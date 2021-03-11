@@ -3,7 +3,7 @@ import 'package:core/widget_forces/screen_edge.dart';
 import '../core.dart';
 import 'single_widget_force.dart';
 import 'widget_forces.dart';
-
+import 'package:forge2d/forge2d.dart';
 
 class QuadraticWidgetWallRepulsion extends SingleWidgetForce {
     double? wallCharge;
@@ -17,25 +17,25 @@ class QuadraticWidgetWallRepulsion extends SingleWidgetForce {
     }
 
     @override
-    Vector2 calculateForce(Vector2 bodyPosition, {required Rect worldRect}) {
+    Vector2 calculateForce(Vector2 bodyPosition, {Rect? worldRect}) {
         final forceVector = edges!
                 .map((edge) {
             switch (edge) {
                 case ScreenEdge.TOP:
-                    return Vector2(bodyPosition.x, worldRect.top);
+                    return Vector2(bodyPosition.x, worldRect!.top);
                 case ScreenEdge.BOTTOM:
-                    return Vector2(bodyPosition.x, worldRect.bottom);
+                    return Vector2(bodyPosition.x, worldRect!.bottom);
                 case ScreenEdge.LEFT:
-                    return Vector2(worldRect.left, bodyPosition.y);
+                    return Vector2(worldRect!.left, bodyPosition.y);
                 case ScreenEdge.RIGHT:
-                    return Vector2(worldRect.right, bodyPosition.y);
+                    return Vector2(worldRect!.right, bodyPosition.y);
             }
             return null;
         })
                 .map((wallVec) => bodyPosition.forceFromChargeAtPosition(wallCharge!, wallVec!))
                 .combine();
 
-        final worldCenter = worldRect.center.asVector();
+        final worldCenter = worldRect!.center.asVector();
         final bodyPosPlusForce = bodyPosition + forceVector;
         final distFromCurPos = bodyPosition.distanceTo(worldCenter);
         final distFromNextPos = bodyPosPlusForce.distanceTo(worldCenter);

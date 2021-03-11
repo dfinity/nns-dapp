@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 
 abstract class SingleWidgetForce extends WidgetForce {
 
-    Vector2 calculateForce(Vector2 bodyPosition);
+    Vector2 calculateForce(Vector2 bodyPosition, {Rect worldRect});
 
     @override
     List<GlobalKey?> get widgetKeys => [];

@@ -5,6 +5,7 @@ import 'dual_widget_force.dart';
 import 'package:flutter/cupertino.dart';
 import 'force_removal_criteria.dart';
 import 'widget_forces.dart';
+import 'package:forge2d/forge2d.dart';
 
 class QuadraticRepulsionWidgetForce extends DualWidgetForce {
     double? charge;
@@ -53,7 +54,7 @@ class PointAttractionForce extends SingleWidgetForce {
 
     PointAttractionForce({required this.attractionPoint, this.charge, this.removalCriteria, this.onRemoval}) : super();
 
-    Vector2 calculateForce(Vector2 bodyPosition) {
+    Vector2 calculateForce(Vector2 bodyPosition, {Rect? worldRect}) {
         return attractionPoint.toWorldVector()
             ..sub(bodyPosition)
             ..scale(charge!);

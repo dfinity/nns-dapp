@@ -4,8 +4,8 @@ import 'dart:async';
 import 'package:dfinity_wallet/data/wallet.dart';
 
 class Transaction{
-    final String? fromKey;
-    final String? toKey;
+    final String fromKey;
+    final String toKey;
     final double amount;
 
     Transaction(this.fromKey, this.toKey, this.amount);

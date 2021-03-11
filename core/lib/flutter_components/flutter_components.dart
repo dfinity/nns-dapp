@@ -28,7 +28,7 @@ class ScaffoldSafeAreaColumn extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children),
+            children: children)
       ),
     );
   }

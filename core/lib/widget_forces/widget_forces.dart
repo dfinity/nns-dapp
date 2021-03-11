@@ -6,7 +6,6 @@ export 'force_layout.dart';
 export 'body_shape.dart';
 export 'widget_body.dart';
 export 'x_axis_attraction_force.dart';
-export 'package:forge2d/forge2d.dart';
 export 'flame_extensions.dart';
 export 'widget_body_dragger.dart';
 export 'force_removal_criteria.dart';
