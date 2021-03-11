@@ -1,5 +1,5 @@
 # Name of our workflow which will act as an identifier when have multilple workflows.
-name: Deploy Classroom Web
+name: Deploy Wallet Web
 
 # # Define trigger point, on push on master branch, this workflow will be triggered.
 # on:
