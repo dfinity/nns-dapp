@@ -1,6 +1,7 @@
+import 'package:core/app_colors.dart';
+import 'package:dfinity_wallet/dfinity.dart';
+import 'package:dfinity_wallet/ui/home/home_page.dart';
 import 'package:flutter/material.dart';
-
-import 'home_page.dart';
 
 void main() {
   runApp(DfinityApp());
@@ -13,19 +14,22 @@ class DfinityApp extends StatelessWidget {
     return MaterialApp(
       title: 'Dfinity Wallet',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: MaterialColor(AppColors.blue900.value, {
+          1000: AppColors.blue1000,
+          900: AppColors.blue900,
+          800: AppColors.blue800,
+          700: AppColors.blue700,
+          600: AppColors.blue600,
+          500: AppColors.blue500,
+          400: AppColors.blue400,
+          300: AppColors.blue300,
+          200: AppColors.blue200,
+          100: AppColors.blue100,
+          50: AppColors.blue50,
+        }),
+        textTheme: DfinityTextTheme
       ),
-      home: HomePage(title: 'Flutter Demo Home Page'),
+      home: HomePageContainer(),
     );
   }
 }
-

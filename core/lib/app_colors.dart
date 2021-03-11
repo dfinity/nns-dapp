@@ -5,71 +5,37 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color primaryYellow = Color.fromRGBO(255, 199, 94, 1);
 
-  static const Color black = Color.fromRGBO(0, 0, 0, 1);
-  static const Color gray1000 = Color.fromRGBO(69, 71, 82, 1);
+  static const Color black = Color(0xff292A2E);
+  static const Color gray1000 = Color(0xff43454C);
   static const Color gray800 = Color(0xff676A7A);
-  static const Color gray600 = Color.fromRGBO(154, 159, 184, 1);
-  static const Color gray500 = Color.fromRGBO(221, 221, 221, 1);
-  static const Color gray400 = Color.fromRGBO(240, 241, 245, 1);
-  static const Color gray200 = Color.fromRGBO(244, 245, 249, 1);
-  static const Color gray100 = Color.fromRGBO(250, 251, 255, 1);
+  static const Color gray600 = Color(0xff60606C);
+  static const Color gray500 = Color(0xff7D7D8C);
+  static const Color gray400 = Color(0xffA9A9B2);
+  static const Color gray200 = Color(0xffC9C9CF);
+  static const Color gray100 = Color(0xffEAEAEC);
   static const Color white = Colors.white;
   static const Color transparent = Colors.transparent;
-  static const Color grayIcon = Color.fromRGBO(157, 161, 186, 1);
-  static const Color grayDisabledShadow = Color.fromRGBO(154, 159, 184, 0.5);
-  static const Color grayDisabledPrimary = Color.fromRGBO(221, 221, 221, 1);
 
-  static const Color orange = Color.fromRGBO(255, 163, 95, 1);
-  static const Color pink = Color.fromRGBO(255, 127, 163, 1);
-  static const Color purple = Color.fromRGBO(197, 118, 226, 1);
-  static const Color purple200 = Color.fromRGBO(245, 226, 251, 1);
-  static const Color blue = Color.fromRGBO(70, 196, 242, 1);
-  static const Color turquoise = Color.fromRGBO(31, 199, 204, 1);
-  static const Color green = Color.fromRGBO(97, 207, 159, 1);
-  static const Color midgreen = Color.fromRGBO(157,225,196, 1);
-  static const Color lightGreen = Color(0xffD9F3E8);
 
-  static const Color primaryBlue = Color.fromRGBO(74, 111, 255, 1);
+  static const Color blue1000 = Color(0xff001529);
+  static const Color blue900 = Color(0xff001F3D);
+  static const Color blue800 = Color(0xff003566);
+  static const Color blue700 = Color(0xff00478F);
+  static const Color blue600 = Color(0xff005FB8);
+  static const Color blue500 = Color(0xff007EF5);
+  static const Color blue400 = Color(0xff339CFF);
+  static const Color blue300 = Color(0xff70B8FF);
+  static const Color blue200 = Color(0xff99CEFF);
+  static const Color blue100 = Color(0xffD6EBFF);
+  static const Color blue50 = Color(0xffEBF5FF);
 
-  static const Color blue1000 = Color.fromRGBO(32, 46, 149, 1);
-  static const Color blue800 = Color.fromRGBO(49, 73, 224, 1);
-  static const Color blue600 = Color.fromRGBO(68, 102, 255, 1.0);
-  static const Color blue500 = primaryBlue;
-  static const Color blue400 = Color.fromRGBO(96, 134, 249, 1);
-  static const Color blue200 = Color.fromRGBO(212, 221, 255, 1);
-  static const Color blue100 = Color.fromRGBO(241, 244, 255, 1);
-
-  static const Color red1000 = Color.fromRGBO(194, 50, 50, 1);
-  static const Color red800 = Color.fromRGBO(224, 66, 66, 1);
-  static const Color red600 = Color.fromRGBO(255, 84, 84, 1);
-  static const Color red = Color.fromRGBO(255, 100, 100, 1);
-  static const Color red400 = Color.fromRGBO(255, 118, 118, 1);
-  static const Color red200 = Color.fromRGBO(255, 218, 218, 1);
-  static const Color red100 = Color.fromRGBO(255, 243, 243, 1);
-  static const Color red500 = red;
-
-  static const Color turquoiseDark = Color.fromRGBO(31, 199, 204, 1);
-
-  static const List<Color> soundGroupColors = [
-    const Color(0xffFF7676),
-    const Color(0xffC576e2),
-    const Color(0xff46c4f2),
-    const Color(0xff61cf9f),
-    const Color(0xffff7fa3),
-    const Color(0xffFFA35F),
-    const Color(0xffc58361),
-  ];
-
-  static const List<Color> secondaryColors = [
-    const Color(0xFFFF6464),
-    const Color(0xFFFFC75E),
-    const Color(0xFFFF7FA3),
-    const Color(0xFFC576E2),
-    const Color(0xFF46C4F2),
-    const Color(0xFF61CF9F),
-  ];
-
-  static Color soundGroupColorForIndex(int index) => soundGroupColors[index % soundGroupColors.length];
+  static const Color yellow1000 = Color(0xff3B2502);
+  static const Color yellow800 = Color(0xff764A04);
+  static const Color yellow600 = Color(0xffB17006);
+  static const Color yellow500 = Color(0xffEC9509);
+  static const Color yellow400 = Color(0xffF9B74D);
+  static const Color yellow200 = Color(0xffFCD79C);
+  static const Color yellow100 = Color(0xffFEEFD7);
 }
 
 extension MakePaint on Color {

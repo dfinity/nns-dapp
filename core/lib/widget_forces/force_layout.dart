@@ -146,7 +146,7 @@ class _ForceLayoutState extends State<ForceLayout> {
           element.forceKey,
           ...element.forces!.flatMap((e) => e.widgetKeys),
         ]).distinct() as Iterable<GlobalKey<State<StatefulWidget>>>;
-    final keyToFrameMap = allKeys.filterNot((element) => element?.currentContext == null).associateWith((element) => element.frame.toMeterRect);
+    final keyToFrameMap = allKeys.filterNot((element) => element.currentContext == null).associateWith((element) => element.frame.toMeterRect);
 
     widget.bodies
         .filter((element) => element.body != null && element.forceKey!.currentContext != null && !element.dragging)

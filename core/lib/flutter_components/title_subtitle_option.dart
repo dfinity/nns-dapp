@@ -66,7 +66,7 @@ class _TitleSubtitleOptionState extends State<TitleSubtitleOption> {
                           widget.title!,
                           style: TextStyle(
                             color: Color(0xff666A7A),
-                            fontFamily: Fonts.opensansRegular,
+                            fontFamily: Fonts.circularBook,
                             fontSize: 24,
                           ),
                         ),
@@ -80,7 +80,7 @@ class _TitleSubtitleOptionState extends State<TitleSubtitleOption> {
                           softWrap: true,
                           style: TextStyle(
                             color: Color(0xff9A9FB8),
-                            fontFamily: Fonts.opensansRegular,
+                            fontFamily: Fonts.circularBook,
                             fontSize: 16,
                           ),
                         ),

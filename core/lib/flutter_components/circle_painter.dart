@@ -25,7 +25,7 @@ class DrawSelectionIndicator extends CustomPainter {
   Color get color => colorForSelected(selected!);
 
   static Color colorForSelected(bool selected) =>
-      selected ? AppColors.primaryBlue : AppColors.gray600;
+      selected ? AppColors.blue600 : AppColors.gray600;
 
   @override
   void paint(Canvas canvas, Size size) {

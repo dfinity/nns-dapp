@@ -33,28 +33,3 @@ class ScaffoldSafeAreaColumn extends StatelessWidget {
     );
   }
 }
-
-class OnboardingTitle extends StatelessWidget {
-  final String text;
-  final double fontSize;
-
-  const OnboardingTitle({Key? key, required this.text, required this.fontSize})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Center(
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: fontSize,
-              color: AppColors.gray1000,
-              fontFamily: Fonts.quicksandBold),
-        ),
-      ),
-    );
-  }
-}

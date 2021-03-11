@@ -31,7 +31,7 @@ class WidgetDistributor {
       element.forceKey,
       ...element.forces!.flatMap((e) => e.widgetKeys),
     ]).distinct() as Iterable<GlobalKey<State<StatefulWidget>>>;
-    keyToFrameMap = allKeys.filterNot((element) => element?.currentContext == null).associateWith((element) => element.frame.toMeterRect);
+    keyToFrameMap = allKeys.filterNot((element) => element.currentContext == null).associateWith((element) => element.frame.toMeterRect);
 
     logTime("time to layout", () {
       var hasCompleted = false;
