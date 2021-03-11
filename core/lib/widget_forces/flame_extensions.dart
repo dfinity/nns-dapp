@@ -128,7 +128,7 @@ extension FromOffsetAndSize on Rect {
 }
 
 class RectHelper {
-    static Rect fromCenter({Offset center, double width, double height}) =>
+    static Rect fromCenter({required Offset center, required double width, required double height}) =>
             Rect.fromLTRB(
                 center.dx - width / 2,
                 center.dy - height / 2,

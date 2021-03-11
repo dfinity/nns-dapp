@@ -6,9 +6,9 @@ import 'widget_forces.dart';
 
 
 class QuadraticWidgetWallRepulsion extends SingleWidgetForce {
-    double wallCharge;
-    List<ScreenEdge> edges;
-    GlobalKey wallWidgetKey;
+    double? wallCharge;
+    List<ScreenEdge>? edges;
+    GlobalKey? wallWidgetKey;
 
     QuadraticWidgetWallRepulsion({this.wallCharge, this.edges, this.wallWidgetKey}) : super() {
         if (edges == null) {
@@ -17,8 +17,8 @@ class QuadraticWidgetWallRepulsion extends SingleWidgetForce {
     }
 
     @override
-    Vector2 calculateForce(Vector2 bodyPosition, {Rect worldRect}) {
-        final forceVector = edges
+    Vector2 calculateForce(Vector2 bodyPosition, {required Rect worldRect}) {
+        final forceVector = edges!
                 .map((edge) {
             switch (edge) {
                 case ScreenEdge.TOP:
@@ -32,7 +32,7 @@ class QuadraticWidgetWallRepulsion extends SingleWidgetForce {
             }
             return null;
         })
-                .map((wallVec) => bodyPosition.forceFromChargeAtPosition(wallCharge, wallVec))
+                .map((wallVec) => bodyPosition.forceFromChargeAtPosition(wallCharge!, wallVec!))
                 .combine();
 
         final worldCenter = worldRect.center.asVector();
@@ -42,12 +42,12 @@ class QuadraticWidgetWallRepulsion extends SingleWidgetForce {
 
         //If the vector is pushing away from the world center, push to center
         if (distFromNextPos > distFromCurPos) {
-            return worldCenter.directionTo(bodyPosition).scaled(wallCharge);
+            return worldCenter.directionTo(bodyPosition).scaled(wallCharge!);
         } else {
             return forceVector;
         }
     }
 
     @override
-  List<GlobalKey<State<StatefulWidget>>> get widgetKeys => (wallWidgetKey == null) ? [] : [wallWidgetKey];
+  List<GlobalKey<State<StatefulWidget>>?> get widgetKeys => (wallWidgetKey == null) ? [] : [wallWidgetKey];
 }

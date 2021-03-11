@@ -9,5 +9,5 @@ abstract class SingleWidgetForce extends WidgetForce {
     Vector2 calculateForce(Vector2 bodyPosition);
 
     @override
-    List<GlobalKey> get widgetKeys => [];
+    List<GlobalKey?> get widgetKeys => [];
 }

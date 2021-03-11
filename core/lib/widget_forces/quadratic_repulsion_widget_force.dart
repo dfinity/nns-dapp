@@ -7,16 +7,16 @@ import 'force_removal_criteria.dart';
 import 'widget_forces.dart';
 
 class QuadraticRepulsionWidgetForce extends DualWidgetForce {
-    double charge;
+    double? charge;
 
-    QuadraticRepulsionWidgetForce({GlobalKey sender, GlobalKey receiver, this.charge}) : super(sender, receiver);
+    QuadraticRepulsionWidgetForce({GlobalKey? sender, GlobalKey? receiver, this.charge}) : super(sender, receiver);
 
-    Vector2 calculateForce(Rect senderBox, Rect recieverBox) {
-        var distanceSquared = senderBox.distanceBetweenSquared(recieverBox);
+    Vector2 calculateForce(Rect? senderBox, Rect? recieverBox) {
+        var distanceSquared = senderBox!.distanceBetweenSquared(recieverBox!);
         if (distanceSquared < 3) {
             distanceSquared = 3;
         }
-        var influence = charge / distanceSquared;
+        var influence = charge! / distanceSquared;
         return recieverBox.center.asVector().directionTo(senderBox.center.asVector())..scale(influence);
     }
 
@@ -33,30 +33,30 @@ extension DistanceBetween on Rect {
 
 
 class WidgetAttractionForce extends DualWidgetForce {
-    double charge = 1;
+    double? charge = 1;
 
-    WidgetAttractionForce({GlobalKey sender, GlobalKey receiver, this.charge}) : super(sender, receiver);
+    WidgetAttractionForce({GlobalKey? sender, GlobalKey? receiver, this.charge}) : super(sender, receiver);
 
-    Vector2 calculateForce(Rect senderBox, Rect recieverBox) {
-        return senderBox.center.asVector()
-            ..sub(recieverBox.center.asVector())
-            ..scale(charge);
+    Vector2 calculateForce(Rect? senderBox, Rect? recieverBox) {
+        return senderBox!.center.asVector()
+            ..sub(recieverBox!.center.asVector())
+            ..scale(charge!);
     }
 
 }
 
 class PointAttractionForce extends SingleWidgetForce {
-    double charge = 1;
+    double? charge = 1;
     Offset attractionPoint;
-    ForceRemovalCriteria removalCriteria;
-    Function onRemoval;
+    ForceRemovalCriteria? removalCriteria;
+    Function? onRemoval;
 
-    PointAttractionForce({@required this.attractionPoint, this.charge, this.removalCriteria, this.onRemoval}) : super();
+    PointAttractionForce({required this.attractionPoint, this.charge, this.removalCriteria, this.onRemoval}) : super();
 
     Vector2 calculateForce(Vector2 bodyPosition) {
         return attractionPoint.toWorldVector()
             ..sub(bodyPosition)
-            ..scale(charge);
+            ..scale(charge!);
     }
 
 }

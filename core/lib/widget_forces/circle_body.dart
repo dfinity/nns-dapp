@@ -32,8 +32,8 @@ class CircleBody extends BodyShape {
   CircleBody(this.matchingWidgetKey, {bool sensor = true}) : super(sensor);
 
   @override
-  Size sizeFromWidgetTree(){
-    return matchingWidgetKey.currentContext.size;
+  Size? sizeFromWidgetTree(){
+    return matchingWidgetKey.currentContext!.size;
   }
 
   @override
@@ -61,8 +61,8 @@ class BoxBody extends BodyShape {
   }
 
   @override
-  Size sizeFromWidgetTree(){
-    return matchingWidgetKey.currentContext.size;
+  Size? sizeFromWidgetTree(){
+    return matchingWidgetKey.currentContext!.size;
   }
 }
 

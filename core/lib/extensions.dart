@@ -31,10 +31,10 @@ extension PushRoute on NavigatorState {
   void pushNamedRouteAndClear(String route) => pushNamedAndRemoveUntil(route, (route) => false);
 }
 
-extension ShuffledMovingAll<T> on List<T> {
-  List<T> shuffleList() {
-    List<T> temp = this.toList();
-    List<T> list = this.toList();
+extension ShuffledMovingAll<T> on List<T?> {
+  List<T?> shuffleList() {
+    List<T?> temp = this.toList();
+    List<T?> list = this.toList();
     var rnd = Random();
 
     for (int i = 0; i < list.length; i++) {
@@ -51,13 +51,13 @@ extension ShuffledMovingAll<T> on List<T> {
 
 extension Frame on GlobalKey {
   Rect get frame {
-    final size = currentContext.size;
+    final size = currentContext!.size!;
     final pos = position;
     return Rect.fromLTWH(pos.dx, pos.dy, size.width, size.height);
   }
 
   Offset get position {
-    final box = currentContext.findRenderObject() as RenderBox;
+    final box = currentContext!.findRenderObject() as RenderBox;
     return box.localToGlobal(Offset.zero);
   }
 
@@ -69,7 +69,7 @@ extension Positions<T> on List<T> {
 
   T next(T object) => this[indexOf(object) + 1];
 
-  T getOrNull(int index) {
+  T? getOrNull(int index) {
     if (index >= length || index < 0) return null;
     return this[index];
   }
@@ -121,7 +121,7 @@ extension StandardKotlin<T> on T {
 
   @pragma('vm:prefer-inline')
   @pragma('dart2js:tryInline')
-  T /*?*/ takeIf(bool Function(T) predicate) {
+  T? takeIf(bool Function(T) predicate) {
     assert(() {
       if (predicate == null) throw ArgumentError("predicate can't be null");
       return true;
@@ -132,7 +132,7 @@ extension StandardKotlin<T> on T {
 
   @pragma('vm:prefer-inline')
   @pragma('dart2js:tryInline')
-  T /*?*/ takeUnless(bool Function(T) predicate) {
+  T? takeUnless(bool Function(T) predicate) {
     assert(() {
       if (predicate == null) throw ArgumentError("predicate can't be null");
       return true;

@@ -3,9 +3,9 @@ import 'package:core/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SelectionIndicator extends StatelessWidget {
-  final bool selected;
+  final bool? selected;
 
-  const SelectionIndicator({Key key, this.selected}) : super(key: key);
+  const SelectionIndicator({Key? key, this.selected}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +20,9 @@ class DrawSelectionIndicator extends CustomPainter {
   DrawSelectionIndicator(this.selected);
 
   final borderWidth = 2.0;
-  final bool selected;
+  final bool? selected;
 
-  Color get color => colorForSelected(selected);
+  Color get color => colorForSelected(selected!);
 
   static Color colorForSelected(bool selected) =>
       selected ? AppColors.primaryBlue : AppColors.gray600;
@@ -37,7 +37,7 @@ class DrawSelectionIndicator extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeWidth = borderWidth);
 
-    if (selected) {
+    if (selected!) {
       canvas.drawCircle(
           Offset(size.width / 2, size.height / 2),
           (size.height / 2) - (borderWidth * 1.5),

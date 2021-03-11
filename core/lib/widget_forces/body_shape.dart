@@ -12,5 +12,5 @@ abstract class BodyShape {
 
     FixtureDef createFixtureDef(Size widgetSize);
 
-    Size sizeFromWidgetTree();
+    Size? sizeFromWidgetTree();
 }

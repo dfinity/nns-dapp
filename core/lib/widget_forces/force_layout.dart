@@ -15,26 +15,26 @@ import 'flame_extensions.dart';
 class ForceLayout extends StatefulWidget {
   final List<WidgetBody> bodies;
 
-  ForceLayout({@required Key key, @required this.bodies}) : super(key: key);
+  ForceLayout({required Key key, required this.bodies}) : super(key: key);
 
   @override
   _ForceLayoutState createState() => _ForceLayoutState();
 }
 
 class _ForceLayoutState extends State<ForceLayout> {
-  GameLoop gameLoop;
+  late GameLoop gameLoop;
   final World physicsWorld = World(Vector2.zero(), DefaultBroadPhaseBuffer(DynamicTreeFlatNodes()));
-  Map<GlobalKey, Body> currentBodiesToKeys = {};
-  WidgetBody draggingBody;
-  Body ground;
-  GlobalKey get layoutKey => widget.key;
-  Map<GlobalKey, Size> keySizeCache = {};
+  Map<GlobalKey?, Body> currentBodiesToKeys = {};
+  WidgetBody? draggingBody;
+  Body? ground;
+  GlobalKey? get layoutKey => widget.key as GlobalKey<State<StatefulWidget>>?;
+  Map<GlobalKey, Size?> keySizeCache = {};
 
   @override
   void initState() {
     super.initState();
     gameLoop = GameLoop((dt) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
         gameLoopCallback(dt);
       });
     });
@@ -68,11 +68,11 @@ class _ForceLayoutState extends State<ForceLayout> {
     widget.bodies.forEach((element) {
       element.body = currentBodiesToKeys[element.forceKey];
     });
-    final widgetKeyMap = widget.bodies.associateBy((element) => element.forceKey);
+    final widgetKeyMap = widget.bodies.associateBy(((element) => element.forceKey!) as GlobalKey<State<StatefulWidget>> Function(WidgetBody));
 
-    final toRemove = currentBodiesToKeys.keys.filter((element) => !widgetKeyMap.containsKey(element)).toList();
+    final toRemove = currentBodiesToKeys.keys.filter(((element) => !widgetKeyMap.containsKey(element)) as bool Function(GlobalKey<State<StatefulWidget>>?)).toList() as List<GlobalKey<State<StatefulWidget>>>;
     toRemove.forEach((element) {
-      physicsWorld.destroyBody(currentBodiesToKeys[element]);
+      physicsWorld.destroyBody(currentBodiesToKeys[element]!);
       currentBodiesToKeys.remove(element);
     });
 
@@ -83,8 +83,8 @@ class _ForceLayoutState extends State<ForceLayout> {
             .sortedByDescending((element) => element.sortOrder)
                 .filter((element) => element.body?.position != null && sizeForFixtureShape(element.bodyShape) != null)
                 .map((e) {
-          final size = sizeForFixtureShape(e.bodyShape);
-          final frame = Rect.fromCenter(center: e.body.position.toOffset(), width: size.width, height: size.height);
+          final size = sizeForFixtureShape(e.bodyShape)!;
+          final frame = Rect.fromCenter(center: e.body!.position.toOffset(), width: size.width, height: size.height);
 
           return Positioned.fromRect(
             rect: frame,
@@ -99,7 +99,7 @@ class _ForceLayoutState extends State<ForceLayout> {
   }
 
   void gameLoopCallback(double dt) {
-    if (!this.mounted || !layoutKey.attached) {
+    if (!this.mounted || !layoutKey!.attached) {
       return;
     }
       final bounds = (widget.key as GlobalKey).frame;
@@ -108,9 +108,9 @@ class _ForceLayoutState extends State<ForceLayout> {
       });
 
     final toAdd = widget.bodies.filter((element) => !currentBodiesToKeys.containsKey(element.forceKey)).toList();
-    if (toAdd.isNotEmpty && layoutKey.currentContext != null && !physicsWorld.isLocked()) {
-      final position = layoutKey.position;
-      final size = layoutKey.currentContext.size;
+    if (toAdd.isNotEmpty && layoutKey!.currentContext != null && !physicsWorld.isLocked()) {
+      final position = layoutKey!.position;
+      final size = layoutKey!.currentContext!.size!;
       final rect = Rect.fromLTWH(position.dx, position.dy, size.width, size.height);
       addBodies(toAdd, rect);
       print("adding body");
@@ -130,7 +130,7 @@ class _ForceLayoutState extends State<ForceLayout> {
       }
     }).forEach((globalKey) {
       if(globalKey.attached){
-        keySizeCache[globalKey] = globalKey.currentContext.size;
+        keySizeCache[globalKey] = globalKey.currentContext!.size;
       }
     });
 
@@ -144,42 +144,42 @@ class _ForceLayoutState extends State<ForceLayout> {
     final allKeys = widget.bodies.flatMap((element) => [
           layoutKey,
           element.forceKey,
-          ...element.forces.flatMap((e) => e.widgetKeys),
-        ]).distinct();
+          ...element.forces!.flatMap((e) => e.widgetKeys),
+        ]).distinct() as Iterable<GlobalKey<State<StatefulWidget>>>;
     final keyToFrameMap = allKeys.filterNot((element) => element?.currentContext == null).associateWith((element) => element.frame.toMeterRect);
 
     widget.bodies
-        .filter((element) => element.body != null && element.forceKey.currentContext != null && !element.dragging)
+        .filter((element) => element.body != null && element.forceKey!.currentContext != null && !element.dragging)
         .forEach((widgetBody) {
 
       forcesStopwatch.start();
-      widgetBody.forces.toList().forEach((force) {
+      widgetBody.forces!.toList().forEach((force) {
         final receiverBody = widgetBody.body;
 
         Vector2 forceVector = Vector2.zero();
         if (force is QuadraticWidgetWallRepulsion) {
           final wallKey = force.wallWidgetKey ?? layoutKey;
-          final rect = keyToFrameMap[wallKey];
-          final recieverPos = keyToFrameMap[widgetBody.forceKey].center;
+          final rect = keyToFrameMap[wallKey!]!;
+          final recieverPos = keyToFrameMap[widgetBody.forceKey!]!.center;
           forceVector = force.calculateForce(recieverPos.asVector(), worldRect: rect);
         } else if (force is DualWidgetForce) {
           if (!keyToFrameMap.containsKey(force.sender) || !keyToFrameMap.containsKey(force.receiver)) return;
-          forceVector = force.calculateForce(keyToFrameMap[force.sender], keyToFrameMap[force.receiver]);
+          forceVector = force.calculateForce(keyToFrameMap[force.sender!], keyToFrameMap[force.receiver!]);
         } else if (force is PointAttractionForce) {
-          forceVector = force.calculateForce(receiverBody.position);
+          forceVector = force.calculateForce(receiverBody!.position);
 
           if (force.removalCriteria != null) {
             final closeEnough = receiverBody.position.distanceTo(force.attractionPoint.toWorldVector()) <
-                force.removalCriteria.distance;
-            final slowEnough = receiverBody.linearVelocity.length < force.removalCriteria.velocity;
+                force.removalCriteria!.distance!;
+            final slowEnough = receiverBody.linearVelocity.length < force.removalCriteria!.velocity!;
             if (closeEnough && slowEnough) {
-              widgetBody.forces.remove(force);
-              force.onRemoval();
+              widgetBody.forces!.remove(force);
+              force.onRemoval!();
             }
           }
         }
 
-        receiverBody.applyLinearImpulse(forceVector, point: receiverBody.position, wake: true);
+        receiverBody!.applyLinearImpulse(forceVector, point: receiverBody.position, wake: true);
       });
       forcesStopwatch.stop();
     });
@@ -196,7 +196,7 @@ class _ForceLayoutState extends State<ForceLayout> {
     });
   }
 
-  Size sizeForFixtureShape(BodyShape bodyShape) {
+  Size? sizeForFixtureShape(BodyShape? bodyShape) {
     if (bodyShape is CircleBody) {
       return keySizeCache[bodyShape.matchingWidgetKey];
     } else if (bodyShape is BoxBody) {

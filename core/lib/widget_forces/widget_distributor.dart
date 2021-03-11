@@ -9,9 +9,9 @@ import 'package:forge2d/forge2d.dart';
 import 'flame_extensions.dart';
 
 class WidgetDistributor {
-  List<WidgetBody> virtualBodies;
-  Map<GlobalKey, Vector2> positionMap;
-  Map<GlobalKey, Rect> keyToFrameMap;
+  late List<WidgetBody> virtualBodies;
+  late Map<GlobalKey, Vector2> positionMap;
+  late Map<GlobalKey, Rect> keyToFrameMap;
   final World physicsWorld = World(Vector2.zero(), DefaultBroadPhaseBuffer(DynamicTreeFlatNodes()));
   final Rect worldRect;
 
@@ -29,8 +29,8 @@ class WidgetDistributor {
 
     final allKeys = body.flatMap((element) => [
       element.forceKey,
-      ...element.forces.flatMap((e) => e.widgetKeys),
-    ]).distinct();
+      ...element.forces!.flatMap((e) => e.widgetKeys),
+    ]).distinct() as Iterable<GlobalKey<State<StatefulWidget>>>;
     keyToFrameMap = allKeys.filterNot((element) => element?.currentContext == null).associateWith((element) => element.frame.toMeterRect);
 
     logTime("time to layout", () {
@@ -56,20 +56,20 @@ class WidgetDistributor {
   }
 
   bool applyForcesToBodies(double multiplier) {
-    positionMap = virtualBodies.associate((element) => MapEntry(element.forceKey, element.body.position));
+    positionMap = virtualBodies.associate(((element) => MapEntry(element.forceKey!, element.body!.position)) as MapEntry<GlobalKey<State<StatefulWidget>>, Vector2> Function(WidgetBody));
     virtualBodies.forEach((widgetBody) {
-      widgetBody.forces.forEach((force) {
-        final receiverBody = widgetBody.body;
+      widgetBody.forces!.forEach((force) {
+        final receiverBody = widgetBody.body!;
 
         Vector2 forceVector = Vector2.zero();
         if (force is QuadraticWidgetWallRepulsion) {
-          Rect rect = worldRect;
+          Rect? rect = worldRect;
           if(force.wallWidgetKey != null){
-            rect = keyToFrameMap[force.wallWidgetKey];
+            rect = keyToFrameMap[force.wallWidgetKey!];
           }
-          forceVector = force.calculateForce(receiverBody.position, worldRect: rect);
+          forceVector = force.calculateForce(receiverBody.position, worldRect: rect!);
         } else if (force is DualWidgetForce) {
-          final senderPos = positionMap[force.sender];
+          final senderPos = positionMap[force.sender!];
           if (senderPos != null) {
             forceVector = force.calculateForce(
               Rect.fromCenter(center: senderPos.asOffset(), width: 1, height: 1),
@@ -77,7 +77,7 @@ class WidgetDistributor {
             );
           } else {
             forceVector = force.calculateForce(
-              force.sender.frame.toMeterRect,
+              force.sender!.frame.toMeterRect,
               Rect.fromCenter(center: receiverBody.position.asOffset(), width: 1, height: 1),
             );
           }
@@ -89,11 +89,11 @@ class WidgetDistributor {
       });
     });
 
-    return virtualBodies.all((element) => element.body.linearVelocity.length < 0.1);
+    return virtualBodies.all((element) => element.body!.linearVelocity.length < 0.1);
   }
 
-  Vector2 positionForWidget(GlobalKey key) {
-    final vector = positionMap[key];
+  Vector2 positionForWidget(GlobalKey? key) {
+    final vector = positionMap[key!]!;
     return Vector2(vector.x - worldRect.left, vector.y - worldRect.top);
   }
 }

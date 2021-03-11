@@ -17,7 +17,7 @@ export 'title_subtitle_option.dart';
 class ScaffoldSafeAreaColumn extends StatelessWidget {
   final List<Widget> children;
 
-  const ScaffoldSafeAreaColumn({Key key, @required this.children})
+  const ScaffoldSafeAreaColumn({Key? key, required this.children})
       : super(key: key);
 
   @override
@@ -38,7 +38,7 @@ class OnboardingTitle extends StatelessWidget {
   final String text;
   final double fontSize;
 
-  const OnboardingTitle({Key key, @required this.text, @required this.fontSize})
+  const OnboardingTitle({Key? key, required this.text, required this.fontSize})
       : super(key: key);
 
   @override

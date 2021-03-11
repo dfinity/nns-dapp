@@ -7,11 +7,11 @@ import 'circle_painter.dart';
 import 'flutter_components.dart';
 
 class TitleSubtitleOption extends StatefulWidget {
-  final String title;
-  final String subtitle;
-  final Function onTap;
+  final String? title;
+  final String? subtitle;
+  final Function? onTap;
 
-  const TitleSubtitleOption({Key key, this.title, this.subtitle, this.onTap})
+  const TitleSubtitleOption({Key? key, this.title, this.subtitle, this.onTap})
       : super(key: key);
 
   @override
@@ -32,7 +32,7 @@ class _TitleSubtitleOptionState extends State<TitleSubtitleOption> {
             highlighted = true;
           });
           await Future.delayed(0.3.seconds);
-          widget.onTap();
+          widget.onTap!();
           await Future.delayed(0.1.seconds);
           setState(() {
             highlighted = false;
@@ -63,7 +63,7 @@ class _TitleSubtitleOptionState extends State<TitleSubtitleOption> {
                         padding: const EdgeInsets.only(
                             left: 8.0, top: 8, bottom: 0, right: 20),
                         child: Text(
-                          widget.title,
+                          widget.title!,
                           style: TextStyle(
                             color: Color(0xff666A7A),
                             fontFamily: Fonts.opensansRegular,
@@ -74,7 +74,7 @@ class _TitleSubtitleOptionState extends State<TitleSubtitleOption> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          widget.subtitle,
+                          widget.subtitle!,
                           textAlign: TextAlign.left,
                           maxLines: 3,
                           softWrap: true,

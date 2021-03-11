@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CircularLoader extends StatelessWidget {
   final Color color;
 
-  const CircularLoader({Key key, this.color = const Color(0xFFFFFFFF)})
+  const CircularLoader({Key? key, this.color = const Color(0xFFFFFFFF)})
       : super(key: key);
 
   @override

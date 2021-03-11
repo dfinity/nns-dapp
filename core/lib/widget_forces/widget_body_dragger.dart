@@ -5,15 +5,15 @@ import '../core.dart';
 import 'flame_extensions.dart';
 
 class ForceInteractor {
-  Body worldBody;
-  World physicsWorld;
-  List<WidgetBody> draggableBodies;
+  Body? worldBody;
+  late World physicsWorld;
+  late List<WidgetBody> draggableBodies;
 }
 
 class WidgetBodyDragger extends StatefulWidget {
-  final Widget child;
-  final Function(WidgetBody) onDragEnded;
-  final Function(WidgetBody) onDragUpdated;
+  final Widget? child;
+  final Function(WidgetBody?)? onDragEnded;
+  final Function(WidgetBody?)? onDragUpdated;
 
   WidgetBodyDragger({this.child, this.onDragEnded, this.onDragUpdated});
 
@@ -22,8 +22,8 @@ class WidgetBodyDragger extends StatefulWidget {
 }
 
 class WidgetBodyDraggerState extends State<WidgetBodyDragger> with ForceInteractor {
-  MouseJoint mouseJoint;
-  WidgetBody draggingBody;
+  MouseJoint? mouseJoint;
+  WidgetBody? draggingBody;
 
   @override
   Widget build(BuildContext context) {
@@ -33,19 +33,19 @@ class WidgetBodyDraggerState extends State<WidgetBodyDragger> with ForceInteract
             .sortedBy((element) => element.sortOrder)
             .firstOrNullWhere((component) => component.frame.contains(details.localPosition));
         if (draggingBody != null) {
-          draggingBody.dragging = true;
-          print("Dragging body ${draggingBody.sortOrder}");
+          draggingBody!.dragging = true;
+          print("Dragging body ${draggingBody!.sortOrder}");
           mouseJoint = physicsWorld.createJoint(MouseJointDef()
-            ..bodyA = worldBody
-            ..bodyB = draggingBody.body
+            ..bodyA = worldBody!
+            ..bodyB = draggingBody!.body!
             ..collideConnected = true
-            ..maxForce = 100000 * draggingBody.body.mass
-            ..dampingRatio = 0);
+            ..maxForce = 100000 * draggingBody!.body!.mass
+            ..dampingRatio = 0) as MouseJoint?;
         }
       },
       onPanUpdate: (details) {
         if(mouseJoint!= null){
-          mouseJoint?.setTarget(mouseJoint.getTarget().clone()..add(details.delta.toWorldVector()));
+          mouseJoint?.setTarget(mouseJoint!.getTarget().clone()..add(details.delta.toWorldVector()));
           widget.onDragUpdated?.call(draggingBody);
         }
       },
@@ -55,7 +55,7 @@ class WidgetBodyDraggerState extends State<WidgetBodyDragger> with ForceInteract
           draggingBody?.dragging = false;
           widget.onDragEnded?.call(draggingBody);
           draggingBody = null;
-          physicsWorld.destroyJoint(mouseJoint);
+          physicsWorld.destroyJoint(mouseJoint!);
           mouseJoint = null;
         }
       },
@@ -63,7 +63,7 @@ class WidgetBodyDraggerState extends State<WidgetBodyDragger> with ForceInteract
         if (mouseJoint != null) {
           draggingBody?.dragging = false;
           draggingBody = null;
-          physicsWorld.destroyJoint(mouseJoint);
+          physicsWorld.destroyJoint(mouseJoint!);
           mouseJoint = null;
         }
       },
