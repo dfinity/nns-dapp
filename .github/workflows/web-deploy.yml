@@ -1,0 +1,57 @@
+# Name of our workflow which will act as an identifier when have multilple workflows.
+name: Deploy Classroom Web
+
+# # Define trigger point, on push on master branch, this workflow will be triggered.
+# on:
+#   push:
+#     branches: [ master ]
+
+on:
+  push:
+    branches: [main]
+
+
+# The job(s) you want to do when the workflow is triggered
+# We will be using an ubuntu-latest virtual machine to perform these processes
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Job consists of instructions that you want to trigger
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      # Checkout our code
+      - uses: actions/checkout@v2
+
+      # Switching to Flutter beta branch
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '2.0.1'
+          channel: 'stable'
+
+
+      # Get the latest dependencies
+      - run: flutter pub get
+        working-directory: ./dfinity_wallet
+
+      # Build our
+      - run: flutter build web --web-renderer canvaskit --release --no-sound-null-safety
+        working-directory: ./dfinity_wallet
+
+      # Update the index html to contain the build number
+      - run: sed -i "s/BUILD_NUMBER/$GITHUB_RUN_ID/g" index.html
+        working-directory: ./dfinity_wallet/build/web
+
+      # Copy the contents of build/web to the public folder of Firebase
+      - run: cp -R build/web/* public/
+        working-directory: ./dfinity_wallet
+
+      # Using Firebase Actions to deploy to our Firebase Hosting
+      - uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_DEPLOY_TOKEN }}
+          PROJECT_PATH: ./dfinity_wallet
+          # This is where our stored secret will come in use
