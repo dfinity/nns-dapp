@@ -52,6 +52,6 @@ jobs:
         with:
           args: deploy --only hosting
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DFINITY_WALLET_TESTING }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_SECRET }}
           PROJECT_PATH: ./dfinity_wallet
           # This is where our stored secret will come in use
