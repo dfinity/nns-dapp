@@ -12,7 +12,7 @@ class DfinityApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dfinity Wallet',
+      title: 'Internet Computer Wallet',
       theme: ThemeData(
         primarySwatch: MaterialColor(AppColors.blue900.value, {
           1000: AppColors.blue1000,

@@ -1,4 +1,7 @@
+import 'package:dfinity_wallet/data/app_state.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
+import 'package:dfinity_wallet/ui/wallet/topup_canister_widget.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
 
@@ -12,13 +15,9 @@ class WalletDetailWidget extends StatefulWidget {
 }
 
 class _WalletDetailWidgetState extends State<WalletDetailWidget> {
-  late TransactionService transactionService;
-
   @override
   void initState() {
     super.initState();
-    transactionService = TransactionService(widget.wallet);
-    transactionService.fetchTransactions();
   }
 
   @override
@@ -27,22 +26,91 @@ class _WalletDetailWidgetState extends State<WalletDetailWidget> {
       appBar: AppBar(
         title: Text("Wallet Details"),
       ),
-      body: TabTitleAndContent(
-          title: widget.wallet.name,
-          content: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(24.0),
-                child: Text(
-                  "Balance: ${transactionService.transactions.sumBy((element) => element.amount)}",
-                  style: context.textTheme.headline2,
+      body: Column(
+        children: [
+          Expanded(
+            child: TabTitleAndContent(
+              title: widget.wallet.name,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 24.0, bottom: 24.0),
+                  child: Text(
+                    "Balance: ${widget.wallet.transactions.sumBy((element) => element.amount)}",
+                    style: context.textTheme.headline3,
+                  ),
                 ),
+                if (widget.wallet.transactions.isEmpty)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 100),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Text(
+                              "No transactions!\n\n Your wallet is empty until ICPs are deposited with a transaction",
+                              style: context.textTheme.bodyText1,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          TextButton(
+                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.gray100)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Text("Create Demo Transactions"),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  widget.wallet.transactions.addAll(0
+                                      .rangeTo(3)
+                                      .map((e) => Transaction(fromKey: Uuid().v4(), amount: rand.nextInt(10000) / 100)));
+                                });
+                              })
+                        ],
+                      ),
+                    ),
+                  ),
+                ...widget.wallet.transactions.map((e) => TransactionRow(transaction: e))
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 80,
+            child: Container(
+              color: AppColors.gray400,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SizedBox.expand(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                            child: Text("Top up Canister"),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return TopUpCanisterWidget(
+                                      wallet: widget.wallet,
+                                    );
+                                  });
+                            }),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      child: SizedBox.expand(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(child: Text("New Transaction"), onPressed: () {}),
+                    ),
+                  ))
+                ],
               ),
-              Expanded(child: ListView(children: [
-                ...transactionService.transactions.map((e) => TransactionRow(transaction: e))
-              ],))
-            ],
-          )),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

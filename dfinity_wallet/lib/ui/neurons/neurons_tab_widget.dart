@@ -9,7 +9,7 @@ class NeuronsTabWidget extends StatefulWidget {
 class _NeuronsTabWidgetState extends State<NeuronsTabWidget> {
   @override
   Widget build(BuildContext context) {
-    return TabTitleAndContent(title: "Neurons", content: Container(),);
+    return TabTitleAndContent(title: "Neurons", children: [Container()],);
   }
 }
 

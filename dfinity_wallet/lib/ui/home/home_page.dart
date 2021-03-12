@@ -37,7 +37,8 @@ class _HomePageContainer extends State<HomePageContainer> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        HomeTabsWidget(),
+        if(!landingPageVisible)
+          HomeTabsWidget(),
         if (landingPageAnimating || landingPageVisible)
           AnimatedOpacity(duration: animationDuration, opacity: landingPageVisible ? 1 : 0, child: LandingPageWidget()),
       ],
