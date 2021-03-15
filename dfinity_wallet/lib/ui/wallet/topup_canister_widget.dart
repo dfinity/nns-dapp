@@ -91,7 +91,7 @@ class _TopUpCanisterWidgetState extends State<TopUpCanisterWidget> {
                             final cyclesBought = (amount * 50).round();
                             selectedCanister!.cyclesAdded += cyclesBought;
                             widget.wallet.transactions.add(Transaction(
-                                amount: amount, fromKey: widget.wallet.publicKey, toKey: selectedCanister!.publicKey));
+                                amount: amount, fromKey: widget.wallet.address, toKey: selectedCanister!.publicKey));
                             showDialog(
                                 context: context,
                                 builder: (context) =>

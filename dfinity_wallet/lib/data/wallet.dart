@@ -6,8 +6,8 @@ import 'package:dartx/dartx.dart';
 
 class Wallet {
     final String name;
-    final String publicKey;
-    Wallet(this.name, this.publicKey);
+    final String address;
+    Wallet(this.name, this.address);
 
     List<Transaction> transactions = [];
     double get balance => transactions.sumBy((element) => element.amount);

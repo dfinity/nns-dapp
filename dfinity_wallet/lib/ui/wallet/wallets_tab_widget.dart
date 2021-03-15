@@ -8,6 +8,7 @@ import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/_components/text_field_dialog_widget.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
+import 'package:flutter/services.dart';
 import '../_components/debounced_validated_form_field.dart';
 
 class WalletsTabWidget extends StatefulWidget {
@@ -17,6 +18,7 @@ class WalletsTabWidget extends StatefulWidget {
 
 class _WalletsTabWidgetState extends State<WalletsTabWidget> {
 
+  static const platformChannel = const MethodChannel('internet_computer.signing');
 
 
   @override
@@ -71,9 +73,7 @@ class _WalletsTabWidgetState extends State<WalletsTabWidget> {
                                 buttonTitle: "Create",
                                 fieldName: "Wallet Name",
                                 onComplete: (name) {
-                                  setState(() {
-                                    AppState.shared.wallets.add(Wallet(name, WalletService.uuid.v4()));
-                                  });
+                                  createWallet(name);
                                 }))));
               },
             ),
@@ -82,7 +82,51 @@ class _WalletsTabWidgetState extends State<WalletsTabWidget> {
       ],
     );
   }
+
+  void createWallet(String name)async {
+    final walletId = name.replaceAll(" ", "_");
+    Map<String, dynamic> response = await platformChannel.invokeMapMethod("generateKey", {
+      "walletId": walletId
+    }) ?? {};
+    final walletAddress = response["publicKey"];
+    if(walletAddress != null){
+      setState(() {
+        AppState.shared.wallets.add(Wallet(name, walletAddress));
+      });
+    }else{
+      Map<String, String> error = response["error"] ?? {};
+      _showErrorDialog("Error Creating Wallet", "${error['description']}, \n ${error['type']}");
+    }
+  }
+
+  Future<void> _showErrorDialog(String title, String desc) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(desc),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+
 
 class WalletRow extends StatelessWidget {
   final Wallet wallet;
@@ -112,7 +156,7 @@ class WalletRow extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, bottom: 16.0, right: 16.0),
                 child: Text(
-                  wallet.publicKey,
+                  wallet.address,
                   style: context.textTheme.bodyText1?.copyWith(color: AppColors.gray800),
                 ),
               )
