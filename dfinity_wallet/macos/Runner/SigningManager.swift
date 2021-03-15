@@ -22,9 +22,9 @@ class SigningManager {
         if(call.method == "generateKey"){
             let walletId = args["walletId"] as! String
             do {
-                let rustGreetings = RustGreetings()
+    
                 let key = try generateKey(walletId: walletId)
-                result(["publicKey": rustGreetings.sayHello(to: key)])
+                result(["publicKey": key])
             } catch KeyGenerationError.privateKeyGeneration(let reason) {
                 result(["error": [
                     "type": "privateKeyGeneration",
@@ -69,15 +69,5 @@ class SigningManager {
         let data:Data = cfdata as Data
         let b64Key = data.base64EncodedString()
         return b64Key
-    }
-    
-}
-
-class RustGreetings {
-    func sayHello(to: String) -> String {
-        let result = rust_greeting(to)
-        let swift_result = String(cString: result!)
-        rust_greeting_free(UnsafeMutablePointer(mutating: result))
-        return swift_result
     }
 }
