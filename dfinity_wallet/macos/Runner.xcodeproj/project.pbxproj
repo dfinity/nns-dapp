@@ -21,6 +21,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		0A90C86D25FF6EDC00371C97 /* SigningManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A90C86C25FF6EDC00371C97 /* SigningManager.swift */; };
+		0A90C87C25FF98B700371C97 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A90C87B25FF98A400371C97 /* libresolv.tbd */; };
+		0A90C88E25FF9B2100371C97 /* libic_signing.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A90C88B25FF9AFF00371C97 /* libic_signing.a */; };
 		335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */; };
 		337575A2518F572CC922EC7F /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFCD510B2A7DA5DE3933EAB4 /* Pods_Runner.framework */; };
 		33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC10F02044A3C60003C045 /* AppDelegate.swift */; };
@@ -54,6 +57,11 @@
 
 /* Begin PBXFileReference section */
 		0335D27896A812659E56F80E /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		0A90C86C25FF6EDC00371C97 /* SigningManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningManager.swift; sourceTree = "<group>"; };
+		0A90C87B25FF98A400371C97 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		0A90C87E25FF98F300371C97 /* Rust-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Rust-Bridging-Header.h"; sourceTree = "<group>"; };
+		0A90C88925FF9A5F00371C97 /* ic_signing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ic_signing.h; path = ../rust_lib/cargo/src/ic_signing.h; sourceTree = "<group>"; };
+		0A90C88B25FF9AFF00371C97 /* libic_signing.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libic_signing.a; path = "../rust_lib/cargo/target/x86_64-apple-darwin/release/libic_signing.a"; sourceTree = "<group>"; };
 		333000ED22D3DE5D00554162 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
 		335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratedPluginRegistrant.swift; sourceTree = "<group>"; };
 		33CC10ED2044A3C60003C045 /* dfinity_wallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dfinity_wallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,6 +89,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				337575A2518F572CC922EC7F /* Pods_Runner.framework in Frameworks */,
+				0A90C87C25FF98B700371C97 /* libresolv.tbd in Frameworks */,
+				0A90C88E25FF9B2100371C97 /* libic_signing.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,7 +153,9 @@
 			isa = PBXGroup;
 			children = (
 				33CC10F02044A3C60003C045 /* AppDelegate.swift */,
+				0A90C87E25FF98F300371C97 /* Rust-Bridging-Header.h */,
 				33CC11122044BFA00003C045 /* MainFlutterWindow.swift */,
+				0A90C86C25FF6EDC00371C97 /* SigningManager.swift */,
 				33E51913231747F40026EE4D /* DebugProfile.entitlements */,
 				33E51914231749380026EE4D /* Release.entitlements */,
 				33CC11242044D66E0003C045 /* Resources */,
@@ -155,6 +167,9 @@
 		D73912EC22F37F3D000D13A0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0A90C88B25FF9AFF00371C97 /* libic_signing.a */,
+				0A90C88925FF9A5F00371C97 /* ic_signing.h */,
+				0A90C87B25FF98A400371C97 /* libresolv.tbd */,
 				FFCD510B2A7DA5DE3933EAB4 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -167,7 +182,6 @@
 				37606E2D1308BA428392F8B7 /* Pods-Runner.release.xcconfig */,
 				0335D27896A812659E56F80E /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -338,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */,
+				0A90C86D25FF6EDC00371C97 /* SigningManager.swift in Sources */,
 				33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */,
 				335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */,
 			);
@@ -426,7 +441,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust_lib/cargo/target/x86_64-apple-darwin/release";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Runner/Rust-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Profile;
@@ -552,7 +570,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust_lib/cargo/target/x86_64-apple-darwin/release";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Runner/Rust-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -572,7 +593,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust_lib/cargo/target/x86_64-apple-darwin/release";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Runner/Rust-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
