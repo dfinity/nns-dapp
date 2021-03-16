@@ -29,7 +29,6 @@ dependencies:
   uuid: ^3.0.1
   intl: ^0.17.0
 
-
   core:
     path: ../core
 

@@ -26,51 +26,49 @@ class _WalletsTabWidgetState extends State<WalletsTabWidget> {
   @override
   Widget build(BuildContext context) {
     return FooterGradientButton(
-        body: Expanded(
-          child: TabTitleAndContent(
-            title: "Wallets",
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 50),
-                    child: BalanceDisplayWidget(
-                      amount: AppState.shared.wallets.sumBy((element) => element.balance),
-                      amountSize: 60,
-                      icpLabelSize: 30,
-                    ),
+        body: TabTitleAndContent(
+          title: "Wallets",
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 50),
+                  child: BalanceDisplayWidget(
+                    amount: AppState.shared.wallets.sumBy((element) => element.balance),
+                    amountSize: 60,
+                    icpLabelSize: 30,
                   ),
                 ),
               ),
-              EitherWidget(
-                  condition: AppState.shared.wallets.isEmpty,
-                  trueWidget: Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 100.0),
-                      child: SizedBox(
-                        width: 400,
-                        height: 400,
-                        child: Text(
-                          "A wallet is used to store ICP. \n\nThis application allows you to manage multiple wallets.  \n\nTap below to create one.",
-                          style: context.textTheme.bodyText1,
-                          textAlign: TextAlign.center,
-                        ),
+            ),
+            EitherWidget(
+                condition: AppState.shared.wallets.isEmpty,
+                trueWidget: Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 100.0),
+                    child: SizedBox(
+                      width: 400,
+                      height: 400,
+                      child: Text(
+                        "A wallet is used to store ICP. \n\nThis application allows you to manage multiple wallets.  \n\nTap below to create one.",
+                        style: context.textTheme.bodyText1,
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
-                  falseWidget: Column(
-                    children: [
-                      ...AppState.shared.wallets.mapToList((e) => WalletRow(
-                            wallet: e,
-                          )),
-                      SizedBox(
-                        height: 120,
-                      )
-                    ],
-                  ))
-            ],
-          ),
+                ),
+                falseWidget: Column(
+                  children: [
+                    ...AppState.shared.wallets.mapToList((e) => WalletRow(
+                          wallet: e,
+                        )),
+                    SizedBox(
+                      height: 120,
+                    )
+                  ],
+                ))
+          ],
         ),
         footer: Container(
           padding: const EdgeInsets.all(16.0),
