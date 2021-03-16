@@ -1,0 +1,1 @@
+browserify ./require-dfinity-agent.js --standalone DfinityAgent > ./-dfinity-agent.js
