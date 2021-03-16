@@ -14,7 +14,7 @@ class DfinityApp extends StatelessWidget {
     return MaterialApp(
       title: 'Internet Computer Wallet',
       theme: ThemeData(
-        primarySwatch: MaterialColor(AppColors.blue900.value, {
+        primarySwatch: MaterialColor(AppColors.blue500.value, {
           1000: AppColors.blue1000,
           900: AppColors.blue900,
           800: AppColors.blue800,
@@ -27,7 +27,12 @@ class DfinityApp extends StatelessWidget {
           100: AppColors.blue100,
           50: AppColors.blue50,
         }),
-        textTheme: DfinityTextTheme
+        textTheme: DfinityTextTheme,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)))
+              )
+          )
       ),
       home: HomePageContainer(),
     );

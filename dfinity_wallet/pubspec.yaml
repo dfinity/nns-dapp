@@ -27,6 +27,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   hive: ^2.0.0
   uuid: ^3.0.1
+  intl: ^0.17.0
+
 
   core:
     path: ../core
@@ -40,11 +42,19 @@ flutter:
   fonts:
     - family: Circular-Bold
       fonts:
-        - asset: assets/fonts/circular-bold.ttf
+        - asset: assets/fonts/CircularStd-Bold.ttf
 
     - family: Circular-Book
       fonts:
-        - asset: assets/fonts/circular-book.ttf
+        - asset: assets/fonts/CircularStd-Book.ttf
+
+    - family: Circular-Medium
+      fonts:
+        - asset: assets/fonts/CircularStd-Medium.ttf
+
+    - family: Circular-Black
+      fonts:
+        - asset: assets/fonts/CircularStd-Black.ttf
 
 
 

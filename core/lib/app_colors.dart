@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color primaryYellow = Color.fromRGBO(255, 199, 94, 1);
 
+  static const Color background = Color(0xff0B0C0C);
+
   static const Color black = Color(0xff292A2E);
   static const Color gray1000 = Color(0xff43454C);
   static const Color gray800 = Color(0xff676A7A);
@@ -22,7 +24,7 @@ class AppColors {
   static const Color blue800 = Color(0xff003566);
   static const Color blue700 = Color(0xff00478F);
   static const Color blue600 = Color(0xff005FB8);
-  static const Color blue500 = Color(0xff007EF5);
+  static const Color blue500 = Color(0xff0081FF);
   static const Color blue400 = Color(0xff339CFF);
   static const Color blue300 = Color(0xff70B8FF);
   static const Color blue200 = Color(0xff99CEFF);

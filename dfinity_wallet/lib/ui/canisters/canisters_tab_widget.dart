@@ -66,36 +66,6 @@ class _CansitersTabWidgetState extends State<CansitersTabWidget> {
                       )),
                     ))],
           ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(8.0),
-          color: AppColors.gray600,
-          child: SizedBox(
-            height: 80,
-            width: double.infinity,
-            child: ElevatedButton(
-              child: Text(
-                "New Canister",
-                style: context.textTheme.bodyText1?.copyWith(fontSize: 24),
-              ),
-              onPressed: () {
-                showDialog(
-                        context: context,
-                        builder: (context) => Center(
-                                child: SizedBox(
-                                        width: 500,
-                                        child: TextFieldDialogWidget(
-                                                title: "New Canister",
-                                                buttonTitle: "Create",
-                                                fieldName: "Canister Name",
-                                                onComplete: (name) {
-                                                  setState(() {
-                                                    AppState.shared.canisters.add(Canister(name, WalletService.uuid.v4()));
-                                                  });
-                                                }))));
-              },
-            ),
-          ),
         )
       ],
     );
