@@ -28,9 +28,14 @@ dependencies:
   hive: ^2.0.0
   uuid: ^3.0.1
   intl: ^0.17.0
+  auto_route: ^1.0.1
 
   core:
     path: ../core
+
+dev_dependencies:
+  auto_route_generator: ^1.0.1
+  build_runner:
 
 flutter:
   uses-material-design: true

@@ -1,3 +1,5 @@
+import 'package:auto_route/annotations.dart';
+import 'package:dfinity_wallet/data/app_state.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction_row.dart';
 import 'package:uuid/uuid.dart';
@@ -5,19 +7,22 @@ import 'package:uuid/uuid.dart';
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';
 
-class WalletDetailWidget extends StatefulWidget {
-  final Wallet wallet;
+class WalletDetailPage extends StatefulWidget {
+    final String? walletAddress;
+    WalletDetailPage({@PathParam('wallet_address') this.walletAddress});
 
-  const WalletDetailWidget({Key? key, required this.wallet}) : super(key: key);
 
   @override
-  _WalletDetailWidgetState createState() => _WalletDetailWidgetState();
+  _WalletDetailPageState createState() => _WalletDetailPageState();
 }
 
-class _WalletDetailWidgetState extends State<WalletDetailWidget> {
+class _WalletDetailPageState extends State<WalletDetailPage> {
+    
+     late Wallet wallet;
   @override
   void initState() {
     super.initState();
+    wallet = AppState.shared.wallets.firstWhere((element) => element.address == widget.walletAddress);
   }
 
   @override
@@ -25,7 +30,7 @@ class _WalletDetailWidgetState extends State<WalletDetailWidget> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.background,
-        title: Text(widget.wallet.name),
+        title: Text(wallet.name),
       ),
       body: Container(
         color: AppColors.lightBackground,
@@ -36,11 +41,11 @@ class _WalletDetailWidgetState extends State<WalletDetailWidget> {
                   Padding(
                       padding: EdgeInsets.all(24),
                       child: BalanceDisplayWidget(
-                        amount: widget.wallet.balance,
+                        amount: wallet.balance,
                         amountSize: 50,
                         icpLabelSize: 25,
                       )),
-                  if (widget.wallet.transactions.isEmpty)
+                  if (wallet.transactions.isEmpty)
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 100),
@@ -61,7 +66,7 @@ class _WalletDetailWidgetState extends State<WalletDetailWidget> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    widget.wallet.transactions.addAll(0.rangeTo(3).map(
+                                      wallet.transactions.addAll(0.rangeTo(3).map(
                                         (e) => Transaction(fromKey: Uuid().v4(), amount: rand.nextInt(10000) / 100)));
                                   });
                                 })
@@ -69,7 +74,7 @@ class _WalletDetailWidgetState extends State<WalletDetailWidget> {
                         ),
                       ),
                     ),
-                  ...widget.wallet.transactions.map((e) => TransactionRow(transaction: e))
+                  ...wallet.transactions.map((e) => TransactionRow(transaction: e))
                 ],
               ),
             ),

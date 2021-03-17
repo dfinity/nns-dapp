@@ -1,5 +1,6 @@
 import 'package:core/app_colors.dart';
 import 'package:dfinity_wallet/dfinity.dart';
+import 'package:dfinity_wallet/router.gr.dart';
 import 'package:dfinity_wallet/ui/home/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -9,32 +10,34 @@ void main() {
 
 class DfinityApp extends StatelessWidget {
   // This widget is the root of your application.
+
+  final _appRouter = AppRouter();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+
+    return MaterialApp.router(
+      routerDelegate: _appRouter.delegate(),
+      routeInformationParser: _appRouter.defaultRouteParser(),
       title: 'Internet Computer Wallet',
       theme: ThemeData(
-        primarySwatch: MaterialColor(AppColors.blue500.value, {
-          1000: AppColors.blue1000,
-          900: AppColors.blue900,
-          800: AppColors.blue800,
-          700: AppColors.blue700,
-          600: AppColors.blue600,
-          500: AppColors.blue500,
-          400: AppColors.blue400,
-          300: AppColors.blue300,
-          200: AppColors.blue200,
-          100: AppColors.blue100,
-          50: AppColors.blue50,
-        }),
-        textTheme: DfinityTextTheme,
+          primarySwatch: MaterialColor(AppColors.blue500.value, {
+            1000: AppColors.blue1000,
+            900: AppColors.blue900,
+            800: AppColors.blue800,
+            700: AppColors.blue700,
+            600: AppColors.blue600,
+            500: AppColors.blue500,
+            400: AppColors.blue400,
+            300: AppColors.blue300,
+            200: AppColors.blue200,
+            100: AppColors.blue100,
+            50: AppColors.blue50,
+          }),
+          textTheme: DfinityTextTheme,
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ButtonStyle(
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)))
-              )
-          )
-      ),
-      home: HomePageContainer(),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)))))),
     );
   }
 }

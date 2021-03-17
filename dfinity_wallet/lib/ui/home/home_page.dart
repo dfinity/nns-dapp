@@ -7,7 +7,6 @@ import 'home_tabs_widget.dart';
 import 'landing_widget.dart';
 
 class HomePageContainer extends StatefulWidget {
-
   HomePageContainer({Key? key}) : super(key: key);
 
   @override
@@ -29,11 +28,7 @@ class _HomePageContainer extends State<HomePageContainer> {
       });
       await animationDuration.delay;
       setState(() {
-        if(kIsWeb){
-
-        }else{
-          landingPageAnimating = false;
-        }
+        landingPageAnimating = false;
       });
     });
   }
@@ -42,8 +37,7 @@ class _HomePageContainer extends State<HomePageContainer> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if(!landingPageVisible)
-          HomeTabsWidget(),
+        if (!landingPageVisible) HomeTabsWidget(),
         if (landingPageAnimating || landingPageVisible)
           AnimatedOpacity(duration: animationDuration, opacity: landingPageVisible ? 1 : 0, child: LandingPageWidget()),
       ],

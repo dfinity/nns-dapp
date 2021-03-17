@@ -1,7 +1,9 @@
 
+import 'package:auto_route/auto_route.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
 
 import '../../dfinity.dart';
+import '../../router.gr.dart';
 import 'balance_display_widget.dart';
 
 class WalletRow extends StatelessWidget {
@@ -16,7 +18,7 @@ class WalletRow extends StatelessWidget {
             margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
             child: FlatButton(
                 onPressed: () {
-                    context.push(WalletDetailWidget(wallet: wallet));
+                    AutoRouter.of(context).push(WalletDetailRoute(walletAddress: wallet.address));
                 },
                 child: Container(
                     width: double.infinity,
