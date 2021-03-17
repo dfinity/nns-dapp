@@ -1,10 +1,9 @@
-import 'package:dfinity_wallet/data/app_state.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
-import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
-import 'package:dfinity_wallet/ui/wallet/topup_canister_widget.dart';
+import 'package:dfinity_wallet/ui/wallet/transaction_row.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
+import 'balance_display_widget.dart';
 
 class WalletDetailWidget extends StatefulWidget {
   final Wallet wallet;
@@ -16,7 +15,6 @@ class WalletDetailWidget extends StatefulWidget {
 }
 
 class _WalletDetailWidgetState extends State<WalletDetailWidget> {
-
   @override
   void initState() {
     super.initState();
@@ -30,15 +28,18 @@ class _WalletDetailWidgetState extends State<WalletDetailWidget> {
         title: Text(widget.wallet.name),
       ),
       body: Container(
-        color: AppColors.black,
+        color: AppColors.lightBackground,
         child: FooterGradientButton(
             body: Expanded(
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(24),
-                    child: BalanceDisplayWidget(amount: widget.wallet.balance, amountSize: 50, icpLabelSize: 25,)
-                  ),
+                      padding: EdgeInsets.all(24),
+                      child: BalanceDisplayWidget(
+                        amount: widget.wallet.balance,
+                        amountSize: 50,
+                        icpLabelSize: 25,
+                      )),
                   if (widget.wallet.transactions.isEmpty)
                     Center(
                       child: Padding(
@@ -72,42 +73,31 @@ class _WalletDetailWidgetState extends State<WalletDetailWidget> {
                 ],
               ),
             ),
-            footer: SizedBox(
-                height: 80,
-                child: Container(
-                  color: AppColors.black,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox.expand(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                                child: Text("Top up Canister"),
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return TopUpCanisterWidget(
-                                          wallet: widget.wallet,
-                                        );
-                                      });
-                                }),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                          child: SizedBox.expand(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(child: Text("New Transaction"), onPressed: () {}),
-                        ),
-                      ))
-                    ],
-                  ),
-                ))),
+            footer: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(child: Text("New Transaction"), onPressed: () {}),
+            ))
       ),
     );
+
+    // Expanded(
+    //   child: SizedBox.expand(
+    //     child: Padding(
+    //       padding: const EdgeInsets.all(8.0),
+    //       child: ElevatedButton(
+    //               child: Text("Top up Canister"),
+    //               onPressed: () {
+    //                 showDialog(
+    //                         context: context,
+    //                         builder: (context) {
+    //                           return TopUpCanisterWidget(
+    //                             wallet: widget.wallet,
+    //                           );
+    //                         });
+    //               }),
+    //     ),
+    //   ),
+    // ),
 
     // Container(
     //   padding: const EdgeInsets.all(8.0),
@@ -138,50 +128,5 @@ class _WalletDetailWidgetState extends State<WalletDetailWidget> {
     //     ),
     //   ),
     // );
-  }
-}
-
-
-
-class TransactionRow extends StatelessWidget {
-  final Transaction transaction;
-
-  const TransactionRow({Key? key, required this.transaction}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (transaction.fromKey != null)
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  "From: ${transaction.fromKey!}",
-                  style: context.textTheme.headline3?.copyWith(color: AppColors.gray800),
-                ),
-              ),
-            if (transaction.toKey != null)
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  "To: ${transaction.toKey!}",
-                  style: context.textTheme.headline3?.copyWith(color: AppColors.gray800),
-                ),
-              ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, bottom: 16.0, right: 16.0),
-              child: Text(
-                "Quantity: ${transaction.amount}",
-                style: context.textTheme.bodyText2?.copyWith(color: AppColors.gray800),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:core/widget_forces/force_layout.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 import 'home_tabs_widget.dart';
@@ -28,7 +29,11 @@ class _HomePageContainer extends State<HomePageContainer> {
       });
       await animationDuration.delay;
       setState(() {
-        landingPageAnimating = false;
+        if(kIsWeb){
+
+        }else{
+          landingPageAnimating = false;
+        }
       });
     });
   }
