@@ -32,6 +32,8 @@ dependencies:
 
   core:
     path: ../core
+#  agent_plugin:
+#    path: ../agent_plugin
 
 dev_dependencies:
   auto_route_generator: ^1.0.1
