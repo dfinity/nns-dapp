@@ -8,7 +8,7 @@ import 'package:uuid/uuid.dart';
 part 'transaction.g.dart';
 
 @HiveType(typeId: 2)
-class Transaction {
+class Transaction extends HiveObject {
   @HiveField(0)
   final String? fromKey;
   @HiveField(1)

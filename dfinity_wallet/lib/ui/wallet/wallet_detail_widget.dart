@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';
+import 'new_transaction_overlay.dart';
 
 class WalletDetailPage extends StatefulWidget {
     final String walletIdentifier;
@@ -16,9 +17,9 @@ class WalletDetailPage extends StatefulWidget {
 }
 
 class _WalletDetailPageState extends State<WalletDetailPage> {
-    
-     late Wallet wallet;
 
+  late Wallet wallet;
+  OverlayEntry? _overlayEntry;
 
   @override
   void didChangeDependencies() {
@@ -67,10 +68,8 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                    final transactions = 0.rangeTo(3).map((e) => Transaction(fromKey: Uuid().v4(), amount: rand.nextInt(10000) / 100, date: DateTime.now()));
-                                    transactions.forEach((e) {
-                                      wallet.transactions.add(e);
-                                    });
+                                  wallet.transactions = 0.rangeTo(3).map((e) => Transaction(fromKey: Uuid().v4(), amount: rand.nextInt(10000) / 100, date: DateTime.now())).toList();
+                                  wallet.save();
                                 });
                               })
                         ],
@@ -82,7 +81,10 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
             ),
             footer: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(child: Text("New Transaction"), onPressed: () {}),
+              child: ElevatedButton(child: Text("New Transaction"), onPressed: () {
+                _overlayEntry = _createOverlayEntry();
+                Overlay.of(context)?.insert(_overlayEntry!);
+              }),
             ))
       ),
     );
@@ -136,4 +138,35 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
     //   ),
     // );
   }
+
+
+  OverlayEntry _createOverlayEntry() {
+    return OverlayEntry(builder: (context) {
+      return Scaffold(
+        backgroundColor: AppColors.transparent,
+        body: Stack(
+          children: [
+            Container(
+              color: AppColors.gray800.withOpacity(0.6),
+              child: GestureDetector(onTap: () {
+                _overlayEntry?.remove();
+              }),
+            ),
+            Center(
+              child: FractionallySizedBox(
+                widthFactor: 0.8,
+                heightFactor: 0.8,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 350, maxHeight: 500),
+                  child: NewTransactionOverlay()
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
 }
+
+

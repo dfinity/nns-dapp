@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 part 'canister.g.dart';
 
 @HiveType(typeId: 4)
-class Canister {
+class Canister extends HiveObject{
     @HiveField(0)
     final String name;
     @HiveField(1)
