@@ -35,48 +35,46 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
       body: Container(
         color: AppColors.lightBackground,
         child: FooterGradientButton(
-            body: Expanded(
-              child: Column(
-                children: [
-                  Padding(
-                      padding: EdgeInsets.all(24),
-                      child: BalanceDisplayWidget(
-                        amount: wallet.balance,
-                        amountSize: 50,
-                        icpLabelSize: 25,
-                      )),
-                  if (wallet.transactions.isEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 100),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(32.0),
-                              child: Text(
-                                "No transactions!\n\n Your wallet is empty until ICPs are deposited with a transaction",
-                                style: context.textTheme.bodyText1,
-                                textAlign: TextAlign.center,
-                              ),
+            body: Column(
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(24),
+                    child: BalanceDisplayWidget(
+                      amount: wallet.balance,
+                      amountSize: 50,
+                      icpLabelSize: 25,
+                    )),
+                if (wallet.transactions.isEmpty)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 100),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Text(
+                              "No transactions!\n\n Your wallet is empty until ICPs are deposited with a transaction",
+                              style: context.textTheme.bodyText1,
+                              textAlign: TextAlign.center,
                             ),
-                            TextButton(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(24.0),
-                                  child: Text("Create Demo Transactions"),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                      wallet.transactions.addAll(0.rangeTo(3).map(
-                                        (e) => Transaction(fromKey: Uuid().v4(), amount: rand.nextInt(10000) / 100)));
-                                  });
-                                })
-                          ],
-                        ),
+                          ),
+                          TextButton(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Text("Create Demo Transactions"),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                    wallet.transactions.addAll(0.rangeTo(3).map(
+                                      (e) => Transaction(fromKey: Uuid().v4(), amount: rand.nextInt(10000) / 100)));
+                                });
+                              })
+                        ],
                       ),
                     ),
-                  ...wallet.transactions.map((e) => TransactionRow(transaction: e))
-                ],
-              ),
+                  ),
+                ...wallet.transactions.map((e) => TransactionRow(transaction: e))
+              ],
             ),
             footer: Padding(
               padding: const EdgeInsets.all(8.0),
