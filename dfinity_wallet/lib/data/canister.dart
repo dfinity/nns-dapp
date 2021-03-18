@@ -1,12 +1,21 @@
 import 'dart:math';
 
+import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
+part 'canister.g.dart';
+
+@HiveType(typeId: 4)
 class Canister {
+    @HiveField(0)
     final String name;
+    @HiveField(1)
     final String publicKey;
+    @HiveField(2)
     DateTime? creationDate;
+    @HiveField(3)
     int cyclesAdded = 0;
+
     int get cyclesSpent => creationDate!.difference(DateTime.now()).inSeconds;
     int get cyclesRemaining => max(0, cyclesAdded - DateTime.now().difference(creationDate!).inSeconds);
 
