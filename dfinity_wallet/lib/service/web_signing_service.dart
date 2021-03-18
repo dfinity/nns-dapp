@@ -37,13 +37,13 @@ class PlatformSigningService extends AbstractPlatformSigningService {
   Future<String> createAddressForTag(String tag) async {
     final one = 1;
 
-    final authProxy = new AuthenticationProxy();
-    final identityPromise = authProxy.createAuthenticationIdentity();
-    print("identityPromise $identityPromise");
-    final identity = await promiseToFuture(identityPromise);
-    print("test ${identity}");
-    print("test ${identity.getPublicKey()}");
-    print("test ${identity.getPublicKey().toDer()}");
+    // final authProxy = new AuthenticationProxy();
+    // final identityPromise = authProxy.createAuthenticationIdentity();
+    // print("identityPromise $identityPromise");
+    // final identity = await promiseToFuture(identityPromise);
+    // print("test ${identity}");
+    // print("test ${identity.getPublicKey()}");
+    // print("test ${identity.getPublicKey().toDer()}");
 
     // final principal = Principal.anonymous();
     // bool isAnon = principal.isAnonymous();

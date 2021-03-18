@@ -1,18 +1,18 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
-import 'package:dfinity_wallet/data/app_state.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/data/wallet.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/ui.dart';
+import 'package:dfinity_wallet/dfinity.dart';
 
-class CansitersTabWidget extends StatefulWidget {
+class CansitersPage extends StatefulWidget {
   @override
-  _CansitersTabWidgetState createState() => _CansitersTabWidgetState();
+  _CansitersPageState createState() => _CansitersPageState();
 }
 
-class _CansitersTabWidgetState extends State<CansitersTabWidget> {
+class _CansitersPageState extends State<CansitersPage> {
 
   late Timer timer;
 
@@ -41,7 +41,7 @@ class _CansitersTabWidgetState extends State<CansitersTabWidget> {
           child: TabTitleAndContent(
             title: "Canisters",
             children: [EitherWidget(
-                    condition: AppState.shared.canisters.isEmpty,
+                    condition: context.boxes.canisters.isEmpty,
                     trueWidget: Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 100),
@@ -57,7 +57,7 @@ class _CansitersTabWidgetState extends State<CansitersTabWidget> {
                       ),
                     ),
                     falseWidget: Column(
-                      children: AppState.shared.canisters.mapToList((e) => CanisterRow(
+                      children: context.boxes.canisters.values.mapToList((e) => CanisterRow(
                         canister: e,
                         showsWarning: true,
                         onPressed: (){

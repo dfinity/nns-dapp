@@ -26,9 +26,9 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   hive: ^2.0.0
+  hive_flutter: ^1.0.0
   uuid: ^3.0.1
   intl: ^0.17.0
-  auto_route: ^1.0.1
 
   core:
     path: ../core
@@ -36,7 +36,7 @@ dependencies:
 #    path: ../agent_plugin
 
 dev_dependencies:
-  auto_route_generator: ^1.0.1
+  hive_generator: ^1.0.0
   build_runner:
 
 flutter:

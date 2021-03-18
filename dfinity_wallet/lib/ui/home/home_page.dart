@@ -1,19 +1,22 @@
 import 'package:core/widget_forces/force_layout.dart';
+import 'package:dfinity_wallet/dfinity.dart';
+import 'package:dfinity_wallet/wallet_router_delegate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
+import '../../main.dart';
 import 'home_tabs_widget.dart';
 import 'landing_widget.dart';
 
-class HomePageContainer extends StatefulWidget {
-  HomePageContainer({Key? key}) : super(key: key);
+class SplashPage extends StatefulWidget {
+  SplashPage({Key? key}) : super(key: key);
 
   @override
   _HomePageContainer createState() => _HomePageContainer();
 }
 
-class _HomePageContainer extends State<HomePageContainer> {
+class _HomePageContainer extends State<SplashPage> {
   bool landingPageVisible = true;
   bool landingPageAnimating = false;
   Duration animationDuration = 0.5.seconds;
@@ -22,11 +25,13 @@ class _HomePageContainer extends State<HomePageContainer> {
   void initState() {
     super.initState();
     2.seconds.delay.then((value) async {
+      if(!mounted) return;
       setState(() {
         landingPageVisible = false;
         landingPageAnimating = true;
       });
       await animationDuration.delay;
+      if(!mounted) return;
       setState(() {
         landingPageAnimating = false;
       });
@@ -37,7 +42,7 @@ class _HomePageContainer extends State<HomePageContainer> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (!landingPageVisible) HomeTabsWidget(),
+        if (!landingPageVisible) HomePage(initialTabIndex: 0,),
         if (landingPageAnimating || landingPageVisible)
           AnimatedOpacity(duration: animationDuration, opacity: landingPageVisible ? 1 : 0, child: LandingPageWidget()),
       ],

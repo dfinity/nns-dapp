@@ -1,4 +1,4 @@
-import 'package:dfinity_wallet/data/app_state.dart';
+import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
@@ -43,7 +43,7 @@ class _TopUpCanisterWidgetState extends State<TopUpCanisterWidget> {
                 child:
                     Text("Select Canister:", style: context.textTheme.headline3?.copyWith(color: AppColors.gray1000)),
               ),
-              if (AppState.shared.canisters.isEmpty)
+              if (context.boxes.canisters.isEmpty)
                 Center(
                   child: Column(
                     children: [
@@ -53,7 +53,7 @@ class _TopUpCanisterWidgetState extends State<TopUpCanisterWidget> {
                 ),
               Expanded(
                   child: Column(
-                children: AppState.shared.canisters.mapToList((e) => _CanisterRow(
+                children: context.boxes.canisters.values.mapToList((e) => _CanisterRow(
                       canister: e,
                       selected: selectedCanister == e,
                       onPressed: () {
@@ -91,7 +91,7 @@ class _TopUpCanisterWidgetState extends State<TopUpCanisterWidget> {
                             final cyclesBought = (amount * 50).round();
                             selectedCanister!.cyclesAdded += cyclesBought;
                             widget.wallet.transactions.add(Transaction(
-                                amount: amount, fromKey: widget.wallet.address, toKey: selectedCanister!.publicKey));
+                                amount: amount, fromKey: widget.wallet.address, toKey: selectedCanister!.publicKey, date: DateTime.now()));
                             showDialog(
                                 context: context,
                                 builder: (context) =>

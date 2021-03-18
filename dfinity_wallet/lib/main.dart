@@ -1,24 +1,30 @@
 import 'package:core/app_colors.dart';
 import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/router.gr.dart';
+import 'package:dfinity_wallet/route_information_parser.dart';
+import 'package:dfinity_wallet/service/hive_coordinator.dart';
 import 'package:dfinity_wallet/ui/home/home_page.dart';
+import 'package:dfinity_wallet/wallet_router_delegate.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() {
-  runApp(DfinityApp());
+  final hiveCoordinator = HiveCoordinator();
+  final router = WalletRouterDelegate(hiveCoordinator);
+  runApp(DfinityApp(hiveCoordinator: hiveCoordinator, router: router,));
 }
 
 class DfinityApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final HiveCoordinator hiveCoordinator;
+  final WalletRouterDelegate router;
 
-  final _appRouter = AppRouter();
+  const DfinityApp({Key? key, required this.hiveCoordinator, required this.router}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp.router(
-      routerDelegate: _appRouter.delegate(),
-      routeInformationParser: _appRouter.defaultRouteParser(),
+      routerDelegate: router,
+      routeInformationParser: WalletRouteParser(),
       title: 'Internet Computer Wallet',
       theme: ThemeData(
           primarySwatch: MaterialColor(AppColors.blue500.value, {

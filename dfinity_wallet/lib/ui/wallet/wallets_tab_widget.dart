@@ -1,4 +1,4 @@
-import 'package:dfinity_wallet/data/app_state.dart';
+import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/wallet.dart';
 import 'package:dfinity_wallet/service/signing_service.dart';
@@ -6,18 +6,20 @@ import 'package:dfinity_wallet/ui/_components/conditional_widget.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/_components/text_field_dialog_widget.dart';
+import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_row.dart';
+import 'package:dfinity_wallet/wallet_router_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 import 'balance_display_widget.dart';
 
-class WalletsTabWidget extends StatefulWidget {
+class WalletsPage extends StatefulWidget {
   @override
-  _WalletsTabWidgetState createState() => _WalletsTabWidgetState();
+  _WalletsPageState createState() => _WalletsPageState();
 }
 
-class _WalletsTabWidgetState extends State<WalletsTabWidget> {
+class _WalletsPageState extends State<WalletsPage> {
   @override
   Widget build(BuildContext context) {
     return FooterGradientButton(
@@ -30,7 +32,8 @@ class _WalletsTabWidgetState extends State<WalletsTabWidget> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 50),
                   child: BalanceDisplayWidget(
-                    amount: AppState.shared.wallets.sumBy((element) => element.balance),
+                    amount: context.boxes.wallets.values
+                        .sumBy((element) => element.balance),
                     amountSize: 60,
                     icpLabelSize: 30,
                   ),
@@ -38,7 +41,7 @@ class _WalletsTabWidgetState extends State<WalletsTabWidget> {
               ),
             ),
             EitherWidget(
-                condition: AppState.shared.wallets.isEmpty,
+                condition: context.boxes.wallets.isEmpty,
                 trueWidget: Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 100.0),
@@ -55,8 +58,15 @@ class _WalletsTabWidgetState extends State<WalletsTabWidget> {
                 ),
                 falseWidget: Column(
                   children: [
-                    ...AppState.shared.wallets.mapToList((e) => WalletRow(
+                    ...context.boxes.wallets.values.map((e) => WalletRow(
                           wallet: e,
+                          onTap: () {
+                            context.nav.push(PageConfig(
+                                path: WalletDetailPath + "/${e.identifier}",
+                                createWidget: () => WalletDetailPage(
+                                  walletIdentifier: e.identifier,
+                                )));
+                          },
                         )),
                     SizedBox(
                       height: 120,
@@ -98,7 +108,7 @@ class _WalletsTabWidgetState extends State<WalletsTabWidget> {
     var walletAddress = await generateWalletAddress(name);
     if (walletAddress != null) {
       setState(() {
-        AppState.shared.wallets.add(Wallet(name, walletAddress));
+        context.boxes.wallets.add(Wallet(name, walletAddress));
       });
     }
   }

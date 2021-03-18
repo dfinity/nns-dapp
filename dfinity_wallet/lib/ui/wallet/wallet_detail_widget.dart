@@ -1,5 +1,4 @@
-import 'package:auto_route/annotations.dart';
-import 'package:dfinity_wallet/data/app_state.dart';
+import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction_row.dart';
 import 'package:uuid/uuid.dart';
@@ -8,8 +7,8 @@ import '../../dfinity.dart';
 import 'balance_display_widget.dart';
 
 class WalletDetailPage extends StatefulWidget {
-    final String? walletAddress;
-    WalletDetailPage({@PathParam('wallet_address') this.walletAddress});
+    final String walletIdentifier;
+    WalletDetailPage({required this.walletIdentifier});
 
 
   @override
@@ -19,11 +18,14 @@ class WalletDetailPage extends StatefulWidget {
 class _WalletDetailPageState extends State<WalletDetailPage> {
     
      late Wallet wallet;
+
+
   @override
-  void initState() {
-    super.initState();
-    wallet = AppState.shared.wallets.firstWhere((element) => element.address == widget.walletAddress);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    wallet = context.boxes.wallets.values.firstWhere((element) => element.identifier == widget.walletIdentifier);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +67,10 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                    wallet.transactions.addAll(0.rangeTo(3).map(
-                                      (e) => Transaction(fromKey: Uuid().v4(), amount: rand.nextInt(10000) / 100)));
+                                    final transactions = 0.rangeTo(3).map((e) => Transaction(fromKey: Uuid().v4(), amount: rand.nextInt(10000) / 100, date: DateTime.now()));
+                                    transactions.forEach((e) {
+                                      wallet.transactions.add(e);
+                                    });
                                 });
                               })
                         ],

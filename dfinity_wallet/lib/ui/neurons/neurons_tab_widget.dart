@@ -2,12 +2,12 @@ import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 
-class NeuronsTabWidget extends StatefulWidget {
+class NeuronsPage extends StatefulWidget {
   @override
-  _NeuronsTabWidgetState createState() => _NeuronsTabWidgetState();
+  _NeuronsPageState createState() => _NeuronsPageState();
 }
 
-class _NeuronsTabWidgetState extends State<NeuronsTabWidget> {
+class _NeuronsPageState extends State<NeuronsPage> {
   @override
   Widget build(BuildContext context) {
     return ConstrainWidthAndCenter(
