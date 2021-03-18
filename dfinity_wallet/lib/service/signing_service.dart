@@ -1,8 +1,8 @@
 import 'package:dfinity_wallet/service/platform_signing_service.dart';
 
-import 'package:dfinity_wallet/service/stub_signing_service.dart';
+import '../dfinity.dart';
 
-import '../dfinity.dart'
+import 'stub_signing_service.dart'
     if (dart.library.io) 'native_signing_service.dart' // dart:io implementation
     if (dart.library.html) 'web_signing_service.dart';
 

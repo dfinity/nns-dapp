@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/data/app_state.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/wallet.dart';
+import 'package:dfinity_wallet/service/signing_service.dart';
 import 'package:dfinity_wallet/ui/_components/conditional_widget.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
@@ -17,8 +18,6 @@ class WalletsTabWidget extends StatefulWidget {
 }
 
 class _WalletsTabWidgetState extends State<WalletsTabWidget> {
-  static const platformChannel = const MethodChannel('internet_computer.signing');
-
   @override
   Widget build(BuildContext context) {
     return FooterGradientButton(
@@ -105,19 +104,13 @@ class _WalletsTabWidgetState extends State<WalletsTabWidget> {
   }
 
   Future<String?> generateWalletAddress(String name) async {
-    if (kIsWeb) {
-      return Uuid().v4();
-    } else {
-      final walletId = name.replaceAll(" ", "_");
-      Map<String, dynamic> response =
-          await platformChannel.invokeMapMethod("generateKey", {"walletId": walletId}) ?? {};
-      final address = response["publicKey"];
-      if (address == null) {
-        Map<String, String> error = response["error"] ?? {};
-        _showErrorDialog("Error Creating Wallet", "${error['description']}, \n ${error['type']}");
-      }
-      return address;
+    final signingService = SigningService.of(context).platformSigningService;
+    final address = signingService.createAddressForTag(name);
+    if (address == null) {
+      // Map<String, String> error = response["error"] ?? {};
+      // _showErrorDialog("Error Creating Wallet", "${error['description']}, \n ${error['type']}");
     }
+    return address;
   }
 
   Future<void> _showErrorDialog(String title, String desc) async {
@@ -147,5 +140,3 @@ class _WalletsTabWidgetState extends State<WalletsTabWidget> {
     );
   }
 }
-
-
