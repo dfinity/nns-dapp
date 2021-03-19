@@ -14,6 +14,10 @@ class HiveLoader extends StatefulWidget {
 
   const HiveLoader({Key? key, required this.child, required this.hiveCoordinator}) : super(key: key);
 
+  static HiveLoader of(BuildContext context) {
+    return context.findAncestorWidgetOfExactType<HiveLoader>()!;
+  }
+
   @override
   _HiveLoaderState createState() => _HiveLoaderState();
 }

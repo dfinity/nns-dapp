@@ -1,11 +1,12 @@
 import 'package:dfinity_wallet/dfinity.dart';
+import 'package:dfinity_wallet/resource_orchstrator.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction_row.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';
-import 'new_transaction_overlay.dart';
+import 'transaction/create_transaction_overlay.dart';
 
 class WalletDetailPage extends StatefulWidget {
     final String walletIdentifier;
@@ -141,28 +142,32 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
 
 
   OverlayEntry _createOverlayEntry() {
+    final hiveCoordinator = HiveLoader.of(context).hiveCoordinator;
     return OverlayEntry(builder: (context) {
-      return Scaffold(
-        backgroundColor: AppColors.transparent,
-        body: Stack(
-          children: [
-            Container(
-              color: AppColors.gray800.withOpacity(0.6),
-              child: GestureDetector(onTap: () {
-                _overlayEntry?.remove();
-              }),
-            ),
-            Center(
-              child: FractionallySizedBox(
-                widthFactor: 0.8,
-                heightFactor: 0.8,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 350, maxHeight: 500),
-                  child: NewTransactionOverlay()
+      return ResourceOrchestrator(
+        hiveCoordinator: hiveCoordinator,
+        child: Scaffold(
+          backgroundColor: AppColors.transparent,
+          body: Stack(
+            children: [
+              Container(
+                color: AppColors.gray800.withOpacity(0.6),
+                child: GestureDetector(onTap: () {
+                  _overlayEntry?.remove();
+                }),
+              ),
+              Center(
+                child: FractionallySizedBox(
+                  widthFactor: 0.8,
+                  heightFactor: 0.8,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 350, maxHeight: 500),
+                    child: NewTransactionOverlay(wallet: wallet,)
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     });

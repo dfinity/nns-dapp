@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/resource_orchstrator.dart';
 import 'package:dfinity_wallet/service/hive_coordinator.dart';
 import 'package:dfinity_wallet/ui/home/home_tabs_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
@@ -104,8 +105,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
     return MaterialPage(
       child: RouterDelegateWidget(
           delegate: this,
-          child: SigningService(
-                child: HiveLoader(hiveCoordinator: hiveCoordinator, child: pageConfig.createWidget()))),
+          child: ResourceOrchestrator(hiveCoordinator: hiveCoordinator, child: pageConfig.createWidget())),
       key: ValueKey(pageConfig.key),
       name: pageConfig.path,
       arguments: pageConfig);

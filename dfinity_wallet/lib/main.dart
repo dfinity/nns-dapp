@@ -20,6 +20,7 @@ class DfinityApp extends StatelessWidget {
 
   const DfinityApp({Key? key, required this.hiveCoordinator, required this.router}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
