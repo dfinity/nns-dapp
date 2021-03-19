@@ -16,21 +16,28 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Neuron()
-      ..durationRemaining = fields[0] as double
-      ..timerIsActive = fields[1] as bool
-      ..rewardAmount = fields[2] as double;
+    return Neuron(
+      name: fields[0] as String,
+      address: fields[1] as String,
+      durationRemaining: fields[2] as double,
+      timerIsActive: fields[3] as bool,
+      rewardAmount: fields[4] as double,
+    );
   }
 
   @override
   void write(BinaryWriter writer, Neuron obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.durationRemaining)
+      ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.timerIsActive)
+      ..write(obj.address)
       ..writeByte(2)
+      ..write(obj.durationRemaining)
+      ..writeByte(3)
+      ..write(obj.timerIsActive)
+      ..writeByte(4)
       ..write(obj.rewardAmount);
   }
 

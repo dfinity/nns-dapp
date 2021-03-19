@@ -1,3 +1,4 @@
+
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/resource_orchstrator.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
@@ -33,13 +34,12 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.background,
         title: Text(wallet.name),
       ),
       body: Container(
         color: AppColors.lightBackground,
         child: FooterGradientButton(
-            body: Column(
+            body: ListView(
               children: [
                 Padding(
                     padding: EdgeInsets.all(24),
@@ -47,7 +47,8 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                       amount: wallet.balance,
                       amountSize: 50,
                       icpLabelSize: 25,
-                    )),
+                    )
+                ),
                 if (wallet.transactions.isEmpty)
                   Center(
                     child: Padding(
@@ -77,7 +78,8 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                       ),
                     ),
                   ),
-                ...wallet.transactions.map((e) => TransactionRow(transaction: e))
+                ...wallet.transactions.map((e) => TransactionRow(transaction: e)),
+                SizedBox(height: 200,)
               ],
             ),
             footer: Padding(
@@ -143,30 +145,34 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
 
   OverlayEntry _createOverlayEntry() {
     final hiveCoordinator = HiveLoader.of(context).hiveCoordinator;
+    final delegate = RouterDelegateWidget.of(context).delegate;
     return OverlayEntry(builder: (context) {
-      return ResourceOrchestrator(
-        hiveCoordinator: hiveCoordinator,
-        child: Scaffold(
-          backgroundColor: AppColors.transparent,
-          body: Stack(
-            children: [
-              Container(
-                color: AppColors.gray800.withOpacity(0.6),
-                child: GestureDetector(onTap: () {
-                  _overlayEntry?.remove();
-                }),
-              ),
-              Center(
-                child: FractionallySizedBox(
-                  widthFactor: 0.8,
-                  heightFactor: 0.8,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 350, maxHeight: 500),
-                    child: NewTransactionOverlay(wallet: wallet,)
+      return RouterDelegateWidget(
+        delegate: delegate,
+        child: ResourceOrchestrator(
+          hiveCoordinator: hiveCoordinator,
+          child: Scaffold(
+            backgroundColor: AppColors.transparent,
+            body: Stack(
+              children: [
+                Container(
+                  color: AppColors.gray800.withOpacity(0.6),
+                  child: GestureDetector(onTap: () {
+                    _overlayEntry?.remove();
+                  }),
+                ),
+                Center(
+                  child: FractionallySizedBox(
+                    widthFactor: 0.8,
+                    heightFactor: 0.8,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 350, maxHeight: 500),
+                      child: NewTransactionOverlay(wallet: wallet,)
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

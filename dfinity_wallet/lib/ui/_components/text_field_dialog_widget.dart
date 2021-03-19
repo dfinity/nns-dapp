@@ -19,12 +19,12 @@ class TextFieldDialogWidget extends StatefulWidget {
 }
 
 class _TextFieldDialogWidgetState extends State<TextFieldDialogWidget> {
-  late ValidatedField nameField;
+  late ValidatedTextField nameField;
 
   @override
   void initState() {
     super.initState();
-    nameField = ValidatedField(widget.fieldName, [FieldValidation.minimumLength(2)]);
+    nameField = ValidatedTextField(widget.fieldName, validations: [StringFieldValidation.minimumLength(2)]);
   }
 
   @override
@@ -51,7 +51,7 @@ class _TextFieldDialogWidgetState extends State<TextFieldDialogWidget> {
                   child: ValidFieldsSubmitButton(
                     child: Text("Create"),
                     onPressed: () {
-                      widget.onComplete(nameField.text);
+                      widget.onComplete(nameField.currentValue);
                       Navigator.of(context).pop();
                     },
                     fields: [nameField],

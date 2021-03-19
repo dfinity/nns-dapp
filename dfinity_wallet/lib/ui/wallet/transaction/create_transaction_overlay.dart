@@ -1,4 +1,7 @@
-import 'package:dfinity_wallet/ui/wallet/transaction/topup_canister_page.dart';
+import 'package:dfinity_wallet/ui/wallet/transaction/canister/select_cansiter_page.dart';
+import 'package:dfinity_wallet/ui/wallet/transaction/stake_neuron_page.dart';
+import 'package:dfinity_wallet/ui/wallet/transaction/canister/topup_canister_page.dart';
+import 'package:dfinity_wallet/ui/wallet/transaction/wallet/select_wallet_page.dart';
 
 import '../../../dfinity.dart';
 
@@ -8,11 +11,13 @@ class NewTransactionOverlay extends StatefulWidget {
   const NewTransactionOverlay({Key? key, required this.wallet})
       : super(key: key);
 
+  static NewTransactionOverlayState of(BuildContext context) => context.findAncestorStateOfType<NewTransactionOverlayState>()!;
+
   @override
-  _NewTransactionOverlayState createState() => _NewTransactionOverlayState();
+  NewTransactionOverlayState createState() => NewTransactionOverlayState();
 }
 
-class _NewTransactionOverlayState extends State<NewTransactionOverlay> {
+class NewTransactionOverlayState extends State<NewTransactionOverlay> {
   final GlobalKey navigatorKey = GlobalKey();
 
   List<MaterialPage> pages = [];
@@ -21,17 +26,17 @@ class _NewTransactionOverlayState extends State<NewTransactionOverlay> {
   void initState() {
     super.initState();
     pages.add(createPage(
-        key: ValueKey("Home"),
         widget: SelectTransactionTypeWidget(
             wallet: widget.wallet,
-            onTypeSelected: (e) {
-              setState(() {
-                pages.add(
-                    createPage(
-                        key: ValueKey("Next"),
-                        widget: e));
-              });
-            })));
+        )));
+  }
+
+  void pushPage(Widget widget){
+    setState(() {
+      pages.add(
+          createPage(
+              widget: widget));
+    });
   }
 
   @override
@@ -56,62 +61,80 @@ class _NewTransactionOverlayState extends State<NewTransactionOverlay> {
     );
   }
 
-  MaterialPage createPage({required Widget widget, required ValueKey key}) =>
+  MaterialPage createPage({required Widget widget}) =>
       MaterialPage(
-          key: key,
           child: Scaffold(
               appBar: AppBar(
                 title: Text("New Transaction"),
               ),
-              backgroundColor: AppColors.background,
               body: widget));
 }
 
 class SelectTransactionTypeWidget extends StatelessWidget {
-  final Function(Widget) onTypeSelected;
+
   final Wallet wallet;
 
   const SelectTransactionTypeWidget({
     Key? key,
     required this.wallet,
-    required this.onTypeSelected,
   }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
+    final nav = NewTransactionOverlay.of(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ListTile(
-            title: Text(
-              "Where would you like to send the ICP?",
-              style: context.textTheme.headline3,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                "Where would you like to send the ICP?",
+                style: context.textTheme.headline3?.copyWith(color: AppColors.gray800),
+              ),
             ),
-          ),
-          ListTile(
-            title: Text(
-              "A Canister, as cycles",
-              style: context.textTheme.bodyText2,
+            TextButton(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  "A Canister, as cycles",
+                  style: context.textTheme.bodyText1?.copyWith(color: AppColors.gray800),
+                ),
+              ),
+              onPressed: () {
+                nav.pushPage(SelectCanisterPage(wallet: wallet));
+                // onTypeSelected(TopUpCanisterPage(wallet: wallet));
+              },
             ),
-            onTap: () {
-              onTypeSelected(TopUpCanisterPage(wallet: wallet));
-            },
-          ),
-          ListTile(
-            title: Text(
-              "Send to a Wallet",
-              style: context.textTheme.bodyText2,
+            TextButton(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  "Send to a Wallet",
+                  style: context.textTheme.bodyText1?.copyWith(color: AppColors.gray800),
+                ),
+              ),
+              onPressed: () {
+                nav.pushPage(SelectDestinationWalletPage(fromWallet: wallet,));
+              },
             ),
-          ),
-          ListTile(
-            title: Text(
-              "Stake a Neuron",
-              style: context.textTheme.bodyText2,
-            ),
-          )
-        ],
+            TextButton(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "Stake a Neuron",
+                  style: context.textTheme.bodyText1?.copyWith(color: AppColors.gray800),
+                ),
+              ),
+              onPressed: () {
+                nav.pushPage(StakeNeuronPage(wallet: wallet));
+              },
+            )
+          ],
+        ),
       ),
     );
   }

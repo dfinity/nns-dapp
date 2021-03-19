@@ -10,7 +10,7 @@ class HiveCoordinator {
   Box<Canister>? canisters;
   Box<Wallet>? wallets;
   Box<Neuron>? neurons;
-  bool hiveInitailized = false;
+  static Future? hiveInitFuture;
   Future<dynamic>? loadingFuture;
 
   HiveCoordinator() {
@@ -21,13 +21,11 @@ class HiveCoordinator {
 
   Future<void> openBoxes() async {
     if (boxesClosed) {
-      if (!hiveInitailized) {
-        await Hive.initFlutter();
-        Hive.registerAdapter(WalletAdapter());
-        Hive.registerAdapter(TransactionAdapter());
-        Hive.registerAdapter(NeuronAdapter());
-        Hive.registerAdapter(CanisterAdapter());
-        hiveInitailized = true;
+      if (hiveInitFuture == null) {
+        hiveInitFuture = initializeHive();
+        await hiveInitFuture;
+      }else{
+        await hiveInitFuture;
       }
       if(loadingFuture == null){
         loadingFuture = Future.wait([
@@ -38,5 +36,13 @@ class HiveCoordinator {
       }
       await loadingFuture;
     }
+  }
+
+  Future initializeHive() async {
+    await Hive.initFlutter();
+    Hive.registerAdapter(WalletAdapter());
+    Hive.registerAdapter(TransactionAdapter());
+    Hive.registerAdapter(NeuronAdapter());
+    Hive.registerAdapter(CanisterAdapter());
   }
 }

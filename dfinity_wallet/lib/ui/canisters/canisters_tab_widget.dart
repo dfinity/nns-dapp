@@ -61,7 +61,6 @@ class _CansitersPageState extends State<CansitersPage> {
                         canister: e,
                         showsWarning: true,
                         onPressed: (){
-
                         },
                       )),
                     ))],

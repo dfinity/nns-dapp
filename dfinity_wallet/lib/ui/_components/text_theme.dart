@@ -24,3 +24,8 @@ extension ThemeExt on BuildContext {
 
     TextTheme get textTheme => theme.textTheme;
 }
+
+
+extension ReCcolor on TextStyle? {
+    TextStyle? get gray800 => this?.copyWith(color: AppColors.gray800);
+}

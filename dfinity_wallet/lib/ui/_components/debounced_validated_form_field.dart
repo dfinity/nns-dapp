@@ -20,10 +20,11 @@ class Debouncer {
 }
 
 class DebouncedValidatedFormField extends StatefulWidget {
-  final ValidatedField textField;
+  final ValidatedTextField textField;
+  final Function? onChanged;
   final bool obscureText;
 
-  const DebouncedValidatedFormField(this.textField, {Key? key, this.obscureText = false}) : super(key: key);
+  const DebouncedValidatedFormField(this.textField, {Key? key, this.obscureText = false, this.onChanged}) : super(key: key);
 
   @override
   _DebouncedValidatedFormFieldState createState() => _DebouncedValidatedFormFieldState();
@@ -68,6 +69,7 @@ class _DebouncedValidatedFormFieldState extends State<DebouncedValidatedFormFiel
                 }
               });
             }
+            widget.onChanged?.call();
           },
           validator: (text) =>
               widget.textField.failedValidation?.errorMessage?.let((e) => "${widget.textField.name} $e"),

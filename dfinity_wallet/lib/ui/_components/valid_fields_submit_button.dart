@@ -5,7 +5,7 @@ import 'form_utils.dart';
 class ValidFieldsSubmitButton extends StatefulWidget {
 
     final VoidCallback? onPressed;
-    final List<ValidatedField> fields;
+    final List<ValidatedTextField> fields;
     final Widget child;
 
     const ValidFieldsSubmitButton({
@@ -42,6 +42,6 @@ class ValidFieldsSubmitButtonState extends State<ValidFieldsSubmitButton> {
     @override
     void dispose() {
         super.dispose();
-        widget.fields.forEach((element) {element.textEditingController.dispose();});
+        widget.fields.forEach((element) { element.textEditingController.dispose(); });
     }
 }

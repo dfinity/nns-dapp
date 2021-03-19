@@ -8,6 +8,8 @@ import 'dfinity.dart';
 const String SplashPath = '/splash';
 const String HomePath = '/home';
 const String WalletDetailPath = '/wallet';
+const String CanisterTabsPath = '/canisters';
+const String NeuronsTabsPath = '/neurons';
 
 class PageConfig {
   final String path;
@@ -15,16 +17,23 @@ class PageConfig {
   final Widget Function() createWidget;
 
   final PageConfig? requiredParent;
+  final bool clearStack;
 
   const PageConfig(
-      {required this.path, required this.createWidget, this.requiredParent});
+      {required this.path, required this.createWidget, this.requiredParent, this.clearStack = false});
 }
 
 PageConfig SplashPageConfiguration = PageConfig(
     path: SplashPath, createWidget: () => SplashPage());
 
 PageConfig HomeTabsPageConfiguration = PageConfig(
-    path: HomePath, createWidget: () => HomePage());
+    path: HomePath, createWidget: () => HomePage(), clearStack: true);
+
+PageConfig CanisterTabsPageConfiguration = PageConfig(
+    path: CanisterTabsPath, createWidget: () => CanistersTabPage(), clearStack: true);
+
+PageConfig NeuronsTabsPageConfiguration = PageConfig(
+    path: NeuronsTabsPath, createWidget: () => NeuronsTabPage(), clearStack: true);
 
 class WalletRouterDelegate extends RouterDelegate<PageConfig>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageConfig> {
@@ -83,6 +92,10 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
   void addPage(PageConfig pageConfig) {
     final shouldAddPage = _pages.isEmpty ||
         (_pages.last.arguments as PageConfig).key != pageConfig.key;
+
+    if(pageConfig.clearStack){
+      _pages.clear();
+    }
 
     if (shouldAddPage != false) {
       _addPage(pageConfig);

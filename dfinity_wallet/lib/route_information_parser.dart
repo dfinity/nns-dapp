@@ -22,6 +22,10 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
         return SplashPageConfiguration;
       case HomePath:
         return HomeTabsPageConfiguration;
+      case CanisterTabsPath:
+        return CanisterTabsPageConfiguration;
+        case NeuronsTabsPath:
+        return NeuronsTabsPageConfiguration;
       case WalletDetailPath:
         return PageConfig(
             path: routeInformation.location!,
