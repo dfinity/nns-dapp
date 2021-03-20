@@ -24,18 +24,18 @@ class _HomePageContainer extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    2.seconds.delay.then((value) async {
-      if(!mounted) return;
-      setState(() {
-        landingPageVisible = false;
-        landingPageAnimating = true;
-      });
-      await animationDuration.delay;
-      if(!mounted) return;
-      setState(() {
-        landingPageAnimating = false;
-      });
-    });
+    // 2.seconds.delay.then((value) async {
+    //   if(!mounted) return;
+    //   setState(() {
+    //     landingPageVisible = false;
+    //     landingPageAnimating = true;
+    //   });
+    //   await animationDuration.delay;
+    //   if(!mounted) return;
+    //   setState(() {
+    //     landingPageAnimating = false;
+    //   });
+    // });
   }
 
   @override

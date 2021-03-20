@@ -43,7 +43,6 @@ class WidgetAttractionForce extends DualWidgetForce {
             ..sub(recieverBox!.center.asVector())
             ..scale(charge!);
     }
-
 }
 
 class PointAttractionForce extends SingleWidgetForce {
@@ -59,5 +58,4 @@ class PointAttractionForce extends SingleWidgetForce {
             ..sub(bodyPosition)
             ..scale(charge!);
     }
-
 }
