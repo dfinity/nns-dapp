@@ -1,0 +1,77 @@
+type ICPTs = record {
+     doms : nat64;
+};
+
+type BlockHeight = nat64;
+type Certification = opt vec nat8;
+type Memo = nat64;
+type SystemTime = nat64;
+type SubAccount = vec nat8;
+
+type Block = record {
+    transaction: Transaction;
+    timestamp: SystemTime;
+};
+
+type Transfer = variant {
+    Burn: record {
+        from: principal;
+        amount: ICPTs;
+    };
+    Mint: record {
+        to: principal;
+        amount: ICPTs;
+    };
+    Send: record {
+        from: principal;
+        to: principal;
+        amount: ICPTs;
+    };
+};
+
+type Transaction = record {
+    transfer: Transfer;
+    memo: Memo;
+    created_at: BlockHeight;
+};
+
+type SendArgs = record {
+    memo: Memo;
+    amount: ICPTs;
+    fee: ICPTs;
+    from_subaccount: opt SubAccount;
+    to: principal;
+    to_subaccount: opt SubAccount;
+    block_height: opt BlockHeight;
+};
+
+type NotifyCanisterArgs = record {
+    block_height: BlockHeight;
+    max_fee: ICPTs;
+    from_subaccount: opt SubAccount;
+    to_canister: principal;
+    to_subaccount: opt SubAccount;
+};
+
+type AccountBalanceArgs = record {
+    account: principal;
+    sub_account: opt SubAccount;
+};
+
+type TotalSupplyArgs = record {};
+
+type LedgerCanisterInitPayload = record {
+    minting_account: principal;
+    initial_values: vec record {principal; vec record {opt SubAccount; ICPTs}};
+    archive_canister: opt principal;
+    max_message_size_bytes: opt nat32;
+}
+
+service: (LedgerCanisterInitPayload) -> {
+  send : (SendArgs) -> (nat64);
+  notify: (NotifyCanisterArgs) -> ();
+  account_balance : (AccountBalanceArgs) -> (ICPTs) query;
+  supply: (TotalSupplyArgs) -> (ICPTs) query;
+  tip_of_chain : () -> (Certification, BlockHeight) query;
+  block : (BlockHeight) -> (opt Block) query;
+}
