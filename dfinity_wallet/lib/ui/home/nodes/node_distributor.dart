@@ -33,7 +33,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
 
   final World physicsWorld =
       World(Vector2.zero(), DefaultBroadPhaseBuffer(DynamicTreeFlatNodes()));
-  WallRepulsionForce wallRepulsionForce = WallRepulsionForce(wallCharge: 5);
+  WallRepulsionForce wallRepulsionForce = WallRepulsionForce(wallCharge: 7);
   // CenterRepulsionForce centerRepulsionForce = CenterRepulsionForce(charge: 2);
 
   @override
@@ -191,6 +191,10 @@ class _NodeDistributorState extends State<NodeDistributor> {
       behavior: HitTestBehavior.opaque,
       onTapDown: (details) {
         nodes.forEach((n) {
+          n.charge += n.body.position
+              .forceFromChargeAtPosition(
+              100, details.localPosition.toWorldVector())
+              .length;
           n.body.applyLinearImpulse(
               n.body.position.forceFromChargeAtPosition(
                   10, details.localPosition.toWorldVector()),
@@ -203,6 +207,10 @@ class _NodeDistributorState extends State<NodeDistributor> {
               n.body.position.forceFromChargeAtPosition(
                   1, details.localPosition.toWorldVector()),
               point: n.body.position);
+          n.charge += n.body.position
+              .forceFromChargeAtPosition(
+              10, details.localPosition.toWorldVector())
+              .length;
         });
       },
       child: CustomPaint(
