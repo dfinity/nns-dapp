@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@dfinity/agent": "^0.6.25",
+	"bignumber": "^1.1.0",
     "borc": "^2.1.2",
     "browserify": "^17.0.0",
     "tweetnacl": "^1.0.3"
