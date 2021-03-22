@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/data/data.dart';
+import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/wallet.dart';
 import 'package:dfinity_wallet/ui/home/landing_widget.dart';
 import 'package:hive/hive.dart';
@@ -14,7 +15,7 @@ class HiveLoader extends StatefulWidget {
 
   HiveLoader(
       {Key? key, required this.child, required this.hiveCoordinator})
-      : super(key: hiveCoordinator.loaderKey);
+      : super(key: key);
 
   static HiveLoader of(BuildContext context) {
     return context.findAncestorWidgetOfExactType<HiveLoader>()!;
@@ -34,27 +35,21 @@ class _HiveLoaderState extends State<HiveLoader> {
     super.initState();
 
     if(widget.hiveCoordinator.boxesClosed){
-      widget.hiveCoordinator.openBoxes().then((value) {
+      widget.hiveCoordinator.openBoxes().then((value) async {
         if (mounted) {
-          setState(() {});
+          setState(() {
+            fadingIn = true;
+          });
         }
-      });
-
-      1.seconds.delay.then((value) async {
-        if (!mounted) return;
-        setState(() {
-          fadingIn = true;
-          animationCompleted = false;
-        });
         await animationDuration.delay;
         if (!mounted) return;
         setState(() {
-          animationCompleted = false;
+          animationCompleted = true;
         });
       });
     } else {
       fadingIn = false;
-      animationCompleted = false;
+      animationCompleted = true;
     }
   }
 
@@ -67,7 +62,8 @@ class _HiveLoaderState extends State<HiveLoader> {
               child: widget.child,
               canisters: widget.hiveCoordinator.canisters!,
               wallets: widget.hiveCoordinator.wallets!,
-              neurons: widget.hiveCoordinator.neurons!),
+              neurons: widget.hiveCoordinator.neurons!,
+              proposals: widget.hiveCoordinator.proposals!,),
         if (!animationCompleted || widget.hiveCoordinator.boxesClosed)
           IgnorePointer(
             child: AnimatedOpacity(
@@ -84,6 +80,7 @@ class HiveBoxesWidget extends InheritedWidget {
   final Box<Canister> canisters;
   final Box<Wallet> wallets;
   final Box<Neuron> neurons;
+  final Box<Proposal> proposals;
 
   const HiveBoxesWidget({
     Key? key,
@@ -91,6 +88,7 @@ class HiveBoxesWidget extends InheritedWidget {
     required this.canisters,
     required this.wallets,
     required this.neurons,
+    required this.proposals,
   })   : assert(child != null),
         super(key: key, child: child);
 

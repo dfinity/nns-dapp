@@ -16,10 +16,11 @@ class ProposalAdapter extends TypeAdapter<Proposal> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Proposal()
-      ..name = fields[0] as String
-      ..address = fields[1] as String
-      ..closeDate = fields[2] as double;
+    return Proposal(
+      fields[0] as String,
+      fields[1] as String,
+      fields[2] as DateTime,
+    );
   }
 
   @override
@@ -29,7 +30,7 @@ class ProposalAdapter extends TypeAdapter<Proposal> {
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.address)
+      ..write(obj.authorAddress)
       ..writeByte(2)
       ..write(obj.closeDate);
   }

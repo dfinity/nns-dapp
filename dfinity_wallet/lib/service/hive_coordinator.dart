@@ -8,7 +8,6 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveCoordinator {
-  final GlobalKey loaderKey = GlobalKey();
   Box<Canister>? canisters;
   Box<Wallet>? wallets;
   Box<Neuron>? neurons;

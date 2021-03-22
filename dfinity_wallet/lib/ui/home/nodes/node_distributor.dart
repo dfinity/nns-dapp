@@ -182,6 +182,9 @@ class _NodeDistributorState extends State<NodeDistributor> {
     }
 
     totalDuration += dt/2;
+
+
+
     centralNode.charge = (sin(totalDuration)) * 3;
 
     physicsWorld.stepDt(dt, 100, 10);

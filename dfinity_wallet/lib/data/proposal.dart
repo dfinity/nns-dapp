@@ -7,8 +7,9 @@ class Proposal extends HiveObject {
   @HiveField(0)
   late String name;
   @HiveField(1)
-  late String address;
+  late String authorAddress;
   @HiveField(2)
-  late double closeDate;
+  late DateTime closeDate;
 
+  Proposal(this.name, this.authorAddress, this.closeDate);
 }
