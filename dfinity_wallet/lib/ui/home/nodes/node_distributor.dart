@@ -181,7 +181,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
       buildProximityMap();
     }
 
-    totalDuration += dt * 2;
+    totalDuration += dt/2;
     centralNode.charge = (sin(totalDuration)) * 3;
 
     physicsWorld.stepDt(dt, 100, 10);
@@ -192,7 +192,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
 
   @override
   Widget build(BuildContext context) {
-    
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: (details) {
