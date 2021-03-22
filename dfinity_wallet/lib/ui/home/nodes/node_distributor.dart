@@ -34,7 +34,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
   final World physicsWorld =
       World(Vector2.zero(), DefaultBroadPhaseBuffer(DynamicTreeFlatNodes()));
   WallRepulsionForce wallRepulsionForce = WallRepulsionForce(wallCharge: 5);
-  CenterRepulsionForce centerRepulsionForce = CenterRepulsionForce(charge: 2);
+  // CenterRepulsionForce centerRepulsionForce = CenterRepulsionForce(charge: 2);
 
   @override
   void initState() {
@@ -155,8 +155,8 @@ class _NodeDistributorState extends State<NodeDistributor> {
       if(node.respondsToForces){
         node.body.applyLinearImpulse(wallRepulsionForce
             .calculateForce(node.body.position, worldRect: widget.worldRect));
-        node.body.applyLinearImpulse(centerRepulsionForce.calculateForce(
-            bodyPosition: node.body.position, worldRect: widget.worldRect));
+        // node.body.applyLinearImpulse(centerRepulsionForce.calculateForce(
+        //     bodyPosition: node.body.position, worldRect: widget.worldRect));
       }
     });
 
@@ -177,7 +177,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
     }
 
     totalDuration += dt;
-    centralNode.charge =(sin(totalDuration)) * 10;
+    centralNode.charge =(sin(totalDuration)) * 3;
 
     physicsWorld.stepDt(dt, 100, 10);
     applyForcesToBodies(1);

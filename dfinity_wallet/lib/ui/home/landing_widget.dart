@@ -12,12 +12,12 @@ class LandingPageWidget extends StatelessWidget {
       child: Stack(
         children: [
           NodeWorld(),
-          SizedBox.expand(
-              child: FractionallySizedBox(
-                  widthFactor: 0.2,
-                  heightFactor: 0.2,
-                  child: SizedBox.expand(
-                      child: SvgPicture.asset("assets/dfinity_logo.svg")))),
+          // SizedBox.expand(
+          //     child: FractionallySizedBox(
+          //         widthFactor: 0.2,
+          //         heightFactor: 0.2,
+          //         child: SizedBox.expand(
+          //             child: SvgPicture.asset("assets/dfinity_logo.svg")))),
         ],
       ),
     );
