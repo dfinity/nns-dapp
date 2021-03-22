@@ -15,8 +15,8 @@ class NodePainter extends CustomPainter {
     nodes.forEach((node) {
       node.connectedNodes.filter((element) => element.respondsToForces).forEach((proximalNode) {
 
-        final amountAboveLowest = (node.charge + proximalNode.charge)/2 - lowestCharge;
-        final opacity = (amountAboveLowest / (diff + 0.1)) * 0.1;
+        final amountAboveLowest = ((node.charge + proximalNode.charge)/2) - lowestCharge;
+        final opacity = (amountAboveLowest / (diff + 0.01)) * 0.1;
 
         canvas.drawLine(node.offset, proximalNode.offset,
             AppColors.white.withOpacity(opacity).paint

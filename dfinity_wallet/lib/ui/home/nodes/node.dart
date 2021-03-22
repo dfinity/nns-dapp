@@ -5,7 +5,7 @@ import 'package:core/core.dart';
 
 class Node {
   final Body body;
-  double charge = 1;
+  double charge = random.nextDouble() ;
   bool respondsToForces = true;
 
   Node(this.body);
