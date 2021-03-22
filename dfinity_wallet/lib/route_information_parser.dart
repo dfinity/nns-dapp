@@ -11,7 +11,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     final uri = Uri.parse(routeInformation.location ?? "");
     // 2
     if (uri.pathSegments.isEmpty) {
-      return HomeTabsPageConfiguration;
+      return SplashPageConfiguration;
     }
 
     // 3

@@ -5,9 +5,6 @@ import 'package:dfinity_wallet/ui/home/nodes/node_distributor.dart';
 import 'nodes/node_world.dart';
 
 class LandingPageWidget extends StatelessWidget {
-
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,15 +12,14 @@ class LandingPageWidget extends StatelessWidget {
       child: Stack(
         children: [
           NodeWorld(),
-      SizedBox.expand(
-          child: FractionallySizedBox(
-              widthFactor: 0.3,
-              heightFactor: 0.3,
-              child: SizedBox.expand(child: SvgPicture.asset("assets/dfinity_logo.svg")))),
+          SizedBox.expand(
+              child: FractionallySizedBox(
+                  widthFactor: 0.3,
+                  heightFactor: 0.3,
+                  child: SizedBox.expand(
+                      child: SvgPicture.asset("assets/dfinity_logo.svg")))),
         ],
       ),
     );
   }
 }
-
-

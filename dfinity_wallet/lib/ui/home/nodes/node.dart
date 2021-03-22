@@ -5,12 +5,16 @@ import 'package:core/core.dart';
 
 class Node {
   final Body body;
+  double charge = 1;
+  bool respondsToForces = true;
 
   Node(this.body);
 
   List<Force> forces = [];
-  List<Force> proximityForces = [];
-  List<Node> proximityNodes = [];
+  List<Node> closestNodes = [];
+  List<Node> connectedNodes = [];
 
   Offset get offset => body.position.toOffset();
+  Vector2 get position => body.position;
 }
+

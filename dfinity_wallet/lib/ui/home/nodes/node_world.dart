@@ -8,12 +8,14 @@ class NodeWorld extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: LayoutBuilder(builder: (context, constraints) {
-        return NodeDistributor(
-            Rect.fromCenter(
-                center: Offset(constraints.maxWidth * METERS_PER_PIXEL * 0.5, constraints.maxHeight * METERS_PER_PIXEL * 0.5),
-                width: constraints.maxWidth * METERS_PER_PIXEL * 1.3,
-                height: constraints.maxHeight * METERS_PER_PIXEL * 1.3),
-            100);
+        return SizedBox.expand(
+          child: NodeDistributor(
+              Rect.fromCenter(
+                  center: Offset(constraints.maxWidth * METERS_PER_PIXEL * 0.5, constraints.maxHeight * METERS_PER_PIXEL * 0.5),
+                  width: constraints.maxWidth * METERS_PER_PIXEL * 1.5,
+                  height: constraints.maxHeight * METERS_PER_PIXEL * 1.5),
+              75),
+        );
       }),
     );
   }

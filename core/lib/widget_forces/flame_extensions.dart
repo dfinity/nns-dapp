@@ -20,8 +20,8 @@ extension Direction on Vector2 {
             {double originRadius = 0}) {
         var distanceTo = (this.distanceTo(pos) - originRadius);
         var distanceToSquared = distanceTo * distanceTo;
-        if (distanceToSquared < 0.1) {
-            distanceToSquared = 0.1;
+        if (distanceToSquared < 1) {
+            distanceToSquared = 1;
         }
         var influence = mass / distanceToSquared;
         return this.directionTo(pos)..scale(influence);
