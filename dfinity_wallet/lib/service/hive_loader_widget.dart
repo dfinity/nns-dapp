@@ -12,7 +12,9 @@ class HiveLoader extends StatefulWidget {
   final HiveCoordinator hiveCoordinator;
   final Widget child;
 
-  const HiveLoader({Key? key, required this.child, required this.hiveCoordinator}) : super(key: key);
+  HiveLoader(
+      {Key? key, required this.child, required this.hiveCoordinator})
+      : super(key: hiveCoordinator.loaderKey);
 
   static HiveLoader of(BuildContext context) {
     return context.findAncestorWidgetOfExactType<HiveLoader>()!;
@@ -23,27 +25,58 @@ class HiveLoader extends StatefulWidget {
 }
 
 class _HiveLoaderState extends State<HiveLoader> {
+  bool fadingIn = false;
+  bool animationCompleted = false;
+  Duration animationDuration = 0.3.seconds;
+
   @override
   void initState() {
     super.initState();
-    widget.hiveCoordinator.openBoxes().then((value) {
-      if(mounted){
-        setState(() {});
-      }
-    });
+
+    if(widget.hiveCoordinator.boxesClosed){
+      widget.hiveCoordinator.openBoxes().then((value) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+
+      1.seconds.delay.then((value) async {
+        if (!mounted) return;
+        setState(() {
+          fadingIn = true;
+          animationCompleted = false;
+        });
+        await animationDuration.delay;
+        if (!mounted) return;
+        setState(() {
+          animationCompleted = false;
+        });
+      });
+    } else {
+      fadingIn = false;
+      animationCompleted = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.hiveCoordinator.boxesClosed) {
-      return LandingPageWidget();
-    } else {
-      return HiveBoxesWidget(
-          child: widget.child,
-          canisters: widget.hiveCoordinator.canisters!,
-          wallets: widget.hiveCoordinator.wallets!,
-          neurons: widget.hiveCoordinator.neurons!);
-    }
+    return Stack(
+      children: [
+        if (!widget.hiveCoordinator.boxesClosed && (fadingIn || animationCompleted))
+          HiveBoxesWidget(
+              child: widget.child,
+              canisters: widget.hiveCoordinator.canisters!,
+              wallets: widget.hiveCoordinator.wallets!,
+              neurons: widget.hiveCoordinator.neurons!),
+        if (!animationCompleted || widget.hiveCoordinator.boxesClosed)
+          IgnorePointer(
+            child: AnimatedOpacity(
+                duration: animationDuration,
+                opacity: fadingIn ? 0 : 1,
+                child: LandingPageWidget()),
+          ),
+      ],
+    );
   }
 }
 

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:core/widget_forces/game_loop.dart';
 import 'package:dfinity_wallet/ui/home/nodes/wall_repulsion_force.dart';
+import 'package:flutter/gestures.dart';
 
 import '../../../dfinity.dart';
 import 'force.dart';
@@ -33,7 +34,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
 
   final World physicsWorld =
       World(Vector2.zero(), DefaultBroadPhaseBuffer(DynamicTreeFlatNodes()));
-  WallRepulsionForce wallRepulsionForce = WallRepulsionForce(wallCharge: 7);
+  WallRepulsionForce wallRepulsionForce = WallRepulsionForce(wallCharge: 1);
 
   // CenterRepulsionForce centerRepulsionForce = CenterRepulsionForce(charge: 2);
 
@@ -65,7 +66,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
 
     gameLoop = GameLoop((dt) {
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        gameLoopCallback(dt);
+          gameLoopCallback(dt);
       });
     });
     gameLoop.start();
@@ -74,7 +75,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
   Node makeNode(Vector2 position) => Node(physicsWorld.createBody(BodyDef()
     ..fixedRotation = true
     ..type = BodyType.DYNAMIC
-    ..linearDamping = 5
+    ..linearDamping = 2
     ..position = position));
 
   void buildProximityMap() {
@@ -144,7 +145,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
 
         final amountAboveLowest =
             (node.charge + otherNode.charge) / 2 - lowestCharge;
-        final charge = amountAboveLowest / (diff + 1);
+        final charge = amountAboveLowest / (diff + 5);
 
         var influence = charge / distanceSquared;
         final force = otherNode.position.directionTo(node.position)
@@ -180,7 +181,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
       buildProximityMap();
     }
 
-    totalDuration += dt;
+    totalDuration += dt * 2;
     centralNode.charge = (sin(totalDuration)) * 3;
 
     physicsWorld.stepDt(dt, 100, 10);
@@ -191,6 +192,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
 
   @override
   Widget build(BuildContext context) {
+    
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: (details) {

@@ -1,13 +1,24 @@
+import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 
-class ProposalTabWidget extends StatefulWidget {
+class GovernanceTabWidget extends StatefulWidget {
     @override
-    _ProposalTabWidgetState createState() => _ProposalTabWidgetState();
+    _GovernanceTabWidgetState createState() => _GovernanceTabWidgetState();
 }
 
-class _ProposalTabWidgetState extends State<ProposalTabWidget> {
+class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
+
+    List<Proposal> proposals = [];
+
+    @override
+  void initState() {
+    super.initState();
+
+    proposals = [];
+  }
+
     @override
     Widget build(BuildContext context) {
         return ConstrainWidthAndCenter(child:

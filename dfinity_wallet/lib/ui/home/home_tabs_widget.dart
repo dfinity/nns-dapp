@@ -1,8 +1,9 @@
 import 'package:core/core.dart';
 import 'package:dfinity_wallet/service/signing_service.dart';
-import 'package:dfinity_wallet/ui/proposals/proposal_tab_widget.dart';
+import 'package:dfinity_wallet/ui/proposals/governance_tab_widget.dart';
 
 import '../../dfinity.dart';
+import 'nodes/node_world.dart';
 
 class WalletsTabPage extends StatelessWidget {
   @override
@@ -37,6 +38,7 @@ class HomePage extends StatefulWidget  {
 }
 
 class _HomePageState extends State<HomePage> {
+
   @override
   Widget build(BuildContext context) {
     final screenSize = context.mediaQuery.size;
@@ -98,15 +100,9 @@ class _HomePageState extends State<HomePage> {
         body: SizedBox.expand(
           child: Stack(
             children: [
-              SizedBox.expand(
-                child: Image.asset(
-                  "assets/background_image.jpg",
-                  fit: BoxFit.cover,
-                  // color: Color(0xff0F0C18),
-                ),
-              ),
+              NodeWorld(),
               TabBarView(
-                children: [WalletsPage(), CansitersPage(), NeuronsPage(), ProposalTabWidget()],
+                children: [WalletsPage(), CansitersPage(), NeuronsPage(), GovernanceTabWidget()],
               ),
             ],
           ),

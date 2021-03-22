@@ -22,9 +22,9 @@ class PageConfig {
   const PageConfig(
       {required this.path, required this.createWidget, this.requiredParent, this.clearStack = false});
 }
-
-PageConfig SplashPageConfiguration = PageConfig(
-    path: SplashPath, createWidget: () => SplashPage());
+//
+// PageConfig SplashPageConfiguration = PageConfig(
+//     path: SplashPath, createWidget: () => SplashPage());
 
 PageConfig HomeTabsPageConfiguration = PageConfig(
     path: HomePath, createWidget: () => HomePage(), clearStack: true);
@@ -53,9 +53,8 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
 
   @override
   Widget build(BuildContext context) {
-    print("pages ${_pages.mapToList((e) => e.name)}");
     if(_pages.isEmpty){
-      _addPage(SplashPageConfiguration);
+      _addPage(HomeTabsPageConfiguration);
     }
 
     return Navigator(
@@ -93,15 +92,18 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
     final shouldAddPage = _pages.isEmpty ||
         (_pages.last.arguments as PageConfig).key != pageConfig.key;
 
-    if(pageConfig.clearStack){
-      _pages.clear();
-    }
-
-    if (shouldAddPage != false) {
+    if (shouldAddPage) {
+      print("adding page ${pageConfig.key}");
+      if(pageConfig.clearStack){
+        _pages.clear();
+      }
       _addPage(pageConfig);
-    }
 
-    notifyListeners();
+      notifyListeners();
+
+    }else{
+      print("not adding page ${pageConfig.key}");
+    }
   }
 
   void _addPage(PageConfig pageConfig) {

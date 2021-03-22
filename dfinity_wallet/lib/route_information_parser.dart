@@ -16,8 +16,6 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
 
     final path = uri.pathSegments[0];
     switch ("/$path") {
-      case SplashPath:
-        return SplashPageConfiguration;
       case HomePath:
         return HomeTabsPageConfiguration;
       case CanisterTabsPath:
