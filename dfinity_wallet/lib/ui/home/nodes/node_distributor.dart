@@ -34,6 +34,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
   final World physicsWorld =
       World(Vector2.zero(), DefaultBroadPhaseBuffer(DynamicTreeFlatNodes()));
   WallRepulsionForce wallRepulsionForce = WallRepulsionForce(wallCharge: 7);
+
   // CenterRepulsionForce centerRepulsionForce = CenterRepulsionForce(charge: 2);
 
   @override
@@ -70,14 +71,11 @@ class _NodeDistributorState extends State<NodeDistributor> {
     gameLoop.start();
   }
 
-  Node makeNode(Vector2 position) {
-    return Node(physicsWorld.createBody(BodyDef()
-      ..fixedRotation = true
-      ..type = BodyType.DYNAMIC
-      ..linearDamping = 3
-      ..position = position));
-  }
-
+  Node makeNode(Vector2 position) => Node(physicsWorld.createBody(BodyDef()
+    ..fixedRotation = true
+    ..type = BodyType.DYNAMIC
+    ..linearDamping = 5
+    ..position = position));
 
   void buildProximityMap() {
     final numNodes = 4;
@@ -95,7 +93,8 @@ class _NodeDistributorState extends State<NodeDistributor> {
         final possiblePair = thisNode.closestNodes[index];
         final proposedLine =
             Line(possiblePair.body.position, thisNode.body.position);
-        if (otherLines.none((element) => element.crosses(proposedLine)) && !thisNode.connectedNodes.contains(proposedLine)) {
+        if (otherLines.none((element) => element.crosses(proposedLine)) &&
+            !thisNode.connectedNodes.contains(proposedLine)) {
           otherLines.add(proposedLine);
 
           thisNode.connectedNodes.add(possiblePair);
@@ -124,24 +123,27 @@ class _NodeDistributorState extends State<NodeDistributor> {
     final highestCharge = nodes.maxBy((e) => e.charge)!.charge;
     final diff = highestCharge - lowestCharge;
 
-
     nodes.forEach((node) {
       final nodeDistance = distanceToCenter(node);
-      final neighbourCharges = node.connectedNodes.filter((element) => distanceToCenter(element) < nodeDistance).map((e) => e.charge);
-      if(neighbourCharges.isNotEmpty){
-        node.charge = lerpDouble(node.charge , neighbourCharges.average(), 0.05)!;
+      final neighbourCharges = node.connectedNodes
+          .filter((element) => distanceToCenter(element) < nodeDistance)
+          .map((e) => e.charge);
+      if (neighbourCharges.isNotEmpty) {
+        node.charge =
+            lerpDouble(node.charge, neighbourCharges.average(), 0.05)!;
       }
 
-
-
-
-      nodes.filterNot((element) => element == node && element.respondsToForces).forEach((otherNode) {
-        var distanceSquared = node.position.distanceToSquared(otherNode.position);
+      nodes
+          .filterNot((element) => element == node && element.respondsToForces)
+          .forEach((otherNode) {
+        var distanceSquared =
+            node.position.distanceToSquared(otherNode.position);
         if (distanceSquared < 3) {
           distanceSquared = 3;
         }
 
-        final amountAboveLowest = (node.charge + otherNode.charge)/2 - lowestCharge;
+        final amountAboveLowest =
+            (node.charge + otherNode.charge) / 2 - lowestCharge;
         final charge = amountAboveLowest / (diff + 1);
 
         var influence = charge / distanceSquared;
@@ -149,10 +151,11 @@ class _NodeDistributorState extends State<NodeDistributor> {
           ..scale(influence);
 
         final impulse = force * multiplier;
-        otherNode.body.applyLinearImpulse(impulse, point: otherNode.position, wake: true);
+        otherNode.body
+            .applyLinearImpulse(impulse, point: otherNode.position, wake: true);
       });
 
-      if(node.respondsToForces){
+      if (node.respondsToForces) {
         node.body.applyLinearImpulse(wallRepulsionForce
             .calculateForce(node.body.position, worldRect: widget.worldRect));
         // node.body.applyLinearImpulse(centerRepulsionForce.calculateForce(
@@ -163,7 +166,8 @@ class _NodeDistributorState extends State<NodeDistributor> {
     return nodes.all((element) => element.body.linearVelocity.length < 0.2);
   }
 
-  double distanceToCenter(Node node) => node.position.distanceTo(centralNode.position);
+  double distanceToCenter(Node node) =>
+      node.position.distanceTo(centralNode.position);
 
   void gameLoopCallback(double dt) {
     if (!this.mounted) {
@@ -177,7 +181,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
     }
 
     totalDuration += dt;
-    centralNode.charge =(sin(totalDuration)) * 3;
+    centralNode.charge = (sin(totalDuration)) * 3;
 
     physicsWorld.stepDt(dt, 100, 10);
     applyForcesToBodies(1);
@@ -193,7 +197,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
         nodes.forEach((n) {
           n.charge += n.body.position
               .forceFromChargeAtPosition(
-              100, details.localPosition.toWorldVector())
+                  100, details.localPosition.toWorldVector())
               .length;
           n.body.applyLinearImpulse(
               n.body.position.forceFromChargeAtPosition(
@@ -209,7 +213,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
               point: n.body.position);
           n.charge += n.body.position
               .forceFromChargeAtPosition(
-              10, details.localPosition.toWorldVector())
+                  10, details.localPosition.toWorldVector())
               .length;
         });
       },

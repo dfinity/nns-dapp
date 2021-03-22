@@ -11,12 +11,10 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     final uri = Uri.parse(routeInformation.location ?? "");
     // 2
     if (uri.pathSegments.isEmpty) {
-      return SplashPageConfiguration;
+      return HomeTabsPageConfiguration;
     }
 
-    // 3
     final path = uri.pathSegments[0];
-    // 4
     switch ("/$path") {
       case SplashPath:
         return SplashPageConfiguration;
