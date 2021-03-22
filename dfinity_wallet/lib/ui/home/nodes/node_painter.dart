@@ -13,12 +13,12 @@ class NodePainter extends CustomPainter {
     final diff = highestCharge - lowestCharge;
 
     nodes.forEach((node) {
-      canvas.drawCircle(node.offset, 5, AppColors.white.paint);
+      canvas.drawCircle(node.offset, 3, AppColors.white.paint);
 
       node.connectedNodes.filter((element) => element.respondsToForces).forEach((proximalNode) {
 
         final amountAboveLowest = (node.charge + proximalNode.charge)/2 - lowestCharge;
-        final opacity = amountAboveLowest / (diff + 0.1);
+        final opacity = (amountAboveLowest / (diff + 0.1)) * 0.3;
 
         canvas.drawLine(node.offset, proximalNode.offset,
             AppColors.white.withOpacity(opacity).paint
