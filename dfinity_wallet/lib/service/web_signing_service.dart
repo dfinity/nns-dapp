@@ -34,19 +34,16 @@ class PlatformSigningService extends AbstractPlatformSigningService {
   @override
   Future<String> createAddressForTag(String tag) async {
     final walletApi = new WalletApi();
-    final identityPromise = walletApi.createAuthenticationIdentity();
-    final identity = await promiseToFuture(identityPromise);
+    final identity = await promiseToFuture(walletApi.createAuthenticationIdentity());
 
     const gatewayHost = "http://localhost:8080/";
 
     final governanceService = walletApi.buildGovernanceService(gatewayHost, identity);
-    final pendingProposalsPromise = governanceService.get_pending_proposals();
-    final pendingProposals = await promiseToFuture(pendingProposalsPromise);
+    final pendingProposals = await promiseToFuture(governanceService.get_pending_proposals());
     print("pending proposals: ${pendingProposals}");
 
     final ledgerService = walletApi.buildLedgerService(gatewayHost, identity);
-    final getBlockPromise = ledgerService.block(1);
-    final block = await promiseToFuture(getBlockPromise);
+    final block = await promiseToFuture(ledgerService.block(1));
     print("block 1: ${block}");
 
     return Uuid().v4();
