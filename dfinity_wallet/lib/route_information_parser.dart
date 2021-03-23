@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/ui/home/home_tabs_widget.dart';
+import 'package:dfinity_wallet/ui/neurons/neuron_detail_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
 import 'package:flutter/material.dart';
 import 'wallet_router_delegate.dart';
@@ -29,8 +30,15 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
             path: routeInformation.location!,
             requiredParent: HomeTabsPageConfiguration,
             createWidget: () => WalletDetailPage(
-                  walletIdentifier: uri.pathSegments[1],
+                  walletIdentifier: int.parse(uri.pathSegments[1]),
                 ));
+      case NeuronDetailPath:
+        return PageConfig(
+            path: routeInformation.location!,
+            requiredParent: HomeTabsPageConfiguration,
+            createWidget: () => NeuronDetailWidget(
+              neuronIdentifier: int.parse(uri.pathSegments[1]),
+            ));
       default:
         return HomeTabsPageConfiguration;
     }

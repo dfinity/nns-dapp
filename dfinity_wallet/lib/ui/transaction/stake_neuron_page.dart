@@ -86,12 +86,17 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
             child: ElevatedButton(
               child: Text("Create"),
               onPressed: () {
-                context.boxes.neurons.add(Neuron(
-                    name: name.currentValue,
-                    address: Uuid().v4(),
-                    durationRemaining: disperseDelay.currentValue.toDouble(),
-                    timerIsActive: false,
-                    rewardAmount: 0));
+                final address = Uuid().v4();
+                context.boxes.neurons.put(
+                    address.hashCode,
+                    Neuron(
+                        name: name.currentValue,
+                        address: address,
+                        durationRemaining:
+                            disperseDelay.currentValue.toDouble(),
+                        timerIsActive: false,
+                        rewardAmount: amountField.currentValue.toDouble() * random.nextDouble() * 0.3,
+                        balance: amountField.currentValue.toDouble()));
                 context.nav.push(NeuronsTabsPageConfiguration);
               }.takeIf((e) => <ValidatedField>[name, amountField, disperseDelay]
                   .allAreValid),

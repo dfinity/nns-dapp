@@ -22,13 +22,14 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       durationRemaining: fields[2] as double,
       timerIsActive: fields[3] as bool,
       rewardAmount: fields[4] as double,
+      balance: fields[5] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, Neuron obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       ..writeByte(3)
       ..write(obj.timerIsActive)
       ..writeByte(4)
-      ..write(obj.rewardAmount);
+      ..write(obj.rewardAmount)
+      ..writeByte(5)
+      ..write(obj.balance);
   }
 
   @override

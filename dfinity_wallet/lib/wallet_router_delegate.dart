@@ -9,6 +9,7 @@ import 'dfinity.dart';
 const String AuthPath = '/auth';
 const String HomePath = '/home';
 const String WalletDetailPath = '/wallet';
+const String NeuronDetailPath = '/neuron';
 const String CanisterTabsPath = '/canisters';
 const String NeuronsTabsPath = '/neurons';
 

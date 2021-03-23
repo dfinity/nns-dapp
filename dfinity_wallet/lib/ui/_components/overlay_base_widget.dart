@@ -1,8 +1,5 @@
 import 'package:core/app_colors.dart';
-import 'package:dfinity_wallet/data/wallet.dart';
-import 'package:dfinity_wallet/service/hive_coordinator.dart';
 import 'package:dfinity_wallet/service/hive_loader_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction/create_transaction_overlay.dart';
 import 'package:flutter/material.dart';
 
 import '../../resource_orchstrator.dart';

@@ -11,7 +11,8 @@ import 'balance_display_widget.dart';
 import '../transaction/create_transaction_overlay.dart';
 
 class WalletDetailPage extends StatefulWidget {
-  final String walletIdentifier;
+  final int walletIdentifier;
+
   WalletDetailPage({required this.walletIdentifier});
 
   @override
@@ -25,26 +26,37 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    wallet = context.boxes.wallets.values
-        .firstWhere((element) => element.identifier == widget.walletIdentifier);
+    wallet = context.boxes.wallets.get(widget.walletIdentifier)!;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(wallet.name),
+        title: Text("Wallet"),
       ),
       body: Container(
           color: AppColors.lightBackground,
           child: FooterGradientButton(
               body: ListView(
                 children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          wallet.name,
+                          style: context.textTheme.headline1,
+                        ),
+                      ),
+                    ),
+                  ),
                   Padding(
                       padding: EdgeInsets.all(24),
                       child: BalanceDisplayWidget(
                         amount: wallet.balance,
-                        amountSize: 50,
+                        amountSize: 40,
                         icpLabelSize: 25,
                       )),
                   if (wallet.transactions.isEmpty)
@@ -92,7 +104,10 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
               footer: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                    child: Text("New Transaction"),
+                    child: Text(
+                      "New Transaction",
+                      style: context.textTheme.button?.copyWith(fontSize: 24),
+                    ),
                     onPressed: () {
                       _overlayEntry = _createOverlayEntry();
                       Overlay.of(context)?.insert(_overlayEntry!);

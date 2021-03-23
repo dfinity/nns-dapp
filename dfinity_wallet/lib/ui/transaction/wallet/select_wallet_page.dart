@@ -43,7 +43,7 @@ class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPag
                     child: EitherWidget(
                       condition: context.boxes.wallets.isNotEmpty,
                       trueWidget: ListView(
-                        children: context.boxes.wallets.values.mapToList(
+                        children: context.boxes.wallets.values.filter((element) => element != widget.source).mapToList(
                                 (e) => _WalletRow(wallet: e, onPressed: () {
                               NewTransactionOverlay.of(context)
                                   .pushPage(SendToWalletPage(
@@ -102,7 +102,7 @@ class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPag
             height: 100,
             padding: EdgeInsets.all(20.0),
             child: ElevatedButton(
-              child: Text("Create New Canister"),
+              child: Text("Create New Wallet"),
               onPressed: () {
                 NewTransactionOverlay.of(context)
                     .pushPage(NewWalletPage(

@@ -4,6 +4,7 @@ import 'package:dfinity_wallet/data/wallet.dart';
 import 'package:dfinity_wallet/service/signing_service.dart';
 import 'package:dfinity_wallet/ui/_components/conditional_widget.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
+import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/_components/text_field_dialog_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
@@ -26,53 +27,31 @@ class _WalletsPageState extends State<WalletsPage> {
         body: TabTitleAndContent(
           title: "Wallets",
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 50),
-                  child: BalanceDisplayWidget(
-                    amount: context.boxes.wallets.values
-                        .sumBy((element) => element.balance),
-                    amountSize: 60,
-                    icpLabelSize: 30,
-                  ),
+            Card(
+              color: AppColors.black,
+              child: Padding(
+                padding: EdgeInsets.all(24),
+                child: Text(
+                  "A wallet is used to store ICP. \n\nThis application allows you to manage multiple wallets.  \n\nTap below to create one.",
+                  style: context.textTheme.bodyText1,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
-            EitherWidget(
-                condition: context.boxes.wallets.isEmpty || true,
-                trueWidget: Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 100.0),
-                    child: SizedBox(
-                      width: 400,
-                      height: 400,
-                      child: Text(
-                        "A wallet is used to store ICP. \n\nThis application allows you to manage multiple wallets.  \n\nTap below to create one.",
-                        style: context.textTheme.bodyText1,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ),
-                falseWidget: Column(
-                  children: [
-                    ...context.boxes.wallets.values.map((e) => WalletRow(
-                          wallet: e,
-                          onTap: () {
-                            context.nav.push(PageConfig(
-                                path: WalletDetailPath + "/${e.identifier}",
-                                createWidget: () => WalletDetailPage(
-                                  walletIdentifier: e.identifier,
-                                )));
-                          },
-                        )),
-                    SizedBox(
-                      height: 120,
-                    )
-                  ],
-                ))
+            SmallFormDivider(),
+            ...context.boxes.wallets.values.map((e) => WalletRow(
+                  wallet: e,
+                  onTap: () {
+                    context.nav.push(PageConfig(
+                        path: WalletDetailPath + "/${e.address.hashCode}",
+                        createWidget: () => WalletDetailPage(
+                              walletIdentifier: e.address.hashCode,
+                            )));
+                  },
+                )),
+            SizedBox(
+              height: 120,
+            )
           ],
         ),
         footer: Container(
@@ -108,7 +87,9 @@ class _WalletsPageState extends State<WalletsPage> {
     var walletAddress = Uuid().v4(); // await generateWalletAddress(name);
     if (walletAddress != null) {
       setState(() {
-        context.boxes.wallets.add(Wallet(name, walletAddress));
+        final box = context.boxes.wallets;
+        final wallet = Wallet(name, walletAddress);
+        box.put(walletAddress.hashCode, wallet);
       });
     }
   }

@@ -19,25 +19,30 @@ class HiveCoordinator {
     openBoxes();
   }
 
-  bool get boxesClosed => canisters == null || wallets == null || neurons == null;
+  bool get boxesClosed =>
+      canisters == null || wallets == null || neurons == null;
 
   Future<void> openBoxes() async {
     if (boxesClosed) {
       if (hiveInitFuture == null) {
         hiveInitFuture = initializeHive();
         await hiveInitFuture;
-      }else{
+      } else {
         await hiveInitFuture;
       }
-      if(loadingFuture == null){
+      if (loadingFuture == null) {
         loadingFuture = Future.wait([
-          Hive.openBox<Canister>('canisters').then((value) => canisters = value),
+          Hive.openBox<Canister>('canisters')
+              .then((value) => canisters = value),
           Hive.openBox<Wallet>('wallets').then((value) => wallets = value),
           Hive.openBox<Neuron>('neurons').then((value) => neurons = value),
           Hive.openBox<Proposal>('proposals').then((value) => proposals = value)
         ]);
       }
       await loadingFuture;
+
+      await Future.wait(
+          [canisters, wallets, neurons, proposals].map((e) => e!.clear()));
     }
   }
 

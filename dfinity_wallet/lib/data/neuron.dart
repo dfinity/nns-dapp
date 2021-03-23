@@ -16,34 +16,42 @@ class Neuron extends HiveObject with ICPSource {
   @HiveField(4)
   late double rewardAmount;
   @HiveField(5)
-  late double stake;
+  late double balance;
 
   Neuron({
-     this.name = "",
-     this.address = "",
-     this.durationRemaining = 0,
-     this.timerIsActive = false,
-     this.rewardAmount = 0,
-     this.stake = 0,
+    this.name = "",
+    this.address = "",
+    this.durationRemaining = 0,
+    this.timerIsActive = false,
+    this.rewardAmount = 0,
+    this.balance = 0,
   });
 
   NeuronState get state {
-    if(timerIsActive){
-      if(durationRemaining == 0) {
+    if (timerIsActive) {
+      if (durationRemaining == 0) {
         return NeuronState.UNLOCKED;
-      }else{
+      } else {
         return NeuronState.DISPERSING;
       }
-    }else{
+    } else {
       return NeuronState.LOCKED;
     }
   }
 
-  @override
-  double get balance => stake;
 }
 
+enum NeuronState { DISPERSING, LOCKED, UNLOCKED }
 
-enum NeuronState {
-  DISPERSING, LOCKED, UNLOCKED
+extension NeuronStateDescription on NeuronState {
+  String get description {
+    switch (this) {
+      case NeuronState.DISPERSING:
+        return "Dispersing";
+      case NeuronState.LOCKED:
+        return "Locked";
+      case NeuronState.UNLOCKED:
+        return "Locked";
+    }
+  }
 }
