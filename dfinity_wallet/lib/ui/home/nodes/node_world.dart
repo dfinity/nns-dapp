@@ -16,9 +16,9 @@ class NodeWorld extends StatelessWidget {
           child: NodeDistributor(
               Rect.fromCenter(
                   center: Offset(constraints.maxWidth * METERS_PER_PIXEL * 0.5, constraints.maxHeight * METERS_PER_PIXEL * 0.5),
-                  width: constraints.maxWidth * METERS_PER_PIXEL * 1.5,
-                  height: constraints.maxHeight * METERS_PER_PIXEL * 1.5),
-              50),
+                  width: constraints.maxWidth * METERS_PER_PIXEL * 1.8,
+                  height: constraints.maxHeight * METERS_PER_PIXEL * 1.8),
+              75),
         );
       }),
     );

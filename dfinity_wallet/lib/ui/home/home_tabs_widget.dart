@@ -46,6 +46,7 @@ class _HomePageState extends State<HomePage> {
       initialIndex: widget.initialTabIndex,
       length: 4,
       child: Scaffold(
+        backgroundColor: AppColors.lightBackground,
         appBar: PreferredSize(
           preferredSize: Size(screenSize.width, 200),
           child: Stack(
@@ -98,13 +99,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: SizedBox.expand(
-          child: Stack(
-            children: [
-              NodeWorld(),
-              TabBarView(
-                children: [WalletsPage(), CansitersPage(), NeuronsPage(), GovernanceTabWidget()],
-              ),
-            ],
+          child: TabBarView(
+            children: [WalletsPage(), CansitersPage(), NeuronsPage(), GovernanceTabWidget()],
           ),
         ),
       ),

@@ -1,11 +1,12 @@
 import 'package:dfinity_wallet/resource_orchstrator.dart';
 import 'package:dfinity_wallet/service/hive_coordinator.dart';
+import 'package:dfinity_wallet/ui/home/auth_widget.dart';
 import 'package:dfinity_wallet/ui/home/home_tabs_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
 
 import 'dfinity.dart';
 
-const String SplashPath = '/splash';
+const String AuthPath = '/auth';
 const String HomePath = '/home';
 const String WalletDetailPath = '/wallet';
 const String CanisterTabsPath = '/canisters';
@@ -22,9 +23,9 @@ class PageConfig {
   const PageConfig(
       {required this.path, required this.createWidget, this.requiredParent, this.clearStack = false});
 }
-//
-// PageConfig SplashPageConfiguration = PageConfig(
-//     path: SplashPath, createWidget: () => SplashPage());
+
+PageConfig AuthPageConfiguration = PageConfig(
+    path: AuthPath, createWidget: () => AuthWidget());
 
 PageConfig HomeTabsPageConfiguration = PageConfig(
     path: HomePath, createWidget: () => HomePage(), clearStack: true);
@@ -54,7 +55,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
   @override
   Widget build(BuildContext context) {
     if(_pages.isEmpty){
-      _addPage(HomeTabsPageConfiguration);
+      _addPage(AuthPageConfiguration);
     }
 
     return Navigator(

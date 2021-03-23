@@ -202,11 +202,11 @@ class _NodeDistributorState extends State<NodeDistributor> {
         nodes.forEach((n) {
           n.charge += n.body.position
               .forceFromChargeAtPosition(
-                  100, details.localPosition.toWorldVector())
+                  5, details.localPosition.toWorldVector())
               .length;
           n.body.applyLinearImpulse(
               n.body.position.forceFromChargeAtPosition(
-                  10, details.localPosition.toWorldVector()),
+                  2, details.localPosition.toWorldVector()),
               point: n.body.position);
         });
       },
@@ -214,11 +214,11 @@ class _NodeDistributorState extends State<NodeDistributor> {
         nodes.forEach((n) {
           n.body.applyLinearImpulse(
               n.body.position.forceFromChargeAtPosition(
-                  1, details.localPosition.toWorldVector()),
+                  0.5, details.localPosition.toWorldVector()),
               point: n.body.position);
           n.charge += n.body.position
               .forceFromChargeAtPosition(
-                  10, details.localPosition.toWorldVector())
+                  3, details.localPosition.toWorldVector())
               .length;
         });
       },

@@ -35,7 +35,6 @@ class PlatformSigningService extends AbstractPlatformSigningService {
 
   @override
   Future<String> createAddressForTag(String tag) async {
-    final one = 1;
 
     final authProxy = new AuthenticationProxy();
     final identityPromise = authProxy.createAuthenticationIdentity();

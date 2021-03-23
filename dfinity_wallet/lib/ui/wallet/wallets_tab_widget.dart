@@ -41,7 +41,7 @@ class _WalletsPageState extends State<WalletsPage> {
               ),
             ),
             EitherWidget(
-                condition: context.boxes.wallets.isEmpty,
+                condition: context.boxes.wallets.isEmpty || true,
                 trueWidget: Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 100.0),
