@@ -36,9 +36,6 @@ class PlatformSigningService extends AbstractPlatformSigningService {
     final walletApi = new WalletApi();
     final identityPromise = walletApi.createAuthenticationIdentity();
     final identity = await promiseToFuture(identityPromise);
-    print("test ${identity}");
-    print("test ${identity.getPublicKey()}");
-    print("test ${identity.getPublicKey().toDer()}");
 
     const gatewayHost = "http://localhost:8080/";
 
@@ -52,10 +49,6 @@ class PlatformSigningService extends AbstractPlatformSigningService {
     final block = await promiseToFuture(getBlockPromise);
     print("block 1: ${block}");
 
-
-    // final principal = Principal.anonymous();
-    // bool isAnon = principal.isAnonymous();
-    // print("is Anon ${isAnon}");
     return Uuid().v4();
   }
 }
