@@ -2,7 +2,7 @@ import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../dfinity.dart';
+import '../../dfinity.dart';
 import 'package:dartx/dartx.dart';
 import 'dart:math';
 

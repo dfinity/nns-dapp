@@ -1,4 +1,4 @@
-import '../../../dfinity.dart';
+import '../../dfinity.dart';
 
 class TransactionToWalletPage extends StatefulWidget {
 

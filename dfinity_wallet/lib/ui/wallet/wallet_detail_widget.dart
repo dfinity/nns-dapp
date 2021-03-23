@@ -8,7 +8,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';
-import 'transaction/create_transaction_overlay.dart';
+import '../transaction/create_transaction_overlay.dart';
 
 class WalletDetailPage extends StatefulWidget {
   final String walletIdentifier;

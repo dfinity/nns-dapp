@@ -1,10 +1,9 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction/canister/select_cansiter_page.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction/stake_neuron_page.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction/canister/topup_canister_page.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction/wallet/select_wallet_page.dart';
+import 'package:dfinity_wallet/ui/transaction/stake_neuron_page.dart';
+import 'package:dfinity_wallet/ui/transaction/wallet/select_wallet_page.dart';
 
-import '../../../dfinity.dart';
+import '../../dfinity.dart';
+import 'canister/select_cansiter_page.dart';
 
 class NewTransactionOverlay extends StatefulWidget {
   final ICPSource source;

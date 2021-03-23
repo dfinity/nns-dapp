@@ -1,22 +1,23 @@
+
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction/canister/topup_canister_page.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction/create_transaction_overlay.dart';
+import 'package:dfinity_wallet/ui/transaction/canister/topup_canister_page.dart';
+import 'package:dfinity_wallet/ui/transaction/wallet/send_to_wallet_page.dart';
+import '../../../dfinity.dart';
+import '../create_transaction_overlay.dart';
+import 'new_wallet_page.dart';
 
-import '../../../../dfinity.dart';
-import 'new_canister_page.dart';
-
-class SelectCanisterPage extends StatefulWidget {
+class SelectDestinationWalletPage extends StatefulWidget {
   final ICPSource source;
 
-  const SelectCanisterPage({Key? key, required this.source}) : super(key: key);
+  const SelectDestinationWalletPage({Key? key, required this.source}) : super(key: key);
 
   @override
-  _SelectCanisterPageState createState() => _SelectCanisterPageState();
+  _SelectDestinationWalletPageState createState() => _SelectDestinationWalletPageState();
 }
 
-class _SelectCanisterPageState extends State<SelectCanisterPage> {
+class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPage> {
   final ValidatedTextField addressField = ValidatedTextField("Address",
       validations: [StringFieldValidation.minimumLength(40)]);
 
@@ -27,7 +28,7 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 24.0, left: 24.0, bottom: 24.0),
-            child: Text("Select a Canister",
+            child: Text("Select a Wallet",
                 style: context.textTheme.headline2.gray800),
           ),
           Expanded(
@@ -35,34 +36,34 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("My Canisters:",
+                  child: Text("My Wallets:",
                       style: context.textTheme.headline3.gray800),
                 ),
                 Expanded(
                     child: EitherWidget(
-                  condition: context.boxes.canisters.isNotEmpty,
-                  trueWidget: Column(
-                    children: context.boxes.canisters.values.mapToList(
-                        (e) => _CanisterRow(canister: e, onPressed: () {
-                          NewTransactionOverlay.of(context)
-                              .pushPage(TopUpCanisterPage(
-                            source: widget.source,
-                            canister: e,
-                          ));
-                        })),
-                  ),
-                  falseWidget: Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        "No canisters registered on this device",
-                        style: context.textTheme.bodyText2.gray800,
-                        textAlign: TextAlign.center,
+                      condition: context.boxes.wallets.isNotEmpty,
+                      trueWidget: ListView(
+                        children: context.boxes.wallets.values.mapToList(
+                                (e) => _WalletRow(wallet: e, onPressed: () {
+                              NewTransactionOverlay.of(context)
+                                  .pushPage(SendToWalletPage(
+                                source: widget.source,
+                                toWallet: e,
+                              ));
+                            })),
                       ),
-                    ),
-                  ),
-                ))
+                      falseWidget: Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            "No canisters registered on this device",
+                            style: context.textTheme.bodyText2.gray800,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ))
               ],
             ),
           ),
@@ -104,7 +105,7 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
               child: Text("Create New Canister"),
               onPressed: () {
                 NewTransactionOverlay.of(context)
-                    .pushPage(NewCanisterPage(
+                    .pushPage(NewWalletPage(
                   source: widget.source,
                 ));
               },
@@ -116,16 +117,16 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
   }
 }
 
-class _CanisterRow extends StatelessWidget {
-  final Canister canister;
+class _WalletRow extends StatelessWidget {
+  final Wallet wallet;
   final VoidCallback onPressed;
   final bool selected;
 
-  const _CanisterRow(
+  const _WalletRow(
       {Key? key,
-      required this.canister,
-      required this.onPressed,
-      this.selected = false})
+        required this.wallet,
+        required this.onPressed,
+        this.selected = false})
       : super(key: key);
 
   @override
@@ -145,7 +146,7 @@ class _CanisterRow extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        canister.name,
+                        wallet.name,
                         style: context.textTheme.headline3
                             ?.copyWith(color: AppColors.gray800),
                       ),
@@ -154,7 +155,7 @@ class _CanisterRow extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           left: 16.0, bottom: 16.0, right: 16.0),
                       child: Text(
-                        "Balance: ${canister.cyclesRemaining}",
+                        "Balance: ${wallet.balance}",
                         style: context.textTheme.bodyText1
                             ?.copyWith(color: AppColors.gray800),
                       ),

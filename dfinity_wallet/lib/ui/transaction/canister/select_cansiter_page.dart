@@ -1,24 +1,22 @@
-
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction/canister/topup_canister_page.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction/create_transaction_overlay.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction/wallet/send_to_wallet_page.dart';
+import 'package:dfinity_wallet/ui/transaction/canister/topup_canister_page.dart';
+import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 
-import '../../../../dfinity.dart';
-import 'new_wallet_page.dart';
+import '../../../dfinity.dart';
+import 'new_canister_page.dart';
 
-class SelectDestinationWalletPage extends StatefulWidget {
+class SelectCanisterPage extends StatefulWidget {
   final ICPSource source;
 
-  const SelectDestinationWalletPage({Key? key, required this.source}) : super(key: key);
+  const SelectCanisterPage({Key? key, required this.source}) : super(key: key);
 
   @override
-  _SelectDestinationWalletPageState createState() => _SelectDestinationWalletPageState();
+  _SelectCanisterPageState createState() => _SelectCanisterPageState();
 }
 
-class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPage> {
+class _SelectCanisterPageState extends State<SelectCanisterPage> {
   final ValidatedTextField addressField = ValidatedTextField("Address",
       validations: [StringFieldValidation.minimumLength(40)]);
 
@@ -29,7 +27,7 @@ class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPag
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 24.0, left: 24.0, bottom: 24.0),
-            child: Text("Select a Wallet",
+            child: Text("Select a Canister",
                 style: context.textTheme.headline2.gray800),
           ),
           Expanded(
@@ -37,34 +35,34 @@ class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPag
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("My Wallets:",
+                  child: Text("My Canisters:",
                       style: context.textTheme.headline3.gray800),
                 ),
                 Expanded(
                     child: EitherWidget(
-                      condition: context.boxes.wallets.isNotEmpty,
-                      trueWidget: ListView(
-                        children: context.boxes.wallets.values.mapToList(
-                                (e) => _WalletRow(wallet: e, onPressed: () {
-                              NewTransactionOverlay.of(context)
-                                  .pushPage(SendToWalletPage(
-                                source: widget.source,
-                                toWallet: e,
-                              ));
-                            })),
+                  condition: context.boxes.canisters.isNotEmpty,
+                  trueWidget: Column(
+                    children: context.boxes.canisters.values.mapToList(
+                        (e) => _CanisterRow(canister: e, onPressed: () {
+                          NewTransactionOverlay.of(context)
+                              .pushPage(TopUpCanisterPage(
+                            source: widget.source,
+                            canister: e,
+                          ));
+                        })),
+                  ),
+                  falseWidget: Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        "No canisters registered on this device",
+                        style: context.textTheme.bodyText2.gray800,
+                        textAlign: TextAlign.center,
                       ),
-                      falseWidget: Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(
-                            "No canisters registered on this device",
-                            style: context.textTheme.bodyText2.gray800,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ))
+                    ),
+                  ),
+                ))
               ],
             ),
           ),
@@ -106,7 +104,7 @@ class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPag
               child: Text("Create New Canister"),
               onPressed: () {
                 NewTransactionOverlay.of(context)
-                    .pushPage(NewWalletPage(
+                    .pushPage(NewCanisterPage(
                   source: widget.source,
                 ));
               },
@@ -118,16 +116,16 @@ class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPag
   }
 }
 
-class _WalletRow extends StatelessWidget {
-  final Wallet wallet;
+class _CanisterRow extends StatelessWidget {
+  final Canister canister;
   final VoidCallback onPressed;
   final bool selected;
 
-  const _WalletRow(
+  const _CanisterRow(
       {Key? key,
-        required this.wallet,
-        required this.onPressed,
-        this.selected = false})
+      required this.canister,
+      required this.onPressed,
+      this.selected = false})
       : super(key: key);
 
   @override
@@ -147,7 +145,7 @@ class _WalletRow extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        wallet.name,
+                        canister.name,
                         style: context.textTheme.headline3
                             ?.copyWith(color: AppColors.gray800),
                       ),
@@ -156,7 +154,7 @@ class _WalletRow extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           left: 16.0, bottom: 16.0, right: 16.0),
                       child: Text(
-                        "Balance: ${wallet.balance}",
+                        "Balance: ${canister.cyclesRemaining}",
                         style: context.textTheme.bodyText1
                             ?.copyWith(color: AppColors.gray800),
                       ),

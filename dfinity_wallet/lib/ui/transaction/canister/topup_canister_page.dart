@@ -4,8 +4,7 @@ import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 
-import '../../../../dfinity.dart';
-import '../../wallet_detail_widget.dart';
+import '../../../dfinity.dart';
 import '../create_transaction_overlay.dart';
 
 class TopUpCanisterPage extends StatefulWidget {
