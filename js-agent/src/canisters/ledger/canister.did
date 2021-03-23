@@ -8,7 +8,11 @@ type Memo = nat64;
 type SystemTime = nat64;
 type SubAccount = vec nat8;
 
-type Block = record {
+type Block = variant {
+    V0: BlockV0;
+};
+
+type BlockV0 = record {
     transaction: Transaction;
     timestamp: SystemTime;
 };
@@ -73,5 +77,5 @@ service: (LedgerCanisterInitPayload) -> {
   account_balance : (AccountBalanceArgs) -> (ICPTs) query;
   supply: (TotalSupplyArgs) -> (ICPTs) query;
   tip_of_chain : () -> (Certification, BlockHeight) query;
-  block : (BlockHeight) -> (opt Block) query;
+  block : (BlockHeight) -> (opt blob) query;
 }

@@ -4,11 +4,12 @@ export interface AccountBalanceArgs {
   'sub_account' : [] | [SubAccount],
   'account' : Principal,
 };
-export interface Block {
+export type Block = { 'V0' : BlockV0 };
+export type BlockHeight = BigNumber;
+export interface BlockV0 {
   'transaction' : Transaction,
   'timestamp' : SystemTime,
 };
-export type BlockHeight = BigNumber;
 export type Certification = [] | [Array<number>];
 export interface ICPTs { 'doms' : BigNumber };
 export interface LedgerCanisterInitPayload {
@@ -47,7 +48,7 @@ export type Transfer = { 'Burn' : { 'from' : Principal, 'amount' : ICPTs } } |
   { 'Send' : { 'to' : Principal, 'from' : Principal, 'amount' : ICPTs } };
 export default interface _SERVICE {
   'account_balance' : (arg_0: AccountBalanceArgs) => Promise<ICPTs>,
-  'block' : (arg_0: BlockHeight) => Promise<[] | [Block]>,
+  'block' : (arg_0: BlockHeight) => Promise<[] | [Array<number>]>,
   'notify' : (arg_0: NotifyCanisterArgs) => Promise<undefined>,
   'send' : (arg_0: SendArgs) => Promise<BigNumber>,
   'supply' : (arg_0: TotalSupplyArgs) => Promise<ICPTs>,

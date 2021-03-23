@@ -1,2 +1,2 @@
 tsc
-browserify ./build/require-dfinity-agent.js --standalone DfinityAgent > ../dfinity_wallet/web/dfinity_agent.js
+browserify ./build/index.js --standalone DfinityAgent > ../dfinity_wallet/web/dfinity_agent.js
