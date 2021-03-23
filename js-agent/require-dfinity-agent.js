@@ -1,6 +1,7 @@
 var agent = require("@dfinity/agent");
-require("borc");
-require("tweetnacl");
+require("./src/governance/builder");
+require("./src/ledger/builder");
+//require("./src/ledgerView/builder");
 var webauthn = require("./webauthn.js");
 
 module.exports = {
