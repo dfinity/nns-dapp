@@ -105,7 +105,7 @@ class _WalletsPageState extends State<WalletsPage> {
   }
 
   void createWallet(String name) async {
-    var walletAddress = await generateWalletAddress(name);
+    var walletAddress = Uuid().v4(); // await generateWalletAddress(name);
     if (walletAddress != null) {
       setState(() {
         context.boxes.wallets.add(Wallet(name, walletAddress));
