@@ -1,0 +1,53 @@
+type BlockHeight = nat64;
+type Doms = nat64;
+
+type Timestamp = 
+    record {
+        secs: nat64;
+        nanos: nat32;
+    };
+
+type GetTransactionsRequest = 
+    record {
+        offset: nat32;
+        page_size: nat8;
+    };
+
+type GetTransactionsResponse = 
+    record {
+        transactions: vec Transaction;
+        total: nat32;
+    };
+
+type Send = 
+    record {
+        to: principal;
+        amount: Doms;
+        fee: Doms;    
+    };
+
+type Receive = 
+    record {
+        from: principal;
+        amount: Doms;
+        fee: Doms;    
+    };
+
+type Transfer = 
+    variant {
+        Burn: record { amount: Doms };
+        Mint: record { amount: Doms };
+        Send: Send;
+        Receive: Receive;
+    };
+
+type Transaction = 
+    record {
+        block_height: BlockHeight;
+        timestamp: Timestamp;
+        transfer: Transfer;
+    };
+
+service : {
+    get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
+}

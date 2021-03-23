@@ -18,6 +18,9 @@ class WalletApi {
 
   @JS("buildLedgerService")
   external dynamic buildLedgerService(String host, dynamic identity);
+
+  @JS("buildLedgerViewService")
+  external dynamic buildLedgerViewService(String host, dynamic identity);
 }
 
 @JS()
@@ -37,12 +40,14 @@ class PlatformSigningService extends AbstractPlatformSigningService {
     print("test ${identity.getPublicKey()}");
     print("test ${identity.getPublicKey().toDer()}");
 
-    final governanceService = walletApi.buildGovernanceService("http://localhost:8080/", identity);
+    const gatewayHost = "http://localhost:8080/";
+
+    final governanceService = walletApi.buildGovernanceService(gatewayHost, identity);
     final pendingProposalsPromise = governanceService.get_pending_proposals();
     final pendingProposals = await promiseToFuture(pendingProposalsPromise);
     print("pending proposals: ${pendingProposals}");
 
-    final ledgerService = walletApi.buildLedgerService("http://localhost:8080/", identity);
+    final ledgerService = walletApi.buildLedgerService(gatewayHost, identity);
     final getBlockPromise = ledgerService.block(1);
     final block = await promiseToFuture(getBlockPromise);
     print("block 1: ${block}");
