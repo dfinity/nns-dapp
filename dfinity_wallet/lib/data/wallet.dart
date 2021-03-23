@@ -5,11 +5,14 @@ import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 import 'package:dartx/dartx.dart';
 
+import 'icp_source.dart';
+
 part 'wallet.g.dart';
 
 
+
 @HiveType(typeId : 1)
-class Wallet extends HiveObject {
+class Wallet extends HiveObject with ICPSource {
     @HiveField(0)
     final String name;
     @HiveField(1)

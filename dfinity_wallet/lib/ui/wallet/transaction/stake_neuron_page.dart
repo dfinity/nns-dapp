@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -6,9 +7,9 @@ import 'package:dartx/dartx.dart';
 import 'dart:math';
 
 class StakeNeuronPage extends StatefulWidget {
-  final Wallet wallet;
+  final ICPSource source;
 
-  const StakeNeuronPage({Key? key, required this.wallet}) : super(key: key);
+  const StakeNeuronPage({Key? key, required this.source}) : super(key: key);
 
   @override
   _StakeNeuronPageState createState() => _StakeNeuronPageState();
@@ -24,8 +25,8 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
   void initState() {
     amountField = ValidatedTextField("Amount",
         validations: [
-          FieldValidation("Not enough ICP in wallet",
-              (e) => (e.toIntOrNull() ?? 0) > widget.wallet.balance),
+          FieldValidation("Not enough ICP",
+              (e) => (e.toIntOrNull() ?? 0) > widget.source.balance),
           FieldValidation(
               "Must be greater than 0", (e) => (e.toIntOrNull() ?? 0) == 0)
         ],

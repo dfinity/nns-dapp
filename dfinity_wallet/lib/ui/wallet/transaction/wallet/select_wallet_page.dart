@@ -1,4 +1,5 @@
 
+import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction/canister/topup_canister_page.dart';
@@ -9,9 +10,9 @@ import '../../../../dfinity.dart';
 import 'new_wallet_page.dart';
 
 class SelectDestinationWalletPage extends StatefulWidget {
-  final Wallet fromWallet;
+  final ICPSource source;
 
-  const SelectDestinationWalletPage({Key? key, required this.fromWallet}) : super(key: key);
+  const SelectDestinationWalletPage({Key? key, required this.source}) : super(key: key);
 
   @override
   _SelectDestinationWalletPageState createState() => _SelectDestinationWalletPageState();
@@ -47,7 +48,7 @@ class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPag
                                 (e) => _WalletRow(wallet: e, onPressed: () {
                               NewTransactionOverlay.of(context)
                                   .pushPage(SendToWalletPage(
-                                fromWallet: widget.fromWallet,
+                                source: widget.source,
                                 toWallet: e,
                               ));
                             })),
@@ -86,7 +87,7 @@ class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPag
                       final address = addressField.currentValue;
                       NewTransactionOverlay.of(context)
                           .pushPage(TopUpCanisterPage(
-                        wallet: widget.fromWallet,
+                        source: widget.source,
                         canister: Canister(
                             address.characters.take(8).toString(), address),
                       ));
@@ -106,7 +107,7 @@ class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPag
               onPressed: () {
                 NewTransactionOverlay.of(context)
                     .pushPage(NewWalletPage(
-                  fromWallet: widget.fromWallet,
+                  source: widget.source,
                 ));
               },
             ),

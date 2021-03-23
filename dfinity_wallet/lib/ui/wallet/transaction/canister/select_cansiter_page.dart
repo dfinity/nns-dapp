@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction/canister/topup_canister_page.dart';
@@ -7,9 +8,9 @@ import '../../../../dfinity.dart';
 import 'new_canister_page.dart';
 
 class SelectCanisterPage extends StatefulWidget {
-  final Wallet wallet;
+  final ICPSource source;
 
-  const SelectCanisterPage({Key? key, required this.wallet}) : super(key: key);
+  const SelectCanisterPage({Key? key, required this.source}) : super(key: key);
 
   @override
   _SelectCanisterPageState createState() => _SelectCanisterPageState();
@@ -45,7 +46,7 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
                         (e) => _CanisterRow(canister: e, onPressed: () {
                           NewTransactionOverlay.of(context)
                               .pushPage(TopUpCanisterPage(
-                            wallet: widget.wallet,
+                            source: widget.source,
                             canister: e,
                           ));
                         })),
@@ -84,7 +85,7 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
                       final address = addressField.currentValue;
                       NewTransactionOverlay.of(context)
                           .pushPage(TopUpCanisterPage(
-                        wallet: widget.wallet,
+                        source: widget.source,
                         canister: Canister(
                             address.characters.take(8).toString(), address),
                       ));
@@ -104,7 +105,7 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
               onPressed: () {
                 NewTransactionOverlay.of(context)
                     .pushPage(NewCanisterPage(
-                  wallet: widget.wallet,
+                  source: widget.source,
                 ));
               },
             ),

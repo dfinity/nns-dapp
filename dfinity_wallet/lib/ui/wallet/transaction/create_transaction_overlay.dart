@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction/canister/select_cansiter_page.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction/stake_neuron_page.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction/canister/topup_canister_page.dart';
@@ -6,9 +7,9 @@ import 'package:dfinity_wallet/ui/wallet/transaction/wallet/select_wallet_page.d
 import '../../../dfinity.dart';
 
 class NewTransactionOverlay extends StatefulWidget {
-  final Wallet wallet;
+  final ICPSource source;
 
-  const NewTransactionOverlay({Key? key, required this.wallet})
+  const NewTransactionOverlay({Key? key, required this.source})
       : super(key: key);
 
   static NewTransactionOverlayState of(BuildContext context) => context.findAncestorStateOfType<NewTransactionOverlayState>()!;
@@ -27,7 +28,7 @@ class NewTransactionOverlayState extends State<NewTransactionOverlay> {
     super.initState();
     pages.add(createPage(
         widget: SelectTransactionTypeWidget(
-            wallet: widget.wallet,
+            source: widget.source,
         )));
   }
 
@@ -72,11 +73,11 @@ class NewTransactionOverlayState extends State<NewTransactionOverlay> {
 
 class SelectTransactionTypeWidget extends StatelessWidget {
 
-  final Wallet wallet;
+  final ICPSource source;
 
   const SelectTransactionTypeWidget({
     Key? key,
-    required this.wallet,
+    required this.source,
   }) : super(key: key);
 
 
@@ -105,7 +106,7 @@ class SelectTransactionTypeWidget extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                nav.pushPage(SelectCanisterPage(wallet: wallet));
+                nav.pushPage(SelectCanisterPage(source: source));
                 // onTypeSelected(TopUpCanisterPage(wallet: wallet));
               },
             ),
@@ -118,7 +119,7 @@ class SelectTransactionTypeWidget extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                nav.pushPage(SelectDestinationWalletPage(fromWallet: wallet,));
+                nav.pushPage(SelectDestinationWalletPage(source: source,));
               },
             ),
             TextButton(
@@ -130,7 +131,7 @@ class SelectTransactionTypeWidget extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                nav.pushPage(StakeNeuronPage(wallet: wallet));
+                nav.pushPage(StakeNeuronPage(source: source));
               },
             )
           ],

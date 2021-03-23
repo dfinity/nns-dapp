@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
@@ -8,10 +9,10 @@ import '../../wallet_detail_widget.dart';
 import '../create_transaction_overlay.dart';
 
 class TopUpCanisterPage extends StatefulWidget {
-  final Wallet wallet;
+  final ICPSource source;
   final Canister canister;
 
-  const TopUpCanisterPage({Key? key, required this.wallet, required this.canister}) : super(key: key);
+  const TopUpCanisterPage({Key? key, required this.source, required this.canister}) : super(key: key);
 
   @override
   _TopUpCanisterPageState createState() => _TopUpCanisterPageState();
@@ -24,7 +25,7 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
   void initState() {
     super.initState();
     amountField = ValidatedTextField(
-        "Amount", validations: [FieldValidation("Not enough ICP in wallet", (e) => (e.toIntOrNull() ?? 0) > widget.wallet.balance)],
+        "Amount", validations: [FieldValidation("Not enough ICP in wallet", (e) => (e.toIntOrNull() ?? 0) > widget.source.balance)],
         inputType: TextInputType.number);
   }
 
@@ -66,12 +67,17 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
                           final amount = amountField.currentValue.toDouble();
                           final cyclesBought = (amount * 50).round();
                           widget.canister.cyclesAdded += cyclesBought;
-                          widget.wallet.transactions = [
-                            ...widget.wallet.transactions,
-                            Transaction(
-                                amount: amount, fromKey: widget.wallet.address, toKey: widget.canister.publicKey, date: DateTime.now())
-                          ];
-                          widget.wallet.save();
+
+                          if(widget.source is Wallet){
+                            final wallet = widget.source as Wallet;
+                            wallet.transactions = [
+                              ...wallet.transactions,
+                              Transaction(
+                                  amount: amount, fromKey: wallet.address, toKey: widget.canister.publicKey, date: DateTime.now())
+                            ];
+                            wallet.save();
+                          }
+
                           NewTransactionOverlay.of(context).pushPage(DoneWidget(numCycles: cyclesBought, canisterName: widget.canister.name));
                         }.takeIf((e) => widget.canister != null),
                         fields: [amountField],

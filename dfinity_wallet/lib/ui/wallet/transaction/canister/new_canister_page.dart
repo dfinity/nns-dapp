@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction/canister/topup_canister_page.dart';
@@ -8,8 +9,8 @@ import '../create_transaction_overlay.dart';
 
 class NewCanisterPage extends StatelessWidget {
 
-  final Wallet wallet;
-  NewCanisterPage({Key? key, required this.wallet}) : super(key: key);
+  final ICPSource source;
+  NewCanisterPage({Key? key, required this.source}) : super(key: key);
 
   final ValidatedTextField nameField = ValidatedTextField("Canister Name", validations: [StringFieldValidation.minimumLength(2)]);
 
@@ -44,7 +45,7 @@ class NewCanisterPage extends StatelessWidget {
                 context.boxes.canisters.add(canister);
                 NewTransactionOverlay.of(context)
                     .pushPage(TopUpCanisterPage(
-                  wallet: wallet, canister: canister
+                  source: source, canister: canister
                 ));
               },
             ),

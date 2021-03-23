@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
@@ -8,10 +9,10 @@ import '../../wallet_detail_widget.dart';
 import '../create_transaction_overlay.dart';
 
 class SendToWalletPage extends StatefulWidget {
-  final Wallet fromWallet;
+  final ICPSource source;
   final Wallet toWallet;
 
-  const SendToWalletPage({Key? key, required this.fromWallet, required this.toWallet}) : super(key: key);
+  const SendToWalletPage({Key? key, required this.source, required this.toWallet}) : super(key: key);
 
   @override
   _SendToWalletPageState createState() => _SendToWalletPageState();
@@ -24,7 +25,7 @@ class _SendToWalletPageState extends State<SendToWalletPage> {
   void initState() {
     super.initState();
     amountField = ValidatedTextField(
-        "Amount", validations: [FieldValidation("Not enough ICP in wallet", (e) => (e.toIntOrNull() ?? 0) > widget.fromWallet.balance)],
+        "Amount", validations: [FieldValidation("Not enough ICP in wallet", (e) => (e.toIntOrNull() ?? 0) > widget.source.balance)],
         inputType: TextInputType.number);
   }
 
@@ -66,18 +67,21 @@ class _SendToWalletPageState extends State<SendToWalletPage> {
                           final amount = amountField.currentValue.toDouble();
 
                           final transaction = Transaction(
-                              amount: amount, fromKey: widget.fromWallet.address, toKey: widget.toWallet.address, date: DateTime.now());
+                              amount: amount, fromKey: widget.source.address, toKey: widget.toWallet.address, date: DateTime.now());
                           widget.toWallet.transactions = [
                             ...widget.toWallet.transactions,
                             transaction
                           ];
                           widget.toWallet.save();
 
-                          widget.fromWallet.transactions = [
-                            ...widget.toWallet.transactions,
-                            transaction
-                          ];
-                          widget.fromWallet.save();
+                          if(widget.source is Wallet){
+                            final wallet = widget.source as Wallet;
+                            wallet.transactions = [
+                              ...widget.toWallet.transactions,
+                              transaction
+                            ];
+                            wallet.save();
+                          }
 
                           NewTransactionOverlay.of(context).pushPage(DoneWidget(numICP: amount, canisterName: widget.toWallet.name));
                         },
