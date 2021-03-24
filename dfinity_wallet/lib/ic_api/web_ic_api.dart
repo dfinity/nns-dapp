@@ -13,6 +13,9 @@ import '../dfinity.dart';
 class WalletApi {
   external factory WalletApi();
 
+  @JS("createKey")
+  external String createKey();
+
   @JS("createAuthenticationIdentity")
   external Promise<dynamic> loginWithIdentityProvider(String returnUrl);
 
@@ -43,8 +46,11 @@ class PlatformICApi extends AbstractPlatformICApi {
   final walletApi = new WalletApi();
 
   @override
-  void authenticate() async {
-    walletApi.loginWithIdentityProvider("http://" + window.location.host);
+
+  void authenticate(BuildContext context) async {
+    final key = walletApi.createKey();
+    context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
+    walletApi.loginWithIdentityProvider("http://" + window.location.host + "/home");
   }
 
   Future<void> buildServices(BuildContext context) async {

@@ -14,6 +14,9 @@ class AuthToken extends HiveObject{
 
   @HiveField(1)
   late String data;
+
+  @HiveField(2)
+  late String key;
 }
 
 extension WebAuthToken on Box<AuthToken>{
