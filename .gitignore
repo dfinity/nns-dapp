@@ -122,7 +122,7 @@ pubspec.lock
 /ios/Flutter/flutter_export_environment.sh
 
 dfinity-wallet/build/**
-dfinity_wallet/web/dfinity_agent.js
+dfinity_wallet/assets/dfinity_agent.js
 
 
 js-agent/node_modules/**
