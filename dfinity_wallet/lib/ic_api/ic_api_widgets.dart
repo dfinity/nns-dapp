@@ -14,27 +14,12 @@ class ICApiManager extends StatefulWidget {
   const ICApiManager({Key? key, required this.child}) : super(key: key);
 
   @override
-  _ICApiManagerState createState() => _ICApiManagerState();
+  PlatformICApi createState() => PlatformICApi();
 }
 
-class _ICApiManagerState extends State<ICApiManager> {
-
-  final PlatformICApi icApi = PlatformICApi();
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    icApi.buildServices(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return InternetComputerApiWidget(child: widget.child, icApi: icApi,);
-  }
-}
 
 class InternetComputerApiWidget extends InheritedWidget {
-  final PlatformICApi icApi;
+  final AbstractPlatformICApi icApi;
 
   InternetComputerApiWidget({
     Key? key,
@@ -54,5 +39,5 @@ class InternetComputerApiWidget extends InheritedWidget {
 
 
 extension ICApiAccess on BuildContext {
-  PlatformICApi get icApi => InternetComputerApiWidget.of(this).icApi;
+  AbstractPlatformICApi get icApi => InternetComputerApiWidget.of(this).icApi;
 }

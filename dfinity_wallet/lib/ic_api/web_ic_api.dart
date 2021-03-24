@@ -17,10 +17,10 @@ class WalletApi {
   external String createKey();
 
   @JS("createAuthenticationIdentity")
-  external Promise<dynamic> loginWithIdentityProvider(String returnUrl);
+  external Promise<dynamic> loginWithIdentityProvider(String key, String returnUrl);
 
   @JS("createDelegationIdentity")
-  external dynamic createDelegationIdentity(String accessToken);
+  external dynamic createDelegationIdentity(String key, String accessToken);
 
   @JS("createDelegationIdentity")
   external Promise<dynamic> createAuthenticationIdentity();
@@ -46,17 +46,18 @@ class PlatformICApi extends AbstractPlatformICApi {
   final walletApi = new WalletApi();
 
   @override
-
   void authenticate(BuildContext context) async {
+    await context.boxes.authToken.clear();
+
     final key = walletApi.createKey();
     context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
-    walletApi.loginWithIdentityProvider("http://" + window.location.host + "/home");
+    walletApi.loginWithIdentityProvider(key, "http://" + window.location.host + "/home");
   }
 
   Future<void> buildServices(BuildContext context) async {
     final token = context.boxes.authToken.webAuthToken;
-    if (token != null) {
-      final identity = walletApi.createDelegationIdentity(token.data);
+    if (token != null && token.data != null) {
+      final identity = walletApi.createDelegationIdentity(token.key, token.data!);
 
       const gatewayHost = "http://10.12.31.5:8080/";
       final governanceService =
@@ -70,4 +71,6 @@ class PlatformICApi extends AbstractPlatformICApi {
       print("block 1: ${block}");
     }
   }
+
+
 }

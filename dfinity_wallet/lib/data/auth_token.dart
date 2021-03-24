@@ -10,10 +10,10 @@ const WEB_TOKEN_KEY = "WEB_TOKEN_KEY";
 class AuthToken extends HiveObject{
 
   @HiveField(0)
-  late DateTime creationDate;
+  DateTime? creationDate;
 
   @HiveField(1)
-  late String data;
+  String? data;
 
   @HiveField(2)
   late String key;
