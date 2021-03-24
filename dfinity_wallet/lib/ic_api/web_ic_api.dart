@@ -72,7 +72,8 @@ class PlatformICApi extends AbstractPlatformICApi {
 
       const gatewayHost = "http://10.12.31.5:8080/";
 
-      walletApi.testCalls();
+      // await promiseToFuture(walletApi.testCalls());
+      // print("testCalls done");
 
       final governanceService =
           walletApi.buildGovernanceService(gatewayHost, identity);

@@ -16,7 +16,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
   Future<PageConfig> parseRouteInformation(
       RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location ?? "");
-
+    
     final path = uri.pathSegments.isEmpty ? HomePath : uri.pathSegments[0];
     if (path.startsWith("access_token")) {
       final map = Map.fromEntries(path

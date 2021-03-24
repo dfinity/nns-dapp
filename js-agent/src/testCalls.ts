@@ -17,6 +17,7 @@ export default async function(walletApi: WalletApi) {
     const governanceService = walletApi.buildGovernanceService(icEndpoint, identity);
     const ledgerService = walletApi.buildLedgerService(icEndpoint,identity);
     const ledgerViewService = walletApi.buildLedgerViewService(icEndpoint, identity);
+    console.log("created services");
 
     const pendingProposals = await governanceService.get_pending_proposals();
     console.log(pendingProposals);
