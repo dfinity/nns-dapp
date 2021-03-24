@@ -9,7 +9,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   static const platformChannel = const MethodChannel('internet_computer.signing');
 
   @override
-  void authenticate() {
+  void authenticate(BuildContext context) {
     final walletId = "".replaceAll(" ", "_");
     // Map<String, dynamic> response =
     //         await platformChannel.invokeMapMethod("generateKey", {"walletId": walletId}) ?? {};

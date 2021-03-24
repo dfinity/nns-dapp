@@ -32,19 +32,19 @@ class AuthWidget extends StatelessWidget {
                       ),
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.gray1000)),
                       onPressed: () {
-                        context.icApi.authenticate();
+                        context.icApi.authenticate(context);
                       }),
                   SmallFormDivider(),
-                  TextButton(
-                      style: ButtonStyle(overlayColor: MaterialStateProperty.all(AppColors.white.withOpacity(0.3))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text("Bypass", style: context.textTheme.button),
-                      ),
-                      onPressed: () async{
-                        await 0.2.seconds.delay;
-                        context.nav.push(HomeTabsPageConfiguration);
-                  })
+                  // TextButton(
+                  //     style: ButtonStyle(overlayColor: MaterialStateProperty.all(AppColors.white.withOpacity(0.3))),
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(16.0),
+                  //       child: Text("Bypass", style: context.textTheme.button),
+                  //     ),
+                  //     onPressed: () async{
+                  //       await 0.2.seconds.delay;
+                  //       context.nav.push(HomeTabsPageConfiguration);
+                  // })
                 ],
               ),
             ),

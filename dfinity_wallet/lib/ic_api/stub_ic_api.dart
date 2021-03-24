@@ -5,7 +5,7 @@ import '../dfinity.dart';
 
 class PlatformICApi extends AbstractPlatformICApi{
   @override
-  void authenticate() {
+  void authenticate(BuildContext context) {
     throw UnimplementedError();
   }
 

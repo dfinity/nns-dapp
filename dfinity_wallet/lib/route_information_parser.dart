@@ -17,13 +17,15 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
       RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location ?? "");
 
-    final path = uri.pathSegments[0];
+    final path = uri.pathSegments.isEmpty ? HomePath : uri.pathSegments[0];
     if (path.startsWith("access_token")) {
       final map = Map.fromEntries(path
           .split("&")
           .map((e) => e.split("=").let((it) => MapEntry(it[0], it[1]))));
       final token = map["access_token"];
       storeAccessToken(token!);
+      print("access token stored");
+      return HomeTabsPageConfiguration;
     }
 
     bool isAuthenticated = await hasValidAuthToken();
@@ -35,8 +37,6 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
       return HomeTabsPageConfiguration;
     }
     switch ("/$path") {
-      case AuthPath:
-        return AuthPageConfiguration;
       case HomePath:
         return HomeTabsPageConfiguration;
       case CanisterTabsPath:
@@ -57,9 +57,8 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
             createWidget: () => NeuronDetailWidget(
                   neuronIdentifier: int.parse(uri.pathSegments[1]),
                 ));
-      default:
-        return HomeTabsPageConfiguration;
     }
+    return HomeTabsPageConfiguration;
   }
 
   Future<bool> hasValidAuthToken() async {
@@ -68,7 +67,11 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     if (token == null) {
       return false;
     } else {
-      return token.creationDate.difference(DateTime.now()).inSeconds <
+      final date = token.creationDate;
+      if(date == null){
+        return false;
+      }
+      return date.difference(DateTime.now()).inSeconds <
           1.days.inSeconds;
     }
   }
@@ -78,15 +81,13 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     return RouteInformation(location: configuration.path);
   }
 
-  void storeAccessToken(String queryParameter) async {
+  Future<void> storeAccessToken(String queryParameter) async {
     await hiveCoordinator.openBoxes();
-    final box = hiveCoordinator.authToken!;
-
-    await box.clear();
-    box.put(
-        WEB_TOKEN_KEY,
-        AuthToken()
-          ..creationDate = DateTime.now()
-          ..data = queryParameter);
+    final token = hiveCoordinator.authToken!.webAuthToken;
+    if(token != null){
+      token.data = queryParameter;
+      token.creationDate = DateTime.now();
+      await token.save();
+    }
   }
 }

@@ -1,11 +1,13 @@
 import 'package:dfinity_wallet/resource_orchstrator.dart';
 import 'package:dfinity_wallet/ui/home/auth_widget.dart';
 import 'package:dfinity_wallet/ui/home/home_tabs_widget.dart';
+import 'package:dfinity_wallet/ui/home/landing_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
 
 import 'dfinity.dart';
 
 const String AuthPath = '/auth';
+const String LoadingPagePath = '/';
 const String AccessTokenPath = '/access_token';
 const String HomePath = '/home';
 const String WalletDetailPath = '/wallet';
@@ -15,6 +17,7 @@ const String NeuronsTabsPath = '/neurons';
 
 class PageConfig {
   final String path;
+
   String get key => path.replaceAll("/", "");
   final Widget Function() createWidget;
 
@@ -28,14 +31,23 @@ class PageConfig {
 PageConfig AuthPageConfiguration = PageConfig(
     path: AuthPath, createWidget: () => AuthWidget());
 
+
+PageConfig LoadingPageConfiguration = PageConfig(
+    path: LoadingPagePath, createWidget: () => LandingPageWidget());
+
+
 PageConfig HomeTabsPageConfiguration = PageConfig(
     path: HomePath, createWidget: () => HomePage(), clearStack: true);
 
 PageConfig CanisterTabsPageConfiguration = PageConfig(
-    path: CanisterTabsPath, createWidget: () => CanistersTabPage(), clearStack: true);
+    path: CanisterTabsPath,
+    createWidget: () => CanistersTabPage(),
+    clearStack: true);
 
 PageConfig NeuronsTabsPageConfiguration = PageConfig(
-    path: NeuronsTabsPath, createWidget: () => NeuronsTabPage(), clearStack: true);
+    path: NeuronsTabsPath,
+    createWidget: () => NeuronsTabPage(),
+    clearStack: true);
 
 class WalletRouterDelegate extends RouterDelegate<PageConfig>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageConfig> {
@@ -55,8 +67,8 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
 
   @override
   Widget build(BuildContext context) {
-    if(_pages.isEmpty){
-      _addPage(AuthPageConfiguration);
+    if (_pages.isEmpty) {
+      _pages.add(createPage(LoadingPageConfiguration));
     }
 
     return Navigator(
@@ -68,7 +80,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
   }
 
   @override
-  Future<void> setNewRoutePath(PageConfig configuration)  {
+  Future<void> setNewRoutePath(PageConfig configuration) {
     print("setNewRoutePath ${configuration.path}");
     addPage(configuration);
     return Future.value();
@@ -91,41 +103,44 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
   }
 
   void addPage(PageConfig pageConfig) {
-    final shouldAddPage = _pages.isEmpty ||
-        (_pages.last.arguments as PageConfig).key != pageConfig.key;
+    final lastKey = _pages.lastOrNull
+        ?.takeIf((e) => (e is PageConfig))
+        ?.let((
+        e) => (e as PageConfig).key);
+    final shouldAddPage = _pages.isEmpty || lastKey != pageConfig.key;
+
+    _pages.removeWhere((element) => element.arguments == LoadingPageConfiguration);
 
     if (shouldAddPage) {
       print("adding page ${pageConfig.key}");
-      if(pageConfig.clearStack){
+      if (pageConfig.clearStack) {
         _pages.clear();
       }
       _addPage(pageConfig);
 
       notifyListeners();
-
-    }else{
+    } else {
       print("not adding page ${pageConfig.key}");
     }
   }
 
   void _addPage(PageConfig pageConfig) {
-
     final requiredParent = pageConfig.requiredParent;
-    if(requiredParent!=null){
+    if (requiredParent != null) {
       _addPage(requiredParent);
     }
-
     _pages.add(createPage(pageConfig));
   }
 
   MaterialPage createPage(PageConfig pageConfig) {
     return MaterialPage(
-      child: RouterDelegateWidget(
-          delegate: this,
-          child: ResourceOrchestrator(hiveCoordinator: hiveCoordinator, child: pageConfig.createWidget())),
-      key: ValueKey(pageConfig.key),
-      name: pageConfig.path,
-      arguments: pageConfig);
+        child: RouterDelegateWidget(
+            delegate: this,
+            child: ResourceOrchestrator(hiveCoordinator: hiveCoordinator,
+                child: pageConfig.createWidget())),
+        key: ValueKey(pageConfig.key),
+        name: pageConfig.path,
+        arguments: pageConfig);
   }
 
   void replace(PageConfig newRoute) {
@@ -162,7 +177,8 @@ class RouterDelegateWidget extends InheritedWidget {
     Key? key,
     required this.delegate,
     required Widget child,
-  })   : assert(child != null),
+  })
+      : assert(child != null),
         super(key: key, child: child);
 
   static RouterDelegateWidget of(BuildContext context) {
@@ -176,5 +192,8 @@ class RouterDelegateWidget extends InheritedWidget {
 }
 
 extension DelegateNavigation on BuildContext {
-  WalletRouterDelegate get nav => RouterDelegateWidget.of(this).delegate;
+  WalletRouterDelegate get nav =>
+      RouterDelegateWidget
+          .of(this)
+          .delegate;
 }

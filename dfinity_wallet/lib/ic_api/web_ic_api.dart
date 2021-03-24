@@ -13,11 +13,14 @@ import '../dfinity.dart';
 class WalletApi {
   external factory WalletApi();
 
+  @JS("createKey")
+  external String createKey();
+
   @JS("createAuthenticationIdentity")
-  external Promise<dynamic> loginWithIdentityProvider(String returnUrl);
+  external Promise<dynamic> loginWithIdentityProvider(String key, String returnUrl);
 
   @JS("createDelegationIdentity")
-  external dynamic createDelegationIdentity(String accessToken);
+  external dynamic createDelegationIdentity(String key, String accessToken);
 
   @JS("createDelegationIdentity")
   external Promise<dynamic> createAuthenticationIdentity();
@@ -42,19 +45,27 @@ class Promise<T> {
 class PlatformICApi extends AbstractPlatformICApi {
   final walletApi = new WalletApi();
 
-  String get host => "http://" + window.location.host;
+  @override
+  void authenticate(BuildContext context) async {
+    await context.boxes.authToken.clear();
+
+    final key = walletApi.createKey();
+    context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
+    walletApi.loginWithIdentityProvider(key, "http://" + window.location.host + "/home");
+  }
 
   @override
-  void authenticate() async {
-    walletApi.loginWithIdentityProvider(host);
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    buildServices(context);
   }
 
   Future<void> buildServices(BuildContext context) async {
     final token = context.boxes.authToken.webAuthToken;
-    if (token != null) {
-      final identity = walletApi.createDelegationIdentity(token.data);
+    if (token != null && token.data != null) {
+      final identity = walletApi.createDelegationIdentity(token.key, token.data!);
 
-      final gatewayHost = host;
+      const gatewayHost = "http://10.12.31.5:8080/";
       final governanceService =
           walletApi.buildGovernanceService(gatewayHost, identity);
       final pendingProposals =
@@ -66,4 +77,5 @@ class PlatformICApi extends AbstractPlatformICApi {
       print("block 1: ${block}");
     }
   }
+
 }

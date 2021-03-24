@@ -18,17 +18,20 @@ class AuthTokenAdapter extends TypeAdapter<AuthToken> {
     };
     return AuthToken()
       ..creationDate = fields[0] as DateTime
-      ..data = fields[1] as String;
+      ..data = fields[1] as String
+      ..key = fields[2] as String;
   }
 
   @override
   void write(BinaryWriter writer, AuthToken obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.creationDate)
       ..writeByte(1)
-      ..write(obj.data);
+      ..write(obj.data)
+      ..writeByte(2)
+      ..write(obj.key);
   }
 
   @override
