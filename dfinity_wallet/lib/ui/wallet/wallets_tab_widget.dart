@@ -1,7 +1,6 @@
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/wallet.dart';
-import 'package:dfinity_wallet/service/signing_service.dart';
 import 'package:dfinity_wallet/ui/_components/conditional_widget.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
@@ -95,13 +94,13 @@ class _WalletsPageState extends State<WalletsPage> {
   }
 
   Future<String?> generateWalletAddress(String name) async {
-    final signingService = SigningService.of(context).platformSigningService;
-    final address = signingService.createAddressForTag(name);
-    if (address == null) {
-      // Map<String, String> error = response["error"] ?? {};
-      // _showErrorDialog("Error Creating Wallet", "${error['description']}, \n ${error['type']}");
-    }
-    return address;
+    // final signingService = SigningService.of(context).platformSigningService;
+    // final address = signingService.authenticate();
+    // if (address == null) {
+    //   // Map<String, String> error = response["error"] ?? {};
+    //   // _showErrorDialog("Error Creating Wallet", "${error['description']}, \n ${error['type']}");
+    // }
+    // return address;
   }
 
   Future<void> _showErrorDialog(String title, String desc) async {

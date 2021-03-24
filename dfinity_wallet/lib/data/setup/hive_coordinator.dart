@@ -1,3 +1,5 @@
+import 'package:dfinity_wallet/data/auth_token.dart';
+import 'package:dfinity_wallet/data/auth_token.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/data/neuron.dart';
 import 'package:dfinity_wallet/data/proposal.dart';
@@ -12,6 +14,7 @@ class HiveCoordinator {
   Box<Wallet>? wallets;
   Box<Neuron>? neurons;
   Box<Proposal>? proposals;
+  Box<AuthToken>? authToken;
   static Future? hiveInitFuture;
   Future<dynamic>? loadingFuture;
 
@@ -36,13 +39,13 @@ class HiveCoordinator {
               .then((value) => canisters = value),
           Hive.openBox<Wallet>('wallets').then((value) => wallets = value),
           Hive.openBox<Neuron>('neurons').then((value) => neurons = value),
-          Hive.openBox<Proposal>('proposals').then((value) => proposals = value)
+          Hive.openBox<Proposal>('proposals').then((value) => proposals = value),
+          Hive.openBox<AuthToken>('auth_token').then((value) => authToken = value)
         ]);
       }
       await loadingFuture;
 
-      await Future.wait(
-          [canisters, wallets, neurons, proposals].map((e) => e!.clear()));
+
     }
   }
 
@@ -53,5 +56,6 @@ class HiveCoordinator {
     Hive.registerAdapter(NeuronAdapter());
     Hive.registerAdapter(CanisterAdapter());
     Hive.registerAdapter(ProposalAdapter());
+    Hive.registerAdapter(AuthTokenAdapter());
   }
 }

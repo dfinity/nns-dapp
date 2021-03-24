@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ic_api/ic_api_widgets.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
 
@@ -31,8 +32,7 @@ class AuthWidget extends StatelessWidget {
                       ),
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.gray1000)),
                       onPressed: () {
-                        final signingService = SigningService.of(context).platformSigningService;
-                        signingService.createAddressForTag("");
+                        context.icApi.authenticate();
                       }),
                   SmallFormDivider(),
                   TextButton(

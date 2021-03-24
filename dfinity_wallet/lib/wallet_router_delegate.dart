@@ -1,5 +1,4 @@
 import 'package:dfinity_wallet/resource_orchstrator.dart';
-import 'package:dfinity_wallet/service/hive_coordinator.dart';
 import 'package:dfinity_wallet/ui/home/auth_widget.dart';
 import 'package:dfinity_wallet/ui/home/home_tabs_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
@@ -7,6 +6,7 @@ import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
 import 'dfinity.dart';
 
 const String AuthPath = '/auth';
+const String AccessTokenPath = '/access_token';
 const String HomePath = '/home';
 const String WalletDetailPath = '/wallet';
 const String NeuronDetailPath = '/neuron';

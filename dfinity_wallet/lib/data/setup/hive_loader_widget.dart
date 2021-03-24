@@ -1,13 +1,13 @@
+import 'package:dfinity_wallet/data/auth_token.dart';
 import 'package:dfinity_wallet/data/data.dart';
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/wallet.dart';
 import 'package:dfinity_wallet/ui/home/landing_widget.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../dfinity.dart';
-import '../data/canister.dart';
-import '../data/neuron.dart';
 import 'hive_coordinator.dart';
+import '../data.dart';
+import 'package:dfinity_wallet/dfinity.dart';
 
 class HiveLoader extends StatefulWidget {
   final HiveCoordinator hiveCoordinator;
@@ -63,6 +63,7 @@ class _HiveLoaderState extends State<HiveLoader> {
               canisters: widget.hiveCoordinator.canisters!,
               wallets: widget.hiveCoordinator.wallets!,
               neurons: widget.hiveCoordinator.neurons!,
+              authToken: widget.hiveCoordinator.authToken!,
               proposals: widget.hiveCoordinator.proposals!,),
         if (!animationCompleted || widget.hiveCoordinator.boxesClosed)
           IgnorePointer(
@@ -79,6 +80,7 @@ class _HiveLoaderState extends State<HiveLoader> {
 class HiveBoxesWidget extends InheritedWidget {
   final Box<Canister> canisters;
   final Box<Wallet> wallets;
+  final Box<AuthToken> authToken;
   final Box<Neuron> neurons;
   final Box<Proposal> proposals;
 
@@ -87,6 +89,7 @@ class HiveBoxesWidget extends InheritedWidget {
     required Widget child,
     required this.canisters,
     required this.wallets,
+    required this.authToken,
     required this.neurons,
     required this.proposals,
   })   : assert(child != null),

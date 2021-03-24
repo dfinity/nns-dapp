@@ -1,7 +1,6 @@
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/resource_orchstrator.dart';
-import 'package:dfinity_wallet/service/hive_coordinator.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction_row.dart';
 import 'package:uuid/uuid.dart';

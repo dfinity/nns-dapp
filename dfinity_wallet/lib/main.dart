@@ -1,7 +1,6 @@
 import 'package:core/app_colors.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/route_information_parser.dart';
-import 'package:dfinity_wallet/service/hive_coordinator.dart';
 import 'package:dfinity_wallet/ui/home/home_page.dart';
 import 'package:dfinity_wallet/wallet_router_delegate.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,7 @@ class DfinityApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerDelegate: router,
-      routeInformationParser: WalletRouteParser(),
+      routeInformationParser: WalletRouteParser(hiveCoordinator),
       title: 'Internet Computer Wallet',
       theme: ThemeData(
           primarySwatch: MaterialColor(AppColors.blue500.value, {

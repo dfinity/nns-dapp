@@ -1,7 +1,7 @@
 import 'package:core/app_colors.dart';
-import 'package:dfinity_wallet/service/hive_loader_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../dfinity.dart';
 import '../../resource_orchstrator.dart';
 import '../../wallet_router_delegate.dart';
 

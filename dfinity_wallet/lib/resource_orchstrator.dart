@@ -1,5 +1,4 @@
 import 'package:dfinity_wallet/dfinity.dart';
-import 'service/hive_coordinator.dart';
 
 class ResourceOrchestrator extends InheritedWidget {
 
@@ -10,8 +9,12 @@ class ResourceOrchestrator extends InheritedWidget {
     required Widget child,
     required this.hiveCoordinator
   }) :super(key: key,
-      child: SigningService(child: HiveLoader(
-          child: child, hiveCoordinator: hiveCoordinator)));
+      child: HiveLoader(
+        hiveCoordinator: hiveCoordinator,
+        child: ICApiManager(
+          child: child,
+        ),
+      ));
 
   static ResourceOrchestrator of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<ResourceOrchestrator>()!;
