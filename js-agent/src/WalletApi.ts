@@ -4,7 +4,7 @@ import GovernanceService from "./canisters/governance/service";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/service";
 import ledgerViewBuilder from "./canisters/ledgerView/builder";
-import LedgerViewService from "./canisters/ledgerView/service";
+import LedgerViewService from "./canisters/ledgerView/rawService";
 import * as webauthn from "./auth/webauthn";
 import { WebAuthnIdentity } from "./auth/webauthn";
 import authClient from "./auth/authClient";

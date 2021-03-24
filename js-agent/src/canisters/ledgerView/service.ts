@@ -1,29 +1,43 @@
-import type { Principal } from '@dfinity/agent';
-import type BigNumber from 'bignumber.js';
-export type BlockHeight = BigNumber;
-export type Doms = BigNumber;
-export interface GetTransactionsRequest {
-  'page_size' : number,
-  'offset' : number,
-};
-export interface GetTransactionsResponse {
-  'total' : number,
-  'transactions' : Array<Transaction>,
-};
-export interface Receive { 'fee' : Doms, 'from' : Principal, 'amount' : Doms };
-export interface Send { 'to' : Principal, 'fee' : Doms, 'amount' : Doms };
-export interface Timestamp { 'secs' : BigNumber, 'nanos' : number };
-export interface Transaction {
-  'timestamp' : Timestamp,
-  'block_height' : BlockHeight,
-  'transfer' : Transfer,
-};
-export type Transfer = { 'Burn' : { 'amount' : Doms } } |
-  { 'Mint' : { 'amount' : Doms } } |
-  { 'Send' : Send } |
-  { 'Receive' : Receive };
-export default interface _SERVICE {
-  'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<
-      GetTransactionsResponse
-    >,
-};
+import RawService, {
+    BlockHeight,
+    GetTransactionsRequest as RawGetTransactionsRequest,
+    Timestamp,
+    Transaction as RawTransaction, Transfer
+} from "./rawService";
+import { Principal } from "@dfinity/agent";
+
+export default class Service {
+    private readonly service: RawService;
+    public constructor(service: RawService, principal: Principal) {
+        this.service = service;
+    }
+
+    public async getTransactions(request: GetTransactionsRequest) : Promise<GetTransationsResponse> {
+        const rawRequest: RawGetTransactionsRequest = {
+            offset: request.offset,
+            page_size: request.pageSize
+        };
+
+        const rawResponse = await this.service.get_transactions(rawRequest);
+
+        const response: GetTransactionsResponse = {
+
+        }
+    }
+}
+
+interface GetTransactionsRequest {
+    offset: number,
+    pageSize: number
+}
+
+interface GetTransactionsResponse {
+    total : number,
+    transactions : Array<RawTransaction>,
+}
+
+interface Transaction {
+    timestamp : Timestamp,
+    blockHeight : BlockHeight,
+    transfer : Transfer,
+}
