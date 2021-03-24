@@ -13,7 +13,6 @@ const DEFAULT_IDP_URL = 'https://auth.ic0.app/authorize';
 
 class AuthenticationClient {
     private _auth: Authenticator;
-    private _key: SignIdentity | null;
 
     constructor() {
         const idpUrl = new URL(DEFAULT_IDP_URL);
@@ -25,12 +24,7 @@ class AuthenticationClient {
         });
     }
 
-    createDelegationIdentity(accessToken: string) : DelegationIdentity {
-        const key = this._key;
-        if (!key) {
-            throw new Error('Key missing');
-        }
-
+    createDelegationIdentity(key: SignIdentity, accessToken: string) : DelegationIdentity {
         // Parse the token which is a JSON object serialized in Hex form.
         const chainJson = [...accessToken]
             .reduce((acc, curr, i) => {
@@ -44,9 +38,7 @@ class AuthenticationClient {
         return DelegationIdentity.fromDelegation(key, chain);
     }
 
-    async loginWithRedirect(options: { redirectUri?: string; scope?: Principal[]; } = {}) {
-        const key = this._getOrCreateKey();
-
+    async loginWithRedirect(key: SignIdentity, options: { redirectUri?: string; scope?: Principal[]; } = {}) {
         await this._auth.sendAuthenticationRequest({
             session: {
                 identity: key,
@@ -56,13 +48,8 @@ class AuthenticationClient {
         });
     }
 
-    _getOrCreateKey() : SignIdentity {
-        let key = this._key;
-        if (!key) {
-            key = Ed25519KeyIdentity.generate();
-            this._key = key;
-        }
-        return key;
+    createKey() : Ed25519KeyIdentity {
+        return Ed25519KeyIdentity.generate();
     }
 }
 

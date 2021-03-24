@@ -11,7 +11,7 @@ import authClient from "./auth/authClient";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
 import LEDGER_CANISTER_ID from "./canisters/governance/canisterId";
 import LEDGER_VIEW_CANISTER_ID from "./canisters/governance/canisterId";
-import { DelegationIdentity } from "@dfinity/authentication";
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/authentication";
 
 const canisterIds = [
     GOVERNANCE_CANISTER_ID,
@@ -20,15 +20,21 @@ const canisterIds = [
 ];
 
 export default class WalletApi {
-    public async loginWithIdentityProvider(returnUrl: string) : Promise<void> {
-        await authClient.loginWithRedirect({
-            redirectUri: returnUrl,
-            scope: canisterIds
-        });
+    public createKey() : string {
+        return JSON.stringify(authClient.createKey().toJSON());
     }
 
-    public createDelegationIdentity(accessToken: string) : DelegationIdentity {
-        return authClient.createDelegationIdentity(accessToken);
+    public async loginWithIdentityProvider(key: string, returnUrl: string) : Promise<void> {
+        await authClient.loginWithRedirect(
+            Ed25519KeyIdentity.fromJSON(key),
+            {
+                redirectUri: returnUrl,
+                scope: canisterIds
+            });
+    }
+
+    public createDelegationIdentity(key: string, accessToken: string) : DelegationIdentity {
+        return authClient.createDelegationIdentity(Ed25519KeyIdentity.fromJSON(key), accessToken);
     }
 
     public createAuthenticationIdentity(): Promise<WebAuthnIdentity> {
