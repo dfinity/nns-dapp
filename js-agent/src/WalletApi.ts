@@ -1,8 +1,8 @@
 import { Identity } from "@dfinity/agent";
 import governanceBuilder from "./canisters/governance/builder";
-import GovernanceService from "./canisters/governance/service";
+import GovernanceService from "./canisters/governance/rawService";
 import ledgerBuilder from "./canisters/ledger/builder";
-import LedgerService from "./canisters/ledger/service";
+import LedgerService from "./canisters/ledger/rawService";
 import ledgerViewBuilder from "./canisters/ledgerView/builder";
 import LedgerViewService from "./canisters/ledgerView/service";
 import * as webauthn from "./auth/webauthn";

@@ -1,5 +1,5 @@
 import { Identity } from "@dfinity/agent";
-import ServiceInterface from "./service";
+import ServiceInterface from "./rawService";
 import IDL from "./canister.did.js";
 import buildActor from "../buildActor";
 import CANISTER_ID from "./canisterId";

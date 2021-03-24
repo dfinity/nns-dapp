@@ -1,9 +1,9 @@
 import WalletApi from "./WalletApi";
 import { AnonymousIdentity, Principal } from "@dfinity/agent";
 import BigNumber from "bignumber.js";
-import { ICPTs } from "./canisters/ledger/service";
-import LedgerService from "./canisters/ledger/service";
-import GovernanceService, { ProposalInfo } from "./canisters/governance/service";
+import { ICPTs } from "./canisters/ledger/rawService";
+import LedgerService from "./canisters/ledger/rawService";
+import GovernanceService, { ProposalInfo } from "./canisters/governance/rawService";
 
 const TRANSACTION_FEE : ICPTs = fromDoms(137);
 
