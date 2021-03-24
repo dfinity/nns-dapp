@@ -12,6 +12,7 @@ import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
 import LEDGER_CANISTER_ID from "./canisters/governance/canisterId";
 import LEDGER_VIEW_CANISTER_ID from "./canisters/governance/canisterId";
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/authentication";
+import testCalls from "./testCalls";
 
 const canisterIds = [
     GOVERNANCE_CANISTER_ID,
@@ -20,6 +21,11 @@ const canisterIds = [
 ];
 
 export default class WalletApi {
+
+    public async testCalls() {
+        testCalls(this);
+    }
+
     public createKey() : string {
         return JSON.stringify(authClient.createKey().toJSON());
     }
