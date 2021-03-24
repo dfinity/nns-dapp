@@ -3,7 +3,8 @@
     "build": "./build.sh"
   },
   "dependencies": {
-    "@dfinity/agent": "^0.6.25",
+    "@dfinity/agent": "0.6.28",
+    "@dfinity/authentication": "0.6.28",
     "bignumber": "^1.1.0",
     "borc": "^2.1.2",
     "browserify": "^17.0.0",
