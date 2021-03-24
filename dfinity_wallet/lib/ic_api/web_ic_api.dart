@@ -42,11 +42,9 @@ class Promise<T> {
 class PlatformICApi extends AbstractPlatformICApi {
   final walletApi = new WalletApi();
 
-  String get host => "http://" + window.location.host;
-
   @override
   void authenticate() async {
-    walletApi.loginWithIdentityProvider(host);
+    walletApi.loginWithIdentityProvider("http://" + window.location.host);
   }
 
   Future<void> buildServices(BuildContext context) async {
@@ -54,7 +52,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     if (token != null) {
       final identity = walletApi.createDelegationIdentity(token.data);
 
-      final gatewayHost = host;
+      const gatewayHost = "http://10.12.31.5:8080/";
       final governanceService =
           walletApi.buildGovernanceService(gatewayHost, identity);
       final pendingProposals =
