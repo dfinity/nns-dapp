@@ -17,8 +17,8 @@ class AuthTokenAdapter extends TypeAdapter<AuthToken> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AuthToken()
-      ..creationDate = fields[0] as DateTime
-      ..data = fields[1] as String
+      ..creationDate = fields[0] as DateTime?
+      ..data = fields[1] as String?
       ..key = fields[2] as String;
   }
 

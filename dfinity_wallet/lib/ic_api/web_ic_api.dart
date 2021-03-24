@@ -16,6 +16,9 @@ class WalletApi {
   @JS("createKey")
   external String createKey();
 
+  @JS("testCalls")
+  external String testCalls();
+
   @JS("createAuthenticationIdentity")
   external Promise<dynamic> loginWithIdentityProvider(String key, String returnUrl);
 
@@ -65,9 +68,17 @@ class PlatformICApi extends AbstractPlatformICApi {
     if (token != null && token.data != null) {
       final identity = walletApi.createDelegationIdentity(token.key, token.data!);
 
+      print("Identity: ${identity}");
+
       const gatewayHost = "http://10.12.31.5:8080/";
+
       final governanceService =
           walletApi.buildGovernanceService(gatewayHost, identity);
+      print("governanceService: ${governanceService}");
+
+      final principal = identity.getPrincipal();
+      print("principal ${principal}");
+
       final pendingProposals =
           await promiseToFuture(governanceService.get_pending_proposals());
       print("pending proposals: ${pendingProposals}");

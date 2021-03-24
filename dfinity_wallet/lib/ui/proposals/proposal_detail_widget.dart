@@ -3,7 +3,7 @@ import 'package:dfinity_wallet/data/proposal.dart';
 import '../../dfinity.dart';
 
 class ProposalDetailWidget extends StatefulWidget {
-  final String proposalIdentifier;
+  final int proposalIdentifier;
 
   const ProposalDetailWidget({Key? key, required this.proposalIdentifier})
       : super(key: key);
@@ -48,6 +48,10 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                       ?.copyWith(color: AppColors.gray800),
                 ),
               ),
+              ListTile(
+                title: Text("Neurons:"),
+
+              )
             ],
           ),
         ),

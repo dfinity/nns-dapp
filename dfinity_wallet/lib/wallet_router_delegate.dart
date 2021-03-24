@@ -12,6 +12,7 @@ const String AccessTokenPath = '/access_token';
 const String HomePath = '/home';
 const String WalletDetailPath = '/wallet';
 const String NeuronDetailPath = '/neuron';
+const String ProposalDetailPath = '/proposal';
 const String CanisterTabsPath = '/canisters';
 const String NeuronsTabsPath = '/neurons';
 
@@ -31,10 +32,8 @@ class PageConfig {
 PageConfig AuthPageConfiguration = PageConfig(
     path: AuthPath, createWidget: () => AuthWidget());
 
-
 PageConfig LoadingPageConfiguration = PageConfig(
     path: LoadingPagePath, createWidget: () => LandingPageWidget());
-
 
 PageConfig HomeTabsPageConfiguration = PageConfig(
     path: HomePath, createWidget: () => HomePage(), clearStack: true);
@@ -48,6 +47,7 @@ PageConfig NeuronsTabsPageConfiguration = PageConfig(
     path: NeuronsTabsPath,
     createWidget: () => NeuronsTabPage(),
     clearStack: true);
+
 
 class WalletRouterDelegate extends RouterDelegate<PageConfig>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageConfig> {

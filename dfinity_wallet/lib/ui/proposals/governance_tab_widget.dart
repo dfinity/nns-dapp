@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
+import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
 
 class GovernanceTabWidget extends StatefulWidget {
     @override
@@ -20,16 +21,16 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
     if(context.boxes.proposals.isEmpty){
       [
         Proposal(
-            "Precompiled contracts for addition and scalar multiplication on the elliptic curve alt_bn128." , "91175380908085661531", DateTime.now().add(random.nextDouble().days)
+            "Precompiled contracts for addition and scalar multiplication on the elliptic curve alt_bn128." , "91175380908085661531", DateTime.now().add(random.nextDouble().days), "asfcf2v34rc3fqs"
         ),
         Proposal(
-            "Minimal Proxy Contract" , "55643373613721384592", DateTime.now().add(random.nextDouble().days)
+            "Minimal Proxy Contract" , "55643373613721384592", DateTime.now().add(random.nextDouble().days), "cw322412cr3xwsdxqwas"
         ),
         Proposal(
-            "Uniformity Between 0xAb5801a7D398351b8bE11C439 e05C5B3259aeC9B and 0x15E55EF43efA8348dDaeAa45 5F16C43B64917e3c" , "89228947949245012542", DateTime.now().add(random.nextDouble().days)
+            "Uniformity Between 0xAb5801a7D398351b8bE11C439 e05C5B3259aeC9B and 0x15E55EF43efA8348dDaeAa45 5F16C43B64917e3c" , "89228947949245012542", DateTime.now().add(random.nextDouble().days), "3cefsadxdasfqcwesfax"
         ),
       ].forEach((e){
-        context.boxes.proposals.add(e);
+        context.boxes.proposals.put(e.address.hashCode, e);
       });
     }
   }
@@ -51,7 +52,11 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
               ),
           ),
              ...context.boxes.proposals.values.map((e) {
-               return ProposalRow(proposal: e, onPressed: () {});
+               return ProposalRow(proposal: e, onPressed: () {
+                 context.nav.push(PageConfig(
+                     path: ProposalDetailPath + "/${e.authorAddress.hashCode}",
+                     createWidget: () => ProposalDetailWidget(proposalIdentifier: e.address.hashCode)));
+               });
              })
            ],),
         );
