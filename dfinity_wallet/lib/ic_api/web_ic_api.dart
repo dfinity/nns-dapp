@@ -54,6 +54,12 @@ class PlatformICApi extends AbstractPlatformICApi {
     walletApi.loginWithIdentityProvider(key, "http://" + window.location.host + "/home");
   }
 
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    buildServices(context);
+  }
+
   Future<void> buildServices(BuildContext context) async {
     final token = context.boxes.authToken.webAuthToken;
     if (token != null && token.data != null) {
@@ -71,6 +77,5 @@ class PlatformICApi extends AbstractPlatformICApi {
       print("block 1: ${block}");
     }
   }
-
 
 }
