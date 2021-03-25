@@ -1,32 +1,33 @@
 import BigNumber from "bignumber.js";
 import { Principal } from "@dfinity/agent/lib/cjs/principal";
-import { fromBigNumber, toBigNumber } from "../converters";
+import * as convert from "../converters";
 import RawService, { ICPTs, SendArgs } from "./service";
 
-const TRANSACTION_FEE : ICPTs = fromDoms(BigInt(137));
+const TRANSACTION_FEE : ICPTs = { doms: new BigNumber(137) };
 
 export interface SendICPTsRequest {
     to: Principal,
-    amount: bigint
+    amount: ICPTs,
+    fee?: ICPTs,
+    memo?: ArrayBuffer,
+    blockHeight?: bigint,
+    fromSubaccount?: ArrayBuffer,
+    toSubaccount?: ArrayBuffer
 };
 
 export default async function(service: RawService, request: SendICPTsRequest): Promise<bigint> {
     const result = await service.send(convertRequest(request));
-    return fromBigNumber(result);
+    return convert.bigNumberToBigInt(result);
 }
 
 function convertRequest(request: SendICPTsRequest): SendArgs {
     return {
         to: request.to,
-        fee: TRANSACTION_FEE,
+        fee: request.fee ?? TRANSACTION_FEE,
         memo: new BigNumber(0),
-        amount: fromDoms(request.amount),
-        block_height: [],
-        from_subaccount: [],
-        to_subaccount: []
+        amount: request.amount,
+        block_height: request.blockHeight === undefined ? [] : [convert.bigIntToBigNumber(request.blockHeight)],
+        from_subaccount: request.fromSubaccount === undefined ? [] : [convert.arrayBufferToArrayOfNumber(request.fromSubaccount)],
+        to_subaccount: request.toSubaccount === undefined ? [] : [convert.arrayBufferToArrayOfNumber(request.toSubaccount)]
     };
-}
-
-function fromDoms(amount: bigint) : ICPTs {
-    return { doms: toBigNumber(amount) }
 }

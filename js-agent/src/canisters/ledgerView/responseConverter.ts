@@ -1,4 +1,4 @@
-import { fromBigNumber } from "../converters";
+import * as convert from "../converters";
 import { GetTransactionsResponse, Transaction, Transfer } from "./model";
 import {
     GetTransactionsResponse as RawGetTransactionsResponse,
@@ -17,10 +17,10 @@ class ResponseConverter {
     convertTransaction(transaction: RawTransaction) : Transaction {
         return {
             timestamp: {
-                secs: fromBigNumber(transaction.timestamp.secs),
+                secs: convert.bigNumberToBigInt(transaction.timestamp.secs),
                 nanos: transaction.timestamp.nanos
             },
-            blockHeight: fromBigNumber(transaction.block_height),
+            blockHeight: convert.bigNumberToBigInt(transaction.block_height),
             transfer: this.convertTransfer(transaction.transfer)
         }
     }
@@ -29,14 +29,14 @@ class ResponseConverter {
         if ("Burn" in transfer) {
             return {
                 Burn: {
-                    amount: fromBigNumber(transfer.Burn.amount)
+                    amount: convert.bigNumberToBigInt(transfer.Burn.amount)
                 }
             };
         }
         if ("Mint" in transfer) {
             return {
                 Mint: {
-                    amount: fromBigNumber(transfer.Mint.amount)
+                    amount: convert.bigNumberToBigInt(transfer.Mint.amount)
                 }
             };
         }
@@ -44,8 +44,8 @@ class ResponseConverter {
             return {
                 Send: {
                     to: transfer.Send.to,
-                    amount: fromBigNumber(transfer.Send.amount),
-                    fee: fromBigNumber(transfer.Send.fee)
+                    amount: convert.bigNumberToBigInt(transfer.Send.amount),
+                    fee: convert.bigNumberToBigInt(transfer.Send.fee)
                 }
             };
         }
@@ -53,8 +53,8 @@ class ResponseConverter {
             return {
                 Receive: {
                     from: transfer.Receive.from,
-                    amount: fromBigNumber(transfer.Receive.amount),
-                    fee: fromBigNumber(transfer.Receive.fee)
+                    amount: convert.bigNumberToBigInt(transfer.Receive.amount),
+                    fee: convert.bigNumberToBigInt(transfer.Receive.fee)
                 }
             };
         }

@@ -1,32 +1,31 @@
-import { Identity } from "@dfinity/agent";
+import { Identity, Principal } from "@dfinity/agent";
 import ledgerBuilder from "./canisters/ledger/builder";
 import getBalance from "./canisters/ledger/getBalance";
 import sendICPTs, { SendICPTsRequest } from "./canisters/ledger/sendICPTs";
+import LedgerService from "./canisters/ledger/service";
+import LedgerViewService from "./canisters/ledgerView/service";
 import ledgerViewBuilder from "./canisters/ledgerView/builder";
 import { GetTransactionsRequest, GetTransactionsResponse } from "./canisters/ledgerView/model";
 
 export default class LedgerApi {
-
-    private _host: string;
-    private _identity: Identity;
+    private _ledgerService: LedgerService;
+    private _ledgerViewService: LedgerViewService;
+    private _principal: Principal
 
     constructor(host: string, identity: Identity) {
-        this._host = host;
-        this._identity = identity;
-    }   
+        this._ledgerService = ledgerBuilder(host, identity);
+        this._ledgerViewService = ledgerViewBuilder(host, identity);
+    }
 
     public async getBalance(): Promise<bigint> {
-        const service = ledgerBuilder(this._host, this._identity);
-        return getBalance(service, this._identity.getPrincipal());
+        return getBalance(this._ledgerService, this._principal);
     }
 
     public async getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse> {
-        const service = ledgerViewBuilder(this._host, this._identity);
-        return service.getTransactions(request);
+        return this._ledgerViewService.getTransactions(request);
     }
 
     public async sendICPTs(request: SendICPTsRequest) {
-        const service = ledgerBuilder(this._host, this._identity);
-        return sendICPTs(service, request);
+        return sendICPTs(this._ledgerService, request);
     }
 }

@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/agent";
-import { fromBigNumber } from "../converters";
+import * as convert from "../converters";
 import RawService from "./service";
 
 export default async function(service: RawService, principal: Principal): Promise<bigint> {
@@ -8,5 +8,5 @@ export default async function(service: RawService, principal: Principal): Promis
         account: principal
     });
 
-    return fromBigNumber(result.doms);
+    return convert.bigNumberToBigInt(result.doms);
 }
