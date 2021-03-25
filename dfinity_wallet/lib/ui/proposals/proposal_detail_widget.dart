@@ -4,9 +4,9 @@ import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import '../../dfinity.dart';
 
 class ProposalDetailWidget extends StatefulWidget {
-  final int proposalIdentifier;
+  final Proposal proposal;
 
-  const ProposalDetailWidget({Key? key, required this.proposalIdentifier})
+  const ProposalDetailWidget(this.proposal, {Key? key})
       : super(key: key);
 
   @override
@@ -14,20 +14,12 @@ class ProposalDetailWidget extends StatefulWidget {
 }
 
 class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
-  late Proposal proposal;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    print(widget.proposalIdentifier);
-    proposal = context.boxes.proposals.get(widget.proposalIdentifier)!;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Neuron"),
+          title: Text("Proposal"),
         ),
         body: Container(
             color: AppColors.lightBackground,
@@ -43,7 +35,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            proposal.name,
+                            widget.proposal.name,
                             style: context.textTheme.headline3
                                 ?.copyWith(color: AppColors.gray800),
                           ),
@@ -52,7 +44,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                           padding: const EdgeInsets.only(
                               left: 16.0, bottom: 16.0, right: 16.0),
                           child: Text(
-                            proposal.authorAddress,
+                            widget.proposal.authorAddress,
                             style: context.textTheme.bodyText1
                                 ?.copyWith(color: AppColors.gray800),
                           ),

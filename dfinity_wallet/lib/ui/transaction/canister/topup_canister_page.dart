@@ -124,7 +124,7 @@ class DoneWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                         onPressed: () {
-                          context.nav.push(CanisterTabsPageConfiguration);
+                          context.nav.push(CanistersTabPage);
                         },
                         child: Text("OK")),
                   ),

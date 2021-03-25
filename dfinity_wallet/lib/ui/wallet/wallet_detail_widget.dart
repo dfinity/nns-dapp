@@ -10,23 +10,17 @@ import 'balance_display_widget.dart';
 import '../transaction/create_transaction_overlay.dart';
 
 class WalletDetailPage extends StatefulWidget {
-  final int walletIdentifier;
+  final Wallet wallet;
 
-  WalletDetailPage({required this.walletIdentifier});
+  WalletDetailPage(this.wallet);
 
   @override
   _WalletDetailPageState createState() => _WalletDetailPageState();
 }
 
 class _WalletDetailPageState extends State<WalletDetailPage> {
-  late Wallet wallet;
   OverlayEntry? _overlayEntry;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    wallet = context.boxes.wallets.get(widget.walletIdentifier)!;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +39,7 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          wallet.name,
+                          widget.wallet.name,
                           style: context.textTheme.headline1,
                         ),
                       ),
@@ -54,11 +48,11 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                   Padding(
                       padding: EdgeInsets.all(24),
                       child: BalanceDisplayWidget(
-                        amount: wallet.balance,
+                        amount: widget.wallet.balance,
                         amountSize: 40,
                         icpLabelSize: 25,
                       )),
-                  if (wallet.transactions.isEmpty)
+                  if (widget.wallet.transactions.isEmpty)
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 100),
@@ -79,21 +73,21 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    wallet.transactions = 0
+                                    widget.wallet.transactions = 0
                                         .rangeTo(3)
                                         .map((e) => Transaction(
                                             fromKey: Uuid().v4(),
                                             amount: rand.nextInt(10000) / 100,
                                             date: DateTime.now()))
                                         .toList();
-                                    wallet.save();
+                                    widget.wallet.save();
                                   });
                                 })
                           ],
                         ),
                       ),
                     ),
-                  ...wallet.transactions
+                  ...widget.wallet.transactions
                       .map((e) => TransactionRow(transaction: e)),
                   SizedBox(
                     height: 200,
@@ -122,7 +116,7 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
           parentContext: parentContext,
           overlayEntry: _overlayEntry,
           child: NewTransactionOverlay(
-            source: wallet,
+            source: widget.wallet,
           ));
     });
   }

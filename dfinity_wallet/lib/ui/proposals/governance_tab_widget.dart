@@ -53,9 +53,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
           ),
              ...context.boxes.proposals.values.map((e) {
                return ProposalRow(proposal: e, onPressed: () {
-                 context.nav.push(PageConfig(
-                     path: ProposalDetailPath + "/${e.authorAddress.hashCode}",
-                     createWidget: () => ProposalDetailWidget(proposalIdentifier: e.address.hashCode)));
+                 context.nav.push(ProposalPageDef.createPageConfig(e));
                });
              })
            ],),

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dfinity_wallet/data/data.dart';
 import 'package:dfinity_wallet/data/transaction.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
@@ -7,12 +8,13 @@ import 'package:dartx/dartx.dart';
 
 import 'icp_source.dart';
 
+
 part 'wallet.g.dart';
 
 
 
 @HiveType(typeId : 1)
-class Wallet extends HiveObject with ICPSource {
+class Wallet extends DfinityEntity with ICPSource {
     @HiveField(0)
     final String name;
     @HiveField(1)
@@ -23,7 +25,8 @@ class Wallet extends HiveObject with ICPSource {
     List<Transaction> transactions = [];
     double get balance => transactions.sumBy((element) => element.amount);
 
-    String get identifier => name.replaceAll(" ", "_");
+    @override
+    int get identifier => address.hashCode;
 }
 
 class WalletService {

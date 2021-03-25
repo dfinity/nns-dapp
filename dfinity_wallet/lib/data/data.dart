@@ -6,3 +6,4 @@ export 'canister.dart';
 export 'neuron.dart';
 export 'auth_token.dart';
 export 'proposal.dart';
+export 'dfinity_entity.dart';

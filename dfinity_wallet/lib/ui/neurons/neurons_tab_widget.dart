@@ -32,10 +32,7 @@ class _NeuronsPageState extends State<NeuronsPage> {
                 neuron: e,
                 showsWarning: true,
                 onPressed: () {
-                  context.nav.push(PageConfig(
-                      path: NeuronDetailPath + "/${e.address.hashCode}",
-                      createWidget: () => NeuronDetailWidget(
-                          neuronIdentifier: e.address.hashCode)));
+                  context.nav.push(NeuronPageDef.createPageConfig(e));
                 },
               )),
         ],

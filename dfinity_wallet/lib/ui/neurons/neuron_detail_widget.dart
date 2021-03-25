@@ -7,9 +7,9 @@ import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 import '../../dfinity.dart';
 
 class NeuronDetailWidget extends StatefulWidget {
-  final int neuronIdentifier;
+  final Neuron neuron;
 
-  const NeuronDetailWidget({Key? key, required this.neuronIdentifier}) : super(key: key);
+  const NeuronDetailWidget(this.neuron, {Key? key}) : super(key: key);
 
   @override
   _NeuronDetailWidgetState createState() => _NeuronDetailWidgetState();
@@ -17,16 +17,8 @@ class NeuronDetailWidget extends StatefulWidget {
 
 class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
 
-  late Neuron neuron;
   OverlayEntry? _overlayEntry;
 
-
-  @override
-  void didChangeDependencies() {
-
-    super.didChangeDependencies();
-    neuron = context.boxes.neurons.get(widget.neuronIdentifier)!;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,16 +34,16 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: _LabelledBalanceDisplay(label: "Stake", amount: neuron.balance,)
+                        child: _LabelledBalanceDisplay(label: "Stake", amount: widget.neuron.balance,)
                       ),
                       Expanded(
-                          child: _LabelledBalanceDisplay(label: "Reward", amount: neuron.rewardAmount,)
+                          child: _LabelledBalanceDisplay(label: "Reward", amount: widget.neuron.rewardAmount,)
                       ),
                     ],
                   ),
                   Center(child: Padding(
                       padding: EdgeInsets.all(20),
-                    child: Text(neuron.name.capitalize(), style: context.textTheme.headline2,),
+                    child: Text(widget.neuron.name.capitalize(), style: context.textTheme.headline2,),
                   )),
                   TallFormDivider(),
                   Card(
@@ -65,16 +57,16 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                           SmallFormDivider(),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("State: ${neuron.state.description}", style: context.textTheme.bodyText1),
+                            child: Text("State: ${widget.neuron.state.description}", style: context.textTheme.bodyText1),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("Disperse Delay: ${neuron.durationRemaining.seconds.inDays} Days", style: context.textTheme.bodyText1),
+                            child: Text("Disperse Delay: ${widget.neuron.durationRemaining.seconds.inDays} Days", style: context.textTheme.bodyText1),
                           ),
-                          if(neuron.timerIsActive)
+                          if(widget.neuron.timerIsActive)
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("Time Remaining: ${neuron.durationRemaining.seconds.inDays} Days", style: context.textTheme.bodyText1),
+                              child: Text("Time Remaining: ${widget.neuron.durationRemaining.seconds.inDays} Days", style: context.textTheme.bodyText1),
                             )
                         ],
                       ),
@@ -100,7 +92,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                             onPressed: () {
                               _overlayEntry = _createOverlayEntry();
                               Overlay.of(context)?.insert(_overlayEntry!);
-                            }.takeIf((e) => neuron.rewardAmount > 0)),
+                            }.takeIf((e) => widget.neuron.rewardAmount > 0)),
                       ),
                     ],
                   ),
@@ -110,14 +102,14 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
   }
 
   ElevatedButton buildStateButton() {
-    switch(neuron.state){
+    switch(widget.neuron.state){
       case NeuronState.DISPERSING:
         return ElevatedButton(
             child: Text("Stop Dispersing"),
             onPressed: () {
               setState(() {
-                neuron.timerIsActive = false;
-                neuron.save();
+                widget.neuron.timerIsActive = false;
+                widget.neuron.save();
               });
             });
       case NeuronState.LOCKED:
@@ -125,8 +117,8 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
             child: Text("Start Dispersing"),
             onPressed: () {
               setState(() {
-                neuron.timerIsActive = true;
-                neuron.save();
+                widget.neuron.timerIsActive = true;
+                widget.neuron.save();
               });
             });
       case NeuronState.UNLOCKED:
@@ -145,7 +137,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
           parentContext: parentContext,
           overlayEntry: _overlayEntry,
           child: NewTransactionOverlay(
-            source: neuron,
+            source: widget.neuron,
           ));
     });
   }

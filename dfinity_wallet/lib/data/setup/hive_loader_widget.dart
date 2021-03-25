@@ -60,11 +60,8 @@ class _HiveLoaderState extends State<HiveLoader> {
         if (!widget.hiveCoordinator.boxesClosed && (fadingIn || animationCompleted))
           HiveBoxesWidget(
               child: widget.child,
-              canisters: widget.hiveCoordinator.canisters!,
-              wallets: widget.hiveCoordinator.wallets!,
-              neurons: widget.hiveCoordinator.neurons!,
-              authToken: widget.hiveCoordinator.authToken!,
-              proposals: widget.hiveCoordinator.proposals!,),
+              hiveBoxes: widget.hiveCoordinator.hiveBoxes
+          ),
         if (!animationCompleted || widget.hiveCoordinator.boxesClosed)
           IgnorePointer(
             child: AnimatedOpacity(
@@ -78,20 +75,17 @@ class _HiveLoaderState extends State<HiveLoader> {
 }
 
 class HiveBoxesWidget extends InheritedWidget {
-  final Box<Canister> canisters;
-  final Box<Wallet> wallets;
-  final Box<AuthToken> authToken;
-  final Box<Neuron> neurons;
-  final Box<Proposal> proposals;
+  final HiveBoxes hiveBoxes;
+  Box<Canister> get canisters => hiveBoxes.canisters!;
+  Box<Wallet> get wallets => hiveBoxes.wallets!;
+  Box<AuthToken> get authToken => hiveBoxes.authToken!;
+  Box<Neuron> get neurons => hiveBoxes.neurons!;
+  Box<Proposal> get proposals => hiveBoxes.proposals!;
 
   const HiveBoxesWidget({
     Key? key,
     required Widget child,
-    required this.canisters,
-    required this.wallets,
-    required this.authToken,
-    required this.neurons,
-    required this.proposals,
+    required this.hiveBoxes,
   })   : assert(child != null),
         super(key: key, child: child);
 

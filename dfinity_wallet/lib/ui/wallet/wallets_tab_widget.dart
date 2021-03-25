@@ -41,11 +41,7 @@ class _WalletsPageState extends State<WalletsPage> {
             ...context.boxes.wallets.values.map((e) => WalletRow(
                   wallet: e,
                   onTap: () {
-                    context.nav.push(PageConfig(
-                        path: WalletDetailPath + "/${e.address.hashCode}",
-                        createWidget: () => WalletDetailPage(
-                              walletIdentifier: e.address.hashCode,
-                            )));
+                    context.nav.push(WalletPageDef.createPageConfig(e));
                   },
                 )),
             SizedBox(

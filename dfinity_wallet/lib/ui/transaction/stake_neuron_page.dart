@@ -97,7 +97,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                         timerIsActive: false,
                         rewardAmount: amountField.currentValue.toDouble() * random.nextDouble() * 0.3,
                         balance: amountField.currentValue.toDouble()));
-                context.nav.push(NeuronsTabsPageConfiguration);
+                context.nav.push(NeuronTabsPage);
               }.takeIf((e) => <ValidatedField>[name, amountField, disperseDelay]
                   .allAreValid),
             ),

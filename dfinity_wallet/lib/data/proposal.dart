@@ -1,9 +1,10 @@
+import 'package:dfinity_wallet/data/data.dart';
 import 'package:hive/hive.dart';
 
 part 'proposal.g.dart';
 
 @HiveType(typeId: 5)
-class Proposal extends HiveObject {
+class Proposal extends DfinityEntity {
   @HiveField(0)
   late String name;
   @HiveField(1)
@@ -14,4 +15,7 @@ class Proposal extends HiveObject {
   late String address;
 
   Proposal(this.name, this.authorAddress, this.closeDate, this.address);
+
+  @override
+  int get identifier => address.hashCode;
 }

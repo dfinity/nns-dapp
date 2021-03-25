@@ -9,12 +9,27 @@ import 'package:dfinity_wallet/dfinity.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class HiveCoordinator {
+class HiveBoxes {
   Box<Canister>? canisters;
   Box<Wallet>? wallets;
   Box<Neuron>? neurons;
   Box<Proposal>? proposals;
   Box<AuthToken>? authToken;
+
+  bool get areClosed =>
+      canisters == null || wallets == null || neurons == null ||
+          proposals == null || authToken == null;
+
+  HiveBoxes({this.canisters,
+    this.wallets,
+    this.neurons,
+    this.proposals,
+    this.authToken});
+}
+
+class HiveCoordinator {
+  HiveBoxes hiveBoxes = HiveBoxes();
+
   static Future? hiveInitFuture;
   Future<dynamic>? loadingFuture;
 
@@ -22,8 +37,7 @@ class HiveCoordinator {
     openBoxes();
   }
 
-  bool get boxesClosed =>
-      canisters == null || wallets == null || neurons == null;
+  bool get boxesClosed => hiveBoxes.areClosed;
 
   Future<void> openBoxes() async {
     if (boxesClosed) {
@@ -35,17 +49,14 @@ class HiveCoordinator {
       }
       if (loadingFuture == null) {
         loadingFuture = Future.wait([
-          Hive.openBox<Canister>('canisters')
-              .then((value) => canisters = value),
-          Hive.openBox<Wallet>('wallets').then((value) => wallets = value),
-          Hive.openBox<Neuron>('neurons').then((value) => neurons = value),
-          Hive.openBox<Proposal>('proposals').then((value) => proposals = value),
-          Hive.openBox<AuthToken>('auth_token').then((value) => authToken = value)
+          Hive.openBox<Canister>('canisters').then((value) => hiveBoxes.canisters = value),
+          Hive.openBox<Wallet>('wallets').then((value) => hiveBoxes.wallets = value),
+          Hive.openBox<Neuron>('neurons').then((value) => hiveBoxes.neurons = value),
+          Hive.openBox<Proposal>('proposals').then((value) => hiveBoxes.proposals = value),
+          Hive.openBox<AuthToken>('auth_token').then((value) => hiveBoxes.authToken = value)
         ]);
       }
       await loadingFuture;
-
-
     }
   }
 

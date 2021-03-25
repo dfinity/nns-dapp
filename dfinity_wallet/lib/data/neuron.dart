@@ -1,10 +1,11 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:hive/hive.dart';
+import 'dfinity_entity.dart';
 
 part 'neuron.g.dart';
 
 @HiveType(typeId: 3)
-class Neuron extends HiveObject with ICPSource {
+class Neuron extends DfinityEntity with ICPSource {
   @HiveField(0)
   late String name;
   @HiveField(1)
@@ -39,6 +40,8 @@ class Neuron extends HiveObject with ICPSource {
     }
   }
 
+  @override
+  int get identifier => address.hashCode;
 }
 
 enum NeuronState { DISPERSING, LOCKED, UNLOCKED }

@@ -72,19 +72,16 @@ class PlatformICApi extends AbstractPlatformICApi {
 
       const gatewayHost = "http://10.12.31.5:8080/";
 
-      // await promiseToFuture(walletApi.testCalls());
-      // print("testCalls done");
-
-      // final governanceService =
-      //     walletApi.buildGovernanceService(gatewayHost, identity);
-      // print("governanceService: ${governanceService}");
+      final governanceService =
+          walletApi.buildGovernanceService(gatewayHost, identity);
+      print("governanceService: ${governanceService}");
       //
       // final principal = identity.getPrincipal();
       // print("principal ${principal}");
       //
-      // final pendingProposals =
-      //     await promiseToFuture(governanceService.get_pending_proposals());
-      // print("pending proposals: ${pendingProposals}");
+      final pendingProposals =
+          await promiseToFuture(governanceService.get_pending_proposals());
+      print("pending proposals: ${pendingProposals}");
       //
       // final ledgerService = walletApi.buildLedgerService(gatewayHost, identity);
       // final block = await promiseToFuture(ledgerService.block(1));

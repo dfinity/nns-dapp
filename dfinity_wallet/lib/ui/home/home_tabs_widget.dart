@@ -4,27 +4,6 @@ import 'package:dfinity_wallet/ui/proposals/governance_tab_widget.dart';
 import '../../dfinity.dart';
 import 'nodes/node_world.dart';
 
-class WalletsTabPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return HomePage(initialTabIndex: 0,);
-  }
-}
-
-
-class CanistersTabPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return HomePage(initialTabIndex: 1,);
-  }
-}
-
-class NeuronsTabPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return HomePage(initialTabIndex: 2,);
-  }
-}
 
 class HomePage extends StatefulWidget  {
 
@@ -83,10 +62,10 @@ class _HomePageState extends State<HomePage> {
                           labelColor: AppColors.white,
                           labelStyle: TextStyle(fontFamily: Fonts.circularMedium, fontSize: 20, letterSpacing: 1.2),
                           tabs: [
-                            Tab(text: "WALLETS"),
-                            Tab(text: "CANISTERS"),
+                            Tab(text: "ICPTs"),
                             Tab(text: "NEURONS"),
                             Tab(text: "GOVERNANCE"),
+                            Tab(text: "CANISTERS"),
                           ],
                         ),
                       ),
@@ -99,7 +78,7 @@ class _HomePageState extends State<HomePage> {
         ),
         body: SizedBox.expand(
           child: TabBarView(
-            children: [WalletsPage(), CansitersPage(), NeuronsPage(), GovernanceTabWidget()],
+            children: [WalletsPage(), NeuronsPage(), GovernanceTabWidget(), CansitersPage()],
           ),
         ),
       ),
