@@ -15,8 +15,8 @@ export default class Service implements ServiceInterface {
     }
 
     public async getTransactions(request: GetTransactionsRequest) : Promise<GetTransactionsResponse> {
-        const rawRequest = this.requestConverters.convertGetTransactionsRequest(request);
+        const rawRequest = this.requestConverters.fromGetTransactionsRequest(request);
         const rawResponse = await this.service.get_transactions(rawRequest);
-        return this.responseConverters.convertGetTransactionsResponse(rawResponse);
+        return this.responseConverters.toGetTransactionsResponse(rawResponse);
     }
 }

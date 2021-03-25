@@ -7,25 +7,25 @@ import {
 } from "./rawService";
 
 export default class ResponseConverters {
-    convertGetTransactionsResponse(response: RawGetTransactionsResponse) : GetTransactionsResponse {
+    public toGetTransactionsResponse(response: RawGetTransactionsResponse) : GetTransactionsResponse {
         return {
             total: response.total,
-            transactions: response.transactions.map(this.convertTransaction)
+            transactions: response.transactions.map(this.toTransaction)
         };
     }
 
-    convertTransaction(transaction: RawTransaction) : Transaction {
+    private toTransaction(transaction: RawTransaction) : Transaction {
         return {
             timestamp: {
                 secs: convert.bigNumberToBigInt(transaction.timestamp.secs),
                 nanos: transaction.timestamp.nanos
             },
             blockHeight: convert.bigNumberToBigInt(transaction.block_height),
-            transfer: this.convertTransfer(transaction.transfer)
+            transfer: this.toTransfer(transaction.transfer)
         }
     }
 
-    convertTransfer(transfer: RawTransfer): Transfer {
+    private toTransfer(transfer: RawTransfer): Transfer {
         if ("Burn" in transfer) {
             return {
                 Burn: {
