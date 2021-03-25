@@ -26,7 +26,7 @@ import {
     Tally as RawTally
 } from "./rawService";
 
-class ResponseConverter {
+export default class ResponseConverters {
     convertGetPendingProposalsResponse(response: Array<RawProposalInfo>) : Array<ProposalInfo> {
         return response.map(p => ({
             id: p.id.length ? this.convertNeuronId(p.id[0]) : null,
@@ -279,7 +279,3 @@ class ResponseConverter {
         throw new Error(`Unrecognised ${name} type - ${JSON.stringify(value)}`);
     }
 }
-
-const converter = new ResponseConverter();
-
-export default converter;
