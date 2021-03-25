@@ -1,4 +1,4 @@
-import { Identity } from "@dfinity/agent";
+import { AnonymousIdentity, Identity } from "@dfinity/agent";
 import governanceBuilder from "./canisters/governance/builder";
 import GovernanceService from "./canisters/governance/model";
 import ledgerBuilder from "./canisters/ledger/builder";
@@ -10,29 +10,44 @@ import { BlockHeight, GetBalanceRequest, ICPTs, SendICPTsRequest } from "./canis
 import { ProposalInfo } from "./canisters/governance/model";
 
 export default class WalletApi {
-    private _governanceService: GovernanceService;
-    private _ledgerService: LedgerService;
-    private _ledgerViewService: LedgerViewService;
+    private governanceService: GovernanceService;
+    private ledgerService: LedgerService;
+    private ledgerViewService: LedgerViewService;
+    private host: string;
+    private identity: Identity;
 
     constructor(host: string, identity: Identity) {
-        this._governanceService = governanceBuilder(host, identity);
-        this._ledgerService = ledgerBuilder(host, identity);
-        this._ledgerViewService = ledgerViewBuilder(host, identity);
+        this.governanceService = governanceBuilder(host, identity);
+        this.ledgerService = ledgerBuilder(host, identity);
+        this.ledgerViewService = ledgerViewBuilder(host, identity);
+        this.host = host;
+        this.identity = identity;
+    }
+
+    // Temporary method for demo purposes only, to give the current principal some ICPTs 
+    // by sending from the anon account which has been gifted lots of ICPTs
+    public async aquireICPTs(icpts: ICPTs): Promise<void> {
+        const anonIdentity = new AnonymousIdentity();
+        const anonLedgerService = ledgerBuilder(this.host, anonIdentity);
+        anonLedgerService.sendICPTs({
+            to: this.identity.getPrincipal(),
+            amount: icpts
+        });
     }
 
     public async getBalance(request: GetBalanceRequest): Promise<ICPTs> {
-        return this._ledgerService.getBalance(request);
+        return this.ledgerService.getBalance(request);
     }
 
     public async getPendingProposals(): Promise<Array<ProposalInfo>> {
-        return this._governanceService.getPendingProposals();
+        return this.governanceService.getPendingProposals();
     }
 
     public async getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse> {
-        return this._ledgerViewService.getTransactions(request);
+        return this.ledgerViewService.getTransactions(request);
     }
 
     public async sendICPTs(request: SendICPTsRequest): Promise<BlockHeight> {
-        return this._ledgerService.sendICPTs(request);
+        return this.ledgerService.sendICPTs(request);
     }
 }
