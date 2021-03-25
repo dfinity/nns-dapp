@@ -176,3 +176,25 @@ export interface Tally {
     total: bigint,
     timestampSeconds: bigint,
 };
+export default interface ServiceInterface {
+    // claimNeuron: (
+    //     arg_0: Array<number>,
+    //     arg_1: bigint,
+    //     arg_2: bigint,
+    // ) => Promise<Result>,
+    // currentAuthz: () => Promise<CanisterAuthzInfo>,
+    // executeEligibleProposals: () => Promise<undefined>,
+    // getFinalizedProposals: () => Promise<Array<ProposalInfo>>,
+    // getFullNeuron: (arg_0: bigint) => Promise<Result_1>,
+    // getNeuronIds: () => Promise<Array<bigint>>,
+    // getNeuronInfo: (arg_0: bigint) => Promise<Result_2>,
+    getPendingProposals: () => Promise<Array<ProposalInfo>>,
+    // getProposalInfo: (arg_0: bigint) => Promise<[] | [ProposalInfo]>,
+    // manageNeuron: (arg_0: ManageNeuron) => Promise<Result_3>,
+    // submitProposal: (
+    //     arg_0: bigint,
+    //     arg_1: Proposal,
+    //     arg_2: Principal,
+    // ) => Promise<bigint>,
+    // updateAuthz: (arg_0: Array<MethodAuthzChange>) => Promise<undefined>,
+};

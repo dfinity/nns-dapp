@@ -22,6 +22,6 @@ export type Transfer = { Burn: { amount: Doms } } |
     { Mint: { amount: Doms } } |
     { Send: Send } |
     { Receive: Receive };
-export default interface Service {
+export default interface ServiceInterface {
     getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
 };

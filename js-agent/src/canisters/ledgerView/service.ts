@@ -1,9 +1,9 @@
+import ServiceInterface, { GetTransactionsRequest, GetTransactionsResponse } from "./model";
 import RawService from "./rawService";
-import { GetTransactionsRequest, GetTransactionsResponse } from "./model";
 import requestConverter from "./requestConverter";
 import responseConverter from "./responseConverter";
 
-export default class Service {
+export default class Service implements ServiceInterface {
     private readonly service: RawService;
     public constructor(service: RawService) {
         this.service = service;
