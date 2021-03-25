@@ -7,6 +7,5 @@ import Service from "./service";
 
 export default function(host: string, identity: Identity) : Service {
     const rawService = buildActor<RawService>(host, identity, CANISTER_ID, IDL);
-
     return new Service(rawService);
 }
