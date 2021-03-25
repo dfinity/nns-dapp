@@ -29,41 +29,41 @@ import {
 export default class ResponseConverters {
     convertGetPendingProposalsResponse(response: Array<RawProposalInfo>) : Array<ProposalInfo> {
         return response.map(p => ({
-            id: p.id.length ? this.convertNeuronId(p.id[0]) : null,
-            ballots: p.ballots.map(b => [bigNumberToBigInt(b[0]), this.convertBallot(b[1])]),
+            id: p.id.length ? this.toNeuronId(p.id[0]) : null,
+            ballots: p.ballots.map(b => [bigNumberToBigInt(b[0]), this.toBallot(b[1])]),
             rejectCostDoms: bigNumberToBigInt(p.reject_cost_doms),
             proposalTimestampSeconds: bigNumberToBigInt(p.proposal_timestamp_seconds),
             rewardEventRound: bigNumberToBigInt(p.reward_event_round),
             failedTimestampSeconds: bigNumberToBigInt(p.failed_timestamp_seconds),
-            proposal: p.proposal.length ? this.convertProposal(p.proposal[0]) : null,
-            proposer: p.proposer.length ? this.convertNeuronId(p.proposer[0]) : null,
-            tallyAtDecisionTime: p.tally_at_decision_time.length ? this.convertTally(p.tally_at_decision_time[0]): null,
+            proposal: p.proposal.length ? this.toProposal(p.proposal[0]) : null,
+            proposer: p.proposer.length ? this.toNeuronId(p.proposer[0]) : null,
+            tallyAtDecisionTime: p.tally_at_decision_time.length ? this.toTally(p.tally_at_decision_time[0]): null,
             executedTimestampSeconds: bigNumberToBigInt(p.executed_timestamp_seconds),
         }));
     }
 
-    convertNeuronId(neuronId: RawNeuronId) : NeuronId {
+    private toNeuronId(neuronId: RawNeuronId) : NeuronId {
         return {
             id: bigNumberToBigInt(neuronId.id)
         };
     }
 
-    convertBallot(ballot: RawBallot) : Ballot {
+    private toBallot(ballot: RawBallot) : Ballot {
         return {
             vote: ballot.vote,
             votingPower: bigNumberToBigInt(ballot.voting_power)
         };
     }
 
-    convertProposal(proposal: RawProposal) : Proposal {
+    private toProposal(proposal: RawProposal) : Proposal {
         return {
             url: proposal.url,
-            action: proposal.action.length ? this.convertAction(proposal.action[0]) : null,
+            action: proposal.action.length ? this.toAction(proposal.action[0]) : null,
             summary: proposal.summary
         }
     }
 
-    convertAction(action: RawAction) : Action {
+    private toAction(action: RawAction) : Action {
         if ("ExternalUpdate" in action) {
             const externalUpdate = action.ExternalUpdate;
             return {
@@ -77,8 +77,8 @@ export default class ResponseConverters {
             const manageNeuron = action.ManageNeuron;
             return {
                 ManageNeuron: {
-                    id: manageNeuron.id.length ? this.convertNeuronId(manageNeuron.id[0]) : null,
-                    command: manageNeuron.command.length ? this.convertCommand(manageNeuron.command[0]) : null
+                    id: manageNeuron.id.length ? this.toNeuronId(manageNeuron.id[0]) : null,
+                    command: manageNeuron.command.length ? this.toCommand(manageNeuron.command[0]) : null
                 }
             }
         }
@@ -108,7 +108,7 @@ export default class ResponseConverters {
             const rewardNodeProvider = action.RewardNodeProvider;
             return {
                 RewardNodeProvider: {
-                    nodeProvider : rewardNodeProvider.node_provider.length ? this.convertNodeProvider(rewardNodeProvider.node_provider[0]) : null,
+                    nodeProvider : rewardNodeProvider.node_provider.length ? this.toNodeProvider(rewardNodeProvider.node_provider[0]) : null,
                     xdrAmount100ths : bigNumberToBigInt(rewardNodeProvider.xdr_amount_100ths)
                 }
             }
@@ -117,7 +117,7 @@ export default class ResponseConverters {
             const addOrRemoveNodeProvider = action.AddOrRemoveNodeProvider;
             return {
                 AddOrRemoveNodeProvider: {
-                    change: addOrRemoveNodeProvider.change.length ? this.convertChange(addOrRemoveNodeProvider.change[0]) : null
+                    change: addOrRemoveNodeProvider.change.length ? this.toChange(addOrRemoveNodeProvider.change[0]) : null
                 }
             }
         }
@@ -132,7 +132,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("action", action);
     }
 
-    convertTally(tally: RawTally) : Tally {
+    private toTally(tally: RawTally) : Tally {
         return {
             no: bigNumberToBigInt(tally.no),
             yes: bigNumberToBigInt(tally.yes),
@@ -141,7 +141,7 @@ export default class ResponseConverters {
         }
     }
 
-    convertCommand(command: RawCommand) : Command {
+    private toCommand(command: RawCommand) : Command {
         if ("Split" in command) {
             const split = command.Split;
             return {
@@ -155,7 +155,7 @@ export default class ResponseConverters {
             return {
                 Follow: {
                     topic: follow.topic,
-                    followees: follow.followees.map(this.convertNeuronId)
+                    followees: follow.followees.map(this.toNeuronId)
                 }
             }
         }
@@ -163,7 +163,7 @@ export default class ResponseConverters {
             const configure = command.Configure;
             return {
                 Configure: {
-                    operation: configure.operation.length ? this.convertOperation(configure.operation[0]) : null
+                    operation: configure.operation.length ? this.toOperation(configure.operation[0]) : null
                 }
             }
         }
@@ -172,7 +172,7 @@ export default class ResponseConverters {
             return {
                 RegisterVote: {
                     vote: registerVote.vote,
-                    proposal: registerVote.proposal.length ? this.convertNeuronId(registerVote.proposal[0]) : null
+                    proposal: registerVote.proposal.length ? this.toNeuronId(registerVote.proposal[0]) : null
                 }
             }
         }
@@ -193,7 +193,7 @@ export default class ResponseConverters {
             return {
                 MakeProposal: {
                     url: makeProposal.url,
-                    action: makeProposal.action.length ? this.convertAction(makeProposal.action[0]) : null,
+                    action: makeProposal.action.length ? this.toAction(makeProposal.action[0]) : null,
                     summary: makeProposal.summary
                 }
             }
@@ -204,14 +204,14 @@ export default class ResponseConverters {
                 Disburse: {
                     toSubaccount: disburse.to_subaccount,
                     toAccount: disburse.to_account.length ? disburse.to_account[0] : null,
-                    amount: disburse.amount.length ? this.convertAmount(disburse.amount[0]) : null
+                    amount: disburse.amount.length ? this.toAmount(disburse.amount[0]) : null
                 }
             }
         }
         this.throwUnrecognisedTypeError("command", command);
     }
 
-    convertOperation(operation: RawOperation) : Operation {
+    private toOperation(operation: RawOperation) : Operation {
         if ("RemoveHotKey" in operation) {
             const removeHotKey = operation.RemoveHotKey;
             return {
@@ -249,33 +249,33 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("operation", operation);
     }
 
-    convertChange(change: RawChange) : Change {
+    private toChange(change: RawChange) : Change {
         if ("ToRemove" in change) {
             return {
-                ToRemove: this.convertNodeProvider(change.ToRemove)
+                ToRemove: this.toNodeProvider(change.ToRemove)
             }
         }
         if ("ToAdd" in change) {
             return {
-                ToAdd: this.convertNodeProvider(change.ToAdd)
+                ToAdd: this.toNodeProvider(change.ToAdd)
             }
         }
         this.throwUnrecognisedTypeError("change", change);
     }
 
-    convertNodeProvider(nodeProvider: RawNodeProvider) : NodeProvider {
+    private toNodeProvider(nodeProvider: RawNodeProvider) : NodeProvider {
         return {
             id: nodeProvider.id.length ? nodeProvider.id[0] : null
         }
     }
 
-    convertAmount(amount: RawAmount) : Amount {
+    private toAmount(amount: RawAmount) : Amount {
         return {
             doms: bigNumberToBigInt(amount.doms)
         }
     }
 
-    throwUnrecognisedTypeError(name: string, value: any) {
+    private throwUnrecognisedTypeError(name: string, value: any) {
         throw new Error(`Unrecognised ${name} type - ${JSON.stringify(value)}`);
     }
 }
