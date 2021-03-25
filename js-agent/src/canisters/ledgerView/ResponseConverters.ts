@@ -6,7 +6,7 @@ import {
     Transfer as RawTransfer
 } from "./rawService";
 
-class ResponseConverter {
+export default class ResponseConverters {
     convertGetTransactionsResponse(response: RawGetTransactionsResponse) : GetTransactionsResponse {
         return {
             total: response.total,
@@ -61,7 +61,3 @@ class ResponseConverter {
         throw new Error("Unrecognised transfer type - " + JSON.stringify(transfer));
     }
 }
-
-const converter = new ResponseConverter();
-
-export default converter;

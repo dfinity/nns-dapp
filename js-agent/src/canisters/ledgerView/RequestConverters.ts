@@ -1,7 +1,7 @@
 import { GetTransactionsRequest } from "./model";
 import { GetTransactionsRequest as RawGetTransactionsRequest } from "./rawService";
 
-class RequestConverter {
+export default class RequestConverters {
     public convertGetTransactionsRequest(request: GetTransactionsRequest) : RawGetTransactionsRequest {
         return {
             offset: request.offset,
@@ -9,7 +9,3 @@ class RequestConverter {
         };
     }
 }
-
-const converter = new RequestConverter();
-
-export default converter;
