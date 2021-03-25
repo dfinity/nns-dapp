@@ -31,14 +31,6 @@ export type Command = { Spawn: Spawn } |
     { DisburseToNeuron: DisburseToNeuron } |
     { MakeProposal: Proposal } |
     { Disburse: Disburse };
-export type Command_1 = { Spawn: SpawnResponse } |
-    { Split: SpawnResponse } |
-    { Follow: {} } |
-    { Configure: {} } |
-    { RegisterVote: {} } |
-    { DisburseToNeuron: SpawnResponse } |
-    { MakeProposal: MakeProposalResponse } |
-    { Disburse: DisburseResponse };
 export interface Configure { operation: Option<Operation> };
 export interface Disburse {
     toSubaccount: Array<number>,
@@ -73,7 +65,17 @@ export interface ManageNeuron {
     id: Option<NeuronId>,
     command: Option<Command>,
 };
-export interface ManageNeuronResponse { command: Option<Command_1> };
+export type ManageNeuronResponse = { Ok: ManageNeuronResponseOk } |
+    { Err: GovernanceError };
+export type ManageNeuronResponseCommand = { Spawn: SpawnResponse } |
+    { Split: SpawnResponse } |
+    { Follow: {} } |
+    { Configure: {} } |
+    { RegisterVote: {} } |
+    { DisburseToNeuron: SpawnResponse } |
+    { MakeProposal: MakeProposalResponse } |
+    { Disburse: DisburseResponse };
+export interface ManageNeuronResponseOk { command: Option<ManageNeuronResponseCommand> };
 export interface MethodAuthzChange {
     principal: Option<Principal>,
     methodName: string,
@@ -161,8 +163,6 @@ export type Result_1 = { Ok: Neuron } |
     { Err: GovernanceError };
 export type Result_2 = { Ok: NeuronInfo } |
     { Err: GovernanceError };
-export type Result_3 = { Ok: ManageNeuronResponse } |
-    { Err: GovernanceError };
 export interface RewardNodeProvider {
     nodeProvider : Option<NodeProvider>,
     xdrAmount100ths : bigint,
@@ -190,7 +190,7 @@ export default interface ServiceInterface {
     // getNeuronInfo: (arg_0: bigint) => Promise<Result_2>,
     getPendingProposals: () => Promise<Array<ProposalInfo>>,
     // getProposalInfo: (arg_0: bigint) => Promise<[] | [ProposalInfo]>,
-    // manageNeuron: (arg_0: ManageNeuron) => Promise<Result_3>,
+    manageNeuron: (arg_0: ManageNeuron) => Promise<ManageNeuronResponse>,
     // submitProposal: (
     //     arg_0: bigint,
     //     arg_1: Proposal,

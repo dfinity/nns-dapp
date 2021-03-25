@@ -31,14 +31,6 @@ export type Command = { 'Spawn' : Spawn } |
   { 'DisburseToNeuron' : DisburseToNeuron } |
   { 'MakeProposal' : Proposal } |
   { 'Disburse' : Disburse };
-export type Command_1 = { 'Spawn' : SpawnResponse } |
-  { 'Split' : SpawnResponse } |
-  { 'Follow' : {} } |
-  { 'Configure' : {} } |
-  { 'RegisterVote' : {} } |
-  { 'DisburseToNeuron' : SpawnResponse } |
-  { 'MakeProposal' : MakeProposalResponse } |
-  { 'Disburse' : DisburseResponse };
 export interface Configure { 'operation' : [] | [Operation] };
 export interface Disburse {
   'to_subaccount' : Array<number>,
@@ -73,7 +65,17 @@ export interface ManageNeuron {
   'id' : [] | [NeuronId],
   'command' : [] | [Command],
 };
-export interface ManageNeuronResponse { 'command' : [] | [Command_1] };
+export type ManageNeuronResponse = { 'Ok' : ManageNeuronResponseOk } |
+    { 'Err' : GovernanceError };
+export type ManageNeuronResponseCommand = { 'Spawn' : SpawnResponse } |
+    { 'Split' : SpawnResponse } |
+    { 'Follow' : {} } |
+    { 'Configure' : {} } |
+    { 'RegisterVote' : {} } |
+    { 'DisburseToNeuron' : SpawnResponse } |
+    { 'MakeProposal' : MakeProposalResponse } |
+    { 'Disburse' : DisburseResponse };
+export interface ManageNeuronResponseOk { 'command' : [] | [ManageNeuronResponseCommand] };
 export interface MethodAuthzChange {
   'principal' : [] | [Principal],
   'method_name' : string,
@@ -161,8 +163,6 @@ export type Result_1 = { 'Ok' : Neuron } |
   { 'Err' : GovernanceError };
 export type Result_2 = { 'Ok' : NeuronInfo } |
   { 'Err' : GovernanceError };
-export type Result_3 = { 'Ok' : ManageNeuronResponse } |
-  { 'Err' : GovernanceError };
 export interface RewardNodeProvider {
   'node_provider' : [] | [NodeProvider],
   'xdr_amount_100ths' : BigNumber,
@@ -190,7 +190,7 @@ export default interface _SERVICE {
   'get_neuron_info' : (arg_0: BigNumber) => Promise<Result_2>,
   'get_pending_proposals' : () => Promise<Array<ProposalInfo>>,
   'get_proposal_info' : (arg_0: BigNumber) => Promise<[] | [ProposalInfo]>,
-  'manage_neuron' : (arg_0: ManageNeuron) => Promise<Result_3>,
+  'manage_neuron' : (arg_0: ManageNeuron) => Promise<ManageNeuronResponse>,
   'submit_proposal' : (
       arg_0: BigNumber,
       arg_1: Proposal,

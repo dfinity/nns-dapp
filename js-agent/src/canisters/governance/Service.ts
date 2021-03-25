@@ -1,18 +1,27 @@
 import RawService from "./rawService";
-import ServiceInterface, { ProposalInfo } from "./model";
+import ServiceInterface, { ManageNeuron, ManageNeuronResponse, ProposalInfo } from "./model";
+import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
 
 export default class Service implements ServiceInterface {
     private readonly service: RawService;
-    private responseConverters: ResponseConverters;
+    private readonly requestConverters: RequestConverters;
+    private readonly responseConverters: ResponseConverters;
 
     public constructor(service: RawService) {
         this.service = service;
+        this.requestConverters = new RequestConverters();
         this.responseConverters = new ResponseConverters();
     }
 
     public async getPendingProposals() : Promise<Array<ProposalInfo>> {
         const rawResponse = await this.service.get_pending_proposals();
-        return this.responseConverters.convertGetPendingProposalsResponse(rawResponse);
+        return rawResponse.map(this.responseConverters.toProposalInfo);
+    }
+
+    public async manageNeuron(request: ManageNeuron) : Promise<ManageNeuronResponse> {
+        const rawRequest = this.requestConverters.fromManageNeuron(request);
+        const rawResponse = await this.service.manage_neuron(rawRequest);
+        return this.responseConverters.toManageNeuronResponse(rawResponse);
     }
 }

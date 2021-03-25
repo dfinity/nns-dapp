@@ -5,6 +5,8 @@ import {
     Ballot,
     Change,
     Command,
+    ManageNeuronResponse,
+    ManageNeuronResponseCommand,
     NeuronId,
     NodeProvider,
     Operation,
@@ -18,6 +20,8 @@ import {
     Ballot as RawBallot,
     Change as RawChange,
     Command as RawCommand,
+    ManageNeuronResponse as RawManageNeuronResponse,
+    ManageNeuronResponseCommand as RawManageNeuronResponseCommand,
     NeuronId as RawNeuronId,
     NodeProvider as RawNodeProvider,
     Operation as RawOperation,
@@ -27,19 +31,38 @@ import {
 } from "./rawService";
 
 export default class ResponseConverters {
-    convertGetPendingProposalsResponse(response: Array<RawProposalInfo>) : Array<ProposalInfo> {
-        return response.map(p => ({
-            id: p.id.length ? this.toNeuronId(p.id[0]) : null,
-            ballots: p.ballots.map(b => [bigNumberToBigInt(b[0]), this.toBallot(b[1])]),
-            rejectCostDoms: bigNumberToBigInt(p.reject_cost_doms),
-            proposalTimestampSeconds: bigNumberToBigInt(p.proposal_timestamp_seconds),
-            rewardEventRound: bigNumberToBigInt(p.reward_event_round),
-            failedTimestampSeconds: bigNumberToBigInt(p.failed_timestamp_seconds),
-            proposal: p.proposal.length ? this.toProposal(p.proposal[0]) : null,
-            proposer: p.proposer.length ? this.toNeuronId(p.proposer[0]) : null,
-            tallyAtDecisionTime: p.tally_at_decision_time.length ? this.toTally(p.tally_at_decision_time[0]): null,
-            executedTimestampSeconds: bigNumberToBigInt(p.executed_timestamp_seconds),
-        }));
+    public toProposalInfo(proposalInfo: RawProposalInfo) : ProposalInfo {
+        return {
+            id: proposalInfo.id.length ? this.toNeuronId(proposalInfo.id[0]) : null,
+            ballots: proposalInfo.ballots.map(b => [bigNumberToBigInt(b[0]), this.toBallot(b[1])]),
+            rejectCostDoms: bigNumberToBigInt(proposalInfo.reject_cost_doms),
+            proposalTimestampSeconds: bigNumberToBigInt(proposalInfo.proposal_timestamp_seconds),
+            rewardEventRound: bigNumberToBigInt(proposalInfo.reward_event_round),
+            failedTimestampSeconds: bigNumberToBigInt(proposalInfo.failed_timestamp_seconds),
+            proposal: proposalInfo.proposal.length ? this.toProposal(proposalInfo.proposal[0]) : null,
+            proposer: proposalInfo.proposer.length ? this.toNeuronId(proposalInfo.proposer[0]) : null,
+            tallyAtDecisionTime: proposalInfo.tally_at_decision_time.length ? this.toTally(proposalInfo.tally_at_decision_time[0]): null,
+            executedTimestampSeconds: bigNumberToBigInt(proposalInfo.executed_timestamp_seconds),
+        };
+    }
+
+    public toManageNeuronResponse(response: RawManageNeuronResponse) : ManageNeuronResponse {
+        if ("Ok" in response) {
+            return {
+                Ok: {
+                    command: response.Ok.command.length ? this.toManageNeuronResponseCommand(response.Ok.command[0]) : null
+                }
+            }
+        }
+        if ("Err" in response) {
+            return {
+                Err: {
+                    errorMessage: response.Err.error_message,
+                    errorType: response.Err.error_type
+                }
+            }
+        }
+        this.throwUnrecognisedTypeError("response", response);
     }
 
     private toNeuronId(neuronId: RawNeuronId) : NeuronId {
@@ -142,6 +165,14 @@ export default class ResponseConverters {
     }
 
     private toCommand(command: RawCommand) : Command {
+        if ("Spawn" in command) {
+            const spawn = command.Spawn;
+            return {
+                Spawn: {
+                    newController: spawn.new_controller.length ? spawn.new_controller[0] : null
+                }
+            }
+        }
         if ("Split" in command) {
             const split = command.Split;
             return {
@@ -205,6 +236,65 @@ export default class ResponseConverters {
                     toSubaccount: disburse.to_subaccount,
                     toAccount: disburse.to_account.length ? disburse.to_account[0] : null,
                     amount: disburse.amount.length ? this.toAmount(disburse.amount[0]) : null
+                }
+            }
+        }
+        this.throwUnrecognisedTypeError("command", command);
+    }
+
+    private toManageNeuronResponseCommand(command: RawManageNeuronResponseCommand) : ManageNeuronResponseCommand {
+        if ("Spawn" in command) {
+            const spawn = command.Spawn;
+            return {
+                Spawn: {
+                    createdNeuronId: spawn.created_neuron_id.length ? this.toNeuronId(spawn.created_neuron_id[0]) : null
+                }
+            }
+        }
+        if ("Split" in command) {
+            const split = command.Split;
+            return {
+                Split: {
+                    createdNeuronId: split.created_neuron_id.length ? this.toNeuronId(split.created_neuron_id[0]) : null
+                }
+            }
+        }
+        if ("Follow" in command) {
+            return {
+                Follow: {}
+            }
+        }
+        if ("Configure" in command) {
+            return {
+                Configure: {}
+            }
+        }
+        if ("RegisterVote" in command) {
+            return {
+                RegisterVote: {}
+            }
+        }
+        if ("DisburseToNeuron" in command) {
+            const disburseToNeuron = command.DisburseToNeuron;
+            return {
+                DisburseToNeuron: {
+                    createdNeuronId: disburseToNeuron.created_neuron_id.length ? this.toNeuronId(disburseToNeuron.created_neuron_id[0]) : null
+                }
+            }
+        }
+        if ("MakeProposal" in command) {
+            const makeProposal = command.MakeProposal;
+            return {
+                MakeProposal: {
+                    proposalId: makeProposal.proposal_id.length ? this.toNeuronId(makeProposal.proposal_id[0]) : null
+                }
+            }
+        }
+        if ("Disburse" in command) {
+            const disburse = command.Disburse;
+            return {
+                Disburse: {
+                    transferBlockHeight: bigNumberToBigInt(disburse.transfer_block_height)
                 }
             }
         }
