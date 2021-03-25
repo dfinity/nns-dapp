@@ -1,10 +1,10 @@
 import { Identity } from "@dfinity/agent";
 import governanceBuilder from "./canisters/governance/builder";
-import GovernanceService from "./canisters/governance/Service";
+import GovernanceService from "./canisters/governance/model";
 import ledgerBuilder from "./canisters/ledger/builder";
-import LedgerService from "./canisters/ledger/Service";
+import LedgerService from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/ledgerView/builder";
-import LedgerViewService from "./canisters/ledgerView/Service";
+import LedgerViewService from "./canisters/ledgerView/model";
 import { GetTransactionsRequest, GetTransactionsResponse } from "./canisters/ledgerView/model";
 import { BlockHeight, GetBalanceRequest, ICPTs, SendICPTsRequest } from "./canisters/ledger/model";
 import { ProposalInfo } from "./canisters/governance/model";
@@ -15,6 +15,7 @@ export default class WalletApi {
     private _ledgerViewService: LedgerViewService;
 
     constructor(host: string, identity: Identity) {
+        this._governanceService = governanceBuilder(host, identity);
         this._ledgerService = ledgerBuilder(host, identity);
         this._ledgerViewService = ledgerViewBuilder(host, identity);
     }
