@@ -1,8 +1,9 @@
+import { Option } from "../option";
 import RawService from "./rawService";
 import ServiceInterface, { GetFullNeuronResponse, GetNeuronInfoResponse, ManageNeuron, ManageNeuronResponse, ProposalInfo } from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
-import { bigIntToBigNumber } from "../converters";
+import { bigIntToBigNumber, bigNumberToBigInt } from "../converters";
 
 export default class Service implements ServiceInterface {
     private readonly service: RawService;
@@ -27,9 +28,24 @@ export default class Service implements ServiceInterface {
         return this.responseConverters.toNeuronInfoResponse(rawResponse);        
     }
 
+    public async getFinalizedProposals() : Promise<Array<ProposalInfo>> {
+        const rawResponse = await this.service.get_finalized_proposals();
+        return rawResponse.map(this.responseConverters.toProposalInfo);
+    }
+
+    public async getNeuronIds() : Promise<Array<bigint>> {
+        const rawResponse = await this.service.get_neuron_ids();
+        return rawResponse.map(bigNumberToBigInt);
+    }
+
     public async getPendingProposals() : Promise<Array<ProposalInfo>> {
         const rawResponse = await this.service.get_pending_proposals();
         return rawResponse.map(this.responseConverters.toProposalInfo);
+    }
+
+    public async getProposalInfo(proposalId: bigint) : Promise<Option<ProposalInfo>> {
+        const rawResponse = await this.service.get_proposal_info(bigIntToBigNumber(proposalId));
+        return rawResponse.length ? this.responseConverters.toProposalInfo(rawResponse[0]) : null;
     }
 
     public async manageNeuron(request: ManageNeuron) : Promise<ManageNeuronResponse> {
