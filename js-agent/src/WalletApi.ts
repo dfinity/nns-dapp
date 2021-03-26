@@ -1,6 +1,6 @@
 import { AnonymousIdentity, Identity } from "@dfinity/agent";
 import governanceBuilder from "./canisters/governance/builder";
-import GovernanceService from "./canisters/governance/model";
+import GovernanceService, { ManageNeuron, ManageNeuronResponse } from "./canisters/governance/model";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/ledgerView/builder";
@@ -45,6 +45,10 @@ export default class WalletApi {
 
     public async getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse> {
         return this.ledgerViewService.getTransactions(request);
+    }
+
+    public async manageNeuron(request: ManageNeuron) : Promise<ManageNeuronResponse> {
+        return this.governanceService.manageNeuron(request);   
     }
 
     public async sendICPTs(request: SendICPTsRequest): Promise<BlockHeight> {

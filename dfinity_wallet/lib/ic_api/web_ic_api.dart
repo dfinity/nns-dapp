@@ -9,15 +9,12 @@ import 'dart:html';
 
 import '../dfinity.dart';
 
-@JS("WalletApi")
-class WalletApi {
-  external factory WalletApi();
+@JS("AuthApi")
+class AuthApi {
+  external factory AuthApi();
 
   @JS("createKey")
   external String createKey();
-
-  @JS("testCalls")
-  external String testCalls();
 
   @JS("createAuthenticationIdentity")
   external Promise<dynamic> loginWithIdentityProvider(String key, String returnUrl);
@@ -27,15 +24,11 @@ class WalletApi {
 
   @JS("createDelegationIdentity")
   external Promise<dynamic> createAuthenticationIdentity();
+}
 
-  @JS("buildGovernanceService")
-  external dynamic buildGovernanceService(String host, dynamic identity);
-
-  @JS("buildLedgerService")
-  external dynamic buildLedgerService(String host, dynamic identity);
-
-  @JS("buildLedgerViewService")
-  external dynamic buildLedgerViewService(String host, dynamic identity);
+@JS("WalletApi")
+class WalletApi {
+  external factory WalletApi(String host, dynamic identity);
 }
 
 @JS()
@@ -46,15 +39,16 @@ class Promise<T> {
 }
 
 class PlatformICApi extends AbstractPlatformICApi {
-  final walletApi = new WalletApi();
+  final authApi = new AuthApi();
+  var walletApi;
 
   @override
   void authenticate(BuildContext context) async {
     await context.boxes.authToken.clear();
 
-    final key = walletApi.createKey();
+    final key = authApi.createKey();
     context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
-    walletApi.loginWithIdentityProvider(key, "http://" + window.location.host + "/home");
+    authApi.loginWithIdentityProvider(key, "http://" + window.location.host + "/home");
   }
 
   @override
@@ -66,27 +60,9 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> buildServices(BuildContext context) async {
     final token = context.boxes.authToken.webAuthToken;
     if (token != null && token.data != null) {
-      final identity = walletApi.createDelegationIdentity(token.key, token.data!);
-
-      print("Identity: ${identity}");
-
       const gatewayHost = "http://10.12.31.5:8080/";
-
-      final governanceService =
-          walletApi.buildGovernanceService(gatewayHost, identity);
-      print("governanceService: ${governanceService}");
-      //
-      // final principal = identity.getPrincipal();
-      // print("principal ${principal}");
-      //
-      final pendingProposals =
-          await promiseToFuture(governanceService.get_pending_proposals());
-      print("pending proposals: ${pendingProposals}");
-      //
-      // final ledgerService = walletApi.buildLedgerService(gatewayHost, identity);
-      // final block = await promiseToFuture(ledgerService.block(1));
-      // print("block 1: ${block}");
+      final identity = authApi.createDelegationIdentity(token.key, token.data!);
+      walletApi = new WalletApi(gatewayHost, identity);
     }
   }
-
 }
