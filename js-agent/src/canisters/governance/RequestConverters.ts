@@ -1,4 +1,4 @@
-import { bigIntToBigNumber } from "../converters";
+import { arrayBufferToArrayOfNumber, bigIntToBigNumber } from "../converters";
 import {
     Action,
     Amount,
@@ -59,7 +59,7 @@ export default class RequestConverters {
             return {
                 ExternalUpdate: {
                     update_type: externalUpdate.updateType,
-                    payload: externalUpdate.payload
+                    payload: arrayBufferToArrayOfNumber(externalUpdate.payload)
                 }
             }
         }
@@ -183,7 +183,7 @@ export default class RequestConverters {
             const disburse = command.Disburse;
             return {
                 Disburse: {
-                    to_subaccount: disburse.toSubaccount,
+                    to_subaccount: arrayBufferToArrayOfNumber(disburse.toSubaccount),
                     to_account: disburse.toAccount ? [disburse.toAccount] : [],
                     amount: disburse.amount ? [this.fromAmount(disburse.amount)] : []
                 }

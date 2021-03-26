@@ -26,7 +26,7 @@ export default class WalletApi {
 
     // Temporary method for demo purposes only, to give the current principal some ICPTs 
     // by sending from the anon account which has been gifted lots of ICPTs
-    public async aquireICPTs(icpts: ICPTs): Promise<void> {
+    public async acquireICPTs(icpts: ICPTs): Promise<void> {
         const anonIdentity = new AnonymousIdentity();
         const anonLedgerService = ledgerBuilder(this.host, anonIdentity);
         anonLedgerService.sendICPTs({

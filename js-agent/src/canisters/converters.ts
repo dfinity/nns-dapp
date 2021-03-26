@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { Option } from "./option";
 
 export const bigIntToBigNumber = (value: bigint) : BigNumber => {
     return new BigNumber(value.toString(10));
@@ -15,10 +16,10 @@ export const arrayBufferToBigNumber = (buffer: ArrayBuffer) : BigNumber => {
 }
 
 export const arrayBufferToArrayOfNumber = (buffer: ArrayBuffer) : Array<number> => {
-    const view = new DataView(buffer);
-    const array = new Array<number>(view.byteLength);
-    for (let i = 0; i < array.length; i++) {
-        array[i] = view.getUint8(i);
-    }
-    return array;
+    const typedArray = new Uint8Array(buffer);
+    return Array.from(typedArray);
+}
+
+export const arrayOfNumberToArrayBuffer = (numbers: Array<number>) : ArrayBuffer => {
+    return new Uint8Array(numbers);
 }
