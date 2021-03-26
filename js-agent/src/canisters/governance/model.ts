@@ -23,7 +23,8 @@ export interface BallotInfo {
 export interface CanisterAuthzInfo { methodsAuthz: Array<MethodAuthzInfo> };
 export type Change = { ToRemove: NodeProvider } |
     { ToAdd: NodeProvider };
-export type Command = { Spawn: Spawn } |
+export type Command = 
+    { Spawn: Spawn } |
     { Split: Split } |
     { Follow: Follow } |
     { Configure: Configure } |
@@ -33,7 +34,7 @@ export type Command = { Spawn: Spawn } |
     { Disburse: Disburse };
 export interface Configure { operation: Option<Operation> };
 export interface Disburse {
-    toSubaccount: Array<number>,
+    toSubaccount: ArrayBuffer,
     toAccount: Option<Principal>,
     amount: Option<Amount>,
 };
@@ -49,7 +50,7 @@ export type DissolveState = { DissolveDelaySeconds: bigint } |
     { WhenDissolvedTimestampSeconds: bigint };
 export interface ExternalUpdate {
     updateType: number,
-    payload: Array<number>,
+    payload: ArrayBuffer,
 };
 export interface Follow { topic: number, followees: Array<NeuronId> };
 export interface Followees { followees: Array<NeuronId> };
@@ -84,7 +85,7 @@ export interface MethodAuthzChange {
 };
 export interface MethodAuthzInfo {
     methodName: string,
-    principalIds: Array<Array<number>>,
+    principalIds: Array<ArrayBuffer>,
 };
 export interface Motion { motionText: string };
 export interface NetworkEconomics {
@@ -108,7 +109,7 @@ export interface Neuron {
     agingSinceTimestampSeconds: bigint,
     neuronFeesDoms: bigint,
     hotKeys: Array<Principal>,
-    account: Array<number>,
+    account: ArrayBuffer,
     dissolveState: Option<DissolveState>,
     followees: Array<[number, Followees]>,
     transfer: Option<NeuronStakeTransfer>,
@@ -124,11 +125,11 @@ export interface NeuronInfo {
     ageSeconds: bigint,
 };
 export interface NeuronStakeTransfer {
-    toSubaccount: Array<number>,
+    toSubaccount: ArrayBuffer,
     from: Option<Principal>,
     memo: bigint,
     neuronStakeDoms: bigint,
-    fromSubaccount: Array<number>,
+    fromSubaccount: ArrayBuffer,
     transferTimestamp: bigint,
     blockHeight: bigint,
 };
@@ -159,9 +160,9 @@ export interface RegisterVote { vote: number, proposal: Option<NeuronId> };
 export interface RemoveHotKey { hotKeyToRemove: Option<Principal> };
 export type Result = { Ok: bigint } |
     { Err: GovernanceError };
-export type Result_1 = { Ok: Neuron } |
+export type GetFullNeuronResponse = { Ok: Neuron } |
     { Err: GovernanceError };
-export type Result_2 = { Ok: NeuronInfo } |
+export type GetNeuronInfoResponse = { Ok: NeuronInfo } |
     { Err: GovernanceError };
 export interface RewardNodeProvider {
     nodeProvider : Option<NodeProvider>,
@@ -185,9 +186,9 @@ export default interface ServiceInterface {
     // currentAuthz: () => Promise<CanisterAuthzInfo>,
     // executeEligibleProposals: () => Promise<undefined>,
     // getFinalizedProposals: () => Promise<Array<ProposalInfo>>,
-    // getFullNeuron: (arg_0: bigint) => Promise<Result_1>,
+    getFullNeuron: (arg_0: bigint) => Promise<GetFullNeuronResponse>,
     // getNeuronIds: () => Promise<Array<bigint>>,
-    // getNeuronInfo: (arg_0: bigint) => Promise<Result_2>,
+    getNeuronInfo: (arg_0: bigint) => Promise<GetNeuronInfoResponse>,
     getPendingProposals: () => Promise<Array<ProposalInfo>>,
     // getProposalInfo: (arg_0: bigint) => Promise<[] | [ProposalInfo]>,
     manageNeuron: (arg_0: ManageNeuron) => Promise<ManageNeuronResponse>,

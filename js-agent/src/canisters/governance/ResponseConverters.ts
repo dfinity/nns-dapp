@@ -1,13 +1,22 @@
-import { bigNumberToBigInt } from "../converters";
+import { arrayOfNumberToArrayBuffer, bigNumberToBigInt } from "../converters";
+
 import {
     Action,
     Amount,
     Ballot,
+    BallotInfo,
     Change,
     Command,
+    DissolveState,
+    Followees,
+    GetFullNeuronResponse,
+    GetNeuronInfoResponse,
     ManageNeuronResponse,
     ManageNeuronResponseCommand,
+    Neuron,
     NeuronId,
+    NeuronInfo,
+    NeuronStakeTransfer,
     NodeProvider,
     Operation,
     Proposal,
@@ -18,15 +27,23 @@ import {
     Action as RawAction,
     Amount as RawAmount,
     Ballot as RawBallot,
+    BallotInfo as RawBallotInfo,
     Change as RawChange,
     Command as RawCommand,
+    DissolveState as RawDissolveState,
+    Followees as RawFollowees,
     ManageNeuronResponse as RawManageNeuronResponse,
     ManageNeuronResponseCommand as RawManageNeuronResponseCommand,
+    Neuron as RawNeuron,
     NeuronId as RawNeuronId,
+    NeuronInfo as RawNeuronInfo,
+    NeuronStakeTransfer as RawNeuronStakeTransfer,
     NodeProvider as RawNodeProvider,
     Operation as RawOperation,
     Proposal as RawProposal,
     ProposalInfo as RawProposalInfo,
+    Result_1,
+    Result_2,
     Tally as RawTally
 } from "./rawService";
 
@@ -65,6 +82,109 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("response", response);
     }
 
+    public toFullNeuronResponse(response: Result_1) : GetFullNeuronResponse {
+        if ("Ok" in response) {
+            return {
+                Ok: this.toNeuron(response.Ok)
+            }
+        }
+        if ("Err" in response) {
+            return {
+                Err: {
+                    errorMessage: response.Err.error_message,
+                    errorType: response.Err.error_type
+                }
+            }
+        }
+        this.throwUnrecognisedTypeError("response", response);
+    }
+
+    public toNeuronInfoResponse(response: Result_2) : GetNeuronInfoResponse {
+        if ("Ok" in response) {
+            return {
+                Ok: this.toNeuronInfo(response.Ok)
+            }
+        }
+        if ("Err" in response) {
+            return {
+                Err: {
+                    errorMessage: response.Err.error_message,
+                    errorType: response.Err.error_type
+                }
+            }
+        }
+        this.throwUnrecognisedTypeError("response", response);
+    }
+
+    private toNeuron(neuron: RawNeuron) : Neuron {
+        return {
+            id: neuron.id.length ? this.toNeuronId(neuron.id[0]) : null,
+            controller: neuron.controller.length ? neuron.controller[0] : null,
+            recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
+            kycVerified: neuron.kyc_verified,
+            notForProfit: neuron.not_for_profit,
+            cachedNeuronStakeDoms: bigNumberToBigInt(neuron.cached_neuron_stake_doms),
+            createdTimestampSeconds: bigNumberToBigInt(neuron.created_timestamp_seconds),
+            maturityDomsEquivalent: bigNumberToBigInt(neuron.maturity_doms_equivalent),
+            agingSinceTimestampSeconds: bigNumberToBigInt(neuron.aging_since_timestamp_seconds),
+            neuronFeesDoms: bigNumberToBigInt(neuron.neuron_fees_doms),
+            hotKeys: neuron.hot_keys,
+            account: arrayOfNumberToArrayBuffer(neuron.account),
+            dissolveState: neuron.dissolve_state.length ? this.toDissolveState(neuron.dissolve_state[0]) : null,
+            followees: neuron.followees.map(([n, f]) => [n, this.toFollowees(f)]),
+            transfer: neuron.transfer.length ? this.toNeuronStakeTransfer(neuron.transfer[0]) : null
+        };
+    }
+
+    private toBallotInfo(ballotInfo: RawBallotInfo) : BallotInfo {
+        return {
+            vote: ballotInfo.vote,
+            proposalId: ballotInfo.proposal_id.length ? this.toNeuronId(ballotInfo.proposal_id[0]) : null,        
+        }
+    }
+    
+    private toDissolveState(dissolveState: RawDissolveState) : DissolveState {
+        if ("DissolveDelaySeconds" in dissolveState) {
+            return {
+                DissolveDelaySeconds: bigNumberToBigInt(dissolveState.DissolveDelaySeconds)
+            }
+        } else {
+            return {
+                WhenDissolvedTimestampSeconds: bigNumberToBigInt(dissolveState.WhenDissolvedTimestampSeconds)
+            }
+        }
+    }
+
+    private toFollowees(followees: RawFollowees) : Followees {
+        return {
+            followees: followees.followees.map(this.toNeuronId)
+        };
+    }
+
+    private toNeuronStakeTransfer(neuronStakeTransfer: RawNeuronStakeTransfer) : NeuronStakeTransfer {
+        return {
+            toSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.to_subaccount),
+            from: neuronStakeTransfer.from ? neuronStakeTransfer.from[0] : null,
+            memo: bigNumberToBigInt(neuronStakeTransfer.memo),
+            neuronStakeDoms: bigNumberToBigInt(neuronStakeTransfer.neuron_stake_doms),
+            fromSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.from_subaccount),
+            transferTimestamp: bigNumberToBigInt(neuronStakeTransfer.transfer_timestamp),
+            blockHeight: bigNumberToBigInt(neuronStakeTransfer.block_height)                    
+        };        
+    }
+
+    private toNeuronInfo(neuron: RawNeuronInfo) : NeuronInfo {
+        return {
+            dissolveDelaySeconds: bigNumberToBigInt(neuron.dissolve_delay_seconds),
+            recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
+            createdTimestampSeconds: bigNumberToBigInt(neuron.created_timestamp_seconds),
+            state: neuron.state,
+            retrievedAtTimestampSeconds: bigNumberToBigInt(neuron.retrieved_at_timestamp_seconds),
+            votingPower: bigNumberToBigInt(neuron.voting_power),
+            ageSeconds: bigNumberToBigInt(neuron.age_seconds),                    
+        };
+    }
+
     private toNeuronId(neuronId: RawNeuronId) : NeuronId {
         return {
             id: bigNumberToBigInt(neuronId.id)
@@ -92,7 +212,7 @@ export default class ResponseConverters {
             return {
                 ExternalUpdate: {
                     updateType: externalUpdate.update_type,
-                    payload: externalUpdate.payload
+                    payload: arrayOfNumberToArrayBuffer(externalUpdate.payload)
                 }
             }
         }
@@ -233,7 +353,7 @@ export default class ResponseConverters {
             const disburse = command.Disburse;
             return {
                 Disburse: {
-                    toSubaccount: disburse.to_subaccount,
+                    toSubaccount: arrayOfNumberToArrayBuffer(disburse.to_subaccount),
                     toAccount: disburse.to_account.length ? disburse.to_account[0] : null,
                     amount: disburse.amount.length ? this.toAmount(disburse.amount[0]) : null
                 }
