@@ -5,7 +5,7 @@ import GovernanceService, { GetFullNeuronResponse, GetNeuronInfoResponse, Manage
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/ledgerView/builder";
-import LedgerViewService from "./canisters/ledgerView/model";
+import LedgerViewService, { CreateSubAccountResponse, NamedSubAccount } from "./canisters/ledgerView/model";
 import { GetTransactionsRequest, GetTransactionsResponse } from "./canisters/ledgerView/model";
 import { BlockHeight, GetBalanceRequest, ICPTs, SendICPTsRequest } from "./canisters/ledger/model";
 import { ProposalInfo } from "./canisters/governance/model";
@@ -36,7 +36,11 @@ export default class WalletApi {
         });
     }
 
-    public async getBalance(request: GetBalanceRequest): Promise<ICPTs> {
+    public async trackAccount() : Promise<undefined> {
+        return this.ledgerViewService.trackAccount();
+    }
+
+    public async getBalance(request: GetBalanceRequest) : Promise<ICPTs> {
         return this.ledgerService.getBalance(request);
     }
 
@@ -64,7 +68,15 @@ export default class WalletApi {
         return this.governanceService.getProposalInfo(proposalId);
     }
 
-    public async getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse> {
+    public async createSubAccount(name: string) : Promise<CreateSubAccountResponse> {
+        return this.ledgerViewService.createSubAccount(name);
+    }
+
+    public async getSubAccounts() : Promise<Array<NamedSubAccount>> {
+        return this.ledgerViewService.getSubAccounts();
+    }
+
+    public async getTransactions(request: GetTransactionsRequest) : Promise<GetTransactionsResponse> {
         return this.ledgerViewService.getTransactions(request);
     }
 

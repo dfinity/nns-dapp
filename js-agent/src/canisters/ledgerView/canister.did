@@ -1,39 +1,41 @@
 type BlockHeight = nat64;
 type Doms = nat64;
+type SubAccount = vec nat8;
 
-type Timestamp = 
+type Timestamp =
     record {
         secs: nat64;
         nanos: nat32;
     };
 
-type GetTransactionsRequest = 
+type GetTransactionsRequest =
     record {
+        "principal": principal;
         offset: nat32;
         page_size: nat8;
     };
 
-type GetTransactionsResponse = 
+type GetTransactionsResponse =
     record {
         transactions: vec Transaction;
         total: nat32;
     };
 
-type Send = 
+type Send =
     record {
         to: principal;
         amount: Doms;
-        fee: Doms;    
+        fee: Doms;
     };
 
-type Receive = 
+type Receive =
     record {
         from: principal;
         amount: Doms;
-        fee: Doms;    
+        fee: Doms;
     };
 
-type Transfer = 
+type Transfer =
     variant {
         Burn: record { amount: Doms };
         Mint: record { amount: Doms };
@@ -41,13 +43,30 @@ type Transfer =
         Receive: Receive;
     };
 
-type Transaction = 
+type Transaction =
     record {
         block_height: BlockHeight;
         timestamp: Timestamp;
         transfer: Transfer;
     };
 
+type NamedSubAccount =
+    record {
+        name: text;
+        sub_account: SubAccount;
+        "principal": principal;
+    };
+
+type CreateSubAccountResponse =
+    variant {
+        Ok: NamedSubAccount;
+        AccountNotFound;
+        SubAccountLimitExceeded;
+    };
+
 service : {
+    track_account: () -> ();
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
+    get_sub_accounts: () -> (vec NamedSubAccount) query;
+    create_sub_account: (text) -> (CreateSubAccountResponse);
 }
