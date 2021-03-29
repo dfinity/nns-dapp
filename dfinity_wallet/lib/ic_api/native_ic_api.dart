@@ -1,6 +1,5 @@
 import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:dfinity_wallet/ic_api/stub_ic_api.dart';
-import 'package:dfinity_wallet/ic_api/web_ic_api.dart';
 import 'package:flutter/services.dart';
 
 import '../dfinity.dart';

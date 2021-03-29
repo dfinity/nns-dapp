@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:dfinity_wallet/ic_api/web_ic_api.dart';
 import 'package:dfinity_wallet/ui/proposals/governance_tab_widget.dart';
 
 import '../../dfinity.dart';

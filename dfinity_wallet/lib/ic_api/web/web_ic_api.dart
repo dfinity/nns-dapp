@@ -7,67 +7,11 @@ import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:js/js.dart';
 import 'dart:html';
 
-import '../dfinity.dart';
+import '../../dfinity.dart';
+import 'auth_api.dart';
+import 'ledger_api.dart';
+import 'promise.dart';
 
-@JS("AuthApi")
-class AuthApi {
-  external factory AuthApi();
-
-  @JS("createKey")
-  external String createKey();
-
-  @JS("createAuthenticationIdentity")
-  external Promise<dynamic> loginWithIdentityProvider(
-      String key, String returnUrl);
-
-  @JS("createDelegationIdentity")
-  external dynamic createDelegationIdentity(String key, String accessToken);
-
-  @JS("createDelegationIdentity")
-  external Promise<dynamic> createAuthenticationIdentity();
-}
-
-@JS("LedgerApi")
-class LedgerApi {
-  external factory LedgerApi(String host, dynamic identity);
-
-  @JS("acquireICPTs")
-  external Promise<void> acquireICPTs(ICPTs icpts);
-
-  @JS("getAccount")
-  external Promise<AccountDetails> getAccount();
-}
-
-class ICPTs {
-  ICPTs({required this.doms});
-  BigInt doms;
-}
-
-class AccountDetails {
-  external Principal defaultAccount;
-  external List<NamedSubAccount> subAccounts;
-}
-
-class NamedSubAccount {
-  late Principal principal;
-  late String name;
-  dynamic subAccount;
-}
-
-class Principal {
-
-}
-
-@JS()
-class Promise<T> {
-  external Promise(void executor(void resolve(T result), Function reject));
-
-  external Promise then(void onFulfilled(T result), [Function onRejected]);
-}
-
-extension AsFuture<T> on Promise<T>{
-  Future<T> toFuture() => promiseToFuture(this);
-}
 
 class PlatformICApi extends AbstractPlatformICApi {
   final authApi = new AuthApi();
@@ -81,8 +25,6 @@ class PlatformICApi extends AbstractPlatformICApi {
     context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
     authApi.loginWithIdentityProvider(key, "http://" + window.location.host + "/home");
   }
-
-
 
   @override
   void didChangeDependencies() {

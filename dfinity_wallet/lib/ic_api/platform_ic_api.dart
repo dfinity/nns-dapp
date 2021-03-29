@@ -1,6 +1,3 @@
-
-import 'package:dfinity_wallet/ic_api/web_ic_api.dart';
-
 import '../dfinity.dart';
 
 abstract class AbstractPlatformICApi extends State<ICApiManager> {
