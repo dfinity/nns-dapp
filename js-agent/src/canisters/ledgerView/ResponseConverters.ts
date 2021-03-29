@@ -1,6 +1,7 @@
 import * as convert from "../converters";
 import {
     CreateSubAccountResponse,
+    GetAccountResponse,
     GetTransactionsResponse,
     NamedSubAccount,
     Transaction,
@@ -8,6 +9,7 @@ import {
 } from "./model";
 import {
     CreateSubAccountResponse as RawCreateSubAccountResponse,
+    GetAccountResponse as RawGetAccountResponse,
     GetTransactionsResponse as RawGetTransactionsResponse,
     NamedSubAccount as RawNamedSubAccount,
     Transaction as RawTransaction,
@@ -15,6 +17,17 @@ import {
 } from "./rawService";
 
 export default class ResponseConverters {
+    public toGetAccountResponse(response: RawGetAccountResponse) : GetAccountResponse {
+        if ("Ok" in response) {
+            return {
+                Ok: {
+                    subAccounts: response.Ok.sub_accounts.map(this.toNamedSubAccount)
+                }
+            }
+        }
+        return response;
+    }
+
     public toCreateSubAccountResponse(response: RawCreateSubAccountResponse) : CreateSubAccountResponse {
         if ("Ok" in response) {
             return {

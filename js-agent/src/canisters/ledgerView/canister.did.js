@@ -10,6 +10,10 @@ export default ({ IDL }) => {
     'AccountNotFound' : IDL.Null,
     'SubAccountLimitExceeded' : IDL.Null,
   });
+  const GetAccountResponse = IDL.Variant({
+    'Ok' : IDL.Record({ 'sub_accounts' : IDL.Vec(NamedSubAccount) }),
+    'AccountNotFound' : IDL.Null,
+  });
   const GetTransactionsRequest = IDL.Record({
     'principal' : IDL.Principal,
     'page_size' : IDL.Nat8,
@@ -44,14 +48,14 @@ export default ({ IDL }) => {
     'transactions' : IDL.Vec(Transaction),
   });
   return IDL.Service({
+    'add_account' : IDL.Func([], [], []),
     'create_sub_account' : IDL.Func([IDL.Text], [CreateSubAccountResponse], []),
-    'get_sub_accounts' : IDL.Func([], [IDL.Vec(NamedSubAccount)], ['query']),
+    'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_transactions' : IDL.Func(
         [GetTransactionsRequest],
         [GetTransactionsResponse],
         ['query'],
     ),
-    'track_account' : IDL.Func([], [], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

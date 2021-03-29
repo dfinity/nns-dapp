@@ -2,6 +2,14 @@ type BlockHeight = nat64;
 type Doms = nat64;
 type SubAccount = vec nat8;
 
+type GetAccountResponse =
+    variant {
+        Ok: {
+            sub_accounts: vec NamedSubAccount;
+        };
+        AccountNotFound;
+    };
+
 type Timestamp =
     record {
         secs: nat64;
@@ -65,8 +73,8 @@ type CreateSubAccountResponse =
     };
 
 service : {
-    track_account: () -> ();
+    get_account: () -> (GetAccountResponse) query;
+    add_account: () -> ();
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
-    get_sub_accounts: () -> (vec NamedSubAccount) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
 }

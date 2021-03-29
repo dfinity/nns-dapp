@@ -1,5 +1,5 @@
 import { Option } from "./canisters/option";
-import { AnonymousIdentity, Identity } from "@dfinity/agent";
+import { AnonymousIdentity, Identity, Principal } from "@dfinity/agent";
 import governanceBuilder from "./canisters/governance/builder";
 import GovernanceService, { GetFullNeuronResponse, GetNeuronInfoResponse, ManageNeuron, ManageNeuronResponse } from "./canisters/governance/model";
 import ledgerBuilder from "./canisters/ledger/builder";
@@ -11,11 +11,11 @@ import { BlockHeight, GetBalanceRequest, ICPTs, SendICPTsRequest } from "./canis
 import { ProposalInfo } from "./canisters/governance/model";
 
 export default class WalletApi {
-    private governanceService: GovernanceService;
-    private ledgerService: LedgerService;
-    private ledgerViewService: LedgerViewService;
-    private host: string;
-    private identity: Identity;
+    private readonly governanceService: GovernanceService;
+    private readonly ledgerService: LedgerService;
+    private readonly ledgerViewService: LedgerViewService;
+    private readonly host: string;
+    private readonly identity: Identity;
 
     constructor(host: string, identity: Identity) {
         this.governanceService = governanceBuilder(host, identity);
@@ -36,8 +36,21 @@ export default class WalletApi {
         });
     }
 
-    public async trackAccount() : Promise<undefined> {
-        return this.ledgerViewService.trackAccount();
+    public async getAccount() : Promise<AccountDetails> {
+        const defaultAccount = this.identity.getPrincipal();
+        const response = await this.ledgerViewService.getAccount();
+        let subAccounts: Array<NamedSubAccount>;
+        if ("Ok" in response) {
+            subAccounts = response.Ok.subAccounts;
+        } else {
+            await this.ledgerViewService.addAccount();
+            subAccounts = [];
+        }
+
+        return {
+            defaultAccount,
+            subAccounts
+        }
     }
 
     public async getBalance(request: GetBalanceRequest) : Promise<ICPTs> {
@@ -72,10 +85,6 @@ export default class WalletApi {
         return this.ledgerViewService.createSubAccount(name);
     }
 
-    public async getSubAccounts() : Promise<Array<NamedSubAccount>> {
-        return this.ledgerViewService.getSubAccounts();
-    }
-
     public async getTransactions(request: GetTransactionsRequest) : Promise<GetTransactionsResponse> {
         return this.ledgerViewService.getTransactions(request);
     }
@@ -87,4 +96,9 @@ export default class WalletApi {
     public async sendICPTs(request: SendICPTsRequest): Promise<BlockHeight> {
         return this.ledgerService.sendICPTs(request);
     }
+}
+
+export type AccountDetails = {
+    defaultAccount: Principal,
+    subAccounts: Array<NamedSubAccount>
 }

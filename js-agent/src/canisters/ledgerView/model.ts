@@ -6,6 +6,9 @@ export type CreateSubAccountResponse =
     { AccountNotFound: null } |
     { SubAccountLimitExceeded: null };
 export type Doms = bigint;
+export type GetAccountResponse =
+    { Ok: { subAccounts: Array<NamedSubAccount> } } |
+    { AccountNotFound: null };
 export interface GetTransactionsRequest {
     principal: Principal,
     pageSize: number,
@@ -34,8 +37,8 @@ export type Transfer = { Burn: { amount: Doms } } |
     { Send: Send } |
     { Receive: Receive };
 export default interface ServiceInterface {
+    addAccount: () => Promise<undefined>,
     createSubAccount: (name: string) => Promise<CreateSubAccountResponse>,
-    getSubAccounts: () => Promise<Array<NamedSubAccount>>,
+    getAccount: () => Promise<GetAccountResponse>,
     getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
-    trackAccount: () => Promise<undefined>,
 };

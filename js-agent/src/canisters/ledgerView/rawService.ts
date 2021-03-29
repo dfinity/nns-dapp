@@ -5,6 +5,10 @@ export type CreateSubAccountResponse = { 'Ok' : NamedSubAccount } |
     { 'AccountNotFound' : null } |
     { 'SubAccountLimitExceeded' : null };
 export type Doms = BigNumber;
+export type GetAccountResponse = {
+  'Ok' : { 'sub_accounts' : Array<NamedSubAccount> }
+} |
+    { 'AccountNotFound' : null };
 export interface GetTransactionsRequest {
   'principal' : Principal,
   'page_size' : number,
@@ -33,8 +37,8 @@ export type Transfer = { 'Burn' : { 'amount' : Doms } } |
     { 'Send' : Send } |
     { 'Receive' : Receive };
 export default interface _SERVICE {
+  'add_account' : () => Promise<undefined>,
   'create_sub_account' : (arg_0: string) => Promise<CreateSubAccountResponse>,
-  'get_sub_accounts' : () => Promise<Array<NamedSubAccount>>,
+  'get_account' : () => Promise<GetAccountResponse>,
   'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
-  'track_account' : () => Promise<undefined>,
 };

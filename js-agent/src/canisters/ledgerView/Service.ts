@@ -1,8 +1,8 @@
 import ServiceInterface, {
     CreateSubAccountResponse,
+    GetAccountResponse,
     GetTransactionsRequest,
-    GetTransactionsResponse,
-    NamedSubAccount
+    GetTransactionsResponse
 } from "./model";
 import RawService from "./rawService";
 import RequestConverters from "./RequestConverters";
@@ -19,8 +19,13 @@ export default class Service implements ServiceInterface {
         this.responseConverters = new ResponseConverters();
     }
 
-    public async trackAccount() : Promise<undefined> {
-        return await this.service.track_account();
+    public async getAccount() : Promise<GetAccountResponse> {
+        const rawResponse = await this.service.get_account();
+        return this.responseConverters.toGetAccountResponse(rawResponse);
+    }
+
+    public async addAccount() : Promise<undefined> {
+        return await this.service.add_account();
     }
 
     public async createSubAccount(name: string) : Promise<CreateSubAccountResponse> {
@@ -32,10 +37,5 @@ export default class Service implements ServiceInterface {
         const rawRequest = this.requestConverters.fromGetTransactionsRequest(request);
         const rawResponse = await this.service.get_transactions(rawRequest);
         return this.responseConverters.toGetTransactionsResponse(rawResponse);
-    }
-
-    public async getSubAccounts() : Promise<Array<NamedSubAccount>> {
-        const rawResponse = await this.service.get_sub_accounts();
-        return rawResponse.map(this.responseConverters.toNamedSubAccount);
     }
 }
