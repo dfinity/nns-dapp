@@ -31,6 +31,9 @@ jobs:
           channel: 'stable'
 
 
+      - run: npm run build
+        working-directory: ./js-agent
+
       # Get the latest dependencies
       - run: flutter pub get
         working-directory: ./dfinity_wallet
