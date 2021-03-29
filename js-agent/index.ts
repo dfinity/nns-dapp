@@ -1,5 +1,7 @@
 import AuthApi from "./src/AuthApi";
-import WalletApi from "./src/WalletApi";
+import GovernanceApi from "./src/GovernanceApi";
+import LedgerApi from "./src/LedgerApi";
 
 window["AuthApi"] = AuthApi;
-window["WalletApi"] = WalletApi;
+window["GovernanceApi"] = GovernanceApi;
+window["LedgerApi"] = LedgerApi;

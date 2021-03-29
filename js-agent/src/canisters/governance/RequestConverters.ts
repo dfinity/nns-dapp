@@ -1,9 +1,13 @@
+import BigNumber from "bignumber.js";
+import * as convert from "../converters";
+
 import { arrayBufferToArrayOfNumber, bigIntToBigNumber } from "../converters";
 import {
     Action,
     Amount,
     Ballot,
     Change,
+    ClaimNeuronRequest,
     Command,
     ManageNeuron,
     NeuronId,
@@ -30,6 +34,14 @@ export default class RequestConverters {
             id: manageNeuron.id ? [this.fromNeuronId(manageNeuron.id)] : [],
             command: manageNeuron.command ? [this.fromCommand(manageNeuron.command)] : []
         }
+    }
+
+    public fromClaimNeuronRequest(request: ClaimNeuronRequest): [Array<number>, BigNumber, BigNumber] {
+        return [
+            convert.arrayBufferToArrayOfNumber(request.owner.toBlob()),
+            convert.bigIntToBigNumber(request.nonce),
+            convert.bigIntToBigNumber(request.dissolveDelayInSecs)
+        ];
     }
 
     private fromNeuronId(neuronId: NeuronId) : RawNeuronId {

@@ -158,7 +158,14 @@ export interface ProposalInfo {
 };
 export interface RegisterVote { vote: number, proposal: Option<NeuronId> };
 export interface RemoveHotKey { hotKeyToRemove: Option<Principal> };
-export type Result = { Ok: bigint } |
+
+export type ClaimNeuronRequest = {
+    owner: Principal,
+    nonce: bigint,
+    dissolveDelayInSecs: bigint
+}
+
+export type ClaimNeuronResponse = { Ok: bigint } |
     { Err: GovernanceError };
 export type GetFullNeuronResponse = { Ok: Neuron } |
     { Err: GovernanceError };
@@ -178,13 +185,9 @@ export interface Tally {
     timestampSeconds: bigint,
 };
 export default interface ServiceInterface {
-    // claimNeuron: (
-    //     arg_0: Array<number>,
-    //     arg_1: bigint,
-    //     arg_2: bigint,
-    // ) => Promise<Result>,
     // currentAuthz: () => Promise<CanisterAuthzInfo>,
     // executeEligibleProposals: () => Promise<undefined>,
+    claimNeuron: (request: ClaimNeuronRequest) => Promise<ClaimNeuronResponse>,
     getFinalizedProposals: () => Promise<Array<ProposalInfo>>,
     getFullNeuron: (arg_0: bigint) => Promise<GetFullNeuronResponse>,
     getNeuronIds: () => Promise<Array<bigint>>,
