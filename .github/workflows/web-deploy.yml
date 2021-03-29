@@ -30,6 +30,8 @@ jobs:
           flutter-version: '2.0.1'
           channel: 'stable'
 
+      - run: npm install
+        working-directory: ./js-agent
 
       - run: npm run build
         working-directory: ./js-agent
