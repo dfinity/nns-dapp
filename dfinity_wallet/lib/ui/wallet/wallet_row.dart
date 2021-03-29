@@ -46,7 +46,7 @@ class WalletRow extends StatelessWidget {
                                 ],
                             ),
                             Expanded(child: Container()),
-                            BalanceDisplayWidget(amount: wallet.balance, amountSize: 30, icpLabelSize: 20)
+                            BalanceDisplayWidget(amount: wallet.icpBalance, amountSize: 30, icpLabelSize: 20)
                         ],
                     ),
                 ),

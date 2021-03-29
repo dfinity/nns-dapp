@@ -22,8 +22,7 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       durationRemaining: fields[2] as double,
       timerIsActive: fields[3] as bool,
       rewardAmount: fields[4] as double,
-      balance: fields[5] as double,
-    );
+    )..domsBalance = fields[5] as String;
   }
 
   @override
@@ -41,7 +40,7 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       ..writeByte(4)
       ..write(obj.rewardAmount)
       ..writeByte(5)
-      ..write(obj.balance);
+      ..write(obj.domsBalance);
   }
 
   @override

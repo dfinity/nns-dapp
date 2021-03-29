@@ -15,5 +15,5 @@ class NamedSubAccount {
 }
 
 class Principal {
-
+ external String toString();
 }

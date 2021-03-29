@@ -155,7 +155,7 @@ class _WalletRow extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           left: 16.0, bottom: 16.0, right: 16.0),
                       child: Text(
-                        "Balance: ${wallet.balance}",
+                        "Balance: ${wallet.domsBalance}",
                         style: context.textTheme.bodyText1
                             ?.copyWith(color: AppColors.gray800),
                       ),

@@ -26,7 +26,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
     amountField = ValidatedTextField("Amount",
         validations: [
           FieldValidation("Not enough ICP",
-              (e) => (e.toIntOrNull() ?? 0) > widget.source.balance),
+              (e) => (e.toIntOrNull() ?? 0) > widget.source.icpBalance),
           FieldValidation(
               "Must be greater than 0", (e) => (e.toIntOrNull() ?? 0) == 0)
         ],
@@ -96,7 +96,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                             disperseDelay.currentValue.toDouble(),
                         timerIsActive: false,
                         rewardAmount: amountField.currentValue.toDouble() * random.nextDouble() * 0.3,
-                        balance: amountField.currentValue.toDouble()));
+                        icpBalance: amountField.currentValue.toDouble()));
                 context.nav.push(NeuronTabsPage);
               }.takeIf((e) => <ValidatedField>[name, amountField, disperseDelay]
                   .allAreValid),

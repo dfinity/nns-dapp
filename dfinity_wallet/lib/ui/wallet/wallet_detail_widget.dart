@@ -48,7 +48,7 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                   Padding(
                       padding: EdgeInsets.all(24),
                       child: BalanceDisplayWidget(
-                        amount: widget.wallet.balance,
+                        amount: widget.wallet.icpBalance,
                         amountSize: 40,
                         icpLabelSize: 25,
                       )),

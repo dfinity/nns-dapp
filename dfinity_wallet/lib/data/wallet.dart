@@ -20,14 +20,17 @@ class Wallet extends DfinityEntity with ICPSource {
     @HiveField(1)
     final String address;
     @HiveField(2)
-    List<Transaction> transactions = [];
-    @HiveField(3)
     final bool primary;
+    @HiveField(3)
+    late String domsBalance;
+    @HiveField(4)
+    List<Transaction> transactions = [];
 
-    Wallet(this.name, this.address, this.primary);
+    Wallet(this.name, this.address, this.primary, this.domsBalance);
 
-
-    double get balance => transactions.sumBy((element) => element.amount);
+    Wallet.create({required this.name, required this.address, required this.primary, required double icpBalance}){
+        this.icpBalance = icpBalance;
+    }
 
     @override
     int get identifier => address.hashCode;

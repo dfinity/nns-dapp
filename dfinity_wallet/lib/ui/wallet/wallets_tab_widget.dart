@@ -23,6 +23,7 @@ class WalletsPage extends StatefulWidget {
 class _WalletsPageState extends State<WalletsPage> {
   @override
   Widget build(BuildContext context) {
+    return Container();
     final wallets = context.boxes.wallets.values;
     final primary = wallets.primary;
     return FooterGradientButton(
@@ -46,7 +47,7 @@ class _WalletsPageState extends State<WalletsPage> {
                   ),
                 ),
                 BalanceDisplayWidget(
-                    amount: primary.balance,
+                    amount: primary.icpBalance,
                     amountSize: 50,
                     icpLabelSize: 30)
               ],
@@ -108,7 +109,7 @@ class _WalletsPageState extends State<WalletsPage> {
     if (walletAddress != null) {
       setState(() {
         final box = context.boxes.wallets;
-        final wallet = Wallet(name, walletAddress, false);
+        final wallet = Wallet.create(name: name, address: walletAddress, primary: false, icpBalance: 0);
         box.put(walletAddress.hashCode, wallet);
       });
     }

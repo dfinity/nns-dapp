@@ -22,8 +22,9 @@ class _SendToWalletPageState extends State<SendToWalletPage> {
   @override
   void initState() {
     super.initState();
+
     amountField = ValidatedTextField(
-        "Amount", validations: [FieldValidation("Not enough ICP in wallet", (e) => (e.toIntOrNull() ?? 0) > widget.source.balance)],
+        "Amount", validations: [FieldValidation("Not enough ICP in wallet", (e) => (e.toIntOrNull() ?? 0) > widget.source.icpBalance)],
         inputType: TextInputType.number);
   }
 

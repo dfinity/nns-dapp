@@ -34,7 +34,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                   Row(
                     children: [
                       Expanded(
-                        child: _LabelledBalanceDisplay(label: "Stake", amount: widget.neuron.balance,)
+                        child: _LabelledBalanceDisplay(label: "Stake", amount: widget.neuron.icpBalance,)
                       ),
                       Expanded(
                           child: _LabelledBalanceDisplay(label: "Reward", amount: widget.neuron.rewardAmount,)

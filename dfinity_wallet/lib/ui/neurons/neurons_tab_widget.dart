@@ -76,7 +76,7 @@ class NeuronRow extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 16.0, bottom: 16.0, right: 16.0),
                 child: Text(
-                  "${neuron.balance} ICP",
+                  "${neuron.domsBalance} ICP",
                   style: context.textTheme.bodyText1
                       ?.copyWith(color: AppColors.gray800),
                 ),

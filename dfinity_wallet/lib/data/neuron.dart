@@ -17,7 +17,7 @@ class Neuron extends DfinityEntity with ICPSource {
   @HiveField(4)
   late double rewardAmount;
   @HiveField(5)
-  late double balance;
+  late String domsBalance;
 
   Neuron({
     this.name = "",
@@ -25,8 +25,10 @@ class Neuron extends DfinityEntity with ICPSource {
     this.durationRemaining = 0,
     this.timerIsActive = false,
     this.rewardAmount = 0,
-    this.balance = 0,
-  });
+    double icpBalance = 0.0,
+  }){
+    this.icpBalance = icpBalance;
+  }
 
   NeuronState get state {
     if (timerIsActive) {
