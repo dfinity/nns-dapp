@@ -6,7 +6,7 @@ import LedgerViewService, { CreateSubAccountResponse, NamedSubAccount } from "./
 import { GetTransactionsRequest, GetTransactionsResponse } from "./canisters/ledgerView/model";
 import { BlockHeight, GetBalanceRequest, ICPTs, SendICPTsRequest } from "./canisters/ledger/model";
 
-export default class WalletApi {
+export default class LedgerApi {
     private ledgerService: LedgerService;
     private ledgerViewService: LedgerViewService;
     private host: string;
