@@ -1,5 +1,7 @@
 import { Principal } from "@dfinity/agent";
 
+export type SubAccount = ArrayBuffer;
+
 export type BlockHeight = bigint;
 
 export interface ICPTs { 'doms' : bigint };
@@ -12,14 +14,23 @@ export interface GetBalanceRequest {
 export interface SendICPTsRequest {
     to: Principal,
     amount: ICPTs,
-    fee?: ICPTs,
     memo?: ArrayBuffer,
+    fee?: ICPTs,
     blockHeight?: BlockHeight,
-    fromSubaccount?: ArrayBuffer,
-    toSubaccount?: ArrayBuffer
+    fromSubAccount?: ArrayBuffer,
+    toSubAccount?: ArrayBuffer
 };
 
+export interface NotifyCanisterRequest {
+    toCanister : Principal,
+    blockHeight : BlockHeight,
+    toSubAccount? : SubAccount,
+    fromSubAccount? : SubAccount,
+    maxFee? : ICPTs,
+};
+  
 export default interface ServiceInterface {
     getBalance(request: GetBalanceRequest): Promise<ICPTs>,
-    sendICPTs(request: SendICPTsRequest): Promise<BlockHeight>
+    sendICPTs(request: SendICPTsRequest): Promise<BlockHeight>,
+    notify(request: NotifyCanisterRequest): Promise<void>
 };

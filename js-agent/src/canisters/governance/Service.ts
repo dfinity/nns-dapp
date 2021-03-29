@@ -1,6 +1,6 @@
 import { Option } from "../option";
 import RawService from "./rawService";
-import ServiceInterface, { GetFullNeuronResponse, GetNeuronInfoResponse, ManageNeuron, ManageNeuronResponse, ProposalInfo } from "./model";
+import ServiceInterface, { ClaimNeuronRequest, ClaimNeuronResponse, GetFullNeuronResponse, GetNeuronInfoResponse, ManageNeuron, ManageNeuronResponse, ProposalInfo } from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
 import { bigIntToBigNumber, bigNumberToBigInt } from "../converters";
@@ -14,6 +14,12 @@ export default class Service implements ServiceInterface {
         this.service = service;
         this.requestConverters = new RequestConverters();
         this.responseConverters = new ResponseConverters();
+    }
+
+    public async claimNeuron(request: ClaimNeuronRequest) : Promise<ClaimNeuronResponse> {
+        const rawRequest = this.requestConverters.fromClaimNeuronRequest(request);
+        const rawResponse = await this.service.claim_neuron(rawRequest[0], rawRequest[1], rawRequest[2]);
+        return this.responseConverters.toClaimNeuronResponse(rawResponse);        
     }
 
     public async getFullNeuron(neuronId: bigint) : Promise<GetFullNeuronResponse> {

@@ -1,10 +1,8 @@
 @JS()
 library dfinity_agent.js;
 
-import 'dart:js_util';
 import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:js/js.dart';
-import 'package:uuid/uuid.dart';
 import 'dart:html';
 
 import '../dfinity.dart';
@@ -25,10 +23,9 @@ class AuthApi {
   @JS("createDelegationIdentity")
   external Promise<dynamic> createAuthenticationIdentity();
 }
-
-@JS("WalletApi")
-class WalletApi {
-  external factory WalletApi(String host, dynamic identity);
+@JS("LedgerApi")
+class LedgerApi {
+  external factory LedgerApi(String host, dynamic identity);
 }
 
 @JS()
@@ -40,7 +37,7 @@ class Promise<T> {
 
 class PlatformICApi extends AbstractPlatformICApi {
   final authApi = new AuthApi();
-  var walletApi;
+  LedgerApi? ledgerApi;
 
   @override
   void authenticate(BuildContext context) async {
@@ -52,7 +49,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  void didChangeDependencies(){
+  void didChangeDependencies() {
     super.didChangeDependencies();
     buildServices(context);
   }
@@ -61,8 +58,9 @@ class PlatformICApi extends AbstractPlatformICApi {
     final token = context.boxes.authToken.webAuthToken;
     if (token != null && token.data != null) {
       const gatewayHost = "http://10.12.31.5:8080/";
+      //const gatewayHost = "http://localhost:8080/";
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
-      walletApi = new WalletApi(gatewayHost, identity);
+      ledgerApi = new LedgerApi(gatewayHost, identity);
     }
   }
 }

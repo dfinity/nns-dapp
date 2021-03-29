@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/agent";
-import ServiceInterface, { BlockHeight, GetBalanceRequest, ICPTs, SendICPTsRequest } from "./model";
+import ServiceInterface, { BlockHeight, GetBalanceRequest, ICPTs, NotifyCanisterRequest, SendICPTsRequest } from "./model";
 import RawService from "./rawService";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
@@ -27,5 +27,10 @@ export default class Service implements ServiceInterface {
         const rawRequest = this.requestConverters.fromSendICPTsRequest(request);
         const result = await this.service.send(rawRequest);
         return this.responseConverters.toBlockHeight(result);
+    }
+
+    public async notify(request: NotifyCanisterRequest): Promise<void> {
+        const rawRequest = this.requestConverters.fromNotifyCanisterRequest(request);
+        await this.service.notify(rawRequest);
     }
 }

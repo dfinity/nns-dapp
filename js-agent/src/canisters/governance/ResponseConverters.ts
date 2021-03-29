@@ -6,6 +6,7 @@ import {
     Ballot,
     BallotInfo,
     Change,
+    ClaimNeuronResponse,
     Command,
     DissolveState,
     Followees,
@@ -42,6 +43,7 @@ import {
     Operation as RawOperation,
     Proposal as RawProposal,
     ProposalInfo as RawProposalInfo,
+    Result,
     Result_1,
     Result_2,
     Tally as RawTally
@@ -103,6 +105,23 @@ export default class ResponseConverters {
         if ("Ok" in response) {
             return {
                 Ok: this.toNeuronInfo(response.Ok)
+            }
+        }
+        if ("Err" in response) {
+            return {
+                Err: {
+                    errorMessage: response.Err.error_message,
+                    errorType: response.Err.error_type
+                }
+            }
+        }
+        this.throwUnrecognisedTypeError("response", response);
+    }
+
+    public toClaimNeuronResponse(response: Result) : ClaimNeuronResponse {
+        if ("Ok" in response) {
+            return {
+                Ok: bigNumberToBigInt(response.Ok)
             }
         }
         if ("Err" in response) {
