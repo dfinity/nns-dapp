@@ -25,8 +25,8 @@ export default async function(
     let blockHeight = await ledgerService.sendICPTs({
         memo: convert.bigintToArrayBuffer(nonce),
         amount: request.stake,
-        to: GOVERNANCE_CANISTER_ID,
-        toSubAccount: toSubAccount
+        to: GOVERNANCE_CANISTER_ID.toString(),
+        // TODO - toSubAccount: toSubAccount
     });
 
     // 2. Notify the Governance canister that a neuron has been staked

@@ -1,5 +1,6 @@
 import { Principal } from "@dfinity/agent";
 
+export type AccountIdentifier = string;
 export type BlockHeight = bigint;
 export type CreateSubAccountResponse =
     { Ok: NamedSubAccount } |
@@ -10,7 +11,7 @@ export type GetAccountResponse =
     { Ok: { subAccounts: Array<NamedSubAccount> } } |
     { AccountNotFound: null };
 export interface GetTransactionsRequest {
-    principal: Principal,
+    accountIdentifier: AccountIdentifier,
     pageSize: number,
     offset: number,
 };
@@ -19,12 +20,12 @@ export interface GetTransactionsResponse {
     transactions: Array<Transaction>,
 };
 export interface NamedSubAccount {
-    principal: Principal,
+    accountIdentifier: AccountIdentifier,
     name: string,
     subAccount: SubAccount,
 };
-export interface Receive { fee: Doms, from: Principal, amount: Doms };
-export interface Send { to: Principal, fee: Doms, amount: Doms };
+export interface Receive { fee: Doms, from: AccountIdentifier, amount: Doms };
+export interface Send { to: AccountIdentifier, fee: Doms, amount: Doms };
 export type SubAccount = Array<number>;
 export interface Timestamp { secs: bigint, nanos: number };
 export interface Transaction {

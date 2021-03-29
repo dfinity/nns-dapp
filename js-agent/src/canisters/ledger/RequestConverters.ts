@@ -2,16 +2,12 @@ import BigNumber from "bignumber.js";
 import { GetBalanceRequest, ICPTs, NotifyCanisterRequest, SendICPTsRequest } from "./model";
 import { AccountBalanceArgs, ICPTs as RawICPTs, NotifyCanisterArgs, SendArgs } from "./rawService";
 import * as convert from "../converters";
-import { Principal } from "@dfinity/agent";
 
 export const TRANSACTION_FEE : RawICPTs = { doms: new BigNumber(137) };
 
 export default class RequestConverters {
-    public fromGetBalanceRequest(request: GetBalanceRequest, principal: Principal) : AccountBalanceArgs {
-        return {
-            sub_account: request.subAccount === undefined ? [] : [convert.arrayBufferToArrayOfNumber(request.subAccount)],
-            account: request.account ?? principal
-        };
+    public fromGetBalanceRequest(request: GetBalanceRequest) : AccountBalanceArgs {
+        return request
     }
 
     public fromSendICPTsRequest(request: SendICPTsRequest): SendArgs {
@@ -22,7 +18,6 @@ export default class RequestConverters {
             amount: this.fromICPTs(request.amount),
             block_height: request.blockHeight === undefined ? [] : [convert.bigIntToBigNumber(request.blockHeight)],
             from_subaccount: request.fromSubAccount === undefined ? [] : [convert.arrayBufferToArrayOfNumber(request.fromSubAccount)],
-            to_subaccount: request.toSubAccount === undefined ? [] : [convert.arrayBufferToArrayOfNumber(request.toSubAccount)]
         };
     }  
     

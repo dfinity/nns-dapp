@@ -46,7 +46,7 @@ export default class ResponseConverters {
 
     public toNamedSubAccount(subAccount: RawNamedSubAccount) : NamedSubAccount {
         return {
-            principal: subAccount.principal,
+            accountIdentifier: subAccount.account_identifier,
             name: subAccount.name,
             subAccount: subAccount.sub_account
         }

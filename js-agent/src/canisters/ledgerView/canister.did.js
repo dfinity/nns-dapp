@@ -1,9 +1,10 @@
 export default ({ IDL }) => {
   const SubAccount = IDL.Vec(IDL.Nat8);
+  const AccountIdentifier = IDL.Text;
   const NamedSubAccount = IDL.Record({
-    'principal' : IDL.Principal,
     'name' : IDL.Text,
     'sub_account' : SubAccount,
+    'account_identifier' : AccountIdentifier,
   });
   const CreateSubAccountResponse = IDL.Variant({
     'Ok' : NamedSubAccount,
@@ -15,21 +16,21 @@ export default ({ IDL }) => {
     'AccountNotFound' : IDL.Null,
   });
   const GetTransactionsRequest = IDL.Record({
-    'principal' : IDL.Principal,
     'page_size' : IDL.Nat8,
     'offset' : IDL.Nat32,
+    'account_identifier' : AccountIdentifier,
   });
   const Timestamp = IDL.Record({ 'secs' : IDL.Nat64, 'nanos' : IDL.Nat32 });
   const BlockHeight = IDL.Nat64;
   const Doms = IDL.Nat64;
   const Send = IDL.Record({
-    'to' : IDL.Principal,
+    'to' : AccountIdentifier,
     'fee' : Doms,
     'amount' : Doms,
   });
   const Receive = IDL.Record({
     'fee' : Doms,
-    'from' : IDL.Principal,
+    'from' : AccountIdentifier,
     'amount' : Doms,
   });
   const Transfer = IDL.Variant({

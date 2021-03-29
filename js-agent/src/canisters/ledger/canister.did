@@ -6,29 +6,27 @@ type BlockHeight = nat64;
 type Certification = opt vec nat8;
 type Memo = nat64;
 type SystemTime = nat64;
+type AccountIdentifier = text;
 type SubAccount = vec nat8;
+type EncodedBlock = vec nat8;
 
-type Block = variant {
-    V0: BlockV0;
-};
-
-type BlockV0 = record {
+type Block = record {
     transaction: Transaction;
     timestamp: SystemTime;
 };
 
 type Transfer = variant {
     Burn: record {
-        from: principal;
+        from: AccountIdentifier;
         amount: ICPTs;
     };
     Mint: record {
-        to: principal;
+        to: AccountIdentifier;
         amount: ICPTs;
     };
     Send: record {
-        from: principal;
-        to: principal;
+        from: AccountIdentifier;
+        to: AccountIdentifier;
         amount: ICPTs;
     };
 };
@@ -44,8 +42,7 @@ type SendArgs = record {
     amount: ICPTs;
     fee: ICPTs;
     from_subaccount: opt SubAccount;
-    to: principal;
-    to_subaccount: opt SubAccount;
+    to: AccountIdentifier;
     block_height: opt BlockHeight;
 };
 
@@ -58,24 +55,23 @@ type NotifyCanisterArgs = record {
 };
 
 type AccountBalanceArgs = record {
-    account: principal;
-    sub_account: opt SubAccount;
+    account: AccountIdentifier;
 };
 
 type TotalSupplyArgs = record {};
 
 type LedgerCanisterInitPayload = record {
-    minting_account: principal;
-    initial_values: vec record {principal; vec record {opt SubAccount; ICPTs}};
+    minting_account: AccountIdentifier;
+    initial_values: vec record {AccountIdentifier; ICPTs};
     archive_canister: opt principal;
     max_message_size_bytes: opt nat32;
 }
 
 service: (LedgerCanisterInitPayload) -> {
-  send : (SendArgs) -> (nat64);
+  send : (SendArgs) -> (BlockHeight);
   notify: (NotifyCanisterArgs) -> ();
   account_balance : (AccountBalanceArgs) -> (ICPTs) query;
-  supply: (TotalSupplyArgs) -> (ICPTs) query;
+  total_supply: (TotalSupplyArgs) -> (ICPTs) query;
   tip_of_chain : () -> (Certification, BlockHeight) query;
-  block : (BlockHeight) -> (opt blob) query;
+  block : (BlockHeight) -> (opt EncodedBlock) query;
 }

@@ -25,7 +25,7 @@ export default class WalletApi {
         const anonIdentity = new AnonymousIdentity();
         const anonLedgerService = ledgerBuilder(this.host, anonIdentity);
         anonLedgerService.sendICPTs({
-            to: this.identity.getPrincipal(),
+            to: this.identity.getPrincipal().toString(),
             amount: icpts
         });
     }

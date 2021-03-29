@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/agent';
 import type BigNumber from 'bignumber.js';
+export type AccountIdentifier = string;
 export type BlockHeight = BigNumber;
 export type CreateSubAccountResponse = { 'Ok' : NamedSubAccount } |
     { 'AccountNotFound' : null } |
@@ -10,21 +11,29 @@ export type GetAccountResponse = {
 } |
     { 'AccountNotFound' : null };
 export interface GetTransactionsRequest {
-  'principal' : Principal,
   'page_size' : number,
   'offset' : number,
+  'account_identifier' : AccountIdentifier,
 };
 export interface GetTransactionsResponse {
   'total' : number,
   'transactions' : Array<Transaction>,
 };
 export interface NamedSubAccount {
-  'principal' : Principal,
   'name' : string,
   'sub_account' : SubAccount,
+  'account_identifier' : AccountIdentifier,
 };
-export interface Receive { 'fee' : Doms, 'from' : Principal, 'amount' : Doms };
-export interface Send { 'to' : Principal, 'fee' : Doms, 'amount' : Doms };
+export interface Receive {
+  'fee' : Doms,
+  'from' : AccountIdentifier,
+  'amount' : Doms,
+};
+export interface Send {
+  'to' : AccountIdentifier,
+  'fee' : Doms,
+  'amount' : Doms,
+};
 export type SubAccount = Array<number>;
 export interface Timestamp { 'secs' : BigNumber, 'nanos' : number };
 export interface Transaction {

@@ -18,7 +18,7 @@ export default class Service implements ServiceInterface {
     }
 
     public async getBalance(request: GetBalanceRequest): Promise<ICPTs> {
-        const rawRequest = this.requestConverters.fromGetBalanceRequest(request, this.principal);
+        const rawRequest = this.requestConverters.fromGetBalanceRequest(request);
         const result = await this.service.account_balance(rawRequest);
         return this.responseConverters.toICPTs(result);
     }

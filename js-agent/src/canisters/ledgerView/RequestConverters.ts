@@ -4,7 +4,7 @@ import { GetTransactionsRequest as RawGetTransactionsRequest } from "./rawServic
 export default class RequestConverters {
     public fromGetTransactionsRequest(request: GetTransactionsRequest) : RawGetTransactionsRequest {
         return {
-            principal: request.principal,
+            account_identifier: request.accountIdentifier,
             offset: request.offset,
             page_size: request.pageSize
         };

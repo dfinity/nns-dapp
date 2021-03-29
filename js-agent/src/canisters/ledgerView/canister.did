@@ -1,10 +1,11 @@
+type AccountIdentifier = text;
 type BlockHeight = nat64;
 type Doms = nat64;
 type SubAccount = vec nat8;
 
 type GetAccountResponse =
     variant {
-        Ok: {
+        Ok: record {
             sub_accounts: vec NamedSubAccount;
         };
         AccountNotFound;
@@ -18,7 +19,7 @@ type Timestamp =
 
 type GetTransactionsRequest =
     record {
-        "principal": principal;
+        account_identifier: AccountIdentifier;
         offset: nat32;
         page_size: nat8;
     };
@@ -31,14 +32,14 @@ type GetTransactionsResponse =
 
 type Send =
     record {
-        to: principal;
+        to: AccountIdentifier;
         amount: Doms;
         fee: Doms;
     };
 
 type Receive =
     record {
-        from: principal;
+        from: AccountIdentifier;
         amount: Doms;
         fee: Doms;
     };
@@ -62,7 +63,7 @@ type NamedSubAccount =
     record {
         name: text;
         sub_account: SubAccount;
-        "principal": principal;
+        account_identifier: AccountIdentifier;
     };
 
 type CreateSubAccountResponse =
