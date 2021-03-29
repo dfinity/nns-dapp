@@ -1,12 +1,11 @@
 import 'package:core/core.dart';
+import 'package:dfinity_wallet/ic_api/web_ic_api.dart';
 import 'package:dfinity_wallet/ui/proposals/governance_tab_widget.dart';
 
 import '../../dfinity.dart';
 import 'nodes/node_world.dart';
 
-
-class HomePage extends StatefulWidget  {
-
+class HomePage extends StatefulWidget {
   final int initialTabIndex;
 
   const HomePage({Key? key, this.initialTabIndex = 0}) : super(key: key);
@@ -16,7 +15,6 @@ class HomePage extends StatefulWidget  {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     final screenSize = context.mediaQuery.size;
@@ -41,9 +39,25 @@ class _HomePageState extends State<HomePage> {
                   child: Text(
                     "INTERNET COMPUTER WALLET",
                     style: TextStyle(
-                        fontSize: 24, color: AppColors.white, fontFamily: Fonts.circularMedium, letterSpacing: 4),
+                        fontSize: 24,
+                        color: AppColors.white,
+                        fontFamily: Fonts.circularMedium,
+                        letterSpacing: 4),
                   ),
                 ),
+                actions: [
+                  TextButton(
+                    child: Text("Recieve", style: TextStyle(color: AppColors.white),),
+                    onPressed: () async {
+                      LoadingOverlay.of(context).showOverlay();
+                      await 3.seconds.delay;
+                      await context.icApi.acquireICPTs(ICPTs(
+                        doms: BigInt.from(10000)
+                      ));
+                      LoadingOverlay.of(context).hideOverlay();
+                    },
+                  )
+                ],
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
                 bottom: PreferredSize(
@@ -53,14 +67,22 @@ class _HomePageState extends State<HomePage> {
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Container(
-                        decoration: BoxDecoration(color: Color(0xff282A2D), borderRadius: BorderRadius.circular(16)),
+                        decoration: BoxDecoration(
+                            color: Color(0xff282A2D),
+                            borderRadius: BorderRadius.circular(16)),
                         child: TabBar(
-                          indicator: BoxDecoration(color: Color(0xff0081FF), borderRadius: BorderRadius.circular(16)),
+                          indicator: BoxDecoration(
+                              color: Color(0xff0081FF),
+                              borderRadius: BorderRadius.circular(16)),
                           indicatorSize: TabBarIndicatorSize.tab,
-                          labelPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                          labelPadding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 10),
                           unselectedLabelColor: AppColors.gray400,
                           labelColor: AppColors.white,
-                          labelStyle: TextStyle(fontFamily: Fonts.circularMedium, fontSize: 20, letterSpacing: 1.2),
+                          labelStyle: TextStyle(
+                              fontFamily: Fonts.circularMedium,
+                              fontSize: 20,
+                              letterSpacing: 1.2),
                           tabs: [
                             Tab(text: "ICPTs"),
                             Tab(text: "NEURONS"),
@@ -78,7 +100,12 @@ class _HomePageState extends State<HomePage> {
         ),
         body: SizedBox.expand(
           child: TabBarView(
-            children: [WalletsPage(), NeuronsPage(), GovernanceTabWidget(), CansitersPage()],
+            children: [
+              WalletsPage(),
+              NeuronsPage(),
+              GovernanceTabWidget(),
+              CansitersPage()
+            ],
           ),
         ),
       ),
