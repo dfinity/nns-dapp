@@ -8,6 +8,11 @@ import 'dart:math';
 
 class NodeWorld extends StatelessWidget {
 
+  final double sizeMultipler;
+  final oscillationMultiplier;
+
+  const NodeWorld({Key? key, this.sizeMultipler = 1.0, this.oscillationMultiplier = 1}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,9 +23,10 @@ class NodeWorld extends StatelessWidget {
           child: NodeDistributor(
               Rect.fromCenter(
                   center: Offset(constraints.maxWidth * METERS_PER_PIXEL * 0.5, constraints.maxHeight * METERS_PER_PIXEL * 0.5),
-                  width: constraints.maxWidth * METERS_PER_PIXEL * 1.8,
-                  height: constraints.maxHeight * METERS_PER_PIXEL * 1.8),
-              numNodes.toInt()),
+                  width: constraints.maxWidth * METERS_PER_PIXEL * sizeMultipler,
+                  height: constraints.maxHeight * METERS_PER_PIXEL * sizeMultipler),
+              numNodes.toInt(),
+              oscillationMultiplier),
         );
       }),
     );

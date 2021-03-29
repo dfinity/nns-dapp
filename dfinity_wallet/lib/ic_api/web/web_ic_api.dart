@@ -40,8 +40,15 @@ class PlatformICApi extends AbstractPlatformICApi {
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
       ledgerApi = new LedgerApi(gatewayHost, identity);
       final account = await ledgerApi!.getAccount().toFuture();
-      print("Account : ${account.defaultAccount}, ${account.subAccounts}");
+      // print("Account : ${account.defaultAccount}, ${account.subAccounts}");
+
+      updateWallets(context, account);
     }
+  }
+
+  void updateWallets(BuildContext context, AccountDetails accountDetails) {
+    final wallets =  context.boxes.wallets.values;
+
   }
 
   @override

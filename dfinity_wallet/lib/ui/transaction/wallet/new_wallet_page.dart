@@ -14,7 +14,7 @@ class NewWalletPage extends StatelessWidget {
   final ICPSource source;
   NewWalletPage({Key? key, required this.source}) : super(key: key);
 
-  final ValidatedTextField nameField = ValidatedTextField("Canister Name", validations: [StringFieldValidation.minimumLength(2)]);
+  final ValidatedTextField nameField = ValidatedTextField("Wallet Name", validations: [StringFieldValidation.minimumLength(2)]);
 
   Widget build(BuildContext context) {
     return Container(
@@ -42,12 +42,12 @@ class NewWalletPage extends StatelessWidget {
               child: Text("Create Wallet"),
               fields: [nameField],
               onPressed: () {
-                final wallet = Wallet(nameField.currentValue, Uuid().v4());
-                context.boxes.wallets.add(wallet);
-                NewTransactionOverlay.of(context)
-                    .pushPage(SendToWalletPage(
-                    source: source, toWallet: wallet,
-                ));
+                // final wallet = Wallet(nameField.currentValue, Uuid().v4(), 0);
+                // context.boxes.wallets.add(wallet);
+                // NewTransactionOverlay.of(context)
+                //     .pushPage(SendToWalletPage(
+                //     source: source, toWallet: wallet,
+                // ));
               },
             ),
           )

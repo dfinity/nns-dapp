@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 
 part 'auth_token.g.dart';
 
-
 const WEB_TOKEN_KEY = "WEB_TOKEN_KEY";
 
 @HiveType(typeId: 6)

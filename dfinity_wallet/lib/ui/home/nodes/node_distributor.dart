@@ -16,8 +16,9 @@ import 'node_painter.dart';
 class NodeDistributor extends StatefulWidget {
   Rect worldRect;
   int numNodes;
+  double oscillationMultiplier;
 
-  NodeDistributor(this.worldRect, this.numNodes);
+  NodeDistributor(this.worldRect, this.numNodes, this.oscillationMultiplier);
 
   static Random random = Random();
 
@@ -34,7 +35,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
 
   final World physicsWorld =
       World(Vector2.zero(), DefaultBroadPhaseBuffer(DynamicTreeFlatNodes()));
-  WallRepulsionForce wallRepulsionForce = WallRepulsionForce(wallCharge: 1);
+  WallRepulsionForce wallRepulsionForce = WallRepulsionForce(wallCharge: 0.1);
 
   // CenterRepulsionForce centerRepulsionForce = CenterRepulsionForce(charge: 2);
 
@@ -164,7 +165,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
       }
     });
 
-    return nodes.all((element) => element.body.linearVelocity.length < 2);
+    return nodes.all((element) => element.body.linearVelocity.length < 0.5);
   }
 
   double distanceToCenter(Node node) =>
@@ -181,7 +182,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
       buildProximityMap();
     }
 
-    totalDuration += dt/2;
+    totalDuration += (dt/2) * widget.oscillationMultiplier;
 
 
 

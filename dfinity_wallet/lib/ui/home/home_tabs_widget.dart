@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
                     child: Text("Recieve", style: TextStyle(color: AppColors.white),),
                     onPressed: () async {
                       LoadingOverlay.of(context).showOverlay();
-                      await 3.seconds.delay;
+                      // await 10.seconds.delay;
                       await context.icApi.acquireICPTs(ICPTs(
                         doms: BigInt.from(10000)
                       ));

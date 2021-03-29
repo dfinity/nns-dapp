@@ -29,19 +29,21 @@ class _LoadingOverlayControllerState extends State<LoadingOverlayController> {
 
   OverlayEntry _createOverlayEntry() {
     return OverlayEntry(builder: (context) {
-      return NodeOverlay(overlayKey);
+      return NodeOverlay(overlayKey, remove);
     });
   }
 
   void remove() async{
-    await overlayKey.currentState!.fadeOut();
+    await (overlayKey.currentState?.fadeOut() ?? Future.value(null));
     _overlayEntry?.remove();
   }
 }
 
 class NodeOverlay extends StatefulWidget {
 
-  NodeOverlay(Key? key) : super(key: key);
+  final Function tapped;
+
+  NodeOverlay(Key? key, this.tapped) : super(key: key);
 
   @override
   _NodeState createState() => _NodeState();
@@ -68,13 +70,14 @@ class _NodeState extends State<NodeOverlay> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
+        widget.tapped();
       },
       child: AnimatedOpacity(
           opacity: visible ? 1.0 : 0.0,
           duration: 1.seconds,
           child: Container(
-              color: AppColors.gray400.withOpacity(0.9),
-              child: NodeWorld()),
+              color: AppColors.lightBackground.withOpacity(0.9),
+              child: IgnorePointer(child: NodeWorld(oscillationMultiplier: 2,))),
         ),
     );
   }

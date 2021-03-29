@@ -19,17 +19,21 @@ class Wallet extends DfinityEntity with ICPSource {
     final String name;
     @HiveField(1)
     final String address;
-    Wallet(this.name, this.address);
-
     @HiveField(2)
     List<Transaction> transactions = [];
+    @HiveField(3)
+    final bool primary;
+
+    Wallet(this.name, this.address, this.primary);
+
+
     double get balance => transactions.sumBy((element) => element.amount);
 
     @override
     int get identifier => address.hashCode;
 }
 
-class WalletService {
-    static Uuid uuid = Uuid();
-    static Wallet demoWallet() => Wallet("Wallet ${Random().nextInt(10)}", uuid.v4());
+
+extension getPrimary on Iterable<Wallet>{
+    Wallet get primary => firstWhere((element) => element.primary);
 }

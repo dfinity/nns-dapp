@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/wallet.dart';
 import 'package:dfinity_wallet/ui/_components/conditional_widget.dart';
+import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
@@ -22,10 +23,34 @@ class WalletsPage extends StatefulWidget {
 class _WalletsPageState extends State<WalletsPage> {
   @override
   Widget build(BuildContext context) {
+    final wallets = context.boxes.wallets.values;
+    final primary = wallets.primary;
     return FooterGradientButton(
-        body: TabTitleAndContent(
-          title: "Wallets",
+        body: ConstrainWidthAndCenter(
+            child: ListView(
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        "Account",
+                        style: context.textTheme.headline2,
+                      ),
+                      Text(
+                        primary.key,
+                        style: context.textTheme.bodyText1,
+                      )
+                    ],
+                  ),
+                ),
+                BalanceDisplayWidget(
+                    amount: primary.balance,
+                    amountSize: 50,
+                    icpLabelSize: 30)
+              ],
+            ),
             Card(
               color: AppColors.black,
               child: Padding(
@@ -48,7 +73,7 @@ class _WalletsPageState extends State<WalletsPage> {
               height: 120,
             )
           ],
-        ),
+        )),
         footer: Container(
           padding: const EdgeInsets.all(16.0),
           child: SizedBox(
@@ -83,7 +108,7 @@ class _WalletsPageState extends State<WalletsPage> {
     if (walletAddress != null) {
       setState(() {
         final box = context.boxes.wallets;
-        final wallet = Wallet(name, walletAddress);
+        final wallet = Wallet(name, walletAddress, false);
         box.put(walletAddress.hashCode, wallet);
       });
     }
