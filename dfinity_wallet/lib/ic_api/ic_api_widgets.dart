@@ -4,7 +4,7 @@ import '../dfinity.dart';
 
 import 'stub_ic_api.dart'
     if (dart.library.io) 'platform_ic_api.dart' // dart:io implementation
-    if (dart.library.html) 'web_ic_api.dart';
+    if (dart.library.html) 'web/web_ic_api.dart';
 
 
 class ICApiManager extends StatefulWidget {
