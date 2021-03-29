@@ -164,7 +164,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
       }
     });
 
-    return nodes.all((element) => element.body.linearVelocity.length < 0.2);
+    return nodes.all((element) => element.body.linearVelocity.length < 2);
   }
 
   double distanceToCenter(Node node) =>

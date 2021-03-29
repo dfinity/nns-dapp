@@ -9,10 +9,12 @@ class ResourceOrchestrator extends InheritedWidget {
     required Widget child,
     required this.hiveCoordinator
   }) :super(key: key,
-      child: HiveLoader(
-        hiveCoordinator: hiveCoordinator,
-        child: ICApiManager(
-          child: child,
+      child: LoadingOverlayController(
+        child: HiveLoader(
+          hiveCoordinator: hiveCoordinator,
+          child: ICApiManager(
+            child: child,
+          ),
         ),
       ));
 

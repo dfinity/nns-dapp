@@ -10,7 +10,7 @@ class NodeWorld extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: AppColors.black,
+    return Container(
       child: LayoutBuilder(builder: (context, constraints) {
         final numCalculated = (constraints.maxHeight + constraints.maxWidth) / 30;
         final numNodes = min(75.0, numCalculated);

@@ -1,0 +1,117 @@
+import 'package:dfinity_wallet/dfinity.dart';
+import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
+import 'package:flutter/gestures.dart';
+
+class LoadingOverlayController extends StatefulWidget {
+  final Widget child;
+
+  const LoadingOverlayController({Key? key, required this.child})
+      : super(key: key);
+
+  @override
+  _LoadingOverlayControllerState createState() =>
+      _LoadingOverlayControllerState();
+}
+
+class _LoadingOverlayControllerState extends State<LoadingOverlayController> {
+  OverlayEntry? _overlayEntry;
+  GlobalKey<_NodeState> overlayKey = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+    return LoadingOverlay(this, child: widget.child);
+  }
+
+  void showOverlay() {
+    _overlayEntry = _createOverlayEntry();
+    Overlay.of(context)?.insert(_overlayEntry!);
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    return OverlayEntry(builder: (context) {
+      return NodeOverlay(overlayKey);
+    });
+  }
+
+  void remove() async{
+    await overlayKey.currentState!.fadeOut();
+    _overlayEntry?.remove();
+  }
+}
+
+class NodeOverlay extends StatefulWidget {
+
+  NodeOverlay(Key? key) : super(key: key);
+
+  @override
+  _NodeState createState() => _NodeState();
+}
+
+class _NodeState extends State<NodeOverlay> {
+
+  bool visible = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    0.1.seconds.delay.then((value) {
+      setState(() {
+        visible = true;
+      });
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+      },
+      child: AnimatedOpacity(
+          opacity: visible ? 1.0 : 0.0,
+          duration: 1.seconds,
+          child: Container(
+              color: AppColors.gray400.withOpacity(0.9),
+              child: NodeWorld()),
+        ),
+    );
+  }
+
+  Future<void> fadeOut() async{
+    setState(() {
+      visible = false;
+    });
+    await 1.seconds.delay;
+  }
+}
+
+
+class LoadingOverlay extends InheritedWidget {
+  final _LoadingOverlayControllerState state;
+
+  const LoadingOverlay(
+    this.state, {
+    Key? key,
+    required Widget child,
+  })   : assert(child != null),
+        super(key: key, child: child);
+
+  static LoadingOverlay of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<LoadingOverlay>()!;
+  }
+
+  @override
+  bool updateShouldNotify(LoadingOverlay old) {
+    return false;
+  }
+
+  void showOverlay() {
+    state.showOverlay();
+  }
+
+  void hideOverlay() {
+    state.remove();
+  }
+}
