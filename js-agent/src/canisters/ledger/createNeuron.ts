@@ -1,29 +1,29 @@
 import LedgerService, { ICPTs } from "./model";
 import GovernanceService, { GovernanceError } from "../governance/model";
-import { Principal } from "@dfinity/agent";
+import { DerEncodedBlob } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
 import * as convert from "../converters";
 
 export type CreateNeuronRequest = {
     stake: ICPTs
-    owner: Principal,
     dissolveDelayInSecs: bigint
 }
 
 export type CreateNeuronResponse = { Ok: bigint } | { Err: GovernanceError };
 
 export default async function(
+    publicKey: DerEncodedBlob,
     ledgerService: LedgerService, 
     governanceService: GovernanceService, 
     request: CreateNeuronRequest) : Promise<CreateNeuronResponse> {
 
     // 0. Generate a nonce and a sub-account
     let nonce = generateNonce();
-    let toSubAccount = await createSubAccount(nonce, request.owner);
+    let toSubAccount = await createSubAccount(nonce, publicKey);
 
     // 1. Send the stake to a sub-account where the principal is the Governance canister
     let blockHeight = await ledgerService.sendICPTs({
-        memo: convert.bigintToArrayBuffer(nonce),
+        memo: nonce,
         amount: request.stake,
         to: GOVERNANCE_CANISTER_ID.toString(),
         // TODO - toSubAccount: toSubAccount
@@ -38,8 +38,8 @@ export default async function(
 
     // 3. Call the Governance canister to "claim" the neuron
     let claimResponse = await governanceService.claimNeuron({
-        owner: request.owner,
-        nonce: nonce,
+        publicKey,
+        nonce: convert.arrayBufferToBigInt(nonce),
         dissolveDelayInSecs: request.dissolveDelayInSecs    
     });
 
@@ -49,19 +49,21 @@ export default async function(
 }
 
 // 32 bytes
-async function createSubAccount(nonce: bigint, owner: Principal) : Promise<ArrayBuffer> {
-    const numbers: number[] = [];
-    numbers.push(0x0c);
-    numbers.concat(convert.asciiStringToByteArray("neuron-claim"));
-    numbers.concat(convert.arrayBufferToArrayOfNumber(owner.toBlob()));
-    numbers.concat(convert.arrayBufferToArrayOfNumber(convert.bigintToArrayBuffer(nonce)));
-    const msgUint8 = convert.arrayOfNumberToArrayBuffer(numbers);
-    return await crypto.subtle.digest("SHA-256", msgUint8);
+export async function createSubAccount(nonce: Uint8Array, publicKey: DerEncodedBlob) : Promise<ArrayBuffer> {
+    const text = "neuron-claim";
+    const bufferSize = 1 + text.length + publicKey.length + nonce.length;
+    let buffer = new ArrayBuffer(bufferSize);
+    let bytes = new Uint8Array(buffer);
+    bytes[0] = 0x0c;
+    bytes.set(convert.asciiStringToByteArray("neuron-claim"), 1);
+    bytes.set(publicKey, 1 + text.length);
+    bytes.set(nonce, 1 + text.length + publicKey.length);
+    return await crypto.subtle.digest("SHA-256", bytes);
 }
 
-// u64
-function generateNonce(): bigint {
+// 8 bytes
+function generateNonce(): Uint8Array {
     var array = new Uint8Array(8);
     window.crypto.getRandomValues(array);
-    return convert.arrayBufferToBigInt(array);
+    return array;
 }

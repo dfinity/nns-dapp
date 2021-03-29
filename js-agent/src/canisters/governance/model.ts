@@ -1,4 +1,4 @@
-import type { Principal } from "@dfinity/agent";
+import type { DerEncodedBlob, Principal } from "@dfinity/agent";
 import { Option } from "../option";
 
 export type Action =
@@ -160,7 +160,7 @@ export interface RegisterVote { vote: number, proposal: Option<NeuronId> };
 export interface RemoveHotKey { hotKeyToRemove: Option<Principal> };
 
 export type ClaimNeuronRequest = {
-    owner: Principal,
+    publicKey: DerEncodedBlob,
     nonce: bigint,
     dissolveDelayInSecs: bigint
 }

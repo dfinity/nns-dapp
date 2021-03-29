@@ -1,4 +1,4 @@
-import { AnonymousIdentity, Identity, Principal } from "@dfinity/agent";
+import { AnonymousIdentity, Identity, Principal, SignIdentity } from "@dfinity/agent";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/ledgerView/builder";
@@ -10,9 +10,9 @@ export default class LedgerApi {
     private ledgerService: LedgerService;
     private ledgerViewService: LedgerViewService;
     private host: string;
-    private identity: Identity;
+    private identity: SignIdentity;
 
-    constructor(host: string, identity: Identity) {
+    constructor(host: string, identity: SignIdentity) {
         this.ledgerService = ledgerBuilder(host, identity);
         this.ledgerViewService = ledgerViewBuilder(host, identity);
         this.host = host;

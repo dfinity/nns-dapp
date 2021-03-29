@@ -1,5 +1,5 @@
 import { Option } from "./canisters/option";
-import { Identity } from "@dfinity/agent";
+import { SignIdentity } from "@dfinity/agent";
 import governanceBuilder from "./canisters/governance/builder";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/model";
@@ -10,14 +10,20 @@ import createNeuronImpl, { CreateNeuronRequest, CreateNeuronResponse } from "./c
 export default class GovernanceApi {
     private governanceService: GovernanceService;
     private ledgerService: LedgerService;
+    private identity: SignIdentity;
 
-    constructor(host: string, identity: Identity) {
+    constructor(host: string, identity: SignIdentity) {
         this.ledgerService = ledgerBuilder(host, identity);
         this.governanceService = governanceBuilder(host, identity);
+        this.identity = identity;
     }
 
     public async createNeuron(request: CreateNeuronRequest) : Promise<CreateNeuronResponse> {
-        return createNeuronImpl(this.ledgerService, this.governanceService, request);
+        return createNeuronImpl(
+            this.identity.getPublicKey().toDer(), 
+            this.ledgerService, 
+            this.governanceService, 
+            request);
     }
 
     public async getFullNeuron(neuronId: bigint) : Promise<GetFullNeuronResponse> {

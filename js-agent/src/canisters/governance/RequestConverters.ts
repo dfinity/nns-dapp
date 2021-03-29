@@ -38,7 +38,7 @@ export default class RequestConverters {
 
     public fromClaimNeuronRequest(request: ClaimNeuronRequest): [Array<number>, BigNumber, BigNumber] {
         return [
-            convert.arrayBufferToArrayOfNumber(request.owner.toBlob()),
+            convert.arrayBufferToArrayOfNumber(request.publicKey),
             convert.bigIntToBigNumber(request.nonce),
             convert.bigIntToBigNumber(request.dissolveDelayInSecs)
         ];
