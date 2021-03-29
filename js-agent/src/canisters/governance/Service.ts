@@ -17,8 +17,8 @@ export default class Service implements ServiceInterface {
     }
 
     public async claimNeuron(request: ClaimNeuronRequest) : Promise<ClaimNeuronResponse> {
-        const rawRequest = this.requestConverters.fromClaimNeuronRequest(request);
-        const rawResponse = await this.service.claim_neuron(rawRequest[0], rawRequest[1], rawRequest[2]);
+        const [principal, nonce, dissolveDelay] = this.requestConverters.fromClaimNeuronRequest(request);
+        const rawResponse = await this.service.claim_neuron(principal, nonce, dissolveDelay);
         return this.responseConverters.toClaimNeuronResponse(rawResponse);        
     }
 
