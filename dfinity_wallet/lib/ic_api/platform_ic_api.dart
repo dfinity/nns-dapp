@@ -1,9 +1,13 @@
 
+import 'package:dfinity_wallet/ic_api/web_ic_api.dart';
+
 import '../dfinity.dart';
 
 abstract class AbstractPlatformICApi extends State<ICApiManager> {
     void authenticate(BuildContext context);
     Future<void> buildServices(BuildContext context);
+
+    Future<void> acquireICPTs(ICPTs icpts);
 
     @override
     Widget build(BuildContext context) {

@@ -1,6 +1,8 @@
 @JS()
 library dfinity_agent.js;
 
+import 'dart:js_util';
+
 import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:js/js.dart';
 import 'dart:html';
@@ -15,7 +17,8 @@ class AuthApi {
   external String createKey();
 
   @JS("createAuthenticationIdentity")
-  external Promise<dynamic> loginWithIdentityProvider(String key, String returnUrl);
+  external Promise<dynamic> loginWithIdentityProvider(
+      String key, String returnUrl);
 
   @JS("createDelegationIdentity")
   external dynamic createDelegationIdentity(String key, String accessToken);
@@ -23,9 +26,36 @@ class AuthApi {
   @JS("createDelegationIdentity")
   external Promise<dynamic> createAuthenticationIdentity();
 }
+
 @JS("LedgerApi")
 class LedgerApi {
   external factory LedgerApi(String host, dynamic identity);
+
+  @JS("acquireICPTs")
+  external Promise<void> acquireICPTs(ICPTs icpts);
+
+  @JS("getAccount")
+  external Promise<AccountDetails> getAccount();
+}
+
+class ICPTs {
+  ICPTs({required this.doms});
+  BigInt doms;
+}
+
+class AccountDetails {
+  external Principal defaultAccount;
+  external List<NamedSubAccount> subAccounts;
+}
+
+class NamedSubAccount {
+  late Principal principal;
+  late String name;
+  dynamic subAccount;
+}
+
+class Principal {
+
 }
 
 @JS()
@@ -33,6 +63,10 @@ class Promise<T> {
   external Promise(void executor(void resolve(T result), Function reject));
 
   external Promise then(void onFulfilled(T result), [Function onRejected]);
+}
+
+extension AsFuture<T> on Promise<T>{
+  Future<T> toFuture() => promiseToFuture(this);
 }
 
 class PlatformICApi extends AbstractPlatformICApi {
@@ -48,6 +82,8 @@ class PlatformICApi extends AbstractPlatformICApi {
     authApi.loginWithIdentityProvider(key, "http://" + window.location.host + "/home");
   }
 
+
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -61,6 +97,13 @@ class PlatformICApi extends AbstractPlatformICApi {
       //const gatewayHost = "http://localhost:8080/";
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
       ledgerApi = new LedgerApi(gatewayHost, identity);
+      final account = await ledgerApi!.getAccount().toFuture();
+      print("Account : ${account.defaultAccount}, ${account.subAccounts}");
     }
+  }
+
+  @override
+  Future<void> acquireICPTs(ICPTs icpts) {
+    return ledgerApi!.acquireICPTs(icpts).toFuture();
   }
 }
