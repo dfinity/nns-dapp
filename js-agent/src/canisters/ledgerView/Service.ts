@@ -1,3 +1,4 @@
+import { AccountIdentifier } from "../ledger/model";
 import ServiceInterface, {
     CreateSubAccountResponse,
     GetAccountResponse,
@@ -24,8 +25,8 @@ export default class Service implements ServiceInterface {
         return this.responseConverters.toGetAccountResponse(rawResponse);
     }
 
-    public async addAccount() : Promise<undefined> {
-        return await this.service.add_account();
+    public addAccount() : Promise<AccountIdentifier> {
+        return this.service.add_account();
     }
 
     public async createSubAccount(name: string) : Promise<CreateSubAccountResponse> {

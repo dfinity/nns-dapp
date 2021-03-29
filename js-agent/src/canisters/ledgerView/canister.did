@@ -6,6 +6,7 @@ type SubAccount = vec nat8;
 type GetAccountResponse =
     variant {
         Ok: record {
+            account_identifier: AccountIdentifier;
             sub_accounts: vec NamedSubAccount;
         };
         AccountNotFound;
@@ -75,7 +76,7 @@ type CreateSubAccountResponse =
 
 service : {
     get_account: () -> (GetAccountResponse) query;
-    add_account: () -> ();
+    add_account: () -> (AccountIdentifier);
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
 }

@@ -8,9 +8,9 @@ import { ProposalInfo } from "./canisters/governance/model";
 import createNeuronImpl, { CreateNeuronRequest, CreateNeuronResponse } from "./canisters/ledger/createNeuron";
 
 export default class GovernanceApi {
-    private governanceService: GovernanceService;
-    private ledgerService: LedgerService;
-    private identity: SignIdentity;
+    private readonly governanceService: GovernanceService;
+    private readonly ledgerService: LedgerService;
+    private readonly identity: SignIdentity;
 
     constructor(host: string, identity: SignIdentity) {
         this.ledgerService = ledgerBuilder(host, identity);
@@ -26,31 +26,31 @@ export default class GovernanceApi {
             request);
     }
 
-    public async getFullNeuron(neuronId: bigint) : Promise<GetFullNeuronResponse> {
+    public getFullNeuron(neuronId: bigint) : Promise<GetFullNeuronResponse> {
         return this.governanceService.getFullNeuron(neuronId);
     }
 
-    public async getNeuronInfo(neuronId: bigint) : Promise<GetNeuronInfoResponse> {
+    public getNeuronInfo(neuronId: bigint) : Promise<GetNeuronInfoResponse> {
         return this.governanceService.getNeuronInfo(neuronId);
     }
 
-    public async getFinalizedProposals() : Promise<Array<ProposalInfo>> {
+    public getFinalizedProposals() : Promise<Array<ProposalInfo>> {
         return this.governanceService.getFinalizedProposals();
     }
 
-    public async getNeuronIds() : Promise<Array<bigint>> {
+    public getNeuronIds() : Promise<Array<bigint>> {
         return this.governanceService.getNeuronIds();
     }
 
-    public async getPendingProposals(): Promise<Array<ProposalInfo>> {
+    public getPendingProposals(): Promise<Array<ProposalInfo>> {
         return this.governanceService.getPendingProposals();
     }
 
-    public async getProposalInfo(proposalId: bigint) : Promise<Option<ProposalInfo>> {
+    public getProposalInfo(proposalId: bigint) : Promise<Option<ProposalInfo>> {
         return this.governanceService.getProposalInfo(proposalId);
     }
 
-    public async manageNeuron(request: ManageNeuron) : Promise<ManageNeuronResponse> {
+    public manageNeuron(request: ManageNeuron) : Promise<ManageNeuronResponse> {
         return this.governanceService.manageNeuron(request);   
     }
 }

@@ -1,6 +1,6 @@
 export default ({ IDL }) => {
-  const SubAccount = IDL.Vec(IDL.Nat8);
   const AccountIdentifier = IDL.Text;
+  const SubAccount = IDL.Vec(IDL.Nat8);
   const NamedSubAccount = IDL.Record({
     'name' : IDL.Text,
     'sub_account' : SubAccount,
@@ -12,7 +12,10 @@ export default ({ IDL }) => {
     'SubAccountLimitExceeded' : IDL.Null,
   });
   const GetAccountResponse = IDL.Variant({
-    'Ok' : IDL.Record({ 'sub_accounts' : IDL.Vec(NamedSubAccount) }),
+    'Ok' : IDL.Record({
+      'account_identifier' : AccountIdentifier,
+      'sub_accounts' : IDL.Vec(NamedSubAccount),
+    }),
     'AccountNotFound' : IDL.Null,
   });
   const GetTransactionsRequest = IDL.Record({
@@ -49,7 +52,7 @@ export default ({ IDL }) => {
     'transactions' : IDL.Vec(Transaction),
   });
   return IDL.Service({
-    'add_account' : IDL.Func([], [], []),
+    'add_account' : IDL.Func([], [AccountIdentifier], []),
     'create_sub_account' : IDL.Func([IDL.Text], [CreateSubAccountResponse], []),
     'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_transactions' : IDL.Func(

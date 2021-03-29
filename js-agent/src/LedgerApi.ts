@@ -1,16 +1,16 @@
-import { AnonymousIdentity, Identity, Principal, SignIdentity } from "@dfinity/agent";
+import { AnonymousIdentity, SignIdentity } from "@dfinity/agent";
 import ledgerBuilder from "./canisters/ledger/builder";
-import LedgerService from "./canisters/ledger/model";
+import LedgerService, { AccountIdentifier } from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/ledgerView/builder";
 import LedgerViewService, { CreateSubAccountResponse, NamedSubAccount } from "./canisters/ledgerView/model";
 import { GetTransactionsRequest, GetTransactionsResponse } from "./canisters/ledgerView/model";
 import { BlockHeight, GetBalanceRequest, ICPTs, SendICPTsRequest } from "./canisters/ledger/model";
 
 export default class LedgerApi {
-    private ledgerService: LedgerService;
-    private ledgerViewService: LedgerViewService;
-    private host: string;
-    private identity: SignIdentity;
+    private readonly ledgerService: LedgerService;
+    private readonly ledgerViewService: LedgerViewService;
+    private readonly host: string;
+    private readonly identity: SignIdentity;
 
     constructor(host: string, identity: SignIdentity) {
         this.ledgerService = ledgerBuilder(host, identity);
@@ -24,47 +24,43 @@ export default class LedgerApi {
     public async acquireICPTs(icpts: ICPTs): Promise<void> {
         const anonIdentity = new AnonymousIdentity();
         const anonLedgerService = ledgerBuilder(this.host, anonIdentity);
-        anonLedgerService.sendICPTs({
+        await anonLedgerService.sendICPTs({
             to: this.identity.getPrincipal().toString(),
             amount: icpts
         });
     }
 
-    public async createSubAccount(name: string) : Promise<CreateSubAccountResponse> {
+    public createSubAccount(name: string) : Promise<CreateSubAccountResponse> {
         return this.ledgerViewService.createSubAccount(name);
     }
 
     public async getAccount() : Promise<AccountDetails> {
-        const defaultAccount = this.identity.getPrincipal();
         const response = await this.ledgerViewService.getAccount();
-        let subAccounts: Array<NamedSubAccount>;
         if ("Ok" in response) {
-            subAccounts = response.Ok.subAccounts;
+            return response.Ok;
         } else {
-            await this.ledgerViewService.addAccount();
-            subAccounts = [];
-        }
-
-        return {
-            defaultAccount,
-            subAccounts
+            const accountIdentifier = await this.ledgerViewService.addAccount();
+            return {
+                accountIdentifier,
+                subAccounts: []
+            };
         }
     }
 
-    public async getBalance(request: GetBalanceRequest) : Promise<ICPTs> {
+    public getBalance(request: GetBalanceRequest) : Promise<ICPTs> {
         return this.ledgerService.getBalance(request);
     }
 
-    public async getTransactions(request: GetTransactionsRequest) : Promise<GetTransactionsResponse> {
+    public getTransactions(request: GetTransactionsRequest) : Promise<GetTransactionsResponse> {
         return this.ledgerViewService.getTransactions(request);
     }
 
-    public async sendICPTs(request: SendICPTsRequest): Promise<BlockHeight> {
+    public sendICPTs(request: SendICPTsRequest): Promise<BlockHeight> {
         return this.ledgerService.sendICPTs(request);
     }
 }
 
 export type AccountDetails = {
-    defaultAccount: Principal,
+    accountIdentifier: AccountIdentifier,
     subAccounts: Array<NamedSubAccount>
 }

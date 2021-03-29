@@ -21,6 +21,7 @@ export default class ResponseConverters {
         if ("Ok" in response) {
             return {
                 Ok: {
+                    accountIdentifier: response.Ok.account_identifier,
                     subAccounts: response.Ok.sub_accounts.map(this.toNamedSubAccount)
                 }
             }

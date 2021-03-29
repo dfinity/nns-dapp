@@ -7,7 +7,10 @@ export type CreateSubAccountResponse = { 'Ok' : NamedSubAccount } |
     { 'SubAccountLimitExceeded' : null };
 export type Doms = BigNumber;
 export type GetAccountResponse = {
-  'Ok' : { 'sub_accounts' : Array<NamedSubAccount> }
+  'Ok' : {
+    'account_identifier' : AccountIdentifier,
+    'sub_accounts' : Array<NamedSubAccount>,
+  }
 } |
     { 'AccountNotFound' : null };
 export interface GetTransactionsRequest {
@@ -46,7 +49,7 @@ export type Transfer = { 'Burn' : { 'amount' : Doms } } |
     { 'Send' : Send } |
     { 'Receive' : Receive };
 export default interface _SERVICE {
-  'add_account' : () => Promise<undefined>,
+  'add_account' : () => Promise<AccountIdentifier>,
   'create_sub_account' : (arg_0: string) => Promise<CreateSubAccountResponse>,
   'get_account' : () => Promise<GetAccountResponse>,
   'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<GetTransactionsResponse>,

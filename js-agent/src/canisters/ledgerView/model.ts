@@ -1,14 +1,12 @@
-import { Principal } from "@dfinity/agent";
+import { AccountIdentifier, BlockHeight } from "../ledger/model";
 
-export type AccountIdentifier = string;
-export type BlockHeight = bigint;
 export type CreateSubAccountResponse =
     { Ok: NamedSubAccount } |
     { AccountNotFound: null } |
     { SubAccountLimitExceeded: null };
 export type Doms = bigint;
 export type GetAccountResponse =
-    { Ok: { subAccounts: Array<NamedSubAccount> } } |
+    { Ok: { accountIdentifier: AccountIdentifier, subAccounts: Array<NamedSubAccount> } } |
     { AccountNotFound: null };
 export interface GetTransactionsRequest {
     accountIdentifier: AccountIdentifier,
@@ -38,7 +36,7 @@ export type Transfer = { Burn: { amount: Doms } } |
     { Send: Send } |
     { Receive: Receive };
 export default interface ServiceInterface {
-    addAccount: () => Promise<undefined>,
+    addAccount: () => Promise<AccountIdentifier>,
     createSubAccount: (name: string) => Promise<CreateSubAccountResponse>,
     getAccount: () => Promise<GetAccountResponse>,
     getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
