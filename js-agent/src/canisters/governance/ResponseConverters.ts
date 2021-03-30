@@ -1,5 +1,5 @@
+import BigNumber from "bignumber.js";
 import { arrayOfNumberToArrayBuffer, bigNumberToBigInt } from "../converters";
-
 import {
     Action,
     Amount,
@@ -84,38 +84,33 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("response", response);
     }
 
-    public toFullNeuronResponse = (response: Result_1) : GetFullNeuronResponse => {
-        if ("Ok" in response) {
-            return {
-                Ok: this.toNeuron(response.Ok)
-            }
-        }
-        if ("Err" in response) {
+    public toNeuronInfoResponse = (neuronId: BigNumber, neuronInfoResponse: Result_2, fullNeuronResponse: Result_1) : GetNeuronInfoResponse => {
+        let fullNeuron: Neuron;
+        if ("Ok" in fullNeuronResponse) {
+            fullNeuron = this.toNeuron(fullNeuronResponse.Ok);
+        } else if ("Err" in fullNeuronResponse) {
             return {
                 Err: {
-                    errorMessage: response.Err.error_message,
-                    errorType: response.Err.error_type
+                    errorMessage: fullNeuronResponse.Err.error_message,
+                    errorType: fullNeuronResponse.Err.error_type
                 }
-            }
+            };
+        } else {
+            this.throwUnrecognisedTypeError("response", fullNeuronResponse);
         }
-        this.throwUnrecognisedTypeError("response", response);
-    }
-
-    public toNeuronInfoResponse = (response: Result_2) : GetNeuronInfoResponse => {
-        if ("Ok" in response) {
+        if ("Ok" in neuronInfoResponse) {
             return {
-                Ok: this.toNeuronInfo(response.Ok)
-            }
-        }
-        if ("Err" in response) {
+                Ok: this.toNeuronInfo(neuronId, neuronInfoResponse.Ok, fullNeuron)
+            };
+        } else if ("Err" in neuronInfoResponse) {
             return {
                 Err: {
-                    errorMessage: response.Err.error_message,
-                    errorType: response.Err.error_type
+                    errorMessage: neuronInfoResponse.Err.error_message,
+                    errorType: neuronInfoResponse.Err.error_type
                 }
-            }
+            };
         }
-        this.throwUnrecognisedTypeError("response", response);
+        this.throwUnrecognisedTypeError("response", neuronInfoResponse);
     }
 
     public toClaimNeuronResponse = (response: Result) : ClaimNeuronResponse => {
@@ -192,15 +187,17 @@ export default class ResponseConverters {
         };        
     }
 
-    private toNeuronInfo = (neuron: RawNeuronInfo) : NeuronInfo => {
+    private toNeuronInfo = (neuronId: BigNumber, neuronInfo: RawNeuronInfo, fullNeuron: Neuron) : NeuronInfo => {
         return {
-            dissolveDelaySeconds: bigNumberToBigInt(neuron.dissolve_delay_seconds),
-            recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
-            createdTimestampSeconds: bigNumberToBigInt(neuron.created_timestamp_seconds),
-            state: neuron.state,
-            retrievedAtTimestampSeconds: bigNumberToBigInt(neuron.retrieved_at_timestamp_seconds),
-            votingPower: bigNumberToBigInt(neuron.voting_power),
-            ageSeconds: bigNumberToBigInt(neuron.age_seconds),                    
+            neuronId: bigNumberToBigInt(neuronId),
+            dissolveDelaySeconds: bigNumberToBigInt(neuronInfo.dissolve_delay_seconds),
+            recentBallots: neuronInfo.recent_ballots.map(this.toBallotInfo),
+            createdTimestampSeconds: bigNumberToBigInt(neuronInfo.created_timestamp_seconds),
+            state: neuronInfo.state,
+            retrievedAtTimestampSeconds: bigNumberToBigInt(neuronInfo.retrieved_at_timestamp_seconds),
+            votingPower: bigNumberToBigInt(neuronInfo.voting_power),
+            ageSeconds: bigNumberToBigInt(neuronInfo.age_seconds),
+            fullNeuron: fullNeuron
         };
     }
 

@@ -116,6 +116,7 @@ export interface Neuron {
 };
 export interface NeuronId { id: bigint };
 export interface NeuronInfo {
+    neuronId: bigint,
     dissolveDelaySeconds: bigint,
     recentBallots: Array<BallotInfo>,
     createdTimestampSeconds: bigint,
@@ -123,6 +124,7 @@ export interface NeuronInfo {
     retrievedAtTimestampSeconds: bigint,
     votingPower: bigint,
     ageSeconds: bigint,
+    fullNeuron: Neuron
 };
 export interface NeuronStakeTransfer {
     toSubaccount: ArrayBuffer,
@@ -189,9 +191,7 @@ export default interface ServiceInterface {
     // executeEligibleProposals: () => Promise<undefined>,
     claimNeuron: (request: ClaimNeuronRequest) => Promise<ClaimNeuronResponse>,
     getFinalizedProposals: () => Promise<Array<ProposalInfo>>,
-    getFullNeuron: (arg_0: bigint) => Promise<GetFullNeuronResponse>,
-    getNeuronIds: () => Promise<Array<bigint>>,
-    getNeuronInfo: (arg_0: bigint) => Promise<GetNeuronInfoResponse>,
+    getNeurons: () => Promise<Array<NeuronInfo>>,
     getPendingProposals: () => Promise<Array<ProposalInfo>>,
     getProposalInfo: (proposalId: bigint) => Promise<Option<ProposalInfo>>,
     manageNeuron: (arg_0: ManageNeuron) => Promise<ManageNeuronResponse>,

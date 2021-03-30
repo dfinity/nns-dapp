@@ -3,7 +3,11 @@ import { SignIdentity } from "@dfinity/agent";
 import governanceBuilder from "./canisters/governance/builder";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/model";
-import GovernanceService, { GetFullNeuronResponse, GetNeuronInfoResponse, ManageNeuron, ManageNeuronResponse } from "./canisters/governance/model";
+import GovernanceService, {
+    ManageNeuron,
+    ManageNeuronResponse,
+    NeuronInfo
+} from "./canisters/governance/model";
 import { ProposalInfo } from "./canisters/governance/model";
 import createNeuronImpl, { CreateNeuronRequest, CreateNeuronResponse } from "./canisters/governance/createNeuron";
 
@@ -26,20 +30,12 @@ export default class GovernanceApi {
             request);
     }
 
-    public getFullNeuron = (neuronId: bigint) : Promise<GetFullNeuronResponse> => {
-        return this.governanceService.getFullNeuron(neuronId);
-    }
-
-    public getNeuronInfo = (neuronId: bigint) : Promise<GetNeuronInfoResponse> => {
-        return this.governanceService.getNeuronInfo(neuronId);
+    public getNeurons = () : Promise<Array<NeuronInfo>> => {
+        return this.governanceService.getNeurons();
     }
 
     public getFinalizedProposals = () : Promise<Array<ProposalInfo>> => {
         return this.governanceService.getFinalizedProposals();
-    }
-
-    public getNeuronIds = () : Promise<Array<bigint>> => {
-        return this.governanceService.getNeuronIds();
     }
 
     public getPendingProposals = (): Promise<Array<ProposalInfo>> => {

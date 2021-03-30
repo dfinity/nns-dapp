@@ -1,6 +1,14 @@
+import BigNumber from "bignumber.js";
 import { Option } from "../option";
 import RawService from "./rawService";
-import ServiceInterface, { ClaimNeuronRequest, ClaimNeuronResponse, GetFullNeuronResponse, GetNeuronInfoResponse, ManageNeuron, ManageNeuronResponse, ProposalInfo } from "./model";
+import ServiceInterface, {
+    ClaimNeuronRequest,
+    ClaimNeuronResponse,
+    ManageNeuron,
+    ManageNeuronResponse,
+    NeuronInfo,
+    ProposalInfo
+} from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
 import { bigIntToBigNumber, bigNumberToBigInt } from "../converters";
@@ -22,26 +30,29 @@ export default class Service implements ServiceInterface {
         return this.responseConverters.toClaimNeuronResponse(rawResponse);        
     }
 
-    public getFullNeuron = async (neuronId: bigint) : Promise<GetFullNeuronResponse> => {
-        const rawNeuronId = bigIntToBigNumber(neuronId);
-        const rawResponse = await this.service.get_full_neuron(rawNeuronId);
-        return this.responseConverters.toFullNeuronResponse(rawResponse);
-    }
+    public getNeurons = async () : Promise<Array<NeuronInfo>> => {
+        const neuronIds = await this.service.get_neuron_ids();
+        if (!neuronIds.length) {
+            return [];
+        }
 
-    public getNeuronInfo = async (neuronId: bigint) : Promise<GetNeuronInfoResponse> => {
-        const rawNeuronId = bigIntToBigNumber(neuronId);
-        const rawResponse = await this.service.get_neuron_info(rawNeuronId);
-        return this.responseConverters.toNeuronInfoResponse(rawResponse);        
+        const promises: Promise<NeuronInfo>[] = neuronIds.map(async (id: BigNumber) : Promise<NeuronInfo> => {
+            const neuronInfoPromise = this.service.get_neuron_info(id);
+            const fullNeuronPromise = this.service.get_full_neuron(id);
+            const rawResponses = await Promise.all([neuronInfoPromise, fullNeuronPromise]);
+            const neuronInfoResponse = this.responseConverters.toNeuronInfoResponse(id, rawResponses[0], rawResponses[1]);
+            if ("Ok" in neuronInfoResponse) {
+                return neuronInfoResponse.Ok;
+            }
+            throw new Error("Failed to retrieve neuron info. NeuronId: " + bigNumberToBigInt(id));
+        });
+
+        return await Promise.all(promises);
     }
 
     public getFinalizedProposals = async () : Promise<Array<ProposalInfo>> => {
         const rawResponse = await this.service.get_finalized_proposals();
         return rawResponse.map(this.responseConverters.toProposalInfo);
-    }
-
-    public getNeuronIds = async () : Promise<Array<bigint>> => {
-        const rawResponse = await this.service.get_neuron_ids();
-        return rawResponse.map(bigNumberToBigInt);
     }
 
     public getPendingProposals = async () : Promise<Array<ProposalInfo>> => {
