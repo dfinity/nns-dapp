@@ -17,25 +17,22 @@ class ProposalAdapter extends TypeAdapter<Proposal> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Proposal(
-      fields[0] as String,
-      fields[1] as String,
-      fields[2] as DateTime,
       fields[3] as String,
+      fields[4] as String,
+      fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Proposal obj) {
     writer
-      ..writeByte(4)
-      ..writeByte(0)
-      ..write(obj.name)
-      ..writeByte(1)
-      ..write(obj.authorAddress)
-      ..writeByte(2)
-      ..write(obj.closeDate)
       ..writeByte(3)
-      ..write(obj.address);
+      ..writeByte(3)
+      ..write(obj.id)
+      ..writeByte(4)
+      ..write(obj.text)
+      ..writeByte(5)
+      ..write(obj.url);
   }
 
   @override

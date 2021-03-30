@@ -5,17 +5,16 @@ part 'proposal.g.dart';
 
 @HiveType(typeId: 5)
 class Proposal extends DfinityEntity {
-  @HiveField(0)
-  late String name;
-  @HiveField(1)
-  late String authorAddress;
-  @HiveField(2)
-  late DateTime closeDate;
-  @HiveField(3)
-  late String address;
 
-  Proposal(this.name, this.authorAddress, this.closeDate, this.address);
+  @HiveField(3)
+  late String id;
+  @HiveField(4)
+  late String text;
+  @HiveField(5)
+  late String url;
+
+  Proposal(this.id, this.text, this.url);
 
   @override
-  String get identifier => address;
+  String get identifier => id;
 }

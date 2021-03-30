@@ -35,7 +35,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            widget.proposal.name,
+                            widget.proposal.text,
                             style: context.textTheme.headline3
                                 ?.copyWith(color: AppColors.gray800),
                           ),
@@ -44,7 +44,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                           padding: const EdgeInsets.only(
                               left: 16.0, bottom: 16.0, right: 16.0),
                           child: Text(
-                            widget.proposal.authorAddress,
+                            widget.proposal.id,
                             style: context.textTheme.bodyText1
                                 ?.copyWith(color: AppColors.gray800),
                           ),

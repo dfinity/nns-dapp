@@ -17,4 +17,7 @@ class GovernanceApi {
 
   @JS("getNeurons")
   external Promise<dynamic> getNeurons();
+
+  @JS("getPendingProposals")
+  external Promise<dynamic> getPendingProposals();
 }

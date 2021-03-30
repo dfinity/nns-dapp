@@ -25,6 +25,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   BalanceSyncService? balanceSyncService;
   TransactionSyncService? transactionSyncService;
   NeuronSyncService? neuronSyncService;
+  ProposalSyncService? proposalSyncService;
 
   @override
   void authenticate(BuildContext context) async {
@@ -60,11 +61,13 @@ class PlatformICApi extends AbstractPlatformICApi {
       balanceSyncService = BalanceSyncService(ledgerApi!, hiveBoxes.wallets);
       transactionSyncService = TransactionSyncService(ledgerApi: ledgerApi!, accountsBox: hiveBoxes.wallets);
       neuronSyncService = NeuronSyncService(governanceApi: governanceApi!, neuronsBox: hiveBoxes.neurons);
+      proposalSyncService = ProposalSyncService(governanceApi: governanceApi!, proposalsBox: hiveBoxes.proposals);
 
-      neuronSyncService!.fetchNeurons();
       await accountsSyncService!.performSync();
       balanceSyncService!.syncBalances();
       transactionSyncService!.syncAccount(hiveBoxes.wallets.primary);
+      neuronSyncService!.fetchNeurons();
+      proposalSyncService!.fetchProposals();
     }
   }
 
@@ -262,6 +265,33 @@ class NeuronSyncService{
         timerIsActive: false,
         rewardAmount: 0,
           icpBalance: e.votingPower.toString().toICPT
+      ));
+    }
+  }
+}
+
+
+class ProposalSyncService {
+  final GovernanceApi governanceApi;
+  final Box<Proposal> proposalsBox;
+
+  ProposalSyncService({required this.governanceApi, required this.proposalsBox});
+
+  Future<void> fetchProposals() async {
+    final response = await promiseToFuture(governanceApi.getPendingProposals());
+    response.forEach((e){
+      storeNeuron(e);
+    });
+  }
+
+  void storeNeuron(dynamic response) {
+    final neuronId = response.id.id.toString();
+    print("Fetched neuron ${neuronId}");
+    if(!proposalsBox.containsKey(neuronId)){
+      proposalsBox.put(neuronId, Proposal(
+           neuronId,
+           response.proposal.summary.toString(),
+           response.proposal.url,
       ));
     }
   }
