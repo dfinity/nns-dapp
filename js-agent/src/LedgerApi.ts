@@ -1,12 +1,19 @@
 import { AnonymousIdentity, SignIdentity } from "@dfinity/agent";
 import ledgerBuilder from "./canisters/ledger/builder";
-import LedgerService, { AccountIdentifier } from "./canisters/ledger/model";
+import LedgerService, {
+    AccountIdentifier,
+    BlockHeight,
+    GetBalancesRequest,
+    ICPTs,
+    SendICPTsRequest
+} from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/ledgerView/builder";
-import LedgerViewService, { CreateSubAccountResponse, NamedSubAccount } from "./canisters/ledgerView/model";
-import { GetTransactionsRequest, GetTransactionsResponse } from "./canisters/ledgerView/model";
-import { BlockHeight, GetBalanceRequest, ICPTs, SendICPTsRequest } from "./canisters/ledger/model";
-import {BigIntEncoder} from "simple-cbor/encoders/bigint";
-import BigNumber from "bignumber.js";
+import LedgerViewService, {
+    CreateSubAccountResponse,
+    GetTransactionsRequest,
+    GetTransactionsResponse,
+    NamedSubAccount
+} from "./canisters/ledgerView/model";
 
 export default class LedgerApi {
     private readonly ledgerService: LedgerService;
@@ -21,13 +28,14 @@ export default class LedgerApi {
         this.identity = identity;
     }
 
-    // Temporary method for demo purposes only, to give the current principal some ICPTs 
+    // Temporary method for demo purposes only, to give the specified account some ICPTs
     // by sending from the anon account which has been gifted lots of ICPTs
-    public async acquireICPTs(icpts: ICPTs): Promise<void> {
+    public async acquireICPTs(accountIdentifier: AccountIdentifier, icpts: ICPTs): Promise<void> {
+        console.log("Account id " + accountIdentifier + " ICPTs " + icpts.doms);
         const anonIdentity = new AnonymousIdentity();
         const anonLedgerService = ledgerBuilder(this.host, anonIdentity);
         await anonLedgerService.sendICPTs({
-            to: this.identity.getPrincipal().toString(),
+            to: accountIdentifier,
             amount: icpts
         });
     }
@@ -49,11 +57,9 @@ export default class LedgerApi {
         }
     }
 
-    public async getBalance(request: GetBalanceRequest) : Promise<ICPTs> {
-        console.log(request.account);
-        let balance = await this.ledgerService.getBalance(request);
-        console.log('balance ' + balance['doms']);
-        return {'doms': BigInt(1234123412341234)};
+    public getBalances(request: GetBalancesRequest) : Promise<{}> {
+        console.log("accounts : " + request.accounts);
+        return this.ledgerService.getBalances(request);
     }
 
     public getTransactions(request: GetTransactionsRequest) : Promise<GetTransactionsResponse> {

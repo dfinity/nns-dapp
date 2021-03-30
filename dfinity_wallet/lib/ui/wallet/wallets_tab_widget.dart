@@ -23,7 +23,6 @@ class WalletsPage extends StatefulWidget {
 class _WalletsPageState extends State<WalletsPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
     final wallets = context.boxes.wallets.values;
     final primary = wallets.primary;
     return FooterGradientButton(

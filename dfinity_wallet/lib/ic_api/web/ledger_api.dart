@@ -11,11 +11,11 @@ class LedgerApi {
   external factory LedgerApi(String host, dynamic identity);
 
   @JS("acquireICPTs")
-  external Promise<void> acquireICPTs(Object icpts);
+  external Promise<void> acquireICPTs(String accountIdentifier, Object icpts);
 
   @JS("getAccount")
   external Promise<dynamic> getAccount();
 
-  @JS("getAccount")
-  external Promise<dynamic> getBalance(dynamic request);
+  @JS("getBalances")
+  external Promise<dynamic> getBalances(Object request);
 }

@@ -51,8 +51,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> acquireICPTs(BigInt doms) {
-    return ledgerApi!.acquireICPTs({'doms': doms}.toJsObject()).toFuture();
+  Future<void> acquireICPTs(String accountIdentifier, BigInt doms) {
+    return ledgerApi!.acquireICPTs(accountIdentifier, jsify({'doms': doms})).toFuture();
   }
 }
 
@@ -95,12 +95,9 @@ class AccountSyncService {
   }
 
   Future<Map<String, String>> fetchBalances(List<String> accountIds) async {
-    return Map.fromEntries(await Future.wait(accountIds.map((element) async {
-      final promise = ledgerApi.getBalance({'account': element}.toJsObject());
-      final response = await promiseToFutureAsMap(promise);
-      final doms = response!['doms'].toString();
-      return MapEntry(element, BigInt.parse(doms).toString());
-    })));
+    final promise = ledgerApi.getBalances(jsify({'accounts': accountIds}));
+    final response = await promiseToFutureAsMap(promise);
+    return response!.map((key, value) => MapEntry(key, value.doms.toString()));
   }
 }
 
