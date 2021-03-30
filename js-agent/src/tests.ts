@@ -49,31 +49,42 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         pageSize: 10
     });
     console.log(transactions);   
-    
-    console.log("creating a neuron");
-    const createNeuronResult = await governanceApi.createNeuron({
-        stake: {doms: BigInt(1_000_000_000)},
-        dissolveDelayInSecs: BigInt(20_000_000),
-        fromSubAccountId: account.subAccounts[0].id
-    });
-    console.log(createNeuronResult);
 
-    if (!("Ok" in createNeuronResult)) {
-        return;
+    console.log("get neurons")
+    let neurons = await governanceApi.getNeurons();
+    console.log(neurons)
+
+    if (neurons.length < 3) {    
+        console.log("creating a neuron");
+        const createNeuronResult = await governanceApi.createNeuron({
+            stake: {doms: BigInt(1_000_000_000)},
+            dissolveDelayInSecs: BigInt(20_000_000),
+            fromSubAccountId: account.subAccounts[0].id
+        });
+        console.log(createNeuronResult);
+
+        if (!("Ok" in createNeuronResult)) {
+            return;
+        }
+
+        console.log("get neurons again")
+        neurons = await governanceApi.getNeurons();
+        console.log(neurons)
     }
+
     console.log("make a 'motion' proposal");
-    const neuronId = createNeuronResult.Ok;
+    const neuronId = neurons[neurons.length - 1].neuronId;
     const manageNeuronResponse = await governanceApi.manageNeuron({
         id: { id: neuronId },
         command: {
             MakeProposal: {
-                url: "https://www.facebook.com/megrogan",
+                url: "https://www.lipsum.com/",
                 action: {
                     Motion: {
-                        motionText: "Matt for King!"
+                        motionText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                     }
                 },
-                summary: "Matt for King!"
+                summary: "Lorem Ipsum"
             }
         }
     });
