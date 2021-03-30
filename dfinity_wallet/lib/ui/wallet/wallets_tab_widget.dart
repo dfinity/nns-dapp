@@ -12,6 +12,7 @@ import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/_components/text_field_dialog_widget.dart';
 import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
+import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_row.dart';
 import 'package:dfinity_wallet/wallet_router_delegate.dart';
@@ -123,8 +124,8 @@ class _WalletsPageState extends State<WalletsPage> {
                       SubAccountsListWidget(
                         subAccounts: context.boxes.wallets.subAccounts,
                       ),
-                      SubAccountsListWidget(
-                        subAccounts: context.boxes.wallets.subAccounts,
+                      TransactionsListWidget(
+                        wallet: primary,
                       ),
                     ],
                   ),

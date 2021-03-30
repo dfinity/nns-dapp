@@ -21,19 +21,20 @@ class Wallet extends DfinityEntity with ICPSource {
   @HiveField(3)
   late String domsBalance;
   @HiveField(4)
-  List<Transaction> transactions = [];
+  List<Transaction> transactions;
   @HiveField(7)
   String? subAccount;
 
   Wallet(
-      this.name, this.address, this.primary, this.domsBalance, this.subAccount);
+      this.name, this.address, this.primary, this.domsBalance, this.subAccount, this.transactions);
 
   Wallet.create(
       {required this.name,
       required this.address,
       required this.primary,
       required this.subAccount,
-      required double icpBalance}) {
+      required double icpBalance,
+      required this.transactions}) {
     this.icpBalance = icpBalance;
   }
 

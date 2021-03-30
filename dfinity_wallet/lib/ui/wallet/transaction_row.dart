@@ -4,41 +4,54 @@ import '../../dfinity.dart';
 import 'balance_display_widget.dart';
 
 class TransactionRow extends StatelessWidget {
-    final Transaction transaction;
+  final Transaction transaction;
+  final Wallet currentAccount;
 
-    const TransactionRow({Key? key, required this.transaction}) : super(key: key);
+  const TransactionRow(
+      {Key? key, required this.transaction, required this.currentAccount})
+      : super(key: key);
 
-    @override
-    Widget build(BuildContext context) {
-        return Card(
-            color: Color(0xff292a2e),
-            child: Container(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                          BalanceDisplayWidget(
-                              amount: transaction.icptAmount,
-                              amountSize: 30,
-                              icpLabelSize: 20,
-                          ),
-                          SmallFormDivider(),
-                          if (transaction.from != null)
-                              Text(
-                                  "From: ${transaction.from}",
-                                  style: context.textTheme.bodyText2
-                              ),
-                          if (transaction.to != null)
-                              Text(
-                                  "To: ${transaction.to}",
-                                  style: context.textTheme.bodyText2,
-                              ),
-                      ],
-                  ),
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Color(0xff292a2e),
+      child: Container(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        (transaction.from == currentAccount.address)
+                            ? "Sent"
+                            : "Recieved",
+                        style: context.textTheme.headline3),
+                    SmallFormDivider(),
+                    if (transaction.from != currentAccount.address)
+                      Text("From: ${transaction.from}",
+                          style: context.textTheme.bodyText2),
+                    if (transaction.to != currentAccount.address)
+                      Text(
+                        "To: ${transaction.to}",
+                        style: context.textTheme.bodyText2?.copyWith(fontSize: 16),
+                      ),
+                  ],
                 ),
-            ),
-        );
-    }
+              ),
+              SizedBox(width: 20,),
+              BalanceDisplayWidget(
+                amount: transaction.icptAmount,
+                amountSize: 30,
+                icpLabelSize: 20,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

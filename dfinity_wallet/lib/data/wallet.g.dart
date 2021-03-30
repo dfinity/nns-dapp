@@ -22,7 +22,8 @@ class WalletAdapter extends TypeAdapter<Wallet> {
       fields[2] as bool,
       fields[3] as String,
       fields[7] as String?,
-    )..transactions = (fields[4] as List).cast<Transaction>();
+      (fields[4] as List).cast<Transaction>(),
+    );
   }
 
   @override

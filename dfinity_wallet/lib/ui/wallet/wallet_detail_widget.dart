@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/resource_orchstrator.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction_row.dart';
+import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
@@ -21,12 +24,30 @@ class WalletDetailPage extends StatefulWidget {
 class _WalletDetailPageState extends State<WalletDetailPage> {
   OverlayEntry? _overlayEntry;
 
+  StreamSubscription? subs;
+
+  @override
+  void didChangeDependencies() {
+
+    super.didChangeDependencies();
+    subs = context.boxes.wallets.watch(key: widget.wallet.address).listen((event) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    subs?.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Wallet"),
+        backgroundColor: AppColors.background,
       ),
       body: Container(
           color: AppColors.lightBackground,
@@ -52,37 +73,7 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                         amountSize: 40,
                         icpLabelSize: 25,
                       )),
-                  if (widget.wallet.transactions.isEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 100),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(32.0),
-                              child: Text(
-                                "No transactions!\n\n Your wallet is empty until ICPs are deposited with a transaction",
-                                style: context.textTheme.bodyText1,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            TextButton(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(24.0),
-                                  child: Text("Receive IC"),
-                                ),
-                                onPressed: () async {
-                                  LoadingOverlay.of(context).showOverlay();
-                                  await context.icApi.acquireICPTs(widget.wallet.address, BigInt.from(1500000000));
-                                  LoadingOverlay.of(context).hideOverlay();
-                                  setState(() {});
-                                })
-                          ],
-                        ),
-                      ),
-                    ),
-                  ...widget.wallet.transactions
-                      .map((e) => TransactionRow(transaction: e)),
+                  TransactionsListWidget(wallet: widget.wallet),
                   SizedBox(
                     height: 200,
                   )

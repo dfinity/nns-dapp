@@ -46,21 +46,18 @@ class PlatformICApi extends AbstractPlatformICApi {
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
       ledgerApi = new LedgerApi(gatewayHost, identity);
 
-
       // @Gilbert perhaps this could be triggered from a button?
       // Also this is being hit twice for some reason
 //      await promiseToFuture(ledgerApi!.integrationTest());
 
       accountsSyncService = AccountsSyncService(ledgerApi!, hiveBoxes.wallets);
       balanceSyncService = BalanceSyncService(ledgerApi!, hiveBoxes.wallets);
-      transactionSyncService = TransactionSyncService(ledgerApi: ledgerApi!);
+      transactionSyncService = TransactionSyncService(ledgerApi: ledgerApi!, accountsBox: hiveBoxes.wallets);
       await accountsSyncService!.performSync();
       await balanceSyncService!.syncBalances();
-      await transactionSyncService!.syncAccounts(hiveBoxes.wallets.values);
-
+      await transactionSyncService!.syncAccount(hiveBoxes.wallets.primary);
     }
   }
-
 
   @override
   Future<void> acquireICPTs(String accountIdentifier, BigInt doms) async {
@@ -80,7 +77,8 @@ class PlatformICApi extends AbstractPlatformICApi {
         address.toString(),
         false,
         "0",
-        namedSubAccount.subAccount.map((e) => e.toInt()).toList().cast<int>());
+        namedSubAccount.subAccount.map((e) => e.toInt()).toList().cast<int>(),
+        []);
     await hiveBoxes.wallets.put(address.toString(), newWallet);
   }
 
@@ -91,8 +89,10 @@ class PlatformICApi extends AbstractPlatformICApi {
       'to': toAccount,
       'amount': {'doms': icpts.toDoms}
     })));
-     await Future.wait([balanceSyncService!.syncBalances(),
-     transactionSyncService!.syncAccounts(hiveBoxes.wallets.values)]);
+    await Future.wait([
+      balanceSyncService!.syncBalances(),
+      transactionSyncService!.syncAccounts(hiveBoxes.wallets.values)
+    ]);
   }
 }
 
@@ -131,7 +131,8 @@ class AccountsSyncService {
               address: address,
               subAccount: subAccount,
               primary: primary,
-              icpBalance: 0));
+              icpBalance: 0,
+              transactions: []));
     }
   }
 }
@@ -143,7 +144,8 @@ class BalanceSyncService {
   BalanceSyncService(this.ledgerApi, this.accountBox);
 
   Future<void> syncBalances() async {
-    Map<String, String> balanceByAddress = await fetchBalances(accountBox.values.map((e) => e.address).toList());
+    Map<String, String> balanceByAddress =
+        await fetchBalances(accountBox.values.map((e) => e.address).toList());
     await Future.wait(balanceByAddress.entries.mapToList((entry) async {
       final account = accountBox.get(entry.key);
       account!.domsBalance = entry.value;
@@ -158,44 +160,41 @@ class BalanceSyncService {
   }
 }
 
-
 class TransactionSyncService {
   final LedgerApi ledgerApi;
-  TransactionSyncService({required this.ledgerApi});
+  final Box<Wallet> accountsBox;
+
+  TransactionSyncService({required this.ledgerApi, required this.accountsBox});
 
   Future<void> syncAccounts(Iterable<Wallet> accounts) async {
     await Future.wait(accounts.mapToList((e) => syncAccount(e)));
   }
 
   Future<void> syncAccount(Wallet account) async {
-    final response = await promiseToFutureAsMap(ledgerApi.getTransactions(jsify({
-      'accountIdentifier': account.address,
-      'pageSize': 100,
-      'offset': 0
-    })));
+    final response = await promiseToFuture(ledgerApi.getTransactions(jsify(
+        {'accountIdentifier': account.address, 'pageSize': 100, 'offset': 0})));
 
-    final returnedTransactions = response!['transactions']!;
     final transactions = <Transaction>[];
-    returnedTransactions.forEach((e) {
-      final send = e.transfer.send;
-      final receive = e.transfer.receive;
+    response.transactions.forEach((e) {
+      final send = e.transfer.Send;
+      final receive = e.transfer.Receive;
 
       late String from;
       late String to;
       late String doms;
-      if(send != null){
+      if (send != null) {
         from = account.address;
         to = send.to.toString();
         doms = send.amount.doms.toString();
       }
-      if(receive != null){
+      if (receive != null) {
         to = account.address;
         from = receive.from.toString();
         doms = receive.amount.doms.toString();
       }
 
-      final milliseconds = int.parse(e.timestamp.toString()) * 1000;
-
+      print("from ${from} to ${to}");
+      final milliseconds = int.parse(e.timestamp.secs.toString()) * 1000;
       transactions.add(Transaction(
         to: to,
         from: from,
@@ -203,8 +202,15 @@ class TransactionSyncService {
         domsAmount: doms,
       ));
     });
-    account.transactions = transactions;
-    account.save();
+    print("parsed ${transactions.length} transactions for ${account.address}");
+
+    Future.wait(accountsBox.values.map((e) async {
+      e.transactions = transactions
+          .filter(
+              (element) => element.to == e.address || element.from == e.address)
+          .toList();
+      e.save();
+    }));
   }
 }
 
