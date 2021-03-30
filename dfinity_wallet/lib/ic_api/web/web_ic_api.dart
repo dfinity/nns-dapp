@@ -41,6 +41,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       //const gatewayHost = "http://localhost:8080/";
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
       ledgerApi = new LedgerApi(gatewayHost, identity);
+
+      // @Gilbert perhaps this could be triggered from a button?
+      // Also this is being hit twice for some reason
+      await promiseToFuture(ledgerApi!.integrationTest());
+
       final accountResponse = await promiseToFuture(ledgerApi!.getAccount());
 
       final accountSync = AccountSyncService(ledgerApi!, hiveBoxes);

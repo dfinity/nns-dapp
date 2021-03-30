@@ -1,7 +1,7 @@
-import LedgerService, { ICPTs } from "./model";
-import GovernanceService, { GovernanceError } from "../governance/model";
+import LedgerService, { ICPTs } from "../ledger/model";
+import GovernanceService, { GovernanceError } from "./model";
 import { BinaryBlob, blobFromUint8Array, DerEncodedBlob, Principal, SignIdentity } from "@dfinity/agent";
-import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
+import GOVERNANCE_CANISTER_ID from "./canisterId";
 import * as convert from "../converters";
 import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
 import crc from "crc";
@@ -44,7 +44,7 @@ export default async function(
     // 3. Call the Governance canister to "claim" the neuron
     const claimResponse = await governanceService.claimNeuron({
         publicKey,
-        nonce: convert.arrayBufferToBigInt(nonce),
+        nonce: convert.arrayBufferToBigInt(nonce.buffer),
         dissolveDelayInSecs: request.dissolveDelayInSecs    
     });
 

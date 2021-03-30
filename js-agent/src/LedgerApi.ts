@@ -14,6 +14,7 @@ import LedgerViewService, {
     GetTransactionsResponse,
     NamedSubAccount
 } from "./canisters/ledgerView/model";
+import { test_happy_path } from "./tests";
 
 export default class LedgerApi {
     private readonly ledgerService: LedgerService;
@@ -31,7 +32,6 @@ export default class LedgerApi {
     // Temporary method for demo purposes only, to give the specified account some ICPTs
     // by sending from the anon account which has been gifted lots of ICPTs
     public acquireICPTs = async (accountIdentifier: AccountIdentifier, icpts: ICPTs): Promise<void> => {
-        console.log("Account id " + accountIdentifier + " ICPTs " + icpts.doms);
         const anonIdentity = new AnonymousIdentity();
         const anonLedgerService = ledgerBuilder(this.host, anonIdentity);
         await anonLedgerService.sendICPTs({
@@ -59,7 +59,6 @@ export default class LedgerApi {
     }
 
     public getBalances = (request: GetBalancesRequest) : Promise<{}> => {
-        console.log("accounts : " + request.accounts);
         return this.ledgerService.getBalances(request);
     }
 
@@ -71,6 +70,10 @@ export default class LedgerApi {
         const response = await this.ledgerService.sendICPTs(request);
         this.ledgerViewService.syncTransactions();
         return response;
+    }
+
+    public integrationTest = async (): Promise<void> => {
+        return await test_happy_path(this.host, this.identity);
     }
 }
 

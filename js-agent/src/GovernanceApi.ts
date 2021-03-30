@@ -5,7 +5,7 @@ import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/model";
 import GovernanceService, { GetFullNeuronResponse, GetNeuronInfoResponse, ManageNeuron, ManageNeuronResponse } from "./canisters/governance/model";
 import { ProposalInfo } from "./canisters/governance/model";
-import createNeuronImpl, { CreateNeuronRequest, CreateNeuronResponse } from "./canisters/ledger/createNeuron";
+import createNeuronImpl, { CreateNeuronRequest, CreateNeuronResponse } from "./canisters/governance/createNeuron";
 
 export default class GovernanceApi {
     private readonly governanceService: GovernanceService;

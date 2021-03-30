@@ -24,4 +24,7 @@ class LedgerApi {
 
   @JS("sendICPTs")
   external Promise<dynamic> sendICPTs(Object request);
+
+  @JS("integrationTest")
+  external Promise<void> integrationTest();
 }
