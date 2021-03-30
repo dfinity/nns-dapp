@@ -6,8 +6,8 @@ export type BlockHeight = bigint;
 
 export interface ICPTs { doms: bigint };
 
-export interface GetBalanceRequest {
-    account: AccountIdentifier,
+export interface GetBalancesRequest {
+    accounts: Array<AccountIdentifier>,
 };
 
 export type AccountIdentifier = string;
@@ -30,7 +30,7 @@ export interface NotifyCanisterRequest {
 };
   
 export default interface ServiceInterface {
-    getBalance(request: GetBalanceRequest): Promise<ICPTs>,
+    getBalances(request: GetBalancesRequest): Promise<{}>,
     sendICPTs(request: SendICPTsRequest): Promise<BlockHeight>,
     notify(request: NotifyCanisterRequest): Promise<void>
 };

@@ -1,13 +1,13 @@
 import BigNumber from "bignumber.js";
-import { GetBalanceRequest, ICPTs, NotifyCanisterRequest, SendICPTsRequest } from "./model";
+import { GetBalancesRequest, ICPTs, NotifyCanisterRequest, SendICPTsRequest } from "./model";
 import { AccountBalanceArgs, ICPTs as RawICPTs, NotifyCanisterArgs, SendArgs } from "./rawService";
 import * as convert from "../converters";
 
 export const TRANSACTION_FEE : RawICPTs = { doms: new BigNumber(137) };
 
 export default class RequestConverters {
-    public fromGetBalanceRequest(request: GetBalanceRequest) : AccountBalanceArgs {
-        return request
+    public fromGetBalancesRequest(request: GetBalancesRequest) : Array<AccountBalanceArgs> {
+        return request.accounts.map(a => ({ account: a }));
     }
 
     public fromSendICPTsRequest(request: SendICPTsRequest): SendArgs {

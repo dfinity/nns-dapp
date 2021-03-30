@@ -1,5 +1,10 @@
 import { Principal } from "@dfinity/agent";
-import ServiceInterface, { BlockHeight, GetBalanceRequest, ICPTs, NotifyCanisterRequest, SendICPTsRequest } from "./model";
+import ServiceInterface, {
+    BlockHeight,
+    GetBalancesRequest,
+    NotifyCanisterRequest,
+    SendICPTsRequest
+} from "./model";
 import RawService from "./rawService";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
@@ -17,10 +22,19 @@ export default class Service implements ServiceInterface {
         this.responseConverters = new ResponseConverters();
     }
 
-    public async getBalance(request: GetBalanceRequest): Promise<ICPTs> {
-        const rawRequest = this.requestConverters.fromGetBalanceRequest(request);
-        const result = await this.service.account_balance(rawRequest);
-        return this.responseConverters.toICPTs(result);
+    public async getBalances(request: GetBalancesRequest): Promise<{}> {
+        const rawRequests = this.requestConverters.fromGetBalancesRequest(request);
+        const promises = rawRequests.map(async r => {
+            const rawResponse = await this.service.account_balance(r);
+            return this.responseConverters.toICPTs(rawResponse);
+        });
+        const balances = await Promise.all(promises);
+
+        const result = {};
+        request.accounts.forEach((a, index) => {
+            result[a] = balances[index];
+        })
+        return result;
     }
 
     public async sendICPTs(request: SendICPTsRequest): Promise<BlockHeight> {
