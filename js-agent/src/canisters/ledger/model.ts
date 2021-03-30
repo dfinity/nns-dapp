@@ -18,14 +18,14 @@ export interface SendICPTsRequest {
     memo?: ArrayBuffer,
     fee?: ICPTs,
     blockHeight?: BlockHeight,
-    fromSubAccountIndex?: number,
+    fromSubAccountId?: number,
 };
 
 export interface NotifyCanisterRequest {
     toCanister : Principal,
     blockHeight : BlockHeight,
     toSubAccount? : SubAccount,
-    fromSubAccount? : SubAccount,
+    fromSubAccountId? : number,
     maxFee? : ICPTs,
 };
   

@@ -18,7 +18,7 @@ export default class RequestConverters {
             memo: new BigNumber(0),
             amount: this.fromICPTs(request.amount),
             block_height: request.blockHeight === undefined ? [] : [convert.bigIntToBigNumber(request.blockHeight)],
-            from_subaccount: request.fromSubAccountIndex === undefined ? [] : [this.subAccountIndexToSubAccount(request.fromSubAccountIndex)]
+            from_subaccount: request.fromSubAccountId === undefined ? [] : [this.subAccountIdToSubAccount(request.fromSubAccountId)]
         };
     }  
     
@@ -33,12 +33,12 @@ export default class RequestConverters {
             to_canister : request.toCanister,
             block_height: convert.bigIntToBigNumber(request.blockHeight),
             to_subaccount : request.toSubAccount === undefined ? [] : [convert.arrayBufferToArrayOfNumber(request.toSubAccount)],
-            from_subaccount : request.fromSubAccount === undefined ? [] : [convert.arrayBufferToArrayOfNumber(request.fromSubAccount)],
+            from_subaccount: request.fromSubAccountId === undefined ? [] : [this.subAccountIdToSubAccount(request.fromSubAccountId)],
             max_fee : request.maxFee === undefined ? TRANSACTION_FEE : this.fromICPTs(request.maxFee),
         };
     }
 
-    private subAccountIndexToSubAccount = (index: number) : SubAccount => {
+    private subAccountIdToSubAccount = (index: number) : SubAccount => {
         const bytes = convert.numberToArrayBuffer(index, SUB_ACCOUNT_BYTE_LENGTH);
         return convert.arrayBufferToArrayOfNumber(bytes);
     }

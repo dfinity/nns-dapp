@@ -17,9 +17,9 @@ export interface GetTransactionsResponse {
     transactions: Array<Transaction>,
 };
 export interface NamedSubAccount {
+    id: number,
     accountIdentifier: AccountIdentifier,
     name: string,
-    subAccountIndex: number,
 };
 export interface Receive { fee: ICPTs, from: AccountIdentifier, amount: ICPTs };
 export interface Send { to: AccountIdentifier, fee: ICPTs, amount: ICPTs };

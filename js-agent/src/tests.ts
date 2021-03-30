@@ -29,7 +29,11 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         console.log("getting account");
         account = await ledgerApi.getAccount();
         console.log("acquireICPTs");
-        await ledgerApi.acquireICPTs(account.accountIdentifier, {doms: BigInt(2_000_000_000)});
+        await ledgerApi.acquireICPTs(account.accountIdentifier, {doms: BigInt(100_000_000)});
+        await ledgerApi.acquireICPTs(account.subAccounts[0].accountIdentifier, {doms: BigInt(2_000_000_000)});
+    } else {
+        console.log("acquireICPTs");
+        await ledgerApi.acquireICPTs(account.subAccounts[0].accountIdentifier, {doms: BigInt(1_000_100_000)});
     }
     
     console.log("getting balances");
@@ -49,10 +53,31 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     console.log("creating a neuron");
     const createNeuronResult = await governanceApi.createNeuron({
         stake: {doms: BigInt(1_000_000_000)},
-        dissolveDelayInSecs: BigInt(1000)
+        dissolveDelayInSecs: BigInt(20_000_000),
+        fromSubAccountId: account.subAccounts[0].id
     });
     console.log(createNeuronResult);
 
+    if (!("Ok" in createNeuronResult)) {
+        return;
+    }
+    console.log("make a 'motion' proposal");
+    const neuronId = createNeuronResult.Ok;
+    const manageNeuronResponse = await governanceApi.manageNeuron({
+        id: { id: neuronId },
+        command: {
+            MakeProposal: {
+                url: "https://www.facebook.com/megrogan",
+                action: {
+                    Motion: {
+                        motionText: "Matt for King!"
+                    }
+                },
+                summary: "Matt for King!"
+            }
+        }
+    });
+    console.log(manageNeuronResponse);    
 
     console.log("finish integration test");
 }

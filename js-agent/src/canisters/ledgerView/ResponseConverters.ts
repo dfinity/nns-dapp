@@ -47,9 +47,9 @@ export default class ResponseConverters {
 
     public toNamedSubAccount = (subAccount: RawNamedSubAccount) : NamedSubAccount => {
         return {
+            id: this.toSubAccountId(subAccount.sub_account),
             accountIdentifier: subAccount.account_identifier,
             name: subAccount.name,
-            subAccountIndex: this.toSubAccountIndex(subAccount.sub_account)
         }
     }
 
@@ -100,7 +100,7 @@ export default class ResponseConverters {
         throw new Error("Unrecognised transfer type - " + JSON.stringify(transfer));
     }
 
-    private toSubAccountIndex = (subAccount: Array<number>) : number => {
+    private toSubAccountId = (subAccount: Array<number>) : number => {
         const bytes = convert.arrayOfNumberToArrayBuffer(subAccount);
         return convert.arrayBufferToNumber(bytes);
     }

@@ -9,7 +9,8 @@ import randomBytes from "randomBytes";
 
 export type CreateNeuronRequest = {
     stake: ICPTs
-    dissolveDelayInSecs: bigint
+    dissolveDelayInSecs: bigint,
+    fromSubAccountId?: number
 }
 
 export type CreateNeuronResponse = { Ok: bigint } | { Err: GovernanceError };
@@ -21,27 +22,29 @@ export default async function(
     governanceService: GovernanceService, 
     request: CreateNeuronRequest) : Promise<CreateNeuronResponse> {
 
-    // 0. Generate a nonce and a sub-account
+    console.log("0. Generate a nonce and a sub-account");
     const publicKey = identity.getPublicKey().toDer();
     const nonce = new Uint8Array(randomBytes(8));
     const toSubAccount = await buildSubAccount(nonce, publicKey);
 
-    // 1. Send the stake to a sub-account where the principal is the Governance canister
+    console.log("1. Send the stake to a sub-account where the principal is the Governance canister");
     const accountIdentifier = buildAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
     const blockHeight = await ledgerService.sendICPTs({
         memo: nonce,
         amount: request.stake,
-        to: accountIdentifier
+        to: accountIdentifier,
+        fromSubAccountId: request.fromSubAccountId
     });
 
-    // 2. Notify the Governance canister that a neuron has been staked
+    console.log("2. Notify the Governance canister that a neuron has been staked");
     await ledgerService.notify({
         toCanister: GOVERNANCE_CANISTER_ID,
         blockHeight: blockHeight,
-        toSubAccount: toSubAccount
+        toSubAccount: toSubAccount,
+        fromSubAccountId: request.fromSubAccountId
     });
 
-    // 3. Call the Governance canister to "claim" the neuron
+    console.log("3. Call the Governance canister to claim the neuron");
     const claimResponse = await governanceService.claimNeuron({
         publicKey,
         nonce: convert.arrayBufferToBigInt(nonce.buffer),
