@@ -20,7 +20,7 @@ export default class GovernanceApi {
 
     public async createNeuron(request: CreateNeuronRequest) : Promise<CreateNeuronResponse> {
         return createNeuronImpl(
-            this.identity.getPublicKey().toDer(), 
+            this.identity, 
             this.ledgerService, 
             this.governanceService, 
             request);

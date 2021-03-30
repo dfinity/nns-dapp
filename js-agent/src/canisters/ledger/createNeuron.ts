@@ -1,8 +1,11 @@
 import LedgerService, { ICPTs } from "./model";
 import GovernanceService, { GovernanceError } from "../governance/model";
-import { DerEncodedBlob } from "@dfinity/agent";
+import { BinaryBlob, blobFromUint8Array, DerEncodedBlob, Principal, SignIdentity } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
 import * as convert from "../converters";
+import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
+import crc from "crc";
+import randomBytes from "randomBytes";
 
 export type CreateNeuronRequest = {
     stake: ICPTs
@@ -11,22 +14,24 @@ export type CreateNeuronRequest = {
 
 export type CreateNeuronResponse = { Ok: bigint } | { Err: GovernanceError };
 
+// Ported from https://github.com/dfinity-lab/dfinity/blob/master/rs/nns/integration_tests/src/ledger.rs#L29
 export default async function(
-    publicKey: DerEncodedBlob,
+    identity: SignIdentity,
     ledgerService: LedgerService, 
     governanceService: GovernanceService, 
     request: CreateNeuronRequest) : Promise<CreateNeuronResponse> {
 
     // 0. Generate a nonce and a sub-account
-    let nonce = generateNonce();
-    let toSubAccount = await createSubAccount(nonce, publicKey);
+    const publicKey = identity.getPublicKey().toDer();
+    const nonce = new Uint8Array(randomBytes(8));
+    const toSubAccount = await buildSubAccount(nonce, publicKey);
 
     // 1. Send the stake to a sub-account where the principal is the Governance canister
-    let blockHeight = await ledgerService.sendICPTs({
+    const accountIdentifier = buildAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
+    const blockHeight = await ledgerService.sendICPTs({
         memo: nonce,
         amount: request.stake,
-        to: GOVERNANCE_CANISTER_ID.toString(),
-        // TODO - toSubAccount: toSubAccount
+        to: accountIdentifier
     });
 
     // 2. Notify the Governance canister that a neuron has been staked
@@ -37,7 +42,7 @@ export default async function(
     });
 
     // 3. Call the Governance canister to "claim" the neuron
-    let claimResponse = await governanceService.claimNeuron({
+    const claimResponse = await governanceService.claimNeuron({
         publicKey,
         nonce: convert.arrayBufferToBigInt(nonce),
         dissolveDelayInSecs: request.dissolveDelayInSecs    
@@ -49,21 +54,40 @@ export default async function(
 }
 
 // 32 bytes
-export async function createSubAccount(nonce: Uint8Array, publicKey: DerEncodedBlob) : Promise<ArrayBuffer> {
-    const text = "neuron-claim";
-    const bufferSize = 1 + text.length + publicKey.length + nonce.length;
-    let buffer = new ArrayBuffer(bufferSize);
-    let bytes = new Uint8Array(buffer);
-    bytes[0] = 0x0c;
-    bytes.set(convert.asciiStringToByteArray("neuron-claim"), 1);
-    bytes.set(publicKey, 1 + text.length);
-    bytes.set(nonce, 1 + text.length + publicKey.length);
-    return await crypto.subtle.digest("SHA-256", bytes);
+export async function buildSubAccount(nonce: Uint8Array, publicKey: DerEncodedBlob) : Promise<ArrayBuffer> {
+    const padding = convert.asciiStringToByteArray("neuron-claim");
+    const array = new Uint8Array([
+        0x0c, 
+        ...padding, 
+        ...publicKey, 
+        ...nonce]);
+    return await crypto.subtle.digest("SHA-256", array);
 }
 
-// 8 bytes
-function generateNonce(): Uint8Array {
-    var array = new Uint8Array(8);
-    window.crypto.getRandomValues(array);
-    return array;
+// hex string of length 64
+// ported from https://github.com/dfinity-lab/dfinity/blob/master/rs/rosetta-api/canister/src/account_identifier.rs
+export function buildAccountIdentifier(principal: Principal, subAccount: ArrayBuffer) : string {
+    // Hash (sha224) the principal, the subAccount and some padding
+    const padding = convert.asciiStringToByteArray("\x0Aaccount-id");
+    const array = new Uint8Array([
+        ...padding, 
+        ...principal.toBlob(), 
+        ...new Uint8Array(subAccount)]);
+    const hash = sha224(array);
+    
+    // Prepend the checksum of the hash and convert to a hex string
+    const checksum = calculateCrc32(hash);
+    const array2 = new Uint8Array([
+        ...checksum,
+        ...hash
+    ]);
+    return blobFromUint8Array(array2).toString("hex");
+}
+
+// 4 bytes
+function calculateCrc32(bytes: BinaryBlob) : Uint8Array {
+    const checksumArrayBuf = new ArrayBuffer(4);
+    const view = new DataView(checksumArrayBuf);
+    view.setUint32(0, crc.crc32(Buffer.from(bytes)), false);
+    return Buffer.from(checksumArrayBuf);
 }
