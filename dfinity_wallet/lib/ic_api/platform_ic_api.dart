@@ -4,7 +4,7 @@ abstract class AbstractPlatformICApi extends State<ICApiManager> {
     void authenticate(BuildContext context);
     Future<void> buildServices(BuildContext context);
 
-    Future<void> acquireICPTs(ICPTs icpts);
+    Future<void> acquireICPTs(BigInt doms);
 
     @override
     Widget build(BuildContext context) {

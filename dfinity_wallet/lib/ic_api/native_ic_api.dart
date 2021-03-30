@@ -22,7 +22,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> acquireICPTs(ICPTs icpTs) {
+  Future<void> acquireICPTs(BigInt doms) {
     // TODO: implement acquireICPTs
     throw UnimplementedError();
   }

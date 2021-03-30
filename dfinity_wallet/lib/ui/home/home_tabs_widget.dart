@@ -50,9 +50,7 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       LoadingOverlay.of(context).showOverlay();
                       // await 10.seconds.delay;
-                      await context.icApi.acquireICPTs(ICPTs(
-                        doms: BigInt.from(10000)
-                      ));
+                      await context.icApi.acquireICPTs(BigInt.from(1500000000));
                       LoadingOverlay.of(context).hideOverlay();
                     },
                   )

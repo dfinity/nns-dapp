@@ -33,39 +33,41 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   Future<void> buildServices(BuildContext context) async {
-    final token = context.boxes.authToken.webAuthToken;
+    final hiveBoxes = context.boxes;
+    final token = hiveBoxes.authToken.webAuthToken;
     if (token != null && token.data != null) {
       const gatewayHost = "http://10.12.31.5:8080/";
       //const gatewayHost = "http://localhost:8080/";
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
       ledgerApi = new LedgerApi(gatewayHost, identity);
-      final accountResponse = await promiseToFutureAsMap(ledgerApi!.getAccount());
+      final accountResponse =
+          await promiseToFutureAsMap(ledgerApi!.getAccount());
       final account = AccountDetails(accountResponse!);
 
       print("Account $account");
-      final accountSync = AccountSyncService(ledgerApi!, context);
+      final accountSync = AccountSyncService(ledgerApi!, hiveBoxes);
       accountSync.syncWallets(account);
     }
   }
 
   @override
-  Future<void> acquireICPTs(ICPTs icpts) {
-    return ledgerApi!.acquireICPTs(icpts).toFuture();
+  Future<void> acquireICPTs(BigInt doms) {
+    return ledgerApi!.acquireICPTs({'doms': doms}.toJsObject()).toFuture();
   }
 }
 
 class AccountSyncService {
   final LedgerApi ledgerApi;
-  final BuildContext context;
+  final HiveBoxesWidget hiveBoxes;
   late Map<String, Wallet> accountsByAddress;
 
-  AccountSyncService(this.ledgerApi, this.context) {
-    final wallets = context.boxes.wallets.values;
+  AccountSyncService(this.ledgerApi, this.hiveBoxes) {
+    final wallets = hiveBoxes.wallets.values;
     accountsByAddress = wallets.associateBy((element) => element.address);
   }
 
   void syncWallets(AccountDetails accountDetails) async {
-    Map<String, int> balanceByAddress = await fetchBalances([
+    Map<String, String> balanceByAddress = await fetchBalances([
       accountDetails.defaultAccount.toString(),
       ...accountDetails.subAccounts.map((e) => e.accountIdentifier)
     ]);
@@ -78,28 +80,32 @@ class AccountSyncService {
     });
   }
 
-  void createOrUpdateWallet(String accountIdentifier, String name, bool primary,
-      Map<String, int> balanceByAddress) {
-    // final publicKey = principal.toString();
-    // if (accountsByAddress.containsKey(publicKey)) {
-    //   // context.boxes.wallets.put(publicKey, Wallet(name, publicKey, primary));
-    // } else {
-    //   final wallet = accountsByAddress[publicKey]!;
-    // }
+  Future<void> createOrUpdateWallet(String accountIdentifier, String name,
+      bool primary, Map<String, String> balanceByAddress) async {
+    if (!accountsByAddress.containsKey(accountIdentifier)) {
+      await hiveBoxes.wallets.put(
+          accountIdentifier,
+          Wallet(name, accountIdentifier, primary,
+              balanceByAddress[accountIdentifier]!));
+    } else {
+      final wallet = accountsByAddress[accountIdentifier]!;
+      wallet.domsBalance = balanceByAddress[accountIdentifier]!.toString();
+      await wallet.save();
+    }
   }
 
-  Future<Map<String, int>> fetchBalances(List<String> accountIds) async {
+  Future<Map<String, String>> fetchBalances(List<String> accountIds) async {
     return Map.fromEntries(await Future.wait(accountIds.map((element) async {
       final promise = ledgerApi.getBalance({'account': element}.toJsObject());
       final response = await promiseToFutureAsMap(promise);
-      return MapEntry(element, response!['doms'].toString().toInt());
+      final doms = response!['doms'].toString();
+      return MapEntry(element, BigInt.parse(doms).toString());
     })));
   }
 }
 
-
 extension ToJSObject on Map {
-  Object toJsObject(){
+  Object toJsObject() {
     var object = newObject();
     this.forEach((k, v) {
       var key = k;
