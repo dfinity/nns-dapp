@@ -21,8 +21,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     await context.boxes.authToken.clear();
 
     final key = authApi.createKey();
-    context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()
-      ..key = key);
+    context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
     authApi.loginWithIdentityProvider(
         key, "http://" + window.location.host + "/home");
   }
@@ -40,8 +39,10 @@ class PlatformICApi extends AbstractPlatformICApi {
       //const gatewayHost = "http://localhost:8080/";
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
       ledgerApi = new LedgerApi(gatewayHost, identity);
-      final account = await ledgerApi!.getAccount().toFuture();
+      final accountResponse = await promiseToFutureAsMap(ledgerApi!.getAccount());
+      final account = AccountDetails(accountResponse!);
 
+      print("Account $account");
       final accountSync = AccountSyncService(ledgerApi!, context);
       accountSync.syncWallets(account);
     }
@@ -58,34 +59,53 @@ class AccountSyncService {
   final BuildContext context;
   late Map<String, Wallet> accountsByAddress;
 
-
   AccountSyncService(this.ledgerApi, this.context) {
     final wallets = context.boxes.wallets.values;
     accountsByAddress = wallets.associateBy((element) => element.address);
   }
 
   void syncWallets(AccountDetails accountDetails) async {
-    Map<String, double> balanceByAddress = await fetchBalances([
+    Map<String, int> balanceByAddress = await fetchBalances([
       accountDetails.defaultAccount.toString(),
-      ...accountDetails.subAccounts.map((e) => e.principal.toString())
+      ...accountDetails.subAccounts.map((e) => e.accountIdentifier)
     ]);
 
-    // createOrUpdateWallet(accountDetails.defaultAccount, "Default", true);
-    // accountDetails.subAccounts.forEach((element) {
-    //   createOrUpdateWallet(element.principal, false);
-    // });
+    createOrUpdateWallet(
+        accountDetails.defaultAccount, "Default", true, balanceByAddress);
+    accountDetails.subAccounts.forEach((element) {
+      createOrUpdateWallet(
+          element.accountIdentifier, element.name, false, balanceByAddress);
+    });
   }
 
-  void createOrUpdateWallet(Principal principal, String name, bool primary, Map<String, double> balanceByAddress) {
-    final publicKey = principal.toString();
-    if (accountsByAddress.containsKey(publicKey)) {
-      // context.boxes.wallets.put(publicKey, Wallet(name, publicKey, primary));
-    } else {
-      final wallet = accountsByAddress[publicKey]!;
-    }
+  void createOrUpdateWallet(String accountIdentifier, String name, bool primary,
+      Map<String, int> balanceByAddress) {
+    // final publicKey = principal.toString();
+    // if (accountsByAddress.containsKey(publicKey)) {
+    //   // context.boxes.wallets.put(publicKey, Wallet(name, publicKey, primary));
+    // } else {
+    //   final wallet = accountsByAddress[publicKey]!;
+    // }
   }
 
-  Future<Map<String, double>> fetchBalances(List<String> accountIds) async {
-    return {};
+  Future<Map<String, int>> fetchBalances(List<String> accountIds) async {
+    return Map.fromEntries(await Future.wait(accountIds.map((element) async {
+      final promise = ledgerApi.getBalance({'account': element}.toJsObject());
+      final response = await promiseToFutureAsMap(promise);
+      return MapEntry(element, response!['doms'].toString().toInt());
+    })));
+  }
+}
+
+
+extension ToJSObject on Map {
+  Object toJsObject(){
+    var object = newObject();
+    this.forEach((k, v) {
+      var key = k;
+      var value = v;
+      setProperty(object, key, value);
+    });
+    return object;
   }
 }

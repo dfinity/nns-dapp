@@ -14,5 +14,8 @@ class LedgerApi {
   external Promise<void> acquireICPTs(ICPTs icpts);
 
   @JS("getAccount")
-  external Promise<AccountDetails> getAccount();
+  external Promise<dynamic> getAccount();
+
+  @JS("getAccount")
+  external Promise<dynamic> getBalance(dynamic request);
 }
