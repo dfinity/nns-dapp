@@ -71,17 +71,11 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                                   padding: const EdgeInsets.all(24.0),
                                   child: Text("Receive IC"),
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    widget.wallet.transactions = 0
-                                        .rangeTo(3)
-                                        .map((e) => Transaction(
-                                            fromKey: Uuid().v4(),
-                                            amount: rand.nextInt(10000) / 100,
-                                            date: DateTime.now()))
-                                        .toList();
-                                    widget.wallet.save();
-                                  });
+                                onPressed: () async {
+                                  LoadingOverlay.of(context).showOverlay();
+                                  await context.icApi.acquireICPTs(widget.wallet.address, BigInt.from(1500000000));
+                                  LoadingOverlay.of(context).hideOverlay();
+                                  setState(() {});
                                 })
                           ],
                         ),

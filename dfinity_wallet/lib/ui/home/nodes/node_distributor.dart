@@ -35,7 +35,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
 
   final World physicsWorld =
       World(Vector2.zero(), DefaultBroadPhaseBuffer(DynamicTreeFlatNodes()));
-  WallRepulsionForce wallRepulsionForce = WallRepulsionForce(wallCharge: 0.1);
+  WallRepulsionForce wallRepulsionForce = WallRepulsionForce(wallCharge: 0.5);
 
   // CenterRepulsionForce centerRepulsionForce = CenterRepulsionForce(charge: 2);
 

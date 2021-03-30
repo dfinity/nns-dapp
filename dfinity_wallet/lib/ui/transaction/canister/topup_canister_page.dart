@@ -67,15 +67,6 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
                           final cyclesBought = (amount * 50).round();
                           widget.canister.cyclesAdded += cyclesBought;
 
-                          if(widget.source is Wallet){
-                            final wallet = widget.source as Wallet;
-                            wallet.transactions = [
-                              ...wallet.transactions,
-                              Transaction(
-                                  amount: amount, fromKey: wallet.address, toKey: widget.canister.publicKey, date: DateTime.now())
-                            ];
-                            wallet.save();
-                          }
 
                           NewTransactionOverlay.of(context).pushPage(DoneWidget(numCycles: cyclesBought, canisterName: widget.canister.name));
                         }.takeIf((e) => widget.canister != null),

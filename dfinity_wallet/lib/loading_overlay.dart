@@ -125,8 +125,9 @@ extension ShowLoading on BuildContext {
   void hideLoadingOverlay() => LoadingOverlay.of(this).hideOverlay();
 
   Future<void> performLoading(Future<void> Function() action) async {
-    showLoadingOverlay();
+    final overlay = LoadingOverlay.of(this);
+    overlay.showOverlay();
     await action();
-    hideLoadingOverlay();
+    overlay.hideOverlay();
   }
 }

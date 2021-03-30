@@ -5,8 +5,7 @@ abstract class ICPSource {
 
   abstract String domsBalance;
 
-  double get icpBalance =>
-      BigInt.parse(domsBalance) / BigInt.from(DOMS_TO_ICPT);
+  double get icpBalance => domsBalance.toICPT;
 
   set icpBalance(double value) {
     final floored = value.floor();
@@ -27,4 +26,9 @@ extension ToDoms on double {
         BigInt.from(remainder * DOMS_TO_ICPT);
     return domsInt;
   }
+}
+
+extension ToICPT on String {
+  double get toICPT =>
+      BigInt.parse(this) / BigInt.from(DOMS_TO_ICPT);
 }

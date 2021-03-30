@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:dfinity_wallet/dfinity.dart';
@@ -26,11 +27,23 @@ class WalletsPage extends StatefulWidget {
 }
 
 class _WalletsPageState extends State<WalletsPage> {
+
+  StreamSubscription? walletsSubscription;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    walletsSubscription = context.boxes.wallets.watch().listen((event) {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final wallets = context.boxes.wallets.values;
     if (wallets.isEmpty) {
-      return NodeWorld();
+      return Container();
     }
     final primary = context.boxes.wallets.primary;
     final subAccounts = context.boxes.wallets.subAccounts;
@@ -153,6 +166,12 @@ class _WalletsPageState extends State<WalletsPage> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    walletsSubscription?.cancel();
   }
 }
 

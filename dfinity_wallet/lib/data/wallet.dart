@@ -22,8 +22,8 @@ class Wallet extends DfinityEntity with ICPSource {
   late String domsBalance;
   @HiveField(4)
   List<Transaction> transactions = [];
-  @HiveField(5)
-  List<int>? subAccount;
+  @HiveField(7)
+  String? subAccount;
 
   Wallet(
       this.name, this.address, this.primary, this.domsBalance, this.subAccount);

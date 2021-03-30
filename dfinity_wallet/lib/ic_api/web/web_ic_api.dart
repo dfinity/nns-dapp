@@ -4,6 +4,7 @@ library dfinity_agent.js;
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
+import 'package:hive/hive.dart';
 import 'package:js/js.dart';
 import 'dart:html';
 
@@ -16,6 +17,9 @@ class PlatformICApi extends AbstractPlatformICApi {
   final authApi = new AuthApi();
   late HiveBoxesWidget hiveBoxes;
   LedgerApi? ledgerApi;
+  AccountsSyncService? accountsSyncService;
+  BalanceSyncService? balanceSyncService;
+  TransactionSyncService? transactionSyncService;
 
   @override
   void authenticate(BuildContext context) async {
@@ -36,28 +40,34 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   Future<void> buildServices(BuildContext context) async {
     final token = hiveBoxes.authToken.webAuthToken;
-    if (token != null && token.data != null) {
+    if (token != null && token.data != null && ledgerApi == null) {
       const gatewayHost = "http://10.12.31.5:8080/";
       //const gatewayHost = "http://localhost:8080/";
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
       ledgerApi = new LedgerApi(gatewayHost, identity);
 
+
       // @Gilbert perhaps this could be triggered from a button?
       // Also this is being hit twice for some reason
-      await promiseToFuture(ledgerApi!.integrationTest());
+//      await promiseToFuture(ledgerApi!.integrationTest());
 
-      final accountResponse = await promiseToFuture(ledgerApi!.getAccount());
+      accountsSyncService = AccountsSyncService(ledgerApi!, hiveBoxes.wallets);
+      balanceSyncService = BalanceSyncService(ledgerApi!, hiveBoxes.wallets);
+      transactionSyncService = TransactionSyncService(ledgerApi: ledgerApi!);
+      await accountsSyncService!.performSync();
+      await balanceSyncService!.syncBalances();
+      await transactionSyncService!.syncAccounts(hiveBoxes.wallets.values);
 
-      final accountSync = AccountSyncService(ledgerApi!, hiveBoxes);
-      accountSync.syncWallets(accountResponse);
     }
   }
 
+
   @override
-  Future<void> acquireICPTs(String accountIdentifier, BigInt doms) {
-    return ledgerApi!
+  Future<void> acquireICPTs(String accountIdentifier, BigInt doms) async {
+    await ledgerApi!
         .acquireICPTs(accountIdentifier, jsify({'doms': doms}))
         .toFuture();
+    await balanceSyncService!.syncBalances();
   }
 
   @override
@@ -65,85 +75,136 @@ class PlatformICApi extends AbstractPlatformICApi {
     final response = await promiseToFuture(ledgerApi!.createSubAccount(name));
     final namedSubAccount = response.Ok;
     final address = namedSubAccount.accountIdentifier;
-    await hiveBoxes.wallets.put(
+    final newWallet = Wallet(
+        namedSubAccount.name,
         address.toString(),
-        Wallet(
-            namedSubAccount.name,
-            address.toString(),
-            false,
-            "0",
-            namedSubAccount.subAccount.map((e) => e.toInt()).toList().cast<int>()
-        )
-    );
+        false,
+        "0",
+        namedSubAccount.subAccount.map((e) => e.toInt()).toList().cast<int>());
+    await hiveBoxes.wallets.put(address.toString(), newWallet);
   }
 
   @override
-  Future<void> sendICPTs(String toAccount, double icpts, String fromSubAccount) async {
+  Future<void> sendICPTs(
+      String toAccount, double icpts, String fromSubAccount) async {
     await promiseToFuture(ledgerApi!.sendICPTs(jsify({
       'to': toAccount,
-      'amount': {
-        'doms' : icpts.toDoms
-      }
+      'amount': {'doms': icpts.toDoms}
     })));
+     await Future.wait([balanceSyncService!.syncBalances(),
+     transactionSyncService!.syncAccounts(hiveBoxes.wallets.values)]);
   }
 }
 
-class AccountSyncService {
+class AccountsSyncService {
   final LedgerApi ledgerApi;
-  final HiveBoxesWidget hiveBoxes;
-  late Map<String, Wallet> accountsByAddress;
+  final Box<Wallet> accountBox;
 
-  AccountSyncService(this.ledgerApi, this.hiveBoxes) {
-    final wallets = hiveBoxes.wallets.values;
-    accountsByAddress = wallets.associateBy((element) => element.address);
-  }
+  AccountsSyncService(this.ledgerApi, this.accountBox);
 
-  void syncWallets(dynamic accountDetails) async {
-    Map<String, String> balanceByAddress = await fetchBalances([
-      accountDetails.accountIdentifier.toString(),
-      ...accountDetails.subAccounts.map((e) => e.accountIdentifier.toString())
+  Future<dynamic> performSync() async {
+    final accountResponse = await promiseToFuture(ledgerApi.getAccount());
+    return Future.wait(<Future<dynamic>>[
+      storeNewAccount(
+          name: "Default",
+          address: accountResponse.accountIdentifier.toString(),
+          subAccount: null,
+          primary: true),
+      ...accountResponse.subAccounts.map((element) => storeNewAccount(
+          name: element.name.toString(),
+          address: element.accountIdentifier.toString(),
+          subAccount: element.subAccount.toString(),
+          primary: false))
     ]);
-
-    createOrUpdateWallet(accountDetails.accountIdentifier.toString(), "Default", true, balanceByAddress, null);
-    accountDetails.subAccounts.forEach((element) {
-      final sub =  element.subAccount.map((e) => e.toInt()).toList().cast<int>();
-      createOrUpdateWallet(
-          element.accountIdentifier.toString(),
-          element.name.toString(),
-          false,
-          balanceByAddress,
-          sub
-      );
-    });
   }
 
-  Future<void> createOrUpdateWallet(
-      String accountIdentifier,
-      String name,
-      bool primary,
-      Map<String, String> balanceByAddress,
-      List<int>? subAccount
-      ) async {
-    print("1");
-    if (!accountsByAddress.containsKey(accountIdentifier)) {
-      print("2");
-      await hiveBoxes.wallets.put(
-          accountIdentifier,
-          Wallet(name, accountIdentifier, primary, balanceByAddress[accountIdentifier] ?? "0", subAccount));
-    } else {
-      print("3");
-      final wallet = accountsByAddress[accountIdentifier]!;
-      print("4");
-      wallet.domsBalance = balanceByAddress[accountIdentifier]!.toString();
-      print("5");
-      await wallet.save();
+  Future<void> storeNewAccount(
+      {required String name,
+      required String address,
+      required String? subAccount,
+      required bool primary}) async {
+    if (!accountBox.containsKey(address)) {
+      await accountBox.put(
+          address,
+          Wallet.create(
+              name: name,
+              address: address,
+              subAccount: subAccount,
+              primary: primary,
+              icpBalance: 0));
     }
+  }
+}
+
+class BalanceSyncService {
+  final LedgerApi ledgerApi;
+  final Box<Wallet> accountBox;
+
+  BalanceSyncService(this.ledgerApi, this.accountBox);
+
+  Future<void> syncBalances() async {
+    Map<String, String> balanceByAddress = await fetchBalances(accountBox.values.map((e) => e.address).toList());
+    await Future.wait(balanceByAddress.entries.mapToList((entry) async {
+      final account = accountBox.get(entry.key);
+      account!.domsBalance = entry.value;
+      await account.save();
+    }));
   }
 
   Future<Map<String, String>> fetchBalances(List<String> accountIds) async {
     final promise = ledgerApi.getBalances(jsify({'accounts': accountIds}));
     final response = await promiseToFutureAsMap(promise);
     return response!.map((key, value) => MapEntry(key, value.doms.toString()));
+  }
+}
+
+
+class TransactionSyncService {
+  final LedgerApi ledgerApi;
+  TransactionSyncService({required this.ledgerApi});
+
+  Future<void> syncAccounts(Iterable<Wallet> accounts) async {
+    await Future.wait(accounts.mapToList((e) => syncAccount(e)));
+  }
+
+  Future<void> syncAccount(Wallet account) async {
+    final response = await promiseToFutureAsMap(ledgerApi.getTransactions(jsify({
+      'accountIdentifier': account.address,
+      'pageSize': 100,
+      'offset': 0
+    })));
+
+    final returnedTransactions = response!['transactions']!;
+    final transactions = <Transaction>[];
+    returnedTransactions.forEach((e) {
+      final send = e.transfer.send;
+      final receive = e.transfer.receive;
+
+      late String from;
+      late String to;
+      late String doms;
+      if(send != null){
+        from = account.address;
+        to = send.to.toString();
+        doms = send.amount.doms.toString();
+      }
+      if(receive != null){
+        to = account.address;
+        from = receive.from.toString();
+        doms = receive.amount.doms.toString();
+      }
+
+      final milliseconds = int.parse(e.timestamp.toString()) * 1000;
+
+      transactions.add(Transaction(
+        to: to,
+        from: from,
+        date: DateTime.fromMillisecondsSinceEpoch(milliseconds),
+        domsAmount: doms,
+      ));
+    });
+    account.transactions = transactions;
+    account.save();
   }
 }
 

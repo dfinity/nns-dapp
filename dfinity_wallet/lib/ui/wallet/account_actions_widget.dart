@@ -58,13 +58,13 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
             onPressed: () {
               showDialog(
                   context: context,
-                  builder: (context) => Center(
+                  builder: (overlayContext) => Center(
                       child: TextFieldDialogWidget(
                           title: "New Sub Account",
                           buttonTitle: "Create",
                           fieldName: "Account Name",
                           onComplete: (name) {
-
+                            context.performLoading(() => context.icApi.createSubAccount(name));
                           })));
             },
           ),

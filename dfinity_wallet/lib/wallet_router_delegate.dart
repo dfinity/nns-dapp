@@ -217,7 +217,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
     return MaterialPage(
         child: RouterDelegateWidget(
             delegate: this,
-            child: pageConfig.createWidget()),
+            child: LoadingOverlayController(child: pageConfig.createWidget())),
         key: ValueKey(pageConfig.key),
         name: pageConfig.path,
         arguments: pageConfig);

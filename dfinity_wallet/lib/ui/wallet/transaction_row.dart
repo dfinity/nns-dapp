@@ -20,19 +20,19 @@ class TransactionRow extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                           BalanceDisplayWidget(
-                              amount: transaction.amount,
+                              amount: transaction.icptAmount,
                               amountSize: 30,
                               icpLabelSize: 20,
                           ),
                           SmallFormDivider(),
-                          if (transaction.fromKey != null)
+                          if (transaction.from != null)
                               Text(
-                                  "From: ${transaction.fromKey!}",
+                                  "From: ${transaction.from}",
                                   style: context.textTheme.bodyText2
                               ),
-                          if (transaction.toKey != null)
+                          if (transaction.to != null)
                               Text(
-                                  "To: ${transaction.toKey!}",
+                                  "To: ${transaction.to}",
                                   style: context.textTheme.bodyText2,
                               ),
                       ],
