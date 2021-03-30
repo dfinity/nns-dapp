@@ -19,11 +19,10 @@ export interface GetTransactionsResponse {
 export interface NamedSubAccount {
     accountIdentifier: AccountIdentifier,
     name: string,
-    subAccount: SubAccount,
+    subAccountIndex: number,
 };
 export interface Receive { fee: ICPTs, from: AccountIdentifier, amount: ICPTs };
 export interface Send { to: AccountIdentifier, fee: ICPTs, amount: ICPTs };
-export type SubAccount = Array<number>;
 export interface Timestamp { secs: bigint, nanos: number };
 export interface Transaction {
     timestamp: Timestamp,

@@ -18,7 +18,7 @@ export interface SendICPTsRequest {
     memo?: ArrayBuffer,
     fee?: ICPTs,
     blockHeight?: BlockHeight,
-    fromSubAccount?: ArrayBuffer,
+    fromSubAccountIndex?: number,
 };
 
 export interface NotifyCanisterRequest {

@@ -49,7 +49,7 @@ export default class ResponseConverters {
         return {
             accountIdentifier: subAccount.account_identifier,
             name: subAccount.name,
-            subAccount: subAccount.sub_account
+            subAccountIndex: this.toSubAccountIndex(subAccount.sub_account)
         }
     }
 
@@ -98,5 +98,10 @@ export default class ResponseConverters {
             };
         }
         throw new Error("Unrecognised transfer type - " + JSON.stringify(transfer));
+    }
+
+    private toSubAccountIndex = (subAccount: Array<number>) : number => {
+        const bytes = convert.arrayOfNumberToArrayBuffer(subAccount);
+        return convert.arrayBufferToNumber(bytes);
     }
 }

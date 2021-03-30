@@ -1,7 +1,8 @@
 import BigNumber from "bignumber.js";
 import { GetBalancesRequest, ICPTs, NotifyCanisterRequest, SendICPTsRequest } from "./model";
-import { AccountBalanceArgs, ICPTs as RawICPTs, NotifyCanisterArgs, SendArgs } from "./rawService";
+import { AccountBalanceArgs, ICPTs as RawICPTs, NotifyCanisterArgs, SendArgs, SubAccount } from "./rawService";
 import * as convert from "../converters";
+import { SUB_ACCOUNT_BYTE_LENGTH } from "../constants";
 
 export const TRANSACTION_FEE : RawICPTs = { doms: new BigNumber(137) };
 
@@ -17,7 +18,7 @@ export default class RequestConverters {
             memo: new BigNumber(0),
             amount: this.fromICPTs(request.amount),
             block_height: request.blockHeight === undefined ? [] : [convert.bigIntToBigNumber(request.blockHeight)],
-            from_subaccount: request.fromSubAccount === undefined ? [] : [convert.arrayBufferToArrayOfNumber(request.fromSubAccount)],
+            from_subaccount: request.fromSubAccountIndex === undefined ? [] : [this.subAccountIndexToSubAccount(request.fromSubAccountIndex)]
         };
     }  
     
@@ -35,5 +36,10 @@ export default class RequestConverters {
             from_subaccount : request.fromSubAccount === undefined ? [] : [convert.arrayBufferToArrayOfNumber(request.fromSubAccount)],
             max_fee : request.maxFee === undefined ? TRANSACTION_FEE : this.fromICPTs(request.maxFee),
         };
+    }
+
+    private subAccountIndexToSubAccount = (index: number) : SubAccount => {
+        const bytes = convert.numberToArrayBuffer(index, SUB_ACCOUNT_BYTE_LENGTH);
+        return convert.arrayBufferToArrayOfNumber(bytes);
     }
 }

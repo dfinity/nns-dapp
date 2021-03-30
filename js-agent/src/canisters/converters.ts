@@ -27,7 +27,18 @@ export const arrayBufferToArrayOfNumber = (buffer: ArrayBuffer) : Array<number> 
 }
 
 export const arrayOfNumberToArrayBuffer = (numbers: Array<number>) : ArrayBuffer => {
-    return new Uint8Array(numbers);
+    return new Uint8Array(numbers).buffer;
+}
+
+export const arrayBufferToNumber = (buffer: ArrayBuffer) : number => {
+    const view = new DataView(buffer);
+    return view.getUint32(view.byteLength - 4);
+}
+
+export const numberToArrayBuffer = (value: number, byteLength: number) : ArrayBuffer => {
+    const buffer = new ArrayBuffer(byteLength);
+    new DataView(buffer).setUint32(byteLength - 4, value);
+    return buffer;
 }
 
 export function asciiStringToByteArray(text: string) : Array<number> {

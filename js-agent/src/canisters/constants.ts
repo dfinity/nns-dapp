@@ -1,0 +1,1 @@
+export const SUB_ACCOUNT_BYTE_LENGTH = 32;
