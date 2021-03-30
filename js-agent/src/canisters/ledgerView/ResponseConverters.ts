@@ -17,7 +17,7 @@ import {
 } from "./rawService";
 
 export default class ResponseConverters {
-    public toGetAccountResponse(response: RawGetAccountResponse) : GetAccountResponse {
+    public toGetAccountResponse = (response: RawGetAccountResponse) : GetAccountResponse => {
         if ("Ok" in response) {
             return {
                 Ok: {
@@ -29,7 +29,7 @@ export default class ResponseConverters {
         return response;
     }
 
-    public toCreateSubAccountResponse(response: RawCreateSubAccountResponse) : CreateSubAccountResponse {
+    public toCreateSubAccountResponse = (response: RawCreateSubAccountResponse) : CreateSubAccountResponse => {
         if ("Ok" in response) {
             return {
                 Ok: this.toNamedSubAccount(response.Ok)
@@ -38,14 +38,14 @@ export default class ResponseConverters {
         return response;
     }
 
-    public toGetTransactionsResponse(response: RawGetTransactionsResponse) : GetTransactionsResponse {
+    public toGetTransactionsResponse = (response: RawGetTransactionsResponse) : GetTransactionsResponse => {
         return {
             total: response.total,
             transactions: response.transactions.map(this.toTransaction)
         };
     }
 
-    public toNamedSubAccount(subAccount: RawNamedSubAccount) : NamedSubAccount {
+    public toNamedSubAccount = (subAccount: RawNamedSubAccount) : NamedSubAccount => {
         return {
             accountIdentifier: subAccount.account_identifier,
             name: subAccount.name,
@@ -53,7 +53,7 @@ export default class ResponseConverters {
         }
     }
 
-    private toTransaction(transaction: RawTransaction) : Transaction {
+    private toTransaction = (transaction: RawTransaction) : Transaction => {
         return {
             timestamp: {
                 secs: convert.bigNumberToBigInt(transaction.timestamp.secs),
@@ -64,18 +64,18 @@ export default class ResponseConverters {
         }
     }
 
-    private toTransfer(transfer: RawTransfer): Transfer {
+    private toTransfer = (transfer: RawTransfer) : Transfer => {
         if ("Burn" in transfer) {
             return {
                 Burn: {
-                    amount: convert.bigNumberToBigInt(transfer.Burn.amount)
+                    amount: convert.toICPTs(transfer.Burn.amount)
                 }
             };
         }
         if ("Mint" in transfer) {
             return {
                 Mint: {
-                    amount: convert.bigNumberToBigInt(transfer.Mint.amount)
+                    amount: convert.toICPTs(transfer.Mint.amount)
                 }
             };
         }
@@ -83,8 +83,8 @@ export default class ResponseConverters {
             return {
                 Send: {
                     to: transfer.Send.to,
-                    amount: convert.bigNumberToBigInt(transfer.Send.amount),
-                    fee: convert.bigNumberToBigInt(transfer.Send.fee)
+                    amount: convert.toICPTs(transfer.Send.amount),
+                    fee: convert.toICPTs(transfer.Send.fee)
                 }
             };
         }
@@ -92,8 +92,8 @@ export default class ResponseConverters {
             return {
                 Receive: {
                     from: transfer.Receive.from,
-                    amount: convert.bigNumberToBigInt(transfer.Receive.amount),
-                    fee: convert.bigNumberToBigInt(transfer.Receive.fee)
+                    amount: convert.toICPTs(transfer.Receive.amount),
+                    fee: convert.toICPTs(transfer.Receive.fee)
                 }
             };
         }

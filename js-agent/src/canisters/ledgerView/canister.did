@@ -1,6 +1,6 @@
 type AccountIdentifier = text;
 type BlockHeight = nat64;
-type Doms = nat64;
+type ICPTs = record { doms: nat64; };
 type SubAccount = vec nat8;
 
 type GetAccountResponse =
@@ -34,21 +34,21 @@ type GetTransactionsResponse =
 type Send =
     record {
         to: AccountIdentifier;
-        amount: Doms;
-        fee: Doms;
+        amount: ICPTs;
+        fee: ICPTs;
     };
 
 type Receive =
     record {
         from: AccountIdentifier;
-        amount: Doms;
-        fee: Doms;
+        amount: ICPTs;
+        fee: ICPTs;
     };
 
 type Transfer =
     variant {
-        Burn: record { amount: Doms };
-        Mint: record { amount: Doms };
+        Burn: record { amount: ICPTs };
+        Mint: record { amount: ICPTs };
         Send: Send;
         Receive: Receive;
     };
@@ -79,4 +79,5 @@ service : {
     add_account: () -> (AccountIdentifier);
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
+    sync_transactions: () -> ();
 }

@@ -14,11 +14,11 @@ const canisterIds = [
 
 export default class AuthApi {
 
-    public createKey() : string {
+    public createKey = () : string => {
         return JSON.stringify(authClient.createKey().toJSON());
     }
 
-    public async loginWithIdentityProvider(key: string, returnUrl: string) : Promise<void> {
+    public loginWithIdentityProvider = async (key: string, returnUrl: string) : Promise<void> => {
         await authClient.loginWithRedirect(
             Ed25519KeyIdentity.fromJSON(key),
             {
@@ -27,11 +27,11 @@ export default class AuthApi {
             });
     }
 
-    public createDelegationIdentity(key: string, accessToken: string) : DelegationIdentity {
+    public createDelegationIdentity = (key: string, accessToken: string) : DelegationIdentity => {
         return authClient.createDelegationIdentity(Ed25519KeyIdentity.fromJSON(key), accessToken);
     }
 
-    public createAuthenticationIdentity(): Promise<WebAuthnIdentity> {
+    public createAuthenticationIdentity = (): Promise<WebAuthnIdentity> => {
         return webauthn.WebAuthnIdentity.create();
     }
 }

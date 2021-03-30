@@ -6,11 +6,11 @@ import * as convert from "../converters";
 export const TRANSACTION_FEE : RawICPTs = { doms: new BigNumber(137) };
 
 export default class RequestConverters {
-    public fromGetBalancesRequest(request: GetBalancesRequest) : Array<AccountBalanceArgs> {
+    public fromGetBalancesRequest = (request: GetBalancesRequest) : Array<AccountBalanceArgs> => {
         return request.accounts.map(a => ({ account: a }));
     }
 
-    public fromSendICPTsRequest(request: SendICPTsRequest): SendArgs {
+    public fromSendICPTsRequest = (request: SendICPTsRequest) : SendArgs => {
         return {
             to: request.to,
             fee: request.fee === undefined ? TRANSACTION_FEE : this.fromICPTs(request.fee),
@@ -21,13 +21,13 @@ export default class RequestConverters {
         };
     }  
     
-    public fromICPTs(icpts: ICPTs): RawICPTs {
+    public fromICPTs = (icpts: ICPTs) : RawICPTs => {
         return {
             doms: convert.bigIntToBigNumber(icpts.doms)
         };
     }
 
-    public fromNotifyCanisterRequest(request: NotifyCanisterRequest): NotifyCanisterArgs {
+    public fromNotifyCanisterRequest = (request: NotifyCanisterRequest) : NotifyCanisterArgs => {
         return {
             to_canister : request.toCanister,
             block_height: convert.bigIntToBigNumber(request.blockHeight),

@@ -20,23 +20,27 @@ export default class Service implements ServiceInterface {
         this.responseConverters = new ResponseConverters();
     }
 
-    public async getAccount() : Promise<GetAccountResponse> {
+    public getAccount = async () : Promise<GetAccountResponse> => {
         const rawResponse = await this.service.get_account();
         return this.responseConverters.toGetAccountResponse(rawResponse);
     }
 
-    public addAccount() : Promise<AccountIdentifier> {
+    public addAccount = () : Promise<AccountIdentifier> => {
         return this.service.add_account();
     }
 
-    public async createSubAccount(name: string) : Promise<CreateSubAccountResponse> {
+    public createSubAccount = async (name: string) : Promise<CreateSubAccountResponse> => {
         const rawResponse = await this.service.create_sub_account(name);
         return this.responseConverters.toCreateSubAccountResponse(rawResponse);
     }
 
-    public async getTransactions(request: GetTransactionsRequest) : Promise<GetTransactionsResponse> {
+    public getTransactions = async (request: GetTransactionsRequest) : Promise<GetTransactionsResponse> => {
         const rawRequest = this.requestConverters.fromGetTransactionsRequest(request);
         const rawResponse = await this.service.get_transactions(rawRequest);
         return this.responseConverters.toGetTransactionsResponse(rawResponse);
+    }
+
+    public syncTransactions = () : Promise<undefined> => {
+        return this.service.sync_transactions();
     }
 }

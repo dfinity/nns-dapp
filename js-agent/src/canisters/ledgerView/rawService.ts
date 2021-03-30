@@ -1,11 +1,9 @@
-import type { Principal } from '@dfinity/agent';
 import type BigNumber from 'bignumber.js';
 export type AccountIdentifier = string;
 export type BlockHeight = BigNumber;
 export type CreateSubAccountResponse = { 'Ok' : NamedSubAccount } |
     { 'AccountNotFound' : null } |
     { 'SubAccountLimitExceeded' : null };
-export type Doms = BigNumber;
 export type GetAccountResponse = {
   'Ok' : {
     'account_identifier' : AccountIdentifier,
@@ -22,20 +20,21 @@ export interface GetTransactionsResponse {
   'total' : number,
   'transactions' : Array<Transaction>,
 };
+export interface ICPTs { 'doms' : BigNumber };
 export interface NamedSubAccount {
   'name' : string,
   'sub_account' : SubAccount,
   'account_identifier' : AccountIdentifier,
 };
 export interface Receive {
-  'fee' : Doms,
+  'fee' : ICPTs,
   'from' : AccountIdentifier,
-  'amount' : Doms,
+  'amount' : ICPTs,
 };
 export interface Send {
   'to' : AccountIdentifier,
-  'fee' : Doms,
-  'amount' : Doms,
+  'fee' : ICPTs,
+  'amount' : ICPTs,
 };
 export type SubAccount = Array<number>;
 export interface Timestamp { 'secs' : BigNumber, 'nanos' : number };
@@ -44,8 +43,8 @@ export interface Transaction {
   'block_height' : BlockHeight,
   'transfer' : Transfer,
 };
-export type Transfer = { 'Burn' : { 'amount' : Doms } } |
-    { 'Mint' : { 'amount' : Doms } } |
+export type Transfer = { 'Burn' : { 'amount' : ICPTs } } |
+    { 'Mint' : { 'amount' : ICPTs } } |
     { 'Send' : Send } |
     { 'Receive' : Receive };
 export default interface _SERVICE {
@@ -53,4 +52,5 @@ export default interface _SERVICE {
   'create_sub_account' : (arg_0: string) => Promise<CreateSubAccountResponse>,
   'get_account' : () => Promise<GetAccountResponse>,
   'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
+  'sync_transactions' : () => Promise<undefined>,
 };

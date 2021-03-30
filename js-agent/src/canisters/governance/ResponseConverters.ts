@@ -50,7 +50,7 @@ import {
 } from "./rawService";
 
 export default class ResponseConverters {
-    public toProposalInfo(proposalInfo: RawProposalInfo) : ProposalInfo {
+    public toProposalInfo = (proposalInfo: RawProposalInfo) : ProposalInfo => {
         return {
             id: proposalInfo.id.length ? this.toNeuronId(proposalInfo.id[0]) : null,
             ballots: proposalInfo.ballots.map(b => [bigNumberToBigInt(b[0]), this.toBallot(b[1])]),
@@ -65,7 +65,7 @@ export default class ResponseConverters {
         };
     }
 
-    public toManageNeuronResponse(response: RawManageNeuronResponse) : ManageNeuronResponse {
+    public toManageNeuronResponse = (response: RawManageNeuronResponse) : ManageNeuronResponse => {
         if ("Ok" in response) {
             return {
                 Ok: {
@@ -84,7 +84,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("response", response);
     }
 
-    public toFullNeuronResponse(response: Result_1) : GetFullNeuronResponse {
+    public toFullNeuronResponse = (response: Result_1) : GetFullNeuronResponse => {
         if ("Ok" in response) {
             return {
                 Ok: this.toNeuron(response.Ok)
@@ -101,7 +101,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("response", response);
     }
 
-    public toNeuronInfoResponse(response: Result_2) : GetNeuronInfoResponse {
+    public toNeuronInfoResponse = (response: Result_2) : GetNeuronInfoResponse => {
         if ("Ok" in response) {
             return {
                 Ok: this.toNeuronInfo(response.Ok)
@@ -118,7 +118,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("response", response);
     }
 
-    public toClaimNeuronResponse(response: Result) : ClaimNeuronResponse {
+    public toClaimNeuronResponse = (response: Result) : ClaimNeuronResponse => {
         if ("Ok" in response) {
             return {
                 Ok: bigNumberToBigInt(response.Ok)
@@ -135,7 +135,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("response", response);
     }
 
-    private toNeuron(neuron: RawNeuron) : Neuron {
+    private toNeuron = (neuron: RawNeuron) : Neuron => {
         return {
             id: neuron.id.length ? this.toNeuronId(neuron.id[0]) : null,
             controller: neuron.controller.length ? neuron.controller[0] : null,
@@ -155,14 +155,14 @@ export default class ResponseConverters {
         };
     }
 
-    private toBallotInfo(ballotInfo: RawBallotInfo) : BallotInfo {
+    private toBallotInfo = (ballotInfo: RawBallotInfo) : BallotInfo => {
         return {
             vote: ballotInfo.vote,
             proposalId: ballotInfo.proposal_id.length ? this.toNeuronId(ballotInfo.proposal_id[0]) : null,        
         }
     }
     
-    private toDissolveState(dissolveState: RawDissolveState) : DissolveState {
+    private toDissolveState = (dissolveState: RawDissolveState) : DissolveState => {
         if ("DissolveDelaySeconds" in dissolveState) {
             return {
                 DissolveDelaySeconds: bigNumberToBigInt(dissolveState.DissolveDelaySeconds)
@@ -174,13 +174,13 @@ export default class ResponseConverters {
         }
     }
 
-    private toFollowees(followees: RawFollowees) : Followees {
+    private toFollowees = (followees: RawFollowees) : Followees => {
         return {
             followees: followees.followees.map(this.toNeuronId)
         };
     }
 
-    private toNeuronStakeTransfer(neuronStakeTransfer: RawNeuronStakeTransfer) : NeuronStakeTransfer {
+    private toNeuronStakeTransfer = (neuronStakeTransfer: RawNeuronStakeTransfer) : NeuronStakeTransfer => {
         return {
             toSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.to_subaccount),
             from: neuronStakeTransfer.from ? neuronStakeTransfer.from[0] : null,
@@ -192,7 +192,7 @@ export default class ResponseConverters {
         };        
     }
 
-    private toNeuronInfo(neuron: RawNeuronInfo) : NeuronInfo {
+    private toNeuronInfo = (neuron: RawNeuronInfo) : NeuronInfo => {
         return {
             dissolveDelaySeconds: bigNumberToBigInt(neuron.dissolve_delay_seconds),
             recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
@@ -204,20 +204,20 @@ export default class ResponseConverters {
         };
     }
 
-    private toNeuronId(neuronId: RawNeuronId) : NeuronId {
+    private toNeuronId = (neuronId: RawNeuronId) : NeuronId => {
         return {
             id: bigNumberToBigInt(neuronId.id)
         };
     }
 
-    private toBallot(ballot: RawBallot) : Ballot {
+    private toBallot = (ballot: RawBallot) : Ballot => {
         return {
             vote: ballot.vote,
             votingPower: bigNumberToBigInt(ballot.voting_power)
         };
     }
 
-    private toProposal(proposal: RawProposal) : Proposal {
+    private toProposal = (proposal: RawProposal) : Proposal => {
         return {
             url: proposal.url,
             action: proposal.action.length ? this.toAction(proposal.action[0]) : null,
@@ -225,7 +225,7 @@ export default class ResponseConverters {
         }
     }
 
-    private toAction(action: RawAction) : Action {
+    private toAction = (action: RawAction) : Action => {
         if ("ExternalUpdate" in action) {
             const externalUpdate = action.ExternalUpdate;
             return {
@@ -294,7 +294,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("action", action);
     }
 
-    private toTally(tally: RawTally) : Tally {
+    private toTally = (tally: RawTally) : Tally => {
         return {
             no: bigNumberToBigInt(tally.no),
             yes: bigNumberToBigInt(tally.yes),
@@ -303,7 +303,7 @@ export default class ResponseConverters {
         }
     }
 
-    private toCommand(command: RawCommand) : Command {
+    private toCommand = (command: RawCommand) : Command => {
         if ("Spawn" in command) {
             const spawn = command.Spawn;
             return {
@@ -381,7 +381,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("command", command);
     }
 
-    private toManageNeuronResponseCommand(command: RawManageNeuronResponseCommand) : ManageNeuronResponseCommand {
+    private toManageNeuronResponseCommand = (command: RawManageNeuronResponseCommand) : ManageNeuronResponseCommand => {
         if ("Spawn" in command) {
             const spawn = command.Spawn;
             return {
@@ -440,7 +440,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("command", command);
     }
 
-    private toOperation(operation: RawOperation) : Operation {
+    private toOperation = (operation: RawOperation) : Operation => {
         if ("RemoveHotKey" in operation) {
             const removeHotKey = operation.RemoveHotKey;
             return {
@@ -478,7 +478,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("operation", operation);
     }
 
-    private toChange(change: RawChange) : Change {
+    private toChange = (change: RawChange) : Change => {
         if ("ToRemove" in change) {
             return {
                 ToRemove: this.toNodeProvider(change.ToRemove)
@@ -492,19 +492,19 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("change", change);
     }
 
-    private toNodeProvider(nodeProvider: RawNodeProvider) : NodeProvider {
+    private toNodeProvider = (nodeProvider: RawNodeProvider) : NodeProvider => {
         return {
             id: nodeProvider.id.length ? nodeProvider.id[0] : null
         }
     }
 
-    private toAmount(amount: RawAmount) : Amount {
+    private toAmount = (amount: RawAmount) : Amount => {
         return {
             doms: bigNumberToBigInt(amount.doms)
         }
     }
 
-    private throwUnrecognisedTypeError(name: string, value: any) {
+    private throwUnrecognisedTypeError = (name: string, value: any) => {
         throw new Error(`Unrecognised ${name} type - ${JSON.stringify(value)}`);
     }
 }

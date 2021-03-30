@@ -25,20 +25,20 @@ export default ({ IDL }) => {
   });
   const Timestamp = IDL.Record({ 'secs' : IDL.Nat64, 'nanos' : IDL.Nat32 });
   const BlockHeight = IDL.Nat64;
-  const Doms = IDL.Nat64;
+  const ICPTs = IDL.Record({ 'doms' : IDL.Nat64 });
   const Send = IDL.Record({
     'to' : AccountIdentifier,
-    'fee' : Doms,
-    'amount' : Doms,
+    'fee' : ICPTs,
+    'amount' : ICPTs,
   });
   const Receive = IDL.Record({
-    'fee' : Doms,
+    'fee' : ICPTs,
     'from' : AccountIdentifier,
-    'amount' : Doms,
+    'amount' : ICPTs,
   });
   const Transfer = IDL.Variant({
-    'Burn' : IDL.Record({ 'amount' : Doms }),
-    'Mint' : IDL.Record({ 'amount' : Doms }),
+    'Burn' : IDL.Record({ 'amount' : ICPTs }),
+    'Mint' : IDL.Record({ 'amount' : ICPTs }),
     'Send' : Send,
     'Receive' : Receive,
   });
@@ -60,6 +60,7 @@ export default ({ IDL }) => {
         [GetTransactionsResponse],
         ['query'],
     ),
+    'sync_transactions' : IDL.Func([], [], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

@@ -22,7 +22,7 @@ export default class Service implements ServiceInterface {
         this.responseConverters = new ResponseConverters();
     }
 
-    public async getBalances(request: GetBalancesRequest): Promise<{}> {
+    public getBalances = async (request: GetBalancesRequest) : Promise<{}> => {
         const rawRequests = this.requestConverters.fromGetBalancesRequest(request);
         const promises = rawRequests.map(async r => {
             const rawResponse = await this.service.account_balance(r);
@@ -37,13 +37,13 @@ export default class Service implements ServiceInterface {
         return result;
     }
 
-    public async sendICPTs(request: SendICPTsRequest): Promise<BlockHeight> {
+    public sendICPTs = async (request: SendICPTsRequest) : Promise<BlockHeight> => {
         const rawRequest = this.requestConverters.fromSendICPTsRequest(request);
         const result = await this.service.send(rawRequest);
         return this.responseConverters.toBlockHeight(result);
     }
 
-    public async notify(request: NotifyCanisterRequest): Promise<void> {
+    public notify = async (request: NotifyCanisterRequest) : Promise<void> => {
         const rawRequest = this.requestConverters.fromNotifyCanisterRequest(request);
         await this.service.notify(rawRequest);
     }

@@ -18,7 +18,7 @@ export default class GovernanceApi {
         this.identity = identity;
     }
 
-    public async createNeuron(request: CreateNeuronRequest) : Promise<CreateNeuronResponse> {
+    public createNeuron = async (request: CreateNeuronRequest) : Promise<CreateNeuronResponse> => {
         return createNeuronImpl(
             this.identity, 
             this.ledgerService, 
@@ -26,31 +26,31 @@ export default class GovernanceApi {
             request);
     }
 
-    public getFullNeuron(neuronId: bigint) : Promise<GetFullNeuronResponse> {
+    public getFullNeuron = (neuronId: bigint) : Promise<GetFullNeuronResponse> => {
         return this.governanceService.getFullNeuron(neuronId);
     }
 
-    public getNeuronInfo(neuronId: bigint) : Promise<GetNeuronInfoResponse> {
+    public getNeuronInfo = (neuronId: bigint) : Promise<GetNeuronInfoResponse> => {
         return this.governanceService.getNeuronInfo(neuronId);
     }
 
-    public getFinalizedProposals() : Promise<Array<ProposalInfo>> {
+    public getFinalizedProposals = () : Promise<Array<ProposalInfo>> => {
         return this.governanceService.getFinalizedProposals();
     }
 
-    public getNeuronIds() : Promise<Array<bigint>> {
+    public getNeuronIds = () : Promise<Array<bigint>> => {
         return this.governanceService.getNeuronIds();
     }
 
-    public getPendingProposals(): Promise<Array<ProposalInfo>> {
+    public getPendingProposals = (): Promise<Array<ProposalInfo>> => {
         return this.governanceService.getPendingProposals();
     }
 
-    public getProposalInfo(proposalId: bigint) : Promise<Option<ProposalInfo>> {
+    public getProposalInfo = (proposalId: bigint) : Promise<Option<ProposalInfo>> => {
         return this.governanceService.getProposalInfo(proposalId);
     }
 
-    public manageNeuron(request: ManageNeuron) : Promise<ManageNeuronResponse> {
+    public manageNeuron = (request: ManageNeuron) : Promise<ManageNeuronResponse> => {
         return this.governanceService.manageNeuron(request);   
     }
 }

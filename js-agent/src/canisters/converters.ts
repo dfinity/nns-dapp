@@ -1,4 +1,6 @@
 import BigNumber from "bignumber.js";
+import { ICPTs } from "./ledger/model";
+import { ICPTs as RawICPTs } from "./ledger/rawService";
 
 export const bigIntToBigNumber = (value: bigint) : BigNumber => {
     return new BigNumber(value.toString(10));
@@ -32,4 +34,10 @@ export function asciiStringToByteArray(text: string) : Array<number> {
     return Array
         .from(text)
         .map(c => c.charCodeAt(0));
+}
+
+export function toICPTs(value: RawICPTs) : ICPTs {
+    return {
+        doms: BigInt(value.doms)
+    };
 }

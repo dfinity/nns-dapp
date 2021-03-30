@@ -30,7 +30,7 @@ export default class LedgerApi {
 
     // Temporary method for demo purposes only, to give the specified account some ICPTs
     // by sending from the anon account which has been gifted lots of ICPTs
-    public async acquireICPTs(accountIdentifier: AccountIdentifier, icpts: ICPTs): Promise<void> {
+    public acquireICPTs = async (accountIdentifier: AccountIdentifier, icpts: ICPTs): Promise<void> => {
         console.log("Account id " + accountIdentifier + " ICPTs " + icpts.doms);
         const anonIdentity = new AnonymousIdentity();
         const anonLedgerService = ledgerBuilder(this.host, anonIdentity);
@@ -38,13 +38,14 @@ export default class LedgerApi {
             to: accountIdentifier,
             amount: icpts
         });
+        await this.ledgerViewService.syncTransactions();
     }
 
-    public createSubAccount(name: string) : Promise<CreateSubAccountResponse> {
+    public createSubAccount = (name: string) : Promise<CreateSubAccountResponse> => {
         return this.ledgerViewService.createSubAccount(name);
     }
 
-    public async getAccount() : Promise<AccountDetails> {
+    public getAccount = async () : Promise<AccountDetails> => {
         const response = await this.ledgerViewService.getAccount();
         if ("Ok" in response) {
             return response.Ok;
@@ -57,17 +58,19 @@ export default class LedgerApi {
         }
     }
 
-    public getBalances(request: GetBalancesRequest) : Promise<{}> {
+    public getBalances = (request: GetBalancesRequest) : Promise<{}> => {
         console.log("accounts : " + request.accounts);
         return this.ledgerService.getBalances(request);
     }
 
-    public getTransactions(request: GetTransactionsRequest) : Promise<GetTransactionsResponse> {
+    public getTransactions = (request: GetTransactionsRequest) : Promise<GetTransactionsResponse> => {
         return this.ledgerViewService.getTransactions(request);
     }
 
-    public sendICPTs(request: SendICPTsRequest): Promise<BlockHeight> {
-        return this.ledgerService.sendICPTs(request);
+    public sendICPTs = async (request: SendICPTsRequest): Promise<BlockHeight> => {
+        const response = await this.ledgerService.sendICPTs(request);
+        this.ledgerViewService.syncTransactions();
+        return response;
     }
 }
 

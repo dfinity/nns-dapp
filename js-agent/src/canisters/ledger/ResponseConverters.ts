@@ -4,11 +4,11 @@ import * as convert from "../converters";
 
 export default class ResponseConverters {
     
-    public toBlockHeight(rawBlockHeight: RawBlockHeight): BlockHeight {
+    public toBlockHeight = (rawBlockHeight: RawBlockHeight) : BlockHeight => {
         return convert.bigNumberToBigInt(rawBlockHeight);
     }
 
-    public toICPTs(rawICPTs: RawICPTs): ICPTs {
+    public toICPTs = (rawICPTs: RawICPTs) : ICPTs =>{
         return {
             doms: convert.bigNumberToBigInt(rawICPTs.doms)
         };

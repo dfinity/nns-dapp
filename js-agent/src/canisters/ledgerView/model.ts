@@ -1,10 +1,9 @@
-import { AccountIdentifier, BlockHeight } from "../ledger/model";
+import { AccountIdentifier, BlockHeight, ICPTs } from "../ledger/model";
 
 export type CreateSubAccountResponse =
     { Ok: NamedSubAccount } |
     { AccountNotFound: null } |
     { SubAccountLimitExceeded: null };
-export type Doms = bigint;
 export type GetAccountResponse =
     { Ok: { accountIdentifier: AccountIdentifier, subAccounts: Array<NamedSubAccount> } } |
     { AccountNotFound: null };
@@ -22,8 +21,8 @@ export interface NamedSubAccount {
     name: string,
     subAccount: SubAccount,
 };
-export interface Receive { fee: Doms, from: AccountIdentifier, amount: Doms };
-export interface Send { to: AccountIdentifier, fee: Doms, amount: Doms };
+export interface Receive { fee: ICPTs, from: AccountIdentifier, amount: ICPTs };
+export interface Send { to: AccountIdentifier, fee: ICPTs, amount: ICPTs };
 export type SubAccount = Array<number>;
 export interface Timestamp { secs: bigint, nanos: number };
 export interface Transaction {
@@ -31,8 +30,8 @@ export interface Transaction {
     blockHeight: BlockHeight,
     transfer: Transfer,
 };
-export type Transfer = { Burn: { amount: Doms } } |
-    { Mint: { amount: Doms } } |
+export type Transfer = { Burn: { amount: ICPTs } } |
+    { Mint: { amount: ICPTs } } |
     { Send: Send } |
     { Receive: Receive };
 export default interface ServiceInterface {
@@ -40,4 +39,5 @@ export default interface ServiceInterface {
     createSubAccount: (name: string) => Promise<CreateSubAccountResponse>,
     getAccount: () => Promise<GetAccountResponse>,
     getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
+    syncTransactions: () => Promise<undefined>,
 };
