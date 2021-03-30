@@ -62,26 +62,11 @@ class _SendToWalletPageState extends State<SendToWalletPage> {
                       width: double.infinity,
                       child: ValidFieldsSubmitButton(
                         child: Text("Send"),
-                        onPressed: () {
+                        onPressed: () async {
                           final amount = amountField.currentValue.toDouble();
-
-                          final transaction = Transaction(
-                              amount: amount, fromKey: widget.source.address, toKey: widget.toWallet.address, date: DateTime.now());
-                          widget.toWallet.transactions = [
-                            ...widget.toWallet.transactions,
-                            transaction
-                          ];
-                          widget.toWallet.save();
-
-                          if(widget.source is Wallet){
-                            final wallet = widget.source as Wallet;
-                            wallet.transactions = [
-                              ...widget.toWallet.transactions,
-                              transaction
-                            ];
-                            wallet.save();
-                          }
-
+                          await context.performLoading(() {
+                            return context.icApi.sendICPTs(widget.toWallet.address, amount, "");
+                          });
                           NewTransactionOverlay.of(context).pushPage(DoneWidget(numICP: amount, canisterName: widget.toWallet.name));
                         },
                         fields: [amountField],

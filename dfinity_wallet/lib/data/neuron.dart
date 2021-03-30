@@ -43,7 +43,7 @@ class Neuron extends DfinityEntity with ICPSource {
   }
 
   @override
-  int get identifier => address.hashCode;
+  String get identifier => address;
 }
 
 enum NeuronState { DISPERSING, LOCKED, UNLOCKED }

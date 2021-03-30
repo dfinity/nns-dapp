@@ -18,4 +18,10 @@ class LedgerApi {
 
   @JS("getBalances")
   external Promise<dynamic> getBalances(Object request);
+
+  @JS("createSubAccount")
+  external Promise<dynamic> createSubAccount(String name);
+
+  @JS("sendICPTs")
+  external Promise<dynamic> sendICPTs(Object request);
 }

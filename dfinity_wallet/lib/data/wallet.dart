@@ -8,35 +8,39 @@ import 'package:dartx/dartx.dart';
 
 import 'icp_source.dart';
 
-
 part 'wallet.g.dart';
 
-
-
-@HiveType(typeId : 1)
+@HiveType(typeId: 1)
 class Wallet extends DfinityEntity with ICPSource {
-    @HiveField(0)
-    final String name;
-    @HiveField(1)
-    final String address;
-    @HiveField(2)
-    final bool primary;
-    @HiveField(3)
-    late String domsBalance;
-    @HiveField(4)
-    List<Transaction> transactions = [];
+  @HiveField(0)
+  final String name;
+  @HiveField(1)
+  final String address;
+  @HiveField(2)
+  final bool primary;
+  @HiveField(3)
+  late String domsBalance;
+  @HiveField(4)
+  List<Transaction> transactions = [];
+  @HiveField(5)
+  List<int>? subAccount;
 
-    Wallet(this.name, this.address, this.primary, this.domsBalance);
+  Wallet(
+      this.name, this.address, this.primary, this.domsBalance, this.subAccount);
 
-    Wallet.create({required this.name, required this.address, required this.primary, required double icpBalance}){
-        this.icpBalance = icpBalance;
-    }
+  Wallet.create(
+      {required this.name,
+      required this.address,
+      required this.primary,
+      required this.subAccount,
+      required double icpBalance}) {
+    this.icpBalance = icpBalance;
+  }
 
-    @override
-    int get identifier => address.hashCode;
+  @override
+  String get identifier => address;
 }
 
-
-extension getPrimary on Iterable<Wallet>{
-    Wallet get primary => firstWhere((element) => element.primary);
+extension getPrimary on Iterable<Wallet> {
+  Wallet get primary => firstWhere((element) => element.primary);
 }

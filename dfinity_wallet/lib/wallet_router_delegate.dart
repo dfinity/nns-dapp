@@ -94,7 +94,7 @@ class EntityPageDefinition<T extends DfinityEntity> {
   EntityPageDefinition(
       this.pathTemplate, this.parentPage, this.createWidget, this.fetchBox);
 
-  EntityPage createConfigWithId(int entityIdentifier, HiveBoxes boxes) {
+  EntityPage createConfigWithId(String entityIdentifier, HiveBoxes boxes) {
     final entity = fetchBox(boxes).get(entityIdentifier);
     return createPageConfig(entity!);
   }
@@ -140,15 +140,18 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
 
   @override
   Widget build(BuildContext context) {
-    if (_pages.isEmpty) {
+    if(_pages.isEmpty){
       _pages.add(createPage(LoadingPage));
     }
 
-    return Navigator(
-      key: navigatorKey,
-      onPopPage: _onPopPage,
-      pages: List.of(_pages),
-      transitionDelegate: DefaultTransitionDelegate(),
+    return ResourceOrchestrator(
+      hiveCoordinator: hiveCoordinator,
+      child: Navigator(
+        key: navigatorKey,
+        onPopPage: _onPopPage,
+        pages: List.of(_pages),
+        transitionDelegate: DefaultTransitionDelegate(),
+      ),
     );
   }
 
@@ -214,9 +217,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
     return MaterialPage(
         child: RouterDelegateWidget(
             delegate: this,
-            child: ResourceOrchestrator(
-                hiveCoordinator: hiveCoordinator,
-                child: pageConfig.createWidget())),
+            child: pageConfig.createWidget()),
         key: ValueKey(pageConfig.key),
         name: pageConfig.path,
         arguments: pageConfig);

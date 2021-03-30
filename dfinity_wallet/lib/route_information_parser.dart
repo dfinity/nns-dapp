@@ -72,7 +72,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     final entityPageDef = entityPages[path];
     if (entityPageDef != null) {
       await hiveCoordinator.openBoxes();
-      final id = int.parse(uri.pathSegments[1]);
+      final id = uri.pathSegments[1];
       final entityPage =
           entityPageDef.createConfigWithId(id, hiveCoordinator.hiveBoxes);
       print("EntityPage ${entityPage.path}");

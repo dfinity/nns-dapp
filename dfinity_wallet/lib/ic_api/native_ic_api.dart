@@ -26,4 +26,16 @@ class PlatformICApi extends AbstractPlatformICApi {
     // TODO: implement acquireICPTs
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> createSubAccount(String name) {
+    // TODO: implement createSubAccount
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> sendICPTs(String toAccount, double icpts, String fromSubAccount) {
+    // TODO: implement sendICPTs
+    throw UnimplementedError();
+  }
 }

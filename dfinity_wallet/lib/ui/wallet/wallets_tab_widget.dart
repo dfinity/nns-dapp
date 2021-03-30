@@ -7,6 +7,7 @@ import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/_components/text_field_dialog_widget.dart';
+import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_row.dart';
 import 'package:dfinity_wallet/wallet_router_delegate.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 import 'balance_display_widget.dart';
+import 'package:dfinity_wallet/dfinity.dart';
 
 class WalletsPage extends StatefulWidget {
   @override
@@ -24,6 +26,9 @@ class _WalletsPageState extends State<WalletsPage> {
   @override
   Widget build(BuildContext context) {
     final wallets = context.boxes.wallets.values;
+    if(wallets.isEmpty){
+      return NodeWorld();
+    }
     final primary = wallets.primary;
     return FooterGradientButton(
         body: ConstrainWidthAndCenter(
@@ -91,11 +96,11 @@ class _WalletsPageState extends State<WalletsPage> {
                         child: SizedBox(
                             width: 500,
                             child: TextFieldDialogWidget(
-                                title: "New Wallet",
+                                title: "New Sub Account",
                                 buttonTitle: "Create",
-                                fieldName: "Wallet Name",
+                                fieldName: "Account Name",
                                 onComplete: (name) {
-                                  createWallet(name);
+                                  createSubAccount(name);
                                 }))));
               },
             ),
@@ -103,25 +108,9 @@ class _WalletsPageState extends State<WalletsPage> {
         ));
   }
 
-  void createWallet(String name) async {
-    var walletAddress = Uuid().v4(); // await generateWalletAddress(name);
-    if (walletAddress != null) {
-      setState(() {
-        final box = context.boxes.wallets;
-        final wallet = Wallet.create(name: name, address: walletAddress, primary: false, icpBalance: 0);
-        box.put(walletAddress.hashCode, wallet);
-      });
-    }
-  }
-
-  Future<String?> generateWalletAddress(String name) async {
-    // final signingService = SigningService.of(context).platformSigningService;
-    // final address = signingService.authenticate();
-    // if (address == null) {
-    //   // Map<String, String> error = response["error"] ?? {};
-    //   // _showErrorDialog("Error Creating Wallet", "${error['description']}, \n ${error['type']}");
-    // }
-    // return address;
+  void createSubAccount(String name) async {
+    await context.performLoading(() => context.icApi.createSubAccount(name));
+    setState(() {});
   }
 
   Future<void> _showErrorDialog(String title, String desc) async {

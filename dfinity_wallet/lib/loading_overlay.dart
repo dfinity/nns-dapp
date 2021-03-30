@@ -118,3 +118,15 @@ class LoadingOverlay extends InheritedWidget {
     state.remove();
   }
 }
+
+
+extension ShowLoading on BuildContext {
+  void showLoadingOverlay() => LoadingOverlay.of(this).showOverlay();
+  void hideLoadingOverlay() => LoadingOverlay.of(this).hideOverlay();
+
+  Future<void> performLoading(Future<void> Function() action) async {
+    showLoadingOverlay();
+    await action();
+    hideLoadingOverlay();
+  }
+}

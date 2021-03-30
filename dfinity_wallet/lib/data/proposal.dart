@@ -17,5 +17,5 @@ class Proposal extends DfinityEntity {
   Proposal(this.name, this.authorAddress, this.closeDate, this.address);
 
   @override
-  int get identifier => address.hashCode;
+  String get identifier => address;
 }

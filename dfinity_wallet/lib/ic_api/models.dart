@@ -18,7 +18,7 @@ class AccountDetails {
       subAccounts = (json["subAccounts"] as List<dynamic>).map((e) => NamedSubAccount(
           accountIdentifier: e.accountIdentifier.toString(),
           name: e.name.toString(),
-          subAccount: e.subAccount)
+          subAccount: e.subAccount.map((e) => e.toList().toInt()))
       ).toList();
   }
 }
