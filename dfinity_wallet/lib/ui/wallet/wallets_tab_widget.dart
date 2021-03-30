@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:dfinity_wallet/dfinity.dart';
+import 'package:dfinity_wallet/ui/wallet/account_actions_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/wallet.dart';
 import 'package:dfinity_wallet/ui/_components/conditional_widget.dart';
@@ -26,91 +29,103 @@ class _WalletsPageState extends State<WalletsPage> {
   @override
   Widget build(BuildContext context) {
     final wallets = context.boxes.wallets.values;
-    if(wallets.isEmpty){
+    if (wallets.isEmpty) {
       return NodeWorld();
     }
-    final primary = wallets.primary;
+    final primary = context.boxes.wallets.primary;
+    final subAccounts = context.boxes.wallets.subAccounts;
+    final maxListItems = max(subAccounts.length, primary.transactions.length);
     return FooterGradientButton(
-        body: ConstrainWidthAndCenter(
-            child: ListView(
-          children: [
-            Row(
+        footerHeight: null,
+        body: DefaultTabController(
+          length: 2,
+          child: SingleChildScrollView(
+            child: ConstrainWidthAndCenter(
+                child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: Column(
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
+                  child: Row(
                     children: [
-                      Text(
-                        "Account",
-                        style: context.textTheme.headline2,
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Account",
+                                textAlign: TextAlign.left,
+                                style: context.textTheme.headline2,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                primary.key,
+                                style: context.textTheme.bodyText2,
+                              )
+                            ],
+                          ),
+                        ),
                       ),
-                      Text(
-                        primary.key,
-                        style: context.textTheme.bodyText1,
-                      )
+                      BalanceDisplayWidget(
+                          amount: primary.icpBalance,
+                          amountSize: 40,
+                          icpLabelSize: 20)
                     ],
                   ),
                 ),
-                BalanceDisplayWidget(
-                    amount: primary.icpBalance,
-                    amountSize: 50,
-                    icpLabelSize: 30)
-              ],
-            ),
-            Card(
-              color: AppColors.black,
-              child: Padding(
-                padding: EdgeInsets.all(24),
-                child: Text(
-                  "A wallet is used to store ICP. \n\nThis application allows you to manage multiple wallets.  \n\nTap below to create one.",
-                  style: context.textTheme.bodyText1,
-                  textAlign: TextAlign.center,
+                SmallFormDivider(),
+                Container(
+                  color: AppColors.lighterBackground,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: TabBar(
+                          indicatorColor: Colors.white,
+                            tabs: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Tab(text: "SUBACCOUNTS"),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Tab(text: "TRANSACTION HISTORY"),
+                          ),
+                        ]),
+                      ),
+                      Expanded(flex: 1, child: Container())
+                    ],
+                  ),
                 ),
-              ),
-            ),
-            SmallFormDivider(),
-            ...context.boxes.wallets.values.map((e) => WalletRow(
-                  wallet: e,
-                  onTap: () {
-                    context.nav.push(WalletPageDef.createPageConfig(e));
-                  },
-                )),
-            SizedBox(
-              height: 120,
-            )
-          ],
-        )),
-        footer: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: SizedBox(
-            height: 80,
-            width: double.infinity,
-            child: ElevatedButton(
-              child: Text(
-                "Create New Wallet",
-                style: context.textTheme.button?.copyWith(fontSize: 24),
-              ),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) => Center(
-                        child: SizedBox(
-                            width: 500,
-                            child: TextFieldDialogWidget(
-                                title: "New Sub Account",
-                                buttonTitle: "Create",
-                                fieldName: "Account Name",
-                                onComplete: (name) {
-                                  createSubAccount(name);
-                                }))));
-              },
-            ),
+                SmallFormDivider(),
+                SizedBox(
+                  height: maxListItems * 200,
+                  child: TabBarView(
+                    children: [
+                      SubAccountsListWidget(
+                        subAccounts: context.boxes.wallets.subAccounts,
+                      ),
+                      SubAccountsListWidget(
+                        subAccounts: context.boxes.wallets.subAccounts,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 180,
+                )
+              ],
+            )),
           ),
+        ),
+        footer: AccountActionsWidget(
+          primaryWallet: primary,
         ));
-  }
-
-  void createSubAccount(String name) async {
-    await context.performLoading(() => context.icApi.createSubAccount(name));
-    setState(() {});
   }
 
   Future<void> _showErrorDialog(String title, String desc) async {
@@ -137,6 +152,26 @@ class _WalletsPageState extends State<WalletsPage> {
           ],
         );
       },
+    );
+  }
+}
+
+class SubAccountsListWidget extends StatelessWidget {
+  final List<Wallet> subAccounts;
+
+  const SubAccountsListWidget({Key? key, required this.subAccounts})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: subAccounts.mapToList((e) => WalletRow(
+            wallet: e,
+            onTap: () {
+              context.nav.push(WalletPageDef.createPageConfig(e));
+            },
+          )),
     );
   }
 }

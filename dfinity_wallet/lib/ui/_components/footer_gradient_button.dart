@@ -5,7 +5,7 @@ import '../../dfinity.dart';
 class FooterGradientButton extends StatelessWidget {
   final Widget footer;
   final Widget body;
-  final double footerHeight;
+  final double? footerHeight;
 
   const FooterGradientButton({Key? key, required this.footer, required this.body, this.footerHeight = 100})
       : super(key: key);
@@ -29,12 +29,14 @@ class FooterGradientButton extends StatelessWidget {
             ),
           ),
         ),
-        ConstrainWidthAndCenter(child:Align(
-          alignment: Alignment.bottomCenter,
-          child: SizedBox(
-            width: double.infinity,
-            height: footerHeight,
-            child: footer,
+        ConstrainWidthAndCenter(child:SizedBox.expand(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: SizedBox(
+              width: double.infinity,
+              height: footerHeight,
+              child: footer,
+            ),
           ),
         ))
       ],

@@ -96,19 +96,19 @@ class SelectTransactionTypeWidget extends StatelessWidget {
                 style: context.textTheme.headline3?.copyWith(color: AppColors.gray800),
               ),
             ),
-            TextButton(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  "A Canister, as cycles",
-                  style: context.textTheme.bodyText1?.copyWith(color: AppColors.gray800),
-                ),
-              ),
-              onPressed: () {
-                nav.pushPage(SelectCanisterPage(source: source));
-                // onTypeSelected(TopUpCanisterPage(wallet: wallet));
-              },
-            ),
+            // TextButton(
+            //   child: Padding(
+            //     padding: EdgeInsets.all(20),
+            //     child: Text(
+            //       "A Canister, as cycles",
+            //       style: context.textTheme.bodyText1?.copyWith(color: AppColors.gray800),
+            //     ),
+            //   ),
+            //   onPressed: () {
+            //     nav.pushPage(SelectCanisterPage(source: source));
+            //     // onTypeSelected(TopUpCanisterPage(wallet: wallet));
+            //   },
+            // ),
             TextButton(
               child: Padding(
                 padding: EdgeInsets.all(20),

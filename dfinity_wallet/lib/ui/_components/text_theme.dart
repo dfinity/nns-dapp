@@ -2,9 +2,9 @@ import 'package:core/core.dart';
 
 const DfinityTextTheme = TextTheme(
     headline1: TextStyle(
-            fontSize: 56, fontFamily: Fonts.circularBold, color: AppColors.gray100, fontWeight: FontWeight.w700),
-    headline2: TextStyle(
             fontSize: 40, fontFamily: Fonts.circularBold, color: AppColors.gray100, fontWeight: FontWeight.w700),
+    headline2: TextStyle(
+            fontSize: 32, fontFamily: Fonts.circularBold, color: AppColors.gray100, fontWeight: FontWeight.w700),
     headline3: TextStyle(
             fontSize: 24, fontFamily: Fonts.circularBold, color: AppColors.gray100, fontWeight: FontWeight.w700),
     headline4: TextStyle(

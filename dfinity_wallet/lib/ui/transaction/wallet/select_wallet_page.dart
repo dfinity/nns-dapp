@@ -95,21 +95,6 @@ class _SelectDestinationWalletPageState extends State<SelectDestinationWalletPag
                 ],
               ),
             ),
-          ),
-          Container(
-            color: AppColors.gray100,
-            width: double.infinity,
-            height: 100,
-            padding: EdgeInsets.all(20.0),
-            child: ElevatedButton(
-              child: Text("Create New Wallet"),
-              onPressed: () {
-                NewTransactionOverlay.of(context)
-                    .pushPage(NewWalletPage(
-                  source: widget.source,
-                ));
-              },
-            ),
           )
         ],
       ),

@@ -69,7 +69,7 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                             TextButton(
                                 child: Padding(
                                   padding: const EdgeInsets.all(24.0),
-                                  child: Text("Create Demo Transactions"),
+                                  child: Text("Receive IC"),
                                 ),
                                 onPressed: () {
                                   setState(() {

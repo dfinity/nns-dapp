@@ -41,6 +41,7 @@ class Wallet extends DfinityEntity with ICPSource {
   String get identifier => address;
 }
 
-extension getPrimary on Iterable<Wallet> {
-  Wallet get primary => firstWhere((element) => element.primary);
+extension getPrimary on Box<Wallet> {
+  Wallet get primary => values.firstWhere((element) => element.primary);
+  List<Wallet> get subAccounts => values.filterNot((element) => element.primary).toList();
 }
