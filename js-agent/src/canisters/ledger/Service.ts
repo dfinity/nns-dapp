@@ -1,7 +1,9 @@
 import { Principal } from "@dfinity/agent";
 import ServiceInterface, {
+    AccountIdentifier,
     BlockHeight,
     GetBalancesRequest,
+    ICPTs,
     NotifyCanisterRequest,
     SendICPTsRequest
 } from "./model";
@@ -22,7 +24,7 @@ export default class Service implements ServiceInterface {
         this.responseConverters = new ResponseConverters();
     }
 
-    public getBalances = async (request: GetBalancesRequest) : Promise<{}> => {
+    public getBalances = async (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, ICPTs>> => {
         const rawRequests = this.requestConverters.fromGetBalancesRequest(request);
         const promises = rawRequests.map(async r => {
             const rawResponse = await this.service.account_balance(r);
