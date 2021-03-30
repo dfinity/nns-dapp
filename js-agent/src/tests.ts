@@ -90,6 +90,10 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     });
     console.log(manageNeuronResponse);    
 
+    console.log("Get pending proposals"); 
+    const pendingProposals = await governanceApi.getPendingProposals();
+    console.log(pendingProposals);    
+
     console.log("finish integration test");
 }
 

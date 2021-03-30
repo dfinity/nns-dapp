@@ -4,6 +4,8 @@ import RawService from "./rawService";
 import ServiceInterface, {
     ClaimNeuronRequest,
     ClaimNeuronResponse,
+    ListProposalsRequest,
+    ListProposalsResponse,
     ManageNeuron,
     ManageNeuronResponse,
     NeuronInfo,
@@ -50,9 +52,10 @@ export default class Service implements ServiceInterface {
         return await Promise.all(promises);
     }
 
-    public getFinalizedProposals = async () : Promise<Array<ProposalInfo>> => {
-        const rawResponse = await this.service.get_finalized_proposals();
-        return rawResponse.map(this.responseConverters.toProposalInfo);
+    public listProposals = async (request: ListProposalsRequest) : Promise<ListProposalsResponse> => {
+        const rawRequest = this.requestConverters.fromListProposalsRequest(request);
+        const rawResponse = await this.service.list_proposals(rawRequest);
+        return this.responseConverters.toListProposalsResponse(rawResponse);
     }
 
     public getPendingProposals = async () : Promise<Array<ProposalInfo>> => {

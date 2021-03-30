@@ -61,6 +61,16 @@ export interface GovernanceError {
 export interface IncreaseDissolveDelay {
     additionalDissolveDelaySeconds: number,
 };
+export interface ListProposalsRequest {
+    includeRewardStatus : Array<number>,
+    beforeProposal : Option<NeuronId>,
+    limit : number,
+    excludeTopic : Array<number>,
+    includeStatus : Array<number>,
+};
+export interface ListProposalsResponse {
+    proposals : Array<ProposalInfo>,
+};
 export interface MakeProposalResponse { proposalId: Option<NeuronId> };
 export interface ManageNeuron {
     id: Option<NeuronId>,
@@ -90,12 +100,10 @@ export interface MethodAuthzInfo {
 export interface Motion { motionText: string };
 export interface NetworkEconomics {
     rejectCostDoms: bigint,
-    nodeRewardXdrPerBillingPeriod: bigint,
     manageNeuronCostPerProposalDoms: bigint,
     neuronMinimumStakeDoms: bigint,
+    maximumNodeProviderRewardsDoms : bigint,
     neuronSpawnDissolveDelaySeconds: bigint,
-    maximumNodeProviderRewardsXdr_100ths: bigint,
-    minimumIcpXdrRate: bigint,
 };
 export interface Neuron {
     id: Option<NeuronId>,
@@ -153,9 +161,10 @@ export interface ProposalInfo {
     proposalTimestampSeconds: bigint,
     rewardEventRound: bigint,
     failedTimestampSeconds: bigint,
+    decidedTimestampSeconds: bigint,
+    latestTally: Option<Tally>,
     proposal: Option<Proposal>,
     proposer: Option<NeuronId>,
-    tallyAtDecisionTime: Option<Tally>,
     executedTimestampSeconds: bigint,
 };
 export interface RegisterVote { vote: number, proposal: Option<NeuronId> };
@@ -175,7 +184,7 @@ export type GetNeuronInfoResponse = { Ok: NeuronInfo } |
     { Err: GovernanceError };
 export interface RewardNodeProvider {
     nodeProvider : Option<NodeProvider>,
-    xdrAmount100ths : bigint,
+    amountDoms : bigint,
 };
 export interface Spawn { newController: Option<Principal> };
 export interface SpawnResponse { createdNeuronId: Option<NeuronId> };
@@ -190,10 +199,10 @@ export default interface ServiceInterface {
     // currentAuthz: () => Promise<CanisterAuthzInfo>,
     // executeEligibleProposals: () => Promise<undefined>,
     claimNeuron: (request: ClaimNeuronRequest) => Promise<ClaimNeuronResponse>,
-    getFinalizedProposals: () => Promise<Array<ProposalInfo>>,
     getNeurons: () => Promise<Array<NeuronInfo>>,
     getPendingProposals: () => Promise<Array<ProposalInfo>>,
     getProposalInfo: (proposalId: bigint) => Promise<Option<ProposalInfo>>,
+    listProposals: (request: ListProposalsRequest) => Promise<ListProposalsResponse>,
     manageNeuron: (arg_0: ManageNeuron) => Promise<ManageNeuronResponse>,
     // submitProposal: (
     //     arg_0: bigint,

@@ -10,8 +10,8 @@ import {
     Command,
     DissolveState,
     Followees,
-    GetFullNeuronResponse,
     GetNeuronInfoResponse,
+    ListProposalsResponse,
     ManageNeuronResponse,
     ManageNeuronResponseCommand,
     Neuron,
@@ -33,8 +33,9 @@ import {
     Command as RawCommand,
     DissolveState as RawDissolveState,
     Followees as RawFollowees,
+    Result_3,
     ManageNeuronResponse as RawManageNeuronResponse,
-    ManageNeuronResponseCommand as RawManageNeuronResponseCommand,
+    Command_1,
     Neuron as RawNeuron,
     NeuronId as RawNeuronId,
     NeuronInfo as RawNeuronInfo,
@@ -46,7 +47,8 @@ import {
     Result,
     Result_1,
     Result_2,
-    Tally as RawTally
+    Tally as RawTally,
+    ListProposalInfoResponse
 } from "./rawService";
 
 export default class ResponseConverters {
@@ -58,14 +60,15 @@ export default class ResponseConverters {
             proposalTimestampSeconds: bigNumberToBigInt(proposalInfo.proposal_timestamp_seconds),
             rewardEventRound: bigNumberToBigInt(proposalInfo.reward_event_round),
             failedTimestampSeconds: bigNumberToBigInt(proposalInfo.failed_timestamp_seconds),
+            decidedTimestampSeconds: bigNumberToBigInt(proposalInfo.decided_timestamp_seconds),
             proposal: proposalInfo.proposal.length ? this.toProposal(proposalInfo.proposal[0]) : null,
             proposer: proposalInfo.proposer.length ? this.toNeuronId(proposalInfo.proposer[0]) : null,
-            tallyAtDecisionTime: proposalInfo.tally_at_decision_time.length ? this.toTally(proposalInfo.tally_at_decision_time[0]): null,
+            latestTally: proposalInfo.latest_tally.length ? this.toTally(proposalInfo.latest_tally[0]): null,
             executedTimestampSeconds: bigNumberToBigInt(proposalInfo.executed_timestamp_seconds),
         };
     }
 
-    public toManageNeuronResponse = (response: RawManageNeuronResponse) : ManageNeuronResponse => {
+    public toManageNeuronResponse = (response: Result_3) : ManageNeuronResponse => {
         if ("Ok" in response) {
             return {
                 Ok: {
@@ -128,6 +131,12 @@ export default class ResponseConverters {
             }
         }
         this.throwUnrecognisedTypeError("response", response);
+    }
+
+    public toListProposalsResponse = (response: ListProposalInfoResponse) : ListProposalsResponse => {
+        return {
+            proposals: response.proposal_info.map(this.toProposalInfo)
+        };
     }
 
     private toNeuron = (neuron: RawNeuron) : Neuron => {
@@ -254,12 +263,10 @@ export default class ResponseConverters {
             return {
                 NetworkEconomics: {
                     rejectCostDoms: bigNumberToBigInt(networkEconomics.reject_cost_doms),
-                    nodeRewardXdrPerBillingPeriod: bigNumberToBigInt(networkEconomics.node_reward_xdr_per_billing_period),
                     manageNeuronCostPerProposalDoms: bigNumberToBigInt(networkEconomics.manage_neuron_cost_per_proposal_doms),
                     neuronMinimumStakeDoms: bigNumberToBigInt(networkEconomics.neuron_minimum_stake_doms),
+                    maximumNodeProviderRewardsDoms: bigNumberToBigInt(networkEconomics.maximum_node_provider_rewards_doms),
                     neuronSpawnDissolveDelaySeconds: bigNumberToBigInt(networkEconomics.neuron_spawn_dissolve_delay_seconds),
-                    maximumNodeProviderRewardsXdr_100ths: bigNumberToBigInt(networkEconomics.maximum_node_provider_rewards_xdr_100ths),
-                    minimumIcpXdrRate: bigNumberToBigInt(networkEconomics.minimum_icp_xdr_rate)
                 }
             }
         }
@@ -268,7 +275,7 @@ export default class ResponseConverters {
             return {
                 RewardNodeProvider: {
                     nodeProvider : rewardNodeProvider.node_provider.length ? this.toNodeProvider(rewardNodeProvider.node_provider[0]) : null,
-                    xdrAmount100ths : bigNumberToBigInt(rewardNodeProvider.xdr_amount_100ths)
+                    amountDoms : bigNumberToBigInt(rewardNodeProvider.amount_doms)
                 }
             }
         }
@@ -378,7 +385,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("command", command);
     }
 
-    private toManageNeuronResponseCommand = (command: RawManageNeuronResponseCommand) : ManageNeuronResponseCommand => {
+    private toManageNeuronResponseCommand = (command: Command_1) : ManageNeuronResponseCommand => {
         if ("Spawn" in command) {
             const spawn = command.Spawn;
             return {

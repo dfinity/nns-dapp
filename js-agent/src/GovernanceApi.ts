@@ -4,6 +4,8 @@ import governanceBuilder from "./canisters/governance/builder";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/model";
 import GovernanceService, {
+    ListProposalsRequest,
+    ListProposalsResponse,
     ManageNeuron,
     ManageNeuronResponse,
     NeuronInfo
@@ -34,16 +36,16 @@ export default class GovernanceApi {
         return this.governanceService.getNeurons();
     }
 
-    public getFinalizedProposals = () : Promise<Array<ProposalInfo>> => {
-        return this.governanceService.getFinalizedProposals();
-    }
-
     public getPendingProposals = (): Promise<Array<ProposalInfo>> => {
         return this.governanceService.getPendingProposals();
     }
 
     public getProposalInfo = (proposalId: bigint) : Promise<Option<ProposalInfo>> => {
         return this.governanceService.getProposalInfo(proposalId);
+    }
+
+    public listProposals = (request: ListProposalsRequest) : Promise<ListProposalsResponse> => {
+        return this.governanceService.listProposals(request);
     }
 
     public manageNeuron = (request: ManageNeuron) : Promise<ManageNeuronResponse> => {

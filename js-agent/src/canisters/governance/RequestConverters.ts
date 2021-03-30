@@ -9,6 +9,7 @@ import {
     Change,
     ClaimNeuronRequest,
     Command,
+    ListProposalsRequest,
     ManageNeuron,
     NeuronId,
     NodeProvider,
@@ -21,6 +22,7 @@ import {
     Ballot as RawBallot,
     Change as RawChange,
     Command as RawCommand,
+    ListProposalInfo,
     ManageNeuron as RawManageNeuron,
     NeuronId as RawNeuronId,
     NodeProvider as RawNodeProvider,
@@ -42,6 +44,16 @@ export default class RequestConverters {
             convert.bigIntToBigNumber(request.nonce),
             convert.bigIntToBigNumber(request.dissolveDelayInSecs)
         ];
+    }
+
+    public fromListProposalsRequest = (request: ListProposalsRequest) : ListProposalInfo => {    
+        return {
+            include_reward_status: request.includeRewardStatus,
+            before_proposal: request.beforeProposal ? [this.fromNeuronId(request.beforeProposal)] : [],
+            limit: request.limit,
+            exclude_topic: request.excludeTopic,
+            include_status: request.includeStatus
+        };
     }
 
     private fromNeuronId = (neuronId: NeuronId) : RawNeuronId => {
@@ -97,12 +109,10 @@ export default class RequestConverters {
             return {
                 NetworkEconomics: {
                     reject_cost_doms: bigIntToBigNumber(networkEconomics.rejectCostDoms),
-                    node_reward_xdr_per_billing_period: bigIntToBigNumber(networkEconomics.nodeRewardXdrPerBillingPeriod),
                     manage_neuron_cost_per_proposal_doms: bigIntToBigNumber(networkEconomics.manageNeuronCostPerProposalDoms),
                     neuron_minimum_stake_doms: bigIntToBigNumber(networkEconomics.neuronMinimumStakeDoms),
                     neuron_spawn_dissolve_delay_seconds: bigIntToBigNumber(networkEconomics.neuronSpawnDissolveDelaySeconds),
-                    maximum_node_provider_rewards_xdr_100ths: bigIntToBigNumber(networkEconomics.maximumNodeProviderRewardsXdr_100ths),
-                    minimum_icp_xdr_rate: bigIntToBigNumber(networkEconomics.minimumIcpXdrRate)
+                    maximum_node_provider_rewards_doms: bigIntToBigNumber(networkEconomics.maximumNodeProviderRewardsDoms)
                 }
             }
         }
@@ -111,7 +121,7 @@ export default class RequestConverters {
             return {
                 RewardNodeProvider: {
                     node_provider : rewardNodeProvider.nodeProvider ? [this.fromNodeProvider(rewardNodeProvider.nodeProvider)] : [],
-                    xdr_amount_100ths : bigIntToBigNumber(rewardNodeProvider.xdrAmount100ths)
+                    amount_doms : bigIntToBigNumber(rewardNodeProvider.amountDoms)
                 }
             }
         }
