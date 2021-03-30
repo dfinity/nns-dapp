@@ -44,6 +44,9 @@ class Neuron extends DfinityEntity with ICPSource {
 
   @override
   String get identifier => address;
+
+  @override
+  String? get subAccountId => null;
 }
 
 enum NeuronState { DISPERSING, LOCKED, UNLOCKED }

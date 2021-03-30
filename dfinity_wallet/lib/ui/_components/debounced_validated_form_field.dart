@@ -46,35 +46,41 @@ class _DebouncedValidatedFormFieldState extends State<DebouncedValidatedFormFiel
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: TextFormField(
-          key: widget.textField.key,
-          focusNode: widget.textField.focusNode,
-          controller: widget.textField.textEditingController,
-          inputFormatters: widget.textField.inputFormatters,
-          decoration: InputDecoration(
-              labelText: widget.textField.name,
-              contentPadding: EdgeInsets.only(left: 20, top: 25, bottom: 25),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(100), borderSide: BorderSide(width: 1, color: AppColors.gray800)),
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(100),
-                  borderSide: BorderSide(width: 1, color: AppColors.blue600))),
-          onChanged: (e) {
-            if (autovalidateMode != AutovalidateMode.always) {
-              debouncer.run(() {
-                if (context.findRenderObject()?.attached == true) {
-                  setState(() {
-                    autovalidateMode = AutovalidateMode.always;
-                  });
-                }
-              });
-            }
-            widget.onChanged?.call();
-          },
-          validator: (text) =>
-              widget.textField.failedValidation?.errorMessage?.let((e) => "${widget.textField.name} $e"),
-          autovalidateMode: autovalidateMode,
-          obscureText: widget.obscureText),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: TextFormField(
+            key: widget.textField.key,
+            focusNode: widget.textField.focusNode,
+            controller: widget.textField.textEditingController,
+            inputFormatters: widget.textField.inputFormatters,
+            style: context.textTheme.bodyText1,
+            decoration: InputDecoration(
+                labelText: widget.textField.name,
+                labelStyle: context.textTheme.bodyText1,
+                contentPadding: EdgeInsets.only(left: 20, top: 25, bottom: 25),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(100), borderSide: BorderSide(width: 1, color: AppColors.white)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(100),
+                    borderSide: BorderSide(width: 1, color: AppColors.white)),
+            ),
+            onChanged: (e) {
+              if (autovalidateMode != AutovalidateMode.always) {
+                debouncer.run(() {
+                  if (context.findRenderObject()?.attached == true) {
+                    setState(() {
+                      autovalidateMode = AutovalidateMode.always;
+                    });
+                  }
+                });
+              }
+              widget.onChanged?.call();
+            },
+            validator: (text) =>
+                widget.textField.failedValidation?.errorMessage?.let((e) => "${widget.textField.name} $e"),
+            autovalidateMode: autovalidateMode,
+            obscureText: widget.obscureText),
+      ),
     );
   }
 }

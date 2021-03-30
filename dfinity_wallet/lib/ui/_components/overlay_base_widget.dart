@@ -38,14 +38,10 @@ class OverlayBaseWidget extends StatelessWidget {
                 }),
               ),
               Center(
-                child: FractionallySizedBox(
-                  widthFactor: 0.8,
-                  heightFactor: 0.8,
-                  child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(maxWidth: 350, maxHeight: 500),
-                      child: child),
-                ),
+                child: ConstrainedBox(
+                    constraints:
+                        BoxConstraints(maxWidth: 800, maxHeight: 700),
+                    child: child),
               ),
             ],
           ),

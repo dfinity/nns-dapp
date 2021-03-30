@@ -77,21 +77,23 @@ class PlatformICApi extends AbstractPlatformICApi {
         address.toString(),
         false,
         "0",
-        namedSubAccount.subAccount.map((e) => e.toInt()).toList().cast<int>(),
+        namedSubAccount.subAccountId.map((e) => e.toInt()).toList().cast<int>(),
         []);
     await hiveBoxes.wallets.put(address.toString(), newWallet);
   }
 
   @override
   Future<void> sendICPTs(
-      String toAccount, double icpts, String fromSubAccount) async {
+      String toAccount, double icpts, String? fromSubAccount) async {
     await promiseToFuture(ledgerApi!.sendICPTs(jsify({
       'to': toAccount,
-      'amount': {'doms': icpts.toDoms}
+      'amount': {'doms': icpts.toDoms},
+      if(fromSubAccount?.toIntOrNull() != null)
+        'fromSubAccountId': fromSubAccount!.toInt()
     })));
     await Future.wait([
       balanceSyncService!.syncBalances(),
-      transactionSyncService!.syncAccounts(hiveBoxes.wallets.values)
+      transactionSyncService!.syncAccount(hiveBoxes.wallets.primary)
     ]);
   }
 }
@@ -113,7 +115,7 @@ class AccountsSyncService {
       ...accountResponse.subAccounts.map((element) => storeNewAccount(
           name: element.name.toString(),
           address: element.accountIdentifier.toString(),
-          subAccount: element.subAccount.toString(),
+          subAccount: element.id.toString(),
           primary: false))
     ]);
   }
@@ -129,7 +131,7 @@ class AccountsSyncService {
           Wallet.create(
               name: name,
               address: address,
-              subAccount: subAccount,
+              subAccountId: subAccount,
               primary: primary,
               icpBalance: 0,
               transactions: []));

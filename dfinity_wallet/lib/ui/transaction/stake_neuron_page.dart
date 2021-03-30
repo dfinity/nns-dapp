@@ -16,8 +16,6 @@ class StakeNeuronPage extends StatefulWidget {
 }
 
 class _StakeNeuronPageState extends State<StakeNeuronPage> {
-  ValidatedTextField name = ValidatedTextField("Neuron Name",
-      validations: [StringFieldValidation.minimumLength(2)]);
   late ValidatedTextField amountField;
   late IntField disperseDelay;
 
@@ -41,64 +39,73 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
       child: Column(
         children: [
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: ListView(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  ListTile(
-                    title: Text(
-                      "Stake a Neuron",
-                      style: context.textTheme.headline2
-                          ?.copyWith(color: AppColors.gray800),
+                  Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              "Stake a Neuron",
+                              style: context.textTheme.headline2,
+                            ),
+                          ),
+                        ),
+                        TallFormDivider(),
+                        DebouncedValidatedFormField(
+                          amountField,
+                          onChanged: () {
+                            setState(() {});
+                          },
+                        ),
+                        SmallFormDivider(),
+                        DisperseDelayWidget(
+                          timeInSeconds: disperseDelay.currentValue,
+                          onUpdate: (delay) {
+                            setState(() {
+                              disperseDelay.currentValue = delay;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  TallFormDivider(),
-                  DebouncedValidatedFormField(name),
-                  SmallFormDivider(),
-                  DebouncedValidatedFormField(
-                    amountField,
-                    onChanged: () {
-                      setState(() {});
-                    },
+                  VotingPowerWidget(
+                    amount: votingPower.toStringAsFixed(2),
                   ),
-                  SmallFormDivider(),
-                  DisperseDelayWidget(
-                    timeInSeconds: disperseDelay.currentValue,
-                    onUpdate: (delay) {
-                      setState(() {
-                        disperseDelay.currentValue = delay;
-                      });
-                    },
-                  ),
+                  SizedBox(height: 100,)
                 ],
               ),
             ),
           ),
-          VotingPowerWidget(
-            amount: votingPower.toStringAsFixed(2),
-          ),
-          SmallFormDivider(),
           Container(
             width: double.infinity,
-            color: AppColors.gray100,
+            color: AppColors.lightBackground,
             height: 100,
             padding: EdgeInsets.all(20.0),
             child: ElevatedButton(
               child: Text("Create"),
               onPressed: () {
                 final address = Uuid().v4();
-                context.boxes.neurons.put(
-                    address.hashCode,
-                    Neuron(
-                        name: name.currentValue,
-                        address: address,
-                        durationRemaining:
-                            disperseDelay.currentValue.toDouble(),
-                        timerIsActive: false,
-                        rewardAmount: amountField.currentValue.toDouble() * random.nextDouble() * 0.3,
-                        icpBalance: amountField.currentValue.toDouble()));
+                // context.boxes.neurons.put(
+                //     address.hashCode,
+                //     Neuron(
+                //         name: name.currentValue,
+                //         address: address,
+                //         durationRemaining:
+                //         disperseDelay.currentValue.toDouble(),
+                //         timerIsActive: false,
+                //         rewardAmount: amountField.currentValue.toDouble() * random.nextDouble() * 0.3,
+                //         icpBalance: amountField.currentValue.toDouble()));
+
                 context.nav.push(NeuronTabsPage);
-              }.takeIf((e) => <ValidatedField>[name, amountField, disperseDelay]
+              }.takeIf((e) => <ValidatedField>[amountField, disperseDelay]
                   .allAreValid),
             ),
           )
@@ -133,19 +140,29 @@ class DisperseDelayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
             Text(
-              "Lockup Duration",
-              style: context.textTheme.bodyText1.gray800,
+              "Lockup Period",
+              style: context.textTheme.bodyText1,
             ),
-            SmallFormDivider(),
+            SizedBox(height: 5,),
+            Text(
+              "Voting power is given when neurons are locked for at least 6 months",
+              style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: Fonts.circularBook,
+                  color: AppColors.gray200),
+            ),
+            SizedBox(height: 10,),
             Slider(
+              activeColor: AppColors.white,
+              inactiveColor: AppColors.gray600,
               value: sqrt(sqrt(timeInSeconds)),
               min: 0,
               max: sqrt(sqrt(maxDelay)),
-              divisions: 1000,
+              divisions: 10000,
               onChanged: (double value) {
                 onUpdate((value * value * value * value).toInt());
               },
@@ -155,7 +172,7 @@ class DisperseDelayWidget extends StatelessWidget {
                 child: Center(
                     child: Text(
                   timeInSeconds.seconds.yearsDayHourMinuteSecondFormatted(),
-                  style: context.textTheme.bodyText1.gray800,
+                  style: context.textTheme.bodyText1,
                 )))
           ],
         ),
@@ -176,19 +193,12 @@ class VotingPowerWidget extends StatelessWidget {
         children: [
           Text(
             "Voting power",
-            style: context.textTheme.headline3.gray800,
+            style: context.textTheme.headline3,
           ),
           SmallFormDivider(),
           Text(
             amount,
-            style: context.textTheme.headline2.gray800,
-          ),
-          Text(
-            "Voting power is given when neurons are locked for at least 6 months",
-            style: TextStyle(
-                fontSize: 12,
-                fontFamily: Fonts.circularBook,
-                color: AppColors.gray800),
+            style: context.textTheme.headline2,
           )
         ],
       ),

@@ -41,7 +41,7 @@ class WalletAdapter extends TypeAdapter<Wallet> {
       ..writeByte(4)
       ..write(obj.transactions)
       ..writeByte(7)
-      ..write(obj.subAccount);
+      ..write(obj.subAccountId);
   }
 
   @override

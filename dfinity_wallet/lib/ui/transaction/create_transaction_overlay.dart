@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
+import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/transaction/stake_neuron_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_wallet_page.dart';
 
@@ -11,7 +12,8 @@ class NewTransactionOverlay extends StatefulWidget {
   const NewTransactionOverlay({Key? key, required this.source})
       : super(key: key);
 
-  static NewTransactionOverlayState of(BuildContext context) => context.findAncestorStateOfType<NewTransactionOverlayState>()!;
+  static NewTransactionOverlayState of(BuildContext context) =>
+      context.findAncestorStateOfType<NewTransactionOverlayState>()!;
 
   @override
   NewTransactionOverlayState createState() => NewTransactionOverlayState();
@@ -27,51 +29,56 @@ class NewTransactionOverlayState extends State<NewTransactionOverlay> {
     super.initState();
     pages.add(createPage(
         widget: SelectTransactionTypeWidget(
-            source: widget.source,
-        )));
+      source: widget.source,
+    )));
   }
 
-  void pushPage(Widget widget){
+  void pushPage(Widget widget) {
     setState(() {
-      pages.add(
-          createPage(
-              widget: widget));
+      pages.add(createPage(widget: widget));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      child: Card(
-        child: Navigator(
-          key: navigatorKey,
-          pages: List.of(pages),
-          onPopPage: ((route, result) {
-            final didPop = route.didPop(result);
-            if (!didPop) {
-              return false;
-            }
-            setState(() {
-              pages.remove(route.settings);
-            });
-            return true;
-          }),
-        ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(32),
+      child: Navigator(
+        key: navigatorKey,
+        pages: List.of(pages),
+        onPopPage: ((route, result) {
+          final didPop = route.didPop(result);
+          if (!didPop) {
+            return false;
+          }
+          setState(() {
+            pages.remove(route.settings);
+          });
+          return true;
+        }),
       ),
     );
   }
 
-  MaterialPage createPage({required Widget widget}) =>
-      MaterialPage(
-          child: Scaffold(
-              appBar: AppBar(
-                title: Text("New Transaction"),
-              ),
-              body: widget));
+  MaterialPage createPage({required Widget widget}) => MaterialPage(
+      child: Scaffold(
+          backgroundColor: AppColors.lighterBackground,
+          appBar: AppBar(
+            backgroundColor: AppColors.lighterBackground,
+            toolbarHeight: 100,
+            title: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text("New Transaction",
+                  style: TextStyle(
+                      fontSize: 32,
+                      fontFamily: Fonts.circularBook,
+                      color: AppColors.gray100)),
+            ),
+          ),
+          body: widget));
 }
 
 class SelectTransactionTypeWidget extends StatelessWidget {
-
   final ICPSource source;
 
   const SelectTransactionTypeWidget({
@@ -79,10 +86,8 @@ class SelectTransactionTypeWidget extends StatelessWidget {
     required this.source,
   }) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
-    final nav = NewTransactionOverlay.of(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Center(
@@ -90,52 +95,74 @@ class SelectTransactionTypeWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(32),
               child: Text(
-                "Where would you like to send the ICP?",
-                style: context.textTheme.headline3?.copyWith(color: AppColors.gray800),
+                "How would you like to use your ICP?",
+                style: TextStyle(
+                    fontSize: 32, fontFamily: Fonts.circularBook, color: AppColors.gray200),
               ),
             ),
-            // TextButton(
-            //   child: Padding(
-            //     padding: EdgeInsets.all(20),
-            //     child: Text(
-            //       "A Canister, as cycles",
-            //       style: context.textTheme.bodyText1?.copyWith(color: AppColors.gray800),
-            //     ),
-            //   ),
-            //   onPressed: () {
-            //     nav.pushPage(SelectCanisterPage(source: source));
-            //     // onTypeSelected(TopUpCanisterPage(wallet: wallet));
-            //   },
-            // ),
-            TextButton(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  "Send to a Wallet",
-                  style: context.textTheme.bodyText1?.copyWith(color: AppColors.gray800),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: SizedBox(
+                width: 400,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildButton(context, "Send", "Send ICP to another account", () {
+                      NewTransactionOverlay.of(context).pushPage(SelectDestinationWalletPage(
+                        source: source,
+                      ));
+                    }),
+                    SmallFormDivider(),
+                    buildButton(context, "Convert", "Convert ICP into cycles to power canisters", () {}),
+                    SmallFormDivider(),
+                    buildButton(context, "Stake", "Stake ICP in a neuron to participate in governance", () {
+                      NewTransactionOverlay.of(context).pushPage(StakeNeuronPage(source: source));
+                    }),
+                  ],
                 ),
               ),
-              onPressed: () {
-                nav.pushPage(SelectDestinationWalletPage(source: source,));
-              },
-            ),
-            TextButton(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  "Stake a Neuron",
-                  style: context.textTheme.bodyText1?.copyWith(color: AppColors.gray800),
-                ),
-              ),
-              onPressed: () {
-                nav.pushPage(StakeNeuronPage(source: source));
-              },
             )
           ],
         ),
       ),
     );
+  }
+
+  TextButton buildButton(BuildContext context, String title, String subtitle, Function() onPressed) {
+    return TextButton(
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(24))),
+              overlayColor: MaterialStateProperty.resolveWith((states) {
+                if(states.contains(MaterialState.pressed)){
+                  return AppColors.blue600;
+                }else{
+                  return AppColors.blue600;
+                }
+              })
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: context.textTheme.headline3,
+                    ),
+                    SizedBox(height: 10,),
+                    Text(
+                      subtitle,
+                      style: context.textTheme.bodyText2?.copyWith(color: AppColors.gray200),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            onPressed: onPressed,
+          );
   }
 }
