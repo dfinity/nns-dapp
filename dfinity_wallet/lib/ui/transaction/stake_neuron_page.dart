@@ -79,7 +79,9 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                   VotingPowerWidget(
                     amount: votingPower.toStringAsFixed(2),
                   ),
-                  SizedBox(height: 100,)
+                  SizedBox(
+                    height: 100,
+                  )
                 ],
               ),
             ),
@@ -91,22 +93,14 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
             padding: EdgeInsets.all(20.0),
             child: ElevatedButton(
               child: Text("Create"),
-              onPressed: () {
-                final address = Uuid().v4();
-                // context.boxes.neurons.put(
-                //     address.hashCode,
-                //     Neuron(
-                //         name: name.currentValue,
-                //         address: address,
-                //         durationRemaining:
-                //         disperseDelay.currentValue.toDouble(),
-                //         timerIsActive: false,
-                //         rewardAmount: amountField.currentValue.toDouble() * random.nextDouble() * 0.3,
-                //         icpBalance: amountField.currentValue.toDouble()));
-
+              onPressed: () async {
+                await context.performLoading(() => context.icApi.createNeuron(
+                    amountField.currentValue.toDouble().toDoms,
+                    BigInt.from(disperseDelay.currentValue),
+                    widget.source.subAccountId));
                 context.nav.push(NeuronTabsPage);
-              }.takeIf((e) => <ValidatedField>[amountField, disperseDelay]
-                  .allAreValid),
+              }.takeIf((e) =>
+                  <ValidatedField>[amountField, disperseDelay].allAreValid),
             ),
           )
         ],
@@ -147,7 +141,9 @@ class DisperseDelayWidget extends StatelessWidget {
               "Lockup Period",
               style: context.textTheme.bodyText1,
             ),
-            SizedBox(height: 5,),
+            SizedBox(
+              height: 5,
+            ),
             Text(
               "Voting power is given when neurons are locked for at least 6 months",
               style: TextStyle(
@@ -155,7 +151,9 @@ class DisperseDelayWidget extends StatelessWidget {
                   fontFamily: Fonts.circularBook,
                   color: AppColors.gray200),
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Slider(
               activeColor: AppColors.white,
               inactiveColor: AppColors.gray600,

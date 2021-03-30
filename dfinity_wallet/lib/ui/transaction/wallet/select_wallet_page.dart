@@ -29,35 +29,9 @@ class _SelectDestinationWalletPageState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Text("My Accounts", style: context.textTheme.bodyText1,),
-                  ),
-                  ...context.boxes.wallets.values
-                    .filter((element) => element != widget.source)
-                    .mapToList((e) => _WalletRow(
-                        wallet: e,
-                        onPressed: () {
-                          NewTransactionOverlay.of(context)
-                              .pushPage(SendToWalletPage(
-                            source: widget.source,
-                            toWallet: e,
-                          ));
-                        }))
-                ]),
-            ),
-          ),
-          SizedBox(
-            height: 3,
-          ),
           Container(
             padding: const EdgeInsets.all(16.0),
-            color: AppColors.lightBackground,
+            color: AppColors.lighterBackground,
             child: Row(
               children: [
                 Expanded(
@@ -83,7 +57,34 @@ class _SelectDestinationWalletPageState
                 )
               ],
             ),
-          )
+          ),
+          SizedBox(
+            height: 3,
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    child: Text("My Accounts", style: context.textTheme.bodyText1,),
+                  ),
+                  ...context.boxes.wallets.values
+                    .filter((element) => element != widget.source)
+                    .mapToList((e) => _WalletRow(
+                        wallet: e,
+                        onPressed: () {
+                          NewTransactionOverlay.of(context)
+                              .pushPage(SendToWalletPage(
+                            source: widget.source,
+                            toWallet: e,
+                          ));
+                        }))
+                ]),
+            ),
+          ),
+
         ],
       ),
     );

@@ -6,12 +6,10 @@ part 'neuron.g.dart';
 
 @HiveType(typeId: 3)
 class Neuron extends DfinityEntity with ICPSource {
-  @HiveField(0)
-  late String name;
   @HiveField(1)
   late String address;
-  @HiveField(2)
-  late double durationRemaining;
+  @HiveField(6)
+  late String durationRemaining;
   @HiveField(3)
   late bool timerIsActive;
   @HiveField(4)
@@ -20,9 +18,8 @@ class Neuron extends DfinityEntity with ICPSource {
   late String domsBalance;
 
   Neuron({
-    this.name = "",
     this.address = "",
-    this.durationRemaining = 0,
+    this.durationRemaining = "0",
     this.timerIsActive = false,
     this.rewardAmount = 0,
     double icpBalance = 0.0,

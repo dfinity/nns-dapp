@@ -43,7 +43,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                   ),
                   Center(child: Padding(
                       padding: EdgeInsets.all(20),
-                    child: Text(widget.neuron.name.capitalize(), style: context.textTheme.headline2,),
+                    child: Text(widget.neuron.address.capitalize(), style: context.textTheme.headline2,),
                   )),
                   TallFormDivider(),
                   Card(
@@ -61,12 +61,12 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("Disperse Delay: ${widget.neuron.durationRemaining.seconds.inDays} Days", style: context.textTheme.bodyText1),
+                            child: Text("Disperse Delay: ${widget.neuron.durationRemaining.toInt().seconds.inDays} Days", style: context.textTheme.bodyText1),
                           ),
                           if(widget.neuron.timerIsActive)
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("Time Remaining: ${widget.neuron.durationRemaining.seconds.inDays} Days", style: context.textTheme.bodyText1),
+                              child: Text("Time Remaining: ${widget.neuron.durationRemaining.toInt().seconds.inDays} Days", style: context.textTheme.bodyText1),
                             )
                         ],
                       ),

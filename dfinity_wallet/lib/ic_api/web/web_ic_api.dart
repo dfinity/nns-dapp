@@ -10,16 +10,21 @@ import 'dart:html';
 
 import '../../dfinity.dart';
 import 'auth_api.dart';
+import 'governance_api.dart';
 import 'ledger_api.dart';
 import 'promise.dart';
+import 'package:dfinity_wallet/dfinity.dart';
+
 
 class PlatformICApi extends AbstractPlatformICApi {
   final authApi = new AuthApi();
   late HiveBoxesWidget hiveBoxes;
   LedgerApi? ledgerApi;
+  GovernanceApi? governanceApi;
   AccountsSyncService? accountsSyncService;
   BalanceSyncService? balanceSyncService;
   TransactionSyncService? transactionSyncService;
+  NeuronSyncService? neuronSyncService;
 
   @override
   void authenticate(BuildContext context) async {
@@ -45,6 +50,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       //const gatewayHost = "http://localhost:8080/";
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
       ledgerApi = new LedgerApi(gatewayHost, identity);
+      governanceApi = new GovernanceApi(gatewayHost, identity);
 
       // @Gilbert perhaps this could be triggered from a button?
       // Also this is being hit twice for some reason
@@ -53,9 +59,12 @@ class PlatformICApi extends AbstractPlatformICApi {
       accountsSyncService = AccountsSyncService(ledgerApi!, hiveBoxes.wallets);
       balanceSyncService = BalanceSyncService(ledgerApi!, hiveBoxes.wallets);
       transactionSyncService = TransactionSyncService(ledgerApi: ledgerApi!, accountsBox: hiveBoxes.wallets);
+      neuronSyncService = NeuronSyncService(governanceApi: governanceApi!, neuronsBox: hiveBoxes.neurons);
+
+      neuronSyncService!.fetchNeurons();
       await accountsSyncService!.performSync();
-      await balanceSyncService!.syncBalances();
-      await transactionSyncService!.syncAccount(hiveBoxes.wallets.primary);
+      balanceSyncService!.syncBalances();
+      transactionSyncService!.syncAccount(hiveBoxes.wallets.primary);
     }
   }
 
@@ -96,7 +105,20 @@ class PlatformICApi extends AbstractPlatformICApi {
       transactionSyncService!.syncAccount(hiveBoxes.wallets.primary)
     ]);
   }
+
+  @override
+  Future<void> createNeuron(BigInt stakeInDoms, BigInt dissolveDelayInSecs, String? fromSubAccount) async {
+    await promiseToFuture(governanceApi!.createNeuron(jsify({
+      'stake': {'doms': stakeInDoms},
+      'dissolveDelayInSecs': dissolveDelayInSecs,
+      if(fromSubAccount?.toIntOrNull() != null)
+        'fromSubAccountId': fromSubAccount!.toInt()
+    })));
+    await neuronSyncService!.fetchNeurons();
+  }
 }
+
+
 
 class AccountsSyncService {
   final LedgerApi ledgerApi;
@@ -213,6 +235,35 @@ class TransactionSyncService {
           .toList();
       e.save();
     }));
+  }
+}
+
+
+class NeuronSyncService{
+  final GovernanceApi governanceApi;
+  final Box<Neuron> neuronsBox;
+
+  NeuronSyncService({required this.governanceApi, required this.neuronsBox});
+
+  Future<void> fetchNeurons() async {
+    final response = await promiseToFuture(governanceApi.getNeurons());
+    response.forEach((e){
+      storeNeuron(e);
+    });
+  }
+
+  void storeNeuron(dynamic e) {
+    final neuronId = e.neuronId.toString();
+    print("Fetched neuron ${neuronId}");
+    if(!neuronsBox.containsKey(neuronId)){
+      neuronsBox.put(neuronId, Neuron(
+          address: neuronId,
+          durationRemaining: e.dissolveDelaySeconds.toString(),
+        timerIsActive: false,
+        rewardAmount: 0,
+          icpBalance: e.votingPower.toString().toICPT
+      ));
+    }
   }
 }
 

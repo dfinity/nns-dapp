@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/data/wallet.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
+import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
 import 'package:dfinity_wallet/ui/ui.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
@@ -35,6 +36,7 @@ class _CansitersPageState extends State<CansitersPage> {
 
   @override
   Widget build(BuildContext context) {
+    return NodeWorld();
     return Column(
       children: [
         Expanded(

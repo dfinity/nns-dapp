@@ -35,6 +35,7 @@ class _WalletsPageState extends State<WalletsPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+    walletsSubscription?.cancel();
     walletsSubscription = context.boxes.wallets.watch().listen((event) {
       if(mounted){
         setState(() {});

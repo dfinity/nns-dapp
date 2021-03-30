@@ -80,7 +80,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
     ..position = position));
 
   void buildProximityMap() {
-    final numNodes = 4;
+    final numNodes = 5;
     nodes.forEach((node) {
       findClosestNodes(node, numNodes);
       node.connectedNodes = [];

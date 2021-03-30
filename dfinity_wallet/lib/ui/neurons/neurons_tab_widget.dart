@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
@@ -10,6 +12,27 @@ class NeuronsPage extends StatefulWidget {
 }
 
 class _NeuronsPageState extends State<NeuronsPage> {
+
+  StreamSubscription? subs;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    subs?.cancel();
+    subs = context.boxes.neurons.watch().listen((event) {
+      if(mounted){
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    subs?.cancel();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ConstrainWidthAndCenter(
@@ -67,8 +90,8 @@ class NeuronRow extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  neuron.name,
-                  style: context.textTheme.headline3
+                  neuron.address,
+                  style: context.textTheme.headline4
                       ?.copyWith(color: AppColors.gray800),
                 ),
               ),
@@ -76,7 +99,7 @@ class NeuronRow extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 16.0, bottom: 16.0, right: 16.0),
                 child: Text(
-                  "${neuron.domsBalance} ICP",
+                  "${neuron.domsBalance.toICPT} ICP",
                   style: context.textTheme.bodyText1
                       ?.copyWith(color: AppColors.gray800),
                 ),

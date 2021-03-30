@@ -28,8 +28,8 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
 
   @override
   void didChangeDependencies() {
-
     super.didChangeDependencies();
+    subs?.cancel();
     subs = context.boxes.wallets.watch(key: widget.wallet.address).listen((event) {
       setState(() {});
     });

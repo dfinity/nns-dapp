@@ -29,4 +29,10 @@ class PlatformICApi extends AbstractPlatformICApi{
     // TODO: implement sendICPTs
     throw UnimplementedError();
   }
+
+
+  @override
+  Future<void> createNeuron(BigInt stakeInDoms, BigInt dissolveDelayInSecs, String? fromSubAccount) async {
+
+  }
 }
