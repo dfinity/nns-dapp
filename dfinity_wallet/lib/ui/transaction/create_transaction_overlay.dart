@@ -7,10 +7,19 @@ import '../../dfinity.dart';
 import 'canister/select_cansiter_page.dart';
 
 class NewTransactionOverlay extends StatefulWidget {
-  final ICPSource source;
+  late Widget rootWidget;
+  late String rootTitle;
 
-  const NewTransactionOverlay({Key? key, required this.source})
+  NewTransactionOverlay({Key? key, required this.rootTitle, required this.rootWidget})
       : super(key: key);
+
+  NewTransactionOverlay.account({Key? key, required Wallet account})
+      : super(key: key){
+    rootTitle = "Send ICPT";
+    rootWidget =  SelectTransactionTypeWidget(
+      source: account,
+    );
+  }
 
   static NewTransactionOverlayState of(BuildContext context) =>
       context.findAncestorStateOfType<NewTransactionOverlayState>()!;
@@ -27,15 +36,12 @@ class NewTransactionOverlayState extends State<NewTransactionOverlay> {
   @override
   void initState() {
     super.initState();
-    pages.add(createPage(
-        widget: SelectTransactionTypeWidget(
-      source: widget.source,
-    )));
+    pages.add(createPage(title: widget.rootTitle, widget:widget.rootWidget));
   }
 
-  void pushPage(Widget widget) {
+  void pushPage(String? title, Widget widget) {
     setState(() {
-      pages.add(createPage(widget: widget));
+      pages.add(createPage(title:title, widget: widget));
     });
   }
 
@@ -60,21 +66,21 @@ class NewTransactionOverlayState extends State<NewTransactionOverlay> {
     );
   }
 
-  MaterialPage createPage({required Widget widget}) => MaterialPage(
+  MaterialPage createPage({String? title, required Widget widget}) => MaterialPage(
       child: Scaffold(
           backgroundColor: AppColors.lighterBackground,
-          appBar: AppBar(
+          appBar: (title != null) ? AppBar(
             backgroundColor: AppColors.lighterBackground,
             toolbarHeight: 100,
             title: Padding(
               padding: const EdgeInsets.all(24.0),
-              child: Text("New Transaction",
+              child: Text(title,
                   style: TextStyle(
                       fontSize: 32,
                       fontFamily: Fonts.circularBook,
                       color: AppColors.gray100)),
             ),
-          ),
+          ) : null,
           body: widget));
 }
 
@@ -110,7 +116,7 @@ class SelectTransactionTypeWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     buildButton(context, "Send", "Send ICP to another account", () {
-                      NewTransactionOverlay.of(context).pushPage(SelectDestinationWalletPage(
+                      NewTransactionOverlay.of(context).pushPage("Select Wallet", SelectDestinationWalletPage(
                         source: source,
                       ));
                     }),
@@ -118,7 +124,7 @@ class SelectTransactionTypeWidget extends StatelessWidget {
                     buildButton(context, "Convert", "Convert ICP into cycles to power canisters", () {}),
                     SmallFormDivider(),
                     buildButton(context, "Stake", "Stake ICP in a neuron to participate in governance", () {
-                      NewTransactionOverlay.of(context).pushPage(StakeNeuronPage(source: source));
+                      NewTransactionOverlay.of(context).pushPage("Stake Neuron", StakeNeuronPage(source: source));
                     }),
                   ],
                 ),

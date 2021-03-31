@@ -43,10 +43,10 @@ class NewCanisterPage extends StatelessWidget {
               onPressed: () {
                 final canister = Canister(nameField.currentValue, Uuid().v4());
                 context.boxes.canisters.add(canister);
-                NewTransactionOverlay.of(context)
-                    .pushPage(TopUpCanisterPage(
-                  source: source, canister: canister
-                ));
+                // NewTransactionOverlay.of(context)
+                //     .pushPage(TopUpCanisterPage(
+                //   source: source, canister: canister
+                // ));
               },
             ),
           )

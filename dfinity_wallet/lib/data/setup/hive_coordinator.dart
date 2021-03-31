@@ -69,4 +69,8 @@ class HiveCoordinator {
     Hive.registerAdapter(ProposalAdapter());
     Hive.registerAdapter(AuthTokenAdapter());
   }
+
+  void clearData() {
+    Hive.deleteFromDisk();
+  }
 }

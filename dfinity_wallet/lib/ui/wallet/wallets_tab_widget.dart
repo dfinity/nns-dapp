@@ -28,7 +28,6 @@ class WalletsPage extends StatefulWidget {
 }
 
 class _WalletsPageState extends State<WalletsPage> {
-
   StreamSubscription? walletsSubscription;
 
   @override
@@ -37,7 +36,7 @@ class _WalletsPageState extends State<WalletsPage> {
 
     walletsSubscription?.cancel();
     walletsSubscription = context.boxes.wallets.watch().listen((event) {
-      if(mounted){
+      if (mounted) {
         setState(() {});
       }
     });
@@ -49,9 +48,10 @@ class _WalletsPageState extends State<WalletsPage> {
     if (wallets.isEmpty) {
       return Container();
     }
-    final primary = context.boxes.wallets.primary;
+    final primary = context.boxes.wallets.maybePrimary;
     final subAccounts = context.boxes.wallets.subAccounts;
-    final maxListItems = max(subAccounts.length, primary.transactions.length);
+    final maxListItems =
+        max(subAccounts.length, primary?.transactions.length ?? 0);
     return FooterGradientButton(
         footerHeight: null,
         body: DefaultTabController(
@@ -81,7 +81,7 @@ class _WalletsPageState extends State<WalletsPage> {
                                 height: 10,
                               ),
                               Text(
-                                primary.key,
+                                primary?.key ?? "",
                                 style: context.textTheme.bodyText2,
                               )
                             ],
@@ -89,7 +89,7 @@ class _WalletsPageState extends State<WalletsPage> {
                         ),
                       ),
                       BalanceDisplayWidget(
-                          amount: primary.icpBalance,
+                          amount: primary?.icpBalance ?? 0,
                           amountSize: 40,
                           icpLabelSize: 20)
                     ],
@@ -102,9 +102,7 @@ class _WalletsPageState extends State<WalletsPage> {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: TabBar(
-                          indicatorColor: Colors.white,
-                            tabs: [
+                        child: TabBar(indicatorColor: Colors.white, tabs: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Tab(text: "SUBACCOUNTS"),
@@ -140,8 +138,12 @@ class _WalletsPageState extends State<WalletsPage> {
             )),
           ),
         ),
-        footer: AccountActionsWidget(
-          primaryWallet: primary,
+        footer: EitherWidget(
+          condition: primary != null,
+          trueWidget: AccountActionsWidget(
+            primaryWallet: primary!,
+          ),
+          falseWidget: Container(),
         ));
   }
 

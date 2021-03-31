@@ -48,7 +48,7 @@ class _SelectDestinationWalletPageState
                   fields: [addressField],
                   onPressed: () {
                     final address = addressField.currentValue;
-                    NewTransactionOverlay.of(context).pushPage(SendToWalletPage(
+                    NewTransactionOverlay.of(context).pushPage("Enter Amount", SendToWalletPage(
                       source: widget.source,
                       toWallet: Wallet(address.characters.take(8).toString(),
                           address, false, "0", "", []),
@@ -76,7 +76,7 @@ class _SelectDestinationWalletPageState
                         wallet: e,
                         onPressed: () {
                           NewTransactionOverlay.of(context)
-                              .pushPage(SendToWalletPage(
+                              .pushPage("Enter Amount", SendToWalletPage(
                             source: widget.source,
                             toWallet: e,
                           ));

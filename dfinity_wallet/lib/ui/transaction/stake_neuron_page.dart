@@ -48,15 +48,6 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: Center(
-                            child: Text(
-                              "Stake a Neuron",
-                              style: context.textTheme.headline2,
-                            ),
-                          ),
-                        ),
                         TallFormDivider(),
                         DebouncedValidatedFormField(
                           amountField,

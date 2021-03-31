@@ -80,7 +80,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
     ..position = position));
 
   void buildProximityMap() {
-    final numNodes = 5;
+    final numNodes = 6;
     nodes.forEach((node) {
       findClosestNodes(node, numNodes);
       node.connectedNodes = [];
@@ -129,6 +129,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
       final nodeDistance = distanceToCenter(node);
       final neighbourCharges = node.connectedNodes
           .filter((element) => distanceToCenter(element) < nodeDistance)
+          .take(2)
           .map((e) => e.charge);
       if (neighbourCharges.isNotEmpty) {
         node.charge =

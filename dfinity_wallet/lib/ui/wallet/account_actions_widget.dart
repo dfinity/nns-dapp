@@ -59,13 +59,16 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
               showDialog(
                   context: context,
                   builder: (overlayContext) => Center(
-                      child: TextFieldDialogWidget(
-                          title: "New Sub Account",
-                          buttonTitle: "Create",
-                          fieldName: "Account Name",
-                          onComplete: (name) {
-                            context.performLoading(() => context.icApi.createSubAccount(name));
-                          })));
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 400, maxHeight: 300),
+                        child: TextFieldDialogWidget(
+                            title: "New Sub Account",
+                            buttonTitle: "Create",
+                            fieldName: "Account Name",
+                            onComplete: (name) {
+                              context.performLoading(() => context.icApi.createSubAccount(name));
+                            }),
+                      )));
             },
           ),
         ],
@@ -80,8 +83,8 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
       return OverlayBaseWidget(
           parentContext: parentContext,
           overlayEntry: _overlayEntry,
-          child: NewTransactionOverlay(
-            source: widget.primaryWallet,
+          child: NewTransactionOverlay.account(
+            account: widget.primaryWallet,
           ));
     });
   }

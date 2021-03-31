@@ -44,5 +44,6 @@ class Wallet extends DfinityEntity with ICPSource {
 
 extension getPrimary on Box<Wallet> {
   Wallet get primary => values.firstWhere((element) => element.primary);
+  Wallet? get maybePrimary => values.firstOrNullWhere((element) => element.primary);
   List<Wallet> get subAccounts => values.filterNot((element) => element.primary).toList();
 }

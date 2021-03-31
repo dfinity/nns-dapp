@@ -280,13 +280,13 @@ class ProposalSyncService {
   Future<void> fetchProposals() async {
     final response = await promiseToFuture(governanceApi.getPendingProposals());
     response.forEach((e){
-      storeNeuron(e);
+      storeProposal(e);
     });
   }
 
-  void storeNeuron(dynamic response) {
+  void storeProposal(dynamic response) {
     final neuronId = response.id.id.toString();
-    print("Fetched neuron ${neuronId}");
+    print("Fetched proposal ${neuronId}");
     if(!proposalsBox.containsKey(neuronId)){
       proposalsBox.put(neuronId, Proposal(
            neuronId,

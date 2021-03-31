@@ -44,11 +44,11 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
                   trueWidget: Column(
                     children: context.boxes.canisters.values.mapToList(
                         (e) => _CanisterRow(canister: e, onPressed: () {
-                          NewTransactionOverlay.of(context)
-                              .pushPage(TopUpCanisterPage(
-                            source: widget.source,
-                            canister: e,
-                          ));
+                          // NewTransactionOverlay.of(context)
+                          //     .pushPage(TopUpCanisterPage(
+                          //   source: widget.source,
+                          //   canister: e,
+                          // ));
                         })),
                   ),
                   falseWidget: Align(
@@ -83,12 +83,12 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
                     fields: [addressField],
                     onPressed: () {
                       final address = addressField.currentValue;
-                      NewTransactionOverlay.of(context)
-                          .pushPage(TopUpCanisterPage(
-                        source: widget.source,
-                        canister: Canister(
-                            address.characters.take(8).toString(), address),
-                      ));
+                      // NewTransactionOverlay.of(context)
+                      //     .pushPage(TopUpCanisterPage(
+                      //   source: widget.source,
+                      //   canister: Canister(
+                      //       address.characters.take(8).toString(), address),
+                      // ));
                     },
                   )
                 ],
@@ -103,10 +103,10 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
             child: ElevatedButton(
               child: Text("Create New Canister"),
               onPressed: () {
-                NewTransactionOverlay.of(context)
-                    .pushPage(NewCanisterPage(
-                  source: widget.source,
-                ));
+                // NewTransactionOverlay.of(context)
+                //     .pushPage(NewCanisterPage(
+                //   source: widget.source,
+                // ));
               },
             ),
           )

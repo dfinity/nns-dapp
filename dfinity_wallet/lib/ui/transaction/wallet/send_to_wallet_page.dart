@@ -70,7 +70,7 @@ class _SendToWalletPageState extends State<SendToWalletPage> {
                       return context.icApi
                           .sendICPTs(widget.toWallet.address, amount, widget.source.subAccountId);
                     });
-                    NewTransactionOverlay.of(context).pushPage(DoneWidget(
+                    NewTransactionOverlay.of(context).pushPage(null, DoneWidget(
                         numICP: amount, canisterName: widget.toWallet.name));
                   },
                   fields: [amountField],

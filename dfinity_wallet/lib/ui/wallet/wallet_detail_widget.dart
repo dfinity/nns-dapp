@@ -100,8 +100,8 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
       return OverlayBaseWidget(
           parentContext: parentContext,
           overlayEntry: _overlayEntry,
-          child: NewTransactionOverlay(
-            source: widget.wallet,
+          child: NewTransactionOverlay.account(
+            account: widget.wallet,
           ));
     });
   }

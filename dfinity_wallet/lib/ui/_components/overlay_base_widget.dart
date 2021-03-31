@@ -32,7 +32,7 @@ class OverlayBaseWidget extends StatelessWidget {
           body: Stack(
             children: [
               Container(
-                color: AppColors.gray800.withOpacity(0.6),
+                color: AppColors.black.withOpacity(0.9),
                 child: GestureDetector(onTap: () {
                   _overlayEntry?.remove();
                 }),

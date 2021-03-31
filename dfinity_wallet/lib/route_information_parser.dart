@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/ui/neurons/neuron_detail_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'data/auth_token.dart';
 import 'data/data.dart';
 import 'wallet_router_delegate.dart';
@@ -48,6 +49,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     bool isAuthenticated =
         isAuthTokenValid(hiveCoordinator.hiveBoxes.authToken!.webAuthToken);
     if (!isAuthenticated) {
+      Hive.deleteFromDisk();
       return AuthPage;
     }
 
@@ -96,7 +98,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
       if (date == null) {
         return false;
       }
-      return date.difference(DateTime.now()).inSeconds < 1.days.inSeconds;
+      return DateTime.now().difference(date).inSeconds < 1.days.inSeconds;
     }
   }
 
