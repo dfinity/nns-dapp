@@ -21,14 +21,15 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
 
+
+      # Checkout our code
+      - uses: actions/checkout@v2
+
       - run: npm install
         working-directory: ./js-agent
 
       - run: npm run build
         working-directory: ./js-agent
-
-      # Checkout our code
-      - uses: actions/checkout@v2
 
       # Switching to Flutter beta branch
       - uses: subosito/flutter-action@v1
