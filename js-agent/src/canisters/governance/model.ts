@@ -123,12 +123,18 @@ export interface Neuron {
     transfer: Option<NeuronStakeTransfer>,
 };
 export interface NeuronId { id: bigint };
+export enum NeuronState {
+	UNSPECIFIED = 0,
+	LOCKED = 1,
+	DISSOLVING = 2,
+	DISSOLVED = 3
+}
 export interface NeuronInfo {
     neuronId: bigint,
     dissolveDelaySeconds: bigint,
     recentBallots: Array<BallotInfo>,
     createdTimestampSeconds: bigint,
-    state: number,
+    state: NeuronState,
     retrievedAtTimestampSeconds: bigint,
     votingPower: bigint,
     ageSeconds: bigint,
