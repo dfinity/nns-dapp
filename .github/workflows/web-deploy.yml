@@ -21,6 +21,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
 
+      - run: npm install
+        working-directory: ./js-agent
+
+      - run: npm run build
+        working-directory: ./js-agent
+
       # Checkout our code
       - uses: actions/checkout@v2
 
@@ -29,12 +35,6 @@ jobs:
         with:
           flutter-version: '2.0.1'
           channel: 'stable'
-
-      - run: npm install
-        working-directory: ./js-agent
-
-      - run: npm run build
-        working-directory: ./js-agent
 
       # Get the latest dependencies
       - run: flutter pub get

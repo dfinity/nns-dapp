@@ -5,7 +5,7 @@ import GOVERNANCE_CANISTER_ID from "./canisterId";
 import * as convert from "../converters";
 import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
 import crc from "crc";
-import randomBytes from "randomBytes";
+import randomBytes from "randombytes";
 
 export type CreateNeuronRequest = {
     stake: ICPTs
