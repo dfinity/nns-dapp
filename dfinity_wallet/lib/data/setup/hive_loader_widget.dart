@@ -35,7 +35,7 @@ class _HiveLoaderState extends State<HiveLoader> {
     super.initState();
 
     if(widget.hiveCoordinator.boxesClosed){
-      widget.hiveCoordinator.openBoxes().then((value) async {
+      widget.hiveCoordinator.performInitialisation().then((value) async {
         if (mounted) {
           setState(() {
             fadingIn = true;
@@ -60,7 +60,7 @@ class _HiveLoaderState extends State<HiveLoader> {
         if (!widget.hiveCoordinator.boxesClosed && (fadingIn || animationCompleted))
           HiveBoxesWidget(
               child: widget.child,
-              hiveBoxes: widget.hiveCoordinator.hiveBoxes
+              hiveCoordinator: widget.hiveCoordinator,
           ),
         if (!animationCompleted || widget.hiveCoordinator.boxesClosed)
           IgnorePointer(
@@ -75,7 +75,8 @@ class _HiveLoaderState extends State<HiveLoader> {
 }
 
 class HiveBoxesWidget extends InheritedWidget {
-  final HiveBoxes hiveBoxes;
+  HiveBoxes get hiveBoxes => hiveCoordinator.hiveBoxes;
+  final HiveCoordinator hiveCoordinator;
   Box<Canister> get canisters => hiveBoxes.canisters!;
   Box<Wallet> get wallets => hiveBoxes.wallets!;
   Box<AuthToken> get authToken => hiveBoxes.authToken!;
@@ -85,7 +86,7 @@ class HiveBoxesWidget extends InheritedWidget {
   const HiveBoxesWidget({
     Key? key,
     required Widget child,
-    required this.hiveBoxes,
+    required this.hiveCoordinator,
   })   : assert(child != null),
         super(key: key, child: child);
 

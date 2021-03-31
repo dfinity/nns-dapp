@@ -237,7 +237,9 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
   }
 
   void replaceAll(PageConfig newRoute) {
-    setNewRoutePath(newRoute);
+    _pages.clear();
+    _pages.add(createPage(newRoute));
+    notifyListeners();
   }
 
   void push(PageConfig newRoute) {

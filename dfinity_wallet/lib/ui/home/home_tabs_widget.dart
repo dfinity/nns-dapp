@@ -1,5 +1,7 @@
 import 'package:core/core.dart';
+import 'package:dfinity_wallet/ui/home/auth_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/governance_tab_widget.dart';
+import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
 import 'nodes/node_world.dart';
@@ -46,13 +48,26 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 actions: [
-                  TextButton(
-                    child: Text("Recieve", style: TextStyle(color: AppColors.white),),
-                    onPressed: () async {
-                      LoadingOverlay.of(context).showOverlay();
-                      await context.icApi.acquireICPTs(context.boxes.wallets.primary.address, BigInt.from(1500000000));
-                      LoadingOverlay.of(context).hideOverlay();
-                    },
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextButton(
+                      child: Text("Recieve", style: TextStyle(color: AppColors.white),),
+                      onPressed: () async {
+                        LoadingOverlay.of(context).showOverlay();
+                        await context.icApi.acquireICPTs(context.boxes.wallets.primary.address, BigInt.from(1500000000));
+                        LoadingOverlay.of(context).hideOverlay();
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextButton(
+                      child: Text("Logout", style: TextStyle(color: AppColors.white),),
+                      onPressed: () async {
+                        context.nav.replaceAll(AuthPage);
+                        context.boxes.hiveCoordinator.deleteAllData();
+                      },
+                    ),
                   )
                 ],
                 backgroundColor: Colors.transparent,

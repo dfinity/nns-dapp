@@ -33,14 +33,14 @@ class _TextFieldDialogWidgetState extends State<TextFieldDialogWidget> {
       padding: const EdgeInsets.all(8.0),
       child: IntrinsicHeight(
         child: Card(
-          color: AppColors.gray100,
+          color: AppColors.lightBackground,
           child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Column(
               children: [
                 Text(
                   widget.title,
-                  style: context.textTheme.headline3?.copyWith(color: AppColors.gray1000),
+                  style: context.textTheme.headline3,
                 ),
                 SmallFormDivider(),
                 DebouncedValidatedFormField(nameField),

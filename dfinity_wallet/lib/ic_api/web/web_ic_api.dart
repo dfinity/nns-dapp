@@ -29,10 +29,11 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   void authenticate(BuildContext context) async {
-    await hiveBoxes.authToken.clear();
+    await context.boxes.authToken.clear();
 
     final key = authApi.createKey();
-    context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
+    await context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
+    print("Stored token ${context.boxes.authToken.get(WEB_TOKEN_KEY)?.key}");
     authApi.loginWithIdentityProvider(
         key, "http://" + window.location.host + "/home");
   }
@@ -57,11 +58,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       // Also this is being hit twice for some reason
 //      await promiseToFuture(ledgerApi!.integrationTest());
 
-      accountsSyncService = AccountsSyncService(ledgerApi!, hiveBoxes.wallets);
-      balanceSyncService = BalanceSyncService(ledgerApi!, hiveBoxes.wallets);
-      transactionSyncService = TransactionSyncService(ledgerApi: ledgerApi!, accountsBox: hiveBoxes.wallets);
-      neuronSyncService = NeuronSyncService(governanceApi: governanceApi!, neuronsBox: hiveBoxes.neurons);
-      proposalSyncService = ProposalSyncService(governanceApi: governanceApi!, proposalsBox: hiveBoxes.proposals);
+      accountsSyncService = AccountsSyncService(ledgerApi!, hiveBoxes);
+      balanceSyncService = BalanceSyncService(ledgerApi!, hiveBoxes);
+      transactionSyncService = TransactionSyncService(ledgerApi: ledgerApi!, hiveBoxes: hiveBoxes);
+      neuronSyncService = NeuronSyncService(governanceApi: governanceApi!, hiveBoxes: hiveBoxes);
+      proposalSyncService = ProposalSyncService(governanceApi: governanceApi!, hiveBoxes: hiveBoxes);
 
       await accountsSyncService!.performSync();
       balanceSyncService!.syncBalances();
@@ -82,16 +83,17 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> createSubAccount(String name) async {
     final response = await promiseToFuture(ledgerApi!.createSubAccount(name));
-    final namedSubAccount = response.Ok;
-    final address = namedSubAccount.accountIdentifier;
-    final newWallet = Wallet(
-        namedSubAccount.name,
-        address.toString(),
-        false,
-        "0",
-        namedSubAccount.subAccountId.map((e) => e.toInt()).toList().cast<int>(),
-        []);
-    await hiveBoxes.wallets.put(address.toString(), newWallet);
+    await accountsSyncService!.performSync();
+    // final namedSubAccount = response.Ok;
+    // final address = namedSubAccount.accountIdentifier;
+    // final newWallet = Wallet(
+    //     namedSubAccount.name,
+    //     address.toString(),
+    //     false,
+    //     "0",
+    //     namedSubAccount.subAccountId.map((e) => e.toInt()).toList().cast<int>(),
+    //     []);
+    // await hiveBoxes.wallets.put(address.toString(), newWallet);
   }
 
   @override
@@ -125,9 +127,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
 class AccountsSyncService {
   final LedgerApi ledgerApi;
-  final Box<Wallet> accountBox;
+  final HiveBoxesWidget hiveBoxes;
 
-  AccountsSyncService(this.ledgerApi, this.accountBox);
+  AccountsSyncService(this.ledgerApi, this.hiveBoxes);
 
   Future<dynamic> performSync() async {
     final accountResponse = await promiseToFuture(ledgerApi.getAccount());
@@ -150,8 +152,8 @@ class AccountsSyncService {
       required String address,
       required String? subAccount,
       required bool primary}) async {
-    if (!accountBox.containsKey(address)) {
-      await accountBox.put(
+    if (!hiveBoxes.wallets.containsKey(address)) {
+      await hiveBoxes.wallets.put(
           address,
           Wallet.create(
               name: name,
@@ -166,15 +168,15 @@ class AccountsSyncService {
 
 class BalanceSyncService {
   final LedgerApi ledgerApi;
-  final Box<Wallet> accountBox;
+  final HiveBoxesWidget hiveBoxes;
 
-  BalanceSyncService(this.ledgerApi, this.accountBox);
+  BalanceSyncService(this.ledgerApi, this.hiveBoxes);
 
   Future<void> syncBalances() async {
     Map<String, String> balanceByAddress =
-        await fetchBalances(accountBox.values.map((e) => e.address).toList());
+        await fetchBalances(hiveBoxes.wallets.values.map((e) => e.address).toList());
     await Future.wait(balanceByAddress.entries.mapToList((entry) async {
-      final account = accountBox.get(entry.key);
+      final account = hiveBoxes.wallets.get(entry.key);
       account!.domsBalance = entry.value;
       await account.save();
     }));
@@ -189,9 +191,9 @@ class BalanceSyncService {
 
 class TransactionSyncService {
   final LedgerApi ledgerApi;
-  final Box<Wallet> accountsBox;
+  final HiveBoxesWidget hiveBoxes;
 
-  TransactionSyncService({required this.ledgerApi, required this.accountsBox});
+  TransactionSyncService({required this.ledgerApi, required this.hiveBoxes});
 
   Future<void> syncAccounts(Iterable<Wallet> accounts) async {
     await Future.wait(accounts.mapToList((e) => syncAccount(e)));
@@ -231,7 +233,7 @@ class TransactionSyncService {
     });
     print("parsed ${transactions.length} transactions for ${account.address}");
 
-    Future.wait(accountsBox.values.map((e) async {
+    Future.wait(hiveBoxes.wallets.values.map((e) async {
       e.transactions = transactions
           .filter(
               (element) => element.to == e.address || element.from == e.address)
@@ -244,9 +246,9 @@ class TransactionSyncService {
 
 class NeuronSyncService{
   final GovernanceApi governanceApi;
-  final Box<Neuron> neuronsBox;
+  final HiveBoxesWidget hiveBoxes;
 
-  NeuronSyncService({required this.governanceApi, required this.neuronsBox});
+  NeuronSyncService({required this.governanceApi, required this.hiveBoxes});
 
   Future<void> fetchNeurons() async {
     final response = await promiseToFuture(governanceApi.getNeurons());
@@ -258,8 +260,8 @@ class NeuronSyncService{
   void storeNeuron(dynamic e) {
     final neuronId = e.neuronId.toString();
     print("Fetched neuron ${neuronId}");
-    if(!neuronsBox.containsKey(neuronId)){
-      neuronsBox.put(neuronId, Neuron(
+    if(!hiveBoxes.neurons.containsKey(neuronId)){
+      hiveBoxes.neurons.put(neuronId, Neuron(
           address: neuronId,
           durationRemaining: e.dissolveDelaySeconds.toString(),
         timerIsActive: false,
@@ -273,9 +275,9 @@ class NeuronSyncService{
 
 class ProposalSyncService {
   final GovernanceApi governanceApi;
-  final Box<Proposal> proposalsBox;
+  final HiveBoxesWidget hiveBoxes;
 
-  ProposalSyncService({required this.governanceApi, required this.proposalsBox});
+  ProposalSyncService({required this.governanceApi, required this.hiveBoxes});
 
   Future<void> fetchProposals() async {
     final response = await promiseToFuture(governanceApi.getPendingProposals());
@@ -287,8 +289,8 @@ class ProposalSyncService {
   void storeProposal(dynamic response) {
     final neuronId = response.id.id.toString();
     print("Fetched proposal ${neuronId}");
-    if(!proposalsBox.containsKey(neuronId)){
-      proposalsBox.put(neuronId, Proposal(
+    if(!hiveBoxes.proposals.containsKey(neuronId)){
+      hiveBoxes.proposals.put(neuronId, Proposal(
            neuronId,
            response.proposal.summary.toString(),
            response.proposal.url,

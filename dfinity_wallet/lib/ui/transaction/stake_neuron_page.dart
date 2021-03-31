@@ -29,8 +29,8 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
               "Must be greater than 0", (e) => (e.toIntOrNull() ?? 0) == 0)
         ],
         inputType: TextInputType.number);
-
     disperseDelay = IntField("Disperse Delay", []);
+    disperseDelay.currentValue = 190.days.inSeconds;
   }
 
   @override
@@ -148,8 +148,8 @@ class DisperseDelayWidget extends StatelessWidget {
             Slider(
               activeColor: AppColors.white,
               inactiveColor: AppColors.gray600,
-              value: sqrt(sqrt(timeInSeconds)),
-              min: 0,
+              value: max(minValue(), sqrt(sqrt(timeInSeconds))),
+              min: minValue(),
               max: sqrt(sqrt(maxDelay)),
               divisions: 10000,
               onChanged: (double value) {
@@ -168,6 +168,8 @@ class DisperseDelayWidget extends StatelessWidget {
       ),
     );
   }
+
+  double minValue() => sqrt(sqrt(7.001.days.inSeconds.toDouble()));
 }
 
 class VotingPowerWidget extends StatelessWidget {

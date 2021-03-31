@@ -17,14 +17,18 @@ class HiveBoxes {
   Box<AuthToken>? authToken;
 
   bool get areClosed =>
-      canisters == null || wallets == null || neurons == null ||
-          proposals == null || authToken == null;
+      canisters == null ||
+      wallets == null ||
+      neurons == null ||
+      proposals == null ||
+      authToken == null;
 
-  HiveBoxes({this.canisters,
-    this.wallets,
-    this.neurons,
-    this.proposals,
-    this.authToken});
+  HiveBoxes(
+      {this.canisters,
+      this.wallets,
+      this.neurons,
+      this.proposals,
+      this.authToken});
 }
 
 class HiveCoordinator {
@@ -34,12 +38,12 @@ class HiveCoordinator {
   Future<dynamic>? loadingFuture;
 
   HiveCoordinator() {
-    openBoxes();
+    performInitialisation();
   }
 
   bool get boxesClosed => hiveBoxes.areClosed;
 
-  Future<void> openBoxes() async {
+  Future<void> performInitialisation() async {
     if (boxesClosed) {
       if (hiveInitFuture == null) {
         hiveInitFuture = initializeHive();
@@ -48,16 +52,25 @@ class HiveCoordinator {
         await hiveInitFuture;
       }
       if (loadingFuture == null) {
-        loadingFuture = Future.wait([
-          Hive.openBox<Canister>('canisters').then((value) => hiveBoxes.canisters = value),
-          Hive.openBox<Wallet>('wallets').then((value) => hiveBoxes.wallets = value),
-          Hive.openBox<Neuron>('neurons').then((value) => hiveBoxes.neurons = value),
-          Hive.openBox<Proposal>('proposals').then((value) => hiveBoxes.proposals = value),
-          Hive.openBox<AuthToken>('auth_token').then((value) => hiveBoxes.authToken = value)
-        ]);
+        loadingFuture = openAllBoxes();
       }
       await loadingFuture;
     }
+  }
+
+  Future<List<Box<HiveObject>>> openAllBoxes() {
+    return Future.wait([
+      Hive.openBox<Canister>('canisters')
+          .then((value) => hiveBoxes.canisters = value),
+      Hive.openBox<Wallet>('wallets')
+          .then((value) => hiveBoxes.wallets = value),
+      Hive.openBox<Neuron>('neurons')
+          .then((value) => hiveBoxes.neurons = value),
+      Hive.openBox<Proposal>('proposals')
+          .then((value) => hiveBoxes.proposals = value),
+      Hive.openBox<AuthToken>('auth_token')
+          .then((value) => hiveBoxes.authToken = value)
+    ]);
   }
 
   Future initializeHive() async {
@@ -70,7 +83,15 @@ class HiveCoordinator {
     Hive.registerAdapter(AuthTokenAdapter());
   }
 
-  void clearData() {
-    Hive.deleteFromDisk();
+  Future<void> deleteAllData() async {
+    await Future.wait([
+      hiveBoxes.canisters,
+      hiveBoxes.wallets,
+      hiveBoxes.neurons,
+      hiveBoxes.proposals,
+      hiveBoxes.authToken
+    ].map((element) async {
+      await element?.deleteAll(element.keys);
+    }));
   }
 }

@@ -36,9 +36,8 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
           .split("&")
           .map((e) => e.split("=").let((it) => MapEntry(it[0], it[1]))));
       final token = map["access_token"];
-      storeAccessToken(token!);
       print("access token stored");
-      return AccountsTabPage;
+      return ResourcesLoadingPageConfig(Future.value(AccountsTabPage), storeAccessToken(token!));;
     }
 
     if (hiveCoordinator.hiveBoxes.authToken == null) {
@@ -49,7 +48,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     bool isAuthenticated =
         isAuthTokenValid(hiveCoordinator.hiveBoxes.authToken!.webAuthToken);
     if (!isAuthenticated) {
-      Hive.deleteFromDisk();
+      hiveCoordinator.deleteAllData();
       return AuthPage;
     }
 
@@ -73,7 +72,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
 
     final entityPageDef = entityPages[path];
     if (entityPageDef != null) {
-      await hiveCoordinator.openBoxes();
+      await hiveCoordinator.performInitialisation();
       final id = uri.pathSegments[1];
       final entityPage =
           entityPageDef.createConfigWithId(id, hiveCoordinator.hiveBoxes);
@@ -86,7 +85,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
   }
 
   Future<bool> hasValidAuthToken() async {
-    await hiveCoordinator.openBoxes();
+    await hiveCoordinator.performInitialisation();
     return isAuthTokenValid(hiveCoordinator.hiveBoxes.authToken!.webAuthToken);
   }
 
@@ -107,13 +106,17 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     return RouteInformation(location: configuration.path);
   }
 
-  Future<void> storeAccessToken(String queryParameter) async {
-    await hiveCoordinator.openBoxes();
+  Future<bool> storeAccessToken(String queryParameter) async {
+    await hiveCoordinator.performInitialisation();
     final token = hiveCoordinator.hiveBoxes.authToken!.webAuthToken;
     if (token != null) {
       token.data = queryParameter;
       token.creationDate = DateTime.now();
       await token.save();
+      return true;
+    }else{
+      print("Could not find token on disk");
+      return false;
     }
   }
 }
