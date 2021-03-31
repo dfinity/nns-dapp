@@ -1,7 +1,6 @@
+import { Principal } from "@dfinity/agent";
 import BigNumber from "bignumber.js";
-import * as convert from "../converters";
-
-import { arrayBufferToArrayOfNumber, bigIntToBigNumber } from "../converters";
+import * as convert from "../converter";
 import {
     Action,
     Amount,
@@ -31,6 +30,11 @@ import {
 } from "./rawService";
 
 export default class RequestConverters {
+    private readonly principal: Principal;
+    constructor(principal: Principal) {
+        this.principal = principal;
+    }
+
     public fromManageNeuron = (manageNeuron: ManageNeuron) : RawManageNeuron => {
         return {
             id: manageNeuron.id ? [this.fromNeuronId(manageNeuron.id)] : [],
@@ -58,14 +62,14 @@ export default class RequestConverters {
 
     private fromNeuronId = (neuronId: NeuronId) : RawNeuronId => {
         return {
-            id: bigIntToBigNumber(neuronId.id)
+            id: convert.bigIntToBigNumber(neuronId.id)
         };
     }
 
     private fromBallot = (ballot: Ballot) : RawBallot => {
         return {
             vote: ballot.vote,
-            voting_power: bigIntToBigNumber(ballot.votingPower)
+            voting_power: convert.bigIntToBigNumber(ballot.votingPower)
         };
     }
 
@@ -83,7 +87,7 @@ export default class RequestConverters {
             return {
                 ExternalUpdate: {
                     update_type: externalUpdate.updateType,
-                    payload: arrayBufferToArrayOfNumber(externalUpdate.payload)
+                    payload: convert.arrayBufferToArrayOfNumber(externalUpdate.payload)
                 }
             }
         }
@@ -108,11 +112,11 @@ export default class RequestConverters {
             const networkEconomics = action.NetworkEconomics;
             return {
                 NetworkEconomics: {
-                    reject_cost_doms: bigIntToBigNumber(networkEconomics.rejectCostDoms),
-                    manage_neuron_cost_per_proposal_doms: bigIntToBigNumber(networkEconomics.manageNeuronCostPerProposalDoms),
-                    neuron_minimum_stake_doms: bigIntToBigNumber(networkEconomics.neuronMinimumStakeDoms),
-                    neuron_spawn_dissolve_delay_seconds: bigIntToBigNumber(networkEconomics.neuronSpawnDissolveDelaySeconds),
-                    maximum_node_provider_rewards_doms: bigIntToBigNumber(networkEconomics.maximumNodeProviderRewardsDoms)
+                    reject_cost_doms: convert.bigIntToBigNumber(networkEconomics.rejectCostDoms),
+                    manage_neuron_cost_per_proposal_doms: convert.bigIntToBigNumber(networkEconomics.manageNeuronCostPerProposalDoms),
+                    neuron_minimum_stake_doms: convert.bigIntToBigNumber(networkEconomics.neuronMinimumStakeDoms),
+                    neuron_spawn_dissolve_delay_seconds: convert.bigIntToBigNumber(networkEconomics.neuronSpawnDissolveDelaySeconds),
+                    maximum_node_provider_rewards_doms: convert.bigIntToBigNumber(networkEconomics.maximumNodeProviderRewardsDoms)
                 }
             }
         }
@@ -121,7 +125,7 @@ export default class RequestConverters {
             return {
                 RewardNodeProvider: {
                     node_provider : rewardNodeProvider.nodeProvider ? [this.fromNodeProvider(rewardNodeProvider.nodeProvider)] : [],
-                    amount_doms : bigIntToBigNumber(rewardNodeProvider.amountDoms)
+                    amount_doms : convert.bigIntToBigNumber(rewardNodeProvider.amountDoms)
                 }
             }
         }
@@ -149,7 +153,7 @@ export default class RequestConverters {
             const split = command.Split;
             return {
                 Split: {
-                    amount_doms: bigIntToBigNumber(split.amountDoms)
+                    amount_doms: convert.bigIntToBigNumber(split.amountDoms)
                 }
             }
         }
@@ -183,11 +187,11 @@ export default class RequestConverters {
             const disburseToNeuron = command.DisburseToNeuron;
             return {
                 DisburseToNeuron: {
-                    dissolve_delay_seconds: bigIntToBigNumber(disburseToNeuron.dissolveDelaySeconds),
+                    dissolve_delay_seconds: convert.bigIntToBigNumber(disburseToNeuron.dissolveDelaySeconds),
                     kyc_verified: disburseToNeuron.kycVerified,
-                    amount_doms: bigIntToBigNumber(disburseToNeuron.amountDoms),
+                    amount_doms: convert.bigIntToBigNumber(disburseToNeuron.amountDoms),
                     new_controller: disburseToNeuron.newController ? [disburseToNeuron.newController] : [],
-                    nonce: bigIntToBigNumber(disburseToNeuron.nonce)
+                    nonce: convert.bigIntToBigNumber(disburseToNeuron.nonce)
                 }
             }
         }
@@ -205,8 +209,8 @@ export default class RequestConverters {
             const disburse = command.Disburse;
             return {
                 Disburse: {
-                    to_subaccount: arrayBufferToArrayOfNumber(disburse.toSubaccount),
-                    to_account: disburse.toAccount ? [disburse.toAccount] : [],
+                    to_subaccount: disburse.toSubaccountId ? convert.fromSubAccountId(disburse.toSubaccountId) : [],
+                    to_account: [this.principal],
                     amount: disburse.amount ? [this.fromAmount(disburse.amount)] : []
                 }
             }
@@ -274,7 +278,7 @@ export default class RequestConverters {
 
     private fromAmount = (amount: Amount) : RawAmount => {
         return {
-            doms: bigIntToBigNumber(amount.doms)
+            doms: convert.bigIntToBigNumber(amount.doms)
         }
     }
 

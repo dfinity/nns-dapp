@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { arrayOfNumberToArrayBuffer, bigNumberToBigInt } from "../converters";
+import { arrayOfNumberToArrayBuffer, bigNumberToBigInt, toSubAccountId } from "../converter";
 import {
     Action,
     Amount,
@@ -192,7 +192,7 @@ export default class ResponseConverters {
             neuronStakeDoms: bigNumberToBigInt(neuronStakeTransfer.neuron_stake_doms),
             fromSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.from_subaccount),
             transferTimestamp: bigNumberToBigInt(neuronStakeTransfer.transfer_timestamp),
-            blockHeight: bigNumberToBigInt(neuronStakeTransfer.block_height)                    
+            blockHeight: bigNumberToBigInt(neuronStakeTransfer.block_height)
         };        
     }
 
@@ -376,8 +376,7 @@ export default class ResponseConverters {
             const disburse = command.Disburse;
             return {
                 Disburse: {
-                    toSubaccount: arrayOfNumberToArrayBuffer(disburse.to_subaccount),
-                    toAccount: disburse.to_account.length ? disburse.to_account[0] : null,
+                    toSubaccountId: toSubAccountId(disburse.to_subaccount),
                     amount: disburse.amount.length ? this.toAmount(disburse.amount[0]) : null
                 }
             }

@@ -12,6 +12,7 @@ import GovernanceService, {
 } from "./canisters/governance/model";
 import { ProposalInfo } from "./canisters/governance/model";
 import createNeuronImpl, { CreateNeuronRequest, CreateNeuronResponse } from "./canisters/governance/createNeuron";
+import ledgerViewBuilder from "./canisters/ledgerView/builder";
 
 export default class GovernanceApi {
     private readonly governanceService: GovernanceService;
@@ -20,7 +21,8 @@ export default class GovernanceApi {
 
     constructor(host: string, identity: SignIdentity) {
         this.ledgerService = ledgerBuilder(host, identity);
-        this.governanceService = governanceBuilder(host, identity);
+        const ledgerViewService = ledgerViewBuilder(host, identity);
+        this.governanceService = governanceBuilder(host, identity, ledgerViewService.syncTransactions);
         this.identity = identity;
     }
 

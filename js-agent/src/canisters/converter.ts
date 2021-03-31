@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 import { ICPTs } from "./ledger/model";
 import { ICPTs as RawICPTs } from "./ledger/rawService";
+import { SUB_ACCOUNT_BYTE_LENGTH } from "./constants";
 
 export const bigIntToBigNumber = (value: bigint) : BigNumber => {
     return new BigNumber(value.toString(10));
@@ -41,14 +42,24 @@ export const numberToArrayBuffer = (value: number, byteLength: number) : ArrayBu
     return buffer;
 }
 
-export function asciiStringToByteArray(text: string) : Array<number> {
+export const asciiStringToByteArray = (text: string) : Array<number> => {
     return Array
         .from(text)
         .map(c => c.charCodeAt(0));
 }
 
-export function toICPTs(value: RawICPTs) : ICPTs {
+export const toICPTs = (value: RawICPTs) : ICPTs => {
     return {
         doms: BigInt(value.doms)
     };
+}
+
+export const toSubAccountId = (subAccount: Array<number>) : number => {
+    const bytes = arrayOfNumberToArrayBuffer(subAccount);
+    return arrayBufferToNumber(bytes);
+}
+
+export const fromSubAccountId = (subAccountId: number) : Array<number> => {
+    const buffer = numberToArrayBuffer(subAccountId, SUB_ACCOUNT_BYTE_LENGTH);
+    return arrayBufferToArrayOfNumber(buffer);
 }

@@ -2,7 +2,7 @@ import LedgerService, { ICPTs } from "../ledger/model";
 import GovernanceService, { GovernanceError } from "./model";
 import { BinaryBlob, blobFromUint8Array, DerEncodedBlob, Principal, SignIdentity } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "./canisterId";
-import * as convert from "../converters";
+import * as convert from "../converter";
 import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
 import crc from "crc";
 import randomBytes from "randombytes";

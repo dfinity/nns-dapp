@@ -19,8 +19,6 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     const ledgerApi = new LedgerApi(host, identity);
     const governanceApi = new GovernanceApi(host, identity);
 
-    const myPrincipal = identity.getPrincipal();
-    
     console.log("getting account");
     let account = await ledgerApi.getAccount();
     console.log(account);
@@ -31,10 +29,6 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
         console.log("getting account");
         account = await ledgerApi.getAccount();
-
-        console.log("acquireICPTs");
-        await ledgerApi.acquireICPTs(account.accountIdentifier, {doms: BigInt(100_000_000)});
-        await ledgerApi.acquireICPTs(account.subAccounts[0].accountIdentifier, {doms: BigInt(2_000_000_000)});
     }
 
     console.log("getting balances");
@@ -42,12 +36,12 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         accounts: [account.accountIdentifier].concat(account.subAccounts.map(a => a.accountIdentifier))
     });
     console.log(balances);
-    
+
     const firstSubAccount = account.subAccounts[0];
 
     if (balances[firstSubAccount.accountIdentifier].doms < BigInt(3_000_000_000)) {
         console.log("topping up balance");
-        await ledgerApi.acquireICPTs(firstSubAccount.accountIdentifier, {doms: BigInt(1_000_000_000)});
+        await ledgerApi.acquireICPTs(firstSubAccount.accountIdentifier, {doms: BigInt(2_100_000_000)});
     }
 
     {
@@ -184,8 +178,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
             id: { id: disbursableNeuronId },
             command: {
                 Disburse: {
-                    toAccount: myPrincipal,
-                    toSubaccount: new Uint8Array(32),
+                    toSubaccountId: null,
                     amount: {
                         doms: BigInt(1_000_000)
                     }

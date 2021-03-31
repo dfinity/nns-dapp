@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/agent";
 import BigNumber from "bignumber.js";
 import { Option } from "../option";
 import RawService from "./rawService";
@@ -13,16 +14,18 @@ import ServiceInterface, {
 } from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
-import { bigIntToBigNumber, bigNumberToBigInt } from "../converters";
+import { bigIntToBigNumber, bigNumberToBigInt } from "../converter";
 
 export default class Service implements ServiceInterface {
     private readonly service: RawService;
+    private readonly syncTransactions: () => void;
     private readonly requestConverters: RequestConverters;
     private readonly responseConverters: ResponseConverters;
 
-    public constructor(service: RawService) {
+    public constructor(service: RawService, syncTransactions: () => void, myPrincipal: Principal) {
         this.service = service;
-        this.requestConverters = new RequestConverters();
+        this.syncTransactions = syncTransactions;
+        this.requestConverters = new RequestConverters(myPrincipal);
         this.responseConverters = new ResponseConverters();
     }
 
@@ -71,6 +74,10 @@ export default class Service implements ServiceInterface {
     public manageNeuron = async (request: ManageNeuron) : Promise<ManageNeuronResponse> => {
         const rawRequest = this.requestConverters.fromManageNeuron(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toManageNeuronResponse(rawResponse);
+        const response = this.responseConverters.toManageNeuronResponse(rawResponse);
+        if ("Ok" in response && "Disburse" in response.Ok) {
+            this.syncTransactions();
+        }
+        return response;
     }
 }

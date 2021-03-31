@@ -6,7 +6,7 @@ import RawService from "./rawService";
 import Service from "./Service";
 import ServiceInterface from "./model";
 
-export default function(host: string, identity: Identity) : ServiceInterface {
+export default function(host: string, identity: Identity, syncTransactions: () => void) : ServiceInterface {
     const rawService = buildActor<RawService>(host, identity, CANISTER_ID, IDL);
-    return new Service(rawService);
+    return new Service(rawService, syncTransactions, identity.getPrincipal());
 }

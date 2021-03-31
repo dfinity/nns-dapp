@@ -9,8 +9,8 @@ export type Action =
     { RewardNodeProvider: RewardNodeProvider } |
     { AddOrRemoveNodeProvider: AddOrRemoveNodeProvider } |
     { Motion: Motion };
-export interface AddHotKey { newHotKey: Option<Principal> };
-export interface AddOrRemoveNodeProvider { change: Option<Change> };
+export interface AddHotKey { newHotKey: Principal };
+export interface AddOrRemoveNodeProvider { change: Change };
 export interface Amount { doms: bigint };
 export interface ApproveKyc { principals: Array<Principal> };
 export type AuthzChangeOp = { Authorize: { addSelf: boolean } } |
@@ -18,7 +18,7 @@ export type AuthzChangeOp = { Authorize: { addSelf: boolean } } |
 export interface Ballot { vote: number, votingPower: bigint };
 export interface BallotInfo {
     vote: number,
-    proposalId: Option<NeuronId>,
+    proposalId: NeuronId,
 };
 export interface CanisterAuthzInfo { methodsAuthz: Array<MethodAuthzInfo> };
 export type Change = { ToRemove: NodeProvider } |
@@ -32,11 +32,10 @@ export type Command =
     { DisburseToNeuron: DisburseToNeuron } |
     { MakeProposal: Proposal } |
     { Disburse: Disburse };
-export interface Configure { operation: Option<Operation> };
+export interface Configure { operation: Operation };
 export interface Disburse {
-    toSubaccount: ArrayBuffer,
-    toAccount: Option<Principal>,
-    amount: Option<Amount>,
+    toSubaccountId: Option<number>,
+    amount: Amount,
 };
 export interface DisburseResponse { transferBlockHeight: bigint };
 export interface DisburseToNeuron {
@@ -73,8 +72,8 @@ export interface ListProposalsResponse {
 };
 export interface MakeProposalResponse { proposalId: Option<NeuronId> };
 export interface ManageNeuron {
-    id: Option<NeuronId>,
-    command: Option<Command>,
+    id: NeuronId,
+    command: Command,
 };
 export type ManageNeuronResponse = { Ok: ManageNeuronResponseOk } |
     { Err: GovernanceError };

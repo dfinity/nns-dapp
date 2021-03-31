@@ -1,6 +1,6 @@
 import { BlockHeight, ICPTs } from "./model";
 import { BlockHeight as RawBlockHeight, ICPTs as RawICPTs } from "./rawService";
-import * as convert from "../converters";
+import * as convert from "../converter";
 
 export default class ResponseConverters {
     

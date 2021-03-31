@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import { GetBalancesRequest, ICPTs, NotifyCanisterRequest, SendICPTsRequest } from "./model";
 import { AccountBalanceArgs, ICPTs as RawICPTs, NotifyCanisterArgs, SendArgs, SubAccount } from "./rawService";
-import * as convert from "../converters";
+import * as convert from "../converter";
 import { SUB_ACCOUNT_BYTE_LENGTH } from "../constants";
 
 export const TRANSACTION_FEE : RawICPTs = { doms: new BigNumber(137) };
