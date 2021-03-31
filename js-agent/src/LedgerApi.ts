@@ -58,7 +58,7 @@ export default class LedgerApi {
         }
     }
 
-    public getBalances = (request: GetBalancesRequest) : Promise<{}> => {
+    public getBalances = (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, ICPTs>> => {
         return this.ledgerService.getBalances(request);
     }
 

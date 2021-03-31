@@ -1,4 +1,4 @@
-import { blobFromUint8Array, derBlobFromBlob, SignIdentity } from "@dfinity/agent";
+import { blobFromUint8Array, derBlobFromBlob, Principal, SignIdentity } from "@dfinity/agent";
 import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
@@ -18,6 +18,8 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     console.log("start integration test");
     const ledgerApi = new LedgerApi(host, identity);
     const governanceApi = new GovernanceApi(host, identity);
+
+    const myPrincipal = identity.getPrincipal();
     
     console.log("getting account");
     let account = await ledgerApi.getAccount();
@@ -26,29 +28,37 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     if (!account.subAccounts.length) {
         console.log("creating sub-account Abc");
         await ledgerApi.createSubAccount("Abc");
+
         console.log("getting account");
         account = await ledgerApi.getAccount();
+
         console.log("acquireICPTs");
         await ledgerApi.acquireICPTs(account.accountIdentifier, {doms: BigInt(100_000_000)});
         await ledgerApi.acquireICPTs(account.subAccounts[0].accountIdentifier, {doms: BigInt(2_000_000_000)});
-    } else {
-        console.log("acquireICPTs");
-        await ledgerApi.acquireICPTs(account.subAccounts[0].accountIdentifier, {doms: BigInt(1_000_100_000)});
     }
-    
+
     console.log("getting balances");
     const balances = await ledgerApi.getBalances({
         accounts: [account.accountIdentifier].concat(account.subAccounts.map(a => a.accountIdentifier))
     });
     console.log(balances);
+    
+    const firstSubAccount = account.subAccounts[0];
 
-    console.log("getting transactions");
-    const transactions = await ledgerApi.getTransactions({
-        accountIdentifier: account.accountIdentifier,
-        offset: 0,
-        pageSize: 10
-    });
-    console.log(transactions);   
+    if (balances[firstSubAccount.accountIdentifier].doms < BigInt(3_000_000_000)) {
+        console.log("topping up balance");
+        await ledgerApi.acquireICPTs(firstSubAccount.accountIdentifier, {doms: BigInt(1_000_000_000)});
+    }
+
+    {
+        console.log("getting transactions");
+        const transactions = await ledgerApi.getTransactions({
+            accountIdentifier: account.accountIdentifier,
+            offset: 0,
+            pageSize: 10
+        });
+        console.log(transactions);   
+    }
 
     console.log("get neurons")
     let neurons = await governanceApi.getNeurons();
@@ -59,7 +69,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         const createNeuronResult = await governanceApi.createNeuron({
             stake: {doms: BigInt(1_000_000_000)},
             dissolveDelayInSecs: BigInt(20_000_000),
-            fromSubAccountId: account.subAccounts[0].id
+            fromSubAccountId: firstSubAccount.id
         });
         console.log(createNeuronResult);
 
@@ -72,27 +82,126 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         console.log(neurons)
     }
 
-    console.log("make a 'motion' proposal");
-    const neuronId = neurons[neurons.length - 1].neuronId;
-    const manageNeuronResponse = await governanceApi.manageNeuron({
-        id: { id: neuronId },
-        command: {
-            MakeProposal: {
-                url: "https://www.lipsum.com/",
-                action: {
-                    Motion: {
-                        motionText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                    }
-                },
-                summary: "Lorem Ipsum"
-            }
-        }
-    });
-    console.log(manageNeuronResponse);    
-
     console.log("Get pending proposals"); 
     const pendingProposals = await governanceApi.getPendingProposals();
     console.log(pendingProposals);    
+
+    const latestNeuronId = neurons[neurons.length - 1].neuronId;
+
+    if (pendingProposals.length < 3) {
+        console.log("make a 'motion' proposal");
+        const manageNeuronResponse = await governanceApi.manageNeuron({
+            id: { id: latestNeuronId },
+            command: {
+                MakeProposal: {
+                    url: "https://www.lipsum.com/",
+                    action: {
+                        Motion: {
+                            motionText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                        }
+                    },
+                    summary: "Lorem Ipsum"
+                }
+            }
+        });
+        console.log(manageNeuronResponse);    
+
+        console.log("Get pending proposals"); 
+        const pendingProposals = await governanceApi.getPendingProposals();
+        console.log(pendingProposals);        
+    }
+
+    {
+        console.log("increase dissolve delay of latest neuron by 30 days");
+        const increase = 3600 * 24 * 30;
+        const manageNeuronResponse = await governanceApi.manageNeuron({
+            id: { id: latestNeuronId },
+            command: {
+                Configure: {
+                    operation: {
+                        IncreaseDissolveDelay: {
+                            additionalDissolveDelaySeconds: increase
+                        }
+                    }
+                }
+            }
+        });
+        console.log(manageNeuronResponse);            
+    }    
+
+    {
+        console.log("stop dissolving latest neuron");
+        const manageNeuronResponse = await governanceApi.manageNeuron({
+            id: { id: latestNeuronId },
+            command: {
+                Configure: {
+                    operation: {
+                        StopDissolving: {}
+                    }
+                }
+            }
+        });
+        console.log(manageNeuronResponse);            
+    }    
+
+    {
+        console.log("start dissolving latest neuron");
+        const manageNeuronResponse = await governanceApi.manageNeuron({
+            id: { id: latestNeuronId },
+            command: {
+                Configure: {
+                    operation: {
+                        StartDissolving: {}
+                    }
+                }
+            }
+        });
+        console.log(manageNeuronResponse);            
+    }    
+
+    // Create a neuron with zero dissolve delay if none exists so it can be disbursed
+    let disbursableNeuronId = neurons.find(n => n.dissolveDelaySeconds == BigInt(0))?.neuronId;
+    if (!disbursableNeuronId) {    
+        console.log("creating a neuron with zero dissolve delay");
+        const createNeuronResult = await governanceApi.createNeuron({
+            stake: {doms: BigInt(1_000_000_000)},
+            dissolveDelayInSecs: BigInt(0),
+            fromSubAccountId: firstSubAccount.id
+        });
+        console.log(createNeuronResult);
+
+        if (!("Ok" in createNeuronResult)) {
+            return;
+        }
+
+        disbursableNeuronId = createNeuronResult.Ok;
+    }
+
+    // Disburse a neuron to my default account
+    {
+        console.log("Disburse 1_000_000 doms from first disbursable neuron to my default account");
+        const manageNeuronResponse = await governanceApi.manageNeuron({
+            id: { id: disbursableNeuronId },
+            command: {
+                Disburse: {
+                    toAccount: myPrincipal,
+                    toSubaccount: new Uint8Array(32),
+                    amount: {
+                        doms: BigInt(1_000_000)
+                    }
+                }
+            }
+        });
+        console.log(manageNeuronResponse);            
+    }    
+
+    {
+        console.log("getting balances");
+        const balances = await ledgerApi.getBalances({
+            accounts: [account.accountIdentifier].concat(account.subAccounts.map(a => a.accountIdentifier))
+        });
+        console.log(balances);
+    }
 
     console.log("finish integration test");
 }
