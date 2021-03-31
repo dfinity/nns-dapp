@@ -121,6 +121,36 @@ class PlatformICApi extends AbstractPlatformICApi {
     })));
     await neuronSyncService!.fetchNeurons();
   }
+
+  @override
+  Future<void> startDissolving(BigInt neuronId) async{
+    await promiseToFuture(governanceApi!.manageNeuron(jsify({
+      'id': { 'id': neuronId },
+      'command': {
+        'Configure': {
+          'operation': {
+            'StartDissolving': {}
+          }
+        }
+      }
+    })));
+    await neuronSyncService!.fetchNeurons();
+  }
+
+  @override
+  Future<void> stopDissolving(BigInt neuronId) async{
+    await promiseToFuture(governanceApi!.manageNeuron(jsify({
+      'id': { 'id': neuronId },
+      'command': {
+        'Configure': {
+          'operation': {
+            'StopDissolving': {}
+          }
+        }
+      }
+    })));
+    await neuronSyncService!.fetchNeurons();
+  }
 }
 
 
@@ -264,10 +294,14 @@ class NeuronSyncService{
       hiveBoxes.neurons.put(neuronId, Neuron(
           address: neuronId,
           durationRemaining: e.dissolveDelaySeconds.toString(),
-        timerIsActive: false,
-        rewardAmount: 0,
+          timerIsActive: e.state == 2,
+          rewardAmount: 0,
           icpBalance: e.votingPower.toString().toICPT
       ));
+    }else{
+      final neuron = hiveBoxes.neurons.get(neuronId);
+      neuron!.timerIsActive =  e.state == 2;
+      neuron.save();
     }
   }
 }

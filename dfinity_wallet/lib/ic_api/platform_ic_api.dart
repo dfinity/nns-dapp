@@ -7,6 +7,8 @@ abstract class AbstractPlatformICApi extends State<ICApiManager> {
     Future<void> createSubAccount(String name);
     Future<void> sendICPTs(String toAccount, double icpts, String? fromSubAccount);
     Future<void> createNeuron(BigInt stakeInDoms, BigInt dissolveDelayInSecs, String? fromSubAccount);
+    Future<void> startDissolving(BigInt neuronId);
+    Future<void> stopDissolving(BigInt neuronId);
 
     @override
     Widget build(BuildContext context) {

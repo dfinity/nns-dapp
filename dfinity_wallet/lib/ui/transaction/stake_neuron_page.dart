@@ -30,7 +30,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
         ],
         inputType: TextInputType.number);
     disperseDelay = IntField("Disperse Delay", []);
-    disperseDelay.currentValue = 190.days.inSeconds;
+    disperseDelay.currentValue = 365.days.inSeconds;
   }
 
   @override

@@ -41,6 +41,7 @@ class Neuron extends DfinityEntity with ICPSource {
 
   @override
   String get identifier => address;
+  BigInt get id => BigInt.parse(address);
 
   @override
   String? get subAccountId => null;

@@ -44,4 +44,16 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> createNeuron(BigInt stakeInDoms, BigInt dissolveDelayInSecs, String? fromSubAccount) async {
 
   }
+
+  @override
+  Future<void> startDissolving(BigInt neuronId) {
+    // TODO: implement startDissolving
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> stopDissolving(BigInt neuronId) {
+    // TODO: implement stopDissolving
+    throw UnimplementedError();
+  }
 }

@@ -15,6 +15,9 @@ class GovernanceApi {
   @JS("createNeuron")
   external Promise<void> createNeuron(dynamic request);
 
+  @JS("manageNeuron")
+  external Promise<dynamic> manageNeuron(dynamic request);
+
   @JS("getNeurons")
   external Promise<dynamic> getNeurons();
 
