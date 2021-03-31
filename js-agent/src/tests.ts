@@ -1,9 +1,9 @@
-import { blobFromUint8Array, derBlobFromBlob, Principal, SignIdentity } from "@dfinity/agent";
+import { blobFromUint8Array, derBlobFromBlob, SignIdentity } from "@dfinity/agent";
 import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
 import { buildSubAccount, buildAccountIdentifier } from "./canisters/governance/createNeuron";
-import { Vote } from "./canisters/governance/model";
+import { Topic, Vote } from "./canisters/governance/model";
 
 var running = false;
 
@@ -187,7 +187,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
             }
         });
         console.log(manageNeuronResponse);            
-    }    
+    }
 
     {
         console.log("getting balances");
@@ -207,14 +207,31 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
                 id: { id: votingNeuronId },
                 command: {
                     RegisterVote: {
-                        vote: Vote.YES, 
+                        vote: Vote.YES,
                         proposal: proposalId
                     }
                 }
             });
-            console.log(manageNeuronResponse);            
+            console.log(manageNeuronResponse);
         }
-    }    
+    }
+
+
+    if (neurons.length > 2) {
+        console.log("Setting a neuron to follow another");
+
+        const response = await governanceApi.manageNeuron({
+            id: { id: neurons[0].neuronId },
+            command: {
+                Follow: {
+                    topic: Topic.Unspecified,
+                    followees: [{ id: neurons[1].neuronId }]
+                }
+            }
+        });
+
+        console.log(response);
+    }
 
     console.log("finish integration test");
 }

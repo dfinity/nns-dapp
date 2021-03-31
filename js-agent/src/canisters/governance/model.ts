@@ -51,7 +51,7 @@ export interface ExternalUpdate {
     updateType: number,
     payload: ArrayBuffer,
 };
-export interface Follow { topic: number, followees: Array<NeuronId> };
+export interface Follow { topic: Topic, followees: Array<NeuronId> };
 export interface Followees { followees: Array<NeuronId> };
 export interface GovernanceError {
     errorMessage: string,
@@ -207,6 +207,19 @@ export interface Tally {
     yes: bigint,
     total: bigint,
     timestampSeconds: bigint,
+};
+export enum Topic {
+    // https://github.com/dfinity-lab/dfinity/blob/99289f7b58f22268d8575b94971655e8f4567a8a/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto#L26
+    Unspecified = 0,
+    ManageNeuron = 1,
+    ExchangeRate = 2,
+    NetworkEconomics = 3,
+    Governance = 4,
+    NodeAdmin = 5,
+    ParticipantManagement = 6,
+    SubnetManagement = 7,
+    NetworkCanisterManagement = 8,
+    Kyc = 9,
 };
 export default interface ServiceInterface {
     // currentAuthz: () => Promise<CanisterAuthzInfo>,
