@@ -15,10 +15,10 @@ export interface Amount { doms: bigint };
 export interface ApproveKyc { principals: Array<Principal> };
 export type AuthzChangeOp = { Authorize: { addSelf: boolean } } |
     { Deauthorize: null };
-export interface Ballot { vote: number, votingPower: bigint };
+export interface Ballot { neuronId: bigint, vote: Vote, votingPower: bigint };
 export interface BallotInfo {
     vote: number,
-    proposalId: NeuronId,
+    proposalId: ProposalId,
 };
 export interface CanisterAuthzInfo { methodsAuthz: Array<MethodAuthzInfo> };
 export type Change = { ToRemove: NodeProvider } |
@@ -62,7 +62,7 @@ export interface IncreaseDissolveDelay {
 };
 export interface ListProposalsRequest {
     includeRewardStatus : Array<number>,
-    beforeProposal : Option<NeuronId>,
+    beforeProposal : Option<ProposalId>,
     limit : number,
     excludeTopic : Array<number>,
     includeStatus : Array<number>,
@@ -70,7 +70,7 @@ export interface ListProposalsRequest {
 export interface ListProposalsResponse {
     proposals : Array<ProposalInfo>,
 };
-export interface MakeProposalResponse { proposalId: Option<NeuronId> };
+export interface MakeProposalResponse { proposalId: ProposalId };
 export interface ManageNeuron {
     id: NeuronId,
     command: Command,
@@ -159,20 +159,28 @@ export interface Proposal {
     action: Option<Action>,
     summary: string,
 };
+export interface ProposalId { id: bigint };
+
 export interface ProposalInfo {
-    id: Option<NeuronId>,
-    ballots: Array<[bigint, Ballot]>,
+    id: ProposalId,
+    ballots: Array<Ballot>,
     rejectCostDoms: bigint,
     proposalTimestampSeconds: bigint,
     rewardEventRound: bigint,
     failedTimestampSeconds: bigint,
     decidedTimestampSeconds: bigint,
-    latestTally: Option<Tally>,
-    proposal: Option<Proposal>,
-    proposer: Option<NeuronId>,
+    latestTally: Tally,
+    proposal: Proposal,
+    proposer: NeuronId,
     executedTimestampSeconds: bigint,
 };
-export interface RegisterVote { vote: number, proposal: Option<NeuronId> };
+
+export enum Vote {
+	UNSPECIFIED = 0,
+	YES = 1,
+	NO = 2
+}  
+export interface RegisterVote { vote: Vote, proposal: ProposalId };
 export interface RemoveHotKey { hotKeyToRemove: Option<Principal> };
 
 export type ClaimNeuronRequest = {

@@ -13,7 +13,8 @@ import {
     NeuronId,
     NodeProvider,
     Operation,
-    Proposal
+    Proposal,
+    ProposalId
 } from "./model";
 import {
     Action as RawAction,
@@ -53,7 +54,7 @@ export default class RequestConverters {
     public fromListProposalsRequest = (request: ListProposalsRequest) : ListProposalInfo => {    
         return {
             include_reward_status: request.includeRewardStatus,
-            before_proposal: request.beforeProposal ? [this.fromNeuronId(request.beforeProposal)] : [],
+            before_proposal: request.beforeProposal ? [this.fromProposalId(request.beforeProposal)] : [],
             limit: request.limit,
             exclude_topic: request.excludeTopic,
             include_status: request.includeStatus
@@ -63,6 +64,12 @@ export default class RequestConverters {
     private fromNeuronId = (neuronId: NeuronId) : RawNeuronId => {
         return {
             id: convert.bigIntToBigNumber(neuronId.id)
+        };
+    }
+
+    private fromProposalId = (proposalId: ProposalId) : RawNeuronId => {
+        return {
+            id: convert.bigIntToBigNumber(proposalId.id)
         };
     }
 
@@ -170,7 +177,7 @@ export default class RequestConverters {
             const configure = command.Configure;
             return {
                 Configure: {
-                    operation: configure.operation ? [this.fromOperation(configure.operation)] : []
+                    operation: [this.fromOperation(configure.operation)]
                 }
             }
         }
@@ -179,7 +186,7 @@ export default class RequestConverters {
             return {
                 RegisterVote: {
                     vote: registerVote.vote,
-                    proposal: registerVote.proposal ? [this.fromNeuronId(registerVote.proposal)] : []
+                    proposal: [this.fromProposalId(registerVote.proposal)]
                 }
             }
         }

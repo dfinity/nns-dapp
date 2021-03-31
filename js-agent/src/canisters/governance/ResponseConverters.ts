@@ -55,15 +55,15 @@ export default class ResponseConverters {
     public toProposalInfo = (proposalInfo: RawProposalInfo) : ProposalInfo => {
         return {
             id: proposalInfo.id.length ? this.toNeuronId(proposalInfo.id[0]) : null,
-            ballots: proposalInfo.ballots.map(b => [bigNumberToBigInt(b[0]), this.toBallot(b[1])]),
+            ballots: proposalInfo.ballots.map(b => this.toBallot(b[0], b[1])),
             rejectCostDoms: bigNumberToBigInt(proposalInfo.reject_cost_doms),
             proposalTimestampSeconds: bigNumberToBigInt(proposalInfo.proposal_timestamp_seconds),
             rewardEventRound: bigNumberToBigInt(proposalInfo.reward_event_round),
             failedTimestampSeconds: bigNumberToBigInt(proposalInfo.failed_timestamp_seconds),
             decidedTimestampSeconds: bigNumberToBigInt(proposalInfo.decided_timestamp_seconds),
-            proposal: proposalInfo.proposal.length ? this.toProposal(proposalInfo.proposal[0]) : null,
-            proposer: proposalInfo.proposer.length ? this.toNeuronId(proposalInfo.proposer[0]) : null,
-            latestTally: proposalInfo.latest_tally.length ? this.toTally(proposalInfo.latest_tally[0]): null,
+            proposal: this.toProposal(proposalInfo.proposal[0]),
+            proposer: this.toNeuronId(proposalInfo.proposer[0]),
+            latestTally: this.toTally(proposalInfo.latest_tally[0]),
             executedTimestampSeconds: bigNumberToBigInt(proposalInfo.executed_timestamp_seconds),
         };
     }
@@ -216,8 +216,9 @@ export default class ResponseConverters {
         };
     }
 
-    private toBallot = (ballot: RawBallot) : Ballot => {
+    private toBallot = (neuronId: BigNumber, ballot: RawBallot) : Ballot => {
         return {
+            neuronId: bigNumberToBigInt(neuronId),
             vote: ballot.vote,
             votingPower: bigNumberToBigInt(ballot.voting_power)
         };

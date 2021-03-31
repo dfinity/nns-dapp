@@ -3,6 +3,7 @@ import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
 import { buildSubAccount, buildAccountIdentifier } from "./canisters/governance/createNeuron";
+import { Vote } from "./canisters/governance/model";
 
 var running = false;
 
@@ -154,7 +155,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     }    
 
     // Create a neuron with zero dissolve delay if none exists so it can be disbursed
-    let disbursableNeuronId = neurons.find(n => n.dissolveDelaySeconds == BigInt(0))?.neuronId;
+    let disbursableNeuronId = neurons.find(n => n.dissolveDelaySeconds == BigInt(0) && n.fullNeuron.cachedNeuronStakeDoms > 1_000_000_000)?.neuronId;
     if (!disbursableNeuronId) {    
         console.log("creating a neuron with zero dissolve delay");
         const createNeuronResult = await governanceApi.createNeuron({
@@ -195,6 +196,25 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         });
         console.log(balances);
     }
+
+    {
+        // Find a neuron with dissolve delay > 6 months
+        let votingNeuronId = neurons.find(n => n.dissolveDelaySeconds > BigInt(3600 * 24 * 183))?.neuronId;
+        const proposalId = pendingProposals.find(p => !p.ballots.find(b => b.neuronId == votingNeuronId))?.id;
+        if (proposalId) {
+            console.log("vote on 1st pending proposal I've not already voted on");
+            const manageNeuronResponse = await governanceApi.manageNeuron({
+                id: { id: votingNeuronId },
+                command: {
+                    RegisterVote: {
+                        vote: Vote.YES, 
+                        proposal: proposalId
+                    }
+                }
+            });
+            console.log(manageNeuronResponse);            
+        }
+    }    
 
     console.log("finish integration test");
 }
