@@ -4,11 +4,26 @@ import governanceBuilder from "./canisters/governance/builder";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/model";
 import GovernanceService, {
+    AddHotKeyRequest,
+    DisburseRequest,
+    DisburseResult,
+    DisburseToNeuronRequest,
+    DisburseToNeuronResult,
+    EmptyResponse,
+    FollowRequest,
+    IncreaseDissolveDelayRequest,
     ListProposalsRequest,
     ListProposalsResponse,
-    ManageNeuron,
-    ManageNeuronResponse,
-    NeuronInfo
+    MakeMotionProposalRequest,
+    MakeProposalResult,
+    NeuronInfo,
+    RegisterVoteRequest,
+    RemoveHotKeyRequest,
+    SpawnRequest,
+    SpawnResult,
+    SplitRequest,
+    StartDissolvingRequest,
+    StopDissolvingRequest
 } from "./canisters/governance/model";
 import { ProposalInfo } from "./canisters/governance/model";
 import createNeuronImpl, { CreateNeuronRequest, CreateNeuronResponse } from "./canisters/governance/createNeuron";
@@ -50,7 +65,51 @@ export default class GovernanceApi {
         return this.governanceService.listProposals(request);
     }
 
-    public manageNeuron = (request: ManageNeuron) : Promise<ManageNeuronResponse> => {
-        return this.governanceService.manageNeuron(request);   
+    public addHotKey = async (request: AddHotKeyRequest) : Promise<EmptyResponse> => {
+        return this.governanceService.addHotKey(request);
+    }
+
+    public removeHotKey = async (request: RemoveHotKeyRequest) : Promise<EmptyResponse> => {
+        return this.governanceService.removeHotKey(request);
+    }
+
+    public startDissolving = async (request: StartDissolvingRequest) : Promise<EmptyResponse> => {
+        return this.governanceService.startDissolving(request);
+    }
+
+    public stopDissolving = async (request: StopDissolvingRequest) : Promise<EmptyResponse> => {
+        return this.governanceService.stopDissolving(request);
+    }        
+
+    public increaseDissolveDelay = async (request: IncreaseDissolveDelayRequest) : Promise<EmptyResponse> => {
+        return this.governanceService.increaseDissolveDelay(request);
+    }
+
+    public follow = async (request: FollowRequest) : Promise<EmptyResponse> => {
+        return this.governanceService.follow(request);
+    }
+
+    public registerVote = async (request: RegisterVoteRequest) : Promise<EmptyResponse> => {
+        return this.governanceService.registerVote(request);
+    }
+
+    public spawn = async (request: SpawnRequest) : Promise<SpawnResult> => {
+        return this.governanceService.spawn(request);
+    }
+
+    public split = async (request: SplitRequest) : Promise<EmptyResponse> => {
+        return this.governanceService.split(request);
+    }
+
+    public disburse = async (request: DisburseRequest) : Promise<DisburseResult> => {
+        return this.governanceService.disburse(request);
+    }
+
+    public disburseToNeuron = async (request: DisburseToNeuronRequest) : Promise<DisburseToNeuronResult> => {
+        return this.governanceService.disburseToNeuron(request);
+    }
+
+    public makeMotionProposal = async (request: MakeMotionProposalRequest) : Promise<MakeProposalResult> => {
+        return this.governanceService.makeMotionProposal(request);
     }
 }

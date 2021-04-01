@@ -85,19 +85,11 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     if (pendingProposals.length < 3) {
         console.log("make a 'motion' proposal");
-        const manageNeuronResponse = await governanceApi.manageNeuron({
-            id: latestNeuronId,
-            command: {
-                MakeProposal: {
-                    url: "https://www.lipsum.com/",
-                    action: {
-                        Motion: {
-                            motionText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                        }
-                    },
-                    summary: "Lorem Ipsum"
-                }
-            }
+        const manageNeuronResponse = await governanceApi.makeMotionProposal({
+            neuronId: latestNeuronId,
+            url: "https://www.lipsum.com/",
+            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            summary: "Lorem Ipsum"
         });
         console.log(manageNeuronResponse);    
 
@@ -109,47 +101,25 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     {
         console.log("increase dissolve delay of latest neuron by 30 days");
         const increase = 3600 * 24 * 30;
-        const manageNeuronResponse = await governanceApi.manageNeuron({
-            id: latestNeuronId,
-            command: {
-                Configure: {
-                    operation: {
-                        IncreaseDissolveDelay: {
-                            additionalDissolveDelaySeconds: increase
-                        }
-                    }
-                }
-            }
+        const manageNeuronResponse = await governanceApi.increaseDissolveDelay({
+            neuronId: latestNeuronId,
+            additionalDissolveDelaySeconds: increase
         });
         console.log(manageNeuronResponse);            
     }    
 
     {
         console.log("stop dissolving latest neuron");
-        const manageNeuronResponse = await governanceApi.manageNeuron({
-            id: latestNeuronId,
-            command: {
-                Configure: {
-                    operation: {
-                        StopDissolving: {}
-                    }
-                }
-            }
+        const manageNeuronResponse = await governanceApi.stopDissolving({
+            neuronId: latestNeuronId
         });
         console.log(manageNeuronResponse);            
     }    
 
     {
         console.log("start dissolving latest neuron");
-        const manageNeuronResponse = await governanceApi.manageNeuron({
-            id: latestNeuronId,
-            command: {
-                Configure: {
-                    operation: {
-                        StartDissolving: {}
-                    }
-                }
-            }
+        const manageNeuronResponse = await governanceApi.startDissolving({
+            neuronId: latestNeuronId
         });
         console.log(manageNeuronResponse);            
     }    
@@ -175,16 +145,10 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     // Disburse a neuron to my default account
     {
         console.log("Disburse 1_000_000 doms from first disbursable neuron to my default account");
-        const manageNeuronResponse = await governanceApi.manageNeuron({
-            id: disbursableNeuronId,
-            command: {
-                Disburse: {
-                    toSubaccountId: null,
-                    amount: {
-                        doms: BigInt(1_000_000)
-                    }
-                }
-            }
+        const manageNeuronResponse = await governanceApi.disburse({
+            neuronId: disbursableNeuronId,
+            toSubaccountId: null,
+            amountDoms: BigInt(1_000_000)
         });
         console.log(manageNeuronResponse);            
     }
@@ -204,14 +168,10 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         const proposalId = pendingProposals.find(p => !p.ballots.find(b => b.neuronId == votingNeuronId))?.id;
         if (proposalId) {
             console.log("vote on 1st pending proposal I've not already voted on");
-            const manageNeuronResponse = await governanceApi.manageNeuron({
-                id: votingNeuronId,
-                command: {
-                    RegisterVote: {
-                        vote: Vote.YES,
-                        proposal: proposalId
-                    }
-                }
+            const manageNeuronResponse = await governanceApi.registerVote({
+                neuronId: votingNeuronId,
+                vote: Vote.YES,
+                proposal: proposalId
             });
             console.log(manageNeuronResponse);
         }
@@ -221,14 +181,10 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     if (neurons.length > 2) {
         console.log("Setting a neuron to follow another");
 
-        const response = await governanceApi.manageNeuron({
-            id: neurons[0].neuronId,
-            command: {
-                Follow: {
-                    topic: Topic.Unspecified,
-                    followees: [neurons[1].neuronId]
-                }
-            }
+        const response = await governanceApi.follow({
+            neuronId: neurons[0].neuronId,
+            topic: Topic.Unspecified,
+            followees: [neurons[1].neuronId]
         });
 
         console.log(response);

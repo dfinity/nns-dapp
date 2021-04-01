@@ -8,12 +8,14 @@ import {
     Change,
     ClaimNeuronResponse,
     Command,
+    DisburseResult,
+    DisburseToNeuronResult,
     DissolveState,
+    EmptyResponse,
     Followees,
     GetNeuronInfoResponse,
     ListProposalsResponse,
-    ManageNeuronResponse,
-    ManageNeuronResponseCommand,
+    MakeProposalResult,
     Neuron,
     NeuronId,
     NeuronInfo,
@@ -22,6 +24,7 @@ import {
     Operation,
     Proposal,
     ProposalInfo,
+    SpawnResult,
     Tally
 } from "./model";
 import {
@@ -34,8 +37,6 @@ import {
     DissolveState as RawDissolveState,
     Followees as RawFollowees,
     Result_3,
-    ManageNeuronResponse as RawManageNeuronResponse,
-    Command_1,
     Neuron as RawNeuron,
     NeuronId as RawNeuronId,
     NeuronInfo as RawNeuronInfo,
@@ -66,25 +67,6 @@ export default class ResponseConverters {
             latestTally: this.toTally(proposalInfo.latest_tally[0]),
             executedTimestampSeconds: bigNumberToBigInt(proposalInfo.executed_timestamp_seconds),
         };
-    }
-
-    public toManageNeuronResponse = (response: Result_3) : ManageNeuronResponse => {
-        if ("Ok" in response) {
-            return {
-                Ok: {
-                    command: response.Ok.command.length ? this.toManageNeuronResponseCommand(response.Ok.command[0]) : null
-                }
-            }
-        }
-        if ("Err" in response) {
-            return {
-                Err: {
-                    errorMessage: response.Err.error_message,
-                    errorType: response.Err.error_type
-                }
-            }
-        }
-        this.throwUnrecognisedTypeError("response", response);
     }
 
     public toNeuronInfoResponse = (neuronId: BigNumber, neuronInfoResponse: Result_2, fullNeuronResponse: Result_1) : GetNeuronInfoResponse => {
@@ -122,6 +104,79 @@ export default class ResponseConverters {
                 Ok: bigNumberToBigInt(response.Ok)
             }
         }
+        return this.handleErrorResult(response);
+    }
+
+    public toListProposalsResponse = (response: ListProposalInfoResponse) : ListProposalsResponse => {
+        return {
+            proposals: response.proposal_info.map(this.toProposalInfo)
+        };
+    }
+
+    public toEmptyResponse = (response: Result_3) : EmptyResponse => {
+        if ("Ok" in response) {
+            return null;
+        }
+        return this.handleErrorResult(response);
+    }
+
+    public toSpawnResult = (response: Result_3) : SpawnResult => {
+        if ("Ok" in response) {
+            const command = (response.Ok.command)[0];
+            if ("Spawn" in command) {
+                return {
+                    Ok: {
+                        createdNeuronId: bigNumberToBigInt((command.Spawn.created_neuron_id)[0].id)
+                    }
+                };    
+            }
+        }
+        return this.handleErrorResult(response);
+    } 
+
+    public toDisburseResult = (response: Result_3) : DisburseResult => {
+        if ("Ok" in response) {
+            const command = (response.Ok.command)[0];
+            if ("Disburse" in command) {
+                return {
+                    Ok: {
+                        transferBlockHeight: bigNumberToBigInt(command.Disburse.transfer_block_height)
+                    }
+                };    
+            }
+        }
+        return this.handleErrorResult(response);
+    } 
+
+    public toDisburseToNeuronResult = (response: Result_3) : DisburseToNeuronResult => {
+        if ("Ok" in response) {
+            const command = (response.Ok.command)[0];
+            if ("Spawn" in command) {
+                return {
+                    Ok: {
+                        createdNeuronId: bigNumberToBigInt((command.Spawn.created_neuron_id)[0].id)
+                    }
+                };    
+            }
+        }
+        return this.handleErrorResult(response);
+    } 
+
+    public toMakeProposalResult = (response: Result_3) : MakeProposalResult => {
+        if ("Ok" in response) {
+            const command = (response.Ok.command)[0];
+            if ("MakeProposal" in command) {
+                return {
+                    Ok: {
+                        proposalId: bigNumberToBigInt((command.MakeProposal.proposal_id)[0].id)
+                    }
+                };    
+            }
+        }
+        return this.handleErrorResult(response);
+    } 
+
+    private handleErrorResult(response: Result_3) : any {
         if ("Err" in response) {
             return {
                 Err: {
@@ -131,12 +186,6 @@ export default class ResponseConverters {
             }
         }
         this.throwUnrecognisedTypeError("response", response);
-    }
-
-    public toListProposalsResponse = (response: ListProposalInfoResponse) : ListProposalsResponse => {
-        return {
-            proposals: response.proposal_info.map(this.toProposalInfo)
-        };
     }
 
     private toNeuron = (neuron: RawNeuron) : Neuron => {
@@ -378,65 +427,6 @@ export default class ResponseConverters {
                 Disburse: {
                     toSubaccountId: toSubAccountId(disburse.to_subaccount),
                     amount: disburse.amount.length ? this.toAmount(disburse.amount[0]) : null
-                }
-            }
-        }
-        this.throwUnrecognisedTypeError("command", command);
-    }
-
-    private toManageNeuronResponseCommand = (command: Command_1) : ManageNeuronResponseCommand => {
-        if ("Spawn" in command) {
-            const spawn = command.Spawn;
-            return {
-                Spawn: {
-                    createdNeuronId: spawn.created_neuron_id.length ? this.toNeuronId(spawn.created_neuron_id[0]) : null
-                }
-            }
-        }
-        if ("Split" in command) {
-            const split = command.Split;
-            return {
-                Split: {
-                    createdNeuronId: split.created_neuron_id.length ? this.toNeuronId(split.created_neuron_id[0]) : null
-                }
-            }
-        }
-        if ("Follow" in command) {
-            return {
-                Follow: {}
-            }
-        }
-        if ("Configure" in command) {
-            return {
-                Configure: {}
-            }
-        }
-        if ("RegisterVote" in command) {
-            return {
-                RegisterVote: {}
-            }
-        }
-        if ("DisburseToNeuron" in command) {
-            const disburseToNeuron = command.DisburseToNeuron;
-            return {
-                DisburseToNeuron: {
-                    createdNeuronId: disburseToNeuron.created_neuron_id.length ? this.toNeuronId(disburseToNeuron.created_neuron_id[0]) : null
-                }
-            }
-        }
-        if ("MakeProposal" in command) {
-            const makeProposal = command.MakeProposal;
-            return {
-                MakeProposal: {
-                    proposalId: makeProposal.proposal_id.length ? this.toNeuronId(makeProposal.proposal_id[0]) : null
-                }
-            }
-        }
-        if ("Disburse" in command) {
-            const disburse = command.Disburse;
-            return {
-                Disburse: {
-                    transferBlockHeight: bigNumberToBigInt(disburse.transfer_block_height)
                 }
             }
         }

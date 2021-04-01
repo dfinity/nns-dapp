@@ -1,20 +1,32 @@
 import { Principal } from "@dfinity/agent";
+import { response } from "@dfinity/authentication";
 import BigNumber from "bignumber.js";
 import * as convert from "../converter";
 import {
     Action,
+    AddHotKeyRequest,
     Amount,
     Ballot,
     Change,
     ClaimNeuronRequest,
     Command,
+    DisburseRequest,
+    DisburseToNeuronRequest,
+    FollowRequest,
+    IncreaseDissolveDelayRequest,
     ListProposalsRequest,
+    MakeMotionProposalRequest,
     ManageNeuron,
     NeuronId,
     NodeProvider,
     Operation,
     Proposal,
-    ProposalId
+    ProposalId,
+    RegisterVoteRequest,
+    RemoveHotKeyRequest,
+    SpawnRequest,
+    SplitRequest,
+    StartDissolvingRequest
 } from "./model";
 import {
     Action as RawAction,
@@ -38,8 +50,8 @@ export default class RequestConverters {
 
     public fromManageNeuron = (manageNeuron: ManageNeuron) : RawManageNeuron => {
         return {
-            id: manageNeuron.id ? [this.fromNeuronId(manageNeuron.id)] : [],
-            command: manageNeuron.command ? [this.fromCommand(manageNeuron.command)] : []
+            id: [this.fromNeuronId(manageNeuron.id)],
+            command: [this.fromCommand(manageNeuron.command)]
         }
     }
 
@@ -58,6 +70,133 @@ export default class RequestConverters {
             limit: request.limit,
             exclude_topic: request.excludeTopic,
             include_status: request.includeStatus
+        };
+    }
+
+    public fromAddHotKeyRequest = (request: AddHotKeyRequest) : RawManageNeuron => {
+        const rawOperation: RawOperation = { AddHotKey: { new_hot_key: [request.principal] } };
+        const rawCommand: RawCommand =  { Configure: { operation: [rawOperation] } };
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromRemoveHotKeyRequest = (request: RemoveHotKeyRequest) : RawManageNeuron => {
+        const rawOperation: RawOperation = { RemoveHotKey: { hot_key_to_remove: [request.principal] } };
+        const rawCommand: RawCommand =  { Configure: { operation: [rawOperation] } };
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromStartDissolvingRequest = (request: StartDissolvingRequest) : RawManageNeuron => {
+        const rawOperation: RawOperation = { StartDissolving: {} };
+        const rawCommand: RawCommand =  { Configure: { operation: [rawOperation] } };
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromStopDissolvingRequest = (request: StartDissolvingRequest) : RawManageNeuron => {
+        const rawOperation: RawOperation = { StopDissolving: {} };
+        const rawCommand: RawCommand =  { Configure: { operation: [rawOperation] } };
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromIncreaseDissolveDelayRequest = (request: IncreaseDissolveDelayRequest) : RawManageNeuron => {
+        const rawOperation: RawOperation = { IncreaseDissolveDelay: { 
+            additional_dissolve_delay_seconds : request.additionalDissolveDelaySeconds 
+        }};
+        const rawCommand: RawCommand =  { Configure: { operation: [rawOperation] } };
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromFollowRequest = (request: FollowRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { Follow: { 
+            topic : request.topic, 
+            followees : request.followees.map(this.fromNeuronId) 
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromRegisterVoteRequest = (request: RegisterVoteRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { RegisterVote: { 
+            vote : request.vote, 
+            proposal : [this.fromProposalId(request.proposal)] }
+        };
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromSpawnRequest = (request: SpawnRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { Spawn: { 
+            new_controller: [request.newController]
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+    
+    public fromSplitRequest = (request: SplitRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { Split: { 
+            amount_doms: convert.bigIntToBigNumber(request.amountDoms)
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromDisburseRequest = (request: DisburseRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { Disburse: { 
+            to_account: [this.principal],
+            to_subaccount: convert.fromSubAccountId(request.toSubaccountId),
+            amount : [this.toRawAmount(request.amountDoms)]
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromDisburseToNeuronRequest = (request: DisburseToNeuronRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { DisburseToNeuron: { 
+            dissolve_delay_seconds : convert.bigIntToBigNumber(request.dissolveDelaySeconds),
+            kyc_verified : request.kycVerified,
+            amount_doms : convert.bigIntToBigNumber(request.amountDoms),
+            new_controller : [request.newController],
+            nonce : convert.bigIntToBigNumber(request.nonce)
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromMakeMotionProposalRequest = (request: MakeMotionProposalRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { MakeProposal: { 
+            url: request.url,
+            summary: request.summary,
+            action: [{ Motion: { motion_text: request.text } }]
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
         };
     }
 
@@ -286,6 +425,12 @@ export default class RequestConverters {
     private fromAmount = (amount: Amount) : RawAmount => {
         return {
             doms: convert.bigIntToBigNumber(amount.doms)
+        }
+    }
+
+    private toRawAmount = (doms: bigint) : RawAmount => {
+        return {
+            doms: convert.bigIntToBigNumber(doms)
         }
     }
 

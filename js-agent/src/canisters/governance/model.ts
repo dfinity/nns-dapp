@@ -17,7 +17,7 @@ export type AuthzChangeOp = { Authorize: { addSelf: boolean } } |
     { Deauthorize: null };
 export interface Ballot { neuronId: bigint, vote: Vote, votingPower: bigint };
 export interface BallotInfo {
-    vote: number,
+    vote: Vote,
     proposalId: ProposalId,
 };
 export interface CanisterAuthzInfo { methodsAuthz: Array<MethodAuthzInfo> };
@@ -75,17 +75,6 @@ export interface ManageNeuron {
     id: NeuronId,
     command: Command,
 };
-export type ManageNeuronResponse = { Ok: ManageNeuronResponseOk } |
-    { Err: GovernanceError };
-export type ManageNeuronResponseCommand = { Spawn: SpawnResponse } |
-    { Split: SpawnResponse } |
-    { Follow: {} } |
-    { Configure: {} } |
-    { RegisterVote: {} } |
-    { DisburseToNeuron: SpawnResponse } |
-    { MakeProposal: MakeProposalResponse } |
-    { Disburse: DisburseResponse };
-export interface ManageNeuronResponseOk { command: Option<ManageNeuronResponseCommand> };
 export interface MethodAuthzChange {
     principal: Option<Principal>,
     methodName: string,
@@ -200,7 +189,7 @@ export interface RewardNodeProvider {
     amountDoms : bigint,
 };
 export interface Spawn { newController: Option<Principal> };
-export interface SpawnResponse { createdNeuronId: Option<NeuronId> };
+export interface SpawnResponse { createdNeuronId: NeuronId };
 export interface Split { amountDoms: bigint };
 export interface Tally {
     no: bigint,
@@ -221,19 +210,100 @@ export enum Topic {
     NetworkCanisterManagement = 8,
     Kyc = 9,
 };
+
+export interface AddHotKeyRequest {
+    neuronId: NeuronId,
+    principal: Principal
+}
+
+export interface RemoveHotKeyRequest {
+    neuronId: NeuronId,
+    principal: Principal
+}
+
+export interface StartDissolvingRequest {
+    neuronId: NeuronId
+}
+
+export interface StopDissolvingRequest {
+    neuronId: NeuronId
+}
+
+export interface IncreaseDissolveDelayRequest {
+    neuronId: NeuronId,
+    additionalDissolveDelaySeconds: number
+}
+
+export interface FollowRequest { 
+    neuronId: NeuronId,
+    topic: Topic, 
+    followees: Array<NeuronId> 
+};
+
+export interface RegisterVoteRequest {
+    neuronId: NeuronId,
+    vote: Vote, 
+    proposal: ProposalId
+}
+
+export interface SpawnRequest {
+    neuronId: NeuronId,
+    newController: Option<Principal>
+}
+
+export interface SplitRequest {
+    neuronId: NeuronId,
+    amountDoms: bigint
+}
+
+export interface DisburseRequest {
+    neuronId: NeuronId,
+    amountDoms: bigint
+    // Should be an AccountIdentifier
+    toSubaccountId: Option<number>,
+}
+
+export interface DisburseToNeuronRequest {
+    neuronId: NeuronId,
+    dissolveDelaySeconds: bigint,
+    kycVerified: boolean,
+    amountDoms: bigint,
+    newController: Option<Principal>,
+    nonce: bigint
+}
+
+export interface MakeMotionProposalRequest {
+    neuronId: NeuronId,
+    url: string,
+    text: string
+    summary: string
+}
+
+export interface DisburseToNeuronResponse { createdNeuronId: NeuronId };
+export interface SpawnResponse { createdNeuronId: NeuronId };
+export type SpawnResult = { Ok: SpawnResponse } | { Err: GovernanceError };
+export type DisburseResult = { Ok: DisburseResponse } | { Err: GovernanceError };
+export type DisburseToNeuronResult = { Ok: DisburseToNeuronResponse } | { Err: GovernanceError };
+export type MakeProposalResult = { Ok: MakeProposalResponse } | { Err: GovernanceError };
+
+export type EmptyResponse = Option<GovernanceError>;
+
 export default interface ServiceInterface {
-    // currentAuthz: () => Promise<CanisterAuthzInfo>,
-    // executeEligibleProposals: () => Promise<undefined>,
     claimNeuron: (request: ClaimNeuronRequest) => Promise<ClaimNeuronResponse>,
     getNeurons: () => Promise<Array<NeuronInfo>>,
     getPendingProposals: () => Promise<Array<ProposalInfo>>,
     getProposalInfo: (proposalId: bigint) => Promise<Option<ProposalInfo>>,
     listProposals: (request: ListProposalsRequest) => Promise<ListProposalsResponse>,
-    manageNeuron: (arg_0: ManageNeuron) => Promise<ManageNeuronResponse>,
-    // submitProposal: (
-    //     arg_0: bigint,
-    //     arg_1: Proposal,
-    //     arg_2: Principal,
-    // ) => Promise<bigint>,
-    // updateAuthz: (arg_0: Array<MethodAuthzChange>) => Promise<undefined>,
+    addHotKey: (request: AddHotKeyRequest) => Promise<EmptyResponse>,
+    removeHotKey: (request: RemoveHotKeyRequest) => Promise<EmptyResponse>,
+    startDissolving: (request: StartDissolvingRequest) => Promise<EmptyResponse>,
+    stopDissolving: (request: StopDissolvingRequest) => Promise<EmptyResponse>,
+    increaseDissolveDelay: (request: IncreaseDissolveDelayRequest) => Promise<EmptyResponse>,
+    follow: (request: FollowRequest) => Promise<EmptyResponse>,
+    registerVote: (request: RegisterVoteRequest) => Promise<EmptyResponse>,
+    spawn: (request: SpawnRequest) => Promise<SpawnResult>,
+    split: (request: SplitRequest) => Promise<EmptyResponse>,
+    disburse: (request: DisburseRequest) => Promise<DisburseResult>,
+    disburseToNeuron: (request: DisburseToNeuronRequest) => Promise<DisburseToNeuronResult>,
+    makeMotionProposal: (request: MakeMotionProposalRequest) => Promise<MakeProposalResult>,
 };
