@@ -68,14 +68,14 @@ export default class ResponseConverters {
         if ("Burn" in transfer) {
             return {
                 Burn: {
-                    amount: convert.toICPTs(transfer.Burn.amount)
+                    amount: convert.toDoms(transfer.Burn.amount)
                 }
             };
         }
         if ("Mint" in transfer) {
             return {
                 Mint: {
-                    amount: convert.toICPTs(transfer.Mint.amount)
+                    amount: convert.toDoms(transfer.Mint.amount)
                 }
             };
         }
@@ -83,8 +83,8 @@ export default class ResponseConverters {
             return {
                 Send: {
                     to: transfer.Send.to,
-                    amount: convert.toICPTs(transfer.Send.amount),
-                    fee: convert.toICPTs(transfer.Send.fee)
+                    amount: convert.toDoms(transfer.Send.amount),
+                    fee: convert.toDoms(transfer.Send.fee)
                 }
             };
         }
@@ -92,8 +92,8 @@ export default class ResponseConverters {
             return {
                 Receive: {
                     from: transfer.Receive.from,
-                    amount: convert.toICPTs(transfer.Receive.amount),
-                    fee: convert.toICPTs(transfer.Receive.fee)
+                    amount: convert.toDoms(transfer.Receive.amount),
+                    fee: convert.toDoms(transfer.Receive.fee)
                 }
             };
         }

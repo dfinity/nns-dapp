@@ -1,4 +1,4 @@
-import LedgerService, { ICPTs } from "../ledger/model";
+import LedgerService, { Doms } from "../ledger/model";
 import GovernanceService, { GovernanceError } from "./model";
 import { BinaryBlob, blobFromUint8Array, DerEncodedBlob, Principal, SignIdentity } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "./canisterId";
@@ -8,7 +8,7 @@ import crc from "crc";
 import randomBytes from "randombytes";
 
 export type CreateNeuronRequest = {
-    stake: ICPTs
+    stake: Doms
     dissolveDelayInSecs: bigint,
     fromSubAccountId?: number
 }

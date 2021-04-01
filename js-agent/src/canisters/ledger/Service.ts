@@ -3,7 +3,7 @@ import ServiceInterface, {
     AccountIdentifier,
     BlockHeight,
     GetBalancesRequest,
-    ICPTs,
+    Doms,
     NotifyCanisterRequest,
     SendICPTsRequest
 } from "./model";
@@ -24,11 +24,11 @@ export default class Service implements ServiceInterface {
         this.responseConverters = new ResponseConverters();
     }
 
-    public getBalances = async (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, ICPTs>> => {
+    public getBalances = async (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, Doms>> => {
         const rawRequests = this.requestConverters.fromGetBalancesRequest(request);
         const promises = rawRequests.map(async r => {
             const rawResponse = await this.service.account_balance(r);
-            return this.responseConverters.toICPTs(rawResponse);
+            return this.responseConverters.toDoms(rawResponse);
         });
         const balances = await Promise.all(promises);
 

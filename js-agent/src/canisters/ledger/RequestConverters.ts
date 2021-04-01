@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { GetBalancesRequest, ICPTs, NotifyCanisterRequest, SendICPTsRequest } from "./model";
+import { GetBalancesRequest, Doms, NotifyCanisterRequest, SendICPTsRequest } from "./model";
 import { AccountBalanceArgs, ICPTs as RawICPTs, NotifyCanisterArgs, SendArgs, SubAccount } from "./rawService";
 import * as convert from "../converter";
 import { SUB_ACCOUNT_BYTE_LENGTH } from "../constants";
@@ -14,17 +14,17 @@ export default class RequestConverters {
     public fromSendICPTsRequest = (request: SendICPTsRequest) : SendArgs => {
         return {
             to: request.to,
-            fee: request.fee === undefined ? TRANSACTION_FEE : this.fromICPTs(request.fee),
+            fee: request.fee === undefined ? TRANSACTION_FEE : this.fromDoms(request.fee),
             memo: new BigNumber(0),
-            amount: this.fromICPTs(request.amount),
+            amount: this.fromDoms(request.amount),
             block_height: request.blockHeight === undefined ? [] : [convert.bigIntToBigNumber(request.blockHeight)],
             from_subaccount: request.fromSubAccountId === undefined ? [] : [this.subAccountIdToSubAccount(request.fromSubAccountId)]
         };
     }  
     
-    public fromICPTs = (icpts: ICPTs) : RawICPTs => {
+    public fromDoms = (doms: Doms) : RawICPTs => {
         return {
-            doms: convert.bigIntToBigNumber(icpts.doms)
+            doms: convert.bigIntToBigNumber(doms)
         };
     }
 
@@ -34,7 +34,7 @@ export default class RequestConverters {
             block_height: convert.bigIntToBigNumber(request.blockHeight),
             to_subaccount : request.toSubAccount === undefined ? [] : [convert.arrayBufferToArrayOfNumber(request.toSubAccount)],
             from_subaccount: request.fromSubAccountId === undefined ? [] : [this.subAccountIdToSubAccount(request.fromSubAccountId)],
-            max_fee : request.maxFee === undefined ? TRANSACTION_FEE : this.fromICPTs(request.maxFee),
+            max_fee : request.maxFee === undefined ? TRANSACTION_FEE : this.fromDoms(request.maxFee),
         };
     }
 
