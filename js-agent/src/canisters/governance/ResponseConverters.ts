@@ -141,8 +141,8 @@ export default class ResponseConverters {
 
     private toNeuron = (neuron: RawNeuron) : Neuron => {
         return {
-            id: neuron.id.length ? this.toNeuronId(neuron.id[0]) : null,
-            controller: neuron.controller.length ? neuron.controller[0] : null,
+            id: this.toNeuronId(neuron.id[0]),
+            controller: neuron.controller[0],
             recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
             kycVerified: neuron.kyc_verified,
             notForProfit: neuron.not_for_profit,
@@ -152,10 +152,10 @@ export default class ResponseConverters {
             agingSinceTimestampSeconds: bigNumberToBigInt(neuron.aging_since_timestamp_seconds),
             neuronFeesDoms: bigNumberToBigInt(neuron.neuron_fees_doms),
             hotKeys: neuron.hot_keys,
-            account: arrayOfNumberToArrayBuffer(neuron.account),
-            dissolveState: neuron.dissolve_state.length ? this.toDissolveState(neuron.dissolve_state[0]) : null,
+            accountPrincipal: arrayOfNumberToArrayBuffer(neuron.account),
+            dissolveState: this.toDissolveState(neuron.dissolve_state[0]),
             followees: neuron.followees.map(([n, f]) => this.toFollowees(n, f)),
-            transfer: neuron.transfer.length ? this.toNeuronStakeTransfer(neuron.transfer[0]) : null
+            transfer: this.toNeuronStakeTransfer(neuron.transfer[0])
         };
     }
 

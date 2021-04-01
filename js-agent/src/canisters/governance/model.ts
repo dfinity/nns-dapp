@@ -105,8 +105,8 @@ export interface NetworkEconomics {
     neuronSpawnDissolveDelaySeconds: bigint,
 };
 export interface Neuron {
-    id: Option<NeuronId>,
-    controller: Option<Principal>,
+    id: NeuronId,
+    controller: Principal,
     recentBallots: Array<BallotInfo>,
     kycVerified: boolean,
     notForProfit: boolean,
@@ -116,10 +116,10 @@ export interface Neuron {
     agingSinceTimestampSeconds: bigint,
     neuronFeesDoms: bigint,
     hotKeys: Array<Principal>,
-    account: ArrayBuffer,
-    dissolveState: Option<DissolveState>,
+    accountPrincipal: ArrayBuffer,
+    dissolveState: DissolveState,
     followees: Array<Followees>,
-    transfer: Option<NeuronStakeTransfer>,
+    transfer: NeuronStakeTransfer,
 };
 export type NeuronId = bigint;
 export enum NeuronState {
