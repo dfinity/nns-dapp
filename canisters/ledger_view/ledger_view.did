@@ -1,0 +1,83 @@
+type AccountIdentifier = text;
+type BlockHeight = nat64;
+type ICPTs = record { doms: nat64; };
+type SubAccount = vec nat8;
+
+type GetAccountResponse =
+    variant {
+        Ok: record {
+            account_identifier: AccountIdentifier;
+            sub_accounts: vec NamedSubAccount;
+        };
+        AccountNotFound;
+    };
+
+type Timestamp = 
+    record {
+        secs: nat64;
+        nanos: nat32;
+    };
+
+type GetTransactionsRequest = 
+    record {
+        account_identifier: AccountIdentifier;
+        offset: nat32;
+        page_size: nat8;
+    };
+
+type GetTransactionsResponse = 
+    record {
+        transactions: vec Transaction;
+        total: nat32;
+    };
+
+type Send = 
+    record {
+        to: AccountIdentifier;
+        amount: ICPTs;
+        fee: ICPTs;
+    };
+
+type Receive = 
+    record {
+        from: AccountIdentifier;
+        amount: ICPTs;
+        fee: ICPTs;
+    };
+
+type Transfer = 
+    variant {
+        Burn: record { amount: ICPTs };
+        Mint: record { amount: ICPTs };
+        Send: Send;
+        Receive: Receive;
+    };
+
+type Transaction = 
+    record {
+        block_height: BlockHeight;
+        timestamp: Timestamp;
+        transfer: Transfer;
+    };
+
+type NamedSubAccount =
+    record {
+        name: text;
+        sub_account: SubAccount;
+        account_identifier: AccountIdentifier;
+    };
+
+type CreateSubAccountResponse =
+    variant {
+        Ok: NamedSubAccount;
+        AccountNotFound;
+        SubAccountLimitExceeded;
+    };
+
+service : {
+    get_account: () -> (GetAccountResponse) query;
+    add_account: () -> (AccountIdentifier);
+    get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
+    create_sub_account: (text) -> (CreateSubAccountResponse);
+    sync_transactions: () -> ();
+}

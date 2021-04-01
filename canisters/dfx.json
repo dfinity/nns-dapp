@@ -1,0 +1,35 @@
+{
+  "canisters": {
+    "ledger_view": {
+      "type": "custom",
+      "candid": "ledger_view/ledger_view.did",
+      "wasm": "target/wasm32-unknown-unknown/release/ledger_view-opt.wasm",
+      "build": "./generate-wasm.sh ledger_view"
+    }
+  },
+  "dfx": "0.6.26",
+  "networks": {
+    "ic": {
+      "providers": [
+        "https://gw.dfinity.network"
+      ],
+      "type": "persistent"
+    },
+    "testnet": {
+      "providers": [
+        "http://10.12.31.5:8080/"
+      ],
+      "type": "persistent"
+    },
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": ""
+    }
+  },
+  "version": 1
+}

@@ -123,8 +123,15 @@ pubspec.lock
 
 dfinity-wallet/build/**
 dfinity_wallet/assets/dfinity_agent.js
-
-
-js-agent/node_modules/**
-js-agent/build/
 dfinity_wallet/web/dfinity_agent.js
+js-agent/build/
+
+.dfx/
+target/
+dist/
+node_modules/
+
+**/*.rs.bk
+
+Cargo.lock
+
