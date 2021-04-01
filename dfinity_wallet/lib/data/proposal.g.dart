@@ -20,19 +20,31 @@ class ProposalAdapter extends TypeAdapter<Proposal> {
       fields[3] as String,
       fields[4] as String,
       fields[5] as String,
+      fields[9] as String,
+      fields[6] as String,
+      fields[7] as int,
+      fields[8] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, Proposal obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(7)
       ..writeByte(3)
       ..write(obj.id)
       ..writeByte(4)
       ..write(obj.text)
       ..writeByte(5)
-      ..write(obj.url);
+      ..write(obj.url)
+      ..writeByte(9)
+      ..write(obj.proposer)
+      ..writeByte(6)
+      ..write(obj.status)
+      ..writeByte(7)
+      ..write(obj.no)
+      ..writeByte(8)
+      ..write(obj.yes);
   }
 
   @override

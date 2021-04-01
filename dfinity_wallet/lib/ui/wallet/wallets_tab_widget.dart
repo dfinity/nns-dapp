@@ -80,7 +80,7 @@ class _WalletsPageState extends State<WalletsPage> {
                               SizedBox(
                                 height: 10,
                               ),
-                              Text(
+                              SelectableText(
                                 primary?.key ?? "",
                                 style: context.textTheme.bodyText2,
                               )

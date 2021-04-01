@@ -33,7 +33,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
     final key = authApi.createKey();
     await context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
-    print("Stored token ${context.boxes.authToken.get(WEB_TOKEN_KEY)?.key}");
+    print("Stored token ${context.boxes.authToken.get( WEB_TOKEN_KEY)?.key}");
     authApi.loginWithIdentityProvider(
         key, "http://" + window.location.host + "/home");
   }
@@ -324,11 +324,26 @@ class ProposalSyncService {
     final neuronId = response.id.id.toString();
     print("Fetched proposal ${neuronId}");
     if(!hiveBoxes.proposals.containsKey(neuronId)){
+      final yes = response.latestTally.yes.toString().toInt();
       hiveBoxes.proposals.put(neuronId, Proposal(
            neuronId,
            response.proposal.summary.toString(),
            response.proposal.url,
+          response.proposer.id.toString(),
+          "Open",
+          random.nextInt(yes),
+          yes
       ));
+    }else{
+      final proposal = hiveBoxes.proposals.get(neuronId)!;
+      proposal.id = neuronId;
+      proposal.text = response.proposal.summary.toString();
+      proposal.url = response.proposal.url;
+      proposal.proposer = response.proposer.id.toString();
+      proposal.status = "Open";
+      // proposal.no = response.latestTally.yes.toString().toInt();
+      // proposal.yes = response.latestTally.no.toString().toInt();
+      proposal.save();
     }
   }
 }

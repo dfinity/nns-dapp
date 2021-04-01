@@ -12,8 +12,16 @@ class Proposal extends DfinityEntity {
   late String text;
   @HiveField(5)
   late String url;
+  @HiveField(9)
+  late String proposer;
+  @HiveField(6)
+  late String status;
+  @HiveField(7)
+  late int no;
+  @HiveField(8)
+  late int yes;
 
-  Proposal(this.id, this.text, this.url);
+  Proposal(this.id, this.text, this.url, this.proposer, this.status, this.no, this.yes);
 
   @override
   String get identifier => id;

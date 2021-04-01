@@ -51,13 +51,11 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
               ),
             ),
           ),
-          ...context.boxes.proposals.values.map((e) {
-            return ProposalRow(
-                proposal: e,
-                onPressed: () {
-                  context.nav.push(ProposalPageDef.createPageConfig(e));
-                });
-          })
+          ...context.boxes.proposals.values.map((e) => ProposalRow(
+              proposal: e,
+              onPressed: () {
+                context.nav.push(ProposalPageDef.createPageConfig(e));
+              }))
         ],
       ),
     );
@@ -74,32 +72,55 @@ class ProposalRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.background,
       child: FlatButton(
         onPressed: onPressed,
         child: Container(
           width: double.infinity,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  proposal.text,
-                  style: context.textTheme.headline3
-                      ?.copyWith(color: AppColors.gray800),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(
+                                width: 2, color: Color(0xffFBB03B)))),
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        "Open",
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontFamily: Fonts.circularBook,
+                            color: Color(0xffFBB03B),
+                            fontWeight: FontWeight.normal),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 16.0, bottom: 16.0, right: 16.0),
-                child: Text(
-                  proposal.id,
-                  style: context.textTheme.bodyText1
-                      ?.copyWith(color: AppColors.gray800),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    proposal.text,
+                    style: context.textTheme.headline3,
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 16.0, bottom: 16.0, right: 16.0),
+                  child: Text(
+                    "By: ${proposal.proposer}",
+                    style: context.textTheme.bodyText1,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

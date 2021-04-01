@@ -57,7 +57,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                                         amount: widget.neuron.domsBalance.toICPT,
                                         amountSize: 30,
                                         icpLabelSize: 15),
-                                    Text("Staked")
+                                    Text("Votes")
                                   ],
                                 )
                               ],
@@ -67,8 +67,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                               height: 10,
                             ),
                             Text("Status: ${widget.neuron.state.description}"),
-                            Text(
-                                "Time Remaining ${widget.neuron.durationRemaining}"),
+                            Text("Time Remaining ${widget.neuron.durationRemaining}"),
                             SizedBox(
                               height: 10,
                             ),

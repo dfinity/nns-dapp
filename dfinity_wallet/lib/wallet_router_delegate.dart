@@ -121,7 +121,7 @@ EntityPageDefinition NeuronPageDef = EntityPageDefinition<Neuron>(
 
 EntityPageDefinition ProposalPageDef = EntityPageDefinition<Proposal>(
     "/proposal",
-    NeuronTabsPage,
+    ProposalsTabPage,
     (proposal) => ProposalDetailWidget(proposal),
     (boxes) => boxes.proposals!);
 
