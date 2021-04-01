@@ -4,7 +4,7 @@ import LedgerService, {
     AccountIdentifier,
     BlockHeight,
     GetBalancesRequest,
-    ICPTs,
+    Doms,
     SendICPTsRequest
 } from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/ledgerView/builder";
@@ -31,12 +31,12 @@ export default class LedgerApi {
 
     // Temporary method for demo purposes only, to give the specified account some ICPTs
     // by sending from the anon account which has been gifted lots of ICPTs
-    public acquireICPTs = async (accountIdentifier: AccountIdentifier, icpts: ICPTs): Promise<void> => {
+    public acquireICPTs = async (accountIdentifier: AccountIdentifier, doms: Doms): Promise<void> => {
         const anonIdentity = new AnonymousIdentity();
         const anonLedgerService = ledgerBuilder(this.host, anonIdentity);
         await anonLedgerService.sendICPTs({
             to: accountIdentifier,
-            amount: icpts
+            amount: doms
         });
         await this.ledgerViewService.syncTransactions();
     }
@@ -58,7 +58,7 @@ export default class LedgerApi {
         }
     }
 
-    public getBalances = (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, ICPTs>> => {
+    public getBalances = (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, Doms>> => {
         return this.ledgerService.getBalances(request);
     }
 

@@ -40,9 +40,9 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     const firstSubAccount = account.subAccounts[0];
 
-    if (balances[firstSubAccount.accountIdentifier].doms < BigInt(3_000_000_000)) {
+    if (balances[firstSubAccount.accountIdentifier] < BigInt(3_000_000_000)) {
         console.log("topping up balance");
-        await ledgerApi.acquireICPTs(firstSubAccount.accountIdentifier, {doms: BigInt(2_100_000_000)});
+        await ledgerApi.acquireICPTs(firstSubAccount.accountIdentifier, BigInt(2_100_000_000));
     }
 
     {
@@ -62,7 +62,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     if (neurons.length < 3) {    
         console.log("creating a neuron");
         const createNeuronResult = await governanceApi.createNeuron({
-            stake: {doms: BigInt(1_000_000_000)},
+            stake: BigInt(1_000_000_000),
             dissolveDelayInSecs: BigInt(20_000_000),
             fromSubAccountId: firstSubAccount.id
         });
@@ -159,7 +159,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     if (!disbursableNeuronId) {    
         console.log("creating a neuron with zero dissolve delay");
         const createNeuronResult = await governanceApi.createNeuron({
-            stake: {doms: BigInt(1_000_000_000)},
+            stake: BigInt(1_000_000_000),
             dissolveDelayInSecs: BigInt(0),
             fromSubAccountId: firstSubAccount.id
         });
