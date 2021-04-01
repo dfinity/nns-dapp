@@ -63,13 +63,13 @@ export default class RequestConverters {
 
     private fromNeuronId = (neuronId: NeuronId) : RawNeuronId => {
         return {
-            id: convert.bigIntToBigNumber(neuronId.id)
+            id: convert.bigIntToBigNumber(neuronId)
         };
     }
 
     private fromProposalId = (proposalId: ProposalId) : RawNeuronId => {
         return {
-            id: convert.bigIntToBigNumber(proposalId.id)
+            id: convert.bigIntToBigNumber(proposalId)
         };
     }
 

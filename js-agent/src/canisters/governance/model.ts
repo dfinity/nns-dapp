@@ -52,7 +52,7 @@ export interface ExternalUpdate {
     payload: ArrayBuffer,
 };
 export interface Follow { topic: Topic, followees: Array<NeuronId> };
-export interface Followees { followees: Array<NeuronId> };
+export interface Followees { topic: Topic, followees: Array<NeuronId> };
 export interface GovernanceError {
     errorMessage: string,
     errorType: number,
@@ -118,10 +118,10 @@ export interface Neuron {
     hotKeys: Array<Principal>,
     account: ArrayBuffer,
     dissolveState: Option<DissolveState>,
-    followees: Array<[number, Followees]>,
+    followees: Array<Followees>,
     transfer: Option<NeuronStakeTransfer>,
 };
-export interface NeuronId { id: bigint };
+export type NeuronId = bigint;
 export enum NeuronState {
 	UNSPECIFIED = 0,
 	LOCKED = 1,
@@ -159,7 +159,7 @@ export interface Proposal {
     action: Option<Action>,
     summary: string,
 };
-export interface ProposalId { id: bigint };
+export type ProposalId = bigint;
 
 export interface ProposalInfo {
     id: ProposalId,

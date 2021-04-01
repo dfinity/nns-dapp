@@ -154,7 +154,7 @@ export default class ResponseConverters {
             hotKeys: neuron.hot_keys,
             account: arrayOfNumberToArrayBuffer(neuron.account),
             dissolveState: neuron.dissolve_state.length ? this.toDissolveState(neuron.dissolve_state[0]) : null,
-            followees: neuron.followees.map(([n, f]) => [n, this.toFollowees(f)]),
+            followees: neuron.followees.map(([n, f]) => this.toFollowees(n, f)),
             transfer: neuron.transfer.length ? this.toNeuronStakeTransfer(neuron.transfer[0]) : null
         };
     }
@@ -178,8 +178,9 @@ export default class ResponseConverters {
         }
     }
 
-    private toFollowees = (followees: RawFollowees) : Followees => {
+    private toFollowees = (topic: number, followees: RawFollowees) : Followees => {
         return {
+            topic: topic,
             followees: followees.followees.map(this.toNeuronId)
         };
     }
@@ -211,9 +212,7 @@ export default class ResponseConverters {
     }
 
     private toNeuronId = (neuronId: RawNeuronId) : NeuronId => {
-        return {
-            id: bigNumberToBigInt(neuronId.id)
-        };
+        return bigNumberToBigInt(neuronId.id);
     }
 
     private toBallot = (neuronId: BigNumber, ballot: RawBallot) : Ballot => {

@@ -86,7 +86,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     if (pendingProposals.length < 3) {
         console.log("make a 'motion' proposal");
         const manageNeuronResponse = await governanceApi.manageNeuron({
-            id: { id: latestNeuronId },
+            id: latestNeuronId,
             command: {
                 MakeProposal: {
                     url: "https://www.lipsum.com/",
@@ -110,7 +110,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         console.log("increase dissolve delay of latest neuron by 30 days");
         const increase = 3600 * 24 * 30;
         const manageNeuronResponse = await governanceApi.manageNeuron({
-            id: { id: latestNeuronId },
+            id: latestNeuronId,
             command: {
                 Configure: {
                     operation: {
@@ -127,7 +127,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     {
         console.log("stop dissolving latest neuron");
         const manageNeuronResponse = await governanceApi.manageNeuron({
-            id: { id: latestNeuronId },
+            id: latestNeuronId,
             command: {
                 Configure: {
                     operation: {
@@ -142,7 +142,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     {
         console.log("start dissolving latest neuron");
         const manageNeuronResponse = await governanceApi.manageNeuron({
-            id: { id: latestNeuronId },
+            id: latestNeuronId,
             command: {
                 Configure: {
                     operation: {
@@ -176,7 +176,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     {
         console.log("Disburse 1_000_000 doms from first disbursable neuron to my default account");
         const manageNeuronResponse = await governanceApi.manageNeuron({
-            id: { id: disbursableNeuronId },
+            id: disbursableNeuronId,
             command: {
                 Disburse: {
                     toSubaccountId: null,
@@ -199,12 +199,13 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     {
         // Find a neuron with dissolve delay > 6 months
+        // THIS DOESN'T WORK BECAUSE YOU CAN ONLY VOTE ON PROPOSALS CREATED AFTER THIS NEURON WAS CREATED
         let votingNeuronId = neurons.find(n => n.dissolveDelaySeconds > BigInt(3600 * 24 * 183))?.neuronId;
         const proposalId = pendingProposals.find(p => !p.ballots.find(b => b.neuronId == votingNeuronId))?.id;
         if (proposalId) {
             console.log("vote on 1st pending proposal I've not already voted on");
             const manageNeuronResponse = await governanceApi.manageNeuron({
-                id: { id: votingNeuronId },
+                id: votingNeuronId,
                 command: {
                     RegisterVote: {
                         vote: Vote.YES,
@@ -221,11 +222,11 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         console.log("Setting a neuron to follow another");
 
         const response = await governanceApi.manageNeuron({
-            id: { id: neurons[0].neuronId },
+            id: neurons[0].neuronId,
             command: {
                 Follow: {
                     topic: Topic.Unspecified,
-                    followees: [{ id: neurons[1].neuronId }]
+                    followees: [neurons[1].neuronId]
                 }
             }
         });
