@@ -135,7 +135,7 @@ class NeuronRow extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 16.0, bottom: 16.0, right: 16.0),
                 child: Text(
-                  "${neuron.domsBalance.toICPT} Voting Power",
+                  "${neuron.votingPower.toICPT} Voting Power",
                   style: context.textTheme.bodyText1,
                 ),
               ),

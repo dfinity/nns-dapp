@@ -54,7 +54,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                                 Column(
                                   children: [
                                     BalanceDisplayWidget(
-                                        amount: widget.neuron.domsBalance.toICPT,
+                                        amount: widget.neuron.votingPower.toICPT,
                                         amountSize: 30,
                                         icpLabelSize: 15),
                                     Text("Votes")
@@ -185,7 +185,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                     borderRadius: BorderRadius.circular(10)))),
             onPressed: () async {
               context.performLoading(
-                  () => context.icApi.stopDissolving(widget.neuron.id));
+                  () => context.icApi.stopDissolving(neuronId: widget.neuron.id));
             });
       case NeuronState.LOCKED:
         return ElevatedButton(
@@ -199,7 +199,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
             ),
             onPressed: () {
               context.performLoading(
-                      () => context.icApi.startDissolving(widget.neuron.id));
+                      () => context.icApi.startDissolving(neuronId: widget.neuron.id));
             });
       case NeuronState.UNLOCKED:
         return ElevatedButton(child: Text("Send ICP"), onPressed: () {});

@@ -86,9 +86,10 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
               child: Text("Create"),
               onPressed: () async {
                 await context.performLoading(() => context.icApi.createNeuron(
-                    amountField.currentValue.toDouble().toDoms,
-                    BigInt.from(disperseDelay.currentValue),
-                    widget.source.subAccountId));
+                    stakeInDoms: amountField.currentValue.toDouble().toDoms,
+                    dissolveDelayInSecs:
+                        BigInt.from(disperseDelay.currentValue),
+                    fromSubAccount: widget.source.subAccountId));
                 context.nav.push(NeuronTabsPage);
               }.takeIf((e) =>
                   <ValidatedField>[amountField, disperseDelay].allAreValid),

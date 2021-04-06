@@ -15,7 +15,7 @@ class Transaction extends HiveObject {
   @HiveField(1)
   final String to;
   @HiveField(4)
-  final String domsAmount;
+  final BigInt domsAmount;
   @HiveField(3)
   final DateTime date;
 

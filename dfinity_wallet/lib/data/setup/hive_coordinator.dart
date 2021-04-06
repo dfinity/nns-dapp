@@ -1,6 +1,8 @@
 import 'package:dfinity_wallet/data/auth_token.dart';
 import 'package:dfinity_wallet/data/auth_token.dart';
+import 'package:dfinity_wallet/data/ballot_info.dart';
 import 'package:dfinity_wallet/data/canister.dart';
+import 'package:dfinity_wallet/data/followee.dart';
 import 'package:dfinity_wallet/data/neuron.dart';
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/transaction.dart';
@@ -8,6 +10,9 @@ import 'package:dfinity_wallet/data/wallet.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+import '../topic.dart';
+import '../vote.dart';
 
 class HiveBoxes {
   Box<Canister>? canisters;
@@ -81,6 +86,11 @@ class HiveCoordinator {
     Hive.registerAdapter(CanisterAdapter());
     Hive.registerAdapter(ProposalAdapter());
     Hive.registerAdapter(AuthTokenAdapter());
+    Hive.registerAdapter(BigIntAdapter());
+    Hive.registerAdapter(BallotInfoAdapter());
+    Hive.registerAdapter(FolloweeAdapter());
+    Hive.registerAdapter(TopicAdapter());
+    Hive.registerAdapter(VoteAdapter());
   }
 
   Future<void> deleteAllData() async {
@@ -93,5 +103,22 @@ class HiveCoordinator {
     ].map((element) async {
       await element?.deleteAll(element.keys);
     }));
+  }
+}
+
+
+// Can be generated automatically
+class BigIntAdapter extends TypeAdapter<BigInt> {
+  @override
+  final typeId = -1;
+
+  @override
+  BigInt read(BinaryReader reader) {
+    return BigInt.parse(reader.read());
+  }
+
+  @override
+  void write(BinaryWriter writer, BigInt obj) {
+    writer.write(obj.toString());
   }
 }

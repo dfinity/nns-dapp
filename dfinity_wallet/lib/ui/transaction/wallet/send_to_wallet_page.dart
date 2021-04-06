@@ -68,7 +68,7 @@ class _SendToWalletPageState extends State<SendToWalletPage> {
                     final amount = amountField.currentValue.toDouble();
                     await context.performLoading(() {
                       return context.icApi
-                          .sendICPTs(widget.toWallet.address, amount, widget.source.subAccountId);
+                          .sendICPTs(toAccount: widget.toWallet.address, doms: amount.toDoms, fromSubAccount: widget.source.subAccountId);
                     });
                     NewTransactionOverlay.of(context).pushPage(null, DoneWidget(
                         numICP: amount, canisterName: widget.toWallet.name));

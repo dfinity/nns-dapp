@@ -4,7 +4,7 @@ library dfinity_agent.js;
 import 'package:js/js.dart';
 
 import '../models.dart';
-import 'promise.dart';
+import 'js_utils.dart';
 
 
 @JS("AuthApi")

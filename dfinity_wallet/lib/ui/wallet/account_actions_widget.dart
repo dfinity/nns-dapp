@@ -66,7 +66,7 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
                             buttonTitle: "Create",
                             fieldName: "Account Name",
                             onComplete: (name) {
-                              context.performLoading(() => context.icApi.createSubAccount(name));
+                              context.performLoading(() => context.icApi.createSubAccount(name: name));
                             }),
                       )));
             },

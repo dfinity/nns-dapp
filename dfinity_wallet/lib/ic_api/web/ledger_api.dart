@@ -4,7 +4,7 @@ library dfinity_agent.js;
 import 'package:js/js.dart';
 
 import '../models.dart';
-import 'promise.dart';
+import 'js_utils.dart';
 
 @JS("LedgerApi")
 class LedgerApi {
@@ -30,6 +30,6 @@ class LedgerApi {
   external Promise<void> integrationTest();
 
   @JS("getTransactions")
-  external Promise<dynamic> getTransactions(Object getTransactionsRequest);
+  external Promise<dynamic> getTransactions(dynamic request);
 
 }

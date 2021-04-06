@@ -1,18 +1,18 @@
 abstract class ICPSource {
   String get address;
-  String? get subAccountId;
+  BigInt? get subAccountId;
 
-  abstract String domsBalance;
+  BigInt get balance;
+  double get icpBalance => balance.toICPT;
 
-  double get icpBalance => domsBalance.toICPT;
-
-  set icpBalance(double value) {
-    final floored = value.floor();
-    final remainder = value - floored;
-    final domsInt = (BigInt.from(DOMS_TO_ICPT) * BigInt.from(floored)) +
-        BigInt.from(remainder * DOMS_TO_ICPT);
-    domsBalance = domsInt.toString();
-  }
+  //
+  // set icpBalance(double value) {
+  //   final floored = value.floor();
+  //   final remainder = value - floored;
+  //   final domsInt = (BigInt.from(DOMS_TO_ICPT) * BigInt.from(floored)) +
+  //       BigInt.from(remainder * DOMS_TO_ICPT);
+  //   domsBalance = domsInt;
+  // }
 }
 
 const DOMS_TO_ICPT = 100000000;
@@ -27,7 +27,6 @@ extension ToDoms on double {
   }
 }
 
-extension ToICPT on String {
-  double get toICPT =>
-      BigInt.parse(this) / BigInt.from(DOMS_TO_ICPT);
+extension ToICPT on BigInt {
+  double get toICPT => this / BigInt.from(DOMS_TO_ICPT);
 }

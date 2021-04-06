@@ -1,41 +1,34 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transaction.dart';
+part of 'followee.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TransactionAdapter extends TypeAdapter<Transaction> {
+class FolloweeAdapter extends TypeAdapter<Followee> {
   @override
-  final int typeId = 2;
+  final int typeId = 12;
 
   @override
-  Transaction read(BinaryReader reader) {
+  Followee read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Transaction(
-      from: fields[0] as String,
-      to: fields[1] as String,
-      domsAmount: fields[4] as BigInt,
-      date: fields[3] as DateTime,
-    );
+    return Followee()
+      ..topic = fields[0] as Topic
+      ..followees = (fields[1] as List).cast<BigInt>();
   }
 
   @override
-  void write(BinaryWriter writer, Transaction obj) {
+  void write(BinaryWriter writer, Followee obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.from)
+      ..write(obj.topic)
       ..writeByte(1)
-      ..write(obj.to)
-      ..writeByte(4)
-      ..write(obj.domsAmount)
-      ..writeByte(3)
-      ..write(obj.date);
+      ..write(obj.followees);
   }
 
   @override
@@ -44,7 +37,7 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TransactionAdapter &&
+      other is FolloweeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
