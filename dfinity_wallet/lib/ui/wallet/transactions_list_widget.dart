@@ -35,7 +35,7 @@ class TransactionsListWidget extends StatelessWidget {
                       onPressed: () async {
                         LoadingOverlay.of(context).showOverlay();
                         await context.icApi.acquireICPTs(
-                            accountIdentifier: wallet!.address,
+                            accountIdentifier: wallet!.accountIdentifier,
                             doms: BigInt.from(1500000000));
                         LoadingOverlay.of(context).hideOverlay();
                       })

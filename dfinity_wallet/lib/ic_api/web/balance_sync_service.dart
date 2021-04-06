@@ -13,10 +13,10 @@ class BalanceSyncService {
 
   Future<void> syncBalances() async {
     Map<String, String> balanceByAddress = await fetchBalances(
-        hiveBoxes.wallets.values.map((e) => e.address).toList());
+        hiveBoxes.wallets.values.map((e) => e.accountIdentifier).toList());
     await Future.wait(balanceByAddress.entries.mapToList((entry) async {
       final account = hiveBoxes.wallets.get(entry.key);
-      account!.balance = entry.value;
+      account!.balance = BigInt.parse(entry.value);
       await account.save();
     }));
   }

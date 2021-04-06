@@ -11,6 +11,7 @@ import 'package:dfinity_wallet/dfinity.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../neuron_state.dart';
 import '../topic.dart';
 import '../vote.dart';
 
@@ -91,6 +92,7 @@ class HiveCoordinator {
     Hive.registerAdapter(FolloweeAdapter());
     Hive.registerAdapter(TopicAdapter());
     Hive.registerAdapter(VoteAdapter());
+    Hive.registerAdapter(NeuronStateAdapter());
   }
 
   Future<void> deleteAllData() async {

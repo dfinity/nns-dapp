@@ -17,7 +17,7 @@ class TransactionSyncService {
   }
 
   Future<void> syncAccount(Wallet account) async {
-    final response = await callApi(ledgerApi.getTransactions, {'accountIdentifier': account.address, 'pageSize': 100, 'offset': 0});
+    final response = await callApi(ledgerApi.getTransactions, {'accountIdentifier': account.accountIdentifier, 'pageSize': 100, 'offset': 0});
 
     final transactions = <Transaction>[];
     response.transactions.forEach((e) {
@@ -26,16 +26,16 @@ class TransactionSyncService {
 
       late String from;
       late String to;
-      late String doms;
+      late BigInt doms;
       if (send != null) {
-        from = account.address;
+        from = account.accountIdentifier;
         to = send.to.toString();
-        doms = send.amount.doms.toString();
+        doms = BigInt.parse(send.amount.doms.toString());
       }
       if (receive != null) {
-        to = account.address;
+        to = account.accountIdentifier;
         from = receive.from.toString();
-        doms = receive.amount.doms.toString();
+        doms = BigInt.parse(receive.amount.doms.toString());
       }
 
       print("from ${from} to ${to}");
@@ -44,15 +44,16 @@ class TransactionSyncService {
         to: to,
         from: from,
         date: DateTime.fromMillisecondsSinceEpoch(milliseconds),
-        domsAmount: doms,
+        doms: doms,
+        fee: BigInt.parse(e.fees.toString())
       ));
     });
-    print("parsed ${transactions.length} transactions for ${account.address}");
+    print("parsed ${transactions.length} transactions for ${account.accountIdentifier}");
 
     Future.wait(hiveBoxes.wallets.values.map((e) async {
       e.transactions = transactions
           .filter(
-              (element) => element.to == e.address || element.from == e.address)
+              (element) => element.to == e.accountIdentifier || element.from == e.accountIdentifier)
           .toList();
       e.save();
     }));

@@ -20,7 +20,6 @@ import 'governance_api.dart';
 import 'js_utils.dart';
 import 'ledger_api.dart';
 import 'neuron_sync_service.dart';
-import 'promise.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
 class PlatformICApi extends AbstractPlatformICApi {

@@ -26,15 +26,15 @@ class TransactionRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        (transaction.from == currentAccount.address)
+                        (transaction.from == currentAccount.accountIdentifier)
                             ? "Sent"
                             : "Recieved",
                         style: context.textTheme.headline3),
                     SmallFormDivider(),
-                    if (transaction.from != currentAccount.address)
+                    if (transaction.from != currentAccount.accountIdentifier)
                       Text("From: ${transaction.from}",
                           style: context.textTheme.bodyText2),
-                    if (transaction.to != currentAccount.address)
+                    if (transaction.to != currentAccount.accountIdentifier)
                       Text(
                         "To: ${transaction.to}",
                         style: context.textTheme.bodyText2?.copyWith(fontSize: 16),
@@ -44,7 +44,7 @@ class TransactionRow extends StatelessWidget {
               ),
               SizedBox(width: 20,),
               BalanceDisplayWidget(
-                amount: transaction.icptAmount,
+                amount: transaction.icpt,
                 amountSize: 30,
                 icpLabelSize: 20,
               ),

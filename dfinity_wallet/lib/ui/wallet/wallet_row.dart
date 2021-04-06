@@ -39,7 +39,7 @@ class WalletRow extends StatelessWidget {
                                     Padding(
                                         padding: const EdgeInsets.only(left: 16.0, bottom: 16.0, right: 16.0),
                                         child: Text(
-                                            wallet.address.characters.take(20).toString() + "...",
+                                            wallet.accountIdentifier.characters.take(20).toString() + "...",
                                             style: context.textTheme.bodyText2?.copyWith(color: AppColors.gray800),
                                         ),
                                     )

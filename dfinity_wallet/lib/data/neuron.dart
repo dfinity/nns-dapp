@@ -4,6 +4,7 @@ import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:hive/hive.dart';
 import 'dfinity_entity.dart';
 import 'followee.dart';
+import 'neuron_state.dart';
 
 part 'neuron.g.dart';
 
@@ -59,29 +60,3 @@ class Neuron extends DfinityEntity with ICPSource {
 }
 
 
-@HiveType(typeId: 8)
-enum NeuronState {
-  @HiveField(0)
-  UNSPECIFIED,
-  @HiveField(1)
-  DISPERSING,
-  @HiveField(2)
-  LOCKED,
-  @HiveField(3)
-  UNLOCKED
-}
-
-extension NeuronStateDescription on NeuronState {
-  String get description {
-    switch (this) {
-      case NeuronState.UNSPECIFIED:
-        return "Unspecified";
-      case NeuronState.DISPERSING:
-        return "Dispersing";
-      case NeuronState.LOCKED:
-        return "Locked";
-      case NeuronState.UNLOCKED:
-        return "Locked";
-    }
-  }
-}
