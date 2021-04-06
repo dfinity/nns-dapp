@@ -257,11 +257,11 @@ export default class RequestConverters {
             const networkEconomics = action.NetworkEconomics;
             return {
                 NetworkEconomics: {
-                    reject_cost_doms: convert.bigIntToBigNumber(networkEconomics.rejectCostDoms),
-                    manage_neuron_cost_per_proposal_doms: convert.bigIntToBigNumber(networkEconomics.manageNeuronCostPerProposalDoms),
-                    neuron_minimum_stake_doms: convert.bigIntToBigNumber(networkEconomics.neuronMinimumStakeDoms),
+                    reject_cost_doms: convert.bigIntToBigNumber(networkEconomics.rejectCost),
+                    manage_neuron_cost_per_proposal_doms: convert.bigIntToBigNumber(networkEconomics.manageNeuronCostPerProposal),
+                    neuron_minimum_stake_doms: convert.bigIntToBigNumber(networkEconomics.neuronMinimumStake),
                     neuron_spawn_dissolve_delay_seconds: convert.bigIntToBigNumber(networkEconomics.neuronSpawnDissolveDelaySeconds),
-                    maximum_node_provider_rewards_doms: convert.bigIntToBigNumber(networkEconomics.maximumNodeProviderRewardsDoms)
+                    maximum_node_provider_rewards_doms: convert.bigIntToBigNumber(networkEconomics.maximumNodeProviderRewards)
                 }
             }
         }

@@ -131,7 +131,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     }    
 
     // Create a neuron with zero dissolve delay if none exists so it can be disbursed
-    let disbursableNeuronId = neurons.find(n => n.dissolveDelaySeconds == BigInt(0) && n.fullNeuron.cachedNeuronStakeDoms > 1_000_000_000)?.neuronId;
+    let disbursableNeuronId = neurons.find(n => n.dissolveDelaySeconds == BigInt(0) && n.fullNeuron.cachedNeuronStake > 1_000_000_000)?.neuronId;
     if (!disbursableNeuronId) {    
         console.log("creating a neuron with zero dissolve delay");
         const createNeuronResult = await governanceApi.createNeuron({

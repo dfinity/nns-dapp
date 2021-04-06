@@ -57,7 +57,7 @@ export default class ResponseConverters {
         return {
             id: proposalInfo.id.length ? this.toNeuronId(proposalInfo.id[0]) : null,
             ballots: proposalInfo.ballots.map(b => this.toBallot(b[0], b[1])),
-            rejectCostDoms: bigNumberToBigInt(proposalInfo.reject_cost_doms),
+            rejectCost: bigNumberToBigInt(proposalInfo.reject_cost_doms),
             proposalTimestampSeconds: bigNumberToBigInt(proposalInfo.proposal_timestamp_seconds),
             rewardEventRound: bigNumberToBigInt(proposalInfo.reward_event_round),
             failedTimestampSeconds: bigNumberToBigInt(proposalInfo.failed_timestamp_seconds),
@@ -197,11 +197,11 @@ export default class ResponseConverters {
             recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
             kycVerified: neuron.kyc_verified,
             notForProfit: neuron.not_for_profit,
-            cachedNeuronStakeDoms: bigNumberToBigInt(neuron.cached_neuron_stake_doms),
+            cachedNeuronStake: bigNumberToBigInt(neuron.cached_neuron_stake_doms),
             createdTimestampSeconds: bigNumberToBigInt(neuron.created_timestamp_seconds),
             maturityDomsEquivalent: bigNumberToBigInt(neuron.maturity_doms_equivalent),
             agingSinceTimestampSeconds: bigNumberToBigInt(neuron.aging_since_timestamp_seconds),
-            neuronFeesDoms: bigNumberToBigInt(neuron.neuron_fees_doms),
+            neuronFees: bigNumberToBigInt(neuron.neuron_fees_doms),
             hotKeys: neuron.hot_keys,
             accountPrincipal: arrayOfNumberToArrayBuffer(neuron.account),
             dissolveState: this.toDissolveState(neuron.dissolve_state[0]),
@@ -241,7 +241,7 @@ export default class ResponseConverters {
             toSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.to_subaccount),
             from: neuronStakeTransfer.from ? neuronStakeTransfer.from[0] : null,
             memo: bigNumberToBigInt(neuronStakeTransfer.memo),
-            neuronStakeDoms: bigNumberToBigInt(neuronStakeTransfer.neuron_stake_doms),
+            neuronStake: bigNumberToBigInt(neuronStakeTransfer.neuron_stake_doms),
             fromSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.from_subaccount),
             transferTimestamp: bigNumberToBigInt(neuronStakeTransfer.transfer_timestamp),
             blockHeight: bigNumberToBigInt(neuronStakeTransfer.block_height)
@@ -313,10 +313,10 @@ export default class ResponseConverters {
             const networkEconomics = action.NetworkEconomics;
             return {
                 NetworkEconomics: {
-                    rejectCostDoms: bigNumberToBigInt(networkEconomics.reject_cost_doms),
-                    manageNeuronCostPerProposalDoms: bigNumberToBigInt(networkEconomics.manage_neuron_cost_per_proposal_doms),
-                    neuronMinimumStakeDoms: bigNumberToBigInt(networkEconomics.neuron_minimum_stake_doms),
-                    maximumNodeProviderRewardsDoms: bigNumberToBigInt(networkEconomics.maximum_node_provider_rewards_doms),
+                    rejectCost: bigNumberToBigInt(networkEconomics.reject_cost_doms),
+                    manageNeuronCostPerProposal: bigNumberToBigInt(networkEconomics.manage_neuron_cost_per_proposal_doms),
+                    neuronMinimumStake: bigNumberToBigInt(networkEconomics.neuron_minimum_stake_doms),
+                    maximumNodeProviderRewards: bigNumberToBigInt(networkEconomics.maximum_node_provider_rewards_doms),
                     neuronSpawnDissolveDelaySeconds: bigNumberToBigInt(networkEconomics.neuron_spawn_dissolve_delay_seconds),
                 }
             }

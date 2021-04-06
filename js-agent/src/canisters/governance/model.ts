@@ -110,10 +110,10 @@ export interface MethodAuthzInfo {
 };
 export interface Motion { motionText: string };
 export interface NetworkEconomics {
-    rejectCostDoms: bigint,
-    manageNeuronCostPerProposalDoms: bigint,
-    neuronMinimumStakeDoms: bigint,
-    maximumNodeProviderRewardsDoms : bigint,
+    rejectCost: Doms,
+    manageNeuronCostPerProposal: Doms,
+    neuronMinimumStake: Doms,
+    maximumNodeProviderRewards : Doms,
     neuronSpawnDissolveDelaySeconds: bigint,
 };
 export interface Neuron {
@@ -122,11 +122,11 @@ export interface Neuron {
     recentBallots: Array<BallotInfo>,
     kycVerified: boolean,
     notForProfit: boolean,
-    cachedNeuronStakeDoms: bigint,
+    cachedNeuronStake: Doms,
     createdTimestampSeconds: bigint,
     maturityDomsEquivalent: bigint,
     agingSinceTimestampSeconds: bigint,
-    neuronFeesDoms: bigint,
+    neuronFees: Doms,
     hotKeys: Array<Principal>,
     accountPrincipal: ArrayBuffer,
     dissolveState: DissolveState,
@@ -155,7 +155,7 @@ export interface NeuronStakeTransfer {
     toSubaccount: ArrayBuffer,
     from: Option<Principal>,
     memo: bigint,
-    neuronStakeDoms: bigint,
+    neuronStake: Doms,
     fromSubaccount: ArrayBuffer,
     transferTimestamp: bigint,
     blockHeight: bigint,
@@ -176,7 +176,7 @@ export type ProposalId = bigint;
 export interface ProposalInfo {
     id: ProposalId,
     ballots: Array<Ballot>,
-    rejectCostDoms: bigint,
+    rejectCost: Doms,
     proposalTimestampSeconds: bigint,
     rewardEventRound: bigint,
     failedTimestampSeconds: bigint,
