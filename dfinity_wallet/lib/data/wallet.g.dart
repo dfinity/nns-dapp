@@ -20,7 +20,7 @@ class WalletAdapter extends TypeAdapter<Wallet> {
       fields[0] as String,
       fields[1] as String,
       fields[2] as bool,
-      fields[3] as BigInt,
+      fields[3] as String,
       fields[5] as int?,
       (fields[4] as List).cast<Transaction>(),
     );

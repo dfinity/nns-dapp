@@ -5,31 +5,32 @@ import 'package:hive/hive.dart';
 import 'dfinity_entity.dart';
 import 'followee.dart';
 import 'neuron_state.dart';
+import 'data_type_extensions.dart';
 
 part 'neuron.g.dart';
 
 @HiveType(typeId: 3)
 class Neuron extends DfinityEntity with ICPSource {
   @HiveField(1)
-  late BigInt id;
+  late String id;
   @HiveField(2)
   late List<BallotInfo> recentBallots;
   @HiveField(3)
-  late BigInt createdTimestampSeconds;
+  late String createdTimestampSeconds;
   @HiveField(4)
-  late BigInt votingPower;
+  late String votingPower;
   @HiveField(5)
   late NeuronState state;
   @HiveField(6)
-  late BigInt dissolveDelaySeconds;
+  late String dissolveDelaySeconds;
   @HiveField(7)
-  late BigInt cachedNeuronStakeDoms;
+  late String cachedNeuronStakeDoms;
   @HiveField(8)
-  late BigInt neuronFeesDoms;
+  late String neuronFeesDoms;
   @HiveField(9)
-  late BigInt maturityDomsEquivalent;
+  late String maturityDomsEquivalent;
   @HiveField(10)
-  late BigInt? whenDissolvedTimestampSeconds;
+  late String? whenDissolvedTimestampSeconds;
   @HiveField(11)
   late List<Followee> followees;
 
@@ -54,14 +55,13 @@ class Neuron extends DfinityEntity with ICPSource {
   @override
   int? get subAccountId => null;
 
-  BigInt get stake => cachedNeuronStakeDoms - neuronFeesDoms;
+  BigInt get stake => cachedNeuronStakeDoms.toBigInt - neuronFeesDoms.toBigInt;
 
   @override
-  BigInt get balance => stake;
+  String get balance => stake.toString();
 
   DateTime get whenDissolvedTimestamp =>
-      DateTime.fromMillisecondsSinceEpoch(
-          (whenDissolvedTimestampSeconds!).toInt() * 1000);
+      DateTime.fromMillisecondsSinceEpoch(whenDissolvedTimestampSeconds!.toBigInt.toInt() * 1000);
 
   Duration get durationRemaining => whenDissolvedTimestamp.difference(DateTime.now());
 }

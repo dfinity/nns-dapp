@@ -9,6 +9,6 @@ class BallotInfo  {
   late Vote vote;
 
   @HiveField(1)
-  late BigInt proposalId;
+  late String proposalId;
 }
 

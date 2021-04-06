@@ -87,7 +87,6 @@ class HiveCoordinator {
     Hive.registerAdapter(CanisterAdapter());
     Hive.registerAdapter(ProposalAdapter());
     Hive.registerAdapter(AuthTokenAdapter());
-    Hive.registerAdapter(BigIntAdapter());
     Hive.registerAdapter(BallotInfoAdapter());
     Hive.registerAdapter(FolloweeAdapter());
     Hive.registerAdapter(TopicAdapter());
@@ -105,21 +104,5 @@ class HiveCoordinator {
     ].map((element) async {
       await element?.deleteAll(element.keys);
     }));
-  }
-}
-
-
-class BigIntAdapter extends TypeAdapter<BigInt> {
-  @override
-  final typeId = 13;
-
-  @override
-  BigInt read(BinaryReader reader) {
-    return BigInt.parse(reader.read());
-  }
-
-  @override
-  void write(BinaryWriter writer, BigInt obj) {
-    writer.write(obj.toString());
   }
 }

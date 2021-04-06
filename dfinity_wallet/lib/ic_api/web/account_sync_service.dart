@@ -40,7 +40,7 @@ class AccountsSyncService {
               accountIdentifier: address,
               subAccountId: subAccount,
               primary: primary,
-              balance: BigInt.zero,
+              balance: BigInt.zero.toString(),
               transactions: [],
           ));
     }

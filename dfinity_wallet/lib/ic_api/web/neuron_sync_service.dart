@@ -25,38 +25,43 @@ class NeuronSyncService {
   void storeNeuron(dynamic e) {
     final neuronId = e.neuronId.toString();
     if (!hiveBoxes.neurons.containsKey(neuronId)) {
-      hiveBoxes.neurons.put(
-          neuronId,
-          Neuron.empty());
+      final neuron = Neuron.empty();
+      updateNeuron(neuron, neuronId, e);
+      hiveBoxes.neurons.put(neuronId, neuron);
+    } else {
+      final neuron = hiveBoxes.neurons.get(neuronId)!;
+      updateNeuron(neuron, neuronId, e);
+      neuron.save();
     }
-    final neuron = hiveBoxes.neurons.get(neuronId)!;
-    neuron.id = BigInt.parse(neuronId);
+  }
+
+  void updateNeuron(Neuron neuron, String neuronId, e) {
+    neuron.id = neuronId;
     neuron.recentBallots = parseRecentBallots(e.fullNeuron.recentBallots);
-    neuron.createdTimestampSeconds = BigInt.from(e.fullNeuron.createdTimestampSeconds);
-    neuron.votingPower = BigInt.from(e.votingPower);
+    neuron.createdTimestampSeconds =
+        e.fullNeuron.createdTimestampSeconds.toString();
+    neuron.votingPower = e.votingPower.toString();
     neuron.state = NeuronState.values[e.state.toString().toInt()];
-    neuron.dissolveDelaySeconds = BigInt.from(e.dissolveDelaySeconds);
-    neuron.cachedNeuronStakeDoms = BigInt.from(e.fullNeuron.cachedNeuronStakeDoms);
-    neuron.neuronFeesDoms = BigInt.from(e.fullNeuron.neuronFeesDoms);
-    neuron.maturityDomsEquivalent = BigInt.from(e.fullNeuron.maturityDomsEquivalent);
-    neuron.whenDissolvedTimestampSeconds = BigInt.from(e.fullNeuron.dissolveState.whenDissolvedTimestampSeconds);
+    neuron.dissolveDelaySeconds = e.dissolveDelaySeconds.toString();
+    neuron.cachedNeuronStakeDoms =
+        e.fullNeuron.cachedNeuronStakeDoms.toString();
+    neuron.neuronFeesDoms = e.fullNeuron.neuronFeesDoms.toString();
+    neuron.maturityDomsEquivalent =
+        e.fullNeuron.maturityDomsEquivalent.toString();
+    neuron.whenDissolvedTimestampSeconds =
+        e.fullNeuron.dissolveState.whenDissolvedTimestampSeconds.toString();
     neuron.followees = parseFollowees(e.fullNeuron.followees);
-    neuron.save();
   }
 
   List<BallotInfo> parseRecentBallots(recentBallots) => [
-      ...recentBallots.map((e) =>
-      BallotInfo()
-        ..proposalId = BigInt.from(e.proposalId)
-        ..vote = Vote.values[e.vote.toInt()]
-      )
-    ];
+        ...recentBallots.map((e) => BallotInfo()
+          ..proposalId = e.proposalId.toString()
+          ..vote = Vote.values[e.vote.toInt()])
+      ];
 
   List<Followee> parseFollowees(recentBallots) => [
-    ...recentBallots.map((e) =>
-    Followee()
-      ..followees = [...e.followees.map((e) => BigInt.from(e))]
-      ..topic = Topic.values[e.vote.toInt()]
-    )
-  ];
+        ...recentBallots.map((e) => Followee()
+          ..followees = [...e.followees.map((e) => BigInt.from(e))]
+          ..topic = Topic.values[e.vote.toInt()])
+      ];
 }

@@ -19,9 +19,9 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
     return Transaction(
       from: fields[0] as String,
       to: fields[1] as String,
-      doms: fields[2] as BigInt,
+      doms: fields[2] as String,
       date: fields[3] as DateTime,
-      fee: fields[4] as BigInt,
+      fee: fields[4] as String,
     );
   }
 

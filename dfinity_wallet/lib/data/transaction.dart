@@ -15,14 +15,14 @@ class Transaction extends HiveObject {
   @HiveField(1)
   final String to;
   @HiveField(2)
-  final BigInt doms;
+  final String doms;
   @HiveField(3)
   final DateTime date;
   @HiveField(4)
-  final BigInt fee;
+  final String fee;
 
   Transaction(
       {required this.from, required this.to, required this.doms, required this.date, required this.fee});
 
-  double get icpt => doms.toICPT;
+  double get icpt => doms.toBigInt.toICPT;
 }

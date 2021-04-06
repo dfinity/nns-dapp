@@ -11,5 +11,5 @@ class Followee {
   late Topic topic;
 
   @HiveField(1)
-  late List<BigInt> followees;
+  late List<String> followees;
 }

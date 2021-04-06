@@ -105,11 +105,11 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
   double amount() => amountField.currentValue.toDoubleOrNull() ?? 0.0;
 
   double votingMultiplier() =>
-      disperseDelay.currentValue
+      1 + (disperseDelay.currentValue
           .toDouble()
           .takeIf((e) => e.seconds.inDays > (365 / 2))
           ?.let((e) => e / (365 * 8).days.inSeconds) ??
-      0;
+      0);
 }
 
 class DisperseDelayWidget extends StatelessWidget {

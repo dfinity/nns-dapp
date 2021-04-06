@@ -19,7 +19,7 @@ class Wallet extends DfinityEntity with ICPSource {
   @HiveField(2)
   final bool primary;
   @HiveField(3)
-  late BigInt balance;
+  late String balance;
   @HiveField(4)
   List<Transaction> transactions;
   @HiveField(5)

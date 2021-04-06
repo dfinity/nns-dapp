@@ -17,17 +17,17 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Neuron(
-      id: fields[1] as BigInt,
+      id: fields[1] as String,
       recentBallots: (fields[2] as List).cast<BallotInfo>(),
-      createdTimestampSeconds: fields[3] as BigInt,
-      votingPower: fields[4] as BigInt,
+      createdTimestampSeconds: fields[3] as String,
+      votingPower: fields[4] as String,
       state: fields[5] as NeuronState,
-      dissolveDelaySeconds: fields[6] as BigInt,
-      cachedNeuronStakeDoms: fields[7] as BigInt,
+      dissolveDelaySeconds: fields[6] as String,
+      cachedNeuronStakeDoms: fields[7] as String,
     )
-      ..neuronFeesDoms = fields[8] as BigInt
-      ..maturityDomsEquivalent = fields[9] as BigInt
-      ..whenDissolvedTimestampSeconds = fields[10] as BigInt?
+      ..neuronFeesDoms = fields[8] as String
+      ..maturityDomsEquivalent = fields[9] as String
+      ..whenDissolvedTimestampSeconds = fields[10] as String?
       ..followees = (fields[11] as List).cast<Followee>();
   }
 

@@ -18,7 +18,7 @@ class BallotInfoAdapter extends TypeAdapter<BallotInfo> {
     };
     return BallotInfo()
       ..vote = fields[0] as Vote
-      ..proposalId = fields[1] as BigInt;
+      ..proposalId = fields[1] as String;
   }
 
   @override

@@ -18,7 +18,7 @@ class FolloweeAdapter extends TypeAdapter<Followee> {
     };
     return Followee()
       ..topic = fields[0] as Topic
-      ..followees = (fields[1] as List).cast<BigInt>();
+      ..followees = (fields[1] as List).cast<String>();
   }
 
   @override

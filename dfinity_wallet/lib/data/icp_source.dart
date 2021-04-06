@@ -1,9 +1,11 @@
+import 'data_type_extensions.dart';
+
 abstract class ICPSource {
   String get address;
   int? get subAccountId;
 
-  BigInt get balance;
-  double get icpBalance => balance.toICPT;
+  String get balance;
+  double get icpBalance => balance.toBigInt.toICPT;
 
   //
   // set icpBalance(double value) {

@@ -26,6 +26,6 @@ class Proposal extends DfinityEntity {
   Proposal.empty();
 
   @override
-  String get identifier => id;
+  String get identifier => id.toString();
 }
 

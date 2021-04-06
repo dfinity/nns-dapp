@@ -16,7 +16,7 @@ class BalanceSyncService {
         hiveBoxes.wallets.values.map((e) => e.accountIdentifier).toList());
     await Future.wait(balanceByAddress.entries.mapToList((entry) async {
       final account = hiveBoxes.wallets.get(entry.key);
-      account!.balance = BigInt.parse(entry.value);
+      account!.balance = entry.value.toString();
       await account.save();
     }));
   }

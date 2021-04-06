@@ -44,8 +44,8 @@ class TransactionSyncService {
         to: to,
         from: from,
         date: DateTime.fromMillisecondsSinceEpoch(milliseconds),
-        doms: doms,
-        fee: BigInt.parse(e.fees.toString())
+        doms: doms.toString(),
+        fee: e.fees.toString()
       ));
     });
     print("parsed ${transactions.length} transactions for ${account.accountIdentifier}");
