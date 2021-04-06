@@ -93,7 +93,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         });
         console.log(manageNeuronResponse);    
 
-        console.log("List pending proposals"); 
+        console.log("List recent proposals"); 
         const pendingProposals = await governanceApi.listProposals({
             limit: 20,
             beforeProposal: null,
