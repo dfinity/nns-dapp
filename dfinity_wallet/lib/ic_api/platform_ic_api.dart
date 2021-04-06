@@ -16,12 +16,12 @@ abstract class AbstractPlatformICApi extends State<ICApiManager> {
   Future<void> sendICPTs(
       {required String toAccount,
       required BigInt doms,
-      String? fromSubAccount});
+        int? fromSubAccount});
 
   Future<void> createNeuron(
       {required BigInt stakeInDoms,
       required BigInt dissolveDelayInSecs,
-      String? fromSubAccount});
+        int? fromSubAccount});
 
   Future<void> startDissolving({required BigInt neuronId});
 

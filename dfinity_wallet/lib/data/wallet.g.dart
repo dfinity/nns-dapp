@@ -21,7 +21,7 @@ class WalletAdapter extends TypeAdapter<Wallet> {
       fields[1] as String,
       fields[2] as bool,
       fields[3] as BigInt,
-      fields[7] as BigInt?,
+      fields[5] as int?,
       (fields[4] as List).cast<Transaction>(),
     );
   }
@@ -40,7 +40,7 @@ class WalletAdapter extends TypeAdapter<Wallet> {
       ..write(obj.balance)
       ..writeByte(4)
       ..write(obj.transactions)
-      ..writeByte(7)
+      ..writeByte(5)
       ..write(obj.subAccountId);
   }
 

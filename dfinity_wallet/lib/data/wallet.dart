@@ -22,8 +22,8 @@ class Wallet extends DfinityEntity with ICPSource {
   late BigInt balance;
   @HiveField(4)
   List<Transaction> transactions;
-  @HiveField(7)
-  BigInt? subAccountId;
+  @HiveField(5)
+  int? subAccountId;
 
   Wallet(
       this.name, this.accountIdentifier, this.primary, this.balance, this.subAccountId, this.transactions);

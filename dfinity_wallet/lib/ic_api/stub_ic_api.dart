@@ -22,7 +22,7 @@ class PlatformICApi extends AbstractPlatformICApi{
   }
 
   @override
-  Future<void> createNeuron({required BigInt stakeInDoms, required BigInt dissolveDelayInSecs, String? fromSubAccount}) {
+  Future<void> createNeuron({required BigInt stakeInDoms, required BigInt dissolveDelayInSecs, int? fromSubAccount}) {
     // TODO: implement createNeuron
     throw UnimplementedError();
   }
@@ -70,7 +70,7 @@ class PlatformICApi extends AbstractPlatformICApi{
   }
 
   @override
-  Future<void> sendICPTs({required String toAccount, required BigInt doms, String? fromSubAccount}) {
+  Future<void> sendICPTs({required String toAccount, required BigInt doms, int? fromSubAccount}) {
     // TODO: implement sendICPTs
     throw UnimplementedError();
   }

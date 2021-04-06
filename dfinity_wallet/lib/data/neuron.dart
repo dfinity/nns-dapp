@@ -42,6 +42,7 @@ class Neuron extends DfinityEntity with ICPSource {
     required this.dissolveDelaySeconds,
     required this.cachedNeuronStakeDoms,
   });
+
   Neuron.empty();
 
   @override
@@ -51,12 +52,18 @@ class Neuron extends DfinityEntity with ICPSource {
   String get address => id.toString();
 
   @override
-  BigInt? get subAccountId => null;
+  int? get subAccountId => null;
 
   BigInt get stake => cachedNeuronStakeDoms - neuronFeesDoms;
 
   @override
   BigInt get balance => stake;
+
+  DateTime get whenDissolvedTimestamp =>
+      DateTime.fromMillisecondsSinceEpoch(
+          (whenDissolvedTimestampSeconds!).toInt() * 1000);
+
+  Duration get durationRemaining => whenDissolvedTimestamp.difference(DateTime.now());
 }
 
 

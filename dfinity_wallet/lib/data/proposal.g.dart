@@ -17,13 +17,13 @@ class ProposalAdapter extends TypeAdapter<Proposal> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Proposal(
+      fields[1] as String,
+      fields[2] as String,
       fields[3] as String,
       fields[4] as String,
       fields[5] as String,
-      fields[9] as String,
-      fields[6] as String,
+      fields[6] as int,
       fields[7] as int,
-      fields[8] as int,
     );
   }
 
@@ -31,19 +31,19 @@ class ProposalAdapter extends TypeAdapter<Proposal> {
   void write(BinaryWriter writer, Proposal obj) {
     writer
       ..writeByte(7)
-      ..writeByte(3)
+      ..writeByte(1)
       ..write(obj.id)
-      ..writeByte(4)
+      ..writeByte(2)
       ..write(obj.text)
-      ..writeByte(5)
+      ..writeByte(3)
       ..write(obj.url)
-      ..writeByte(9)
+      ..writeByte(4)
       ..write(obj.proposer)
-      ..writeByte(6)
+      ..writeByte(5)
       ..write(obj.status)
-      ..writeByte(7)
+      ..writeByte(6)
       ..write(obj.no)
-      ..writeByte(8)
+      ..writeByte(7)
       ..write(obj.yes);
   }
 

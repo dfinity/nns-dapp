@@ -8,3 +8,7 @@ export 'auth_token.dart';
 export 'proposal.dart';
 export 'dfinity_entity.dart';
 export 'icp_source.dart';
+export 'neuron_state.dart';
+export 'followee.dart';
+export 'vote.dart';
+export 'ballot_info.dart';

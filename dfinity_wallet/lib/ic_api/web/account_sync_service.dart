@@ -22,7 +22,7 @@ class AccountsSyncService {
       ...accountResponse.subAccounts.map((element) => storeNewAccount(
           name: element.name.toString(),
           address: element.accountIdentifier.toString(),
-          subAccount: BigInt.from(element.id),
+          subAccount: element.id,
           primary: false))
     ]);
   }
@@ -30,7 +30,7 @@ class AccountsSyncService {
   Future<void> storeNewAccount(
       {required String name,
         required String address,
-        required BigInt? subAccount,
+        required int? subAccount,
         required bool primary}) async {
     if (!hiveBoxes.wallets.containsKey(address)) {
       await hiveBoxes.wallets.put(

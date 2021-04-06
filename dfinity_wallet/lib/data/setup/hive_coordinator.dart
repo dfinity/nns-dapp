@@ -109,10 +109,9 @@ class HiveCoordinator {
 }
 
 
-// Can be generated automatically
 class BigIntAdapter extends TypeAdapter<BigInt> {
   @override
-  final typeId = -1;
+  final typeId = 13;
 
   @override
   BigInt read(BinaryReader reader) {

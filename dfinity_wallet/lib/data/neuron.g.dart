@@ -21,7 +21,7 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       recentBallots: (fields[2] as List).cast<BallotInfo>(),
       createdTimestampSeconds: fields[3] as BigInt,
       votingPower: fields[4] as BigInt,
-      state: fields[5] as dynamic,
+      state: fields[5] as NeuronState,
       dissolveDelaySeconds: fields[6] as BigInt,
       cachedNeuronStakeDoms: fields[7] as BigInt,
     )

@@ -26,6 +26,11 @@ class ProposalSyncService {
       await hiveBoxes.proposals.put(neuronId, Proposal.empty());
     }
     final proposal = hiveBoxes.proposals.get(neuronId)!;
+    updateNeuron(proposal, neuronId, response);
+    proposal.save();
+  }
+
+  void updateNeuron(Proposal proposal, String neuronId, response) {
     proposal.id = neuronId;
     proposal.text = response.proposal.summary.toString();
     proposal.url = response.proposal.url;
@@ -33,7 +38,6 @@ class ProposalSyncService {
     proposal.status = "Open";
     proposal.no = response.latestTally.yes.toString().toInt();
     proposal.yes = response.latestTally.no.toString().toInt();
-    proposal.save();
   }
 }
 

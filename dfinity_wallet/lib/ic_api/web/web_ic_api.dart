@@ -100,12 +100,12 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> sendICPTs(
       {required String toAccount,
       required BigInt doms,
-      String? fromSubAccount}) async {
+        int? fromSubAccount}) async {
     await promiseToFuture(ledgerApi!.sendICPTs(jsify({
       'to': toAccount,
       'amount': doms,
-      if (fromSubAccount?.toIntOrNull() != null)
-        'fromSubAccountId': fromSubAccount!.toInt()
+      if (fromSubAccount != null)
+        'fromSubAccountId': fromSubAccount.toInt()
     })));
     await Future.wait([
       balanceSyncService!.syncBalances(),
@@ -117,12 +117,12 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> createNeuron(
       {required BigInt stakeInDoms,
       required BigInt dissolveDelayInSecs,
-      String? fromSubAccount}) async {
+        int? fromSubAccount}) async {
     await promiseToFuture(governanceApi!.createNeuron(jsify({
       'stake': {'doms': stakeInDoms},
       'dissolveDelayInSecs': dissolveDelayInSecs,
-      if (fromSubAccount?.toIntOrNull() != null)
-        'fromSubAccountId': fromSubAccount!.toInt()
+      if (fromSubAccount != null)
+        'fromSubAccountId': fromSubAccount.toInt()
     })));
     await neuronSyncService!.fetchNeurons();
   }

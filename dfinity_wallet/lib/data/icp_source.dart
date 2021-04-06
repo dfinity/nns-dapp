@@ -1,6 +1,6 @@
 abstract class ICPSource {
   String get address;
-  BigInt? get subAccountId;
+  int? get subAccountId;
 
   BigInt get balance;
   double get icpBalance => balance.toICPT;
