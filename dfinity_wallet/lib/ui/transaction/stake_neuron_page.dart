@@ -198,25 +198,3 @@ class VotingPowerWidget extends StatelessWidget {
   }
 }
 
-extension DurationFormatter on Duration {
-  String yearsDayHourMinuteSecondFormatted() {
-    this.toString();
-    final years = (inDays / 365).floor();
-    return [
-      LabelledPeriod("Years", years),
-      LabelledPeriod("Days", this.inDays.remainder(365)),
-      LabelledPeriod("Hours", this.inHours.remainder(24)),
-      LabelledPeriod("Minutes", this.inMinutes.remainder(60)),
-      LabelledPeriod("Seconds", this.inSeconds.remainder(60))
-    ].filter((element) => element.amount > 0).take(2).map((e) {
-      return "${e.amount} ${e.label}";
-    }).join(', ');
-  }
-}
-
-class LabelledPeriod {
-  final String label;
-  final int amount;
-
-  LabelledPeriod(this.label, this.amount);
-}

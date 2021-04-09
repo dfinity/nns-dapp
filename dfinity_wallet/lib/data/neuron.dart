@@ -1,15 +1,18 @@
 import 'package:dfinity_wallet/data/ballot_info.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
+import 'package:dfinity_wallet/data/proposal.dart';
+import 'package:dfinity_wallet/data/vote.dart';
 import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:hive/hive.dart';
 import 'dfinity_entity.dart';
 import 'followee.dart';
 import 'neuron_state.dart';
 import 'data_type_extensions.dart';
+import 'package:dartx/dartx.dart';
 
 part 'neuron.g.dart';
 
-@HiveType(typeId: 3)
+@HiveType(typeId: 103)
 class Neuron extends DfinityEntity with ICPSource {
   @HiveField(1)
   late String id;
@@ -60,10 +63,15 @@ class Neuron extends DfinityEntity with ICPSource {
   @override
   String get balance => stake.toString();
 
-  DateTime get whenDissolvedTimestamp =>
-      DateTime.fromMillisecondsSinceEpoch(whenDissolvedTimestampSeconds!.toBigInt.toInt() * 1000);
+  DateTime get whenDissolvedTimestamp {
+    return DateTime.fromMillisecondsSinceEpoch((whenDissolvedTimestampSeconds?.toBigInt.toInt() ?? 0) * 1000);
+  }
 
   Duration get durationRemaining => whenDissolvedTimestamp.difference(DateTime.now());
+
+  Duration get dissolveDelay => int.parse(dissolveDelaySeconds).seconds;
+
+  Vote? voteForProposal(Proposal proposal) => recentBallots.firstOrNullWhere((element) => element.proposalId == proposal.id)?.vote;
 }
 
 

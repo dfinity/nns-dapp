@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'topic.g.dart';
 
-@HiveType(typeId: 11)
+@HiveType(typeId: 109)
 enum Topic {
   @HiveField(0)
   Unspecified,
@@ -24,4 +24,21 @@ enum Topic {
   NetworkCanisterManagement,
   @HiveField(9)
   Kyc,
+}
+
+const _topicNameMap = {
+  Topic.Unspecified: "Unspecified",
+  Topic.ManageNeuron: "Manage Neuron",
+  Topic.ExchangeRate: "Exchange Rate",
+  Topic.NetworkEconomics: "Network Economics",
+  Topic.Governance: "Governance",
+  Topic.NodeAdmin: "Node Admin",
+  Topic.ParticipantManagement: "Participant Management",
+  Topic.SubnetManagement: "Subnet Management",
+  Topic.NetworkCanisterManagement: "Network Canister Management",
+  Topic.Kyc: "Kyc",
+};
+
+extension Description on Topic {
+  String get description => _topicNameMap[this]!;
 }

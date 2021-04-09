@@ -8,7 +8,7 @@ part of 'followee.dart';
 
 class FolloweeAdapter extends TypeAdapter<Followee> {
   @override
-  final int typeId = 12;
+  final int typeId = 108;
 
   @override
   Followee read(BinaryReader reader) {

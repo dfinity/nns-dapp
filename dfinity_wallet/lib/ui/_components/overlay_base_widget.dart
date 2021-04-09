@@ -5,8 +5,22 @@ import '../../dfinity.dart';
 import '../../resource_orchstrator.dart';
 import '../../wallet_router_delegate.dart';
 
-class OverlayBaseWidget extends StatelessWidget {
+extension ShowOverlay on OverlayState {
+  OverlayEntry show(BuildContext parentContext, Widget widget) {
+    OverlayEntry? entry;
+    entry = OverlayEntry(builder: (context) {
+      return OverlayBaseWidget(
+        parentContext: parentContext,
+        overlayEntry: entry,
+        child: widget,
+      );
+    });
+    insert(entry);
+    return entry;
+  }
+}
 
+class OverlayBaseWidget extends StatelessWidget {
   const OverlayBaseWidget({
     Key? key,
     required this.parentContext,
@@ -39,8 +53,7 @@ class OverlayBaseWidget extends StatelessWidget {
               ),
               Center(
                 child: ConstrainedBox(
-                    constraints:
-                        BoxConstraints(maxWidth: 800, maxHeight: 700),
+                    constraints: BoxConstraints(maxWidth: 800, maxHeight: 700),
                     child: child),
               ),
             ],

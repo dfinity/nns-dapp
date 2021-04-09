@@ -215,3 +215,4 @@ export async function test_create_neuron_functions(): Promise<void> {
     console.log(accountIdentifier);
     console.log(accountIdentifier.length);
 }
+

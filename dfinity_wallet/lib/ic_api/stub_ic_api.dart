@@ -46,7 +46,10 @@ class PlatformICApi extends AbstractPlatformICApi{
   }
 
   @override
-  Future<void> follow({required BigInt neuronId, required Topic topic, required BigInt followee}) {
+  Future<void> follow(
+      {required BigInt neuronId,
+        required Topic topic,
+        required List<BigInt> followees}){
     // TODO: implement follow
     throw UnimplementedError();
   }
@@ -64,7 +67,7 @@ class PlatformICApi extends AbstractPlatformICApi{
   }
 
   @override
-  Future<void> registerVote({required BigInt neuronId, required BigInt proposalId, required Vote vote}) {
+  Future<void> registerVote({required List<BigInt> neuronIds, required BigInt proposalId, required Vote vote}) {
     // TODO: implement registerVote
     throw UnimplementedError();
   }

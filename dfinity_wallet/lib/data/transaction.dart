@@ -8,7 +8,7 @@ import 'package:dfinity_wallet/dfinity.dart';
 
 part 'transaction.g.dart';
 
-@HiveType(typeId: 2)
+@HiveType(typeId: 106)
 class Transaction extends HiveObject {
   @HiveField(0)
   final String from;

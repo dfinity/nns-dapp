@@ -22,12 +22,12 @@ import 'package:uuid/uuid.dart';
 import 'balance_display_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
-class WalletsPage extends StatefulWidget {
+class AccountsTabWidget extends StatefulWidget {
   @override
-  _WalletsPageState createState() => _WalletsPageState();
+  _AccountsTabWidgetState createState() => _AccountsTabWidgetState();
 }
 
-class _WalletsPageState extends State<WalletsPage> {
+class _AccountsTabWidgetState extends State<AccountsTabWidget> {
   StreamSubscription? walletsSubscription;
 
   @override
@@ -81,7 +81,7 @@ class _WalletsPageState extends State<WalletsPage> {
                                 height: 10,
                               ),
                               SelectableText(
-                                primary?.key ?? "",
+                                primary?.accountIdentifier ?? "",
                                 style: context.textTheme.bodyText2,
                               )
                             ],

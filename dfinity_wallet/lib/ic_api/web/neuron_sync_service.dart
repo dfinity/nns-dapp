@@ -8,6 +8,10 @@ import 'package:dfinity_wallet/data/vote.dart';
 
 import '../../dfinity.dart';
 import 'governance_api.dart';
+import 'js_utils.dart';
+import 'dart:convert';
+import 'stringify.dart';
+
 
 class NeuronSyncService {
   final GovernanceApi governanceApi;
@@ -16,14 +20,18 @@ class NeuronSyncService {
   NeuronSyncService({required this.governanceApi, required this.hiveBoxes});
 
   Future<void> fetchNeurons() async {
-    final response = await promiseToFuture(governanceApi.getNeurons());
+    dynamic res = (await promiseToFuture(governanceApi.getNeurons()));
+    final string = governanceApi.jsonString(res);
+    dynamic response = jsonDecode(string);
+
+    print("Storing ${response.length} neurons");
     response.forEach((e) {
       storeNeuron(e);
     });
   }
 
   void storeNeuron(dynamic e) {
-    final neuronId = e.neuronId.toString();
+    final neuronId = e['neuronId'].toString();
     if (!hiveBoxes.neurons.containsKey(neuronId)) {
       final neuron = Neuron.empty();
       updateNeuron(neuron, neuronId, e);
@@ -35,33 +43,69 @@ class NeuronSyncService {
     }
   }
 
-  void updateNeuron(Neuron neuron, String neuronId, e) {
+  void updateNeuron(Neuron neuron, String neuronId, dynamic res) {
+    final fullNeuron = res['fullNeuron'];
+
+    PrettyPrint.prettyPrintJson("neuron response", res);
     neuron.id = neuronId;
-    neuron.recentBallots = parseRecentBallots(e.fullNeuron.recentBallots);
+    neuron.recentBallots = parseRecentBallots(fullNeuron['recentBallots']);
     neuron.createdTimestampSeconds =
-        e.fullNeuron.createdTimestampSeconds.toString();
-    neuron.votingPower = e.votingPower.toString();
-    neuron.state = NeuronState.values[e.state.toString().toInt()];
-    neuron.dissolveDelaySeconds = e.dissolveDelaySeconds.toString();
+        fullNeuron['createdTimestampSeconds'].toString();
+    neuron.votingPower = res['votingPower'].toString();
+    neuron.state = NeuronState.values[res['state'].toInt()];
+    neuron.dissolveDelaySeconds = res['dissolveDelaySeconds'].toString();
     neuron.cachedNeuronStakeDoms =
-        e.fullNeuron.cachedNeuronStakeDoms.toString();
-    neuron.neuronFeesDoms = e.fullNeuron.neuronFeesDoms.toString();
+        fullNeuron['cachedNeuronStake'].toString();
+    neuron.neuronFeesDoms = fullNeuron['neuronFees'].toString();
     neuron.maturityDomsEquivalent =
-        e.fullNeuron.maturityDomsEquivalent.toString();
-    neuron.whenDissolvedTimestampSeconds =
-        e.fullNeuron.dissolveState.whenDissolvedTimestampSeconds.toString();
-    neuron.followees = parseFollowees(e.fullNeuron.followees);
+        fullNeuron['maturityDomsEquivalent'].toString();
+
+    final dissolveState = fullNeuron['dissolveState'];
+    if (dissolveState != null) {
+      neuron.whenDissolvedTimestampSeconds =
+          dissolveState['WhenDissolvedTimestampSeconds']?.toString();
+    }
+    neuron.followees = parseFollowees(fullNeuron['followees']);
+
+
+    assert(neuron.id != null);
+    assert(neuron.recentBallots != null);
+    assert(neuron.createdTimestampSeconds != null);
+    assert(neuron.votingPower != null);
+    assert(neuron.state != null);
+    assert(neuron.dissolveDelaySeconds != null);
+    assert(neuron.cachedNeuronStakeDoms != null);
+    assert(neuron.neuronFeesDoms != null);
+    assert(neuron.maturityDomsEquivalent != null);
+    assert(neuron.followees != null);
   }
 
-  List<BallotInfo> parseRecentBallots(recentBallots) => [
-        ...recentBallots.map((e) => BallotInfo()
-          ..proposalId = e.proposalId.toString()
-          ..vote = Vote.values[e.vote.toInt()])
+  List<BallotInfo> parseRecentBallots(List<dynamic> recentBallots) =>
+      [
+        ...recentBallots.map((e) {
+          return BallotInfo()
+            ..proposalId = e['proposalId'].toString()
+            ..vote = Vote.values[e['vote'].toInt()];
+        })
       ];
 
-  List<Followee> parseFollowees(recentBallots) => [
-        ...recentBallots.map((e) => Followee()
-          ..followees = [...e.followees.map((e) => BigInt.from(e))]
-          ..topic = Topic.values[e.vote.toInt()])
-      ];
+  List<Followee> parseFollowees(List<dynamic> folowees) {
+    final map = folowees.associate((e) =>
+        MapEntry(Topic.values[e['topic'] as int],
+            (e['followees'] as List<dynamic>).cast<String>()));
+
+    return Topic.values
+        .mapToList((e) => Followee()
+        ..topic = e
+        ..followees = map[e] ?? []);
+  }
 }
+
+class PrettyPrint {
+  static prettyPrintJson(String text, dynamic object){
+    JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+    String prettyprint = encoder.convert(object);
+    print("${text} $prettyprint");;
+  }
+}
+

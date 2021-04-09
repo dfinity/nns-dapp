@@ -6,9 +6,9 @@ import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
-import 'package:dfinity_wallet/ui/neurons/neuron_detail_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/stake_neuron_page.dart';
+import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
 class NeuronsPage extends StatefulWidget {
   @override
@@ -31,13 +31,13 @@ class _NeuronsPageState extends State<NeuronsPage> {
               title: "Neurons",
               children: [
                 Card(
-                  color: AppColors.black,
+                  color: AppColors.black.withOpacity(0.1),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
-                      "Neurons are long term stores of ICP.\n\n Storing ICP in neurons earns rewards.\n\n ICP stored in neurons give you power to vote on proposals.",
-                      style: context.textTheme.bodyText1,
-                      textAlign: TextAlign.center,
+                      "You can stake ICP by storing them in Neurons. These neurons allow you to participate in the IC Governance by giving you the ability to vote on proposals",
+                      style: context.textTheme.bodyText2,
+                      textAlign: TextAlign.left,
                     ),
                   ),
                 ),
@@ -120,25 +120,21 @@ class NeuronRow extends StatelessWidget {
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(
+                child: SelectableText(
                   neuron.address,
-                  style: context.textTheme.headline4,
+                  style: context.textTheme.headline3,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 16.0, bottom: 16.0, right: 16.0),
-                child: Text(
-                  "${neuron.votingPower.toBigInt.toICPT} Voting Power",
-                  style: context.textTheme.bodyText1,
-                ),
-              ),
+              Expanded(child: Container()),
+              BalanceDisplayWidget(
+                  amount: neuron.stake.toICPT,
+                  amountSize: 30,
+                  icpLabelSize: 15,
+              )
             ],
           ),
         ),

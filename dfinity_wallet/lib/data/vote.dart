@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'vote.g.dart';
 
-@HiveType(typeId: 10)
+@HiveType(typeId: 110)
 enum Vote {
   @HiveField(0)
   UNSPECIFIED,

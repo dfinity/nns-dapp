@@ -8,7 +8,7 @@ part of 'proposal.dart';
 
 class ProposalAdapter extends TypeAdapter<Proposal> {
   @override
-  final int typeId = 5;
+  final int typeId = 105;
 
   @override
   Proposal read(BinaryReader reader) {

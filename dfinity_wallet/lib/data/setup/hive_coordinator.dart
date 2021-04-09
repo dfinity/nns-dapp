@@ -41,7 +41,7 @@ class HiveCoordinator {
   HiveBoxes hiveBoxes = HiveBoxes();
 
   static Future? hiveInitFuture;
-  Future<dynamic>? loadingFuture;
+  static Future<dynamic>? loadingFuture;
 
   HiveCoordinator() {
     performInitialisation();
@@ -50,6 +50,7 @@ class HiveCoordinator {
   bool get boxesClosed => hiveBoxes.areClosed;
 
   Future<void> performInitialisation() async {
+
     if (boxesClosed) {
       if (hiveInitFuture == null) {
         hiveInitFuture = initializeHive();
@@ -80,18 +81,18 @@ class HiveCoordinator {
   }
 
   Future initializeHive() async {
+    Hive.registerAdapter<Wallet>(WalletAdapter());
+    Hive.registerAdapter<Canister>(CanisterAdapter());
+    Hive.registerAdapter<Neuron>(NeuronAdapter());
+    Hive.registerAdapter<AuthToken>(AuthTokenAdapter());
+    Hive.registerAdapter<Proposal>(ProposalAdapter());
+    Hive.registerAdapter<Transaction>(TransactionAdapter());
+    Hive.registerAdapter<BallotInfo>(BallotInfoAdapter());
+    Hive.registerAdapter<Followee>(FolloweeAdapter());
+    Hive.registerAdapter<Topic>(TopicAdapter());
+    Hive.registerAdapter<Vote>(VoteAdapter());
+    Hive.registerAdapter<NeuronState>(NeuronStateAdapter());
     await Hive.initFlutter();
-    Hive.registerAdapter(WalletAdapter());
-    Hive.registerAdapter(TransactionAdapter());
-    Hive.registerAdapter(NeuronAdapter());
-    Hive.registerAdapter(CanisterAdapter());
-    Hive.registerAdapter(ProposalAdapter());
-    Hive.registerAdapter(AuthTokenAdapter());
-    Hive.registerAdapter(BallotInfoAdapter());
-    Hive.registerAdapter(FolloweeAdapter());
-    Hive.registerAdapter(TopicAdapter());
-    Hive.registerAdapter(VoteAdapter());
-    Hive.registerAdapter(NeuronStateAdapter());
   }
 
   Future<void> deleteAllData() async {

@@ -10,7 +10,7 @@ import 'icp_source.dart';
 
 part 'wallet.g.dart';
 
-@HiveType(typeId: 1)
+@HiveType(typeId: 101)
 class Wallet extends DfinityEntity with ICPSource {
   @HiveField(0)
   final String name;

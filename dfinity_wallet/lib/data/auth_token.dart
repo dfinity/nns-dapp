@@ -5,7 +5,7 @@ part 'auth_token.g.dart';
 
 const WEB_TOKEN_KEY = "WEB_TOKEN_KEY";
 
-@HiveType(typeId: 6)
+@HiveType(typeId: 104)
 class AuthToken extends HiveObject{
 
   @HiveField(0)

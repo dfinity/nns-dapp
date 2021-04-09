@@ -31,15 +31,18 @@ abstract class AbstractPlatformICApi extends State<ICApiManager> {
       {required BigInt neuronId,
       required BigInt additionalDissolveDelaySeconds});
 
+  @override
   Future<void> follow(
       {required BigInt neuronId,
-      required Topic topic,
-      required BigInt followee});
+        required Topic topic,
+        required List<BigInt> followees});
 
   Future<void> registerVote(
-      {required BigInt neuronId,
+      {required List<BigInt> neuronIds,
       required BigInt proposalId,
       required Vote vote});
+
+
 
   Future<void> disburse(
       {required BigInt neuronId, required BigInt doms, BigInt? toSubaccountId});

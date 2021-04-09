@@ -6,3 +6,5 @@ export 'canisters/canisters_tab_widget.dart';
 export '_components/text_field_dialog_widget.dart';
 export '_components/debounced_validated_form_field.dart';
 export '_components/conditional_widget.dart';
+export '_components/overlay_base_widget.dart';
+export '_components/duration_formatting.dart';

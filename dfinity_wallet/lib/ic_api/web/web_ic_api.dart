@@ -85,7 +85,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> acquireICPTs(
       {required String accountIdentifier, required BigInt doms}) async {
     await ledgerApi!
-        .acquireICPTs(accountIdentifier, jsify({'doms': doms}))
+        .acquireICPTs(accountIdentifier, doms)
         .toFuture();
     await balanceSyncService!.syncBalances();
   }
@@ -119,7 +119,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       required BigInt dissolveDelayInSecs,
         int? fromSubAccount}) async {
     await promiseToFuture(governanceApi!.createNeuron(jsify({
-      'stake': {'doms': stakeInDoms},
+      'stake': stakeInDoms,
       'dissolveDelayInSecs': dissolveDelayInSecs,
       if (fromSubAccount != null)
         'fromSubAccountId': fromSubAccount.toInt()
@@ -166,9 +166,9 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> follow(
       {required BigInt neuronId,
       required Topic topic,
-      required BigInt followee}) async {
+      required List<BigInt> followees}) async {
     await callApi(governanceApi!.follow,
-        {'neuronId': neuronId, 'topic': topic.index, 'followee': followee});
+        {'neuronId': neuronId, 'topic': topic.index, 'followees': followees});
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -199,13 +199,14 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> registerVote(
-      {required BigInt neuronId,
+      {required List<BigInt> neuronIds,
       required BigInt proposalId,
       required Vote vote}) async {
-    await callApi(governanceApi!.makeMotionProposal, {
-      'neuronId': neuronId,
-      'proposalId': proposalId,
+    await Future.wait(neuronIds.map((e) => callApi(governanceApi!.makeMotionProposal, {
+      'neuronId': e,
+      'proposal': proposalId,
       'vote': vote.index,
-    });
+    }))) ;
+    await neuronSyncService!.fetchNeurons();
   }
 }

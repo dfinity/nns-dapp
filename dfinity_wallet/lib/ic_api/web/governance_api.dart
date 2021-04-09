@@ -62,4 +62,7 @@ class GovernanceApi {
 
   @JS("makeMotionProposal")
   external Promise<dynamic> makeMotionProposal(dynamic request);
+
+  @JS("jsonString")
+  external String jsonString(dynamic request);
 }

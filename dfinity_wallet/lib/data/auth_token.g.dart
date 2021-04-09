@@ -8,7 +8,7 @@ part of 'auth_token.dart';
 
 class AuthTokenAdapter extends TypeAdapter<AuthToken> {
   @override
-  final int typeId = 6;
+  final int typeId = 104;
 
   @override
   AuthToken read(BinaryReader reader) {

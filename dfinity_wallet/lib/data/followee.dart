@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 
 part 'followee.g.dart';
 
-@HiveType(typeId: 12)
+@HiveType(typeId: 108)
 class Followee {
 
   @HiveField(0)

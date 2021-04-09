@@ -8,7 +8,7 @@ part of 'transaction.dart';
 
 class TransactionAdapter extends TypeAdapter<Transaction> {
   @override
-  final int typeId = 2;
+  final int typeId = 106;
 
   @override
   Transaction read(BinaryReader reader) {

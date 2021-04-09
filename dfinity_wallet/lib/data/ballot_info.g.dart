@@ -8,7 +8,7 @@ part of 'ballot_info.dart';
 
 class BallotInfoAdapter extends TypeAdapter<BallotInfo> {
   @override
-  final int typeId = 9;
+  final int typeId = 107;
 
   @override
   BallotInfo read(BinaryReader reader) {

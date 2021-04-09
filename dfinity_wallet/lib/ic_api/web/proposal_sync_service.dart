@@ -1,4 +1,5 @@
 
+import 'dart:html';
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/data/setup/hive_loader_widget.dart';
@@ -14,6 +15,12 @@ class ProposalSyncService {
   ProposalSyncService({required this.governanceApi, required this.hiveBoxes});
 
   Future<void> fetchProposals() async {
+    final asMap = promiseToFutureAsMap(governanceApi.listProposals(jsify({
+      'limit': 100,
+      'includeRewardStatus': [0,1,2,3,4],
+      'excludeTopic': [],
+      'includeStatus': []
+    })));
     final response = await callApi(governanceApi.listProposals, {
       'limit': 100,
       'includeRewardStatus': [0,1,2,3,4],
@@ -44,10 +51,22 @@ class ProposalSyncService {
     proposal.id = proposalId.toString();
     proposal.text = response.proposal.summary.toString();
     proposal.url = response.proposal.url;
-    proposal.proposer = response.proposer.id.toString();
+    proposal.proposer = response.proposer.toString();
     proposal.status = "Open";
     proposal.no = response.latestTally.yes.toString().toInt();
     proposal.yes = response.latestTally.no.toString().toInt();
+
+
+    // print("");
+    // print("proposal");
+    // print("proposal.id: ${proposal.id}");
+    // print("proposal.text: ${proposal.text}");
+    // print("proposal.url: ${proposal.url}");
+    // print("proposal.proposer: ${proposal.proposer}");
+    // print("proposal.status: ${proposal.status}");
+    // print("proposal.no: ${proposal.no}");
+    // print("proposal.yes: ${proposal.yes}");
   }
+
 }
 

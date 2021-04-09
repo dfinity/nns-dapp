@@ -24,6 +24,6 @@ class BalanceSyncService {
   Future<Map<String, String>> fetchBalances(List<String> accountIds) async {
     final promise = ledgerApi.getBalances(jsify({'accounts': accountIds}));
     final response = await promiseToFutureAsMap(promise);
-    return response!.map((key, value) => MapEntry(key, value.doms.toString()));
+    return response!.map((key, value) => MapEntry(key, value.toString()));
   }
 }

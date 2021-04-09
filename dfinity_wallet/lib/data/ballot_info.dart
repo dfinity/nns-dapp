@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 
 part 'ballot_info.g.dart';
 
-@HiveType(typeId: 9)
+@HiveType(typeId: 107)
 class BallotInfo  {
   @HiveField(0)
   late Vote vote;

@@ -28,7 +28,7 @@ class TransactionRow extends StatelessWidget {
                     Text(
                         (transaction.from == currentAccount.accountIdentifier)
                             ? "Sent"
-                            : "Recieved",
+                            : "Received",
                         style: context.textTheme.headline3),
                     SmallFormDivider(),
                     if (transaction.from != currentAccount.accountIdentifier)

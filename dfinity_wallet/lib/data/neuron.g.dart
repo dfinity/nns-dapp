@@ -8,7 +8,7 @@ part of 'neuron.dart';
 
 class NeuronAdapter extends TypeAdapter<Neuron> {
   @override
-  final int typeId = 3;
+  final int typeId = 103;
 
   @override
   Neuron read(BinaryReader reader) {

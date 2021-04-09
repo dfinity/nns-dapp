@@ -11,7 +11,7 @@ class LedgerApi {
   external factory LedgerApi(String host, dynamic identity);
 
   @JS("acquireICPTs")
-  external Promise<void> acquireICPTs(String accountIdentifier, Object icpts);
+  external Promise<void> acquireICPTs(String accountIdentifier, BigInt icpts);
 
   @JS("getAccount")
   external Promise<dynamic> getAccount();
@@ -32,4 +32,6 @@ class LedgerApi {
   @JS("getTransactions")
   external Promise<dynamic> getTransactions(dynamic request);
 
+  @JS("jsonString")
+  external String jsonString(dynamic request);
 }

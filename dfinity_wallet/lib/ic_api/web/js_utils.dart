@@ -1,6 +1,8 @@
+import 'dart:html';
 import 'dart:js';
 import 'dart:js_util';
 import 'package:js/js.dart';
+import 'dart:collection' show Maps;
 
 
 extension ToJSObject on Map {
@@ -17,7 +19,14 @@ extension ToJSObject on Map {
 
 Future<dynamic> callApi(
     dynamic Function(dynamic) function, Map<String, dynamic> input) {
+  print("Api input ${input}");
   return promiseToFuture(function(jsify(input)));
+}
+
+Future<Map<String, dynamic>> callApiMap(
+    dynamic Function(dynamic) function, Map<String, dynamic> input) async {
+  print("Api input ${input}");
+  return (await promiseToFutureAsMap(function(jsify(input))))!;
 }
 
 @JS()

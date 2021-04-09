@@ -75,6 +75,14 @@ export default class LedgerApi {
     public integrationTest = async (): Promise<void> => {
         return await test_happy_path(this.host, this.identity);
     }
+
+    public jsonString(object: Object): String{
+        return JSON.stringify(object, (key, value) =>
+            typeof value === 'bigint'
+                ? value.toString()
+                : value // return everything else unchanged
+        );
+    }
 }
 
 export type AccountDetails = {

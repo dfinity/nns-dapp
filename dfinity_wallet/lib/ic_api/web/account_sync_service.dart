@@ -13,6 +13,7 @@ class AccountsSyncService {
 
   Future<dynamic> performSync() async {
     final accountResponse = await promiseToFuture(ledgerApi.getAccount());
+
     return Future.wait(<Future<dynamic>>[
       storeNewAccount(
           name: "Default",

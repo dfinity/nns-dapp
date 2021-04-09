@@ -36,6 +36,7 @@ class _LoadingOverlayControllerState extends State<LoadingOverlayController> {
   void remove() async{
     await (overlayKey.currentState?.fadeOut() ?? Future.value(null));
     _overlayEntry?.remove();
+    _overlayEntry = null;
   }
 }
 

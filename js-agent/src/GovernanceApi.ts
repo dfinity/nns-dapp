@@ -112,4 +112,12 @@ export default class GovernanceApi {
     public makeMotionProposal = async (request: MakeMotionProposalRequest) : Promise<MakeProposalResult> => {
         return this.governanceService.makeMotionProposal(request);
     }
+
+    public jsonString(object: Object): String{
+        return JSON.stringify(object, (key, value) =>
+            typeof value === 'bigint'
+                ? value.toString()
+                : value // return everything else unchanged
+        );
+    }
 }

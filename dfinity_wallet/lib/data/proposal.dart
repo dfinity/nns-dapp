@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 
 part 'proposal.g.dart';
 
-@HiveType(typeId: 5)
+@HiveType(typeId: 105)
 class Proposal extends DfinityEntity {
   @HiveField(1)
   late String id;

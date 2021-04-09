@@ -8,7 +8,7 @@ part of 'neuron_state.dart';
 
 class NeuronStateAdapter extends TypeAdapter<NeuronState> {
   @override
-  final int typeId = 8;
+  final int typeId = 111;
 
   @override
   NeuronState read(BinaryReader reader) {
@@ -16,7 +16,7 @@ class NeuronStateAdapter extends TypeAdapter<NeuronState> {
       case 0:
         return NeuronState.UNSPECIFIED;
       case 1:
-        return NeuronState.DISPERSING;
+        return NeuronState.DISSOLVING;
       case 2:
         return NeuronState.LOCKED;
       case 3:
@@ -32,7 +32,7 @@ class NeuronStateAdapter extends TypeAdapter<NeuronState> {
       case NeuronState.UNSPECIFIED:
         writer.writeByte(0);
         break;
-      case NeuronState.DISPERSING:
+      case NeuronState.DISSOLVING:
         writer.writeByte(1);
         break;
       case NeuronState.LOCKED:

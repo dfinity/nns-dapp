@@ -1,13 +1,13 @@
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
-import 'package:dfinity_wallet/ui/transaction/stake_neuron_page.dart';
+import 'package:dfinity_wallet/ui/neurons/following/neuron_followees_card.dart';
+import 'package:dfinity_wallet/ui/neurons/neuron_rewards_card.dart';
+import 'package:dfinity_wallet/ui/neurons/neuron_state_card.dart';
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
 
 import '../../dfinity.dart';
+import 'neuron_votes_card.dart';
 
 class NeuronDetailWidget extends StatefulWidget {
   final Neuron neuron;
@@ -19,7 +19,6 @@ class NeuronDetailWidget extends StatefulWidget {
 }
 
 class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
-  OverlayEntry? _overlayEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -38,187 +37,19 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                 child: ListView(
                   children: [
                     SmallFormDivider(),
-                    Card(
-                      color: AppColors.background,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(widget.neuron.identifier,
-                                      style: context.textTheme.headline3),
-                                ),
-                                Column(
-                                  children: [
-                                    BalanceDisplayWidget(
-                                        amount: widget.neuron.votingPower.toDouble(),
-                                        amountSize: 30,
-                                        icpLabelSize: 15),
-                                    Text("Votes")
-                                  ],
-                                )
-                              ],
-                            ),
-                            Text("Details", style: context.textTheme.headline3),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text("Status: ${widget.neuron.state.description}"),
-                            Text("Time Remaining ${widget.neuron.durationRemaining}"),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            buildStateButton()
-                          ],
-                        ),
-                      ),
-                    ),
+                    NeuronStateCard(neuron: widget.neuron),
                     SmallFormDivider(),
-                    Card(
-                      color: AppColors.background,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Rewards",
-                                        style: context.textTheme.headline3,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        child: Text(
-                                            "You can use your rewarded ICP to create a new neuron, convert it into cycles, or send it to your wallet."),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Column(
-                                  children: [
-                                    BalanceDisplayWidget(
-                                        amount: 0,
-                                        amountSize: 30,
-                                        icpLabelSize: 15),
-                                    Text("Available")
-                                  ],
-                                )
-                              ],
-                            ),
-                            ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        AppColors.blue600),
-                                    shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)))),
-                                onPressed: () {
-                                  _overlayEntry =
-                                      _createOverlayEntry(NewTransactionOverlay(
-                                    rootTitle: "Spawn Neuron",
-                                    rootWidget:
-                                        StakeNeuronPage(source: widget.neuron),
-                                  ));
-                                  Overlay.of(context)?.insert(_overlayEntry!);
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Text("Spawn Neuron"),
-                                ))
-                          ],
-                        ),
-                      ),
-                    ),
+                    NeuronRewardsCard(neuron: widget.neuron),
                     SmallFormDivider(),
-                    Card(
-                      color: AppColors.background,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text("Voting",
-                                      style: context.textTheme.headline3),
-                                ),
-
-                              ],
-                            ),
-                            SizedBox(height: 150,)
-                          ],
-                        ),
-                      ),
-                    ),
+                    NeuronVotesCard(neuron: widget.neuron),
+                    SmallFormDivider(),
+                    NeuronFolloweesCard(neuron: widget.neuron),
                   ],
                 ),
               ),
             );
           }
         ));
-  }
-
-  ElevatedButton buildStateButton() {
-    switch (widget.neuron.state) {
-      case NeuronState.DISPERSING:
-        return ElevatedButton(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text("Lockup"),
-            ),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(AppColors.blue600),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)))),
-            onPressed: () async {
-              context.performLoading(
-                  () => context.icApi.stopDissolving(neuronId: widget.neuron.id.toBigInt));
-            });
-      case NeuronState.LOCKED:
-        return ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(AppColors.yellow500),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)))),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text("Start Unlock"),
-            ),
-            onPressed: () {
-              context.performLoading(
-                      () => context.icApi.startDissolving(neuronId: widget.neuron.id.toBigInt));
-            });
-      case NeuronState.UNLOCKED:
-        return ElevatedButton(child: Text("Send ICP"), onPressed: () {});
-      case NeuronState.UNSPECIFIED:
-        return ElevatedButton(child: Text(""), onPressed: () {});
-        break;
-    }
-  }
-
-  OverlayEntry _createOverlayEntry(Widget overlayWidget) {
-    final parentContext = this.context;
-    return OverlayEntry(builder: (context) {
-      return OverlayBaseWidget(
-        parentContext: parentContext,
-        overlayEntry: _overlayEntry,
-        child: overlayWidget,
-      );
-    });
   }
 }
 

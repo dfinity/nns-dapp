@@ -8,7 +8,7 @@ part of 'canister.dart';
 
 class CanisterAdapter extends TypeAdapter<Canister> {
   @override
-  final int typeId = 4;
+  final int typeId = 102;
 
   @override
   Canister read(BinaryReader reader) {

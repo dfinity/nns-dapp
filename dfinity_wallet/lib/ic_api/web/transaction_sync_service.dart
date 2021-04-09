@@ -30,12 +30,12 @@ class TransactionSyncService {
       if (send != null) {
         from = account.accountIdentifier;
         to = send.to.toString();
-        doms = BigInt.parse(send.amount.doms.toString());
+        doms = BigInt.parse(send.amount.toString());
       }
       if (receive != null) {
         to = account.accountIdentifier;
         from = receive.from.toString();
-        doms = BigInt.parse(receive.amount.doms.toString());
+        doms = BigInt.parse(receive.amount.toString());
       }
 
       print("from ${from} to ${to}");
