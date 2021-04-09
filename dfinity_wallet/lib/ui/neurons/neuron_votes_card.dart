@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
 import '../../dfinity.dart';
@@ -32,19 +33,16 @@ class NeuronVotesCard extends StatelessWidget {
                 )
               ],
             ),
-            ...neuron.recentBallots.map((e) {
-              final proposal = context.boxes.proposals.get(e);
+            SmallFormDivider(),
+            ...neuron.recentBallots.distinctBy((element) => element.proposalId).map((e) {
+              final proposal = context.boxes.proposals.get(e.proposalId);
               return Container(
+                padding: EdgeInsets.all(8),
               child: Row(
                 children: [
-                  Column(
-                    children: [
-                      Text(proposal?.text ?? ""),
-                      Text(e.proposalId),
-                    ],
-                  ),
+                  Text(proposal?.text ?? ""),
                   Expanded(child: Container()),
-                  Text(e.vote.toString())
+                  Text(e.vote.toString().removePrefix("Vote."))
                 ],
               ),
             );
