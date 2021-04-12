@@ -83,33 +83,39 @@ class ProposalRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(
-                                width: 2, color: Color(0xffFBB03B)))),
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
+
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "Open",
-                        style: TextStyle(
-                            fontSize: 24,
-                            fontFamily: Fonts.circularBook,
-                            color: Color(0xffFBB03B),
-                            fontWeight: FontWeight.normal),
+                        proposal.text,
+                        style: context.textTheme.headline3,
                       ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    proposal.text,
-                    style: context.textTheme.headline3,
-                  ),
+                    Expanded(child: Container()),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: BorderSide(
+                                    width: 2, color: Color(0xffFBB03B)))),
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            "Open",
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontFamily: Fonts.circularBook,
+                                color: Color(0xffFBB03B),
+                                fontWeight: FontWeight.normal),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.only(

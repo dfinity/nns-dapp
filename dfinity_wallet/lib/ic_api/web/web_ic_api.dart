@@ -202,11 +202,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required List<BigInt> neuronIds,
       required BigInt proposalId,
       required Vote vote}) async {
-    // await Future.wait(neuronIds.map((e) => callApi(governanceApi!.makeMotionProposal, {
-    //   'neuronId': e,
-    //   'proposal': proposalId,
-    //   'vote': vote.index,
-    // }))) ;
+    await Future.wait(neuronIds.map((e) => callApi(governanceApi!.registerVote, {
+      'neuronId': e,
+      'proposal': proposalId,
+      'vote': vote.index,
+    })));
 
    await Future.wait(neuronIds.map((neuronId) async {
       final neuron = neuronSyncService!.hiveBoxes.neurons.get(neuronId.toString())!;
@@ -220,7 +220,6 @@ class PlatformICApi extends AbstractPlatformICApi {
        await neuron.save();
     }));
 
-    // neuronSyncService.
-    // await neuronSyncService!.fetchNeurons();
+    await neuronSyncService!.fetchNeurons();
   }
 }
