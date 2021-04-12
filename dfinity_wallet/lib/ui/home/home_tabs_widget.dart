@@ -65,8 +65,8 @@ class _HomePageState extends State<HomePage> {
                     child: TextButton(
                       child: Text("Logout", style: TextStyle(color: AppColors.white),),
                       onPressed: () async {
-                        context.nav.replaceAll(AuthPage);
                         context.boxes.hiveCoordinator.deleteAllData();
+                        context.nav.replaceAll(AuthPage);
                       },
                     ),
                   )

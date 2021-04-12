@@ -61,8 +61,8 @@ class Proposal extends DfinityEntity {
   String? get motionText => action['Motion']['motionText'];
 
   String get status {
-    if(executedTimestampSeconds != null) return "Executed";
-    if(failedTimestampSeconds != null) return "Failed";
+    if(executedTimestampSeconds != "0") return "Executed";
+    if(failedTimestampSeconds != "0") return "Failed";
     return "Open";
   }
 

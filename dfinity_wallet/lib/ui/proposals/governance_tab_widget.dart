@@ -105,7 +105,7 @@ class ProposalRow extends StatelessWidget {
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Text(
-                            "Open",
+                            proposal.status,
                             style: TextStyle(
                                 fontSize: 24,
                                 fontFamily: Fonts.circularBook,

@@ -11,10 +11,13 @@ class AccountsSyncService {
 
   AccountsSyncService(this.ledgerApi, this.hiveBoxes);
 
-  Future<dynamic> performSync() async {
+  Future<void> performSync() async {
     final accountResponse = await promiseToFuture(ledgerApi.getAccount());
 
-    return Future.wait(<Future<dynamic>>[
+    final cachedAccounts = hiveBoxes.wallets.values;
+    print("cached accounts ${cachedAccounts.length} " + cachedAccounts.joinToString(transform: ((e) => e.accountIdentifier)));
+
+    final validAccounts = await Future.wait(<Future<dynamic>>[
       storeNewAccount(
           name: "Default",
           address: accountResponse.accountIdentifier.toString(),
@@ -26,9 +29,13 @@ class AccountsSyncService {
           subAccount: element.id,
           primary: false))
     ]);
+
+   await Future.wait(cachedAccounts
+       .filterNot((element) => validAccounts.contains(element.accountIdentifier))
+        .map((element) => hiveBoxes.wallets.delete(element.accountIdentifier)));
   }
 
-  Future<void> storeNewAccount(
+  Future<String> storeNewAccount(
       {required String name,
         required String address,
         required int? subAccount,
@@ -45,5 +52,6 @@ class AccountsSyncService {
               transactions: [],
           ));
     }
+    return address;
   }
 }
