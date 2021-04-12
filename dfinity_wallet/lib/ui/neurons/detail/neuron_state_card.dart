@@ -1,6 +1,6 @@
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
-import '../../dfinity.dart';
+import '../../../dfinity.dart';
 
 class NeuronStateCard extends StatelessWidget {
   final Neuron neuron;

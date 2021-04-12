@@ -10,13 +10,31 @@ import 'stub_ic_api.dart'
 class ICApiManager extends StatefulWidget {
 
   final Widget child;
+  final AbstractPlatformICApi? icApi;
 
-  const ICApiManager({Key? key, required this.child}) : super(key: key);
+  const ICApiManager({Key? key, required this.child, this.icApi}) : super(key: key);
 
   @override
-  PlatformICApi createState() => PlatformICApi();
+  ICApiManagerState createState() => ICApiManagerState();
 }
 
+class ICApiManagerState extends State<ICApiManager>{
+
+  AbstractPlatformICApi? icApi;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if(icApi == null){
+      icApi = PlatformICApi(context.boxes);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InternetComputerApiWidget(icApi: icApi!, child: widget.child,);
+  }
+}
 
 class InternetComputerApiWidget extends InheritedWidget {
   final AbstractPlatformICApi icApi;

@@ -187,7 +187,7 @@ class _NodeDistributorState extends State<NodeDistributor> {
 
 
 
-    centralNode.charge = (sin(totalDuration)) * 3;
+    centralNode.charge = 3 + (sin(totalDuration)) * 1;
 
     physicsWorld.stepDt(dt, 100, 10);
     applyForcesToBodies(1);

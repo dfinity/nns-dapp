@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
+import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
 
@@ -35,28 +36,28 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
   @override
   Widget build(BuildContext context) {
     return ConstrainWidthAndCenter(
-      child: TabTitleAndContent(
-        title: "Governance",
-        children: [
-          Container(
-            child: Card(
-              color: AppColors.black,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  "The Internet Computer is Governed by Neurons. \n\nVoting power is determined by long term stakes in neurons.  \n\n Select a proposal below to vote on it.",
-                  style: context.textTheme.bodyText1,
-                  textAlign: TextAlign.center,
+        child: TabTitleAndContent(
+          title: "Governance",
+          children: [
+            Container(
+              child: Card(
+                color: AppColors.black,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(
+                    "The Internet Computer is Governed by Neurons. \n\nVoting power is determined by long term stakes in neurons.  \n\n Select a proposal below to vote on it.",
+                    style: context.textTheme.bodyText1,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),
-          ),
-          ...context.boxes.proposals.values.map((e) => ProposalRow(
-              proposal: e,
-              onPressed: () {
-                context.nav.push(ProposalPageDef.createPageConfig(e));
-              }))
-        ],
+            ...context.boxes.proposals.values.map((e) => ProposalRow(
+                proposal: e,
+                onPressed: () {
+                  context.nav.push(ProposalPageDef.createPageConfig(e));
+                }))
+          ],
       ),
     );
   }
@@ -83,13 +84,12 @@ class ProposalRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Row(
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        proposal.text,
+                        proposal.summary,
                         style: context.textTheme.headline3,
                       ),
                     ),

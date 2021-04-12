@@ -24,7 +24,6 @@ import 'package:dfinity_wallet/dfinity.dart';
 
 class PlatformICApi extends AbstractPlatformICApi {
   final authApi = new AuthApi();
-  late HiveBoxesWidget hiveBoxes;
   LedgerApi? ledgerApi;
   GovernanceApi? governanceApi;
   AccountsSyncService? accountsSyncService;
@@ -33,9 +32,11 @@ class PlatformICApi extends AbstractPlatformICApi {
   NeuronSyncService? neuronSyncService;
   ProposalSyncService? proposalSyncService;
 
+  PlatformICApi(HiveBoxesWidget hiveBoxes) : super(hiveBoxes);
+
   @override
   void authenticate(BuildContext context) async {
-    await context.boxes.authToken.clear();
+    await hiveBoxes.authToken.clear();
 
     final key = authApi.createKey();
     await context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
@@ -44,14 +45,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         key, "http://" + window.location.host + "/home");
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    hiveBoxes = context.boxes;
-    buildServices(context);
-  }
-
-  Future<void> buildServices(BuildContext context) async {
+  Future<void> buildServices() async {
     final token = hiveBoxes.authToken.webAuthToken;
     if (token != null && token.data != null && ledgerApi == null) {
       const gatewayHost = "http://10.12.31.5:8080/";
@@ -167,8 +161,10 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId,
       required Topic topic,
       required List<BigInt> followees}) async {
-    await callApi(governanceApi!.follow,
+    final result = await callApi(governanceApi!.follow,
         {'neuronId': neuronId, 'topic': topic.index, 'followees': followees});
+    print("follow ${governanceApi!.jsonString(result)}");
+
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -176,10 +172,12 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> increaseDissolveDelay(
       {required BigInt neuronId,
       required BigInt additionalDissolveDelaySeconds}) async {
-    await callApi(governanceApi!.increaseDissolveDelay, {
+    final result = await callApi(governanceApi!.increaseDissolveDelay, {
       'neuronId': neuronId,
       'additionalDissolveDelaySeconds': additionalDissolveDelaySeconds,
     });
+    print("increaseDissolveDelay ${governanceApi!.jsonString(result)}");
+
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -189,12 +187,14 @@ class PlatformICApi extends AbstractPlatformICApi {
       required String url,
       required String text,
       required String summary}) async {
-    await callApi(governanceApi!.makeMotionProposal, {
+    final result = await callApi(governanceApi!.makeMotionProposal, {
       'neuronId': neuronId,
       'url': url,
       'text': text,
       'summary': summary,
     });
+    print("makeMotionProposal ${governanceApi!.jsonString(result)}");
+    await proposalSyncService!.fetchProposals();
   }
 
   @override
@@ -202,13 +202,15 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required List<BigInt> neuronIds,
       required BigInt proposalId,
       required Vote vote}) async {
-    await Future.wait(neuronIds.map((e) => callApi(governanceApi!.registerVote, {
+    final result = await Future.wait(neuronIds.map((e) => callApi(governanceApi!.registerVote, {
       'neuronId': e,
       'proposal': proposalId,
       'vote': vote.index,
     })));
+    print("registerVote ${governanceApi!.jsonString(result)}");
 
-   await Future.wait(neuronIds.map((neuronId) async {
+
+    await Future.wait(neuronIds.map((neuronId) async {
       final neuron = neuronSyncService!.hiveBoxes.neurons.get(neuronId.toString())!;
 
       neuron.recentBallots = [

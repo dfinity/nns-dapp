@@ -16,9 +16,9 @@ class NeuronStateAdapter extends TypeAdapter<NeuronState> {
       case 0:
         return NeuronState.UNSPECIFIED;
       case 1:
-        return NeuronState.DISSOLVING;
-      case 2:
         return NeuronState.LOCKED;
+      case 2:
+        return NeuronState.DISSOLVING;
       case 3:
         return NeuronState.UNLOCKED;
       default:
@@ -32,10 +32,10 @@ class NeuronStateAdapter extends TypeAdapter<NeuronState> {
       case NeuronState.UNSPECIFIED:
         writer.writeByte(0);
         break;
-      case NeuronState.DISSOLVING:
+      case NeuronState.LOCKED:
         writer.writeByte(1);
         break;
-      case NeuronState.LOCKED:
+      case NeuronState.DISSOLVING:
         writer.writeByte(2);
         break;
       case NeuronState.UNLOCKED:

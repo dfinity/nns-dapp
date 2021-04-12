@@ -36,6 +36,8 @@ class Neuron extends DfinityEntity with ICPSource {
   late String? whenDissolvedTimestampSeconds;
   @HiveField(11)
   late List<Followee> followees;
+  @HiveField(12)
+  HiveList<Proposal>? proposals;
 
   Neuron({
     required this.id,
@@ -45,6 +47,7 @@ class Neuron extends DfinityEntity with ICPSource {
     required this.state,
     required this.dissolveDelaySeconds,
     required this.cachedNeuronStakeDoms,
+    required this.proposals,
   });
 
   Neuron.empty();

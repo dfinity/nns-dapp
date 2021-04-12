@@ -22,7 +22,7 @@ class ProposalStateCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  proposal.text,
+                  proposal.summary,
                   style: context.textTheme.headline3,
                 ),
               ),

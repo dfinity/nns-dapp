@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:dfinity_wallet/ui/home/auth_widget.dart';
+import 'package:dfinity_wallet/ui/neurons/tab/neurons_tab_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/governance_tab_widget.dart';
 import 'package:hive/hive.dart';
 

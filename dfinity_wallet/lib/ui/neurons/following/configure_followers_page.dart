@@ -103,7 +103,7 @@ class TopicFolloweesWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Suggested Followees",
+                        "Popular Neurons",
                         style: context.textTheme.headline3,
                         textAlign: TextAlign.left,
                       ),

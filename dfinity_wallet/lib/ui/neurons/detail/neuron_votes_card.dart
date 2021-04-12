@@ -1,7 +1,7 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
-import '../../dfinity.dart';
+import '../../../dfinity.dart';
 
 class NeuronVotesCard extends StatelessWidget {
 
@@ -40,16 +40,18 @@ class NeuronVotesCard extends StatelessWidget {
                 padding: EdgeInsets.all(8),
               child: Row(
                 children: [
-                  Text(proposal?.text ?? ""),
+                  Text(proposal?.summary ?? ""),
                   Expanded(child: Container()),
                   Text(e.vote.toString().removePrefix("Vote."))
                 ],
               ),
             );
-            })
+            }),
           ],
         ),
       ),
     );
   }
 }
+
+

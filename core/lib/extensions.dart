@@ -143,3 +143,7 @@ extension StandardKotlin<T> on T {
 }
 
 
+extension NotNullMap<T> on Iterable<T>?{
+  List<R> map<R>(R Function(T e) func) => this?.map((e) => func(e)).toList() ?? [];
+}
+

@@ -6,12 +6,14 @@ import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import '../dfinity.dart';
 
 class PlatformICApi extends AbstractPlatformICApi{
+  PlatformICApi(HiveBoxesWidget hiveBoxes) : super(hiveBoxes);
+
   @override
   void authenticate(BuildContext context) {
     throw UnimplementedError();
   }
 
-  Future<void> buildServices(BuildContext context) async {
+  Future<void> buildServices() async {
 
   }
 

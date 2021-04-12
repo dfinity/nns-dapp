@@ -41,6 +41,7 @@ class OverlayBaseWidget extends StatelessWidget {
       delegate: delegate,
       child: ResourceOrchestrator(
         hiveCoordinator: hiveCoordinator,
+        icApi: parentContext.icApi,
         child: Scaffold(
           backgroundColor: AppColors.transparent,
           body: Stack(
@@ -61,5 +62,11 @@ class OverlayBaseWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  static OverlayBaseWidget? of(BuildContext context) => context.findAncestorWidgetOfExactType<OverlayBaseWidget>();
+
+  void dismiss() {
+    _overlayEntry?.remove();
   }
 }

@@ -3,10 +3,16 @@ import 'package:dfinity_wallet/data/vote.dart';
 
 import '../dfinity.dart';
 
-abstract class AbstractPlatformICApi extends State<ICApiManager> {
+abstract class AbstractPlatformICApi {
+  final HiveBoxesWidget hiveBoxes;
+
+  AbstractPlatformICApi(this.hiveBoxes){
+    buildServices();
+  }
+
   void authenticate(BuildContext context);
 
-  Future<void> buildServices(BuildContext context);
+  Future<void> buildServices();
 
   Future<void> acquireICPTs(
       {required String accountIdentifier, required BigInt doms});
@@ -58,9 +64,5 @@ abstract class AbstractPlatformICApi extends State<ICApiManager> {
       required String text,
       required String summary});
 
-  @override
-  Widget build(BuildContext context) {
-    return InternetComputerApiWidget(child: widget.child, icApi: this);
-  }
 }
 

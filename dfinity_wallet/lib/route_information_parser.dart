@@ -1,7 +1,7 @@
 import 'package:dfinity_wallet/resources_loading_page.dart';
 import 'package:dfinity_wallet/ui/home/home_tabs_widget.dart';
 import 'package:dfinity_wallet/ui/home/landing_widget.dart';
-import 'package:dfinity_wallet/ui/neurons/neuron_detail_widget.dart';
+import 'package:dfinity_wallet/ui/neurons/detail/neuron_detail_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
 import 'package:flutter/material.dart';

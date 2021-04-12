@@ -3,7 +3,7 @@ import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/stake_neuron_page.dart';
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
-import '../../dfinity.dart';
+import '../../../dfinity.dart';
 
 class NeuronRewardsCard extends StatelessWidget {
   final Neuron neuron;

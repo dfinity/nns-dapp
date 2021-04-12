@@ -28,7 +28,7 @@ class NeuronFolloweesCard extends StatelessWidget {
                 ),
               ],
             ),
-            ...neuron.followees.map((e) => Container(
+            ...neuron.followees.filter((element) => element.followees.isNotEmpty).map((e) => Container(
               padding: EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

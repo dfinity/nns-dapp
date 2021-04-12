@@ -10,6 +10,8 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   static const platformChannel = const MethodChannel('internet_computer.signing');
 
+  PlatformICApi(HiveBoxesWidget hiveBoxes) : super(hiveBoxes);
+
   @override
   void authenticate(BuildContext context) {
     final walletId = "".replaceAll(" ", "_");
@@ -19,7 +21,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     // return address;
   }
 
-  Future<void> buildServices(BuildContext context) async {
+  Future<void> buildServices() async {
 
   }
 
