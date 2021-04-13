@@ -52,7 +52,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                                   proposal: latestProposal!,
                                   neurons: updatedNeurons),
                               SmallFormDivider(),
-                              if (notVotedNeurons.isNotEmpty)
+                              if (notVotedNeurons.isNotEmpty && widget.proposal.status == ProposalStatus.Open)
                                 CastVoteWidget(
                                   proposal: latestProposal,
                                   neurons: notVotedNeurons,

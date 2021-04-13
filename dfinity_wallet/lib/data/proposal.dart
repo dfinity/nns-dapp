@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:dfinity_wallet/data/data.dart';
 import 'package:hive/hive.dart';
 
@@ -58,16 +60,37 @@ class Proposal extends DfinityEntity {
     return ProposalType.Unspecified;
   }
 
+  DateTime get proposalTimestamp => DateTime.fromMillisecondsSinceEpoch(int.parse(proposalTimestampSeconds!) * 1000);
+
   String? get motionText => action['Motion']['motionText'];
 
-  String get status {
-    if(executedTimestampSeconds != "0") return "Executed";
-    if(failedTimestampSeconds != "0") return "Failed";
-    return "Open";
+  ProposalStatus get status {
+    if (executedTimestampSeconds != "0") return ProposalStatus.Executed;
+    if (failedTimestampSeconds != "0") return ProposalStatus.Failed;
+    return ProposalStatus.Open;
   }
 
   @override
   String get identifier => id.toString();
+}
+
+enum ProposalStatus {
+  Open, Executed, Failed
+}
+
+extension ProposalStatusDisplay on ProposalStatus {
+  static final colorMap = {
+    ProposalStatus.Executed: Color(0xff0FA958),
+    ProposalStatus.Failed: Color(0xffD9D9DA),
+    ProposalStatus.Open: Color(0xffFBB03B)
+  };
+  Color get color => colorMap[this]!;
+  static final nameMap = {
+    ProposalStatus.Executed: "Executed",
+    ProposalStatus.Failed: "Failed",
+    ProposalStatus.Open: "Open"
+  };
+  String get description => nameMap[this]!;
 }
 
 enum ProposalType {
@@ -81,3 +104,16 @@ enum ProposalType {
   Unspecified,
 }
 
+extension ProposalTypeDescription on ProposalType {
+  static final map = {
+    ProposalType.ExternalUpdate: "External Update",
+    ProposalType.ManageNeuron: "Manage Neuron",
+    ProposalType.ApproveKyc: "Approve Kyc",
+    ProposalType.NetworkEconomics: "Network Economics",
+    ProposalType.RewardNodeProvider: "Reward Node Provider",
+    ProposalType.AddOrRemoveNodeProvider: "Add Or Remove Node Provider",
+    ProposalType.Motion: "Motion",
+    ProposalType.Unspecified: "Unspecified",
+  };
+  String get description => map[this] ?? "";
+}

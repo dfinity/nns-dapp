@@ -40,7 +40,7 @@ class ProposalStateCard extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      proposal.status,
+                      proposal.status.description,
                       style: TextStyle(
                           fontSize: 24,
                           fontFamily: Fonts.circularBook,

@@ -38,8 +38,12 @@ class NeuronProposalsCard extends StatelessWidget {
               ),
             )),
             SmallFormDivider(),
-            TextButton(
-
+            ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor:
+                    MaterialStateProperty.all(AppColors.blue600),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)))),
                 onPressed: () {
                   Overlay.of(context)?.show(context,
                       NewProposalDialog(neuron: neuron)

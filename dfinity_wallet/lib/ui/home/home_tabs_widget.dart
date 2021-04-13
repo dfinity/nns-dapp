@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
     final screenSize = context.mediaQuery.size;
     return DefaultTabController(
       initialIndex: widget.initialTabIndex,
-      length: 4,
+      length: 3,
       child: Scaffold(
         backgroundColor: AppColors.lightBackground,
         appBar: PreferredSize(
@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                             Tab(text: "ICPTs"),
                             Tab(text: "NEURONS"),
                             Tab(text: "GOVERNANCE"),
-                            Tab(text: "CANISTERS"),
+                            // Tab(text: "CANISTERS"),
                           ],
                         ),
                       ),
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
               AccountsTabWidget(),
               NeuronsPage(),
               GovernanceTabWidget(),
-              CansitersPage()
+              // CansitersPage()
             ],
           ),
         ),

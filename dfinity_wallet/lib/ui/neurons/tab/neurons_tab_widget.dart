@@ -32,15 +32,12 @@ class _NeuronsPageState extends State<NeuronsPage> {
             return TabTitleAndContent(
               title: "Neurons",
               children: [
-                Card(
-                  color: AppColors.black.withOpacity(0.1),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "You can stake ICP by storing them in Neurons. These neurons allow you to participate in the IC Governance by giving you the ability to vote on proposals",
-                      style: context.textTheme.bodyText2,
-                      textAlign: TextAlign.left,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    "You can stake ICP by storing them in Neurons. These neurons allow you to participate in the IC Governance by giving you the ability to vote on proposals",
+                    style: context.textTheme.bodyText2,
+                    textAlign: TextAlign.left,
                   ),
                 ),
                 SmallFormDivider(),
