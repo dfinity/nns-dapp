@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
 
@@ -6,7 +7,7 @@ import '../dfinity.dart';
 abstract class AbstractPlatformICApi {
   final HiveBoxesWidget hiveBoxes;
 
-  AbstractPlatformICApi(this.hiveBoxes){
+  AbstractPlatformICApi(this.hiveBoxes) {
     buildServices();
   }
 
@@ -20,14 +21,12 @@ abstract class AbstractPlatformICApi {
   Future<void> createSubAccount({required String name});
 
   Future<void> sendICPTs(
-      {required String toAccount,
-      required BigInt doms,
-        int? fromSubAccount});
+      {required String toAccount, required BigInt doms, int? fromSubAccount});
 
   Future<void> createNeuron(
       {required BigInt stakeInDoms,
       required BigInt dissolveDelayInSecs,
-        int? fromSubAccount});
+      int? fromSubAccount});
 
   Future<void> startDissolving({required BigInt neuronId});
 
@@ -40,15 +39,13 @@ abstract class AbstractPlatformICApi {
   @override
   Future<void> follow(
       {required BigInt neuronId,
-        required Topic topic,
-        required List<BigInt> followees});
+      required Topic topic,
+      required List<BigInt> followees});
 
   Future<void> registerVote(
       {required List<BigInt> neuronIds,
       required BigInt proposalId,
       required Vote vote});
-
-
 
   Future<void> disburse(
       {required BigInt neuronId, required BigInt doms, BigInt? toSubaccountId});
@@ -64,5 +61,9 @@ abstract class AbstractPlatformICApi {
       required String text,
       required String summary});
 
+  Future<void> fetchProposals(
+      {required List<Topic> excludeTopics,
+      required List<ProposalStatus> includeStatus,
+        required List<ProposalRewardStatus> includeRewardStatus,
+        Proposal? beforeProposal});
 }
-

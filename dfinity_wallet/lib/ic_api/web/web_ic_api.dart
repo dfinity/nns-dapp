@@ -1,8 +1,10 @@
 @JS()
 library dfinity_agent.js;
 
+import 'dart:convert';
 import 'dart:js_util';
 
+import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
 import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
@@ -71,16 +73,13 @@ class PlatformICApi extends AbstractPlatformICApi {
       balanceSyncService!.syncBalances();
       transactionSyncService!.syncAccount(hiveBoxes.wallets.primary);
       neuronSyncService!.fetchNeurons();
-      proposalSyncService!.fetchProposals();
     }
   }
 
   @override
   Future<void> acquireICPTs(
       {required String accountIdentifier, required BigInt doms}) async {
-    await ledgerApi!
-        .acquireICPTs(accountIdentifier, doms)
-        .toFuture();
+    await ledgerApi!.acquireICPTs(accountIdentifier, doms).toFuture();
     await balanceSyncService!.syncBalances();
   }
 
@@ -94,12 +93,11 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> sendICPTs(
       {required String toAccount,
       required BigInt doms,
-        int? fromSubAccount}) async {
+      int? fromSubAccount}) async {
     await promiseToFuture(ledgerApi!.sendICPTs(jsify({
       'to': toAccount,
       'amount': doms,
-      if (fromSubAccount != null)
-        'fromSubAccountId': fromSubAccount.toInt()
+      if (fromSubAccount != null) 'fromSubAccountId': fromSubAccount.toInt()
     })));
     await Future.wait([
       balanceSyncService!.syncBalances(),
@@ -111,12 +109,11 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> createNeuron(
       {required BigInt stakeInDoms,
       required BigInt dissolveDelayInSecs,
-        int? fromSubAccount}) async {
+      int? fromSubAccount}) async {
     final request = {
       'stake': stakeInDoms,
       'dissolveDelayInSecs': dissolveDelayInSecs,
-      if (fromSubAccount != null)
-        'fromSubAccountId': fromSubAccount.toInt()
+      if (fromSubAccount != null) 'fromSubAccountId': fromSubAccount.toInt()
     };
     print("create neuron request ${request}");
     await promiseToFuture(governanceApi!.createNeuron(jsify(request)));
@@ -196,7 +193,6 @@ class PlatformICApi extends AbstractPlatformICApi {
       'summary': summary,
     });
     print("makeMotionProposal ${governanceApi!.jsonString(result)}");
-    await proposalSyncService!.fetchProposals();
   }
 
   @override
@@ -204,12 +200,26 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required List<BigInt> neuronIds,
       required BigInt proposalId,
       required Vote vote}) async {
-    final result = await Future.wait(neuronIds.map((e) => callApi(governanceApi!.registerVote, {
-      'neuronId': e,
-      'proposal': proposalId,
-      'vote': vote.index,
-    })));
+    final result = await Future.wait(
+        neuronIds.map((e) => callApi(governanceApi!.registerVote, {
+              'neuronId': e,
+              'proposal': proposalId,
+              'vote': vote.index,
+            })));
     print("registerVote ${governanceApi!.jsonString(result)}");
     await neuronSyncService!.fetchNeurons();
+  }
+
+  @override
+  Future<void> fetchProposals(
+      {required List<Topic> excludeTopics,
+      required List<ProposalStatus> includeStatus,
+      required List<ProposalRewardStatus> includeRewardStatus,
+      Proposal? beforeProposal}) async {
+    proposalSyncService?.fetchProposals(
+        excludeTopics: excludeTopics,
+        includeStatus: includeStatus,
+        includeRewardStatus: includeRewardStatus,
+        beforeProposal:beforeProposal);
   }
 }

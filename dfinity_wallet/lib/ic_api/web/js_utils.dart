@@ -19,13 +19,11 @@ extension ToJSObject on Map {
 
 Future<dynamic> callApi(
     dynamic Function(dynamic) function, Map<String, dynamic> input) {
-  print("Api input ${input}");
   return promiseToFuture(function(jsify(input)));
 }
 
 Future<Map<String, dynamic>> callApiMap(
     dynamic Function(dynamic) function, Map<String, dynamic> input) async {
-  print("Api input ${input}");
   return (await promiseToFutureAsMap(function(jsify(input))))!;
 }
 

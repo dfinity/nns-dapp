@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:dfinity_wallet/data/proposal.dart';
+import 'package:dfinity_wallet/data/proposal_reward_status.dart';
+import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/multi_select_list.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
 
@@ -13,25 +16,83 @@ class GovernanceTabWidget extends StatefulWidget {
   _GovernanceTabWidgetState createState() => _GovernanceTabWidgetState();
 }
 
+final DefaultTopics = [
+  Topic.ManageNeuron,
+  Topic.NetworkEconomics,
+  Topic.Governance,
+  Topic.NodeAdmin,
+  Topic.ParticipantManagement,
+  Topic.SubnetManagement,
+  Topic.NetworkCanisterManagement,
+];
+
+final ValidTopics = [
+  Topic.ManageNeuron,
+  Topic.ExchangeRate,
+  Topic.NetworkEconomics,
+  Topic.Governance,
+  Topic.NodeAdmin,
+  Topic.ParticipantManagement,
+  Topic.SubnetManagement,
+  Topic.NetworkCanisterManagement,
+  Topic.Kyc,
+];
+
+final ValidStatuses = [
+  ProposalStatus.Open,
+  ProposalStatus.Rejected,
+  ProposalStatus.Accepted,
+  ProposalStatus.Executed,
+  ProposalStatus.Failed,
+];
+
+final DefaultStatuses = [ProposalStatus.Open];
+
+final ValidRewardStatuses = [
+  ProposalRewardStatus.AcceptVotes,
+  ProposalRewardStatus.ReadyToSettle,
+  ProposalRewardStatus.Settled,
+  ProposalRewardStatus.Ineligible,
+];
+
+final DefaultRewardStatuses = [ProposalRewardStatus.AcceptVotes];
+
 class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
-  StreamSubscription? subs;
+  MultiSelectField<Topic> topicsField = MultiSelectField<Topic>(
+      "Topics",
+      ValidTopics,
+      DefaultTopics,
+      (dynamic e) => (e as Topic?)?.description ?? "");
+
+  MultiSelectField<ProposalStatus> statusesField =
+      MultiSelectField<ProposalStatus>(
+          "Proposal Status",
+          ValidStatuses,
+          DefaultStatuses,
+          (dynamic e) => (e as ProposalStatus?)?.description ?? "");
+
+  MultiSelectField<ProposalRewardStatus> rewardStatuesField =
+      MultiSelectField<ProposalRewardStatus>(
+          "Rewared Status",
+          ValidRewardStatuses,
+          DefaultRewardStatuses,
+          (dynamic e) => (e as ProposalRewardStatus?)?.label ?? "");
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    subs?.cancel();
-    subs = context.boxes.proposals.watch().listen((event) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
+  void initState() {
+    super.initState();
+    0.1.seconds.delay.then((value) => fetchProposals());
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    subs?.cancel();
+  void fetchProposals({Proposal? lastProposal}) {
+    context.icApi.fetchProposals(
+        excludeTopics: Topic.values
+            .filterNot(
+                (element) => topicsField.selectedOptions.contains(element))
+            .toList(),
+        includeStatus: statusesField.selectedOptions,
+        includeRewardStatus: rewardStatuesField.selectedOptions,
+      beforeProposal: lastProposal);
   }
 
   @override
@@ -49,75 +110,95 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
               ),
             ),
           ),
+          IntrinsicHeight(
+            child: MultiSelectDropdownWidget(
+              topicsField,
+              onChange: () {
+                setState(() {});
+              },
+              onDismiss: () {
+                fetchProposals();
+              },
+            ),
+          ),
+          SizedBox(height: 10),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: MultiSelectDropdownWidget(
+                    rewardStatuesField,
+                    onChange: () {
+                      setState(() {});
+                    },
+                    onDismiss: () {
+                      fetchProposals();
+                    },
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: MultiSelectDropdownWidget(
+                    statusesField,
+                    onChange: () {
+                      setState(() {});
+                    },
+                    onDismiss: () {
+                      fetchProposals();
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
           SmallFormDivider(),
-          ...context.boxes.proposals.values
-              .groupBy((element) => element.proposalType)
-              .entries
-              .map((entry) => ProposalGroupCard(type: entry.key, proposals: entry.value))
-              .interspace(SmallFormDivider()),
-          SmallFormDivider()
+          StreamBuilder<Object>(
+              stream: context.boxes.proposals.watch(),
+              builder: (context, snapshot) {
+                final proposals = context.boxes.proposals.values
+                    .filter((element) =>
+                        topicsField.selectedOptions.contains(element.topic))
+                    .filter((element) =>
+                        statusesField.selectedOptions.contains(element.status))
+                .sortedByDescending((element) => element.proposalTimestamp)
+                ;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ...proposals.mapToList((e) => ProposalRow(
+                          proposal: e,
+                          onPressed: () {
+                            context.nav
+                                .push(ProposalPageDef.createPageConfig(e));
+                          },
+                        )),
+                    SmallFormDivider(),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextButton(
+                            child: Text(
+                              "Load More",
+                              style: context.textTheme.bodyText2
+                                  ?.copyWith(color: AppColors.gray100),
+                            ),
+                            onPressed: () {
+                              final lastProposal = proposals.lastOrNull;
+                              fetchProposals(
+                                  lastProposal: lastProposal);
+                            }),
+                      ),
+                    )
+                  ],
+                );
+              }),
+          SmallFormDivider(),
         ],
       ),
     );
   }
 }
-
-class ProposalGroupCard extends StatelessWidget {
-
-  final ProposalType type;
-  final List<Proposal> proposals;
-
-  const ProposalGroupCard({Key? key,
-    required this.type,
-    required this.proposals})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: AppColors.background,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(type.description, style: context.textTheme.headline3,),
-            ...highestPriorityProposals.take(3).map((e) =>
-                ProposalRow(
-                    proposal: e,
-                    onPressed: () {
-                      context.nav.push(ProposalPageDef.createPageConfig(e));
-                    })),
-            SmallFormDivider(),
-            ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all(AppColors.blue600),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)))),
-                onPressed: () {
-                  // Overlay.of(context)?.show(context,
-                  //     NewProposalDialog(neuron: neuron)
-                  // );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text("View All"),
-                ))
-          ],
-        ),
-      ),
-    );
-  }
-
-
-  Iterable<Proposal> get highestPriorityProposals => proposals
-      .groupBy((element) => element.status)
-      .entries
-      .sortedBy((element) => element.key.index)
-      .flatMap((element) => element.value.sortedBy((element) => element.proposalTimestamp));
-}
-
 
 class ProposalRow extends StatelessWidget {
   final Proposal proposal;

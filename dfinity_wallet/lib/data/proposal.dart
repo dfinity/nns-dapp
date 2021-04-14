@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:dfinity_wallet/data/data.dart';
+import 'package:dfinity_wallet/data/topic.dart';
 import 'package:hive/hive.dart';
 
 part 'proposal.g.dart';
@@ -60,7 +61,8 @@ class Proposal extends DfinityEntity {
     return ProposalType.Unspecified;
   }
 
-  DateTime get proposalTimestamp => DateTime.fromMillisecondsSinceEpoch(int.parse(proposalTimestampSeconds!) * 1000);
+  DateTime get proposalTimestamp => DateTime.fromMillisecondsSinceEpoch(
+      int.parse(proposalTimestampSeconds!) * 1000);
 
   String? get motionText => action['Motion']['motionText'];
 
@@ -72,24 +74,48 @@ class Proposal extends DfinityEntity {
 
   @override
   String get identifier => id.toString();
+
+  Topic get topic => {
+    ProposalType.ExternalUpdate: Topic.SubnetManagement,
+    ProposalType.ManageNeuron: Topic.ManageNeuron,
+    ProposalType.ApproveKyc: Topic.Kyc,
+    ProposalType.NetworkEconomics: Topic.NetworkEconomics,
+    ProposalType.RewardNodeProvider: Topic.NodeAdmin,
+    ProposalType.AddOrRemoveNodeProvider: Topic.NodeAdmin,
+    ProposalType.Motion: Topic.Governance,
+    ProposalType.Unspecified: Topic.Unspecified,
+  }[proposalType]!;
 }
 
 enum ProposalStatus {
-  Open, Executed, Failed
+  Unknown,
+  Open,
+  Rejected,
+  Accepted,
+  Executed,
+  Failed
 }
 
 extension ProposalStatusDisplay on ProposalStatus {
   static final colorMap = {
+    ProposalStatus.Unknown: Color(0xffD9D9DA),
+    ProposalStatus.Open: Color(0xffFBB03B),
+    ProposalStatus.Rejected: Color(0xffD9D9DA),
+    ProposalStatus.Accepted: Color(0xffD9D9DA),
     ProposalStatus.Executed: Color(0xff0FA958),
     ProposalStatus.Failed: Color(0xffD9D9DA),
-    ProposalStatus.Open: Color(0xffFBB03B)
   };
+
   Color get color => colorMap[this]!;
   static final nameMap = {
+    ProposalStatus.Unknown: "Unknown",
+    ProposalStatus.Open: "Open",
+    ProposalStatus.Rejected: "Rejected",
+    ProposalStatus.Accepted: "Accepted",
     ProposalStatus.Executed: "Executed",
     ProposalStatus.Failed: "Failed",
-    ProposalStatus.Open: "Open"
   };
+
   String get description => nameMap[this]!;
 }
 
@@ -115,5 +141,6 @@ extension ProposalTypeDescription on ProposalType {
     ProposalType.Motion: "Motion",
     ProposalType.Unspecified: "Unspecified",
   };
+
   String get description => map[this] ?? "";
 }

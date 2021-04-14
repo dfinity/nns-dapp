@@ -15,7 +15,6 @@ class AccountsSyncService {
     final accountResponse = await promiseToFuture(ledgerApi.getAccount());
 
     final cachedAccounts = hiveBoxes.wallets.values;
-    print("cached accounts ${cachedAccounts.length} " + cachedAccounts.joinToString(transform: ((e) => e.accountIdentifier)));
 
     final validAccounts = await Future.wait(<Future<dynamic>>[
       storeNewAccount(

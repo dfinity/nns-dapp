@@ -2,12 +2,15 @@ import 'dart:convert';
 import 'dart:html';
 import 'dart:js_util';
 
+import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/setup/hive_loader_widget.dart';
+import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
 import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
 import 'governance_api.dart';
+import 'neuron_sync_service.dart';
 
 class ProposalSyncService {
   final GovernanceApi governanceApi;
@@ -15,17 +18,29 @@ class ProposalSyncService {
 
   ProposalSyncService({required this.governanceApi, required this.hiveBoxes});
 
-  Future<void> fetchProposals() async {
-    final res = await promiseToFuture(governanceApi.listProposals(jsify({
-      'limit': 100,
-      'includeRewardStatus': [0, 1, 2, 3, 4],
-      'excludeTopic': [],
-      'includeStatus': []
-    })));
+  Future<void> fetchProposals(
+      {required List<Topic> excludeTopics,
+      required List<ProposalStatus> includeStatus,
+      required List<ProposalRewardStatus> includeRewardStatus,
+      Proposal? beforeProposal}) async {
+    final request = {
+      'limit': 1,
+      if (beforeProposal != null) 'beforeProposal': beforeProposal.id.toBigInt,
+      'includeRewardStatus': includeRewardStatus.mapToList((e) => e.index.toInt()),
+      'excludeTopic': [], // excludeTopics.map((e) => e.index),
+      'includeStatus': includeStatus.mapToList((e) => e.index.toInt())
+    };
+
+    final stopwatch = Stopwatch();
+    stopwatch.start();
+    print("\n\nfetchProposals request \n" + request.toString());
+    final res =
+        await promiseToFuture(governanceApi.listProposals(jsify(request)));
 
     final string = governanceApi.jsonString(res);
-    print("proposals response ${string}");
     dynamic response = jsonDecode(string);
+    print("\nfetchProposals response in ${stopwatch.elapsed.yearsDayHourMinuteSecondFormatted()} \n ${response}");
+
     response!['proposals']?.forEach((e) {
       storeProposal(e);
     });
@@ -35,7 +50,6 @@ class ProposalSyncService {
 
   void storeProposal(dynamic response) async {
     final proposalId = response['id'].toString();
-    print("Fetched proposal ${proposalId}");
     if (!hiveBoxes.proposals.containsKey(proposalId)) {
       final proposal = Proposal.empty();
       updateProposal(proposal, proposalId, response);
@@ -56,10 +70,14 @@ class ProposalSyncService {
     proposal.yes = response['latestTally']['no'].toString().toInt();
     proposal.action = response['proposal']['action'];
 
-    proposal.executedTimestampSeconds = response['executedTimestampSeconds'].toString();
-    proposal.failedTimestampSeconds = response['failedTimestampSeconds'].toString();
-    proposal.decidedTimestampSeconds = response['decidedTimestampSeconds'].toString();
-    proposal.proposalTimestampSeconds = response['proposalTimestampSeconds'].toString();
+    proposal.executedTimestampSeconds =
+        response['executedTimestampSeconds'].toString();
+    proposal.failedTimestampSeconds =
+        response['failedTimestampSeconds'].toString();
+    proposal.decidedTimestampSeconds =
+        response['decidedTimestampSeconds'].toString();
+    proposal.proposalTimestampSeconds =
+        response['proposalTimestampSeconds'].toString();
 
     // print("");
     // print("proposal");

@@ -24,7 +24,7 @@ class NeuronSyncService {
     final string = governanceApi.jsonString(res);
     dynamic response = jsonDecode(string);
 
-    print("Storing ${response.length} neurons");
+    // print("Storing ${response.length} neurons");
     response.forEach((e) {
       storeNeuron(e);
     });
@@ -46,7 +46,7 @@ class NeuronSyncService {
   void updateNeuron(Neuron neuron, String neuronId, dynamic res) {
     final fullNeuron = res['fullNeuron'];
 
-    PrettyPrint.prettyPrintJson("neuron response", res);
+    // PrettyPrint.prettyPrintJson("neuron response", res);
     neuron.id = neuronId;
     neuron.recentBallots = parseRecentBallots(fullNeuron['recentBallots']);
     neuron.createdTimestampSeconds =

@@ -23,10 +23,10 @@ class ProposalAdapter extends TypeAdapter<Proposal> {
       fields[4] as String,
       fields[6] as int,
       fields[7] as int,
-      fields[9] as String,
-      fields[10] as String,
-      fields[11] as String,
-      fields[12] as String,
+      fields[9] as String?,
+      fields[10] as String?,
+      fields[11] as String?,
+      fields[12] as String?,
     )..action = (fields[8] as Map).cast<String, dynamic>();
   }
 
