@@ -30,37 +30,94 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                 stream: context.boxes.proposals.watch(key: widget.proposal.id),
                 builder: (context, snapshot) {
                   final latestProposal =
-                      context.boxes.proposals.get(widget.proposal.id);
+                  context.boxes.proposals.get(widget.proposal.id);
                   return StreamBuilder(
                       stream: context.boxes.neurons.watch(),
                       builder: (context, snapshot) {
                         final updatedNeurons =
-                            context.boxes.neurons.values.toList();
+                        context.boxes.neurons.values.toList();
+
+                        final ineligibleNeurons = updatedNeurons.filter(
+                                (element) =>
+                                element.createdTimestampSeconds
+                                    .secondsToDateTime()
+                                    .isAfter(widget.proposal.proposalTimestamp))
+                            .toList();
+
                         final notVotedNeurons = updatedNeurons
                             .filter((element) =>
-                                element.voteForProposal(widget.proposal) ==
-                                null)
+                        element.voteForProposal(widget.proposal) ==
+                            null && !ineligibleNeurons.contains(element))
                             .toList();
+
                         return ConstrainWidthAndCenter(
                             child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SmallFormDivider(),
-                              ProposalStateCard(
-                                  proposal: latestProposal!,
-                                  neurons: updatedNeurons),
-                              SmallFormDivider(),
-                              if (notVotedNeurons.isNotEmpty && widget.proposal.status == ProposalStatus.Open)
-                                CastVoteWidget(
-                                  proposal: latestProposal,
-                                  neurons: notVotedNeurons,
-                                ),
-                            ],
-                          ),
-                        ));
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SmallFormDivider(),
+                                  ProposalStateCard(
+                                      proposal: latestProposal!,
+                                      neurons: updatedNeurons),
+                                  SmallFormDivider(),
+                                  if (notVotedNeurons.isNotEmpty &&
+                                      widget.proposal.status ==
+                                          ProposalStatus.Open)
+                                    CastVoteWidget(
+                                      proposal: latestProposal,
+                                      neurons: notVotedNeurons,
+                                    ),
+                                  if(ineligibleNeurons.isNotEmpty &&
+                                      widget.proposal.status ==
+                                          ProposalStatus.Open)
+                                    IneligibleNeuronsWidget(ineligibleNeurons: ineligibleNeurons,)
+                                ],
+                              ),
+                            ));
                       });
                 })));
+  }
+}
+
+
+class IneligibleNeuronsWidget extends StatelessWidget {
+
+  final List<Neuron> ineligibleNeurons;
+
+  const IneligibleNeuronsWidget({Key? key, required this.ineligibleNeurons}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+  return Card(
+    color: AppColors.background,
+    child: Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text("Ineligible Neurons",
+                  style: context.textTheme.headline3)),
+          Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text("The following neurons were created after the proposal was submitted, and are not able to vote on it",
+                  style: context.textTheme.bodyText2)),
+          ...ineligibleNeurons
+              .map((e) => Container(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text(e.identifier)),
+                ),
+              ],
+            ),
+          )),
+        ],
+      ),
+    ),
+  );
   }
 }

@@ -1,4 +1,4 @@
-import 'data_type_extensions.dart';
+import 'package:dfinity_wallet/dfinity.dart';
 
 abstract class ICPSource {
   String get address;

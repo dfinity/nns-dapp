@@ -68,6 +68,7 @@ class PlatformICApi extends AbstractPlatformICApi {
           governanceApi: governanceApi!, hiveBoxes: hiveBoxes);
       proposalSyncService = ProposalSyncService(
           governanceApi: governanceApi!, hiveBoxes: hiveBoxes);
+      print("syncing accounts");
 
       await accountsSyncService!.performSync();
       balanceSyncService!.syncBalances();

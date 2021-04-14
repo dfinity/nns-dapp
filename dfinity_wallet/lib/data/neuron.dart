@@ -7,7 +7,7 @@ import 'package:hive/hive.dart';
 import 'dfinity_entity.dart';
 import 'followee.dart';
 import 'neuron_state.dart';
-import 'data_type_extensions.dart';
+import 'package:core/extensions.dart';
 import 'package:dartx/dartx.dart';
 
 part 'neuron.g.dart';
@@ -66,9 +66,7 @@ class Neuron extends DfinityEntity with ICPSource {
   @override
   String get balance => stake.toString();
 
-  DateTime get whenDissolvedTimestamp {
-    return DateTime.fromMillisecondsSinceEpoch((whenDissolvedTimestampSeconds?.toBigInt.toInt() ?? 0) * 1000);
-  }
+  DateTime get whenDissolvedTimestamp => whenDissolvedTimestampSeconds.secondsToDateTime();
 
   Duration get durationRemaining => whenDissolvedTimestamp.difference(DateTime.now());
 
@@ -76,5 +74,6 @@ class Neuron extends DfinityEntity with ICPSource {
 
   Vote? voteForProposal(Proposal proposal) => recentBallots.firstOrNullWhere((element) => element.proposalId == proposal.id)?.vote;
 }
+
 
 

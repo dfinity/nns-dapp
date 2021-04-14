@@ -10,11 +10,9 @@ extension FetchMediaQuery on BuildContext{
 }
 
 extension ProportionalSizing on MediaQueryData {
-
   double get smallPadding => size.shortestSide * 0.01;
   double get mediumPadding => size.shortestSide * 0.02;
   double get largePadding => size.shortestSide * 0.03;
-
 }
 
 
@@ -147,3 +145,10 @@ extension NotNullMap<T> on Iterable<T>?{
   List<R> map<R>(R Function(T e) func) => this?.map((e) => func(e)).toList() ?? [];
 }
 
+extension TimestampToDate on String? {
+  DateTime secondsToDateTime() => DateTime.fromMillisecondsSinceEpoch(((this ?? "0").toBigInt.toInt()) * 1000);
+}
+
+extension ToBigInt on String {
+  BigInt get toBigInt => BigInt.tryParse(this) ?? BigInt.from(-1);
+}

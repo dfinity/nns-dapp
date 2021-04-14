@@ -73,7 +73,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
 
   MultiSelectField<ProposalRewardStatus> rewardStatuesField =
       MultiSelectField<ProposalRewardStatus>(
-          "Rewared Status",
+          "Reward Status",
           ValidRewardStatuses,
           DefaultRewardStatuses,
           (dynamic e) => (e as ProposalRewardStatus?)?.label ?? "");
