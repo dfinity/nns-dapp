@@ -1,7 +1,7 @@
 import 'package:dfinity_wallet/data/auth_token.dart';
 import 'package:dfinity_wallet/data/data.dart';
 import 'package:dfinity_wallet/data/proposal.dart';
-import 'package:dfinity_wallet/data/wallet.dart';
+import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/ui/home/landing_widget.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -78,7 +78,7 @@ class HiveBoxesWidget extends InheritedWidget {
   HiveBoxes get hiveBoxes => hiveCoordinator.hiveBoxes;
   final HiveCoordinator hiveCoordinator;
   Box<Canister> get canisters => hiveBoxes.canisters!;
-  Box<Wallet> get wallets => hiveBoxes.wallets!;
+  Box<Account> get accounts => hiveBoxes.accounts!;
   Box<AuthToken> get authToken => hiveBoxes.authToken!;
   Box<Neuron> get neurons => hiveBoxes.neurons!;
   Box<Proposal> get proposals => hiveBoxes.proposals!;

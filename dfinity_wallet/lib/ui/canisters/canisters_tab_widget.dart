@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:dfinity_wallet/data/canister.dart';
-import 'package:dfinity_wallet/data/wallet.dart';
+import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';

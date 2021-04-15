@@ -6,7 +6,7 @@ import 'package:dfinity_wallet/data/followee.dart';
 import 'package:dfinity_wallet/data/neuron.dart';
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/transaction.dart';
-import 'package:dfinity_wallet/data/wallet.dart';
+import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -17,21 +17,21 @@ import '../vote.dart';
 
 class HiveBoxes {
   Box<Canister>? canisters;
-  Box<Wallet>? wallets;
+  Box<Account>? accounts;
   Box<Neuron>? neurons;
   Box<Proposal>? proposals;
   Box<AuthToken>? authToken;
 
   bool get areClosed =>
       canisters == null ||
-      wallets == null ||
+          accounts == null ||
       neurons == null ||
       proposals == null ||
       authToken == null;
 
   HiveBoxes(
       {this.canisters,
-      this.wallets,
+      this.accounts,
       this.neurons,
       this.proposals,
       this.authToken});
@@ -69,8 +69,8 @@ class HiveCoordinator {
     return Future.wait([
       Hive.openBox<Canister>('canisters')
           .then((value) => hiveBoxes.canisters = value),
-      Hive.openBox<Wallet>('wallets')
-          .then((value) => hiveBoxes.wallets = value),
+      Hive.openBox<Account>('wallets')
+          .then((value) => hiveBoxes.accounts = value),
       Hive.openBox<Neuron>('neurons')
           .then((value) => hiveBoxes.neurons = value),
       Hive.openBox<Proposal>('proposals')
@@ -81,7 +81,7 @@ class HiveCoordinator {
   }
 
   Future initializeHive() async {
-    Hive.registerAdapter<Wallet>(WalletAdapter());
+    Hive.registerAdapter<Account>(AccountAdapter());
     Hive.registerAdapter<Canister>(CanisterAdapter());
     Hive.registerAdapter<Neuron>(NeuronAdapter());
     Hive.registerAdapter<AuthToken>(AuthTokenAdapter());
@@ -98,7 +98,7 @@ class HiveCoordinator {
   Future<void> deleteAllData() async {
     await Future.wait([
       hiveBoxes.canisters,
-      hiveBoxes.wallets,
+      hiveBoxes.accounts,
       hiveBoxes.neurons,
       hiveBoxes.proposals,
       hiveBoxes.authToken

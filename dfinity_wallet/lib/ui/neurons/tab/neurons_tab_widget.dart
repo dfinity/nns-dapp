@@ -92,7 +92,7 @@ class _NeuronsPageState extends State<NeuronsPage> {
           overlayEntry: _overlayEntry,
           child: NewTransactionOverlay(
             rootTitle: "Stake Neuron",
-            rootWidget: StakeNeuronPage(source: parentContext.boxes.wallets.primary),
+            rootWidget: StakeNeuronPage(source: parentContext.boxes.accounts.primary),
           ));
     });
   }

@@ -12,11 +12,11 @@ class TransactionSyncService {
 
   TransactionSyncService({required this.ledgerApi, required this.hiveBoxes});
 
-  Future<void> syncAccounts(Iterable<Wallet> accounts) async {
+  Future<void> syncAccounts(Iterable<Account> accounts) async {
     await Future.wait(accounts.mapToList((e) => syncAccount(e)));
   }
 
-  Future<void> syncAccount(Wallet account) async {
+  Future<void> syncAccount(Account account) async {
     final response = await callApi(ledgerApi.getTransactions, {'accountIdentifier': account.accountIdentifier, 'pageSize': 100, 'offset': 0});
 
     final transactions = <Transaction>[];
@@ -50,7 +50,7 @@ class TransactionSyncService {
     });
     print("parsed ${transactions.length} transactions for ${account.accountIdentifier}");
 
-    Future.wait(hiveBoxes.wallets.values.map((e) async {
+    Future.wait(hiveBoxes.accounts.values.map((e) async {
       e.transactions = transactions
           .filter(
               (element) => element.to == e.accountIdentifier || element.from == e.accountIdentifier)

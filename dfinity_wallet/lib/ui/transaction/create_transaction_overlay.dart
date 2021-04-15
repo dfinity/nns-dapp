@@ -13,7 +13,7 @@ class NewTransactionOverlay extends StatefulWidget {
   NewTransactionOverlay({Key? key, required this.rootTitle, required this.rootWidget})
       : super(key: key);
 
-  NewTransactionOverlay.account({Key? key, required Wallet account})
+  NewTransactionOverlay.account({Key? key, required Account account})
       : super(key: key){
     rootTitle = "Send ICPT";
     rootWidget =  SelectTransactionTypeWidget(
@@ -116,7 +116,7 @@ class SelectTransactionTypeWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     buildButton(context, "Send", "Send ICP to another account", () {
-                      NewTransactionOverlay.of(context).pushPage("Select Wallet", SelectDestinationWalletPage(
+                      NewTransactionOverlay.of(context).pushPage("Select Account", SelectDestinationAccountPage(
                         source: source,
                       ));
                     }),

@@ -9,12 +9,12 @@ import 'package:uuid/uuid.dart';
 import '../../../dfinity.dart';
 import '../create_transaction_overlay.dart';
 
-class NewWalletPage extends StatelessWidget {
+class NewAccountPage extends StatelessWidget {
 
   final ICPSource source;
-  NewWalletPage({Key? key, required this.source}) : super(key: key);
+  NewAccountPage({Key? key, required this.source}) : super(key: key);
 
-  final ValidatedTextField nameField = ValidatedTextField("Wallet Name", validations: [StringFieldValidation.minimumLength(2)]);
+  final ValidatedTextField nameField = ValidatedTextField("Account Name", validations: [StringFieldValidation.minimumLength(2)]);
 
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +22,7 @@ class NewWalletPage extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 24.0, left: 24.0, bottom: 24.0),
-            child: Text("New Wallet",
+            child: Text("New Account",
                 style: context.textTheme.headline2.gray800),
           ),
           SizedBox(
@@ -39,14 +39,14 @@ class NewWalletPage extends StatelessWidget {
             height: 100,
             padding: EdgeInsets.all(20.0),
             child: ValidFieldsSubmitButton(
-              child: Text("Create Wallet"),
+              child: Text("Create Account"),
               fields: [nameField],
               onPressed: () {
-                // final wallet = Wallet(nameField.currentValue, Uuid().v4(), 0);
-                // context.boxes.wallets.add(wallet);
+                // final wallet = Account(nameField.currentValue, Uuid().v4(), 0);
+                // context.boxes.accounts.add(wallet);
                 // NewTransactionOverlay.of(context)
-                //     .pushPage(SendToWalletPage(
-                //     source: source, toWallet: wallet,
+                //     .pushPage(SendToAccountPage(
+                //     source: source, toAccount: wallet,
                 // ));
               },
             ),

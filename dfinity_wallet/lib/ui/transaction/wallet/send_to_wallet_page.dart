@@ -6,20 +6,20 @@ import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 
 import '../create_transaction_overlay.dart';
 
-class SendToWalletPage extends StatefulWidget {
+class SendToAccountPage extends StatefulWidget {
   final ICPSource source;
   final String accountIdentifier;
   final int? subAccountId;
 
-  const SendToWalletPage(
+  const SendToAccountPage(
       {Key? key, required this.source, required this.accountIdentifier, this.subAccountId})
       : super(key: key);
 
   @override
-  _SendToWalletPageState createState() => _SendToWalletPageState();
+  _SendToAccountPageState createState() => _SendToAccountPageState();
 }
 
-class _SendToWalletPageState extends State<SendToWalletPage> {
+class _SendToAccountPageState extends State<SendToAccountPage> {
   late ValidatedTextField amountField;
 
   @override

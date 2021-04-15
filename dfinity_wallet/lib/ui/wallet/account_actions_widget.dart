@@ -6,10 +6,10 @@ import 'package:dfinity_wallet/dfinity.dart';
 
 class AccountActionsWidget extends StatefulWidget {
 
-  final Wallet primaryWallet;
+  final Account primaryAccount;
 
   const AccountActionsWidget({
-    Key? key, required this.primaryWallet,
+    Key? key, required this.primaryAccount,
   }) : super(key: key);
 
   @override
@@ -84,7 +84,7 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
           parentContext: parentContext,
           overlayEntry: _overlayEntry,
           child: NewTransactionOverlay.account(
-            account: widget.primaryWallet,
+            account: widget.primaryAccount,
           ));
     });
   }

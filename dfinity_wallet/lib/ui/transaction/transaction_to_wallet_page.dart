@@ -1,16 +1,16 @@
 import '../../dfinity.dart';
 
-class TransactionToWalletPage extends StatefulWidget {
+class TransactionToAccountPage extends StatefulWidget {
 
-  final Wallet wallet;
+  final Account account;
 
-  const TransactionToWalletPage({Key? key, required this.wallet}) : super(key: key);
+  const TransactionToAccountPage({Key? key, required this.account}) : super(key: key);
 
   @override
-  _TransactionToWalletPageState createState() => _TransactionToWalletPageState();
+  _TransactionToAccountPageState createState() => _TransactionToAccountPageState();
 }
 
-class _TransactionToWalletPageState extends State<TransactionToWalletPage> {
+class _TransactionToAccountPageState extends State<TransactionToAccountPage> {
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'wallet.dart';
+part of 'account.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class WalletAdapter extends TypeAdapter<Wallet> {
+class AccountAdapter extends TypeAdapter<Account> {
   @override
   final int typeId = 101;
 
   @override
-  Wallet read(BinaryReader reader) {
+  Account read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Wallet(
+    return Account(
       fields[0] as String,
       fields[1] as String,
       fields[2] as bool,
@@ -27,7 +27,7 @@ class WalletAdapter extends TypeAdapter<Wallet> {
   }
 
   @override
-  void write(BinaryWriter writer, Wallet obj) {
+  void write(BinaryWriter writer, Account obj) {
     writer
       ..writeByte(6)
       ..writeByte(0)
@@ -50,7 +50,7 @@ class WalletAdapter extends TypeAdapter<Wallet> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WalletAdapter &&
+      other is AccountAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

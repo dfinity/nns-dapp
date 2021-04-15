@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/wallet/account_actions_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/data/wallet.dart';
+import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/ui/_components/conditional_widget.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
@@ -35,7 +35,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
     super.didChangeDependencies();
 
     walletsSubscription?.cancel();
-    walletsSubscription = context.boxes.wallets.watch().listen((event) {
+    walletsSubscription = context.boxes.accounts.watch().listen((event) {
       if (mounted) {
         setState(() {});
       }
@@ -44,7 +44,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final wallets = context.boxes.wallets.values;
+    final wallets = context.boxes.accounts.values;
     if (wallets.isEmpty) {
       return Container(
         child: Center(
@@ -52,8 +52,8 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
         ),
       );
     }
-    final primary = context.boxes.wallets.maybePrimary;
-    final subAccounts = context.boxes.wallets.subAccounts;
+    final primary = context.boxes.accounts.maybePrimary;
+    final subAccounts = context.boxes.accounts.subAccounts;
     final maxListItems =
         max(subAccounts.length, primary?.transactions.length ?? 0);
     return FooterGradientButton(
@@ -127,10 +127,10 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                   child: TabBarView(
                     children: [
                       SubAccountsListWidget(
-                        subAccounts: context.boxes.wallets.subAccounts,
+                        subAccounts: context.boxes.accounts.subAccounts,
                       ),
                       TransactionsListWidget(
-                        wallet: primary,
+                        account: primary,
                       ),
                     ],
                   ),
@@ -145,7 +145,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
         footer: EitherWidget(
           condition: primary != null,
           trueWidget: AccountActionsWidget(
-            primaryWallet: primary!,
+            primaryAccount: primary!,
           ),
           falseWidget: Container(),
         ));
@@ -186,7 +186,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
 }
 
 class SubAccountsListWidget extends StatelessWidget {
-  final List<Wallet> subAccounts;
+  final List<Account> subAccounts;
 
   const SubAccountsListWidget({Key? key, required this.subAccounts})
       : super(key: key);
@@ -195,10 +195,10 @@ class SubAccountsListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: subAccounts.mapToList((e) => WalletRow(
-            wallet: e,
+      children: subAccounts.mapToList((e) => AccountRow(
+        account: e,
             onTap: () {
-              context.nav.push(WalletPageDef.createPageConfig(e));
+              context.nav.push(AccountPageDef.createPageConfig(e));
             },
           )),
     );

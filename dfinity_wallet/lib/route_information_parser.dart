@@ -23,7 +23,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     CanistersTabPage
   ].associateBy((e) => e.path.removePrefix('/'));
 
-  final entityPages = [WalletPageDef, NeuronPageDef, ProposalPageDef]
+  final entityPages = [AccountPageDef, NeuronPageDef, ProposalPageDef]
       .associateBy((e) => e.pathTemplate.removePrefix('/'));
 
   @override

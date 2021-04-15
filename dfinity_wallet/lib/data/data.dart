@@ -1,5 +1,5 @@
 export 'transaction.dart';
-export 'wallet.dart';
+export 'account.dart';
 export 'setup/hive_loader_widget.dart';
 export 'setup/hive_coordinator.dart';
 export 'canister.dart';

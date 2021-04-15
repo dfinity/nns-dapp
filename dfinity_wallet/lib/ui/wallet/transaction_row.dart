@@ -5,7 +5,7 @@ import 'balance_display_widget.dart';
 
 class TransactionRow extends StatelessWidget {
   final Transaction transaction;
-  final Wallet currentAccount;
+  final Account currentAccount;
 
   const TransactionRow(
       {Key? key, required this.transaction, required this.currentAccount})

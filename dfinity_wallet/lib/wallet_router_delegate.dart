@@ -107,11 +107,11 @@ class EntityPageDefinition<T extends DfinityEntity> {
   }
 }
 
-EntityPageDefinition WalletPageDef = EntityPageDefinition<Wallet>(
+EntityPageDefinition AccountPageDef = EntityPageDefinition<Account>(
     "/wallet",
     AccountsTabPage,
-    (wallet) => WalletDetailPage(wallet),
-    (boxes) => boxes.wallets!);
+    (wallet) => AccountDetailPage(wallet),
+    (boxes) => boxes.accounts!);
 
 EntityPageDefinition NeuronPageDef = EntityPageDefinition<Neuron>(
     "/neuron",

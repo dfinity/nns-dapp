@@ -3,9 +3,9 @@ import 'package:dfinity_wallet/ui/wallet/transaction_row.dart';
 import '../../dfinity.dart';
 
 class TransactionsListWidget extends StatelessWidget {
-  final Wallet? wallet;
+  final Account? account;
 
-  const TransactionsListWidget({Key? key, required this.wallet})
+  const TransactionsListWidget({Key? key, required this.account})
       : super(key: key);
 
   @override
@@ -13,7 +13,7 @@ class TransactionsListWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (wallet?.transactions.isEmpty ?? true)
+        if (account?.transactions.isEmpty ?? true)
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 100),
@@ -35,7 +35,7 @@ class TransactionsListWidget extends StatelessWidget {
                       onPressed: () async {
                         LoadingOverlay.of(context).showOverlay();
                         await context.icApi.acquireICPTs(
-                            accountIdentifier: wallet!.accountIdentifier,
+                            accountIdentifier: account!.accountIdentifier,
                             doms: BigInt.from(1500000000));
                         LoadingOverlay.of(context).hideOverlay();
                       })
@@ -43,8 +43,8 @@ class TransactionsListWidget extends StatelessWidget {
               ),
             ),
           ),
-        ...wallet?.transactions.map((e) =>
-                TransactionRow(transaction: e, currentAccount: wallet!)) ??
+        ...account?.transactions.map((e) =>
+                TransactionRow(transaction: e, currentAccount: account!)) ??
             [],
       ],
     );

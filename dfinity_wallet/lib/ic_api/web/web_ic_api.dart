@@ -72,7 +72,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
       await accountsSyncService!.performSync();
       balanceSyncService!.syncBalances();
-      transactionSyncService!.syncAccount(hiveBoxes.wallets.primary);
+      transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
       neuronSyncService!.fetchNeurons();
     }
   }
@@ -102,7 +102,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     })));
     await Future.wait([
       balanceSyncService!.syncBalances(),
-      transactionSyncService!.syncAccount(hiveBoxes.wallets.primary)
+      transactionSyncService!.syncAccount(hiveBoxes.accounts.primary)
     ]);
   }
 

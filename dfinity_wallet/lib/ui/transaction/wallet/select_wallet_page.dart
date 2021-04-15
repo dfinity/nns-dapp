@@ -7,19 +7,19 @@ import '../../../dfinity.dart';
 import '../create_transaction_overlay.dart';
 import 'new_wallet_page.dart';
 
-class SelectDestinationWalletPage extends StatefulWidget {
+class SelectDestinationAccountPage extends StatefulWidget {
   final ICPSource source;
 
-  const SelectDestinationWalletPage({Key? key, required this.source})
+  const SelectDestinationAccountPage({Key? key, required this.source})
       : super(key: key);
 
   @override
-  _SelectDestinationWalletPageState createState() =>
-      _SelectDestinationWalletPageState();
+  _SelectDestinationAccountPageState createState() =>
+      _SelectDestinationAccountPageState();
 }
 
-class _SelectDestinationWalletPageState
-    extends State<SelectDestinationWalletPage> {
+class _SelectDestinationAccountPageState
+    extends State<SelectDestinationAccountPage> {
   final ValidatedTextField addressField = ValidatedTextField("Specific Address",
       validations: [StringFieldValidation.minimumLength(40)]);
 
@@ -48,7 +48,7 @@ class _SelectDestinationWalletPageState
                   fields: [addressField],
                   onPressed: () {
                     final address = addressField.currentValue;
-                    NewTransactionOverlay.of(context).pushPage("Enter Amount", SendToWalletPage(
+                    NewTransactionOverlay.of(context).pushPage("Enter Amount", SendToAccountPage(
                       source: widget.source,
                       accountIdentifier: address,
                     ));
@@ -69,13 +69,13 @@ class _SelectDestinationWalletPageState
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: Text("My Accounts", style: context.textTheme.bodyText1,),
                   ),
-                  ...context.boxes.wallets.values
+                  ...context.boxes.accounts.values
                     .filter((element) => element != widget.source)
-                    .mapToList((e) => _WalletRow(
-                        wallet: e,
+                    .mapToList((e) => _AccountRow(
+                        account: e,
                         onPressed: () {
                           NewTransactionOverlay.of(context)
-                              .pushPage("Enter Amount", SendToWalletPage(
+                              .pushPage("Enter Amount", SendToAccountPage(
                             source: widget.source,
                             accountIdentifier: e.accountIdentifier,
                           ));
@@ -90,14 +90,14 @@ class _SelectDestinationWalletPageState
   }
 }
 
-class _WalletRow extends StatelessWidget {
-  final Wallet wallet;
+class _AccountRow extends StatelessWidget {
+  final Account account;
   final VoidCallback onPressed;
   final bool selected;
 
-  const _WalletRow(
+  const _AccountRow(
       {Key? key,
-      required this.wallet,
+      required this.account,
       required this.onPressed,
       this.selected = false})
       : super(key: key);
@@ -120,7 +120,7 @@ class _WalletRow extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        wallet.name,
+                        account.name,
                         style: context.textTheme.headline3,
                       ),
                     ),
@@ -128,7 +128,7 @@ class _WalletRow extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           left: 16.0, bottom: 16.0, right: 16.0),
                       child: Text(
-                        "Balance: ${wallet.icpBalance}",
+                        "Balance: ${account.icpBalance}",
                         style: context.textTheme.bodyText1,
                       ),
                     )

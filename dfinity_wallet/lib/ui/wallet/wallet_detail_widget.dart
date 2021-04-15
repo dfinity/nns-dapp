@@ -12,16 +12,16 @@ import '../../dfinity.dart';
 import 'balance_display_widget.dart';
 import '../transaction/create_transaction_overlay.dart';
 
-class WalletDetailPage extends StatefulWidget {
-  final Wallet wallet;
+class AccountDetailPage extends StatefulWidget {
+  final Account account;
 
-  WalletDetailPage(this.wallet);
+  AccountDetailPage(this.account);
 
   @override
-  _WalletDetailPageState createState() => _WalletDetailPageState();
+  _AccountDetailPageState createState() => _AccountDetailPageState();
 }
 
-class _WalletDetailPageState extends State<WalletDetailPage> {
+class _AccountDetailPageState extends State<AccountDetailPage> {
   OverlayEntry? _overlayEntry;
 
   StreamSubscription? subs;
@@ -30,7 +30,7 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     subs?.cancel();
-    subs = context.boxes.wallets.watch(key: widget.wallet.accountIdentifier).listen((event) {
+    subs = context.boxes.accounts.watch(key: widget.account.accountIdentifier).listen((event) {
       setState(() {});
     });
   }
@@ -46,7 +46,7 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Wallet"),
+        title: Text("Account"),
         backgroundColor: AppColors.background,
       ),
       body: Container(
@@ -60,7 +60,7 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          widget.wallet.name,
+                          widget.account.name,
                           style: context.textTheme.headline1,
                         ),
                       ),
@@ -69,11 +69,11 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
                   Padding(
                       padding: EdgeInsets.all(24),
                       child: BalanceDisplayWidget(
-                        amount: widget.wallet.icpBalance,
+                        amount: widget.account.icpBalance,
                         amountSize: 40,
                         icpLabelSize: 25,
                       )),
-                  TransactionsListWidget(wallet: widget.wallet),
+                  TransactionsListWidget(account: widget.account),
                   SizedBox(
                     height: 200,
                   )
@@ -101,7 +101,7 @@ class _WalletDetailPageState extends State<WalletDetailPage> {
           parentContext: parentContext,
           overlayEntry: _overlayEntry,
           child: NewTransactionOverlay.account(
-            account: widget.wallet,
+            account: widget.account,
           ));
     });
   }

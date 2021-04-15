@@ -8,10 +8,10 @@ import 'package:dartx/dartx.dart';
 
 import 'icp_source.dart';
 
-part 'wallet.g.dart';
+part 'account.g.dart';
 
 @HiveType(typeId: 101)
-class Wallet extends DfinityEntity with ICPSource {
+class Account extends DfinityEntity with ICPSource {
   @HiveField(0)
   final String name;
   @HiveField(1)
@@ -25,10 +25,10 @@ class Wallet extends DfinityEntity with ICPSource {
   @HiveField(5)
   int? subAccountId;
 
-  Wallet(
+  Account(
       this.name, this.accountIdentifier, this.primary, this.balance, this.subAccountId, this.transactions);
 
-  Wallet.create(
+  Account.create(
       {required this.name,
       required this.accountIdentifier,
       required this.primary,
@@ -43,8 +43,8 @@ class Wallet extends DfinityEntity with ICPSource {
   String get address => accountIdentifier;
 }
 
-extension getPrimary on Box<Wallet> {
-  Wallet get primary => values.firstWhere((element) => element.primary);
-  Wallet? get maybePrimary => values.firstOrNullWhere((element) => element.primary);
-  List<Wallet> get subAccounts => values.filterNot((element) => element.primary).toList();
+extension getPrimary on Box<Account> {
+  Account get primary => values.firstWhere((element) => element.primary);
+  Account? get maybePrimary => values.firstOrNullWhere((element) => element.primary);
+  List<Account> get subAccounts => values.filterNot((element) => element.primary).toList();
 }
