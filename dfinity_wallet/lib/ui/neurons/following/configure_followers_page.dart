@@ -16,7 +16,7 @@ class ConfigureFollowersPage extends StatelessWidget {
         stream: context.boxes.neurons.watch(key: neuron.id),
         builder: (context, snapshot) {
           final refreshed = context.boxes.neurons.get(neuron.id)!;
-          final followees = refreshed.followees;
+          final followees = refreshed.followees.filterNot((element) => element.topic == Topic.Unspecified);
           return DefaultTabController(
             length: followees.length,
             child: Container(
@@ -67,7 +67,7 @@ class TopicFolloweesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SizedBox.expand(
         child: Container(
-          color: AppColors.gray600,
+          color: AppColors.lightBackground,
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           child: ListView(
             children: [
@@ -86,7 +86,7 @@ class TopicFolloweesWidget extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("This is a really important topic because it contains proposals that enable the network to grow and deliver value to the users for years to come in multiple aspects and dimensions.", style: context.textTheme.bodyText2,),
+                        child: Text("This topic contains proposals that govern the IC.", style: context.textTheme.bodyText2,),
                       )
                     ],
                   ),
@@ -103,7 +103,7 @@ class TopicFolloweesWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Popular Neurons",
+                        "Options for Following",
                         style: context.textTheme.headline3,
                         textAlign: TextAlign.left,
                       ),

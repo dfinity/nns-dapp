@@ -33,7 +33,7 @@ class _LoadingOverlayControllerState extends State<LoadingOverlayController> {
     });
   }
 
-  void remove() async{
+  void remove() async {
     await (overlayKey.currentState?.fadeOut() ?? Future.value(null));
     _overlayEntry?.remove();
     _overlayEntry = null;
@@ -41,7 +41,6 @@ class _LoadingOverlayControllerState extends State<LoadingOverlayController> {
 }
 
 class NodeOverlay extends StatefulWidget {
-
   final Function tapped;
 
   NodeOverlay(Key? key, this.tapped) : super(key: key);
@@ -51,7 +50,6 @@ class NodeOverlay extends StatefulWidget {
 }
 
 class _NodeState extends State<NodeOverlay> {
-
   bool visible = false;
 
   @override
@@ -65,7 +63,6 @@ class _NodeState extends State<NodeOverlay> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -74,23 +71,27 @@ class _NodeState extends State<NodeOverlay> {
         widget.tapped();
       },
       child: AnimatedOpacity(
-          opacity: visible ? 1.0 : 0.0,
-          duration: 1.seconds,
-          child: Container(
-              color: AppColors.lightBackground.withOpacity(0.9),
-              child: IgnorePointer(child: NodeWorld(oscillationMultiplier: 2,))),
-        ),
+        opacity: visible ? 1.0 : 0.0,
+        duration: 1.seconds,
+        child: Container(
+            color: AppColors.lightBackground.withOpacity(0.9),
+            child: FractionallySizedBox(
+                widthFactor: 0.3,
+                heightFactor: 0.3,
+                child: SizedBox.expand(
+                    child: SvgPicture.asset("assets/infinity_logo.svg")))),
+        // child: IgnorePointer(child: NodeWorld(oscillationMultiplier: 2,))),
+      ),
     );
   }
 
-  Future<void> fadeOut() async{
+  Future<void> fadeOut() async {
     setState(() {
       visible = false;
     });
     await 1.seconds.delay;
   }
 }
-
 
 class LoadingOverlay extends InheritedWidget {
   final _LoadingOverlayControllerState state;
@@ -120,9 +121,9 @@ class LoadingOverlay extends InheritedWidget {
   }
 }
 
-
 extension ShowLoading on BuildContext {
   void showLoadingOverlay() => LoadingOverlay.of(this).showOverlay();
+
   void hideLoadingOverlay() => LoadingOverlay.of(this).hideOverlay();
 
   Future<void> performLoading(Future<void> Function() action) async {

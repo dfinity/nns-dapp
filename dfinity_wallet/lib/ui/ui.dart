@@ -1,5 +1,5 @@
 export '_components/text_theme.dart';
-export 'wallet/wallets_tab_widget.dart';
+export 'wallet/accounts_tab_widget.dart';
 export 'neurons/tab/neurons_tab_widget.dart';
 export 'home/home_page.dart';
 export 'canisters/canisters_tab_widget.dart';

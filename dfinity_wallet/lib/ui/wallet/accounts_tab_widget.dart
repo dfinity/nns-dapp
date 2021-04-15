@@ -46,7 +46,11 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
   Widget build(BuildContext context) {
     final wallets = context.boxes.wallets.values;
     if (wallets.isEmpty) {
-      return Container();
+      return Container(
+        child: Center(
+          child: Text("Loading Accounts..."),
+        ),
+      );
     }
     final primary = context.boxes.wallets.maybePrimary;
     final subAccounts = context.boxes.wallets.subAccounts;

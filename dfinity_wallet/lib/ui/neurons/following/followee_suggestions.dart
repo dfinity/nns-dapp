@@ -43,7 +43,7 @@ class _FolloweeSuggestionWidgetState extends State<FolloweeSuggestionWidget> {
                     selected: () {
                       widget.suggestionSelected(e);
                     },
-                  )),
+                  )).interspace(Divider(color: AppColors.white,)).toList(),
               ),
             )
           ],
@@ -103,10 +103,7 @@ class FolloweeSuggestion {
   FolloweeSuggestion(this.name, this.text, this.id);
 
   static List<FolloweeSuggestion> followerSuggestions = [
-    FolloweeSuggestion("Anne", "Experience and Wisdom", "11922007257315742427"),
-    FolloweeSuggestion("Jim", "Economic Expertise", "14284545088473860856"),
-    FolloweeSuggestion("Alice", "Clear-headed decision making", "1447267484133850799"),
-    FolloweeSuggestion("Mary", "Strong Leadership", "11922007257315742427"),
-    FolloweeSuggestion("David", "Transparent and Fair", "1447267484133850799"),
+    FolloweeSuggestion("DFINITY Foundation", "", "13218947198202633252"),
+    FolloweeSuggestion("Internet Computer Association", "", "2987295021308282305"),
   ];
 }

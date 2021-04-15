@@ -16,6 +16,7 @@ class ProposalStateCard extends StatelessWidget {
     return Card(
       color: AppColors.background,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -56,23 +57,71 @@ class ProposalStateCard extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               "By: ${proposal.proposer}",
-              style: context.textTheme.bodyText1,
+              style: context.textTheme.bodyText2,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: SliderTheme(
-              data: SliderThemeData(
-                inactiveTrackColor: Color(0xffED1E79),
-                activeTrackColor: Color(0xff80ACF8),
-                thumbColor: Colors.transparent,
-              ),
-              child: Slider(
-                value: proposal.yes.toDouble(),
-                min: 0,
-                max: proposal.yes.toDouble() + proposal.no.toDouble(),
-                divisions: 1000,
-                onChanged: (e) {},
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                              "Yes",
+                            style: context.textTheme.headline3,
+                          ),
+                        ),
+                        Expanded(
+                          flex: proposal.yes,
+                          child: SizedBox(
+                            height: 10,
+                            child: Container(
+                                color: Color(0xffED1E79),
+                              ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: proposal.no,
+                          child: SizedBox(
+                            height: 10,
+                            child: Container(
+                                color: Color(0xff80ACF8),
+                              ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                              "No",
+                            style: context.textTheme.headline3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SizedBox(width: 5,),
+                      Text(
+                          "${proposal.yes}",
+                        style: context.textTheme.headline4,
+                      ),
+                      Expanded(child: Container()),
+                      SizedBox(width: 5,),
+                      Text(
+                          "${proposal.no}",
+                        style: context.textTheme.headline4,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -80,29 +129,46 @@ class ProposalStateCard extends StatelessWidget {
             Card(
               color: AppColors.gray400.withOpacity(0.1),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "My Votes",
-                    style: context.textTheme.bodyText1,
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      "My Votes",
+                      style: context.textTheme.bodyText1,
+                    ),
                   ),
                   ...votedNeurons.map((e) {
                     final vote = e.voteForProposal(proposal);
-                    final image = (vote == Vote.YES) ? "assets/thumbs_up.svg" : "assets/thumbs_down.svg";
+                    final image = (vote == Vote.YES)
+                        ? "assets/thumbs_up.svg"
+                        : "assets/thumbs_down.svg";
+                    final color = (vote == Vote.YES)
+                        ? Color(0xff80ACF8)
+                        : Color(0xffED1E78);
+
                     return Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Text(e.id)),
+                      children: [
+                        Expanded(
+                          child: Padding(
+                              padding: EdgeInsets.all(16.0), child: Text(e.id)),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text(
+                                "${e.votingPower.toBigInt.toICPT.toStringAsFixed(2)}")),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox.fromSize(
+                            child: SvgPicture.asset(
+                              image,
+                              color: color,
+                            ),
+                            size: Size.square(30),
                           ),
-                          Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Text(
-                                  "${e.votingPower.toBigInt.toICPT.toStringAsFixed(2)}")),
-                          SvgPicture.asset(image)
-                        ],
-                      );
+                        )
+                      ],
+                    );
                   })
                 ],
               ),

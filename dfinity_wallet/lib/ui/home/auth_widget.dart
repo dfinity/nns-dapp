@@ -13,7 +13,7 @@ class AuthWidget extends StatelessWidget {
       color: AppColors.lightBackground,
       child: Stack(
         children: [
-          NodeWorld(sizeMultipler: 1.5,),
+          // NodeWorld(sizeMultipler: 1.5,),
           Container(
             padding: EdgeInsets.all(MediaQuery
                 .of(context)

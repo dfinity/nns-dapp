@@ -33,6 +33,11 @@ class NeuronVotesCard extends StatelessWidget {
                 )
               ],
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 0.0),
+              child: Text(
+                  "Below is a list of votes undertaken by this neuron"),
+            ),
             SmallFormDivider(),
             ...neuron.recentBallots.distinctBy((element) => element.proposalId).map((e) {
               // final proposal = context.boxes.proposals.get(e.proposalId);

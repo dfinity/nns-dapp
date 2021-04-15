@@ -33,7 +33,7 @@ class NeuronRewardsCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                            "You can use your rewarded ICP to create a new neuron, convert it into cycles, or send it to your wallet."),
+                            "As your neuron matures, and you participate in governance, you gain rewards that can be used to spawn new neurons."),
                       )
                     ],
                   ),

@@ -15,7 +15,9 @@ class MultiSelectDropdownWidget<T> extends StatefulWidget {
   final Function()? onChange;
   final Function()? onDismiss;
 
-  const MultiSelectDropdownWidget(this.field, {Key? key, this.onChange, this.onDismiss}) : super(key: key);
+  const MultiSelectDropdownWidget(this.field,
+      {Key? key, this.onChange, this.onDismiss})
+      : super(key: key);
 
   @override
   _MultiSelectDropdownWidgetState createState() =>
@@ -45,20 +47,26 @@ class _MultiSelectDropdownWidgetState<T>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
-            child: Text(
-              widget.field.title,
-              style: context.textTheme.headline4?.copyWith(color: AppColors.white),
-            )),
+        Row(
+          children: [
+            Padding(
+                padding:
+                    const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
+                child: Text(
+                  widget.field.title,
+                  style: context.textTheme.headline4
+                      ?.copyWith(color: AppColors.white),
+                )),
+          ],
+        ),
         Expanded(
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: 60),
             child: OutlinedButton(
               style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all(AppColors.gray800),
-                  overlayColor:
-                      MaterialStateProperty.all(AppColors.gray800.withOpacity(0.1)),
+                  overlayColor: MaterialStateProperty.all(
+                      AppColors.gray800.withOpacity(0.1)),
                   textStyle: MaterialStateProperty.all(
                       TextStyle(fontSize: 16, fontFamily: Fonts.circularBook)),
                   side: MaterialStateProperty.all(
@@ -67,27 +75,27 @@ class _MultiSelectDropdownWidgetState<T>
                 children: [
                   Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Wrap(
-                          // scrollDirection: Axis.horizontal,
-                          children:
-                              widget.field.selectedOptions.mapToList((e) => Container(
-                                    margin: EdgeInsets.only(
-                                        left: 8.0, top: 4.0, bottom:4.0),
-                                    padding: EdgeInsets.all(8.0),
-                                    decoration: ShapeDecoration(
-                                        color: AppColors.gray100,
-                                        shape: StadiumBorder()),
-                                    child: Text(
-                                      widget.field.titleForOption(e),
-                                      style: TextStyle(
-                                          fontFamily: Fonts.circularMedium,
-                                          fontSize: 14,
-                                          color: AppColors.black),
-                                    ),
-                                  )),
-                        ),
-                      )),
+                    padding: const EdgeInsets.all(8.0),
+                    child: Wrap(
+                      // scrollDirection: Axis.horizontal,
+                      children: widget.field.selectedOptions
+                          .mapToList((e) => Container(
+                                margin: EdgeInsets.only(
+                                    left: 8.0, top: 4.0, bottom: 4.0),
+                                padding: EdgeInsets.all(8.0),
+                                decoration: ShapeDecoration(
+                                    color: AppColors.gray100,
+                                    shape: StadiumBorder()),
+                                child: Text(
+                                  widget.field.titleForOption(e),
+                                  style: TextStyle(
+                                      fontFamily: Fonts.circularMedium,
+                                      fontSize: 14,
+                                      color: AppColors.black),
+                                ),
+                              )),
+                    ),
+                  )),
                   Center(
                       child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -133,12 +141,15 @@ class _MultiSelectDropdownWidgetState<T>
               child: SizedBox(
                 width: 420,
                 child: MultiSelectList(
-                  field: widget.field,
-                  onChange: () {
-                    widget.onChange?.call();
-                    setState(() {});
-                  },
-                ),
+                    field: widget.field,
+                    onChange: () {
+                      widget.onChange?.call();
+                      setState(() {});
+                    },
+                    onDismissPressed: () {
+                      this._overlayEntry.remove();
+                      widget.onDismiss?.call();
+                    }),
               ),
             ),
           ],
@@ -151,8 +162,13 @@ class _MultiSelectDropdownWidgetState<T>
 class MultiSelectList<T> extends StatefulWidget {
   final MultiSelectField<T> field;
   final Function onChange;
+  final Function? onDismissPressed;
 
-  const MultiSelectList({Key? key, required this.field, required this.onChange})
+  const MultiSelectList(
+      {Key? key,
+      required this.field,
+      required this.onChange,
+      this.onDismissPressed})
       : super(key: key);
 
   @override
@@ -206,6 +222,23 @@ class _MultiSelectListState<T> extends State<MultiSelectList<T>> {
                               fontSize: 24,
                               color: AppColors.gray800))),
                   Expanded(child: Container()),
+                  if (widget.onDismissPressed != null)
+                    AspectRatio(
+                        aspectRatio: 1,
+                        child: TextButton(
+                          onPressed: () {
+                            widget.onDismissPressed?.call();
+                          },
+                          child: Center(
+                            child: Text(
+                              "✕",
+                              style: TextStyle(
+                                  fontFamily: Fonts.circularBook,
+                                  fontSize: 24,
+                                  color: AppColors.gray800),
+                            ),
+                          ),
+                        )),
                 ],
               ),
             ),

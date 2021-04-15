@@ -68,6 +68,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                                       proposal: latestProposal,
                                       neurons: notVotedNeurons,
                                     ),
+                                  SmallFormDivider(),
                                   if(ineligibleNeurons.isNotEmpty &&
                                       widget.proposal.status ==
                                           ProposalStatus.Open)
@@ -94,6 +95,7 @@ class IneligibleNeuronsWidget extends StatelessWidget {
     child: Container(
       padding: EdgeInsets.all(16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
               padding: EdgeInsets.all(16.0),
