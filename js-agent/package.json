@@ -3,11 +3,12 @@
     "build": "./build.sh"
   },
   "dependencies": {
-    "@dfinity/agent": "0.6.28",
-    "@dfinity/authentication": "0.6.28",
+    "@dfinity/agent": "^0.8.2",
+    "@dfinity/authentication": "^0.8.2",
     "bignumber": "^1.1.0",
     "borc": "^2.1.2",
     "browserify": "^17.0.0",
+    "crc": "^3.8.0",
     "randombytes": "^2.1.0",
     "tweetnacl": "^1.0.3",
     "typescript": "^4.2.3"
