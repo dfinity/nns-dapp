@@ -97,104 +97,107 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainWidthAndCenter(
-      child: TabTitleAndContent(
-        title: "Voting",
-        children: [
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(
-                "The Internet Computer is managed by ICP token-holders that have staked tokens in neurons, who propose and vote on upgrades to the protocol.",
-                style: context.textTheme.bodyText2,
+    return FooterGradientButton(
+      footer: Container(),
+      body: ConstrainWidthAndCenter(
+        child: TabTitleAndContent(
+          title: "Voting",
+          children: [
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  "The Internet Computer is managed by ICP token-holders that have staked tokens in neurons, who propose and vote on upgrades to the protocol.",
+                  style: context.textTheme.bodyText2,
+                ),
               ),
             ),
-          ),
-          IntrinsicHeight(
-            child: MultiSelectDropdownWidget(
-              topicsField,
-              onChange: () {
-                setState(() {});
-              },
-              onDismiss: () {
-                fetchProposals();
-              },
+            IntrinsicHeight(
+              child: MultiSelectDropdownWidget(
+                topicsField,
+                onChange: () {
+                  setState(() {});
+                },
+                onDismiss: () {
+                  fetchProposals();
+                },
+              ),
             ),
-          ),
-          SizedBox(height: 10),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: MultiSelectDropdownWidget(
-                    rewardStatuesField,
-                    onChange: () {
-                      setState(() {});
-                    },
-                    onDismiss: () {
-                      fetchProposals();
-                    },
+            SizedBox(height: 10),
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: MultiSelectDropdownWidget(
+                      rewardStatuesField,
+                      onChange: () {
+                        setState(() {});
+                      },
+                      onDismiss: () {
+                        fetchProposals();
+                      },
+                    ),
                   ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: MultiSelectDropdownWidget(
-                    statusesField,
-                    onChange: () {
-                      setState(() {});
-                    },
-                    onDismiss: () {
-                      fetchProposals();
-                    },
-                  ),
-                )
-              ],
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: MultiSelectDropdownWidget(
+                      statusesField,
+                      onChange: () {
+                        setState(() {});
+                      },
+                      onDismiss: () {
+                        fetchProposals();
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          SmallFormDivider(),
-          StreamBuilder<Object>(
-              stream: context.boxes.proposals.watch(),
-              builder: (context, snapshot) {
-                final proposals = context.boxes.proposals.values
-                    .filter((element) =>
-                        topicsField.selectedOptions.contains(element.topic))
-                    .filter((element) =>
-                        statusesField.selectedOptions.contains(element.status))
-                .sortedByDescending((element) => element.proposalTimestamp)
-                ;
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...proposals.mapToList((e) => ProposalRow(
-                          proposal: e,
-                          onPressed: () {
-                            context.nav
-                                .push(ProposalPageDef.createPageConfig(e));
-                          },
-                        )),
-                    SmallFormDivider(),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextButton(
-                            child: Text(
-                              "Load More",
-                              style: context.textTheme.bodyText2
-                                  ?.copyWith(color: AppColors.gray100),
-                            ),
+            SmallFormDivider(),
+            StreamBuilder<Object>(
+                stream: context.boxes.proposals.watch(),
+                builder: (context, snapshot) {
+                  final proposals = context.boxes.proposals.values
+                      .filter((element) =>
+                          topicsField.selectedOptions.contains(element.topic))
+                      .filter((element) =>
+                          statusesField.selectedOptions.contains(element.status))
+                  .sortedByDescending((element) => element.proposalTimestamp)
+                  ;
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...proposals.mapToList((e) => ProposalRow(
+                            proposal: e,
                             onPressed: () {
-                              final lastProposal = proposals.lastOrNull;
-                              fetchProposals(
-                                  lastProposal: lastProposal);
-                            }),
-                      ),
-                    )
-                  ],
-                );
-              }),
-          SmallFormDivider(),
-        ],
+                              context.nav
+                                  .push(ProposalPageDef.createPageConfig(e));
+                            },
+                          )),
+                      SmallFormDivider(),
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextButton(
+                              child: Text(
+                                "Load More",
+                                style: context.textTheme.bodyText2
+                                    ?.copyWith(color: AppColors.gray100),
+                              ),
+                              onPressed: () {
+                                final lastProposal = proposals.lastOrNull;
+                                fetchProposals(
+                                    lastProposal: lastProposal);
+                              }),
+                        ),
+                      )
+                    ],
+                  );
+                }),
+            SmallFormDivider(),
+          ],
+        ),
       ),
     );
   }
