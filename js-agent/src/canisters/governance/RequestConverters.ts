@@ -15,6 +15,8 @@ import {
     IncreaseDissolveDelayRequest,
     ListProposalsRequest,
     MakeMotionProposalRequest,
+    MakeNetworkEconomicsProposalRequest,
+    MakeRewardNodeProviderProposalRequest,
     ManageNeuron,
     NeuronId,
     NodeProvider,
@@ -192,6 +194,41 @@ export default class RequestConverters {
             url: request.url,
             summary: request.summary,
             action: [{ Motion: { motion_text: request.text } }]
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromMakeNetworkEconomicsProposalRequest = (request: MakeNetworkEconomicsProposalRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { MakeProposal: { 
+            url: request.url,
+            summary: request.summary,
+            action: [{ NetworkEconomics: { 
+                reject_cost_doms: convert.bigIntToBigNumber(request.rejectCost),
+                manage_neuron_cost_per_proposal_doms: convert.bigIntToBigNumber(request.manageNeuronCostPerProposal),
+                neuron_minimum_stake_doms: convert.bigIntToBigNumber(request.neuronMinimumStake),
+                maximum_node_provider_rewards_doms: convert.bigIntToBigNumber(request.maximumNodeProviderRewards),
+                neuron_spawn_dissolve_delay_seconds: convert.bigIntToBigNumber(request.neuronSpawnDissolveDelaySeconds),
+            } }]
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromMakeRewardNodeProviderProposalRequest = (request: MakeRewardNodeProviderProposalRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { MakeProposal: { 
+            url: request.url,
+            summary: request.summary,
+            action: [{ RewardNodeProvider: { 
+                amount_doms: convert.bigIntToBigNumber(request.amount),
+                node_provider: [{
+                    id: [request.nodeProvider]
+                }]
+            } }]
         }};
         return {
             id: [this.fromNeuronId(request.neuronId)],

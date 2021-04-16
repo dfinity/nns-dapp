@@ -15,7 +15,9 @@ import GovernanceService, {
     ListProposalsRequest,
     ListProposalsResponse,
     MakeMotionProposalRequest,
+    MakeNetworkEconomicsProposalRequest,
     MakeProposalResult,
+    MakeRewardNodeProviderProposalRequest,
     NeuronInfo,
     RegisterVoteRequest,
     RemoveHotKeyRequest,
@@ -111,6 +113,14 @@ export default class GovernanceApi {
 
     public makeMotionProposal = async (request: MakeMotionProposalRequest) : Promise<MakeProposalResult> => {
         return this.governanceService.makeMotionProposal(request);
+    }
+
+    public makeNetworkEconomicsProposal = async (request: MakeNetworkEconomicsProposalRequest) : Promise<MakeProposalResult> => {
+        return this.governanceService.makeNetworkEconomicsProposal(request);
+    }
+
+    public makeRewardNodeProviderProposal = async (request: MakeRewardNodeProviderProposalRequest) : Promise<MakeProposalResult> => {
+        return this.governanceService.makeRewardNodeProviderProposal(request);
     }
 
     public jsonString(object: Object): String{

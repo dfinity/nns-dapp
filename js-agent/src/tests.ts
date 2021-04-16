@@ -1,4 +1,4 @@
-import { blobFromUint8Array, derBlobFromBlob, SignIdentity } from "@dfinity/agent";
+import { blobFromUint8Array, derBlobFromBlob, Principal, SignIdentity } from "@dfinity/agent";
 import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
@@ -40,7 +40,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     const firstSubAccount = account.subAccounts[0];
 
-    if (balances[firstSubAccount.accountIdentifier] < BigInt(3_000_000_000)) {
+    if (balances[firstSubAccount.accountIdentifier] < BigInt(4_000_000_000)) {
         console.log("topping up balance");
         await ledgerApi.acquireICPTs(firstSubAccount.accountIdentifier, BigInt(2_100_000_000));
     }
@@ -197,6 +197,46 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     }
 
     console.log("finish integration test");
+}
+
+export async function create_dummy_proposals(host: string, identity: SignIdentity, neuronId: bigint) : Promise<void> {
+
+    console.log("start create_dummy_proposals");
+    const ledgerApi = new LedgerApi(host, identity);
+    const governanceApi = new GovernanceApi(host, identity);
+
+    console.log("getting account");
+    let account = await ledgerApi.getAccount();
+    console.log(account);
+
+    {
+        console.log("make a 'NetworkEconomics' proposal");
+        const manageNeuronResponse = await governanceApi.makeNetworkEconomicsProposal({
+            neuronId: neuronId,
+            url: "https://www.lipsum.com/",
+            summary: "New networks economics proposal",
+            rejectCost: BigInt(10_000_000),
+            manageNeuronCostPerProposal: BigInt(1_000),
+            neuronMinimumStake: BigInt(100_000_000),
+            maximumNodeProviderRewards: BigInt(10_000_000_000),
+            neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
+        });
+        console.log(manageNeuronResponse);
+    }
+
+    {
+        console.log("make a 'RewardNodeProvider' proposal");
+        const manageNeuronResponse = await governanceApi.makeRewardNodeProviderProposal({
+            neuronId: neuronId,
+            url: "https://www.lipsum.com/",
+            summary: "Reward my node provider",
+            amount: BigInt(10_000_000),
+            nodeProvider: Principal.fromText("rrkah-fqaaa-abcde-aaaaq-cai")
+        });
+        console.log(manageNeuronResponse);
+    }
+
+    console.log("finish create_dummy_proposals");
 }
 
 export async function test_create_neuron_functions(): Promise<void> {

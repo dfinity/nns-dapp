@@ -340,8 +340,27 @@ export interface DisburseToNeuronRequest {
 export interface MakeMotionProposalRequest {
     neuronId: NeuronId,
     url: string,
-    text: string
-    summary: string
+    text: string,
+    summary: string,
+}
+
+export interface MakeNetworkEconomicsProposalRequest {
+    neuronId: NeuronId,
+    summary: string,
+    url: string,
+    rejectCost : Doms,
+    manageNeuronCostPerProposal : Doms,
+    neuronMinimumStake : Doms,
+    maximumNodeProviderRewards : Doms,
+    neuronSpawnDissolveDelaySeconds : bigint
+}
+
+export interface MakeRewardNodeProviderProposalRequest {
+    neuronId: NeuronId,
+    summary: string,
+    url: string,
+    nodeProvider: Principal,
+    amount: Doms,
 }
 
 export interface DisburseToNeuronResponse { createdNeuronId: NeuronId };
@@ -371,4 +390,6 @@ export default interface ServiceInterface {
     disburse: (request: DisburseRequest) => Promise<DisburseResult>,
     disburseToNeuron: (request: DisburseToNeuronRequest) => Promise<DisburseToNeuronResult>,
     makeMotionProposal: (request: MakeMotionProposalRequest) => Promise<MakeProposalResult>,
+    makeNetworkEconomicsProposal: (request: MakeNetworkEconomicsProposalRequest) => Promise<MakeProposalResult>,
+    makeRewardNodeProviderProposal: (request: MakeRewardNodeProviderProposalRequest) => Promise<MakeProposalResult>,
 };

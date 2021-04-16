@@ -14,7 +14,7 @@ import LedgerViewService, {
     GetTransactionsResponse,
     NamedSubAccount
 } from "./canisters/ledgerView/model";
-import { test_happy_path } from "./tests";
+import { create_dummy_proposals, test_happy_path } from "./tests";
 
 export default class LedgerApi {
     private readonly ledgerService: LedgerService;
@@ -74,6 +74,10 @@ export default class LedgerApi {
 
     public integrationTest = async (): Promise<void> => {
         return await test_happy_path(this.host, this.identity);
+    }
+
+    public createDummyProposals = async (neuronId: bigint): Promise<void> => {
+        return await create_dummy_proposals(this.host, this.identity, neuronId);
     }
 
     public jsonString(object: Object): String{
