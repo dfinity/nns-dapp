@@ -18,6 +18,7 @@ import GovernanceService, {
     MakeNetworkEconomicsProposalRequest,
     MakeProposalResult,
     MakeRewardNodeProviderProposalRequest,
+    MakeSetDefaultFolloweesProposalRequest,
     NeuronInfo,
     RegisterVoteRequest,
     RemoveHotKeyRequest,
@@ -121,6 +122,10 @@ export default class GovernanceApi {
 
     public makeRewardNodeProviderProposal = async (request: MakeRewardNodeProviderProposalRequest) : Promise<MakeProposalResult> => {
         return this.governanceService.makeRewardNodeProviderProposal(request);
+    }
+
+    public makeSetDefaultFolloweesProposal = async (request: MakeSetDefaultFolloweesProposalRequest) : Promise<MakeProposalResult> => {
+        return this.governanceService.makeSetDefaultFolloweesProposal(request);
     }
 
     public jsonString(object: Object): String{

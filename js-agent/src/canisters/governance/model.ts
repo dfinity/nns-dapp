@@ -363,6 +363,13 @@ export interface MakeRewardNodeProviderProposalRequest {
     amount: Doms,
 }
 
+export interface MakeSetDefaultFolloweesProposalRequest {
+    neuronId: NeuronId,
+    summary: string,
+    url: string,
+    followees: Array<Followees>
+}
+
 export interface DisburseToNeuronResponse { createdNeuronId: NeuronId };
 export interface SpawnResponse { createdNeuronId: NeuronId };
 export type SpawnResult = { Ok: SpawnResponse } | { Err: GovernanceError };
@@ -392,4 +399,5 @@ export default interface ServiceInterface {
     makeMotionProposal: (request: MakeMotionProposalRequest) => Promise<MakeProposalResult>,
     makeNetworkEconomicsProposal: (request: MakeNetworkEconomicsProposalRequest) => Promise<MakeProposalResult>,
     makeRewardNodeProviderProposal: (request: MakeRewardNodeProviderProposalRequest) => Promise<MakeProposalResult>,
+    makeSetDefaultFolloweesProposal: (request: MakeSetDefaultFolloweesProposalRequest) => Promise<MakeProposalResult>,
 };

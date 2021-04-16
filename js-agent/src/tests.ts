@@ -3,7 +3,7 @@ import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
 import { buildSubAccount, buildAccountIdentifier } from "./canisters/governance/createNeuron";
-import { Topic, Vote } from "./canisters/governance/model";
+import { NeuronId, Topic, Vote } from "./canisters/governance/model";
 
 var running = false;
 
@@ -199,7 +199,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     console.log("finish integration test");
 }
 
-export async function create_dummy_proposals(host: string, identity: SignIdentity, neuronId: bigint) : Promise<void> {
+export async function create_dummy_proposals(host: string, identity: SignIdentity, neuronId: NeuronId) : Promise<void> {
 
     console.log("start create_dummy_proposals");
     const ledgerApi = new LedgerApi(host, identity);
@@ -232,6 +232,26 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
             summary: "Reward my node provider",
             amount: BigInt(10_000_000),
             nodeProvider: Principal.fromText("rrkah-fqaaa-abcde-aaaaq-cai")
+        });
+        console.log(manageNeuronResponse);
+    }
+
+    {
+        console.log("make a 'SetDefaultFollowees' proposal");
+        const manageNeuronResponse = await governanceApi.makeSetDefaultFolloweesProposal({
+            neuronId: neuronId,
+            url: "https://www.lipsum.com/",
+            summary: "Set default followees",
+            followees: [
+                { topic: Topic.ExchangeRate, followees: [BigInt(1),BigInt(2)] },
+                { topic: Topic.NetworkEconomics, followees: [BigInt(1),BigInt(3)] },
+                { topic: Topic.Governance, followees: [BigInt(2),BigInt(3)] },
+                { topic: Topic.NodeAdmin, followees: [BigInt(1)] },
+                { topic: Topic.ParticipantManagement, followees: [BigInt(1),BigInt(2),BigInt(3)] },
+                { topic: Topic.SubnetManagement, followees: [BigInt(1),BigInt(2)] },
+                { topic: Topic.NetworkCanisterManagement, followees: [BigInt(1),BigInt(2)] },
+                { topic: Topic.Kyc, followees: [BigInt(1),BigInt(2)] },
+            ]
         });
         console.log(manageNeuronResponse);
     }

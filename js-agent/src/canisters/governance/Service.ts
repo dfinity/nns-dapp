@@ -19,6 +19,7 @@ import ServiceInterface, {
     MakeNetworkEconomicsProposalRequest,
     MakeProposalResult,
     MakeRewardNodeProviderProposalRequest,
+    MakeSetDefaultFolloweesProposalRequest,
     NeuronInfo,
     ProposalInfo,
     RegisterVoteRequest,
@@ -172,6 +173,12 @@ export default class Service implements ServiceInterface {
 
     public makeRewardNodeProviderProposal = async (request: MakeRewardNodeProviderProposalRequest) : Promise<MakeProposalResult> => {
         const rawRequest = this.requestConverters.fromMakeRewardNodeProviderProposalRequest(request);
+        const rawResponse = await this.service.manage_neuron(rawRequest);
+        return this.responseConverters.toMakeProposalResult(rawResponse);
+    }
+
+    public makeSetDefaultFolloweesProposal = async (request: MakeSetDefaultFolloweesProposalRequest) : Promise<MakeProposalResult> => {
+        const rawRequest = this.requestConverters.fromMakeSetDefaultFolloweesProposalRequest(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
         return this.responseConverters.toMakeProposalResult(rawResponse);
     }

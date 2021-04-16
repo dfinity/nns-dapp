@@ -17,6 +17,7 @@ import {
     MakeMotionProposalRequest,
     MakeNetworkEconomicsProposalRequest,
     MakeRewardNodeProviderProposalRequest,
+    MakeSetDefaultFolloweesProposalRequest,
     ManageNeuron,
     NeuronId,
     NodeProvider,
@@ -35,6 +36,7 @@ import {
     Ballot as RawBallot,
     Change as RawChange,
     Command as RawCommand,
+    Followees as RawFollowees,
     ListProposalInfo,
     ManageNeuron as RawManageNeuron,
     NeuronId as RawNeuronId,
@@ -233,6 +235,26 @@ export default class RequestConverters {
         return {
             id: [this.fromNeuronId(request.neuronId)],
             command: [rawCommand]
+        };
+    }
+
+    public fromMakeSetDefaultFolloweesProposalRequest = (request: MakeSetDefaultFolloweesProposalRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { MakeProposal: { 
+            url: request.url,
+            summary: request.summary,
+            action: [{ SetDefaultFollowees: { 
+                default_followees: request.followees.map(f => [f.topic as number, this.fromFollowees(f.followees)])
+            } }]
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    private fromFollowees(followees: Array<NeuronId>): RawFollowees {
+        return {
+            followees: followees.map(this.fromNeuronId)
         };
     }
 
