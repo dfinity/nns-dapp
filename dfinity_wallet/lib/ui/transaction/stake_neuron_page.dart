@@ -170,7 +170,7 @@ class DisperseDelayWidget extends StatelessWidget {
     );
   }
 
-  double minValue() => sqrt(sqrt(7.001.days.inSeconds.toDouble()));
+  double minValue() => 0.0;// sqrt(sqrt(7.001.days.inSeconds.toDouble()));
 }
 
 class VotingPowerWidget extends StatelessWidget {

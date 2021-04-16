@@ -22,6 +22,16 @@ class Proposal extends DfinityEntity {
   late int yes;
   @HiveField(8)
   late Map<String, dynamic> action;
+  @HiveField(9)
+  String? executedTimestampSeconds;
+  @HiveField(10)
+  String? failedTimestampSeconds;
+  @HiveField(11)
+  String? decidedTimestampSeconds;
+  @HiveField(12)
+  String? proposalTimestampSeconds;
+  @HiveField(13)
+  late DateTime cacheUpdateDate;
 
   Proposal(
       this.id,
@@ -33,16 +43,10 @@ class Proposal extends DfinityEntity {
       this.executedTimestampSeconds,
       this.failedTimestampSeconds,
       this.decidedTimestampSeconds,
-      this.proposalTimestampSeconds);
+      this.proposalTimestampSeconds,
+      this.cacheUpdateDate
+      );
 
-  @HiveField(9)
-  String? executedTimestampSeconds;
-  @HiveField(10)
-  String? failedTimestampSeconds;
-  @HiveField(11)
-  String? decidedTimestampSeconds;
-  @HiveField(12)
-  String? proposalTimestampSeconds;
 
   Proposal.empty();
 

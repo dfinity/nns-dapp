@@ -12,45 +12,47 @@ class ConfigureFollowersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Object>(
-        stream: context.boxes.neurons.watch(key: neuron.id),
-        builder: (context, snapshot) {
-          final refreshed = context.boxes.neurons.get(neuron.id)!;
-          final followees = refreshed.followees.filterNot((element) => element.topic == Topic.Unspecified);
-          return DefaultTabController(
-            length: followees.length,
-            child: Container(
-              child: Column(
-                children: [
-                  Container(
-                    color: AppColors.lighterBackground,
-                    child: TabBar(
-                        isScrollable: true,
-                        indicatorColor: Colors.white,
-                        tabs: [
-                          ...followees.mapToList(
-                            (e) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Tab(text: e.topic.description),
-                            ),
-                          )
-                        ]),
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      children: [
-                        ...followees.map((e) => TopicFolloweesWidget(
-                              followees: e,
-                              neuron: neuron,
-                            ))
-                      ],
+    return Card(
+      child: StreamBuilder<Object>(
+          stream: context.boxes.neurons.watch(key: neuron.id),
+          builder: (context, snapshot) {
+            final refreshed = context.boxes.neurons.get(neuron.id)!;
+            final followees = refreshed.followees.filterNot((element) => element.topic == Topic.Unspecified);
+            return DefaultTabController(
+              length: followees.length,
+              child: Container(
+                child: Column(
+                  children: [
+                    Container(
+                      color: AppColors.lighterBackground,
+                      child: TabBar(
+                          isScrollable: true,
+                          indicatorColor: Colors.white,
+                          tabs: [
+                            ...followees.mapToList(
+                              (e) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Tab(text: e.topic.name),
+                              ),
+                            )
+                          ]),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          ...followees.map((e) => TopicFolloweesWidget(
+                                followees: e,
+                                neuron: neuron,
+                              ))
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        });
+            );
+          }),
+    );
   }
 }
 
@@ -80,13 +82,13 @@ class TopicFolloweesWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        followees.topic.description,
+                        followees.topic.name,
                         style: context.textTheme.headline3,
                         textAlign: TextAlign.left,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("This topic contains proposals that govern the IC.", style: context.textTheme.bodyText2,),
+                        child: Text(followees.topic.desc, style: context.textTheme.bodyText2,),
                       )
                     ],
                   ),

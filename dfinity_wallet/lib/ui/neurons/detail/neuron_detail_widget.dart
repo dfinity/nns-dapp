@@ -32,23 +32,21 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
         body: StreamBuilder<Object>(
           stream: context.boxes.neurons.watch(key: widget.neuron.identifier),
           builder: (context, snapshot) {
-            return ConstrainWidthAndCenter(
-              child: Container(
-                color: AppColors.lightBackground,
-                child: ListView(
-                  children: [
-                    SmallFormDivider(),
-                    NeuronStateCard(neuron: widget.neuron),
-                    SmallFormDivider(),
-                    NeuronRewardsCard(neuron: widget.neuron),
-                    SmallFormDivider(),
-                    NeuronVotesCard(neuron: widget.neuron),
-                    SmallFormDivider(),
-                    NeuronFolloweesCard(neuron: widget.neuron),
-                    SmallFormDivider(),
-                    NeuronProposalsCard(neuron: widget.neuron),
-                    TallFormDivider(),
-                  ],
+            return SingleChildScrollView(
+              child: ConstrainWidthAndCenter(
+                child: Container(
+                  color: AppColors.lightBackground,
+                  child: Column(
+                    children: [
+                      SmallFormDivider(),
+                      NeuronStateCard(neuron: widget.neuron),
+                      NeuronRewardsCard(neuron: widget.neuron),
+                      NeuronVotesCard(neuron: widget.neuron),
+                      NeuronFolloweesCard(neuron: widget.neuron),
+                      NeuronProposalsCard(neuron: widget.neuron),
+                      TallFormDivider(),
+                    ],
+                  ),
                 ),
               ),
             );

@@ -62,7 +62,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
       "Topics",
       ValidTopics,
       DefaultTopics,
-      (dynamic e) => (e as Topic?)?.description ?? "");
+      (dynamic e) => (e as Topic?)?.name ?? "");
 
   MultiSelectField<ProposalStatus> statusesField =
       MultiSelectField<ProposalStatus>(
@@ -99,7 +99,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
   Widget build(BuildContext context) {
     return ConstrainWidthAndCenter(
       child: TabTitleAndContent(
-        title: "Governance",
+        title: "Voting",
         children: [
           Container(
             child: Padding(

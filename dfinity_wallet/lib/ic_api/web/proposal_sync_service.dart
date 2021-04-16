@@ -26,7 +26,8 @@ class ProposalSyncService {
     final request = {
       'limit': 1,
       if (beforeProposal != null) 'beforeProposal': beforeProposal.id.toBigInt,
-      'includeRewardStatus': includeRewardStatus.mapToList((e) => e.index.toInt()),
+      'includeRewardStatus':
+          includeRewardStatus.mapToList((e) => e.index.toInt()),
       'excludeTopic': [], // excludeTopics.map((e) => e.index),
       'includeStatus': includeStatus.mapToList((e) => e.index.toInt())
     };
@@ -34,12 +35,14 @@ class ProposalSyncService {
     final stopwatch = Stopwatch();
     stopwatch.start();
     print("\n\nfetchProposals request \n" + request.toString());
-    final res =
-        await promiseToFuture(governanceApi.listProposals(jsify(request)));
-
+    final fetchPromise =
+        promiseToFuture(governanceApi.listProposals(jsify(request)));
+    await cleanProposalCache();
+    final res = await fetchPromise;
     final string = governanceApi.jsonString(res);
     dynamic response = jsonDecode(string);
-    print("\nfetchProposals response in ${stopwatch.elapsed.yearsDayHourMinuteSecondFormatted()} \n ${response}");
+    print(
+        "\nfetchProposals response in ${stopwatch.elapsed.yearsDayHourMinuteSecondFormatted()} \n ${response}");
 
     response!['proposals']?.forEach((e) {
       storeProposal(e);
@@ -78,6 +81,7 @@ class ProposalSyncService {
         response['decidedTimestampSeconds'].toString();
     proposal.proposalTimestampSeconds =
         response['proposalTimestampSeconds'].toString();
+    proposal.cacheUpdateDate = DateTime.now();
 
     // print("");
     // print("proposal");
@@ -96,7 +100,18 @@ class ProposalSyncService {
     hiveBoxes.neurons.values.forEach((element) {
       element.proposals = HiveList(hiveBoxes.proposals)
         ..addAll(byProposer[element.id] ?? []);
-      ;
     });
+  }
+
+  Future<void> cleanProposalCache() async {
+    if (hiveBoxes.proposals.length > 0) {
+      await Future.wait(hiveBoxes.proposals.values
+          .filter((element) =>
+              element.cacheUpdateDate.difference(DateTime.now()).inSeconds >
+              1)
+          .sortedBy((element) => element.cacheUpdateDate)
+          .take(100)
+          .map((element) => element.delete()));
+    }
   }
 }

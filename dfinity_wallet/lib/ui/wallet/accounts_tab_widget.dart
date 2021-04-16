@@ -13,12 +13,11 @@ import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/_components/text_field_dialog_widget.dart';
 import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
 import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/wallet_detail_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/wallet_row.dart';
 import 'package:dfinity_wallet/wallet_router_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
+import 'account_row.dart';
 import 'balance_display_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
@@ -28,127 +27,121 @@ class AccountsTabWidget extends StatefulWidget {
 }
 
 class _AccountsTabWidgetState extends State<AccountsTabWidget> {
-  StreamSubscription? walletsSubscription;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
 
-    walletsSubscription?.cancel();
-    walletsSubscription = context.boxes.accounts.watch().listen((event) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final wallets = context.boxes.accounts.values;
-    if (wallets.isEmpty) {
-      return Container(
-        child: Center(
-          child: Text("Loading Accounts..."),
-        ),
-      );
-    }
-    final primary = context.boxes.accounts.maybePrimary;
-    final subAccounts = context.boxes.accounts.subAccounts;
-    final maxListItems =
+    return StreamBuilder<Object>(
+      stream: context.boxes.accounts.watch(),
+      builder: (context, snapshot) {
+
+        final wallets = context.boxes.accounts.values;
+        if (wallets.isEmpty) {
+          return Container(
+            child: Center(
+              child: Text("Loading Accounts..."),
+            ),
+          );
+        }
+        final primary = context.boxes.accounts.maybePrimary;
+        final subAccounts = context.boxes.accounts.subAccounts;
+        final maxListItems =
         max(subAccounts.length, primary?.transactions.length ?? 0);
-    return FooterGradientButton(
-        footerHeight: null,
-        body: DefaultTabController(
-          length: 2,
-          child: SingleChildScrollView(
-            child: ConstrainWidthAndCenter(
-                child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Account",
-                                textAlign: TextAlign.left,
-                                style: context.textTheme.headline2,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              SelectableText(
-                                primary?.accountIdentifier ?? "",
-                                style: context.textTheme.bodyText2,
-                              )
-                            ],
+
+        return FooterGradientButton(
+            footerHeight: null,
+            body: DefaultTabController(
+              length: 2,
+              child: SingleChildScrollView(
+                child: ConstrainWidthAndCenter(
+                    child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Account",
+                                  textAlign: TextAlign.left,
+                                  style: context.textTheme.headline1,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                SelectableText(
+                                  primary?.accountIdentifier ?? "",
+                                  style: context.textTheme.bodyText2,
+                                )
+                              ],
+                            ),
                           ),
                         ),
+                        BalanceDisplayWidget(
+                            amount: primary?.icpBalance ?? 0,
+                            amountSize: 40,
+                            icpLabelSize: 20)
+                      ],
+                    ),
+                    SmallFormDivider(),
+                    Container(
+                      color: AppColors.transparent,
+                      child: Row(
+                        children: [
+                          TabBar(
+                              indicatorColor: Colors.white,
+                              overlayColor: MaterialStateProperty.all(AppColors.lightBackground),
+                              isScrollable: true,
+                              tabs: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Tab(text: "SUBACCOUNTS"),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Tab(text: "TRANSACTION HISTORY"),
+                            ),
+                          ]),
+                          // Expanded(flex: 1, child: Container())
+                        ],
                       ),
-                      BalanceDisplayWidget(
-                          amount: primary?.icpBalance ?? 0,
-                          amountSize: 40,
-                          icpLabelSize: 20)
-                    ],
-                  ),
-                ),
-                SmallFormDivider(),
-                Container(
-                  color: AppColors.lighterBackground,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: TabBar(indicatorColor: Colors.white, tabs: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Tab(text: "SUBACCOUNTS"),
+                    ),
+                    SmallFormDivider(),
+                    SizedBox(
+                      height: maxListItems * 200,
+                      child: TabBarView(
+                        children: [
+                          SubAccountsListWidget(
+                            subAccounts: context.boxes.accounts.subAccounts,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Tab(text: "TRANSACTION HISTORY"),
+                          TransactionsListWidget(
+                            account: primary,
                           ),
-                        ]),
+                        ],
                       ),
-                      Expanded(flex: 1, child: Container())
-                    ],
-                  ),
-                ),
-                SmallFormDivider(),
-                SizedBox(
-                  height: maxListItems * 200,
-                  child: TabBarView(
-                    children: [
-                      SubAccountsListWidget(
-                        subAccounts: context.boxes.accounts.subAccounts,
-                      ),
-                      TransactionsListWidget(
-                        account: primary,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 180,
-                )
-              ],
-            )),
-          ),
-        ),
-        footer: EitherWidget(
-          condition: primary != null,
-          trueWidget: AccountActionsWidget(
-            primaryAccount: primary!,
-          ),
-          falseWidget: Container(),
-        ));
+                    ),
+                    SizedBox(
+                      height: 180,
+                    )
+                  ],
+                )),
+              ),
+            ),
+            footer: EitherWidget(
+              condition: primary != null,
+              trueWidget: AccountActionsWidget(
+                primaryAccount: primary!,
+              ),
+              falseWidget: Container(),
+            ));
+      }
+    );
   }
 
   Future<void> _showErrorDialog(String title, String desc) async {
@@ -178,11 +171,6 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    walletsSubscription?.cancel();
-  }
 }
 
 class SubAccountsListWidget extends StatelessWidget {

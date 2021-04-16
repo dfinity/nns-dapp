@@ -24,11 +24,11 @@ class _HomePageState extends State<HomePage> {
     final screenSize = context.mediaQuery.size;
     return DefaultTabController(
       initialIndex: widget.initialTabIndex,
-      length: 3,
+      length: 4,
       child: Scaffold(
         backgroundColor: AppColors.lightBackground,
         appBar: PreferredSize(
-          preferredSize: Size(screenSize.width, 200),
+          preferredSize: Size(screenSize.width, 160),
           child: Stack(
             children: [
               SizedBox.expand(
@@ -39,9 +39,9 @@ class _HomePageState extends State<HomePage> {
               AppBar(
                 centerTitle: true,
                 title: Padding(
-                  padding: const EdgeInsets.only(top: 32.0),
+                  padding: const EdgeInsets.only(top: 4.0),
                   child: Text(
-                    "INTERNET COMPUTER WALLET",
+                    "NETWORK NERVOUS SYSTEM",
                     style: TextStyle(
                         fontSize: 24,
                         color: AppColors.white,
@@ -98,10 +98,10 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 20,
                               letterSpacing: 1.2),
                           tabs: [
-                            Tab(text: "ICPTs"),
+                            Tab(text: "ICP"),
                             Tab(text: "NEURONS"),
-                            Tab(text: "GOVERNANCE"),
-                            // Tab(text: "CANISTERS"),
+                            Tab(text: "VOTING"),
+                            Tab(text: "DEPLOY"),
                           ],
                         ),
                       ),
@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
               AccountsTabWidget(),
               NeuronsPage(),
               GovernanceTabWidget(),
-              // CansitersPage()
+              CansitersPage()
             ],
           ),
         ),

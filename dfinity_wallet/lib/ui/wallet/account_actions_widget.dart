@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
+import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
@@ -18,7 +19,6 @@ class AccountActionsWidget extends StatefulWidget {
 
 class _AccountActionsWidgetState extends State<AccountActionsWidget> {
 
-  OverlayEntry? _overlayEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +42,10 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
               ),
             ),
             onPressed: () {
-              _overlayEntry = _createOverlayEntry();
-              Overlay.of(context)?.insert(_overlayEntry!);
+              Overlay.of(context)!.show(context, NewTransactionOverlay(
+                rootTitle: 'Send ICPT', 
+                rootWidget: SelectAccountTransactionTypeWidget(source: widget.primaryAccount,),
+              ));
             },
           ),
           SmallFormDivider(),
@@ -56,19 +58,13 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
               ),
             ),
             onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (overlayContext) => Center(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 400, maxHeight: 300),
-                        child: TextFieldDialogWidget(
-                            title: "New Sub Account",
-                            buttonTitle: "Create",
-                            fieldName: "Account Name",
-                            onComplete: (name) {
-                              context.performLoading(() => context.icApi.createSubAccount(name: name));
-                            }),
-                      )));
+              Overlay.of(context)!.show(context, TextFieldDialogWidget(
+                  title: "New Sub Account",
+                  buttonTitle: "Create",
+                  fieldName: "Account Name",
+                  onComplete: (name) {
+                    context.performLoading(() => context.icApi.createSubAccount(name: name));
+                  }));
             },
           ),
         ],
@@ -76,16 +72,4 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
     );
   }
 
-
-  OverlayEntry _createOverlayEntry() {
-    final parentContext = this.context;
-    return OverlayEntry(builder: (context) {
-      return OverlayBaseWidget(
-          parentContext: parentContext,
-          overlayEntry: _overlayEntry,
-          child: NewTransactionOverlay.account(
-            account: widget.primaryAccount,
-          ));
-    });
-  }
 }

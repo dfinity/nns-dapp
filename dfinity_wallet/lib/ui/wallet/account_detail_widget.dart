@@ -4,6 +4,7 @@ import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/resource_orchstrator.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
+import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/transaction_row.dart';
 import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
 import 'package:uuid/uuid.dart';
@@ -100,8 +101,11 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
       return OverlayBaseWidget(
           parentContext: parentContext,
           overlayEntry: _overlayEntry,
-          child: NewTransactionOverlay.account(
-            account: widget.account,
+          child: NewTransactionOverlay(
+            rootTitle: "Send ICPT",
+            rootWidget: SelectAccountTransactionTypeWidget(
+              source: widget.account,
+            ),
           ));
     });
   }

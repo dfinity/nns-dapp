@@ -42,10 +42,15 @@ class _SendToAccountPageState extends State<SendToAccountPage> {
         child: Column(
           children: [
             Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(widget.source.address,
+                  style: context.textTheme.bodyText2),
+            ),
+            Padding(
               padding:
                   const EdgeInsets.only(top: 24.0, left: 24.0, bottom: 24.0),
               child:
-                  Text("Send to account", style: context.textTheme.headline2),
+                  Text("To", style: context.textTheme.headline2),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),

@@ -27,19 +27,32 @@ class MultiSelectDropdownWidget<T> extends StatefulWidget {
 class _MultiSelectDropdownWidgetState<T>
     extends State<MultiSelectDropdownWidget<T>> {
   final FocusNode _focusNode = FocusNode();
-  late OverlayEntry _overlayEntry;
-
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
-        this._overlayEntry = this._createOverlayEntry();
-        Overlay.of(context)!.insert(this._overlayEntry);
+        showPopup();
       } else {
-        this._overlayEntry.remove();
+        OverlayBaseWidget.of(context)?.dismiss();
       }
     });
+  }
+
+  void showPopup() {
+     Overlay.of(context)!.show(context, SizedBox(
+      width: 420,
+      child: MultiSelectList(
+          field: widget.field,
+          onChange: () {
+            widget.onChange?.call();
+            setState(() {});
+          },
+          onDismissPressed: (context) {
+            OverlayBaseWidget.of(context)!.dismiss();
+            widget.onDismiss?.call();
+          }),
+    ), borderRadius: 20);
   }
 
   @override
@@ -108,8 +121,7 @@ class _MultiSelectDropdownWidgetState<T>
                 ],
               ),
               onPressed: () {
-                _overlayEntry = _createOverlayEntry();
-                Overlay.of(context)!.insert(_overlayEntry);
+                showPopup();
               },
             ),
           ),
@@ -118,51 +130,12 @@ class _MultiSelectDropdownWidgetState<T>
     );
   }
 
-  OverlayEntry _createOverlayEntry() {
-    RenderBox renderBox = context.findRenderObject() as RenderBox;
-    var size = renderBox.size;
-    var offset = renderBox.localToGlobal(Offset.zero);
-    final frame = Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
-    final initialOptions = widget.field.selectedOptions.toList();
-
-    return OverlayEntry(builder: (context) {
-      return Scaffold(
-        backgroundColor: AppColors.transparent,
-        body: Stack(
-          children: [
-            Container(
-              color: AppColors.gray800.withOpacity(0.6),
-              child: GestureDetector(onTap: () {
-                this._overlayEntry.remove();
-                widget.onDismiss?.call();
-              }),
-            ),
-            Center(
-              child: SizedBox(
-                width: 420,
-                child: MultiSelectList(
-                    field: widget.field,
-                    onChange: () {
-                      widget.onChange?.call();
-                      setState(() {});
-                    },
-                    onDismissPressed: () {
-                      this._overlayEntry.remove();
-                      widget.onDismiss?.call();
-                    }),
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-  }
 }
 
 class MultiSelectList<T> extends StatefulWidget {
   final MultiSelectField<T> field;
   final Function onChange;
-  final Function? onDismissPressed;
+  final Function(BuildContext context)? onDismissPressed;
 
   const MultiSelectList(
       {Key? key,
@@ -227,7 +200,7 @@ class _MultiSelectListState<T> extends State<MultiSelectList<T>> {
                         aspectRatio: 1,
                         child: TextButton(
                           onPressed: () {
-                            widget.onDismissPressed?.call();
+                            widget.onDismissPressed?.call(context);
                           },
                           child: Center(
                             child: Text(

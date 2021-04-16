@@ -60,7 +60,7 @@ class NeuronFolloweesCard extends StatelessWidget {
                                 child: Padding(
                                   padding: EdgeInsets.all(4.0),
                                   child: Text(
-                                    topic.topic.description,
+                                    topic.topic.name,
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontFamily: Fonts.circularBook,

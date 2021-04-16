@@ -29,7 +29,6 @@ class _FolloweeSuggestionWidgetState extends State<FolloweeSuggestionWidget> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        color: AppColors.gray400.withOpacity(0.1),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -71,7 +70,7 @@ class FolloweeSuggestionRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(suggestion.name, style: context.textTheme.headline3),
+                Text(suggestion.name, style: context.textTheme.bodyText1),
                 Text(suggestion.text, style: context.textTheme.bodyText2),
                 Text(suggestion.id, style: context.textTheme.bodyText2),
               ],

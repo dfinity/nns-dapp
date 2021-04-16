@@ -36,39 +36,36 @@ class _NewProposalDialogState extends State<NewProposalDialog> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: IntrinsicHeight(
-        child: Card(
-          color: AppColors.lightBackground,
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              children: [
-                Text(
-                  "Create a Motion Proposal",
-                  style: context.textTheme.headline3,
-                ),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            children: [
+              Text(
+                "Create a Motion Proposal",
+                style: context.textTheme.headline3,
+              ),
+              SmallFormDivider(),
+              ...fields.flatMap((e) => [
+                DebouncedValidatedFormField(e),
                 SmallFormDivider(),
-                ...fields.flatMap((e) => [
-                  DebouncedValidatedFormField(e),
-                  SmallFormDivider(),
-                ]),
-                SizedBox(
-                  height: 60.0,
-                  width: double.infinity,
-                  child: ValidFieldsSubmitButton(
-                    child: Text("Create"),
-                    onPressed: () async {
-                      await context.performLoading(() => context.icApi.makeMotionProposal(
-                          neuronId: widget.neuron.id.toBigInt,
-                          url: urlField.currentValue,
-                          text: textField.currentValue,
-                          summary: textField.currentValue));
-                      OverlayBaseWidget.of(context)?.dismiss();
-                    },
-                    fields: fields,
-                  ),
-                )
-              ],
-            ),
+              ]),
+              SizedBox(
+                height: 60.0,
+                width: double.infinity,
+                child: ValidFieldsSubmitButton(
+                  child: Text("Create"),
+                  onPressed: () async {
+                    await context.performLoading(() => context.icApi.makeMotionProposal(
+                        neuronId: widget.neuron.id.toBigInt,
+                        url: urlField.currentValue,
+                        text: textField.currentValue,
+                        summary: textField.currentValue));
+                    OverlayBaseWidget.of(context)?.dismiss();
+                  },
+                  fields: fields,
+                ),
+              )
+            ],
           ),
         ),
       ),

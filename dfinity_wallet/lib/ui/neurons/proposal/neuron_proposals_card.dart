@@ -12,7 +12,6 @@ class NeuronProposalsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.background,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

@@ -52,6 +52,16 @@ class DfinityApp extends StatelessWidget {
             textButtonTheme: TextButtonThemeData(
                 style: ButtonStyle(textStyle: MaterialStateProperty.all(TextStyle(
                   color: Colors.white
-                ))))));
+                )))),
+            cardTheme: CardTheme(
+              color: AppColors.background,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                shadowColor: Colors.white.withOpacity(0.3),
+              elevation: 7,
+              margin: EdgeInsets.all(10)
+            )
+        ),
+
+    );
   }
 }

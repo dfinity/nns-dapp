@@ -60,7 +60,6 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                                   ProposalStateCard(
                                       proposal: latestProposal!,
                                       neurons: updatedNeurons),
-                                  SmallFormDivider(),
                                   if (notVotedNeurons.isNotEmpty &&
                                       widget.proposal.status ==
                                           ProposalStatus.Open)
@@ -68,7 +67,6 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                                       proposal: latestProposal,
                                       neurons: notVotedNeurons,
                                     ),
-                                  SmallFormDivider(),
                                   if(ineligibleNeurons.isNotEmpty &&
                                       widget.proposal.status ==
                                           ProposalStatus.Open)

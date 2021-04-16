@@ -9,6 +9,7 @@ class AuthWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // context.boxes.hiveCoordinator.deleteAllData();
     return Container(
       color: AppColors.lightBackground,
       child: Stack(

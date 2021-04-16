@@ -30,36 +30,32 @@ class _TextFieldDialogWidgetState extends State<TextFieldDialogWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: IntrinsicHeight(
-        child: Card(
-          color: AppColors.lightBackground,
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              children: [
-                Text(
-                  widget.title,
-                  style: context.textTheme.headline3,
-                ),
-                SmallFormDivider(),
-                DebouncedValidatedFormField(nameField),
-                SmallFormDivider(),
-                SizedBox(
-                  height: 60.0,
-                  width: double.infinity,
-                  child: ValidFieldsSubmitButton(
-                    child: Text("Create"),
-                    onPressed: () {
-                      widget.onComplete(nameField.currentValue);
-                      Navigator.of(context).pop();
-                    },
-                    fields: [nameField],
-                  ),
-                )
-              ],
+      padding: const EdgeInsets.all(24.0),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 500),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              widget.title,
+              style: context.textTheme.headline3,
             ),
-          ),
+            SmallFormDivider(),
+            DebouncedValidatedFormField(nameField),
+            SmallFormDivider(),
+            SizedBox(
+              height: 60.0,
+              width: double.infinity,
+              child: ValidFieldsSubmitButton(
+                child: Text("Create"),
+                onPressed: () {
+                  widget.onComplete(nameField.currentValue);
+                  Navigator.of(context).pop();
+                },
+                fields: [nameField],
+              ),
+            )
+          ],
         ),
       ),
     );

@@ -12,6 +12,7 @@ class NeuronRewardsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final maturity = neuron.maturityDomsEquivalent;
     return Card(
       color: AppColors.background,
       child: Padding(
@@ -62,7 +63,7 @@ class NeuronRewardsCard extends StatelessWidget {
                         rootWidget: StakeNeuronPage(source: neuron),
                       )
                   );
-                },
+                }.takeIf((e) => neuron.maturityDomsEquivalent.toDouble() > 0),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text("Spawn Neuron"),

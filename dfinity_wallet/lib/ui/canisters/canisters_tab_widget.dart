@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/data/account.dart';
+import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
+import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
@@ -40,27 +42,56 @@ class _CansitersPageState extends State<CansitersPage> {
     return Column(
       children: [
         Expanded(
-          child: TabTitleAndContent(
-            title: "Canisters",
-            children: [
-              Card(
-                color: AppColors.black,
+          child: FooterGradientButton(
+            footerHeight: null,
+            body: ConstrainWidthAndCenter(
+              child: TabTitleAndContent(
+                title: "Canisters",
+                children: [
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(
+                        "Canisters are computational units, a canister executes your application and consumes cycles.",
+                        style: context.textTheme.bodyText2,
+                      ),
+                    ),
+                  ),
+                  SmallFormDivider(),
+                  ...context.boxes.canisters.values.mapToList((e) => CanisterRow(
+                        canister: e,
+                        showsWarning: true,
+                        onPressed: () {},
+                      )),
+                ],
+              ),
+            ),
+            footer: Align(
+              alignment: Alignment.bottomCenter,
+              child: IntrinsicHeight(
                 child: Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Text(
-                    "Canisters are computational units.  \n\nA canister executes your application, and consumes cycles.\n\n Create a canister from a wallet",
-                    style: context.textTheme.bodyText1,
-                    textAlign: TextAlign.center,
+                  padding: EdgeInsets.all(32),
+                  child: ElevatedButton(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: SizedBox(
+                        width: 400,
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            "Add Canister",
+                            textAlign: TextAlign.center,
+                            style: context.textTheme.button?.copyWith(fontSize: 24),
+                          ),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                    },
                   ),
                 ),
               ),
-              SmallFormDivider(),
-              ...context.boxes.canisters.values.mapToList((e) => CanisterRow(
-                    canister: e,
-                    showsWarning: true,
-                    onPressed: () {},
-                  )),
-            ],
+            ),
           ),
         )
       ],

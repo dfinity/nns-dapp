@@ -46,7 +46,7 @@ class NeuronSyncService {
   void updateNeuron(Neuron neuron, String neuronId, dynamic res) {
     final fullNeuron = res['fullNeuron'];
 
-    // PrettyPrint.prettyPrintJson("neuron response", res);
+    PrettyPrint.prettyPrintJson("neuron response", res);
     neuron.id = neuronId;
     neuron.recentBallots = parseRecentBallots(fullNeuron['recentBallots']);
     neuron.createdTimestampSeconds =

@@ -26,19 +26,7 @@ class TransactionsListWidget extends StatelessWidget {
                       style: context.textTheme.bodyText1,
                       textAlign: TextAlign.center,
                     ),
-                  ),
-                  TextButton(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Text("Receive IC"),
-                      ),
-                      onPressed: () async {
-                        LoadingOverlay.of(context).showOverlay();
-                        await context.icApi.acquireICPTs(
-                            accountIdentifier: account!.accountIdentifier,
-                            doms: BigInt.from(1500000000));
-                        LoadingOverlay.of(context).hideOverlay();
-                      })
+                  )
                 ],
               ),
             ),

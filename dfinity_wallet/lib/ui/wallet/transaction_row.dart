@@ -39,6 +39,8 @@ class TransactionRow extends StatelessWidget {
                         "To: ${transaction.to}",
                         style: context.textTheme.bodyText2?.copyWith(fontSize: 16),
                       ),
+                    SizedBox(height: 5,),
+                    Text("${transaction.date.toString()}")
                   ],
                 ),
               ),

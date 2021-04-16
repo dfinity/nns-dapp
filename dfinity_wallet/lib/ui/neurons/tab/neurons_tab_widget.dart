@@ -19,8 +19,6 @@ class NeuronsPage extends StatefulWidget {
 
 class _NeuronsPageState extends State<NeuronsPage> {
 
-  OverlayEntry? _overlayEntry;
-
   @override
   Widget build(BuildContext context) {
     return FooterGradientButton(
@@ -74,27 +72,16 @@ class _NeuronsPageState extends State<NeuronsPage> {
                  ),
                ),
                onPressed: () {
-                 _overlayEntry = _createOverlayEntry();
-                 Overlay.of(context)?.insert(_overlayEntry!);
+                 Overlay.of(context)?.show(context, NewTransactionOverlay(
+                   rootTitle: "Stake Neuron",
+                   rootWidget: StakeNeuronPage(source: context.boxes.accounts.primary),
+                 ));
                },
             ),
           ),
         ),
       ),
     );
-  }
-
-  OverlayEntry _createOverlayEntry() {
-    final parentContext = this.context;
-    return OverlayEntry(builder: (context) {
-      return OverlayBaseWidget(
-          parentContext: parentContext,
-          overlayEntry: _overlayEntry,
-          child: NewTransactionOverlay(
-            rootTitle: "Stake Neuron",
-            rootWidget: StakeNeuronPage(source: parentContext.boxes.accounts.primary),
-          ));
-    });
   }
 }
 

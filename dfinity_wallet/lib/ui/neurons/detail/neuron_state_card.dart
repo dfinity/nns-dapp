@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
 import '../../../dfinity.dart';
@@ -10,7 +11,6 @@ class NeuronStateCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.background,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -83,7 +83,21 @@ class NeuronStateCard extends StatelessWidget {
                   context.icApi.startDissolving(neuronId: neuron.id.toBigInt));
             });
       case NeuronState.UNLOCKED:
-        return ElevatedButton(child: Text("Send ICP"), onPressed: () {});
+        return ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(AppColors.yellow500),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)))),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text("Dispurse"),
+            ),
+            onPressed: () {
+              // Overlay.of(context)!.show(context, NewTransactionOverlay(
+              //
+              //   account: neuron,
+              // ));
+            });
       case NeuronState.UNSPECIFIED:
         return ElevatedButton(child: Text(""), onPressed: () {});
     }
