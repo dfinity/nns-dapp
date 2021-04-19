@@ -20,7 +20,6 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     const ledgerApi = new LedgerApi(host, identity);
     const governanceApi = new GovernanceApi(host, identity);
 
-    let neurons_temp = governanceApi.getNeurons();
     console.log("getting account");
     let account = await ledgerApi.getAccount();
     console.log(account);
