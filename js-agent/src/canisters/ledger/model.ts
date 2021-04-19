@@ -15,7 +15,7 @@ export type AccountIdentifier = string;
 export interface SendICPTsRequest {
     to: AccountIdentifier,
     amount: Doms,
-    memo?: ArrayBuffer,
+    memo?: Uint8Array,
     fee?: Doms,
     blockHeight?: BlockHeight,
     fromSubAccountId?: number,

@@ -8,9 +8,8 @@ import ServiceInterface, {
     SendICPTsRequest
 } from "./model";
 import RequestConverters from "./RequestConverters";
-import ResponseConverters from "./ResponseConverters";
-import { blobToUint8Array, uint8ArrayToBlob } from "../converter";
-import { AccountBalanceResponse, SendResponse } from "./types/types_pb";
+import { uint8ArrayToBigInt, blobToUint8Array, uint8ArrayToBlob } from "../converter";
+import { ICPTs } from "./types/types_pb";
 import { submitUpdateRequest } from "../updateRequestHandler";
 
 export default class Service implements ServiceInterface {
@@ -18,14 +17,12 @@ export default class Service implements ServiceInterface {
     private readonly canisterId: Principal;
     private readonly myPrincipal: Principal;
     private readonly requestConverters: RequestConverters;
-    private readonly responseConverters: ResponseConverters;
 
     public constructor(agent: Agent, canisterId: Principal, myPrincipal: Principal) {
         this.agent = agent;
         this.canisterId = canisterId;
         this.myPrincipal = myPrincipal;
         this.requestConverters = new RequestConverters();
-        this.responseConverters = new ResponseConverters();
     }
 
     public getBalances = async (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, Doms>> => {
@@ -36,8 +33,8 @@ export default class Service implements ServiceInterface {
                 arg: uint8ArrayToBlob(r.serializeBinary())
             });
             if (rawResponse.status === QueryResponseStatus.Replied) {
-                const response = AccountBalanceResponse.deserializeBinary(blobToUint8Array(rawResponse.reply.arg));
-                return this.responseConverters.toDoms(response);
+                const response = ICPTs.deserializeBinary(blobToUint8Array(rawResponse.reply.arg));
+                return response.getE8s() ?? BigInt(0);
             } else {
                 throw new Error(`Code: {rawResponse.reject_code}. Message: {rawResponse.reject_message}`);
             }
@@ -60,8 +57,7 @@ export default class Service implements ServiceInterface {
             "send",
             uint8ArrayToBlob(rawRequest.serializeBinary()));
 
-        const response = SendResponse.deserializeBinary(blobToUint8Array(responseBytes));
-        return this.responseConverters.toBlockHeight(response);
+        return uint8ArrayToBigInt(responseBytes);
     }
 
     public notify = async (request: NotifyCanisterRequest) : Promise<void> => {

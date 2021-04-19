@@ -19,8 +19,16 @@ export const arrayBufferToBigNumber = (buffer: ArrayBuffer) : BigNumber => {
     return bigIntToBigNumber(value);
 }
 
-export const arrayBufferToBigInt = (buffer: ArrayBuffer) : bigint => {
-    const view = new DataView(buffer);
+export const uint8ArrayToBigInt = (array: Uint8Array) : bigint => {
+    let view: DataView;
+    if (array.byteLength < 8) {
+        // Hack needed because the ledger returns < 8 bytes for some reason (probably a bug somewhere)
+        array = new Uint8Array([0,0,0,0,0,0,0,0,...array]).subarray(8 - array.byteLength);
+        view = new DataView(array.buffer, 0, 8);
+    } else {
+        view = new DataView(array.buffer, array.byteOffset, array.byteLength);
+    }
+
     return view.getBigUint64(0);
 }
 

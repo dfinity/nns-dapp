@@ -39,15 +39,15 @@ export default async function(
     console.log("2. Notify the Governance canister that a neuron has been staked");
     await ledgerService.notify({
         toCanister: GOVERNANCE_CANISTER_ID,
-        blockHeight: blockHeight,
-        toSubAccount: toSubAccount,
+        blockHeight,
+        toSubAccount,
         fromSubAccountId: request.fromSubAccountId
     });
 
     console.log("3. Call the Governance canister to claim the neuron");
     const claimResponse = await governanceService.claimNeuron({
         publicKey,
-        nonce: convert.arrayBufferToBigInt(nonce.buffer),
+        nonce: convert.uint8ArrayToBigInt(nonce),
         dissolveDelayInSecs: request.dissolveDelayInSecs    
     });
 
@@ -57,25 +57,26 @@ export default async function(
 }
 
 // 32 bytes
-export async function buildSubAccount(nonce: Uint8Array, publicKey: DerEncodedBlob) : Promise<ArrayBuffer> {
+export async function buildSubAccount(nonce: Uint8Array, publicKey: DerEncodedBlob) : Promise<Uint8Array> {
     const padding = convert.asciiStringToByteArray("neuron-claim");
     const array = new Uint8Array([
         0x0c, 
         ...padding, 
         ...publicKey, 
         ...nonce]);
-    return await crypto.subtle.digest("SHA-256", array);
+    const result = await crypto.subtle.digest("SHA-256", array);
+    return new Uint8Array(result);
 }
 
 // hex string of length 64
 // ported from https://github.com/dfinity-lab/dfinity/blob/master/rs/rosetta-api/canister/src/account_identifier.rs
-export function buildAccountIdentifier(principal: Principal, subAccount: ArrayBuffer) : string {
+export function buildAccountIdentifier(principal: Principal, subAccount: Uint8Array) : string {
     // Hash (sha224) the principal, the subAccount and some padding
     const padding = convert.asciiStringToByteArray("\x0Aaccount-id");
     const array = new Uint8Array([
         ...padding, 
         ...principal.toBlob(), 
-        ...new Uint8Array(subAccount)]);
+        ...subAccount]);
     const hash = sha224(array);
     
     // Prepend the checksum of the hash and convert to a hex string
