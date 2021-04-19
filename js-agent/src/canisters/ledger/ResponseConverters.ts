@@ -1,14 +1,15 @@
 import { BlockHeight, Doms } from "./model";
-import { BlockHeight as RawBlockHeight, ICPTs as RawICPTs } from "./rawService";
-import * as convert from "../converter";
+import { AccountBalanceResponse, SendResponse } from "./types/types_pb";
 
 export default class ResponseConverters {
     
-    public toBlockHeight = (rawBlockHeight: RawBlockHeight) : BlockHeight => {
-        return convert.bigNumberToBigInt(rawBlockHeight);
+    public toBlockHeight = (response: SendResponse) : BlockHeight => {
+        const blockHeight = response.getResultingHeight();
+        return BigInt(blockHeight.getHeight());
     }
 
-    public toDoms = (rawICPTs: RawICPTs) : Doms =>{
-        return convert.bigNumberToBigInt(rawICPTs.doms);
+    public toDoms = (response: AccountBalanceResponse) : Doms =>{
+        const icpts = response.getBalance();
+        return BigInt(icpts.getDoms());
     }
 }

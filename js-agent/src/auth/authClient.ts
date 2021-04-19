@@ -3,27 +3,15 @@ import {
     SignIdentity,
 } from '@dfinity/agent';
 import {
-    Authenticator,
     DelegationChain,
     DelegationIdentity,
     Ed25519KeyIdentity,
-} from '@dfinity/authentication';
+} from '@dfinity/identity';
+import { createAuthenticationRequestUrl } from "@dfinity/authentication";
 
 const DEFAULT_IDP_URL = 'https://auth.ic0.app/authorize';
 
 class AuthenticationClient {
-    private _auth: Authenticator;
-
-    constructor() {
-        const idpUrl = new URL(DEFAULT_IDP_URL);
-
-        this._auth = new Authenticator({
-            identityProvider: {
-                url: idpUrl,
-            }
-        });
-    }
-
     createDelegationIdentity(key: SignIdentity, accessToken: string) : DelegationIdentity {
         // Parse the token which is a JSON object serialized in Hex form.
         const chainJson = [...accessToken]
@@ -39,13 +27,14 @@ class AuthenticationClient {
     }
 
     async loginWithRedirect(key: SignIdentity, options: { redirectUri?: string; scope?: Principal[]; } = {}) {
-        await this._auth.sendAuthenticationRequest({
-            session: {
-                identity: key,
-            },
-            redirectUri: new URL(options.redirectUri || window.location.href),
-            scope: options.scope?.map(x => ({ type: 'CanisterScope', principal: x })) ?? [],
+        const url = await createAuthenticationRequestUrl({
+            identityProvider: DEFAULT_IDP_URL,
+            publicKey: key.getPublicKey(),
+            redirectUri: options.redirectUri || window.location.href,
+            scope: options.scope ?? [],
         });
+
+        window.location.href = url.toString();
     }
 
     createKey() : Ed25519KeyIdentity {

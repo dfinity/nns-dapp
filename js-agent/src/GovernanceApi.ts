@@ -1,5 +1,5 @@
 import { Option } from "./canisters/option";
-import { SignIdentity } from "@dfinity/agent";
+import { HttpAgent, SignIdentity } from "@dfinity/agent";
 import governanceBuilder from "./canisters/governance/builder";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/model";
@@ -38,9 +38,13 @@ export default class GovernanceApi {
     private readonly identity: SignIdentity;
 
     constructor(host: string, identity: SignIdentity) {
-        this.ledgerService = ledgerBuilder(host, identity);
-        const ledgerViewService = ledgerViewBuilder(host, identity);
-        this.governanceService = governanceBuilder(host, identity, ledgerViewService.syncTransactions);
+        const agent = new HttpAgent({
+            host,
+            identity
+        });
+        this.ledgerService = ledgerBuilder(agent, identity);
+        const ledgerViewService = ledgerViewBuilder(agent);
+        this.governanceService = governanceBuilder(agent, identity, ledgerViewService.syncTransactions);
         this.identity = identity;
     }
 
