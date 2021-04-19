@@ -34,7 +34,7 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
                 width: 400,
                 child: Center(
                   child: Text(
-                    "Send ICPT",
+                    "Manage ICP",
                     textAlign: TextAlign.center,
                     style: context.textTheme.button?.copyWith(fontSize: 24),
                   ),
@@ -43,7 +43,7 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
             ),
             onPressed: () {
               Overlay.of(context)!.show(context, NewTransactionOverlay(
-                rootTitle: 'Send ICPT', 
+                rootTitle: 'Manage ICP',
                 rootWidget: SelectAccountTransactionTypeWidget(source: widget.primaryAccount,),
               ));
             },
@@ -53,13 +53,13 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                "Create Sub Account",
+                "Create Sub-Account",
                 style: context.textTheme.bodyText2?.copyWith(fontSize: 18),
               ),
             ),
             onPressed: () {
               Overlay.of(context)!.show(context, TextFieldDialogWidget(
-                  title: "New Sub Account",
+                  title: "New Sub-Account",
                   buttonTitle: "Create",
                   fieldName: "Account Name",
                   onComplete: (name) {

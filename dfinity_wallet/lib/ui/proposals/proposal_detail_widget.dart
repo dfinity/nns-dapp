@@ -70,7 +70,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                                   if(ineligibleNeurons.isNotEmpty &&
                                       widget.proposal.status ==
                                           ProposalStatus.Open)
-                                    IneligibleNeuronsWidget(ineligibleNeurons: ineligibleNeurons,)
+                                    IneligibleNeuronsWidget(ineligibleNeurons: ineligibleNeurons)
                                 ],
                               ),
                             ));

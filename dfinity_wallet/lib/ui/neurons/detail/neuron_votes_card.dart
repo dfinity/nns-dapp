@@ -25,7 +25,7 @@ class NeuronVotesCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Text("Voting",
+                      child: Text("Voting History",
                           style: context.textTheme.headline3),
                     ),
                     LabelledBalanceDisplayWidget(
@@ -35,11 +35,6 @@ class NeuronVotesCard extends StatelessWidget {
                         text: Text("Voting Power")
                     )
                   ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0.0),
-                  child: Text(
-                      "Below is a list of votes undertaken by this neuron"),
                 ),
                 SmallFormDivider(),
                 ...neuron.recentBallots.distinctBy((element) => element.proposalId).map((e) {

@@ -101,7 +101,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
       footer: Container(),
       body: ConstrainWidthAndCenter(
         child: TabTitleAndContent(
-          title: "Voting",
+          title: "Voting History",
           subtitle: "The Internet Computer is managed by ICP token-holders that have staked tokens in neurons, who propose and vote on upgrades to the protocol.",
           children: [
             IntrinsicHeight(
@@ -155,8 +155,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                           topicsField.selectedOptions.contains(element.topic))
                       .filter((element) =>
                           statusesField.selectedOptions.contains(element.status))
-                  .sortedByDescending((element) => element.proposalTimestamp)
-                  ;
+                  .sortedByDescending((element) => element.proposalTimestamp);
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

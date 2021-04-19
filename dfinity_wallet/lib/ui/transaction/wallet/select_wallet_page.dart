@@ -48,7 +48,7 @@ class _SelectDestinationAccountPageState
                   fields: [addressField],
                   onPressed: () {
                     final address = addressField.currentValue;
-                    NewTransactionOverlay.of(context).pushPage("Enter Amount", SendToAccountPage(
+                    NewTransactionOverlay.of(context).pushPage("Enter ICP Amount", SendToAccountPage(
                       source: widget.source,
                       accountIdentifier: address,
                     ));
@@ -75,7 +75,7 @@ class _SelectDestinationAccountPageState
                         account: e,
                         onPressed: () {
                           NewTransactionOverlay.of(context)
-                              .pushPage("Enter Amount", SendToAccountPage(
+                              .pushPage("Enter ICP Amount", SendToAccountPage(
                             source: widget.source,
                             accountIdentifier: e.accountIdentifier,
                           ));

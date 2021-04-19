@@ -130,7 +130,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
           parentContext: parentContext,
           overlayEntry: _overlayEntry,
           child: NewTransactionOverlay(
-            rootTitle: "Send ICPT",
+            rootTitle: "Manage ICPT",
             rootWidget: SelectAccountTransactionTypeWidget(
               source: widget.account,
             ),

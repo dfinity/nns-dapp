@@ -101,7 +101,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                               tabs: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Tab(text: "SUBACCOUNTS"),
+                              child: Tab(text: "SUB-ACCOUNTS"),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
