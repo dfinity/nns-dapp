@@ -7,13 +7,13 @@ import LedgerService, {
     Doms,
     SendICPTsRequest
 } from "./canisters/ledger/model";
-import ledgerViewBuilder from "./canisters/ledgerView/builder";
+import ledgerViewBuilder from "./canisters/nnsUI/builder";
 import LedgerViewService, {
     CreateSubAccountResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
     NamedSubAccount
-} from "./canisters/ledgerView/model";
+} from "./canisters/nnsUI/model";
 import { create_dummy_proposals, test_happy_path } from "./tests";
 
 export default class LedgerApi {

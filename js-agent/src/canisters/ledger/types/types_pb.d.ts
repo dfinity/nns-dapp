@@ -2,6 +2,7 @@
 // file: src/canisters/ledger/types/types.proto
 
 import * as jspb from "google-protobuf";
+import * as google_protobuf_descriptor_pb from "google-protobuf/google/protobuf/descriptor_pb";
 
 export class PrincipalId extends jspb.Message {
   getSerializedId(): Uint8Array | string;
@@ -110,6 +111,11 @@ export class SendRequest extends jspb.Message {
   getCreatedAt(): BlockHeight | undefined;
   setCreatedAt(value?: BlockHeight): void;
 
+  hasCreatedAtTime(): boolean;
+  clearCreatedAtTime(): void;
+  getCreatedAtTime(): TimeStamp | undefined;
+  setCreatedAtTime(value?: TimeStamp): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SendRequest.AsObject;
   static toObject(includeInstance: boolean, msg: SendRequest): SendRequest.AsObject;
@@ -128,6 +134,7 @@ export namespace SendRequest {
     fromSubaccount?: Subaccount.AsObject,
     to?: AccountIdentifier.AsObject,
     createdAt?: BlockHeight.AsObject,
+    createdAtTime?: TimeStamp.AsObject,
   }
 }
 
@@ -212,6 +219,86 @@ export class NotifyResponse extends jspb.Message {
 
 export namespace NotifyResponse {
   export type AsObject = {
+  }
+}
+
+export class TransactionNotificationRequest extends jspb.Message {
+  hasFrom(): boolean;
+  clearFrom(): void;
+  getFrom(): PrincipalId | undefined;
+  setFrom(value?: PrincipalId): void;
+
+  hasFromSubaccount(): boolean;
+  clearFromSubaccount(): void;
+  getFromSubaccount(): Subaccount | undefined;
+  setFromSubaccount(value?: Subaccount): void;
+
+  hasTo(): boolean;
+  clearTo(): void;
+  getTo(): PrincipalId | undefined;
+  setTo(value?: PrincipalId): void;
+
+  hasToSubaccount(): boolean;
+  clearToSubaccount(): void;
+  getToSubaccount(): Subaccount | undefined;
+  setToSubaccount(value?: Subaccount): void;
+
+  hasBlockHeight(): boolean;
+  clearBlockHeight(): void;
+  getBlockHeight(): BlockHeight | undefined;
+  setBlockHeight(value?: BlockHeight): void;
+
+  hasAmount(): boolean;
+  clearAmount(): void;
+  getAmount(): ICPTs | undefined;
+  setAmount(value?: ICPTs): void;
+
+  hasMemo(): boolean;
+  clearMemo(): void;
+  getMemo(): Memo | undefined;
+  setMemo(value?: Memo): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TransactionNotificationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: TransactionNotificationRequest): TransactionNotificationRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TransactionNotificationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TransactionNotificationRequest;
+  static deserializeBinaryFromReader(message: TransactionNotificationRequest, reader: jspb.BinaryReader): TransactionNotificationRequest;
+}
+
+export namespace TransactionNotificationRequest {
+  export type AsObject = {
+    from?: PrincipalId.AsObject,
+    fromSubaccount?: Subaccount.AsObject,
+    to?: PrincipalId.AsObject,
+    toSubaccount?: Subaccount.AsObject,
+    blockHeight?: BlockHeight.AsObject,
+    amount?: ICPTs.AsObject,
+    memo?: Memo.AsObject,
+  }
+}
+
+export class TransactionNotificationResponse extends jspb.Message {
+  getResponse(): Uint8Array | string;
+  getResponse_asU8(): Uint8Array;
+  getResponse_asB64(): string;
+  setResponse(value: Uint8Array | string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TransactionNotificationResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: TransactionNotificationResponse): TransactionNotificationResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TransactionNotificationResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TransactionNotificationResponse;
+  static deserializeBinaryFromReader(message: TransactionNotificationResponse, reader: jspb.BinaryReader): TransactionNotificationResponse;
+}
+
+export namespace TransactionNotificationResponse {
+  export type AsObject = {
+    response: Uint8Array | string,
   }
 }
 
@@ -720,8 +807,8 @@ export namespace GetNodesResponse {
 }
 
 export class ICPTs extends jspb.Message {
-  getDoms(): string;
-  setDoms(value: string): void;
+  getE8s(): string;
+  setE8s(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ICPTs.AsObject;
@@ -735,7 +822,7 @@ export class ICPTs extends jspb.Message {
 
 export namespace ICPTs {
   export type AsObject = {
-    doms: string,
+    e8s: string,
   }
 }
 
@@ -891,6 +978,11 @@ export class Transaction extends jspb.Message {
   getCreatedAt(): BlockHeight | undefined;
   setCreatedAt(value?: BlockHeight): void;
 
+  hasCreatedAtTime(): boolean;
+  clearCreatedAtTime(): void;
+  getCreatedAtTime(): TimeStamp | undefined;
+  setCreatedAtTime(value?: TimeStamp): void;
+
   getTransferCase(): Transaction.TransferCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Transaction.AsObject;
@@ -909,6 +1001,7 @@ export namespace Transaction {
     send?: Send.AsObject,
     memo?: Memo.AsObject,
     createdAt?: BlockHeight.AsObject,
+    createdAtTime?: TimeStamp.AsObject,
   }
 
   export enum TransferCase {
@@ -1120,4 +1213,8 @@ export namespace Certification {
     certification: Uint8Array | string,
   }
 }
+
+  export const tuiSignedMessage: jspb.ExtensionFieldInfo<boolean>;
+
+  export const tuiSignedDisplayQ22021: jspb.ExtensionFieldInfo<boolean>;
 

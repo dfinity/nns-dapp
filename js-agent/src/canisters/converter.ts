@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { Doms } from "./ledger/model";
-import { ICPTs as RawICPTs } from "./ledgerView/rawService";
+import { ICPTs as RawICPTs } from "./nnsUI/rawService";
 import { SUB_ACCOUNT_BYTE_LENGTH } from "./constants";
 import { BinaryBlob } from "@dfinity/agent";
 import { Buffer } from "buffer";

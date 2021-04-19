@@ -6,7 +6,7 @@ use ledger_canister::{
     AccountIdentifier,
     BlockHeight,
     Subaccount,
-    Timestamp,
+    TimeStamp,
     Transfer::{Burn, Mint, Send, self},
     ICPTs
 };
@@ -46,7 +46,7 @@ struct NamedSubAccount {
 struct Transaction {
     transaction_index: TransactionIndex,
     block_height: BlockHeight,
-    timestamp: Timestamp,
+    timestamp: TimeStamp,
     transfer: Transfer,
 }
 
@@ -170,7 +170,7 @@ impl TransactionStore {
         &mut self,
         transfer: Transfer,
         block_height: BlockHeight,
-        timestamp: Timestamp,
+        timestamp: TimeStamp,
     ) -> Result<bool, String> {
         let expected_block_height = self.get_next_required_block_height();
         if block_height != expected_block_height {
@@ -345,7 +345,7 @@ impl Account {
 }
 
 impl Transaction {
-    pub fn new(transaction_index: TransactionIndex, block_height: BlockHeight, timestamp: Timestamp, transfer: Transfer) -> Transaction {
+    pub fn new(transaction_index: TransactionIndex, block_height: BlockHeight, timestamp: TimeStamp, transfer: Transfer) -> Transaction {
         Transaction {
             transaction_index,
             block_height,
@@ -387,7 +387,7 @@ pub struct GetTransactionsResponse {
 #[derive(CandidType)]
 pub struct TransactionResult {
     block_height: BlockHeight,
-    timestamp: Timestamp,
+    timestamp: TimeStamp,
     transfer: TransferResult,
 }
 
@@ -505,7 +505,7 @@ mod tests {
         let mut store = TransactionStore::default();
         store.add_account(principal1);
         store.add_account(principal2);
-        let timestamp = Timestamp {
+        let timestamp = TimeStamp {
             secs: 100,
             nanos: 100,
         };

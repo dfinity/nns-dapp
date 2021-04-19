@@ -1,10 +1,43 @@
+/*
+First append '[jstype = JS_STRING];' on any numeric fields of size 64 bit or higher, otherwise the js 'number' type will
+be used for these fields which loses precision for numbers above 2^52.
+
+Then generate the js and ts files -
+protoc \
+--plugin="protoc-gen-ts=./node_modules/.bin/protoc-gen-ts" \
+--ts_out="./src/canisters/ledger" \
+--js_out="import_style=commonjs,binary:./src/canisters/ledger" \
+src/canisters/ledger/types/types.proto
+*/
+
 syntax = "proto3";
 
+package ic_ledger.pb.v1;
+
+import "google/protobuf/descriptor.proto";
+
+// A PB container for a PrincipalId, which uniquely identifies
+// a principal.
 message PrincipalId {
   bytes serialized_id = 1;
 }
 
-package ic_ledger.pb.v1;
+// Annotations related to the use of hardware wallets. The annotated messages are
+// parsed on hardware wallets and marked fields are displayed in a trusted user
+// interface (TUI). We must not, for instance, add fields that would change the
+// semantics of the message such that old hardware wallets would not display
+// appropriate information to users.
+
+// The annotated message is supported by hardware wallet signing.
+// The numbering was chosen as the range 19000-19999 is anyway reserved in protobuf.
+extend google.protobuf.MessageOptions {
+  bool tui_signed_message = 20000;
+}
+// The annotated field is displayed on the hardware wallet in the specification
+// used by launch of the Internet Computer.
+extend google.protobuf.FieldOptions {
+  bool tui_signed_display_q2_2021 = 20001;
+}
 
 // ** LEDGER CANISTER ENDPOINTS
 
@@ -24,12 +57,14 @@ message LedgerUpgrade {
 
 // Make a payment
 message SendRequest {
-  Memo memo = 1;
-  Payment payment = 2;
-  ICPTs max_fee = 3;
-  Subaccount from_subaccount = 4;
-  AccountIdentifier to = 5;
+  option (tui_signed_message) = true;
+  Memo memo = 1                  [(tui_signed_display_q2_2021) = true];
+  Payment payment = 2            [(tui_signed_display_q2_2021) = true];
+  ICPTs max_fee = 3              [(tui_signed_display_q2_2021) = true];
+  Subaccount from_subaccount = 4 [(tui_signed_display_q2_2021) = true];
+  AccountIdentifier to = 5       [(tui_signed_display_q2_2021) = true];
   BlockHeight created_at = 6;
+  TimeStamp created_at_time = 7;
 }
 
 message SendResponse {
@@ -38,16 +73,30 @@ message SendResponse {
 
 // Notify a canister that it has recieved a payment
 message NotifyRequest {
-  BlockHeight block_height = 1;
-  ICPTs max_fee = 2;
-  Subaccount from_subaccount = 3;
-  PrincipalId to_canister = 4;
-  Subaccount to_subaccount = 5;
+  option (tui_signed_message) = true;
+  BlockHeight block_height = 1                    [(tui_signed_display_q2_2021) = true];
+  ICPTs max_fee = 2                               [(tui_signed_display_q2_2021) = true];
+  Subaccount from_subaccount = 3                  [(tui_signed_display_q2_2021) = true];
+  PrincipalId to_canister = 4 [(tui_signed_display_q2_2021) = true];
+  Subaccount to_subaccount = 5                    [(tui_signed_display_q2_2021) = true];
 }
 
 message NotifyResponse {
 }
 
+message TransactionNotificationRequest {
+  PrincipalId from = 1;
+  Subaccount from_subaccount = 2;
+  PrincipalId to = 3;
+  Subaccount to_subaccount = 4;
+  BlockHeight block_height = 5;
+  ICPTs amount = 6;
+  Memo memo = 7;
+}
+
+message TransactionNotificationResponse {
+  bytes response = 1;
+}
 
 // Get the balance of an account
 message AccountBalanceRequest  {
@@ -166,7 +215,7 @@ message GetNodesResponse {
 
 // ** BASIC TYPES **
 message ICPTs {
-  uint64 doms = 1 [jstype = JS_STRING];
+  uint64 e8s = 1 [jstype = JS_STRING];
 }
 
 message Payment {
@@ -201,7 +250,8 @@ message Transaction {
     Send send = 3;
   }
   Memo memo = 4;
-  BlockHeight created_at = 5;
+  BlockHeight created_at = 5; // obsolete
+  TimeStamp created_at_time = 6;
 }
 
 message Send {
@@ -241,3 +291,4 @@ message TimeStamp {
 message Certification {
   bytes certification = 1;
 }
+
