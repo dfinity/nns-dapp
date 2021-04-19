@@ -2,7 +2,7 @@ import { Agent, Principal, QueryResponseStatus } from "@dfinity/agent";
 import ServiceInterface, {
     AccountIdentifier,
     BlockHeight,
-    Doms,
+    E8s,
     GetBalancesRequest,
     NotifyCanisterRequest,
     SendICPTsRequest
@@ -25,7 +25,7 @@ export default class Service implements ServiceInterface {
         this.requestConverters = new RequestConverters();
     }
 
-    public getBalances = async (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, Doms>> => {
+    public getBalances = async (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, E8s>> => {
         const rawRequests = this.requestConverters.fromGetBalancesRequest(request);
         const promises = rawRequests.map(async r => {
             const rawResponse = await this.agent.query(this.canisterId, {
@@ -60,13 +60,14 @@ export default class Service implements ServiceInterface {
         return uint8ArrayToBigInt(responseBytes);
     }
 
-    public notify = async (request: NotifyCanisterRequest) : Promise<void> => {
+    public notify = async (request: NotifyCanisterRequest) : Promise<any> => {
         const rawRequest = this.requestConverters.fromNotifyCanisterRequest(request);
-
-        await submitUpdateRequest(
+        const requestBinary = rawRequest.serializeBinary();
+        const requestBlob = uint8ArrayToBlob(requestBinary);
+        return await submitUpdateRequest(
             this.agent,
             this.canisterId,
             "notify",
-            uint8ArrayToBlob(rawRequest.serializeBinary()));
+            requestBlob);
     }
 }

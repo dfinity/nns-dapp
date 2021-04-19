@@ -1,4 +1,4 @@
-import { AccountIdentifier, BlockHeight, Doms } from "../ledger/model";
+import { AccountIdentifier, BlockHeight, E8s } from "../ledger/model";
 
 export type CreateSubAccountResponse =
     { Ok: NamedSubAccount } |
@@ -21,16 +21,16 @@ export interface NamedSubAccount {
     accountIdentifier: AccountIdentifier,
     name: string,
 };
-export interface Receive { fee: Doms, from: AccountIdentifier, amount: Doms };
-export interface Send { to: AccountIdentifier, fee: Doms, amount: Doms };
+export interface Receive { fee: E8s, from: AccountIdentifier, amount: E8s };
+export interface Send { to: AccountIdentifier, fee: E8s, amount: E8s };
 export interface Timestamp { secs: bigint, nanos: number };
 export interface Transaction {
     timestamp: Timestamp,
     blockHeight: BlockHeight,
     transfer: Transfer,
 };
-export type Transfer = { Burn: { amount: Doms } } |
-    { Mint: { amount: Doms } } |
+export type Transfer = { Burn: { amount: E8s } } |
+    { Mint: { amount: E8s } } |
     { Send: Send } |
     { Receive: Receive };
 export default interface ServiceInterface {

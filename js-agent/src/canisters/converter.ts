@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { Doms } from "./ledger/model";
+import { E8s } from "./ledger/model";
 import { ICPTs as RawICPTs } from "./nnsUI/rawService";
 import { SUB_ACCOUNT_BYTE_LENGTH } from "./constants";
 import { BinaryBlob } from "@dfinity/agent";
@@ -62,7 +62,7 @@ export const asciiStringToByteArray = (text: string) : Array<number> => {
         .map(c => c.charCodeAt(0));
 }
 
-export const toDoms = (value: RawICPTs) : Doms => {
+export const toDoms = (value: RawICPTs) : E8s => {
     return BigInt(value.doms);
 }
 

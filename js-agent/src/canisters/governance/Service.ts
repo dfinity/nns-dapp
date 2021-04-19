@@ -1,15 +1,12 @@
 import { Principal } from "@dfinity/agent";
-import BigNumber from "bignumber.js";
 import { Option } from "../option";
-import RawService from "./rawService";
+import RawService, { ListNeurons } from "./rawService";
 import ServiceInterface, {
     AddHotKeyRequest,
-    ClaimNeuronRequest,
-    ClaimNeuronResponse,
     DisburseRequest,
-    DisburseResult,
+    DisburseResponse,
     DisburseToNeuronRequest,
-    DisburseToNeuronResult,
+    DisburseToNeuronResponse,
     EmptyResponse,
     FollowRequest,
     IncreaseDissolveDelayRequest,
@@ -17,22 +14,22 @@ import ServiceInterface, {
     ListProposalsResponse,
     MakeMotionProposalRequest,
     MakeNetworkEconomicsProposalRequest,
-    MakeProposalResult,
+    MakeProposalResponse,
     MakeRewardNodeProviderProposalRequest,
     MakeSetDefaultFolloweesProposalRequest,
+    NeuronId,
     NeuronInfo,
     ProposalInfo,
     RegisterVoteRequest,
     RemoveHotKeyRequest,
     SpawnRequest,
-    SpawnResult,
+    SpawnResponse,
     SplitRequest,
     StartDissolvingRequest,
     StopDissolvingRequest
 } from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
-import { bigIntToBigNumber, bigNumberToBigInt } from "../converter";
 
 export default class Service implements ServiceInterface {
     private readonly service: RawService;
@@ -47,30 +44,23 @@ export default class Service implements ServiceInterface {
         this.responseConverters = new ResponseConverters();
     }
 
-    public claimNeuron = async (request: ClaimNeuronRequest) : Promise<ClaimNeuronResponse> => {
-        const [principal, nonce, dissolveDelay] = this.requestConverters.fromClaimNeuronRequest(request);
-        const rawResponse = await this.service.claim_neuron(principal, nonce, dissolveDelay);
-        return this.responseConverters.toClaimNeuronResponse(rawResponse);        
+    public getNeuron = async (neuronId: NeuronId) : Promise<Option<NeuronInfo>> => {
+        const rawRequest: ListNeurons = {
+            neuron_ids: [neuronId],
+            include_neurons_readable_by_caller: false
+        }
+        const rawResponse = await this.service.list_neurons(rawRequest);
+        const response = this.responseConverters.toArrayOfNeuronInfo(rawResponse);
+        return response.length > 0 ? response[0] : null;
     }
 
     public getNeurons = async () : Promise<Array<NeuronInfo>> => {
-        const neuronIds = await this.service.get_neuron_ids();
-        if (!neuronIds.length) {
-            return [];
+        const rawRequest: ListNeurons = {
+            neuron_ids: [],
+            include_neurons_readable_by_caller: true
         }
-
-        const promises: Promise<NeuronInfo>[] = neuronIds.map(async (id: BigNumber) : Promise<NeuronInfo> => {
-            const neuronInfoPromise = this.service.get_neuron_info(id);
-            const fullNeuronPromise = this.service.get_full_neuron(id);
-            const rawResponses = await Promise.all([neuronInfoPromise, fullNeuronPromise]);
-            const neuronInfoResponse = this.responseConverters.toNeuronInfoResponse(id, rawResponses[0], rawResponses[1]);
-            if ("Ok" in neuronInfoResponse) {
-                return neuronInfoResponse.Ok;
-            }
-            throw new Error("Failed to retrieve neuron info. NeuronId: " + bigNumberToBigInt(id));
-        });
-
-        return await Promise.all(promises);
+        const rawResponse = await this.service.list_neurons(rawRequest);
+        return this.responseConverters.toArrayOfNeuronInfo(rawResponse);
     }
 
     public listProposals = async (request: ListProposalsRequest) : Promise<ListProposalsResponse> => {
@@ -85,101 +75,101 @@ export default class Service implements ServiceInterface {
     }
 
     public getProposalInfo = async (proposalId: bigint) : Promise<Option<ProposalInfo>> => {
-        const rawResponse = await this.service.get_proposal_info(bigIntToBigNumber(proposalId));
+        const rawResponse = await this.service.get_proposal_info(proposalId);
         return rawResponse.length ? this.responseConverters.toProposalInfo(rawResponse[0]) : null;
     }
 
     public addHotKey = async (request: AddHotKeyRequest) : Promise<EmptyResponse> => {
         const rawRequest = this.requestConverters.fromAddHotKeyRequest(request);
-        const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toEmptyResponse(rawResponse);
+        await this.service.manage_neuron(rawRequest);
+        return { Ok: null };
     }
     
     public removeHotKey = async (request: RemoveHotKeyRequest) : Promise<EmptyResponse> => {
         const rawRequest = this.requestConverters.fromRemoveHotKeyRequest(request);
-        const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toEmptyResponse(rawResponse);
+        await this.service.manage_neuron(rawRequest);
+        return { Ok: null };
     }
 
     public startDissolving = async (request: StartDissolvingRequest) : Promise<EmptyResponse> => {
         const rawRequest = this.requestConverters.fromStartDissolvingRequest(request);
-        const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toEmptyResponse(rawResponse);
+        await this.service.manage_neuron(rawRequest);
+        return { Ok: null };
     }
 
     public stopDissolving = async (request: StopDissolvingRequest) : Promise<EmptyResponse> => {
         const rawRequest = this.requestConverters.fromStopDissolvingRequest(request);
-        const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toEmptyResponse(rawResponse);
+        await this.service.manage_neuron(rawRequest);
+        return { Ok: null };
     }
 
     public increaseDissolveDelay = async (request: IncreaseDissolveDelayRequest) : Promise<EmptyResponse> => {
         const rawRequest = this.requestConverters.fromIncreaseDissolveDelayRequest(request);
-        const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toEmptyResponse(rawResponse);
+        await this.service.manage_neuron(rawRequest);
+        return { Ok: null };
     }
 
     public follow = async (request: FollowRequest) : Promise<EmptyResponse> => {
         const rawRequest = this.requestConverters.fromFollowRequest(request);
-        const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toEmptyResponse(rawResponse);
+         await this.service.manage_neuron(rawRequest);
+        return { Ok: null };
     }
 
     public registerVote = async (request: RegisterVoteRequest) : Promise<EmptyResponse> => {
         const rawRequest = this.requestConverters.fromRegisterVoteRequest(request);
-        const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toEmptyResponse(rawResponse);
+        await this.service.manage_neuron(rawRequest);
+        return { Ok: null };
     }
 
-    public spawn = async (request: SpawnRequest) : Promise<SpawnResult> => {
+    public spawn = async (request: SpawnRequest) : Promise<SpawnResponse> => {
         const rawRequest = this.requestConverters.fromSpawnRequest(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toSpawnResult(rawResponse);
+        return this.responseConverters.toSpawnResponse(rawResponse);
     }
 
     public split = async (request: SplitRequest) : Promise<EmptyResponse> => {
         const rawRequest = this.requestConverters.fromSplitRequest(request);
-        const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toEmptyResponse(rawResponse);
+        await this.service.manage_neuron(rawRequest);
+        return { Ok: null };
     }
 
-    public disburse = async (request: DisburseRequest) : Promise<DisburseResult> => {
+    public disburse = async (request: DisburseRequest) : Promise<DisburseResponse> => {
         const rawRequest = this.requestConverters.fromDisburseRequest(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
-        const response = this.responseConverters.toDisburseResult(rawResponse);
+        const response = this.responseConverters.toDisburseResponse(rawResponse);
         if ("Ok" in response) {
             this.syncTransactions();
         }
         return response
     }
 
-    public disburseToNeuron = async (request: DisburseToNeuronRequest) : Promise<DisburseToNeuronResult> => {
+    public disburseToNeuron = async (request: DisburseToNeuronRequest) : Promise<DisburseToNeuronResponse> => {
         const rawRequest = this.requestConverters.fromDisburseToNeuronRequest(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
         return this.responseConverters.toDisburseToNeuronResult(rawResponse);
     }
 
-    public makeMotionProposal = async (request: MakeMotionProposalRequest) : Promise<MakeProposalResult> => {
+    public makeMotionProposal = async (request: MakeMotionProposalRequest) : Promise<MakeProposalResponse> => {
         const rawRequest = this.requestConverters.fromMakeMotionProposalRequest(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toMakeProposalResult(rawResponse);
+        return this.responseConverters.toMakeProposalResponse(rawResponse);
     }
 
-    public makeNetworkEconomicsProposal = async (request: MakeNetworkEconomicsProposalRequest) : Promise<MakeProposalResult> => {
+    public makeNetworkEconomicsProposal = async (request: MakeNetworkEconomicsProposalRequest) : Promise<MakeProposalResponse> => {
         const rawRequest = this.requestConverters.fromMakeNetworkEconomicsProposalRequest(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toMakeProposalResult(rawResponse);
+        return this.responseConverters.toMakeProposalResponse(rawResponse);
     }
 
-    public makeRewardNodeProviderProposal = async (request: MakeRewardNodeProviderProposalRequest) : Promise<MakeProposalResult> => {
+    public makeRewardNodeProviderProposal = async (request: MakeRewardNodeProviderProposalRequest) : Promise<MakeProposalResponse> => {
         const rawRequest = this.requestConverters.fromMakeRewardNodeProviderProposalRequest(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toMakeProposalResult(rawResponse);
+        return this.responseConverters.toMakeProposalResponse(rawResponse);
     }
 
-    public makeSetDefaultFolloweesProposal = async (request: MakeSetDefaultFolloweesProposalRequest) : Promise<MakeProposalResult> => {
+    public makeSetDefaultFolloweesProposal = async (request: MakeSetDefaultFolloweesProposalRequest) : Promise<MakeProposalResponse> => {
         const rawRequest = this.requestConverters.fromMakeSetDefaultFolloweesProposalRequest(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
-        return this.responseConverters.toMakeProposalResult(rawResponse);
+        return this.responseConverters.toMakeProposalResponse(rawResponse);
     }
 }

@@ -4,7 +4,7 @@ export type SubAccount = ArrayBuffer;
 
 export type BlockHeight = bigint;
 
-export type Doms = bigint;
+export type E8s = bigint;
 
 export interface GetBalancesRequest {
     accounts: Array<AccountIdentifier>,
@@ -14,9 +14,9 @@ export type AccountIdentifier = string;
 
 export interface SendICPTsRequest {
     to: AccountIdentifier,
-    amount: Doms,
+    amount: E8s,
     memo?: Uint8Array,
-    fee?: Doms,
+    fee?: E8s,
     blockHeight?: BlockHeight,
     fromSubAccountId?: number,
 };
@@ -26,11 +26,11 @@ export interface NotifyCanisterRequest {
     blockHeight : BlockHeight,
     toSubAccount? : SubAccount,
     fromSubAccountId? : number,
-    maxFee? : Doms,
+    maxFee? : E8s,
 };
   
 export default interface ServiceInterface {
-    getBalances(request: GetBalancesRequest): Promise<Record<AccountIdentifier, Doms>>,
+    getBalances(request: GetBalancesRequest): Promise<Record<AccountIdentifier, E8s>>,
     sendICPTs(request: SendICPTsRequest): Promise<BlockHeight>,
     notify(request: NotifyCanisterRequest): Promise<void>
 };

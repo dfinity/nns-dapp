@@ -2,8 +2,9 @@ import { blobFromUint8Array, derBlobFromBlob, Principal, SignIdentity } from "@d
 import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
-import { buildSubAccount, buildAccountIdentifier } from "./canisters/governance/createNeuron";
+import { buildSubAccount, buildAccountIdentifier } from "./canisters/ledger/createNeuron";
 import { NeuronId, Topic, Vote } from "./canisters/governance/model";
+import AccountIdentifier from "./canisters/AccountIdentifier";
 
 var running = false;
 
@@ -61,16 +62,12 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     if (neurons.length < 3) {    
         console.log("creating a neuron");
-        const createNeuronResult = await governanceApi.createNeuron({
+        const createNeuronResult = await ledgerApi.createNeuron({
             stake: BigInt(1_000_000_000),
             dissolveDelayInSecs: BigInt(20_000_000),
             fromSubAccountId: firstSubAccount.id
         });
         console.log(createNeuronResult);
-
-        if (!("Ok" in createNeuronResult)) {
-            return;
-        }
 
         console.log("get neurons again")
         neurons = await governanceApi.getNeurons();
@@ -134,16 +131,12 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     let disbursableNeuronId = neurons.find(n => n.dissolveDelaySeconds == BigInt(0) && n.fullNeuron.cachedNeuronStake > 1_000_000_000)?.neuronId;
     if (!disbursableNeuronId) {    
         console.log("creating a neuron with zero dissolve delay");
-        const createNeuronResult = await governanceApi.createNeuron({
+        const createNeuronResult = await ledgerApi.createNeuron({
             stake: BigInt(1_000_000_000),
             dissolveDelayInSecs: BigInt(0),
             fromSubAccountId: firstSubAccount.id
         });
         console.log(createNeuronResult);
-
-        if (!("Ok" in createNeuronResult)) {
-            return;
-        }
 
         disbursableNeuronId = createNeuronResult.Ok;
     }
@@ -153,7 +146,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         console.log("Disburse 1_000_000 doms from first disbursable neuron to my default account");
         const manageNeuronResponse = await governanceApi.disburse({
             neuronId: disbursableNeuronId,
-            toSubaccountId: null,
+            toAccountId: AccountIdentifier.fromString(account.accountIdentifier),
             amount: BigInt(1_000_000)
         });
         console.log(manageNeuronResponse);            
@@ -215,11 +208,15 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
             neuronId: neuronId,
             url: "https://www.lipsum.com/",
             summary: "New networks economics proposal",
-            rejectCost: BigInt(10_000_000),
-            manageNeuronCostPerProposal: BigInt(1_000),
-            neuronMinimumStake: BigInt(100_000_000),
-            maximumNodeProviderRewards: BigInt(10_000_000_000),
-            neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
+            networkEcomomics: {
+                rejectCost: BigInt(10_000_000),
+                manageNeuronCostPerProposal: BigInt(1_000),
+                neuronMinimumStake: BigInt(100_000_000),
+                maximumNodeProviderRewards: BigInt(10_000_000_000),
+                neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
+                transactionFee: BigInt(1000),
+                minimumIcpXdrRate: BigInt(1)
+            }
         });
         console.log(manageNeuronResponse);
     }

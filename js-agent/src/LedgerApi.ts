@@ -4,7 +4,7 @@ import LedgerService, {
     AccountIdentifier,
     BlockHeight,
     GetBalancesRequest,
-    Doms,
+    E8s,
     SendICPTsRequest
 } from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/nnsUI/builder";
@@ -15,6 +15,7 @@ import LedgerViewService, {
     NamedSubAccount
 } from "./canisters/nnsUI/model";
 import { create_dummy_proposals, test_happy_path } from "./tests";
+import createNeuronImpl, { CreateNeuronRequest, CreateNeuronResponse } from "./canisters/ledger/createNeuron";
 
 export default class LedgerApi {
     private readonly ledgerService: LedgerService;
@@ -37,7 +38,7 @@ export default class LedgerApi {
 
     // Temporary method for demo purposes only, to give the specified account some ICPTs
     // by sending from the anon account which has been gifted lots of ICPTs
-    public acquireICPTs = async (accountIdentifier: AccountIdentifier, doms: Doms): Promise<void> => {
+    public acquireICPTs = async (accountIdentifier: AccountIdentifier, e8s: E8s): Promise<void> => {
         const anonIdentity = new AnonymousIdentity();
         const agent = new HttpAgent({
             host: this.host,
@@ -46,7 +47,7 @@ export default class LedgerApi {
         const anonLedgerService = ledgerBuilder(agent, anonIdentity);
         await anonLedgerService.sendICPTs({
             to: accountIdentifier,
-            amount: doms
+            amount: e8s
         });
         await this.ledgerViewService.syncTransactions();
     }
@@ -68,7 +69,7 @@ export default class LedgerApi {
         }
     }
 
-    public getBalances = (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, Doms>> => {
+    public getBalances = (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, E8s>> => {
         return this.ledgerService.getBalances(request);
     }
 
@@ -82,6 +83,13 @@ export default class LedgerApi {
         return response;
     }
 
+    public createNeuron = async (request: CreateNeuronRequest) : Promise<CreateNeuronResponse> => {
+        return createNeuronImpl(
+            this.identity, 
+            this.ledgerService, 
+            request);
+    }
+
     public integrationTest = async (): Promise<void> => {
         return await test_happy_path(this.host, this.identity);
     }
@@ -91,7 +99,7 @@ export default class LedgerApi {
     }
 
     public jsonString(object: Object): String{
-        return JSON.stringify(object, (key, value) =>
+        return JSON.stringify(object, (_key, value) =>
             typeof value === 'bigint'
                 ? value.toString()
                 : value // return everything else unchanged

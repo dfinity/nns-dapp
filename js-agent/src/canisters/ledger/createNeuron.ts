@@ -1,33 +1,29 @@
-import LedgerService, { Doms } from "../ledger/model";
-import GovernanceService, { GovernanceError } from "./model";
+import LedgerService, { E8s } from "./model";
 import { BinaryBlob, blobFromUint8Array, DerEncodedBlob, Principal, SignIdentity } from "@dfinity/agent";
-import GOVERNANCE_CANISTER_ID from "./canisterId";
+import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
 import * as convert from "../converter";
 import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
 import crc from "crc";
 import randomBytes from "randombytes";
 
 export type CreateNeuronRequest = {
-    stake: Doms
+    stake: E8s
     dissolveDelayInSecs: bigint,
     fromSubAccountId?: number
 }
 
-export type CreateNeuronResponse = { Ok: bigint } | { Err: GovernanceError };
+export type CreateNeuronResponse = any;
 
 // Ported from https://github.com/dfinity-lab/dfinity/blob/master/rs/nns/integration_tests/src/ledger.rs#L29
 export default async function(
     identity: SignIdentity,
     ledgerService: LedgerService, 
-    governanceService: GovernanceService, 
     request: CreateNeuronRequest) : Promise<CreateNeuronResponse> {
 
-    console.log("0. Generate a nonce and a sub-account");
     const publicKey = identity.getPublicKey().toDer();
     const nonce = new Uint8Array(randomBytes(8));
     const toSubAccount = await buildSubAccount(nonce, publicKey);
 
-    console.log("1. Send the stake to a sub-account where the principal is the Governance canister");
     const accountIdentifier = buildAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
     const blockHeight = await ledgerService.sendICPTs({
         memo: nonce,
@@ -36,23 +32,15 @@ export default async function(
         fromSubAccountId: request.fromSubAccountId
     });
 
-    console.log("2. Notify the Governance canister that a neuron has been staked");
-    await ledgerService.notify({
+    const result = await ledgerService.notify({
         toCanister: GOVERNANCE_CANISTER_ID,
         blockHeight,
         toSubAccount,
         fromSubAccountId: request.fromSubAccountId
     });
 
-    console.log("3. Call the Governance canister to claim the neuron");
-    const claimResponse = await governanceService.claimNeuron({
-        publicKey,
-        nonce: convert.uint8ArrayToBigInt(nonce),
-        dissolveDelayInSecs: request.dissolveDelayInSecs    
-    });
-
     return {
-        ...claimResponse
+        result
     };
 }
 

@@ -1,8 +1,8 @@
 import type { Principal } from '@dfinity/agent';
-import type BigNumber from 'bignumber.js';
-export type Action = {
-    'ExternalUpdate' : ExternalUpdate
-  } |
+export interface AccountIdentifier {
+  'hash' : Array<number>,
+};
+export type Action = { 'ExternalUpdate' : ExternalUpdate } |
   { 'ManageNeuron' : ManageNeuron } |
   { 'ApproveKyc' : ApproveKyc } |
   { 'NetworkEconomics' : NetworkEconomics } |
@@ -12,11 +12,11 @@ export type Action = {
   { 'Motion' : Motion };
 export interface AddHotKey { 'new_hot_key' : [] | [Principal] };
 export interface AddOrRemoveNodeProvider { 'change' : [] | [Change] };
-export interface Amount { 'doms' : BigNumber };
+export interface Amount { 'e8s' : bigint };
 export interface ApproveKyc { 'principals' : Array<Principal> };
 export type AuthzChangeOp = { 'Authorize' : { 'add_self' : boolean } } |
   { 'Deauthorize' : null };
-export interface Ballot { 'vote' : number, 'voting_power' : BigNumber };
+export interface Ballot { 'vote' : number, 'voting_power' : bigint };
 export interface BallotInfo {
   'vote' : number,
   'proposal_id' : [] | [NeuronId],
@@ -32,7 +32,8 @@ export type Command = { 'Spawn' : Spawn } |
   { 'DisburseToNeuron' : DisburseToNeuron } |
   { 'MakeProposal' : Proposal } |
   { 'Disburse' : Disburse };
-export type Command_1 = { 'Spawn' : SpawnResponse } |
+export type Command_1 = { 'Error' : GovernanceError } |
+  { 'Spawn' : SpawnResponse } |
   { 'Split' : SpawnResponse } |
   { 'Follow' : {} } |
   { 'Configure' : {} } |
@@ -46,20 +47,19 @@ export type Command_2 = { 'Spawn' : Spawn } |
   { 'Disburse' : Disburse };
 export interface Configure { 'operation' : [] | [Operation] };
 export interface Disburse {
-  'to_subaccount' : Array<number>,
-  'to_account' : [] | [Principal],
+  'to_account' : [] | [AccountIdentifier],
   'amount' : [] | [Amount],
 };
-export interface DisburseResponse { 'transfer_block_height' : BigNumber };
+export interface DisburseResponse { 'transfer_block_height' : bigint };
 export interface DisburseToNeuron {
-  'dissolve_delay_seconds' : BigNumber,
+  'dissolve_delay_seconds' : bigint,
   'kyc_verified' : boolean,
-  'amount_doms' : BigNumber,
+  'amount_e8s' : bigint,
   'new_controller' : [] | [Principal],
-  'nonce' : BigNumber,
+  'nonce' : bigint,
 };
-export type DissolveState = { 'DissolveDelaySeconds' : BigNumber } |
-  { 'WhenDissolvedTimestampSeconds' : BigNumber };
+export type DissolveState = { 'DissolveDelaySeconds' : bigint } |
+  { 'WhenDissolvedTimestampSeconds' : bigint };
 export interface ExternalUpdate {
   'update_type' : number,
   'payload' : Array<number>,
@@ -68,16 +68,16 @@ export interface Follow { 'topic' : number, 'followees' : Array<NeuronId> };
 export interface Followees { 'followees' : Array<NeuronId> };
 export interface Governance {
   'default_followees' : Array<[number, Followees]>,
-  'wait_for_quiet_threshold_seconds' : BigNumber,
+  'wait_for_quiet_threshold_seconds' : bigint,
   'authz' : [] | [CanisterAuthzInfo],
   'node_providers' : Array<NodeProvider>,
   'economics' : [] | [NetworkEconomics],
   'latest_reward_event' : [] | [RewardEvent],
   'to_claim_transfers' : Array<NeuronStakeTransfer>,
-  'proposals' : Array<[BigNumber, ProposalInfo]>,
-  'in_flight_commands' : Array<[BigNumber, NeuronInFlightCommand]>,
-  'neurons' : Array<[BigNumber, Neuron]>,
-  'genesis_timestamp_seconds' : BigNumber,
+  'proposals' : Array<[bigint, ProposalData]>,
+  'in_flight_commands' : Array<[bigint, NeuronInFlightCommand]>,
+  'neurons' : Array<[bigint, Neuron]>,
+  'genesis_timestamp_seconds' : bigint,
 };
 export interface GovernanceError {
   'error_message' : string,
@@ -85,6 +85,14 @@ export interface GovernanceError {
 };
 export interface IncreaseDissolveDelay {
   'additional_dissolve_delay_seconds' : number,
+};
+export interface ListNeurons {
+  'neuron_ids' : Array<bigint>,
+  'include_neurons_readable_by_caller' : boolean,
+};
+export interface ListNeuronsResponse {
+  'neuron_infos' : Array<[bigint, NeuronInfo]>,
+  'full_neurons' : Array<Neuron>,
 };
 export interface ListProposalInfo {
   'include_reward_status' : Array<number>,
@@ -114,11 +122,13 @@ export interface MethodAuthzInfo {
 };
 export interface Motion { 'motion_text' : string };
 export interface NetworkEconomics {
-  'reject_cost_doms' : BigNumber,
-  'manage_neuron_cost_per_proposal_doms' : BigNumber,
-  'neuron_minimum_stake_doms' : BigNumber,
-  'maximum_node_provider_rewards_doms' : BigNumber,
-  'neuron_spawn_dissolve_delay_seconds' : BigNumber,
+  'neuron_minimum_stake_e8s' : bigint,
+  'reject_cost_e8s' : bigint,
+  'manage_neuron_cost_per_proposal_e8s' : bigint,
+  'transaction_fee_e8s' : bigint,
+  'neuron_spawn_dissolve_delay_seconds' : bigint,
+  'minimum_icp_xdr_rate' : bigint,
+  'maximum_node_provider_rewards_e8s' : bigint,
 };
 export interface Neuron {
   'id' : [] | [NeuronId],
@@ -126,39 +136,39 @@ export interface Neuron {
   'recent_ballots' : Array<BallotInfo>,
   'kyc_verified' : boolean,
   'not_for_profit' : boolean,
-  'cached_neuron_stake_doms' : BigNumber,
-  'created_timestamp_seconds' : BigNumber,
-  'maturity_doms_equivalent' : BigNumber,
-  'aging_since_timestamp_seconds' : BigNumber,
-  'neuron_fees_doms' : BigNumber,
+  'maturity_e8s_equivalent' : bigint,
+  'cached_neuron_stake_e8s' : bigint,
+  'created_timestamp_seconds' : bigint,
+  'aging_since_timestamp_seconds' : bigint,
   'hot_keys' : Array<Principal>,
   'account' : Array<number>,
   'dissolve_state' : [] | [DissolveState],
   'followees' : Array<[number, Followees]>,
+  'neuron_fees_e8s' : bigint,
   'transfer' : [] | [NeuronStakeTransfer],
 };
-export interface NeuronId { 'id' : BigNumber };
+export interface NeuronId { 'id' : bigint };
 export interface NeuronInFlightCommand {
   'command' : [] | [Command_2],
-  'timestamp' : BigNumber,
+  'timestamp' : bigint,
 };
 export interface NeuronInfo {
-  'dissolve_delay_seconds' : BigNumber,
+  'dissolve_delay_seconds' : bigint,
   'recent_ballots' : Array<BallotInfo>,
-  'created_timestamp_seconds' : BigNumber,
+  'created_timestamp_seconds' : bigint,
   'state' : number,
-  'retrieved_at_timestamp_seconds' : BigNumber,
-  'voting_power' : BigNumber,
-  'age_seconds' : BigNumber,
+  'retrieved_at_timestamp_seconds' : bigint,
+  'voting_power' : bigint,
+  'age_seconds' : bigint,
 };
 export interface NeuronStakeTransfer {
   'to_subaccount' : Array<number>,
+  'neuron_stake_e8s' : bigint,
   'from' : [] | [Principal],
-  'memo' : BigNumber,
-  'neuron_stake_doms' : BigNumber,
+  'memo' : bigint,
   'from_subaccount' : Array<number>,
-  'transfer_timestamp' : BigNumber,
-  'block_height' : BigNumber,
+  'transfer_timestamp' : bigint,
+  'block_height' : bigint,
 };
 export interface NodeProvider { 'id' : [] | [Principal] };
 export type Operation = { 'RemoveHotKey' : RemoveHotKey } |
@@ -171,72 +181,84 @@ export interface Proposal {
   'action' : [] | [Action],
   'summary' : string,
 };
-export interface ProposalInfo {
+export interface ProposalData {
   'id' : [] | [NeuronId],
-  'ballots' : Array<[BigNumber, Ballot]>,
-  'reject_cost_doms' : BigNumber,
-  'proposal_timestamp_seconds' : BigNumber,
-  'reward_event_round' : BigNumber,
-  'failed_timestamp_seconds' : BigNumber,
+  'ballots' : Array<[bigint, Ballot]>,
+  'proposal_timestamp_seconds' : bigint,
+  'reward_event_round' : bigint,
+  'failed_timestamp_seconds' : bigint,
+  'reject_cost_e8s' : bigint,
   'latest_tally' : [] | [Tally],
-  'decided_timestamp_seconds' : BigNumber,
+  'decided_timestamp_seconds' : bigint,
   'proposal' : [] | [Proposal],
   'proposer' : [] | [NeuronId],
-  'executed_timestamp_seconds' : BigNumber,
+  'executed_timestamp_seconds' : bigint,
+};
+export interface ProposalInfo {
+  'id' : [] | [NeuronId],
+  'status' : number,
+  'topic' : number,
+  'ballots' : Array<[bigint, Ballot]>,
+  'proposal_timestamp_seconds' : bigint,
+  'reward_event_round' : bigint,
+  'failed_timestamp_seconds' : bigint,
+  'reject_cost_e8s' : bigint,
+  'latest_tally' : [] | [Tally],
+  'reward_status' : number,
+  'decided_timestamp_seconds' : bigint,
+  'proposal' : [] | [Proposal],
+  'proposer' : [] | [NeuronId],
+  'executed_timestamp_seconds' : bigint,
 };
 export interface RegisterVote { 'vote' : number, 'proposal' : [] | [NeuronId] };
 export interface RemoveHotKey { 'hot_key_to_remove' : [] | [Principal] };
-export type Result = { 'Ok' : BigNumber } |
+export type Result = { 'Ok' : null } |
   { 'Err' : GovernanceError };
 export type Result_1 = { 'Ok' : Neuron } |
   { 'Err' : GovernanceError };
 export type Result_2 = { 'Ok' : NeuronInfo } |
   { 'Err' : GovernanceError };
-export type Result_3 = { 'Ok' : ManageNeuronResponse } |
-  { 'Err' : GovernanceError };
 export interface RewardEvent {
-  'day_after_genesis' : BigNumber,
-  'actual_timestamp_seconds' : BigNumber,
-  'distributed_doms_equivalent' : BigNumber,
+  'day_after_genesis' : bigint,
+  'actual_timestamp_seconds' : bigint,
+  'distributed_e8s_equivalent' : bigint,
   'settled_proposals' : Array<NeuronId>,
 };
 export interface RewardNodeProvider {
   'node_provider' : [] | [NodeProvider],
-  'amount_doms' : BigNumber,
+  'amount_e8s' : bigint,
 };
 export interface SetDefaultFollowees {
   'default_followees' : Array<[number, Followees]>,
 };
 export interface Spawn { 'new_controller' : [] | [Principal] };
 export interface SpawnResponse { 'created_neuron_id' : [] | [NeuronId] };
-export interface Split { 'amount_doms' : BigNumber };
+export interface Split { 'amount_e8s' : bigint };
 export interface Tally {
-  'no' : BigNumber,
-  'yes' : BigNumber,
-  'total' : BigNumber,
-  'timestamp_seconds' : BigNumber,
+  'no' : bigint,
+  'yes' : bigint,
+  'total' : bigint,
+  'timestamp_seconds' : bigint,
 };
 export default interface _SERVICE {
-  'claim_neuron' : (
-      arg_0: Array<number>,
-      arg_1: BigNumber,
-      arg_2: BigNumber,
-    ) => Promise<Result>,
+  'claim_gtc_neurons' : (arg_0: Principal, arg_1: Array<NeuronId>) => Promise<
+      Result
+    >,
   'current_authz' : () => Promise<CanisterAuthzInfo>,
-  'execute_eligible_proposals' : () => Promise<undefined>,
-  'get_full_neuron' : (arg_0: BigNumber) => Promise<Result_1>,
-  'get_neuron_ids' : () => Promise<Array<BigNumber>>,
-  'get_neuron_info' : (arg_0: BigNumber) => Promise<Result_2>,
+  'get_full_neuron' : (arg_0: bigint) => Promise<Result_1>,
+  'get_neuron_ids' : () => Promise<Array<bigint>>,
+  'get_neuron_info' : (arg_0: bigint) => Promise<Result_2>,
   'get_pending_proposals' : () => Promise<Array<ProposalInfo>>,
-  'get_proposal_info' : (arg_0: BigNumber) => Promise<[] | [ProposalInfo]>,
+  'get_proposal_info' : (arg_0: bigint) => Promise<[] | [ProposalInfo]>,
+  'list_neurons' : (arg_0: ListNeurons) => Promise<ListNeuronsResponse>,
   'list_proposals' : (arg_0: ListProposalInfo) => Promise<
       ListProposalInfoResponse
     >,
-  'manage_neuron' : (arg_0: ManageNeuron) => Promise<Result_3>,
+  'manage_neuron' : (arg_0: ManageNeuron) => Promise<ManageNeuronResponse>,
   'submit_proposal' : (
-      arg_0: BigNumber,
+      arg_0: bigint,
       arg_1: Proposal,
       arg_2: Principal,
-    ) => Promise<BigNumber>,
+    ) => Promise<bigint>,
   'update_authz' : (arg_0: Array<MethodAuthzChange>) => Promise<undefined>,
 };

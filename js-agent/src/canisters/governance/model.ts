@@ -1,6 +1,8 @@
 import type { DerEncodedBlob, Principal } from "@dfinity/agent";
-import { Doms } from "../ledger/model";
+import AccountIdentifier from "../AccountIdentifier";
 import { Option } from "../option";
+
+export type E8s = bigint;
 
 export type Action =
     { ExternalUpdate: ExternalUpdate } |
@@ -34,14 +36,14 @@ export type Command =
     { Disburse: Disburse };
 export interface Configure { operation: Operation };
 export interface Disburse {
-    toSubaccountId: Option<number>,
-    amount: Doms,
+    toAccountId: AccountIdentifier,
+    amount: E8s,
 };
 export interface DisburseResponse { transferBlockHeight: bigint };
 export interface DisburseToNeuron {
     dissolveDelaySeconds: bigint,
     kycVerified: boolean,
-    amount: Doms,
+    amount: E8s,
     newController: Option<Principal>,
     nonce: bigint,
 };
@@ -110,11 +112,13 @@ export interface MethodAuthzInfo {
 };
 export interface Motion { motionText: string };
 export interface NetworkEconomics {
-    rejectCost: Doms,
-    manageNeuronCostPerProposal: Doms,
-    neuronMinimumStake: Doms,
-    maximumNodeProviderRewards : Doms,
+    rejectCost: E8s,
+    manageNeuronCostPerProposal: E8s,
+    neuronMinimumStake: E8s,
+    maximumNodeProviderRewards : E8s,
     neuronSpawnDissolveDelaySeconds: bigint,
+    transactionFee: E8s,
+    minimumIcpXdrRate: bigint
 };
 export interface Neuron {
     id: NeuronId,
@@ -122,11 +126,11 @@ export interface Neuron {
     recentBallots: Array<BallotInfo>,
     kycVerified: boolean,
     notForProfit: boolean,
-    cachedNeuronStake: Doms,
+    cachedNeuronStake: E8s,
     createdTimestampSeconds: bigint,
-    maturityDomsEquivalent: bigint,
+    maturityE8sEquivalent: bigint,
     agingSinceTimestampSeconds: bigint,
-    neuronFees: Doms,
+    neuronFees: E8s,
     hotKeys: Array<Principal>,
     accountPrincipal: ArrayBuffer,
     dissolveState: DissolveState,
@@ -141,7 +145,7 @@ export enum NeuronState {
 	DISSOLVED = 3
 }
 export interface NeuronInfo {
-    neuronId: bigint,
+    neuronId: NeuronId,
     dissolveDelaySeconds: bigint,
     recentBallots: Array<BallotInfo>,
     createdTimestampSeconds: bigint,
@@ -149,13 +153,13 @@ export interface NeuronInfo {
     retrievedAtTimestampSeconds: bigint,
     votingPower: bigint,
     ageSeconds: bigint,
-    fullNeuron: Neuron
+    fullNeuron: Option<Neuron>
 };
 export interface NeuronStakeTransfer {
     toSubaccount: ArrayBuffer,
     from: Option<Principal>,
     memo: bigint,
-    neuronStake: Doms,
+    neuronStake: E8s,
     fromSubaccount: ArrayBuffer,
     transferTimestamp: bigint,
     blockHeight: bigint,
@@ -176,7 +180,7 @@ export type ProposalId = bigint;
 export interface ProposalInfo {
     id: ProposalId,
     ballots: Array<Ballot>,
-    rejectCost: Doms,
+    rejectCost: E8s,
     proposalTimestampSeconds: bigint,
     rewardEventRound: bigint,
     failedTimestampSeconds: bigint,
@@ -185,6 +189,9 @@ export interface ProposalInfo {
     proposal: Proposal,
     proposer: NeuronId,
     executedTimestampSeconds: bigint,
+    topic: Topic,
+    status: ProposalStatus,
+    rewardStatus: ProposalRewardStatus,
 };
 
 // The proposal status, with respect to reward distribution.
@@ -243,7 +250,7 @@ export type ClaimNeuronRequest = {
     dissolveDelayInSecs: bigint
 }
 
-export type ClaimNeuronResponse = { Ok: bigint } |
+export type ClaimNeuronResponse = { Ok: null } |
     { Err: GovernanceError };
 export type GetFullNeuronResponse = { Ok: Neuron } |
     { Err: GovernanceError };
@@ -251,11 +258,11 @@ export type GetNeuronInfoResponse = { Ok: NeuronInfo } |
     { Err: GovernanceError };
 export interface RewardNodeProvider {
     nodeProvider : Option<NodeProvider>,
-    amount : Doms,
+    amount : E8s,
 };
 export interface Spawn { newController: Option<Principal> };
 export interface SpawnResponse { createdNeuronId: NeuronId };
-export interface Split { amount: Doms };
+export interface Split { amount: E8s };
 export interface Tally {
     no: bigint,
     yes: bigint,
@@ -318,21 +325,20 @@ export interface SpawnRequest {
 
 export interface SplitRequest {
     neuronId: NeuronId,
-    amount: Doms
+    amount: E8s
 }
 
 export interface DisburseRequest {
     neuronId: NeuronId,
-    amount: Doms
-    // Should be an AccountIdentifier
-    toSubaccountId: Option<number>,
+    toAccountId: AccountIdentifier,
+    amount: E8s,
 }
 
 export interface DisburseToNeuronRequest {
     neuronId: NeuronId,
     dissolveDelaySeconds: bigint,
     kycVerified: boolean,
-    amount: Doms,
+    amount: E8s,
     newController: Option<Principal>,
     nonce: bigint
 }
@@ -348,11 +354,7 @@ export interface MakeNetworkEconomicsProposalRequest {
     neuronId: NeuronId,
     summary: string,
     url: string,
-    rejectCost : Doms,
-    manageNeuronCostPerProposal : Doms,
-    neuronMinimumStake : Doms,
-    maximumNodeProviderRewards : Doms,
-    neuronSpawnDissolveDelaySeconds : bigint
+    networkEcomomics: NetworkEconomics
 }
 
 export interface MakeRewardNodeProviderProposalRequest {
@@ -360,7 +362,7 @@ export interface MakeRewardNodeProviderProposalRequest {
     summary: string,
     url: string,
     nodeProvider: Principal,
-    amount: Doms,
+    amount: E8s,
 }
 
 export interface MakeSetDefaultFolloweesProposalRequest {
@@ -372,15 +374,10 @@ export interface MakeSetDefaultFolloweesProposalRequest {
 
 export interface DisburseToNeuronResponse { createdNeuronId: NeuronId };
 export interface SpawnResponse { createdNeuronId: NeuronId };
-export type SpawnResult = { Ok: SpawnResponse } | { Err: GovernanceError };
-export type DisburseResult = { Ok: DisburseResponse } | { Err: GovernanceError };
-export type DisburseToNeuronResult = { Ok: DisburseToNeuronResponse } | { Err: GovernanceError };
-export type MakeProposalResult = { Ok: MakeProposalResponse } | { Err: GovernanceError };
-
 export type EmptyResponse = { Ok: null } | { Err: GovernanceError };
 
 export default interface ServiceInterface {
-    claimNeuron: (request: ClaimNeuronRequest) => Promise<ClaimNeuronResponse>,
+    getNeuron: (neuronId: NeuronId) => Promise<Option<NeuronInfo>>,
     getNeurons: () => Promise<Array<NeuronInfo>>,
     getPendingProposals: () => Promise<Array<ProposalInfo>>,
     getProposalInfo: (proposalId: bigint) => Promise<Option<ProposalInfo>>,
@@ -392,12 +389,12 @@ export default interface ServiceInterface {
     increaseDissolveDelay: (request: IncreaseDissolveDelayRequest) => Promise<EmptyResponse>,
     follow: (request: FollowRequest) => Promise<EmptyResponse>,
     registerVote: (request: RegisterVoteRequest) => Promise<EmptyResponse>,
-    spawn: (request: SpawnRequest) => Promise<SpawnResult>,
+    spawn: (request: SpawnRequest) => Promise<SpawnResponse>,
     split: (request: SplitRequest) => Promise<EmptyResponse>,
-    disburse: (request: DisburseRequest) => Promise<DisburseResult>,
-    disburseToNeuron: (request: DisburseToNeuronRequest) => Promise<DisburseToNeuronResult>,
-    makeMotionProposal: (request: MakeMotionProposalRequest) => Promise<MakeProposalResult>,
-    makeNetworkEconomicsProposal: (request: MakeNetworkEconomicsProposalRequest) => Promise<MakeProposalResult>,
-    makeRewardNodeProviderProposal: (request: MakeRewardNodeProviderProposalRequest) => Promise<MakeProposalResult>,
-    makeSetDefaultFolloweesProposal: (request: MakeSetDefaultFolloweesProposalRequest) => Promise<MakeProposalResult>,
+    disburse: (request: DisburseRequest) => Promise<DisburseResponse>,
+    disburseToNeuron: (request: DisburseToNeuronRequest) => Promise<DisburseToNeuronResponse>,
+    makeMotionProposal: (request: MakeMotionProposalRequest) => Promise<MakeProposalResponse>,
+    makeNetworkEconomicsProposal: (request: MakeNetworkEconomicsProposalRequest) => Promise<MakeProposalResponse>,
+    makeRewardNodeProviderProposal: (request: MakeRewardNodeProviderProposalRequest) => Promise<MakeProposalResponse>,
+    makeSetDefaultFolloweesProposal: (request: MakeSetDefaultFolloweesProposalRequest) => Promise<MakeProposalResponse>,
 };

@@ -1,21 +1,17 @@
-import BigNumber from "bignumber.js";
-import { arrayOfNumberToArrayBuffer, bigNumberToBigInt, toSubAccountId } from "../converter";
-import { Doms } from "../ledger/model";
+import { arrayOfNumberToArrayBuffer } from "../converter";
 import {
     Action,
     Ballot,
     BallotInfo,
     Change,
-    ClaimNeuronResponse,
     Command,
-    DisburseResult,
-    DisburseToNeuronResult,
+    DisburseResponse,
+    DisburseToNeuronResponse,
     DissolveState,
-    EmptyResponse,
+    E8s,
     Followees,
-    GetNeuronInfoResponse,
     ListProposalsResponse,
-    MakeProposalResult,
+    MakeProposalResponse,
     Neuron,
     NeuronId,
     NeuronInfo,
@@ -24,10 +20,11 @@ import {
     Operation,
     Proposal,
     ProposalInfo,
-    SpawnResult,
+    SpawnResponse,
     Tally
 } from "./model";
 import {
+    AccountIdentifier as RawAccountIdentifier,
     Action as RawAction,
     Amount as RawAmount,
     Ballot as RawBallot,
@@ -36,7 +33,6 @@ import {
     Command as RawCommand,
     DissolveState as RawDissolveState,
     Followees as RawFollowees,
-    Result_3,
     Neuron as RawNeuron,
     NeuronId as RawNeuronId,
     NeuronInfo as RawNeuronInfo,
@@ -45,66 +41,51 @@ import {
     Operation as RawOperation,
     Proposal as RawProposal,
     ProposalInfo as RawProposalInfo,
-    Result,
-    Result_1,
-    Result_2,
     Tally as RawTally,
-    ListProposalInfoResponse
+    ListProposalInfoResponse,
+    ManageNeuronResponse,
+    ListNeuronsResponse,
 } from "./rawService";
+import AccountIdentifier from "../AccountIdentifier";
 
 export default class ResponseConverters {
     public toProposalInfo = (proposalInfo: RawProposalInfo) : ProposalInfo => {
         return {
             id: proposalInfo.id.length ? this.toNeuronId(proposalInfo.id[0]) : null,
             ballots: proposalInfo.ballots.map(b => this.toBallot(b[0], b[1])),
-            rejectCost: bigNumberToBigInt(proposalInfo.reject_cost_doms),
-            proposalTimestampSeconds: bigNumberToBigInt(proposalInfo.proposal_timestamp_seconds),
-            rewardEventRound: bigNumberToBigInt(proposalInfo.reward_event_round),
-            failedTimestampSeconds: bigNumberToBigInt(proposalInfo.failed_timestamp_seconds),
-            decidedTimestampSeconds: bigNumberToBigInt(proposalInfo.decided_timestamp_seconds),
+            rejectCost: proposalInfo.reject_cost_e8s,
+            proposalTimestampSeconds: proposalInfo.proposal_timestamp_seconds,
+            rewardEventRound: proposalInfo.reward_event_round,
+            failedTimestampSeconds: proposalInfo.failed_timestamp_seconds,
+            decidedTimestampSeconds: proposalInfo.decided_timestamp_seconds,
             proposal: this.toProposal(proposalInfo.proposal[0]),
             proposer: this.toNeuronId(proposalInfo.proposer[0]),
             latestTally: this.toTally(proposalInfo.latest_tally[0]),
-            executedTimestampSeconds: bigNumberToBigInt(proposalInfo.executed_timestamp_seconds),
+            executedTimestampSeconds: proposalInfo.executed_timestamp_seconds,
+            topic: proposalInfo.topic,
+            status: proposalInfo.status,
+            rewardStatus: proposalInfo.reward_status
         };
     }
 
-    public toNeuronInfoResponse = (neuronId: BigNumber, neuronInfoResponse: Result_2, fullNeuronResponse: Result_1) : GetNeuronInfoResponse => {
-        let fullNeuron: Neuron;
-        if ("Ok" in fullNeuronResponse) {
-            fullNeuron = this.toNeuron(fullNeuronResponse.Ok);
-        } else if ("Err" in fullNeuronResponse) {
-            return {
-                Err: {
-                    errorMessage: fullNeuronResponse.Err.error_message,
-                    errorType: fullNeuronResponse.Err.error_type
-                }
-            };
-        } else {
-            this.throwUnrecognisedTypeError("response", fullNeuronResponse);
-        }
-        if ("Ok" in neuronInfoResponse) {
-            return {
-                Ok: this.toNeuronInfo(neuronId, neuronInfoResponse.Ok, fullNeuron)
-            };
-        } else if ("Err" in neuronInfoResponse) {
-            return {
-                Err: {
-                    errorMessage: neuronInfoResponse.Err.error_message,
-                    errorType: neuronInfoResponse.Err.error_type
-                }
-            };
-        }
-        this.throwUnrecognisedTypeError("response", neuronInfoResponse);
+    public toArrayOfNeuronInfo = (response: ListNeuronsResponse) : Array<NeuronInfo> => {
+        return response.neuron_infos.map(([id, neuronInfo]) => this.toNeuronInfo(id, neuronInfo, response.full_neurons));
     }
 
-    public toClaimNeuronResponse = (response: Result) : ClaimNeuronResponse => {
-        if ("Ok" in response) {
-            return {
-                Ok: bigNumberToBigInt(response.Ok)
-            }
-        }
-        return this.handleErrorResult(response);
+    private toNeuronInfo(neuronId: bigint, neuronInfo: RawNeuronInfo, neurons: Array<RawNeuron>): NeuronInfo {
+        const rawNeuron = neurons.find(n => n.id[0]);
+        const fullNeuron = rawNeuron ? this.toNeuron(rawNeuron) : null;
+        return {
+            neuronId: neuronId,
+            dissolveDelaySeconds: neuronInfo.dissolve_delay_seconds,
+            recentBallots: neuronInfo.recent_ballots.map(this.toBallotInfo),
+            createdTimestampSeconds: neuronInfo.created_timestamp_seconds,
+            state: neuronInfo.state,
+            retrievedAtTimestampSeconds: neuronInfo.retrieved_at_timestamp_seconds,
+            votingPower: neuronInfo.voting_power,
+            ageSeconds: neuronInfo.age_seconds,
+            fullNeuron: fullNeuron
+        };
     }
 
     public toListProposalsResponse = (response: ListProposalInfoResponse) : ListProposalsResponse => {
@@ -113,82 +94,45 @@ export default class ResponseConverters {
         };
     }
 
-    public toEmptyResponse = (response: Result_3) : EmptyResponse => {
-        if ("Ok" in response) {
+    public toSpawnResponse = (response: ManageNeuronResponse) : SpawnResponse => {
+        const command = (response.command)[0];
+        if ("Spawn" in command) {
             return {
-                Ok: null
-            }
-        }
-        return this.handleErrorResult(response);
-    }
-
-    public toSpawnResult = (response: Result_3) : SpawnResult => {
-        if ("Ok" in response) {
-            const command = (response.Ok.command)[0];
-            if ("Spawn" in command) {
-                return {
-                    Ok: {
-                        createdNeuronId: bigNumberToBigInt((command.Spawn.created_neuron_id)[0].id)
-                    }
-                };    
-            }
-        }
-        return this.handleErrorResult(response);
-    } 
-
-    public toDisburseResult = (response: Result_3) : DisburseResult => {
-        if ("Ok" in response) {
-            const command = (response.Ok.command)[0];
-            if ("Disburse" in command) {
-                return {
-                    Ok: {
-                        transferBlockHeight: bigNumberToBigInt(command.Disburse.transfer_block_height)
-                    }
-                };    
-            }
-        }
-        return this.handleErrorResult(response);
-    } 
-
-    public toDisburseToNeuronResult = (response: Result_3) : DisburseToNeuronResult => {
-        if ("Ok" in response) {
-            const command = (response.Ok.command)[0];
-            if ("Spawn" in command) {
-                return {
-                    Ok: {
-                        createdNeuronId: bigNumberToBigInt((command.Spawn.created_neuron_id)[0].id)
-                    }
-                };    
-            }
-        }
-        return this.handleErrorResult(response);
-    } 
-
-    public toMakeProposalResult = (response: Result_3) : MakeProposalResult => {
-        if ("Ok" in response) {
-            const command = (response.Ok.command)[0];
-            if ("MakeProposal" in command) {
-                return {
-                    Ok: {
-                        proposalId: bigNumberToBigInt((command.MakeProposal.proposal_id)[0].id)
-                    }
-                };    
-            }
-        }
-        return this.handleErrorResult(response);
-    } 
-
-    private handleErrorResult(response: Result_3) : any {
-        if ("Err" in response) {
-            return {
-                Err: {
-                    errorMessage: response.Err.error_message,
-                    errorType: response.Err.error_type
-                }
-            }
+                createdNeuronId: (command.Spawn.created_neuron_id)[0].id
+            };    
         }
         this.throwUnrecognisedTypeError("response", response);
-    }
+    } 
+
+    public toDisburseResponse = (response: ManageNeuronResponse) : DisburseResponse => {
+        const command = (response.command)[0];
+        if ("Disburse" in command) {
+            return {
+                transferBlockHeight: command.Disburse.transfer_block_height
+            };    
+        }
+        this.throwUnrecognisedTypeError("response", response);
+    } 
+
+    public toDisburseToNeuronResult = (response: ManageNeuronResponse) : DisburseToNeuronResponse => {
+        const command = (response.command)[0];
+        if ("Spawn" in command) {
+            return {
+                createdNeuronId: (command.Spawn.created_neuron_id)[0].id
+            };    
+        }
+        this.throwUnrecognisedTypeError("response", response);
+    } 
+
+    public toMakeProposalResponse = (response: ManageNeuronResponse) : MakeProposalResponse => {
+        const command = (response.command)[0];
+        if ("MakeProposal" in command) {
+            return {
+                proposalId: (command.MakeProposal.proposal_id)[0].id
+            };    
+        }
+        this.throwUnrecognisedTypeError("response", response);
+    } 
 
     private toNeuron = (neuron: RawNeuron) : Neuron => {
         return {
@@ -197,11 +141,11 @@ export default class ResponseConverters {
             recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
             kycVerified: neuron.kyc_verified,
             notForProfit: neuron.not_for_profit,
-            cachedNeuronStake: bigNumberToBigInt(neuron.cached_neuron_stake_doms),
-            createdTimestampSeconds: bigNumberToBigInt(neuron.created_timestamp_seconds),
-            maturityDomsEquivalent: bigNumberToBigInt(neuron.maturity_doms_equivalent),
-            agingSinceTimestampSeconds: bigNumberToBigInt(neuron.aging_since_timestamp_seconds),
-            neuronFees: bigNumberToBigInt(neuron.neuron_fees_doms),
+            cachedNeuronStake: neuron.cached_neuron_stake_e8s,
+            createdTimestampSeconds: neuron.created_timestamp_seconds,
+            maturityE8sEquivalent: neuron.maturity_e8s_equivalent,
+            agingSinceTimestampSeconds: neuron.aging_since_timestamp_seconds,
+            neuronFees: neuron.neuron_fees_e8s,
             hotKeys: neuron.hot_keys,
             accountPrincipal: arrayOfNumberToArrayBuffer(neuron.account),
             dissolveState: this.toDissolveState(neuron.dissolve_state[0]),
@@ -220,11 +164,11 @@ export default class ResponseConverters {
     private toDissolveState = (dissolveState: RawDissolveState) : DissolveState => {
         if ("DissolveDelaySeconds" in dissolveState) {
             return {
-                DissolveDelaySeconds: bigNumberToBigInt(dissolveState.DissolveDelaySeconds)
+                DissolveDelaySeconds: dissolveState.DissolveDelaySeconds
             }
         } else {
             return {
-                WhenDissolvedTimestampSeconds: bigNumberToBigInt(dissolveState.WhenDissolvedTimestampSeconds)
+                WhenDissolvedTimestampSeconds: dissolveState.WhenDissolvedTimestampSeconds
             }
         }
     }
@@ -240,37 +184,23 @@ export default class ResponseConverters {
         return {
             toSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.to_subaccount),
             from: neuronStakeTransfer.from ? neuronStakeTransfer.from[0] : null,
-            memo: bigNumberToBigInt(neuronStakeTransfer.memo),
-            neuronStake: bigNumberToBigInt(neuronStakeTransfer.neuron_stake_doms),
+            memo: neuronStakeTransfer.memo,
+            neuronStake: neuronStakeTransfer.neuron_stake_e8s,
             fromSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.from_subaccount),
-            transferTimestamp: bigNumberToBigInt(neuronStakeTransfer.transfer_timestamp),
-            blockHeight: bigNumberToBigInt(neuronStakeTransfer.block_height)
+            transferTimestamp: neuronStakeTransfer.transfer_timestamp,
+            blockHeight: neuronStakeTransfer.block_height
         };        
     }
 
-    private toNeuronInfo = (neuronId: BigNumber, neuronInfo: RawNeuronInfo, fullNeuron: Neuron) : NeuronInfo => {
-        return {
-            neuronId: bigNumberToBigInt(neuronId),
-            dissolveDelaySeconds: bigNumberToBigInt(neuronInfo.dissolve_delay_seconds),
-            recentBallots: neuronInfo.recent_ballots.map(this.toBallotInfo),
-            createdTimestampSeconds: bigNumberToBigInt(neuronInfo.created_timestamp_seconds),
-            state: neuronInfo.state,
-            retrievedAtTimestampSeconds: bigNumberToBigInt(neuronInfo.retrieved_at_timestamp_seconds),
-            votingPower: bigNumberToBigInt(neuronInfo.voting_power),
-            ageSeconds: bigNumberToBigInt(neuronInfo.age_seconds),
-            fullNeuron: fullNeuron
-        };
-    }
-
     private toNeuronId = (neuronId: RawNeuronId) : NeuronId => {
-        return bigNumberToBigInt(neuronId.id);
+        return neuronId.id;
     }
 
-    private toBallot = (neuronId: BigNumber, ballot: RawBallot) : Ballot => {
+    private toBallot = (neuronId: bigint, ballot: RawBallot) : Ballot => {
         return {
-            neuronId: bigNumberToBigInt(neuronId),
+            neuronId: neuronId,
             vote: ballot.vote,
-            votingPower: bigNumberToBigInt(ballot.voting_power)
+            votingPower: ballot.voting_power
         };
     }
 
@@ -313,11 +243,13 @@ export default class ResponseConverters {
             const networkEconomics = action.NetworkEconomics;
             return {
                 NetworkEconomics: {
-                    rejectCost: bigNumberToBigInt(networkEconomics.reject_cost_doms),
-                    manageNeuronCostPerProposal: bigNumberToBigInt(networkEconomics.manage_neuron_cost_per_proposal_doms),
-                    neuronMinimumStake: bigNumberToBigInt(networkEconomics.neuron_minimum_stake_doms),
-                    maximumNodeProviderRewards: bigNumberToBigInt(networkEconomics.maximum_node_provider_rewards_doms),
-                    neuronSpawnDissolveDelaySeconds: bigNumberToBigInt(networkEconomics.neuron_spawn_dissolve_delay_seconds),
+                    rejectCost: networkEconomics.reject_cost_e8s,
+                    manageNeuronCostPerProposal: networkEconomics.manage_neuron_cost_per_proposal_e8s,
+                    neuronMinimumStake: networkEconomics.neuron_minimum_stake_e8s,
+                    maximumNodeProviderRewards: networkEconomics.maximum_node_provider_rewards_e8s,
+                    neuronSpawnDissolveDelaySeconds: networkEconomics.neuron_spawn_dissolve_delay_seconds,
+                    transactionFee: networkEconomics.transaction_fee_e8s,
+                    minimumIcpXdrRate: networkEconomics.minimum_icp_xdr_rate                
                 }
             }
         }
@@ -326,7 +258,7 @@ export default class ResponseConverters {
             return {
                 RewardNodeProvider: {
                     nodeProvider : rewardNodeProvider.node_provider.length ? this.toNodeProvider(rewardNodeProvider.node_provider[0]) : null,
-                    amount : bigNumberToBigInt(rewardNodeProvider.amount_doms)
+                    amount : rewardNodeProvider.amount_e8s
                 }
             }
         }
@@ -351,10 +283,10 @@ export default class ResponseConverters {
 
     private toTally = (tally: RawTally) : Tally => {
         return {
-            no: bigNumberToBigInt(tally.no),
-            yes: bigNumberToBigInt(tally.yes),
-            total: bigNumberToBigInt(tally.total),
-            timestampSeconds: bigNumberToBigInt(tally.timestamp_seconds)
+            no: tally.no,
+            yes: tally.yes,
+            total: tally.total,
+            timestampSeconds: tally.timestamp_seconds
         }
     }
 
@@ -371,7 +303,7 @@ export default class ResponseConverters {
             const split = command.Split;
             return {
                 Split: {
-                    amount: bigNumberToBigInt(split.amount_doms)
+                    amount: split.amount_e8s
                 }
             }
         }
@@ -405,11 +337,11 @@ export default class ResponseConverters {
             const disburseToNeuron = command.DisburseToNeuron;
             return {
                 DisburseToNeuron: {
-                    dissolveDelaySeconds: bigNumberToBigInt(disburseToNeuron.dissolve_delay_seconds),
+                    dissolveDelaySeconds: disburseToNeuron.dissolve_delay_seconds,
                     kycVerified: disburseToNeuron.kyc_verified,
-                    amount: bigNumberToBigInt(disburseToNeuron.amount_doms),
+                    amount: disburseToNeuron.amount_e8s,
                     newController: disburseToNeuron.new_controller.length ? disburseToNeuron.new_controller[0] : null,
-                    nonce: bigNumberToBigInt(disburseToNeuron.nonce)
+                    nonce: disburseToNeuron.nonce
                 }
             }
         }
@@ -427,8 +359,8 @@ export default class ResponseConverters {
             const disburse = command.Disburse;
             return {
                 Disburse: {
-                    toSubaccountId: toSubAccountId(disburse.to_subaccount),
-                    amount: disburse.amount.length ? this.toDoms(disburse.amount[0]) : null
+                    toAccountId: this.toAccountIdentifier(disburse.to_account[0]),
+                    amount: disburse.amount.length ? this.toAmount(disburse.amount[0]) : null
                 }
             }
         }
@@ -493,8 +425,12 @@ export default class ResponseConverters {
         }
     }
 
-    private toDoms = (amount: RawAmount) : Doms => {
-        return bigNumberToBigInt(amount.doms);
+    private toAmount = (amount: RawAmount) : E8s => {
+        return amount.e8s;
+    }
+
+    private toAccountIdentifier(accountIdentifier: RawAccountIdentifier): AccountIdentifier {
+        return new AccountIdentifier(new Uint8Array(accountIdentifier.hash));
     }
 
     private throwUnrecognisedTypeError = (name: string, value: any) => {
