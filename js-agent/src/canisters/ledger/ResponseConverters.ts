@@ -10,6 +10,6 @@ export default class ResponseConverters {
 
     public toDoms = (response: AccountBalanceResponse) : Doms =>{
         const icpts = response.getBalance();
-        return BigInt(icpts.getDoms());
+        return BigInt(icpts.getE8s());
     }
 }

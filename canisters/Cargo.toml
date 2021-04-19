@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "ledger_view"
+    "nns_ui"
 ]
 
 [profile.release]

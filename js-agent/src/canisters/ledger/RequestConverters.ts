@@ -20,9 +20,7 @@ export default class RequestConverters {
         return request.accounts.map(a => {
             const request = new AccountBalanceRequest();
 
-            const accountIdentifier = new AccountIdentifier();
-            accountIdentifier.setHash(a);
-
+            const accountIdentifier = this.toAccountIdentifier(a);
             request.setAccount(accountIdentifier);
             return request;
         });
@@ -31,8 +29,7 @@ export default class RequestConverters {
     public fromSendICPTsRequest = (request: SendICPTsRequest) : SendRequest => {
         const result = new SendRequest();
 
-        const accountIdentifier = new AccountIdentifier();
-        accountIdentifier.setHash(request.to);
+        const accountIdentifier = this.toAccountIdentifier(request.to);
         result.setTo(accountIdentifier);
 
         const maxFee = this.toICPTs(request.fee === undefined ? TRANSACTION_FEE : request.fee);
@@ -93,9 +90,15 @@ export default class RequestConverters {
         return subaccount;
     }
 
+    private toAccountIdentifier = (hexString: string) : AccountIdentifier => {
+        const accountIdentifier = new AccountIdentifier();
+        accountIdentifier.setHash(Uint8Array.from(Buffer.from(hexString, "hex")));
+        return accountIdentifier;
+    }
+
     private toICPTs = (amount: bigint) : ICPTs => {
         const result = new ICPTs();
-        result.setDoms(amount.toString(10));
+        result.setE8s(amount.toString(10));
         return result;
     }
 

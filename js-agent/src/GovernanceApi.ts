@@ -30,7 +30,7 @@ import GovernanceService, {
 } from "./canisters/governance/model";
 import { ProposalInfo } from "./canisters/governance/model";
 import createNeuronImpl, { CreateNeuronRequest, CreateNeuronResponse } from "./canisters/governance/createNeuron";
-import ledgerViewBuilder from "./canisters/ledgerView/builder";
+import ledgerViewBuilder from "./canisters/nnsUI/builder";
 
 export default class GovernanceApi {
     private readonly governanceService: GovernanceService;
