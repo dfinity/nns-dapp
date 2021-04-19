@@ -1,4 +1,4 @@
-import { Agent, blobFromUint8Array, derBlobFromBlob, Principal, SignIdentity } from "@dfinity/agent";
+import { blobFromUint8Array, derBlobFromBlob, Principal, SignIdentity } from "@dfinity/agent";
 import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
