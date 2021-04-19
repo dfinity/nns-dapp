@@ -31,7 +31,9 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     subs?.cancel();
-    subs = context.boxes.accounts.watch(key: widget.account.accountIdentifier).listen((event) {
+    subs = context.boxes.accounts
+        .watch(key: widget.account.accountIdentifier)
+        .listen((event) {
       setState(() {});
     });
   }
@@ -44,7 +46,6 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Account"),
@@ -55,37 +56,64 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
           child: FooterGradientButton(
               body: ListView(
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Center(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.account.name,
+                                style: context.textTheme.headline1,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              SelectableText(
+                                widget.account.accountIdentifier,
+                                style: context.textTheme.bodyText2,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                          padding: EdgeInsets.all(24),
+                          child: BalanceDisplayWidget(
+                            amount: widget.account.icpBalance,
+                            amountSize: 40,
+                            icpLabelSize: 25,
+                          )),
+                    ],
+                  ),
+                  if (widget.account.transactions.isEmpty ?? true)
+                    Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: EdgeInsets.symmetric(vertical: 64),
                         child: Text(
-                          widget.account.name,
-                          style: context.textTheme.headline1,
+                          "No transactions!",
+                          style: context.textTheme.bodyText1,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.all(24),
-                      child: BalanceDisplayWidget(
-                        amount: widget.account.icpBalance,
-                        amountSize: 40,
-                        icpLabelSize: 25,
-                      )),
                   TransactionsListWidget(account: widget.account),
                   SizedBox(
                     height: 200,
                   )
                 ],
               ),
-              footer: Padding(
-                padding: const EdgeInsets.all(8.0),
+              footer: Center(
                 child: ElevatedButton(
-                    child: Text(
-                      "New Transaction",
-                      style: context.textTheme.button?.copyWith(fontSize: 24),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        "New Transaction",
+                        style: context.textTheme.button?.copyWith(fontSize: 24),
+                      ),
                     ),
                     onPressed: () {
                       _overlayEntry = _createOverlayEntry();

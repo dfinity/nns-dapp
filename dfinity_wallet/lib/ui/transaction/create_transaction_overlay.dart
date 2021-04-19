@@ -77,7 +77,7 @@ class NewTransactionOverlayState extends State<NewTransactionOverlay> {
                   style: TextStyle(
                       fontSize: 32,
                       fontFamily: Fonts.circularBook,
-                      color: AppColors.gray100)),
+                      color: AppColors.gray50)),
             ),
           ) : null,
           body: widget));

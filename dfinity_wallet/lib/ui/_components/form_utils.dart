@@ -80,7 +80,7 @@ class SmallFormDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 20,
+      height: 16,
     );
   }
 }
@@ -89,7 +89,7 @@ class TallFormDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
+      height: 42,
     );
   }
 }
@@ -98,7 +98,7 @@ class VeryTallFormDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60,
+      height: 64,
     );
   }
 }

@@ -37,21 +37,19 @@ class NeuronProposalsCard extends StatelessWidget {
               ),
             )),
             SmallFormDivider(),
-            ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all(AppColors.blue600),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)))),
-                onPressed: () {
-                  Overlay.of(context)?.show(context,
-                      NewProposalDialog(neuron: neuron)
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text("Create Motion Proposal"),
-                ))
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                  onPressed: () {
+                    Overlay.of(context)?.show(context,
+                        NewProposalDialog(neuron: neuron)
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text("Create Motion Proposal"),
+                  )),
+            )
           ],
         ),
       ),

@@ -77,7 +77,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                 ),
                                 SelectableText(
                                   primary?.accountIdentifier ?? "",
-                                  style: context.textTheme.bodyText2,
+                                  style: context.textTheme.bodyText1,
                                 )
                               ],
                             ),

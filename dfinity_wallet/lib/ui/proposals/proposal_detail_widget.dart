@@ -95,14 +95,11 @@ class IneligibleNeuronsWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text("Ineligible Neurons",
-                  style: context.textTheme.headline3)),
-          Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text("The following neurons were created after the proposal was submitted, and are not able to vote on it",
-                  style: context.textTheme.bodyText2)),
+          Text("Ineligible Neurons",
+              style: context.textTheme.headline3),
+          SmallFormDivider(),
+          Text("The following neurons were created after the proposal was submitted, and are not able to vote on it",
+              style: context.textTheme.bodyText2),
           ...ineligibleNeurons
               .map((e) => Container(
             child: Row(

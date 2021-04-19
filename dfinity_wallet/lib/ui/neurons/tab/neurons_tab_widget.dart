@@ -29,15 +29,8 @@ class _NeuronsPageState extends State<NeuronsPage> {
           builder: (context, snapshot) {
             return TabTitleAndContent(
               title: "Neurons",
+              subtitle: "You can stake ICP by storing them in Neurons. These neurons allow you to participate in the IC Governance by giving you the ability to vote on proposals",
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    "You can stake ICP by storing them in Neurons. These neurons allow you to participate in the IC Governance by giving you the ability to vote on proposals",
-                    style: context.textTheme.bodyText2,
-                    textAlign: TextAlign.left,
-                  ),
-                ),
                 SmallFormDivider(),
                 ...context.boxes.neurons.values.mapToList((e) => NeuronRow(
                       neuron: e,

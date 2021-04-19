@@ -102,16 +102,8 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
       body: ConstrainWidthAndCenter(
         child: TabTitleAndContent(
           title: "Voting",
+          subtitle: "The Internet Computer is managed by ICP token-holders that have staked tokens in neurons, who propose and vote on upgrades to the protocol.",
           children: [
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  "The Internet Computer is managed by ICP token-holders that have staked tokens in neurons, who propose and vote on upgrades to the protocol.",
-                  style: context.textTheme.bodyText2,
-                ),
-              ),
-            ),
             IntrinsicHeight(
               child: MultiSelectDropdownWidget(
                 topicsField,

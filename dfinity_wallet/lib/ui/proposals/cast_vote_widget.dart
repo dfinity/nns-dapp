@@ -23,6 +23,9 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
     if (selectedNeurons == null) {
       selectedNeurons = neuronsWithoutVote.toList();
     }
+    final numVotes = selectedNeurons!
+        .sumBy((element) => element.icpBalance)
+        .toStringAsFixed(2);
     return Card(
       color: AppColors.background,
       child: Container(
@@ -32,17 +35,12 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
             Row(
               children: [
                 Expanded(
-                  child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text("Cast Vote",
-                          style: context.textTheme.headline3)),
+                  child: Text("Cast Vote", style: context.textTheme.headline3),
                 ),
                 Padding(
                     padding: EdgeInsets.all(4.0),
                     child: Text(
-                      selectedNeurons!
-                          .sumBy((element) => element.icpBalance)
-                          .toStringAsFixed(2),
+                      numVotes,
                       style: context.textTheme.headline2,
                     )),
                 Padding(
@@ -52,37 +50,36 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                     )),
               ],
             ),
-            ...widget.neurons
-                .map((e) => Container(
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Checkbox(
-                              value: selectedNeurons!.contains(e),
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  if (value == true) {
-                                    selectedNeurons!.add(e);
-                                  } else {
-                                    selectedNeurons!.remove(e);
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Text(e.identifier)),
-                          ),
-                          Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Text(
-                                  "${e.icpBalance.toStringAsFixed(2)} votes")),
-                        ],
+            ...widget.neurons.map((e) => Container(
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Checkbox(
+                          value: selectedNeurons!.contains(e),
+                          onChanged: (bool? value) {
+                            setState(() {
+                              if (value == true) {
+                                selectedNeurons!.add(e);
+                              } else {
+                                selectedNeurons!.remove(e);
+                              }
+                            });
+                          },
+                        ),
                       ),
-                    )),
+                      Expanded(
+                        child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text(e.identifier)),
+                      ),
+                      Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child:
+                              Text("${e.icpBalance.toStringAsFixed(2)} votes")),
+                    ],
+                  ),
+                )),
             Row(
               children: [
                 Expanded(
@@ -90,7 +87,18 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      castVote(Vote.YES);
+                      Overlay.of(context)?.show(
+                          context,
+                          ConfirmVoteWidget(
+                            svg: "assets/thumbs_up.svg",
+                            svgColor: Color(0xff80ACF8),
+                            title: "Accept Proposal",
+                            description:
+                            'You are about to cast ${numVotes} votes for this proposal, are you sure you want to proceed? ',
+                            onConfirm: () {
+                              castVote(Vote.YES);
+                            },
+                          ));
                     }.takeIf((e) => selectedNeurons!.isNotEmpty),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -106,7 +114,18 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      castVote(Vote.NO);
+                      Overlay.of(context)?.show(
+                          context,
+                          ConfirmVoteWidget(
+                            svg: "assets/thumbs_down.svg",
+                            svgColor: Color(0xffED1E79),
+                            title: "Reject Proposal",
+                            description:
+                                'You are about to cast ${numVotes} votes against this proposal, are you sure you want to proceed? ',
+                            onConfirm: () {
+                              castVote(Vote.NO);
+                            },
+                          ));
                     }.takeIf((e) => selectedNeurons!.isNotEmpty),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -132,5 +151,93 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
           proposalId: widget.proposal.id.toBigInt,
           vote: vote);
     });
+  }
+}
+
+class ConfirmVoteWidget extends StatelessWidget {
+  final String svg;
+  final Color svgColor;
+  final String title;
+  final String description;
+  final Function onConfirm;
+
+  const ConfirmVoteWidget(
+      {Key? key,
+      required this.svg,
+      required this.svgColor,
+      required this.title,
+      required this.description,
+      required this.onConfirm})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 500),
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: SvgPicture.asset(
+                      svg,
+                      color: svgColor,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(title, style: context.textTheme.headline3),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    description,
+                    style: context.textTheme.bodyText2,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(AppColors.gray800)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text("Cancel"),
+                          ),
+                          onPressed: () {
+                            OverlayBaseWidget.of(context)?.dismiss();
+                          }),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text("Yes, I'm sure"),
+                          ),
+                          onPressed: () {
+                            OverlayBaseWidget.of(context)?.dismiss();
+                            onConfirm();
+                          }),
+                    )
+                  ],
+                )
+              ]),
+        ),
+      ),
+    );
   }
 }

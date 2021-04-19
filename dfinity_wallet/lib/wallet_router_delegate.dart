@@ -257,6 +257,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
       final destination = await configuration.destinationPage;
       push(destination);
     }else{
+      await hiveCoordinator.deleteAllData();
       push(AuthPage);
     }
   }

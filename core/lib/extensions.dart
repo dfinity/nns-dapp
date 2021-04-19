@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dartx/dartx.dart';
 
-
 extension FetchMediaQuery on BuildContext{
   MediaQueryData get mediaQuery => MediaQuery.of(this);
 }
@@ -148,6 +147,7 @@ extension NotNullMap<T> on Iterable<T>?{
 extension TimestampToDate on String? {
   DateTime secondsToDateTime() => DateTime.fromMillisecondsSinceEpoch(((this ?? "0").toBigInt.toInt()) * 1000);
 }
+
 
 extension ToBigInt on String {
   BigInt get toBigInt => BigInt.tryParse(this) ?? BigInt.from(-1);

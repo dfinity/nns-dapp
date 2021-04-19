@@ -77,9 +77,10 @@ class _MultiSelectDropdownWidgetState<T>
             constraints: BoxConstraints(minHeight: 60),
             child: OutlinedButton(
               style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all(AppColors.gray800),
+                  backgroundColor: MaterialStateProperty.all(AppColors.gray600),
+                  foregroundColor: MaterialStateProperty.all(AppColors.gray400),
                   overlayColor: MaterialStateProperty.all(
-                      AppColors.gray800.withOpacity(0.1)),
+                      AppColors.gray400),
                   textStyle: MaterialStateProperty.all(
                       TextStyle(fontSize: 16, fontFamily: Fonts.circularBook)),
                   side: MaterialStateProperty.all(
@@ -97,14 +98,14 @@ class _MultiSelectDropdownWidgetState<T>
                                     left: 8.0, top: 4.0, bottom: 4.0),
                                 padding: EdgeInsets.all(8.0),
                                 decoration: ShapeDecoration(
-                                    color: AppColors.gray100,
+                                    color: AppColors.gray800,
                                     shape: StadiumBorder()),
                                 child: Text(
                                   widget.field.titleForOption(e),
                                   style: TextStyle(
                                       fontFamily: Fonts.circularMedium,
                                       fontSize: 14,
-                                      color: AppColors.black),
+                                      color: AppColors.gray50),
                                 ),
                               )),
                     ),

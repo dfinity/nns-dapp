@@ -48,7 +48,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     bool isAuthenticated =
         isAuthTokenValid(hiveCoordinator.hiveBoxes.authToken!.webAuthToken);
     if (!isAuthenticated) {
-      hiveCoordinator.deleteAllData();
+      await hiveCoordinator.deleteAllData();
       return AuthPage;
     }
 

@@ -53,10 +53,10 @@ class _DebouncedValidatedFormFieldState extends State<DebouncedValidatedFormFiel
             focusNode: widget.textField.focusNode,
             controller: widget.textField.textEditingController,
             inputFormatters: widget.textField.inputFormatters,
-            style: context.textTheme.bodyText1,
+            style: context.textTheme.subtitle1,
             decoration: InputDecoration(
                 labelText: widget.textField.name,
-                labelStyle: context.textTheme.bodyText1,
+                labelStyle: context.textTheme.subtitle1,
                 contentPadding: EdgeInsets.only(left: 20, top: 25, bottom: 25),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(100), borderSide: BorderSide(width: 1, color: AppColors.white)),

@@ -18,6 +18,7 @@ class TransactionSyncService {
 
   Future<void> syncAccount(Account account) async {
     final response = await callApi(ledgerApi.getTransactions, {'accountIdentifier': account.accountIdentifier, 'pageSize': 100, 'offset': 0});
+    print("Transactions response: " + ledgerApi.jsonString(response));
 
     final transactions = <Transaction>[];
     response.transactions.forEach((e) {

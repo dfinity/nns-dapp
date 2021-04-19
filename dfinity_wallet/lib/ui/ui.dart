@@ -9,3 +9,4 @@ export '_components/conditional_widget.dart';
 export '_components/overlay_base_widget.dart';
 export '_components/duration_formatting.dart';
 export 'wallet/balance_display_widget.dart';
+export '_components/date_formatting.dart';

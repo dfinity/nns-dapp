@@ -48,7 +48,16 @@ class DfinityApp extends StatelessWidget {
             elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16))))),
+                        borderRadius: BorderRadius.circular(10))),
+                    backgroundColor: MaterialStateProperty.resolveWith((states) {
+                      if(states.contains(MaterialState.disabled)){
+                        return AppColors.gray400;
+                      }else{
+                        return AppColors.blue600;
+                      }
+                    }),
+                )
+            ),
             textButtonTheme: TextButtonThemeData(
                 style: ButtonStyle(textStyle: MaterialStateProperty.all(TextStyle(
                   color: Colors.white
@@ -58,7 +67,7 @@ class DfinityApp extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 shadowColor: Colors.white.withOpacity(0.3),
               elevation: 7,
-              margin: EdgeInsets.all(10)
+              margin: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0)
             )
         ),
 

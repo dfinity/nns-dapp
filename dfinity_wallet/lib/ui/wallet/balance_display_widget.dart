@@ -49,6 +49,7 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
                 amount: amount,
                 amountSize: 30,
                 icpLabelSize: 15),
+            SizedBox(height: 5),
             text
         ],
     );

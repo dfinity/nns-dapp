@@ -22,7 +22,7 @@ class NeuronFolloweesCard extends StatelessWidget {
         .flatMap((followee) =>
             followee.followees.map((e) => TopicFollowee(e, followee.topic)))
         .groupBy((element) => element.neuron)
-        .entries;
+        .entries.toList();
 
     return Card(
       color: AppColors.background,
@@ -31,13 +31,10 @@ class NeuronFolloweesCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text("Following", style: context.textTheme.headline3),
-                ),
-              ],
+            Text("Following", style: context.textTheme.headline3),
+            Padding(
+              padding: const EdgeInsets.only(top:5.0, right: 50),
+              child: Text("Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.", style: context.textTheme.bodyText2),
             ),
             ...followeeTopics
                 .map((e) => Container(
@@ -75,23 +72,21 @@ class NeuronFolloweesCard extends StatelessWidget {
                       ),
                     )),
             SmallFormDivider(),
-            ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(AppColors.blue600),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)))),
-                onPressed: () {
-                  Overlay.of(context)?.show(
-                      context,
-                      ConfigureFollowersPage(
-                        neuron: neuron,
-                      ));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text("Edit Followees"),
-                ))
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                  onPressed: () {
+                    Overlay.of(context)?.show(
+                        context,
+                        ConfigureFollowersPage(
+                          neuron: neuron,
+                        ));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(followeeTopics.isEmpty ? "Follow Neurons" : "Edit Followees"),
+                  )),
+            )
           ],
         ),
       ),

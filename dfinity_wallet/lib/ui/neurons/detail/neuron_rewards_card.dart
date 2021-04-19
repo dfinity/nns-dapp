@@ -39,35 +39,39 @@ class NeuronRewardsCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Column(
-                  children: [
-                    BalanceDisplayWidget(
-                        amount: neuron.maturityDomsEquivalent.toBigInt.toICPT,
-                        amountSize: 30,
-                        icpLabelSize: 15),
-                    Text("Available")
-                  ],
+                SizedBox(width: 24,),
+                IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      BalanceDisplayWidget(
+                          amount: neuron.maturityDomsEquivalent.toBigInt.toICPT,
+                          amountSize: 30,
+                          icpLabelSize: 15),
+                      Expanded(child: ConstrainedBox(constraints: BoxConstraints(minHeight: 40),
+                      child: Container())),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              Overlay.of(context)?.show(context,
+                                  NewTransactionOverlay(
+                                    rootTitle: "Spawn Neuron",
+                                    rootWidget: StakeNeuronPage(source: neuron),
+                                  )
+                              );
+                            }.takeIf((e) => neuron.maturityDomsEquivalent.toDouble() > 0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text("Spawn Neuron"),
+                            )),
+                      )
+                    ],
+                  ),
                 )
               ],
             ),
-            ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all(AppColors.blue600),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)))),
-                onPressed: () {
-                  Overlay.of(context)?.show(context,
-                      NewTransactionOverlay(
-                        rootTitle: "Spawn Neuron",
-                        rootWidget: StakeNeuronPage(source: neuron),
-                      )
-                  );
-                }.takeIf((e) => neuron.maturityDomsEquivalent.toDouble() > 0),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text("Spawn Neuron"),
-                ))
+
           ],
         ),
       ),

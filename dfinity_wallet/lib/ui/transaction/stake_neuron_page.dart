@@ -47,28 +47,62 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                     padding: const EdgeInsets.all(24.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TallFormDivider(),
-                        DebouncedValidatedFormField(
-                          amountField,
-                          onChanged: () {
-                            setState(() {});
-                          },
+                        Center(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 500),
+                            child: DebouncedValidatedFormField(
+                              amountField,
+                              onChanged: () {
+                                setState(() {});
+                              },
+                            ),
+                          ),
                         ),
                         SmallFormDivider(),
-                        DisperseDelayWidget(
-                          timeInSeconds: disperseDelay.currentValue,
-                          onUpdate: (delay) {
-                            setState(() {
-                              disperseDelay.currentValue = delay;
-                            });
-                          },
+                        AnimatedOpacity(
+                          duration: 0.5.seconds,
+                          opacity: (amountField.currentValue.toDoubleOrNull() != null) ? 1 : 0,
+                          child: Container(
+                            padding: EdgeInsets.all(32),
+                            margin: EdgeInsets.only(top: 10),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: AppColors.gray600, width: 2),
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Column(
+                              children: [
+                                DisperseDelayWidget(
+                                  timeInSeconds: disperseDelay.currentValue,
+                                  onUpdate: (delay) {
+                                    setState(() {
+                                      disperseDelay.currentValue = delay;
+                                    });
+                                  },
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: _FigureWidget(
+                                        amount: votingPower.toStringAsFixed(2),
+                                        label: "Voting Power",
+                                      ),
+                                    ),
+                                    Expanded(
+                                        child: _FigureWidget(
+                                      amount: disperseDelay.currentValue.seconds
+                                          .yearsDayHourMinuteSecondFormatted(),
+                                      label: "Lockup Period",
+                                    ))
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                  VotingPowerWidget(
-                    amount: votingPower.toStringAsFixed(2),
                   ),
                   SizedBox(
                     height: 100,
@@ -81,7 +115,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
             width: double.infinity,
             color: AppColors.lightBackground,
             height: 100,
-            padding: EdgeInsets.all(20.0),
+            padding: EdgeInsets.symmetric(horizontal: 64, vertical: 16),
             child: ElevatedButton(
               child: Text("Create"),
               onPressed: () async {
@@ -105,11 +139,12 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
   double amount() => amountField.currentValue.toDoubleOrNull() ?? 0.0;
 
   double votingMultiplier() =>
-      1 + (disperseDelay.currentValue
-          .toDouble()
-          .takeIf((e) => e.seconds.inDays > (365 / 2))
-          ?.let((e) => e / (365 * 8).days.inSeconds) ??
-      0);
+      1 +
+      (disperseDelay.currentValue
+              .toDouble()
+              .takeIf((e) => e.seconds.inDays > (365 / 2))
+              ?.let((e) => e / (365 * 8).days.inSeconds) ??
+          0);
 }
 
 class DisperseDelayWidget extends StatelessWidget {
@@ -124,77 +159,70 @@ class DisperseDelayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Text(
-              "Lockup Period",
-              style: context.textTheme.bodyText1,
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Text(
-              "Voting power is given when neurons are locked for at least 6 months",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: Fonts.circularBook,
-                  color: AppColors.gray200),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Slider(
-              activeColor: AppColors.white,
-              inactiveColor: AppColors.gray600,
-              value: max(minValue(), sqrt(sqrt(timeInSeconds))),
-              min: minValue(),
-              max: sqrt(sqrt(maxDelay)),
-              divisions: 10000,
-              onChanged: (double value) {
-                onUpdate((value * value * value * value).toInt());
-              },
-            ),
-            SizedBox(
-                width: double.infinity,
-                child: Center(
-                    child: Text(
-                  timeInSeconds.seconds.yearsDayHourMinuteSecondFormatted(),
-                  style: context.textTheme.bodyText1,
-                )))
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Text(
+            "Lockup Period",
+            style: context.textTheme.headline3,
+          ),
         ),
-      ),
+        SizedBox(
+          height: 5,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Text(
+              "Voting power is given when neurons are locked for at least 6 months",
+              style: context.textTheme.subtitle2),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Slider(
+          activeColor: AppColors.white,
+          inactiveColor: AppColors.gray600,
+          value: max(minValue(), sqrt(sqrt(timeInSeconds))),
+          min: minValue(),
+          max: sqrt(sqrt(maxDelay)),
+          divisions: 10000,
+          onChanged: (double value) {
+            onUpdate((value * value * value * value).toInt());
+          },
+        ),
+      ],
     );
   }
 
-  double minValue() => 0.0;// sqrt(sqrt(7.001.days.inSeconds.toDouble()));
+  double minValue() => 0.0; // sqrt(sqrt(7.001.days.inSeconds.toDouble()));
 }
 
-class VotingPowerWidget extends StatelessWidget {
+class _FigureWidget extends StatelessWidget {
   final String amount;
+  final String label;
 
-  const VotingPowerWidget({Key? key, required this.amount}) : super(key: key);
+  const _FigureWidget({Key? key, required this.amount, required this.label})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Center(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Voting power",
+            amount,
             style: context.textTheme.headline3,
           ),
-          SmallFormDivider(),
+          SizedBox(height: 5,),
           Text(
-            amount,
-            style: context.textTheme.headline2,
-          )
+            label,
+            style: context.textTheme.subtitle2,
+          ),
         ],
       ),
     );
   }
 }
-

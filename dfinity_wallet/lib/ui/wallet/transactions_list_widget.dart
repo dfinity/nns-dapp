@@ -10,31 +10,10 @@ class TransactionsListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        if (account?.transactions.isEmpty ?? true)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 100),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Text(
-                      "No transactions!\n\n Your wallet is empty until ICPs are deposited with a transaction",
-                      style: context.textTheme.bodyText1,
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ...account?.transactions.map((e) =>
-                TransactionRow(transaction: e, currentAccount: account!)) ??
-            [],
-      ],
+      children: account?.transactions.mapToList((e) => TransactionRow(transaction: e, currentAccount: account!)) ?? [],
     );
   }
 }

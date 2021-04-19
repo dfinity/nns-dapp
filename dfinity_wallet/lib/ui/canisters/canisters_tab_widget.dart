@@ -46,17 +46,9 @@ class _CansitersPageState extends State<CansitersPage> {
             footerHeight: null,
             body: ConstrainWidthAndCenter(
               child: TabTitleAndContent(
-                title: "Canisters",
+                title: "Deploy",
+                subtitle: "Deploy applications to canisters; Canisters are computational units, a canister executes your application and consumes cycles.",
                 children: [
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                        "Canisters are computational units, a canister executes your application and consumes cycles.",
-                        style: context.textTheme.bodyText2,
-                      ),
-                    ),
-                  ),
                   SmallFormDivider(),
                   ...context.boxes.canisters.values.mapToList((e) => CanisterRow(
                         canister: e,

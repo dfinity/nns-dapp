@@ -106,7 +106,7 @@ class _OverlayBaseWidgetState extends State<OverlayBaseWidget>
                       opacity: min(1.0, opacityAnim.value * 2),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: AppColors.background,
+                          color: AppColors.lighterBackground,
                           borderRadius: BorderRadius.circular(widget.borderRadius),
                         ),
                         child: ClipRRect(

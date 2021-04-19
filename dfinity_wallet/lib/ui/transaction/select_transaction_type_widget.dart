@@ -16,43 +16,27 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return SizedBox.expand(
       child: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(32),
-              child: Text(
-                "How would you like to use your ICP?",
-                style: TextStyle(
-                    fontSize: 32, fontFamily: Fonts.circularBook, color: AppColors.gray200),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: SizedBox(
-                width: 400,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildButton(context, "Send", "Send ICP to another account", () {
-                      NewTransactionOverlay.of(context).pushPage("Select Account", SelectDestinationAccountPage(
-                        source: source,
-                      ));
-                    }),
-                    SmallFormDivider(),
-                    buildButton(context, "Convert", "Convert ICP into cycles to power canisters", () {}),
-                    SmallFormDivider(),
-                    buildButton(context, "Stake", "Stake ICP in a neuron to participate in governance", () {
-                      NewTransactionOverlay.of(context).pushPage("Stake Neuron", StakeNeuronPage(source: source));
-                    }),
-                  ],
-                ),
-              ),
-            )
-          ],
+        child: IntrinsicWidth(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              buildButton(context, "Send", "Send ICP to another account", () {
+                NewTransactionOverlay.of(context).pushPage("Select Account", SelectDestinationAccountPage(
+                  source: source,
+                ));
+              }),
+              SmallFormDivider(),
+              buildButton(context, "Convert", "Convert ICP into cycles to power canisters", () {}),
+              SmallFormDivider(),
+              buildButton(context, "Stake", "Stake ICP in a neuron to participate in governance", () {
+                NewTransactionOverlay.of(context).pushPage("Stake Neuron", StakeNeuronPage(source: source));
+              }),
+              SizedBox(height: 50,)
+            ],
+          ),
         ),
       ),
     );
@@ -84,7 +68,7 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
               SizedBox(height: 10,),
               Text(
                 subtitle,
-                style: context.textTheme.bodyText2?.copyWith(color: AppColors.gray200),
+                style: context.textTheme.subtitle2?.copyWith(color: AppColors.gray200),
               ),
             ],
           ),
