@@ -1,12 +1,7 @@
-import { Actor, HttpAgent, Identity, Principal } from "@dfinity/agent";
+import { Actor, Agent, Principal } from "@dfinity/agent";
 import { InterfaceFactory } from "@dfinity/agent/lib/cjs/idl";
 
-export default function<T>(host: string, identity: Identity, canisterId: Principal, factory: InterfaceFactory) {
-    const agent = new HttpAgent({
-        host: host,
-        identity: identity
-    });
-
+export default function<T>(agent: Agent, canisterId: Principal, factory: InterfaceFactory) {
     return Actor.createActor(factory, {
         agent,
         canisterId

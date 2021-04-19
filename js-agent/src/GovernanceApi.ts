@@ -1,5 +1,5 @@
 import { Option } from "./canisters/option";
-import { SignIdentity } from "@dfinity/agent";
+import { HttpAgent, SignIdentity } from "@dfinity/agent";
 import governanceBuilder from "./canisters/governance/builder";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService from "./canisters/ledger/model";
@@ -15,7 +15,10 @@ import GovernanceService, {
     ListProposalsRequest,
     ListProposalsResponse,
     MakeMotionProposalRequest,
+    MakeNetworkEconomicsProposalRequest,
     MakeProposalResult,
+    MakeRewardNodeProviderProposalRequest,
+    MakeSetDefaultFolloweesProposalRequest,
     NeuronInfo,
     RegisterVoteRequest,
     RemoveHotKeyRequest,
@@ -27,7 +30,7 @@ import GovernanceService, {
 } from "./canisters/governance/model";
 import { ProposalInfo } from "./canisters/governance/model";
 import createNeuronImpl, { CreateNeuronRequest, CreateNeuronResponse } from "./canisters/governance/createNeuron";
-import ledgerViewBuilder from "./canisters/ledgerView/builder";
+import ledgerViewBuilder from "./canisters/nnsUI/builder";
 
 export default class GovernanceApi {
     private readonly governanceService: GovernanceService;
@@ -35,9 +38,13 @@ export default class GovernanceApi {
     private readonly identity: SignIdentity;
 
     constructor(host: string, identity: SignIdentity) {
-        this.ledgerService = ledgerBuilder(host, identity);
-        const ledgerViewService = ledgerViewBuilder(host, identity);
-        this.governanceService = governanceBuilder(host, identity, ledgerViewService.syncTransactions);
+        const agent = new HttpAgent({
+            host,
+            identity
+        });
+        this.ledgerService = ledgerBuilder(agent, identity);
+        const ledgerViewService = ledgerViewBuilder(agent);
+        this.governanceService = governanceBuilder(agent, identity, ledgerViewService.syncTransactions);
         this.identity = identity;
     }
 
@@ -111,6 +118,18 @@ export default class GovernanceApi {
 
     public makeMotionProposal = async (request: MakeMotionProposalRequest) : Promise<MakeProposalResult> => {
         return this.governanceService.makeMotionProposal(request);
+    }
+
+    public makeNetworkEconomicsProposal = async (request: MakeNetworkEconomicsProposalRequest) : Promise<MakeProposalResult> => {
+        return this.governanceService.makeNetworkEconomicsProposal(request);
+    }
+
+    public makeRewardNodeProviderProposal = async (request: MakeRewardNodeProviderProposalRequest) : Promise<MakeProposalResult> => {
+        return this.governanceService.makeRewardNodeProviderProposal(request);
+    }
+
+    public makeSetDefaultFolloweesProposal = async (request: MakeSetDefaultFolloweesProposalRequest) : Promise<MakeProposalResult> => {
+        return this.governanceService.makeSetDefaultFolloweesProposal(request);
     }
 
     public jsonString(object: Object): String{

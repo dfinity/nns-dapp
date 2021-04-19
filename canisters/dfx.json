@@ -1,13 +1,12 @@
 {
   "canisters": {
-    "ledger_view": {
+    "nns_ui": {
       "type": "custom",
-      "candid": "ledger_view/ledger_view.did",
-      "wasm": "target/wasm32-unknown-unknown/release/ledger_view-opt.wasm",
-      "build": "./generate-wasm.sh ledger_view"
+      "candid": "nns_ui/nns_ui.did",
+      "wasm": "target/wasm32-unknown-unknown/release/nns_ui-opt.wasm",
+      "build": "./generate-wasm.sh nns_ui"
     }
   },
-  "dfx": "0.6.26",
   "networks": {
     "ic": {
       "providers": [
@@ -22,7 +21,7 @@
       "type": "persistent"
     },
     "local": {
-      "bind": "127.0.0.1:8000",
+      "bind": "127.0.0.1:8080",
       "type": "ephemeral"
     }
   },

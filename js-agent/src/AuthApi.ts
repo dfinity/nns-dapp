@@ -3,13 +3,13 @@ import { WebAuthnIdentity } from "./auth/webauthn";
 import authClient from "./auth/authClient";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
 import LEDGER_CANISTER_ID from "./canisters/ledger/canisterId";
-import LEDGER_VIEW_CANISTER_ID from "./canisters/ledgerView/canisterId";
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/authentication";
+import NNS_UI_CANISTER_ID from "./canisters/nnsUI/canisterId";
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity";
 
 const canisterIds = [
     GOVERNANCE_CANISTER_ID,
     LEDGER_CANISTER_ID,
-    LEDGER_VIEW_CANISTER_ID
+    NNS_UI_CANISTER_ID
 ];
 
 export default class AuthApi {

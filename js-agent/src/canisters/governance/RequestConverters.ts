@@ -15,6 +15,9 @@ import {
     IncreaseDissolveDelayRequest,
     ListProposalsRequest,
     MakeMotionProposalRequest,
+    MakeNetworkEconomicsProposalRequest,
+    MakeRewardNodeProviderProposalRequest,
+    MakeSetDefaultFolloweesProposalRequest,
     ManageNeuron,
     NeuronId,
     NodeProvider,
@@ -33,6 +36,7 @@ import {
     Ballot as RawBallot,
     Change as RawChange,
     Command as RawCommand,
+    Followees as RawFollowees,
     ListProposalInfo,
     ManageNeuron as RawManageNeuron,
     NeuronId as RawNeuronId,
@@ -196,6 +200,61 @@ export default class RequestConverters {
         return {
             id: [this.fromNeuronId(request.neuronId)],
             command: [rawCommand]
+        };
+    }
+
+    public fromMakeNetworkEconomicsProposalRequest = (request: MakeNetworkEconomicsProposalRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { MakeProposal: { 
+            url: request.url,
+            summary: request.summary,
+            action: [{ NetworkEconomics: { 
+                reject_cost_doms: convert.bigIntToBigNumber(request.rejectCost),
+                manage_neuron_cost_per_proposal_doms: convert.bigIntToBigNumber(request.manageNeuronCostPerProposal),
+                neuron_minimum_stake_doms: convert.bigIntToBigNumber(request.neuronMinimumStake),
+                maximum_node_provider_rewards_doms: convert.bigIntToBigNumber(request.maximumNodeProviderRewards),
+                neuron_spawn_dissolve_delay_seconds: convert.bigIntToBigNumber(request.neuronSpawnDissolveDelaySeconds),
+            } }]
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromMakeRewardNodeProviderProposalRequest = (request: MakeRewardNodeProviderProposalRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { MakeProposal: { 
+            url: request.url,
+            summary: request.summary,
+            action: [{ RewardNodeProvider: { 
+                amount_doms: convert.bigIntToBigNumber(request.amount),
+                node_provider: [{
+                    id: [request.nodeProvider]
+                }]
+            } }]
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    public fromMakeSetDefaultFolloweesProposalRequest = (request: MakeSetDefaultFolloweesProposalRequest) : RawManageNeuron => {
+        const rawCommand: RawCommand =  { MakeProposal: { 
+            url: request.url,
+            summary: request.summary,
+            action: [{ SetDefaultFollowees: { 
+                default_followees: request.followees.map(f => [f.topic as number, this.fromFollowees(f.followees)])
+            } }]
+        }};
+        return {
+            id: [this.fromNeuronId(request.neuronId)],
+            command: [rawCommand]
+        };
+    }
+
+    private fromFollowees(followees: Array<NeuronId>): RawFollowees {
+        return {
+            followees: followees.map(this.fromNeuronId)
         };
     }
 
