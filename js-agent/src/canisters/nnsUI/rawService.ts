@@ -1,6 +1,5 @@
-import type BigNumber from 'bignumber.js';
 export type AccountIdentifier = string;
-export type BlockHeight = BigNumber;
+export type BlockHeight = bigint;
 export type CreateSubAccountResponse = { 'Ok' : NamedSubAccount } |
     { 'AccountNotFound' : null } |
     { 'SubAccountLimitExceeded' : null };
@@ -20,7 +19,7 @@ export interface GetTransactionsResponse {
   'total' : number,
   'transactions' : Array<Transaction>,
 };
-export interface ICPTs { 'doms' : BigNumber };
+export interface ICPTs { 'e8s' : bigint };
 export interface NamedSubAccount {
   'name' : string,
   'sub_account' : SubAccount,
@@ -37,7 +36,7 @@ export interface Send {
   'amount' : ICPTs,
 };
 export type SubAccount = Array<number>;
-export interface Timestamp { 'secs' : BigNumber, 'nanos' : number };
+export interface Timestamp { 'timestamp_nanos' : bigint };
 export interface Transaction {
   'timestamp' : Timestamp,
   'block_height' : BlockHeight,

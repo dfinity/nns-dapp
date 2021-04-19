@@ -1,5 +1,3 @@
-const SUB_ACCOUNT_BYTE_LENGTH = 32;
-
 export default class AccountIdentifier {
     private readonly _bytes: Uint8Array;
 

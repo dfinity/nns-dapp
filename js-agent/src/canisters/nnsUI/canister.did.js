@@ -23,9 +23,9 @@ export default ({ IDL }) => {
     'offset' : IDL.Nat32,
     'account_identifier' : AccountIdentifier,
   });
-  const Timestamp = IDL.Record({ 'secs' : IDL.Nat64, 'nanos' : IDL.Nat32 });
+  const Timestamp = IDL.Record({ 'timestamp_nanos' : IDL.Nat64 });
   const BlockHeight = IDL.Nat64;
-  const ICPTs = IDL.Record({ 'doms' : IDL.Nat64 });
+  const ICPTs = IDL.Record({ 'e8s' : IDL.Nat64 });
   const Send = IDL.Record({
     'to' : AccountIdentifier,
     'fee' : ICPTs,

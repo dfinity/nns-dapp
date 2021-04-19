@@ -89,7 +89,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                           )),
                     ],
                   ),
-                  if (widget.account.transactions.isEmpty ?? true)
+                  if (widget.account.transactions.isEmpty)
                     Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 64),

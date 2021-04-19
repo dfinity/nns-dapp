@@ -56,10 +56,9 @@ export default class ResponseConverters {
     private toTransaction = (transaction: RawTransaction) : Transaction => {
         return {
             timestamp: {
-                secs: convert.bigNumberToBigInt(transaction.timestamp.secs),
-                nanos: transaction.timestamp.nanos
+                timestampNanos: transaction.timestamp.timestamp_nanos
             },
-            blockHeight: convert.bigNumberToBigInt(transaction.block_height),
+            blockHeight: transaction.block_height,
             transfer: this.toTransfer(transaction.transfer)
         }
     }
@@ -68,14 +67,14 @@ export default class ResponseConverters {
         if ("Burn" in transfer) {
             return {
                 Burn: {
-                    amount: convert.toDoms(transfer.Burn.amount)
+                    amount: transfer.Burn.amount.e8s
                 }
             };
         }
         if ("Mint" in transfer) {
             return {
                 Mint: {
-                    amount: convert.toDoms(transfer.Mint.amount)
+                    amount: transfer.Mint.amount.e8s
                 }
             };
         }
@@ -83,8 +82,8 @@ export default class ResponseConverters {
             return {
                 Send: {
                     to: transfer.Send.to,
-                    amount: convert.toDoms(transfer.Send.amount),
-                    fee: convert.toDoms(transfer.Send.fee)
+                    amount: transfer.Send.amount.e8s,
+                    fee: transfer.Send.fee.e8s
                 }
             };
         }
@@ -92,8 +91,8 @@ export default class ResponseConverters {
             return {
                 Receive: {
                     from: transfer.Receive.from,
-                    amount: convert.toDoms(transfer.Receive.amount),
-                    fee: convert.toDoms(transfer.Receive.fee)
+                    amount: transfer.Receive.amount.e8s,
+                    fee: transfer.Receive.fee.e8s
                 }
             };
         }

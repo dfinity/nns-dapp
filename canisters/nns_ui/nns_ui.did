@@ -1,6 +1,6 @@
 type AccountIdentifier = text;
 type BlockHeight = nat64;
-type ICPTs = record { doms: nat64; };
+type ICPTs = record { e8s: nat64; };
 type SubAccount = vec nat8;
 
 type GetAccountResponse =
@@ -14,8 +14,7 @@ type GetAccountResponse =
 
 type Timestamp = 
     record {
-        secs: nat64;
-        nanos: nat32;
+        timestamp_nanos: nat64;
     };
 
 type GetTransactionsRequest = 

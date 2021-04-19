@@ -62,10 +62,6 @@ export const asciiStringToByteArray = (text: string) : Array<number> => {
         .map(c => c.charCodeAt(0));
 }
 
-export const toDoms = (value: RawICPTs) : E8s => {
-    return BigInt(value.doms);
-}
-
 export const toSubAccountId = (subAccount: Array<number>) : number => {
     const bytes = arrayOfNumberToArrayBuffer(subAccount);
     return arrayBufferToNumber(bytes);
