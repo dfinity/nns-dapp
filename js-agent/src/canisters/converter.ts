@@ -1,7 +1,9 @@
 import BigNumber from "bignumber.js";
 import { Doms } from "./ledger/model";
-import { ICPTs as RawICPTs } from "./ledger/rawService";
+import { ICPTs as RawICPTs } from "./ledgerView/rawService";
 import { SUB_ACCOUNT_BYTE_LENGTH } from "./constants";
+import { BinaryBlob } from "@dfinity/agent";
+import { Buffer } from "buffer";
 
 export const bigIntToBigNumber = (value: bigint) : BigNumber => {
     return new BigNumber(value.toString(10));
@@ -27,8 +29,12 @@ export const arrayBufferToArrayOfNumber = (buffer: ArrayBuffer) : Array<number> 
     return Array.from(typedArray);
 }
 
+export const arrayOfNumberToUint8Array = (numbers: Array<number>) : Uint8Array => {
+    return new Uint8Array(numbers);
+}
+
 export const arrayOfNumberToArrayBuffer = (numbers: Array<number>) : ArrayBuffer => {
-    return new Uint8Array(numbers).buffer;
+    return arrayOfNumberToUint8Array(numbers).buffer;
 }
 
 export const arrayBufferToNumber = (buffer: ArrayBuffer) : number => {
@@ -60,4 +66,12 @@ export const toSubAccountId = (subAccount: Array<number>) : number => {
 export const fromSubAccountId = (subAccountId: number) : Array<number> => {
     const buffer = numberToArrayBuffer(subAccountId, SUB_ACCOUNT_BYTE_LENGTH);
     return arrayBufferToArrayOfNumber(buffer);
+}
+
+export const uint8ArrayToBlob = (array: Uint8Array) : BinaryBlob => {
+    return Buffer.from(array) as unknown as BinaryBlob;
+}
+
+export const blobToUint8Array = (blob: BinaryBlob) : Uint8Array => {
+    return Buffer.from(blob);
 }

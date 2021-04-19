@@ -126,6 +126,7 @@ dfinity_wallet/public/**
 dfinity_wallet/assets/dfinity_agent.js
 dfinity_wallet/web/dfinity_agent.js
 js-agent/build/
+js-agent/agent/
 
 .dfx/
 target/

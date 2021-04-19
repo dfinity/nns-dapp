@@ -7,7 +7,6 @@
       "build": "./generate-wasm.sh ledger_view"
     }
   },
-  "dfx": "0.6.26",
   "networks": {
     "ic": {
       "providers": [
@@ -22,7 +21,7 @@
       "type": "persistent"
     },
     "local": {
-      "bind": "127.0.0.1:8000",
+      "bind": "127.0.0.1:8080",
       "type": "ephemeral"
     }
   },

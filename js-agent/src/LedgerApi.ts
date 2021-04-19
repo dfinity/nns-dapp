@@ -1,4 +1,4 @@
-import { AnonymousIdentity, SignIdentity } from "@dfinity/agent";
+import { Agent, AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService, {
     AccountIdentifier,
@@ -19,12 +19,18 @@ import { create_dummy_proposals, test_happy_path } from "./tests";
 export default class LedgerApi {
     private readonly ledgerService: LedgerService;
     private readonly ledgerViewService: LedgerViewService;
+    private readonly agent: Agent;
     private readonly host: string;
     private readonly identity: SignIdentity;
 
     constructor(host: string, identity: SignIdentity) {
-        this.ledgerService = ledgerBuilder(host, identity);
-        this.ledgerViewService = ledgerViewBuilder(host, identity);
+        const agent = new HttpAgent({
+            host,
+            identity
+        });
+        this.ledgerService = ledgerBuilder(agent, identity);
+        this.ledgerViewService = ledgerViewBuilder(agent);
+        this.agent = agent;
         this.host = host;
         this.identity = identity;
     }
@@ -33,7 +39,7 @@ export default class LedgerApi {
     // by sending from the anon account which has been gifted lots of ICPTs
     public acquireICPTs = async (accountIdentifier: AccountIdentifier, doms: Doms): Promise<void> => {
         const anonIdentity = new AnonymousIdentity();
-        const anonLedgerService = ledgerBuilder(this.host, anonIdentity);
+        const anonLedgerService = ledgerBuilder(this.agent, anonIdentity);
         await anonLedgerService.sendICPTs({
             to: accountIdentifier,
             amount: doms

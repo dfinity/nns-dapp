@@ -1,4 +1,4 @@
-import { blobFromUint8Array, derBlobFromBlob, Principal, SignIdentity } from "@dfinity/agent";
+import { Agent, blobFromUint8Array, derBlobFromBlob, Principal, SignIdentity } from "@dfinity/agent";
 import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
@@ -20,6 +20,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     const ledgerApi = new LedgerApi(host, identity);
     const governanceApi = new GovernanceApi(host, identity);
 
+    let neurons_temp = governanceApi.getNeurons();
     console.log("getting account");
     let account = await ledgerApi.getAccount();
     console.log(account);
