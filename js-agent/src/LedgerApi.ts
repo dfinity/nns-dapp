@@ -39,7 +39,11 @@ export default class LedgerApi {
     // by sending from the anon account which has been gifted lots of ICPTs
     public acquireICPTs = async (accountIdentifier: AccountIdentifier, doms: Doms): Promise<void> => {
         const anonIdentity = new AnonymousIdentity();
-        const anonLedgerService = ledgerBuilder(this.agent, anonIdentity);
+        const agent = new HttpAgent({
+            host: this.host,
+            identity: anonIdentity
+        });
+        const anonLedgerService = ledgerBuilder(agent, anonIdentity);
         await anonLedgerService.sendICPTs({
             to: accountIdentifier,
             amount: doms
