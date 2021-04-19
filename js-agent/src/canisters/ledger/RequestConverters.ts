@@ -68,7 +68,7 @@ export default class RequestConverters {
 
         if (request.toSubAccount != null) {
             const subaccount = new Subaccount();
-            subaccount.setSubAccount(new Uint8Array(request.toSubAccount));
+            subaccount.setSubAccount(request.toSubAccount);
             result.setToSubaccount(subaccount);
         }
 
@@ -104,7 +104,7 @@ export default class RequestConverters {
 
     private toPrincipal = (principalId: Principal) : PrincipalId => {
         const result = new PrincipalId();
-        result.setSerializedId(principalId.toBlob());
+        result.setSerializedId(principalId.toString());
         return result;
     }
 }

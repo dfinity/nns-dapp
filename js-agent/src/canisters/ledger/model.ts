@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/agent";
 
-export type SubAccount = ArrayBuffer;
+export type SubAccount = Uint8Array;
 
 export type BlockHeight = bigint;
 

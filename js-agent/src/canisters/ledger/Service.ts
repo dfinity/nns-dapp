@@ -1,4 +1,5 @@
 import { Agent, Principal, QueryResponseStatus } from "@dfinity/agent";
+import { Reader } from "protobufjs";
 import ServiceInterface, {
     AccountIdentifier,
     BlockHeight,
@@ -8,7 +9,7 @@ import ServiceInterface, {
     SendICPTsRequest
 } from "./model";
 import RequestConverters from "./RequestConverters";
-import { uint8ArrayToBigInt, blobToUint8Array, uint8ArrayToBlob } from "../converter";
+import { blobToUint8Array, uint8ArrayToBlob } from "../converter";
 import { ICPTs } from "./types/types_pb";
 import { submitUpdateRequest } from "../updateRequestHandler";
 
@@ -57,7 +58,8 @@ export default class Service implements ServiceInterface {
             "send",
             uint8ArrayToBlob(rawRequest.serializeBinary()));
 
-        return uint8ArrayToBigInt(responseBytes);
+        const reader = new Reader(responseBytes);
+        return BigInt(reader.uint64());
     }
 
     public notify = async (request: NotifyCanisterRequest) : Promise<any> => {

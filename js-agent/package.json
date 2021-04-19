@@ -8,6 +8,7 @@
     "borc": "^2.1.2",
     "browserify": "^17.0.0",
     "crc": "^3.8.0",
+    "protobufjs": "^6.10.2",
     "randombytes": "^2.1.0",
     "ts-protoc-gen": "^0.14.0",
     "tweetnacl": "^1.0.3",
