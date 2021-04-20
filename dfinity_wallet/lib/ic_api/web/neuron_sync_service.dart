@@ -44,27 +44,27 @@ class NeuronSyncService {
   }
 
   void updateNeuron(Neuron neuron, String neuronId, dynamic res) {
-    final fullNeuron = res['fullNeuron'];
 
     PrettyPrint.prettyPrintJson("neuron response", res);
     neuron.id = neuronId;
-    neuron.recentBallots = parseRecentBallots(fullNeuron['recentBallots']);
-    neuron.createdTimestampSeconds =
-        fullNeuron['createdTimestampSeconds'].toString();
     neuron.votingPower = res['votingPower'].toString();
     neuron.state = NeuronState.values[res['state'].toInt()];
     neuron.dissolveDelaySeconds = res['dissolveDelaySeconds'].toString();
-    neuron.cachedNeuronStakeDoms =
-        fullNeuron['cachedNeuronStake'].toString();
-    neuron.neuronFeesDoms = fullNeuron['neuronFees'].toString();
-    neuron.maturityDomsEquivalent =
-        fullNeuron['maturityDomsEquivalent'].toString();
 
+    final fullNeuron = res['fullNeuron'];
     final dissolveState = fullNeuron['dissolveState'];
     if (dissolveState != null) {
       neuron.whenDissolvedTimestampSeconds =
           dissolveState['WhenDissolvedTimestampSeconds']?.toString();
     }
+    neuron.cachedNeuronStakeDoms =
+        fullNeuron['cachedNeuronStake'].toString();
+    neuron.recentBallots = parseRecentBallots(fullNeuron['recentBallots']);
+    neuron.neuronFeesDoms = fullNeuron['neuronFees'].toString();
+    neuron.maturityE8sEquivalent =
+        fullNeuron['maturityE8sEquivalent'].toString();
+    neuron.createdTimestampSeconds =
+        fullNeuron['createdTimestampSeconds'].toString();
     neuron.followees = parseFollowees(fullNeuron['followees']);
 
 
@@ -76,7 +76,7 @@ class NeuronSyncService {
     assert(neuron.dissolveDelaySeconds != null);
     assert(neuron.cachedNeuronStakeDoms != null);
     assert(neuron.neuronFeesDoms != null);
-    assert(neuron.maturityDomsEquivalent != null);
+    assert(neuron.maturityE8sEquivalent != null);
     assert(neuron.followees != null);
   }
 

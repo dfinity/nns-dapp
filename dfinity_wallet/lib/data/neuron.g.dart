@@ -27,7 +27,7 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       proposals: (fields[12] as HiveList?)?.castHiveList(),
     )
       ..neuronFeesDoms = fields[8] as String
-      ..maturityDomsEquivalent = fields[9] as String
+      ..maturityE8sEquivalent = fields[9] as String
       ..whenDissolvedTimestampSeconds = fields[10] as String?
       ..followees = (fields[11] as List).cast<Followee>();
   }
@@ -53,7 +53,7 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       ..writeByte(8)
       ..write(obj.neuronFeesDoms)
       ..writeByte(9)
-      ..write(obj.maturityDomsEquivalent)
+      ..write(obj.maturityE8sEquivalent)
       ..writeByte(10)
       ..write(obj.whenDissolvedTimestampSeconds)
       ..writeByte(11)

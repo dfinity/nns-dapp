@@ -12,7 +12,7 @@ class NeuronRewardsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final maturity = neuron.maturityDomsEquivalent;
+    final maturity = neuron.maturityE8sEquivalent;
     return Card(
       color: AppColors.background,
       child: Padding(
@@ -45,7 +45,7 @@ class NeuronRewardsCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       BalanceDisplayWidget(
-                          amount: neuron.maturityDomsEquivalent.toBigInt.toICPT,
+                          amount: neuron.maturityE8sEquivalent.toBigInt.toICPT,
                           amountSize: 30,
                           icpLabelSize: 15),
                       Expanded(child: ConstrainedBox(constraints: BoxConstraints(minHeight: 40),
@@ -60,7 +60,7 @@ class NeuronRewardsCard extends StatelessWidget {
                                     rootWidget: StakeNeuronPage(source: neuron),
                                   )
                               );
-                            }.takeIf((e) => neuron.maturityDomsEquivalent.toDouble() > 0),
+                            }.takeIf((e) => neuron.maturityE8sEquivalent.toDouble() > 0),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Text("Spawn Neuron"),

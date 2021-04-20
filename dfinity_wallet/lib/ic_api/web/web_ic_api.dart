@@ -117,7 +117,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       if (fromSubAccount != null) 'fromSubAccountId': fromSubAccount.toInt()
     };
     print("create neuron request ${request}");
-    await promiseToFuture(governanceApi!.createNeuron(jsify(request)));
+    await promiseToFuture(ledgerApi!.createNeuron(jsify(request)));
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -139,7 +139,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       required BigInt doms,
       BigInt? toSubaccountId}) async {
     await callApi(governanceApi!.disburse,
-        {'neuronId': neuronId, 'doms': doms, 'toSubaccountId': toSubaccountId});
+        {'neuronId': neuronId, 'amount': doms, 'toAccountId': toSubaccountId});
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -150,7 +150,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       required BigInt doms}) async {
     await callApi(governanceApi!.disburseToNeuron, {
       'neuronId': neuronId,
-      'doms': doms,
+      'amount': doms,
       'dissolveDelaySeconds': dissolveDelaySeconds
     });
     await neuronSyncService!.fetchNeurons();

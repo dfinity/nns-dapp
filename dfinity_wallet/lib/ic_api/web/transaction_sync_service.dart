@@ -40,11 +40,11 @@ class TransactionSyncService {
       }
 
       print("from ${from} to ${to}");
-      final milliseconds = int.parse(e.timestamp.secs.toString()) * 1000;
+      final milliseconds = BigInt.parse(e.timestamp.timestampNanos.toString()) / BigInt.from(1000000);
       transactions.add(Transaction(
         to: to,
         from: from,
-        date: DateTime.fromMillisecondsSinceEpoch(milliseconds),
+        date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
         doms: doms.toString(),
         fee: e.fees.toString()
       ));

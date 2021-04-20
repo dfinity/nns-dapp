@@ -31,7 +31,7 @@ class Neuron extends DfinityEntity with ICPSource {
   @HiveField(8)
   late String neuronFeesDoms;
   @HiveField(9)
-  late String maturityDomsEquivalent;
+  late String maturityE8sEquivalent;
   @HiveField(10)
   late String? whenDissolvedTimestampSeconds;
   @HiveField(11)
