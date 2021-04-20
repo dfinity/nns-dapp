@@ -1,5 +1,5 @@
 import type { DerEncodedBlob, Principal } from "@dfinity/agent";
-import AccountIdentifier from "../AccountIdentifier";
+import { AccountIdentifier } from "../ledger/model";
 import { Option } from "../option";
 
 export type E8s = bigint;

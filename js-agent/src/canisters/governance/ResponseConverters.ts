@@ -1,4 +1,5 @@
-import { arrayOfNumberToArrayBuffer } from "../converter";
+import { accountIdentifierFromBytes, arrayOfNumberToArrayBuffer } from "../converter";
+import { AccountIdentifier } from "../ledger/model";
 import {
     Action,
     Ballot,
@@ -46,7 +47,6 @@ import {
     ManageNeuronResponse,
     ListNeuronsResponse,
 } from "./rawService";
-import AccountIdentifier from "../AccountIdentifier";
 
 export default class ResponseConverters {
     public toProposalInfo = (proposalInfo: RawProposalInfo) : ProposalInfo => {
@@ -430,7 +430,7 @@ export default class ResponseConverters {
     }
 
     private toAccountIdentifier(accountIdentifier: RawAccountIdentifier): AccountIdentifier {
-        return new AccountIdentifier(new Uint8Array(accountIdentifier.hash));
+        return accountIdentifierFromBytes(new Uint8Array(accountIdentifier.hash));
     }
 
     private throwUnrecognisedTypeError = (name: string, value: any) => {

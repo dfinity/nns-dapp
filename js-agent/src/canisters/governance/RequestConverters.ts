@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/agent";
-import AccountIdentifier from "../AccountIdentifier";
-import { arrayBufferToArrayOfNumber } from "../converter";
+import { accountIdentifierToBytes, arrayBufferToArrayOfNumber } from "../converter";
+import { AccountIdentifier } from "../ledger/model";
 import {
     Action,
     AddHotKeyRequest,
@@ -472,8 +472,9 @@ export default class RequestConverters {
     }
 
     private fromAccountIdentifier(accountIdentifier: AccountIdentifier): RawAccountIdentifier {
+        const bytes = accountIdentifierToBytes(accountIdentifier);
         return {
-            hash: arrayBufferToArrayOfNumber(accountIdentifier.bytes)
+            hash: arrayBufferToArrayOfNumber(bytes)
         };
     }
     

@@ -55,9 +55,7 @@ export default class ResponseConverters {
 
     private toTransaction = (transaction: RawTransaction) : Transaction => {
         return {
-            timestamp: {
-                timestampNanos: transaction.timestamp.timestamp_nanos
-            },
+            timestamp: transaction.timestamp.timestamp_nanos,
             blockHeight: transaction.block_height,
             transfer: this.toTransfer(transaction.transfer)
         }

@@ -23,9 +23,9 @@ export interface NamedSubAccount {
 };
 export interface Receive { fee: E8s, from: AccountIdentifier, amount: E8s };
 export interface Send { to: AccountIdentifier, fee: E8s, amount: E8s };
-export interface Timestamp { timestampNanos: bigint };
+export type TimestampNanos = bigint;
 export interface Transaction {
-    timestamp: Timestamp,
+    timestamp: TimestampNanos,
     blockHeight: BlockHeight,
     transfer: Transfer,
 };

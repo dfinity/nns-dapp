@@ -4,7 +4,6 @@ import LedgerApi from "./LedgerApi";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
 import { buildSubAccount, buildAccountIdentifier } from "./canisters/ledger/createNeuron";
 import { NeuronId, Topic, Vote } from "./canisters/governance/model";
-import AccountIdentifier from "./canisters/AccountIdentifier";
 
 var running = false;
 
@@ -146,7 +145,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         console.log("Disburse 1_000_000 doms from first disbursable neuron to my default account");
         const manageNeuronResponse = await governanceApi.disburse({
             neuronId: disbursableNeuronId,
-            toAccountId: AccountIdentifier.fromString(account.accountIdentifier),
+            toAccountId: account.accountIdentifier,
             amount: BigInt(1_000_000)
         });
         console.log(manageNeuronResponse);            

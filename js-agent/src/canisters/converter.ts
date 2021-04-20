@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js";
 import { SUB_ACCOUNT_BYTE_LENGTH } from "./constants";
 import { BinaryBlob } from "@dfinity/agent";
 import { Buffer } from "buffer";
+import { AccountIdentifier } from "./ledger/model";
 
 export const bigIntToBigNumber = (value: bigint) : BigNumber => {
     return new BigNumber(value.toString(10));
@@ -68,4 +69,12 @@ export const uint8ArrayToBlob = (array: Uint8Array) : BinaryBlob => {
 
 export const blobToUint8Array = (blob: BinaryBlob) : Uint8Array => {
     return Buffer.from(blob);
+}
+
+export const accountIdentifierToBytes = (accountIdentifier: AccountIdentifier) : Uint8Array => {
+    return Uint8Array.from(Buffer.from(accountIdentifier, "hex"));
+}
+
+export const accountIdentifierFromBytes = (accountIdentifier: Uint8Array) : AccountIdentifier => {
+    return Buffer.from(accountIdentifier).toString("hex");
 }
