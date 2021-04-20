@@ -6,16 +6,19 @@ class BalanceDisplayWidget extends StatelessWidget {
     final double amount;
     final int amountSize;
     final int icpLabelSize;
+    final Axis direction;
 
-    const BalanceDisplayWidget({Key? key, required this.amount, required this.amountSize, required this.icpLabelSize})
+    const BalanceDisplayWidget({Key? key, required this.amount, required this.amountSize, required this.icpLabelSize, this.direction = Axis.vertical})
             : super(key: key);
 
     @override
     Widget build(BuildContext context) {
         var f = NumberFormat("###,###.#", "en_US");
-        return Row(
+        return Flex(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
+            direction: direction,
             children: [
                 Text(
                     f.format(amount),
@@ -24,8 +27,8 @@ class BalanceDisplayWidget extends StatelessWidget {
                 SizedBox(
                     width: 7,
                 ),
-                Text("ICPT",
-                        style: TextStyle(color: AppColors.white, fontFamily: Fonts.circularBook, fontSize: icpLabelSize.toDouble()))
+                Text("ICP",
+                        style: TextStyle(color: AppColors.gray200, fontFamily: Fonts.circularBook, fontSize: amountSize.toDouble()* 0.4))
             ],
         );
     }

@@ -23,8 +23,9 @@ class DebouncedValidatedFormField extends StatefulWidget {
   final ValidatedTextField textField;
   final Function? onChanged;
   final bool obscureText;
+  final Widget? suffix;
 
-  const DebouncedValidatedFormField(this.textField, {Key? key, this.obscureText = false, this.onChanged}) : super(key: key);
+  const DebouncedValidatedFormField(this.textField, {Key? key, this.obscureText = false, this.suffix, this.onChanged}) : super(key: key);
 
   @override
   _DebouncedValidatedFormFieldState createState() => _DebouncedValidatedFormFieldState();
@@ -63,6 +64,7 @@ class _DebouncedValidatedFormFieldState extends State<DebouncedValidatedFormFiel
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(100),
                     borderSide: BorderSide(width: 1, color: AppColors.white)),
+                suffix: widget.suffix
             ),
             onChanged: (e) {
               if (autovalidateMode != AutovalidateMode.always) {
@@ -79,7 +81,8 @@ class _DebouncedValidatedFormFieldState extends State<DebouncedValidatedFormFiel
             validator: (text) =>
                 widget.textField.failedValidation?.errorMessage?.let((e) => "${widget.textField.name} $e"),
             autovalidateMode: autovalidateMode,
-            obscureText: widget.obscureText),
+            obscureText: widget.obscureText,
+        ),
       ),
     );
   }

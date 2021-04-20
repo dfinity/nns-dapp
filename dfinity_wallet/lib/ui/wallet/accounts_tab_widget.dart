@@ -183,12 +183,14 @@ class SubAccountsListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: subAccounts.mapToList((e) => AccountRow(
+      children: [
+        SizedBox(height: 20,),
+        ...subAccounts.mapToList((e) => AccountRow(
         account: e,
             onTap: () {
               context.nav.push(AccountPageDef.createPageConfig(e));
             },
-          )),
+          ))],
     );
   }
 }

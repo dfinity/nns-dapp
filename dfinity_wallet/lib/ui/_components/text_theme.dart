@@ -20,7 +20,7 @@ const DfinityTextTheme = TextTheme(
     bodyText2: TextStyle(
         fontSize: 14, fontFamily: Fonts.circularBook, color: AppColors.gray200, fontWeight: FontWeight.normal),
     button: TextStyle(
-            fontSize: 16, fontFamily: Fonts.circularBook, color: AppColors.gray100, fontWeight: FontWeight.w700),
+            fontSize: 22.0, fontFamily: Fonts.circularBook, color: AppColors.gray100, fontWeight: FontWeight.normal),
 );
 
 extension ThemeExt on BuildContext {

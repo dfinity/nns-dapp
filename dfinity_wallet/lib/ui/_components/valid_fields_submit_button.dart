@@ -33,9 +33,10 @@ class ValidFieldsSubmitButtonState extends State<ValidFieldsSubmitButton> {
 
     @override
     Widget build(BuildContext context) {
+        final allValid = widget.fields.allAreValid;
         return ElevatedButton(
             child: widget.child,
-            onPressed: widget.fields.allAreValid ? widget.onPressed : null,
+            onPressed: allValid ? widget.onPressed : null,
         );
     }
 

@@ -24,7 +24,7 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               buildButton(context, "Send", "Send ICP to another account", () {
-                NewTransactionOverlay.of(context).pushPage("Select Account", SelectDestinationAccountPage(
+                NewTransactionOverlay.of(context).pushPage("Destination Account", SelectDestinationAccountPage(
                   source: source,
                 ));
               }),
@@ -47,11 +47,7 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
       style: ButtonStyle(
           shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(24))),
           overlayColor: MaterialStateProperty.resolveWith((states) {
-            if(states.contains(MaterialState.pressed)){
-              return AppColors.blue600;
-            }else{
-              return AppColors.blue600;
-            }
+              return AppColors.blue600.withOpacity(0.5);
           })
       ),
       child: Padding(

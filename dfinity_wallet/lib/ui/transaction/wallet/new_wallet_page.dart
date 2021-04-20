@@ -3,7 +3,7 @@ import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/debounced_validated_form_field.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/send_to_wallet_page.dart';
+import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../dfinity.dart';

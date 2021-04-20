@@ -50,7 +50,7 @@ class _TextFieldDialogWidgetState extends State<TextFieldDialogWidget> {
                 child: Text("Create"),
                 onPressed: () {
                   widget.onComplete(nameField.currentValue);
-                  Navigator.of(context).pop();
+                  OverlayBaseWidget.of(context)?.dismiss();
                 },
                 fields: [nameField],
               ),

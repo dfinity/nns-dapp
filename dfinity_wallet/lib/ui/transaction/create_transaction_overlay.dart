@@ -40,6 +40,14 @@ class NewTransactionOverlayState extends State<NewTransactionOverlay> {
     });
   }
 
+  void replacePage(String? title, Widget widget) {
+    setState(() {
+      pages.clear();
+      pages.add(createPage(title:title, widget: widget));
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -71,6 +79,23 @@ class NewTransactionOverlayState extends State<NewTransactionOverlay> {
           appBar: (title != null) ? AppBar(
             backgroundColor: AppColors.lighterBackground,
             toolbarHeight: 100,
+            leadingWidth: 100,
+            actions: [AspectRatio(
+                aspectRatio: 1,
+                child: TextButton(
+                  onPressed: () {
+                    OverlayBaseWidget.of(context)?.dismiss();
+                  },
+                  child: Center(
+                    child: Text(
+                      "✕",
+                      style: TextStyle(
+                          fontFamily: Fonts.circularBook,
+                          fontSize: 24,
+                          color: AppColors.white),
+                    ),
+                  ),
+                )),],
             title: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Text(title,
