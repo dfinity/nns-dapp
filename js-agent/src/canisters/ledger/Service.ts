@@ -1,5 +1,4 @@
-import { Agent, Principal, QueryResponseStatus } from "@dfinity/agent";
-import { Reader } from "protobufjs";
+import { Agent, Principal } from "@dfinity/agent";
 import ServiceInterface, {
     AccountIdentifier,
     BlockHeight,
@@ -9,8 +8,8 @@ import ServiceInterface, {
     SendICPTsRequest
 } from "./model";
 import RequestConverters from "./RequestConverters";
-import { blobToUint8Array, uint8ArrayToBlob } from "../converter";
-import { ICPTs } from "./types/types_pb";
+import { BlockHeight as BlockHeightProto, ICPTs } from "./types/types_pb";
+import { submitQueryRequest } from "../queryRequestHandler";
 import { submitUpdateRequest } from "../updateRequestHandler";
 
 export default class Service implements ServiceInterface {
@@ -29,16 +28,13 @@ export default class Service implements ServiceInterface {
     public getBalances = async (request: GetBalancesRequest) : Promise<Record<AccountIdentifier, E8s>> => {
         const rawRequests = this.requestConverters.fromGetBalancesRequest(request);
         const promises = rawRequests.map(async r => {
-            const rawResponse = await this.agent.query(this.canisterId, {
-                methodName: "account_balance",
-                arg: uint8ArrayToBlob(r.serializeBinary())
-            });
-            if (rawResponse.status === QueryResponseStatus.Replied) {
-                const response = ICPTs.deserializeBinary(blobToUint8Array(rawResponse.reply.arg));
-                return response.getE8s() ?? BigInt(0);
-            } else {
-                throw new Error(`Code: {rawResponse.reject_code}. Message: {rawResponse.reject_message}`);
-            }
+            const responseBytes = await submitQueryRequest(
+                this.agent,
+                this.canisterId,
+                "account_balance",
+                r.serializeBinary());
+
+            return BigInt(ICPTs.deserializeBinary(responseBytes).getE8s());
         });
         const balances = await Promise.all(promises);
 
@@ -56,20 +52,18 @@ export default class Service implements ServiceInterface {
             this.agent,
             this.canisterId,
             "send",
-            uint8ArrayToBlob(rawRequest.serializeBinary()));
+            rawRequest.serializeBinary());
 
-        const reader = new Reader(responseBytes);
-        return BigInt(reader.uint64());
+        return BigInt(BlockHeightProto.deserializeBinary(responseBytes).getHeight());
     }
 
     public notify = async (request: NotifyCanisterRequest) : Promise<any> => {
         const rawRequest = this.requestConverters.fromNotifyCanisterRequest(request);
-        const requestBinary = rawRequest.serializeBinary();
-        const requestBlob = uint8ArrayToBlob(requestBinary);
+
         return await submitUpdateRequest(
             this.agent,
             this.canisterId,
             "notify",
-            requestBlob);
+            rawRequest.serializeBinary());
     }
 }
