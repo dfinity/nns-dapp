@@ -41,13 +41,11 @@ class NeuronProposalsCard extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: ElevatedButton(
                   onPressed: () {
-                    Overlay.of(context)?.show(context,
-                        NewProposalDialog(neuron: neuron)
-                    );
+                    context.icApi.createDummyProposals(neuronId: neuron.id.toBigInt);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text("Create Motion Proposal"),
+                    child: Text("Create Dummy Proposals"),
                   )),
             )
           ],

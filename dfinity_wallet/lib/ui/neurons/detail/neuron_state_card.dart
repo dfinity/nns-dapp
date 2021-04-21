@@ -27,7 +27,8 @@ class NeuronStateCard extends StatelessWidget {
                       SelectableText(neuron.identifier,
                           style: context.textTheme.headline2),
                       VerySmallFormDivider(),
-                      Row(children: [
+                      Row(
+                          children: [
                         Text("${neuron.state.description}",
                             style: context.textTheme.headline4?.copyWith(
                               color: neuron.state.statusColor,
@@ -41,7 +42,6 @@ class NeuronStateCard extends StatelessWidget {
                             color: neuron.state.statusColor,
                           ),
                         ),
-
                       ]),
                       VerySmallFormDivider(),
                       if (neuron.state == NeuronState.DISSOLVING)

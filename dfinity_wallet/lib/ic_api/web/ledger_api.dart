@@ -33,4 +33,7 @@ class LedgerApi {
 
   @JS("getTransactions")
   external Promise<dynamic> getTransactions(dynamic request);
+
+  @JS("createDummyProposals")
+  external Promise<dynamic> createDummyProposals(BigInt neuronId);
 }

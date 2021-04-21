@@ -116,4 +116,10 @@ class PlatformICApi extends AbstractPlatformICApi {
     throw UnimplementedError();
   }
 
+  @override
+  Future<void> createDummyProposals({required BigInt neuronId}) {
+    // TODO: implement createDummyProposals
+    throw UnimplementedError();
+  }
+
 }

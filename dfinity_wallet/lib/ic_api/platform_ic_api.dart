@@ -68,4 +68,6 @@ abstract class AbstractPlatformICApi {
         Proposal? beforeProposal});
 
   Future<Neuron> getNeuron({required BigInt neuronId});
+
+  Future<void> createDummyProposals({required BigInt neuronId});
 }

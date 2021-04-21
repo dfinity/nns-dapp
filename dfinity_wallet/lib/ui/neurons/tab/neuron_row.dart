@@ -26,9 +26,14 @@ class NeuronRow extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: SelectableText(
-                  neuron.address,
-                  style: context.textTheme.headline3,
+                child: Column(
+                  children: [
+                    SelectableText(
+                      neuron.address,
+                      style: context.textTheme.headline3,
+                    ),
+
+                  ],
                 ),
               ),
               Expanded(child: Container()),

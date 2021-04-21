@@ -25,7 +25,7 @@ extension NeuronStateDescription on NeuronState {
       case NeuronState.LOCKED:
         return "Locked";
       case NeuronState.UNLOCKED:
-        return "Locked";
+        return "Unlocked";
     }
   }
 

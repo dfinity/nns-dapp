@@ -235,4 +235,13 @@ class PlatformICApi extends AbstractPlatformICApi {
     neuronSyncService!.updateNeuron(neuron, neuronId.toString(), neuronInfo);
     return neuron;
   }
+
+  @override
+  Future<void> createDummyProposals({required BigInt neuronId}) async {
+    await promiseToFuture(ledgerApi!.createDummyProposals(neuronId));
+    await fetchProposals(
+        excludeTopics: [],
+        includeStatus: ProposalStatus.values,
+        includeRewardStatus: ProposalRewardStatus.values);
+  }
 }

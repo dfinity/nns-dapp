@@ -12,47 +12,45 @@ class ConfigureFollowersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: StreamBuilder<Object>(
-          stream: context.boxes.neurons.watch(key: neuron.id),
-          builder: (context, snapshot) {
-            final refreshed = context.boxes.neurons.get(neuron.id)!;
-            final followees = refreshed.followees.filterNot((element) => element.topic == Topic.Unspecified);
-            return DefaultTabController(
-              length: followees.length,
-              child: Container(
-                child: Column(
-                  children: [
-                    Container(
-                      color: AppColors.lighterBackground,
-                      child: TabBar(
-                          isScrollable: true,
-                          indicatorColor: Colors.white,
-                          tabs: [
-                            ...followees.mapToList(
-                              (e) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Tab(text: e.topic.name),
-                              ),
-                            )
-                          ]),
+    return StreamBuilder<Object>(
+        stream: context.boxes.neurons.watch(key: neuron.id),
+        builder: (context, snapshot) {
+          final refreshed = context.boxes.neurons.get(neuron.id)!;
+          final followees = refreshed.followees.filterNot((element) => element.topic == Topic.Unspecified);
+          return DefaultTabController(
+            length: followees.length,
+            child: Container(
+              child: Column(
+                children: [
+                  Container(
+                    color: AppColors.lighterBackground,
+                    child: TabBar(
+                        isScrollable: true,
+                        indicatorColor: Colors.white,
+                        tabs: [
+                          ...followees.mapToList(
+                            (e) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Tab(text: e.topic.name),
+                            ),
+                          )
+                        ]),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        ...followees.map((e) => TopicFolloweesWidget(
+                              followees: e,
+                              neuron: neuron,
+                            ))
+                      ],
                     ),
-                    Expanded(
-                      child: TabBarView(
-                        children: [
-                          ...followees.map((e) => TopicFolloweesWidget(
-                                followees: e,
-                                neuron: neuron,
-                              ))
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          }),
-    );
+            ),
+          );
+        });
   }
 }
 
@@ -86,10 +84,8 @@ class TopicFolloweesWidget extends StatelessWidget {
                         style: context.textTheme.headline3,
                         textAlign: TextAlign.left,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(followees.topic.desc, style: context.textTheme.bodyText2,),
-                      )
+                      SizedBox(height: 5,),
+                      Text(followees.topic.desc, style: context.textTheme.subtitle2,)
                     ],
                   ),
                 ),
