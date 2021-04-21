@@ -69,11 +69,13 @@ export default class ResponseConverters {
     }
 
     public toArrayOfNeuronInfo = (response: ListNeuronsResponse) : Array<NeuronInfo> => {
-        return response.neuron_infos.map(([id, neuronInfo]) => this.toNeuronInfo(id, neuronInfo, response.full_neurons));
+        const map = new Map(response.full_neurons.map(n => [n.id[0].id, n]));
+
+        return response.neuron_infos.map(([id, neuronInfo]) =>
+            this.toNeuronInfo(id, neuronInfo, map.get(id)));
     }
 
-    private toNeuronInfo(neuronId: bigint, neuronInfo: RawNeuronInfo, neurons: Array<RawNeuron>): NeuronInfo {
-        const rawNeuron = neurons.find(n => n.id[0].id === neuronId);
+    private toNeuronInfo(neuronId: bigint, neuronInfo: RawNeuronInfo, rawNeuron?: RawNeuron): NeuronInfo {
         const fullNeuron = rawNeuron ? this.toNeuron(rawNeuron) : null;
         return {
             neuronId: neuronId,
