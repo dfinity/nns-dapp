@@ -84,6 +84,10 @@ class ProposalSyncService {
         response['proposalTimestampSeconds'].toString();
     proposal.cacheUpdateDate = DateTime.now();
 
+    proposal.topic = Topic.values[response['topic'].toString().toInt()];
+    proposal.status = ProposalStatus.values[response['status'].toString().toInt()];
+    proposal.rewardStatus = ProposalRewardStatus.values[response['rewardStatus'].toString().toInt()];
+
     // print("");
     // print("proposal");
     // print("proposal.id: ${proposal.id}");

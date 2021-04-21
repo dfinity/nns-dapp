@@ -52,6 +52,22 @@ class NeuronSyncService {
     neuron.dissolveDelaySeconds = res['dissolveDelaySeconds'].toString();
 
     final fullNeuron = res['fullNeuron'];
+    parseFullNeuron(fullNeuron, neuron);
+
+
+    assert(neuron.id != null);
+    assert(neuron.recentBallots != null);
+    assert(neuron.createdTimestampSeconds != null);
+    assert(neuron.votingPower != null);
+    assert(neuron.state != null);
+    assert(neuron.dissolveDelaySeconds != null);
+    assert(neuron.cachedNeuronStakeDoms != null);
+    assert(neuron.neuronFeesDoms != null);
+    assert(neuron.maturityE8sEquivalent != null);
+    assert(neuron.followees != null);
+  }
+
+  void parseFullNeuron(dynamic fullNeuron, Neuron neuron) {
     final dissolveState = fullNeuron['dissolveState'];
     if (dissolveState != null) {
       neuron.whenDissolvedTimestampSeconds =
@@ -66,18 +82,6 @@ class NeuronSyncService {
     neuron.createdTimestampSeconds =
         fullNeuron['createdTimestampSeconds'].toString();
     neuron.followees = parseFollowees(fullNeuron['followees']);
-
-
-    assert(neuron.id != null);
-    assert(neuron.recentBallots != null);
-    assert(neuron.createdTimestampSeconds != null);
-    assert(neuron.votingPower != null);
-    assert(neuron.state != null);
-    assert(neuron.dissolveDelaySeconds != null);
-    assert(neuron.cachedNeuronStakeDoms != null);
-    assert(neuron.neuronFeesDoms != null);
-    assert(neuron.maturityE8sEquivalent != null);
-    assert(neuron.followees != null);
   }
 
   List<BallotInfo> parseRecentBallots(List<dynamic> recentBallots) =>

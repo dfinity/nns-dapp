@@ -87,7 +87,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createSubAccount({required String name}) async {
-    final response = await promiseToFuture(ledgerApi!.createSubAccount(name));
+    accountsSyncService!.storeNewAccount(
+        name: name, address: "pending", subAccount: -1, primary: false);
+    final response = await promiseToFutureAsMap(ledgerApi!.createSubAccount(name));
     await accountsSyncService!.performSync();
   }
 
@@ -222,6 +224,6 @@ class PlatformICApi extends AbstractPlatformICApi {
         excludeTopics: excludeTopics,
         includeStatus: includeStatus,
         includeRewardStatus: includeRewardStatus,
-        beforeProposal:beforeProposal);
+        beforeProposal: beforeProposal);
   }
 }
