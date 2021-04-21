@@ -5,6 +5,7 @@ import 'dart:js_util';
 import 'package:dfinity_wallet/data/setup/hive_loader_widget.dart';
 import 'ledger_api.dart';
 import 'package:dfinity_wallet/dfinity.dart';
+import 'stringify.dart';
 
 class BalanceSyncService {
   final LedgerApi ledgerApi;
@@ -24,7 +25,7 @@ class BalanceSyncService {
 
   Future<Map<String, String>> fetchBalances(List<String> accountIds) async {
     final promise = ledgerApi.getBalances(jsify({'accounts': accountIds}));
-    final jsonString = ledgerApi.jsonString(await promiseToFuture(promise));
+    final jsonString = stringify(await promiseToFuture(promise));
     Map<String, dynamic> response = jsonDecode(jsonString);
     return response.map((key, value) => MapEntry(key, value.toString()));
   }

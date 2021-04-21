@@ -23,6 +23,7 @@ import 'js_utils.dart';
 import 'ledger_api.dart';
 import 'neuron_sync_service.dart';
 import 'package:dfinity_wallet/dfinity.dart';
+import 'stringify.dart';
 
 class PlatformICApi extends AbstractPlatformICApi {
   final authApi = new AuthApi();
@@ -58,7 +59,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
       // @Gilbert perhaps this could be triggered from a button?
       // Also this is being hit twice for some reason
-//      await promiseToFuture(ledgerApi!.integrationTest());
+      await promiseToFuture(ledgerApi!.integrationTest());
 
       accountsSyncService = AccountsSyncService(ledgerApi!, hiveBoxes);
       balanceSyncService = BalanceSyncService(ledgerApi!, hiveBoxes);
@@ -163,7 +164,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       required List<BigInt> followees}) async {
     final result = await callApi(governanceApi!.follow,
         {'neuronId': neuronId, 'topic': topic.index, 'followees': followees});
-    print("follow ${governanceApi!.jsonString(result)}");
+    print("follow ${stringify(result)}");
 
     await neuronSyncService!.fetchNeurons();
   }
@@ -176,7 +177,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       'neuronId': neuronId,
       'additionalDissolveDelaySeconds': additionalDissolveDelaySeconds,
     });
-    print("increaseDissolveDelay ${governanceApi!.jsonString(result)}");
+    print("increaseDissolveDelay ${stringify(result)}");
 
     await neuronSyncService!.fetchNeurons();
   }
@@ -193,7 +194,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       'text': text,
       'summary': summary,
     });
-    print("makeMotionProposal ${governanceApi!.jsonString(result)}");
+    print("makeMotionProposal ${stringify(result)}");
   }
 
   @override
@@ -207,7 +208,7 @@ class PlatformICApi extends AbstractPlatformICApi {
               'proposal': proposalId,
               'vote': vote.index,
             })));
-    print("registerVote ${governanceApi!.jsonString(result)}");
+    print("registerVote ${stringify(result)}");
     await neuronSyncService!.fetchNeurons();
   }
 

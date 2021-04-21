@@ -11,6 +11,7 @@ import 'package:hive/hive.dart';
 import '../../dfinity.dart';
 import 'governance_api.dart';
 import 'neuron_sync_service.dart';
+import 'stringify.dart';
 
 class ProposalSyncService {
   final GovernanceApi governanceApi;
@@ -39,7 +40,7 @@ class ProposalSyncService {
         promiseToFuture(governanceApi.listProposals(jsify(request)));
     await cleanProposalCache();
     final res = await fetchPromise;
-    final string = governanceApi.jsonString(res);
+    final string = stringify(res);
     dynamic response = jsonDecode(string);
     print(
         "\nfetchProposals response in ${stopwatch.elapsed.yearsDayHourMinuteSecondFormatted()} \n ${response}");

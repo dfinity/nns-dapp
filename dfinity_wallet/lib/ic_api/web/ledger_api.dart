@@ -33,7 +33,4 @@ class LedgerApi {
 
   @JS("getTransactions")
   external Promise<dynamic> getTransactions(dynamic request);
-
-  @JS("jsonString")
-  external String jsonString(dynamic request);
 }

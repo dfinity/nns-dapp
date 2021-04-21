@@ -97,14 +97,6 @@ export default class LedgerApi {
     public createDummyProposals = async (neuronId: bigint): Promise<void> => {
         return await create_dummy_proposals(this.host, this.identity, neuronId);
     }
-
-    public jsonString(object: Object): String{
-        return JSON.stringify(object, (_key, value) =>
-            typeof value === 'bigint'
-                ? value.toString()
-                : value // return everything else unchanged
-        );
-    }
 }
 
 export type AccountDetails = {

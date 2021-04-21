@@ -121,12 +121,4 @@ export default class GovernanceApi {
     public makeSetDefaultFolloweesProposal = async (request: MakeSetDefaultFolloweesProposalRequest) : Promise<MakeProposalResponse> => {
         return this.governanceService.makeSetDefaultFolloweesProposal(request);
     }
-
-    public jsonString(object: Object): String{
-        return JSON.stringify(object, (key, value) =>
-            typeof value === 'bigint'
-                ? value.toString()
-                : value // return everything else unchanged
-        );
-    }
 }

@@ -21,7 +21,7 @@ class NeuronSyncService {
 
   Future<void> fetchNeurons() async {
     dynamic res = (await promiseToFuture(governanceApi.getNeurons()));
-    final string = governanceApi.jsonString(res);
+    final string = stringify(res);
     dynamic response = jsonDecode(string);
 
     print("Storing ${response.length} neurons");
