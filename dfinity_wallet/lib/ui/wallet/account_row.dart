@@ -10,8 +10,7 @@ class AccountRow extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        return EntityCard(
-            entity: account,
+        return Card(
             margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
             child: FlatButton(
                 onPressed: () {

@@ -87,14 +87,10 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createSubAccount({required String name}) async {
-    final key = "${PENDING_OBJECT_KEY}sub_account_${rand.nextInt(100000)}";
-     accountsSyncService!.storeNewAccount(
-        name: name, address: key, subAccount: -1, primary: false);
     promiseToFuture(ledgerApi!.createSubAccount(name)).then((value) {
-      final account = hiveBoxes.accounts.get(key)!;
-      account.subAccountId = value.id;
-      account.accountIdentifier = value.accountIdentifier.toString();
-      account.save();
+      final json = jsonDecode(ledgerApi!.jsonString(value));
+      final res = json['Ok'];
+      accountsSyncService!.storeSubAccount(res);
     });
   }
 
