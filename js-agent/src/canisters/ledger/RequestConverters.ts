@@ -10,7 +10,7 @@ import {
     Payment, PrincipalId,
     SendRequest, Subaccount
 } from "./types/types_pb";
-import { uint8ArrayToBigInt } from "../converter";
+import { blobToUint8Array, uint8ArrayToBigInt } from "../converter";
 import type { Principal } from "@dfinity/agent";
 
 export const TRANSACTION_FEE : bigint = BigInt(137);
@@ -104,7 +104,7 @@ export default class RequestConverters {
 
     private toPrincipal = (principalId: Principal) : PrincipalId => {
         const result = new PrincipalId();
-        result.setSerializedId(principalId.toString());
+        result.setRaw(blobToUint8Array(principalId.toBlob()));
         return result;
     }
 }

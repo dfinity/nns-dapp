@@ -5,10 +5,10 @@ import * as jspb from "google-protobuf";
 import * as google_protobuf_descriptor_pb from "google-protobuf/google/protobuf/descriptor_pb";
 
 export class PrincipalId extends jspb.Message {
-  getSerializedId(): Uint8Array | string;
-  getSerializedId_asU8(): Uint8Array;
-  getSerializedId_asB64(): string;
-  setSerializedId(value: Uint8Array | string): void;
+  getRaw(): Uint8Array | string;
+  getRaw_asU8(): Uint8Array;
+  getRaw_asB64(): string;
+  setRaw(value: Uint8Array | string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PrincipalId.AsObject;
@@ -22,7 +22,7 @@ export class PrincipalId extends jspb.Message {
 
 export namespace PrincipalId {
   export type AsObject = {
-    serializedId: Uint8Array | string,
+    raw: Uint8Array | string,
   }
 }
 

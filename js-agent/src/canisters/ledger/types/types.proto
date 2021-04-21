@@ -19,7 +19,7 @@ import "google/protobuf/descriptor.proto";
 // A PB container for a PrincipalId, which uniquely identifies
 // a principal.
 message PrincipalId {
-  bytes serialized_id = 1;
+  bytes raw = 1;
 }
 
 // Annotations related to the use of hardware wallets. The annotated messages are

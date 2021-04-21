@@ -1,5 +1,5 @@
 import LedgerService, { E8s } from "./model";
-import { BinaryBlob, blobFromUint8Array, DerEncodedBlob, Principal, SignIdentity } from "@dfinity/agent";
+import { BinaryBlob, blobFromUint8Array, Principal, SignIdentity } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
 import * as convert from "../converter";
 import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
@@ -20,9 +20,9 @@ export default async function(
     ledgerService: LedgerService, 
     request: CreateNeuronRequest) : Promise<CreateNeuronResponse> {
 
-    const publicKey = identity.getPublicKey().toDer();
+    const principal = identity.getPrincipal();
     const nonce = new Uint8Array(randomBytes(8));
-    const toSubAccount = await buildSubAccount(nonce, publicKey);
+    const toSubAccount = await buildSubAccount(nonce, principal);
 
     const accountIdentifier = buildAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
     const blockHeight = await ledgerService.sendICPTs({
@@ -45,12 +45,12 @@ export default async function(
 }
 
 // 32 bytes
-export async function buildSubAccount(nonce: Uint8Array, publicKey: DerEncodedBlob) : Promise<Uint8Array> {
-    const padding = convert.asciiStringToByteArray("neuron-claim");
+export async function buildSubAccount(nonce: Uint8Array, principal: Principal) : Promise<Uint8Array> {
+    const padding = convert.asciiStringToByteArray("neuron-stake");
     const array = new Uint8Array([
         0x0c, 
         ...padding, 
-        ...publicKey, 
+        ...principal.toBlob(),
         ...nonce]);
     const result = await crypto.subtle.digest("SHA-256", array);
     return new Uint8Array(result);

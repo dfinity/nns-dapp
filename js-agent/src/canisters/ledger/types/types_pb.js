@@ -1066,7 +1066,7 @@ proto.ic_ledger.pb.v1.PrincipalId.prototype.toObject = function(opt_includeInsta
  */
 proto.ic_ledger.pb.v1.PrincipalId.toObject = function(includeInstance, msg) {
   var f, obj = {
-    serializedId: msg.getSerializedId_asB64()
+    raw: msg.getRaw_asB64()
   };
 
   if (includeInstance) {
@@ -1105,7 +1105,7 @@ proto.ic_ledger.pb.v1.PrincipalId.deserializeBinaryFromReader = function(msg, re
     switch (field) {
     case 1:
       var value = /** @type {!Uint8Array} */ (reader.readBytes());
-      msg.setSerializedId(value);
+      msg.setRaw(value);
       break;
     default:
       reader.skipField();
@@ -1136,7 +1136,7 @@ proto.ic_ledger.pb.v1.PrincipalId.prototype.serializeBinary = function() {
  */
 proto.ic_ledger.pb.v1.PrincipalId.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getSerializedId_asU8();
+  f = message.getRaw_asU8();
   if (f.length > 0) {
     writer.writeBytes(
       1,
@@ -1147,35 +1147,35 @@ proto.ic_ledger.pb.v1.PrincipalId.serializeBinaryToWriter = function(message, wr
 
 
 /**
- * optional bytes serialized_id = 1;
+ * optional bytes raw = 1;
  * @return {!(string|Uint8Array)}
  */
-proto.ic_ledger.pb.v1.PrincipalId.prototype.getSerializedId = function() {
+proto.ic_ledger.pb.v1.PrincipalId.prototype.getRaw = function() {
   return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * optional bytes serialized_id = 1;
- * This is a type-conversion wrapper around `getSerializedId()`
+ * optional bytes raw = 1;
+ * This is a type-conversion wrapper around `getRaw()`
  * @return {string}
  */
-proto.ic_ledger.pb.v1.PrincipalId.prototype.getSerializedId_asB64 = function() {
+proto.ic_ledger.pb.v1.PrincipalId.prototype.getRaw_asB64 = function() {
   return /** @type {string} */ (jspb.Message.bytesAsB64(
-      this.getSerializedId()));
+      this.getRaw()));
 };
 
 
 /**
- * optional bytes serialized_id = 1;
+ * optional bytes raw = 1;
  * Note that Uint8Array is not supported on all browsers.
  * @see http://caniuse.com/Uint8Array
- * This is a type-conversion wrapper around `getSerializedId()`
+ * This is a type-conversion wrapper around `getRaw()`
  * @return {!Uint8Array}
  */
-proto.ic_ledger.pb.v1.PrincipalId.prototype.getSerializedId_asU8 = function() {
+proto.ic_ledger.pb.v1.PrincipalId.prototype.getRaw_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
-      this.getSerializedId()));
+      this.getRaw()));
 };
 
 
@@ -1183,7 +1183,7 @@ proto.ic_ledger.pb.v1.PrincipalId.prototype.getSerializedId_asU8 = function() {
  * @param {!(string|Uint8Array)} value
  * @return {!proto.ic_ledger.pb.v1.PrincipalId} returns this
  */
-proto.ic_ledger.pb.v1.PrincipalId.prototype.setSerializedId = function(value) {
+proto.ic_ledger.pb.v1.PrincipalId.prototype.setRaw = function(value) {
   return jspb.Message.setProto3BytesField(this, 1, value);
 };
 
