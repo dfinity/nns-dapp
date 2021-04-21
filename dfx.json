@@ -2,9 +2,10 @@
   "canisters": {
     "nns_ui": {
       "type": "custom",
-      "candid": "nns_ui/nns_ui.did",
-      "wasm": "target/wasm32-unknown-unknown/release/nns_ui-opt.wasm",
-      "build": "./generate-wasm.sh nns_ui"
+      "candid": "canisters/nns_ui/nns_ui.did",
+      "wasm": "canisters/target/wasm32-unknown-unknown/release/nns_ui-opt.wasm",
+      "build": "./build.sh",
+      "source": ["dfinity_wallet/build/web"]
     }
   },
   "networks": {

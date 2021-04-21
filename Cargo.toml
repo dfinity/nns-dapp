@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "nns_ui"
+    "canisters/nns_ui"
 ]
 
 [profile.release]
