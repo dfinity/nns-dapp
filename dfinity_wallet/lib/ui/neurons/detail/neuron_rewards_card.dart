@@ -34,7 +34,7 @@ class NeuronRewardsCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                            "As your neuron matures, and you participate in governance, you gain rewards that can be used to spawn new neurons."),
+                            "As your neuron matures, and you participate in governance, you gain rewards that can be used to spawn new neurons.", style: context.textTheme.subtitle2,),
                       )
                     ],
                   ),

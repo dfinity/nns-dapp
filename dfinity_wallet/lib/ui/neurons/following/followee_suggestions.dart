@@ -102,7 +102,7 @@ class FolloweeSuggestion {
   FolloweeSuggestion(this.name, this.text, this.id);
 
   static List<FolloweeSuggestion> followerSuggestions = [
-    FolloweeSuggestion("DFINITY Foundation", "", "13218947198202633252"),
-    FolloweeSuggestion("Internet Computer Association", "", "2987295021308282305"),
+    FolloweeSuggestion("DFINITY Foundation", "", "27"),
+    FolloweeSuggestion("Internet Computer Association", "", "28"),
   ];
 }

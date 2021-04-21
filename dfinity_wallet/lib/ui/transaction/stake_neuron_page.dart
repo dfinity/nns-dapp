@@ -29,7 +29,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
               "Must be greater than 0", (e) => (e.toIntOrNull() ?? 0) == 0)
         ],
         inputType: TextInputType.number);
-    disperseDelay = IntField("Disperse Delay", []);
+    disperseDelay = IntField("Disburse Delay", []);
     disperseDelay.currentValue = 365.days.inSeconds;
   }
 
@@ -73,7 +73,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                             ),
                             child: Column(
                               children: [
-                                DisperseDelayWidget(
+                                DisburseDelayWidget(
                                   timeInSeconds: disperseDelay.currentValue,
                                   onUpdate: (delay) {
                                     setState(() {
@@ -147,11 +147,11 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
           0);
 }
 
-class DisperseDelayWidget extends StatelessWidget {
+class DisburseDelayWidget extends StatelessWidget {
   final int timeInSeconds;
   final Function(int) onUpdate;
 
-  const DisperseDelayWidget(
+  const DisburseDelayWidget(
       {Key? key, required this.timeInSeconds, required this.onUpdate})
       : super(key: key);
 

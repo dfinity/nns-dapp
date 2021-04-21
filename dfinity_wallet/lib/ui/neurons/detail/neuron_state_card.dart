@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/neurons/tab/neuron_row.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
+import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
 import '../../../dfinity.dart';
@@ -20,21 +21,9 @@ class NeuronStateCard extends StatelessWidget {
           children: [
             NeuronRow(neuron: neuron),
             VerySmallFormDivider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                  ],
-                ),
-                Align(
-                    alignment: Alignment.bottomCenter,
-                    child: buildStateButton(context))
-              ],
-            )
+            Align(
+                alignment: Alignment.bottomRight,
+                child: buildStateButton(context))
           ],
         ),
       ),
@@ -75,13 +64,13 @@ class NeuronStateCard extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Text("Disperse"),
+              child: Text("Disburse"),
             ),
             onPressed: () {
-              // Overlay.of(context)!.show(context, NewTransactionOverlay(
-              //
-              //   account: neuron,
-              // ));
+              Overlay.of(context)!.show(context, NewTransactionOverlay(
+                rootTitle: 'Manage ICP',
+                rootWidget: SelectAccountTransactionTypeWidget(source: neuron,),
+              ));
             });
       case NeuronState.UNSPECIFIED:
         return ElevatedButton(child: Text(""), onPressed: () {});

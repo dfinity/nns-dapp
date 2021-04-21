@@ -12,6 +12,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../neuron_state.dart';
+import '../proposal_reward_status.dart';
 import '../topic.dart';
 import '../vote.dart';
 
@@ -94,6 +95,8 @@ class HiveCoordinator {
     Hive.registerAdapter<Topic>(TopicAdapter());
     Hive.registerAdapter<Vote>(VoteAdapter());
     Hive.registerAdapter<NeuronState>(NeuronStateAdapter());
+    Hive.registerAdapter<ProposalStatus>(ProposalStatusAdapter());
+    Hive.registerAdapter<ProposalRewardStatus>(ProposalRewardStatusAdapter());
     await Hive.initFlutter();
   }
 

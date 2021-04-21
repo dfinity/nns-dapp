@@ -24,7 +24,9 @@ class NeuronRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SelectableText(neuron.identifier,
-                  style: context.textTheme.headline2),
+                  style: context.textTheme.headline2, onTap: (){
+                onTap?.call();
+                },),
               VerySmallFormDivider(),
               Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Text("${neuron.state.description}",
@@ -35,8 +37,8 @@ class NeuronRow extends StatelessWidget {
                   width: 5,
                 ),
                 SizedBox(
-                  width: 30,
-                  height: 30,
+                  width: 25,
+                  height: 25,
                   child: SvgPicture.asset(
                     neuron.state.iconName,
                     color: neuron.state.statusColor,

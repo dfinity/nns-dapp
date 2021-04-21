@@ -44,10 +44,18 @@ class ConfirmTransactionWidget extends StatelessWidget {
                         child: Text("Confirm and Send"),
                       ),
                       onPressed: () async {
-                        await context.performLoading(() => context.icApi.sendICPTs(
-                            toAccount: destination,
-                            doms: amount.toDoms,
-                            fromSubAccount: subAccountId));
+
+                        if(origin.length > 20) {
+                          await context.performLoading(() => context.icApi.sendICPTs(
+                              toAccount: destination,
+                              doms: amount.toDoms,
+                              fromSubAccount: subAccountId));
+                        }else{
+                          await context.performLoading(() => context.icApi.disburse(
+                              neuronId: BigInt.parse(origin),
+                              doms: amount.toDoms,
+                              toAccountId: destination));
+                        }
 
                         NewTransactionOverlay.of(context).replacePage(
                             "Transaction Completed!",

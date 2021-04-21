@@ -13,3 +13,4 @@ export 'followee.dart';
 export 'vote.dart';
 export 'ballot_info.dart';
 export 'data_type_extensions.dart';
+export 'proposal_status.dart';

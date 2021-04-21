@@ -141,9 +141,9 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> disburse(
       {required BigInt neuronId,
       required BigInt doms,
-      BigInt? toSubaccountId}) async {
+      required String toAccountId}) async {
     await callApi(governanceApi!.disburse,
-        {'neuronId': neuronId, 'amount': doms, 'toAccountId': toSubaccountId});
+        {'neuronId': neuronId, 'amount': doms, 'toAccountId': toAccountId});
     await neuronSyncService!.fetchNeurons();
   }
 

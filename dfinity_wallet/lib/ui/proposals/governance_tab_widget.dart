@@ -155,6 +155,8 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                           topicsField.selectedOptions.contains(element.topic))
                       .filter((element) =>
                           statusesField.selectedOptions.contains(element.status))
+                      .filter((element) =>
+                      rewardStatuesField.selectedOptions.contains(element.rewardStatus))
                   .sortedByDescending((element) => element.proposalTimestamp);
                   return Column(
                     mainAxisSize: MainAxisSize.min,

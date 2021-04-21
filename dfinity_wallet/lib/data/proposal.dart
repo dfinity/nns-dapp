@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:dfinity_wallet/data/data.dart';
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
+import 'package:dfinity_wallet/data/proposal_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:hive/hive.dart';
 
@@ -83,7 +84,6 @@ class Proposal extends DfinityEntity {
   String get identifier => id.toString();
 }
 
-enum ProposalStatus { Unknown, Open, Rejected, Accepted, Executed, Failed }
 
 extension ProposalStatusDisplay on ProposalStatus {
   static final colorMap = {

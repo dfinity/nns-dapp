@@ -48,7 +48,7 @@ abstract class AbstractPlatformICApi {
       required Vote vote});
 
   Future<void> disburse(
-      {required BigInt neuronId, required BigInt doms, BigInt? toSubaccountId});
+      {required BigInt neuronId, required BigInt doms, required String toAccountId});
 
   Future<void> disburseToNeuron(
       {required BigInt neuronId,

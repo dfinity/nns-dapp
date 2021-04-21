@@ -97,6 +97,10 @@ class ProposalSyncService {
     // print("proposal.status: ${proposal.status}");
     // print("proposal.no: ${proposal.no}");
     // print("proposal.yes: ${proposal.yes}");
+
+    print("proposal.topic : ${proposal.topic}");
+    print("proposal.status : ${proposal.status}");
+    print("proposal.rewardStatus : ${proposal.rewardStatus}");
   }
 
   void linkProposalsToNeurons() {

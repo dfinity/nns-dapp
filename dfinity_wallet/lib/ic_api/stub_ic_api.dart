@@ -41,7 +41,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> disburse(
       {required BigInt neuronId,
       required BigInt doms,
-      BigInt? toSubaccountId}) {
+        required String toAccountId}) {
     // TODO: implement disburse
     throw UnimplementedError();
   }
