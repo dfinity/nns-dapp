@@ -73,7 +73,7 @@ export default class ResponseConverters {
     }
 
     private toNeuronInfo(neuronId: bigint, neuronInfo: RawNeuronInfo, neurons: Array<RawNeuron>): NeuronInfo {
-        const rawNeuron = neurons.find(n => n.id[0]);
+        const rawNeuron = neurons.find(n => n.id[0].id === neuronId);
         const fullNeuron = rawNeuron ? this.toNeuron(rawNeuron) : null;
         return {
             neuronId: neuronId,
