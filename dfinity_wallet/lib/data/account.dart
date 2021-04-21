@@ -15,7 +15,7 @@ class Account extends DfinityEntity with ICPSource {
   @HiveField(0)
   final String name;
   @HiveField(1)
-  final String accountIdentifier;
+  String accountIdentifier;
   @HiveField(2)
   final bool primary;
   @HiveField(3)

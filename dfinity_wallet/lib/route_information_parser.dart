@@ -74,10 +74,12 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     if (entityPageDef != null) {
       await hiveCoordinator.performInitialisation();
       final id = uri.pathSegments[1];
-      final entityPage =
-          entityPageDef.createConfigWithId(id, hiveCoordinator.hiveBoxes);
-      print("EntityPage ${entityPage.path}");
-      return entityPage;
+      final entity = entityPageDef.entityForIdentifier(id, hiveCoordinator.hiveBoxes);
+      if(entity!= null){
+        final entityPage = entityPageDef.createConfigWithEntity(entity);
+        print("EntityPage ${entityPage.path}");
+        return entityPage;
+      }
     }
 
     print("AccountsTabPage");

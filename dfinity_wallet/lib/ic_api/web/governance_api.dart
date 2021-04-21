@@ -12,6 +12,9 @@ import 'js_utils.dart';
 class GovernanceApi {
   external factory GovernanceApi(String host, dynamic identity);
 
+  @JS("getNeuron")
+  external Promise<dynamic> getNeuron(BigInt neuronId);
+
   @JS("getNeurons")
   external Promise<dynamic> getNeurons();
 

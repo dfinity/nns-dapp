@@ -66,4 +66,6 @@ abstract class AbstractPlatformICApi {
       required List<ProposalStatus> includeStatus,
         required List<ProposalRewardStatus> includeRewardStatus,
         Proposal? beforeProposal});
+
+  Future<Neuron> getNeuron({required BigInt neuronId});
 }

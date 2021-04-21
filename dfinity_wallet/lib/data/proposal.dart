@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:dfinity_wallet/data/data.dart';
+import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:hive/hive.dart';
 
@@ -32,21 +33,29 @@ class Proposal extends DfinityEntity {
   String? proposalTimestampSeconds;
   @HiveField(13)
   late DateTime cacheUpdateDate;
+  @HiveField(14)
+  late Topic topic;
+  @HiveField(15)
+  late ProposalStatus status;
+  @HiveField(16)
+  late ProposalRewardStatus rewardStatus;
 
   Proposal(
-      this.id,
-      this.summary,
-      this.url,
-      this.proposer,
-      this.no,
-      this.yes,
-      this.executedTimestampSeconds,
-      this.failedTimestampSeconds,
-      this.decidedTimestampSeconds,
-      this.proposalTimestampSeconds,
-      this.cacheUpdateDate
-      );
-
+    this.id,
+    this.summary,
+    this.url,
+    this.proposer,
+    this.no,
+    this.yes,
+    this.executedTimestampSeconds,
+    this.failedTimestampSeconds,
+    this.decidedTimestampSeconds,
+    this.proposalTimestampSeconds,
+    this.cacheUpdateDate,
+    this.topic,
+    this.status,
+    this.rewardStatus,
+  );
 
   Proposal.empty();
 
@@ -70,35 +79,11 @@ class Proposal extends DfinityEntity {
 
   String? get motionText => action['Motion']['motionText'];
 
-  ProposalStatus get status {
-    if (executedTimestampSeconds != "0") return ProposalStatus.Executed;
-    if (failedTimestampSeconds != "0") return ProposalStatus.Failed;
-    return ProposalStatus.Open;
-  }
-
   @override
   String get identifier => id.toString();
-
-  Topic get topic => {
-    ProposalType.ExternalUpdate: Topic.SubnetManagement,
-    ProposalType.ManageNeuron: Topic.ManageNeuron,
-    ProposalType.ApproveKyc: Topic.Kyc,
-    ProposalType.NetworkEconomics: Topic.NetworkEconomics,
-    ProposalType.RewardNodeProvider: Topic.NodeAdmin,
-    ProposalType.AddOrRemoveNodeProvider: Topic.NodeAdmin,
-    ProposalType.Motion: Topic.Governance,
-    ProposalType.Unspecified: Topic.Unspecified,
-  }[proposalType]!;
 }
 
-enum ProposalStatus {
-  Unknown,
-  Open,
-  Rejected,
-  Accepted,
-  Executed,
-  Failed
-}
+enum ProposalStatus { Unknown, Open, Rejected, Accepted, Executed, Failed }
 
 extension ProposalStatusDisplay on ProposalStatus {
   static final colorMap = {

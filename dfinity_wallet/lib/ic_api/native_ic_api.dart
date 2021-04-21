@@ -110,4 +110,10 @@ class PlatformICApi extends AbstractPlatformICApi {
     throw UnimplementedError();
   }
 
+  @override
+  Future<Neuron> getNeuron({required BigInt neuronId}) {
+    // TODO: implement getNeuron
+    throw UnimplementedError();
+  }
+
 }

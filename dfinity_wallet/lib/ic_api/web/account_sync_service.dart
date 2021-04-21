@@ -22,16 +22,20 @@ class AccountsSyncService {
           address: accountResponse.accountIdentifier.toString(),
           subAccount: null,
           primary: true),
-      ...accountResponse.subAccounts.map((element) => storeNewAccount(
-          name: element.name.toString(),
-          address: element.accountIdentifier.toString(),
-          subAccount: element.id,
-          primary: false))
+      ...accountResponse.subAccounts.map((element) => storeSubAccount(element))
     ]);
 
    await Future.wait(cachedAccounts
        .filterNot((element) => validAccounts.contains(element.accountIdentifier))
         .map((element) => hiveBoxes.accounts.delete(element.accountIdentifier)));
+  }
+
+  Future<String> storeSubAccount(element) {
+    return storeNewAccount(
+        name: element.name.toString(),
+        address: element.accountIdentifier.toString(),
+        subAccount: element.id,
+        primary: false);
   }
 
   Future<String> storeNewAccount(

@@ -9,6 +9,7 @@ import 'package:dfinity_wallet/ui/wallet/account_detail_widget.dart';
 import 'package:hive/hive.dart';
 
 import 'dfinity.dart';
+import 'ic_api/platform_ic_api.dart';
 
 const String ProposalDetailPath = '/proposal';
 const String CanisterTabsPath = '/canisters';
@@ -90,13 +91,18 @@ class EntityPageDefinition<T extends DfinityEntity> {
   final Widget Function(T entity) createWidget;
   final String pathTemplate;
   final PageConfig parentPage;
+  final Future<T> Function(String identifier, AbstractPlatformICApi icApi)? entityFromIC;
 
   EntityPageDefinition(
-      this.pathTemplate, this.parentPage, this.createWidget, this.fetchBox);
+      this.pathTemplate, this.parentPage, this.createWidget, this.fetchBox,
+      {this.entityFromIC});
 
-  EntityPage createConfigWithId(String entityIdentifier, HiveBoxes boxes) {
-    final entity = fetchBox(boxes).get(entityIdentifier);
-    return createPageConfig(entity!);
+  T? entityForIdentifier(String entityIdentifier, HiveBoxes boxes) {
+    return fetchBox(boxes).get(entityIdentifier);
+  }
+
+  EntityPage createConfigWithEntity(T entity) {
+    return createPageConfig(entity);
   }
 
   EntityPage createPageConfig(T entity) {
@@ -117,7 +123,8 @@ EntityPageDefinition NeuronPageDef = EntityPageDefinition<Neuron>(
     "/neuron",
     NeuronTabsPage,
     (neuron) => NeuronDetailWidget(neuron),
-    (boxes) => boxes.neurons!);
+    (boxes) => boxes.neurons!,
+    entityFromIC: (neuronId, icApi) => icApi.getNeuron(neuronId: BigInt.parse(neuronId)));
 
 EntityPageDefinition ProposalPageDef = EntityPageDefinition<Proposal>(
     "/proposal",

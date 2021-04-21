@@ -87,10 +87,15 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createSubAccount({required String name}) async {
-    accountsSyncService!.storeNewAccount(
-        name: name, address: "pending", subAccount: -1, primary: false);
-    final response = await promiseToFutureAsMap(ledgerApi!.createSubAccount(name));
-    await accountsSyncService!.performSync();
+    final key = "${PENDING_OBJECT_KEY}sub_account_${rand.nextInt(100000)}";
+     accountsSyncService!.storeNewAccount(
+        name: name, address: key, subAccount: -1, primary: false);
+    promiseToFuture(ledgerApi!.createSubAccount(name)).then((value) {
+      final account = hiveBoxes.accounts.get(key)!;
+      account.subAccountId = value.id;
+      account.accountIdentifier = value.accountIdentifier.toString();
+      account.save();
+    });
   }
 
   @override
@@ -225,5 +230,14 @@ class PlatformICApi extends AbstractPlatformICApi {
         includeStatus: includeStatus,
         includeRewardStatus: includeRewardStatus,
         beforeProposal: beforeProposal);
+  }
+
+  @override
+  Future<Neuron> getNeuron({required BigInt neuronId}) async {
+    final res = await promiseToFuture(governanceApi!.getNeuron(neuronId));
+    final neuronInfo = jsonDecode(governanceApi!.jsonString(res));
+    final neuron = Neuron.empty();
+    neuronSyncService!.updateNeuron(neuron, neuronId.toString(), neuronInfo);
+    return neuron;
   }
 }

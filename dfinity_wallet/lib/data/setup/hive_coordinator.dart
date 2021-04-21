@@ -37,6 +37,8 @@ class HiveBoxes {
       this.authToken});
 }
 
+final PENDING_OBJECT_KEY = "pending_";
+
 class HiveCoordinator {
   HiveBoxes hiveBoxes = HiveBoxes();
 
