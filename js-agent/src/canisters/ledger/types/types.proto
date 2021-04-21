@@ -22,6 +22,15 @@ message PrincipalId {
   bytes raw = 1;
 }
 
+// A container for a NeuronId blob, which uniquely identifies
+// a Neuron.
+message NeuronId {
+//  bytes serialized_id = 1;
+  reserved 1;
+  reserved 'serialized_id';
+  uint64 id = 2;
+}
+
 // Annotations related to the use of hardware wallets. The annotated messages are
 // parsed on hardware wallets and marked fields are displayed in a trusted user
 // interface (TUI). We must not, for instance, add fields that would change the
