@@ -78,8 +78,25 @@ class _NodeState extends State<NodeOverlay> {
             child: FractionallySizedBox(
                 widthFactor: 0.3,
                 heightFactor: 0.3,
-                child: SizedBox.expand(
-                    child: SvgPicture.asset("assets/infinity_logo.svg")))),
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    // color: AppColors.white,
+                    borderRadius: BorderRadius.circular(500),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.black,
+                        blurRadius: 100,
+                      ),
+                      BoxShadow(
+                        color: AppColors.black,
+                        blurRadius: 100,
+                      )
+                    ]
+                  ),
+                  child: SizedBox.expand(
+                      child: Image.asset("assets/dfinity-glitch.gif")),
+                ))),
         // child: IgnorePointer(child: NodeWorld(oscillationMultiplier: 2,))),
       ),
     );
