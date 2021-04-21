@@ -10,7 +10,6 @@ import 'package:dfinity_wallet/data/vote.dart';
 import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:dfinity_wallet/ic_api/web/proposal_sync_service.dart';
 import 'package:dfinity_wallet/ic_api/web/transaction_sync_service.dart';
-import 'package:hive/hive.dart';
 import 'package:js/js.dart';
 import 'dart:html';
 
@@ -59,7 +58,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
       // @Gilbert perhaps this could be triggered from a button?
       // Also this is being hit twice for some reason
-      await promiseToFuture(ledgerApi!.integrationTest());
+      // await promiseToFuture(ledgerApi!.integrationTest());
 
       accountsSyncService = AccountsSyncService(ledgerApi!, hiveBoxes);
       balanceSyncService = BalanceSyncService(ledgerApi!, hiveBoxes);
@@ -88,7 +87,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> createSubAccount({required String name}) async {
     promiseToFuture(ledgerApi!.createSubAccount(name)).then((value) {
-      final json = jsonDecode(ledgerApi!.jsonString(value));
+      final json = jsonDecode(stringify(value));
       final res = json['Ok'];
       accountsSyncService!.storeSubAccount(res);
     });
@@ -231,7 +230,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<Neuron> getNeuron({required BigInt neuronId}) async {
     final res = await promiseToFuture(governanceApi!.getNeuron(neuronId));
-    final neuronInfo = jsonDecode(governanceApi!.jsonString(res));
+    final neuronInfo = jsonDecode(stringify(res));
     final neuron = Neuron.empty();
     neuronSyncService!.updateNeuron(neuron, neuronId.toString(), neuronInfo);
     return neuron;
