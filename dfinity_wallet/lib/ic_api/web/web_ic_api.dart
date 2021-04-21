@@ -2,6 +2,7 @@
 library dfinity_agent.js;
 
 import 'dart:convert';
+import 'dart:js';
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
@@ -190,6 +191,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       required String url,
       required String text,
       required String summary}) async {
+
     final result = await callApi(governanceApi!.makeMotionProposal, {
       'neuronId': neuronId,
       'url': url,
@@ -238,7 +240,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createDummyProposals({required BigInt neuronId}) async {
-    await promiseToFuture(ledgerApi!.createDummyProposals(neuronId));
+    await promiseToFuture(ledgerApi!.createDummyProposals(neuronId.toString()));
     await fetchProposals(
         excludeTopics: [],
         includeStatus: ProposalStatus.values,

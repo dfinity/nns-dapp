@@ -21,7 +21,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
 
   @override
   void initState() {
-    amountField = ValidatedTextField("Amount",
+    amountField = ValidatedTextField("Amount in ICP",
         validations: [
           FieldValidation("Not enough ICP",
               (e) => (e.toIntOrNull() ?? 0) > widget.source.icpBalance),

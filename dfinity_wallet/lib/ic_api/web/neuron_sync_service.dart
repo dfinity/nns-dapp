@@ -23,8 +23,8 @@ class NeuronSyncService {
     dynamic res = (await promiseToFuture(governanceApi.getNeurons()));
     final string = stringify(res);
     dynamic response = jsonDecode(string);
+    // PrettyPrint.prettyPrintJson("neurons response", response);
 
-    print("Storing ${response.length} neurons");
     response.forEach((e) {
       storeNeuron(e);
     });
@@ -44,8 +44,6 @@ class NeuronSyncService {
   }
 
   void updateNeuron(Neuron neuron, String neuronId, dynamic res) {
-
-    PrettyPrint.prettyPrintJson("neuron response", res);
     neuron.id = neuronId;
     neuron.votingPower = res['votingPower'].toString();
     neuron.state = NeuronState.values[res['state'].toInt()];

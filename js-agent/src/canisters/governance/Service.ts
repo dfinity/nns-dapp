@@ -60,7 +60,10 @@ export default class Service implements ServiceInterface {
             include_neurons_readable_by_caller: true
         }
         const rawResponse = await this.service.list_neurons(rawRequest);
-        return this.responseConverters.toArrayOfNeuronInfo(rawResponse);
+        console.log(rawResponse);
+        const processed = this.responseConverters.toArrayOfNeuronInfo(rawResponse);
+        console.log(processed);
+        return processed;
     }
 
     public listProposals = async (request: ListProposalsRequest) : Promise<ListProposalsResponse> => {

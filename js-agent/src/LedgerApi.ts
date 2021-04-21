@@ -44,10 +44,13 @@ export default class LedgerApi {
             identity: anonIdentity
         });
         const anonLedgerService = ledgerBuilder(agent, anonIdentity);
-        await anonLedgerService.sendICPTs({
+        const req = {
             to: accountIdentifier,
             amount: e8s
-        });
+        }
+        console.log("aquire req");
+        console.log(req);
+        await anonLedgerService.sendICPTs(req);
         await this.ledgerViewService.syncTransactions();
     }
 
@@ -93,8 +96,8 @@ export default class LedgerApi {
         return await test_happy_path(this.host, this.identity);
     }
 
-    public createDummyProposals = async (neuronId: bigint): Promise<void> => {
-        return await create_dummy_proposals(this.host, this.identity, neuronId);
+    public createDummyProposals = async (neuronId: string): Promise<void> => {
+        return await create_dummy_proposals(this.host, this.identity, BigInt(neuronId));
     }
 }
 

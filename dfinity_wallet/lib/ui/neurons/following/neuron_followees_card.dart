@@ -34,7 +34,7 @@ class NeuronFolloweesCard extends StatelessWidget {
             Text("Following", style: context.textTheme.headline3),
             Padding(
               padding: const EdgeInsets.only(top:5.0, right: 50),
-              child: Text("Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.", style: context.textTheme.bodyText2),
+              child: Text("Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.", style: context.textTheme.subtitle2),
             ),
             ...followeeTopics
                 .map((e) => Container(

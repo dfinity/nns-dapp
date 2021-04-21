@@ -18,32 +18,41 @@ class NeuronsPage extends StatefulWidget {
 }
 
 class _NeuronsPageState extends State<NeuronsPage> {
-
   @override
   Widget build(BuildContext context) {
     return FooterGradientButton(
       footerHeight: null,
       body: ConstrainWidthAndCenter(
         child: StreamBuilder<void>(
-          stream: context.boxes.neurons.watch(),
-          builder: (context, snapshot) {
-            return TabTitleAndContent(
-              title: "Neurons",
-              subtitle: "You can stake ICP by storing them in Neurons. These neurons allow you to participate in the IC Governance by giving you the ability to vote on proposals",
-              children: [
-                SmallFormDivider(),
-                ...context.boxes.neurons.values.mapToList((e) => NeuronRow(
-                      neuron: e,
-                      showsWarning: true,
-                      onPressed: () {
-                        context.nav.push(NeuronPageDef.createPageConfig(e));
-                      },
-                    )),
-                SizedBox(height: 150)
-              ],
-            );
-          }
-        ),
+            stream: context.boxes.neurons.watch(),
+            builder: (context, snapshot) {
+              return TabTitleAndContent(
+                title: "Neurons",
+                subtitle:
+                    "You can stake ICP by storing them in Neurons. These neurons allow you to participate in the IC Governance by giving you the ability to vote on proposals",
+                children: [
+                  SmallFormDivider(),
+                  ...context.boxes.neurons.values.mapToList((e) => Card(
+                        child: FlatButton(
+                          onPressed: () {
+                            context.nav.push(NeuronPageDef.createPageConfig(e));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: NeuronRow(
+                              neuron: e,
+                              showsWarning: true,
+                              onTap: (){
+                                context.nav.push(NeuronPageDef.createPageConfig(e));
+                              },
+                            ),
+                          ),
+                        ),
+                      )),
+                  SizedBox(height: 150)
+                ],
+              );
+            }),
       ),
       footer: Align(
         alignment: Alignment.bottomCenter,
@@ -51,25 +60,28 @@ class _NeuronsPageState extends State<NeuronsPage> {
           child: Padding(
             padding: EdgeInsets.all(32),
             child: ElevatedButton(
-               child: Padding(
-                 padding: const EdgeInsets.all(16.0),
-                 child: SizedBox(
-                   width: 400,
-                   child: Center(
-                     child: Text(
-                       "Stake Neuron",
-                       textAlign: TextAlign.center,
-                       style: context.textTheme.button?.copyWith(fontSize: 24),
-                     ),
-                   ),
-                 ),
-               ),
-               onPressed: () {
-                 Overlay.of(context)?.show(context, NewTransactionOverlay(
-                   rootTitle: "Stake Neuron",
-                   rootWidget: StakeNeuronPage(source: context.boxes.accounts.primary),
-                 ));
-               },
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: 400,
+                  child: Center(
+                    child: Text(
+                      "Stake Neuron",
+                      textAlign: TextAlign.center,
+                      style: context.textTheme.button?.copyWith(fontSize: 24),
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Overlay.of(context)?.show(
+                    context,
+                    NewTransactionOverlay(
+                      rootTitle: "Stake Neuron",
+                      rootWidget: StakeNeuronPage(
+                          source: context.boxes.accounts.primary),
+                    ));
+              },
             ),
           ),
         ),
@@ -77,4 +89,3 @@ class _NeuronsPageState extends State<NeuronsPage> {
     );
   }
 }
-
