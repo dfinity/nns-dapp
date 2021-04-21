@@ -28,7 +28,7 @@ message NeuronId {
 //  bytes serialized_id = 1;
   reserved 1;
   reserved 'serialized_id';
-  uint64 id = 2;
+  uint64 id = 2 [jstype = JS_STRING];
 }
 
 // Annotations related to the use of hardware wallets. The annotated messages are

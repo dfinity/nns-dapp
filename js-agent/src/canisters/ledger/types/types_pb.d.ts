@@ -27,8 +27,8 @@ export namespace PrincipalId {
 }
 
 export class NeuronId extends jspb.Message {
-  getId(): number;
-  setId(value: number): void;
+  getId(): string;
+  setId(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NeuronId.AsObject;
@@ -42,7 +42,7 @@ export class NeuronId extends jspb.Message {
 
 export namespace NeuronId {
   export type AsObject = {
-    id: number,
+    id: string,
   }
 }
 
