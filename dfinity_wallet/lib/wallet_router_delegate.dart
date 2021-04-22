@@ -164,7 +164,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
 
   @override
   Future<void> setNewRoutePath(PageConfig configuration) {
-    print("setNewRoutePath ${configuration.path}");
+    // print("setNewRoutePath ${configuration.path}");
 
     if(configuration is ResourcesLoadingPageConfig){
       redirectWhenLoaded(configuration as ResourcesLoadingPageConfig);
@@ -201,13 +201,13 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
     _pages.removeWhere((element) => element.arguments == LoadingPage);
 
     if (shouldAddPage) {
-      print("adding page ${pageConfig.key}");
+      // print("adding page ${pageConfig.key}");
 
       _addPage(pageConfig);
 
       notifyListeners();
     } else {
-      print("not adding page ${pageConfig.key}");
+      // print("not adding page ${pageConfig.key}");
     }
   }
 

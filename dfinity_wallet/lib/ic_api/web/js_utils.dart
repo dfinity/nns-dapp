@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:html';
 import 'dart:js';
 import 'dart:js_util';
+import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:js/js.dart';
 import 'dart:collection' show Maps;
 
@@ -17,9 +19,19 @@ extension ToJSObject on Map {
   }
 }
 
-Future<dynamic> callApi(
-    dynamic Function(dynamic) function, Map<String, dynamic> input) {
-  return promiseToFuture(function(jsify(input)));
+Future<Map<String, dynamic>> callApi(
+    dynamic Function(dynamic) function, Map<String, dynamic> input, {String? debugLabel}) {
+
+  if(debugLabel!= null){
+    print("${debugLabel} request\n ${input}");
+  }
+  return promiseToFuture(function(jsify(input))).then((value) {
+    final json = stringify(value);
+    if(debugLabel!= null){
+      print("${debugLabel} response\n ${json}");
+    }
+    return jsonDecode(json);
+  });
 }
 
 Future<Map<String, dynamic>> callApiMap(

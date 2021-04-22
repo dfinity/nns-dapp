@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dar
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
 import '../../../dfinity.dart';
+import '../increase_dissolve_delay_widget.dart';
 
 class NeuronStateCard extends StatelessWidget {
   final Neuron neuron;
@@ -21,9 +22,26 @@ class NeuronStateCard extends StatelessWidget {
           children: [
             NeuronRow(neuron: neuron),
             VerySmallFormDivider(),
-            Align(
-                alignment: Alignment.bottomRight,
-                child: buildStateButton(context))
+            Row(
+              children: [
+                Expanded(child: Container(),),
+                ElevatedButton(
+                    onPressed: () {
+                      OverlayBaseWidget.show(context, NewTransactionOverlay(
+                          rootTitle: "Increase Dissolve Delay",
+                          rootWidget:
+                          IncreaseDissolveDelayWidget(neuron: neuron, onCompleteAction: (context) {
+                            OverlayBaseWidget.of(context)?.dismiss();
+                          })));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text("Increase Dissolve Delay"),
+                    )),
+                SizedBox(width: 8),
+                buildStateButton(context),
+              ],
+            )
           ],
         ),
       ),
@@ -67,10 +85,14 @@ class NeuronStateCard extends StatelessWidget {
               child: Text("Disburse"),
             ),
             onPressed: () {
-              Overlay.of(context)!.show(context, NewTransactionOverlay(
-                rootTitle: 'Manage ICP',
-                rootWidget: SelectAccountTransactionTypeWidget(source: neuron,),
-              ));
+              OverlayBaseWidget.show(
+                  context,
+                  NewTransactionOverlay(
+                    rootTitle: 'Manage ICP',
+                    rootWidget: SelectAccountTransactionTypeWidget(
+                      source: neuron,
+                    ),
+                  ));
             });
       case NeuronState.UNSPECIFIED:
         return ElevatedButton(child: Text(""), onPressed: () {});

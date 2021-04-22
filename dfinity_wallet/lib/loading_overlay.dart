@@ -29,7 +29,7 @@ class _LoadingOverlayControllerState extends State<LoadingOverlayController> {
 
   OverlayEntry _createOverlayEntry() {
     return OverlayEntry(builder: (context) {
-      return NodeOverlay(overlayKey, remove);
+      return NodeOverlay(overlayKey, (){});
     });
   }
 

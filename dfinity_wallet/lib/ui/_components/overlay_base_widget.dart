@@ -7,23 +7,23 @@ import '../../dfinity.dart';
 import '../../resource_orchstrator.dart';
 import '../../wallet_router_delegate.dart';
 
-extension ShowOverlay on OverlayState {
-  OverlayEntry show(BuildContext parentContext, Widget widget, {double borderRadius = 50}) {
+
+class OverlayBaseWidget extends StatefulWidget {
+
+  static OverlayEntry show(BuildContext parentContext, Widget widget, {double borderRadius = 50}) {
     OverlayEntry? entry;
     entry = OverlayEntry(builder: (context) {
       return OverlayBaseWidget(
-        parentContext: parentContext,
-        overlayEntry: entry,
-        child: widget,
+          parentContext: parentContext,
+          overlayEntry: entry,
+          child: widget,
           borderRadius: borderRadius
       );
     });
-    insert(entry);
+    Overlay.of(parentContext)?.insert(entry);
     return entry;
   }
-}
 
-class OverlayBaseWidget extends StatefulWidget {
   const OverlayBaseWidget({
     Key? key,
     required this.parentContext,
@@ -77,7 +77,6 @@ class _OverlayBaseWidgetState extends State<OverlayBaseWidget>
       delegate: delegate,
       child: ResourceOrchestrator(
         hiveCoordinator: hiveCoordinator,
-        icApi: widget.parentContext.icApi,
         child: Scaffold(
           backgroundColor: AppColors.transparent,
           body: Stack(
@@ -88,33 +87,36 @@ class _OverlayBaseWidgetState extends State<OverlayBaseWidget>
                   dismiss();
                 }),
               ),
-              Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      boxShadow: [
-                        BoxShadow(
-                            color:
-                                AppColors.black.withOpacity(_animation.value),
-                            blurRadius: MediaQuery.of(context).size.width *
-                                _animation.value,
-                            spreadRadius: 100 * _animation.value)
-                      ]),
-                  child: Transform.scale(
-                    scale: min(1.0, scaleAnim.value),
-                    child: Opacity(
-                      opacity: min(1.0, opacityAnim.value * 2),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.lighterBackground,
-                          borderRadius: BorderRadius.circular(widget.borderRadius),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(widget.borderRadius),
-                          child: ConstrainedBox(
-                              constraints:
-                                  BoxConstraints(maxWidth: 800, maxHeight: 700),
-                              child: widget.child),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        boxShadow: [
+                          BoxShadow(
+                              color:
+                                  AppColors.black.withOpacity(_animation.value),
+                              blurRadius: MediaQuery.of(context).size.width *
+                                  _animation.value,
+                              spreadRadius: 100 * _animation.value)
+                        ]),
+                    child: Transform.scale(
+                      scale: min(1.0, scaleAnim.value),
+                      child: Opacity(
+                        opacity: min(1.0, opacityAnim.value * 2),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.lighterBackground,
+                            borderRadius: BorderRadius.circular(widget.borderRadius),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(widget.borderRadius),
+                            child: ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(maxWidth: 800, maxHeight: 700),
+                                child: widget.child),
+                          ),
                         ),
                       ),
                     ),

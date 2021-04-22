@@ -25,7 +25,6 @@ abstract class AbstractPlatformICApi {
 
   Future<void> createNeuron(
       {required BigInt stakeInDoms,
-      required BigInt dissolveDelayInSecs,
       int? fromSubAccount});
 
   Future<void> startDissolving({required BigInt neuronId});

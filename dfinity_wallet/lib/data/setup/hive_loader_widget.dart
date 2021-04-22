@@ -55,21 +55,24 @@ class _HiveLoaderState extends State<HiveLoader> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        if (!widget.hiveCoordinator.boxesClosed && (fadingIn || animationCompleted))
-          HiveBoxesWidget(
-              child: widget.child,
-              hiveCoordinator: widget.hiveCoordinator,
-          ),
-        if (!animationCompleted || widget.hiveCoordinator.boxesClosed)
-          IgnorePointer(
-            child: AnimatedOpacity(
-                duration: animationDuration,
-                opacity: fadingIn ? 0 : 1,
-                child: LandingPageWidget()),
-          ),
-      ],
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Stack(
+        children: [
+          if (!widget.hiveCoordinator.boxesClosed && (fadingIn || animationCompleted))
+            HiveBoxesWidget(
+                child: widget.child,
+                hiveCoordinator: widget.hiveCoordinator,
+            ),
+          if (!animationCompleted || widget.hiveCoordinator.boxesClosed)
+            IgnorePointer(
+              child: AnimatedOpacity(
+                  duration: animationDuration,
+                  opacity: fadingIn ? 0 : 1,
+                  child: LandingPageWidget()),
+            ),
+        ],
+      ),
     );
   }
 }

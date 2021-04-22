@@ -138,7 +138,7 @@ class TopicFolloweesWidget extends StatelessWidget {
                         child: Text("Enter Follower"),
                       ),
                       onPressed: () {
-                        Overlay.of(context)?.show(
+                        OverlayBaseWidget.show(
                             context,
                             Center(
                                 child: ConstrainedBox(

@@ -1,10 +1,14 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
+import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
 import 'package:dartx/dartx.dart';
 import 'dart:math';
+
+import 'following/configure_followers_page.dart';
 
 class StakeNeuronPage extends StatefulWidget {
   final ICPSource source;
@@ -45,7 +49,8 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TallFormDivider(),
-                        SelectableText("Origin", style: context.textTheme.headline4),
+                        SelectableText("Origin",
+                            style: context.textTheme.headline4),
                         VerySmallFormDivider(),
                         Text(widget.source.address,
                             style: context.textTheme.bodyText1),
@@ -74,21 +79,46 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
               ),
             ),
           ),
-          Container(
-            width: double.infinity,
-            color: AppColors.lightBackground,
-            height: 100,
-            padding: EdgeInsets.symmetric(horizontal: 64, vertical: 16),
-            child: ElevatedButton(
-              child: Text("Create"),
-              onPressed: () async {
-                await context.performLoading(() => context.icApi.createNeuron(
-                    stakeInDoms: amountField.currentValue.toDouble().toDoms,
-                    dissolveDelayInSecs: BigInt.zero,
-                    fromSubAccount: widget.source.subAccountId));
-                context.nav.push(NeuronTabsPage);
-              }.takeIf((e) => <ValidatedField>[amountField].allAreValid),
-            ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                    "Your neuron will be created locked, but with zero second dissolve delay."),
+              ),
+              Container(
+                width: double.infinity,
+                color: AppColors.lightBackground,
+                height: 100,
+                padding: EdgeInsets.symmetric(horizontal: 64, vertical: 16),
+                child: ElevatedButton(
+                  child: Text("Create"),
+                  onPressed: () async {
+                    await context.performLoading(() => context.icApi
+                        .createNeuron(
+                            stakeInDoms:
+                                amountField.currentValue.toDouble().toDoms,
+                            fromSubAccount: widget.source.subAccountId));
+                    final newNeuron = context.boxes.neurons.values
+                        .sortedByDescending((element) =>
+                            element.createdTimestampSeconds.toBigInt)
+                        .first;
+                    NewTransactionOverlay.of(context).replacePage(
+                        "Set Dissolve Delay",
+                        IncreaseDissolveDelayWidget(
+                            neuron: newNeuron,
+                            cancelTitle: "Skip",
+                            onCompleteAction: (context) {
+                              NewTransactionOverlay.of(context).replacePage(
+                                  "Select Followees",
+                                  ConfigureFollowersPage(
+                                    neuron: newNeuron,
+                                  ));
+                            }));
+                  }.takeIf((e) => <ValidatedField>[amountField].allAreValid),
+                ),
+              ),
+            ],
           )
         ],
       ),

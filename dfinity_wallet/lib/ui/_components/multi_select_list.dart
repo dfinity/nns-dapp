@@ -40,7 +40,7 @@ class _MultiSelectDropdownWidgetState<T>
   }
 
   void showPopup() {
-     Overlay.of(context)!.show(context, SizedBox(
+    OverlayBaseWidget.show(context, SizedBox(
       width: 420,
       child: MultiSelectList(
           field: widget.field,

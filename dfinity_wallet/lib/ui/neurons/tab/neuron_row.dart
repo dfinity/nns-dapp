@@ -8,10 +8,7 @@ class NeuronRow extends StatelessWidget {
   final Function? onTap;
 
   const NeuronRow(
-      {Key? key,
-      required this.neuron,
-        this.onTap,
-      this.showsWarning = false})
+      {Key? key, required this.neuron, this.onTap, this.showsWarning = false})
       : super(key: key);
 
   @override
@@ -23,10 +20,13 @@ class NeuronRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SelectableText(neuron.identifier,
-                  style: context.textTheme.headline2, onTap: (){
-                onTap?.call();
-                },),
+              SelectableText(
+                neuron.identifier,
+                style: context.textTheme.headline3,
+                onTap: () {
+                  onTap?.call();
+                },
+              ),
               VerySmallFormDivider(),
               Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Text("${neuron.state.description}",
@@ -48,7 +48,7 @@ class NeuronRow extends StatelessWidget {
               SizedBox(
                 height: 5,
               ),
-              if (neuron.state == NeuronState.DISSOLVING)
+              if (neuron.state == NeuronState.DISSOLVING) ...[
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -59,7 +59,11 @@ class NeuronRow extends StatelessWidget {
                     Text(" Remaining", style: context.textTheme.bodyText2)
                   ],
                 ),
-              if (neuron.state == NeuronState.LOCKED)
+                SizedBox(
+                  height: 5,
+                )
+              ],
+              if (neuron.state == NeuronState.LOCKED) ...[
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -69,7 +73,10 @@ class NeuronRow extends StatelessWidget {
                     Text(" Dissolve Delay", style: context.textTheme.bodyText2)
                   ],
                 ),
-              VerySmallFormDivider(),
+                SizedBox(
+                  height: 5,
+                )
+              ],
               RichText(
                   text: TextSpan(style: context.textTheme.bodyText2, children: [
                 TextSpan(text: "Spawned on "),
@@ -86,7 +93,10 @@ class NeuronRow extends StatelessWidget {
             amount: neuron.stake.toICPT,
             amountSize: 30,
             icpLabelSize: 15,
-            text: Text("Stake", style: context.textTheme.subtitle2,))
+            text: Text(
+              "Stake",
+              style: context.textTheme.subtitle2,
+            ))
       ],
     );
   }

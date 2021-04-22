@@ -30,7 +30,6 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
   Future<PageConfig> parseRouteInformation(
       RouteInformation routeInformation) async {
     final path = routeInformation.location ?? "";
-    print("parseRouteInformation ${path}");
     if (path.startsWith("access_token")) {
       final map = Map.fromEntries(path
           .split("&")
@@ -77,12 +76,10 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
       final entity = entityPageDef.entityForIdentifier(id, hiveCoordinator.hiveBoxes);
       if(entity!= null){
         final entityPage = entityPageDef.createConfigWithEntity(entity);
-        print("EntityPage ${entityPage.path}");
         return entityPage;
       }
     }
 
-    print("AccountsTabPage");
     return AccountsTabPage;
   }
 

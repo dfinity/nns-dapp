@@ -46,27 +46,30 @@ class NeuronFolloweesCard extends StatelessWidget {
                             e.key.toString(),
                             style: context.textTheme.headline4,
                           ),
-                          Row(
-                            children: e.value.mapToList((topic) => Padding(
-                              padding: EdgeInsets.only(top:8.0, bottom: 8.0, left: 4.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        side: BorderSide(width: 2, color: Color(0xffFBB03B)))),
-                                child: Padding(
-                                  padding: EdgeInsets.all(4.0),
-                                  child: Text(
-                                    topic.topic.name,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontFamily: Fonts.circularBook,
-                                        color: Color(0xffFBB03B),
-                                        fontWeight: FontWeight.normal),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Wrap(
+                              children: e.value.mapToList((topic) => Padding(
+                                padding: EdgeInsets.only(top:4.0, left: 4.0),
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                          side: BorderSide(width: 2, color: Color(0xffFBB03B)))),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(4.0),
+                                    child: Text(
+                                      topic.topic.name,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: Fonts.circularBook,
+                                          color: Color(0xffFBB03B),
+                                          fontWeight: FontWeight.normal),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )),
+                              )),
+                            ),
                           )
                         ],
                       ),
@@ -76,7 +79,7 @@ class NeuronFolloweesCard extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: ElevatedButton(
                   onPressed: () {
-                    Overlay.of(context)?.show(
+                    OverlayBaseWidget.show(
                         context,
                         ConfigureFollowersPage(
                           neuron: neuron,

@@ -112,12 +112,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createNeuron(
-      {required BigInt stakeInDoms,
-      required BigInt dissolveDelayInSecs,
-      int? fromSubAccount}) async {
+      {required BigInt stakeInDoms, int? fromSubAccount}) async {
     final request = {
       'stake': stakeInDoms,
-      'dissolveDelayInSecs': dissolveDelayInSecs,
       if (fromSubAccount != null) 'fromSubAccountId': fromSubAccount.toInt()
     };
     print("create neuron request ${request}");
@@ -176,12 +173,13 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> increaseDissolveDelay(
       {required BigInt neuronId,
       required BigInt additionalDissolveDelaySeconds}) async {
-    final result = await callApi(governanceApi!.increaseDissolveDelay, {
-      'neuronId': neuronId,
-      'additionalDissolveDelaySeconds': additionalDissolveDelaySeconds,
-    });
-    print("increaseDissolveDelay ${stringify(result)}");
-
+    await callApi(
+        governanceApi!.increaseDissolveDelay,
+        {
+          'neuronId': neuronId,
+          'additionalDissolveDelaySeconds': additionalDissolveDelaySeconds,
+        },
+        debugLabel: "increaseDissolveDelay");
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -191,7 +189,6 @@ class PlatformICApi extends AbstractPlatformICApi {
       required String url,
       required String text,
       required String summary}) async {
-
     final result = await callApi(governanceApi!.makeMotionProposal, {
       'neuronId': neuronId,
       'url': url,

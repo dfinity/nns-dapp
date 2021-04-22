@@ -42,7 +42,7 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
               ),
             ),
             onPressed: () {
-              Overlay.of(context)!.show(context, NewTransactionOverlay(
+              OverlayBaseWidget.show(context, NewTransactionOverlay(
                 rootTitle: 'Manage ICP',
                 rootWidget: SelectAccountTransactionTypeWidget(source: widget.primaryAccount,),
               ));
@@ -58,7 +58,7 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
               ),
             ),
             onPressed: () {
-              Overlay.of(context)!.show(context, TextFieldDialogWidget(
+              OverlayBaseWidget.show(context, TextFieldDialogWidget(
                   title: "New Sub-Account",
                   buttonTitle: "Create",
                   fieldName: "Account Name",

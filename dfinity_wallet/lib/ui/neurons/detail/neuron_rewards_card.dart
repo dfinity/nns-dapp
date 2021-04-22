@@ -54,7 +54,7 @@ class NeuronRewardsCard extends StatelessWidget {
                         alignment: Alignment.bottomRight,
                         child: ElevatedButton(
                             onPressed: () {
-                              Overlay.of(context)?.show(context,
+                              OverlayBaseWidget.show(context,
                                   NewTransactionOverlay(
                                     rootTitle: "Spawn Neuron",
                                     rootWidget: StakeNeuronPage(source: neuron),

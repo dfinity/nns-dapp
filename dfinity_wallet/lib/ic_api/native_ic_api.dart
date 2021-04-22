@@ -33,7 +33,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> createNeuron({required BigInt stakeInDoms, required BigInt dissolveDelayInSecs, int? fromSubAccount}) {
+  Future<void> createNeuron({required BigInt stakeInDoms, int? fromSubAccount}) {
     // TODO: implement createNeuron
     throw UnimplementedError();
   }

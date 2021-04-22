@@ -6,13 +6,18 @@ extension DurationFormatter on Duration {
   String yearsDayHourMinuteSecondFormatted() {
     this.toString();
     final years = (inDays / 365).floor();
-    return [
+    final nonZeroPeriods = [
       LabelledPeriod("Year", years),
       LabelledPeriod("Day", this.inDays.remainder(365)),
       LabelledPeriod("Hour", this.inHours.remainder(24)),
       LabelledPeriod("Minute", this.inMinutes.remainder(60)),
       LabelledPeriod("Second", this.inSeconds.remainder(60))
-    ].filter((element) => element.amount > 0).take(2).map((e) {
+    ].filter((element) => element.amount > 0).toList();
+    if (nonZeroPeriods.isEmpty) {
+      return "0";
+    }
+
+    return nonZeroPeriods.take(2).map((e) {
       return "${e.amount} ${e.label}${e.amount == 1 ? "" : "s"}";
     }).join(', ');
   }
