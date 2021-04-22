@@ -1,24 +1,25 @@
 import LedgerService, { E8s } from "./model";
+import GovernanceService, { NeuronId } from "../governance/model";
 import { BinaryBlob, blobFromUint8Array, Principal, SignIdentity } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
 import * as convert from "../converter";
 import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
 import crc from "crc";
 import randomBytes from "randombytes";
+import { NeuronId as NeuronIdProto } from "./types/types_pb";
 
 export type CreateNeuronRequest = {
     stake: E8s
-    dissolveDelayInSecs: bigint,
+    dissolveDelayInSecs: number,
     fromSubAccountId?: number
 }
-
-export type CreateNeuronResponse = any;
 
 // Ported from https://github.com/dfinity-lab/dfinity/blob/master/rs/nns/integration_tests/src/ledger.rs#L29
 export default async function(
     identity: SignIdentity,
     ledgerService: LedgerService, 
-    request: CreateNeuronRequest) : Promise<CreateNeuronResponse> {
+    governanceService: GovernanceService, 
+    request: CreateNeuronRequest) : Promise<NeuronId> {
 
     const principal = identity.getPrincipal();
     const nonce = new Uint8Array(randomBytes(8));
@@ -38,10 +39,25 @@ export default async function(
         toSubAccount,
         fromSubAccountId: request.fromSubAccountId
     });
+    console.log("notify result");
+    console.log(result);
 
-    return {
-        result
-    };
+    // console.log("deserializeBinary");
+    // console.log(NeuronIdProto.deserializeBinary(result));
+
+    const neuronId = BigInt(NeuronIdProto.deserializeBinary(result).getId());
+    console.log("neuronId");
+    console.log(neuronId);
+
+    // console.log("increaseDissolveDelay");
+    // const delay = Number(request.dissolveDelayInSecs.toString());
+    // console.log(delay);
+    // await governanceService.increaseDissolveDelay({
+    //     neuronId,
+    //     additionalDissolveDelaySeconds: delay
+    // });
+
+    return neuronId;
 }
 
 // 32 bytes

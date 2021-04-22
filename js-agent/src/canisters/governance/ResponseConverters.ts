@@ -280,6 +280,14 @@ export default class ResponseConverters {
                 }
             }
         }
+        if ("SetDefaultFollowees" in action) {
+            const setDefaultFollowees = action.SetDefaultFollowees;
+            return {
+                SetDefaultFollowees: {
+                    defaultFollowees: setDefaultFollowees.default_followees.map(([n, f]) => this.toFollowees(n, f))
+                }
+            };
+        }
         this.throwUnrecognisedTypeError("action", action);
     }
 

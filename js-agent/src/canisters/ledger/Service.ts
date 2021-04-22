@@ -8,7 +8,7 @@ import ServiceInterface, {
     SendICPTsRequest
 } from "./model";
 import RequestConverters from "./RequestConverters";
-import { BlockHeight as BlockHeightProto, ICPTs } from "./types/types_pb";
+import { BlockHeight as BlockHeightProto, ICPTs, TransactionNotificationResponse } from "./types/types_pb";
 import { submitQueryRequest } from "../queryRequestHandler";
 import { submitUpdateRequest } from "../updateRequestHandler";
 
@@ -57,13 +57,15 @@ export default class Service implements ServiceInterface {
         return BigInt(BlockHeightProto.deserializeBinary(responseBytes).getHeight());
     }
 
-    public notify = async (request: NotifyCanisterRequest) : Promise<any> => {
+    public notify = async (request: NotifyCanisterRequest) : Promise<Uint8Array> => {
         const rawRequest = this.requestConverters.fromNotifyCanisterRequest(request);
 
-        return await submitUpdateRequest(
+        const rawResponse = await submitUpdateRequest(
             this.agent,
             this.canisterId,
             "notify",
             rawRequest.serializeBinary());
+
+        return rawResponse;
     }
 }

@@ -11,6 +11,7 @@ export type Action =
     { NetworkEconomics: NetworkEconomics } |
     { RewardNodeProvider: RewardNodeProvider } |
     { AddOrRemoveNodeProvider: AddOrRemoveNodeProvider } |
+    { SetDefaultFollowees: SetDefaultFollowees } |
     { Motion: Motion };
 export interface AddHotKey { newHotKey: Principal };
 export interface AddOrRemoveNodeProvider { change: Change };
@@ -260,6 +261,9 @@ export interface RewardNodeProvider {
     nodeProvider : Option<NodeProvider>,
     amount : E8s,
 };
+export interface SetDefaultFollowees {
+    defaultFollowees: Array<Followees>
+};  
 export interface Spawn { newController: Option<Principal> };
 export interface SpawnResponse { createdNeuronId: NeuronId };
 export interface Split { amount: E8s };

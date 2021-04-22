@@ -72,7 +72,7 @@ export const blobToUint8Array = (blob: BinaryBlob) : Uint8Array => {
 }
 
 export const accountIdentifierToBytes = (accountIdentifier: AccountIdentifier) : Uint8Array => {
-    return Uint8Array.from(Buffer.from(accountIdentifier, "hex"));
+    return Uint8Array.from(Buffer.from(accountIdentifier, "hex")).subarray(4);
 }
 
 export const accountIdentifierFromBytes = (accountIdentifier: Uint8Array) : AccountIdentifier => {
