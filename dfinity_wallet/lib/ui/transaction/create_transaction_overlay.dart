@@ -1,11 +1,4 @@
-import 'package:dfinity_wallet/data/icp_source.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/stake_neuron_page.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/select_wallet_page.dart';
-
 import '../../dfinity.dart';
-import 'canister/select_cansiter_page.dart';
 
 class NewTransactionOverlay extends StatefulWidget {
   late Widget rootWidget;

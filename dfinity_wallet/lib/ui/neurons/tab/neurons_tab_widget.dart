@@ -7,9 +7,8 @@ import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
-import 'package:dfinity_wallet/ui/transaction/stake_neuron_page.dart';
-import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
+import '../stake_neuron_page.dart';
 import 'neuron_row.dart';
 
 class NeuronsPage extends StatefulWidget {

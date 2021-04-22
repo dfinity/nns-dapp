@@ -1,6 +1,6 @@
 
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/transaction/stake_neuron_page.dart';
+import 'package:dfinity_wallet/ui/neurons/stake_neuron_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_wallet_page.dart';
 
 import '../../dfinity.dart';
