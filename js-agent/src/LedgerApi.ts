@@ -1,4 +1,4 @@
-import { Agent, AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
+import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService, {
     AccountIdentifier,
@@ -8,7 +8,6 @@ import LedgerService, {
     SendICPTsRequest
 } from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/nnsUI/builder";
-import governanceBuilder from "./canisters/governance/builder";
 import LedgerViewService, {
     CreateSubAccountResponse,
     GetTransactionsRequest,
@@ -17,13 +16,11 @@ import LedgerViewService, {
 } from "./canisters/nnsUI/model";
 import { create_dummy_proposals, test_happy_path } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/ledger/createNeuron";
-import GovernanceService, { NeuronId } from "./canisters/governance/model";
+import { NeuronId } from "./canisters/governance/model";
 
 export default class LedgerApi {
     private readonly ledgerService: LedgerService;
     private readonly ledgerViewService: LedgerViewService;
-    private readonly governanceService: GovernanceService;
-    private readonly agent: Agent;
     private readonly host: string;
     private readonly identity: SignIdentity;
 
@@ -34,8 +31,6 @@ export default class LedgerApi {
         });
         this.ledgerService = ledgerBuilder(agent, identity);
         this.ledgerViewService = ledgerViewBuilder(agent);
-        this.governanceService = governanceBuilder(agent, identity, this.ledgerViewService.syncTransactions);
-        this.agent = agent;
         this.host = host;
         this.identity = identity;
     }
@@ -91,7 +86,6 @@ export default class LedgerApi {
         return createNeuronImpl(
             this.identity, 
             this.ledgerService, 
-            this.governanceService, 
             request);
     }
 

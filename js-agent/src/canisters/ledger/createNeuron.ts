@@ -10,7 +10,6 @@ import { NeuronId as NeuronIdProto } from "./types/types_pb";
 
 export type CreateNeuronRequest = {
     stake: E8s
-    dissolveDelayInSecs: number,
     fromSubAccountId?: number
 }
 
@@ -18,7 +17,6 @@ export type CreateNeuronRequest = {
 export default async function(
     identity: SignIdentity,
     ledgerService: LedgerService, 
-    governanceService: GovernanceService, 
     request: CreateNeuronRequest) : Promise<NeuronId> {
 
     const principal = identity.getPrincipal();
@@ -48,14 +46,6 @@ export default async function(
     const neuronId = BigInt(NeuronIdProto.deserializeBinary(result).getId());
     console.log("neuronId");
     console.log(neuronId);
-
-    // console.log("increaseDissolveDelay");
-    // const delay = Number(request.dissolveDelayInSecs.toString());
-    // console.log(delay);
-    // await governanceService.increaseDissolveDelay({
-    //     neuronId,
-    //     additionalDissolveDelaySeconds: delay
-    // });
 
     return neuronId;
 }

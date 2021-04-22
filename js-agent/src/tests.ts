@@ -58,7 +58,6 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     console.log("create 1st neuron with 80 ICPT");
     await ledgerApi.createNeuron({
         stake: BigInt(8_000_000_000),
-        dissolveDelayInSecs: 20_000_000,
         fromSubAccountId: firstSubAccount.id
     });
 
@@ -90,7 +89,6 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     console.log("create 2nd neuron with 8 ICPT");
     await ledgerApi.createNeuron({
         stake: BigInt(800_000_000),
-        dissolveDelayInSecs: 20_000_000,
         fromSubAccountId: firstSubAccount.id
     });
 
@@ -171,11 +169,10 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         console.log(manageNeuronResponse);            
     }    
 
-    // Create a neuron with zero dissolve delay if none exists so it can be disbursed
+    // Create a neuron that can be disbursed
     console.log("creating a 3rd neuron with zero dissolve delay");
     await ledgerApi.createNeuron({
         stake: BigInt(1_000_000_000),
-        dissolveDelayInSecs: 0,
         fromSubAccountId: firstSubAccount.id
     });
 
