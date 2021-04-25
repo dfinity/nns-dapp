@@ -10,14 +10,15 @@ import '../../wallet_router_delegate.dart';
 
 class OverlayBaseWidget extends StatefulWidget {
 
-  static OverlayEntry show(BuildContext parentContext, Widget widget, {double borderRadius = 50}) {
+  static OverlayEntry show(BuildContext parentContext, Widget widget, {double borderRadius = 50, Size maxSize = const Size(800, 700)}) {
     OverlayEntry? entry;
     entry = OverlayEntry(builder: (context) {
       return OverlayBaseWidget(
           parentContext: parentContext,
           overlayEntry: entry,
           child: widget,
-          borderRadius: borderRadius
+          borderRadius: borderRadius,
+          maxSize: maxSize,
       );
     });
     Overlay.of(parentContext)?.insert(entry);
@@ -30,6 +31,7 @@ class OverlayBaseWidget extends StatefulWidget {
     required this.child,
     required OverlayEntry? overlayEntry,
     this.borderRadius = 50,
+    this.maxSize = const Size(800, 700)
   })   : _overlayEntry = overlayEntry,
         super(key: key);
 
@@ -37,6 +39,7 @@ class OverlayBaseWidget extends StatefulWidget {
   final BuildContext parentContext;
   final Widget child;
   final double borderRadius;
+  final Size maxSize;
 
   @override
   _OverlayBaseWidgetState createState() => _OverlayBaseWidgetState();
@@ -114,7 +117,10 @@ class _OverlayBaseWidgetState extends State<OverlayBaseWidget>
                             borderRadius: BorderRadius.circular(widget.borderRadius),
                             child: ConstrainedBox(
                                 constraints:
-                                    BoxConstraints(maxWidth: 800, maxHeight: 700),
+                                    BoxConstraints(
+                                        maxWidth: widget.maxSize.width,
+                                        maxHeight: widget.maxSize.height
+                                    ),
                                 child: widget.child),
                           ),
                         ),

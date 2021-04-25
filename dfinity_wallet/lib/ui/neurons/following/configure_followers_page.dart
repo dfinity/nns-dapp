@@ -1,211 +1,141 @@
+import 'dart:math';
+
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/neurons/following/topic_card.dart';
+import 'package:dfinity_wallet/ui/neurons/following/topic_followeees_widget.dart';
 
 import '../../../dfinity.dart';
 import 'followee_suggestions.dart';
 
-class ConfigureFollowersPage extends StatelessWidget {
+class ConfigureFollowersPage extends StatefulWidget {
   final Neuron neuron;
+  final Function(BuildContext) completeAction;
 
-  const ConfigureFollowersPage({Key? key, required this.neuron})
+  const ConfigureFollowersPage({Key? key, required this.neuron, required this.completeAction})
       : super(key: key);
+
+  @override
+  _ConfigureFollowersPageState createState() => _ConfigureFollowersPageState();
+}
+
+class _ConfigureFollowersPageState extends State<ConfigureFollowersPage> {
+  int? expandedIndex;
+  GlobalKey contentKey = GlobalKey();
+  ScrollController scrollController = ScrollController();
+
+  late List<GlobalKey> rowKeys;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Object>(
-        stream: context.boxes.neurons.watch(key: neuron.id),
+        stream: context.boxes.neurons.watch(key: widget.neuron.id),
         builder: (context, snapshot) {
-          final refreshed = context.boxes.neurons.get(neuron.id)!;
-          final followees = refreshed.followees.filterNot((element) => element.topic == Topic.Unspecified);
-          return DefaultTabController(
-            length: followees.length,
-            child: Container(
-              child: Column(
-                children: [
-                  Container(
-                    color: AppColors.lighterBackground,
-                    child: TabBar(
-                        isScrollable: true,
-                        indicatorColor: Colors.white,
-                        tabs: [
-                          ...followees.mapToList(
-                            (e) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Tab(text: e.topic.name),
-                            ),
-                          )
-                        ]),
-                  ),
-                  Expanded(
-                    child: TabBarView(
+          final refreshed = context.boxes.neurons.get(widget.neuron.id)!;
+          final followees = refreshed.followees
+              .filterNot((element) => element.topic == Topic.Unspecified)
+              .toList();
+          rowKeys = followees.map((element) => GlobalKey()).toList();
+
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ...followees.map((e) => TopicFolloweesWidget(
-                              followees: e,
-                              neuron: neuron,
-                            ))
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Follow Topics",
+                            style: context.textTheme.headline2,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Follow neurons to automate your voting, and receive the maximum voting rewards", style: context.textTheme.subtitle2),
+                        ),
+                        SmallFormDivider(),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: ExpansionPanelList(
+                            key: contentKey,
+                            elevation: 0,
+                            animationDuration: 1.seconds,
+                            expansionCallback: (i, expanded) {
+                              setState(() {
+                                if (expanded) {
+                                  expandedIndex = null;
+                                } else {
+                                  expandedIndex = i;
+                                }
+                                animateToCurrentStep();
+                              });
+                            },
+                            children: [
+                              ...followees.mapIndexed((i, e) {
+                                return ExpansionPanel(
+                                    canTapOnHeader: true,
+                                    isExpanded: i == expandedIndex,
+                                    backgroundColor: AppColors.lightBackground,
+                                    headerBuilder: (context, expanded) =>
+                                        TopicCard(followees: e, key: rowKeys[i]),
+                                    body: TopicFolloweesWidget(
+                                        followees: e, neuron: widget.neuron));
+                              }),
+                            ],
+                          ),
+                        ),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(42.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                widget.completeAction(context);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  "Save and Close",
+                                  style: TextStyle(
+                                      fontFamily: Fonts.circularBook,
+                                      fontSize: 24,
+                                      color: AppColors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height.half,
+                        ),
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           );
         });
   }
-}
 
-class TopicFolloweesWidget extends StatelessWidget {
-  final Neuron neuron;
-  final Followee followees;
+  void animateToCurrentStep() async {
+    await 0.05.seconds.delay;
+    if (contentKey.attached && expandedIndex != null) {
+      final contentHeight = contentKey.currentContext!.size!.height;
+      final maxOffset = contentHeight;
 
-  const TopicFolloweesWidget(
-      {Key? key,
-      required this.neuron,
-      required this.followees})
-      : super(key: key);
+      final proposedOffset = rowKeys
+              .take(expandedIndex!)
+              .sumBy((element) => element.frame.height) +
+          100;
 
-  @override
-  Widget build(BuildContext context) => SizedBox.expand(
-        child: Container(
-          color: AppColors.lightBackground,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: ListView(
-            children: [
-              SizedBox(height: 16,),
-              Card(
-                color: AppColors.background,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        followees.topic.name,
-                        style: context.textTheme.headline3,
-                        textAlign: TextAlign.left,
-                      ),
-                      SizedBox(height: 5,),
-                      Text(followees.topic.desc, style: context.textTheme.subtitle2,)
-                    ],
-                  ),
-                ),
-              ),
-              SmallFormDivider(),
-              currentlyFollowingCard(context),
-              SmallFormDivider(),
-              Card(
-                color: AppColors.background,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Options for Following",
-                        style: context.textTheme.headline3,
-                        textAlign: TextAlign.left,
-                      ),
-                      FolloweeSuggestionWidget(followees.followees, suggestionSelected: (e) {
-                        addFollower(e.id, context);
-                      })
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 16,),
-            ],
-          ),
-        ),
-      );
-
-  Card currentlyFollowingCard(BuildContext context) {
-    return Card(
-              color: AppColors.background,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Currently Following",
-                      style: context.textTheme.headline3,
-                    ),
-                    followingTopicsList(context),
-                    SmallFormDivider(),
-                    ElevatedButton(
-                      child: Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text("Enter Follower"),
-                      ),
-                      onPressed: () {
-                        OverlayBaseWidget.show(
-                            context,
-                            Center(
-                                child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                        maxWidth: 400, maxHeight: 300),
-                                    child: TextFieldDialogWidget(
-                                        title: "Enter Neuron ID",
-                                        buttonTitle: "Follow",
-                                        fieldName: "Neuron ID",
-                                        onComplete: (id) {
-                                          addFollower(id, context);
-                                        }))));
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-  }
-
-  Widget followingTopicsList(BuildContext context) {
-    return Column(
-      children: [
-        ...followees.followees.mapIndexed((i, e) => Container(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(child: Text(e, style: context.textTheme.bodyText2),),
-                    if (i != 0) TextButton(onPressed: () {
-                      reorder(context, i, i-1);
-                    }, child: Text('↑')),
-                    if (i != followees.followees.lastIndex)
-                      TextButton(onPressed: () {
-                        reorder(context, i, i+1);
-                      }, child: Text('↓')),
-                    TextButton(onPressed: () {
-                      removeFollower(e, context);
-                    }, child: Text('✕'))
-                  ],
-                ),
-              ),
-            ))
-      ],
-    );
-  }
-
-  void reorder(BuildContext context, int oldIndex, int newIndex) {
-    followees.followees.swap(oldIndex, newIndex);
-    saveChanges(context);
-  }
-
-  void addFollower(String id, BuildContext context) {
-    followees.followees.add(id);
-    saveChanges(context);
-  }
-
-  void removeFollower(String id, BuildContext context) {
-    followees.followees.remove(id);
-    saveChanges(context);
-  }
-
-  void saveChanges(BuildContext context) {
-    neuron.save();
-    context.icApi.follow(
-        neuronId: neuron.id.toBigInt,
-        topic: followees.topic,
-        followees: followees.followees.mapToList((e) => e.toBigInt));
+      final newOffset = min(maxOffset, proposedOffset);
+      scrollController.animateTo(newOffset,
+          duration: 1.seconds, curve: Curves.easeInOut);
+    }
   }
 }

@@ -30,7 +30,7 @@ class NeuronRow extends StatelessWidget {
               VerySmallFormDivider(),
               Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Text("${neuron.state.description}",
-                    style: context.textTheme.bodyText2?.copyWith(
+                    style: context.textTheme.subtitle2?.copyWith(
                       color: neuron.state.statusColor,
                     )),
                 SizedBox(
@@ -54,7 +54,7 @@ class NeuronRow extends StatelessWidget {
                   children: [
                     Text(
                       "${neuron.durationRemaining.yearsDayHourMinuteSecondFormatted()}",
-                      style: context.textTheme.bodyText2,
+                      style: context.textTheme.subtitle2,
                     ),
                     Text(" Remaining", style: context.textTheme.bodyText2)
                   ],

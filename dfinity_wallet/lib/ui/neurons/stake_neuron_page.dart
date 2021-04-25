@@ -27,9 +27,9 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
     amountField = ValidatedTextField("Amount in ICP",
         validations: [
           FieldValidation("Not enough ICP",
-              (e) => (e.toIntOrNull() ?? 0) > widget.source.icpBalance),
+              (e) => (e.toDoubleOrNull() ?? 0.0) >= widget.source.icpBalance),
           FieldValidation(
-              "Must be greater than 0", (e) => (e.toIntOrNull() ?? 0) == 0)
+              "Must be greater than 1", (e) => (e.toDoubleOrNull() ?? 0.0) < 1.0)
         ],
         inputType: TextInputType.number);
   }
@@ -103,6 +103,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                         .sortedByDescending((element) =>
                             element.createdTimestampSeconds.toBigInt)
                         .first;
+
                     NewTransactionOverlay.of(context).replacePage(
                         "Set Dissolve Delay",
                         IncreaseDissolveDelayWidget(
@@ -110,9 +111,13 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                             cancelTitle: "Skip",
                             onCompleteAction: (context) {
                               NewTransactionOverlay.of(context).replacePage(
-                                  "Select Followees",
+                                  "Follow Neurons",
                                   ConfigureFollowersPage(
                                     neuron: newNeuron,
+                                    completeAction: (context) {
+                                      OverlayBaseWidget.of(context)?.dismiss();
+                                      context.nav.push(NeuronPageDef.createPageConfig(newNeuron));
+                                    },
                                   ));
                             }));
                   }.takeIf((e) => <ValidatedField>[amountField].allAreValid),

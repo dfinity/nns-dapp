@@ -270,6 +270,12 @@ class _MultiSelectListState<T> extends State<MultiSelectList<T>> {
                     ),
                   ))
               .toList(),
+          ElevatedButton(
+            child: Text(""),
+            onPressed: () {
+
+            },
+          )
         ],
       ),
     );

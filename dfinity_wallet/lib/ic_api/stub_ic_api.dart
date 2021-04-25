@@ -66,7 +66,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> increaseDissolveDelay(
       {required BigInt neuronId,
-      required BigInt additionalDissolveDelaySeconds}) {
+      required int additionalDissolveDelaySeconds}) {
     // TODO: implement increaseDissolveDelay
     throw UnimplementedError();
   }

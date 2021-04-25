@@ -11,3 +11,4 @@ export '_components/duration_formatting.dart';
 export 'wallet/balance_display_widget.dart';
 export '_components/date_formatting.dart';
 export '_components/entity_card.dart';
+export '_components/rounder_border_decoration.dart';

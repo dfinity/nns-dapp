@@ -14,3 +14,9 @@ window["Serializer"] = function(object: Object): String {
             : value // return everything else unchanged
     );
 }
+
+
+// This hack is because Dart interop doesn't yet understand bigint
+window["createBigInt"] = function(bigIntString: string): BigInt {
+    return BigInt(bigIntString)
+}

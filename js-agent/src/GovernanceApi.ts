@@ -79,6 +79,7 @@ export default class GovernanceApi {
     }        
 
     public increaseDissolveDelay = async (request: IncreaseDissolveDelayRequest) : Promise<EmptyResponse> => {
+        console.log(request);
         return this.governanceService.increaseDissolveDelay(request);
     }
 

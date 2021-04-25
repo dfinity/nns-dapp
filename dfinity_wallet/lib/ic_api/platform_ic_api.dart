@@ -33,7 +33,7 @@ abstract class AbstractPlatformICApi {
 
   Future<void> increaseDissolveDelay(
       {required BigInt neuronId,
-      required BigInt additionalDissolveDelaySeconds});
+      required int additionalDissolveDelaySeconds});
 
   @override
   Future<void> follow(

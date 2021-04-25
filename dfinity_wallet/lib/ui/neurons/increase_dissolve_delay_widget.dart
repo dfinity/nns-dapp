@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 
@@ -167,8 +168,7 @@ class _IncreaseDissolveDelayWidgetState
   Future performUpdate(BuildContext context) async {
     await context.performLoading(() => context.icApi.increaseDissolveDelay(
         neuronId: widget.neuron.id.toBigInt,
-        additionalDissolveDelaySeconds:
-            BigInt.from(disperseDelay.currentValue)));
+        additionalDissolveDelaySeconds: disperseDelay.currentValue));
     widget.onCompleteAction(context);
   }
 

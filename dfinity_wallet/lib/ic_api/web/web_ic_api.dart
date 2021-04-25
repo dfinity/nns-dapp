@@ -124,13 +124,13 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> startDissolving({required BigInt neuronId}) async {
-    await callApi(governanceApi!.startDissolving, ({'neuronId': neuronId}));
+    await callApi(governanceApi!.startDissolving, {'neuronId': neuronId.toJS}, debugLabel: "startDissolving");
     await neuronSyncService!.fetchNeurons();
   }
 
   @override
   Future<void> stopDissolving({required BigInt neuronId}) async {
-    await callApi(governanceApi!.stopDissolving, {'neuronId': neuronId});
+    await callApi(governanceApi!.stopDissolving, {'neuronId': neuronId.toJS});
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -140,7 +140,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       required BigInt doms,
       required String toAccountId}) async {
     await callApi(governanceApi!.disburse,
-        {'neuronId': neuronId, 'amount': doms, 'toAccountId': toAccountId});
+        {'neuronId': neuronId.toJS, 'amount': doms.toJS, 'toAccountId': toAccountId});
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -150,9 +150,9 @@ class PlatformICApi extends AbstractPlatformICApi {
       required BigInt dissolveDelaySeconds,
       required BigInt doms}) async {
     await callApi(governanceApi!.disburseToNeuron, {
-      'neuronId': neuronId,
-      'amount': doms,
-      'dissolveDelaySeconds': dissolveDelaySeconds
+      'neuronId': neuronId.toJS,
+      'amount': doms.toJS,
+      'dissolveDelaySeconds': toJSBigInt(dissolveDelaySeconds.toString())
     });
     await neuronSyncService!.fetchNeurons();
   }
@@ -163,7 +163,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       required Topic topic,
       required List<BigInt> followees}) async {
     final result = await callApi(governanceApi!.follow,
-        {'neuronId': neuronId, 'topic': topic.index, 'followees': followees});
+        {'neuronId': toJSBigInt(neuronId.toString()), 'topic': topic.index, 'followees': followees});
     print("follow ${stringify(result)}");
 
     await neuronSyncService!.fetchNeurons();
@@ -172,11 +172,11 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> increaseDissolveDelay(
       {required BigInt neuronId,
-      required BigInt additionalDissolveDelaySeconds}) async {
+      required int additionalDissolveDelaySeconds}) async {
     await callApi(
         governanceApi!.increaseDissolveDelay,
         {
-          'neuronId': neuronId,
+          'neuronId': neuronId.toJS,
           'additionalDissolveDelaySeconds': additionalDissolveDelaySeconds,
         },
         debugLabel: "increaseDissolveDelay");
@@ -190,7 +190,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       required String text,
       required String summary}) async {
     final result = await callApi(governanceApi!.makeMotionProposal, {
-      'neuronId': neuronId,
+      'neuronId': neuronId.toJS,
       'url': url,
       'text': text,
       'summary': summary,
@@ -205,10 +205,10 @@ class PlatformICApi extends AbstractPlatformICApi {
       required Vote vote}) async {
     final result = await Future.wait(
         neuronIds.map((e) => callApi(governanceApi!.registerVote, {
-              'neuronId': e,
-              'proposal': proposalId,
+              'neuronId': e.toJS,
+              'proposal': proposalId.toJS,
               'vote': vote.index,
-            })));
+            }, debugLabel: "registerVote")));
     print("registerVote ${stringify(result)}");
     await neuronSyncService!.fetchNeurons();
   }
