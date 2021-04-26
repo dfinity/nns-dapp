@@ -3,8 +3,11 @@
     "nns_ui": {
       "type": "custom",
       "candid": "canisters/nns_ui/nns_ui.did",
-      "wasm": "canisters/target/wasm32-unknown-unknown/release/nns_ui-opt.wasm",
-      "build": "./build.sh",
+      "wasm": "target/wasm32-unknown-unknown/release/nns_ui-opt.wasm",
+      "build": "./build.sh"
+    },
+    "nns_ui_assets": {
+      "type": "assets",
       "source": ["dfinity_wallet/build/web"]
     }
   },
