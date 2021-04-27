@@ -47,7 +47,7 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
 async fn get_latest_block_height() -> Result<BlockHeight, String> {
     let response: TipOfChainRes = dfn_core::call(
         LEDGER_CANISTER_ID,
-        "tip_of_chain",
+        "tip_of_chain_pb",
         protobuf,
         TipOfChainRequest {}).await.map_err(|e| e.1)?;
 
@@ -57,7 +57,7 @@ async fn get_latest_block_height() -> Result<BlockHeight, String> {
 async fn get_blocks(from: BlockHeight, to: BlockHeight) -> Result<Vec<(BlockHeight, Block)>, String> {
     let response: GetBlocksRes = dfn_core::call(
         LEDGER_CANISTER_ID,
-        "get_blocks",
+        "get_blocks_pb",
         protobuf,
         GetBlocksArgs::new(from, (to - from) as usize + 1usize)).await.map_err(|e| e.1)?;
 
