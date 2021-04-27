@@ -81,11 +81,6 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
           ),
           Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                    "Your neuron will be created locked, but with zero second dissolve delay."),
-              ),
               Container(
                 width: double.infinity,
                 color: AppColors.lightBackground,
