@@ -13,7 +13,7 @@ class BalanceDisplayWidget extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        var f = NumberFormat("###,###.#", "en_US");
+        var f = NumberFormat("###,###.########", "en_US");
         return Flex(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,6 @@
 import 'package:dfinity_wallet/resource_orchstrator.dart';
 import 'package:dfinity_wallet/resources_loading_page.dart';
+import 'package:dfinity_wallet/ui/canisters/canister_detail_widget.dart';
 import 'package:dfinity_wallet/ui/home/auth_widget.dart';
 import 'package:dfinity_wallet/ui/home/home_tabs_widget.dart';
 import 'package:dfinity_wallet/ui/home/landing_widget.dart';
@@ -150,13 +151,19 @@ EntityPageDefinition NeuronPageDef = EntityPageDefinition<Neuron>(
     fetchBox: (boxes) => boxes.neurons!,
     entityFromIC: (neuronId, icApi) => icApi.fetchNeuron(neuronId: BigInt.parse(neuronId)));
 
-
 EntityPageDefinition ProposalPageDef = EntityPageDefinition<Proposal>(
     pathTemplate: "/proposal",
     parentPage: ProposalsTabPage,
     createWidget: (proposal) => ProposalDetailWidget(proposal),
     fetchBox: (boxes) => boxes.proposals!,
     entityFromIC: (proposalId, icApi) => icApi.fetchProposal(proposalId: BigInt.parse(proposalId)));
+
+
+EntityPageDefinition CanisterPageDef = EntityPageDefinition<Canister>(
+    pathTemplate: "/canister",
+    parentPage: CanistersTabPage,
+    createWidget: (canister) => CanisterDetailWidget(canister),
+    fetchBox: (boxes) => boxes.canisters!);
 
 class WalletRouterDelegate extends RouterDelegate<PageConfig>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageConfig> {

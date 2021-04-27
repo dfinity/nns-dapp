@@ -3,10 +3,12 @@ import 'dart:math';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
+import 'dfinity_entity.dart';
+
 part 'canister.g.dart';
 
 @HiveType(typeId: 102)
-class Canister extends HiveObject{
+class Canister extends DfinityEntity{
     @HiveField(0)
     final String name;
     @HiveField(1)
@@ -25,5 +27,8 @@ class Canister extends HiveObject{
         // cyclesRemaining = random.nextInt(1000000);
         // cyclesSpent = random.nextInt(1000000);
     }
+
+  @override
+  String get identifier => publicKey;
 }
 

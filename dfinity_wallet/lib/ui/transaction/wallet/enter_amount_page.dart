@@ -37,7 +37,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
         validations: [
           FieldValidation("Not enough ICP in account",
               (e) {
-                final amount = (e.toIntOrNull() ?? 0);
+                final amount = (e.toDoubleOrNull() ?? 0);
                     return amount == 0 || amount > widget.origin.icpBalance;
               })
         ],

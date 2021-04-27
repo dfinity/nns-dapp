@@ -47,14 +47,18 @@ class _CansitersPageState extends State<CansitersPage> {
             body: ConstrainWidthAndCenter(
               child: TabTitleAndContent(
                 title: "Deploy",
-                subtitle: "Deploy applications to canisters; Canisters are computational units, a canister executes your application and consumes cycles.",
+                subtitle:
+                    "Deploy applications to canisters; Canisters are computational units, a canister executes your application and consumes cycles.",
                 children: [
                   SmallFormDivider(),
-                  ...context.boxes.canisters.values.mapToList((e) => CanisterRow(
-                        canister: e,
-                        showsWarning: true,
-                        onPressed: () {},
-                      )),
+                  ...context.boxes.canisters.values
+                      .mapToList((e) => CanisterRow(
+                            canister: e,
+                            showsWarning: true,
+                            onPressed: () {
+                              context.nav.push(CanisterPageDef.createPageConfig(e));
+                            },
+                          )),
                 ],
               ),
             ),
@@ -73,12 +77,31 @@ class _CansitersPageState extends State<CansitersPage> {
                           child: Text(
                             "Add Canister",
                             textAlign: TextAlign.center,
-                            style: context.textTheme.button?.copyWith(fontSize: 24),
+                            style: context.textTheme.button
+                                ?.copyWith(fontSize: 24),
                           ),
                         ),
                       ),
                     ),
                     onPressed: () {
+                      OverlayBaseWidget.show(
+                          context,
+                          TextFieldDialogWidget(
+                              title: "New Canister",
+                              buttonTitle: "Create",
+                              fieldName: "Account Name",
+                              onComplete: (name) {
+                                context.performLoading(() async {
+                                  await 1.seconds.delay;
+                                  final id =
+                                      rand.nextInt(2147483647).toString();
+                                  final canister = Canister(name, id);
+                                  await context.icApi.hiveBoxes.canisters.put(id, canister);
+
+                                  context.nav.push(CanisterPageDef.createPageConfig(canister));
+                                });
+                              }),
+                          borderRadius: 20);
                     },
                   ),
                 ),
@@ -118,8 +141,7 @@ class CanisterRow extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   canister.name,
-                  style: context.textTheme.headline3
-                      ?.copyWith(color: AppColors.gray800),
+                  style: context.textTheme.headline3,
                 ),
               ),
               Padding(
@@ -127,8 +149,7 @@ class CanisterRow extends StatelessWidget {
                     left: 16.0, bottom: 16.0, right: 16.0),
                 child: Text(
                   "Balance: ${canister.cyclesRemaining}",
-                  style: context.textTheme.bodyText1
-                      ?.copyWith(color: AppColors.gray800),
+                  style: context.textTheme.bodyText1,
                 ),
               ),
               if (canister.cyclesRemaining == 0 && showsWarning)
@@ -137,8 +158,7 @@ class CanisterRow extends StatelessWidget {
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
                       "Out of cycles - Open a wallet to top up",
-                      style: context.textTheme.bodyText1
-                          ?.copyWith(color: AppColors.gray800),
+                      style: context.textTheme.bodyText1,
                     ),
                   ),
                 )
