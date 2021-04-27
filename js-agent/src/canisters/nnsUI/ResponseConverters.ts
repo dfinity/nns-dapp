@@ -3,7 +3,9 @@ import {
     CreateSubAccountResponse,
     GetAccountResponse,
     GetTransactionsResponse,
-    NamedSubAccount,
+    HardwareWalletAccountDetails,
+    RegisterHardwareWalletResponse,
+    SubAccountDetails,
     Transaction,
     Transfer
 } from "./model";
@@ -11,7 +13,9 @@ import {
     CreateSubAccountResponse as RawCreateSubAccountResponse,
     GetAccountResponse as RawGetAccountResponse,
     GetTransactionsResponse as RawGetTransactionsResponse,
-    NamedSubAccount as RawNamedSubAccount,
+    HardwareWalletAccountDetails as RawHardwareWalletAccountDetails,
+    RegisterHardwareWalletResponse as RawRegisterHardwareWalletResponse,
+    SubAccountDetails as RawSubAccountDetails,
     Transaction as RawTransaction,
     Transfer as RawTransfer
 } from "./rawService";
@@ -22,7 +26,8 @@ export default class ResponseConverters {
             return {
                 Ok: {
                     accountIdentifier: response.Ok.account_identifier,
-                    subAccounts: response.Ok.sub_accounts.map(this.toNamedSubAccount)
+                    subAccounts: response.Ok.sub_accounts.map(this.toSubAccountDetails),
+                    hardwareWalletAccounts: response.Ok.hardware_wallet_accounts.map(this.toHardwareWalletAccountDetails)
                 }
             }
         }
@@ -32,7 +37,7 @@ export default class ResponseConverters {
     public toCreateSubAccountResponse = (response: RawCreateSubAccountResponse) : CreateSubAccountResponse => {
         if ("Ok" in response) {
             return {
-                Ok: this.toNamedSubAccount(response.Ok)
+                Ok: this.toSubAccountDetails(response.Ok)
             }
         }
         return response;
@@ -45,12 +50,23 @@ export default class ResponseConverters {
         };
     }
 
-    public toNamedSubAccount = (subAccount: RawNamedSubAccount) : NamedSubAccount => {
+    public toRegisterHardwareWalletResponse = (response: RawRegisterHardwareWalletResponse) : RegisterHardwareWalletResponse => {
+        return response;
+    }
+
+    private toSubAccountDetails = (subAccount: RawSubAccountDetails) : SubAccountDetails => {
         return {
             id: convert.toSubAccountId(subAccount.sub_account),
             accountIdentifier: subAccount.account_identifier,
             name: subAccount.name,
         }
+    }
+
+    private toHardwareWalletAccountDetails = (hardwareWalletAccount: RawHardwareWalletAccountDetails) : HardwareWalletAccountDetails => {
+        return {
+            name: hardwareWalletAccount.name,
+            accountIdentifier: hardwareWalletAccount.account_identifier
+        };
     }
 
     private toTransaction = (transaction: RawTransaction) : Transaction => {

@@ -1,6 +1,13 @@
 use candid::CandidType;
 use crate::state::{STATE, State};
-use crate::transaction_store::{GetTransactionsRequest, GetTransactionsResponse, CreateSubAccountResponse, SubAccountResponse};
+use crate::transaction_store::{
+    AccountDetails,
+    CreateSubAccountResponse,
+    GetTransactionsRequest,
+    GetTransactionsResponse,
+    RegisterHardwareWalletRequest,
+    RegisterHardwareWalletResponse
+};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{stable, over, over_async};
 use ledger_canister::AccountIdentifier;
@@ -33,10 +40,8 @@ pub fn get_account() {
 fn get_account_impl() -> GetAccountResponse {
     let principal = dfn_core::api::caller();
     let store = &STATE.read().unwrap().transactions_store;
-    if store.check_account_exists(principal) {
-        let account_identifier = AccountIdentifier::from(principal);
-        let sub_accounts = store.get_sub_accounts(principal);
-        GetAccountResponse::Ok { account_identifier, sub_accounts }
+    if let Some(account) = store.get_account(principal) {
+        GetAccountResponse::Ok(account)
     } else {
         GetAccountResponse::AccountNotFound
     }
@@ -76,6 +81,17 @@ fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse
     store.create_sub_account(principal, sub_account_name)
 }
 
+#[export_name = "canister_update register_hardware_wallet"]
+pub fn register_hardware_wallet() {
+    over(candid_one, register_hardware_wallet_impl);
+}
+
+fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
+    let principal = dfn_core::api::caller();
+    let store = &mut STATE.write().unwrap().transactions_store;
+    store.register_hardware_wallet(principal, request)
+}
+
 #[export_name = "canister_update sync_transactions"]
 pub fn ledger_sync_manual() {
     ledger_sync();
@@ -92,6 +108,6 @@ pub fn ledger_sync() {
 
 #[derive(CandidType)]
 pub enum GetAccountResponse {
-    Ok { account_identifier: AccountIdentifier, sub_accounts: Vec<SubAccountResponse> },
+    Ok(AccountDetails),
     AccountNotFound
 }

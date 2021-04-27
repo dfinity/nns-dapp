@@ -3,7 +3,9 @@ import ServiceInterface, {
     CreateSubAccountResponse,
     GetAccountResponse,
     GetTransactionsRequest,
-    GetTransactionsResponse
+    GetTransactionsResponse,
+    RegisterHardwareWalletRequest,
+    RegisterHardwareWalletResponse
 } from "./model";
 import RawService from "./rawService";
 import RequestConverters from "./RequestConverters";
@@ -32,6 +34,12 @@ export default class Service implements ServiceInterface {
     public createSubAccount = async (name: string) : Promise<CreateSubAccountResponse> => {
         const rawResponse = await this.service.create_sub_account(name);
         return this.responseConverters.toCreateSubAccountResponse(rawResponse);
+    }
+
+    public registerHardwareWallet = async (request: RegisterHardwareWalletRequest) : Promise<RegisterHardwareWalletResponse> => {
+        const rawRequest = this.requestConverters.fromRegisterHardwareWalletRequest(request);
+        const rawResponse = await this.service.register_hardware_wallet(rawRequest);
+        return this.responseConverters.toRegisterHardwareWalletResponse(rawResponse);
     }
 
     public getTransactions = async (request: GetTransactionsRequest) : Promise<GetTransactionsResponse> => {

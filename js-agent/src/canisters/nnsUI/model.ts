@@ -1,11 +1,15 @@
-import { AccountIdentifier, BlockHeight, E8s } from "../ledger/model";
-
-export type CreateSubAccountResponse =
-    { Ok: NamedSubAccount } |
+export interface AccountDetails {
+    accountIdentifier: AccountIdentifier,
+    hardwareWalletAccounts: Array<HardwareWalletAccountDetails>,
+    subAccounts: Array<SubAccountDetails>,
+};
+export type AccountIdentifier = string;
+export type BlockHeight = bigint;
+export type CreateSubAccountResponse = { Ok: SubAccountDetails } |
     { AccountNotFound: null } |
     { SubAccountLimitExceeded: null };
-export type GetAccountResponse =
-    { Ok: { accountIdentifier: AccountIdentifier, subAccounts: Array<NamedSubAccount> } } |
+export type E8s = bigint;
+export type GetAccountResponse = { Ok: AccountDetails } |
     { AccountNotFound: null };
 export interface GetTransactionsRequest {
     accountIdentifier: AccountIdentifier,
@@ -16,13 +20,33 @@ export interface GetTransactionsResponse {
     total: number,
     transactions: Array<Transaction>,
 };
-export interface NamedSubAccount {
-    id: number,
-    accountIdentifier: AccountIdentifier,
+export interface HardwareWalletAccountDetails {
     name: string,
+    accountIdentifier: AccountIdentifier,
 };
-export interface Receive { fee: E8s, from: AccountIdentifier, amount: E8s };
-export interface Send { to: AccountIdentifier, fee: E8s, amount: E8s };
+export interface Receive {
+    fee: E8s,
+    from: AccountIdentifier,
+    amount: E8s,
+};
+export interface RegisterHardwareWalletRequest {
+    name: string,
+    accountIdentifier: AccountIdentifier,
+};
+export type RegisterHardwareWalletResponse = { Ok: null } |
+    { AccountNotFound: null } |
+    { HardwareWalletLimitExceeded: null };
+export interface Send {
+    to: AccountIdentifier,
+    fee: E8s,
+    amount: E8s,
+};
+export type SubAccount = Array<number>;
+export interface SubAccountDetails {
+    id: number,
+    name: string,
+    accountIdentifier: AccountIdentifier,
+};
 export type TimestampNanos = bigint;
 export interface Transaction {
     timestamp: TimestampNanos,
@@ -38,5 +62,6 @@ export default interface ServiceInterface {
     createSubAccount: (name: string) => Promise<CreateSubAccountResponse>,
     getAccount: () => Promise<GetAccountResponse>,
     getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
+    registerHardwareWallet: (request: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
     syncTransactions: () => Promise<undefined>,
 };

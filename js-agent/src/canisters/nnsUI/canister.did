@@ -3,12 +3,29 @@ type BlockHeight = nat64;
 type ICPTs = record { e8s: nat64; };
 type SubAccount = vec nat8;
 
+type AccountDetails =
+    record {
+        account_identifier: AccountIdentifier;
+        sub_accounts: vec SubAccountDetails;
+        hardware_wallet_accounts: vec HardwareWalletAccountDetails;
+    };
+
+type SubAccountDetails =
+    record {
+        name: text;
+        sub_account: SubAccount;
+        account_identifier: AccountIdentifier;
+    };
+
+type HardwareWalletAccountDetails =
+    record {
+        name: text;
+        account_identifier: AccountIdentifier;
+    };
+
 type GetAccountResponse =
     variant {
-        Ok: record {
-            account_identifier: AccountIdentifier;
-            sub_accounts: vec NamedSubAccount;
-        };
+        Ok: AccountDetails;
         AccountNotFound;
     };
 
@@ -59,18 +76,24 @@ type Transaction =
         transfer: Transfer;
     };
 
-type NamedSubAccount =
+type CreateSubAccountResponse =
+    variant {
+        Ok: SubAccountDetails;
+        AccountNotFound;
+        SubAccountLimitExceeded;
+    };
+
+type RegisterHardwareWalletRequest =
     record {
         name: text;
-        sub_account: SubAccount;
         account_identifier: AccountIdentifier;
     };
 
-type CreateSubAccountResponse =
+type RegisterHardwareWalletResponse =
     variant {
-        Ok: NamedSubAccount;
+        Ok;
         AccountNotFound;
-        SubAccountLimitExceeded;
+        HardwareWalletLimitExceeded;
     };
 
 service : {
@@ -78,5 +101,6 @@ service : {
     add_account: () -> (AccountIdentifier);
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
+    register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);
     sync_transactions: () -> ();
 }

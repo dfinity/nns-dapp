@@ -9,10 +9,11 @@ import LedgerService, {
 } from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/nnsUI/builder";
 import LedgerViewService, {
+    AccountDetails,
     CreateSubAccountResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
-    NamedSubAccount
+    SubAccountDetails
 } from "./canisters/nnsUI/model";
 import { create_dummy_proposals, test_happy_path } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/ledger/createNeuron";
@@ -66,7 +67,8 @@ export default class LedgerApi {
             const accountIdentifier = await this.ledgerViewService.addAccount();
             return {
                 accountIdentifier,
-                subAccounts: []
+                subAccounts: [],
+                hardwareWalletAccounts: []
             };
         }
     }
@@ -99,9 +101,4 @@ export default class LedgerApi {
     public createDummyProposals = async (neuronId: string): Promise<void> => {
         return await create_dummy_proposals(this.host, this.identity, BigInt(neuronId));
     }
-}
-
-export type AccountDetails = {
-    accountIdentifier: AccountIdentifier,
-    subAccounts: Array<NamedSubAccount>
 }
