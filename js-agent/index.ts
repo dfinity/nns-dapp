@@ -1,7 +1,7 @@
 import AuthApi from "./src/AuthApi";
 import GovernanceApi from "./src/GovernanceApi";
 import LedgerApi from "./src/LedgerApi";
-import {SignIdentity} from "@dfinity/agent";
+import { SignIdentity } from "@dfinity/agent";
 
 window["AuthApi"] = AuthApi;
 window["GovernanceApi"] = GovernanceApi;

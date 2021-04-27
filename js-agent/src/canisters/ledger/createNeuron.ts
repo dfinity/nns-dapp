@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import LedgerService, { E8s } from "./model";
 import { NeuronId } from "../governance/model";
 import { BinaryBlob, blobFromUint8Array, Principal, SignIdentity } from "@dfinity/agent";

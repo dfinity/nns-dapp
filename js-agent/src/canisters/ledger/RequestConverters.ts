@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import { GetBalancesRequest, NotifyCanisterRequest, SendICPTsRequest } from "./model";
 import * as convert from "../converter";
 import { SUB_ACCOUNT_BYTE_LENGTH } from "../constants";

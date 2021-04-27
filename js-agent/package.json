@@ -3,10 +3,12 @@
     "build": "./build.sh"
   },
   "dependencies": {
-    "@dfinity/authentication": "^0.8.3",
+    "@dfinity/authentication": "^0.8.4",
+    "@dfinity/identity-ledgerhq": "^0.8.4",
     "bignumber": "^1.1.0",
     "borc": "^2.1.2",
     "browserify": "^17.0.0",
+    "buffer": "^5.4.3",
     "crc": "^3.8.0",
     "protobufjs": "^6.10.2",
     "randombytes": "^2.1.0",

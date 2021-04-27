@@ -1,11 +1,8 @@
 import { Agent, Principal } from "@dfinity/agent";
-import { pollForResponse } from "@dfinity/agent/lib/cjs/polling_handler";
+import { polling } from "@dfinity/agent";
 import { blobToUint8Array, uint8ArrayToBlob } from "./converter";
 
-const DEFAULT_ACTOR_CONFIG = {
-    maxAttempts: 300,
-    throttleDurationInMSecs: 1000,
-};
+const pollStrategy = polling.defaultStrategy();
 
 export const submitUpdateRequest = async (agent: Agent, canisterId: Principal, methodName: string, bytes: Uint8Array) : Promise<Uint8Array> => {
     const arg = uint8ArrayToBlob(bytes);
@@ -29,13 +26,11 @@ export const submitUpdateRequest = async (agent: Agent, canisterId: Principal, m
         );
     }
 
-    const blob = await pollForResponse(
+    const blob = await polling.pollForResponse(
         agent,
         canisterId,
         submitResponse.requestId,
-        DEFAULT_ACTOR_CONFIG.maxAttempts,
-        DEFAULT_ACTOR_CONFIG.maxAttempts,
-        DEFAULT_ACTOR_CONFIG.throttleDurationInMSecs);
+        pollStrategy);
 
     return blobToUint8Array(blob);
 }

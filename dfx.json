@@ -12,9 +12,9 @@
     }
   },
   "networks": {
-    "ic": {
+    "rc3": {
       "providers": [
-        "https://gw.dfinity.network"
+        "https://boundary.dfinity.network"
       ],
       "type": "persistent"
     },
