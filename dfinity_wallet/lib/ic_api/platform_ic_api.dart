@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
+import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 
 import '../dfinity.dart';
 
@@ -49,11 +50,6 @@ abstract class AbstractPlatformICApi {
   Future<void> disburse(
       {required BigInt neuronId, required BigInt doms, required String toAccountId});
 
-  Future<void> disburseToNeuron(
-      {required BigInt neuronId,
-      required BigInt dissolveDelaySeconds,
-      required BigInt doms});
-
   Future<void> makeMotionProposal(
       {required BigInt neuronId,
       required String url,
@@ -66,7 +62,11 @@ abstract class AbstractPlatformICApi {
         required List<ProposalRewardStatus> includeRewardStatus,
         Proposal? beforeProposal});
 
-  Future<Neuron> getNeuron({required BigInt neuronId});
+  Future<Proposal> fetchProposal({required BigInt proposalId});
+
+  Future<Neuron> fetchNeuron({required BigInt neuronId});
+
+  Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId});
 
   Future<void> createDummyProposals({required BigInt neuronId});
 }

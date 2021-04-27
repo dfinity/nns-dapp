@@ -2,7 +2,6 @@
 library dfinity_agent.js;
 
 import 'dart:convert';
-import 'dart:js';
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
@@ -45,17 +44,18 @@ class PlatformICApi extends AbstractPlatformICApi {
     await context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
     print("Stored token ${context.boxes.authToken.get(WEB_TOKEN_KEY)?.key}");
     authApi.loginWithIdentityProvider(
-        key, "http://" + window.location.host + "/home");
+        key, "http://" + window.location.host + "/index.html");
   }
 
   Future<void> buildServices() async {
     final token = hiveBoxes.authToken.webAuthToken;
     if (token != null && token.data != null && ledgerApi == null) {
       const gatewayHost = "http://10.12.31.5:8080/";
-      //const gatewayHost = "http://localhost:8080/";
+
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
-      ledgerApi = new LedgerApi(gatewayHost, identity);
-      governanceApi = new GovernanceApi(gatewayHost, identity);
+      print("token data ${token.data!}");
+      ledgerApi = createLedgerApi(gatewayHost, identity);
+      governanceApi = createGovernanceApi(gatewayHost, identity);
 
       // @Gilbert perhaps this could be triggered from a button?
       // Also this is being hit twice for some reason
@@ -87,7 +87,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createSubAccount({required String name}) async {
-    promiseToFuture(ledgerApi!.createSubAccount(name)).then((value) {
+    await promiseToFuture(ledgerApi!.createSubAccount(name)).then((value) {
       final json = jsonDecode(stringify(value));
       final res = json['Ok'];
       accountsSyncService!.storeSubAccount(res);
@@ -118,7 +118,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       if (fromSubAccount != null) 'fromSubAccountId': fromSubAccount.toInt()
     };
     print("create neuron request ${request}");
-    await promiseToFuture(ledgerApi!.createNeuron(jsify(request)));
+    final neuronId = await promiseToFuture(ledgerApi!.createNeuron(CreateNeuronRequest(stake: stakeInDoms, fromSubAccountId: fromSubAccount)));
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -145,25 +145,15 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> disburseToNeuron(
-      {required BigInt neuronId,
-      required BigInt dissolveDelaySeconds,
-      required BigInt doms}) async {
-    await callApi(governanceApi!.disburseToNeuron, {
-      'neuronId': neuronId.toJS,
-      'amount': doms.toJS,
-      'dissolveDelaySeconds': toJSBigInt(dissolveDelaySeconds.toString())
-    });
-    await neuronSyncService!.fetchNeurons();
-  }
-
-  @override
   Future<void> follow(
       {required BigInt neuronId,
       required Topic topic,
       required List<BigInt> followees}) async {
-    final result = await callApi(governanceApi!.follow,
-        {'neuronId': toJSBigInt(neuronId.toString()), 'topic': topic.index, 'followees': followees});
+    final result = await promiseToFuture(governanceApi!.follow(FollowRequest(
+      neuronId:  toJSBigInt(neuronId.toString()),
+        topic: topic.index,
+        followees: followees.mapToList((e) => e.toJS)
+    )));
     print("follow ${stringify(result)}");
 
     await neuronSyncService!.fetchNeurons();
@@ -173,14 +163,14 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> increaseDissolveDelay(
       {required BigInt neuronId,
       required int additionalDissolveDelaySeconds}) async {
-    await callApi(
-        governanceApi!.increaseDissolveDelay,
-        {
-          'neuronId': neuronId.toJS,
-          'additionalDissolveDelaySeconds': additionalDissolveDelaySeconds,
-        },
-        debugLabel: "increaseDissolveDelay");
-    await neuronSyncService!.fetchNeurons();
+    print("before increaseDissolveDelay");
+    await promiseToFuture(governanceApi!.increaseDissolveDelay(IncreaseDissolveDelayRequest(
+        neuronId: neuronId.toJS,
+        additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
+    )));
+    print("before getNeuron");
+    await fetchNeuron(neuronId: neuronId);
+    print("after getNeuron");
   }
 
   @override
@@ -227,20 +217,73 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<Neuron> getNeuron({required BigInt neuronId}) async {
-    final res = await promiseToFuture(governanceApi!.getNeuron(neuronId));
+  Future<Neuron> fetchNeuron({required BigInt neuronId}) async {
+    final res = await promiseToFuture(governanceApi!.getNeuron(neuronId.toJS));
     final neuronInfo = jsonDecode(stringify(res));
-    final neuron = Neuron.empty();
-    neuronSyncService!.updateNeuron(neuron, neuronId.toString(), neuronInfo);
-    return neuron;
+    print("get neuron response ${stringify(res)}");
+    return neuronSyncService!.storeNeuron(neuronInfo);
+  }
+
+  @override
+  Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId}) async {
+    final res = await promiseToFuture(governanceApi!.getNeuron(neuronId.toJS));
+    final neuronInfo = jsonDecode(stringify(res));
+    return NeuronInfo.fromResponse(neuronInfo);
   }
 
   @override
   Future<void> createDummyProposals({required BigInt neuronId}) async {
-    await promiseToFuture(ledgerApi!.createDummyProposals(neuronId.toString()));
+    await promiseToFuture(ledgerApi!.createDummyProposals(neuronId.toJS));
     await fetchProposals(
         excludeTopics: [],
         includeStatus: ProposalStatus.values,
         includeRewardStatus: ProposalRewardStatus.values);
   }
+
+  @override
+  Future<Proposal> fetchProposal({required BigInt proposalId}) async{
+    final response = await governanceApi!.getProposalInfo(proposalId);
+    final json = jsonDecode(stringify(response));
+    final proposal = await proposalSyncService!.storeProposal(json);
+    proposalSyncService!.linkProposalsToNeurons();
+    return proposal;
+  }
+}
+
+
+@JS()
+@anonymous
+class IncreaseDissolveDelayRequest {
+  external dynamic get neuronId;
+  external num get additionalDissolveDelaySeconds;
+
+  external factory IncreaseDissolveDelayRequest({dynamic neuronId, num additionalDissolveDelaySeconds});
+}
+
+@JS()
+@anonymous
+class FollowRequest {
+  external dynamic neuronId;
+  external int topic;
+  external List<dynamic> followees;
+
+ external factory FollowRequest({dynamic neuronId, int topic, List<dynamic> followees});
+}
+
+@JS()
+@anonymous
+class NeuronIdentifierRequest {
+  external dynamic neuronId;
+
+  external factory NeuronIdentifierRequest({dynamic neuronId});
+}
+
+
+@JS()
+@anonymous
+class CreateNeuronRequest {
+  external dynamic stake;
+  external int? fromSubAccountId;
+
+  external factory CreateNeuronRequest({dynamic stake, int? fromSubAccountId});
 }

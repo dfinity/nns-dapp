@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_gifimage/flutter_gifimage.dart';
 
 class LoadingOverlayController extends StatefulWidget {
   final Widget child;
@@ -29,7 +30,7 @@ class _LoadingOverlayControllerState extends State<LoadingOverlayController> {
 
   OverlayEntry _createOverlayEntry() {
     return OverlayEntry(builder: (context) {
-      return NodeOverlay(overlayKey, (){});
+      return NodeOverlay(overlayKey, () {});
     });
   }
 
@@ -49,12 +50,16 @@ class NodeOverlay extends StatefulWidget {
   _NodeState createState() => _NodeState();
 }
 
-class _NodeState extends State<NodeOverlay> {
+class _NodeState extends State<NodeOverlay> with TickerProviderStateMixin {
   bool visible = false;
+  late GifController controller;
 
   @override
   void initState() {
     super.initState();
+    controller = GifController(vsync: this);
+    controller.repeat(min:0,max:62,period:3.seconds);
+
 
     0.1.seconds.delay.then((value) {
       setState(() {
@@ -79,24 +84,26 @@ class _NodeState extends State<NodeOverlay> {
                 widthFactor: 0.3,
                 heightFactor: 0.3,
                 child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    // color: AppColors.white,
-                    borderRadius: BorderRadius.circular(500),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.black,
-                        blurRadius: 100,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        // color: AppColors.white,
+                        borderRadius: BorderRadius.circular(500),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.black,
+                            blurRadius: 100,
+                          ),
+                          BoxShadow(
+                            color: AppColors.black,
+                            blurRadius: 100,
+                          )
+                        ]),
+                    child: SizedBox.expand(
+                      child: GifImage(
+                        controller: controller,
+                        image: AssetImage("assets/dfinity-glitch.gif"),
                       ),
-                      BoxShadow(
-                        color: AppColors.black,
-                        blurRadius: 100,
-                      )
-                    ]
-                  ),
-                  child: SizedBox.expand(
-                      child: Image.asset("assets/dfinity-glitch.gif")),
-                ))),
+                    )))),
         // child: IgnorePointer(child: NodeWorld(oscillationMultiplier: 2,))),
       ),
     );

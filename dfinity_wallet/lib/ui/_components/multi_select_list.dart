@@ -270,11 +270,20 @@ class _MultiSelectListState<T> extends State<MultiSelectList<T>> {
                     ),
                   ))
               .toList(),
-          ElevatedButton(
-            child: Text(""),
-            onPressed: () {
-
-            },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text("Close"),
+                ),
+                onPressed: () {
+                  widget.onDismissPressed?.call(context);
+                },
+              ),
+            ),
           )
         ],
       ),

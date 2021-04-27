@@ -100,8 +100,7 @@ class _IncreaseDissolveDelayWidgetState
                             Expanded(
                                 child: _FigureWidget(
                               amount:
-                                  (widget.neuron.dissolveDelaySeconds.toInt() +
-                                          disperseDelay.currentValue)
+                                  newDissolveDelay()
                                       .seconds
                                       .yearsDayHourMinuteSecondFormatted(),
                               label: "New Dissolve Delay",
@@ -165,6 +164,11 @@ class _IncreaseDissolveDelayWidgetState
     );
   }
 
+  int newDissolveDelay() {
+    return (widget.neuron.dissolveDelaySeconds.toInt() +
+                                        disperseDelay.currentValue);
+  }
+
   Future performUpdate(BuildContext context) async {
     await context.performLoading(() => context.icApi.increaseDissolveDelay(
         neuronId: widget.neuron.id.toBigInt,
@@ -187,7 +191,7 @@ class _IncreaseDissolveDelayWidgetState
           0);
 
   bool isMoreThan6Months() =>
-      disperseDelay.currentValue.toDouble() > SIX_MONTHS_IN_SECONDS;
+      newDissolveDelay() > SIX_MONTHS_IN_SECONDS;
 }
 
 const SIX_MONTHS_IN_SECONDS = 182.625 * 24 * 60 * 60;

@@ -101,7 +101,7 @@ class TopicFolloweesWidget extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(e, style: context.textTheme.bodyText2),
+                  child: Text(FolloweeSuggestion.followerSuggestions.firstOrNullWhere((element) => element.id == e)?.name ?? e, style: context.textTheme.bodyText2),
                 ),
                 if (i != 0)
                   TextButton(

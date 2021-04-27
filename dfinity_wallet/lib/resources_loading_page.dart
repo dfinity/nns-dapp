@@ -4,9 +4,10 @@ import 'dfinity.dart';
 
 class ResourcesLoadingPageConfig extends PageConfig {
   final Future<PageConfig> destinationPage;
-  final Future<bool> hasValidAuthToken;
+  final Future<bool> loadDestinationResources;
+  bool logoutOnFailure;
 
-  ResourcesLoadingPageConfig(this.destinationPage, this.hasValidAuthToken): super(LoadingPage.path);
+  ResourcesLoadingPageConfig(this.destinationPage, this.loadDestinationResources, {required this.logoutOnFailure}): super(LoadingPage.path);
 
   @override
   Widget createWidget() {

@@ -3,6 +3,7 @@ import 'package:dfinity_wallet/resources_loading_page.dart';
 import 'package:dfinity_wallet/ui/home/auth_widget.dart';
 import 'package:dfinity_wallet/ui/home/home_tabs_widget.dart';
 import 'package:dfinity_wallet/ui/home/landing_widget.dart';
+import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/neuron_detail_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/account_detail_widget.dart';
@@ -10,6 +11,7 @@ import 'package:hive/hive.dart';
 
 import 'dfinity.dart';
 import 'ic_api/platform_ic_api.dart';
+import 'ic_api/web/neuron_sync_service.dart';
 
 const String ProposalDetailPath = '/proposal';
 const String CanisterTabsPath = '/canisters';
@@ -86,16 +88,38 @@ PageConfig CanistersTabPage = StaticPage(
     ),
     clearStack: true);
 
+class ApiObjectPage {
+  final String pathTemplate;
+  final Widget Function(String identifier) createWidget;
+
+  ApiObjectPage(this.pathTemplate, this.createWidget);
+
+  EntityPage createPageConfig(String identifier) {
+    return EntityPage("$pathTemplate/${identifier}",
+        widget: createWidget(identifier),
+        clearStack: false,
+        requiredParent: null);
+  }
+}
+
+
+ApiObjectPage NeuronInfoPage = ApiObjectPage("/neuron_info", (identifier) => NeuronInfoWidget(identifier));
+
+
+
 class EntityPageDefinition<T extends DfinityEntity> {
   final Box<T> Function(HiveBoxes boxes) fetchBox;
   final Widget Function(T entity) createWidget;
   final String pathTemplate;
   final PageConfig parentPage;
-  final Future<T> Function(String identifier, AbstractPlatformICApi icApi)? entityFromIC;
+  final Future<T?> Function(String identifier, AbstractPlatformICApi icApi)? entityFromIC;
 
   EntityPageDefinition(
-      this.pathTemplate, this.parentPage, this.createWidget, this.fetchBox,
-      {this.entityFromIC});
+      {required this.pathTemplate,
+      required this.parentPage,
+      required this.createWidget,
+      required this.fetchBox,
+      this.entityFromIC});
 
   T? entityForIdentifier(String entityIdentifier, HiveBoxes boxes) {
     return fetchBox(boxes).get(entityIdentifier);
@@ -114,23 +138,25 @@ class EntityPageDefinition<T extends DfinityEntity> {
 }
 
 EntityPageDefinition AccountPageDef = EntityPageDefinition<Account>(
-    "/wallet",
-    AccountsTabPage,
-    (wallet) => AccountDetailPage(wallet),
-    (boxes) => boxes.accounts!);
+    pathTemplate: "/wallet",
+    parentPage: AccountsTabPage,
+    createWidget: (wallet) => AccountDetailPage(wallet),
+    fetchBox: (boxes) => boxes.accounts!);
 
 EntityPageDefinition NeuronPageDef = EntityPageDefinition<Neuron>(
-    "/neuron",
-    NeuronTabsPage,
-    (neuron) => NeuronDetailWidget(neuron),
-    (boxes) => boxes.neurons!,
-    entityFromIC: (neuronId, icApi) => icApi.getNeuron(neuronId: BigInt.parse(neuronId)));
+    pathTemplate: "/neuron",
+    parentPage: NeuronTabsPage,
+    createWidget: (neuron) => NeuronDetailWidget(neuron),
+    fetchBox: (boxes) => boxes.neurons!,
+    entityFromIC: (neuronId, icApi) => icApi.fetchNeuron(neuronId: BigInt.parse(neuronId)));
+
 
 EntityPageDefinition ProposalPageDef = EntityPageDefinition<Proposal>(
-    "/proposal",
-    ProposalsTabPage,
-    (proposal) => ProposalDetailWidget(proposal),
-    (boxes) => boxes.proposals!);
+    pathTemplate: "/proposal",
+    parentPage: ProposalsTabPage,
+    createWidget: (proposal) => ProposalDetailWidget(proposal),
+    fetchBox: (boxes) => boxes.proposals!,
+    entityFromIC: (proposalId, icApi) => icApi.fetchProposal(proposalId: BigInt.parse(proposalId)));
 
 class WalletRouterDelegate extends RouterDelegate<PageConfig>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageConfig> {
@@ -147,7 +173,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
 
   @override
   Widget build(BuildContext context) {
-    if(_pages.isEmpty){
+    if (_pages.isEmpty) {
       _pages.add(createPage(LoadingPage));
     }
 
@@ -166,10 +192,10 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
   Future<void> setNewRoutePath(PageConfig configuration) {
     // print("setNewRoutePath ${configuration.path}");
 
-    if(configuration is ResourcesLoadingPageConfig){
+    if (configuration is ResourcesLoadingPageConfig) {
       redirectWhenLoaded(configuration as ResourcesLoadingPageConfig);
       addPage(LoadingPage);
-    }else{
+    } else {
       addPage(configuration);
     }
 
@@ -258,14 +284,16 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
     notifyListeners();
   }
 
-  void redirectWhenLoaded(ResourcesLoadingPageConfig configuration) async{
-    final isLoggedIn = await configuration.hasValidAuthToken;
-    if(isLoggedIn){
+  void redirectWhenLoaded(ResourcesLoadingPageConfig configuration) async {
+    final isLoggedIn = await configuration.loadDestinationResources;
+    if (isLoggedIn) {
       final destination = await configuration.destinationPage;
       push(destination);
-    }else{
-      await hiveCoordinator.deleteAllData();
-      push(AuthPage);
+    } else {
+      if(configuration.logoutOnFailure){
+        await hiveCoordinator.deleteAllData();
+        push(AuthPage);
+      }
     }
   }
 }

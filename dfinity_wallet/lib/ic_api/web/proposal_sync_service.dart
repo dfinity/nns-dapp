@@ -52,16 +52,18 @@ class ProposalSyncService {
     linkProposalsToNeurons();
   }
 
-  void storeProposal(dynamic response) async {
+  Future<Proposal> storeProposal(dynamic response) async {
     final proposalId = response['id'].toString();
     if (!hiveBoxes.proposals.containsKey(proposalId)) {
       final proposal = Proposal.empty();
       updateProposal(proposal, proposalId, response);
       await hiveBoxes.proposals.put(proposalId, proposal);
+      return proposal;
     } else {
       final proposal = hiveBoxes.proposals.get(proposalId)!;
       updateProposal(proposal, proposalId, response);
       proposal.save();
+      return proposal;
     }
   }
 

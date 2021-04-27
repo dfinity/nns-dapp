@@ -56,7 +56,7 @@ class NeuronRow extends StatelessWidget {
                       "${neuron.durationRemaining.yearsDayHourMinuteSecondFormatted()}",
                       style: context.textTheme.subtitle2,
                     ),
-                    Text(" Remaining", style: context.textTheme.bodyText2)
+                    Text(" Remaining", style: context.textTheme.subtitle2)
                   ],
                 ),
                 SizedBox(
@@ -76,16 +76,7 @@ class NeuronRow extends StatelessWidget {
                 SizedBox(
                   height: 5,
                 )
-              ],
-              RichText(
-                  text: TextSpan(style: context.textTheme.bodyText2, children: [
-                TextSpan(text: "Spawned on "),
-                TextSpan(
-                    text: neuron.createdTimestampSeconds
-                        .secondsToDateTime()
-                        .dayFormat,
-                    style: context.textTheme.bodyText1),
-              ]))
+              ]
             ],
           ),
         ),

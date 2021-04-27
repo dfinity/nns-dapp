@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
 import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
+import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 
 import '../dfinity.dart';
 
@@ -119,7 +120,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<Neuron> getNeuron({required BigInt neuronId}) {
+  Future<Neuron> fetchNeuron({required BigInt neuronId}) {
     // TODO: implement getNeuron
     throw UnimplementedError();
   }
@@ -127,6 +128,18 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> createDummyProposals({required BigInt neuronId}) {
     // TODO: implement createDummyProposals
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Proposal> fetchProposal({required BigInt proposalId}) {
+    // TODO: implement fetchProposalInfo
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId}) {
+    // TODO: implement fetchNeuronInfo
     throw UnimplementedError();
   }
 }

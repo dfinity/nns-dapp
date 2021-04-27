@@ -1,7 +1,11 @@
 
+import 'dart:convert';
 import 'dart:js_util';
 
+import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
 import 'package:dfinity_wallet/ic_api/web/ledger_api.dart';
+import 'package:dfinity_wallet/ic_api/web/stringify.dart';
+import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
 
@@ -13,16 +17,20 @@ class AccountsSyncService {
 
   Future<void> performSync() async {
     final accountResponse = await promiseToFuture(ledgerApi.getAccount());
-
+    final json = stringify(accountResponse);
+      print("${accountResponse} response\n ${json}");
     final cachedAccounts = hiveBoxes.accounts.values;
+
+    final res = jsonDecode(json);
+
 
     final validAccounts = await Future.wait(<Future<dynamic>>[
       storeNewAccount(
           name: "Default",
-          address: accountResponse.accountIdentifier.toString(),
+          address: res['accountIdentifier'].toString(),
           subAccount: null,
           primary: true),
-      ...accountResponse.subAccounts.map((element) => storeSubAccount(element))
+      ...res['subAccounts'].map((element) => storeSubAccount(element))
     ]);
 
    await Future.wait(cachedAccounts
@@ -32,9 +40,9 @@ class AccountsSyncService {
 
   Future<String> storeSubAccount(element) {
     return storeNewAccount(
-        name: element.name.toString(),
-        address: element.accountIdentifier.toString(),
-        subAccount: element.id,
+        name: element['name'].toString(),
+        address: element['accountIdentifier'].toString(),
+        subAccount: element['id'],
         primary: false);
   }
 
@@ -53,6 +61,7 @@ class AccountsSyncService {
               primary: primary,
               balance: BigInt.zero.toString(),
               transactions: [],
+              neurons: HiveList(hiveBoxes.neurons)
           ));
     }
     return address;

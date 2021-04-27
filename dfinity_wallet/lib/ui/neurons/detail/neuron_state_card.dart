@@ -21,6 +21,15 @@ class NeuronStateCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NeuronRow(neuron: neuron),
+            RichText(
+                text: TextSpan(style: context.textTheme.subtitle2, children: [
+                  TextSpan(
+                      text: neuron.createdTimestampSeconds
+                          .secondsToDateTime()
+                          .dayFormat,
+                      style: context.textTheme.subtitle2),
+                  TextSpan(text: " - Staked"),
+                ])),
             VerySmallFormDivider(),
             Row(
               children: [

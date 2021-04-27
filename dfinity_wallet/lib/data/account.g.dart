@@ -23,13 +23,14 @@ class AccountAdapter extends TypeAdapter<Account> {
       fields[3] as String,
       fields[5] as int?,
       (fields[4] as List).cast<Transaction>(),
+      (fields[6] as HiveList?)?.castHiveList(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Account obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class AccountAdapter extends TypeAdapter<Account> {
       ..writeByte(4)
       ..write(obj.transactions)
       ..writeByte(5)
-      ..write(obj.subAccountId);
+      ..write(obj.subAccountId)
+      ..writeByte(6)
+      ..write(obj.neurons);
   }
 
   @override
