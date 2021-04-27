@@ -25,6 +25,7 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       dissolveDelaySeconds: fields[6] as String,
       cachedNeuronStakeDoms: fields[7] as String,
       proposals: (fields[12] as HiveList?)?.castHiveList(),
+      followEditCounter: fields[13] as int,
     )
       ..neuronFeesDoms = fields[8] as String
       ..maturityE8sEquivalent = fields[9] as String
@@ -35,7 +36,7 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
   @override
   void write(BinaryWriter writer, Neuron obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -59,7 +60,9 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       ..writeByte(11)
       ..write(obj.followees)
       ..writeByte(12)
-      ..write(obj.proposals);
+      ..write(obj.proposals)
+      ..writeByte(13)
+      ..write(obj.followEditCounter);
   }
 
   @override

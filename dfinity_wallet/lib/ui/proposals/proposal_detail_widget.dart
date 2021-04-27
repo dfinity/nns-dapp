@@ -41,7 +41,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                                 (element) =>
                                 element.createdTimestampSeconds
                                     .secondsToDateTime()
-                                    .isAfter(widget.proposal.proposalTimestamp))
+                                    .isAfter(widget.proposal.proposalTimestamp) || element.dissolveDelay < 182.625.days)
                             .toList();
 
                         final notVotedNeurons = updatedNeurons
@@ -70,7 +70,8 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                                   if(ineligibleNeurons.isNotEmpty &&
                                       widget.proposal.status ==
                                           ProposalStatus.Open)
-                                    IneligibleNeuronsWidget(ineligibleNeurons: ineligibleNeurons)
+                                    IneligibleNeuronsWidget(ineligibleNeurons: ineligibleNeurons),
+                                  SmallFormDivider()
                                 ],
                               ),
                             ));
@@ -98,7 +99,7 @@ class IneligibleNeuronsWidget extends StatelessWidget {
           Text("Ineligible Neurons",
               style: context.textTheme.headline3),
           SmallFormDivider(),
-          Text("The following neurons were created after the proposal was submitted, and are not able to vote on it",
+          Text("The following neurons have a dissolve delay of less than 6 months, or were created after the proposal was submitted, and are not able to vote on it",
               style: context.textTheme.bodyText2),
           ...ineligibleNeurons
               .map((e) => Container(

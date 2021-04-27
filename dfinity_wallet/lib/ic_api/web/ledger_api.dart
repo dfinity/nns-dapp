@@ -6,6 +6,9 @@ import 'package:js/js.dart';
 import '../models.dart';
 import 'js_utils.dart';
 
+@JS('createLedgerApi')
+external LedgerApi createLedgerApi(String host, dynamic identity);
+
 @JS("LedgerApi")
 class LedgerApi {
   external factory LedgerApi(String host, dynamic identity);

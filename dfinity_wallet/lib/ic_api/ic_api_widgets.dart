@@ -53,6 +53,7 @@ class InternetComputerApiWidget extends InheritedWidget {
   bool updateShouldNotify(InternetComputerApiWidget old) {
     return true;
   }
+
 }
 
 

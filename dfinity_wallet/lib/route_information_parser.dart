@@ -8,13 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'data/auth_token.dart';
 import 'data/data.dart';
+import 'ic_api/platform_ic_api.dart';
 import 'wallet_router_delegate.dart';
 import 'dfinity.dart';
 
 class WalletRouteParser extends RouteInformationParser<PageConfig> {
   final HiveCoordinator hiveCoordinator;
+  final BuildContext context;
 
-  WalletRouteParser(this.hiveCoordinator);
+  WalletRouteParser(this.hiveCoordinator, this.context);
 
   final staticPages = [
     AccountsTabPage,
@@ -26,6 +28,8 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
   final entityPages = [AccountPageDef, NeuronPageDef, ProposalPageDef]
       .associateBy((e) => e.pathTemplate.removePrefix('/'));
 
+  final apiObjectPages = [NeuronInfoPage].associateBy((e) => e.pathTemplate.removePrefix('/'));
+
   @override
   Future<PageConfig> parseRouteInformation(
       RouteInformation routeInformation) async {
@@ -35,13 +39,16 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
           .split("&")
           .map((e) => e.split("=").let((it) => MapEntry(it[0], it[1]))));
       final token = map["access_token"];
-      print("access token stored");
-      return ResourcesLoadingPageConfig(Future.value(AccountsTabPage), storeAccessToken(token!));;
+      print("access token found");
+      return ResourcesLoadingPageConfig(
+          Future.value(AccountsTabPage), storeAccessToken(token!),
+          logoutOnFailure: true);
     }
 
     if (hiveCoordinator.hiveBoxes.authToken == null) {
       return ResourcesLoadingPageConfig(
-          pageConfigRouteInformation(routeInformation), hasValidAuthToken());
+          pageConfigRouteInformation(routeInformation), hasValidAuthToken(),
+          logoutOnFailure: true);
     }
 
     bool isAuthenticated =
@@ -73,11 +80,25 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     if (entityPageDef != null) {
       await hiveCoordinator.performInitialisation();
       final id = uri.pathSegments[1];
-      final entity = entityPageDef.entityForIdentifier(id, hiveCoordinator.hiveBoxes);
-      if(entity!= null){
+      final entity =
+          entityPageDef.entityForIdentifier(id, hiveCoordinator.hiveBoxes);
+      if (entity != null) {
         final entityPage = entityPageDef.createConfigWithEntity(entity);
         return entityPage;
+      } else if (entityPageDef.entityFromIC != null) {
+        final loadEntity = entityPageDef.entityFromIC!(id, context.icApi);
+        return ResourcesLoadingPageConfig(
+            loadEntity
+                .then((value) => entityPageDef.createConfigWithEntity(value!)),
+            loadEntity.then((value) => value != null),
+            logoutOnFailure: false);
       }
+    }
+
+    final apiObjectPage = apiObjectPages[path];
+    if(apiObjectPage != null){
+      final id = uri.pathSegments[1];
+      return apiObjectPage.createPageConfig(id);
     }
 
     return AccountsTabPage;
@@ -112,8 +133,10 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
       token.data = queryParameter;
       token.creationDate = DateTime.now();
       await token.save();
+      print("access token stored");
+      context.icApi.buildServices();
       return true;
-    }else{
+    } else {
       print("Could not find token on disk");
       return false;
     }

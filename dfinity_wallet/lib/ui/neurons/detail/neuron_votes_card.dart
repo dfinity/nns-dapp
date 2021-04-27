@@ -39,9 +39,6 @@ class NeuronVotesCard extends StatelessWidget {
                 SmallFormDivider(),
                 ...neuron.recentBallots.distinctBy((element) => element.proposalId).map((e) {
                   final proposal = context.boxes.proposals.get(e.proposalId);
-                  if(proposal == null){
-                    // context.icApi.
-                  }
                   return Container(
                     padding: EdgeInsets.all(8),
                   child: Row(

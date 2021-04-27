@@ -22,7 +22,8 @@ class NeuronFolloweesCard extends StatelessWidget {
         .flatMap((followee) =>
             followee.followees.map((e) => TopicFollowee(e, followee.topic)))
         .groupBy((element) => element.neuron)
-        .entries.toList();
+        .entries
+        .toList();
 
     return Card(
       color: AppColors.background,
@@ -33,8 +34,10 @@ class NeuronFolloweesCard extends StatelessWidget {
           children: [
             Text("Following", style: context.textTheme.headline3),
             Padding(
-              padding: const EdgeInsets.only(top:5.0, right: 50),
-              child: Text("Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.", style: context.textTheme.subtitle2),
+              padding: const EdgeInsets.only(top: 5.0, right: 50),
+              child: Text(
+                  "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
+                  style: context.textTheme.subtitle2),
             ),
             VerySmallFormDivider(),
             Container(
@@ -45,42 +48,67 @@ class NeuronFolloweesCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: followeeTopics
                     .map((e) => Container(
-                  padding: EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        e.key.toString(),
-                        style: context.textTheme.headline4,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Wrap(
-                          children: e.value.mapToList((topic) => Padding(
-                            padding: EdgeInsets.only(top:4.0, left: 4.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      side: BorderSide(width: 2, color: Color(0xffFBB03B)))),
-                              child: Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child: Text(
-                                  topic.topic.name,
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  context.nav.push(NeuronInfoPage.createPageConfig(e.key));
+                                },
+                                child: SelectableText(
+                                  e.key.toString(),
                                   style: TextStyle(
-                                      fontSize: 14,
-                                      fontFamily: Fonts.circularBook,
-                                      color: Color(0xffFBB03B),
-                                      fontWeight: FontWeight.normal),
+                                      fontSize: 16,
+                                      fontFamily: Fonts.circularBold,
+                                      color: AppColors.white,
+                                      fontWeight: FontWeight.w700,
+                                      decoration: TextDecoration.underline
+                                  ),
                                 ),
                               ),
-                            ),
-                          )),
-                        ),
-                      )
-                    ],
-                  ),
-                )).interspace(Divider(height: 2, color: AppColors.gray500,)).toList(),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4.0),
+                                child: Wrap(
+                                  children: e.value.mapToList((topic) =>
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 4.0, left: 4.0),
+                                        child: Container(
+                                          decoration: ShapeDecoration(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  side: BorderSide(
+                                                      width: 2,
+                                                      color:
+                                                          Color(0xffFBB03B)))),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(4.0),
+                                            child: Text(
+                                              topic.topic.name,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily:
+                                                      Fonts.circularBook,
+                                                  color: Color(0xffFBB03B),
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                                ),
+                              )
+                            ],
+                          ),
+                        ))
+                    .interspace(Divider(
+                      height: 2,
+                      color: AppColors.gray500,
+                    ))
+                    .toList(),
               ),
             ),
             SmallFormDivider(),
@@ -95,11 +123,15 @@ class NeuronFolloweesCard extends StatelessWidget {
                           completeAction: (context) {
                             OverlayBaseWidget.of(context)?.dismiss();
                           },
-                        ), maxSize: Size(700, MediaQuery.of(context).size.height - 100));
+                        ),
+                        maxSize: Size(
+                            700, MediaQuery.of(context).size.height - 100));
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text(followeeTopics.isEmpty ? "Follow Neurons" : "Edit Followees"),
+                    child: Text(followeeTopics.isEmpty
+                        ? "Follow Neurons"
+                        : "Edit Followees"),
                   )),
             )
           ],

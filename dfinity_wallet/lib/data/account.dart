@@ -24,9 +24,11 @@ class Account extends DfinityEntity with ICPSource {
   List<Transaction> transactions;
   @HiveField(5)
   int? subAccountId;
+  @HiveField(6)
+  HiveList<Neuron>? neurons;
 
   Account(
-      this.name, this.accountIdentifier, this.primary, this.balance, this.subAccountId, this.transactions);
+      this.name, this.accountIdentifier, this.primary, this.balance, this.subAccountId, this.transactions, this.neurons);
 
   Account.create(
       {required this.name,
@@ -34,7 +36,8 @@ class Account extends DfinityEntity with ICPSource {
       required this.primary,
       required this.subAccountId,
       required this.balance,
-      required this.transactions});
+      required this.transactions,
+      required this.neurons});
 
   @override
   String get identifier => accountIdentifier;

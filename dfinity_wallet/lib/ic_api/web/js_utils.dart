@@ -22,13 +22,13 @@ extension ToJSObject on Map {
 Future<Map<String, dynamic>> callApi(
     dynamic Function(dynamic) function, Map<String, dynamic> input, {String? debugLabel}) {
 
-  if(debugLabel!= null){
-    print("${debugLabel} request\n ${input}");
+  if(debugLabel != null){
+    // print("${debugLabel} request\n ${stringify(jsify(input))}");
   }
   return promiseToFuture(function(jsify(input))).then((value) {
     final json = stringify(value);
     if(debugLabel!= null){
-      print("${debugLabel} response\n ${json}");
+      // print("${debugLabel} response\n ${json}");
     }
     return jsonDecode(json);
   });
@@ -42,7 +42,6 @@ Future<Map<String, dynamic>> callApiMap(
 @JS()
 class Promise<T> {
   external Promise(void executor(void resolve(T result), Function reject));
-
   external Promise then(void onFulfilled(T result), [Function onRejected]);
 }
 

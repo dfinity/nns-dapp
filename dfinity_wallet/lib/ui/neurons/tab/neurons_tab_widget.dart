@@ -31,7 +31,7 @@ class _NeuronsPageState extends State<NeuronsPage> {
                     "You can stake ICP by storing them in Neurons. These neurons allow you to participate in the IC Governance by giving you the ability to vote on proposals",
                 children: [
                   SmallFormDivider(),
-                  ...context.boxes.neurons.values.mapToList((e) => Card(
+                  ...(context.boxes.accounts.primary.neurons?.mapToList((e) => Card(
                         child: FlatButton(
                           onPressed: () {
                             context.nav.push(NeuronPageDef.createPageConfig(e));
@@ -47,7 +47,7 @@ class _NeuronsPageState extends State<NeuronsPage> {
                             ),
                           ),
                         ),
-                      )),
+                      )) ?? []),
                   SizedBox(height: 150)
                 ],
               );

@@ -8,12 +8,16 @@ import 'package:js/js.dart';
 import '../models.dart';
 import 'js_utils.dart';
 
+
+@JS('createGovernanceApi')
+external GovernanceApi createGovernanceApi(String host, dynamic identity);
+
 @JS("GovernanceApi")
 class GovernanceApi {
-  external factory GovernanceApi(String host, dynamic identity);
+  external GovernanceApi(String host, dynamic identity);
 
   @JS("getNeuron")
-  external Promise<dynamic> getNeuron(BigInt neuronId);
+  external Promise<dynamic> getNeuron(dynamic neuronId);
 
   @JS("getNeurons")
   external Promise<dynamic> getNeurons();
@@ -22,7 +26,7 @@ class GovernanceApi {
   external Promise<dynamic> getPendingProposals();
 
   @JS("getProposalInfo")
-  external Promise<dynamic> getProposalInfo(BigInt proposalId);
+  external Promise<dynamic> getProposalInfo(dynamic proposalId);
 
   @JS("listProposals")
   external Promise<dynamic> listProposals(dynamic request);

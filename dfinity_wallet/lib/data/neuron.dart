@@ -38,6 +38,8 @@ class Neuron extends DfinityEntity with ICPSource {
   late List<Followee> followees;
   @HiveField(12)
   HiveList<Proposal>? proposals;
+  @HiveField(13)
+  late int followEditCounter;
 
   Neuron({
     required this.id,
@@ -48,6 +50,7 @@ class Neuron extends DfinityEntity with ICPSource {
     required this.dissolveDelaySeconds,
     required this.cachedNeuronStakeDoms,
     required this.proposals,
+    required this.followEditCounter
   });
 
   Neuron.empty();
@@ -74,6 +77,7 @@ class Neuron extends DfinityEntity with ICPSource {
 
   Vote? voteForProposal(Proposal proposal) => recentBallots.firstOrNullWhere((element) => element.proposalId == proposal.id)?.vote;
 }
+
 
 
 

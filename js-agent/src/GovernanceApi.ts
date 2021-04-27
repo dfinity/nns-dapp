@@ -76,7 +76,7 @@ export default class GovernanceApi {
 
     public stopDissolving = async (request: StopDissolvingRequest) : Promise<EmptyResponse> => {
         return this.governanceService.stopDissolving(request);
-    }        
+    }
 
     public increaseDissolveDelay = async (request: IncreaseDissolveDelayRequest) : Promise<EmptyResponse> => {
         console.log(request);

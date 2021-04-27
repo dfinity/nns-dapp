@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/data/followee.dart';
 import 'package:dfinity_wallet/data/neuron_state.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
+import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
 import 'governance_api.dart';
@@ -19,27 +20,45 @@ class NeuronSyncService {
 
   NeuronSyncService({required this.governanceApi, required this.hiveBoxes});
 
-  Future<void> fetchNeurons() async {
-    dynamic res = (await promiseToFuture(governanceApi.getNeurons()));
+  Future<void> syncNeuron(String neuronId) async {
+    dynamic res = (await promiseToFuture(
+        governanceApi.getNeuron(neuronId.toBigInt.toJS)));
     final string = stringify(res);
     dynamic response = jsonDecode(string);
-    // PrettyPrint.prettyPrintJson("neurons response", response);
-
-    response.forEach((e) {
-      storeNeuron(e);
-    });
+    storeNeuron(response);
   }
 
-  void storeNeuron(dynamic e) {
+
+  Future<void> fetchNeurons() async {
+    print("fetching neurons");
+    dynamic res = (await promiseToFuture(governanceApi.getNeurons()));
+    final string = stringify(res);
+    print("fetched neurons $string");
+    dynamic response = (jsonDecode(string) as List<dynamic>).toList();
+
+    final primaryWallet = hiveBoxes.accounts.primary;
+    final neurons = <Neuron>[...response.map((e) => storeNeuron(e))];
+    print("Stored neurons: ${neurons}");
+
+    primaryWallet.neurons = HiveList(hiveBoxes.neurons, objects: neurons);
+    print("Stored neurons: ${primaryWallet.neurons!.joinToString(
+        transform: (e) => e.id)}");
+    primaryWallet.save();
+  }
+
+  Neuron storeNeuron(dynamic e) {
     final neuronId = e['neuronId'].toString();
     if (!hiveBoxes.neurons.containsKey(neuronId)) {
       final neuron = Neuron.empty();
+      neuron.followEditCounter = 0;
       updateNeuron(neuron, neuronId, e);
       hiveBoxes.neurons.put(neuronId, neuron);
+      return neuron;
     } else {
       final neuron = hiveBoxes.neurons.get(neuronId)!;
       updateNeuron(neuron, neuronId, e);
       neuron.save();
+      return neuron;
     }
   }
 
@@ -50,19 +69,9 @@ class NeuronSyncService {
     neuron.dissolveDelaySeconds = res['dissolveDelaySeconds'].toString();
 
     final fullNeuron = res['fullNeuron'];
-    parseFullNeuron(fullNeuron, neuron);
-
-
-    assert(neuron.id != null);
-    assert(neuron.recentBallots != null);
-    assert(neuron.createdTimestampSeconds != null);
-    assert(neuron.votingPower != null);
-    assert(neuron.state != null);
-    assert(neuron.dissolveDelaySeconds != null);
-    assert(neuron.cachedNeuronStakeDoms != null);
-    assert(neuron.neuronFeesDoms != null);
-    assert(neuron.maturityE8sEquivalent != null);
-    assert(neuron.followees != null);
+    if (fullNeuron != null) {
+      parseFullNeuron(fullNeuron, neuron);
+    }
   }
 
   void parseFullNeuron(dynamic fullNeuron, Neuron neuron) {
@@ -97,17 +106,72 @@ class NeuronSyncService {
             (e['followees'] as List<dynamic>).cast<String>()));
 
     return Topic.values
-        .mapToList((e) => Followee()
-        ..topic = e
-        ..followees = map[e] ?? []);
+        .mapToList((e) =>
+    Followee()
+      ..topic = e
+      ..followees = map[e] ?? []);
   }
 }
 
 class PrettyPrint {
-  static prettyPrintJson(String text, dynamic object){
+  static prettyPrintJson(String text, dynamic object) {
     JsonEncoder encoder = new JsonEncoder.withIndent('  ');
     String prettyprint = encoder.convert(object);
-    print("${text} $prettyprint");;
+    print("${text} $prettyprint");
+    ;
   }
 }
 
+
+class NeuronInfo extends DfinityEntity {
+  late BigInt neuronId;
+  late BigInt dissolveDelaySeconds;
+  late List<BallotInfo> recentBallots;
+  late BigInt createdTimestampSeconds;
+  late NeuronState state;
+  late BigInt retrievedAtTimestampSeconds;
+  late BigInt votingPower;
+  late BigInt ageSeconds;
+
+  factory NeuronInfo.fromResponse(dynamic response) {
+    return NeuronInfo(
+      neuronId: response['neuronId']
+          .toString()
+          .toBigInt,
+      dissolveDelaySeconds: response['dissolveDelaySeconds']
+          .toString()
+          .toBigInt,
+      recentBallots: response['recentBallots'].map((e) =>
+      BallotInfo()
+        ..proposalId = e['proposalId'].toString()
+        ..vote = Vote.values[e['vote'].toInt()]
+      ),
+      createdTimestampSeconds: response['createdTimestampSeconds']
+          .toString()
+          .toBigInt,
+      state: NeuronState.values[response['state'].toInt()],
+      retrievedAtTimestampSeconds: response['retrievedAtTimestampSeconds']
+          .toString()
+          .toBigInt,
+      votingPower: response['votingPower']
+          .toString()
+          .toBigInt,
+      ageSeconds: response['ageSeconds']
+          .toString()
+          .toBigInt,
+    );
+  }
+
+  NeuronInfo({
+    required this.neuronId,
+    required this.dissolveDelaySeconds,
+    required this.recentBallots,
+    required this.createdTimestampSeconds,
+    required this.state,
+    required this.retrievedAtTimestampSeconds,
+    required this.votingPower,
+    required this.ageSeconds});
+
+  @override
+  String get identifier => neuronId.toString();
+}
