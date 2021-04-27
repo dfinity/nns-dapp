@@ -95,7 +95,7 @@ class _CansitersPageState extends State<CansitersPage> {
                                   await 1.seconds.delay;
                                   final id =
                                       rand.nextInt(2147483647).toString();
-                                  final canister = Canister(name, id);
+                                  final canister = Canister.demo(name, id);
                                   await context.icApi.hiveBoxes.canisters.put(id, canister);
 
                                   context.nav.push(CanisterPageDef.createPageConfig(canister));
@@ -151,17 +151,7 @@ class CanisterRow extends StatelessWidget {
                   "Balance: ${canister.cyclesRemaining}",
                   style: context.textTheme.bodyText1,
                 ),
-              ),
-              if (canister.cyclesRemaining == 0 && showsWarning)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "Out of cycles - Open a wallet to top up",
-                      style: context.textTheme.bodyText1,
-                    ),
-                  ),
-                )
+              )
             ],
           ),
         ),

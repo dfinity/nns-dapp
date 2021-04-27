@@ -19,9 +19,9 @@ class Canister extends DfinityEntity{
     int cyclesAdded = 0;
 
     int get cyclesSpent => creationDate!.difference(DateTime.now()).inSeconds;
-    int get cyclesRemaining => max(0, cyclesAdded - DateTime.now().difference(creationDate!).inSeconds);
+    int get cyclesRemaining => max(0, cyclesAdded - DateTime.now().difference(creationDate!).inHours);
 
-    Canister(this.name, this.publicKey){
+    Canister.demo(this.name, this.publicKey){
         this.creationDate = DateTime.now();
         // final random = Random();
         // cyclesRemaining = random.nextInt(1000000);
@@ -30,5 +30,13 @@ class Canister extends DfinityEntity{
 
   @override
   String get identifier => publicKey;
+
+    Canister(
+    {required this.name,
+    required this.publicKey,
+    required this.creationDate,
+    required this.cyclesAdded,}
+        );
+
 }
 

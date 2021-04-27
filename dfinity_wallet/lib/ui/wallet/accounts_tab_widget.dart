@@ -28,8 +28,6 @@ class AccountsTabWidget extends StatefulWidget {
 
 class _AccountsTabWidgetState extends State<AccountsTabWidget> {
 
-
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Object>(
@@ -52,7 +50,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
         return FooterGradientButton(
             footerHeight: null,
             body: DefaultTabController(
-              length: 2,
+              length: 3,
               child: SingleChildScrollView(
                 child: ConstrainWidthAndCenter(
                     child: Column(
@@ -103,10 +101,15 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                               padding: const EdgeInsets.all(8.0),
                               child: Tab(text: "SUB-ACCOUNTS"),
                             ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Tab(text: "HARDWARE WALLETS"),
+                                ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Tab(text: "TRANSACTION HISTORY"),
                             ),
+
                           ]),
                           // Expanded(flex: 1, child: Container())
                         ],
@@ -117,6 +120,9 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                       height: maxListItems * 200,
                       child: TabBarView(
                         children: [
+                          SubAccountsListWidget(
+                            subAccounts: context.boxes.accounts.subAccounts,
+                          ),
                           SubAccountsListWidget(
                             subAccounts: context.boxes.accounts.subAccounts,
                           ),

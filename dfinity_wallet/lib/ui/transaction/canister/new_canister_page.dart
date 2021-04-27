@@ -41,7 +41,7 @@ class NewCanisterPage extends StatelessWidget {
               child: Text("Create Canister"),
               fields: [nameField],
               onPressed: () {
-                final canister = Canister(nameField.currentValue, Uuid().v4());
+                final canister = Canister.demo(nameField.currentValue, Uuid().v4());
                 context.boxes.canisters.add(canister);
                 // NewTransactionOverlay.of(context)
                 //     .pushPage(TopUpCanisterPage(

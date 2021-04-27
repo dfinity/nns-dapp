@@ -17,11 +17,11 @@ class CanisterAdapter extends TypeAdapter<Canister> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Canister(
-      fields[0] as String,
-      fields[1] as String,
-    )
-      ..creationDate = fields[2] as DateTime?
-      ..cyclesAdded = fields[3] as int;
+      name: fields[0] as String,
+      publicKey: fields[1] as String,
+      creationDate: fields[2] as DateTime?,
+      cyclesAdded: fields[3] as int,
+    );
   }
 
   @override
