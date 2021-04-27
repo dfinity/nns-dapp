@@ -1,50 +1,8 @@
 // package: ic_ledger.pb.v1
-// file: src/canisters/ledger/types/types.proto
+// file: types.proto
 
 import * as jspb from "google-protobuf";
-import * as google_protobuf_descriptor_pb from "google-protobuf/google/protobuf/descriptor_pb";
-
-export class PrincipalId extends jspb.Message {
-  getRaw(): Uint8Array | string;
-  getRaw_asU8(): Uint8Array;
-  getRaw_asB64(): string;
-  setRaw(value: Uint8Array | string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): PrincipalId.AsObject;
-  static toObject(includeInstance: boolean, msg: PrincipalId): PrincipalId.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: PrincipalId, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): PrincipalId;
-  static deserializeBinaryFromReader(message: PrincipalId, reader: jspb.BinaryReader): PrincipalId;
-}
-
-export namespace PrincipalId {
-  export type AsObject = {
-    raw: Uint8Array | string,
-  }
-}
-
-export class NeuronId extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): NeuronId.AsObject;
-  static toObject(includeInstance: boolean, msg: NeuronId): NeuronId.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: NeuronId, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): NeuronId;
-  static deserializeBinaryFromReader(message: NeuronId, reader: jspb.BinaryReader): NeuronId;
-}
-
-export namespace NeuronId {
-  export type AsObject = {
-    id: string,
-  }
-}
+import * as base_types_pb from "./base_types_pb";
 
 export class LedgerInit extends jspb.Message {
   hasMintingAccount(): boolean;
@@ -59,8 +17,8 @@ export class LedgerInit extends jspb.Message {
 
   hasArchiveCanister(): boolean;
   clearArchiveCanister(): void;
-  getArchiveCanister(): PrincipalId | undefined;
-  setArchiveCanister(value?: PrincipalId): void;
+  getArchiveCanister(): base_types_pb.PrincipalId | undefined;
+  setArchiveCanister(value?: base_types_pb.PrincipalId): void;
 
   getMaxMessageSizeBytes(): number;
   setMaxMessageSizeBytes(value: number): void;
@@ -79,7 +37,7 @@ export namespace LedgerInit {
   export type AsObject = {
     mintingAccount?: AccountIdentifier.AsObject,
     initialValuesList: Array<Account.AsObject>,
-    archiveCanister?: PrincipalId.AsObject,
+    archiveCanister?: base_types_pb.PrincipalId.AsObject,
     maxMessageSizeBytes: number,
   }
 }
@@ -198,8 +156,8 @@ export class NotifyRequest extends jspb.Message {
 
   hasToCanister(): boolean;
   clearToCanister(): void;
-  getToCanister(): PrincipalId | undefined;
-  setToCanister(value?: PrincipalId): void;
+  getToCanister(): base_types_pb.PrincipalId | undefined;
+  setToCanister(value?: base_types_pb.PrincipalId): void;
 
   hasToSubaccount(): boolean;
   clearToSubaccount(): void;
@@ -221,7 +179,7 @@ export namespace NotifyRequest {
     blockHeight?: BlockHeight.AsObject,
     maxFee?: ICPTs.AsObject,
     fromSubaccount?: Subaccount.AsObject,
-    toCanister?: PrincipalId.AsObject,
+    toCanister?: base_types_pb.PrincipalId.AsObject,
     toSubaccount?: Subaccount.AsObject,
   }
 }
@@ -245,8 +203,8 @@ export namespace NotifyResponse {
 export class TransactionNotificationRequest extends jspb.Message {
   hasFrom(): boolean;
   clearFrom(): void;
-  getFrom(): PrincipalId | undefined;
-  setFrom(value?: PrincipalId): void;
+  getFrom(): base_types_pb.PrincipalId | undefined;
+  setFrom(value?: base_types_pb.PrincipalId): void;
 
   hasFromSubaccount(): boolean;
   clearFromSubaccount(): void;
@@ -255,8 +213,8 @@ export class TransactionNotificationRequest extends jspb.Message {
 
   hasTo(): boolean;
   clearTo(): void;
-  getTo(): PrincipalId | undefined;
-  setTo(value?: PrincipalId): void;
+  getTo(): base_types_pb.PrincipalId | undefined;
+  setTo(value?: base_types_pb.PrincipalId): void;
 
   hasToSubaccount(): boolean;
   clearToSubaccount(): void;
@@ -290,9 +248,9 @@ export class TransactionNotificationRequest extends jspb.Message {
 
 export namespace TransactionNotificationRequest {
   export type AsObject = {
-    from?: PrincipalId.AsObject,
+    from?: base_types_pb.PrincipalId.AsObject,
     fromSubaccount?: Subaccount.AsObject,
-    to?: PrincipalId.AsObject,
+    to?: base_types_pb.PrincipalId.AsObject,
     toSubaccount?: Subaccount.AsObject,
     blockHeight?: BlockHeight.AsObject,
     amount?: ICPTs.AsObject,
@@ -471,8 +429,8 @@ export namespace LedgerArchiveRequest {
 }
 
 export class BlockRequest extends jspb.Message {
-  getBlockHeight(): string;
-  setBlockHeight(value: string): void;
+  getBlockHeight(): number;
+  setBlockHeight(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): BlockRequest.AsObject;
@@ -486,7 +444,7 @@ export class BlockRequest extends jspb.Message {
 
 export namespace BlockRequest {
   export type AsObject = {
-    blockHeight: string,
+    blockHeight: number,
   }
 }
 
@@ -520,8 +478,8 @@ export class BlockResponse extends jspb.Message {
 
   hasCanisterId(): boolean;
   clearCanisterId(): void;
-  getCanisterId(): PrincipalId | undefined;
-  setCanisterId(value?: PrincipalId): void;
+  getCanisterId(): base_types_pb.PrincipalId | undefined;
+  setCanisterId(value?: base_types_pb.PrincipalId): void;
 
   getBlockContentCase(): BlockResponse.BlockContentCase;
   serializeBinary(): Uint8Array;
@@ -537,7 +495,7 @@ export class BlockResponse extends jspb.Message {
 export namespace BlockResponse {
   export type AsObject = {
     block?: EncodedBlock.AsObject,
-    canisterId?: PrincipalId.AsObject,
+    canisterId?: base_types_pb.PrincipalId.AsObject,
   }
 
   export enum BlockContentCase {
@@ -548,11 +506,11 @@ export namespace BlockResponse {
 }
 
 export class GetBlocksRequest extends jspb.Message {
-  getStart(): string;
-  setStart(value: string): void;
+  getStart(): number;
+  setStart(value: number): void;
 
-  getLength(): string;
-  setLength(value: string): void;
+  getLength(): number;
+  setLength(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetBlocksRequest.AsObject;
@@ -566,8 +524,8 @@ export class GetBlocksRequest extends jspb.Message {
 
 export namespace GetBlocksRequest {
   export type AsObject = {
-    start: string,
-    length: string,
+    start: number,
+    length: number,
   }
 }
 
@@ -683,8 +641,8 @@ export class ArchiveIndexEntry extends jspb.Message {
 
   hasCanisterId(): boolean;
   clearCanisterId(): void;
-  getCanisterId(): PrincipalId | undefined;
-  setCanisterId(value?: PrincipalId): void;
+  getCanisterId(): base_types_pb.PrincipalId | undefined;
+  setCanisterId(value?: base_types_pb.PrincipalId): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ArchiveIndexEntry.AsObject;
@@ -700,7 +658,7 @@ export namespace ArchiveIndexEntry {
   export type AsObject = {
     heightFrom: string,
     heightTo: string,
-    canisterId?: PrincipalId.AsObject,
+    canisterId?: base_types_pb.PrincipalId.AsObject,
   }
 }
 
@@ -806,9 +764,9 @@ export namespace GetNodesRequest {
 
 export class GetNodesResponse extends jspb.Message {
   clearNodesList(): void;
-  getNodesList(): Array<PrincipalId>;
-  setNodesList(value: Array<PrincipalId>): void;
-  addNodes(value?: PrincipalId, index?: number): PrincipalId;
+  getNodesList(): Array<base_types_pb.PrincipalId>;
+  setNodesList(value: Array<base_types_pb.PrincipalId>): void;
+  addNodes(value?: base_types_pb.PrincipalId, index?: number): base_types_pb.PrincipalId;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetNodesResponse.AsObject;
@@ -822,7 +780,7 @@ export class GetNodesResponse extends jspb.Message {
 
 export namespace GetNodesResponse {
   export type AsObject = {
-    nodesList: Array<PrincipalId.AsObject>,
+    nodesList: Array<base_types_pb.PrincipalId.AsObject>,
   }
 }
 
@@ -1233,8 +1191,4 @@ export namespace Certification {
     certification: Uint8Array | string,
   }
 }
-
-  export const tuiSignedMessage: jspb.ExtensionFieldInfo<boolean>;
-
-  export const tuiSignedDisplayQ22021: jspb.ExtensionFieldInfo<boolean>;
 

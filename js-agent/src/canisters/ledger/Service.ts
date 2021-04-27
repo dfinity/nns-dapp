@@ -8,7 +8,7 @@ import ServiceInterface, {
     SendICPTsRequest
 } from "./model";
 import RequestConverters from "./RequestConverters";
-import { BlockHeight as BlockHeightProto, ICPTs, TransactionNotificationResponse } from "./types/types_pb";
+import { BlockHeight as BlockHeightProto, ICPTs } from "./proto/types_pb";
 import { submitQueryRequest } from "../queryRequestHandler";
 import { submitUpdateRequest } from "../updateRequestHandler";
 
@@ -31,7 +31,7 @@ export default class Service implements ServiceInterface {
             const responseBytes = await submitQueryRequest(
                 this.agent,
                 this.canisterId,
-                "account_balance",
+                "account_balance_pb",
                 r.serializeBinary());
 
             return BigInt(ICPTs.deserializeBinary(responseBytes).getE8s());
@@ -51,7 +51,7 @@ export default class Service implements ServiceInterface {
         const responseBytes = await submitUpdateRequest(
             this.agent,
             this.canisterId,
-            "send",
+            "send_pb",
             rawRequest.serializeBinary());
 
         return BigInt(BlockHeightProto.deserializeBinary(responseBytes).getHeight());
@@ -63,7 +63,7 @@ export default class Service implements ServiceInterface {
         const rawResponse = await submitUpdateRequest(
             this.agent,
             this.canisterId,
-            "notify",
+            "notify_pb",
             rawRequest.serializeBinary());
 
         return rawResponse;

@@ -5,31 +5,24 @@ be used for these fields which loses precision for numbers above 2^52.
 Then generate the js and ts files -
 protoc \
 --plugin="protoc-gen-ts=./node_modules/.bin/protoc-gen-ts" \
---ts_out="./src/canisters/ledger" \
---js_out="import_style=commonjs,binary:./src/canisters/ledger" \
-src/canisters/ledger/types/types.proto
+--ts_out="./src/canisters/ledger/proto" \
+--js_out="import_style=commonjs,binary:./src/canisters/ledger/proto" \
+--proto_path="./src/canisters/ledger/proto" \
+./src/canisters/ledger/proto/types.proto
+
+protoc \
+--plugin="protoc-gen-ts=./node_modules/.bin/protoc-gen-ts" \
+--ts_out="./src/canisters/ledger/proto" \
+--js_out="import_style=commonjs,binary:./src/canisters/ledger/proto" \
+--proto_path="./src/canisters/ledger/proto" \
+./src/canisters/ledger/proto/base_types.proto
 */
 
 syntax = "proto3";
 
 package ic_ledger.pb.v1;
 
-import "google/protobuf/descriptor.proto";
-
-// A PB container for a PrincipalId, which uniquely identifies
-// a principal.
-message PrincipalId {
-  bytes raw = 1;
-}
-
-// A container for a NeuronId blob, which uniquely identifies
-// a Neuron.
-message NeuronId {
-//  bytes serialized_id = 1;
-  reserved 1;
-  reserved 'serialized_id';
-  uint64 id = 2 [jstype = JS_STRING];
-}
+import "base_types.proto";
 
 // Annotations related to the use of hardware wallets. The annotated messages are
 // parsed on hardware wallets and marked fields are displayed in a trusted user
@@ -37,24 +30,13 @@ message NeuronId {
 // semantics of the message such that old hardware wallets would not display
 // appropriate information to users.
 
-// The annotated message is supported by hardware wallet signing.
-// The numbering was chosen as the range 19000-19999 is anyway reserved in protobuf.
-extend google.protobuf.MessageOptions {
-  bool tui_signed_message = 20000;
-}
-// The annotated field is displayed on the hardware wallet in the specification
-// used by launch of the Internet Computer.
-extend google.protobuf.FieldOptions {
-  bool tui_signed_display_q2_2021 = 20001;
-}
-
 // ** LEDGER CANISTER ENDPOINTS
 
 // Initialise the ledger canister
 message LedgerInit {
   AccountIdentifier minting_account = 1;
   repeated Account initial_values = 2;
-  PrincipalId archive_canister = 3;
+  ic_base_types.pb.v1.PrincipalId archive_canister = 3;
   uint32 max_message_size_bytes = 4;
 }
 
@@ -66,12 +48,12 @@ message LedgerUpgrade {
 
 // Make a payment
 message SendRequest {
-  option (tui_signed_message) = true;
-  Memo memo = 1                  [(tui_signed_display_q2_2021) = true];
-  Payment payment = 2            [(tui_signed_display_q2_2021) = true];
-  ICPTs max_fee = 3              [(tui_signed_display_q2_2021) = true];
-  Subaccount from_subaccount = 4 [(tui_signed_display_q2_2021) = true];
-  AccountIdentifier to = 5       [(tui_signed_display_q2_2021) = true];
+  option (ic_base_types.pb.v1.tui_signed_message) = true;
+  Memo memo = 1                  [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  Payment payment = 2            [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  ICPTs max_fee = 3              [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  Subaccount from_subaccount = 4 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  AccountIdentifier to = 5       [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
   BlockHeight created_at = 6;
   TimeStamp created_at_time = 7;
 }
@@ -82,21 +64,21 @@ message SendResponse {
 
 // Notify a canister that it has recieved a payment
 message NotifyRequest {
-  option (tui_signed_message) = true;
-  BlockHeight block_height = 1                    [(tui_signed_display_q2_2021) = true];
-  ICPTs max_fee = 2                               [(tui_signed_display_q2_2021) = true];
-  Subaccount from_subaccount = 3                  [(tui_signed_display_q2_2021) = true];
-  PrincipalId to_canister = 4 [(tui_signed_display_q2_2021) = true];
-  Subaccount to_subaccount = 5                    [(tui_signed_display_q2_2021) = true];
+  option (ic_base_types.pb.v1.tui_signed_message) = true;
+  BlockHeight block_height = 1                    [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  ICPTs max_fee = 2                               [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  Subaccount from_subaccount = 3                  [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  ic_base_types.pb.v1.PrincipalId to_canister = 4 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  Subaccount to_subaccount = 5                    [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
 }
 
 message NotifyResponse {
 }
 
 message TransactionNotificationRequest {
-  PrincipalId from = 1;
+  ic_base_types.pb.v1.PrincipalId from = 1;
   Subaccount from_subaccount = 2;
-  PrincipalId to = 3;
+  ic_base_types.pb.v1.PrincipalId to = 3;
   Subaccount to_subaccount = 4;
   BlockHeight block_height = 5;
   ICPTs amount = 6;
@@ -152,7 +134,7 @@ message EncodedBlock {
 message BlockResponse {
   oneof block_content {
     EncodedBlock block = 1;
-    PrincipalId canister_id = 2;
+    ic_base_types.pb.v1.PrincipalId canister_id = 2;
   }
 }
 
@@ -163,7 +145,7 @@ message GetBlocksRequest {
 }
 
 message EncodedBlocks {
-    repeated EncodedBlock blocks = 1;
+  repeated EncodedBlock blocks = 1;
 }
 
 message GetBlocksResponse {
@@ -186,7 +168,7 @@ message IterBlocksResponse {
 message ArchiveIndexEntry {
   uint64 height_from = 1 [jstype = JS_STRING];
   uint64 height_to = 2 [jstype = JS_STRING];
-  PrincipalId canister_id = 3;
+  ic_base_types.pb.v1.PrincipalId canister_id = 3;
 }
 
 message ArchiveIndexResponse {
@@ -218,21 +200,26 @@ message GetNodesRequest {
 }
 
 message GetNodesResponse {
-  repeated PrincipalId nodes = 1;
+  repeated ic_base_types.pb.v1.PrincipalId nodes = 1;
 }
 
 
 // ** BASIC TYPES **
 message ICPTs {
-  uint64 e8s = 1 [jstype = JS_STRING];
+  option (ic_base_types.pb.v1.tui_signed_message) = true;
+  uint64 e8s = 1       [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true, jstype = JS_STRING];
+
 }
 
 message Payment {
-    ICPTs receiver_gets = 1;
+  option (ic_base_types.pb.v1.tui_signed_message) = true;
+  ICPTs receiver_gets = 1      [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+
 }
 
 message BlockHeight {
-  uint64 height = 1 [jstype = JS_STRING];
+  option (ic_base_types.pb.v1.tui_signed_message) = true;
+  uint64 height = 1      [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true, jstype = JS_STRING];
 }
 
 
@@ -282,15 +269,21 @@ message Burn {
 
 
 message AccountIdentifier {
-  bytes hash = 1;
+  option (ic_base_types.pb.v1.tui_signed_message) = true;
+  bytes hash = 1        [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+
 }
 
 message Subaccount {
-  bytes sub_account = 1;
+  option (ic_base_types.pb.v1.tui_signed_message) = true;
+  bytes sub_account = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+
 }
 
 message Memo {
-  uint64 memo = 1 [jstype = JS_STRING];
+  option (ic_base_types.pb.v1.tui_signed_message) = true;
+  uint64 memo = 1       [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true, jstype = JS_STRING];
+
 }
 
 message TimeStamp {
@@ -300,4 +293,3 @@ message TimeStamp {
 message Certification {
   bytes certification = 1;
 }
-

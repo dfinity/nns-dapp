@@ -1,5 +1,8 @@
 {
   "nns_ui": {
+    "testnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
+  },
+  "nns_ui_assets": {
     "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
   }
 }

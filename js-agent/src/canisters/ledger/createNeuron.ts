@@ -1,12 +1,13 @@
 import LedgerService, { E8s } from "./model";
-import GovernanceService, { NeuronId } from "../governance/model";
+import { NeuronId } from "../governance/model";
 import { BinaryBlob, blobFromUint8Array, Principal, SignIdentity } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
 import * as convert from "../converter";
 import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
 import crc from "crc";
 import randomBytes from "randombytes";
-import { NeuronId as NeuronIdProto } from "./types/types_pb";
+import { TransactionNotificationResponse } from "./proto/types_pb";
+import { uint8ArrayToBigInt } from "../converter";
 
 export type CreateNeuronRequest = {
     stake: E8s
@@ -43,7 +44,7 @@ export default async function(
     // console.log("deserializeBinary");
     // console.log(NeuronIdProto.deserializeBinary(result));
 
-    const neuronId = BigInt(NeuronIdProto.deserializeBinary(result).getId());
+    const neuronId = uint8ArrayToBigInt(TransactionNotificationResponse.deserializeBinary(result).getResponse_asU8());
     console.log("neuronId");
     console.log(neuronId);
 

@@ -1,15 +1,17 @@
 import { GetBalancesRequest, NotifyCanisterRequest, SendICPTsRequest } from "./model";
 import * as convert from "../converter";
 import { SUB_ACCOUNT_BYTE_LENGTH } from "../constants";
+import { PrincipalId } from "./proto/base_types_pb";
 import {
     AccountBalanceRequest,
     AccountIdentifier,
     BlockHeight,
     ICPTs,
-    Memo, NotifyRequest,
-    Payment, PrincipalId,
+    Memo,
+    NotifyRequest,
+    Payment,
     SendRequest, Subaccount
-} from "./types/types_pb";
+} from "./proto/types_pb";
 import { blobToUint8Array, uint8ArrayToBigInt } from "../converter";
 import type { Principal } from "@dfinity/agent";
 
@@ -104,7 +106,7 @@ export default class RequestConverters {
 
     private toPrincipal = (principalId: Principal) : PrincipalId => {
         const result = new PrincipalId();
-        result.setRaw(blobToUint8Array(principalId.toBlob()));
+        result.setSerializedId(blobToUint8Array(principalId.toBlob()));
         return result;
     }
 }
