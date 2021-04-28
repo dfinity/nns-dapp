@@ -6,19 +6,17 @@ class BalanceDisplayWidget extends StatelessWidget {
     final double amount;
     final int amountSize;
     final int icpLabelSize;
-    final Axis direction;
 
-    const BalanceDisplayWidget({Key? key, required this.amount, required this.amountSize, required this.icpLabelSize, this.direction = Axis.vertical})
+    const BalanceDisplayWidget({Key? key, required this.amount, required this.amountSize, required this.icpLabelSize})
             : super(key: key);
 
     @override
     Widget build(BuildContext context) {
         var f = NumberFormat("###,###.########", "en_US");
-        return Flex(
-            crossAxisAlignment: CrossAxisAlignment.center,
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            direction: direction,
             children: [
                 Text(
                     f.format(amount),
@@ -51,8 +49,7 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
             BalanceDisplayWidget(
                 amount: amount,
                 amountSize: 30,
-                icpLabelSize: 15,
-            direction: Axis.horizontal,),
+                icpLabelSize: 15,),
             SizedBox(height: 5),
             text
         ],

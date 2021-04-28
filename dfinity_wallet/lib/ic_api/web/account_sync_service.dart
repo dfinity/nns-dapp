@@ -20,9 +20,7 @@ class AccountsSyncService {
     final json = stringify(accountResponse);
       print("${accountResponse} response\n ${json}");
     final cachedAccounts = hiveBoxes.accounts.values;
-
     final res = jsonDecode(json);
-
 
     final validAccounts = await Future.wait(<Future<dynamic>>[
       storeNewAccount(
@@ -61,7 +59,8 @@ class AccountsSyncService {
               primary: primary,
               balance: BigInt.zero.toString(),
               transactions: [],
-              neurons: HiveList(hiveBoxes.neurons)
+              neurons: HiveList(hiveBoxes.neurons),
+              hardwareWallet: false
           ));
     }
     return address;

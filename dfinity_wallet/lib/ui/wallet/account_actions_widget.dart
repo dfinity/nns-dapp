@@ -48,25 +48,6 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
               ));
             },
           ),
-          SmallFormDivider(),
-          TextButton(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "Create Sub-Account",
-                style: context.textTheme.bodyText2?.copyWith(fontSize: 18),
-              ),
-            ),
-            onPressed: () {
-              OverlayBaseWidget.show(context, TextFieldDialogWidget(
-                  title: "New Sub-Account",
-                  buttonTitle: "Create",
-                  fieldName: "Account Name",
-                  onComplete: (name) {
-                    context.performLoading(() => context.icApi.createSubAccount(name: name));
-                  }), borderRadius: 20);
-            },
-          ),
         ],
       ),
     );

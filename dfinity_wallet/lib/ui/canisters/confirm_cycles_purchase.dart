@@ -40,7 +40,6 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                             amount: amount,
                             amountSize: 50,
                             icpLabelSize: 0,
-                            direction: Axis.horizontal,
                           ),
                         ),
                       ),

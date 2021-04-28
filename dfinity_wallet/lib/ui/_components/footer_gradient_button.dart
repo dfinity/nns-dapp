@@ -14,7 +14,7 @@ class FooterGradientButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ConstrainWidthAndCenter(child: body),
+        body,
         IgnorePointer(
           child: SizedBox.expand(
             child: Container(
@@ -29,7 +29,7 @@ class FooterGradientButton extends StatelessWidget {
             ),
           ),
         ),
-        ConstrainWidthAndCenter(child:SizedBox.expand(
+        SizedBox.expand(
           child: Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
@@ -38,7 +38,7 @@ class FooterGradientButton extends StatelessWidget {
               child: footer,
             ),
           ),
-        ))
+        )
       ],
     );
   }

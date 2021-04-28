@@ -26,9 +26,11 @@ class Account extends DfinityEntity with ICPSource {
   int? subAccountId;
   @HiveField(6)
   HiveList<Neuron>? neurons;
+  @HiveField(7)
+  bool hardwareWallet;
 
   Account(
-      this.name, this.accountIdentifier, this.primary, this.balance, this.subAccountId, this.transactions, this.neurons);
+      this.name, this.accountIdentifier, this.primary, this.balance, this.subAccountId, this.transactions, this.neurons, this.hardwareWallet);
 
   Account.create(
       {required this.name,
@@ -37,7 +39,8 @@ class Account extends DfinityEntity with ICPSource {
       required this.subAccountId,
       required this.balance,
       required this.transactions,
-      required this.neurons});
+      required this.neurons,
+      required this.hardwareWallet});
 
   @override
   String get identifier => accountIdentifier;
@@ -46,8 +49,9 @@ class Account extends DfinityEntity with ICPSource {
   String get address => accountIdentifier;
 }
 
-extension getPrimary on Box<Account> {
+extension GetAccounts on Box<Account> {
   Account get primary => values.firstWhere((element) => element.primary);
   Account? get maybePrimary => values.firstOrNullWhere((element) => element.primary);
-  List<Account> get subAccounts => values.filterNot((element) => element.primary).toList();
+  List<Account> get subAccounts => values.filterNot((element) => element.primary || element.hardwareWallet).toList();
+  List<Account> get hardwareWallets => values.filter((element) => element.hardwareWallet).toList();
 }

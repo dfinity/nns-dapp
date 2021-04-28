@@ -9,6 +9,6 @@ class ConstrainWidthAndCenter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(alignment: Alignment.topCenter, child: ConstrainedBox(constraints: BoxConstraints(maxWidth: 800), child: child));
+    return Align(alignment: Alignment.topCenter, child: ConstrainedBox(constraints: BoxConstraints(maxWidth: width), child: child));
   }
 }

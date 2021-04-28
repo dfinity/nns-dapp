@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color primaryYellow = Color.fromRGBO(255, 199, 94, 1);
 
-  static const Color background = Color(0xff2b3030);
+  static const Color background = Color(0xff272929);
+  static const Color mediumBackground = Color(0xff2e3333);
   static const Color lightBackground = Color(0xff383c3c);
   static const Color lighterBackground = Color(0xff48494c);
 

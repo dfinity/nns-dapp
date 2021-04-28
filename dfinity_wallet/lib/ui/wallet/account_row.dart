@@ -11,7 +11,7 @@ class AccountRow extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         return Card(
-            margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+            margin: EdgeInsets.only(left: 0, right: 0, bottom: 16),
             child: FlatButton(
                 onPressed: () {
                     this.onTap();
