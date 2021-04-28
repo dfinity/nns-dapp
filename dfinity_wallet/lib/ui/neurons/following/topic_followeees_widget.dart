@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 
 import '../../../dfinity.dart';
 import 'followee_suggestions.dart';
@@ -12,42 +13,42 @@ class TopicFolloweesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-    child: IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(child: currentlyFollowingCard(context)),
-          SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            child: Container(
-              color: AppColors.background,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "Options for Following",
-                      style: context.textTheme.headline3,
-                      textAlign: TextAlign.left,
-                    ),
-                    FolloweeSuggestionWidget(followees.followees,
-                        suggestionSelected: (e) {
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: currentlyFollowingCard(context)),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Container(
+                  color: AppColors.background,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Options for Following",
+                          style: context.textTheme.headline3,
+                          textAlign: TextAlign.left,
+                        ),
+                        FolloweeSuggestionWidget(followees.followees,
+                            suggestionSelected: (e) {
                           addFollower(e.id, context);
                         })
-                  ],
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 
   Container currentlyFollowingCard(BuildContext context) {
     return Container(
@@ -96,37 +97,51 @@ class TopicFolloweesWidget extends StatelessWidget {
     return Column(
       children: [
         ...followees.followees.mapIndexed((i, e) => Container(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(FolloweeSuggestion.followerSuggestions.firstOrNullWhere((element) => element.id == e)?.name ?? e, style: context.textTheme.bodyText2),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                              FolloweeSuggestion.followerSuggestions
+                                      .firstOrNullWhere(
+                                          (element) => element.id == e)
+                                      ?.name ??
+                                  e,
+                              style: context.textTheme.bodyText2),
+                        ),
+                        onPressed: () {
+                          OverlayBaseWidget.show(context, NeuronInfoWidget(e));
+                        },
+                      ),
+                    ),
+                    if (i != 0)
+                      TextButton(
+                          style: buttonStyle,
+                          onPressed: () {
+                            reorder(context, i, i - 1);
+                          },
+                          child: Text('↑')),
+                    if (i != followees.followees.lastIndex)
+                      TextButton(
+                          style: buttonStyle,
+                          onPressed: () {
+                            reorder(context, i, i + 1);
+                          },
+                          child: Text('↓')),
+                    TextButton(
+                        style: buttonStyle,
+                        onPressed: () {
+                          removeFollower(e, context);
+                        },
+                        child: Text('✕'))
+                  ],
                 ),
-                if (i != 0)
-                  TextButton(
-                      style: buttonStyle,
-                      onPressed: () {
-                        reorder(context, i, i - 1);
-                      },
-                      child: Text('↑')),
-                if (i != followees.followees.lastIndex)
-                  TextButton(
-                      style: buttonStyle,
-                      onPressed: () {
-                        reorder(context, i, i + 1);
-                      },
-                      child: Text('↓')),
-                TextButton(
-                    style: buttonStyle,
-                    onPressed: () {
-                      removeFollower(e, context);
-                    },
-                    child: Text('✕'))
-              ],
-            ),
-          ),
-        ))
+              ),
+            ))
       ],
     );
   }

@@ -18,7 +18,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     final screenSize = context.mediaQuery.size;
@@ -53,18 +52,39 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(
-                      child: Text("Receive", style: TextStyle(color: AppColors.white),),
+                      child: Text(
+                        "Receive",
+                        style: TextStyle(color: AppColors.white),
+                      ),
                       onPressed: () async {
-                        LoadingOverlay.of(context).showOverlay();
-                        await context.icApi.acquireICPTs(accountIdentifier: context.boxes.accounts.primary.accountIdentifier, doms: BigInt.from(1500000000));
-                        LoadingOverlay.of(context).hideOverlay();
+                        OverlayBaseWidget.show(
+                            context,
+                            TextFieldDialogWidget(
+                                title: "How much?",
+                                buttonTitle: "Get",
+                                fieldName: "ICPT",
+                                onComplete: (name) {
+                                  final amount = BigInt.from(name.toDouble()) * BigInt.from(100000000);
+                                  context.performLoading(() => context.icApi
+                                      .acquireICPTs(
+                                          accountIdentifier: context
+                                              .boxes
+                                              .accounts
+                                              .primary
+                                              .accountIdentifier,
+                                          doms: amount));
+                                }),
+                            borderRadius: 20);
                       },
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(
-                      child: Text("Logout", style: TextStyle(color: AppColors.white),),
+                      child: Text(
+                        "Logout",
+                        style: TextStyle(color: AppColors.white),
+                      ),
                       onPressed: () async {
                         context.boxes.hiveCoordinator.deleteAllData();
                         context.nav.replaceAll(AuthPage);

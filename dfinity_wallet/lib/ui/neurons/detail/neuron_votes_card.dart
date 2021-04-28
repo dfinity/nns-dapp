@@ -43,9 +43,9 @@ class NeuronVotesCard extends StatelessWidget {
                     padding: EdgeInsets.all(8),
                   child: Row(
                     children: [
-                      Text(proposal?.summary ?? e.proposalId),
+                      Text(proposal?.summary ?? e.proposalId, style: context.textTheme.subtitle2,),
                       Expanded(child: Container()),
-                      Text(e.vote.toString().removePrefix("Vote."))
+                      Text(e.vote.toString().removePrefix("Vote."), style: context.textTheme.headline4)
                     ],
                   ),
                 );

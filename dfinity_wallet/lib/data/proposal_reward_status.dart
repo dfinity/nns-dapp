@@ -28,9 +28,9 @@ Ineligible}
 extension RewardStatusDesc on ProposalRewardStatus{
   static const map = {
   ProposalRewardStatus.Unknown: "Unknown",
-  ProposalRewardStatus.AcceptVotes: "Accept Votes",
-  ProposalRewardStatus.ReadyToSettle: "Ready To Settle",
-  ProposalRewardStatus.Settled: "Settled",
+  ProposalRewardStatus.AcceptVotes: "Accepting Votes",
+  ProposalRewardStatus.ReadyToSettle: "Processing Votes",
+  ProposalRewardStatus.Settled: "Rewards Disbursed",
   ProposalRewardStatus.Ineligible: "Ineligible"
   };
   String get label => map[this]!;

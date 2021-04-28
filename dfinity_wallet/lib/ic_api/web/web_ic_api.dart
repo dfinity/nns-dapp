@@ -228,12 +228,15 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId}) async {
     final res = await promiseToFuture(governanceApi!.getNeuron(neuronId.toJS));
     final neuronInfo = jsonDecode(stringify(res));
-    return NeuronInfo.fromResponse(neuronInfo);
+    print("Neuron info Response ${stringify(res)}");
+    final nInfo = NeuronInfo.fromResponse(neuronInfo);
+    print("nInfo ${nInfo}");
+    return nInfo;
   }
 
   @override
   Future<void> createDummyProposals({required BigInt neuronId}) async {
-    await promiseToFuture(ledgerApi!.createDummyProposals(neuronId.toJS));
+    await promiseToFuture(ledgerApi!.createDummyProposals(neuronId.toString()));
     await fetchProposals(
         excludeTopics: [],
         includeStatus: ProposalStatus.values,
@@ -242,11 +245,12 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Proposal> fetchProposal({required BigInt proposalId}) async{
-    final response = await governanceApi!.getProposalInfo(proposalId);
+    final response = await governanceApi!.getProposalInfo(proposalId.toJS);
     final json = jsonDecode(stringify(response));
+    print("proposal json ${stringify(response)}");
     final proposal = await proposalSyncService!.storeProposal(json);
     proposalSyncService!.linkProposalsToNeurons();
-    return proposal;
+    return Proposal.empty();
   }
 }
 

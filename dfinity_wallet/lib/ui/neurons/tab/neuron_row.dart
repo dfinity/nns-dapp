@@ -23,9 +23,6 @@ class NeuronRow extends StatelessWidget {
               SelectableText(
                 neuron.identifier,
                 style: context.textTheme.headline3,
-                onTap: () {
-                  onTap?.call();
-                },
               ),
               VerySmallFormDivider(),
               Row(crossAxisAlignment: CrossAxisAlignment.end, children: [

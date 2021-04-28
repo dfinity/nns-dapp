@@ -124,42 +124,53 @@ class PrettyPrint {
 
 
 class NeuronInfo extends DfinityEntity {
-  late BigInt neuronId;
-  late BigInt dissolveDelaySeconds;
-  late List<BallotInfo> recentBallots;
-  late BigInt createdTimestampSeconds;
-  late NeuronState state;
-  late BigInt retrievedAtTimestampSeconds;
-  late BigInt votingPower;
-  late BigInt ageSeconds;
+  final BigInt neuronId;
+  final BigInt dissolveDelaySeconds;
+  final List<BallotInfo> recentBallots;
+  final BigInt createdTimestampSeconds;
+  final NeuronState state;
+  final BigInt retrievedAtTimestampSeconds;
+  final BigInt votingPower;
+  final BigInt ageSeconds;
 
-  factory NeuronInfo.fromResponse(dynamic response) {
-    return NeuronInfo(
-      neuronId: response['neuronId']
-          .toString()
-          .toBigInt,
-      dissolveDelaySeconds: response['dissolveDelaySeconds']
-          .toString()
-          .toBigInt,
-      recentBallots: response['recentBallots'].map((e) =>
-      BallotInfo()
-        ..proposalId = e['proposalId'].toString()
-        ..vote = Vote.values[e['vote'].toInt()]
-      ),
-      createdTimestampSeconds: response['createdTimestampSeconds']
-          .toString()
-          .toBigInt,
-      state: NeuronState.values[response['state'].toInt()],
-      retrievedAtTimestampSeconds: response['retrievedAtTimestampSeconds']
-          .toString()
-          .toBigInt,
-      votingPower: response['votingPower']
-          .toString()
-          .toBigInt,
-      ageSeconds: response['ageSeconds']
-          .toString()
-          .toBigInt,
+  static fromResponse(dynamic response) {
+      final neuronId = response['neuronId']
+        .toString()
+        .toBigInt;
+      final dissolveDelaySeconds = response['dissolveDelaySeconds']
+        .toString()
+        .toBigInt;
+      final recentBallots = <BallotInfo>[...response['recentBallots'].map((e) =>
+    BallotInfo()
+    ..proposalId = e['proposalId'].toString()
+    ..vote = Vote.values[e['vote'].toInt()]
+    )];
+      final createdTimestampSeconds = response['createdTimestampSeconds']
+        .toString()
+        .toBigInt;
+      final state = NeuronState.values[response['state'].toInt()];
+      final retrievedAtTimestampSeconds = response['retrievedAtTimestampSeconds']
+        .toString()
+        .toBigInt;
+      final votingPower = response['votingPower']
+        .toString()
+        .toBigInt;
+      final ageSeconds = response['ageSeconds']
+        .toString()
+        .toBigInt;
+
+    final obj = NeuronInfo(
+        neuronId: neuronId,
+        dissolveDelaySeconds: dissolveDelaySeconds,
+        recentBallots: recentBallots,
+        createdTimestampSeconds: createdTimestampSeconds,
+        state: state,
+        retrievedAtTimestampSeconds: retrievedAtTimestampSeconds,
+        votingPower: votingPower,
+        ageSeconds: ageSeconds,
     );
+    print("neuron info 2 ${obj}");
+      return obj;
   }
 
   NeuronInfo({

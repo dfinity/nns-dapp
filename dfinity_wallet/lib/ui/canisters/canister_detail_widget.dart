@@ -1,7 +1,9 @@
+import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
+import 'package:intl/intl.dart';
 
 import '../../dfinity.dart';
 import 'enter_cycles_page.dart';
@@ -27,50 +29,72 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
       body: Container(
           color: AppColors.lightBackground,
           child: StreamBuilder<Object>(
-              stream: context.icApi.hiveBoxes.accounts.watch(
+              stream: context.icApi.hiveBoxes.canisters.watch(
                   key: widget.canister.identifier),
               builder: (context, snapshot) {
                 return FooterGradientButton(
-                    body: ListView(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    body: SingleChildScrollView(
+                      child: ConstrainWidthAndCenter(
+                        child: Column(
                           children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(24.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      widget.canister.name,
-                                      style: context.textTheme.headline1,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(24.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          widget.canister.name,
+                                          style: context.textTheme.headline1,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        SelectableText(
+                                          widget.canister.identifier,
+                                          style: context.textTheme.subtitle2,
+                                        )
+                                      ],
                                     ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    SelectableText(
-                                      widget.canister.identifier,
-                                      style: context.textTheme.subtitle2,
-                                    )
-                                  ],
+                                  ),
                                 ),
-                              ),
+                                Padding(
+                                    padding: EdgeInsets.all(24),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(24.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            NumberFormat("###,###.########", "en_US")
+                                                .format(widget.canister.cyclesRemaining),
+                                            style: TextStyle(color: AppColors.white,
+                                                fontFamily: Fonts.circularBold,
+                                                fontSize: 50),
+                                          ),
+                                          SizedBox(
+                                            width: 7,
+                                          ),
+                                          Text("Cycles",
+                                              style: TextStyle(color: AppColors.gray200,
+                                                  fontFamily: Fonts.circularBook,
+                                                  fontSize: 50 * 0.4))
+                                        ],
+                                      ),
+                                    ))
+                              ]
                             ),
-                            Padding(
-                                padding: EdgeInsets.all(24),
-                                child: BalanceDisplayWidget(
-                                  amount: widget.canister.cyclesRemaining
-                                      .toDouble(),
-                                  amountSize: 40,
-                                  icpLabelSize: 25,
-                                )),
+                            SizedBox(
+                              height: 200,
+                            )
                           ],
                         ),
-                        SizedBox(
-                          height: 200,
-                        )
-                      ],
+                      ),
                     ),
                     footer: Center(
                       child: ElevatedButton(

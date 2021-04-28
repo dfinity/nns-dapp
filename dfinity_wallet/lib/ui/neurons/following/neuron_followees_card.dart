@@ -1,5 +1,6 @@
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 import 'package:dfinity_wallet/ui/neurons/following/configure_followers_page.dart';
 
 import '../../../dfinity.dart';
@@ -54,7 +55,7 @@ class NeuronFolloweesCard extends StatelessWidget {
                             children: [
                               TextButton(
                                 onPressed: () {
-                                  context.nav.push(NeuronInfoPage.createPageConfig(e.key));
+                                  showNeuronInfo(context, e.key);
                                 },
                                 child: SelectableText(
                                   e.key.toString(),
@@ -65,6 +66,9 @@ class NeuronFolloweesCard extends StatelessWidget {
                                       fontWeight: FontWeight.w700,
                                       decoration: TextDecoration.underline
                                   ),
+                                  onTap: () {
+                                    showNeuronInfo(context, e.key);
+                                  },
                                 ),
                               ),
                               Padding(
@@ -138,5 +142,9 @@ class NeuronFolloweesCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void showNeuronInfo(BuildContext context, String neuronId) {
+    OverlayBaseWidget.show(context, NeuronInfoWidget(neuronId));
   }
 }

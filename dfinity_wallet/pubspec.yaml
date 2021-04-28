@@ -32,6 +32,8 @@ dependencies:
   auto_size_text: ^2.1.0
   url_launcher: ^6.0.3
   flutter_gifimage: ^1.0.1
+  flutter_spinkit: ^5.0.0
+
   core:
     path: ../core
 #  agent_plugin:

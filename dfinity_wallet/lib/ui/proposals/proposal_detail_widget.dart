@@ -17,6 +17,18 @@ class ProposalDetailWidget extends StatefulWidget {
 }
 
 class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    refreshProposal();
+  }
+
+  void refreshProposal() {
+    context.icApi.fetchProposal(proposalId: widget.proposal.identifier.toBigInt);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,7 +112,7 @@ class IneligibleNeuronsWidget extends StatelessWidget {
               style: context.textTheme.headline3),
           SmallFormDivider(),
           Text("The following neurons have a dissolve delay of less than 6 months, or were created after the proposal was submitted, and are not able to vote on it",
-              style: context.textTheme.bodyText2),
+              style: context.textTheme.subtitle2),
           ...ineligibleNeurons
               .map((e) => Container(
             child: Row(
@@ -108,7 +120,7 @@ class IneligibleNeuronsWidget extends StatelessWidget {
                 Expanded(
                   child: Padding(
                       padding: EdgeInsets.all(16.0),
-                      child: Text(e.identifier)),
+                      child: Text(e.identifier, style: context.textTheme.subtitle2)),
                 ),
               ],
             ),

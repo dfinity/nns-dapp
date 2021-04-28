@@ -222,23 +222,23 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
     }
 
     {
-        console.log("make a 'SetDefaultFollowees' proposal");
-        const manageNeuronResponse = await governanceApi.makeSetDefaultFolloweesProposal({
-            neuronId: neuronId,
-            url: "https://www.lipsum.com/",
-            summary: "Set default followees",
-            followees: [
-                { topic: Topic.ExchangeRate, followees: [neurons[0].neuronId, neurons[1].neuronId] },
-                { topic: Topic.NetworkEconomics, followees: [neurons[0].neuronId, neurons[1].neuronId] },
-                { topic: Topic.Governance, followees: [neurons[0].neuronId] },
-                { topic: Topic.NodeAdmin, followees: [neurons[2].neuronId, neurons[3].neuronId] },
-                { topic: Topic.ParticipantManagement, followees: [neurons[0].neuronId, neurons[1].neuronId, neurons[2].neuronId] },
-                { topic: Topic.SubnetManagement, followees: [neurons[0].neuronId] },
-                { topic: Topic.NetworkCanisterManagement, followees: [neurons[0].neuronId] },
-                { topic: Topic.Kyc, followees: [neurons[0].neuronId, neurons[1].neuronId] },
-            ]
-        });
-        console.log(manageNeuronResponse);
+        // console.log("make a 'SetDefaultFollowees' proposal");
+        // const manageNeuronResponse = await governanceApi.makeSetDefaultFolloweesProposal({
+        //     neuronId: neuronId,
+        //     url: "https://www.lipsum.com/",
+        //     summary: "Set default followees",
+        //     followees: [
+        //         { topic: Topic.ExchangeRate, followees: [neurons[0].neuronId, neurons[1].neuronId] },
+        //         { topic: Topic.NetworkEconomics, followees: [neurons[0].neuronId, neurons[1].neuronId] },
+        //         { topic: Topic.Governance, followees: [neurons[0].neuronId] },
+        //         { topic: Topic.NodeAdmin, followees: [neurons[2].neuronId, neurons[3].neuronId] },
+        //         { topic: Topic.ParticipantManagement, followees: [neurons[0].neuronId, neurons[1].neuronId, neurons[2].neuronId] },
+        //         { topic: Topic.SubnetManagement, followees: [neurons[0].neuronId] },
+        //         { topic: Topic.NetworkCanisterManagement, followees: [neurons[0].neuronId] },
+        //         { topic: Topic.Kyc, followees: [neurons[0].neuronId, neurons[1].neuronId] },
+        //     ]
+        // });
+        // console.log(manageNeuronResponse);
     }
 
     {

@@ -36,10 +36,26 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                       Card(
                         child: Padding(
                           padding: const EdgeInsets.all(24.0),
-                          child: BalanceDisplayWidget(
-                            amount: amount,
-                            amountSize: 50,
-                            icpLabelSize: 0,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                NumberFormat("###,###.########", "en_US")
+                                    .format(amount),
+                                style: TextStyle(color: AppColors.white,
+                                    fontFamily: Fonts.circularBold,
+                                    fontSize: 50),
+                              ),
+                              SizedBox(
+                                width: 7,
+                              ),
+                              Text("ICP",
+                                  style: TextStyle(color: AppColors.gray200,
+                                      fontFamily: Fonts.circularBook,
+                                      fontSize: 50 * 0.4))
+                            ],
                           ),
                         ),
                       ),

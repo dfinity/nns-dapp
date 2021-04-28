@@ -89,7 +89,7 @@ class _CansitersPageState extends State<CansitersPage> {
                           TextFieldDialogWidget(
                               title: "New Canister",
                               buttonTitle: "Create",
-                              fieldName: "Account Name",
+                              fieldName: "Canister Name",
                               onComplete: (name) {
                                 context.performLoading(() async {
                                   await 1.seconds.delay;

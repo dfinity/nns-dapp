@@ -21,11 +21,32 @@ class _NeuronInfoWidgetState extends State<NeuronInfoWidget> {
         appBar: AppBar(
           backgroundColor: AppColors.background,
           title: Text("Neuron"),
+          actions: [
+            if (OverlayBaseWidget.of(context) != null)
+              AspectRatio(
+                  aspectRatio: 1,
+                  child: TextButton(
+                    onPressed: () {
+                      OverlayBaseWidget.of(context)?.dismiss();
+                    },
+                    child: Center(
+                      child: Text(
+                        "✕",
+                        style: TextStyle(
+                            fontFamily: Fonts.circularBook,
+                            fontSize: 24,
+                            color: AppColors.white),
+                      ),
+                    ),
+                  )),
+          ],
         ),
         body: FutureBuilder<NeuronInfo>(
             future: context.icApi
                 .fetchNeuronInfo(neuronId: widget.neuronId.toBigInt),
             builder: (context, snapshot) {
+              final neuronInfo = snapshot.data;
+              print("neuronInfo ${neuronInfo}");
               if (snapshot.hasData) {
                 return SingleChildScrollView(
                     child: ConstrainWidthAndCenter(
@@ -145,11 +166,6 @@ class NeuronInfoVotesCard extends StatelessWidget {
                 Expanded(
                   child: Text("Voting", style: context.textTheme.headline3),
                 ),
-                LabelledBalanceDisplayWidget(
-                    amount: neuron.votingPower.toICPT,
-                    amountSize: 30,
-                    icpLabelSize: 15,
-                    text: Text("Voting Power"))
               ],
             ),
             SmallFormDivider(),
@@ -161,9 +177,13 @@ class NeuronInfoVotesCard extends StatelessWidget {
                 padding: EdgeInsets.all(8),
                 child: Row(
                   children: [
-                    Text(proposal?.summary ?? e.proposalId),
+                    Text(
+                      proposal?.summary ?? e.proposalId,
+                      style: context.textTheme.subtitle2,
+                    ),
                     Expanded(child: Container()),
-                    Text(e.vote.toString().removePrefix("Vote."))
+                    Text(e.vote.toString().removePrefix("Vote."),
+                        style: context.textTheme.headline3)
                   ],
                 ),
               );

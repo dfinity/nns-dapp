@@ -44,8 +44,8 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
           }
           final primary = context.boxes.accounts.maybePrimary;
           final subAccounts = context.boxes.accounts.subAccounts;
-          final maxListItems =
-              max(subAccounts.length, primary?.transactions.length ?? 0);
+          final hardwareWallets = context.boxes.accounts.hardwareWallets;
+          final maxListItems = max(subAccounts.length, hardwareWallets.length);
 
           return FooterGradientButton(
               footerHeight: null,
@@ -133,7 +133,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                         ),
                         SmallFormDivider(),
                         SizedBox(
-                          height: 150 + maxListItems * 200,
+                          height: 100 + (maxListItems * 150),
                           child: TabBarView(
                             children: [
                               SubAccountsListWidget(

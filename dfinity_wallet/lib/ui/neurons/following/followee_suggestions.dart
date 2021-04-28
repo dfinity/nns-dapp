@@ -1,3 +1,5 @@
+import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
+
 import '../../../dfinity.dart';
 
 class FolloweeSuggestionWidget extends StatefulWidget {
@@ -65,7 +67,9 @@ class FolloweeSuggestionRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(suggestion.name, style: context.textTheme.bodyText1),
+                TextButton(child: Align(alignment: Alignment.bottomLeft, child: Text(suggestion.name, style: context.textTheme.bodyText1)), onPressed: (){
+                    OverlayBaseWidget.show(context, NeuronInfoWidget(suggestion.id));
+                },),
               ],
             ),
           ),

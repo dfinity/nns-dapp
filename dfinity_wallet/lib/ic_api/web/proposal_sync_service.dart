@@ -25,11 +25,11 @@ class ProposalSyncService {
       required List<ProposalRewardStatus> includeRewardStatus,
       Proposal? beforeProposal}) async {
     final request = {
-      'limit': 1,
+      'limit': 100,
       if (beforeProposal != null) 'beforeProposal': beforeProposal.id.toBigInt,
       'includeRewardStatus':
           includeRewardStatus.mapToList((e) => e.index.toInt()),
-      'excludeTopic': [], // excludeTopics.map((e) => e.index),
+      'excludeTopic': excludeTopics.mapToList((e) => e.index.toInt()),
       'includeStatus': includeStatus.mapToList((e) => e.index.toInt())
     };
 
@@ -86,6 +86,12 @@ class ProposalSyncService {
         response['proposalTimestampSeconds'].toString();
     proposal.cacheUpdateDate = DateTime.now();
 
+    print("topic ${response['topic']}");
+    print("status ${response['status'].toString().toInt()}");
+    print("rewardStatus ${response['rewardStatus'].toString().toInt()}");
+
+
+
     proposal.topic = Topic.values[response['topic'].toString().toInt()];
     proposal.status = ProposalStatus.values[response['status'].toString().toInt()];
     proposal.rewardStatus = ProposalRewardStatus.values[response['rewardStatus'].toString().toInt()];
@@ -121,7 +127,6 @@ class ProposalSyncService {
               element.cacheUpdateDate.difference(DateTime.now()).inSeconds >
               1)
           .sortedBy((element) => element.cacheUpdateDate)
-          .take(100)
           .map((element) => element.delete()));
     }
   }

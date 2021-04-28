@@ -21,6 +21,13 @@ class NeuronDetailWidget extends StatefulWidget {
 
 class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
 
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.icApi.fetchNeuron(neuronId: widget.neuron.identifier.toBigInt);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

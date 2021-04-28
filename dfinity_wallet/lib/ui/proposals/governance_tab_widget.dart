@@ -101,7 +101,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
       footer: Container(),
       body: ConstrainWidthAndCenter(
         child: TabTitleAndContent(
-          title: "Voting History",
+          title: "Voting",
           subtitle: "The Internet Computer is managed by ICP token-holders that have staked tokens in neurons, who propose and vote on upgrades to the protocol.",
           children: [
             IntrinsicHeight(
@@ -173,10 +173,13 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextButton(
-                              child: Text(
-                                "Load More",
-                                style: context.textTheme.bodyText2
-                                    ?.copyWith(color: AppColors.gray100),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Load More Proposals",
+                                  style: context.textTheme.subtitle2
+                                      ?.copyWith(color: AppColors.gray100),
+                                ),
                               ),
                               onPressed: () {
                                 final lastProposal = proposals.lastOrNull;
@@ -184,11 +187,11 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                                     lastProposal: lastProposal);
                               }),
                         ),
-                      )
+                      ),
+                      SizedBox(height: 200,)
                     ],
                   );
                 }),
-            SmallFormDivider(),
           ],
         ),
       ),
@@ -221,7 +224,7 @@ class ProposalRow extends StatelessWidget {
                   children: [
                     Text(
                       proposal.summary,
-                      style: context.textTheme.bodyText1,
+                      style: context.textTheme.subtitle1,
                     ),
                     Expanded(child: Container()),
                     Container(

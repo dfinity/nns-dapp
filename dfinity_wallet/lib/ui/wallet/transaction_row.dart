@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:intl/intl.dart';
 
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';
@@ -13,6 +14,7 @@ class TransactionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dateFormatter = DateFormat.yMd().add_jm();
     return Card(
       color: Color(0xff292a2e),
       child: Container(
@@ -25,10 +27,7 @@ class TransactionRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                        (transaction.from == currentAccount.accountIdentifier)
-                            ? "Sent"
-                            : "Received",
+                    Text(dateFormatter.format(transaction.date),
                         style: context.textTheme.headline3),
                     SmallFormDivider(),
                     if (transaction.from != currentAccount.accountIdentifier)
@@ -45,10 +44,9 @@ class TransactionRow extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 20,),
-              BalanceDisplayWidget(
+              TransactionAmountDisplayWidget(
                 amount: transaction.icpt,
-                amountSize: 30,
-                icpLabelSize: 20,
+                addition: transaction.from != currentAccount.accountIdentifier,
               ),
             ],
           ),
@@ -57,3 +55,35 @@ class TransactionRow extends StatelessWidget {
     );
   }
 }
+
+class TransactionAmountDisplayWidget extends StatelessWidget {
+  final double amount;
+  final bool addition;
+  const TransactionAmountDisplayWidget({Key? key, required this.amount, required this.addition})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var f = NumberFormat("###,###.########", "en_US");
+    final sign = addition ? "+" : "-";
+    final color = addition ? AppColors.green500 : AppColors.gray50;
+    final secondaryColor = addition ? AppColors.green600 : AppColors.gray200;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          "$sign${f.format(amount)}",
+          style: TextStyle(color: color, fontFamily: Fonts.circularBold, fontSize: 30.toDouble()),
+        ),
+        SizedBox(
+          width: 7,
+        ),
+        Text("ICP",
+            style: TextStyle(color: secondaryColor, fontFamily: Fonts.circularBook, fontSize: 20.0))
+      ],
+    );
+  }
+}
+

@@ -28,11 +28,12 @@ class SubAccountsListWidget extends StatelessWidget {
         )),
         SmallFormDivider(),
         TextButton(
+          style: ButtonStyle(foregroundColor: MaterialStateProperty.all(AppColors.white)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
               buttonTitle,
-              style: context.textTheme.bodyText2?.copyWith(fontSize: 18),
+              style: context.textTheme.bodyText2?.copyWith(fontSize: 18, color: AppColors.gray50),
             ),
           ),
           onPressed: () {

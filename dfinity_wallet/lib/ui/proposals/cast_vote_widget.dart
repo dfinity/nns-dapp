@@ -72,7 +72,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                       Expanded(
                         child: Padding(
                             padding: EdgeInsets.all(16.0),
-                            child: Text(e.identifier)),
+                            child: Text(e.identifier, style: context.textTheme.subtitle2,)),
                       ),
                       Padding(
                           padding: EdgeInsets.all(16.0),
@@ -103,7 +103,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                     }.takeIf((e) => selectedNeurons!.isNotEmpty),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text("For"),
+                      child: Text("Approve"),
                     ),
                     style: ButtonStyle(
                         backgroundColor:
@@ -130,7 +130,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                     }.takeIf((e) => selectedNeurons!.isNotEmpty),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text("Against"),
+                      child: Text("Reject"),
                     ),
                     style: ButtonStyle(
                         backgroundColor:
@@ -145,12 +145,13 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
     );
   }
 
-  void castVote(Vote vote) {
-    context.performLoading(() async {
+  void castVote(Vote vote) async {
+    await context.performLoading(() async {
       await context.icApi.registerVote(
           neuronIds: selectedNeurons!.map((e) => e.id.toBigInt).toList(),
           proposalId: widget.proposal.id.toBigInt,
           vote: vote);
     });
+    await context.icApi.fetchProposal(proposalId: widget.proposal.identifier.toBigInt);
   }
 }

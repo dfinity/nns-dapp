@@ -55,12 +55,12 @@ class ProposalStateCard extends StatelessWidget {
               onPressed: () { launch(proposal.url); },
               child: Text(
                 proposal.url,
-                style: context.textTheme.bodyText2?.copyWith(color: Colors.blue),
+                style: context.textTheme.subtitle2?.copyWith(color: Colors.blue),
               ),
             ),
             Text(
               "Proposer: ${proposal.proposer}",
-              style: context.textTheme.bodyText2,
+              style: context.textTheme.subtitle2,
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -78,7 +78,7 @@ class ProposalStateCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                    "Yes",
+                                    "Approve",
                                   style: context.textTheme.headline3,
                                 ),
                                 Text(
@@ -112,7 +112,7 @@ class ProposalStateCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                    "No",
+                                    "Reject",
                                   style: context.textTheme.headline3,
                                 ),
                                 Text(
@@ -143,7 +143,7 @@ class ProposalStateCard extends StatelessWidget {
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
                         "My Votes",
-                        style: context.textTheme.bodyText1,
+                        style: context.textTheme.subtitle1,
                       ),
                     ),
                     ...votedNeurons.map((e) {
@@ -164,7 +164,7 @@ class ProposalStateCard extends StatelessWidget {
                           Padding(
                               padding: EdgeInsets.all(16.0),
                               child: Text(
-                                  "${e.votingPower.toBigInt.toICPT.toStringAsFixed(2)}")),
+                                  "${e.votingPower.toBigInt.toICPT.toStringAsFixed(2)}", style: context.textTheme.subtitle2,)),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: SizedBox.fromSize(
