@@ -34,4 +34,8 @@ export default class AuthApi {
     public createAuthenticationIdentity = (): Promise<WebAuthnIdentity> => {
         return webauthn.WebAuthnIdentity.create();
     }
+
+    public connectToHardwareWallet = () => LedgerIdentity => {
+        return LedgerIdentity.fromWebUsb();
+    }
 }

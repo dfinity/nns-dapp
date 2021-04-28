@@ -1,10 +1,12 @@
 import AuthApi from "./src/AuthApi";
 import GovernanceApi from "./src/GovernanceApi";
+import HardwareWalletApi from "./src/HardwareWalletApi";
 import LedgerApi from "./src/LedgerApi";
 import { SignIdentity } from "@dfinity/agent";
 
 window["AuthApi"] = AuthApi;
 window["GovernanceApi"] = GovernanceApi;
+window["HardwareWalletApi"] = HardwareWalletApi;
 window["LedgerApi"] = LedgerApi;
 
 // This hack is because Dart interop doesn't yet understand bigint

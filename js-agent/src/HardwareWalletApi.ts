@@ -26,4 +26,8 @@ export default class HardwareWalletApi {
 
         return await this.ledgerService.sendICPTs(request);
     }
+
+    public showAddressAndPubKeyOnDevice = () : Promise<void> => {
+        return this.identity.showAddressAndPubKeyOnDevice();
+    }
 }
