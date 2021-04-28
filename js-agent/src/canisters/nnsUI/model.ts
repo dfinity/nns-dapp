@@ -1,14 +1,13 @@
+import { AccountIdentifier, BlockHeight, E8s } from "../common/types";
+
 export interface AccountDetails {
     accountIdentifier: AccountIdentifier,
     hardwareWalletAccounts: Array<HardwareWalletAccountDetails>,
     subAccounts: Array<SubAccountDetails>,
 };
-export type AccountIdentifier = string;
-export type BlockHeight = bigint;
 export type CreateSubAccountResponse = { Ok: SubAccountDetails } |
     { AccountNotFound: null } |
     { SubAccountLimitExceeded: null };
-export type E8s = bigint;
 export type GetAccountResponse = { Ok: AccountDetails } |
     { AccountNotFound: null };
 export interface GetTransactionsRequest {

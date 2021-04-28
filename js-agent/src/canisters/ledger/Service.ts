@@ -1,8 +1,6 @@
 import { Agent, Principal } from "@dfinity/agent";
+import { AccountIdentifier, BlockHeight, E8s } from "../common/types";
 import ServiceInterface, {
-    AccountIdentifier,
-    BlockHeight,
-    E8s,
     GetBalancesRequest,
     NotifyCanisterRequest,
     SendICPTsRequest

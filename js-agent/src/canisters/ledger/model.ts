@@ -1,16 +1,10 @@
 import { Principal } from "@dfinity/agent";
-
-export type SubAccount = Uint8Array;
-
-export type BlockHeight = bigint;
-
-export type E8s = bigint;
+import { AccountIdentifier, BlockHeight, E8s, SubAccount } from "../common/types";
 
 export interface GetBalancesRequest {
     accounts: Array<AccountIdentifier>,
 };
 
-export type AccountIdentifier = string;
 
 export interface SendICPTsRequest {
     to: AccountIdentifier,

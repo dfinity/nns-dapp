@@ -1,4 +1,4 @@
-import { AccountIdentifier } from "../ledger/model";
+import { AccountIdentifier } from "../common/types";
 import ServiceInterface, {
     CreateSubAccountResponse,
     GetAccountResponse,

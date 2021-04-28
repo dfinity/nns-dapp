@@ -1,22 +1,9 @@
-import BigNumber from "bignumber.js";
 import { SUB_ACCOUNT_BYTE_LENGTH } from "./constants";
-import { BinaryBlob } from "@dfinity/agent";
+import { BinaryBlob, blobFromUint8Array, Principal } from "@dfinity/agent";
 import { Buffer } from "buffer";
-import { AccountIdentifier } from "./ledger/model";
-
-export const bigIntToBigNumber = (value: bigint) : BigNumber => {
-    return new BigNumber(value.toString(10));
-}
-
-export const bigNumberToBigInt = (value: BigNumber) : bigint => {
-    return BigInt(value.toString(10));
-}
-
-export const arrayBufferToBigNumber = (buffer: ArrayBuffer) : BigNumber => {
-    const view = new DataView(buffer);
-    const value = view.getBigUint64(0);
-    return bigIntToBigNumber(value);
-}
+import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
+import crc from "crc";
+import { AccountIdentifier } from "./common/types";
 
 export const uint8ArrayToBigInt = (array: Uint8Array) : bigint => {
     const view = new DataView(array.buffer, array.byteOffset, array.byteLength);
@@ -77,4 +64,30 @@ export const accountIdentifierToBytes = (accountIdentifier: AccountIdentifier) :
 
 export const accountIdentifierFromBytes = (accountIdentifier: Uint8Array) : AccountIdentifier => {
     return Buffer.from(accountIdentifier).toString("hex");
+}
+
+export const principalToAccountIdentifier = (principal: Principal, subAccount?: Uint8Array) : string => {
+    // Hash (sha224) the principal, the subAccount and some padding
+    const padding = asciiStringToByteArray("\x0Aaccount-id");
+    const array = new Uint8Array([
+        ...padding,
+        ...principal.toBlob(),
+        ...(subAccount ?? Array(32).fill(0))]);
+    const hash = sha224(array);
+
+    // Prepend the checksum of the hash and convert to a hex string
+    const checksum = calculateCrc32(hash);
+    const array2 = new Uint8Array([
+        ...checksum,
+        ...hash
+    ]);
+    return blobFromUint8Array(array2).toString("hex");
+}
+
+// 4 bytes
+function calculateCrc32(bytes: BinaryBlob) : Uint8Array {
+    const checksumArrayBuf = new ArrayBuffer(4);
+    const view = new DataView(checksumArrayBuf);
+    view.setUint32(0, crc.crc32(Buffer.from(bytes)), false);
+    return Buffer.from(checksumArrayBuf);
 }

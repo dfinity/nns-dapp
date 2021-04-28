@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/agent";
 import { accountIdentifierToBytes, arrayBufferToArrayOfNumber } from "../converter";
-import { AccountIdentifier } from "../ledger/model";
+import { AccountIdentifier, E8s } from "../common/types";
 import {
     Action,
     AddHotKeyRequest,
@@ -9,7 +9,6 @@ import {
     Command,
     DisburseRequest,
     DisburseToNeuronRequest,
-    E8s,
     FollowRequest,
     IncreaseDissolveDelayRequest,
     ListProposalsRequest,

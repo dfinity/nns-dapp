@@ -1,8 +1,6 @@
-import { blobFromUint8Array, derBlobFromBlob, Principal, SignIdentity } from "@dfinity/agent";
+import { SignIdentity } from "@dfinity/agent";
 import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
-import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
-import { buildSubAccount, buildAccountIdentifier } from "./canisters/ledger/createNeuron";
 import { NeuronId, Topic, Vote } from "./canisters/governance/model";
 
 var running = false;
@@ -257,23 +255,3 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
 
     console.log("finish create_dummy_proposals");
 }
-
-// export async function test_create_neuron_functions(): Promise<void> {
-//     console.log("Create sub-account");
-
-//     const publicKey = new Uint8Array([48,42,48,5,6,3,43,101,112,3,33,0,181,24,137,15,148,110,55,201,158,206,110,91,176,249,155,62,237,13,87,9,79,26,225,92,162,113,124,246,221,218,76,239]);
-//     const nonce = new Uint8Array([0,0,0,0,0,0,48,57]);
-
-//     const subAccount = await buildSubAccount(nonce, derBlobFromBlob(blobFromUint8Array(publicKey)));
-
-//     console.log("subAccount");
-//     console.log(subAccount);
-
-//     const accountIdentifier = buildAccountIdentifier(GOVERNANCE_CANISTER_ID, subAccount);
-//     console.log("accountIdentifier");
-//     console.log(accountIdentifier);
-//     console.log(accountIdentifier.length);
-// }
-
-
-

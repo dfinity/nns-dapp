@@ -1,14 +1,12 @@
-import { Buffer } from "buffer";
-import LedgerService, { E8s } from "./model";
+import LedgerService from "./model";
 import { NeuronId } from "../governance/model";
-import { BinaryBlob, blobFromUint8Array, Principal, SignIdentity } from "@dfinity/agent";
+import { Principal, SignIdentity } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
 import * as convert from "../converter";
-import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
-import crc from "crc";
 import randomBytes from "randombytes";
 import { TransactionNotificationResponse } from "./proto/types_pb";
-import { uint8ArrayToBigInt } from "../converter";
+import { principalToAccountIdentifier, uint8ArrayToBigInt } from "../converter";
+import { E8s } from "../common/types";
 
 export type CreateNeuronRequest = {
     stake: E8s
@@ -25,7 +23,7 @@ export default async function(
     const nonce = new Uint8Array(randomBytes(8));
     const toSubAccount = await buildSubAccount(nonce, principal);
 
-    const accountIdentifier = buildAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
+    const accountIdentifier = principalToAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
     const blockHeight = await ledgerService.sendICPTs({
         memo: nonce,
         amount: request.stake,
@@ -62,32 +60,4 @@ export async function buildSubAccount(nonce: Uint8Array, principal: Principal) :
         ...nonce]);
     const result = await crypto.subtle.digest("SHA-256", array);
     return new Uint8Array(result);
-}
-
-// hex string of length 64
-// ported from https://github.com/dfinity-lab/dfinity/blob/master/rs/rosetta-api/canister/src/account_identifier.rs
-export function buildAccountIdentifier(principal: Principal, subAccount: Uint8Array) : string {
-    // Hash (sha224) the principal, the subAccount and some padding
-    const padding = convert.asciiStringToByteArray("\x0Aaccount-id");
-    const array = new Uint8Array([
-        ...padding, 
-        ...principal.toBlob(), 
-        ...subAccount]);
-    const hash = sha224(array);
-    
-    // Prepend the checksum of the hash and convert to a hex string
-    const checksum = calculateCrc32(hash);
-    const array2 = new Uint8Array([
-        ...checksum,
-        ...hash
-    ]);
-    return blobFromUint8Array(array2).toString("hex");
-}
-
-// 4 bytes
-function calculateCrc32(bytes: BinaryBlob) : Uint8Array {
-    const checksumArrayBuf = new ArrayBuffer(4);
-    const view = new DataView(checksumArrayBuf);
-    view.setUint32(0, crc.crc32(Buffer.from(bytes)), false);
-    return Buffer.from(checksumArrayBuf);
 }

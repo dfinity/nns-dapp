@@ -1,5 +1,5 @@
 import { accountIdentifierFromBytes, arrayOfNumberToArrayBuffer } from "../converter";
-import { AccountIdentifier } from "../ledger/model";
+import { AccountIdentifier, E8s } from "../common/types";
 import {
     Action,
     Ballot,
@@ -9,7 +9,6 @@ import {
     DisburseResponse,
     DisburseToNeuronResponse,
     DissolveState,
-    E8s,
     Followees,
     ListProposalsResponse,
     MakeProposalResponse,

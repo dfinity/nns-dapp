@@ -1,8 +1,10 @@
 {
   "nns_ui": {
-    "testnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
+    "rc3": "36szl-siaaa-aaaaa-qaaxa-cai",
+    "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
   },
   "nns_ui_assets": {
-    "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+    "rc3": "3zt77-7qaaa-aaaaa-qaaxq-cai",
+    "testnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
   }
 }

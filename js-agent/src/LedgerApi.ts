@@ -1,10 +1,7 @@
 import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService, {
-    AccountIdentifier,
-    BlockHeight,
     GetBalancesRequest,
-    E8s,
     SendICPTsRequest
 } from "./canisters/ledger/model";
 import ledgerViewBuilder from "./canisters/nnsUI/builder";
@@ -13,11 +10,15 @@ import LedgerViewService, {
     CreateSubAccountResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
-    SubAccountDetails
+    RegisterHardwareWalletRequest,
+    RegisterHardwareWalletResponse
 } from "./canisters/nnsUI/model";
 import { create_dummy_proposals, test_happy_path } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/ledger/createNeuron";
 import { NeuronId } from "./canisters/governance/model";
+import { AccountIdentifier, BlockHeight, E8s } from "./canisters/common/types";
+import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
+import { principalToAccountIdentifier } from "./canisters/converter";
 
 export default class LedgerApi {
     private readonly ledgerService: LedgerService;
@@ -57,6 +58,15 @@ export default class LedgerApi {
 
     public createSubAccount = (name: string) : Promise<CreateSubAccountResponse> => {
         return this.ledgerViewService.createSubAccount(name);
+    }
+
+    public registerHardwareWallet = (name: string, identity: LedgerIdentity) : Promise<RegisterHardwareWalletResponse> => {
+        const accountIdentifier = principalToAccountIdentifier(identity.getPrincipal());
+        const request: RegisterHardwareWalletRequest = {
+            name,
+            accountIdentifier
+        };
+        return this.ledgerViewService.registerHardwareWallet(request);
     }
 
     public getAccount = async () : Promise<AccountDetails> => {
