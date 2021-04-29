@@ -13,8 +13,7 @@ lazy_static! {
 
 impl State {
     pub fn encode(&self) -> Vec<u8> {
-        let state = STATE.read().unwrap();
-        state.transactions_store.encode()
+        self.transactions_store.encode()
     }
 
     pub fn decode(bytes: &[u8]) -> Result<Self, String> {

@@ -16,6 +16,7 @@ use std::cmp::min;
 use std::collections::{hash_map::Entry::{Occupied, Vacant}, HashMap, VecDeque};
 use std::iter::FromIterator;
 use std::ops::RangeTo;
+use std::time::{SystemTime, Duration};
 
 type TransactionIndex = u64;
 
@@ -28,6 +29,11 @@ pub struct TransactionStore {
 
     // Use these up first before appending to the accounts Vec
     empty_account_indices: Vec<u32>,
+
+    accounts_count: u64,
+    sub_accounts_count: u64,
+    hardware_wallet_accounts_count: u64,
+    last_ledger_sync_timestamp_nanos: u64
 }
 
 #[derive(CandidType, Deserialize, Debug)]
@@ -109,15 +115,18 @@ pub struct HardwareWalletAccountDetails {
 
 impl TransactionStore {
     pub fn encode(&self) -> Vec<u8> {
-        Candid((Vec::from_iter(self.transactions.iter()), &self.accounts, &self.block_height_synced_up_to)).into_bytes().unwrap()
+        Candid((Vec::from_iter(self.transactions.iter()), &self.accounts, &self.block_height_synced_up_to, &self.last_ledger_sync_timestamp_nanos)).into_bytes().unwrap()
     }
 
     pub fn decode(bytes: &[u8]) -> Result<Self, String> {
-        let (transactions, accounts, block_height_synced_up_to): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>) =
+        let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64) =
             Candid::from_bytes(bytes.to_vec()).map(|c| c.0)?;
 
         let mut account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation> = HashMap::new();
         let mut empty_account_indices: Vec<u32> = Vec::new();
+        let mut accounts_count: u64 = 0;
+        let mut sub_accounts_count: u64 = 0;
+        let mut hardware_wallet_accounts_count: u64 = 0;
 
         for i in 0..accounts.len() {
             if let Some(a) = accounts.get(i).unwrap() {
@@ -129,6 +138,9 @@ impl TransactionStore {
                 for hw in a.hardware_wallet_accounts.iter() {
                     Self::link_hardware_wallet_to_account_index(&mut account_identifier_lookup, hw.account_identifier, index);
                 }
+                accounts_count = accounts_count + 1;
+                sub_accounts_count = sub_accounts_count + a.sub_accounts.len() as u64;
+                hardware_wallet_accounts_count = hardware_wallet_accounts_count + a.hardware_wallet_accounts.len() as u64;
             } else {
                 empty_account_indices.push(i as u32);
             }
@@ -139,7 +151,11 @@ impl TransactionStore {
             transactions: VecDeque::from_iter(transactions),
             accounts,
             block_height_synced_up_to,
-            empty_account_indices
+            empty_account_indices,
+            accounts_count: 10,
+            sub_accounts_count,
+            hardware_wallet_accounts_count,
+            last_ledger_sync_timestamp_nanos
         })
     }
 
@@ -190,6 +206,7 @@ impl TransactionStore {
                     *account = Some(new_account);
                 }
                 e.insert(AccountLocation::DefaultAccount(account_index));
+                self.accounts_count = self.accounts_count + 1;
                 true
             }
         }
@@ -200,7 +217,7 @@ impl TransactionStore {
             if account.sub_accounts.len() == (u8::MAX as usize) {
                 CreateSubAccountResponse::SubAccountLimitExceeded
             } else {
-                let sub_account_id = (1..u8::max_value())
+                let sub_account_id = (1..u8::MAX)
                     .filter(|i| !account.sub_accounts.contains_key(i))
                     .next()
                     .unwrap();
@@ -210,7 +227,9 @@ impl TransactionStore {
                 let named_sub_account = NamedSubAccount::new(
                     sub_account_name.clone(),
                     sub_account_identifier.clone());
+
                 account.sub_accounts.insert(sub_account_id, named_sub_account);
+                self.sub_accounts_count = self.sub_accounts_count + 1;
 
                 CreateSubAccountResponse::Ok(SubAccountDetails {
                     name: sub_account_name,
@@ -236,6 +255,7 @@ impl TransactionStore {
                 });
 
                 Self::link_hardware_wallet_to_account_index(&mut self.account_identifier_lookup, request.account_identifier, index);
+                self.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count + 1;
 
                 RegisterHardwareWalletResponse::Ok
             }
@@ -294,6 +314,11 @@ impl TransactionStore {
         self.block_height_synced_up_to = Some(block_height);
 
         Ok(should_store_transaction)
+    }
+
+    pub fn mark_ledger_sync_complete(&mut self) {
+        self.last_ledger_sync_timestamp_nanos = dfn_core::api::now()
+            .duration_since(SystemTime::UNIX_EPOCH).unwrap().as_nanos() as u64;
     }
 
     pub fn get_transactions(&self, caller: PrincipalId, request: GetTransactionsRequest) -> GetTransactionsResponse {
@@ -391,6 +416,26 @@ impl TransactionStore {
         }
 
         count_to_prune as u32
+    }
+
+    pub fn get_stats(&self) -> Stats {
+        let earliest_transaction = self.transactions.front();
+        let latest_transaction = self.transactions.back();
+        let timestamp_now_nanos = dfn_core::api::now().duration_since(SystemTime::UNIX_EPOCH).unwrap().as_nanos() as u64;
+        let duration_since_last_sync = Duration::from_nanos(timestamp_now_nanos - self.last_ledger_sync_timestamp_nanos);
+
+        Stats {
+            accounts_count: self.accounts_count,
+            sub_accounts_count: self.sub_accounts_count,
+            hardware_wallet_accounts_count: self.hardware_wallet_accounts_count,
+            transactions_count: self.transactions.len() as u64,
+            block_height_synced_up_to: self.block_height_synced_up_to.unwrap_or(0),
+            earliest_transaction_timestamp_nanos: earliest_transaction.map_or(0, |t| t.timestamp.timestamp_nanos),
+            earliest_transaction_block_height: earliest_transaction.map_or(0, |t| t.block_height),
+            latest_transaction_timestamp_nanos: latest_transaction.map_or(0, |t| t.timestamp.timestamp_nanos),
+            latest_transaction_block_height: latest_transaction.map_or(0, |t| t.block_height),
+            seconds_since_last_ledger_sync: duration_since_last_sync.as_secs()
+        }
     }
 
     fn try_add_transaction_to_account(&mut self, account_identifier: AccountIdentifier, transaction_index: TransactionIndex) -> bool {
@@ -615,6 +660,20 @@ pub enum TransferResult {
     },
 }
 
+#[derive(CandidType)]
+pub struct Stats {
+    accounts_count: u64,
+    sub_accounts_count: u64,
+    hardware_wallet_accounts_count: u64,
+    transactions_count: u64,
+    block_height_synced_up_to: u64,
+    earliest_transaction_timestamp_nanos: u64,
+    earliest_transaction_block_height: BlockHeight,
+    latest_transaction_timestamp_nanos: u64,
+    latest_transaction_block_height: BlockHeight,
+    seconds_since_last_ledger_sync: u64,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -625,6 +684,8 @@ mod tests {
     const TEST_ACCOUNT_2: &str = "c2u3y-w273i-ols77-om7wu-jzrdm-gxxz3-b75cc-3ajdg-mauzk-hm5vh-jag";
     const TEST_ACCOUNT_3: &str = "347of-sq6dc-h53df-dtzkw-eama6-hfaxk-a7ghn-oumsd-jf2qy-tqvqc-wqe";
     const TEST_ACCOUNT_4: &str = "zrmyx-sbrcv-rod5f-xyd6k-letwb-tukpj-edhrc-sqash-lddmc-7qypw-yqe";
+    const TEST_ACCOUNT_5: &str = "2fzwl-cu3hl-bawo2-idwrw-7yygk-uccms-cbo3a-c6kqt-lnk3j-mewg3-hae";
+    const TEST_ACCOUNT_6: &str = "4gb44-uya57-c2v6u-fcz5v-qrpwl-wqkmf-o3fd3-esjio-kpysm-r5xxh-fqe";
 
     #[test]
     fn get_non_existant_account_produces_empty_results() {
@@ -838,6 +899,49 @@ mod tests {
         let block_heights_remaining = transaction_indexes_remaining.iter().map(|t| store.get_transaction(*t).unwrap().block_height).collect_vec();
 
         assert_eq!(pruned_block_heights, block_heights_remaining);
+    }
+
+    #[test]
+    fn get_stats() {
+        let mut store = setup_test_store();
+
+        let stats = store.get_stats();
+        assert_eq!(2, stats.accounts_count);
+        assert_eq!(0, stats.sub_accounts_count);
+        assert_eq!(0, stats.hardware_wallet_accounts_count);
+        assert_eq!(4, stats.transactions_count);
+        assert_eq!(3, stats.block_height_synced_up_to);
+        assert_eq!(0, stats.earliest_transaction_block_height);
+        assert_eq!(3, stats.latest_transaction_block_height);
+        assert!(stats.seconds_since_last_ledger_sync > 1_000_000_000);
+
+        let principal3 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+        let principal4 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
+
+        store.add_account(principal3);
+        store.add_account(principal4);
+
+        let stats = store.get_stats();
+
+        assert_eq!(4, stats.accounts_count);
+
+        for i in 1..10 {
+            store.create_sub_account(principal3, i.to_string());
+            let stats = store.get_stats();
+            assert_eq!(i, stats.sub_accounts_count);
+        }
+
+        let hw1 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_5).unwrap());
+        let hw2 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_6).unwrap());
+        store.register_hardware_wallet(principal3, RegisterHardwareWalletRequest { name: "HW1".to_string(), account_identifier: hw1 });
+        store.register_hardware_wallet(principal4, RegisterHardwareWalletRequest { name: "HW2".to_string(), account_identifier: hw2 });
+
+        let stats = store.get_stats();
+        assert_eq!(2, stats.hardware_wallet_accounts_count);
+
+        store.mark_ledger_sync_complete();
+        let stats = store.get_stats();
+        assert!(stats.seconds_since_last_ledger_sync < 10);
     }
 
     fn setup_test_store() -> TransactionStore {

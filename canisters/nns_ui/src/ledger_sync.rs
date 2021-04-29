@@ -3,8 +3,8 @@ use dfn_protobuf::protobuf;
 use ic_nns_constants::LEDGER_CANISTER_ID;
 use lazy_static::lazy_static;
 use ledger_canister::{BlockHeight, GetBlocksRes, Block, GetBlocksArgs, TipOfChainRes};
-use std::sync::Mutex;
 use ledger_canister::protobuf::TipOfChainRequest;
+use std::sync::Mutex;
 
 lazy_static! {
     static ref LOCK: Mutex<bool> = Mutex::new(false);
@@ -37,6 +37,8 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
                         return Err(result.unwrap_err());
                     }
                 }
+                store.mark_ledger_sync_complete();
+
                 Ok(blocks_count)
             }
             Err(e) => Err(e),

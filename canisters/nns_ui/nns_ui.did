@@ -96,11 +96,32 @@ type RegisterHardwareWalletResponse =
         HardwareWalletLimitExceeded;
     };
 
+type Stats =
+    record {
+        accounts_count: nat64;
+        sub_accounts_count: nat64;
+        hardware_wallet_accounts_count: nat64;
+        transactions_count: nat64;
+        block_height_synced_up_to: nat64;
+        earliest_transaction_timestamp_nanos: nat64;
+        earliest_transaction_block_height: BlockHeight;
+        latest_transaction_timestamp_nanos: nat64;
+        latest_transaction_block_height: BlockHeight;
+        seconds_since_last_ledger_sync: nat64;
+    };
+
+type SyncTransactionsResult =
+    variant {
+        Ok: nat32;
+        Err: text;
+    };
+
 service : {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
     register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);
-    sync_transactions: () -> ();
+    get_stats: () -> (Stats) query;
+    sync_transactions: () -> (opt SyncTransactionsResult);
 }

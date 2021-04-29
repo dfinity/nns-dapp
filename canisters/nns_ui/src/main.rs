@@ -6,7 +6,8 @@ use crate::transaction_store::{
     GetTransactionsRequest,
     GetTransactionsResponse,
     RegisterHardwareWalletRequest,
-    RegisterHardwareWalletResponse
+    RegisterHardwareWalletResponse,
+    Stats
 };
 use dfn_candid::{candid, candid_one};
 use dfn_core::{stable, over, over_async};
@@ -19,17 +20,17 @@ mod transaction_store;
 #[export_name = "canister_init"]
 fn main() {}
 
-#[export_name = "canister_post_upgrade"]
-fn post_upgrade() {
-    let bytes = stable::get();
-    *STATE.write().unwrap() = State::decode(&bytes).expect("Decoding stable memory failed");
-}
-
 #[export_name = "canister_pre_upgrade"]
 fn pre_upgrade() {
     let state = STATE.read().unwrap();
     let bytes = state.encode();
     stable::set(&bytes);
+}
+
+#[export_name = "canister_post_upgrade"]
+fn post_upgrade() {
+    let bytes = stable::get();
+    *STATE.write().unwrap() = State::decode(&bytes).expect("Decoding stable memory failed");
 }
 
 #[export_name = "canister_query get_account"]
@@ -92,6 +93,16 @@ fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> Regi
     store.register_hardware_wallet(principal, request)
 }
 
+#[export_name = "canister_query get_stats"]
+pub fn get_stats() {
+    over(candid, |()| get_stats_impl());
+}
+
+fn get_stats_impl() -> Stats {
+    let store = &STATE.read().unwrap().transactions_store;
+    store.get_stats()
+}
+
 #[export_name = "canister_update sync_transactions"]
 pub fn ledger_sync_manual() {
     ledger_sync();
@@ -99,11 +110,14 @@ pub fn ledger_sync_manual() {
 
 #[export_name = "canister_heartbeat"]
 pub fn ledger_sync() {
-    over_async(candid, |()| async {
-        dfn_core::api::print("sync_transactions started");
-        let result = ledger_sync::sync_transactions().await;
-        dfn_core::api::print(format!("sync_transactions completed. Count added = {:?}", result));
-    });
+    over_async(candid, |()| ledger_sync_impl());
+}
+
+async fn ledger_sync_impl() -> Option<Result<u32, String>> {
+    dfn_core::api::print("sync_transactions started");
+    let result = ledger_sync::sync_transactions().await;
+    dfn_core::api::print(format!("sync_transactions completed. Count added = {:?}", result));
+    result
 }
 
 #[derive(CandidType)]
