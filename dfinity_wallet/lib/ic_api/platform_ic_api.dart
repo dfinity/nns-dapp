@@ -50,11 +50,6 @@ abstract class AbstractPlatformICApi {
   Future<void> disburse(
       {required BigInt neuronId, required BigInt doms, required String toAccountId});
 
-  Future<void> makeMotionProposal(
-      {required BigInt neuronId,
-      required String url,
-      required String text,
-      required String summary});
 
   Future<void> fetchProposals(
       {required List<Topic> excludeTopics,

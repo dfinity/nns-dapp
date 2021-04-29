@@ -18,8 +18,7 @@ class _NewProposalDialogState extends State<NewProposalDialog> {
       validations: [StringFieldValidation.minimumLength(2)]);
   final urlField = ValidatedTextField("URL",
       validations: [StringFieldValidation.minimumLength(2)]);
-  // final summaryField = ValidatedTextField("Summary",
-  //     validations: [StringFieldValidation.minimumLength(2)]);
+  // final summaryField = ValidatedTextField("Summary",validations: [StringFieldValidation.minimumLength(2)]);
 
   List<ValidatedTextField> get fields => [textField, urlField];
 
@@ -55,12 +54,7 @@ class _NewProposalDialogState extends State<NewProposalDialog> {
                 child: ValidFieldsSubmitButton(
                   child: Text("Create"),
                   onPressed: () async {
-                    await context.performLoading(() => context.icApi.makeMotionProposal(
-                        neuronId: widget.neuron.id.toBigInt,
-                        url: urlField.currentValue,
-                        text: textField.currentValue,
-                        summary: textField.currentValue));
-                    OverlayBaseWidget.of(context)?.dismiss();
+
                   },
                   fields: fields,
                 ),

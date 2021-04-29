@@ -1,4 +1,3 @@
-
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
@@ -6,6 +5,7 @@ import 'package:dfinity_wallet/ic_api/web/ledger_api.dart';
 
 import '../../dfinity.dart';
 import 'stringify.dart';
+import 'package:js/js.dart';
 
 class TransactionSyncService {
   final LedgerApi ledgerApi;
@@ -18,7 +18,11 @@ class TransactionSyncService {
   }
 
   Future<void> syncAccount(Account account) async {
-    final response = await callApi(ledgerApi.getTransactions, {'accountIdentifier': account.accountIdentifier, 'pageSize': 100, 'offset': 0});
+    final response = await promiseToFuture(ledgerApi.getTransactions(
+        GetTransactionsRequest(
+            accountIdentifier: account.accountIdentifier,
+            pageSize: 100,
+            offset: 0)));
     print("Transactions response: " + stringify(response));
 
     final transactions = <Transaction>[];
@@ -40,23 +44,34 @@ class TransactionSyncService {
         doms = BigInt.parse(receive['amount'].toString());
       }
 
-      final milliseconds = BigInt.parse(e['timestamp'].toString()) / BigInt.from(1000000);
+      final milliseconds =
+          BigInt.parse(e['timestamp'].toString()) / BigInt.from(1000000);
       transactions.add(Transaction(
-        to: to,
-        from: from,
-        date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
-        doms: doms.toString(),
-        fee: e['fees'].toString()
-      ));
+          to: to,
+          from: from,
+          date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
+          doms: doms.toString(),
+          fee: e['fees'].toString()));
     });
-    // print("parsed ${transactions.length} transactions for ${account.accountIdentifier}");
 
     Future.wait(hiveBoxes.accounts.values.map((e) async {
       e.transactions = transactions
-          .filter(
-              (element) => element.to == e.accountIdentifier || element.from == e.accountIdentifier)
+          .filter((element) =>
+              element.to == e.accountIdentifier ||
+              element.from == e.accountIdentifier)
           .toList();
       e.save();
     }));
   }
+}
+
+@JS()
+@anonymous
+class GetTransactionsRequest {
+  external String accountIdentifier;
+  external int pageSize;
+  external int offset;
+
+  external factory GetTransactionsRequest(
+      {dynamic accountIdentifier, int pageSize, int offset});
 }

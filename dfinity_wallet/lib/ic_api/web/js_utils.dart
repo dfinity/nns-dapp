@@ -19,25 +19,6 @@ extension ToJSObject on Map {
   }
 }
 
-Future<Map<String, dynamic>> callApi(
-    dynamic Function(dynamic) function, Map<String, dynamic> input, {String? debugLabel}) {
-
-  if(debugLabel != null){
-    // print("${debugLabel} request\n ${stringify(jsify(input))}");
-  }
-  return promiseToFuture(function(jsify(input))).then((value) {
-    final json = stringify(value);
-    if(debugLabel!= null){
-      // print("${debugLabel} response\n ${json}");
-    }
-    return jsonDecode(json);
-  });
-}
-
-Future<Map<String, dynamic>> callApiMap(
-    dynamic Function(dynamic) function, Map<String, dynamic> input) async {
-  return (await promiseToFutureAsMap(function(jsify(input))))!;
-}
 
 @JS()
 class Promise<T> {

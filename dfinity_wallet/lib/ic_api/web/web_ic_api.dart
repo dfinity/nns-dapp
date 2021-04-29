@@ -99,11 +99,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required String toAccount,
       required BigInt doms,
       int? fromSubAccount}) async {
-    await promiseToFuture(ledgerApi!.sendICPTs(jsify({
-      'to': toAccount,
-      'amount': doms,
-      if (fromSubAccount != null) 'fromSubAccountId': fromSubAccount.toInt()
-    })));
+    await promiseToFuture(ledgerApi!.sendICPTs(SendICPTsRequest(
+      to: toAccount,
+      amount: doms.toJS,
+      fromSubAccountId: fromSubAccount
+    )));
     await Future.wait([
       balanceSyncService!.syncBalances(),
       transactionSyncService!.syncAccount(hiveBoxes.accounts.primary)
@@ -113,24 +113,19 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> createNeuron(
       {required BigInt stakeInDoms, int? fromSubAccount}) async {
-    final request = {
-      'stake': stakeInDoms,
-      if (fromSubAccount != null) 'fromSubAccountId': fromSubAccount.toInt()
-    };
-    print("create neuron request ${request}");
-    final neuronId = await promiseToFuture(ledgerApi!.createNeuron(CreateNeuronRequest(stake: stakeInDoms, fromSubAccountId: fromSubAccount)));
+    await promiseToFuture(ledgerApi!.createNeuron(CreateNeuronRequest(stake: stakeInDoms, fromSubAccountId: fromSubAccount)));
     await neuronSyncService!.fetchNeurons();
   }
 
   @override
   Future<void> startDissolving({required BigInt neuronId}) async {
-    await callApi(governanceApi!.startDissolving, {'neuronId': neuronId.toJS}, debugLabel: "startDissolving");
+    await promiseToFuture(governanceApi!.startDissolving(NeuronIdentifierRequest(neuronId: neuronId.toJS)));
     await neuronSyncService!.fetchNeurons();
   }
 
   @override
   Future<void> stopDissolving({required BigInt neuronId}) async {
-    await callApi(governanceApi!.stopDissolving, {'neuronId': neuronId.toJS});
+    await promiseToFuture(governanceApi!.stopDissolving(NeuronIdentifierRequest(neuronId: neuronId.toJS)));
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -139,8 +134,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId,
       required BigInt doms,
       required String toAccountId}) async {
-    await callApi(governanceApi!.disburse,
-        {'neuronId': neuronId.toJS, 'amount': doms.toJS, 'toAccountId': toAccountId});
+    await governanceApi!.disburse(DisperseNeuronRequest(neuronId: neuronId.toJS, amount: doms.toJS, toAccountId: toAccountId));
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -173,20 +167,6 @@ class PlatformICApi extends AbstractPlatformICApi {
     print("after getNeuron");
   }
 
-  @override
-  Future<void> makeMotionProposal(
-      {required BigInt neuronId,
-      required String url,
-      required String text,
-      required String summary}) async {
-    final result = await callApi(governanceApi!.makeMotionProposal, {
-      'neuronId': neuronId.toJS,
-      'url': url,
-      'text': text,
-      'summary': summary,
-    });
-    print("makeMotionProposal ${stringify(result)}");
-  }
 
   @override
   Future<void> registerVote(
@@ -194,11 +174,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       required BigInt proposalId,
       required Vote vote}) async {
     final result = await Future.wait(
-        neuronIds.map((e) => callApi(governanceApi!.registerVote, {
-              'neuronId': e.toJS,
-              'proposal': proposalId.toJS,
-              'vote': vote.index,
-            }, debugLabel: "registerVote")));
+        neuronIds.map((e) => promiseToFuture(governanceApi!.registerVote(RegisterVoteRequest(
+              neuronId: e.toJS,
+              proposal: proposalId.toJS,
+              vote: vote.index,
+            )))));
     print("registerVote ${stringify(result)}");
     await neuronSyncService!.fetchNeurons();
   }
@@ -291,3 +271,37 @@ class CreateNeuronRequest {
 
   external factory CreateNeuronRequest({dynamic stake, int? fromSubAccountId});
 }
+
+@JS()
+@anonymous
+class DisperseNeuronRequest {
+  external dynamic neuronId;
+  external dynamic amount;
+  external String toAccountId;
+
+  external factory DisperseNeuronRequest({dynamic neuronId, dynamic amount, String toAccountId});
+}
+
+
+@JS()
+@anonymous
+class SendICPTsRequest {
+  external dynamic to;
+  external dynamic amount;
+  external int? fromSubAccountId;
+
+  external factory SendICPTsRequest({dynamic to, dynamic amount, int? fromSubAccountId});
+}
+
+
+
+@JS()
+@anonymous
+class RegisterVoteRequest {
+  external dynamic neuronId;
+  external dynamic proposal;
+  external int vote;
+
+  external factory RegisterVoteRequest({dynamic neuronId, dynamic proposal, int vote});
+}
+
