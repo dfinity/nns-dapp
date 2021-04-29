@@ -1,10 +1,11 @@
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity";
+import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import * as webauthn from "./auth/webauthn";
 import { WebAuthnIdentity } from "./auth/webauthn";
 import authClient from "./auth/authClient";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
 import LEDGER_CANISTER_ID from "./canisters/ledger/canisterId";
 import NNS_UI_CANISTER_ID from "./canisters/nnsUI/canisterId";
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity";
 
 const canisterIds = [
     GOVERNANCE_CANISTER_ID,
@@ -31,11 +32,11 @@ export default class AuthApi {
         return authClient.createDelegationIdentity(Ed25519KeyIdentity.fromJSON(key), accessToken);
     }
 
-    public createAuthenticationIdentity = (): Promise<WebAuthnIdentity> => {
+    public createAuthenticationIdentity = () : Promise<WebAuthnIdentity> => {
         return webauthn.WebAuthnIdentity.create();
     }
 
-    public connectToHardwareWallet = () => LedgerIdentity => {
+    public connectToHardwareWallet = () : Promise<LedgerIdentity> => {
         return LedgerIdentity.fromWebUsb();
     }
 }
