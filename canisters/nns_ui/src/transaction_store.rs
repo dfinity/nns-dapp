@@ -1,6 +1,7 @@
 use candid::CandidType;
 use dfn_candid::Candid;
 use ic_base_types::PrincipalId;
+use itertools::Itertools;
 use ledger_canister::{
     AccountIdentifier,
     BlockHeight,
@@ -11,9 +12,10 @@ use ledger_canister::{
 };
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
+use std::cmp::min;
 use std::collections::{hash_map::Entry::{Occupied, Vacant}, HashMap, VecDeque};
 use std::iter::FromIterator;
-use itertools::Itertools;
+use std::ops::RangeTo;
 
 type TransactionIndex = u64;
 
@@ -366,6 +368,31 @@ impl TransactionStore {
         }
     }
 
+    pub fn prune_transactions(&mut self, count_to_prune: u32) -> u32 {
+        let count_to_prune = min(count_to_prune, self.transactions.len() as u32);
+
+        if count_to_prune > 0 {
+            let transactions: Vec<_> = self.transactions
+                .drain(RangeTo { end: count_to_prune as usize })
+                .collect();
+
+            let min_transaction_index = self.transactions.front().unwrap().transaction_index;
+
+            for transaction in transactions {
+                match transaction.transfer {
+                    Burn { from, amount: _ } => self.prune_transactions_from_account(from, min_transaction_index),
+                    Mint { to, amount: _ } => self.prune_transactions_from_account(to, min_transaction_index),
+                    Send { from, to, amount: _, fee: _ } => {
+                        self.prune_transactions_from_account(from, min_transaction_index);
+                        self.prune_transactions_from_account(to, min_transaction_index);
+                    }
+                }
+            }
+        }
+
+        count_to_prune as u32
+    }
+
     fn try_add_transaction_to_account(&mut self, account_identifier: AccountIdentifier, transaction_index: TransactionIndex) -> bool {
         if let Some(location) = self.account_identifier_lookup.get(&account_identifier) {
             match location {
@@ -417,8 +444,12 @@ impl TransactionStore {
     fn get_transaction(&self, transaction_index: TransactionIndex) -> Option<&Transaction> {
         match self.transactions.front() {
             Some(t) => {
-                let offset = t.transaction_index;
-                self.transactions.get((transaction_index - offset) as usize)
+                if t.transaction_index > transaction_index {
+                    None
+                } else {
+                    let offset = t.transaction_index;
+                    self.transactions.get((transaction_index - offset) as usize)
+                }
             },
             None => None
         }
@@ -438,6 +469,55 @@ impl TransactionStore {
                 e.insert(AccountLocation::HardwareWallet(vec!(account_index)));
             }
         };
+    }
+
+    fn prune_transactions_from_account(&mut self, account_identifier: AccountIdentifier, prune_blocks_previous_to: TransactionIndex) {
+        fn prune_transactions_impl(transactions: &mut Vec<TransactionIndex>, prune_blocks_previous_to: TransactionIndex) {
+            let index = transactions
+                .iter()
+                .enumerate()
+                .take_while(|(_, &block_height)| block_height < prune_blocks_previous_to)
+                .map(|(index, _)| index)
+                .last();
+
+            if let Some(index) = index {
+                transactions.drain(0..=index);
+            }
+
+            if transactions.capacity() >= transactions.len() * 2 {
+                transactions.shrink_to_fit();
+            }
+        }
+
+        if let Some(location) = self.account_identifier_lookup.get(&account_identifier) {
+            match location {
+                AccountLocation::DefaultAccount(index) => {
+                    if let Some(account) = self.accounts.get_mut(*index as usize).unwrap().as_mut() {
+                        let transactions = &mut account.default_account_transactions;
+                        prune_transactions_impl(transactions, prune_blocks_previous_to);
+                    }
+                },
+                AccountLocation::SubAccount(index, sub_account) => {
+                    if let Some(account) = self.accounts.get_mut(*index as usize).unwrap().as_mut() {
+                        if let Some(sub_account) = &mut account.sub_accounts.get_mut(sub_account) {
+                            let transactions = &mut sub_account.transactions;
+                            prune_transactions_impl(transactions, prune_blocks_previous_to);
+                        }
+                    }
+                },
+                AccountLocation::HardwareWallet(indexes) => {
+                    for index in indexes.into_iter() {
+                        if let Some(account) = self.accounts.get_mut(*index as usize).unwrap().as_mut() {
+                            if let Some(hardware_wallet_account) = account.hardware_wallet_accounts.iter_mut()
+                                .find(|a| a.account_identifier == account_identifier) {
+                                let transactions = &mut hardware_wallet_account.transactions;
+                                prune_transactions_impl(transactions, prune_blocks_previous_to);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -681,6 +761,83 @@ mod tests {
         assert_eq!(2, response.total);
         assert_eq!(5, response.transactions[0].block_height);
         assert_eq!(4, response.transactions[1].block_height);
+    }
+
+    #[test]
+    fn prune_transactions() {
+        let mut store = setup_test_store();
+        let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+        let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
+
+        let default_account = AccountIdentifier::from(principal1);
+        let hw_account = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
+        let unknown_account = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap());
+
+        let sub_account = if let CreateSubAccountResponse::Ok(response) = store.create_sub_account(principal2, "SUB1".to_string()) {
+            response.account_identifier
+        } else {
+            panic!("Unable to create sub account");
+        };
+
+        store.register_hardware_wallet(principal1, RegisterHardwareWalletRequest { name: "HW".to_string(), account_identifier: hw_account });
+
+        let timestamp = TimeStamp {
+            timestamp_nanos: 100
+        };
+        for _ in 0..10 {
+            let transfer1 = Burn {
+                amount: ICPTs::from_e8s(100_000),
+                from: default_account,
+            };
+            store.append_transaction(transfer1, store.get_next_required_block_height(), timestamp).unwrap();
+
+            let transfer2 = Send {
+                amount: ICPTs::from_e8s(10_000),
+                from: default_account,
+                to: sub_account,
+                fee: ICPTs::from_e8s(1_000),
+            };
+            store.append_transaction(transfer2, store.get_next_required_block_height(), timestamp).unwrap();
+
+            let transfer3 = Mint {
+                amount: ICPTs::from_e8s(1_000_000_000),
+                to: hw_account,
+            };
+            store.append_transaction(transfer3, store.get_next_required_block_height(), timestamp).unwrap();
+
+            let transfer4 = Mint {
+                amount: ICPTs::from_e8s(1_000_000_000),
+                to: unknown_account,
+            };
+            store.append_transaction(transfer4, store.get_next_required_block_height(), timestamp).unwrap();
+        }
+
+        // TODO add hw wallet test case
+        let original_block_heights = store.transactions.iter().map(|t| t.block_height).collect_vec();
+        assert_eq!(20, store.prune_transactions(20));
+        let pruned_block_heights = store.transactions.iter().map(|t| t.block_height).collect_vec();
+
+        assert_eq!(original_block_heights[20..].iter().cloned().collect_vec(), pruned_block_heights);
+
+        let mut transaction_indexes_remaining = Vec::new();
+        for account in store.accounts.iter().map(|a| a.as_ref().unwrap()) {
+            transaction_indexes_remaining.append(account.default_account_transactions.clone().as_mut());
+
+            for sub_account in account.sub_accounts.values() {
+                transaction_indexes_remaining.append(sub_account.transactions.clone().as_mut());
+            }
+
+            for hw_account in account.hardware_wallet_accounts.iter() {
+                transaction_indexes_remaining.append(hw_account.transactions.clone().as_mut());
+            }
+        }
+
+        transaction_indexes_remaining.sort();
+        transaction_indexes_remaining.dedup();
+
+        let block_heights_remaining = transaction_indexes_remaining.iter().map(|t| store.get_transaction(*t).unwrap().block_height).collect_vec();
+
+        assert_eq!(pruned_block_heights, block_heights_remaining);
     }
 
     fn setup_test_store() -> TransactionStore {
