@@ -51,7 +51,6 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> buildServices() async {
     final token = hiveBoxes.authToken.webAuthToken;
     if (token != null && token.data != null && ledgerApi == null) {
-      const gatewayHost = "http://10.12.31.5:8080/";
 
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
       print("token data ${token.data!}");
@@ -236,7 +235,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<HardwareWalletApi> createHardwareWalletApi() async {
-    final identity = (await authApi.connectToHardwareWallet())();
+    final identity = await promiseToFuture(authApi.connectToHardwareWallet());
     print(identity);
     return HardwareWalletApi(gatewayHost, identity);
   }

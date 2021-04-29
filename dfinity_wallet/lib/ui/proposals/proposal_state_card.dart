@@ -78,7 +78,7 @@ class ProposalStateCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                    "Approve",
+                                    "Adopt",
                                   style: context.textTheme.headline3,
                                 ),
                                 Text(

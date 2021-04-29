@@ -100,7 +100,7 @@ extension ProposalStatusDisplay on ProposalStatus {
     ProposalStatus.Unknown: "Unknown",
     ProposalStatus.Open: "Open",
     ProposalStatus.Rejected: "Rejected",
-    ProposalStatus.Accepted: "Accepted",
+    ProposalStatus.Accepted: "Adopted",
     ProposalStatus.Executed: "Executed",
     ProposalStatus.Failed: "Failed",
   };
