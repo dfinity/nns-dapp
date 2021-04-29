@@ -28,12 +28,11 @@ export default class LedgerApi {
 
     constructor(host: string, identity: SignIdentity) {
         const agent = new HttpAgent({
-            host,
+            host: "",
             identity
         });
         this.ledgerService = ledgerBuilder(agent, identity);
         this.ledgerViewService = ledgerViewBuilder(agent);
-        this.host = host;
         this.identity = identity;
     }
 
@@ -42,7 +41,7 @@ export default class LedgerApi {
     public acquireICPTs = async (accountIdentifier: AccountIdentifier, e8s: E8s): Promise<void> => {
         const anonIdentity = new AnonymousIdentity();
         const agent = new HttpAgent({
-            host: this.host,
+            host: "",
             identity: anonIdentity
         });
         const anonLedgerService = ledgerBuilder(agent, anonIdentity);

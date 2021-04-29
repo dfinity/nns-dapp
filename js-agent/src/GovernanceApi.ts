@@ -35,7 +35,7 @@ export default class GovernanceApi {
 
     constructor(host: string, identity: SignIdentity) {
         const agent = new HttpAgent({
-            host,
+            host: "",
             identity
         });
         const ledgerViewService = ledgerViewBuilder(agent);
