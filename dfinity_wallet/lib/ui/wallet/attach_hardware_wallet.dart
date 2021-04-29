@@ -52,7 +52,7 @@ class _AttachHardwareWalletWidgetState
                   setState(() {
                     connectionState = ConnectionState.CONNECTING;
                   });
-                  await 3.0.seconds.delay;
+                  final walletApi = await context.icApi.createHardwareWalletApi();
                   setState(() {
                     hardwareWalletId =
                         context.boxes.accounts.primary.identifier.reversed;

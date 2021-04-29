@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
+import 'package:dfinity_wallet/ic_api/web/ledger_api.dart';
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 
 import '../dfinity.dart';
@@ -64,4 +65,8 @@ abstract class AbstractPlatformICApi {
   Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId});
 
   Future<void> createDummyProposals({required BigInt neuronId});
+
+  Future<HardwareWalletApi> createHardwareWalletApi();
 }
+
+

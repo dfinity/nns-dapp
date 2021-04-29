@@ -46,6 +46,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     authApi.loginWithIdentityProvider(
         key, "http://" + window.location.host + "/index.html");
   }
+  final gatewayHost = "http://10.12.31.5:8080/";
 
   Future<void> buildServices() async {
     final token = hiveBoxes.authToken.webAuthToken;
@@ -231,6 +232,13 @@ class PlatformICApi extends AbstractPlatformICApi {
     final proposal = await proposalSyncService!.storeProposal(json);
     proposalSyncService!.linkProposalsToNeurons();
     return Proposal.empty();
+  }
+
+  @override
+  Future<HardwareWalletApi> createHardwareWalletApi() async {
+    final identity = (await authApi.connectToHardwareWallet())();
+    print(identity);
+    return HardwareWalletApi(gatewayHost, identity);
   }
 }
 

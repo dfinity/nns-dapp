@@ -23,4 +23,7 @@ class AuthApi {
 
   @JS("createDelegationIdentity")
   external Promise<dynamic> createAuthenticationIdentity();
+
+  @JS("connectToHardwareWallet")
+  external dynamic connectToHardwareWallet();
 }
