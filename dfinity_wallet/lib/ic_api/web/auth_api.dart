@@ -25,5 +25,5 @@ class AuthApi {
   external Promise<dynamic> createAuthenticationIdentity();
 
   @JS("connectToHardwareWallet")
-  external dynamic connectToHardwareWallet();
+  external Promise<dynamic> connectToHardwareWallet();
 }
