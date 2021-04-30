@@ -9,7 +9,7 @@ export interface GetBalancesRequest {
 export interface SendICPTsRequest {
     to: AccountIdentifier,
     amount: E8s,
-    memo?: Uint8Array,
+    memo?: bigint,
     fee?: E8s,
     blockHeight?: BlockHeight,
     fromSubAccountId?: number,

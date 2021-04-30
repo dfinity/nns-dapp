@@ -57,9 +57,6 @@ class PlatformICApi extends AbstractPlatformICApi {
       ledgerApi = createLedgerApi(gatewayHost, identity);
       governanceApi = createGovernanceApi(gatewayHost, identity);
 
-      // @Gilbert perhaps this could be triggered from a button?
-      // Also this is being hit twice for some reason
-
       accountsSyncService = AccountsSyncService(ledgerApi!, hiveBoxes);
       balanceSyncService = BalanceSyncService(ledgerApi!, hiveBoxes);
       transactionSyncService =

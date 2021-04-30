@@ -13,7 +13,7 @@ import {
     Payment,
     SendRequest, Subaccount
 } from "./proto/types_pb";
-import { blobToUint8Array, uint8ArrayToBigInt } from "../converter";
+import { blobToUint8Array } from "../converter";
 import type { Principal } from "@dfinity/agent";
 
 export const TRANSACTION_FEE : bigint = BigInt(137);
@@ -40,7 +40,7 @@ export default class RequestConverters {
 
         if (request.memo != null) {
             const memo = new Memo();
-            memo.setMemo(uint8ArrayToBigInt(request.memo).toString());
+            memo.setMemo(request.memo.toString());
             result.setMemo(memo);
         }
 

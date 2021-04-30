@@ -1,12 +1,12 @@
+import { Principal } from "@dfinity/agent";
 import LedgerService from "./model";
 import { NeuronId } from "../governance/model";
-import { Principal, SignIdentity } from "@dfinity/agent";
+import { SignIdentity } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
-import * as convert from "../converter";
 import randomBytes from "randombytes";
 import { TransactionNotificationResponse } from "./proto/types_pb";
-import { principalToAccountIdentifier, uint8ArrayToBigInt } from "../converter";
 import { E8s } from "../common/types";
+import * as convert from "../converter";
 
 export type CreateNeuronRequest = {
     stake: E8s
@@ -23,9 +23,9 @@ export default async function(
     const nonce = new Uint8Array(randomBytes(8));
     const toSubAccount = await buildSubAccount(nonce, principal);
 
-    const accountIdentifier = principalToAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
+    const accountIdentifier = convert.principalToAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
     const blockHeight = await ledgerService.sendICPTs({
-        memo: nonce,
+        memo: convert.uint8ArrayToBigInt(nonce),
         amount: request.stake,
         to: accountIdentifier,
         fromSubAccountId: request.fromSubAccountId
@@ -40,10 +40,7 @@ export default async function(
     console.log("notify result");
     console.log(result);
 
-    // console.log("deserializeBinary");
-    // console.log(NeuronIdProto.deserializeBinary(result));
-
-    const neuronId = uint8ArrayToBigInt(TransactionNotificationResponse.deserializeBinary(result).getResponse_asU8());
+    const neuronId = convert.uint8ArrayToBigInt(TransactionNotificationResponse.deserializeBinary(result).getResponse_asU8());
     console.log("neuronId");
     console.log(neuronId);
 

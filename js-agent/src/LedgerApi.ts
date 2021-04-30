@@ -16,6 +16,7 @@ import LedgerViewService, {
 import { create_dummy_proposals, test_happy_path } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/ledger/createNeuron";
 import { NeuronId } from "./canisters/governance/model";
+import { createCanisterImpl, topupCanisterImpl, CanisterId, CreateCanisterRequest, TopupCanisterRequest } from "./canisters/ledger/createCanister";
 import { AccountIdentifier, BlockHeight, E8s } from "./canisters/common/types";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { principalToAccountIdentifier } from "./canisters/converter";
@@ -100,6 +101,19 @@ export default class LedgerApi {
     public createNeuron = async (request: CreateNeuronRequest) : Promise<NeuronId> => {
         return createNeuronImpl(
             this.identity, 
+            this.ledgerService, 
+            request);
+    }
+
+    public createCanister = async (request: CreateCanisterRequest) : Promise<CanisterId> => {
+        return createCanisterImpl(
+            this.identity.getPrincipal(), 
+            this.ledgerService, 
+            request);
+    }
+
+    public topupCanister = async (request: TopupCanisterRequest) : Promise<void> => {
+        return topupCanisterImpl(
             this.ledgerService, 
             request);
     }

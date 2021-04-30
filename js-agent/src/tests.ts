@@ -2,6 +2,7 @@ import { SignIdentity } from "@dfinity/agent";
 import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
 import { NeuronId, Topic, Vote } from "./canisters/governance/model";
+import * as convert from "./canisters/converter";
 
 var running = false;
 
@@ -38,9 +39,14 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     const firstSubAccount = account.subAccounts[0];
 
-    if (balances[firstSubAccount.accountIdentifier] < BigInt(25_000_000_000)) {
-        console.log("topping up balance");
-        await ledgerApi.acquireICPTs(firstSubAccount.accountIdentifier, BigInt(25_100_000_000));
+    if (balances[account.accountIdentifier] < BigInt(6_000_000_000)) {
+        console.log("topping up default balance");
+        await ledgerApi.acquireICPTs(account.accountIdentifier, BigInt(6_100_000_000));
+    }
+    
+    if (balances[firstSubAccount.accountIdentifier] < BigInt(6_000_000_000)) {
+        console.log("topping up 1st sub-account balance");
+        await ledgerApi.acquireICPTs(firstSubAccount.accountIdentifier, BigInt(6_100_000_000));
     }
 
     {
@@ -53,11 +59,19 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         console.log(transactions);   
     }
 
-    console.log("create 1st neuron with 80 ICPT");
+    console.log("create 1st neuron with 10 ICPT");
     await ledgerApi.createNeuron({
-        stake: BigInt(8_000_000_000),
+        stake: BigInt(1_000_000_000),
         fromSubAccountId: firstSubAccount.id
     });
+
+    {
+        console.log("creating a canister with the 1st sub-account as controller");
+        let canisterId = await ledgerApi.createCanister({
+            stake: BigInt(1_000_000_000),
+            fromSubAccountId: firstSubAccount.id            
+        });        
+    }
 
     console.log("get neurons")
     let neurons = await governanceApi.getNeurons();

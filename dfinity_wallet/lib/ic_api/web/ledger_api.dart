@@ -34,6 +34,12 @@ class LedgerApi {
   @JS("createNeuron")
   external Promise<void> createNeuron(dynamic request);
 
+  @JS("createCanister")
+  external Promise<void> createCanister(dynamic request);
+
+  @JS("topupCanister")
+  external Promise<void> topupCanister(dynamic request);
+
   @JS("integrationTest")
   external Promise<void> integrationTest();
 
