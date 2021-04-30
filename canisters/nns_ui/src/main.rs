@@ -17,6 +17,8 @@ mod ledger_sync;
 mod state;
 mod transaction_store;
 
+const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
+
 #[export_name = "canister_init"]
 fn main() {}
 
@@ -117,7 +119,30 @@ async fn ledger_sync_impl() -> Option<Result<u32, String>> {
     dfn_core::api::print("sync_transactions started");
     let result = ledger_sync::sync_transactions().await;
     dfn_core::api::print(format!("sync_transactions completed. Count added = {:?}", result));
+
+    if should_prune_transactions() {
+        let store = &mut STATE.write().unwrap().transactions_store;
+        store.prune_transactions(PRUNE_TRANSACTIONS_COUNT);
+    }
+
     result
+}
+
+fn should_prune_transactions() -> bool {
+    #[cfg(target_arch = "wasm32")]
+    {
+        const MEMORY_LIMIT_BYTES: u32 = 1024 * 1024 * 1024; // 1GB
+        let memory_usage_bytes = (core::arch::wasm32::memory_size(0) * 65536) as u32;
+        memory_usage_bytes > MEMORY_LIMIT_BYTES
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        const TRANSACTIONS_COUNT_LIMIT: u32 = 1_000_000;
+        let store = &mut STATE.write().unwrap().transactions_store;
+        let transactions_count = store.get_transactions_count();
+        transactions_count > TRANSACTIONS_COUNT_LIMIT
+    }
 }
 
 #[derive(CandidType)]

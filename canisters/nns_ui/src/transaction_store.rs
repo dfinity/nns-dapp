@@ -393,6 +393,11 @@ impl TransactionStore {
         }
     }
 
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn get_transactions_count(&self) -> u32 {
+        self.transactions.len() as u32
+    }
+
     pub fn prune_transactions(&mut self, count_to_prune: u32) -> u32 {
         let count_to_prune = min(count_to_prune, self.transactions.len() as u32);
 
