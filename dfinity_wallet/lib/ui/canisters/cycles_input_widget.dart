@@ -45,7 +45,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
         ],
         inputType: TextInputType.number);
 
-    cyclesField = ValidatedTextField("Cycles",
+    cyclesField = ValidatedTextField("T Cycles",
         validations: [],
         inputType: TextInputType.number);
   }
@@ -83,7 +83,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Cycles", style: context.textTheme.headline3),
+                  Text("T Cycles", style: context.textTheme.headline3),
                   DebouncedValidatedFormField(cyclesField, onChanged: (){
                     final newIcpAmount = CycleCalculator.cyclesToIcp(cyclesField.currentValue.toDouble());
                     if(icpField.currentValue != newIcpAmount.toString()){

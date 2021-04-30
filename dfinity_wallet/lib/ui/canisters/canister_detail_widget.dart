@@ -88,7 +88,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                             SizedBox(
                                               width: 7,
                                             ),
-                                            Text("Cycles",
+                                            Text("T Cycles",
                                                 style: TextStyle(
                                                     color: AppColors.gray200,
                                                     fontFamily:

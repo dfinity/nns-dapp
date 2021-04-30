@@ -7,7 +7,7 @@ import '../../dfinity.dart';
 import 'new_canister_cycles_widget.dart';
 
 class CanisterNameWidget extends StatelessWidget {
-  ValidatedTextField nameField = ValidatedTextField("Canister Wallet Name",
+  ValidatedTextField nameField = ValidatedTextField("Canister Name",
       validations: [StringFieldValidation.minimumLength(2)]);
 
   @override

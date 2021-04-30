@@ -82,7 +82,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                               SizedBox(
                                 width: 7,
                               ),
-                              Text("Cycles",
+                              Text("T Cycles",
                                   style: TextStyle(color: AppColors.gray200,
                                       fontFamily: Fonts.circularBook,
                                       fontSize: 50 * 0.4))
