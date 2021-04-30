@@ -67,7 +67,8 @@ abstract class AbstractPlatformICApi {
 
   Future<void> createDummyProposals({required BigInt neuronId});
 
-  Future<HardwareWalletApi> createHardwareWalletApi();
+  Future<dynamic> connectToHardwareWallet();
+  Future<HardwareWalletApi> createHardwareWalletApi({dynamic ledgerIdentity});
 
   Future<void> test();
 }

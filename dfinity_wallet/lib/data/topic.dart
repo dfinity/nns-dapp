@@ -24,6 +24,8 @@ enum Topic {
   NetworkCanisterManagement,
   @HiveField(9)
   Kyc,
+  @HiveField(10)
+  NodeProviderRewards
 }
 
 extension Description on Topic {
@@ -40,6 +42,7 @@ extension Description on Topic {
     Topic.SubnetManagement: "Subnet Management",
     Topic.NetworkCanisterManagement: "Network Canister Management",
     Topic.Kyc: "Kyc",
+    Topic.NodeProviderRewards: "Node Provider Rewards",
   };
 
   static const _topicDescriptionMap = {
@@ -53,6 +56,7 @@ extension Description on Topic {
     Topic.SubnetManagement: "All proposals that administer network subnets, for example creating new subnets, adding and removing subnet nodes, and splitting subnets.",
     Topic.NetworkCanisterManagement: "Installing and upgrading “system” canisters that belong to the network. For example, upgrading the NNS. ",
     Topic.Kyc: "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons.",
+    Topic.NodeProviderRewards: "",
   };
 
   String get name => _topicNameMap[this]!;

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dfinity_wallet/dfinity.dart';
+import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/wallet/account_actions_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/account.dart';
@@ -22,6 +23,8 @@ import 'account_row.dart';
 import 'attach_hardware_wallet.dart';
 import 'balance_display_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
+
+import 'hardware_wallet_name_widget.dart';
 
 class AccountsTabWidget extends StatefulWidget {
   @override
@@ -45,7 +48,8 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
           final primary = context.boxes.accounts.maybePrimary;
           final subAccounts = context.boxes.accounts.subAccounts;
           final hardwareWallets = context.boxes.accounts.hardwareWallets;
-          final maxListItems = max(subAccounts.length +1, hardwareWallets.length);
+          final maxListItems =
+              max(subAccounts.length + 1, hardwareWallets.length);
 
           return FooterGradientButton(
               footerHeight: null,
@@ -55,95 +59,111 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                  ConstrainWidthAndCenter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Accounts",
-                                  textAlign: TextAlign.left,
-                                  style: context.textTheme.headline1,
-                                ),
-                              ],
-                            ),
-                          ),
-                          BalanceDisplayWidget(
-                              amount: wallets.sumBy((element) => element.icpBalance),
-                              amountSize: 40,
-                              icpLabelSize: 20),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SmallFormDivider(),
                       ConstrainWidthAndCenter(
-                    child: Column(
-                      children: [
-                        Container(
-                          color: AppColors.transparent,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              TabBar(
-                                  indicatorColor: Colors.white,
-                                  overlayColor: MaterialStateProperty.all(
-                                      AppColors.lightBackground),
-                                  isScrollable: true,
-                                  tabs: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Tab(text: "SUB-ACCOUNTS"),
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Accounts",
+                                      textAlign: TextAlign.left,
+                                      style: context.textTheme.headline1,
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Tab(text: "HARDWARE WALLETS"),
-                                    )
-                                  ]),
-                              // Expanded(flex: 1, child: Container())
-                            ],
-                          ),
-                        ),
-                        SmallFormDivider(),
-                        SizedBox(
-                          height: 100 + (maxListItems * 150),
-                          child: TabBarView(
-                            children: [
-                              SubAccountsListWidget(
-                                subAccounts: [context.boxes.accounts.primary, ...context.boxes.accounts.subAccounts],
-                                buttonTitle: "Create Sub-Account",
-                                buttonAction: (){
-                                  OverlayBaseWidget.show(context, TextFieldDialogWidget(
-                                      title: "New Sub-Account",
-                                      buttonTitle: "Create",
-                                      fieldName: "Account Name",
-                                      onComplete: (name) {
-                                        context.performLoading(() => context.icApi.createSubAccount(name: name));
-                                      }), borderRadius: 20);
-                                },
+                                  ],
+                                ),
                               ),
-                              SubAccountsListWidget(
-                                subAccounts:
-                                context.boxes.accounts.hardwareWallets,
-                                buttonTitle: "Attach Hardware Wallet",
-                                buttonAction: (){
-                                  // OverlayBaseWidget.show(context, AttachHardwareWalletWidget());
-                                },
-                              )
+                              BalanceDisplayWidget(
+                                  amount: wallets
+                                      .sumBy((element) => element.icpBalance),
+                                  amountSize: 40,
+                                  icpLabelSize: 20),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 180,
-                  )
+                      ),
+                      SmallFormDivider(),
+                      ConstrainWidthAndCenter(
+                        child: Column(
+                          children: [
+                            Container(
+                              color: AppColors.transparent,
+                              child: Row(
+                                children: [
+                                  TabBar(
+                                      indicatorColor: Colors.white,
+                                      overlayColor: MaterialStateProperty.all(
+                                          AppColors.lightBackground),
+                                      isScrollable: true,
+                                      tabs: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Tab(text: "SUB-ACCOUNTS"),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Tab(text: "HARDWARE WALLETS"),
+                                        )
+                                      ]),
+                                  // Expanded(flex: 1, child: Container())
+                                ],
+                              ),
+                            ),
+                            SmallFormDivider(),
+                            SizedBox(
+                              height: 100 + (maxListItems * 150),
+                              child: TabBarView(
+                                children: [
+                                  SubAccountsListWidget(
+                                    subAccounts: [
+                                      context.boxes.accounts.primary,
+                                      ...context.boxes.accounts.subAccounts
+                                    ],
+                                    buttonTitle: "Create Sub-Account",
+                                    buttonAction: () {
+                                      OverlayBaseWidget.show(
+                                          context,
+                                          TextFieldDialogWidget(
+                                              title: "New Sub-Account",
+                                              buttonTitle: "Create",
+                                              fieldName: "Account Name",
+                                              onComplete: (name) {
+                                                context.performLoading(() =>
+                                                    context
+                                                        .icApi
+                                                        .createSubAccount(
+                                                            name: name));
+                                              }),
+                                          borderRadius: 20);
+                                    },
+                                  ),
+                                  SubAccountsListWidget(
+                                    subAccounts:
+                                        context.boxes.accounts.hardwareWallets,
+                                    buttonTitle: "Attach Hardware Wallet",
+                                    buttonAction: () {
+                                      OverlayBaseWidget.show(
+                                          context,
+                                          NewTransactionOverlay(
+                                              rootTitle: "Enter Wallet Name",
+                                              rootWidget:
+                                                  HardwareWalletNameWidget()));
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 180,
+                      )
                     ],
                   ),
                 ),
@@ -152,4 +172,3 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
         });
   }
 }
-

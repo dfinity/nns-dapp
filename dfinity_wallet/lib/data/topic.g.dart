@@ -33,6 +33,8 @@ class TopicAdapter extends TypeAdapter<Topic> {
         return Topic.NetworkCanisterManagement;
       case 9:
         return Topic.Kyc;
+      case 10:
+        return Topic.NodeProviderRewards;
       default:
         return Topic.Unspecified;
     }
@@ -70,6 +72,9 @@ class TopicAdapter extends TypeAdapter<Topic> {
         break;
       case Topic.Kyc:
         writer.writeByte(9);
+        break;
+      case Topic.NodeProviderRewards:
+        writer.writeByte(10);
         break;
     }
   }

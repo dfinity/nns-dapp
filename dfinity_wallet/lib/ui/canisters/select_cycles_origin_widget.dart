@@ -1,14 +1,14 @@
 
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/canisters/top_up_cycles_amount_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 
 import '../../dfinity.dart';
-import 'enter_cycles_page.dart';
 
 class SelectCyclesOriginWidget extends StatelessWidget {
-  final Canister destinationCanister;
+  final Function(Account account, BuildContext context) onSelected;
 
-  const SelectCyclesOriginWidget({Key? key, required this.destinationCanister}) : super(key: key);
+  const SelectCyclesOriginWidget({Key? key, required this.onSelected}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class SelectCyclesOriginWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Select Account",
+                  "Select ICP Origin Account",
                   style: context.textTheme.headline3,
                 ),
                 SmallFormDivider(),
@@ -39,12 +39,7 @@ class SelectCyclesOriginWidget extends StatelessWidget {
                           .mapToList((e) => _AccountRow(
                           account: e,
                           onPressed: () {
-                            NewTransactionOverlay.of(context).pushPage(
-                                "Enter ICP Amount",
-                                EnterCyclesPage(
-                                  origin: e,
-                                  destinationCanister: destinationCanister,
-                                ));
+                           onSelected(e, context);
                           })),
                     ),
                   ),

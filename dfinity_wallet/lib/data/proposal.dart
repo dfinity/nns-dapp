@@ -33,7 +33,7 @@ class Proposal extends DfinityEntity {
   @HiveField(12)
   String? proposalTimestampSeconds;
   @HiveField(13)
-  late DateTime cacheUpdateDate;
+  DateTime? cacheUpdateDate;
   @HiveField(14)
   late Topic topic;
   @HiveField(15)

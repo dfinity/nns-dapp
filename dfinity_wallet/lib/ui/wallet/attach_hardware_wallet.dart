@@ -6,51 +6,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../dfinity.dart';
 
-class HardwareWalletNameWidget extends StatelessWidget {
-
-  ValidatedTextField nameField = ValidatedTextField("Hardware Wallet Name",
-      validations: [StringFieldValidation.minimumLength(2)]);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(
-            child: FractionallySizedBox(
-              widthFactor: 0.7,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text("Name", style: context.textTheme.headline3),
-                      DebouncedValidatedFormField(nameField),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-              height: 70,
-              width: double.infinity,
-              child: ValidFieldsSubmitButton(
-                child: Text("Connect to Wallet"),
-                onPressed: () async {
-                  NewTransactionOverlay.of(context).pushPage("Connect to Wallet", AttachHardwareWalletWidget(name: nameField.name));
-                },
-                fields: [nameField],
-              ))
-        ],
-      ),
-    );
-  }
-}
 
 
 class AttachHardwareWalletWidget extends StatefulWidget {
@@ -68,7 +23,7 @@ class _AttachHardwareWalletWidgetState
 
 
   ConnectionState connectionState = ConnectionState.NOT_CONNECTED;
-  String? hardwareWalletId;
+  dynamic ledgerIdentity;
 
   @override
   Widget build(BuildContext context) {
@@ -80,15 +35,14 @@ class _AttachHardwareWalletWidgetState
           Expanded(
             child: HardwareConnectionWidget(
                 connectionState: connectionState,
-                hardwareWalletId: hardwareWalletId,
+                hardwareWalletId: ledgerIdentity.getPublicKey(),
                 onConnectPressed: () async {
                   setState(() {
                     connectionState = ConnectionState.CONNECTING;
                   });
-                  final walletApi = await context.icApi.createHardwareWalletApi();
+                  final ledgerIdentity = await context.icApi.connectToHardwareWallet();
                   setState(() {
-                    hardwareWalletId =
-                        context.boxes.accounts.primary.identifier.reversed;
+                    this.ledgerIdentity = ledgerIdentity;
                     connectionState = ConnectionState.CONNECTED;
                   });
                 }),
@@ -99,17 +53,20 @@ class _AttachHardwareWalletWidgetState
               child: ElevatedButton(
                 child: Text("Attach Wallet"),
                 onPressed: (() async {
-                  await context.performLoading(() => 2.seconds.delay);
+                  setState(() {
+                    connectionState = ConnectionState.CONNECTING;
+                  });
+
                   final account = Account.create(
                       name: widget.name,
-                      accountIdentifier: hardwareWalletId!,
+                      accountIdentifier: ledgerIdentity.getPublicKey()!,
                       primary: false,
                       subAccountId: null,
                       balance: "0",
                       transactions: [],
                       neurons: null,
                       hardwareWallet: true);
-                  context.boxes.accounts.put(hardwareWalletId, account);
+                  context.boxes.accounts.put(ledgerIdentity.getPublicKey(), account);
                   context.nav.push(AccountPageDef.createPageConfig(account));
                 }).takeIf((e) => connectionState == ConnectionState.CONNECTED),
               ))

@@ -60,4 +60,5 @@ class HardwareWalletApi {
 
   @JS("showAddressAndPubKeyOnDevice")
   external Promise<void> showAddressAndPubKeyOnDevice ();
+
 }

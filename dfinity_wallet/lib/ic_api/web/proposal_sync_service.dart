@@ -90,11 +90,11 @@ class ProposalSyncService {
     print("status ${response['status'].toString().toInt()}");
     print("rewardStatus ${response['rewardStatus'].toString().toInt()}");
 
-
-
     proposal.topic = Topic.values[response['topic'].toString().toInt()];
-    proposal.status = ProposalStatus.values[response['status'].toString().toInt()];
-    proposal.rewardStatus = ProposalRewardStatus.values[response['rewardStatus'].toString().toInt()];
+    proposal.status =
+        ProposalStatus.values[response['status'].toString().toInt()];
+    proposal.rewardStatus = ProposalRewardStatus
+        .values[response['rewardStatus'].toString().toInt()];
 
     // print("");
     // print("proposal");
@@ -124,9 +124,8 @@ class ProposalSyncService {
     if (hiveBoxes.proposals.length > 0) {
       await Future.wait(hiveBoxes.proposals.values
           .filter((element) =>
-              element.cacheUpdateDate.difference(DateTime.now()).inSeconds >
-              1)
-          .sortedBy((element) => element.cacheUpdateDate)
+              element.cacheUpdateDate == null ||
+              element.cacheUpdateDate!.difference(DateTime.now()).inSeconds > 1)
           .map((element) => element.delete()));
     }
   }

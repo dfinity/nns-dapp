@@ -145,14 +145,20 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<HardwareWalletApi> createHardwareWalletApi() {
-    // TODO: implement createHardwareWalletApi
+  Future<void> test() {
+    // TODO: implement test
     throw UnimplementedError();
   }
 
   @override
-  Future<void> test() {
-    // TODO: implement test
+  Future connectToHardwareWallet() {
+    // TODO: implement connectToHardwareWallet
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HardwareWalletApi> createHardwareWalletApi({ledgerIdentity}) {
+    // TODO: implement createHardwareWalletApi
     throw UnimplementedError();
   }
 }

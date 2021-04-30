@@ -10,7 +10,7 @@ import 'package:hive/hive.dart';
 import '../../dfinity.dart';
 
 class AccountsSyncService {
-  final LedgerApi ledgerApi;
+  final LedgerApi   ledgerApi;
   final HiveBoxesWidget hiveBoxes;
 
   AccountsSyncService(this.ledgerApi, this.hiveBoxes);

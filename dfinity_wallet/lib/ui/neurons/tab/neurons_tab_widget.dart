@@ -55,33 +55,29 @@ class _NeuronsPageState extends State<NeuronsPage> {
       ),
       footer: Align(
         alignment: Alignment.bottomCenter,
-        child: IntrinsicHeight(
-          child: Padding(
-            padding: EdgeInsets.all(32),
-            child: ElevatedButton(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SizedBox(
-                  width: 400,
-                  child: Center(
-                    child: Text(
-                      "Stake Neuron",
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.button?.copyWith(fontSize: 24),
-                    ),
-                  ),
+        child: Padding(
+          padding: EdgeInsets.all(32),
+          child: ElevatedButton(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                width: 400,
+                child: Text(
+                  "Stake Neuron",
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.button?.copyWith(fontSize: 24),
                 ),
               ),
-              onPressed: () {
-                OverlayBaseWidget.show(
-                    context,
-                    NewTransactionOverlay(
-                      rootTitle: "Stake Neuron",
-                      rootWidget: StakeNeuronPage(
-                          source: context.boxes.accounts.primary),
-                    ));
-              },
             ),
+            onPressed: () {
+              OverlayBaseWidget.show(
+                  context,
+                  NewTransactionOverlay(
+                    rootTitle: "Stake Neuron",
+                    rootWidget: StakeNeuronPage(
+                        source: context.boxes.accounts.primary),
+                  ));
+            },
           ),
         ),
       ),

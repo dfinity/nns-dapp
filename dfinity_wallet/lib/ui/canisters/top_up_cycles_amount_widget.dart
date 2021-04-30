@@ -1,16 +1,18 @@
-
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 
 import '../../dfinity.dart';
 import 'confirm_cycles_purchase.dart';
+import 'cycles_input_widget.dart';
 
-class EnterCyclesPage extends StatefulWidget {
+
+
+class TopUpCyclesAmountWidget extends StatefulWidget {
   final Account origin;
   final Canister destinationCanister;
 
-  const EnterCyclesPage(
+  const TopUpCyclesAmountWidget(
       {Key? key,
         required this.origin,
         required this.destinationCanister
@@ -18,26 +20,13 @@ class EnterCyclesPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _EnterCyclesPageState createState() => _EnterCyclesPageState();
+  _TopUpCyclesAmountWidgetState createState() => _TopUpCyclesAmountWidgetState();
 }
 
-class _EnterCyclesPageState extends State<EnterCyclesPage> {
-  late ValidatedTextField amountField;
 
-  @override
-  void initState() {
-    super.initState();
+class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
 
-    amountField = ValidatedTextField("Amount",
-        validations: [
-          FieldValidation("Not enough ICP in account",
-                  (e) {
-                final amount = (e.toDoubleOrNull() ?? 0);
-                return amount == 0 || amount > widget.origin.icpBalance;
-              })
-        ],
-        inputType: TextInputType.number);
-  }
+  double? icpAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -48,20 +37,13 @@ class _EnterCyclesPageState extends State<EnterCyclesPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
-              child: FractionallySizedBox(
-                widthFactor: 0.7,
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Amount", style: context.textTheme.headline3),
-                        DebouncedValidatedFormField(amountField),
-                      ],
-                    ),
-                  ),
-                ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: CycleInputWidget(origin: widget.origin, onChange: (double? icps) {
+                  setState(() {
+                    icpAmount = icps;
+                  });
+                }),
               ),
             ),
             TallFormDivider(),
@@ -86,18 +68,17 @@ class _EnterCyclesPageState extends State<EnterCyclesPage> {
             SizedBox(
                 height: 70,
                 width: double.infinity,
-                child: ValidFieldsSubmitButton(
+                child: ElevatedButton(
                   child: Text("Review Cycles Purchase"),
                   onPressed: () async {
                     NewTransactionOverlay.of(context).pushPage(
                         "Review Cycles Purchase",
                         ConfirmCyclesPurchase(
-                          amount: amountField.currentValue.toDouble(),
+                          amount: icpAmount!.toDouble(),
                           origin: widget.origin.address,
                           destination: widget.destinationCanister,
                         ));
-                  },
-                  fields: [amountField],
+                  }.takeIf((e) => icpAmount != null),
                 ))
           ],
         ),
@@ -105,3 +86,6 @@ class _EnterCyclesPageState extends State<EnterCyclesPage> {
     );
   }
 }
+
+
+

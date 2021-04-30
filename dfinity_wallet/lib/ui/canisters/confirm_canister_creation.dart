@@ -1,22 +1,22 @@
+
+
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
 import 'package:intl/intl.dart';
 
 import '../../dfinity.dart';
 import 'cycle_calculator.dart';
 
-
-class ConfirmCyclesPurchase extends StatelessWidget {
+class ConfirmCanisterCreationWidget extends StatelessWidget {
   final double amount;
   final String origin;
-  final Canister destination;
+  final String name;
 
-  const ConfirmCyclesPurchase({Key? key,
+  const ConfirmCanisterCreationWidget({Key? key,
     required this.amount,
     required this.origin,
-    required this.destination})
+    required this.name})
       : super(key: key);
 
   @override
@@ -97,15 +97,13 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [TallFormDivider(),
+                      Text("Canister Name", style: context.textTheme.headline4),
+                      VerySmallFormDivider(),
+                      Text(name, style: context.textTheme.bodyText1),
+                      TallFormDivider(),
                       Text("Origin", style: context.textTheme.headline4),
                       VerySmallFormDivider(),
                       Text(origin, style: context.textTheme.bodyText1),
-                      TallFormDivider(),
-                      Text("Destination", style: context.textTheme.headline4),
-                      VerySmallFormDivider(),
-                      Text(destination.identifier,
-                          style: context.textTheme.bodyText1),
-                      TallFormDivider(),
                     ],
                   ),
                 ),
@@ -116,21 +114,26 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                   child: ElevatedButton(
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: Text("Confirm and Send"),
+                        child: Text("Confirm"),
                       ),
                       onPressed: () async {
                         await context.performLoading(() async {
                           await 1.0.seconds.delay;
-                          destination.cyclesAdded += (amount * 50).toInt();
-                          destination.save();
                         });
+
+                        final id = rand.nextInt(2147483647).toString();
+                        final canister = Canister.demo(name, id);
+                        canister.cyclesAdded = CycleCalculator.icpToCycles(amount).toInt();
+                        await context.icApi.hiveBoxes.canisters.put(id, canister);
+
+                        context.nav.push(CanisterPageDef.createPageConfig(canister));
 
                         NewTransactionOverlay.of(context).replacePage(
                             "Transaction Completed!",
                             TransactionDoneWidget(
                               amount: amount,
                               origin: origin,
-                              destination: destination.identifier,
+                              destination: canister.identifier,
                             ));
                       }),
                 ),

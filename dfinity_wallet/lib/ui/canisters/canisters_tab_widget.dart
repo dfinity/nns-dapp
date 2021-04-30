@@ -7,9 +7,13 @@ import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
+import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
+import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/ui.dart';
 import 'package:dfinity_wallet/dfinity.dart';
+
+import 'cansiter_name_widget.dart';
 
 class CansitersPage extends StatefulWidget {
   @override
@@ -72,7 +76,6 @@ class _CansitersPageState extends State<CansitersPage> {
                       padding: const EdgeInsets.all(16.0),
                       child: SizedBox(
                         width: 400,
-                        height: 50,
                         child: Center(
                           child: Text(
                             "Add Canister",
@@ -86,21 +89,10 @@ class _CansitersPageState extends State<CansitersPage> {
                     onPressed: () {
                       OverlayBaseWidget.show(
                           context,
-                          TextFieldDialogWidget(
-                              title: "New Canister",
-                              buttonTitle: "Create",
-                              fieldName: "Canister Name",
-                              onComplete: (name) {
-                                context.performLoading(() async {
-                                  await 1.seconds.delay;
-                                  final id =
-                                      rand.nextInt(2147483647).toString();
-                                  final canister = Canister.demo(name, id);
-                                  await context.icApi.hiveBoxes.canisters.put(id, canister);
-
-                                  context.nav.push(CanisterPageDef.createPageConfig(canister));
-                                });
-                              }),
+                          NewTransactionOverlay(
+                            rootTitle: "Create Canister",
+                            rootWidget: CanisterNameWidget(),
+                          ),
                           borderRadius: 20);
                     },
                   ),
