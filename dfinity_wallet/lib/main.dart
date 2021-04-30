@@ -37,7 +37,7 @@ class DfinityApp extends StatelessWidget {
             return MaterialApp.router(
               routerDelegate: router,
               routeInformationParser: WalletRouteParser(hiveCoordinator, context),
-              title: 'Internet Computer Wallet',
+              title: 'Network Nervous System',
               theme: ThemeData(
                 primarySwatch: MaterialColor(AppColors.blue500.value, {
                   1000: AppColors.blue1000,
