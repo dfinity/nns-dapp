@@ -72,8 +72,8 @@ class ProposalSyncService {
     proposal.summary = response['proposal']['summary'].toString();
     proposal.url = response['proposal']['url'];
     proposal.proposer = response['proposer'].toString();
-    proposal.no = response['latestTally']['yes'].toString().toInt();
-    proposal.yes = response['latestTally']['no'].toString().toInt();
+    proposal.no = response['latestTally']['no'].toString().toInt();
+    proposal.yes = response['latestTally']['yes'].toString().toInt();
     proposal.action = response['proposal']['action'];
 
     proposal.executedTimestampSeconds =

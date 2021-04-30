@@ -37,18 +37,18 @@ class NeuronProposalsCard extends StatelessWidget {
               ),
             )),
             SmallFormDivider(),
-            // Align(
-            //   alignment: Alignment.bottomRight,
-            //   child: ElevatedButton(
-            //       onPressed: () {
-            //         context.icApi.createDummyProposals(neuronId: neuron.id.toBigInt);
-            //       },
-            //       child: Padding(
-            //         padding: const EdgeInsets.all(12.0),
-            //         child: Text("Create Dummy Proposals"),
-            //       )
-            //   ),
-            // )
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                  onPressed: () {
+                    context.icApi.createDummyProposals(neuronId: neuron.id.toBigInt);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text("Create Dummy Proposals"),
+                  )
+              ),
+            )
           ],
         ),
       ),

@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+
 import '../../dfinity.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,6 +18,8 @@ class ProposalStateCard extends StatelessWidget {
     final votedNeurons = neurons
         .filter((element) => element.voteForProposal(proposal) != null)
         .toList();
+    JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+    String prettyprint = encoder.convert(proposal.action);
     return Card(
       color: AppColors.background,
       child: Padding(
@@ -60,6 +66,11 @@ class ProposalStateCard extends StatelessWidget {
             ),
             Text(
               "Proposer: ${proposal.proposer}",
+              style: context.textTheme.subtitle2,
+            ),
+            SmallFormDivider(),
+            Text(
+              "${prettyprint}",
               style: context.textTheme.subtitle2,
             ),
             Padding(
