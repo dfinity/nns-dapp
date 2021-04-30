@@ -9,6 +9,7 @@ import '../dfinity.dart';
 abstract class AbstractPlatformICApi {
   final HiveBoxesWidget hiveBoxes;
 
+
   AbstractPlatformICApi(this.hiveBoxes) {
     buildServices();
   }
@@ -67,6 +68,8 @@ abstract class AbstractPlatformICApi {
   Future<void> createDummyProposals({required BigInt neuronId});
 
   Future<HardwareWalletApi> createHardwareWalletApi();
+
+  Future<void> test();
 }
 
 

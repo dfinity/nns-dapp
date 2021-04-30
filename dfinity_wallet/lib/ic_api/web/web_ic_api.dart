@@ -59,7 +59,6 @@ class PlatformICApi extends AbstractPlatformICApi {
 
       // @Gilbert perhaps this could be triggered from a button?
       // Also this is being hit twice for some reason
-      // await promiseToFuture(ledgerApi!.integrationTest());
 
       accountsSyncService = AccountsSyncService(ledgerApi!, hiveBoxes);
       balanceSyncService = BalanceSyncService(ledgerApi!, hiveBoxes);
@@ -238,6 +237,11 @@ class PlatformICApi extends AbstractPlatformICApi {
     final identity = await promiseToFuture(authApi.connectToHardwareWallet());
     print(identity);
     return HardwareWalletApi(gatewayHost, identity);
+  }
+
+  @override
+  Future<void> test() async {
+    await promiseToFuture(ledgerApi!.integrationTest());
   }
 }
 

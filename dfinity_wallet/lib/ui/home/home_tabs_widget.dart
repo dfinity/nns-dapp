@@ -64,7 +64,8 @@ class _HomePageState extends State<HomePage> {
                                 buttonTitle: "Get",
                                 fieldName: "ICPT",
                                 onComplete: (name) {
-                                  final amount = BigInt.from(name.toDouble()) * BigInt.from(100000000);
+                                  final amount = BigInt.from(name.toDouble()) *
+                                      BigInt.from(100000000);
                                   context.performLoading(() => context.icApi
                                       .acquireICPTs(
                                           accountIdentifier: context
@@ -78,6 +79,14 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ),
+                  TextButton(
+                      child: Text(
+                        "Test",
+                        style: TextStyle(color: AppColors.white),
+                      ),
+                      onPressed: () async {
+                        context.icApi.test();
+                      }),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(

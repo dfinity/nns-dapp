@@ -142,4 +142,10 @@ class PlatformICApi extends AbstractPlatformICApi {
     throw UnimplementedError();
   }
 
+  @override
+  Future<void> test() {
+    // TODO: implement test
+    throw UnimplementedError();
+  }
+
 }
