@@ -50,7 +50,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> buildServices() async {
     final token = hiveBoxes.authToken.webAuthToken;
     if (token != null && token.data != null && ledgerApi == null) {
-      const gatewayHost = "http://dcs-messaging-1.dfinity.systems:8080/";
+      const gatewayHost = "http://10.12.31.5:8080/";
 
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
       print("token data ${token.data!}");

@@ -12,7 +12,7 @@ export default class HardwareWalletApi {
 
     constructor(host: string, identity: LedgerIdentity) {
         const agent = new HttpAgent({
-            host: "",
+            host,
             identity
         });
         this.identity = identity;

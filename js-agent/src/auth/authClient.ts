@@ -9,7 +9,7 @@ import {
 } from '@dfinity/identity';
 import { createAuthenticationRequestUrl } from "@dfinity/authentication";
 
-const DEFAULT_IDP_URL = 'https://identity.messaging.ic0.app/authorize';
+const DEFAULT_IDP_URL = 'https://auth.ic0.app/authorize';
 
 class AuthenticationClient {
     createDelegationIdentity(key: SignIdentity, accessToken: string) : DelegationIdentity {
