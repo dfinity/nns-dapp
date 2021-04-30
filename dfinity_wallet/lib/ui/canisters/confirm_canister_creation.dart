@@ -118,7 +118,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                       ),
                       onPressed: () async {
                         await context.performLoading(() async {
-                          await 1.0.seconds.delay;
+                          await 4.0.seconds.delay;
                         });
 
                         final id = rand.nextInt(2147483647).toString();

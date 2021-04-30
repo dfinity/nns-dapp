@@ -103,7 +103,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                       tabs: [
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Tab(text: "SUB-ACCOUNTS"),
+                                          child: Tab(text: "ACCOUNTS"),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
@@ -124,12 +124,12 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                       context.boxes.accounts.primary,
                                       ...context.boxes.accounts.subAccounts
                                     ],
-                                    buttonTitle: "Create Sub-Account",
+                                    buttonTitle: "Create Linked Account",
                                     buttonAction: () {
                                       OverlayBaseWidget.show(
                                           context,
                                           TextFieldDialogWidget(
-                                              title: "New Sub-Account",
+                                              title: "New Linked Account",
                                               buttonTitle: "Create",
                                               fieldName: "Account Name",
                                               onComplete: (name) {
