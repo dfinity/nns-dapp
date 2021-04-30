@@ -45,7 +45,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
           final primary = context.boxes.accounts.maybePrimary;
           final subAccounts = context.boxes.accounts.subAccounts;
           final hardwareWallets = context.boxes.accounts.hardwareWallets;
-          final maxListItems = max(subAccounts.length, hardwareWallets.length);
+          final maxListItems = max(subAccounts.length +1, hardwareWallets.length);
 
           return FooterGradientButton(
               footerHeight: null,
@@ -56,51 +56,29 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                   ConstrainWidthAndCenter(
-                    width: 900,
-                    child: Card(
-                      color: AppColors.mediumBackground,
-                      elevation: 1,
-                      child: FlatButton(
-                        color: AppColors.transparent,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                        onPressed: () {
-                          context.nav.push(AccountPageDef.createPageConfig(primary!));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Account",
-                                      textAlign: TextAlign.left,
-                                      style: context.textTheme.headline1,
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    SelectableText(
-                                      primary!.accountIdentifier,
-                                      style: context.textTheme.bodyText1,
-                                    )
-                                  ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Accounts",
+                                  textAlign: TextAlign.left,
+                                  style: context.textTheme.headline1,
                                 ),
-                              ),
-                              BalanceDisplayWidget(
-                                  amount: primary.icpBalance,
-                                  amountSize: 40,
-                                  icpLabelSize: 20),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 16.0),
-                                child: SvgPicture.asset("right_grey.svg"),
-                              )
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
+                          BalanceDisplayWidget(
+                              amount: wallets.sumBy((element) => element.icpBalance),
+                              amountSize: 40,
+                              icpLabelSize: 20),
+                        ],
                       ),
                     ),
                   ),
@@ -137,7 +115,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                           child: TabBarView(
                             children: [
                               SubAccountsListWidget(
-                                subAccounts: context.boxes.accounts.subAccounts,
+                                subAccounts: [context.boxes.accounts.primary, ...context.boxes.accounts.subAccounts],
                                 buttonTitle: "Create Sub-Account",
                                 buttonAction: (){
                                   OverlayBaseWidget.show(context, TextFieldDialogWidget(
@@ -154,7 +132,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                 context.boxes.accounts.hardwareWallets,
                                 buttonTitle: "Attach Hardware Wallet",
                                 buttonAction: (){
-                                  OverlayBaseWidget.show(context, AttachHardwareWalletWidget());
+                                  // OverlayBaseWidget.show(context, AttachHardwareWalletWidget());
                                 },
                               )
                             ],

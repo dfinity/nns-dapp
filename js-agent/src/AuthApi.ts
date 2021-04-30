@@ -37,6 +37,6 @@ export default class AuthApi {
     }
 
     public connectToHardwareWallet = () : Promise<LedgerIdentity> => {
-        return LedgerIdentity.fromWebUsb(`m/44'/223'/0'/0/0`);
+        return LedgerIdentity.fromWebUsb();
     }
 }

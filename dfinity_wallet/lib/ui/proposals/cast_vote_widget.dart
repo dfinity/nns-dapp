@@ -93,7 +93,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                           ConfirmVoteDialog(
                             svg: "assets/thumbs_up.svg",
                             svgColor: Color(0xff80ACF8),
-                            title: "Accept Proposal",
+                            title: "Adopt Proposal",
                             description:
                             'You are about to cast ${numVotes} votes for this proposal, are you sure you want to proceed? ',
                             onConfirm: () {
@@ -103,7 +103,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                     }.takeIf((e) => selectedNeurons!.isNotEmpty),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text("Approve"),
+                      child: Text("Adopt"),
                     ),
                     style: ButtonStyle(
                         backgroundColor:

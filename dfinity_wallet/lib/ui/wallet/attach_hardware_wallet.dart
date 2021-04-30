@@ -1,23 +1,15 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
+import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/wallet/account_detail_widget.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../dfinity.dart';
 
-class AttachHardwareWalletWidget extends StatefulWidget {
-  @override
-  _AttachHardwareWalletWidgetState createState() =>
-      _AttachHardwareWalletWidgetState();
-}
+class HardwareWalletNameWidget extends StatelessWidget {
 
-class _AttachHardwareWalletWidgetState
-    extends State<AttachHardwareWalletWidget> {
   ValidatedTextField nameField = ValidatedTextField("Hardware Wallet Name",
       validations: [StringFieldValidation.minimumLength(2)]);
-
-  ConnectionState connectionState = ConnectionState.NOT_CONNECTED;
-  String? hardwareWalletId;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +36,47 @@ class _AttachHardwareWalletWidgetState
               ),
             ),
           ),
+          SizedBox(
+              height: 70,
+              width: double.infinity,
+              child: ValidFieldsSubmitButton(
+                child: Text("Connect to Wallet"),
+                onPressed: () async {
+                  NewTransactionOverlay.of(context).pushPage("Connect to Wallet", AttachHardwareWalletWidget(name: nameField.name));
+                },
+                fields: [nameField],
+              ))
+        ],
+      ),
+    );
+  }
+}
+
+
+class AttachHardwareWalletWidget extends StatefulWidget {
+  final String name;
+
+  const AttachHardwareWalletWidget({Key? key, required this.name}) : super(key: key);
+
+  @override
+  _AttachHardwareWalletWidgetState createState() =>
+      _AttachHardwareWalletWidgetState();
+}
+
+class _AttachHardwareWalletWidgetState
+    extends State<AttachHardwareWalletWidget> {
+
+
+  ConnectionState connectionState = ConnectionState.NOT_CONNECTED;
+  String? hardwareWalletId;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
           Expanded(
             child: HardwareConnectionWidget(
                 connectionState: connectionState,
@@ -63,12 +96,12 @@ class _AttachHardwareWalletWidgetState
           SizedBox(
               height: 70,
               width: double.infinity,
-              child: ValidFieldsSubmitButton(
+              child: ElevatedButton(
                 child: Text("Attach Wallet"),
                 onPressed: (() async {
                   await context.performLoading(() => 2.seconds.delay);
                   final account = Account.create(
-                      name: nameField.currentValue,
+                      name: widget.name,
                       accountIdentifier: hardwareWalletId!,
                       primary: false,
                       subAccountId: null,
@@ -79,7 +112,6 @@ class _AttachHardwareWalletWidgetState
                   context.boxes.accounts.put(hardwareWalletId, account);
                   context.nav.push(AccountPageDef.createPageConfig(account));
                 }).takeIf((e) => connectionState == ConnectionState.CONNECTED),
-                fields: [nameField],
               ))
         ],
       ),

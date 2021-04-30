@@ -12,6 +12,7 @@ class AccountRow extends StatelessWidget {
     Widget build(BuildContext context) {
         return Card(
             margin: EdgeInsets.only(left: 0, right: 0, bottom: 16),
+            color: account.primary ? AppColors.mediumBackground : AppColors.background,
             child: FlatButton(
                 onPressed: () {
                     this.onTap();
