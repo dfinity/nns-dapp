@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
@@ -18,12 +19,13 @@ class TransactionSyncService {
   }
 
   Future<void> syncAccount(Account account) async {
-    final response = await promiseToFuture(ledgerApi.getTransactions(
+    final res = await promiseToFuture(ledgerApi.getTransactions(
         GetTransactionsRequest(
             accountIdentifier: account.accountIdentifier,
             pageSize: 100,
             offset: 0)));
-    print("Transactions response: " + stringify(response));
+    final response = jsonDecode(stringify(res));
+    print("Transactions response: " + stringify(res));
 
     final transactions = <Transaction>[];
     response['transactions'].forEach((e) {
