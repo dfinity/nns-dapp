@@ -203,11 +203,20 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
     console.log(neurons);
 
     {
+        const manageNeuronResponse = await governanceApi.makeMotionProposal({
+            neuronId: neuronId,
+            url: "http://free-stuff-for-all.com",
+            text: "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
+            summary: "Change the world with the IC - lower all prices!"
+        });
+    }
+
+    {
         console.log("make a 'NetworkEconomics' proposal");
         const manageNeuronResponse = await governanceApi.makeNetworkEconomicsProposal({
             neuronId: neuronId,
             url: "https://www.lipsum.com/",
-            summary: "New networks economics proposal",
+            summary: "Increase minimum neuron stake",
             networkEcomomics: {
                 rejectCost: BigInt(10_000_000),
                 manageNeuronCostPerProposal: BigInt(1_000),
@@ -246,7 +255,7 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
         const manageNeuronResponse = await governanceApi.makeRewardNodeProviderProposal({
             neuronId: neuronId,
             url: "https://www.lipsum.com/",
-            summary: "Try to reward my own principal",
+            summary: "Reward for Node Provider 'ABC'",
             amount: BigInt(10_000_000),
             nodeProvider: identity.getPrincipal()
         });
