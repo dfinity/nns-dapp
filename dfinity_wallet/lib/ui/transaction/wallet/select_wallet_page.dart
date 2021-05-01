@@ -58,7 +58,8 @@ class _SelectDestinationAccountPageState
                                 "Enter ICP Amount",
                                 EnterAmountPage(
                                   origin: widget.source,
-                                  destinationAccountIdentifier: address
+                                  destinationAccountIdentifier: address,
+                                  subAccountId: widget.source.subAccountId,
                                 ));
                           },
                         ),
@@ -100,6 +101,7 @@ class _SelectDestinationAccountPageState
                                         EnterAmountPage(
                                           origin: widget.source,
                                           destinationAccountIdentifier: e.accountIdentifier,
+                                          subAccountId: widget.source.subAccountId,
                                         ));
                                   })),
                         ),
