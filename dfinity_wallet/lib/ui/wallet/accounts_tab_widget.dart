@@ -149,7 +149,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                     buttonAction: () {
                                       OverlayBaseWidget.show(
                                           context,
-                                          NewTransactionOverlay(
+                                          WizardOverlay(
                                               rootTitle: "Enter Wallet Name",
                                               rootWidget:
                                                   HardwareWalletNameWidget()));

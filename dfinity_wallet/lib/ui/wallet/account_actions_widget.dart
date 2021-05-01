@@ -42,7 +42,7 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
               ),
             ),
             onPressed: () {
-              OverlayBaseWidget.show(context, NewTransactionOverlay(
+              OverlayBaseWidget.show(context, WizardOverlay(
                 rootTitle: 'Manage ICP',
                 rootWidget: SelectAccountTransactionTypeWidget(source: widget.primaryAccount,),
               ));

@@ -72,7 +72,7 @@ class _NeuronsPageState extends State<NeuronsPage> {
             onPressed: () {
               OverlayBaseWidget.show(
                   context,
-                  NewTransactionOverlay(
+                  WizardOverlay(
                     rootTitle: "Stake Neuron",
                     rootWidget: StakeNeuronPage(
                         source: context.boxes.accounts.primary),

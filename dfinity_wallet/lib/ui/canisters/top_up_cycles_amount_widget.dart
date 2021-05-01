@@ -71,7 +71,7 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
                 child: ElevatedButton(
                   child: Text("Review Cycles Purchase"),
                   onPressed: () async {
-                    NewTransactionOverlay.of(context).pushPage(
+                    WizardOverlay.of(context).pushPage(
                         "Review Cycles Purchase",
                         ConfirmCyclesPurchase(
                           amount: icpAmount!.toDouble(),

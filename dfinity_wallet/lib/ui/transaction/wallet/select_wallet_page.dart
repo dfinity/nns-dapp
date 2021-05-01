@@ -54,7 +54,7 @@ class _SelectDestinationAccountPageState
                           fields: [addressField],
                           onPressed: () {
                             final address = addressField.currentValue;
-                            NewTransactionOverlay.of(context).pushPage(
+                            WizardOverlay.of(context).pushPage(
                                 "Enter ICP Amount",
                                 EnterAmountPage(
                                   origin: widget.source,
@@ -95,7 +95,7 @@ class _SelectDestinationAccountPageState
                               .mapToList((e) => _AccountRow(
                                   account: e,
                                   onPressed: () {
-                                    NewTransactionOverlay.of(context).pushPage(
+                                    WizardOverlay.of(context).pushPage(
                                         "Enter ICP Amount",
                                         EnterAmountPage(
                                           origin: widget.source,

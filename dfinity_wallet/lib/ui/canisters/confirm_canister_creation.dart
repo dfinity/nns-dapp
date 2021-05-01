@@ -125,10 +125,9 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                         final canister = Canister.demo(name, id);
                         canister.cyclesAdded = CycleCalculator.icpToCycles(amount).toInt();
                         await context.icApi.hiveBoxes.canisters.put(id, canister);
-
                         context.nav.push(CanisterPageDef.createPageConfig(canister));
 
-                        NewTransactionOverlay.of(context).replacePage(
+                        WizardOverlay.of(context).replacePage(
                             "Transaction Completed!",
                             TransactionDoneWidget(
                               amount: amount,

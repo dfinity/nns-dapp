@@ -57,7 +57,7 @@ class ConfirmTransactionWidget extends StatelessWidget {
                               toAccountId: destination));
                         }
 
-                        NewTransactionOverlay.of(context).replacePage(
+                        WizardOverlay.of(context).replacePage(
                             "Transaction Completed!",
                             TransactionDoneWidget(
                               amount: amount,

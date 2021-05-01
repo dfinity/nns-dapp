@@ -1,22 +1,22 @@
 import '../../dfinity.dart';
 
-class NewTransactionOverlay extends StatefulWidget {
+class WizardOverlay extends StatefulWidget {
   late Widget rootWidget;
   late String rootTitle;
 
-  NewTransactionOverlay({Key? key, required this.rootTitle, required this.rootWidget})
+  WizardOverlay({Key? key, required this.rootTitle, required this.rootWidget})
       : super(key: key);
 
 
-  static NewTransactionOverlayState of(BuildContext context) =>
-      context.findAncestorStateOfType<NewTransactionOverlayState>()!;
+  static WizardOverlayState of(BuildContext context) =>
+      context.findAncestorStateOfType<WizardOverlayState>()!;
 
   @override
-  NewTransactionOverlayState createState() => NewTransactionOverlayState();
+  WizardOverlayState createState() => WizardOverlayState();
 }
 
 
-class NewTransactionOverlayState extends State<NewTransactionOverlay> {
+class WizardOverlayState extends State<WizardOverlay> {
   final GlobalKey navigatorKey = GlobalKey();
 
   List<MaterialPage> pages = [];

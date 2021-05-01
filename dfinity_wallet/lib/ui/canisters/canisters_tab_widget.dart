@@ -7,6 +7,7 @@ import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
+import 'package:dfinity_wallet/ui/canisters/select_canister_add_action_widget.dart';
 import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
@@ -89,9 +90,9 @@ class _CansitersPageState extends State<CansitersPage> {
                     onPressed: () {
                       OverlayBaseWidget.show(
                           context,
-                          NewTransactionOverlay(
-                            rootTitle: "Create Canister",
-                            rootWidget: CanisterNameWidget(),
+                          WizardOverlay(
+                            rootTitle: "Add Canister",
+                            rootWidget: SelectCanisterAddActionWidget(),
                           ),
                           borderRadius: 20);
                     },
@@ -140,7 +141,7 @@ class CanisterRow extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 16.0, bottom: 16.0, right: 16.0),
                 child: Text(
-                  "Balance: ${canister.cyclesRemaining}",
+                  "${canister.cyclesRemaining} Cycles Remaining",
                   style: context.textTheme.bodyText1,
                 ),
               )

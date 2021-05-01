@@ -55,7 +55,7 @@ class NeuronRewardsCard extends StatelessWidget {
                         child: ElevatedButton(
                             onPressed: () {
                               OverlayBaseWidget.show(context,
-                                  NewTransactionOverlay(
+                                  WizardOverlay(
                                     rootTitle: "Spawn Neuron",
                                     rootWidget: StakeNeuronPage(source: neuron),
                                   )

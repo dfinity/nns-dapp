@@ -4,11 +4,14 @@ import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 
 import '../../dfinity.dart';
+import 'cycle_calculator.dart';
 import 'new_canister_cycles_widget.dart';
 
 
 
-class CanisterNameWidget extends StatelessWidget {
+class EnterCanisterIdAndNameWidget extends StatelessWidget {
+  ValidatedTextField idField = ValidatedTextField("Canister ID",
+      validations: [StringFieldValidation.minimumLength(60)]);
   ValidatedTextField nameField = ValidatedTextField("Canister Name",
       validations: [StringFieldValidation.minimumLength(2)]);
 
@@ -34,6 +37,10 @@ class CanisterNameWidget extends StatelessWidget {
                         Text("Canister Name",
                             style: context.textTheme.headline3),
                         DebouncedValidatedFormField(nameField),
+                        SmallFormDivider(),
+                        Text("Canister ID",
+                            style: context.textTheme.headline3),
+                        DebouncedValidatedFormField(idField),
                       ],
                     ),
                   ),
@@ -45,20 +52,15 @@ class CanisterNameWidget extends StatelessWidget {
               height: 70,
               width: double.infinity,
               child: ValidFieldsSubmitButton(
-                child: Text("Confirm Name"),
+                child: Text("Attach Canister"),
                 onPressed: () async {
-                  WizardOverlay.of(context).pushPage(
-                      "Select ICP Origin",
-                      SelectCyclesOriginWidget(onSelected: (account, context) {
-                    WizardOverlay.of(context).pushPage(
-                        "Enter Amount",
-                        NewCanisterCyclesAmountWidget(
-                          origin: account,
-                          name: nameField.currentValue,
-                        ));
-                  }));
+                  final canister = Canister.demo(nameField.currentValue, idField.currentValue);
+                  canister.cyclesAdded = CycleCalculator.icpToCycles(random.nextInt(1000).toDouble()).toInt();
+                  await context.icApi.hiveBoxes.canisters.put(idField.currentValue, canister);
+                  await context.performLoading(() => 2.seconds.delay);
+                  context.nav.push(CanisterPageDef.createPageConfig(canister));
                 },
-                fields: [nameField],
+                fields: [nameField, idField],
               ))
         ],
       ),

@@ -127,11 +127,11 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                               onPressed: () {
                                 OverlayBaseWidget.show(
                                     context,
-                                    NewTransactionOverlay(
+                                    WizardOverlay(
                                         rootTitle: "Top Up Canister",
                                         rootWidget: SelectCyclesOriginWidget(
                                           onSelected: (account, context) {
-                                            NewTransactionOverlay.of(context)
+                                            WizardOverlay.of(context)
                                                 .pushPage(
                                                     "Enter ICP Amount",
                                                     TopUpCyclesAmountWidget(

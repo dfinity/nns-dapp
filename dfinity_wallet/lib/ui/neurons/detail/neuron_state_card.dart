@@ -38,7 +38,7 @@ class NeuronStateCard extends StatelessWidget {
                 Expanded(child: Container(),),
                 ElevatedButton(
                     onPressed: () {
-                      OverlayBaseWidget.show(context, NewTransactionOverlay(
+                      OverlayBaseWidget.show(context, WizardOverlay(
                           rootTitle: "Increase Dissolve Delay",
                           rootWidget:
                           IncreaseDissolveDelayWidget(neuron: neuron, onCompleteAction: (context) {
@@ -98,7 +98,7 @@ class NeuronStateCard extends StatelessWidget {
             onPressed: () {
               OverlayBaseWidget.show(
                   context,
-                  NewTransactionOverlay(
+                  WizardOverlay(
                     rootTitle: 'Disburse Neuron',
                     rootWidget: SelectDestinationAccountPage(
                       source: neuron,

@@ -68,7 +68,7 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
                           widget.canister.cyclesAdded += cyclesBought;
 
 
-                          NewTransactionOverlay.of(context).pushPage(null, DoneWidget(numCycles: cyclesBought, canisterName: widget.canister.name));
+                          WizardOverlay.of(context).pushPage(null, DoneWidget(numCycles: cyclesBought, canisterName: widget.canister.name));
                         }.takeIf((e) => widget.canister != null),
                         fields: [amountField],
                       ))

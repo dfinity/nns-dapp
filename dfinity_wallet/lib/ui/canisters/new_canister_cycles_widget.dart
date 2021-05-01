@@ -53,7 +53,7 @@ class _NewCanisterCyclesAmountWidgetState extends State<NewCanisterCyclesAmountW
                 child: ElevatedButton(
                   child: Text("Review Cycles Purchase"),
                   onPressed: () async {
-                    NewTransactionOverlay.of(context).pushPage(
+                    WizardOverlay.of(context).pushPage(
                         "Review Canister Creation",
                         ConfirmCanisterCreationWidget(
                           amount: icpAmount!.toDouble(),

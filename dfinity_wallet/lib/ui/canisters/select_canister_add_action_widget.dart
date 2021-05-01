@@ -1,17 +1,16 @@
 
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/neurons/stake_neuron_page.dart';
+import 'package:dfinity_wallet/ui/canisters/cansiter_name_widget.dart';
+import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_wallet_page.dart';
 
 import '../../dfinity.dart';
-import 'create_transaction_overlay.dart';
+import 'enter_canister_id_and_name_widget.dart';
 
-class SelectAccountTransactionTypeWidget extends StatelessWidget {
-  final ICPSource source;
+class SelectCanisterAddActionWidget extends StatelessWidget {
 
-  const SelectAccountTransactionTypeWidget({
+  const SelectCanisterAddActionWidget({
     Key? key,
-    required this.source,
   }) : super(key: key);
 
   @override
@@ -23,17 +22,14 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              buildButton(context, "Send", "Send ICP to another account", () {
-                WizardOverlay.of(context).pushPage("Destination Account", SelectDestinationAccountPage(
-                  source: source,
-                ));
+              buildButton(context, "Attach Existing Canister", "Enter the id of a canister, to top up it's cycles", () {
+                WizardOverlay.of(context).pushPage("Attach Canister", EnterCanisterIdAndNameWidget());
               }),
               SmallFormDivider(),
-              buildButton(context, "Convert", "Convert ICP into cycles to power canisters", () {}),
-              SmallFormDivider(),
-              buildButton(context, "Stake", "Stake ICP in a neuron to participate in governance", () {
-                WizardOverlay.of(context).pushPage("Stake Neuron", StakeNeuronPage(source: source));
+              buildButton(context, "Create New Canister", "Create a new canister, to deploy your application", () {
+                WizardOverlay.of(context).pushPage("Enter Canister Name", CanisterNameWidget());
               }),
+              SmallFormDivider(),
               SizedBox(height: 50,)
             ],
           ),
@@ -47,7 +43,7 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
       style: ButtonStyle(
           shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(24))),
           overlayColor: MaterialStateProperty.resolveWith((states) {
-              return AppColors.blue600.withOpacity(0.5);
+            return AppColors.blue600.withOpacity(0.5);
           })
       ),
       child: Padding(

@@ -99,13 +99,13 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                             element.createdTimestampSeconds.toBigInt)
                         .first;
 
-                    NewTransactionOverlay.of(context).replacePage(
+                    WizardOverlay.of(context).replacePage(
                         "Set Dissolve Delay",
                         IncreaseDissolveDelayWidget(
                             neuron: newNeuron,
                             cancelTitle: "Skip",
                             onCompleteAction: (context) {
-                              NewTransactionOverlay.of(context).replacePage(
+                              WizardOverlay.of(context).replacePage(
                                   "Follow Neurons",
                                   ConfigureFollowersPage(
                                     neuron: newNeuron,

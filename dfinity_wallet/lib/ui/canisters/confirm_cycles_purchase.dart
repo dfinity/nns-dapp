@@ -125,7 +125,7 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                           destination.save();
                         });
 
-                        NewTransactionOverlay.of(context).replacePage(
+                        WizardOverlay.of(context).replacePage(
                             "Transaction Completed!",
                             TransactionDoneWidget(
                               amount: amount,

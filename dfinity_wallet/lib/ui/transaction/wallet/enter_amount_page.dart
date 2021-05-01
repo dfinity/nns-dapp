@@ -94,7 +94,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                 child: ValidFieldsSubmitButton(
                   child: Text("Review Transaction"),
                   onPressed: () async {
-                    NewTransactionOverlay.of(context).pushPage(
+                    WizardOverlay.of(context).pushPage(
                         "Review Transaction",
                         ConfirmTransactionWidget(
                           amount: amountField.currentValue.toDouble(),

@@ -105,12 +105,12 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                         ),
                         onPressed: () {
                           if(widget.account.hardwareWallet) {
-                            OverlayBaseWidget.show(context, NewTransactionOverlay(
+                            OverlayBaseWidget.show(context, WizardOverlay(
                               rootTitle: "Send ICPT",
                               rootWidget: SelectDestinationAccountPage(source: widget.account),
                             ));
                           }else{
-                            OverlayBaseWidget.show(context, NewTransactionOverlay(
+                            OverlayBaseWidget.show(context, WizardOverlay(
                               rootTitle: "Send ICPT",
                               rootWidget: SelectAccountTransactionTypeWidget(
                                 source: widget.account,
