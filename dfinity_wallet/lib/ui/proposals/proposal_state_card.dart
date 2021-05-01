@@ -15,11 +15,10 @@ class ProposalStateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final votedNeurons = neurons
-        .filter((element) => element.voteForProposal(proposal) != null)
-        .toList();
-    JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+    JsonEncoder encoder = new JsonEncoder.withIndent('    ');
     String prettyprint = encoder.convert(proposal.action);
+
+
     return Card(
       color: AppColors.background,
       child: Padding(
@@ -68,133 +67,63 @@ class ProposalStateCard extends StatelessWidget {
               "Proposer: ${proposal.proposer}",
               style: context.textTheme.subtitle2,
             ),
-            SmallFormDivider(),
             Text(
-              "${prettyprint}",
+              "Topic: ${proposal.topic.toString().removePrefix("Topic.")}",
               style: context.textTheme.subtitle2,
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                    "Adopt",
-                                  style: context.textTheme.headline3,
-                                ),
-                                Text(
-                                  "${proposal.yes}",
-                                  style: context.textTheme.headline4,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: proposal.yes,
-                            child: SizedBox(
-                              height: 10,
-                              child: Container(
-                                  color: Color(0xffED1E79),
-                                ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: proposal.no,
-                            child: SizedBox(
-                              height: 10,
-                              child: Container(
-                                  color: Color(0xff80ACF8),
-                                ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                    "Reject",
-                                  style: context.textTheme.headline3,
-                                ),
-                                Text(
-                                  "${proposal.no}",
-                                  style: context.textTheme.headline4,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            Text(
+              "Identifier: ${proposal.id}",
+              style: context.textTheme.subtitle2,
             ),
-            if (votedNeurons.isNotEmpty)
-              Container(
-                margin: EdgeInsets.only(top: 10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.gray600, width: 2),
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                        "My Votes",
-                        style: context.textTheme.subtitle1,
-                      ),
-                    ),
-                    ...votedNeurons.map((e) {
-                      final vote = e.voteForProposal(proposal);
-                      final image = (vote == Vote.YES)
-                          ? "assets/thumbs_up.svg"
-                          : "assets/thumbs_down.svg";
-                      final color = (vote == Vote.YES)
-                          ? Color(0xff80ACF8)
-                          : Color(0xffED1E78);
-
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                                padding: EdgeInsets.all(16.0), child: Text(e.id)),
-                          ),
-                          Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Text(
-                                  "${e.votingPower.toBigInt.toICPT.toStringAsFixed(2)}", style: context.textTheme.subtitle2,)),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SizedBox.fromSize(
-                              child: SvgPicture.asset(
-                                image,
-                                color: color,
-                              ),
-                              size: Size.square(30),
-                            ),
-                          )
-                        ],
-                      );
-                    })
-                  ],
-                ),
-              )
+            SmallFormDivider(),
+            ActionDetailsWidget(proposal: proposal,)
           ],
         ),
       ),
     );
   }
 }
+
+class ActionDetailsWidget extends StatelessWidget {
+
+  final Proposal proposal;
+
+  const ActionDetailsWidget({Key? key, required this.proposal}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final actionKey = proposal.action.keys.firstOrNull;
+    if(actionKey == null) return Container();
+    final fields = proposal.action[actionKey] as Map<dynamic, dynamic>;
+
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(actionKey, style: context.textTheme.headline3),
+          ),
+          ...fields.entries.map((entry) => Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(camelToTitle(entry.key), style: context.textTheme.bodyText1?.copyWith(fontSize: 14, color: AppColors.gray50),),
+                Text(entry.value, style: context.textTheme.subtitle2,)
+              ],
+            ),
+          ))
+        ],
+      ),
+    );
+  }
+
+  String camelToTitle(String text) {
+    RegExp exp = RegExp(r'(?<=[a-z])[A-Z]');
+    String result = text.capitalize().replaceAllMapped(exp, (Match m) => (' ' + m.group(0)!.toLowerCase().capitalize()));
+    return result;
+  }
+}
+
+

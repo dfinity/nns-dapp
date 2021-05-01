@@ -7,7 +7,7 @@ enum Topic {
   @HiveField(0)
   Unspecified,
   @HiveField(1)
-  ManageNeuron,
+  NeuronManagement,
   @HiveField(2)
   ExchangeRate,
   @HiveField(3)
@@ -33,7 +33,7 @@ extension Description on Topic {
 
   static const _topicNameMap = {
     Topic.Unspecified: "Unspecified",
-    Topic.ManageNeuron: "Manage Neuron",
+    Topic.NeuronManagement: "Manage Neuron",
     Topic.ExchangeRate: "Exchange Rate",
     Topic.NetworkEconomics: "Network Economics",
     Topic.Governance: "Governance",
@@ -47,7 +47,7 @@ extension Description on Topic {
 
   static const _topicDescriptionMap = {
     Topic.Unspecified: "Unspecified",
-    Topic.ManageNeuron: "Proposals that manage specific neurons, for example making them perform actions.",
+    Topic.NeuronManagement: "Proposals that manage specific neurons, for example making them perform actions.",
     Topic.ExchangeRate: "All proposals that provide “real time” information about the value of ICP, as measured by an IMF SDR, which allows the NNS to convert ICP to cycles (which power computation) at a rate which keeps their real world cost constant.",
     Topic.NetworkEconomics: "Proposals that administer network economics, for example, determining what rewards should be paid to node operators.",
     Topic.Governance: "All proposals that administer governance, for example to freeze malicious canisters that are harming the network.",

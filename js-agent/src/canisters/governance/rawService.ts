@@ -2,7 +2,8 @@ import type { Principal } from '@dfinity/agent';
 export interface AccountIdentifier {
   'hash' : Array<number>,
 };
-export type Action = { 'ExternalUpdate' : ExternalUpdate } |
+export type Action =
+    { 'ExternalUpdate' : ExternalUpdate } |
   { 'ManageNeuron' : ManageNeuron } |
   { 'ApproveKyc' : ApproveKyc } |
   { 'NetworkEconomics' : NetworkEconomics } |

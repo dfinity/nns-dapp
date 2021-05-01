@@ -16,7 +16,7 @@ class TopicAdapter extends TypeAdapter<Topic> {
       case 0:
         return Topic.Unspecified;
       case 1:
-        return Topic.ManageNeuron;
+        return Topic.NeuronManagement;
       case 2:
         return Topic.ExchangeRate;
       case 3:
@@ -46,7 +46,7 @@ class TopicAdapter extends TypeAdapter<Topic> {
       case Topic.Unspecified:
         writer.writeByte(0);
         break;
-      case Topic.ManageNeuron:
+      case Topic.NeuronManagement:
         writer.writeByte(1);
         break;
       case Topic.ExchangeRate:

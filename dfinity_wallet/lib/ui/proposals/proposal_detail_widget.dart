@@ -6,6 +6,7 @@ import 'package:dfinity_wallet/ui/proposals/proposal_state_card.dart';
 
 import '../../dfinity.dart';
 import 'cast_vote_widget.dart';
+import 'my_votes_card.dart';
 
 class ProposalDetailWidget extends StatefulWidget {
   final Proposal proposal;
@@ -62,6 +63,10 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                             null && !ineligibleNeurons.contains(element))
                             .toList();
 
+                        final votedNeurons = updatedNeurons
+                            .filter((element) => element.voteForProposal(widget.proposal) != null)
+                            .toList();
+
                         return ConstrainWidthAndCenter(
                             child: SingleChildScrollView(
                               child: Column(
@@ -72,15 +77,17 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                                   ProposalStateCard(
                                       proposal: latestProposal!,
                                       neurons: updatedNeurons),
+                                  if(votedNeurons.isNotEmpty)
+                                    MyVotesCard(votedNeurons: votedNeurons, proposal: latestProposal,),
                                   if (notVotedNeurons.isNotEmpty &&
-                                      widget.proposal.status ==
+                                      latestProposal.status ==
                                           ProposalStatus.Open)
                                     CastVoteWidget(
                                       proposal: latestProposal,
                                       neurons: notVotedNeurons,
                                     ),
                                   if(ineligibleNeurons.isNotEmpty &&
-                                      widget.proposal.status ==
+                                      latestProposal.status ==
                                           ProposalStatus.Open)
                                     IneligibleNeuronsWidget(ineligibleNeurons: ineligibleNeurons),
                                   SmallFormDivider()
