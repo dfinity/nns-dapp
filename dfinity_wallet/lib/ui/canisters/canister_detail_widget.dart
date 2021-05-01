@@ -7,6 +7,7 @@ import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:intl/intl.dart';
 
 import '../../dfinity.dart';
+import 'change_canister_controller_widget.dart';
 
 class CanisterDetailWidget extends StatefulWidget {
   final Canister canister;
@@ -31,11 +32,14 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
               stream: context.icApi.hiveBoxes.canisters
                   .watch(key: widget.canister.identifier),
               builder: (context, snapshot) {
+                final canister = context.boxes.canisters.get(widget.canister.identifier)!;
                 return FooterGradientButton(
-                  footerHeight: null,
-                  body: SingleChildScrollView(
+                    footerHeight: null,
+                    body: SingleChildScrollView(
                       child: ConstrainWidthAndCenter(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Row(
                                 mainAxisAlignment:
@@ -49,14 +53,14 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            widget.canister.name,
+                                            canister.name,
                                             style: context.textTheme.headline1,
                                           ),
                                           SizedBox(
                                             height: 10,
                                           ),
                                           SelectableText(
-                                            widget.canister.identifier,
+                                            canister.identifier,
                                             style: context.textTheme.subtitle2,
                                           )
                                         ],
@@ -77,7 +81,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                             Text(
                                               NumberFormat("###,###.########",
                                                       "en_US")
-                                                  .format(widget.canister
+                                                  .format(canister
                                                       .cyclesRemaining),
                                               style: TextStyle(
                                                   color: AppColors.white,
@@ -96,11 +100,47 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                                     fontSize: 50 * 0.4))
                                           ],
                                         ),
-                                      ))
+                                      )),
                                 ]),
-                            SizedBox(
-                              height: 200,
-                            )
+                            Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Controller",
+                                      style: context.textTheme.headline3,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(canister.controller),
+                                  ),
+                                  // if (context.boxes.accounts.values.any(
+                                  //     (element) =>
+                                  //         element.identifier ==
+                                  //         widget.canister.controller))
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            OverlayBaseWidget.show(
+                                                context,
+                                                ChangeCanisterControllerWidget(
+                                                  canister: canister,
+                                                ));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text("Change Controller"),
+                                          )),
+                                    )
+                              ],
+                            ),
+                                ))
                           ],
                         ),
                       ),
@@ -131,13 +171,12 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                         rootTitle: "Top Up Canister",
                                         rootWidget: SelectCyclesOriginWidget(
                                           onSelected: (account, context) {
-                                            WizardOverlay.of(context)
-                                                .pushPage(
-                                                    "Enter ICP Amount",
-                                                    TopUpCyclesAmountWidget(
-                                                        origin: account,
-                                                        destinationCanister:
-                                                            widget.canister));
+                                            WizardOverlay.of(context).pushPage(
+                                                "Enter ICP Amount",
+                                                TopUpCyclesAmountWidget(
+                                                    origin: account,
+                                                    destinationCanister:
+                                                        canister));
                                           },
                                         )));
                               }),

@@ -27,7 +27,7 @@ class ProposalAdapter extends TypeAdapter<Proposal> {
       fields[10] as String?,
       fields[11] as String?,
       fields[12] as String?,
-      fields[13] as DateTime,
+      fields[13] as DateTime?,
       fields[14] as Topic,
       fields[15] as ProposalStatus,
       fields[16] as ProposalRewardStatus,

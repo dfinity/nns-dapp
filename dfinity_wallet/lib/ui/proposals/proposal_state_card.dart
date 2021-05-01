@@ -15,10 +15,6 @@ class ProposalStateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    JsonEncoder encoder = new JsonEncoder.withIndent('    ');
-    String prettyprint = encoder.convert(proposal.action);
-
-
     return Card(
       color: AppColors.background,
       child: Padding(
@@ -57,7 +53,7 @@ class ProposalStateCard extends StatelessWidget {
               ],
             ),
             TextButton(
-              onPressed: () { launch(proposal.url); },
+              onPressed: () => launch(proposal.url),
               child: Text(
                 proposal.url,
                 style: context.textTheme.subtitle2?.copyWith(color: Colors.blue),
@@ -97,12 +93,19 @@ class ActionDetailsWidget extends StatelessWidget {
     final fields = proposal.action[actionKey] as Map<dynamic, dynamic>;
 
     return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.mediumBackground,
+        borderRadius: BorderRadius.circular(10)
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(actionKey, style: context.textTheme.headline3),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(camelToTitle(actionKey.replaceAll("NetworkEconomics", "ManageNetworkEconomics")), style: context.textTheme.headline4),
+            ),
           ),
           ...fields.entries.map((entry) => Padding(
             padding: const EdgeInsets.all(8.0),

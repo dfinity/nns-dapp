@@ -121,8 +121,8 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                           await 4.0.seconds.delay;
                         });
 
-                        final id = rand.nextInt(2147483647).toString();
-                        final canister = Canister.demo(name, id);
+                        final id = context.randomUUID();
+                        final canister = Canister.demo(name, id, context.boxes.accounts.primary.identifier);
                         canister.cyclesAdded = CycleCalculator.icpToCycles(amount).toInt();
                         await context.icApi.hiveBoxes.canisters.put(id, canister);
                         context.nav.push(CanisterPageDef.createPageConfig(canister));

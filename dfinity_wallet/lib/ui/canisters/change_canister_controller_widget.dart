@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
@@ -8,12 +9,14 @@ import 'cycle_calculator.dart';
 import 'new_canister_cycles_widget.dart';
 
 
+class ChangeCanisterControllerWidget extends StatelessWidget {
 
-class EnterCanisterIdAndNameWidget extends StatelessWidget {
-  ValidatedTextField idField = ValidatedTextField("Canister ID",
-      validations: [StringFieldValidation.minimumLength(60)]);
-  ValidatedTextField nameField = ValidatedTextField("Canister Name",
-      validations: [StringFieldValidation.minimumLength(2)]);
+  final Canister canister;
+
+  final ValidatedTextField controllerField = ValidatedTextField("New Canister Controller",
+      validations: [StringFieldValidation.minimumLength(20)]);
+
+  ChangeCanisterControllerWidget({Key? key, required this.canister}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,18 +32,14 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
                 widthFactor: 0.7,
                 child: Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(6.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("Canister Name",
+                        Text("New Canister Controller",
                             style: context.textTheme.headline3),
-                        DebouncedValidatedFormField(nameField),
-                        SmallFormDivider(),
-                        Text("Canister ID",
-                            style: context.textTheme.headline3),
-                        DebouncedValidatedFormField(idField),
+                        DebouncedValidatedFormField(controllerField),
                       ],
                     ),
                   ),
@@ -52,18 +51,30 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
               height: 70,
               width: double.infinity,
               child: ValidFieldsSubmitButton(
-                child: Text("Attach Canister"),
+                child: Text("Perform Controller Change"),
                 onPressed: () async {
-                  final canister = Canister.demo(nameField.currentValue, idField.currentValue, context.randomUUID());
-                  canister.cyclesAdded = CycleCalculator.icpToCycles(random.nextInt(1000).toDouble()).toInt();
-                  await context.icApi.hiveBoxes.canisters.put(idField.currentValue, canister);
-                  await context.performLoading(() => 2.seconds.delay);
-                  context.nav.push(CanisterPageDef.createPageConfig(canister));
+                  confirmControllerChange(context);
                 },
-                fields: [nameField, idField],
+                fields: [controllerField],
               ))
         ],
       ),
     );
+  }
+
+  Future confirmControllerChange(BuildContext context) async {
+    OverlayBaseWidget.show(
+        context,
+        ConfirmDialog(
+          title: "Confirm Change Controller",
+          description:
+          "You are going to change the controller of canister ${canister.identifier}.\n\nAfter complete, the new controller will be ${controllerField.currentValue}",
+          onConfirm: () async {
+            await context.performLoading(() => 2.seconds.delay);
+            canister.controller = controllerField.currentValue;
+            await canister.save();
+            OverlayBaseWidget.of(context)?.dismiss();
+          },
+        ));
   }
 }
