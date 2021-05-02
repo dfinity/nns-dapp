@@ -69,8 +69,8 @@ class ProposalSyncService {
 
   void updateProposal(Proposal proposal, String proposalId, dynamic response) {
     proposal.id = proposalId.toString();
-    proposal.summary = response['proposal']['summary'].toString();
-    proposal.url = response['proposal']['url'];
+    proposal.summary = (response['proposal']['summary'].toString()).replaceAll("Change the world with the IC - lower all prices!", "Reflect falling hardware prices - reduce smart contract memory costs by 5%");
+    proposal.url = response['proposal']['url'].toString().replaceAll("https://www.lipsum.com/", "https://medium.com/zurich-eth/ic-proposal-reduce-smart-contract-memory-costs/");
     proposal.proposer = response['proposer'].toString();
     proposal.no = response['latestTally']['no'].toString().toInt();
     proposal.yes = response['latestTally']['yes'].toString().toInt();

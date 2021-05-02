@@ -25,12 +25,11 @@ class ProposalStateCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  proposal.summary,
-                  style: context.textTheme.headline3,
-                ),
                 Expanded(
-                  child: Container(),
+                  child: Text(
+                    proposal.summary,
+                    style: context.textTheme.headline3,
+                  ),
                 ),
                 Container(
                   decoration: ShapeDecoration(

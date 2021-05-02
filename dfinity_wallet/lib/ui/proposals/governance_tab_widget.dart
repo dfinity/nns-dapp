@@ -103,7 +103,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
         child: TabTitleAndContent(
           title: "Voting",
           subtitle:
-              "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposals, which are decided as the result of voting activity by neurons.",
+              "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposal, which are decided as the result of voting activity by neurons.",
           children: [
             IntrinsicHeight(
               child: MultiSelectDropdownWidget(
@@ -223,11 +223,12 @@ class ProposalRow extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(
-                      proposal.summary,
-                      style: context.textTheme.subtitle1,
+                    Expanded(
+                      child: Text(
+                        proposal.summary,
+                        style: context.textTheme.subtitle1,
+                      ),
                     ),
-                    Expanded(child: Container()),
                     Container(
                       decoration: ShapeDecoration(
                           shape: RoundedRectangleBorder(
