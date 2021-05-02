@@ -25,7 +25,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
       selectedNeurons = neuronsWithoutVote.toList();
     }
     final numVotes = selectedNeurons!
-        .sumBy((element) => element.icpBalance)
+        .sumBy((element) => element.votingPower.toBigInt.toICPT)
         .toStringAsFixed(2);
     return Card(
       color: AppColors.background,
@@ -77,7 +77,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                       Padding(
                           padding: EdgeInsets.all(16.0),
                           child:
-                              Text("${e.icpBalance.toStringAsFixed(2)} votes")),
+                              Text("${e.votingPower.toBigInt.toICPT.toStringAsFixed(2)} votes")),
                     ],
                   ),
                 )),
