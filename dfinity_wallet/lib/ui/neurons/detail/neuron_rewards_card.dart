@@ -47,7 +47,8 @@ class NeuronRewardsCard extends StatelessWidget {
                       BalanceDisplayWidget(
                           amount: neuron.maturityE8sEquivalent.toBigInt.toICPT,
                           amountSize: 30,
-                          icpLabelSize: 15),
+                          icpLabelSize: 0,
+                          amountLabelSuffix: "%"),
                       Expanded(child: ConstrainedBox(constraints: BoxConstraints(minHeight: 40),
                       child: Container())),
                       Align(

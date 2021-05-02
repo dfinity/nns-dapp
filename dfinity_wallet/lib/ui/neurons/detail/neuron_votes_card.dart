@@ -31,7 +31,7 @@ class NeuronVotesCard extends StatelessWidget {
                     LabelledBalanceDisplayWidget(
                         amount: neuron.votingPower.toBigInt.toICPT,
                         amountSize: 30,
-                        icpLabelSize: 15,
+                        icpLabelSize: 0,
                         text: Text("Voting Power")
                     )
                   ],
