@@ -105,5 +105,5 @@ class VeryTallFormDivider extends StatelessWidget {
 
 
 extension RandomUUID on BuildContext {
-  String randomUUID() => boxes.accounts.primary.identifier.characters.shuffled().toString();
+  String randomUUID() => boxes.accounts.primary.identifier.characters.shuffled().joinToString(separator: "").toString();
 }
