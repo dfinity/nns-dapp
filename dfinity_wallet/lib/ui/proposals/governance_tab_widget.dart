@@ -102,7 +102,8 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
       body: ConstrainWidthAndCenter(
         child: TabTitleAndContent(
           title: "Voting",
-          subtitle: "The Internet Computer is managed by ICP token-holders that have staked tokens in neurons, who propose and vote on upgrades to the protocol.",
+          subtitle:
+              "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposals, which are decided as the result of voting activity by neurons.",
           children: [
             IntrinsicHeight(
               child: MultiSelectDropdownWidget(

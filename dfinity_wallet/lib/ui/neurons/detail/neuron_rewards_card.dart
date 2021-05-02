@@ -28,13 +28,13 @@ class NeuronRewardsCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Rewards",
+                        "Maturity",
                         style: context.textTheme.headline3,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                            "As your neuron matures, and you participate in governance, you gain rewards that can be used to spawn new neurons.", style: context.textTheme.subtitle2,),
+                          "When your neuron votes, its maturity increases. This allows you to spawn a new neuron containing newly minted ICP. Increases in maturity can occur up to 3 days after voting took place.", style: context.textTheme.subtitle2,),
                       )
                     ],
                   ),

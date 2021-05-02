@@ -52,8 +52,7 @@ class _CansitersPageState extends State<CansitersPage> {
             body: ConstrainWidthAndCenter(
               child: TabTitleAndContent(
                 title: "Deploy",
-                subtitle:
-                    "Deploy applications to canisters; Canisters are computational units, a canister executes your application and consumes cycles.",
+                subtitle: "Canisters are computational units (a form of smart contracts).They are powered by “cycles”, which they must be pre-charged with. You create cycles by converting ICP tokens.",
                 children: [
                   SmallFormDivider(),
                   ...context.boxes.canisters.values
@@ -79,7 +78,7 @@ class _CansitersPageState extends State<CansitersPage> {
                         width: 400,
                         child: Center(
                           child: Text(
-                            "Add Canister",
+                            "Create or Link Canister",
                             textAlign: TextAlign.center,
                             style: context.textTheme.button
                                 ?.copyWith(fontSize: 24),
