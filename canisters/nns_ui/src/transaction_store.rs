@@ -77,7 +77,8 @@ struct Transaction {
 pub enum CreateSubAccountResponse {
     Ok(SubAccountDetails),
     AccountNotFound,
-    SubAccountLimitExceeded
+    SubAccountLimitExceeded,
+    NameTooLong
 }
 
 #[derive(Deserialize)]
@@ -90,7 +91,8 @@ pub struct RegisterHardwareWalletRequest {
 pub enum RegisterHardwareWalletResponse {
     Ok,
     AccountNotFound,
-    HardwareWalletLimitExceeded
+    HardwareWalletLimitExceeded,
+    NameTooLong
 }
 
 #[derive(CandidType)]
@@ -213,7 +215,9 @@ impl TransactionStore {
     }
 
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
-        if let Some(account) = self.try_get_account_mut_by_default_identifier(&AccountIdentifier::from(caller.clone())) {
+        if !Self::validate_account_name(&sub_account_name) {
+            CreateSubAccountResponse::NameTooLong
+        } else if let Some(account) = self.try_get_account_mut_by_default_identifier(&AccountIdentifier::from(caller.clone())) {
             if account.sub_accounts.len() == (u8::MAX as usize) {
                 CreateSubAccountResponse::SubAccountLimitExceeded
             } else {
@@ -243,7 +247,9 @@ impl TransactionStore {
     }
 
     pub fn register_hardware_wallet(&mut self, caller: PrincipalId, request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
-        if let Some(index) = self.try_get_account_index_by_default_identifier(&AccountIdentifier::from(caller)) {
+        if !Self::validate_account_name(&request.name) {
+            RegisterHardwareWalletResponse::NameTooLong
+        } else if let Some(index) = self.try_get_account_index_by_default_identifier(&AccountIdentifier::from(caller)) {
             let account = self.accounts.get_mut(index as usize).unwrap().as_mut().unwrap();
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
@@ -519,6 +525,12 @@ impl TransactionStore {
                 e.insert(AccountLocation::HardwareWallet(vec!(account_index)));
             }
         };
+    }
+
+    fn validate_account_name(name: &str) -> bool {
+        const ACCOUNT_NAME_MAX_LENGTH: usize = 24;
+
+        name.len() <= ACCOUNT_NAME_MAX_LENGTH
     }
 
     fn prune_transactions_from_account(&mut self, account_identifier: AccountIdentifier, prune_blocks_previous_to: TransactionIndex) {
@@ -878,7 +890,6 @@ mod tests {
             store.append_transaction(transfer4, store.get_next_required_block_height(), timestamp).unwrap();
         }
 
-        // TODO add hw wallet test case
         let original_block_heights = store.transactions.iter().map(|t| t.block_height).collect_vec();
         assert_eq!(20, store.prune_transactions(20));
         let pruned_block_heights = store.transactions.iter().map(|t| t.block_height).collect_vec();
@@ -904,6 +915,39 @@ mod tests {
         let block_heights_remaining = transaction_indexes_remaining.iter().map(|t| store.get_transaction(*t).unwrap().block_height).collect_vec();
 
         assert_eq!(pruned_block_heights, block_heights_remaining);
+    }
+
+    #[test]
+    fn sub_account_name_too_long() {
+        let mut store = setup_test_store();
+
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+        let res1 = store.create_sub_account(principal, "ABCDEFGHIJKLMNOPQRSTUVWX".to_string());
+        let res2 = store.create_sub_account(principal, "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string());
+
+        assert!(matches!(res1, CreateSubAccountResponse::Ok(_)));
+        assert!(matches!(res2, CreateSubAccountResponse::NameTooLong));
+    }
+
+    #[test]
+    fn hardware_wallet_account_name_too_long() {
+        let mut store = setup_test_store();
+
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+        let hw_account1 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
+        let hw_account2 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap());
+
+        let res1 = store.register_hardware_wallet(
+            principal,
+            RegisterHardwareWalletRequest { name: "ABCDEFGHIJKLMNOPQRSTUVWX".to_string(), account_identifier: hw_account1 });
+
+        let res2 = store.register_hardware_wallet(
+            principal,
+            RegisterHardwareWalletRequest { name: "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string(), account_identifier: hw_account2 });
+
+        assert!(matches!(res1, RegisterHardwareWalletResponse::Ok));
+        assert!(matches!(res2, RegisterHardwareWalletResponse::NameTooLong));
     }
 
     #[test]

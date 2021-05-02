@@ -81,6 +81,7 @@ type CreateSubAccountResponse =
         Ok: SubAccountDetails;
         AccountNotFound;
         SubAccountLimitExceeded;
+        NameTooLong;
     };
 
 type RegisterHardwareWalletRequest =
@@ -94,6 +95,7 @@ type RegisterHardwareWalletResponse =
         Ok;
         AccountNotFound;
         HardwareWalletLimitExceeded;
+        NameTooLong;
     };
 
 type Stats =
