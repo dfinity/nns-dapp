@@ -1,9 +1,8 @@
+use crate::ledger;
 use crate::state::STATE;
-use dfn_protobuf::protobuf;
-use ic_nns_constants::LEDGER_CANISTER_ID;
 use lazy_static::lazy_static;
-use ledger_canister::{BlockHeight, GetBlocksRes, Block, GetBlocksArgs, TipOfChainRes};
-use ledger_canister::protobuf::TipOfChainRequest;
+use ledger_canister::{Block, BlockHeight};
+use std::cmp::min;
 use std::sync::Mutex;
 
 lazy_static! {
@@ -22,52 +21,55 @@ pub async fn sync_transactions() -> Option<Result<u32, String>> {
 async fn sync_transactions_within_lock() -> Result<u32, String> {
     let store = &mut STATE.write().unwrap().transactions_store;
     let next_block_height_required = store.get_next_required_block_height();
-    let latest_block_height = get_latest_block_height().await?;
+    let latest_block_height = ledger::tip_of_chain().await?;
 
     if latest_block_height < next_block_height_required {
         Ok(0)
     } else {
-        match get_blocks(next_block_height_required, latest_block_height).await {
-            Ok(blocks) => {
-                let blocks_count = blocks.len() as u32;
-                for (block_height, block) in blocks.into_iter() {
-                    let result = store.append_transaction(block.transaction().into_owned().transfer, block_height, block.timestamp());
+        const MAX_BLOCKS_PER_EXECUTION: u64 = 500;
+        let count = min(latest_block_height - next_block_height_required + 1, MAX_BLOCKS_PER_EXECUTION);
 
-                    if result.is_err() {
-                        return Err(result.unwrap_err());
-                    }
-                }
-                store.mark_ledger_sync_complete();
+        let blocks = get_blocks(next_block_height_required, count as u32).await?;
 
-                Ok(blocks_count)
+        let blocks_count = blocks.len() as u32;
+        for (block_height, block) in blocks.into_iter() {
+            let result = store.append_transaction(block.transaction().into_owned().transfer, block_height, block.timestamp());
+
+            if result.is_err() {
+                return Err(result.unwrap_err());
             }
-            Err(e) => Err(e),
         }
+        store.mark_ledger_sync_complete();
+
+        Ok(blocks_count)
     }
 }
 
-async fn get_latest_block_height() -> Result<BlockHeight, String> {
-    let response: TipOfChainRes = dfn_core::call(
-        LEDGER_CANISTER_ID,
-        "tip_of_chain_pb",
-        protobuf,
-        TipOfChainRequest {}).await.map_err(|e| e.1)?;
+async fn get_blocks(from: BlockHeight, count: u32) -> Result<Vec<(BlockHeight, Block)>, String> {
+    const MAX_BLOCKS_PER_BATCH: u32 = 100;
+    let mut batch_start = from;
+    let mut count_remaining = count;
+    let mut results: Vec<(BlockHeight, Block)> = Vec::with_capacity(count as usize);
 
-    Ok(response.tip_index)
-}
+    loop {
+        let batch_size = min(count_remaining, MAX_BLOCKS_PER_BATCH);
 
-async fn get_blocks(from: BlockHeight, to: BlockHeight) -> Result<Vec<(BlockHeight, Block)>, String> {
-    let response: GetBlocksRes = dfn_core::call(
-        LEDGER_CANISTER_ID,
-        "get_blocks_pb",
-        protobuf,
-        GetBlocksArgs::new(from, (to - from) as usize + 1usize)).await.map_err(|e| e.1)?;
+        let blocks = ledger::get_blocks(batch_start, batch_size).await?;
 
-    let blocks = response.0?;
+        for (block_height, block) in blocks
+            .into_iter()
+            .enumerate()
+            .map(|(index, block)| (from + (index as u64), block.decode().unwrap())) {
+            results.push((block_height, block));
+        }
 
-    Ok(blocks
-        .into_iter()
-        .enumerate()
-        .map(|(index, block)| (from + (index as u64), block.decode().unwrap()))
-        .collect())
+        count_remaining = count_remaining - batch_size;
+        if count_remaining > 0 {
+            batch_start = batch_start + batch_size as u64;
+        } else {
+            break;
+        }
+    }
+
+    Ok(results)
 }

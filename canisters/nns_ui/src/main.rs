@@ -13,6 +13,7 @@ use dfn_candid::{candid, candid_one};
 use dfn_core::{stable, over, over_async};
 use ledger_canister::AccountIdentifier;
 
+mod ledger;
 mod ledger_sync;
 mod state;
 mod transaction_store;
