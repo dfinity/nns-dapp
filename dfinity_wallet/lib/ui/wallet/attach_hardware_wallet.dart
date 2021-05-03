@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
@@ -6,12 +7,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../dfinity.dart';
 
-
-
 class AttachHardwareWalletWidget extends StatefulWidget {
   final String name;
 
-  const AttachHardwareWalletWidget({Key? key, required this.name}) : super(key: key);
+  const AttachHardwareWalletWidget({Key? key, required this.name})
+      : super(key: key);
 
   @override
   _AttachHardwareWalletWidgetState createState() =>
@@ -20,8 +20,6 @@ class AttachHardwareWalletWidget extends StatefulWidget {
 
 class _AttachHardwareWalletWidgetState
     extends State<AttachHardwareWalletWidget> {
-
-
   ConnectionState connectionState = ConnectionState.NOT_CONNECTED;
   dynamic ledgerIdentity;
 
@@ -35,12 +33,16 @@ class _AttachHardwareWalletWidgetState
           Expanded(
             child: HardwareConnectionWidget(
                 connectionState: connectionState,
-                hardwareWalletId: ledgerIdentity.getPublicKey(),
+                hardwareWalletId:
+                    ledgerIdentity?.let((e) => getAccountIdentifier(e)),
                 onConnectPressed: () async {
                   setState(() {
                     connectionState = ConnectionState.CONNECTING;
                   });
-                  final ledgerIdentity = await context.icApi.connectToHardwareWallet();
+                  final ledgerIdentity =
+                      await context.icApi.connectToHardwareWallet();
+                  final json = stringify(ledgerIdentity);
+                  print("identity ${json}");
                   setState(() {
                     this.ledgerIdentity = ledgerIdentity;
                     connectionState = ConnectionState.CONNECTED;
@@ -66,7 +68,8 @@ class _AttachHardwareWalletWidgetState
                       transactions: [],
                       neurons: null,
                       hardwareWallet: true);
-                  context.boxes.accounts.put(ledgerIdentity.getPublicKey(), account);
+                  context.boxes.accounts
+                      .put(ledgerIdentity.getPublicKey(), account);
                   context.nav.push(AccountPageDef.createPageConfig(account));
                 }).takeIf((e) => connectionState == ConnectionState.CONNECTED),
               ))
