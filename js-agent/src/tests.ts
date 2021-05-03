@@ -232,13 +232,14 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
             url: "https://www.lipsum.com/",
             summary: "Increase minimum neuron stake",
             networkEcomomics: {
-                rejectCost: BigInt(10_000_000),
-                manageNeuronCostPerProposal: BigInt(1_000),
                 neuronMinimumStake: BigInt(100_000_000),
-                maximumNodeProviderRewards: BigInt(10_000_000_000),
-                neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
+                maxProposalsToKeepPerTopic: 1000,
+                neuronManagementFeePerProposal: BigInt(10_000),
+                rejectCost: BigInt(10_000_000),
                 transactionFee: BigInt(1000),
-                minimumIcpXdrRate: BigInt(1)
+                neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
+                minimumIcpXdrRate: BigInt(1),
+                maximumNodeProviderRewards: BigInt(10_000_000_000),
             }
         });
         console.log(manageNeuronResponse);
@@ -271,7 +272,8 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
             url: "https://www.lipsum.com/",
             summary: "Reward for Node Provider 'ABC'",
             amount: BigInt(10_000_000),
-            nodeProvider: identity.getPrincipal()
+            nodeProvider: identity.getPrincipal(),
+            createNeuron: null
         });
         console.log(manageNeuronResponse);
     }

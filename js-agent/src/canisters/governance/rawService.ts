@@ -2,19 +2,18 @@ import type { Principal } from '@dfinity/agent';
 export interface AccountIdentifier {
   'hash' : Array<number>,
 };
-export type Action =
-    { 'ExternalUpdate' : ExternalUpdate } |
-  { 'ManageNeuron' : ManageNeuron } |
-  { 'ApproveKyc' : ApproveKyc } |
-  { 'NetworkEconomics' : NetworkEconomics } |
+export type Action = { 'ManageNeuron' : ManageNeuron } |
+  { 'ExecuteNnsFunction' : ExecuteNnsFunction } |
   { 'RewardNodeProvider' : RewardNodeProvider } |
   { 'SetDefaultFollowees' : SetDefaultFollowees } |
+  { 'ManageNetworkEconomics' : NetworkEconomics } |
+  { 'ApproveGenesisKyc' : ApproveGenesisKyc } |
   { 'AddOrRemoveNodeProvider' : AddOrRemoveNodeProvider } |
   { 'Motion' : Motion };
 export interface AddHotKey { 'new_hot_key' : [] | [Principal] };
 export interface AddOrRemoveNodeProvider { 'change' : [] | [Change] };
 export interface Amount { 'e8s' : bigint };
-export interface ApproveKyc { 'principals' : Array<Principal> };
+export interface ApproveGenesisKyc { 'principals' : Array<Principal> };
 export type AuthzChangeOp = { 'Authorize' : { 'add_self' : boolean } } |
   { 'Deauthorize' : null };
 export interface Ballot { 'vote' : number, 'voting_power' : bigint };
@@ -47,6 +46,7 @@ export type Command_2 = { 'Spawn' : Spawn } |
   { 'DisburseToNeuron' : DisburseToNeuron } |
   { 'Disburse' : Disburse };
 export interface Configure { 'operation' : [] | [Operation] };
+export interface CreateNeuron { 'dissolve_delay_seconds' : bigint };
 export interface Disburse {
   'to_account' : [] | [AccountIdentifier],
   'amount' : [] | [Amount],
@@ -61,8 +61,8 @@ export interface DisburseToNeuron {
 };
 export type DissolveState = { 'DissolveDelaySeconds' : bigint } |
   { 'WhenDissolvedTimestampSeconds' : bigint };
-export interface ExternalUpdate {
-  'update_type' : number,
+export interface ExecuteNnsFunction {
+  'nns_function' : number,
   'payload' : Array<number>,
 };
 export interface Follow { 'topic' : number, 'followees' : Array<NeuronId> };
@@ -75,6 +75,7 @@ export interface Governance {
   'economics' : [] | [NetworkEconomics],
   'latest_reward_event' : [] | [RewardEvent],
   'to_claim_transfers' : Array<NeuronStakeTransfer>,
+  'short_voting_period_seconds' : bigint,
   'proposals' : Array<[bigint, ProposalData]>,
   'in_flight_commands' : Array<[bigint, NeuronInFlightCommand]>,
   'neurons' : Array<[bigint, Neuron]>,
@@ -124,8 +125,9 @@ export interface MethodAuthzInfo {
 export interface Motion { 'motion_text' : string };
 export interface NetworkEconomics {
   'neuron_minimum_stake_e8s' : bigint,
+  'max_proposals_to_keep_per_topic' : number,
+  'neuron_management_fee_per_proposal_e8s' : bigint,
   'reject_cost_e8s' : bigint,
-  'manage_neuron_cost_per_proposal_e8s' : bigint,
   'transaction_fee_e8s' : bigint,
   'neuron_spawn_dissolve_delay_seconds' : bigint,
   'minimum_icp_xdr_rate' : bigint,
@@ -228,6 +230,7 @@ export interface RewardEvent {
 export interface RewardNodeProvider {
   'node_provider' : [] | [NodeProvider],
   'amount_e8s' : bigint,
+  'create_neuron' : [] | [CreateNeuron],
 };
 export interface SetDefaultFollowees {
   'default_followees' : Array<[number, Followees]>,
@@ -261,5 +264,6 @@ export default interface _SERVICE {
       arg_1: Proposal,
       arg_2: Principal,
     ) => Promise<bigint>,
+  'transfer_gtc_neuron' : (arg_0: NeuronId, arg_1: NeuronId) => Promise<Result>,
   'update_authz' : (arg_0: Array<MethodAuthzChange>) => Promise<undefined>,
 };

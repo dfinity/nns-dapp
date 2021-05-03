@@ -1,18 +1,18 @@
 type AccountIdentifier = record { hash : vec nat8 };
 type Action = variant {
-  ExternalUpdate : ExternalUpdate;
   ManageNeuron : ManageNeuron;
-  ApproveKyc : ApproveKyc;
-  NetworkEconomics : NetworkEconomics;
+  ExecuteNnsFunction : ExecuteNnsFunction;
   RewardNodeProvider : RewardNodeProvider;
   SetDefaultFollowees : SetDefaultFollowees;
+  ManageNetworkEconomics : NetworkEconomics;
+  ApproveGenesisKyc : ApproveGenesisKyc;
   AddOrRemoveNodeProvider : AddOrRemoveNodeProvider;
   Motion : Motion;
 };
 type AddHotKey = record { new_hot_key : opt principal };
 type AddOrRemoveNodeProvider = record { change : opt Change };
 type Amount = record { e8s : nat64 };
-type ApproveKyc = record { principals : vec principal };
+type ApproveGenesisKyc = record { principals : vec principal };
 type AuthzChangeOp = variant {
   Authorize : record { add_self : bool };
   Deauthorize;
@@ -49,6 +49,7 @@ type Command_2 = variant {
   Disburse : Disburse;
 };
 type Configure = record { operation : opt Operation };
+type CreateNeuron = record { dissolve_delay_seconds : nat64 };
 type Disburse = record {
   to_account : opt AccountIdentifier;
   amount : opt Amount;
@@ -65,7 +66,7 @@ type DissolveState = variant {
   DissolveDelaySeconds : nat64;
   WhenDissolvedTimestampSeconds : nat64;
 };
-type ExternalUpdate = record { update_type : int32; payload : vec nat8 };
+type ExecuteNnsFunction = record { nns_function : int32; payload : vec nat8 };
 type Follow = record { topic : int32; followees : vec NeuronId };
 type Followees = record { followees : vec NeuronId };
 type Governance = record {
@@ -76,6 +77,7 @@ type Governance = record {
   economics : opt NetworkEconomics;
   latest_reward_event : opt RewardEvent;
   to_claim_transfers : vec NeuronStakeTransfer;
+  short_voting_period_seconds : nat64;
   proposals : vec record { nat64; ProposalData };
   in_flight_commands : vec record { nat64; NeuronInFlightCommand };
   neurons : vec record { nat64; Neuron };
@@ -117,8 +119,9 @@ type MethodAuthzInfo = record {
 type Motion = record { motion_text : text };
 type NetworkEconomics = record {
   neuron_minimum_stake_e8s : nat64;
+  max_proposals_to_keep_per_topic : nat32;
+  neuron_management_fee_per_proposal_e8s : nat64;
   reject_cost_e8s : nat64;
-  manage_neuron_cost_per_proposal_e8s : nat64;
   transaction_fee_e8s : nat64;
   neuron_spawn_dissolve_delay_seconds : nat64;
   minimum_icp_xdr_rate : nat64;
@@ -216,6 +219,7 @@ type RewardEvent = record {
 type RewardNodeProvider = record {
   node_provider : opt NodeProvider;
   amount_e8s : nat64;
+  create_neuron : opt CreateNeuron;
 };
 type SetDefaultFollowees = record {
   default_followees : vec record { int32; Followees };
@@ -241,5 +245,6 @@ service : (Governance) -> {
   list_proposals : (ListProposalInfo) -> (ListProposalInfoResponse) query;
   manage_neuron : (ManageNeuron) -> (ManageNeuronResponse);
   submit_proposal : (nat64, Proposal, principal) -> (nat64);
+  transfer_gtc_neuron : (NeuronId, NeuronId) -> (Result);
   update_authz : (vec MethodAuthzChange) -> ();
 }

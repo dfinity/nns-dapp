@@ -61,12 +61,12 @@ class Proposal extends DfinityEntity {
   Proposal.empty();
 
   ProposalType get proposalType {
-    if (action.containsKey('ExternalUpdate'))
-      return ProposalType.ExternalUpdate;
+    if (action.containsKey('ExecuteNnsFunction'))
+      return ProposalType.ExecuteNnsFunction;
     if (action.containsKey('ManageNeuron')) return ProposalType.ManageNeuron;
-    if (action.containsKey('ApproveKyc')) return ProposalType.ApproveKyc;
-    if (action.containsKey('NetworkEconomics'))
-      return ProposalType.NetworkEconomics;
+    if (action.containsKey('ApproveGenesisKyc')) return ProposalType.ApproveGenesisKyc;
+    if (action.containsKey('ManageNetworkEconomics'))
+      return ProposalType.ManageNetworkEconomics;
     if (action.containsKey('RewardNodeProvider'))
       return ProposalType.RewardNodeProvider;
     if (action.containsKey('AddOrRemoveNodeProvider'))
@@ -109,10 +109,10 @@ extension ProposalStatusDisplay on ProposalStatus {
 }
 
 enum ProposalType {
-  ExternalUpdate,
+  ExecuteNnsFunction,
   ManageNeuron,
-  ApproveKyc,
-  NetworkEconomics,
+  ApproveGenesisKyc,
+  ManageNetworkEconomics,
   RewardNodeProvider,
   AddOrRemoveNodeProvider,
   Motion,
@@ -121,10 +121,10 @@ enum ProposalType {
 
 extension ProposalTypeDescription on ProposalType {
   static final map = {
-    ProposalType.ExternalUpdate: "External Update",
+    ProposalType.ExecuteNnsFunction: "Execute NNS Function",
     ProposalType.ManageNeuron: "Manage Neuron",
-    ProposalType.ApproveKyc: "Approve Kyc",
-    ProposalType.NetworkEconomics: "Network Economics",
+    ProposalType.ApproveGenesisKyc: "Approve Genesis Kyc",
+    ProposalType.ManageNetworkEconomics: "Manage Network Economics",
     ProposalType.RewardNodeProvider: "Reward Node Provider",
     ProposalType.AddOrRemoveNodeProvider: "Add Or Remove Node Provider",
     ProposalType.Motion: "Motion",
