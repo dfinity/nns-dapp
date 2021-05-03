@@ -143,7 +143,7 @@ export default class RequestConverters {
 
     public fromSpawnRequest = (request: SpawnRequest) : RawManageNeuron => {
         const rawCommand: RawCommand =  { Spawn: { 
-            new_controller: [request.newController]
+            new_controller: request.newController ? [request.newController] : []
         }};
         return {
             id: [this.fromNeuronId(request.neuronId)],
