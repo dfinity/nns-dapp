@@ -2,7 +2,7 @@ import AuthApi from "./src/AuthApi";
 import GovernanceApi from "./src/GovernanceApi";
 import HardwareWalletApi from "./src/HardwareWalletApi";
 import LedgerApi from "./src/LedgerApi";
-import { Identity, SignIdentity } from "@dfinity/agent";
+import { SignIdentity } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "./src/canisters/converter";
 
 window["AuthApi"] = AuthApi;
@@ -33,6 +33,10 @@ window["createGovernanceApi"] = function(host: string, identity: SignIdentity): 
     return new GovernanceApi(host, identity);
 }
 
-window["getAccountIdentifier"] = (identity: Identity) : string => {
+window["getAccountIdentifier"] = (identity: SignIdentity) : string => {
     return principalToAccountIdentifier(identity.getPrincipal());
+}
+
+window["getPublicKey"] = (identity: SignIdentity) : string => {
+    return identity.getPublicKey().toDer().toString('hex');
 }
