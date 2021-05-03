@@ -2,12 +2,16 @@ import AuthApi from "./src/AuthApi";
 import GovernanceApi from "./src/GovernanceApi";
 import HardwareWalletApi from "./src/HardwareWalletApi";
 import LedgerApi from "./src/LedgerApi";
-import { SignIdentity } from "@dfinity/agent";
+import { Identity, SignIdentity } from "@dfinity/agent";
+import { principalToAccountIdentifier } from "./src/canisters/converter";
 
 window["AuthApi"] = AuthApi;
 window["GovernanceApi"] = GovernanceApi;
 window["HardwareWalletApi"] = HardwareWalletApi;
 window["LedgerApi"] = LedgerApi;
+window["getAccountIdentifier"] = (identity: Identity) : string => {
+    return principalToAccountIdentifier(identity.getPrincipal());
+}
 
 // This hack is because Dart interop doesn't yet understand bigint
 window["Serializer"] = function(object: Object): String {
