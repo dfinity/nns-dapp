@@ -18,11 +18,12 @@ class AttachHardwareWalletWidget extends StatefulWidget {
       _AttachHardwareWalletWidgetState();
 }
 
+
 class _AttachHardwareWalletWidgetState
     extends State<AttachHardwareWalletWidget> {
   ConnectionState connectionState = ConnectionState.NOT_CONNECTED;
   dynamic ledgerIdentity;
-
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -33,8 +34,7 @@ class _AttachHardwareWalletWidgetState
           Expanded(
             child: HardwareConnectionWidget(
                 connectionState: connectionState,
-                hardwareWalletId:
-                    ledgerIdentity?.let((e) => getAccountIdentifier(e)),
+                ledgerIdentity: ledgerIdentity,
                 onConnectPressed: () async {
                   setState(() {
                     connectionState = ConnectionState.CONNECTING;
@@ -84,12 +84,12 @@ enum ConnectionState { NOT_CONNECTED, CONNECTING, CONNECTED }
 class HardwareConnectionWidget extends StatelessWidget {
   final ConnectionState connectionState;
   final Function() onConnectPressed;
-  final String? hardwareWalletId;
+  final dynamic ledgerIdentity;
 
   const HardwareConnectionWidget(
       {Key? key,
       required this.connectionState,
-      required this.hardwareWalletId,
+      required this.ledgerIdentity,
       required this.onConnectPressed})
       : super(key: key);
 
@@ -148,13 +148,14 @@ class HardwareConnectionWidget extends StatelessWidget {
                 child: Text("Connected to Hardware Wallet",
                     style: context.textTheme.subtitle1),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  hardwareWalletId!,
-                  style: context.textTheme.subtitle2,
-                ),
-              ),
+              if(ledgerIdentity != null)
+                ...[
+                  Text("Account Identifier", style: context.textTheme.bodyText1?.copyWith(fontSize: 14, color: AppColors.gray50),),
+                  Text(getAccountIdentifier(ledgerIdentity)!, style: context.textTheme.subtitle2,),
+                  SmallFormDivider(),
+                  Text("Public Key", style: context.textTheme.bodyText1?.copyWith(fontSize: 14, color: AppColors.gray50),),
+                  Text(getPublicKey(ledgerIdentity)!, style: context.textTheme.subtitle2,)
+                ]
             ],
           ),
         );
