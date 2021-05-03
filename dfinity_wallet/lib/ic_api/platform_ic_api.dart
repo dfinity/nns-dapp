@@ -3,6 +3,7 @@ import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
 import 'package:dfinity_wallet/ic_api/web/ledger_api.dart';
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
+import 'package:dfinity_wallet/ic_api/web/web_ic_api.dart';
 
 import '../dfinity.dart';
 
@@ -17,6 +18,7 @@ abstract class AbstractPlatformICApi {
   void authenticate(BuildContext context);
 
   Future<void> buildServices();
+  Future<void> refreshAccounts();
 
   Future<void> acquireICPTs(
       {required String accountIdentifier, required BigInt doms});
@@ -37,6 +39,8 @@ abstract class AbstractPlatformICApi {
   Future<void> increaseDissolveDelay(
       {required BigInt neuronId,
       required int additionalDissolveDelaySeconds});
+
+  Future<Neuron> spawnNeuron({required BigInt neuronId});
 
   @override
   Future<void> follow(
@@ -67,10 +71,15 @@ abstract class AbstractPlatformICApi {
 
   Future<void> createDummyProposals({required BigInt neuronId});
 
-  Future<dynamic> connectToHardwareWallet();
-  Future<HardwareWalletApi> createHardwareWalletApi({dynamic ledgerIdentity});
+
 
   Future<void> test();
+
+  Future<dynamic> connectToHardwareWallet();
+  Future<HardwareWalletApi> createHardwareWalletApi({dynamic ledgerIdentity});
+  Future<void> registerHardwareWallet(
+      {required String name, dynamic ledgerIdentity});
+
 }
 
 

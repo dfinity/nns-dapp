@@ -1,3 +1,5 @@
+import 'package:dfinity_wallet/ic_api/web/web_ic_api.dart';
+import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
@@ -55,12 +57,14 @@ class NeuronRewardsCard extends StatelessWidget {
                         alignment: Alignment.bottomRight,
                         child: ElevatedButton(
                             onPressed: () {
-                              OverlayBaseWidget.show(context,
-                                  WizardOverlay(
-                                    rootTitle: "Spawn Neuron",
-                                    rootWidget: StakeNeuronPage(source: neuron),
-                                  )
-                              );
+
+                              OverlayBaseWidget.show(context, ConfirmDialog(
+                                title: "Really Spawn Neuron",
+                                description: "Are you sure you wish to spawn a new neuron?",
+                                onConfirm: () async {
+                                 final neuronId = await context.icApi.spawnNeuron(neuronId: neuron.identifier.toBigInt);
+                                },
+                              ));
                             }.takeIf((e) => neuron.maturityE8sEquivalent.toDouble() > 0),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),

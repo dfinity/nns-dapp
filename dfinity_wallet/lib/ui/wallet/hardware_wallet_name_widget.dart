@@ -45,7 +45,7 @@ class HardwareWalletNameWidget extends StatelessWidget {
               child: ValidFieldsSubmitButton(
                 child: Text("Connect to Wallet"),
                 onPressed: () async {
-                  WizardOverlay.of(context).pushPage("Connect to Wallet", AttachHardwareWalletWidget(name: nameField.name));
+                  WizardOverlay.of(context).pushPage("Connect to Wallet", AttachHardwareWalletWidget(name: nameField.currentValue));
                 },
                 fields: [nameField],
               ))

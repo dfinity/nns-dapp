@@ -10,7 +10,7 @@ import 'cycle_calculator.dart';
 
 class ConfirmCyclesPurchase extends StatelessWidget {
   final double amount;
-  final String origin;
+  final ICPSource origin;
   final Canister destination;
 
   const ConfirmCyclesPurchase({Key? key,
@@ -99,7 +99,7 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                     children: [TallFormDivider(),
                       Text("Origin", style: context.textTheme.headline4),
                       VerySmallFormDivider(),
-                      Text(origin, style: context.textTheme.bodyText1),
+                      Text(origin.address, style: context.textTheme.bodyText1),
                       TallFormDivider(),
                       Text("Destination", style: context.textTheme.headline4),
                       VerySmallFormDivider(),

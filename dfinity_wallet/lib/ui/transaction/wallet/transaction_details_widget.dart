@@ -5,7 +5,7 @@ import '../../../dfinity.dart';
 
 class TransactionDetailsWidget extends StatelessWidget {
   final double amount;
-  final String origin;
+  final ICPSource origin;
   final String destination;
 
   const TransactionDetailsWidget(
@@ -34,7 +34,7 @@ class TransactionDetailsWidget extends StatelessWidget {
                 TallFormDivider(),
                 Text("Origin", style: context.textTheme.headline4),
                 VerySmallFormDivider(),
-                Text(origin, style: context.textTheme.bodyText1),
+                Text(origin.address, style: context.textTheme.bodyText1),
                 TallFormDivider(),
                 Text("Destination", style: context.textTheme.headline4),
                 VerySmallFormDivider(),

@@ -27,8 +27,10 @@ class AccountsSyncService {
           name: "Default",
           address: res['accountIdentifier'].toString(),
           subAccount: null,
-          primary: true),
-      ...res['subAccounts'].map((element) => storeSubAccount(element))
+          primary: true,
+          hardwareWallet: false),
+      ...res['subAccounts'].map((element) => storeSubAccount(element)),
+      ...res['hardwareWalletAccounts'].map((element) => storeHardwareWalletAccount(element))
     ]);
 
    await Future.wait(cachedAccounts
@@ -41,14 +43,26 @@ class AccountsSyncService {
         name: element['name'].toString(),
         address: element['accountIdentifier'].toString(),
         subAccount: element['id'],
-        primary: false);
+        primary: false,
+        hardwareWallet: false);
+  }
+
+
+  Future<String> storeHardwareWalletAccount(element) {
+    return storeNewAccount(
+        name: element['name'].toString(),
+        address: element['accountIdentifier'].toString(),
+        subAccount: null,
+        primary: false,
+        hardwareWallet: true);
   }
 
   Future<String> storeNewAccount(
       {required String name,
         required String address,
         required int? subAccount,
-        required bool primary}) async {
+        required bool primary,
+        required bool hardwareWallet}) async {
     if (!hiveBoxes.accounts.containsKey(address)) {
       await hiveBoxes.accounts.put(
           address,
@@ -60,7 +74,7 @@ class AccountsSyncService {
               balance: BigInt.zero.toString(),
               transactions: [],
               neurons: HiveList(hiveBoxes.neurons),
-              hardwareWallet: false
+              hardwareWallet: hardwareWallet
           ));
     }
     return address;

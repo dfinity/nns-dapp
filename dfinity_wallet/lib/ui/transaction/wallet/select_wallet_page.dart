@@ -26,91 +26,93 @@ class _SelectDestinationAccountPageState
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Card(
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Enter Address", style: context.textTheme.headline3),
-                  DebouncedValidatedFormField(addressField),
-                  Center(
-                    child: FractionallySizedBox(
-                      widthFactor: 0.5,
-                      alignment: Alignment.center,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ValidFieldsSubmitButton(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24.0),
-                            child: Text(
-                              "Send",
-                              style: context.textTheme.subtitle1,
-                            ),
-                          ),
-                          fields: [addressField],
-                          onPressed: () {
-                            final address = addressField.currentValue;
-                            WizardOverlay.of(context).pushPage(
-                                "Enter ICP Amount",
-                                EnterAmountPage(
-                                  origin: widget.source,
-                                  destinationAccountIdentifier: address,
-                                  subAccountId: widget.source.subAccountId,
-                                ));
-                          },
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          if(context.boxes.accounts.values.length > 1)
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "My Accounts",
-                      style: context.textTheme.headline3,
-                    ),
-                    SmallFormDivider(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                side: BorderSide(
-                                    width: 2, color: AppColors.gray800))),
-                        child: Column(
-                          children: context.boxes.accounts.values
-                              .filter((element) => element != widget.source)
-                              .mapToList((e) => _AccountRow(
-                                  account: e,
-                                  onPressed: () {
-                                    WizardOverlay.of(context).pushPage(
-                                        "Enter ICP Amount",
-                                        EnterAmountPage(
-                                          origin: widget.source,
-                                          destinationAccountIdentifier: e.accountIdentifier,
-                                          subAccountId: widget.source.subAccountId,
-                                        ));
-                                  })),
+                    Text("Enter Address", style: context.textTheme.headline3),
+                    DebouncedValidatedFormField(addressField),
+                    Center(
+                      child: FractionallySizedBox(
+                        widthFactor: 0.5,
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ValidFieldsSubmitButton(
+                            child: Padding(
+                              padding: const EdgeInsets.all(24.0),
+                              child: Text(
+                                "Send",
+                                style: context.textTheme.subtitle1,
+                              ),
+                            ),
+                            fields: [addressField],
+                            onPressed: () {
+                              final address = addressField.currentValue;
+                              WizardOverlay.of(context).pushPage(
+                                  "Enter ICP Amount",
+                                  EnterAmountPage(
+                                    origin: widget.source,
+                                    destinationAccountIdentifier: address,
+                                    subAccountId: widget.source.subAccountId,
+                                  ));
+                            },
+                          ),
                         ),
                       ),
                     )
-                  ]),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
+            if(context.boxes.accounts.values.length > 1)
+              Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "My Accounts",
+                        style: context.textTheme.headline3,
+                      ),
+                      SmallFormDivider(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: BorderSide(
+                                      width: 2, color: AppColors.gray800))),
+                          child: Column(
+                            children: context.boxes.accounts.values
+                                .filter((element) => element != widget.source)
+                                .mapToList((e) => _AccountRow(
+                                    account: e,
+                                    onPressed: () {
+                                      WizardOverlay.of(context).pushPage(
+                                          "Enter ICP Amount",
+                                          EnterAmountPage(
+                                            origin: widget.source,
+                                            destinationAccountIdentifier: e.accountIdentifier,
+                                            subAccountId: widget.source.subAccountId,
+                                          ));
+                                    })),
+                          ),
+                        ),
+                      )
+                    ]),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

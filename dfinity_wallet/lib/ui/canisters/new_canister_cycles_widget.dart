@@ -57,7 +57,7 @@ class _NewCanisterCyclesAmountWidgetState extends State<NewCanisterCyclesAmountW
                         "Review Canister Creation",
                         ConfirmCanisterCreationWidget(
                           amount: icpAmount!.toDouble(),
-                          origin: widget.origin.address,
+                          origin: widget.origin,
                           name: widget.name,
                         ));
                   }.takeIf((e) => icpAmount != null),

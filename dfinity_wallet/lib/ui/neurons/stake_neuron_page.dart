@@ -92,7 +92,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                     await context.performLoading(() => context.icApi
                         .createNeuron(
                             stakeInDoms:
-                                amountField.currentValue.toDouble().toDoms,
+                                amountField.currentValue.toDouble().toE8s,
                             fromSubAccount: widget.source.subAccountId));
                     final newNeuron = context.boxes.neurons.values
                         .sortedByDescending((element) =>

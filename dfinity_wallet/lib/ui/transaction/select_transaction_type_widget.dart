@@ -19,23 +19,25 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
     return SizedBox.expand(
       child: Center(
         child: IntrinsicWidth(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildButton(context, "Send", "Send ICP to another account", () {
-                WizardOverlay.of(context).pushPage("Destination Account", SelectDestinationAccountPage(
-                  source: source,
-                ));
-              }),
-              SmallFormDivider(),
-              buildButton(context, "Convert", "Convert ICP into cycles to power canisters", () {}),
-              SmallFormDivider(),
-              buildButton(context, "Stake", "Stake ICP in a neuron to participate in governance", () {
-                WizardOverlay.of(context).pushPage("Stake Neuron", StakeNeuronPage(source: source));
-              }),
-              SizedBox(height: 50,)
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                buildButton(context, "Send", "Send ICP to another account", () {
+                  WizardOverlay.of(context).pushPage("Destination Account", SelectDestinationAccountPage(
+                    source: source,
+                  ));
+                }),
+                SmallFormDivider(),
+                buildButton(context, "Convert", "Convert ICP into cycles to power canisters", () {}),
+                SmallFormDivider(),
+                buildButton(context, "Stake", "Stake ICP in a neuron to participate in governance", () {
+                  WizardOverlay.of(context).pushPage("Stake Neuron", StakeNeuronPage(source: source));
+                }),
+                SizedBox(height: 50,)
+              ],
+            ),
           ),
         ),
       ),

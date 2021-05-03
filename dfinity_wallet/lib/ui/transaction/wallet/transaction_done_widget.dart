@@ -4,7 +4,7 @@ import 'package:dfinity_wallet/dfinity.dart';
 
 class TransactionDoneWidget extends StatelessWidget {
   final double amount;
-  final String origin;
+  final ICPSource origin;
   final String destination;
 
   const TransactionDoneWidget(

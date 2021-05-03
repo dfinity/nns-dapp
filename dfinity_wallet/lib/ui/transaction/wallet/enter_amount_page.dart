@@ -98,7 +98,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                         "Review Transaction",
                         ConfirmTransactionWidget(
                           amount: amountField.currentValue.toDouble(),
-                          origin: widget.origin.address,
+                          origin: widget.origin,
                           destination: widget.destinationAccountIdentifier,
                           subAccountId: widget.subAccountId,
                         ));

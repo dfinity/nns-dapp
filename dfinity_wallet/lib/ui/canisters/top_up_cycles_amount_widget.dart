@@ -75,7 +75,7 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
                         "Review Cycles Purchase",
                         ConfirmCyclesPurchase(
                           amount: icpAmount!.toDouble(),
-                          origin: widget.origin.address,
+                          origin: widget.origin,
                           destination: widget.destinationCanister,
                         ));
                   }.takeIf((e) => icpAmount != null),

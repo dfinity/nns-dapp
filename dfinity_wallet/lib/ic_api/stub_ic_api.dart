@@ -4,6 +4,7 @@ import 'package:dfinity_wallet/data/vote.dart';
 import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:dfinity_wallet/ic_api/web/ledger_api.dart';
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
+import 'package:dfinity_wallet/ic_api/web/web_ic_api.dart';
 
 import '../dfinity.dart';
 
@@ -161,4 +162,24 @@ class PlatformICApi extends AbstractPlatformICApi {
     // TODO: implement createHardwareWalletApi
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> registerHardwareWallet(
+      {required String name, dynamic ledgerIdentity}){
+    // TODO: implement registerHardwareWallet
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> refreshAccounts() {
+    // TODO: implement refreshAccounts
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Neuron> spawnNeuron({required BigInt neuronId}) {
+    throw UnimplementedError();
+  }
+
+
 }

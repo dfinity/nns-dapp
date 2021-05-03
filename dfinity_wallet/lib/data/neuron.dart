@@ -41,6 +41,8 @@ class Neuron extends DfinityEntity with ICPSource {
   @HiveField(13)
   late int followEditCounter;
 
+
+
   Neuron({
     required this.id,
     required this.recentBallots,
@@ -76,6 +78,9 @@ class Neuron extends DfinityEntity with ICPSource {
   Duration get dissolveDelay => int.parse(dissolveDelaySeconds).seconds;
 
   Vote? voteForProposal(Proposal proposal) => recentBallots.firstOrNullWhere((element) => element.proposalId == proposal.id)?.vote;
+
+  @override
+  ICPSourceType get type => ICPSourceType.NEURON;
 }
 
 

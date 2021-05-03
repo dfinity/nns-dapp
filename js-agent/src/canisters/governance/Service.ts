@@ -125,7 +125,9 @@ export default class Service implements ServiceInterface {
     }
 
     public spawn = async (request: SpawnRequest) : Promise<SpawnResponse> => {
+        console.log(request);
         const rawRequest = this.requestConverters.fromSpawnRequest(request);
+        console.log(rawRequest);
         const rawResponse = await this.service.manage_neuron(rawRequest);
         return this.responseConverters.toSpawnResponse(rawResponse);
     }

@@ -48,17 +48,20 @@ class LedgerApi {
 
   @JS("createDummyProposals")
   external Promise<dynamic> createDummyProposals(String neuronId);
-}
 
+  @JS("registerHardwareWallet")
+  external Promise<void> registerHardwareWallet(
+      String name, dynamic ledgerIdentity);
+}
 
 @JS("HardwareWalletApi")
 class HardwareWalletApi {
   external factory HardwareWalletApi(String host, dynamic identity);
 
   @JS("sendICPTs")
-  external Promise<void> sendICPTs (String fromAccount, SendICPTsRequest request);
+  external Promise<void> sendICPTs(
+      String fromAccount, SendICPTsRequest request);
 
   @JS("showAddressAndPubKeyOnDevice")
-  external Promise<void> showAddressAndPubKeyOnDevice ();
-
+  external Promise<void> showAddressAndPubKeyOnDevice();
 }

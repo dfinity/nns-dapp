@@ -47,6 +47,9 @@ class Account extends DfinityEntity with ICPSource {
 
   @override
   String get address => accountIdentifier;
+
+  @override
+  ICPSourceType get type => hardwareWallet ? ICPSourceType.HARDWARE_WALLET : ICPSourceType.ACCOUNT;
 }
 
 extension GetAccounts on Box<Account> {
