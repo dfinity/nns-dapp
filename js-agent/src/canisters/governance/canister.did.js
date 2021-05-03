@@ -12,8 +12,9 @@ export default ({ IDL }) => {
   const NodeProvider = IDL.Record({ 'id' : IDL.Opt(IDL.Principal) });
   const NetworkEconomics = IDL.Record({
     'neuron_minimum_stake_e8s' : IDL.Nat64,
+    'max_proposals_to_keep_per_topic' : IDL.Nat32,
+    'neuron_management_fee_per_proposal_e8s' : IDL.Nat64,
     'reject_cost_e8s' : IDL.Nat64,
-    'manage_neuron_cost_per_proposal_e8s' : IDL.Nat64,
     'transaction_fee_e8s' : IDL.Nat64,
     'neuron_spawn_dissolve_delay_seconds' : IDL.Nat64,
     'minimum_icp_xdr_rate' : IDL.Nat64,
@@ -40,10 +41,6 @@ export default ({ IDL }) => {
     'yes' : IDL.Nat64,
     'total' : IDL.Nat64,
     'timestamp_seconds' : IDL.Nat64,
-  });
-  const ExternalUpdate = IDL.Record({
-    'update_type' : IDL.Int32,
-    'payload' : IDL.Vec(IDL.Nat8),
   });
   const Spawn = IDL.Record({ 'new_controller' : IDL.Opt(IDL.Principal) });
   const Split = IDL.Record({ 'amount_e8s' : IDL.Nat64 });
@@ -97,13 +94,21 @@ export default ({ IDL }) => {
     'id' : IDL.Opt(NeuronId),
     'command' : IDL.Opt(Command),
   });
-  const ApproveKyc = IDL.Record({ 'principals' : IDL.Vec(IDL.Principal) });
+  const ExecuteNnsFunction = IDL.Record({
+    'nns_function' : IDL.Int32,
+    'payload' : IDL.Vec(IDL.Nat8),
+  });
+  const CreateNeuron = IDL.Record({ 'dissolve_delay_seconds' : IDL.Nat64 });
   const RewardNodeProvider = IDL.Record({
     'node_provider' : IDL.Opt(NodeProvider),
     'amount_e8s' : IDL.Nat64,
+    'create_neuron' : IDL.Opt(CreateNeuron),
   });
   const SetDefaultFollowees = IDL.Record({
     'default_followees' : IDL.Vec(IDL.Tuple(IDL.Int32, Followees)),
+  });
+  const ApproveGenesisKyc = IDL.Record({
+    'principals' : IDL.Vec(IDL.Principal),
   });
   const Change = IDL.Variant({
     'ToRemove' : NodeProvider,
@@ -112,12 +117,12 @@ export default ({ IDL }) => {
   const AddOrRemoveNodeProvider = IDL.Record({ 'change' : IDL.Opt(Change) });
   const Motion = IDL.Record({ 'motion_text' : IDL.Text });
   const Action = IDL.Variant({
-    'ExternalUpdate' : ExternalUpdate,
     'ManageNeuron' : ManageNeuron,
-    'ApproveKyc' : ApproveKyc,
-    'NetworkEconomics' : NetworkEconomics,
+    'ExecuteNnsFunction' : ExecuteNnsFunction,
     'RewardNodeProvider' : RewardNodeProvider,
     'SetDefaultFollowees' : SetDefaultFollowees,
+    'ManageNetworkEconomics' : NetworkEconomics,
+    'ApproveGenesisKyc' : ApproveGenesisKyc,
     'AddOrRemoveNodeProvider' : AddOrRemoveNodeProvider,
     'Motion' : Motion,
   });
@@ -184,6 +189,7 @@ export default ({ IDL }) => {
     'economics' : IDL.Opt(NetworkEconomics),
     'latest_reward_event' : IDL.Opt(RewardEvent),
     'to_claim_transfers' : IDL.Vec(NeuronStakeTransfer),
+    'short_voting_period_seconds' : IDL.Nat64,
     'proposals' : IDL.Vec(IDL.Tuple(IDL.Nat64, ProposalData)),
     'in_flight_commands' : IDL.Vec(IDL.Tuple(IDL.Nat64, NeuronInFlightCommand)),
     'neurons' : IDL.Vec(IDL.Tuple(IDL.Nat64, Neuron)),
@@ -294,6 +300,7 @@ export default ({ IDL }) => {
         [IDL.Nat64],
         [],
       ),
+    'transfer_gtc_neuron' : IDL.Func([NeuronId, NeuronId], [Result], []),
     'update_authz' : IDL.Func([IDL.Vec(MethodAuthzChange)], [], []),
   });
 };
@@ -311,8 +318,9 @@ export const init = ({ IDL }) => {
   const NodeProvider = IDL.Record({ 'id' : IDL.Opt(IDL.Principal) });
   const NetworkEconomics = IDL.Record({
     'neuron_minimum_stake_e8s' : IDL.Nat64,
+    'max_proposals_to_keep_per_topic' : IDL.Nat32,
+    'neuron_management_fee_per_proposal_e8s' : IDL.Nat64,
     'reject_cost_e8s' : IDL.Nat64,
-    'manage_neuron_cost_per_proposal_e8s' : IDL.Nat64,
     'transaction_fee_e8s' : IDL.Nat64,
     'neuron_spawn_dissolve_delay_seconds' : IDL.Nat64,
     'minimum_icp_xdr_rate' : IDL.Nat64,
@@ -339,10 +347,6 @@ export const init = ({ IDL }) => {
     'yes' : IDL.Nat64,
     'total' : IDL.Nat64,
     'timestamp_seconds' : IDL.Nat64,
-  });
-  const ExternalUpdate = IDL.Record({
-    'update_type' : IDL.Int32,
-    'payload' : IDL.Vec(IDL.Nat8),
   });
   const Spawn = IDL.Record({ 'new_controller' : IDL.Opt(IDL.Principal) });
   const Split = IDL.Record({ 'amount_e8s' : IDL.Nat64 });
@@ -396,13 +400,21 @@ export const init = ({ IDL }) => {
     'id' : IDL.Opt(NeuronId),
     'command' : IDL.Opt(Command),
   });
-  const ApproveKyc = IDL.Record({ 'principals' : IDL.Vec(IDL.Principal) });
+  const ExecuteNnsFunction = IDL.Record({
+    'nns_function' : IDL.Int32,
+    'payload' : IDL.Vec(IDL.Nat8),
+  });
+  const CreateNeuron = IDL.Record({ 'dissolve_delay_seconds' : IDL.Nat64 });
   const RewardNodeProvider = IDL.Record({
     'node_provider' : IDL.Opt(NodeProvider),
     'amount_e8s' : IDL.Nat64,
+    'create_neuron' : IDL.Opt(CreateNeuron),
   });
   const SetDefaultFollowees = IDL.Record({
     'default_followees' : IDL.Vec(IDL.Tuple(IDL.Int32, Followees)),
+  });
+  const ApproveGenesisKyc = IDL.Record({
+    'principals' : IDL.Vec(IDL.Principal),
   });
   const Change = IDL.Variant({
     'ToRemove' : NodeProvider,
@@ -411,12 +423,12 @@ export const init = ({ IDL }) => {
   const AddOrRemoveNodeProvider = IDL.Record({ 'change' : IDL.Opt(Change) });
   const Motion = IDL.Record({ 'motion_text' : IDL.Text });
   const Action = IDL.Variant({
-    'ExternalUpdate' : ExternalUpdate,
     'ManageNeuron' : ManageNeuron,
-    'ApproveKyc' : ApproveKyc,
-    'NetworkEconomics' : NetworkEconomics,
+    'ExecuteNnsFunction' : ExecuteNnsFunction,
     'RewardNodeProvider' : RewardNodeProvider,
     'SetDefaultFollowees' : SetDefaultFollowees,
+    'ManageNetworkEconomics' : NetworkEconomics,
+    'ApproveGenesisKyc' : ApproveGenesisKyc,
     'AddOrRemoveNodeProvider' : AddOrRemoveNodeProvider,
     'Motion' : Motion,
   });
@@ -483,6 +495,7 @@ export const init = ({ IDL }) => {
     'economics' : IDL.Opt(NetworkEconomics),
     'latest_reward_event' : IDL.Opt(RewardEvent),
     'to_claim_transfers' : IDL.Vec(NeuronStakeTransfer),
+    'short_voting_period_seconds' : IDL.Nat64,
     'proposals' : IDL.Vec(IDL.Tuple(IDL.Nat64, ProposalData)),
     'in_flight_commands' : IDL.Vec(IDL.Tuple(IDL.Nat64, NeuronInFlightCommand)),
     'neurons' : IDL.Vec(IDL.Tuple(IDL.Nat64, Neuron)),

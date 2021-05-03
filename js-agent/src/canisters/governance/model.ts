@@ -3,17 +3,17 @@ import { Option } from "../option";
 import { AccountIdentifier, E8s } from "../common/types";
 
 export type Action =
-    { ExternalUpdate: ExternalUpdate } |
+    { ExecuteNnsFunction: ExecuteNnsFunction } |
     { ManageNeuron: ManageNeuron } |
-    { ApproveKyc: ApproveKyc } |
-    { NetworkEconomics: NetworkEconomics } |
+    { ApproveGenesisKyc: ApproveGenesisKyc } |
+    { ManageNetworkEconomics: NetworkEconomics } |
     { RewardNodeProvider: RewardNodeProvider } |
     { AddOrRemoveNodeProvider: AddOrRemoveNodeProvider } |
     { SetDefaultFollowees: SetDefaultFollowees } |
     { Motion: Motion };
 export interface AddHotKey { newHotKey: Principal };
 export interface AddOrRemoveNodeProvider { change: Change };
-export interface ApproveKyc { principals: Array<Principal> };
+export interface ApproveGenesisKyc { principals: Array<Principal> };
 export type AuthzChangeOp = { Authorize: { addSelf: boolean } } |
     { Deauthorize: null };
 export interface Ballot { neuronId: bigint, vote: Vote, votingPower: bigint };
@@ -34,6 +34,7 @@ export type Command =
     { MakeProposal: Proposal } |
     { Disburse: Disburse };
 export interface Configure { operation: Operation };
+export interface CreateNeuron { dissolveDelaySeconds : bigint };
 export interface Disburse {
     toAccountId: AccountIdentifier,
     amount: E8s,
@@ -48,8 +49,8 @@ export interface DisburseToNeuron {
 };
 export type DissolveState = { DissolveDelaySeconds: bigint } |
     { WhenDissolvedTimestampSeconds: bigint };
-export interface ExternalUpdate {
-    updateType: number,
+export interface ExecuteNnsFunction {
+    nnsFunction: number,
     payload: ArrayBuffer,
 };
 export interface Follow { topic: Topic, followees: Array<NeuronId> };
@@ -111,13 +112,14 @@ export interface MethodAuthzInfo {
 };
 export interface Motion { motionText: string };
 export interface NetworkEconomics {
-    rejectCost: E8s,
-    manageNeuronCostPerProposal: E8s,
     neuronMinimumStake: E8s,
-    maximumNodeProviderRewards : E8s,
-    neuronSpawnDissolveDelaySeconds: bigint,
+    maxProposalsToKeepPerTopic: number,
+    neuronManagementFeePerProposal: E8s,
+    rejectCost: E8s,
     transactionFee: E8s,
-    minimumIcpXdrRate: bigint
+    neuronSpawnDissolveDelaySeconds: bigint,
+    minimumIcpXdrRate: bigint,
+    maximumNodeProviderRewards: bigint
 };
 export interface Neuron {
     id: NeuronId,
@@ -258,6 +260,7 @@ export type GetNeuronInfoResponse = { Ok: NeuronInfo } |
 export interface RewardNodeProvider {
     nodeProvider : Option<NodeProvider>,
     amount : E8s,
+    createNeuron: Option<CreateNeuron>
 };
 export interface SetDefaultFollowees {
     defaultFollowees: Array<Followees>
@@ -365,6 +368,7 @@ export interface MakeRewardNodeProviderProposalRequest {
     url: string,
     nodeProvider: Principal,
     amount: E8s,
+    createNeuron: Option<CreateNeuron>
 }
 
 export interface MakeSetDefaultFolloweesProposalRequest {

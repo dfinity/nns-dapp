@@ -214,12 +214,12 @@ export default class ResponseConverters {
     }
 
     private toAction = (action: RawAction) : Action => {
-        if ("ExternalUpdate" in action) {
-            const externalUpdate = action.ExternalUpdate;
+        if ("ExecuteNnsFunction" in action) {
+            const executeNnsFunction = action.ExecuteNnsFunction;
             return {
-                ExternalUpdate: {
-                    updateType: externalUpdate.update_type,
-                    payload: arrayOfNumberToArrayBuffer(externalUpdate.payload)
+                ExecuteNnsFunction: {
+                    nnsFunction: executeNnsFunction.nns_function,
+                    payload: arrayOfNumberToArrayBuffer(executeNnsFunction.payload)
                 }
             }
         }
@@ -232,25 +232,26 @@ export default class ResponseConverters {
                 }
             }
         }
-        if ("ApproveKyc" in action) {
-            const approveKyc = action.ApproveKyc;
+        if ("ApproveGenesisKyc" in action) {
+            const approveKyc = action.ApproveGenesisKyc;
             return {
-                ApproveKyc: {
+                ApproveGenesisKyc: {
                     principals: approveKyc.principals
                 }
             }
         }
-        if ("NetworkEconomics" in action) {
-            const networkEconomics = action.NetworkEconomics;
+        if ("ManageNetworkEconomics" in action) {
+            const networkEconomics = action.ManageNetworkEconomics;
             return {
-                NetworkEconomics: {
-                    rejectCost: networkEconomics.reject_cost_e8s,
-                    manageNeuronCostPerProposal: networkEconomics.manage_neuron_cost_per_proposal_e8s,
+                ManageNetworkEconomics: {
                     neuronMinimumStake: networkEconomics.neuron_minimum_stake_e8s,
-                    maximumNodeProviderRewards: networkEconomics.maximum_node_provider_rewards_e8s,
-                    neuronSpawnDissolveDelaySeconds: networkEconomics.neuron_spawn_dissolve_delay_seconds,
+                    maxProposalsToKeepPerTopic: networkEconomics.max_proposals_to_keep_per_topic,
+                    neuronManagementFeePerProposal: networkEconomics.neuron_management_fee_per_proposal_e8s,
+                    rejectCost: networkEconomics.reject_cost_e8s,
                     transactionFee: networkEconomics.transaction_fee_e8s,
-                    minimumIcpXdrRate: networkEconomics.minimum_icp_xdr_rate                
+                    neuronSpawnDissolveDelaySeconds: networkEconomics.neuron_spawn_dissolve_delay_seconds,
+                    minimumIcpXdrRate: networkEconomics.minimum_icp_xdr_rate                ,
+                    maximumNodeProviderRewards: networkEconomics.maximum_node_provider_rewards_e8s,
                 }
             }
         }
@@ -259,7 +260,8 @@ export default class ResponseConverters {
             return {
                 RewardNodeProvider: {
                     nodeProvider : rewardNodeProvider.node_provider.length ? this.toNodeProvider(rewardNodeProvider.node_provider[0]) : null,
-                    amount : rewardNodeProvider.amount_e8s
+                    amount : rewardNodeProvider.amount_e8s,
+                    createNeuron: rewardNodeProvider.create_neuron.length ? { dissolveDelaySeconds: rewardNodeProvider.create_neuron[0].dissolve_delay_seconds } : null,
                 }
             }
         }
