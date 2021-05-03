@@ -130,12 +130,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId,
       required BigInt doms,
       required String toAccountId}) async {
-    final res = await governanceApi!.disburse(DisperseNeuronRequest(
-        neuronId: neuronId.toJS, amount: doms.toJS, toAccountId: toAccountId));
+    final res = await promiseToFuture(governanceApi!.disburse(DisperseNeuronRequest(
+        neuronId: neuronId.toJS, amount: doms.toJS, toAccountId: toAccountId)));
     print("disburse ${stringify(res)}");
-
-
-    await neuronSyncService!.fetchNeurons();
+    await fetchNeuron(neuronId: neuronId);
+    balanceSyncService?.syncBalances();
   }
 
   @override
@@ -224,7 +223,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Proposal> fetchProposal({required BigInt proposalId}) async {
-    final response = await governanceApi!.getProposalInfo(proposalId.toJS);
+    final response = await promiseToFuture(governanceApi!.getProposalInfo(proposalId.toJS));
     final json = jsonDecode(stringify(response));
     print("proposal json ${stringify(response)}");
     final proposal = await proposalSyncService!.storeProposal(json);

@@ -26,11 +26,11 @@ class ConfirmTransactionWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ConfirmTransactionWidgetState createState() => _ConfirmTransactionWidgetState();
+  _ConfirmTransactionWidgetState createState() =>
+      _ConfirmTransactionWidgetState();
 }
 
 class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
-
   WalletConnectionState connectionState = WalletConnectionState.NOT_CONNECTED;
   dynamic ledgerIdentity;
 
@@ -48,33 +48,6 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
               destination: widget.destination,
               amount: widget.amount,
             ),
-            if(widget.origin.type == ICPSourceType.HARDWARE_WALLET)
-              HardwareConnectionWidget(
-                  connectionState: connectionState,
-                  ledgerIdentity: ledgerIdentity,
-                  onConnectPressed: () async {
-                    setState(() {
-                      connectionState = WalletConnectionState.CONNECTING;
-                    });
-                    final ledgerIdentity =
-                    await context.icApi.connectToHardwareWallet();
-                    final json = stringify(ledgerIdentity);
-                    print("identity ${json}");
-                    final accountIdentifier =
-                    getAccountIdentifier(ledgerIdentity)!.toString();
-
-                    if (widget.origin.address == accountIdentifier) {
-                      setState(() {
-                        this.ledgerIdentity = ledgerIdentity;
-                        connectionState = WalletConnectionState.CONNECTED;
-                      });
-                    } else {
-                      setState(() {
-                        this.ledgerIdentity = ledgerIdentity;
-                        connectionState = WalletConnectionState.INCORRECT_DEVICE;
-                      });
-                    }
-                  }),
             Expanded(child: Container()),
             SizedBox(
               height: 70,
@@ -99,10 +72,12 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                             destination: widget.destination,
                           ));
                     } else if (widget.origin.type == ICPSourceType.NEURON) {
-                      await context.performLoading(() => context.icApi.disburse(
-                          neuronId: BigInt.parse(widget.origin.address),
-                          doms: widget.amount.toE8s,
-                          toAccountId: widget.destination));
+                      await context.performLoading(() async {
+                        return context.icApi.disburse(
+                            neuronId: BigInt.parse(widget.origin.address),
+                            doms: widget.amount.toE8s,
+                            toAccountId: widget.destination);
+                      });
                       WizardOverlay.of(context).replacePage(
                           "Transaction Completed!",
                           TransactionDoneWidget(
@@ -110,25 +85,14 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                             origin: widget.origin,
                             destination: widget.destination,
                           ));
-                    } else if (widget.origin.type == ICPSourceType.HARDWARE_WALLET) {}
-
-                    final walletApi = await context.icApi
-                        .createHardwareWalletApi(ledgerIdentity: ledgerIdentity);
-
-                    final response = await
-                        promiseToFuture(walletApi.sendICPTs(
-                            widget.origin.address,
-                            SendICPTsRequest(
-                                to: widget.destination,
-                                amount: widget.amount.toE8s.toJS)));
-
-                    if(response!= null){
-                      WizardOverlay.of(context).replacePage(
+                    } else if (widget.origin.type ==
+                        ICPSourceType.HARDWARE_WALLET) {
+                      WizardOverlay.of(context).pushPage(
                           "Transaction Completed!",
-                          TransactionDoneWidget(
+                          HardwareWalletTransactionWidget(
                             amount: widget.amount,
-                            origin: widget.origin,
                             destination: widget.destination,
+                            account: widget.origin as Account,
                           ));
                     }
                   }),
@@ -140,6 +104,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
     ));
   }
 
-  bool canConfirm() => widget.origin.type != ICPSourceType.HARDWARE_WALLET || ledgerIdentity != null;
+  bool canConfirm() =>
+      widget.origin.type != ICPSourceType.HARDWARE_WALLET ||
+      ledgerIdentity != null;
 }
-

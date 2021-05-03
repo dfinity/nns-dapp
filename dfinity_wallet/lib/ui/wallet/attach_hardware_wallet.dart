@@ -52,13 +52,15 @@ class _AttachHardwareWalletWidgetState
                 onPressed: (() async {
 
 
-                  await context.icApi.registerHardwareWallet(name: widget.name, ledgerIdentity: ledgerIdentity);
-                  await 0.5.seconds.delay;
-                  await context.icApi.refreshAccounts();
-                  final accountIdentifier = getAccountIdentifier(ledgerIdentity);
-                  final account = context.boxes.accounts.hardwareWallets.firstWhere((element) => element.accountIdentifier == accountIdentifier);
+                  context.performLoading(() async {
+                    await context.icApi.registerHardwareWallet(name: widget.name, ledgerIdentity: ledgerIdentity);
+                    await 0.2.seconds.delay;
+                    await context.icApi.refreshAccounts();
+                    final accountIdentifier = getAccountIdentifier(ledgerIdentity);
+                    final account = context.boxes.accounts.hardwareWallets.firstWhere((element) => element.accountIdentifier == accountIdentifier);
 
-                  context.nav.push(AccountPageDef.createPageConfig(account));
+                    context.nav.push(AccountPageDef.createPageConfig(account));
+                  });
                 }).takeIf((e) => connectionState == WalletConnectionState.CONNECTED),
               ))
         ],

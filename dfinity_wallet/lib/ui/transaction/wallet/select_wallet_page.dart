@@ -71,7 +71,7 @@ class _SelectDestinationAccountPageState
                 ),
               ),
             ),
-            if(context.boxes.accounts.values.length > 1)
+            if(context.boxes.accounts.values.length >= 1)
               Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
