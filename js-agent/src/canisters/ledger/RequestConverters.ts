@@ -16,7 +16,7 @@ import {
 import { blobToUint8Array } from "../converter";
 import type { Principal } from "@dfinity/agent";
 
-export const TRANSACTION_FEE : bigint = BigInt(137);
+export const TRANSACTION_FEE : bigint = BigInt(10_000);
 
 export default class RequestConverters {
     public fromGetBalancesRequest = (request: GetBalancesRequest) : Array<AccountBalanceRequest> => {
