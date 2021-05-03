@@ -141,6 +141,7 @@ export default class Service implements ServiceInterface {
     public disburse = async (request: DisburseRequest) : Promise<DisburseResponse> => {
         const rawRequest = this.requestConverters.fromDisburseRequest(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
+        console.log(rawResponse);
         const response = this.responseConverters.toDisburseResponse(rawResponse);
         if ("Ok" in response) {
             this.syncTransactions();

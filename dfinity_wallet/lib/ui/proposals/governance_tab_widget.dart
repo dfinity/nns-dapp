@@ -85,6 +85,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
   }
 
   void fetchProposals({Proposal? lastProposal}) {
+    if(mounted)
     context.icApi.fetchProposals(
         excludeTopics: Topic.values
             .filterNot(

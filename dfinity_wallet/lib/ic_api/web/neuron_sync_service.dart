@@ -30,19 +30,19 @@ class NeuronSyncService {
 
 
   Future<void> fetchNeurons() async {
-    print("fetching neurons");
+    // print("fetching neurons");
     dynamic res = (await promiseToFuture(governanceApi.getNeurons()));
     final string = stringify(res);
-    print("fetched neurons $string");
+    // print("fetched neurons $string");
     dynamic response = (jsonDecode(string) as List<dynamic>).toList();
 
     final primaryWallet = hiveBoxes.accounts.primary;
     final neurons = <Neuron>[...response.map((e) => storeNeuron(e))];
-    print("Stored neurons: ${neurons}");
+    // print("Stored neurons: ${neurons}");
 
     primaryWallet.neurons = HiveList(hiveBoxes.neurons, objects: neurons);
-    print("Stored neurons: ${primaryWallet.neurons!.joinToString(
-        transform: (e) => e.id)}");
+    // print("Stored neurons: ${primaryWallet.neurons!.joinToString(
+    //     transform: (e) => e.id)}");
     primaryWallet.save();
   }
 

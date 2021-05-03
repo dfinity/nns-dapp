@@ -130,8 +130,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId,
       required BigInt doms,
       required String toAccountId}) async {
-    await governanceApi!.disburse(DisperseNeuronRequest(
+    final res = await governanceApi!.disburse(DisperseNeuronRequest(
         neuronId: neuronId.toJS, amount: doms.toJS, toAccountId: toAccountId));
+    print("disburse ${stringify(res)}");
+
+
     await neuronSyncService!.fetchNeurons();
   }
 

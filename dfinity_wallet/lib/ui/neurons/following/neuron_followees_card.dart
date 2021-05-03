@@ -41,6 +41,7 @@ class NeuronFolloweesCard extends StatelessWidget {
                   style: context.textTheme.subtitle2),
             ),
             VerySmallFormDivider(),
+            if(followeeTopics.isNotEmpty)
             Container(
               padding: const EdgeInsets.all(8.0),
               width: double.infinity,

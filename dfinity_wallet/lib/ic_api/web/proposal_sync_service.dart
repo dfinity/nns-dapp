@@ -45,6 +45,8 @@ class ProposalSyncService {
     print(
         "\nfetchProposals response in ${stopwatch.elapsed.yearsDayHourMinuteSecondFormatted()} \n ${response}");
 
+    await hiveBoxes.proposals.clear();
+
     response!['proposals']?.forEach((e) {
       storeProposal(e);
     });

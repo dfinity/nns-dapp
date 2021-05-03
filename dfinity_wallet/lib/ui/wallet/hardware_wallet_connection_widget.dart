@@ -8,7 +8,7 @@ import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/wallet/account_detail_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
-enum WalletConnectionState { NOT_CONNECTED, CONNECTING, CONNECTED }
+enum WalletConnectionState { NOT_CONNECTED, CONNECTING, CONNECTED, INCORRECT_DEVICE }
 
 class HardwareConnectionWidget extends StatelessWidget {
   final WalletConnectionState connectionState;
@@ -124,6 +124,44 @@ class HardwareConnectionWidget extends StatelessWidget {
             ],
           ),
         );
+      case WalletConnectionState.INCORRECT_DEVICE:
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Incorrect Wallet Connected",
+                    style: context.textTheme.subtitle1),
+              ),
+              Text(
+                "This hardware wallet is for another account, not the one you have selected in the user interface",
+                style: context.textTheme.subtitle2,
+              ),
+              SmallFormDivider(),
+              if (ledgerIdentity != null)
+                IntrinsicWidth(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Key of attached wallet",
+                        style: context.textTheme.bodyText1
+                            ?.copyWith(fontSize: 14, color: AppColors.gray50),
+                      ),
+                      Text(
+                        getPublicKey(ledgerIdentity)!,
+                        style: context.textTheme.subtitle2,
+                      ),
+                      SmallFormDivider(),
+                    ],
+                  ),
+                )
+            ],
+          ),
+        );
+        break;
     }
   }
 }

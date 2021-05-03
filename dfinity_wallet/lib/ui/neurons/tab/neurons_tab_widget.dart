@@ -31,7 +31,7 @@ class _NeuronsPageState extends State<NeuronsPage> {
                     "Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.",
                 children: [
                   SmallFormDivider(),
-                  ...(context.boxes.accounts.primary.neurons?.mapToList((e) => Card(
+                  ...(context.boxes.accounts.primary.neurons?.sortedByDescending((element) => element.createdTimestampSeconds.toBigInt)?.mapToList((e) => Card(
                         child: FlatButton(
                           onPressed: () {
                             context.nav.push(NeuronPageDef.createPageConfig(e));

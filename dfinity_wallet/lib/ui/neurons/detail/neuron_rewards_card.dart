@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/ic_api/web/web_ic_api.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
+import 'package:dfinity_wallet/ui/neurons/detail/neuron_detail_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
@@ -47,7 +48,7 @@ class NeuronRewardsCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       BalanceDisplayWidget(
-                          amount: neuron.maturityE8sEquivalent.toBigInt.toICPT,
+                          amount: neuron.maturityE8sEquivalent.toBigInt / neuron.stake,
                           amountSize: 30,
                           icpLabelSize: 0,
                           amountLabelSuffix: "%"),
@@ -62,7 +63,10 @@ class NeuronRewardsCard extends StatelessWidget {
                                 title: "Really Spawn Neuron",
                                 description: "Are you sure you wish to spawn a new neuron?",
                                 onConfirm: () async {
-                                 final neuronId = await context.icApi.spawnNeuron(neuronId: neuron.identifier.toBigInt);
+                                  context.performLoading(() async {
+                                    final newNeuron = await context.icApi.spawnNeuron(neuronId: neuron.identifier.toBigInt);
+                                    context.nav.push(NeuronPageDef.createPageConfig(newNeuron));
+                                  });
                                 },
                               ));
                             }.takeIf((e) => neuron.maturityE8sEquivalent.toDouble() > 0),
