@@ -9,9 +9,6 @@ window["AuthApi"] = AuthApi;
 window["GovernanceApi"] = GovernanceApi;
 window["HardwareWalletApi"] = HardwareWalletApi;
 window["LedgerApi"] = LedgerApi;
-window["getAccountIdentifier"] = (identity: Identity) : string => {
-    return principalToAccountIdentifier(identity.getPrincipal());
-}
 
 // This hack is because Dart interop doesn't yet understand bigint
 window["Serializer"] = function(object: Object): String {
@@ -21,7 +18,6 @@ window["Serializer"] = function(object: Object): String {
             : value // return everything else unchanged
     );
 }
-
 
 // This hack is because Dart interop doesn't yet understand bigint
 window["createBigInt"] = function(bigIntString: string): BigInt {
@@ -35,4 +31,8 @@ window["createLedgerApi"] = function(host: string, identity: SignIdentity): Ledg
 
 window["createGovernanceApi"] = function(host: string, identity: SignIdentity): GovernanceApi {
     return new GovernanceApi(host, identity);
+}
+
+window["getAccountIdentifier"] = (identity: Identity) : string => {
+    return principalToAccountIdentifier(identity.getPrincipal());
 }
