@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/neurons/detail/proposal_summary_widget.dart';
 
 import '../../dfinity.dart';
 
@@ -172,16 +173,15 @@ class NeuronInfoVotesCard extends StatelessWidget {
             ...neuron.recentBallots
                 .distinctBy((element) => element.proposalId)
                 .map((e) {
-              final proposal = context.boxes.proposals.get(e.proposalId);
               return Container(
                 padding: EdgeInsets.all(8),
                 child: Row(
                   children: [
-                    Text(
-                      proposal?.summary ?? e.proposalId,
-                      style: context.textTheme.subtitle2,
+                    Expanded(
+                      child: ProposalSummaryWidget(
+                       proposalId: e.proposalId.toBigInt,
+                      ),
                     ),
-                    Expanded(child: Container()),
                     Text(e.vote.toString().removePrefix("Vote."),
                         style: context.textTheme.headline3)
                   ],
