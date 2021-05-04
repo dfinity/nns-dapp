@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/dfinity.dart';
+import 'package:intl/intl.dart';
 
 abstract class ICPSource {
   String get address;
@@ -25,4 +26,28 @@ extension ToDoms on double {
 
 extension ToICPT on BigInt {
   double get toICPT => this / BigInt.from(DOMS_TO_ICPT);
+}
+
+
+/*
+  * The format should be:
+  * a “.” separating full ICP from fractional part
+  * “ “ as a “thousands” separator in the “full” part
+  * in the fractional part, show at least two digits (like “10.00” or “11.30”), otherwise cut trailing zeroes
+  * Examples:
+  *   10.00
+  *   10.01
+  *   10.10
+  *   10.123
+  *   20.00
+  *   200.00
+  *   2 000.00
+  *   20 000.00
+*/
+
+extension DisplayICPTDouble on double {
+  String get toDisplayICPT => NumberFormat("###,##0.00######", "en_US").format(this).replaceAll(',', ' ');
+}
+extension DisplayICPTInt on int {
+  String get toDisplayICPT => NumberFormat("###,##0.00######", "en_US").format(this).replaceAll(',', ' ');
 }

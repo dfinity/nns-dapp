@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 import '../../dfinity.dart';
 
 class BalanceDisplayWidget extends StatelessWidget {
@@ -18,14 +16,13 @@ class BalanceDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var f = NumberFormat("###,###.########", "en_US");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "${f.format(amount)}${amountLabelSuffix??""}",
+          "${amount.toDisplayICPT}${amountLabelSuffix??""}",
           style: TextStyle(
               color: AppColors.white,
               fontFamily: Fonts.circularBold,
