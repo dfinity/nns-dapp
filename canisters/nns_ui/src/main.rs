@@ -127,7 +127,7 @@ pub fn get_icp_xdr_permyriad_conversion_rate() {
 
 async fn get_icp_xdr_permyriad_conversion_rate_impl() -> u64 {
     match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
-        None => 1_000_000, // Using 1 ICP = 100 XDR // panic!("ICP/XDR conversion rate is not available."),
+        None => 1_000_000, // TODO: put the panic back in! // Using 1 ICP = 100 XDR // panic!("ICP/XDR conversion rate is not available."),
         Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
     }
 }
