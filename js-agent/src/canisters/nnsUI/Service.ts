@@ -13,7 +13,6 @@ import ServiceInterface, {
 import RawService from "./rawService";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
-import { CYCLES_PER_XDR } from "../constants";
 
 export default class Service implements ServiceInterface {
     private readonly service: RawService;
@@ -63,10 +62,8 @@ export default class Service implements ServiceInterface {
         return this.responseConverters.toGetTransactionsResponse(rawResponse);
     }
 
-    public getIcpToCyclesConversionRate = async () : Promise<number> => {
-        const rawResponse = await this.service.get_icp_xdr_permyriad_conversion_rate();
-        const xdr = Number(rawResponse) / 10000;
-        return xdr * CYCLES_PER_XDR;
+    public getIcpToCyclesConversionRate = async () : Promise<bigint> => {
+        return await this.service.get_icp_to_cycles_conversion_rate();
     }
 
     public syncTransactions = () : Promise<any> => {

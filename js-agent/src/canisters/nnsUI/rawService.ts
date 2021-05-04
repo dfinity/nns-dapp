@@ -89,7 +89,7 @@ export default interface _SERVICE {
   'create_sub_account' : (arg_0: string) => Promise<CreateSubAccountResponse>,
   'get_account' : () => Promise<GetAccountResponse>,
   'get_canisters' : () => Promise<Array<CanisterDetails>>,
-  'get_icp_xdr_permyriad_conversion_rate' : () => Promise<bigint>,
+  'get_icp_to_cycles_conversion_rate' : () => Promise<bigint>,
   'get_stats' : () => Promise<Stats>,
   'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
   'register_hardware_wallet' : (arg_0: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,

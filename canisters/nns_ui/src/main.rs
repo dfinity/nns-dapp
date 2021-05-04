@@ -21,6 +21,7 @@ mod state;
 mod transaction_store;
 
 const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
+const CYCLES_PER_XDR: u64 = 1_000_000_000_000;
 
 #[export_name = "canister_init"]
 fn main() {}
@@ -120,16 +121,18 @@ fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterRespons
     store.attach_canister(principal, request)
 }
 
-#[export_name = "canister_query get_icp_xdr_permyriad_conversion_rate"]
-pub fn get_icp_xdr_permyriad_conversion_rate() {
-    over_async(candid, |()| get_icp_xdr_permyriad_conversion_rate_impl());
+#[export_name = "canister_query get_icp_to_cycles_conversion_rate"]
+pub fn get_icp_to_cycles_conversion_rate() {
+    over_async(candid, |()| get_icp_to_cycles_conversion_rate_impl());
 }
 
-async fn get_icp_xdr_permyriad_conversion_rate_impl() -> u64 {
-    match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
+async fn get_icp_to_cycles_conversion_rate_impl() -> u64 {
+    let xdr_permyriad_per_icp = match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
         None => 1_000_000, // TODO: put the panic back in! // Using 1 ICP = 100 XDR // panic!("ICP/XDR conversion rate is not available."),
         Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
-    }
+    };
+
+    xdr_permyriad_per_icp * (CYCLES_PER_XDR / 10_000)
 }
 
 #[export_name = "canister_query get_stats"]

@@ -108,7 +108,7 @@ export default ({ IDL }) => {
     'create_sub_account' : IDL.Func([IDL.Text], [CreateSubAccountResponse], []),
     'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_canisters' : IDL.Func([], [IDL.Vec(CanisterDetails)], ['query']),
-    'get_icp_xdr_permyriad_conversion_rate' : IDL.Func(
+    'get_icp_to_cycles_conversion_rate' : IDL.Func(
         [],
         [IDL.Nat64],
         ['query'],

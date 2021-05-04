@@ -97,7 +97,7 @@ export default interface ServiceInterface {
     createSubAccount: (name: string) => Promise<CreateSubAccountResponse>,
     getAccount: () => Promise<GetAccountResponse>,
     getCanisters : () => Promise<Array<CanisterDetails>>,
-    getIcpToCyclesConversionRate : () => Promise<number>,
+    getIcpToCyclesConversionRate : () => Promise<bigint>,
     getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
     registerHardwareWallet: (request: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
     syncTransactions: () => Promise<undefined>,
