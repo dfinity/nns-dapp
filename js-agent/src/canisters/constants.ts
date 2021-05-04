@@ -1,1 +1,2 @@
 export const SUB_ACCOUNT_BYTE_LENGTH = 32;
+export const CYCLES_PER_XDR = 1_000_000_000_000;

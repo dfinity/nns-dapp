@@ -130,8 +130,8 @@ export default class LedgerApi {
         return this.ledgerViewService.getCanisters();
     }
 
-    public getICPToCyclesExchangeRate = async (): Promise<bigint> => {
-        return BigInt(420);
+    public getIcpToCyclesConversionRate = async (): Promise<number> => {
+        return this.ledgerViewService.getIcpToCyclesConversionRate();
     } 
 
     public integrationTest = async (): Promise<void> => {
