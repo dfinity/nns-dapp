@@ -116,6 +116,7 @@ type AttachCanisterResponse =
         CanisterLimitExceeded;
         CanisterAlreadyAttached;
         NameAlreadyTaken;
+        NameTooLong;
     };
 
 type Stats =

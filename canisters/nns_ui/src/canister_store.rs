@@ -21,33 +21,43 @@ pub struct NamedCanister {
 
 impl CanisterStore {
     pub fn attach_canister(&mut self, caller: PrincipalId, request: AttachCanisterRequest) -> AttachCanisterResponse {
-        match self.accounts.entry(caller) {
-            Occupied(mut e) => {
-                let canisters = e.get_mut();
-                if canisters.len() >= u8::MAX as usize {
-                    return AttachCanisterResponse::CanisterLimitExceeded
-                }
-                for c in canisters.iter() {
-                    if c.name == request.name {
-                        return AttachCanisterResponse::NameAlreadyTaken;
-                    } else if c.canister_id == request.canister_id {
-                        return AttachCanisterResponse::CanisterAlreadyAttached;
+        if !Self::validate_canister_name(&request.name) {
+            AttachCanisterResponse::NameTooLong
+        } else {
+            match self.accounts.entry(caller) {
+                Occupied(mut e) => {
+                    let canisters = e.get_mut();
+                    if canisters.len() >= u8::MAX as usize {
+                        return AttachCanisterResponse::CanisterLimitExceeded
                     }
+                    for c in canisters.iter() {
+                        if c.name == request.name {
+                            return AttachCanisterResponse::NameAlreadyTaken;
+                        } else if c.canister_id == request.canister_id {
+                            return AttachCanisterResponse::CanisterAlreadyAttached;
+                        }
+                    }
+                    canisters.push(NamedCanister { name: request.name, canister_id: request.canister_id });
+                },
+                Vacant(e) => {
+                    let canisters = vec!(NamedCanister { name: request.name, canister_id: request.canister_id });
+                    e.insert(canisters);
                 }
-                canisters.push(NamedCanister { name: request.name, canister_id: request.canister_id });
-            },
-            Vacant(e) => {
-                let canisters = vec!(NamedCanister { name: request.name, canister_id: request.canister_id });
-                e.insert(canisters);
             }
+            AttachCanisterResponse::Ok
         }
-        AttachCanisterResponse::Ok
     }
 
     pub fn get_canisters(&self, caller: &PrincipalId) -> Vec<NamedCanister> {
         let mut canisters = self.accounts.get(caller).map_or(Vec::new(), |c| c.iter().cloned().collect());
         canisters.sort_unstable_by_key(|c| c.name.clone());
         canisters
+    }
+
+    fn validate_canister_name(name: &str) -> bool {
+        const CANISTER_NAME_MAX_LENGTH: usize = 24;
+
+        name.len() <= CANISTER_NAME_MAX_LENGTH
     }
 }
 
@@ -76,7 +86,8 @@ pub enum AttachCanisterResponse {
     Ok,
     CanisterLimitExceeded,
     CanisterAlreadyAttached,
-    NameAlreadyTaken
+    NameAlreadyTaken,
+    NameTooLong
 }
 
 
@@ -137,6 +148,21 @@ mod tests {
 
         assert!(matches!(result1, AttachCanisterResponse::Ok));
         assert!(matches!(result2, AttachCanisterResponse::NameAlreadyTaken));
+    }
+
+    #[test]
+    fn attach_canister_name_too_long() {
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+        let mut store = CanisterStore::default();
+
+        let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+        let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+
+        let result1 = store.attach_canister(principal, AttachCanisterRequest { name: "ABCDEFGHIJKLMNOPQRSTUVWX".to_string(), canister_id: canister_id1 });
+        let result2 = store.attach_canister(principal, AttachCanisterRequest { name: "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string(), canister_id: canister_id2 });
+
+        assert!(matches!(result1, AttachCanisterResponse::Ok));
+        assert!(matches!(result2, AttachCanisterResponse::NameTooLong));
     }
 
     #[test]
