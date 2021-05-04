@@ -120,6 +120,18 @@ fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterRespons
     store.attach_canister(principal, request)
 }
 
+#[export_name = "canister_query get_icp_xdr_permyriad_conversion_rate"]
+pub fn get_icp_xdr_permyriad_conversion_rate() {
+    over_async(candid, |()| get_icp_xdr_permyriad_conversion_rate_impl());
+}
+
+async fn get_icp_xdr_permyriad_conversion_rate_impl() -> u64 {
+    match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
+        None => 1_000_000, // Using 1 ICP = 100 XDR // panic!("ICP/XDR conversion rate is not available."),
+        Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
+    }
+}
+
 #[export_name = "canister_query get_stats"]
 pub fn get_stats() {
     over(candid, |()| get_stats_impl());

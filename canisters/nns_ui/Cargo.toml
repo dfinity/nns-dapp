@@ -18,6 +18,7 @@ dfn_json = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca5065
 dfn_macro = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
 dfn_protobuf = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
 ic-base-types = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
+ic-nns-common = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
 ic-nns-constants = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
 ledger-canister = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
 on_wire = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }

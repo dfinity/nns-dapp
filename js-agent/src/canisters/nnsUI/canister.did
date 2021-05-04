@@ -146,6 +146,7 @@ service : {
     register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);
     get_canisters: () -> (vec CanisterDetails) query;
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
+    get_icp_xdr_permyriad_conversion_rate: () -> (nat64) query;
     get_stats: () -> (Stats) query;
     sync_transactions: () -> (opt SyncTransactionsResult);
 }

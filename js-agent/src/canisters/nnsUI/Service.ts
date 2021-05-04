@@ -62,6 +62,11 @@ export default class Service implements ServiceInterface {
         return this.responseConverters.toGetTransactionsResponse(rawResponse);
     }
 
+    public getIcpXdrConversionRate = async () : Promise<number> => {
+        const rawResponse = await this.service.get_icp_xdr_permyriad_conversion_rate();
+        return Number(rawResponse) / 10000;
+    }
+
     public syncTransactions = () : Promise<any> => {
         return this.service.sync_transactions();
     }
