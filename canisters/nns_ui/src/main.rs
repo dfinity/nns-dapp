@@ -1,5 +1,6 @@
 use candid::CandidType;
-use crate::state::{STATE, State};
+use crate::canister_store::{AttachCanisterResponse, AttachCanisterRequest, NamedCanister};
+use crate::state::{StableState, STATE, State};
 use crate::transaction_store::{
     AccountDetails,
     CreateSubAccountResponse,
@@ -13,6 +14,7 @@ use dfn_candid::{candid, candid_one};
 use dfn_core::{stable, over, over_async};
 use ledger_canister::AccountIdentifier;
 
+mod canister_store;
 mod ledger;
 mod ledger_sync;
 mod state;
@@ -33,7 +35,7 @@ fn pre_upgrade() {
 #[export_name = "canister_post_upgrade"]
 fn post_upgrade() {
     let bytes = stable::get();
-    *STATE.write().unwrap() = State::decode(&bytes).expect("Decoding stable memory failed");
+    *STATE.write().unwrap() = State::decode(bytes).expect("Decoding stable memory failed");
 }
 
 #[export_name = "canister_query get_account"]
@@ -94,6 +96,28 @@ fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> Regi
     let principal = dfn_core::api::caller();
     let store = &mut STATE.write().unwrap().transactions_store;
     store.register_hardware_wallet(principal, request)
+}
+
+#[export_name = "canister_update attach_canister"]
+pub fn attach_canister() {
+    over(candid_one, attach_canister_impl);
+}
+
+fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterResponse {
+    let principal = dfn_core::api::caller();
+    let store = &mut STATE.write().unwrap().canisters_store;
+    store.attach_canister(principal, request)
+}
+
+#[export_name = "canister_query get_canisters"]
+pub fn get_canisters() {
+    over(candid, |()| get_canisters_impl());
+}
+
+fn get_canisters_impl() -> Vec<NamedCanister> {
+    let principal = dfn_core::api::caller();
+    let store = &mut STATE.write().unwrap().canisters_store;
+    store.get_canisters(principal)
 }
 
 #[export_name = "canister_query get_stats"]

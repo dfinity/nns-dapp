@@ -98,6 +98,26 @@ type RegisterHardwareWalletResponse =
         NameTooLong;
     };
 
+type CanisterDetails =
+    record {
+        name: text;
+        canister_id: principal;
+    };
+
+type AttachCanisterRequest =
+    record {
+        name: text;
+        canister_id: principal;
+    };
+
+type AttachCanisterResponse =
+    variant {
+        Ok;
+        CanisterLimitExceeded;
+        CanisterAlreadyAttached;
+        NameAlreadyTaken;
+    };
+
 type Stats =
     record {
         accounts_count: nat64;
@@ -124,6 +144,8 @@ service : {
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
     register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);
+    get_canisters: () -> (vec CanisterDetails) query;
+    attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     get_stats: () -> (Stats) query;
     sync_transactions: () -> (opt SyncTransactionsResult);
 }

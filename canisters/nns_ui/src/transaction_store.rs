@@ -1,4 +1,5 @@
 use candid::CandidType;
+use crate::state::StableState;
 use dfn_candid::Candid;
 use ic_base_types::PrincipalId;
 use itertools::Itertools;
@@ -116,51 +117,6 @@ pub struct HardwareWalletAccountDetails {
 }
 
 impl TransactionStore {
-    pub fn encode(&self) -> Vec<u8> {
-        Candid((Vec::from_iter(self.transactions.iter()), &self.accounts, &self.block_height_synced_up_to, &self.last_ledger_sync_timestamp_nanos)).into_bytes().unwrap()
-    }
-
-    pub fn decode(bytes: &[u8]) -> Result<Self, String> {
-        let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64) =
-            Candid::from_bytes(bytes.to_vec()).map(|c| c.0)?;
-
-        let mut account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation> = HashMap::new();
-        let mut empty_account_indices: Vec<u32> = Vec::new();
-        let mut accounts_count: u64 = 0;
-        let mut sub_accounts_count: u64 = 0;
-        let mut hardware_wallet_accounts_count: u64 = 0;
-
-        for i in 0..accounts.len() {
-            if let Some(a) = accounts.get(i).unwrap() {
-                let index = i as u32;
-                account_identifier_lookup.insert(a.account_identifier, AccountLocation::DefaultAccount(index));
-                for (id, sa) in a.sub_accounts.iter() {
-                    account_identifier_lookup.insert(sa.account_identifier, AccountLocation::SubAccount(index, *id));
-                }
-                for hw in a.hardware_wallet_accounts.iter() {
-                    Self::link_hardware_wallet_to_account_index(&mut account_identifier_lookup, hw.account_identifier, index);
-                }
-                accounts_count = accounts_count + 1;
-                sub_accounts_count = sub_accounts_count + a.sub_accounts.len() as u64;
-                hardware_wallet_accounts_count = hardware_wallet_accounts_count + a.hardware_wallet_accounts.len() as u64;
-            } else {
-                empty_account_indices.push(i as u32);
-            }
-        }
-
-        Ok(TransactionStore {
-            account_identifier_lookup,
-            transactions: VecDeque::from_iter(transactions),
-            accounts,
-            block_height_synced_up_to,
-            empty_account_indices,
-            accounts_count: 10,
-            sub_accounts_count,
-            hardware_wallet_accounts_count,
-            last_ledger_sync_timestamp_nanos
-        })
-    }
-
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.try_get_account_by_default_identifier(&account_identifier) {
@@ -580,6 +536,53 @@ impl TransactionStore {
                 }
             }
         }
+    }
+}
+
+impl StableState for TransactionStore {
+    fn encode(&self) -> Vec<u8> {
+        Candid((Vec::from_iter(self.transactions.iter()), &self.accounts, &self.block_height_synced_up_to, &self.last_ledger_sync_timestamp_nanos)).into_bytes().unwrap()
+    }
+
+    fn decode(bytes: Vec<u8>) -> Result<Self, String> {
+        let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64) =
+            Candid::from_bytes(bytes).map(|c| c.0)?;
+
+        let mut account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation> = HashMap::new();
+        let mut empty_account_indices: Vec<u32> = Vec::new();
+        let mut accounts_count: u64 = 0;
+        let mut sub_accounts_count: u64 = 0;
+        let mut hardware_wallet_accounts_count: u64 = 0;
+
+        for i in 0..accounts.len() {
+            if let Some(a) = accounts.get(i).unwrap() {
+                let index = i as u32;
+                account_identifier_lookup.insert(a.account_identifier, AccountLocation::DefaultAccount(index));
+                for (id, sa) in a.sub_accounts.iter() {
+                    account_identifier_lookup.insert(sa.account_identifier, AccountLocation::SubAccount(index, *id));
+                }
+                for hw in a.hardware_wallet_accounts.iter() {
+                    Self::link_hardware_wallet_to_account_index(&mut account_identifier_lookup, hw.account_identifier, index);
+                }
+                accounts_count = accounts_count + 1;
+                sub_accounts_count = sub_accounts_count + a.sub_accounts.len() as u64;
+                hardware_wallet_accounts_count = hardware_wallet_accounts_count + a.hardware_wallet_accounts.len() as u64;
+            } else {
+                empty_account_indices.push(i as u32);
+            }
+        }
+
+        Ok(TransactionStore {
+            account_identifier_lookup,
+            transactions: VecDeque::from_iter(transactions),
+            accounts,
+            block_height_synced_up_to,
+            empty_account_indices,
+            accounts_count: 10,
+            sub_accounts_count,
+            hardware_wallet_accounts_count,
+            last_ledger_sync_timestamp_nanos
+        })
     }
 }
 
