@@ -1,4 +1,5 @@
 import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
+import { Option } from "./canisters/option";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService, {
     GetBalancesRequest,
@@ -105,7 +106,7 @@ export default class LedgerApi {
             request);
     }
 
-    public createCanister = async (request: CreateCanisterRequest) : Promise<CanisterId> => {
+    public createCanister = async (request: CreateCanisterRequest) : Promise<Option<CanisterId>> => {
         return createCanisterImpl(
             this.identity.getPrincipal(), 
             this.ledgerService, 

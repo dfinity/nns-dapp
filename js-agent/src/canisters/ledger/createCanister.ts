@@ -1,7 +1,8 @@
 import { Principal } from "@dfinity/agent";
+import { Option } from "../option";
 import LedgerService from "./model";
 import MINTING_CANISTER_ID from "../cyclesMinting/canisterId";
-import { TransactionNotificationResponse } from "./proto/types_pb";
+import { CyclesNotificationResponse, TransactionNotificationResponse } from "./proto/types_pb";
 import { E8s } from "../common/types";
 import * as convert from "../converter";
 
@@ -15,20 +16,24 @@ export type CreateCanisterRequest = {
 export async function createCanisterImpl(
     principal: Principal,
     ledgerService: LedgerService, 
-    request: CreateCanisterRequest) : Promise<CanisterId> {
+    request: CreateCanisterRequest) : Promise<Option<CanisterId>> {
 
-    const result = sendAndNotify(
+    const response = await sendAndNotify(
         ledgerService, 
         request.stake,
         principal,
         BigInt(0x41455243), // CREA,
         request.fromSubAccountId);
 
-    // TODO: Extract canister id from response
-    console.log("canisterId");
-    console.log(result);
-    
-    return Principal.anonymous();
+    if (!response.hasCreatedCanisterId()) {
+        console.log("Failed to create canister: ");
+        console.log(response);
+        return null;
+    }
+
+    return Principal.fromBlob(
+        convert.uint8ArrayToBlob(
+            response.getCreatedCanisterId().getSerializedId_asU8()));
 }
 
 export type TopupCanisterRequest = {
@@ -41,18 +46,20 @@ export async function topupCanisterImpl(
     ledgerService: LedgerService, 
     request: TopupCanisterRequest) : Promise<void> {
 
-    const result = sendAndNotify(
+    const response = await sendAndNotify(
         ledgerService, 
         request.stake,
         request.targetCanisterId,
         BigInt(0x50555054), // TPUP
         request.fromSubAccountId);
 
-    console.log("topupCanister result");
-    console.log(result);
+    if (!response.hasToppedUp()) {
+        console.log("Failed to topup canister: ");
+        console.log(response);
+    }
 }
 
-async function sendAndNotify(ledgerService: LedgerService, stake: E8s, recipient: Principal, memo: bigint, fromSubAccountId?: number) : Promise<Uint8Array> {
+async function sendAndNotify(ledgerService: LedgerService, stake: E8s, recipient: Principal, memo: bigint, fromSubAccountId?: number) : Promise<CyclesNotificationResponse> {
     const toSubAccount = buildSubAccount(recipient);
     const accountIdentifier = convert.principalToAccountIdentifier(MINTING_CANISTER_ID, toSubAccount);
     const blockHeight = await ledgerService.sendICPTs({
@@ -68,10 +75,8 @@ async function sendAndNotify(ledgerService: LedgerService, stake: E8s, recipient
         toSubAccount,
         fromSubAccountId: fromSubAccountId
     });
-    console.log("notify result");
-    console.log(result);
 
-    return TransactionNotificationResponse.deserializeBinary(result).getResponse_asU8();
+    return CyclesNotificationResponse.deserializeBinary(result);
 }
 
 // 32 bytes

@@ -4,9 +4,9 @@ import { NeuronId } from "../governance/model";
 import { SignIdentity } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
 import randomBytes from "randombytes";
-import { TransactionNotificationResponse } from "./proto/types_pb";
 import { E8s } from "../common/types";
 import * as convert from "../converter";
+import { NeuronId as NeuronIdProto } from "./proto/base_types_pb";
 
 export type CreateNeuronRequest = {
     stake: E8s
@@ -37,14 +37,8 @@ export default async function(
         toSubAccount,
         fromSubAccountId: request.fromSubAccountId
     });
-    console.log("notify result");
-    console.log(result);
 
-    const neuronId = convert.uint8ArrayToBigInt(TransactionNotificationResponse.deserializeBinary(result).getResponse_asU8());
-    console.log("neuronId");
-    console.log(neuronId);
-
-    return neuronId;
+    return BigInt(NeuronIdProto.deserializeBinary(result).getId());
 }
 
 // 32 bytes
