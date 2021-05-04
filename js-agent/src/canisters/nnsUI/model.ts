@@ -12,6 +12,25 @@ export interface AttachCanisterRequest {
     canisterId: CanisterId      
 }
 
+export enum AttachCanisterResult {
+    Ok,
+    CanisterAlreadyAttached,
+    NameAlreadyTaken,
+    CanisterLimitExceeded
+}
+
+export type CanisterAlreadyAttached = {
+    kind: "canisterAlreadyAttached"
+}
+
+export type CanisterNameAlreadyTaken = {
+    kind: "canisterNameAlreadyTaken"
+}
+
+export type CanisterLimitExceeded = {
+    kind: "canisterLimitExceeded"
+}
+
 export interface CanisterDetails {
     name: string,
     canisterId: CanisterId      
@@ -74,8 +93,10 @@ export type Transfer = { Burn: { amount: E8s } } |
 
 export default interface ServiceInterface {
     addAccount: () => Promise<AccountIdentifier>,
+    attachCanister : (request: AttachCanisterRequest) => Promise<AttachCanisterResult>,
     createSubAccount: (name: string) => Promise<CreateSubAccountResponse>,
     getAccount: () => Promise<GetAccountResponse>,
+    getCanisters : () => Promise<Array<CanisterDetails>>,
     getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
     registerHardwareWallet: (request: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
     syncTransactions: () => Promise<undefined>,

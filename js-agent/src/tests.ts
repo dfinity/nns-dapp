@@ -3,6 +3,7 @@ import GovernanceApi from "./GovernanceApi";
 import LedgerApi from "./LedgerApi";
 import { NeuronId, Topic, Vote } from "./canisters/governance/model";
 import * as convert from "./canisters/converter";
+import { CreateCanisterResult } from "./canisters/ledger/createCanister";
 
 var running = false;
 
@@ -77,22 +78,25 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     {
         console.log("creating a canister with the 1st sub-account as controller");
-        let canisterId = await ledgerApi.createCanister({
+        let response = await ledgerApi.createCanister({
             stake: BigInt(1_000_000_000),
             fromSubAccountId: firstSubAccount.id,
             name: "My canister"         
         });       
         
-        if (canisterId) {        
+        if (response.result === CreateCanisterResult.Ok) {        
             console.log("canisterId");
-            console.log(canisterId);
+            console.log(response.canisterId);
 
             console.log("topup the canister");
             await ledgerApi.topupCanister({
                 stake: BigInt(300_000_000),
                 fromSubAccountId: firstSubAccount.id,
-                targetCanisterId: canisterId            
+                targetCanisterId: response.canisterId            
             });        
+        } else {
+            console.log("createCanisterFailed");
+            console.log(response);
         }
     }
 

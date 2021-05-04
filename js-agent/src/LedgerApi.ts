@@ -1,5 +1,4 @@
 import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
-import { Option } from "./canisters/option";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService, {
     GetBalancesRequest,
@@ -9,6 +8,7 @@ import ledgerViewBuilder from "./canisters/nnsUI/builder";
 import LedgerViewService, {
     AccountDetails,
     AttachCanisterRequest,
+    AttachCanisterResult,
     CanisterDetails,
     CreateSubAccountResponse,
     GetTransactionsRequest,
@@ -19,7 +19,7 @@ import LedgerViewService, {
 import { create_dummy_proposals, test_happy_path } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/ledger/createNeuron";
 import { NeuronId } from "./canisters/governance/model";
-import { createCanisterImpl, topupCanisterImpl, CanisterId, CreateCanisterRequest, TopupCanisterRequest } from "./canisters/ledger/createCanister";
+import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/ledger/createCanister";
 import { AccountIdentifier, BlockHeight, E8s } from "./canisters/common/types";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { principalToAccountIdentifier } from "./canisters/converter";
@@ -108,10 +108,11 @@ export default class LedgerApi {
             request);
     }
 
-    public createCanister = async (request: CreateCanisterRequest) : Promise<Option<CanisterId>> => {
+    public createCanister = async (request: CreateCanisterRequest) : Promise<CreateCanisterResponse> => {
         return createCanisterImpl(
             this.identity.getPrincipal(), 
             this.ledgerService, 
+            this.ledgerViewService,
             request);
     }
 
@@ -121,12 +122,12 @@ export default class LedgerApi {
             request);
     }
 
-    public attachCanister = async (request: AttachCanisterRequest) : Promise<void> => {
-        return null;
+    public attachCanister = async (request: AttachCanisterRequest) : Promise<AttachCanisterResult> => {
+        return this.ledgerViewService.attachCanister(request);
     }
 
     public getCanisters = async (): Promise<Array<CanisterDetails>> => {
-        return [];
+        return this.ledgerViewService.getCanisters();
     }
 
     public getICPToCyclesExchangeRate = async (): Promise<bigint> => {

@@ -1,8 +1,9 @@
 import { Principal } from "@dfinity/agent";
-import { Option } from "../option";
+import { Option } from "../option"
 import LedgerService from "./model";
+import LedgerViewService, { AttachCanisterResult } from "../nnsUI/model";
 import MINTING_CANISTER_ID from "../cyclesMinting/canisterId";
-import { CyclesNotificationResponse, TransactionNotificationResponse } from "./proto/types_pb";
+import { CyclesNotificationResponse } from "./proto/types_pb";
 import { E8s } from "../common/types";
 import * as convert from "../converter";
 
@@ -14,10 +15,25 @@ export type CreateCanisterRequest = {
     name: string
 }
 
+export interface CreateCanisterResponse {
+    result: CreateCanisterResult,
+    canisterId?: CanisterId
+    errorMessage?: string
+}
+
+export enum CreateCanisterResult {
+    Ok,
+    FailedToCreateCanister,
+    CanisterAlreadyAttached,
+    NameAlreadyTaken,
+    CanisterLimitExceeded
+}   
+
 export async function createCanisterImpl(
     principal: Principal,
     ledgerService: LedgerService, 
-    request: CreateCanisterRequest) : Promise<Option<CanisterId>> {
+    ledgerViewService: LedgerViewService, 
+    request: CreateCanisterRequest) : Promise<CreateCanisterResponse> {
 
     const response = await sendAndNotify(
         ledgerService, 
@@ -26,15 +42,31 @@ export async function createCanisterImpl(
         BigInt(0x41455243), // CREA,
         request.fromSubAccountId);
 
-    if (!response.hasCreatedCanisterId()) {
-        console.log("Failed to create canister: ");
-        console.log(response);
-        return null;
+    let errorMessage;
+    if (response.hasCreatedCanisterId()) {
+        const canisterId = Principal.fromBlob(
+            convert.uint8ArrayToBlob(
+                response.getCreatedCanisterId().getSerializedId_asU8()));
+
+        const attachResult = await ledgerViewService.attachCanister({
+            name: request.name,
+            canisterId
+        });
+
+        switch (attachResult) {
+            case AttachCanisterResult.Ok: return { result: CreateCanisterResult.Ok, canisterId };
+            case AttachCanisterResult.CanisterAlreadyAttached: return { result: CreateCanisterResult.CanisterAlreadyAttached, canisterId };
+            case AttachCanisterResult.NameAlreadyTaken: return { result: CreateCanisterResult.NameAlreadyTaken, canisterId };
+            case AttachCanisterResult.CanisterLimitExceeded: return { result: CreateCanisterResult.CanisterLimitExceeded, canisterId };            
+        }
+    } else {
+        errorMessage = response.toString();
     }
 
-    return Principal.fromBlob(
-        convert.uint8ArrayToBlob(
-            response.getCreatedCanisterId().getSerializedId_asU8()));
+    return {
+        result: CreateCanisterResult.FailedToCreateCanister,
+        errorMessage
+    };
 }
 
 export type TopupCanisterRequest = {

@@ -1,5 +1,8 @@
 import { AccountIdentifier } from "../common/types";
 import ServiceInterface, {
+    AttachCanisterRequest,
+    AttachCanisterResult,
+    CanisterDetails,
     CreateSubAccountResponse,
     GetAccountResponse,
     GetTransactionsRequest,
@@ -20,6 +23,17 @@ export default class Service implements ServiceInterface {
         this.service = service;
         this.requestConverters = new RequestConverters();
         this.responseConverters = new ResponseConverters();
+    }
+
+    public attachCanister = async (request: AttachCanisterRequest) : Promise<AttachCanisterResult> => {
+        const rawRequest = this.requestConverters.fromAttachCanisterRequest(request);
+        const rawResponse = await this.service.attach_canister(rawRequest);
+        return this.responseConverters.toAttachCanisterResponse(rawResponse);
+    }
+
+    public getCanisters = async () : Promise<Array<CanisterDetails>> => {
+        const rawResponse = await this.service.get_canisters();
+        return this.responseConverters.toArrayOfCanisterDetail(rawResponse);
     }
 
     public getAccount = async () : Promise<GetAccountResponse> => {

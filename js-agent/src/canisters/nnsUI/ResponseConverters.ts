@@ -1,5 +1,7 @@
 import * as convert from "../converter";
 import {
+    AttachCanisterResult,
+    CanisterDetails,
     CreateSubAccountResponse,
     GetAccountResponse,
     GetTransactionsResponse,
@@ -10,6 +12,8 @@ import {
     Transfer
 } from "./model";
 import {
+    AttachCanisterResponse as RawAttachCanisterResponse,
+    CanisterDetails as RawCanisterDetails,
     CreateSubAccountResponse as RawCreateSubAccountResponse,
     GetAccountResponse as RawGetAccountResponse,
     GetTransactionsResponse as RawGetTransactionsResponse,
@@ -21,6 +25,23 @@ import {
 } from "./rawService";
 
 export default class ResponseConverters {
+
+    public toAttachCanisterResponse = (response: RawAttachCanisterResponse) : AttachCanisterResult => {
+        if ("Ok" in response) {
+            return AttachCanisterResult.Ok;
+        } else if ("CanisterAlreadyAttached" in response) {
+            return AttachCanisterResult.CanisterAlreadyAttached;
+        } else if ("NameAlreadyTaken" in response) {
+            return AttachCanisterResult.NameAlreadyTaken;
+        } else if ("CanisterLimitExceeded" in response) {
+            return AttachCanisterResult.CanisterLimitExceeded;
+        }
+    }
+
+    public toArrayOfCanisterDetail = (response: Array<RawCanisterDetails>) : Array<CanisterDetails> => {
+        return response.map(this.toCanisterDetails);
+    }
+
     public toGetAccountResponse = (response: RawGetAccountResponse) : GetAccountResponse => {
         if ("Ok" in response) {
             return {
@@ -59,6 +80,13 @@ export default class ResponseConverters {
             id: convert.toSubAccountId(subAccount.sub_account),
             accountIdentifier: subAccount.account_identifier,
             name: subAccount.name,
+        }
+    }
+
+    private toCanisterDetails = (details: RawCanisterDetails) : CanisterDetails => {
+        return {
+            name: details.name,
+            canisterId: details.canister_id
         }
     }
 
