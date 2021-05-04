@@ -280,6 +280,48 @@ export namespace TransactionNotificationResponse {
   }
 }
 
+export class CyclesNotificationResponse extends jspb.Message {
+  hasCreatedCanisterId(): boolean;
+  clearCreatedCanisterId(): void;
+  getCreatedCanisterId(): base_types_pb.PrincipalId | undefined;
+  setCreatedCanisterId(value?: base_types_pb.PrincipalId): void;
+
+  hasRefund(): boolean;
+  clearRefund(): void;
+  getRefund(): Refund | undefined;
+  setRefund(value?: Refund): void;
+
+  hasToppedUp(): boolean;
+  clearToppedUp(): void;
+  getToppedUp(): ToppedUp | undefined;
+  setToppedUp(value?: ToppedUp): void;
+
+  getResponseCase(): CyclesNotificationResponse.ResponseCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CyclesNotificationResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: CyclesNotificationResponse): CyclesNotificationResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CyclesNotificationResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CyclesNotificationResponse;
+  static deserializeBinaryFromReader(message: CyclesNotificationResponse, reader: jspb.BinaryReader): CyclesNotificationResponse;
+}
+
+export namespace CyclesNotificationResponse {
+  export type AsObject = {
+    createdCanisterId?: base_types_pb.PrincipalId.AsObject,
+    refund?: Refund.AsObject,
+    toppedUp?: ToppedUp.AsObject,
+  }
+
+  export enum ResponseCase {
+    RESPONSE_NOT_SET = 0,
+    CREATED_CANISTER_ID = 1,
+    REFUND = 2,
+    TOPPED_UP = 3,
+  }
+}
+
 export class AccountBalanceRequest extends jspb.Message {
   hasAccount(): boolean;
   clearAccount(): void;
@@ -429,8 +471,8 @@ export namespace LedgerArchiveRequest {
 }
 
 export class BlockRequest extends jspb.Message {
-  getBlockHeight(): number;
-  setBlockHeight(value: number): void;
+  getBlockHeight(): string;
+  setBlockHeight(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): BlockRequest.AsObject;
@@ -444,7 +486,7 @@ export class BlockRequest extends jspb.Message {
 
 export namespace BlockRequest {
   export type AsObject = {
-    blockHeight: number,
+    blockHeight: string,
   }
 }
 
@@ -506,11 +548,11 @@ export namespace BlockResponse {
 }
 
 export class GetBlocksRequest extends jspb.Message {
-  getStart(): number;
-  setStart(value: number): void;
+  getStart(): string;
+  setStart(value: string): void;
 
-  getLength(): number;
-  setLength(value: number): void;
+  getLength(): string;
+  setLength(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetBlocksRequest.AsObject;
@@ -524,8 +566,50 @@ export class GetBlocksRequest extends jspb.Message {
 
 export namespace GetBlocksRequest {
   export type AsObject = {
-    start: number,
-    length: number,
+    start: string,
+    length: string,
+  }
+}
+
+export class Refund extends jspb.Message {
+  hasRefund(): boolean;
+  clearRefund(): void;
+  getRefund(): BlockHeight | undefined;
+  setRefund(value?: BlockHeight): void;
+
+  getError(): string;
+  setError(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Refund.AsObject;
+  static toObject(includeInstance: boolean, msg: Refund): Refund.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Refund, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Refund;
+  static deserializeBinaryFromReader(message: Refund, reader: jspb.BinaryReader): Refund;
+}
+
+export namespace Refund {
+  export type AsObject = {
+    refund?: BlockHeight.AsObject,
+    error: string,
+  }
+}
+
+export class ToppedUp extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ToppedUp.AsObject;
+  static toObject(includeInstance: boolean, msg: ToppedUp): ToppedUp.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ToppedUp, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ToppedUp;
+  static deserializeBinaryFromReader(message: ToppedUp, reader: jspb.BinaryReader): ToppedUp;
+}
+
+export namespace ToppedUp {
+  export type AsObject = {
   }
 }
 
