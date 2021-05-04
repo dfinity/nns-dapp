@@ -1,12 +1,23 @@
+import type { Principal } from '@dfinity/agent';
 export interface AccountDetails {
   'account_identifier' : AccountIdentifier,
   'hardware_wallet_accounts' : Array<HardwareWalletAccountDetails>,
   'sub_accounts' : Array<SubAccountDetails>,
 };
 export type AccountIdentifier = string;
+export interface AttachCanisterRequest {
+  'name' : string,
+  'canister_id' : Principal,
+};
+export type AttachCanisterResponse = { 'Ok' : null } |
+    { 'CanisterAlreadyAttached' : null } |
+    { 'NameAlreadyTaken' : null } |
+    { 'CanisterLimitExceeded' : null };
 export type BlockHeight = bigint;
+export interface CanisterDetails { 'name' : string, 'canister_id' : Principal };
 export type CreateSubAccountResponse = { 'Ok' : SubAccountDetails } |
     { 'AccountNotFound' : null } |
+    { 'NameTooLong' : null } |
     { 'SubAccountLimitExceeded' : null };
 export type GetAccountResponse = { 'Ok' : AccountDetails } |
     { 'AccountNotFound' : null };
@@ -35,11 +46,24 @@ export interface RegisterHardwareWalletRequest {
 };
 export type RegisterHardwareWalletResponse = { 'Ok' : null } |
     { 'AccountNotFound' : null } |
-    { 'HardwareWalletLimitExceeded' : null };
+    { 'HardwareWalletLimitExceeded' : null } |
+    { 'NameTooLong' : null };
 export interface Send {
   'to' : AccountIdentifier,
   'fee' : ICPTs,
   'amount' : ICPTs,
+};
+export interface Stats {
+  'latest_transaction_block_height' : BlockHeight,
+  'seconds_since_last_ledger_sync' : bigint,
+  'sub_accounts_count' : bigint,
+  'hardware_wallet_accounts_count' : bigint,
+  'accounts_count' : bigint,
+  'earliest_transaction_block_height' : BlockHeight,
+  'transactions_count' : bigint,
+  'block_height_synced_up_to' : bigint,
+  'latest_transaction_timestamp_nanos' : bigint,
+  'earliest_transaction_timestamp_nanos' : bigint,
 };
 export type SubAccount = Array<number>;
 export interface SubAccountDetails {
@@ -47,6 +71,8 @@ export interface SubAccountDetails {
   'sub_account' : SubAccount,
   'account_identifier' : AccountIdentifier,
 };
+export type SyncTransactionsResult = { 'Ok' : number } |
+    { 'Err' : string };
 export interface Timestamp { 'timestamp_nanos' : bigint };
 export interface Transaction {
   'timestamp' : Timestamp,
@@ -59,9 +85,12 @@ export type Transfer = { 'Burn' : { 'amount' : ICPTs } } |
     { 'Receive' : Receive };
 export default interface _SERVICE {
   'add_account' : () => Promise<AccountIdentifier>,
+  'attach_canister' : (arg_0: AttachCanisterRequest) => Promise<AttachCanisterResponse>,
   'create_sub_account' : (arg_0: string) => Promise<CreateSubAccountResponse>,
   'get_account' : () => Promise<GetAccountResponse>,
+  'get_canisters' : () => Promise<Array<CanisterDetails>>,
+  'get_stats' : () => Promise<Stats>,
   'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
   'register_hardware_wallet' : (arg_0: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
-  'sync_transactions' : () => Promise<undefined>,
+  'sync_transactions' : () => Promise<[] | [SyncTransactionsResult]>,
 };
