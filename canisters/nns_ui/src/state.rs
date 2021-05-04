@@ -26,18 +26,11 @@ impl StableState for State {
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        let transactions_store = TransactionStore::decode(bytes).unwrap();
+        let (transactions_store_bytes, canisters_store_bytes): (Vec<u8>, Vec<u8>) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
         Ok(State {
-            transactions_store,
-            canisters_store: CanisterStore::default()
+            transactions_store: TransactionStore::decode(transactions_store_bytes)?,
+            canisters_store: CanisterStore::decode(canisters_store_bytes)?
         })
-
-        // let (transactions_store_bytes, canisters_store_bytes): (Vec<u8>, Vec<u8>) = Candid::from_bytes(bytes).map(|c| c.0)?;
-        //
-        // Ok(State {
-        //     transactions_store: TransactionStore::decode(transactions_store_bytes)?,
-        //     canisters_store: CanisterStore::decode(canisters_store_bytes)?
-        // })
     }
 }
