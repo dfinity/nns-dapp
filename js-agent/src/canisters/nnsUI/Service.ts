@@ -48,7 +48,7 @@ export default class Service implements ServiceInterface {
         return this.responseConverters.toGetTransactionsResponse(rawResponse);
     }
 
-    public syncTransactions = () : Promise<undefined> => {
+    public syncTransactions = () : Promise<any> => {
         return this.service.sync_transactions();
     }
 }

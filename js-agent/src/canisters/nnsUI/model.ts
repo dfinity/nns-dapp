@@ -7,7 +7,8 @@ export interface AccountDetails {
 };
 export type CreateSubAccountResponse = { Ok: SubAccountDetails } |
     { AccountNotFound: null } |
-    { SubAccountLimitExceeded: null };
+    { SubAccountLimitExceeded: null } |
+    { NameTooLong: null };
 export type GetAccountResponse = { Ok: AccountDetails } |
     { AccountNotFound: null };
 export interface GetTransactionsRequest {
@@ -34,7 +35,8 @@ export interface RegisterHardwareWalletRequest {
 };
 export type RegisterHardwareWalletResponse = { Ok: null } |
     { AccountNotFound: null } |
-    { HardwareWalletLimitExceeded: null };
+    { HardwareWalletLimitExceeded: null } |
+    { NameTooLong: null };
 export interface Send {
     to: AccountIdentifier,
     fee: E8s,
