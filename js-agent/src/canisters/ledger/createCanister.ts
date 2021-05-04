@@ -10,7 +10,8 @@ export type CanisterId = Principal;
 
 export type CreateCanisterRequest = {
     stake: E8s
-    fromSubAccountId?: number
+    fromSubAccountId?: number,
+    name: string
 }
 
 export async function createCanisterImpl(

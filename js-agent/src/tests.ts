@@ -79,7 +79,8 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         console.log("creating a canister with the 1st sub-account as controller");
         let canisterId = await ledgerApi.createCanister({
             stake: BigInt(1_000_000_000),
-            fromSubAccountId: firstSubAccount.id            
+            fromSubAccountId: firstSubAccount.id,
+            name: "My canister"         
         });       
         
         if (canisterId) {        

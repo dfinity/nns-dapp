@@ -8,6 +8,8 @@ import LedgerService, {
 import ledgerViewBuilder from "./canisters/nnsUI/builder";
 import LedgerViewService, {
     AccountDetails,
+    AttachCanisterRequest,
+    CanisterDetails,
     CreateSubAccountResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
@@ -118,6 +120,18 @@ export default class LedgerApi {
             this.ledgerService, 
             request);
     }
+
+    public attachCanister = async (request: AttachCanisterRequest) : Promise<void> => {
+        return null;
+    }
+
+    public getCanisters = async (): Promise<Array<CanisterDetails>> => {
+        return [];
+    }
+
+    public getICPToCyclesExchangeRate = async (): Promise<bigint> => {
+        return BigInt(420);
+    } 
 
     public integrationTest = async (): Promise<void> => {
         return await test_happy_path(this.host, this.identity);

@@ -1,10 +1,22 @@
 import { AccountIdentifier, BlockHeight, E8s } from "../common/types";
+import { CanisterId } from "../ledger/createCanister";
 
 export interface AccountDetails {
     accountIdentifier: AccountIdentifier,
     hardwareWalletAccounts: Array<HardwareWalletAccountDetails>,
     subAccounts: Array<SubAccountDetails>,
 };
+
+export interface AttachCanisterRequest {
+    name: string,
+    canisterId: CanisterId      
+}
+
+export interface CanisterDetails {
+    name: string,
+    canisterId: CanisterId      
+}
+  
 export type CreateSubAccountResponse = { Ok: SubAccountDetails } |
     { AccountNotFound: null } |
     { SubAccountLimitExceeded: null } |
@@ -58,6 +70,8 @@ export type Transfer = { Burn: { amount: E8s } } |
     { Mint: { amount: E8s } } |
     { Send: Send } |
     { Receive: Receive };
+
+
 export default interface ServiceInterface {
     addAccount: () => Promise<AccountIdentifier>,
     createSubAccount: (name: string) => Promise<CreateSubAccountResponse>,
