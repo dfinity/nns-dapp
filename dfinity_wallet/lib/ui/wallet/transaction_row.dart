@@ -64,7 +64,6 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var f = NumberFormat("###,###.########", "en_US");
     final sign = addition ? "+" : "-";
     final color = addition ? AppColors.green500 : AppColors.gray50;
     final secondaryColor = addition ? AppColors.green600 : AppColors.gray200;
@@ -74,7 +73,7 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "$sign${f.format(amount)}",
+          "$sign${amount.toDisplayICPT}",
           style: TextStyle(color: color, fontFamily: Fonts.circularBold, fontSize: 30.toDouble()),
         ),
         SizedBox(

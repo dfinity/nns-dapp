@@ -1,5 +1,3 @@
-
-
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
@@ -41,8 +39,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                NumberFormat("###,###.########", "en_US")
-                                    .format(amount),
+                                amount.toDisplayICPT,
                                 style: TextStyle(color: AppColors.white,
                                     fontFamily: Fonts.circularBold,
                                     fontSize: 50),
@@ -73,8 +70,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                NumberFormat("###,###.########", "en_US")
-                                    .format(CycleCalculator.icpToCycles(amount)),
+                                CycleCalculator.icpToCycles(amount).toDisplayICPT,
                                 style: TextStyle(color: AppColors.white,
                                     fontFamily: Fonts.circularBold,
                                     fontSize: 50),
