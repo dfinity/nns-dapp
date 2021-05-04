@@ -98,6 +98,17 @@ fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> Regi
     store.register_hardware_wallet(principal, request)
 }
 
+#[export_name = "canister_query get_canisters"]
+pub fn get_canisters() {
+    over(candid, |()| get_canisters_impl());
+}
+
+fn get_canisters_impl() -> Vec<NamedCanister> {
+    let principal = dfn_core::api::caller();
+    let store = &mut STATE.write().unwrap().canisters_store;
+    store.get_canisters(&principal)
+}
+
 #[export_name = "canister_update attach_canister"]
 pub fn attach_canister() {
     over(candid_one, attach_canister_impl);
@@ -107,17 +118,6 @@ fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterRespons
     let principal = dfn_core::api::caller();
     let store = &mut STATE.write().unwrap().canisters_store;
     store.attach_canister(principal, request)
-}
-
-#[export_name = "canister_query get_canisters"]
-pub fn get_canisters() {
-    over(candid, |()| get_canisters_impl());
-}
-
-fn get_canisters_impl() -> Vec<NamedCanister> {
-    let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().canisters_store;
-    store.get_canisters(principal)
 }
 
 #[export_name = "canister_query get_stats"]
