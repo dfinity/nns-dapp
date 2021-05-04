@@ -36,12 +36,12 @@ message NeuronId {
   //  bytes serialized_id = 1;
   reserved 1;
   reserved 'serialized_id';
-  uint64 id = 2    [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  uint64 id = 2    [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true, jstype = JS_STRING];;
 }
 
 // The id of a specific proposal.
 message ProposalId {
-  uint64 id = 1;
+  uint64 id = 1 [jstype = JS_STRING];
 }
 
 // A descriptor of the authorization of a single method.

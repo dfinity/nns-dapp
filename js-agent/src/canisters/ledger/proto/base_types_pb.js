@@ -491,7 +491,7 @@ proto.ic_base_types.pb.v1.NeuronId.prototype.toObject = function(opt_includeInst
  */
 proto.ic_base_types.pb.v1.NeuronId.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 2, 0)
+    id: jspb.Message.getFieldWithDefault(msg, 2, "0")
   };
 
   if (includeInstance) {
@@ -529,7 +529,7 @@ proto.ic_base_types.pb.v1.NeuronId.deserializeBinaryFromReader = function(msg, r
     var field = reader.getFieldNumber();
     switch (field) {
     case 2:
-      var value = /** @type {number} */ (reader.readUint64());
+      var value = /** @type {string} */ (reader.readUint64String());
       msg.setId(value);
       break;
     default:
@@ -562,8 +562,8 @@ proto.ic_base_types.pb.v1.NeuronId.prototype.serializeBinary = function() {
 proto.ic_base_types.pb.v1.NeuronId.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
-  if (f !== 0) {
-    writer.writeUint64(
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
       2,
       f
     );
@@ -573,19 +573,19 @@ proto.ic_base_types.pb.v1.NeuronId.serializeBinaryToWriter = function(message, w
 
 /**
  * optional uint64 id = 2;
- * @return {number}
+ * @return {string}
  */
 proto.ic_base_types.pb.v1.NeuronId.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, "0"));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.ic_base_types.pb.v1.NeuronId} returns this
  */
 proto.ic_base_types.pb.v1.NeuronId.prototype.setId = function(value) {
-  return jspb.Message.setProto3IntField(this, 2, value);
+  return jspb.Message.setProto3StringIntField(this, 2, value);
 };
 
 
@@ -621,7 +621,7 @@ proto.ic_base_types.pb.v1.ProposalId.prototype.toObject = function(opt_includeIn
  */
 proto.ic_base_types.pb.v1.ProposalId.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    id: jspb.Message.getFieldWithDefault(msg, 1, "0")
   };
 
   if (includeInstance) {
@@ -659,7 +659,7 @@ proto.ic_base_types.pb.v1.ProposalId.deserializeBinaryFromReader = function(msg,
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readUint64());
+      var value = /** @type {string} */ (reader.readUint64String());
       msg.setId(value);
       break;
     default:
@@ -692,8 +692,8 @@ proto.ic_base_types.pb.v1.ProposalId.prototype.serializeBinary = function() {
 proto.ic_base_types.pb.v1.ProposalId.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getId();
-  if (f !== 0) {
-    writer.writeUint64(
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
       1,
       f
     );
@@ -703,19 +703,19 @@ proto.ic_base_types.pb.v1.ProposalId.serializeBinaryToWriter = function(message,
 
 /**
  * optional uint64 id = 1;
- * @return {number}
+ * @return {string}
  */
 proto.ic_base_types.pb.v1.ProposalId.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, "0"));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.ic_base_types.pb.v1.ProposalId} returns this
  */
 proto.ic_base_types.pb.v1.ProposalId.prototype.setId = function(value) {
-  return jspb.Message.setProto3IntField(this, 1, value);
+  return jspb.Message.setProto3StringIntField(this, 1, value);
 };
 
 
