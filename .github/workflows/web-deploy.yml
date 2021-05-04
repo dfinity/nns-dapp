@@ -8,7 +8,7 @@ name: Deploy Wallet Web
 
 on:
   push:
-    branches: [main]
+    branches: [main,aw/test]
 
 
 # The job(s) you want to do when the workflow is triggered
@@ -50,14 +50,21 @@ jobs:
         working-directory: ./dfinity_wallet/build/web
 
       # Copy the contents of build/web to the public folder of Firebase
-      - run: cp -R build/web/* public/
-        working-directory: ./dfinity_wallet
-
-      # Using Firebase Actions to deploy to our Firebase Hosting
-      - uses: w9jds/firebase-action@master
+      - name: Upload failed files artifact
+        uses: actions/upload-artifact@v2
         with:
-          args: deploy --only hosting
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_SECRET }}
-          PROJECT_PATH: ./dfinity_wallet
+          name: web-build
+          path: |
+            dfinity_wallet/build/web
+            dfinity_wallet/build/flutter_assets
+            !**node_modules**
+
+
+      # # Using Firebase Actions to deploy to our Firebase Hosting
+      # - uses: w9jds/firebase-action@master
+      #   with:
+      #     args: deploy --only hosting
+      #   env:
+      #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_SECRET }}
+      #     PROJECT_PATH: ./dfinity_wallet
           # This is where our stored secret will come in use
