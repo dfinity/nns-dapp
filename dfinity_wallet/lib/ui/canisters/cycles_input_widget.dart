@@ -61,39 +61,47 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(6.0),
-        child: Row(
+        child: Column(
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("ICP", style: context.textTheme.headline3),
-                  DebouncedValidatedFormField(icpField, onChanged: () {
-                    final newCyclesAmount = CycleCalculator.icpToCycles(icpField.currentValue.toDouble());
-                    if(cyclesField.currentValue != newCyclesAmount.toString()){
-                      cyclesField.textEditingController.text = newCyclesAmount.toString();
-                    }
-                    callCallback();
-                  }),
-                ],
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("ICP", style: context.textTheme.headline3),
+                      DebouncedValidatedFormField(icpField, onChanged: () {
+                        final newCyclesAmount = CycleCalculator.icpToCycles(icpField.currentValue.toDouble());
+                        if(cyclesField.currentValue != newCyclesAmount.toString()){
+                          cyclesField.textEditingController.text = newCyclesAmount.toString();
+                        }
+                        callCallback();
+                      }),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("T Cycles", style: context.textTheme.headline3),
+                      DebouncedValidatedFormField(cyclesField, onChanged: (){
+                        final newIcpAmount = CycleCalculator.cyclesToIcp(cyclesField.currentValue.toDouble());
+                        if(icpField.currentValue != newIcpAmount.toString()){
+                          icpField.textEditingController.text = newIcpAmount.toString();
+                        }
+                        callCallback();
+                      },),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("T Cycles", style: context.textTheme.headline3),
-                  DebouncedValidatedFormField(cyclesField, onChanged: (){
-                    final newIcpAmount = CycleCalculator.cyclesToIcp(cyclesField.currentValue.toDouble());
-                    if(icpField.currentValue != newIcpAmount.toString()){
-                      icpField.textEditingController.text = newIcpAmount.toString();
-                    }
-                    callCallback();
-                  },),
-                ],
-              ),
-            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Application subnets are beta and therefore Cycles might be lost"),
+            )
           ],
         ),
       ),

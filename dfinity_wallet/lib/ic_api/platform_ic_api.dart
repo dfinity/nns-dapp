@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/ic_api/web/hardware_wallet_api.dart';
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 
 import '../dfinity.dart';
+import 'dart:js';
 
 abstract class AbstractPlatformICApi {
   final HiveBoxesWidget hiveBoxes;
@@ -70,15 +71,16 @@ abstract class AbstractPlatformICApi {
 
   Future<void> createDummyProposals({required BigInt neuronId});
 
-
+  // Canisters
+  Future<void> createCanister({required BigInt stake, int? fromSubAccountId, required String name});
+  Future<void> topupCanister({required BigInt stake, int? fromSubAccountId, required String targetCanisterId});
+  Future<void> attachCanister({required String name, required String canisterId});
+  Future<void> getCanisters();
+  Future<double> getICPToCyclesExchangeRate();
 
   Future<void> test();
 
   Future<dynamic> connectToHardwareWallet();
   Future<HardwareWalletApi> createHardwareWalletApi({dynamic ledgerIdentity});
-  Future<void> registerHardwareWallet(
-      {required String name, dynamic ledgerIdentity});
-
+  Future<void> registerHardwareWallet({required String name, dynamic ledgerIdentity});
 }
-
-

@@ -267,88 +267,48 @@ class PlatformICApi extends AbstractPlatformICApi {
     // print("spawnResponse " + stringify(spawnResponse));
     final createdNeuronId = spawnResponse.createdNeuronId.toString();
     await neuronSyncService!.fetchNeurons();
-    return hiveBoxes.neurons.values.firstWhere((element) => element.identifier == createdNeuronId);
+    return hiveBoxes.neurons.values
+        .firstWhere((element) => element.identifier == createdNeuronId);
   }
 
-}
+  @override
+  Future<void> attachCanister(
+      {required String name, required String canisterId}) async {
+    await promiseToFuture(ledgerApi!.attachCanister(
+        AttachCanisterRequest(name: name, canisterId: canisterId)));
+  }
 
-@JS()
-@anonymous
-class IncreaseDissolveDelayRequest {
-  external dynamic get neuronId;
+  @override
+  Future<void> createCanister(
+      {required BigInt stake,
+      int? fromSubAccountId,
+      required String name}) async {
+    await promiseToFuture(ledgerApi!.createCanister(CreateCanisterRequest(
+      stake: stake.toJS,
+      fromSubAccountId: fromSubAccountId,
+      name: name,
+    )));
+  }
 
-  external num get additionalDissolveDelaySeconds;
+  @override
+  Future<void> getCanisters() async {
+    final response = promiseToFuture(ledgerApi!.getCanisters());
+    final res = jsonDecode(stringify(response));
+  }
 
-  external factory IncreaseDissolveDelayRequest(
-      {dynamic neuronId, num additionalDissolveDelaySeconds});
-}
+  @override
+  Future<double> getICPToCyclesExchangeRate() async {
+    return 420.0;
+  }
 
-@JS()
-@anonymous
-class FollowRequest {
-  external dynamic neuronId;
-  external int topic;
-  external List<dynamic> followees;
-
-  external factory FollowRequest(
-      {dynamic neuronId, int topic, List<dynamic> followees});
-}
-
-@JS()
-@anonymous
-class NeuronIdentifierRequest {
-  external dynamic neuronId;
-
-  external factory NeuronIdentifierRequest({dynamic neuronId});
-}
-
-@JS()
-@anonymous
-class CreateNeuronRequest {
-  external dynamic stake;
-  external int? fromSubAccountId;
-
-  external factory CreateNeuronRequest({dynamic stake, int? fromSubAccountId});
-}
-
-@JS()
-@anonymous
-class DisperseNeuronRequest {
-  external dynamic neuronId;
-  external dynamic amount;
-  external String toAccountId;
-
-  external factory DisperseNeuronRequest(
-      {dynamic neuronId, dynamic amount, String toAccountId});
-}
-
-@JS()
-@anonymous
-class SendICPTsRequest {
-  external dynamic to;
-  external dynamic amount;
-  external int? fromSubAccountId;
-
-  external factory SendICPTsRequest(
-      {dynamic to, dynamic amount, int? fromSubAccountId});
-}
-
-@JS()
-@anonymous
-class RegisterVoteRequest {
-  external dynamic neuronId;
-  external dynamic proposal;
-  external int vote;
-
-  external factory RegisterVoteRequest(
-      {dynamic neuronId, dynamic proposal, int vote});
-}
-
-@JS()
-@anonymous
-class SpawnRequest {
-  external dynamic neuronId;
-  external dynamic newController;
-
-  external factory SpawnRequest({dynamic neuronId, dynamic newController});
+  @override
+  Future<void> topupCanister(
+      {required BigInt stake,
+      int? fromSubAccountId,
+      required String targetCanisterId}) async {
+    await promiseToFuture(ledgerApi!.topupCanister(TopupCanisterRequest(
+        stake: stake,
+        fromSubAccountId: fromSubAccountId,
+        targetCanisterId: targetCanisterId)));
+  }
 }

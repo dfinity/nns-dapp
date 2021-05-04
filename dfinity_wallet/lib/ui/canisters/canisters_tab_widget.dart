@@ -14,31 +14,18 @@ import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
 import 'package:dfinity_wallet/ui/ui.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
-import 'cansiter_name_widget.dart';
-
 class CansitersPage extends StatefulWidget {
+
   @override
   _CansitersPageState createState() => _CansitersPageState();
 }
 
 class _CansitersPageState extends State<CansitersPage> {
-  late Timer timer;
 
   @override
-  void initState() {
-    super.initState();
-
-    timer = Timer.periodic(1.seconds, (timer) {
-      if (context.findRenderObject() != null) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    timer.cancel();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.icApi.getCanisters();
   }
 
   @override
