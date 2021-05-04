@@ -8,7 +8,7 @@ name: Deploy Wallet Web
 
 on:
   push:
-    branches: [main,aw/test]
+    branches: [main]
 
 
 # The job(s) you want to do when the workflow is triggered
