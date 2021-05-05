@@ -84,6 +84,20 @@ type CreateSubAccountResponse =
         NameTooLong;
     };
 
+type RenameSubAccountRequest =
+    record {
+        account_identifier: AccountIdentifier;
+        new_name: text;
+    };
+
+type RenameSubAccountResponse =
+    variant {
+        Ok;
+        AccountNotFound;
+        SubAccountNotFound;
+        NameTooLong;
+    };
+
 type RegisterHardwareWalletRequest =
     record {
         name: text;

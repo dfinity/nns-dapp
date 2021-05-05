@@ -83,6 +83,19 @@ pub enum CreateSubAccountResponse {
 }
 
 #[derive(Deserialize)]
+pub struct RenameSubAccountRequest {
+    account_identifier: AccountIdentifier,
+    new_name: String
+}
+
+#[derive(CandidType)]
+pub enum RenameSubAccountResponse {
+    Ok,
+    AccountNotFound,
+    SubAccountNotFound
+}
+
+#[derive(Deserialize)]
 pub struct RegisterHardwareWalletRequest {
     name: String,
     account_identifier: AccountIdentifier
@@ -105,6 +118,7 @@ pub struct RemoveHardwareWalletRequest {
 #[derive(CandidType)]
 pub enum RemoveHardwareWalletResponse {
     Ok,
+    AccountNotFound,
     HardwareWalletNotFound
 }
 
@@ -134,7 +148,7 @@ impl TransactionStore {
         if let Some(account) = self.try_get_account_by_default_identifier(&account_identifier) {
             let sub_accounts = account.sub_accounts
                 .iter()
-                .sorted_by_key(|(id, _)| *id)
+                .sorted_unstable_by_key(|(_, sub_account)| sub_account.name.clone())
                 .map(|(id, sa)| SubAccountDetails {
                     name: sa.name.clone(),
                     sub_account: convert_byte_to_sub_account(*id),
@@ -214,6 +228,22 @@ impl TransactionStore {
         }
     }
 
+    pub fn rename_sub_account(&mut self, caller: PrincipalId, request: RenameSubAccountRequest) -> RenameSubAccountResponse {
+        if !Self::validate_account_name(&request.new_name) {
+            RenameSubAccountResponse::NameTooLong
+        } else if let Some(account) = self.try_get_account_mut_by_default_identifier(&AccountIdentifier::from(caller)) {
+            if let Some(sub_account) = account.sub_accounts.values_mut()
+                .find(|sub_account| sub_account.account_identifier == request.account_identifier) {
+                sub_account.name = request.new_name;
+                RenameSubAccountResponse::Ok
+            } else {
+                RenameSubAccountResponse::SubAccountNotFound
+            }
+        } else {
+            RenameSubAccountResponse::AccountNotFound
+        }
+    }
+
     pub fn register_hardware_wallet(&mut self, caller: PrincipalId, request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
         if !Self::validate_account_name(&request.name) {
             RegisterHardwareWalletResponse::NameTooLong
@@ -230,6 +260,7 @@ impl TransactionStore {
                         account_identifier: request.account_identifier,
                         transactions: Vec::new()
                     });
+                    account.hardware_wallet_accounts.sort_unstable_by_key(|hw| hw.name.clone());
 
                     Self::link_hardware_wallet_to_account_index(&mut self.account_identifier_lookup, request.account_identifier, index);
                     self.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count + 1;
@@ -257,7 +288,7 @@ impl TransactionStore {
                 RemoveHardwareWalletResponse::HardwareWalletNotFound
             }
         } else {
-            RemoveHardwareWalletResponse::HardwareWalletNotFound
+            RemoveHardwareWalletResponse::AccountNotFound
         }
     }
 
@@ -811,13 +842,34 @@ mod tests {
         store.create_sub_account(principal, "BBB".to_string());
         store.create_sub_account(principal, "CCC".to_string());
 
-        let account = store.get_account(principal).unwrap();
-        let sub_accounts = account.sub_accounts;
+        let sub_accounts = store.get_account(principal).unwrap().sub_accounts;
 
         assert_eq!(3, sub_accounts.len());
         assert_eq!("AAA", sub_accounts[0].name);
         assert_eq!("BBB", sub_accounts[1].name);
         assert_eq!("CCC", sub_accounts[2].name);
+    }
+
+    #[test]
+    fn rename_sub_account() {
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+        let mut store = setup_test_store();
+
+        store.create_sub_account(principal, "AAA".to_string());
+        store.create_sub_account(principal, "BBB".to_string());
+        store.create_sub_account(principal, "CCC".to_string());
+
+        let sub_accounts = store.get_account(principal).unwrap().sub_accounts;
+
+        let result = store.rename_sub_account(
+            principal,
+            RenameSubAccountRequest { account_identifier: sub_accounts[1].account_identifier, new_name: "BBB123".to_string() });
+
+        assert!(matches!(result, RenameSubAccountResponse::Ok));
+
+        let sub_accounts = store.get_account(principal).unwrap().sub_accounts;
+
+        assert_eq!("BBB123".to_string(), sub_accounts[1].name);
     }
 
     #[test]

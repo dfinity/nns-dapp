@@ -16,6 +16,8 @@ use crate::transaction_store::{
     RegisterHardwareWalletResponse,
     RemoveHardwareWalletRequest,
     RemoveHardwareWalletResponse,
+    RenameSubAccountRequest,
+    RenameSubAccountResponse,
     Stats
 };
 use dfn_candid::{candid, candid_one};
@@ -94,6 +96,17 @@ fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse
     let principal = dfn_core::api::caller();
     let store = &mut STATE.write().unwrap().transactions_store;
     store.create_sub_account(principal, sub_account_name)
+}
+
+#[export_name = "canister_update rename_sub_account"]
+pub fn rename_sub_account() {
+    over(candid_one, rename_sub_account_impl);
+}
+
+fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
+    let principal = dfn_core::api::caller();
+    let store = &mut STATE.write().unwrap().transactions_store;
+    store.rename_sub_account(principal, request)
 }
 
 #[export_name = "canister_update register_hardware_wallet"]
