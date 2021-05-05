@@ -49,8 +49,8 @@ import NnsUiService, {
     RenameSubAccountResponse
 } from "./canisters/nnsUI/model";
 import icManagementBuilder from "./canisters/icManagement/builder";
-import ICManagementService from "./canisters/icManagement/model";
-import { create_dummy_proposals, test_canisters, test_happy_path } from "./tests";
+import ICManagementService, { CanisterStatusResponse } from "./canisters/icManagement/model";
+import { create_dummy_proposals, test_canisters, test_happy_path, vote_for_authorized_subnetworks_proposal } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/createNeuron";
 import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/createCanister";
 import { AccountIdentifier, BlockHeight, CanisterId, E8s, NeuronId } from "./canisters/common/types";
@@ -249,6 +249,10 @@ export default class ServiceApi {
         return this.nnsUiService.getCanisters();
     }
 
+    public getCanisterStatus = async (canisterId: CanisterId): Promise<CanisterStatusResponse> => {
+        return this.icManagementService.getCanisterStatus(canisterId);
+    }
+
     public transferCanisterOwnership = async (canisterId: CanisterId, newController: string): Promise<void> => {
         return this.icManagementService.updateSettings({
             canisterId,
@@ -287,7 +291,9 @@ export default class ServiceApi {
 
     // Temporary method to trigger test code from the UI
     public integrationTest = async (): Promise<void> => {
-        return await test_canisters(this.host, this.identity);
+        await test_canisters(this.host, this.identity);
+        // await vote_for_authorized_subnetworks_proposal(this.host, this.identity);
+        // await test_happy_path(this.host, this.identity);
     }
 
     // Temporary method to trigger test code from the UI

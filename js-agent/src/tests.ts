@@ -2,7 +2,7 @@ import { Principal, SignIdentity } from "@dfinity/agent";
 import { Topic, Vote } from "./canisters/governance/model";
 import { CreateCanisterResult } from "./canisters/createCanister";
 import ServiceApi from "./ServiceApi";
-import { NeuronId } from "./canisters/common/types";
+import { CanisterId, NeuronId } from "./canisters/common/types";
 
 export async function acquire_big_stake(host: string, identity: SignIdentity): Promise<void> {
 
@@ -24,56 +24,80 @@ export async function get_set_authorized_subnetworks_proposal(host: string, iden
 }
 
 export async function vote_for_authorized_subnetworks_proposal(host: string, identity: SignIdentity): Promise<void> {
-    console.log("Vote for proposal 31");
+    console.log("Vote for proposal 4");
     const serviceApi = new ServiceApi(host, identity);
     const response = await serviceApi.registerVote({
-        neuronId: BigInt(5707719174376093969n),
+        neuronId: BigInt(425045688689725563n),
         vote: Vote.YES, 
-        proposal: BigInt(31)    
+        proposal: BigInt(4)    
     });
     console.log("registerVote response");
     console.log(response);
-    const proposal = await serviceApi.getProposalInfo(BigInt(31));
-    console.log("proposal 31");
+    const proposal = await serviceApi.getProposalInfo(BigInt(4));
+    console.log("proposal 4");
     console.log(proposal);
 }
 
 export async function test_canisters(host: string, identity: SignIdentity): Promise<void> {
     const serviceApi = new ServiceApi(host, identity);
 
-    {
-        console.log("attach canister qhbym-qaaaa-aaaaa-aaafq-cai");
-        const response = await serviceApi.attachCanister({
-            name: "NNS UI assets canister",
-            canisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
-        });
-        console.log(response);
-    }
-
-    {
-        console.log("attach canister qhbym-qaaaa-aaaaa-aaafq-cai");
-        const response = await serviceApi.attachCanister({
-            name: "NNS UI backend canister",
-            canisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
-        });
-        console.log(response);
-    }
+    let newCanisterId: CanisterId = Principal.fromText("5s2ji-faaaa-aaaaa-qaaaq-cai");
+    // {
+    //     console.log("Create a canister");
+    //     let response = await serviceApi.createCanister({
+    //         stake: BigInt(1_000_000_000),
+    //         name: "My canister 2"  
+    //     });   
+    //     newCanisterId = response.canisterId;
+    //     console.log(response);
+    // }
 
     {
         console.log("get canisters");
         const response = await serviceApi.getCanisters();
+        for (let i = 0; i < response.length; i++) {
+            console.log(response[i].name);
+            console.log(response[i].canisterId.toText());
+        }
+    }
+
+    {
+        console.log("Get canister status");
+        const response = await serviceApi.getCanisterStatus(newCanisterId);
         console.log(response);
     }
 
     {
-        console.log("topup qhbym-qaaaa-aaaaa-aaafq-cai");
-        const response = await serviceApi.topupCanister({
-            stake: BigInt(3_500_000),
-            targetCanisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
-        
-        });
+        console.log("Topup a canister");
+        await serviceApi.topupCanister({
+            stake: BigInt(300_000_000),
+            targetCanisterId: newCanisterId            
+        });        
+    }
+
+    {
+        console.log("Get canister status");
+        const response = await serviceApi.getCanisterStatus(newCanisterId);
         console.log(response);
     }
+
+    // {
+    //     console.log("attach canister qhbym-qaaaa-aaaaa-aaafq-cai");
+    //     const response = await serviceApi.attachCanister({
+    //         name: "NNS UI assets canister",
+    //         canisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
+    //     });
+    //     console.log(response);
+    // }
+
+    // {
+    //     console.log("attach canister qaa6y-5yaaa-aaaaa-aaafa-cai");
+    //     const response = await serviceApi.attachCanister({
+    //         name: "NNS UI backend canister",
+    //         canisterId: Principal.fromText("qaa6y-5yaaa-aaaaa-aaafa-cai")
+    //     });
+    //     console.log(response);
+    // }
 }
 
 export async function test_happy_path(host: string, identity: SignIdentity): Promise<void> {

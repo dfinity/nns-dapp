@@ -6,11 +6,13 @@ import authClient from "./auth/authClient";
 import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
 import LEDGER_CANISTER_ID from "./canisters/ledger/canisterId";
 import NNS_UI_CANISTER_ID from "./canisters/nnsUI/canisterId";
+import IC_MANAGEMENT_CANISTER_ID from "./canisters/icManagement/canisterId";
 
 const canisterIds = [
     GOVERNANCE_CANISTER_ID,
     LEDGER_CANISTER_ID,
-    NNS_UI_CANISTER_ID
+    NNS_UI_CANISTER_ID,
+    IC_MANAGEMENT_CANISTER_ID
 ];
 
 export default class AuthApi {
