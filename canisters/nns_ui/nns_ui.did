@@ -94,6 +94,7 @@ type RegisterHardwareWalletResponse =
     variant {
         Ok;
         AccountNotFound;
+        HardwareWalletAlreadyRegistered;
         HardwareWalletLimitExceeded;
         NameTooLong;
     };

@@ -92,6 +92,7 @@ pub struct RegisterHardwareWalletRequest {
 pub enum RegisterHardwareWalletResponse {
     Ok,
     AccountNotFound,
+    HardwareWalletAlreadyRegistered,
     HardwareWalletLimitExceeded,
     NameTooLong
 }
@@ -221,16 +222,20 @@ impl TransactionStore {
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
             } else {
-                account.hardware_wallet_accounts.push(NamedHardwareWalletAccount {
-                    name: request.name,
-                    account_identifier: request.account_identifier,
-                    transactions: Vec::new()
-                });
+                if account.hardware_wallet_accounts.iter().any(|hw| hw.account_identifier == request.account_identifier) {
+                    RegisterHardwareWalletResponse::HardwareWalletAlreadyRegistered
+                } else {
+                    account.hardware_wallet_accounts.push(NamedHardwareWalletAccount {
+                        name: request.name,
+                        account_identifier: request.account_identifier,
+                        transactions: Vec::new()
+                    });
 
-                Self::link_hardware_wallet_to_account_index(&mut self.account_identifier_lookup, request.account_identifier, index);
-                self.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count + 1;
+                    Self::link_hardware_wallet_to_account_index(&mut self.account_identifier_lookup, request.account_identifier, index);
+                    self.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count + 1;
 
-                RegisterHardwareWalletResponse::Ok
+                    RegisterHardwareWalletResponse::Ok
+                }
             }
         } else {
             RegisterHardwareWalletResponse::AccountNotFound
@@ -839,6 +844,26 @@ mod tests {
     }
 
     #[test]
+    fn register_hardware_wallet_hardware_wallet_already_registered() {
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+        let mut store = setup_test_store();
+
+        let hw1 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
+
+        let res1 = store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW1".to_string(), account_identifier: hw1 });
+        let res2 = store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW2".to_string(), account_identifier: hw1 });
+
+        assert!(matches!(res1, RegisterHardwareWalletResponse::Ok));
+        assert!(matches!(res2, RegisterHardwareWalletResponse::HardwareWalletAlreadyRegistered));
+
+        let account = store.get_account(principal).unwrap();
+
+        assert_eq!(1, account.hardware_wallet_accounts.len());
+        assert_eq!("HW1", account.hardware_wallet_accounts[0].name);
+        assert_eq!(hw1, account.hardware_wallet_accounts[0].account_identifier);
+    }
+
+    #[test]
     fn remove_hardware_wallet() {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
         let mut store = setup_test_store();
@@ -868,8 +893,6 @@ mod tests {
         let hw = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
 
         store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW".to_string(), account_identifier: hw });
-
-        print!("{:?}", store.account_identifier_lookup);
 
         let transfer = Mint {
             amount: ICPTs::from_icpts(1).unwrap(),
