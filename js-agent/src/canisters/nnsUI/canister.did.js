@@ -8,6 +8,7 @@ export default ({ IDL }) => {
     'Ok' : IDL.Null,
     'CanisterAlreadyAttached' : IDL.Null,
     'NameAlreadyTaken' : IDL.Null,
+    'NameTooLong' : IDL.Null,
     'CanisterLimitExceeded' : IDL.Null,
   });
   const SubAccount = IDL.Vec(IDL.Nat8);
@@ -21,6 +22,11 @@ export default ({ IDL }) => {
     'AccountNotFound' : IDL.Null,
     'NameTooLong' : IDL.Null,
     'SubAccountLimitExceeded' : IDL.Null,
+  });
+  const DetachCanisterRequest = IDL.Record({ 'canister_id' : IDL.Principal });
+  const DetachCanisterResponse = IDL.Variant({
+    'Ok' : IDL.Null,
+    'CanisterNotFound' : IDL.Null,
   });
   const HardwareWalletAccountDetails = IDL.Record({
     'name' : IDL.Text,
@@ -91,7 +97,25 @@ export default ({ IDL }) => {
   const RegisterHardwareWalletResponse = IDL.Variant({
     'Ok' : IDL.Null,
     'AccountNotFound' : IDL.Null,
+    'HardwareWalletAlreadyRegistered' : IDL.Null,
     'HardwareWalletLimitExceeded' : IDL.Null,
+    'NameTooLong' : IDL.Null,
+  });
+  const RemoveHardwareWalletRequest = IDL.Record({
+    'account_identifier' : AccountIdentifier,
+  });
+  const RemoveHardwareWalletResponse = IDL.Variant({
+    'Ok' : IDL.Null,
+    'HardwareWalletNotFound' : IDL.Null,
+  });
+  const RenameSubAccountRequest = IDL.Record({
+    'new_name' : IDL.Text,
+    'account_identifier' : AccountIdentifier,
+  });
+  const RenameSubAccountResponse = IDL.Variant({
+    'Ok' : IDL.Null,
+    'AccountNotFound' : IDL.Null,
+    'SubAccountNotFound' : IDL.Null,
     'NameTooLong' : IDL.Null,
   });
   const SyncTransactionsResult = IDL.Variant({
@@ -106,13 +130,14 @@ export default ({ IDL }) => {
         [],
     ),
     'create_sub_account' : IDL.Func([IDL.Text], [CreateSubAccountResponse], []),
+    'detach_canister' : IDL.Func(
+        [DetachCanisterRequest],
+        [DetachCanisterResponse],
+        [],
+    ),
     'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_canisters' : IDL.Func([], [IDL.Vec(CanisterDetails)], ['query']),
-    'get_icp_to_cycles_conversion_rate' : IDL.Func(
-        [],
-        [IDL.Nat64],
-        ['query'],
-    ),
+    'get_icp_to_cycles_conversion_rate' : IDL.Func([], [IDL.Nat64], ['query']),
     'get_stats' : IDL.Func([], [Stats], ['query']),
     'get_transactions' : IDL.Func(
         [GetTransactionsRequest],
@@ -124,7 +149,16 @@ export default ({ IDL }) => {
         [RegisterHardwareWalletResponse],
         [],
     ),
+    'remove_hardware_wallet' : IDL.Func(
+        [RemoveHardwareWalletRequest],
+        [RemoveHardwareWalletResponse],
+        [],
+    ),
+    'rename_sub_account' : IDL.Func(
+        [RenameSubAccountRequest],
+        [RenameSubAccountResponse],
+        [],
+    ),
     'sync_transactions' : IDL.Func([], [IDL.Opt(SyncTransactionsResult)], []),
   });
 };
-export const init = ({ IDL }) => { return []; };

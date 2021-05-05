@@ -32,8 +32,8 @@ import LedgerService, {
     GetBalancesRequest,
     SendICPTsRequest
 } from "./canisters/ledger/model";
-import ledgerViewBuilder from "./canisters/nnsUI/builder";
-import LedgerViewService, {
+import nnsUiBuilder from "./canisters/nnsUI/builder";
+import NnsUiService, {
     AccountDetails,
     AttachCanisterRequest,
     AttachCanisterResult,
@@ -42,7 +42,11 @@ import LedgerViewService, {
     GetTransactionsRequest,
     GetTransactionsResponse,
     RegisterHardwareWalletRequest,
-    RegisterHardwareWalletResponse
+    RegisterHardwareWalletResponse,
+    RemoveHardwareWalletRequest,
+    RemoveHardwareWalletResponse,
+    RenameSubAccountRequest,
+    RenameSubAccountResponse
 } from "./canisters/nnsUI/model";
 import icManagementBuilder from "./canisters/icManagement/builder";
 import ICManagementService from "./canisters/icManagement/model";
@@ -55,7 +59,7 @@ import { principalToAccountIdentifier } from "./canisters/converter";
 
 export default class ServiceApi {
     private readonly ledgerService: LedgerService;
-    private readonly ledgerViewService: LedgerViewService;
+    private readonly nnsUiService: NnsUiService;
     private readonly governanceService: GovernanceService;
     private readonly icManagementService: ICManagementService;
     private readonly host: string;
@@ -67,8 +71,8 @@ export default class ServiceApi {
             identity
         });
         this.ledgerService = ledgerBuilder(agent, identity);
-        this.ledgerViewService = ledgerViewBuilder(agent);
-        this.governanceService = governanceBuilder(agent, identity, this.ledgerViewService.syncTransactions);
+        this.nnsUiService = nnsUiBuilder(agent);
+        this.governanceService = governanceBuilder(agent, identity, this.nnsUiService.syncTransactions);
         this.icManagementService = icManagementBuilder(agent);
         this.host = host;
         this.identity = identity;
@@ -79,7 +83,11 @@ export default class ServiceApi {
     */
 
     public createSubAccount = (name: string) : Promise<CreateSubAccountResponse> => {
-        return this.ledgerViewService.createSubAccount(name);
+        return this.nnsUiService.createSubAccount(name);
+    }
+
+    public renameSubAccount = (request: RenameSubAccountRequest) : Promise<RenameSubAccountResponse> => {
+        return this.nnsUiService.renameSubAccount(request);
     }
 
     public registerHardwareWallet = (name: string, identity: LedgerIdentity) : Promise<RegisterHardwareWalletResponse> => {
@@ -88,15 +96,19 @@ export default class ServiceApi {
             name,
             accountIdentifier
         };
-        return this.ledgerViewService.registerHardwareWallet(request);
+        return this.nnsUiService.registerHardwareWallet(request);
+    }
+
+    public removeHardwareWallet = (request: RemoveHardwareWalletRequest) : Promise<RemoveHardwareWalletResponse> => {
+        return this.nnsUiService.removeHardwareWallet(request);
     }
 
     public getAccount = async () : Promise<AccountDetails> => {
-        const response = await this.ledgerViewService.getAccount();
+        const response = await this.nnsUiService.getAccount();
         if ("Ok" in response) {
             return response.Ok;
         } else {
-            const accountIdentifier = await this.ledgerViewService.addAccount();
+            const accountIdentifier = await this.nnsUiService.addAccount();
             return {
                 accountIdentifier,
                 subAccounts: [],
@@ -110,12 +122,12 @@ export default class ServiceApi {
     }
 
     public getTransactions = (request: GetTransactionsRequest) : Promise<GetTransactionsResponse> => {
-        return this.ledgerViewService.getTransactions(request);
+        return this.nnsUiService.getTransactions(request);
     }
 
     public sendICPTs = async (request: SendICPTsRequest): Promise<BlockHeight> => {
         const response = await this.ledgerService.sendICPTs(request);
-        this.ledgerViewService.syncTransactions();
+        this.nnsUiService.syncTransactions();
         return response;
     }
 
@@ -219,7 +231,7 @@ export default class ServiceApi {
         return createCanisterImpl(
             this.identity.getPrincipal(), 
             this.ledgerService, 
-            this.ledgerViewService,
+            this.nnsUiService,
             request);
     }
 
@@ -230,11 +242,11 @@ export default class ServiceApi {
     }
 
     public attachCanister = async (request: AttachCanisterRequest) : Promise<AttachCanisterResult> => {
-        return this.ledgerViewService.attachCanister(request);
+        return this.nnsUiService.attachCanister(request);
     }
 
     public getCanisters = async (): Promise<Array<CanisterDetails>> => {
-        return this.ledgerViewService.getCanisters();
+        return this.nnsUiService.getCanisters();
     }
 
     public transferCanisterOwnership = async (canisterId: CanisterId, newController: string): Promise<void> => {
@@ -247,7 +259,7 @@ export default class ServiceApi {
     }    
 
     public getIcpToCyclesConversionRate = async (): Promise<bigint> => {
-        return await this.ledgerViewService.getIcpToCyclesConversionRate();
+        return await this.nnsUiService.getIcpToCyclesConversionRate();
     } 
 
     /* 
@@ -270,7 +282,7 @@ export default class ServiceApi {
         console.log("aquire req");
         console.log(req);
         await anonLedgerService.sendICPTs(req);
-        await this.ledgerViewService.syncTransactions();
+        await this.nnsUiService.syncTransactions();
     }
 
     // Temporary method to trigger test code from the UI

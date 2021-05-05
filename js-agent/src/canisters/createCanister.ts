@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/agent";
 import LedgerService from "./ledger/model";
-import LedgerViewService, { AttachCanisterResult } from "./nnsUI/model";
+import NnsUiService, { AttachCanisterResult } from "./nnsUI/model";
 import MINTING_CANISTER_ID from "./cyclesMinting/canisterId";
 import { CyclesNotificationResponse } from "./ledger/proto/types_pb";
 import { CanisterId, E8s } from "./common/types";
@@ -28,8 +28,8 @@ export enum CreateCanisterResult {
 
 export async function createCanisterImpl(
     principal: Principal,
-    ledgerService: LedgerService, 
-    ledgerViewService: LedgerViewService, 
+    ledgerService: LedgerService,
+    nnsUiService: NnsUiService,
     request: CreateCanisterRequest) : Promise<CreateCanisterResponse> {
 
     const response = await sendAndNotify(
@@ -45,7 +45,7 @@ export async function createCanisterImpl(
             convert.uint8ArrayToBlob(
                 response.getCreatedCanisterId().getSerializedId_asU8()));
 
-        const attachResult = await ledgerViewService.attachCanister({
+        const attachResult = await nnsUiService.attachCanister({
             name: request.name,
             canisterId
         });

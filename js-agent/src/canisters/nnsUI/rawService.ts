@@ -12,6 +12,7 @@ export interface AttachCanisterRequest {
 export type AttachCanisterResponse = { 'Ok' : null } |
     { 'CanisterAlreadyAttached' : null } |
     { 'NameAlreadyTaken' : null } |
+    { 'NameTooLong' : null } |
     { 'CanisterLimitExceeded' : null };
 export type BlockHeight = bigint;
 export interface CanisterDetails { 'name' : string, 'canister_id' : Principal };
@@ -19,6 +20,9 @@ export type CreateSubAccountResponse = { 'Ok' : SubAccountDetails } |
     { 'AccountNotFound' : null } |
     { 'NameTooLong' : null } |
     { 'SubAccountLimitExceeded' : null };
+export interface DetachCanisterRequest { 'canister_id' : Principal };
+export type DetachCanisterResponse = { 'Ok' : null } |
+    { 'CanisterNotFound' : null };
 export type GetAccountResponse = { 'Ok' : AccountDetails } |
     { 'AccountNotFound' : null };
 export interface GetTransactionsRequest {
@@ -46,7 +50,21 @@ export interface RegisterHardwareWalletRequest {
 };
 export type RegisterHardwareWalletResponse = { 'Ok' : null } |
     { 'AccountNotFound' : null } |
+    { 'HardwareWalletAlreadyRegistered' : null } |
     { 'HardwareWalletLimitExceeded' : null } |
+    { 'NameTooLong' : null };
+export interface RemoveHardwareWalletRequest {
+  'account_identifier' : AccountIdentifier,
+};
+export type RemoveHardwareWalletResponse = { 'Ok' : null } |
+    { 'HardwareWalletNotFound' : null };
+export interface RenameSubAccountRequest {
+  'new_name' : string,
+  'account_identifier' : AccountIdentifier,
+};
+export type RenameSubAccountResponse = { 'Ok' : null } |
+    { 'AccountNotFound' : null } |
+    { 'SubAccountNotFound' : null } |
     { 'NameTooLong' : null };
 export interface Send {
   'to' : AccountIdentifier,
@@ -87,11 +105,14 @@ export default interface _SERVICE {
   'add_account' : () => Promise<AccountIdentifier>,
   'attach_canister' : (arg_0: AttachCanisterRequest) => Promise<AttachCanisterResponse>,
   'create_sub_account' : (arg_0: string) => Promise<CreateSubAccountResponse>,
+  'detach_canister' : (arg_0: DetachCanisterRequest) => Promise<DetachCanisterResponse>,
   'get_account' : () => Promise<GetAccountResponse>,
   'get_canisters' : () => Promise<Array<CanisterDetails>>,
   'get_icp_to_cycles_conversion_rate' : () => Promise<bigint>,
   'get_stats' : () => Promise<Stats>,
   'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
   'register_hardware_wallet' : (arg_0: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
+  'remove_hardware_wallet' : (arg_0: RemoveHardwareWalletRequest) => Promise<RemoveHardwareWalletResponse>,
+  'rename_sub_account' : (arg_0: RenameSubAccountRequest) => Promise<RenameSubAccountResponse>,
   'sync_transactions' : () => Promise<[] | [SyncTransactionsResult]>,
 };

@@ -181,11 +181,12 @@ service : {
     add_account: () -> (AccountIdentifier);
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
+    rename_sub_account: (RenameSubAccountRequest) -> (RenameSubAccountResponse);
     register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);
     remove_hardware_wallet: (RemoveHardwareWalletRequest) -> (RemoveHardwareWalletResponse);
     get_canisters: () -> (vec CanisterDetails) query;
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
-    deattach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
+    detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
     get_icp_to_cycles_conversion_rate: () -> (nat64) query;
     get_stats: () -> (Stats) query;
     sync_transactions: () -> (opt SyncTransactionsResult);

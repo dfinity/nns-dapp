@@ -1,4 +1,5 @@
 import { AccountIdentifier, BlockHeight, CanisterId, E8s } from "../common/types";
+import type { Principal } from "@dfinity/agent";
 
 export interface AccountDetails {
     accountIdentifier: AccountIdentifier,
@@ -15,6 +16,7 @@ export enum AttachCanisterResult {
     Ok,
     CanisterAlreadyAttached,
     NameAlreadyTaken,
+    NameTooLong,
     CanisterLimitExceeded
 }
 
@@ -39,6 +41,11 @@ export type CreateSubAccountResponse = { Ok: SubAccountDetails } |
     { AccountNotFound: null } |
     { SubAccountLimitExceeded: null } |
     { NameTooLong: null };
+
+export interface DetachCanisterRequest { canisterId: Principal };
+export type DetachCanisterResponse = { Ok: null } |
+    { CanisterNotFound: null };
+
 export type GetAccountResponse = { Ok: AccountDetails } |
     { AccountNotFound: null };
 export interface GetTransactionsRequest {
@@ -65,8 +72,24 @@ export interface RegisterHardwareWalletRequest {
 };
 export type RegisterHardwareWalletResponse = { Ok: null } |
     { AccountNotFound: null } |
+    { HardwareWalletAlreadyRegistered: null } |
     { HardwareWalletLimitExceeded: null } |
     { NameTooLong: null };
+
+export interface RemoveHardwareWalletRequest {
+    accountIdentifier: AccountIdentifier,
+};
+export type RemoveHardwareWalletResponse = { Ok: null } |
+    { HardwareWalletNotFound: null };
+export interface RenameSubAccountRequest {
+    newName: string,
+    accountIdentifier: AccountIdentifier,
+};
+export type RenameSubAccountResponse = { Ok: null } |
+    { AccountNotFound: null } |
+    { SubAccountNotFound: null } |
+    { NameTooLong: null };
+
 export interface Send {
     to: AccountIdentifier,
     fee: E8s,
@@ -94,10 +117,13 @@ export default interface ServiceInterface {
     addAccount: () => Promise<AccountIdentifier>,
     attachCanister : (request: AttachCanisterRequest) => Promise<AttachCanisterResult>,
     createSubAccount: (name: string) => Promise<CreateSubAccountResponse>,
+    detachCanister: (request: DetachCanisterRequest) => Promise<DetachCanisterResponse>,
     getAccount: () => Promise<GetAccountResponse>,
     getCanisters : () => Promise<Array<CanisterDetails>>,
     getIcpToCyclesConversionRate : () => Promise<bigint>,
     getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
     registerHardwareWallet: (request: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
+    removeHardwareWallet: (request: RemoveHardwareWalletRequest) => Promise<RemoveHardwareWalletResponse>,
+    renameSubAccount: (request: RenameSubAccountRequest) => Promise<RenameSubAccountResponse>,
     syncTransactions: () => Promise<undefined>,
 };

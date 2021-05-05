@@ -3,10 +3,13 @@ import {
     AttachCanisterResult,
     CanisterDetails,
     CreateSubAccountResponse,
+    DetachCanisterResponse,
     GetAccountResponse,
     GetTransactionsResponse,
     HardwareWalletAccountDetails,
     RegisterHardwareWalletResponse,
+    RemoveHardwareWalletResponse,
+    RenameSubAccountResponse,
     SubAccountDetails,
     Transaction,
     Transfer
@@ -15,10 +18,13 @@ import {
     AttachCanisterResponse as RawAttachCanisterResponse,
     CanisterDetails as RawCanisterDetails,
     CreateSubAccountResponse as RawCreateSubAccountResponse,
+    DetachCanisterResponse as RawDetachCanisterResponse,
     GetAccountResponse as RawGetAccountResponse,
     GetTransactionsResponse as RawGetTransactionsResponse,
     HardwareWalletAccountDetails as RawHardwareWalletAccountDetails,
     RegisterHardwareWalletResponse as RawRegisterHardwareWalletResponse,
+    RemoveHardwareWalletResponse as RawRemoveHardwareWalletResponse,
+    RenameSubAccountResponse as RawRenameSubAccountResponse,
     SubAccountDetails as RawSubAccountDetails,
     Transaction as RawTransaction,
     Transfer as RawTransfer
@@ -36,6 +42,10 @@ export default class ResponseConverters {
         } else if ("CanisterLimitExceeded" in response) {
             return AttachCanisterResult.CanisterLimitExceeded;
         }
+    }
+
+    public toDetachCanisterResponse = (response: RawDetachCanisterResponse) : DetachCanisterResponse => {
+        return response;
     }
 
     public toArrayOfCanisterDetail = (response: Array<RawCanisterDetails>) : Array<CanisterDetails> => {
@@ -72,6 +82,14 @@ export default class ResponseConverters {
     }
 
     public toRegisterHardwareWalletResponse = (response: RawRegisterHardwareWalletResponse) : RegisterHardwareWalletResponse => {
+        return response;
+    }
+
+    public toRemoveHardwareWalletResponse = (response: RawRemoveHardwareWalletResponse) : RemoveHardwareWalletResponse => {
+        return response;
+    }
+
+    public toRenameSubAccountResponse = (response: RawRenameSubAccountResponse) : RenameSubAccountResponse => {
         return response;
     }
 

@@ -1,8 +1,18 @@
-import { AttachCanisterRequest, GetTransactionsRequest, RegisterHardwareWalletRequest } from "./model";
+import {
+    AttachCanisterRequest,
+    DetachCanisterRequest,
+    GetTransactionsRequest,
+    RegisterHardwareWalletRequest,
+    RemoveHardwareWalletRequest,
+    RenameSubAccountRequest
+} from "./model";
 import {
     AttachCanisterRequest as RawAttachCanisterRequest,
+    DetachCanisterRequest as RawDetachCanisterRequest,
     GetTransactionsRequest as RawGetTransactionsRequest,
-    RegisterHardwareWalletRequest as RawRegisterHardwareWalletRequest
+    RegisterHardwareWalletRequest as RawRegisterHardwareWalletRequest,
+    RemoveHardwareWalletRequest as RawRemoveHardwareWalletRequest,
+    RenameSubAccountRequest as RawRenameSubAccountRequest
 } from "./rawService";
 
 export default class RequestConverters {
@@ -10,6 +20,12 @@ export default class RequestConverters {
     public fromAttachCanisterRequest = (request: AttachCanisterRequest) : RawAttachCanisterRequest => {
         return {
             name: request.name,
+            canister_id: request.canisterId
+        };
+    }
+
+    public fromDetachCanisterRequest = (request: DetachCanisterRequest) : RawDetachCanisterRequest => {
+        return {
             canister_id: request.canisterId
         };
     }
@@ -27,5 +43,18 @@ export default class RequestConverters {
             name: request.name,
             account_identifier: request.accountIdentifier
         };
+    }
+
+    public fromRemoveHardwareWalletRequest = (request: RemoveHardwareWalletRequest) : RawRemoveHardwareWalletRequest => {
+        return {
+            account_identifier: request.accountIdentifier
+        };
+    }
+
+    public fromRenameSubAccountRequest = (request: RenameSubAccountRequest) : RawRenameSubAccountRequest => {
+        return {
+            account_identifier: request.accountIdentifier,
+            new_name: request.newName
+        }
     }
 }
