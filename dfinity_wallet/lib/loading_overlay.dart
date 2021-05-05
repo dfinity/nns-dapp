@@ -1,7 +1,6 @@
 import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter_gifimage/flutter_gifimage.dart';
+// import 'package:flutter_gifimage/flutter_gifimage.dart';
 
 class LoadingOverlayController extends StatefulWidget {
   final Widget child;
@@ -52,13 +51,13 @@ class NodeOverlay extends StatefulWidget {
 
 class _NodeState extends State<NodeOverlay> with TickerProviderStateMixin {
   bool visible = false;
-  late GifController controller;
+  // late GifController controller;
 
   @override
   void initState() {
     super.initState();
-    controller = GifController(vsync: this);
-    controller.repeat(min:0,max:62,period:3.seconds);
+    // controller = GifController(vsync: this);
+    // controller.repeat(min:0,max:62,period:3.seconds);
 
 
     0.1.seconds.delay.then((value) {
@@ -70,7 +69,7 @@ class _NodeState extends State<NodeOverlay> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    controller.dispose();
+    // controller.dispose();
     super.dispose();
   }
 
@@ -105,8 +104,7 @@ class _NodeState extends State<NodeOverlay> with TickerProviderStateMixin {
                           )
                         ]),
                     child: SizedBox.expand(
-                      child: GifImage(
-                        controller: controller,
+                      child: Image(
                         image: AssetImage("assets/glitch-loop.webp"),
                       ),
                     )))),

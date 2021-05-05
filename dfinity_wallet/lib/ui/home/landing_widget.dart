@@ -1,8 +1,4 @@
 import 'package:core/core.dart';
-import 'package:core/widget_forces/force_layout.dart';
-import 'package:dfinity_wallet/ui/home/nodes/node_distributor.dart';
-
-import 'nodes/node_world.dart';
 
 class LandingPageWidget extends StatelessWidget {
   @override

@@ -1,4 +1,3 @@
-import 'package:core/widget_forces/force_layout.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/wallet_router_delegate.dart';
 import 'package:flutter/cupertino.dart';

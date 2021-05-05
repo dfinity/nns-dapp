@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 export 'package:core/extensions.dart';
 export 'package:core/extensions.dart';
 export 'package:core/extensions.dart';
-export 'package:core/widget_forces/flame_extensions.dart';
 export 'package:dartx/dartx.dart';
 export 'package:flutter/material.dart';
 

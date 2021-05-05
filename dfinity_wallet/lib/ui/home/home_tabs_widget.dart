@@ -6,7 +6,6 @@ import 'package:dfinity_wallet/ui/wallet/accounts_tab_widget.dart';
 import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
-import 'nodes/node_world.dart';
 
 class HomePage extends StatefulWidget {
   final int initialTabIndex;
