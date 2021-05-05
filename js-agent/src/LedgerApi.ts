@@ -1,4 +1,5 @@
-import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
+import { AnonymousIdentity, HttpAgent, Principal, SignIdentity } from "@dfinity/agent";
+import { CanisterId } from "./canisters/ledger/createCanister";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService, {
     GetBalancesRequest,
@@ -16,7 +17,9 @@ import LedgerViewService, {
     RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse
 } from "./canisters/nnsUI/model";
-import { create_dummy_proposals, test_happy_path } from "./tests";
+import icManagementBuilder from "./canisters/icManagement/builder";
+import ICManagementService from "./canisters/icManagement/model";
+import { create_dummy_proposals, test_canisters, test_happy_path } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/ledger/createNeuron";
 import { NeuronId } from "./canisters/governance/model";
 import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/ledger/createCanister";
@@ -27,6 +30,7 @@ import { principalToAccountIdentifier } from "./canisters/converter";
 export default class LedgerApi {
     private readonly ledgerService: LedgerService;
     private readonly ledgerViewService: LedgerViewService;
+    private readonly icManagementService: ICManagementService;
     private readonly host: string;
     private readonly identity: SignIdentity;
 
@@ -37,6 +41,7 @@ export default class LedgerApi {
         });
         this.ledgerService = ledgerBuilder(agent, identity);
         this.ledgerViewService = ledgerViewBuilder(agent);
+        this.icManagementService = icManagementBuilder(agent);
         this.host = host;
         this.identity = identity;
     }
@@ -130,12 +135,21 @@ export default class LedgerApi {
         return this.ledgerViewService.getCanisters();
     }
 
+    public transferCanisterOwnership = async (canisterId: CanisterId, newController: string): Promise<void> => {
+        return this.icManagementService.updateSettings({
+            canisterId,
+            settings: {
+                controller: Principal.fromText(newController)
+            }
+        });
+    }    
+
     public getIcpToCyclesConversionRate = async (): Promise<bigint> => {
         return await this.ledgerViewService.getIcpToCyclesConversionRate();
     } 
 
     public integrationTest = async (): Promise<void> => {
-        return await test_happy_path(this.host, this.identity);
+        return await test_canisters(this.host, this.identity);
     }
 
     public createDummyProposals = async (neuronId: string): Promise<void> => {

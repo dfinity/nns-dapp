@@ -1,0 +1,6 @@
+import { Principal } from "@dfinity/agent";
+
+// https://docs.dfinity.systems/public/v/0.17.0/#ic-management-canister
+const CANISTER_ID = Principal.fromText("aaaaa-aa");
+
+export default CANISTER_ID;

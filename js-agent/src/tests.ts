@@ -1,20 +1,84 @@
-import { SignIdentity } from "@dfinity/agent";
+import { Principal, SignIdentity } from "@dfinity/agent";
 import GovernanceApi from "./GovernanceApi";
-import LedgerApi from "./LedgerApi";
 import { NeuronId, Topic, Vote } from "./canisters/governance/model";
-import * as convert from "./canisters/converter";
 import { CreateCanisterResult } from "./canisters/ledger/createCanister";
+import LedgerApi from "./LedgerApi";
 
-var running = false;
+export async function acquire_big_stake(host: string, identity: SignIdentity): Promise<void> {
+
+    const ledgerApi = new LedgerApi(host, identity);
+
+    console.log("getting account");
+    let account = await ledgerApi.getAccount();
+    console.log(account);
+
+    console.log("Aquire 9000 ICPT");
+    await ledgerApi.acquireICPTs(account.accountIdentifier, BigInt(900_000_000_000));
+}
+
+export async function get_set_authorized_subnetworks_proposal(host: string, identity: SignIdentity): Promise<void> {
+    const governanceApi = new GovernanceApi(host, identity);
+    const proposal = await governanceApi.getProposalInfo(BigInt(31));
+    console.log("proposal 31");
+    console.log(proposal);
+}
+
+export async function vote_for_authorized_subnetworks_proposal(host: string, identity: SignIdentity): Promise<void> {
+    console.log("Vote for proposal 31");
+    const governanceApi = new GovernanceApi(host, identity);
+    const response = await governanceApi.registerVote({
+        neuronId: BigInt(5707719174376093969n),
+        vote: Vote.YES, 
+        proposal: BigInt(31)    
+    });
+    console.log("registerVote response");
+    console.log(response);
+    const proposal = await governanceApi.getProposalInfo(BigInt(31));
+    console.log("proposal 31");
+    console.log(proposal);
+}
+
+export async function test_canisters(host: string, identity: SignIdentity): Promise<void> {
+    const ledgerApi = new LedgerApi(host, identity);
+
+    {
+        console.log("attach canister qhbym-qaaaa-aaaaa-aaafq-cai");
+        const response = await ledgerApi.attachCanister({
+            name: "NNS UI assets canister",
+            canisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
+        });
+        console.log(response);
+    }
+
+    {
+        console.log("attach canister qhbym-qaaaa-aaaaa-aaafq-cai");
+        const response = await ledgerApi.attachCanister({
+            name: "NNS UI backend canister",
+            canisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
+        });
+        console.log(response);
+    }
+
+    {
+        console.log("get canisters");
+        const response = await ledgerApi.getCanisters();
+        console.log(response);
+    }
+
+    {
+        console.log("topup qhbym-qaaaa-aaaaa-aaafq-cai");
+        const response = await ledgerApi.topupCanister({
+            stake: BigInt(3_500_000),
+            targetCanisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
+        
+        });
+        console.log(response);
+    }
+}
 
 export async function test_happy_path(host: string, identity: SignIdentity): Promise<void> {
 
-    if (running) { 
-        // Only run these once
-        return;
-    }
-
-    running = true;
+    console.log(identity.getPrincipal().toText());
 
     console.log("start integration test");
     const ledgerApi = new LedgerApi(host, identity);
@@ -60,27 +124,11 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         console.log(transactions);   
     }
 
-    console.log("create 1st neuron with 10 ICPT");
-    let firstNeuronId = await ledgerApi.createNeuron({
-        stake: BigInt(1_000_000_000),
-        fromSubAccountId: firstSubAccount.id
-    });
-
     {
-        console.log("increase dissolve delay of 1st neuron by a year");
-        const increase = 3600 * 24 * 365;
-        const manageNeuronResponse = await governanceApi.increaseDissolveDelay({
-            neuronId: firstNeuronId,
-            additionalDissolveDelaySeconds: increase
-        });
-        console.log(manageNeuronResponse);            
-    }    
-
-    {
-        console.log("creating a canister with the 1st sub-account as controller");
+        console.log("creating a canister with default account as controller");
         let response = await ledgerApi.createCanister({
             stake: BigInt(1_000_000_000),
-            fromSubAccountId: firstSubAccount.id,
+            //fromSubAccountId: firstSubAccount.id,
             name: "My canister"         
         });       
         
@@ -97,8 +145,25 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
         } else {
             console.log("createCanisterFailed");
             console.log(response);
+            return;
         }
     }
+
+    console.log("create 1st neuron with 10 ICPT");
+    let firstNeuronId = await ledgerApi.createNeuron({
+        stake: BigInt(1_000_000_000),
+        fromSubAccountId: firstSubAccount.id
+    });
+
+    {
+        console.log("increase dissolve delay of 1st neuron by a year");
+        const increase = 3600 * 24 * 365;
+        const manageNeuronResponse = await governanceApi.increaseDissolveDelay({
+            neuronId: firstNeuronId,
+            additionalDissolveDelaySeconds: increase
+        });
+        console.log(manageNeuronResponse);            
+    }    
 
     console.log("get neurons")
     let neurons = await governanceApi.getNeurons();
