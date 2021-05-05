@@ -1,49 +1,49 @@
 import { Principal, SignIdentity } from "@dfinity/agent";
-import GovernanceApi from "./GovernanceApi";
-import { NeuronId, Topic, Vote } from "./canisters/governance/model";
-import { CreateCanisterResult } from "./canisters/ledger/createCanister";
-import LedgerApi from "./LedgerApi";
+import { Topic, Vote } from "./canisters/governance/model";
+import { CreateCanisterResult } from "./canisters/createCanister";
+import ServiceApi from "./ServiceApi";
+import { NeuronId } from "./canisters/common/types";
 
 export async function acquire_big_stake(host: string, identity: SignIdentity): Promise<void> {
 
-    const ledgerApi = new LedgerApi(host, identity);
+    const serviceApi = new ServiceApi(host, identity);
 
     console.log("getting account");
-    let account = await ledgerApi.getAccount();
+    let account = await serviceApi.getAccount();
     console.log(account);
 
     console.log("Aquire 9000 ICPT");
-    await ledgerApi.acquireICPTs(account.accountIdentifier, BigInt(900_000_000_000));
+    await serviceApi.acquireICPTs(account.accountIdentifier, BigInt(900_000_000_000));
 }
 
 export async function get_set_authorized_subnetworks_proposal(host: string, identity: SignIdentity): Promise<void> {
-    const governanceApi = new GovernanceApi(host, identity);
-    const proposal = await governanceApi.getProposalInfo(BigInt(31));
+    const serviceApi = new ServiceApi(host, identity);
+    const proposal = await serviceApi.getProposalInfo(BigInt(31));
     console.log("proposal 31");
     console.log(proposal);
 }
 
 export async function vote_for_authorized_subnetworks_proposal(host: string, identity: SignIdentity): Promise<void> {
     console.log("Vote for proposal 31");
-    const governanceApi = new GovernanceApi(host, identity);
-    const response = await governanceApi.registerVote({
+    const serviceApi = new ServiceApi(host, identity);
+    const response = await serviceApi.registerVote({
         neuronId: BigInt(5707719174376093969n),
         vote: Vote.YES, 
         proposal: BigInt(31)    
     });
     console.log("registerVote response");
     console.log(response);
-    const proposal = await governanceApi.getProposalInfo(BigInt(31));
+    const proposal = await serviceApi.getProposalInfo(BigInt(31));
     console.log("proposal 31");
     console.log(proposal);
 }
 
 export async function test_canisters(host: string, identity: SignIdentity): Promise<void> {
-    const ledgerApi = new LedgerApi(host, identity);
+    const serviceApi = new ServiceApi(host, identity);
 
     {
         console.log("attach canister qhbym-qaaaa-aaaaa-aaafq-cai");
-        const response = await ledgerApi.attachCanister({
+        const response = await serviceApi.attachCanister({
             name: "NNS UI assets canister",
             canisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
         });
@@ -52,7 +52,7 @@ export async function test_canisters(host: string, identity: SignIdentity): Prom
 
     {
         console.log("attach canister qhbym-qaaaa-aaaaa-aaafq-cai");
-        const response = await ledgerApi.attachCanister({
+        const response = await serviceApi.attachCanister({
             name: "NNS UI backend canister",
             canisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
         });
@@ -61,13 +61,13 @@ export async function test_canisters(host: string, identity: SignIdentity): Prom
 
     {
         console.log("get canisters");
-        const response = await ledgerApi.getCanisters();
+        const response = await serviceApi.getCanisters();
         console.log(response);
     }
 
     {
         console.log("topup qhbym-qaaaa-aaaaa-aaafq-cai");
-        const response = await ledgerApi.topupCanister({
+        const response = await serviceApi.topupCanister({
             stake: BigInt(3_500_000),
             targetCanisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
         
@@ -81,23 +81,22 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     console.log(identity.getPrincipal().toText());
 
     console.log("start integration test");
-    const ledgerApi = new LedgerApi(host, identity);
-    const governanceApi = new GovernanceApi(host, identity);
+    const serviceApi = new ServiceApi(host, identity);
 
     console.log("getting account");
-    let account = await ledgerApi.getAccount();
+    let account = await serviceApi.getAccount();
     console.log(account);
 
     if (!account.subAccounts.length) {
         console.log("creating sub-account Abc");
-        await ledgerApi.createSubAccount("Abc");
+        await serviceApi.createSubAccount("Abc");
 
         console.log("getting account");
-        account = await ledgerApi.getAccount();
+        account = await serviceApi.getAccount();
     }
 
     console.log("getting balances");
-    const balances = await ledgerApi.getBalances({
+    const balances = await serviceApi.getBalances({
         accounts: [account.accountIdentifier].concat(account.subAccounts.map(a => a.accountIdentifier))
     });
     console.log(balances);
@@ -106,17 +105,17 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     if (balances[account.accountIdentifier] < BigInt(6_000_000_000)) {
         console.log("topping up default balance");
-        await ledgerApi.acquireICPTs(account.accountIdentifier, BigInt(6_100_000_000));
+        await serviceApi.acquireICPTs(account.accountIdentifier, BigInt(6_100_000_000));
     }
     
     if (balances[firstSubAccount.accountIdentifier] < BigInt(6_000_000_000)) {
         console.log("topping up 1st sub-account balance");
-        await ledgerApi.acquireICPTs(firstSubAccount.accountIdentifier, BigInt(6_100_000_000));
+        await serviceApi.acquireICPTs(firstSubAccount.accountIdentifier, BigInt(6_100_000_000));
     }
 
     {
         console.log("getting transactions");
-        const transactions = await ledgerApi.getTransactions({
+        const transactions = await serviceApi.getTransactions({
             accountIdentifier: account.accountIdentifier,
             offset: 0,
             pageSize: 10
@@ -126,7 +125,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     {
         console.log("creating a canister with default account as controller");
-        let response = await ledgerApi.createCanister({
+        let response = await serviceApi.createCanister({
             stake: BigInt(1_000_000_000),
             //fromSubAccountId: firstSubAccount.id,
             name: "My canister"         
@@ -137,7 +136,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
             console.log(response.canisterId);
 
             console.log("topup the canister");
-            await ledgerApi.topupCanister({
+            await serviceApi.topupCanister({
                 stake: BigInt(300_000_000),
                 fromSubAccountId: firstSubAccount.id,
                 targetCanisterId: response.canisterId            
@@ -150,7 +149,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     }
 
     console.log("create 1st neuron with 10 ICPT");
-    let firstNeuronId = await ledgerApi.createNeuron({
+    let firstNeuronId = await serviceApi.createNeuron({
         stake: BigInt(1_000_000_000),
         fromSubAccountId: firstSubAccount.id
     });
@@ -158,7 +157,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     {
         console.log("increase dissolve delay of 1st neuron by a year");
         const increase = 3600 * 24 * 365;
-        const manageNeuronResponse = await governanceApi.increaseDissolveDelay({
+        const manageNeuronResponse = await serviceApi.increaseDissolveDelay({
             neuronId: firstNeuronId,
             additionalDissolveDelaySeconds: increase
         });
@@ -166,11 +165,11 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     }    
 
     console.log("get neurons")
-    let neurons = await governanceApi.getNeurons();
+    let neurons = await serviceApi.getNeurons();
     console.log(neurons);
 
     console.log("With 1st neuron make a 'motion' proposal");
-    const manageNeuronResponse = await governanceApi.makeMotionProposal({
+    const manageNeuronResponse = await serviceApi.makeMotionProposal({
         neuronId: firstNeuronId,
         url: "https://www.lipsum.com/",
         text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
@@ -180,20 +179,20 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
     const newProposalId = manageNeuronResponse.proposalId;
 
     console.log("create 2nd neuron with 8 ICPT");
-    await ledgerApi.createNeuron({
+    await serviceApi.createNeuron({
         stake: BigInt(800_000_000),
         fromSubAccountId: firstSubAccount.id
     });
 
     console.log("get neurons")
-    neurons = await governanceApi.getNeurons();
+    neurons = await serviceApi.getNeurons();
     console.log(neurons);
     let secondNeuronId = neurons[neurons.length - 1].neuronId;
 
     {
         console.log("increase dissolve delay of 2nd neuron by a year");
         const increase = 3600 * 24 * 365;
-        const manageNeuronResponse = await governanceApi.increaseDissolveDelay({
+        const manageNeuronResponse = await serviceApi.increaseDissolveDelay({
             neuronId: secondNeuronId,
             additionalDissolveDelaySeconds: increase
         });
@@ -202,7 +201,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     {
         console.log("Vote on new proposal with 2nd neuron");
-        const manageNeuronResponse = await governanceApi.registerVote({
+        const manageNeuronResponse = await serviceApi.registerVote({
             neuronId: secondNeuronId,
             vote: Vote.YES,
             proposal: newProposalId
@@ -212,7 +211,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     {
         console.log("List recent proposals"); 
-        const pendingProposals = await governanceApi.listProposals({
+        const pendingProposals = await serviceApi.listProposals({
             limit: 20,
             beforeProposal: null,
             includeRewardStatus: [],
@@ -224,7 +223,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     {
         console.log("Set 2nd neuron to follow 1st neuron");
-        const response = await governanceApi.follow({
+        const response = await serviceApi.follow({
             neuronId: secondNeuronId,
             topic: Topic.Unspecified,
             followees: [firstNeuronId]
@@ -236,7 +235,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     {
         console.log("List recent proposals"); 
-        const pendingProposals = await governanceApi.listProposals({
+        const pendingProposals = await serviceApi.listProposals({
             limit: 20,
             beforeProposal: null,
             includeRewardStatus: [],
@@ -248,7 +247,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     {
         console.log("stop dissolving 1st neuron");
-        const manageNeuronResponse = await governanceApi.stopDissolving({
+        const manageNeuronResponse = await serviceApi.stopDissolving({
             neuronId: firstNeuronId
         });
         console.log(manageNeuronResponse);            
@@ -256,7 +255,7 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     {
         console.log("start dissolving 1st neuron");
-        const manageNeuronResponse = await governanceApi.startDissolving({
+        const manageNeuronResponse = await serviceApi.startDissolving({
             neuronId: firstNeuronId
         });
         console.log(manageNeuronResponse);            
@@ -264,20 +263,20 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 
     // Create a neuron that can be disbursed
     console.log("creating a 3rd neuron with zero dissolve delay");
-    await ledgerApi.createNeuron({
+    await serviceApi.createNeuron({
         stake: BigInt(1_000_000_000),
         fromSubAccountId: firstSubAccount.id
     });
 
     console.log("get neurons")
-    neurons = await governanceApi.getNeurons();
+    neurons = await serviceApi.getNeurons();
     console.log(neurons);
     const thirdNeuronId = neurons[neurons.length - 1].neuronId;
 
     // Disburse a neuron to my default account
     {
         console.log("Disburse 1_000_000 e8s from first disbursable neuron to my default account");
-        const manageNeuronResponse = await governanceApi.disburse({
+        const manageNeuronResponse = await serviceApi.disburse({
             neuronId: thirdNeuronId,
             toAccountId: account.accountIdentifier,
             amount: BigInt(1_000_000)
@@ -291,14 +290,14 @@ export async function test_happy_path(host: string, identity: SignIdentity): Pro
 export async function create_dummy_proposals(host: string, identity: SignIdentity, neuronId: NeuronId) : Promise<void> {
 
     console.log("start create_dummy_proposals");
-    const governanceApi = new GovernanceApi(host, identity);
+    const serviceApi = new ServiceApi(host, identity);
 
     console.log("get neurons")
-    let neurons = await governanceApi.getNeurons();
+    let neurons = await serviceApi.getNeurons();
     console.log(neurons);
 
     {
-        const manageNeuronResponse = await governanceApi.makeMotionProposal({
+        const manageNeuronResponse = await serviceApi.makeMotionProposal({
             neuronId: neuronId,
             url: "http://free-stuff-for-all.com",
             text: "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
@@ -308,7 +307,7 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
 
     {
         console.log("make a 'NetworkEconomics' proposal");
-        const manageNeuronResponse = await governanceApi.makeNetworkEconomicsProposal({
+        const manageNeuronResponse = await serviceApi.makeNetworkEconomicsProposal({
             neuronId: neuronId,
             url: "https://www.lipsum.com/",
             summary: "Increase minimum neuron stake",
@@ -328,7 +327,7 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
 
     {
         // console.log("make a 'SetDefaultFollowees' proposal");
-        // const manageNeuronResponse = await governanceApi.makeSetDefaultFolloweesProposal({
+        // const manageNeuronResponse = await serviceApi.makeSetDefaultFolloweesProposal({
         //     neuronId: neuronId,
         //     url: "https://www.lipsum.com/",
         //     summary: "Set default followees",
@@ -348,7 +347,7 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
 
     {
         console.log("make a 'RewardNodeProvider' proposal");
-        const manageNeuronResponse = await governanceApi.makeRewardNodeProviderProposal({
+        const manageNeuronResponse = await serviceApi.makeRewardNodeProviderProposal({
             neuronId: neuronId,
             url: "https://www.lipsum.com/",
             summary: "Reward for Node Provider 'ABC'",

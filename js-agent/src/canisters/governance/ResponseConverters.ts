@@ -1,5 +1,5 @@
 import { accountIdentifierFromBytes, arrayOfNumberToArrayBuffer } from "../converter";
-import { AccountIdentifier, E8s } from "../common/types";
+import { AccountIdentifier, E8s, NeuronId } from "../common/types";
 import {
     Action,
     Ballot,
@@ -13,7 +13,6 @@ import {
     ListProposalsResponse,
     MakeProposalResponse,
     Neuron,
-    NeuronId,
     NeuronInfo,
     NeuronStakeTransfer,
     NodeProvider,

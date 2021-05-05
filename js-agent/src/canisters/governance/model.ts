@@ -1,6 +1,6 @@
 import type { DerEncodedBlob, Principal } from "@dfinity/agent";
 import { Option } from "../option";
-import { AccountIdentifier, E8s } from "../common/types";
+import { AccountIdentifier, E8s, NeuronId } from "../common/types";
 
 export type Action =
     { ExecuteNnsFunction: ExecuteNnsFunction } |
@@ -138,7 +138,6 @@ export interface Neuron {
     followees: Array<Followees>,
     transfer: NeuronStakeTransfer,
 };
-export type NeuronId = bigint;
 export enum NeuronState {
 	UNSPECIFIED = 0,
 	LOCKED = 1,

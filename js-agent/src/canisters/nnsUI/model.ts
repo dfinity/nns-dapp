@@ -1,5 +1,4 @@
-import { AccountIdentifier, BlockHeight, E8s } from "../common/types";
-import { CanisterId } from "../ledger/createCanister";
+import { AccountIdentifier, BlockHeight, CanisterId, E8s } from "../common/types";
 
 export interface AccountDetails {
     accountIdentifier: AccountIdentifier,

@@ -1,12 +1,10 @@
 import { Principal } from "@dfinity/agent";
-import LedgerService from "./model";
-import LedgerViewService, { AttachCanisterResult } from "../nnsUI/model";
-import MINTING_CANISTER_ID from "../cyclesMinting/canisterId";
-import { CyclesNotificationResponse } from "./proto/types_pb";
-import { E8s } from "../common/types";
-import * as convert from "../converter";
-
-export type CanisterId = Principal;
+import LedgerService from "./ledger/model";
+import LedgerViewService, { AttachCanisterResult } from "./nnsUI/model";
+import MINTING_CANISTER_ID from "./cyclesMinting/canisterId";
+import { CyclesNotificationResponse } from "./ledger/proto/types_pb";
+import { CanisterId, E8s } from "./common/types";
+import * as convert from "./converter";
 
 export type CreateCanisterRequest = {
     stake: E8s

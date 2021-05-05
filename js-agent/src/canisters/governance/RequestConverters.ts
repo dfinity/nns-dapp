@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/agent";
 import { accountIdentifierToBytes, arrayBufferToArrayOfNumber } from "../converter";
-import { AccountIdentifier, E8s } from "../common/types";
+import { AccountIdentifier, E8s, NeuronId } from "../common/types";
 import {
     Action,
     AddHotKeyRequest,
@@ -17,7 +17,6 @@ import {
     MakeRewardNodeProviderProposalRequest,
     MakeSetDefaultFolloweesProposalRequest,
     ManageNeuron,
-    NeuronId,
     NodeProvider,
     Operation,
     ProposalId,

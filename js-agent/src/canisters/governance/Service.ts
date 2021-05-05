@@ -17,7 +17,6 @@ import ServiceInterface, {
     MakeProposalResponse,
     MakeRewardNodeProviderProposalRequest,
     MakeSetDefaultFolloweesProposalRequest,
-    NeuronId,
     NeuronInfo,
     ProposalInfo,
     RegisterVoteRequest,
@@ -30,6 +29,7 @@ import ServiceInterface, {
 } from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
+import { NeuronId } from "../common/types";
 
 export default class Service implements ServiceInterface {
     private readonly service: RawService;

@@ -2,24 +2,24 @@ import 'dart:convert';
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
-import 'package:dfinity_wallet/ic_api/web/ledger_api.dart';
+import 'service_api.dart';
 
 import '../../dfinity.dart';
 import 'stringify.dart';
 import 'package:js/js.dart';
 
 class TransactionSyncService {
-  final LedgerApi ledgerApi;
+  final ServiceApi serviceApi;
   final HiveBoxesWidget hiveBoxes;
 
-  TransactionSyncService({required this.ledgerApi, required this.hiveBoxes});
+  TransactionSyncService({required this.serviceApi, required this.hiveBoxes});
 
   Future<void> syncAccounts(Iterable<Account> accounts) async {
     await Future.wait(accounts.mapToList((e) => syncAccount(e)));
   }
 
   Future<void> syncAccount(Account account) async {
-    final res = await promiseToFuture(ledgerApi.getTransactions(
+    final res = await promiseToFuture(serviceApi.getTransactions(
         GetTransactionsRequest(
             accountIdentifier: account.accountIdentifier,
             pageSize: 100,

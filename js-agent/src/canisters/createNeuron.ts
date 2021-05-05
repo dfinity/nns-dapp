@@ -1,12 +1,11 @@
 import { Principal } from "@dfinity/agent";
-import LedgerService from "./model";
-import { NeuronId } from "../governance/model";
+import LedgerService from "./ledger/model";
 import { SignIdentity } from "@dfinity/agent";
-import GOVERNANCE_CANISTER_ID from "../governance/canisterId";
+import GOVERNANCE_CANISTER_ID from "./governance/canisterId";
 import randomBytes from "randombytes";
-import { E8s } from "../common/types";
-import * as convert from "../converter";
-import { NeuronId as NeuronIdProto } from "./proto/base_types_pb";
+import { E8s, NeuronId } from "./common/types";
+import * as convert from "./converter";
+import { NeuronId as NeuronIdProto } from "./ledger/proto/base_types_pb";
 
 export type CreateNeuronRequest = {
     stake: E8s

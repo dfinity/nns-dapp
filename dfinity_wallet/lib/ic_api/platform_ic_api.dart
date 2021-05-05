@@ -1,9 +1,8 @@
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
-import 'package:dfinity_wallet/ic_api/web/ledger_api.dart';
+import 'package:dfinity_wallet/ic_api/web/hardware_wallet_api.dart';
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
-import 'package:dfinity_wallet/ic_api/web/web_ic_api.dart';
 
 import '../dfinity.dart';
 

@@ -8,30 +8,28 @@ import 'package:dfinity_wallet/data/vote.dart';
 import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
-import 'governance_api.dart';
+import 'service_api.dart';
 import 'js_utils.dart';
 import 'dart:convert';
 import 'stringify.dart';
 
-
 class NeuronSyncService {
-  final GovernanceApi governanceApi;
+  final ServiceApi serviceApi;
   final HiveBoxesWidget hiveBoxes;
 
-  NeuronSyncService({required this.governanceApi, required this.hiveBoxes});
+  NeuronSyncService({required this.serviceApi, required this.hiveBoxes});
 
   Future<void> syncNeuron(String neuronId) async {
     dynamic res = (await promiseToFuture(
-        governanceApi.getNeuron(neuronId.toBigInt.toJS)));
+        serviceApi.getNeuron(neuronId.toBigInt.toJS)));
     final string = stringify(res);
     dynamic response = jsonDecode(string);
     storeNeuron(response);
   }
 
-
   Future<void> fetchNeurons() async {
     // print("fetching neurons");
-    dynamic res = (await promiseToFuture(governanceApi.getNeurons()));
+    dynamic res = (await promiseToFuture(serviceApi.getNeurons()));
     final string = stringify(res);
     // print("fetched neurons $string");
     dynamic response = (jsonDecode(string) as List<dynamic>).toList();

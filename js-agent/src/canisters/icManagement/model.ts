@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/agent";
-import { CanisterId } from "../ledger/createCanister";
+import { CanisterId } from "../common/types";
 
 export interface CanisterSettings {
     controller?: Principal,

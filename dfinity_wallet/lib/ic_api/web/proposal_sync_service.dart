@@ -9,15 +9,15 @@ import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
 import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
-import 'governance_api.dart';
+import 'service_api.dart';
 import 'neuron_sync_service.dart';
 import 'stringify.dart';
 
 class ProposalSyncService {
-  final GovernanceApi governanceApi;
+  final ServiceApi serviceApi;
   final HiveBoxesWidget hiveBoxes;
 
-  ProposalSyncService({required this.governanceApi, required this.hiveBoxes});
+  ProposalSyncService({required this.serviceApi, required this.hiveBoxes});
 
   Future<void> fetchProposals(
       {required List<Topic> excludeTopics,
@@ -37,7 +37,7 @@ class ProposalSyncService {
     stopwatch.start();
     print("\n\nfetchProposals request \n" + request.toString());
     final fetchPromise =
-        promiseToFuture(governanceApi.listProposals(jsify(request)));
+        promiseToFuture(serviceApi.listProposals(jsify(request)));
     await cleanProposalCache();
     final res = await fetchPromise;
     final string = stringify(res);
