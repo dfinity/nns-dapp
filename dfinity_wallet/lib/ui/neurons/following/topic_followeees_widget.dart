@@ -1,3 +1,5 @@
+import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 
 import '../../../dfinity.dart';
@@ -12,41 +14,11 @@ class TopicFolloweesWidget extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) =>
+      Container(
         padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
         child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(child: currentlyFollowingCard(context)),
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: Container(
-                  color: AppColors.background,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "Options for Following",
-                          style: context.textTheme.headline3,
-                          textAlign: TextAlign.left,
-                        ),
-                        FolloweeSuggestionWidget(followees.followees,
-                            suggestionSelected: (e) {
-                          addFollower(e.id, context);
-                        })
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          child: currentlyFollowingCard(context),
         ),
       );
 
@@ -65,23 +37,28 @@ class TopicFolloweesWidget extends StatelessWidget {
             ),
             Expanded(child: followingTopicsList(context)),
             Align(
-              alignment: Alignment.bottomRight,
-              child: ElevatedButton(
-                child: Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text("Enter Followee"),
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(
+                      AppColors.gray800)),
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Text("Enter Followee"),
+                  ),
+                  onPressed: () {
+                    OverlayBaseWidget.show(
+                        context,
+                        EnterFolloweeWidget(
+
+                            followees: followees,
+                            neuron: neuron,
+                            onComplete: (id) {
+                              addFollower(id, context);
+                            }));
+                  },
                 ),
-                onPressed: () {
-                  OverlayBaseWidget.show(
-                      context,
-                      TextFieldDialogWidget(
-                          title: "Enter Neuron ID",
-                          buttonTitle: "Follow",
-                          fieldName: "Neuron ID",
-                          onComplete: (id) {
-                            addFollower(id, context);
-                          }));
-                },
               ),
             ),
           ],
@@ -96,7 +73,8 @@ class TopicFolloweesWidget extends StatelessWidget {
         minimumSize: MaterialStateProperty.all(Size.square(40)));
     return Column(
       children: [
-        ...followees.followees.mapIndexed((i, e) => Container(
+        ...followees.followees.mapIndexed((i, e) =>
+            Container(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -107,9 +85,9 @@ class TopicFolloweesWidget extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Text(
                               FolloweeSuggestion.followerSuggestions
-                                      .firstOrNullWhere(
-                                          (element) => element.id == e)
-                                      ?.name ??
+                                  .firstOrNullWhere(
+                                      (element) => element.id == e)
+                                  ?.name ??
                                   e,
                               style: context.textTheme.bodyText2),
                         ),
@@ -153,12 +131,14 @@ class TopicFolloweesWidget extends StatelessWidget {
   }
 
   void addFollower(String id, BuildContext context) {
-    followees.followees = followees.followees.toList()..add(id);
+    followees.followees = followees.followees.toList()
+      ..add(id);
     saveChanges(context);
   }
 
   void removeFollower(String id, BuildContext context) {
-    followees.followees = followees.followees.toList()..remove(id);
+    followees.followees = followees.followees.toList()
+      ..remove(id);
     saveChanges(context);
   }
 
@@ -169,4 +149,119 @@ class TopicFolloweesWidget extends StatelessWidget {
         topic: followees.topic,
         followees: followees.followees.mapToList((e) => e.toBigInt));
   }
+}
+
+
+class EnterFolloweeWidget extends StatelessWidget {
+  EnterFolloweeWidget(
+      {Key? key, required this.neuron, required this.followees, required this.onComplete})
+      : super(key: key);
+
+  final ValidatedTextField addressField = ValidatedTextField(
+      "Followeee Address", inputType: TextInputType.number, validations: []);
+
+  final Function(String neuronId) onComplete;
+  final Neuron neuron;
+  final Followee followees;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            height: 64,
+            decoration: BoxDecoration(
+                color: AppColors.gray800,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24))),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Container(
+                    width: 24,
+                  ),
+                  Center(
+                      child: Text("Enter New Followeee",
+                          style: TextStyle(
+                              fontFamily: Fonts.circularBook,
+                              fontSize: 24,
+                              color: AppColors.white))),
+                  Expanded(child: Container()),
+                  AspectRatio(
+                      aspectRatio: 1,
+                      child: TextButton(
+                        onPressed: () {
+                          OverlayBaseWidget.of(context)?.dismiss();
+                        },
+                        child: Center(
+                          child: Text(
+                            "✕",
+                            style: TextStyle(
+                                fontFamily: Fonts.circularBook,
+                                fontSize: 24,
+                                color: AppColors.white),
+                          ),
+                        ),
+                      )),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Neuron ID",
+                      style: context.textTheme.headline3),
+                  DebouncedValidatedFormField(addressField),
+                  Center(
+                    child: ValidFieldsSubmitButton(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Follow Neuron"),
+                      ),
+                      onPressed: () async {
+                        onComplete(addressField.currentValue);
+                        OverlayBaseWidget.of(context)?.dismiss();
+                      },
+                      fields: [addressField],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          SmallFormDivider(),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Options for Following",
+                    style: context.textTheme.headline3,
+                    textAlign: TextAlign.left,
+                  ),
+                  FolloweeSuggestionWidget(followees.followees,
+                      suggestionSelected: (e) {
+                        onComplete(e.id);
+                        OverlayBaseWidget.of(context)?.dismiss();
+                      })
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
 }
