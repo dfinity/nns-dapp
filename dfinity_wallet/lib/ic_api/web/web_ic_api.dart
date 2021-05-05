@@ -46,7 +46,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         key, "http://" + window.location.host + "/index.html");
   }
 
-  final gatewayHost = "http://10.12.31.5:8080/";
+  final gatewayHost = "https://cdtesting.dfinity.network/";
 
   Future<void> buildServices() async {
     final token = hiveBoxes.authToken.webAuthToken;
