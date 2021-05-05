@@ -32,18 +32,18 @@ import "base_types.proto";
 
 // ** LEDGER CANISTER ENDPOINTS
 
-// Initialise the ledger canister
-message LedgerInit {
-  AccountIdentifier minting_account = 1;
-  repeated Account initial_values = 2;
-  ic_base_types.pb.v1.PrincipalId archive_canister = 3;
-  uint32 max_message_size_bytes = 4;
-}
+// // Initialise the ledger canister
+// message LedgerInit {
+//     AccountIdentifier minting_account = 1;
+//     repeated Account initial_values = 2;
+//     ic_base_types.pb.v1.PrincipalId archive_canister = 3;
+//     uint32 max_message_size_bytes = 4;
+// }
 
 
-// The format of values serialized to/from the stable memory during and upgrade
-message LedgerUpgrade {
-}
+// // The format of values serialized to/from the stable memory during and upgrade
+// message LedgerUpgrade {
+// }
 
 
 // Make a payment
@@ -115,36 +115,36 @@ message TipOfChainResponse {
   BlockHeight chain_length = 2;
 }
 
-// How many ICPTs are there not in the minting account
-message TotalSupplyRequest {
-}
+// // How many ICPTs are there not in the minting account
+// message TotalSupplyRequest {
+// }
 
-message TotalSupplyResponse {
-  ICPTs total_supply = 1;
-}
+// message TotalSupplyResponse {
+//   ICPTs total_supply = 1;
+// }
 
-// Archive any blocks older than this
-message LedgerArchiveRequest {
-  TimeStamp timestamp = 1;
-}
+// // Archive any blocks older than this
+// message LedgerArchiveRequest {
+//   TimeStamp timestamp = 1;
+// }
 
 // * Shared Endpoints *
 
-// Get a single block
-message BlockRequest {
-  uint64 block_height = 1 [jstype = JS_STRING];
-}
+// // Get a single block
+// message BlockRequest {
+//   uint64 block_height = 1 [jstype = JS_STRING];
+// }
 
 message EncodedBlock {
   bytes block = 1;
 }
 
-message BlockResponse {
-  oneof block_content {
-    EncodedBlock block = 1;
-    ic_base_types.pb.v1.PrincipalId canister_id = 2;
-  }
-}
+// message BlockResponse {
+//   oneof block_content {
+//     EncodedBlock block = 1;
+//     ic_base_types.pb.v1.PrincipalId canister_id = 2;
+//   }
+// }
 
 // Get a set of blocks
 message GetBlocksRequest {
@@ -171,53 +171,53 @@ message GetBlocksResponse {
   }
 }
 
-// Iterate through blocks
-message IterBlocksRequest {
-  uint64 start = 1 [jstype = JS_STRING];
-  uint64 length = 2 [jstype = JS_STRING];
-}
+// // Iterate through blocks
+// message IterBlocksRequest {
+//   uint64 start = 1 [jstype = JS_STRING];
+//   uint64 length = 2 [jstype = JS_STRING];
+// }
 
-message IterBlocksResponse {
-  repeated EncodedBlock blocks = 1;
-}
+// message IterBlocksResponse {
+//   repeated EncodedBlock blocks = 1;
+// }
 
-message ArchiveIndexEntry {
-  uint64 height_from = 1 [jstype = JS_STRING];
-  uint64 height_to = 2 [jstype = JS_STRING];
-  ic_base_types.pb.v1.PrincipalId canister_id = 3;
-}
+// message ArchiveIndexEntry {
+//   uint64 height_from = 1 [jstype = JS_STRING];
+//   uint64 height_to = 2 [jstype = JS_STRING];
+//   ic_base_types.pb.v1.PrincipalId canister_id = 3;
+// }
 
-message ArchiveIndexResponse {
-  repeated ArchiveIndexEntry entries = 1;
-}
+// message ArchiveIndexResponse {
+//   repeated ArchiveIndexEntry entries = 1;
+// }
 
 
 // ** ARCHIVE CANISTER ENDPOINTS **
-
-// * Archive canister *
-// Init the archive canister
-message ArchiveInit {
-  uint32 node_max_memory_size_bytes = 1;
-  uint32 max_message_size_bytes = 2;
-}
-
-
-// Add blocks to the archive canister
-message ArchiveAddRequest {
-  repeated Block blocks = 1;
-}
-
-message ArchiveAddResponse {
-}
-
-
-// Fetch a list of all of the archive nodes
-message GetNodesRequest {
-}
-
-message GetNodesResponse {
-  repeated ic_base_types.pb.v1.PrincipalId nodes = 1;
-}
+//
+// // * Archive canister *
+// // Init the archive canister
+// message ArchiveInit {
+//     uint32 node_max_memory_size_bytes = 1;
+//     uint32 max_message_size_bytes = 2;
+// }
+//
+//
+// // Add blocks to the archive canister
+// message ArchiveAddRequest {
+//     repeated Block blocks = 1;
+// }
+//
+// message ArchiveAddResponse {
+// }
+//
+//
+// // Fetch a list of all of the archive nodes
+// message GetNodesRequest {
+// }
+//
+// message GetNodesResponse {
+//     repeated ic_base_types.pb.v1.PrincipalId nodes = 1;
+// }
 
 
 // ** BASIC TYPES **

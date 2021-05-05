@@ -1,5 +1,4 @@
 import { Principal } from "@dfinity/agent";
-import { Option } from "../option"
 import LedgerService from "./model";
 import LedgerViewService, { AttachCanisterResult } from "../nnsUI/model";
 import MINTING_CANISTER_ID from "../cyclesMinting/canisterId";
