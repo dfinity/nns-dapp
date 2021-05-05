@@ -117,19 +117,15 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                           await 4.0.seconds.delay;
                         });
 
-                        final id = context.randomUUID();
-                        final canister = Canister.demo(name, id, context.boxes.accounts.primary.identifier);
-                        canister.cyclesAdded = CycleCalculator.icpToCycles(amount).toInt();
-                        await context.icApi.hiveBoxes.canisters.put(id, canister);
-                        context.nav.push(CanisterPageDef.createPageConfig(canister));
+                        await context.icApi.createCanister(stake: amount.toE8s, name: name);
 
-                        WizardOverlay.of(context).replacePage(
-                            "Transaction Completed!",
-                            TransactionDoneWidget(
-                              amount: amount,
-                              origin: origin,
-                              destination: canister.identifier,
-                            ));
+                        // WizardOverlay.of(context).replacePage(
+                        //     "Transaction Completed!",
+                        //     TransactionDoneWidget(
+                        //       amount: amount,
+                        //       origin: origin,
+                        //       destination: canister.identifier,
+                        //     ));
                       }),
                 ),
                 SmallFormDivider()

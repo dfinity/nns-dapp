@@ -296,7 +296,6 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> getCanisters() async {
     final response = await promiseToFuture(ledgerApi!.getCanisters());
 
-    hiveBoxes.canisters.clear();
     response.forEach((e){
       final id = e.canisterId.toString();
       hiveBoxes.canisters.put(id, Canister(
