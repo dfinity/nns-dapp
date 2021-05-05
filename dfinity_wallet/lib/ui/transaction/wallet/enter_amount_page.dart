@@ -7,7 +7,7 @@ import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 
-import '../create_transaction_overlay.dart';
+import '../wizard_overlay.dart';
 import 'confirm_transactions_widget.dart';
 
 class EnterAmountPage extends StatefulWidget {

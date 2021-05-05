@@ -6,10 +6,8 @@ import 'account_row.dart';
 
 class SubAccountsListWidget extends StatelessWidget {
   final List<Account> subAccounts;
-  final String buttonTitle;
-  final Function buttonAction;
 
-  const SubAccountsListWidget({Key? key, required this.subAccounts, required this.buttonTitle, required this.buttonAction})
+  const SubAccountsListWidget({Key? key, required this.subAccounts})
       : super(key: key);
 
   @override
@@ -17,29 +15,7 @@ class SubAccountsListWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
-          height: 20,
-        ),
-        ...subAccounts.mapToList((e) => AccountRow(
-          account: e,
-          onTap: () {
-            context.nav.push(AccountPageDef.createPageConfig(e));
-          },
-        )),
-        SmallFormDivider(),
-        TextButton(
-          style: ButtonStyle(foregroundColor: MaterialStateProperty.all(AppColors.white)),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              buttonTitle,
-              style: context.textTheme.bodyText2?.copyWith(fontSize: 18, color: AppColors.gray50),
-            ),
-          ),
-          onPressed: () {
-            buttonAction();
-          },
-        ),
+
       ],
     );
   }

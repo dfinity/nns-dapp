@@ -4,7 +4,7 @@ import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/canister/topup_canister_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
 import '../../../dfinity.dart';
-import '../create_transaction_overlay.dart';
+import '../wizard_overlay.dart';
 import 'new_wallet_page.dart';
 
 class SelectDestinationAccountPage extends StatefulWidget {

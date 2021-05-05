@@ -1,7 +1,7 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
+import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';

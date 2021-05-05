@@ -4,7 +4,7 @@ import 'package:dfinity_wallet/ui/neurons/stake_neuron_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_wallet_page.dart';
 
 import '../../dfinity.dart';
-import 'create_transaction_overlay.dart';
+import 'wizard_overlay.dart';
 
 class SelectAccountTransactionTypeWidget extends StatelessWidget {
   final ICPSource source;

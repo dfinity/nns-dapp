@@ -15,7 +15,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';
-import '../transaction/create_transaction_overlay.dart';
+import '../transaction/wizard_overlay.dart';
 
 class AccountDetailPage extends StatefulWidget {
   final Account account;

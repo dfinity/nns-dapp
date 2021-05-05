@@ -8,7 +8,7 @@ import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dar
 import 'package:dfinity_wallet/ui/wallet/hardware_wallet_connection_widget.dart';
 
 import '../../../dfinity.dart';
-import '../create_transaction_overlay.dart';
+import '../wizard_overlay.dart';
 import 'hardware_wallet_transaction_widget.dart';
 
 class ConfirmTransactionWidget extends StatefulWidget {

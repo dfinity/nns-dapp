@@ -2,7 +2,7 @@ import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
+import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 
 import '../../dfinity.dart';
 import 'cycle_calculator.dart';

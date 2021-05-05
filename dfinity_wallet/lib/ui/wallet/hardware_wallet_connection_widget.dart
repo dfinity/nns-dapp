@@ -4,7 +4,7 @@ import '../../dfinity.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
+import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/wallet/account_detail_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 

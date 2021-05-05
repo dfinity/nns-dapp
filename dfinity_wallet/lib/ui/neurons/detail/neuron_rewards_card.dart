@@ -2,7 +2,7 @@ import 'package:dfinity_wallet/ic_api/web/web_ic_api.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/neuron_detail_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
+import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 
 import '../../../dfinity.dart';

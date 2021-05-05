@@ -7,7 +7,7 @@ import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../dfinity.dart';
-import '../create_transaction_overlay.dart';
+import '../wizard_overlay.dart';
 
 class NewAccountPage extends StatelessWidget {
 

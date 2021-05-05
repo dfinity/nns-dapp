@@ -10,7 +10,7 @@ import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/canisters/select_canister_add_action_widget.dart';
 import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/home/nodes/node_world.dart';
-import 'package:dfinity_wallet/ui/transaction/create_transaction_overlay.dart';
+import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/ui.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
