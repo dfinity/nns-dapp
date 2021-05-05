@@ -66,9 +66,10 @@ class PlatformICApi extends AbstractPlatformICApi {
       print("syncing accounts");
 
       await accountsSyncService!.performSync();
-      balanceSyncService!.syncBalances();
-      transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
-      neuronSyncService!.fetchNeurons();
+      await balanceSyncService!.syncBalances();
+      await transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
+      await neuronSyncService!.fetchNeurons();
+      await getCanisters();
     }
   }
 
@@ -294,10 +295,9 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> getCanisters() async {
     final response = await promiseToFuture(ledgerApi!.getCanisters());
-    final res = jsonDecode(stringify(response));
 
     hiveBoxes.canisters.clear();
-    res.forEach((e){
+    response.forEach((e){
       final id = e.canisterId.toString();
       hiveBoxes.canisters.put(id, Canister(
           name: e.name,
@@ -307,7 +307,6 @@ class PlatformICApi extends AbstractPlatformICApi {
           controller: ""
       ));
     });
-    print("canisters res ${stringify(response)}");
   }
 
   @override

@@ -29,7 +29,6 @@ class _CansitersPageState extends State<CansitersPage> {
 
   @override
   Widget build(BuildContext context) {
-    // return NodeWorld();
     return Column(
       children: [
         Expanded(
