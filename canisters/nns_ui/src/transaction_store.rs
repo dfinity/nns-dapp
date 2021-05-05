@@ -96,6 +96,17 @@ pub enum RegisterHardwareWalletResponse {
     NameTooLong
 }
 
+#[derive(Deserialize)]
+pub struct RemoveHardwareWalletRequest {
+    account_identifier: AccountIdentifier
+}
+
+#[derive(CandidType)]
+pub enum RemoveHardwareWalletResponse {
+    Ok,
+    HardwareWalletNotFound
+}
+
 #[derive(CandidType)]
 pub struct AccountDetails {
     account_identifier: AccountIdentifier,
@@ -223,6 +234,25 @@ impl TransactionStore {
             }
         } else {
             RegisterHardwareWalletResponse::AccountNotFound
+        }
+    }
+
+    pub fn remove_hardware_wallet(&mut self, caller: PrincipalId, request: RemoveHardwareWalletRequest) -> RemoveHardwareWalletResponse {
+        if let Some(account_index) = self.try_get_account_index_by_default_identifier(&AccountIdentifier::from(caller)) {
+            let account = self.accounts.get_mut(account_index as usize).unwrap().as_mut().unwrap();
+
+            if let Some(index) = account.hardware_wallet_accounts.iter()
+                .enumerate()
+                .find(|(_, hw)| hw.account_identifier == request.account_identifier)
+                .map(|(index, _)| index) {
+
+                account.hardware_wallet_accounts.remove(index);
+                RemoveHardwareWalletResponse::Ok
+            } else {
+                RemoveHardwareWalletResponse::HardwareWalletNotFound
+            }
+        } else {
+            RemoveHardwareWalletResponse::HardwareWalletNotFound
         }
     }
 
@@ -806,6 +836,28 @@ mod tests {
         assert_eq!("HW2", account.hardware_wallet_accounts[1].name);
         assert_eq!(hw1, account.hardware_wallet_accounts[0].account_identifier);
         assert_eq!(hw2, account.hardware_wallet_accounts[1].account_identifier);
+    }
+
+    #[test]
+    fn remove_hardware_wallet() {
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+        let mut store = setup_test_store();
+
+        let hw1 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
+        let hw2 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap());
+
+        store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW1".to_string(), account_identifier: hw1 });
+        store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW2".to_string(), account_identifier: hw2 });
+
+        let result = store.remove_hardware_wallet(principal, RemoveHardwareWalletRequest { account_identifier: hw1 });
+
+        assert!(matches!(result, RemoveHardwareWalletResponse::Ok));
+
+        let account = store.get_account(principal).unwrap();
+
+        assert_eq!(1, account.hardware_wallet_accounts.len());
+        assert_eq!("HW2", account.hardware_wallet_accounts[0].name);
+        assert_eq!(hw2, account.hardware_wallet_accounts[0].account_identifier);
     }
 
     #[test]

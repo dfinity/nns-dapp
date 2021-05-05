@@ -98,6 +98,17 @@ type RegisterHardwareWalletResponse =
         NameTooLong;
     };
 
+type RemoveHardwareWalletRequest =
+    record {
+        account_identifier: AccountIdentifier;
+    };
+
+type RemoveHardwareWalletResponse =
+    variant {
+        Ok;
+        HardwareWalletNotFound;
+    };
+
 type CanisterDetails =
     record {
         name: text;
@@ -156,6 +167,7 @@ service : {
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
     register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);
+    remove_hardware_wallet: (RemoveHardwareWalletRequest) -> (RemoveHardwareWalletResponse);
     get_canisters: () -> (vec CanisterDetails) query;
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     deattach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);

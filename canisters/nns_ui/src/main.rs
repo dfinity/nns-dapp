@@ -14,6 +14,8 @@ use crate::transaction_store::{
     GetTransactionsResponse,
     RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse,
+    RemoveHardwareWalletRequest,
+    RemoveHardwareWalletResponse,
     Stats
 };
 use dfn_candid::{candid, candid_one};
@@ -103,6 +105,17 @@ fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> Regi
     let principal = dfn_core::api::caller();
     let store = &mut STATE.write().unwrap().transactions_store;
     store.register_hardware_wallet(principal, request)
+}
+
+#[export_name = "canister_update remove_hardware_wallet"]
+pub fn remove_hardware_wallet() {
+    over(candid_one, remove_hardware_wallet_impl);
+}
+
+fn remove_hardware_wallet_impl(request: RemoveHardwareWalletRequest) -> RemoveHardwareWalletResponse {
+    let principal = dfn_core::api::caller();
+    let store = &mut STATE.write().unwrap().transactions_store;
+    store.remove_hardware_wallet(principal, request)
 }
 
 #[export_name = "canister_query get_canisters"]
