@@ -275,7 +275,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<AttachCanisterResult> attachCanister(
       {required String name, required String canisterId}) async {
      final response = await promiseToFuture(ledgerApi!.attachCanister(
-        AttachCanisterRequest(name: name, canisterId: canisterId)));
+        AttachCanisterRequest(name: name, canisterId: createPrincipal(canisterId))));
      return AttachCanisterResult.values[response.toInt()];
   }
 
@@ -293,8 +293,21 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> getCanisters() async {
-    final response = promiseToFuture(ledgerApi!.getCanisters());
+    final response = await promiseToFuture(ledgerApi!.getCanisters());
     final res = jsonDecode(stringify(response));
+
+    hiveBoxes.canisters.clear();
+    res.forEach((e){
+      final id = e.canisterId.toString();
+      hiveBoxes.canisters.put(id, Canister(
+          name: e.name,
+          publicKey: id,
+          creationDate: DateTime.now(),
+          cyclesAdded: 0,
+          controller: ""
+      ));
+    });
+    print("canisters res ${stringify(response)}");
   }
 
   @override

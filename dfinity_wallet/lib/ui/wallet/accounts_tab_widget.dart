@@ -155,6 +155,7 @@ class SelectAccountAddActionWidget extends StatelessWidget {
               WizardPathButton(title: "New Linked-Account",
                   subtitle: "Create a new linked account",
                   onPressed: () {
+                    // StringFieldValidation.maximumLength(24)
                     WizardOverlay.of(context).pushPage(
                         "New Linked Account", Center(
                           child: TextFieldDialogWidget(

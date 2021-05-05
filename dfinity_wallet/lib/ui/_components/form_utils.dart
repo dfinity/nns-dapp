@@ -68,6 +68,10 @@ class StringFieldValidation extends FieldValidation<String>{
   StringFieldValidation.minimumLength(int numCharacters)
       : this("must be more than $numCharacters long",
           (e) => e.length < numCharacters);
+
+  StringFieldValidation.maximumLength(int numCharacters)
+      : this("must be less than $numCharacters long",
+          (e) => e.length > numCharacters);
 }
 
 

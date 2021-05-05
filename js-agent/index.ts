@@ -1,7 +1,7 @@
 import AuthApi from "./src/AuthApi";
 import HardwareWalletApi from "./src/HardwareWalletApi";
-import ServiceApi from "./src/ServiceApi";
-import { SignIdentity } from "@dfinity/agent";
+import LedgerApi from "./src/LedgerApi";
+import {Principal, SignIdentity} from "@dfinity/agent";
 import { principalToAccountIdentifier } from "./src/canisters/converter";
 
 window["AuthApi"] = AuthApi;
@@ -32,4 +32,9 @@ window["getAccountIdentifier"] = (identity: SignIdentity) : string => {
 
 window["getPublicKey"] = (identity: SignIdentity) : string => {
     return identity.getPublicKey().toDer().toString('hex');
+}
+
+
+window["createPrincipal"] = (text: string) : Principal => {
+    return Principal.fromText(text.toString());
 }

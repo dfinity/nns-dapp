@@ -12,10 +12,10 @@ import 'new_canister_cycles_widget.dart';
 class EnterCanisterIdAndNameWidget extends StatelessWidget {
   ValidatedTextField idField = ValidatedTextField("Canister ID",
       validations: [StringFieldValidation.minimumLength(10)],
-      defaultText: "qaa6y-5yaaa-aaaaa-aaafa-cai");
+      defaultText: "rrkah-fqaaa-aaaaa-aaaaq-cai");
   ValidatedTextField nameField = ValidatedTextField("Canister Name",
-      validations: [StringFieldValidation.minimumLength(2)],
-      defaultText: "qaa6y-5yaaa-aaaaa-aaafa-cai");
+      validations: [StringFieldValidation.maximumLength(24)],
+      defaultText: "Cantister");
 
   @override
   Widget build(BuildContext context) {

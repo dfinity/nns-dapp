@@ -17,6 +17,10 @@ external dynamic getAccountIdentifier(dynamic ledgerIdentity);
 @JS('getPublicKey')
 external dynamic getPublicKey(dynamic ledgerIdentity);
 
+@JS('createPrincipal')
+external dynamic createPrincipal(String text);
+
+
 extension ToJS on BigInt {
   dynamic get toJS => toJSBigInt(toString());
 }
