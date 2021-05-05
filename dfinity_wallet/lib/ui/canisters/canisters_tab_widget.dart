@@ -39,7 +39,7 @@ class _CansitersPageState extends State<CansitersPage> {
             body: ConstrainWidthAndCenter(
               child: TabTitleAndContent(
                 title: "Deploy",
-                subtitle: '''Canisters are computational units (a form of smart contracts).They are powered by “cycles”, which they must be pre-charged with. You create cycles by converting ICP tokens.
+                subtitle: '''Canisters are computational units (a form of smart contracts). They are powered by “cycles”, which they must be pre-charged with. You create cycles by converting ICP tokens.
 
 • Create new canisters that are precharged with cycles
 
