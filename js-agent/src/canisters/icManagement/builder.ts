@@ -1,12 +1,33 @@
-import { Agent } from "@dfinity/agent";
-import IDL from "./canister.did.js";
-import buildActor from "../buildActor";
-import CANISTER_ID from "./canisterId";
-import RawService from "./rawService";
+import { Actor, Agent, CallConfig, Principal } from "@dfinity/agent";
 import Service from "./Service";
 import ServiceInterface from "./model";
+import IDL from "./canister.did.js";
+import RawService from "./rawService";
+import CANISTER_ID from "./canisterId";
 
 export default function(agent: Agent) : ServiceInterface {
-    const rawService = buildActor<RawService>(agent, CANISTER_ID, IDL);
+
+    function transform(methodName: string, args: unknown[], callConfig: CallConfig) {
+        const first = args[0] as any;
+        let effectiveCanisterId = CANISTER_ID;
+        if (first && typeof first === 'object' && first.canister_id) {
+            effectiveCanisterId = Principal.from(first.canister_id as unknown);
+        }
+        return { effectiveCanisterId };
+    }
+
+    const config: CallConfig = {
+        agent
+    };
+
+    const rawService = Actor.createActor<RawService>(IDL, {
+        ...config,
+        canisterId: CANISTER_ID,
+        ...{
+            callTransform: transform,
+            queryTransform: transform,
+        },
+    });
+    
     return new Service(rawService);
 }
