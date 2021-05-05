@@ -48,6 +48,26 @@ impl CanisterStore {
         }
     }
 
+    pub fn detach_canister(&mut self, caller: PrincipalId, request: DetachCanisterRequest) -> DetachCanisterResponse {
+        match self.accounts.entry(caller) {
+            Occupied(mut e) => {
+                let canisters = e.get_mut();
+                if let Some(index) = canisters.iter()
+                    .enumerate()
+                    .find(|(_, canister)| canister.canister_id == request.canister_id)
+                    .map(|(index, _)| index) {
+                    canisters.remove(index);
+                    DetachCanisterResponse::Ok
+                } else {
+                    DetachCanisterResponse::CanisterNotFound
+                }
+            },
+            Vacant(_) => {
+                DetachCanisterResponse::CanisterNotFound
+            }
+        }
+    }
+
     pub fn get_canisters(&self, caller: &PrincipalId) -> Vec<NamedCanister> {
         let mut canisters = self.accounts.get(caller).map_or(Vec::new(), |c| c.iter().cloned().collect());
         canisters.sort_unstable_by_key(|c| c.name.clone());
@@ -90,6 +110,16 @@ pub enum AttachCanisterResponse {
     NameTooLong
 }
 
+#[derive(Deserialize)]
+pub struct DetachCanisterRequest {
+    canister_id: CanisterId
+}
+
+#[derive(CandidType)]
+pub enum DetachCanisterResponse {
+    Ok,
+    CanisterNotFound
+}
 
 #[cfg(test)]
 mod tests {
@@ -177,5 +207,47 @@ mod tests {
 
         assert!(matches!(result1, AttachCanisterResponse::Ok));
         assert!(matches!(result2, AttachCanisterResponse::CanisterAlreadyAttached));
+    }
+
+    #[test]
+    fn detach_canister() {
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+        let mut store = CanisterStore::default();
+
+        let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+        let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+
+
+        store.attach_canister(principal, AttachCanisterRequest { name: "ABC".to_string(), canister_id: canister_id1 });
+        store.attach_canister(principal, AttachCanisterRequest { name: "XYZ".to_string(), canister_id: canister_id2 });
+
+        let result = store.detach_canister(principal, DetachCanisterRequest { canister_id: canister_id1 });
+
+        assert!(matches!(result, DetachCanisterResponse::Ok));
+
+        let canisters = store.get_canisters(&principal);
+
+        assert_eq!(1, canisters.len());
+        assert_eq!(canister_id2, canisters[0].canister_id);
+    }
+
+    #[test]
+    fn detach_canister_canister_not_found() {
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+        let mut store = CanisterStore::default();
+
+        let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+        let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+
+        store.attach_canister(principal, AttachCanisterRequest { name: "ABC".to_string(), canister_id: canister_id1 });
+
+        let result = store.detach_canister(principal, DetachCanisterRequest { canister_id: canister_id2 });
+
+        assert!(matches!(result, DetachCanisterResponse::CanisterNotFound));
+
+        let canisters = store.get_canisters(&principal);
+
+        assert_eq!(1, canisters.len());
+        assert_eq!(canister_id1, canisters[0].canister_id);
     }
 }

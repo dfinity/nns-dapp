@@ -119,6 +119,17 @@ type AttachCanisterResponse =
         NameTooLong;
     };
 
+type DetachCanisterRequest =
+    record {
+        canister_id: principal;
+    };
+
+type DetachCanisterResponse =
+    variant {
+        Ok;
+        CanisterNotFound;
+    };
+
 type Stats =
     record {
         accounts_count: nat64;
@@ -147,6 +158,7 @@ service : {
     register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);
     get_canisters: () -> (vec CanisterDetails) query;
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
+    deattach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
     get_icp_to_cycles_conversion_rate: () -> (nat64) query;
     get_stats: () -> (Stats) query;
     sync_transactions: () -> (opt SyncTransactionsResult);

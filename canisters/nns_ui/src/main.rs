@@ -1,5 +1,11 @@
 use candid::CandidType;
-use crate::canister_store::{AttachCanisterResponse, AttachCanisterRequest, NamedCanister};
+use crate::canister_store::{
+    AttachCanisterResponse,
+    AttachCanisterRequest,
+    DetachCanisterRequest,
+    DetachCanisterResponse,
+    NamedCanister
+};
 use crate::state::{StableState, STATE, State};
 use crate::transaction_store::{
     AccountDetails,
@@ -119,6 +125,17 @@ fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterRespons
     let principal = dfn_core::api::caller();
     let store = &mut STATE.write().unwrap().canisters_store;
     store.attach_canister(principal, request)
+}
+
+#[export_name = "canister_update detach_canister"]
+pub fn detach_canister() {
+    over(candid_one, detach_canister_impl);
+}
+
+fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
+    let principal = dfn_core::api::caller();
+    let store = &mut STATE.write().unwrap().canisters_store;
+    store.detach_canister(principal, request)
 }
 
 #[export_name = "canister_query get_icp_to_cycles_conversion_rate"]
