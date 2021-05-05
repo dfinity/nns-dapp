@@ -7,8 +7,11 @@
       "build": "./build.sh"
     },
     "nns_ui_assets": {
-      "type": "assets",
-      "source": ["dfinity_wallet/build/web"]
+      "type": "custom",
+      "candid": "canisters/assets/assets.did",
+      "wasm": "target/wasm32-unknown-unknown/release/assets.wasm",
+      "build": "./build-asset.sh",
+      "source": ["assets.tar.xz"]
     }
   },
   "networks": {

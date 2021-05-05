@@ -8,9 +8,12 @@
     "borc": "^2.1.2",
     "browserify": "^17.0.0",
     "buffer": "^5.4.3",
+    "common-shakeify": "^0.6.2",
     "crc": "^3.8.0",
     "protobufjs": "^6.10.2",
     "randombytes": "^2.1.0",
+    "source-map-explorer": "^2.5.2",
+    "tinyify": "^3.0.0",
     "ts-protoc-gen": "^0.14.0",
     "tweetnacl": "^1.0.3",
     "typescript": "^4.2.3"

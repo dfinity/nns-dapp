@@ -1,0 +1,24 @@
+[package]
+name = "assets"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+base64 = "0.13.0"
+certified_map = { path = "../../lib/certified_map" }
+hashtree = { path = "../../lib/hashtree" }
+hex = "0.4"
+ic-cdk = "0.2.4"
+ic-cdk-macros = "0.2"
+ic-types = "0.1.1"
+serde = "1"
+serde_bytes = "0.11"
+serde_cbor = "0.11"
+serde_with = "1.6.2"
+sha2 = "0.9.1"
+lzma-rs = "0.2.0"
+tar = "0.4.33"
+
+[dev-dependencies]
+hex-literal = "0.2.1"
+rand = "0.8.3"
