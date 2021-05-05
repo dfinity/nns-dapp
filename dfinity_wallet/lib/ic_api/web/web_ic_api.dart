@@ -272,10 +272,11 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> attachCanister(
+  Future<AttachCanisterResult> attachCanister(
       {required String name, required String canisterId}) async {
-    await promiseToFuture(ledgerApi!.attachCanister(
+     final response = await promiseToFuture(ledgerApi!.attachCanister(
         AttachCanisterRequest(name: name, canisterId: canisterId)));
+     return AttachCanisterResult.values[response.toInt()];
   }
 
   @override

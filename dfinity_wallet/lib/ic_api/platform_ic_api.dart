@@ -74,7 +74,7 @@ abstract class AbstractPlatformICApi {
   // Canisters
   Future<void> createCanister({required BigInt stake, int? fromSubAccountId, required String name});
   Future<void> topupCanister({required BigInt stake, int? fromSubAccountId, required String targetCanisterId});
-  Future<void> attachCanister({required String name, required String canisterId});
+  Future<AttachCanisterResult> attachCanister({required String name, required String canisterId});
   Future<void> getCanisters();
   Future<double> getICPToCyclesExchangeRate();
 

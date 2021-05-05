@@ -36,8 +36,13 @@ class ValidatedTextField extends ValidatedField<String> {
       String name,
       {required List<FieldValidation<String>> validations,
       this.inputFormatters,
-      this.inputType = TextInputType.text})
-      : super(name, validations);
+      this.inputType = TextInputType.text,
+      String? defaultText})
+      : super(name, validations) {
+    if(defaultText != null){
+      textEditingController.text = defaultText;
+    }
+  }
 
   @override
   String get currentValue => textEditingController.text;

@@ -172,7 +172,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> attachCanister({required String name, required String canisterId}) {
+  Future<AttachCanisterResult> attachCanister({required String name, required String canisterId}) {
     // TODO: implement attachCanister
     throw UnimplementedError();
   }
