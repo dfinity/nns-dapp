@@ -107,7 +107,7 @@ class _NodeState extends State<NodeOverlay> with TickerProviderStateMixin {
                     child: SizedBox.expand(
                       child: GifImage(
                         controller: controller,
-                        image: AssetImage("assets/dfinity-glitch.gif"),
+                        image: NetworkImage("https://identity.messaging.dfinity.network/glitch-loop.webp"),
                       ),
                     )))),
         // child: IgnorePointer(child: NodeWorld(oscillationMultiplier: 2,))),

@@ -1,6 +1,9 @@
 [workspace]
 members = [
-    "canisters/nns_ui"
+    "canisters/nns_ui",
+    "canisters/assets",
+    "lib/certified_map",
+    "lib/hashtree"
 ]
 
 [profile.release]
