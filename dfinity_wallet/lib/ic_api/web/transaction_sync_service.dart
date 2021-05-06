@@ -25,7 +25,6 @@ class TransactionSyncService {
             pageSize: 100,
             offset: 0)));
     final response = jsonDecode(stringify(res));
-    print("Transactions response: " + stringify(res));
 
     final transactions = <Transaction>[];
     response['transactions'].forEach((e) {

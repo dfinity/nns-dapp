@@ -72,7 +72,6 @@ class _HardwareWalletTransactionWidgetState
                                 });
                               });
                           final json = stringify(ledgerIdentity);
-                          print("identity ${json}");
                           final accountIdentifier =
                               getAccountIdentifier(ledgerIdentity)!.toString();
 

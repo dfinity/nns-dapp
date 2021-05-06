@@ -35,15 +35,12 @@ class ProposalSyncService {
 
     final stopwatch = Stopwatch();
     stopwatch.start();
-    print("\n\nfetchProposals request \n" + request.toString());
     final fetchPromise =
         promiseToFuture(serviceApi.listProposals(jsify(request)));
     await cleanProposalCache();
     final res = await fetchPromise;
     final string = stringify(res);
     dynamic response = jsonDecode(string);
-    print(
-        "\nfetchProposals response in ${stopwatch.elapsed.yearsDayHourMinuteSecondFormatted()} \n ${response}");
 
     await hiveBoxes.proposals.clear();
 
@@ -88,10 +85,6 @@ class ProposalSyncService {
         response['proposalTimestampSeconds'].toString();
     proposal.cacheUpdateDate = DateTime.now();
 
-    print("topic ${response['topic']}");
-    print("status ${response['status'].toString().toInt()}");
-    print("rewardStatus ${response['rewardStatus'].toString().toInt()}");
-
     proposal.topic = Topic.values[response['topic'].toString().toInt()];
     proposal.status =
         ProposalStatus.values[response['status'].toString().toInt()];
@@ -108,9 +101,6 @@ class ProposalSyncService {
     // print("proposal.no: ${proposal.no}");
     // print("proposal.yes: ${proposal.yes}");
 
-    print("proposal.topic : ${proposal.topic}");
-    print("proposal.status : ${proposal.status}");
-    print("proposal.rewardStatus : ${proposal.rewardStatus}");
   }
 
   void linkProposalsToNeurons() {

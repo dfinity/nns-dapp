@@ -18,7 +18,6 @@ class AccountsSyncService {
   Future<void> performSync() async {
     final accountResponse = await promiseToFuture(serviceApi.getAccount());
     final json = stringify(accountResponse);
-      print("${accountResponse} response\n ${json}");
     final cachedAccounts = hiveBoxes.accounts.values;
     final res = jsonDecode(json);
 

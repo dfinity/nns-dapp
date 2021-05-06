@@ -167,7 +167,6 @@ class NeuronInfo extends DfinityEntity {
         votingPower: votingPower,
         ageSeconds: ageSeconds,
     );
-    print("neuron info 2 ${obj}");
       return obj;
   }
 

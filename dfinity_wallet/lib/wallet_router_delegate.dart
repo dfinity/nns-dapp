@@ -210,7 +210,6 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
   }
 
   bool _onPopPage(Route<dynamic> route, result) {
-    print("_onPopPage");
 
     // 1
     final didPop = route.didPop(result);

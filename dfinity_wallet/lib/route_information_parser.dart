@@ -39,7 +39,6 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
           .split("&")
           .map((e) => e.split("=").let((it) => MapEntry(it[0], it[1]))));
       final token = map["access_token"];
-      print("access token found");
       return ResourcesLoadingPageConfig(
           Future.value(AccountsTabPage), storeAccessToken(token!),
           logoutOnFailure: true);
@@ -66,13 +65,11 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     final uri = Uri.parse(routeInformation.location ?? "");
 
     if (uri.pathSegments.isEmpty) {
-      print("AccountsTabPage");
       return AccountsTabPage;
     }
     final path = uri.pathSegments[0];
     final staticPage = staticPages[path];
     if (staticPage != null) {
-      print("StaticPage ${staticPage.path}");
       return staticPage;
     }
 
@@ -133,11 +130,9 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
       token.data = queryParameter;
       token.creationDate = DateTime.now();
       await token.save();
-      print("access token stored");
       context.icApi.buildServices();
       return true;
     } else {
-      print("Could not find token on disk");
       return false;
     }
   }

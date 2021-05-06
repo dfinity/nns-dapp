@@ -47,7 +47,6 @@ class _NeuronInfoWidgetState extends State<NeuronInfoWidget> {
                 .fetchNeuronInfo(neuronId: widget.neuronId.toBigInt),
             builder: (context, snapshot) {
               final neuronInfo = snapshot.data;
-              print("neuronInfo ${neuronInfo}");
               if (snapshot.hasData) {
                 return SingleChildScrollView(
                     child: ConstrainWidthAndCenter(

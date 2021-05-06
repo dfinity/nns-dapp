@@ -41,7 +41,6 @@ class PlatformICApi extends AbstractPlatformICApi {
 
     final key = authApi.createKey();
     await context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
-    print("Stored token ${context.boxes.authToken.get(WEB_TOKEN_KEY)?.key}");
     authApi.loginWithIdentityProvider(
         key, "http://" + window.location.host + "/index.html");
   }
@@ -52,7 +51,6 @@ class PlatformICApi extends AbstractPlatformICApi {
     final token = hiveBoxes.authToken.webAuthToken;
     if (token != null && token.data != null && serviceApi == null) {
       final identity = authApi.createDelegationIdentity(token.key, token.data!);
-      print("token data ${token.data!}");
       serviceApi = createServiceApi(gatewayHost, identity);
 
       accountsSyncService = AccountsSyncService(serviceApi!, hiveBoxes);
@@ -63,7 +61,6 @@ class PlatformICApi extends AbstractPlatformICApi {
           NeuronSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
       proposalSyncService =
           ProposalSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
-      print("syncing accounts");
 
       await accountsSyncService!.performSync();
       await balanceSyncService!.syncBalances();
@@ -133,7 +130,6 @@ class PlatformICApi extends AbstractPlatformICApi {
             neuronId: neuronId.toJS,
             amount: doms.toJS,
             toAccountId: toAccountId)));
-    print("disburse ${stringify(res)}");
     await fetchNeuron(neuronId: neuronId);
     balanceSyncService?.syncBalances();
   }
@@ -147,7 +143,6 @@ class PlatformICApi extends AbstractPlatformICApi {
         neuronId: toJSBigInt(neuronId.toString()),
         topic: topic.index,
         followees: followees.mapToList((e) => e.toJS))));
-    print("follow ${stringify(result)}");
 
     await neuronSyncService!.fetchNeurons();
   }
@@ -156,15 +151,12 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> increaseDissolveDelay(
       {required BigInt neuronId,
       required int additionalDissolveDelaySeconds}) async {
-    print("before increaseDissolveDelay");
     await promiseToFuture(
         serviceApi!.increaseDissolveDelay(IncreaseDissolveDelayRequest(
       neuronId: neuronId.toJS,
       additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
     )));
-    print("before getNeuron");
     await fetchNeuron(neuronId: neuronId);
-    print("after getNeuron");
   }
 
   @override
@@ -178,7 +170,6 @@ class PlatformICApi extends AbstractPlatformICApi {
               proposal: proposalId.toJS,
               vote: vote.index,
             )))));
-    print("registerVote ${stringify(result)}");
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -199,7 +190,6 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<Neuron> fetchNeuron({required BigInt neuronId}) async {
     final res = await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS));
     final neuronInfo = jsonDecode(stringify(res));
-    print("get neuron response ${stringify(res)}");
     return neuronSyncService!.storeNeuron(neuronInfo);
   }
 
@@ -207,9 +197,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId}) async {
     final res = await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS));
     final neuronInfo = jsonDecode(stringify(res));
-    print("Neuron info Response ${stringify(res)}");
     final nInfo = NeuronInfo.fromResponse(neuronInfo);
-    print("nInfo ${nInfo}");
     return nInfo;
   }
 
@@ -228,7 +216,6 @@ class PlatformICApi extends AbstractPlatformICApi {
     final response =
         await promiseToFuture(serviceApi!.getProposalInfo(proposalId.toJS));
     final json = jsonDecode(stringify(response));
-    print("proposal json ${stringify(response)}");
     final proposal = await proposalSyncService!.storeProposal(json);
     proposalSyncService!.linkProposalsToNeurons();
     return Proposal.empty();
@@ -243,7 +230,6 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<HardwareWalletApi> createHardwareWalletApi(
       {dynamic ledgerIdentity}) async {
     final identity = await promiseToFuture(authApi.connectToHardwareWallet());
-    print(identity);
     return HardwareWalletApi(gatewayHost, identity);
   }
 
@@ -266,7 +252,6 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Neuron> spawnNeuron({required BigInt neuronId}) async {
-    print("SpawnRequest ${neuronId}");
 
     final spawnResponse = await promiseToFuture(serviceApi!
         .spawn(SpawnRequest(neuronId: neuronId.toJS, newController: null)));
@@ -300,7 +285,6 @@ class PlatformICApi extends AbstractPlatformICApi {
       fromSubAccountId: fromSubAccountId,
       name: name,
     )));
-    print("create canister response ${stringify(res)}");
 
     await getCanisters();
 
@@ -318,7 +302,6 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> getCanisters() async {
     final response = await promiseToFuture(serviceApi!.getCanisters());
-    print("Get Canisters ${stringify(response)}");
 
     await Future.wait(<Future>[
       ...response.map((e) async {

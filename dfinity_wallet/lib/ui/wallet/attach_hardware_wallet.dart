@@ -37,7 +37,6 @@ class _AttachHardwareWalletWidgetState
                   final ledgerIdentity =
                       await context.icApi.connectToHardwareWallet();
                   final json = stringify(ledgerIdentity);
-                  print("identity ${json}");
                   setState(() {
                     this.ledgerIdentity = ledgerIdentity;
                     connectionState = WalletConnectionState.CONNECTED;
