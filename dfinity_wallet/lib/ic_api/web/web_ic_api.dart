@@ -346,6 +346,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     await promiseToFuture(serviceApi!.topupCanister(TopupCanisterRequest(
         stake: stake,
         fromSubAccountId: fromSubAccountId,
-        targetCanisterId: targetCanisterId)));
+        targetCanisterId: createPrincipal(targetCanisterId))));
   }
 }
+

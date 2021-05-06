@@ -1,6 +1,7 @@
 @JS()
 library dfinity_agent.js;
 
+import 'package:dfinity_wallet/data/canister.dart';
 import 'package:js/js.dart';
 import '../models.dart';
 import 'js_utils.dart';
@@ -210,10 +211,10 @@ class CreateCanisterRequest {
 class TopupCanisterRequest {
   external dynamic stake;
   external int? fromSubAccountId;
-  external String targetCanisterId;
+  external dynamic targetCanisterId;
 
   external factory TopupCanisterRequest(
-      {dynamic stake, int? fromSubAccountId, String targetCanisterId});
+      {dynamic stake, int? fromSubAccountId, dynamic targetCanisterId});
 }
 
 @JS()
@@ -230,4 +231,23 @@ enum AttachCanisterResult {
   CanisterAlreadyAttached,
   NameAlreadyTaken,
   CanisterLimitExceeded,
+}
+
+
+
+class CreateCanisterResponse {
+  final String? canisterId;
+  final Canister? canister;
+  final String? errorMessage;
+  final CreateCanisterResult result;
+
+  CreateCanisterResponse({required this.result, this.canisterId, this.canister, this.errorMessage});
+}
+
+enum CreateCanisterResult {
+  Ok,
+  FailedToCreateCanister,
+  CanisterAlreadyAttached,
+  NameAlreadyTaken,
+  CanisterLimitExceeded
 }

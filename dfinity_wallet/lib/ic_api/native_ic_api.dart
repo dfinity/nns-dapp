@@ -6,6 +6,7 @@ import 'package:dfinity_wallet/ic_api/web/hardware_wallet_api.dart';
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 import 'package:flutter/services.dart';
+import 'web/service_api.dart';
 
 import '../dfinity.dart';
 

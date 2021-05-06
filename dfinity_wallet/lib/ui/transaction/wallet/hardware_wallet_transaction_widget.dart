@@ -1,7 +1,6 @@
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/data/account.dart';
-import 'package:dfinity_wallet/ic_api/web/ledger_api.dart';
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:dfinity_wallet/ic_api/web/web_ic_api.dart';

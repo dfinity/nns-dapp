@@ -2,6 +2,7 @@
 library dfinity_agent.js;
 
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
+import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 import 'package:dfinity_wallet/ic_api/web/web_ic_api.dart';
 import 'package:js/js.dart';
 

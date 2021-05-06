@@ -97,19 +97,3 @@ abstract class AbstractPlatformICApi {
 }
 
 
-class CreateCanisterResponse {
-  final String? canisterId;
-  final Canister? canister;
-  final String? errorMessage;
-  final CreateCanisterResult result;
-
-  CreateCanisterResponse({required this.result, this.canisterId, this.canister, this.errorMessage});
-}
-
-enum CreateCanisterResult {
-  Ok,
-  FailedToCreateCanister,
-  CanisterAlreadyAttached,
-  NameAlreadyTaken,
-  CanisterLimitExceeded
-}
