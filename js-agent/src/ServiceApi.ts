@@ -252,7 +252,7 @@ export default class ServiceApi {
         return this.icManagementService.getCanisterDetails(canisterId);
     }
 
-    public transferCanisterOwnership = (request: UpdateSettingsRequest): Promise<UpdateSettingsResponse> => {
+    public updateCanisterSettings = (request: UpdateSettingsRequest): Promise<UpdateSettingsResponse> => {
         return this.icManagementService.updateSettings(request);
     }    
 
