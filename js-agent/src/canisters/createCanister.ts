@@ -82,7 +82,7 @@ export type TopupCanisterRequest = {
 
 export async function topupCanisterImpl(
     ledgerService: LedgerService, 
-    request: TopupCanisterRequest) : Promise<void> {
+    request: TopupCanisterRequest) : Promise<boolean> {
 
     const response = await sendAndNotify(
         ledgerService, 
@@ -91,10 +91,7 @@ export async function topupCanisterImpl(
         BigInt(0x50555054), // TPUP
         request.fromSubAccountId);
 
-    if (!response.hasToppedUp()) {
-        console.log("Failed to topup canister: ");
-        console.log(response);
-    }
+    return response.hasToppedUp();
 }
 
 async function sendAndNotify(ledgerService: LedgerService, stake: E8s, recipient: Principal, memo: bigint, fromSubAccountId?: number) : Promise<CyclesNotificationResponse> {

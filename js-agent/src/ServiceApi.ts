@@ -234,7 +234,7 @@ export default class ServiceApi {
             request);
     }
 
-    public topupCanister = (request: TopupCanisterRequest) : Promise<void> => {
+    public topupCanister = (request: TopupCanisterRequest) : Promise<boolean> => {
         return topupCanisterImpl(
             this.ledgerService, 
             request);
