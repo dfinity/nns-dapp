@@ -12,13 +12,13 @@ itertools = "0.10.0"
 lazy_static = "1.4.0"
 serde = "1.0"
 
-dfn_candid = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
-dfn_core = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
-dfn_json = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
-dfn_macro = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
-dfn_protobuf = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
-ic-base-types = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
-ic-nns-common = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
-ic-nns-constants = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
-ledger-canister = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
-on_wire = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "ae596c37ca506562ac40f03ac18c57e70bcb5692" }
+dfn_candid = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
+dfn_core = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
+dfn_json = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
+dfn_macro = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
+dfn_protobuf = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
+ic-base-types = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
+ic-nns-common = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
+ic-nns-constants = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
+ledger-canister = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
+on_wire = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }

@@ -192,7 +192,7 @@ fn get_stats_impl() -> Stats {
 pub fn canister_heartbeat() {
     let future = run_periodic_tasks_impl();
 
-    dfn_core::api::futures::kickstart(future);
+    dfn_core::api::futures::spawn(future);
 }
 
 async fn run_periodic_tasks_impl() {
