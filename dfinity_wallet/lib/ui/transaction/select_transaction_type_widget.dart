@@ -30,8 +30,6 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
                   ));
                 }),
                 SmallFormDivider(),
-                buildButton(context, "Convert", "Convert ICP into cycles to power canisters", () {}),
-                SmallFormDivider(),
                 buildButton(context, "Stake", "Stake ICP in a neuron to participate in governance", () {
                   WizardOverlay.of(context).pushPage("Stake Neuron", StakeNeuronPage(source: source));
                 }),

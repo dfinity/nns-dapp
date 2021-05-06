@@ -4,6 +4,7 @@ import 'package:dfinity_wallet/data/vote.dart';
 import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:dfinity_wallet/ic_api/web/hardware_wallet_api.dart';
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
+import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 
 import '../dfinity.dart';
 
@@ -187,7 +188,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> createCanister({required BigInt stake, int? fromSubAccountId, required String name}) {
+  Future<CreateCanisterResponse> createCanister({required BigInt stake, int? fromSubAccountId, required String name}) {
     // TODO: implement createCanister
     throw UnimplementedError();
   }

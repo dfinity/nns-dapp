@@ -10,7 +10,7 @@ import 'new_canister_cycles_widget.dart';
 
 class CanisterNameWidget extends StatelessWidget {
   ValidatedTextField nameField = ValidatedTextField("Canister Name",
-      validations: [StringFieldValidation.minimumLength(2)]);
+      validations: [StringFieldValidation.minimumLength(2), StringFieldValidation.maximumLength(24)]);
 
   @override
   Widget build(BuildContext context) {

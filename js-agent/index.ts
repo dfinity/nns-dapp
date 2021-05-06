@@ -1,8 +1,8 @@
 import AuthApi from "./src/AuthApi";
 import HardwareWalletApi from "./src/HardwareWalletApi";
-import LedgerApi from "./src/LedgerApi";
 import {Principal, SignIdentity} from "@dfinity/agent";
 import { principalToAccountIdentifier } from "./src/canisters/converter";
+import ServiceApi from "./src/ServiceApi";
 
 window["AuthApi"] = AuthApi;
 window["ServiceApi"] = ServiceApi;

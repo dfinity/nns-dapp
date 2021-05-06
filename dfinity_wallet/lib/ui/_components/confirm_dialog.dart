@@ -26,11 +26,11 @@ class ConfirmDialog extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(title, style: context.textTheme.headline3),
+                  child: SelectableText(title, style: context.textTheme.headline3),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(
+                  child: SelectableText(
                     description,
                     style: context.textTheme.subtitle2,
                     textAlign: TextAlign.center,

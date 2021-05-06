@@ -3,13 +3,13 @@ import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
 import 'package:dfinity_wallet/ic_api/web/hardware_wallet_api.dart';
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
+import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 
 import '../dfinity.dart';
 import 'dart:js';
 
 abstract class AbstractPlatformICApi {
   final HiveBoxesWidget hiveBoxes;
-
 
   AbstractPlatformICApi(this.hiveBoxes) {
     buildServices();
@@ -18,6 +18,7 @@ abstract class AbstractPlatformICApi {
   void authenticate(BuildContext context);
 
   Future<void> buildServices();
+
   Future<void> refreshAccounts();
 
   Future<void> acquireICPTs(
@@ -28,17 +29,14 @@ abstract class AbstractPlatformICApi {
   Future<void> sendICPTs(
       {required String toAccount, required BigInt doms, int? fromSubAccount});
 
-  Future<void> createNeuron(
-      {required BigInt stakeInDoms,
-      int? fromSubAccount});
+  Future<void> createNeuron({required BigInt stakeInDoms, int? fromSubAccount});
 
   Future<void> startDissolving({required BigInt neuronId});
 
   Future<void> stopDissolving({required BigInt neuronId});
 
   Future<void> increaseDissolveDelay(
-      {required BigInt neuronId,
-      required int additionalDissolveDelaySeconds});
+      {required BigInt neuronId, required int additionalDissolveDelaySeconds});
 
   Future<Neuron> spawnNeuron({required BigInt neuronId});
 
@@ -54,14 +52,15 @@ abstract class AbstractPlatformICApi {
       required Vote vote});
 
   Future<void> disburse(
-      {required BigInt neuronId, required BigInt doms, required String toAccountId});
-
+      {required BigInt neuronId,
+      required BigInt doms,
+      required String toAccountId});
 
   Future<void> fetchProposals(
       {required List<Topic> excludeTopics,
       required List<ProposalStatus> includeStatus,
-        required List<ProposalRewardStatus> includeRewardStatus,
-        Proposal? beforeProposal});
+      required List<ProposalRewardStatus> includeRewardStatus,
+      Proposal? beforeProposal});
 
   Future<Proposal> fetchProposal({required BigInt proposalId});
 
@@ -72,15 +71,45 @@ abstract class AbstractPlatformICApi {
   Future<void> createDummyProposals({required BigInt neuronId});
 
   // Canisters
-  Future<void> createCanister({required BigInt stake, int? fromSubAccountId, required String name});
-  Future<void> topupCanister({required BigInt stake, int? fromSubAccountId, required String targetCanisterId});
-  Future<AttachCanisterResult> attachCanister({required String name, required String canisterId});
+  Future<CreateCanisterResponse> createCanister(
+      {required BigInt stake, int? fromSubAccountId, required String name});
+
+  Future<void> topupCanister(
+      {required BigInt stake,
+      int? fromSubAccountId,
+      required String targetCanisterId});
+
+  Future<AttachCanisterResult> attachCanister(
+      {required String name, required String canisterId});
+
   Future<void> getCanisters();
+
   Future<double> getICPToCyclesExchangeRate();
 
   Future<void> test();
 
   Future<dynamic> connectToHardwareWallet();
+
   Future<HardwareWalletApi> createHardwareWalletApi({dynamic ledgerIdentity});
-  Future<void> registerHardwareWallet({required String name, dynamic ledgerIdentity});
+
+  Future<void> registerHardwareWallet(
+      {required String name, dynamic ledgerIdentity});
+}
+
+
+class CreateCanisterResponse {
+  final String? canisterId;
+  final Canister? canister;
+  final String? errorMessage;
+  final CreateCanisterResult result;
+
+  CreateCanisterResponse({required this.result, this.canisterId, this.canister, this.errorMessage});
+}
+
+enum CreateCanisterResult {
+  Ok,
+  FailedToCreateCanister,
+  CanisterAlreadyAttached,
+  NameAlreadyTaken,
+  CanisterLimitExceeded
 }

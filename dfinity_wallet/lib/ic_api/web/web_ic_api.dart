@@ -59,10 +59,10 @@ class PlatformICApi extends AbstractPlatformICApi {
       balanceSyncService = BalanceSyncService(serviceApi!, hiveBoxes);
       transactionSyncService =
           TransactionSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
-      neuronSyncService = NeuronSyncService(
-          serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
-      proposalSyncService = ProposalSyncService(
-          serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+      neuronSyncService =
+          NeuronSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+      proposalSyncService =
+          ProposalSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
       print("syncing accounts");
 
       await accountsSyncService!.performSync();
@@ -129,8 +129,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId,
       required BigInt doms,
       required String toAccountId}) async {
-    final res = await promiseToFuture(serviceApi!.disburse(DisperseNeuronRequest(
-        neuronId: neuronId.toJS, amount: doms.toJS, toAccountId: toAccountId)));
+    final res = await promiseToFuture(serviceApi!.disburse(
+        DisperseNeuronRequest(
+            neuronId: neuronId.toJS,
+            amount: doms.toJS,
+            toAccountId: toAccountId)));
     print("disburse ${stringify(res)}");
     await fetchNeuron(neuronId: neuronId);
     balanceSyncService?.syncBalances();
@@ -213,7 +216,8 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createDummyProposals({required BigInt neuronId}) async {
-    await promiseToFuture(serviceApi!.createDummyProposals(neuronId.toString()));
+    await promiseToFuture(
+        serviceApi!.createDummyProposals(neuronId.toString()));
     await fetchProposals(
         excludeTopics: [],
         includeStatus: ProposalStatus.values,
@@ -222,7 +226,8 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Proposal> fetchProposal({required BigInt proposalId}) async {
-    final response = await promiseToFuture(serviceApi!.getProposalInfo(proposalId.toJS));
+    final response =
+        await promiseToFuture(serviceApi!.getProposalInfo(proposalId.toJS));
     final json = jsonDecode(stringify(response));
     print("proposal json ${stringify(response)}");
     final proposal = await proposalSyncService!.storeProposal(json);
@@ -264,7 +269,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<Neuron> spawnNeuron({required BigInt neuronId}) async {
     print("SpawnRequest ${neuronId}");
 
-    final spawnResponse = await promiseToFuture(serviceApi!.spawn(SpawnRequest(neuronId:neuronId.toJS, newController: null)));
+    final spawnResponse = await promiseToFuture(serviceApi!
+        .spawn(SpawnRequest(neuronId: neuronId.toJS, newController: null)));
     // print("spawnResponse " + stringify(spawnResponse));
     final createdNeuronId = spawnResponse.createdNeuronId.toString();
     await neuronSyncService!.fetchNeurons();
@@ -275,37 +281,56 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<AttachCanisterResult> attachCanister(
       {required String name, required String canisterId}) async {
-     final response = await promiseToFuture(ledgerApi!.attachCanister(
-        AttachCanisterRequest(name: name, canisterId: createPrincipal(canisterId))));
-     return AttachCanisterResult.values[response.toInt()];
+    final response = await promiseToFuture(serviceApi!.attachCanister(
+        AttachCanisterRequest(
+            name: name, canisterId: createPrincipal(canisterId))));
+    return AttachCanisterResult.values[response.toInt()];
   }
 
   @override
-  Future<void> createCanister(
+  Future<CreateCanisterResponse> createCanister(
       {required BigInt stake,
       int? fromSubAccountId,
       required String name}) async {
-    await promiseToFuture(ledgerApi!.createCanister(CreateCanisterRequest(
+    print(
+        "CREATE CANISTER stake:${stake}, fromSubAccountId:${fromSubAccountId}, name:${name}");
+
+    final res =
+        await promiseToFuture(serviceApi!.createCanister(CreateCanisterRequest(
       stake: stake.toJS,
       fromSubAccountId: fromSubAccountId,
       name: name,
     )));
+    print("create canister response ${stringify(res)}");
+
+    await getCanisters();
+
+    final response = jsonDecode(stringify(res));
+    final canisterId = res.canisterId.toString();
+    return CreateCanisterResponse(
+        result:
+            CreateCanisterResult.values[response['result']!.toString().toInt()],
+        canisterId: canisterId,
+        errorMessage: response['errorMessage'],
+        canister:
+            (canisterId != null) ? hiveBoxes.canisters.get(canisterId) : null);
   }
 
   @override
   Future<void> getCanisters() async {
-    final response = await promiseToFuture(ledgerApi!.getCanisters());
+    final response = await promiseToFuture(serviceApi!.getCanisters());
+    print("Get Canisters ${stringify(response)}");
 
-    response.forEach((e){
-      final id = e.canisterId.toString();
-      hiveBoxes.canisters.put(id, Canister(
-          name: e.name,
-          publicKey: id,
-          creationDate: DateTime.now(),
-          cyclesAdded: 0,
-          controller: ""
-      ));
-    });
+    await Future.wait(<Future>[
+      ...response.map((e) async {
+        final id = e.canisterId.toString();
+        await hiveBoxes.canisters.put(
+            id,
+            Canister(
+                name: e.name,
+                publicKey: id));
+      })
+    ]);
   }
 
   @override
@@ -318,7 +343,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt stake,
       int? fromSubAccountId,
       required String targetCanisterId}) async {
-    await promiseToFuture(ledgerApi!.topupCanister(TopupCanisterRequest(
+    await promiseToFuture(serviceApi!.topupCanister(TopupCanisterRequest(
         stake: stake,
         fromSubAccountId: fromSubAccountId,
         targetCanisterId: targetCanisterId)));

@@ -117,11 +117,12 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                         child: Text("Confirm and Send"),
                       ),
                       onPressed: () async {
-                        await context.performLoading(() async {
-                          await 1.0.seconds.delay;
-                          destination.cyclesAdded += (amount * 50).toInt();
-                          destination.save();
-                        });
+
+                        await context.performLoading(() => context.icApi.topupCanister(
+                            stake: amount.toE8s,
+                            targetCanisterId: destination.identifier,
+                            fromSubAccountId: origin.subAccountId
+                        ));
 
                         WizardOverlay.of(context).replacePage(
                             "Transaction Completed!",

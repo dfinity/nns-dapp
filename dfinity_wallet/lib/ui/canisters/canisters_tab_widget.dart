@@ -52,6 +52,7 @@ class _CansitersPageState extends State<CansitersPage> {
                               context.nav.push(CanisterPageDef.createPageConfig(e));
                             },
                           )),
+                  SizedBox(height: 200,)
                 ],
               ),
             ),
@@ -129,7 +130,7 @@ class CanisterRow extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 16.0, bottom: 16.0, right: 16.0),
                 child: Text(
-                  "${canister.cyclesRemaining} Cycles Remaining",
+                  canister.identifier,
                   style: context.textTheme.bodyText1,
                 ),
               )

@@ -30,12 +30,6 @@ class ServiceApi {
   @JS("createNeuron")
   external Promise<void> createNeuron(dynamic request);
 
-  @JS("createCanister")
-  external Promise<void> createCanister(dynamic request);
-
-  @JS("topupCanister")
-  external Promise<void> topupCanister(dynamic request);
-
   @JS("integrationTest")
   external Promise<void> integrationTest();
 
@@ -98,4 +92,142 @@ class ServiceApi {
 
   @JS("makeMotionProposal")
   external Promise<dynamic> makeMotionProposal(dynamic request);
+
+  // Canisters
+  @JS("createCanister")
+  external Promise<dynamic> createCanister(CreateCanisterRequest request);
+
+  @JS("topupCanister")
+  external Promise<void> topupCanister(TopupCanisterRequest request);
+
+  @JS("attachCanister")
+  external Promise<void> attachCanister(AttachCanisterRequest request);
+
+  @JS("getCanisters")
+  external Promise<dynamic> getCanisters();
+
+  @JS("getICPToCyclesExchangeRate")
+  external Promise<double> getICPToCyclesExchangeRate();
+}
+
+
+
+
+@JS()
+@anonymous
+class IncreaseDissolveDelayRequest {
+  external dynamic get neuronId;
+
+  external num get additionalDissolveDelaySeconds;
+
+  external factory IncreaseDissolveDelayRequest(
+      {dynamic neuronId, num additionalDissolveDelaySeconds});
+}
+
+@JS()
+@anonymous
+class FollowRequest {
+  external dynamic neuronId;
+  external int topic;
+  external List<dynamic> followees;
+
+  external factory FollowRequest(
+      {dynamic neuronId, int topic, List<dynamic> followees});
+}
+
+@JS()
+@anonymous
+class NeuronIdentifierRequest {
+  external dynamic neuronId;
+
+  external factory NeuronIdentifierRequest({dynamic neuronId});
+}
+
+@JS()
+@anonymous
+class CreateNeuronRequest {
+  external dynamic stake;
+  external int? fromSubAccountId;
+
+  external factory CreateNeuronRequest({dynamic stake, int? fromSubAccountId});
+}
+
+@JS()
+@anonymous
+class DisperseNeuronRequest {
+  external dynamic neuronId;
+  external dynamic amount;
+  external String toAccountId;
+
+  external factory DisperseNeuronRequest(
+      {dynamic neuronId, dynamic amount, String toAccountId});
+}
+
+@JS()
+@anonymous
+class SendICPTsRequest {
+  external dynamic to;
+  external dynamic amount;
+  external int? fromSubAccountId;
+
+  external factory SendICPTsRequest(
+      {dynamic to, dynamic amount, int? fromSubAccountId});
+}
+
+@JS()
+@anonymous
+class RegisterVoteRequest {
+  external dynamic neuronId;
+  external dynamic proposal;
+  external int vote;
+
+  external factory RegisterVoteRequest(
+      {dynamic neuronId, dynamic proposal, int vote});
+}
+
+@JS()
+@anonymous
+class SpawnRequest {
+  external dynamic neuronId;
+  external dynamic newController;
+
+  external factory SpawnRequest({dynamic neuronId, dynamic newController});
+}
+
+@JS()
+@anonymous
+class CreateCanisterRequest {
+  external dynamic stake;
+  external int? fromSubAccountId;
+  external String name;
+
+  external factory CreateCanisterRequest(
+      {dynamic stake, int? fromSubAccountId, String name});
+}
+
+@JS()
+@anonymous
+class TopupCanisterRequest {
+  external dynamic stake;
+  external int? fromSubAccountId;
+  external String targetCanisterId;
+
+  external factory TopupCanisterRequest(
+      {dynamic stake, int? fromSubAccountId, String targetCanisterId});
+}
+
+@JS()
+@anonymous
+class AttachCanisterRequest {
+  external String name;
+  external dynamic canisterId;
+
+  external factory AttachCanisterRequest({String name, dynamic canisterId});
+}
+
+enum AttachCanisterResult {
+  Ok,
+  CanisterAlreadyAttached,
+  NameAlreadyTaken,
+  CanisterLimitExceeded,
 }

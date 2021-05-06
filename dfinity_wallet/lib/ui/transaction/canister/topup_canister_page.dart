@@ -62,13 +62,15 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
                       width: double.infinity,
                       child: ValidFieldsSubmitButton(
                         child: Text("Send"),
-                        onPressed: () {
-                          final amount = amountField.currentValue.toDouble();
-                          final cyclesBought = (amount * 50).round();
-                          widget.canister.cyclesAdded += cyclesBought;
+                        onPressed: () async {
 
+                          await context.performLoading(() => context.icApi.topupCanister(
+                              stake: amountField.currentValue.toDouble().toE8s,
+                              targetCanisterId: widget.canister.identifier,
+                              fromSubAccountId: widget.source.subAccountId
+                          ));
 
-                          WizardOverlay.of(context).pushPage(null, DoneWidget(numCycles: cyclesBought, canisterName: widget.canister.name));
+                          // WizardOverlay.of(context).pushPage(null, DoneWidget(numCycles: amountField.currentValue, canisterName: widget.canister.name));
                         }.takeIf((e) => widget.canister != null),
                         fields: [amountField],
                       ))

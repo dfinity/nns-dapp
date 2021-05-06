@@ -88,7 +88,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                     } else if (widget.origin.type ==
                         ICPSourceType.HARDWARE_WALLET) {
                       WizardOverlay.of(context).pushPage(
-                          "Transaction Completed!",
+                          "Authorize on Hardware",
                           HardwareWalletTransactionWidget(
                             amount: widget.amount,
                             destination: widget.destination,

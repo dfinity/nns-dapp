@@ -80,7 +80,9 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              canister.cyclesRemaining.toDisplayICPT,
+                                              canister.cyclesBalance
+                                                      ?.toDisplayICPT ??
+                                                  "-",
                                               style: TextStyle(
                                                   color: AppColors.white,
                                                   fontFamily:
@@ -100,45 +102,46 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                         ),
                                       )),
                                 ]),
-                            Card(
-                                child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Controller",
-                                      style: context.textTheme.headline3,
+                            if (canister.controller != null)
+                              Card(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Controller",
+                                        style: context.textTheme.headline3,
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(canister.controller),
-                                  ),
-                                  // if (context.boxes.accounts.values.any(
-                                  //     (element) =>
-                                  //         element.identifier ==
-                                  //         widget.canister.controller))
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: ElevatedButton(
-                                        onPressed: () {
-                                          OverlayBaseWidget.show(
-                                              context,
-                                              ChangeCanisterControllerWidget(
-                                                canister: canister,
-                                              ));
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text("Change Controller"),
-                                        )),
-                                  )
-                                ],
-                              ),
-                            ))
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(canister.controller ?? ""),
+                                    ),
+                                    // if (context.boxes.accounts.values.any(
+                                    //     (element) =>
+                                    //         element.identifier ==
+                                    //         widget.canister.controller))
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            OverlayBaseWidget.show(
+                                                context,
+                                                ChangeCanisterControllerWidget(
+                                                  canister: canister,
+                                                ));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text("Change Controller"),
+                                          )),
+                                    )
+                                  ],
+                                ),
+                              ))
                           ],
                         ),
                       ),
