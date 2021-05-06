@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/agent";
 import { Option } from "../option";
 import { CanisterId } from "../common/types";
+import { HttpError } from "../httpError";
 
 export interface CanisterSettings {
     controller: Principal,
@@ -25,7 +26,20 @@ export enum CanisterStatus {
     Running
 }
 
-export interface CanisterStatusResponse {
+export type CanisterDetailsResponse =
+    CanisterDetailsSuccess |
+    UserNotTheController;
+
+export type UserNotTheController = {
+    kind: "userNotTheController"
+}
+
+export type CanisterDetailsSuccess = {
+    kind: "success",
+    details: CanisterDetails
+}
+
+export interface CanisterDetails {
     status: CanisterStatus,
     memorySize: bigint,
     cycles: bigint,
@@ -33,7 +47,15 @@ export interface CanisterStatusResponse {
     moduleHash: Option<ArrayBuffer>
 }
 
+export type UpdateSettingsResponse =
+    UpdateSettingSuccess |
+    UserNotTheController;
+
+export type UpdateSettingSuccess = {
+    kind: "success"
+}
+    
 export default interface ServiceInterface {
-    getCanisterStatus: (canisterId: CanisterId) => Promise<CanisterStatusResponse>,
-    updateSettings: (request: UpdateSettingsRequest) => Promise<void>
+    getCanisterDetails: (canisterId: CanisterId) => Promise<CanisterDetailsResponse>,
+    updateSettings: (request: UpdateSettingsRequest) => Promise<UpdateSettingsResponse>
 };

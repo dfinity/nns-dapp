@@ -4,18 +4,6 @@ import { CreateCanisterResult } from "./canisters/createCanister";
 import ServiceApi from "./ServiceApi";
 import { CanisterId, NeuronId } from "./canisters/common/types";
 
-export async function acquire_big_stake(host: string, identity: SignIdentity): Promise<void> {
-
-    const serviceApi = new ServiceApi(host, identity);
-
-    console.log("getting account");
-    let account = await serviceApi.getAccount();
-    console.log(account);
-
-    console.log("Aquire 9000 ICPT");
-    await serviceApi.acquireICPTs(account.accountIdentifier, BigInt(900_000_000_000));
-}
-
 export async function get_set_authorized_subnetworks_proposal(host: string, identity: SignIdentity): Promise<void> {
     const serviceApi = new ServiceApi(host, identity);
     const proposal = await serviceApi.getProposalInfo(BigInt(31));
@@ -41,63 +29,72 @@ export async function vote_for_authorized_subnetworks_proposal(host: string, ide
 export async function test_canisters(host: string, identity: SignIdentity): Promise<void> {
     const serviceApi = new ServiceApi(host, identity);
 
-    let newCanisterId: CanisterId = Principal.fromText("5s2ji-faaaa-aaaaa-qaaaq-cai");
-    // {
-    //     console.log("Create a canister");
-    //     let response = await serviceApi.createCanister({
-    //         stake: BigInt(1_000_000_000),
-    //         name: "My canister 2"  
-    //     });   
-    //     newCanisterId = response.canisterId;
-    //     console.log(response);
-    // }
-
+    let newCanisterId: CanisterId;
     {
-        console.log("get canisters");
+        console.log("Create a canister");
+        let response = await serviceApi.createCanister({
+            stake: BigInt(1_000_000_000),
+            name: generateRandomName("Canister - ", 8)  
+        });   
+        newCanisterId = response.canisterId;
+        console.log(response);
+    }
+    {
+        console.log("Get canister status");
+        const response = await serviceApi.getCanisterStatus(newCanisterId);
+        if (response.kind === "userNotTheController") {
+            console.log("You are not the owner of this canister");
+        } else {
+            console.log(response);
+        }
+    }
+    {
+        console.log("Topup canister");
+        await serviceApi.topupCanister({
+            stake: BigInt(300_000_000),
+            targetCanisterId: newCanisterId            
+        });        
+    }
+    {
+        console.log("Get canister status");
+        const response = await serviceApi.getCanisterStatus(newCanisterId);
+        if (response.kind === "userNotTheController") {
+            console.log("You are not the owner of this canister");
+        } else {
+            console.log(response);
+        }
+    }
+    {
+        console.log("Get attached canisters");
         const response = await serviceApi.getCanisters();
         for (let i = 0; i < response.length; i++) {
             console.log(response[i].name);
             console.log(response[i].canisterId.toText());
         }
     }
-
     {
-        console.log("Get canister status");
+        console.log("Try changing ownership to anon user");
+        const response = await serviceApi.transferCanisterOwnership({
+            canisterId: newCanisterId,
+            settings: {
+                controller: Principal.anonymous()
+            }
+        });
+        if (response.kind === "userNotTheController") {
+            console.log("You are not the owner of this canister");
+        } else {
+            console.log(response);
+        }
+    }
+    {
+        console.log("Try to get canister status of non-owned canister");
         const response = await serviceApi.getCanisterStatus(newCanisterId);
-        console.log(response);
+        if (response.kind === "userNotTheController") {
+            console.log("You are not the owner of this canister");
+        } else {
+            console.log(response);
+        }
     }
-
-    {
-        console.log("Topup a canister");
-        await serviceApi.topupCanister({
-            stake: BigInt(300_000_000),
-            targetCanisterId: newCanisterId            
-        });        
-    }
-
-    {
-        console.log("Get canister status");
-        const response = await serviceApi.getCanisterStatus(newCanisterId);
-        console.log(response);
-    }
-
-    // {
-    //     console.log("attach canister qhbym-qaaaa-aaaaa-aaafq-cai");
-    //     const response = await serviceApi.attachCanister({
-    //         name: "NNS UI assets canister",
-    //         canisterId: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai")
-    //     });
-    //     console.log(response);
-    // }
-
-    // {
-    //     console.log("attach canister qaa6y-5yaaa-aaaaa-aaafa-cai");
-    //     const response = await serviceApi.attachCanister({
-    //         name: "NNS UI backend canister",
-    //         canisterId: Principal.fromText("qaa6y-5yaaa-aaaaa-aaafa-cai")
-    //     });
-    //     console.log(response);
-    // }
 }
 
 export async function test_happy_path(host: string, identity: SignIdentity): Promise<void> {
@@ -383,4 +380,14 @@ export async function create_dummy_proposals(host: string, identity: SignIdentit
     }
 
     console.log("finish create_dummy_proposals");
+}
+
+function generateRandomName(prefix: string, suffixLength: number) {
+    const result = [];
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for ( var i = 0; i < suffixLength; i++ ) {
+        const char = characters.charAt(Math.floor(Math.random() * characters.length));
+        result.push(char);
+    }
+    return prefix + result.join('');
 }

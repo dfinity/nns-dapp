@@ -21,6 +21,7 @@ export interface CreateCanisterResponse {
 export enum CreateCanisterResult {
     Ok,
     FailedToCreateCanister,
+    FailedToAttachCanister,
     CanisterAlreadyAttached,
     NameAlreadyTaken,
     CanisterLimitExceeded
@@ -45,16 +46,23 @@ export async function createCanisterImpl(
             convert.uint8ArrayToBlob(
                 response.getCreatedCanisterId().getSerializedId_asU8()));
 
-        const attachResult = await nnsUiService.attachCanister({
-            name: request.name,
-            canisterId
-        });
+        try {
+            const attachResult = await nnsUiService.attachCanister({
+                name: request.name,
+                canisterId
+            });
 
-        switch (attachResult) {
-            case AttachCanisterResult.Ok: return { result: CreateCanisterResult.Ok, canisterId };
-            case AttachCanisterResult.CanisterAlreadyAttached: return { result: CreateCanisterResult.CanisterAlreadyAttached, canisterId };
-            case AttachCanisterResult.NameAlreadyTaken: return { result: CreateCanisterResult.NameAlreadyTaken, canisterId };
-            case AttachCanisterResult.CanisterLimitExceeded: return { result: CreateCanisterResult.CanisterLimitExceeded, canisterId };            
+            switch (attachResult) {
+                case AttachCanisterResult.Ok: return { result: CreateCanisterResult.Ok, canisterId };
+                case AttachCanisterResult.CanisterAlreadyAttached: return { result: CreateCanisterResult.CanisterAlreadyAttached, canisterId };
+                case AttachCanisterResult.NameAlreadyTaken: return { result: CreateCanisterResult.NameAlreadyTaken, canisterId };
+                case AttachCanisterResult.CanisterLimitExceeded: return { result: CreateCanisterResult.CanisterLimitExceeded, canisterId };            
+            }
+        } catch (e) {
+            return {
+                result: CreateCanisterResult.FailedToAttachCanister,
+                errorMessage: e.toString()
+            };
         }
     } else {
         errorMessage = response.toString();

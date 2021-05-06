@@ -1,4 +1,4 @@
-import { AnonymousIdentity, HttpAgent, Principal, SignIdentity } from "@dfinity/agent";
+import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
 import { Option } from "./canisters/option";
 import governanceBuilder from "./canisters/governance/builder";
 import GovernanceService, {
@@ -49,7 +49,7 @@ import NnsUiService, {
     RenameSubAccountResponse
 } from "./canisters/nnsUI/model";
 import icManagementBuilder from "./canisters/icManagement/builder";
-import ICManagementService, { CanisterStatusResponse } from "./canisters/icManagement/model";
+import ICManagementService, { CanisterDetailsResponse, UpdateSettingsRequest, UpdateSettingsResponse } from "./canisters/icManagement/model";
 import { create_dummy_proposals, test_canisters, test_happy_path, vote_for_authorized_subnetworks_proposal } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/createNeuron";
 import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/createCanister";
@@ -155,68 +155,67 @@ export default class ServiceApi {
         return this.governanceService.listProposals(request);
     }
 
-    public addHotKey = async (request: AddHotKeyRequest) : Promise<EmptyResponse> => {
+    public addHotKey = (request: AddHotKeyRequest) : Promise<EmptyResponse> => {
         return this.governanceService.addHotKey(request);
     }
 
-    public removeHotKey = async (request: RemoveHotKeyRequest) : Promise<EmptyResponse> => {
+    public removeHotKey = (request: RemoveHotKeyRequest) : Promise<EmptyResponse> => {
         return this.governanceService.removeHotKey(request);
     }
 
-    public startDissolving = async (request: StartDissolvingRequest) : Promise<EmptyResponse> => {
+    public startDissolving = (request: StartDissolvingRequest) : Promise<EmptyResponse> => {
         return this.governanceService.startDissolving(request);
     }
 
-    public stopDissolving = async (request: StopDissolvingRequest) : Promise<EmptyResponse> => {
+    public stopDissolving = (request: StopDissolvingRequest) : Promise<EmptyResponse> => {
         return this.governanceService.stopDissolving(request);
     }
 
-    public increaseDissolveDelay = async (request: IncreaseDissolveDelayRequest) : Promise<EmptyResponse> => {
-        console.log(request);
+    public increaseDissolveDelay = (request: IncreaseDissolveDelayRequest) : Promise<EmptyResponse> => {
         return this.governanceService.increaseDissolveDelay(request);
     }
 
-    public follow = async (request: FollowRequest) : Promise<EmptyResponse> => {
+    public follow = (request: FollowRequest) : Promise<EmptyResponse> => {
         return this.governanceService.follow(request);
     }
 
-    public registerVote = async (request: RegisterVoteRequest) : Promise<EmptyResponse> => {
+    public registerVote = (request: RegisterVoteRequest) : Promise<EmptyResponse> => {
         return this.governanceService.registerVote(request);
     }
 
-    public spawn = async (request: SpawnRequest) : Promise<SpawnResponse> => {
+    public spawn = (request: SpawnRequest) : Promise<SpawnResponse> => {
         return this.governanceService.spawn(request);
     }
 
-    public split = async (request: SplitRequest) : Promise<EmptyResponse> => {
+    public split = (request: SplitRequest) : Promise<EmptyResponse> => {
         return this.governanceService.split(request);
     }
 
-    public disburse = async (request: DisburseRequest) : Promise<DisburseResponse> => {
+    public disburse = (request: DisburseRequest) : Promise<DisburseResponse> => {
         return this.governanceService.disburse(request);
     }
 
-    public disburseToNeuron = async (request: DisburseToNeuronRequest) : Promise<DisburseToNeuronResponse> => {
+    public disburseToNeuron = (request: DisburseToNeuronRequest) : Promise<DisburseToNeuronResponse> => {
         return this.governanceService.disburseToNeuron(request);
     }
 
-    public makeMotionProposal = async (request: MakeMotionProposalRequest) : Promise<MakeProposalResponse> => {
+    public makeMotionProposal = (request: MakeMotionProposalRequest) : Promise<MakeProposalResponse> => {
         return this.governanceService.makeMotionProposal(request);
     }
 
-    public makeNetworkEconomicsProposal = async (request: MakeNetworkEconomicsProposalRequest) : Promise<MakeProposalResponse> => {
+    public makeNetworkEconomicsProposal = (request: MakeNetworkEconomicsProposalRequest) : Promise<MakeProposalResponse> => {
         return this.governanceService.makeNetworkEconomicsProposal(request);
     }
 
-    public makeRewardNodeProviderProposal = async (request: MakeRewardNodeProviderProposalRequest) : Promise<MakeProposalResponse> => {
+    public makeRewardNodeProviderProposal = (request: MakeRewardNodeProviderProposalRequest) : Promise<MakeProposalResponse> => {
         return this.governanceService.makeRewardNodeProviderProposal(request);
     }
 
-    public makeSetDefaultFolloweesProposal = async (request: MakeSetDefaultFolloweesProposalRequest) : Promise<MakeProposalResponse> => {
+    public makeSetDefaultFolloweesProposal = (request: MakeSetDefaultFolloweesProposalRequest) : Promise<MakeProposalResponse> => {
         return this.governanceService.makeSetDefaultFolloweesProposal(request);
     }
 
-    public createNeuron = async (request: CreateNeuronRequest) : Promise<NeuronId> => {
+    public createNeuron = (request: CreateNeuronRequest) : Promise<NeuronId> => {
         return createNeuronImpl(
             this.identity, 
             this.ledgerService, 
@@ -227,7 +226,7 @@ export default class ServiceApi {
         CANISTERS
     */
 
-    public createCanister = async (request: CreateCanisterRequest) : Promise<CreateCanisterResponse> => {
+    public createCanister = (request: CreateCanisterRequest) : Promise<CreateCanisterResponse> => {
         return createCanisterImpl(
             this.identity.getPrincipal(), 
             this.ledgerService, 
@@ -235,35 +234,30 @@ export default class ServiceApi {
             request);
     }
 
-    public topupCanister = async (request: TopupCanisterRequest) : Promise<void> => {
+    public topupCanister = (request: TopupCanisterRequest) : Promise<void> => {
         return topupCanisterImpl(
             this.ledgerService, 
             request);
     }
 
-    public attachCanister = async (request: AttachCanisterRequest) : Promise<AttachCanisterResult> => {
+    public attachCanister = (request: AttachCanisterRequest) : Promise<AttachCanisterResult> => {
         return this.nnsUiService.attachCanister(request);
     }
 
-    public getCanisters = async (): Promise<Array<CanisterDetails>> => {
+    public getCanisters = (): Promise<Array<CanisterDetails>> => {
         return this.nnsUiService.getCanisters();
     }
 
-    public getCanisterStatus = async (canisterId: CanisterId): Promise<CanisterStatusResponse> => {
-        return this.icManagementService.getCanisterStatus(canisterId);
+    public getCanisterStatus = (canisterId: CanisterId): Promise<CanisterDetailsResponse> => {
+        return this.icManagementService.getCanisterDetails(canisterId);
     }
 
-    public transferCanisterOwnership = async (canisterId: CanisterId, newController: string): Promise<void> => {
-        return this.icManagementService.updateSettings({
-            canisterId,
-            settings: {
-                controller: Principal.fromText(newController)
-            }
-        });
+    public transferCanisterOwnership = (request: UpdateSettingsRequest): Promise<UpdateSettingsResponse> => {
+        return this.icManagementService.updateSettings(request);
     }    
 
-    public getIcpToCyclesConversionRate = async (): Promise<bigint> => {
-        return await this.nnsUiService.getIcpToCyclesConversionRate();
+    public getIcpToCyclesConversionRate = (): Promise<bigint> => {
+        return this.nnsUiService.getIcpToCyclesConversionRate();
     } 
 
     /* 
@@ -283,8 +277,6 @@ export default class ServiceApi {
             to: accountIdentifier,
             amount: e8s
         }
-        console.log("aquire req");
-        console.log(req);
         await anonLedgerService.sendICPTs(req);
         await this.nnsUiService.syncTransactions();
     }
@@ -297,7 +289,7 @@ export default class ServiceApi {
     }
 
     // Temporary method to trigger test code from the UI
-    public createDummyProposals = async (neuronId: string): Promise<void> => {
-        return await create_dummy_proposals(this.host, this.identity, BigInt(neuronId));
+    public createDummyProposals = (neuronId: string): Promise<void> => {
+        return create_dummy_proposals(this.host, this.identity, BigInt(neuronId));
     }
 }
