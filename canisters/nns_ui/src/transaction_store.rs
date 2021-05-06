@@ -92,7 +92,8 @@ pub struct RenameSubAccountRequest {
 pub enum RenameSubAccountResponse {
     Ok,
     AccountNotFound,
-    SubAccountNotFound
+    SubAccountNotFound,
+    NameTooLong
 }
 
 #[derive(Deserialize)]
