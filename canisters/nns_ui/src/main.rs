@@ -188,27 +188,20 @@ fn get_stats_impl() -> Stats {
     store.get_stats()
 }
 
-#[export_name = "canister_update sync_transactions"]
-pub fn ledger_sync_manual() {
-    ledger_sync();
-}
-
 #[export_name = "canister_heartbeat"]
-pub fn ledger_sync() {
-    over_async(candid, |()| ledger_sync_impl());
+pub fn canister_heartbeat() {
+    let future = run_periodic_tasks_impl();
+
+    dfn_core::api::futures::kickstart(future);
 }
 
-async fn ledger_sync_impl() -> Option<Result<u32, String>> {
-    dfn_core::api::print("sync_transactions started");
-    let result = ledger_sync::sync_transactions().await;
-    dfn_core::api::print(format!("sync_transactions completed. Count added = {:?}", result));
+async fn run_periodic_tasks_impl() {
+    ledger_sync::sync_transactions().await;
 
     if should_prune_transactions() {
         let store = &mut STATE.write().unwrap().transactions_store;
         store.prune_transactions(PRUNE_TRANSACTIONS_COUNT);
     }
-
-    result
 }
 
 fn should_prune_transactions() -> bool {

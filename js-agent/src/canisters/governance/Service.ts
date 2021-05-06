@@ -33,13 +33,11 @@ import { NeuronId } from "../common/types";
 
 export default class Service implements ServiceInterface {
     private readonly service: RawService;
-    private readonly syncTransactions: () => void;
     private readonly requestConverters: RequestConverters;
     private readonly responseConverters: ResponseConverters;
 
-    public constructor(service: RawService, syncTransactions: () => void, myPrincipal: Principal) {
+    public constructor(service: RawService, myPrincipal: Principal) {
         this.service = service;
-        this.syncTransactions = syncTransactions;
         this.requestConverters = new RequestConverters(myPrincipal);
         this.responseConverters = new ResponseConverters();
     }
@@ -111,7 +109,7 @@ export default class Service implements ServiceInterface {
 
     public follow = async (request: FollowRequest) : Promise<EmptyResponse> => {
         const rawRequest = this.requestConverters.fromFollowRequest(request);
-         await this.service.manage_neuron(rawRequest);
+        await this.service.manage_neuron(rawRequest);
         return { Ok: null };
     }
 
@@ -122,9 +120,7 @@ export default class Service implements ServiceInterface {
     }
 
     public spawn = async (request: SpawnRequest) : Promise<SpawnResponse> => {
-        console.log(request);
         const rawRequest = this.requestConverters.fromSpawnRequest(request);
-        console.log(rawRequest);
         const rawResponse = await this.service.manage_neuron(rawRequest);
         return this.responseConverters.toSpawnResponse(rawResponse);
     }
@@ -138,12 +134,7 @@ export default class Service implements ServiceInterface {
     public disburse = async (request: DisburseRequest) : Promise<DisburseResponse> => {
         const rawRequest = this.requestConverters.fromDisburseRequest(request);
         const rawResponse = await this.service.manage_neuron(rawRequest);
-        console.log(rawResponse);
-        const response = this.responseConverters.toDisburseResponse(rawResponse);
-        if ("Ok" in response) {
-            this.syncTransactions();
-        }
-        return response
+        return this.responseConverters.toDisburseResponse(rawResponse);
     }
 
     public disburseToNeuron = async (request: DisburseToNeuronRequest) : Promise<DisburseToNeuronResponse> => {

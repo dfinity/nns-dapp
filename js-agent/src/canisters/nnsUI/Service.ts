@@ -89,8 +89,4 @@ export default class Service implements ServiceInterface {
     public getIcpToCyclesConversionRate = async () : Promise<bigint> => {
         return await this.service.get_icp_to_cycles_conversion_rate();
     }
-
-    public syncTransactions = () : Promise<any> => {
-        return this.service.sync_transactions();
-    }
 }

@@ -170,12 +170,6 @@ type Stats =
         seconds_since_last_ledger_sync: nat64;
     };
 
-type SyncTransactionsResult =
-    variant {
-        Ok: nat32;
-        Err: text;
-    };
-
 service : {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
@@ -189,5 +183,4 @@ service : {
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
     get_icp_to_cycles_conversion_rate: () -> (nat64) query;
     get_stats: () -> (Stats) query;
-    sync_transactions: () -> (opt SyncTransactionsResult);
 }

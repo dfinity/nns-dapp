@@ -39,6 +39,8 @@ export default class ResponseConverters {
             return AttachCanisterResult.CanisterAlreadyAttached;
         } else if ("NameAlreadyTaken" in response) {
             return AttachCanisterResult.NameAlreadyTaken;
+        } else if ("NameTooLong" in response) {
+            return AttachCanisterResult.NameTooLong;
         } else if ("CanisterLimitExceeded" in response) {
             return AttachCanisterResult.CanisterLimitExceeded;
         }

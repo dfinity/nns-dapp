@@ -89,8 +89,6 @@ export interface SubAccountDetails {
   'sub_account' : SubAccount,
   'account_identifier' : AccountIdentifier,
 };
-export type SyncTransactionsResult = { 'Ok' : number } |
-    { 'Err' : string };
 export interface Timestamp { 'timestamp_nanos' : bigint };
 export interface Transaction {
   'timestamp' : Timestamp,
@@ -114,5 +112,4 @@ export default interface _SERVICE {
   'register_hardware_wallet' : (arg_0: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
   'remove_hardware_wallet' : (arg_0: RemoveHardwareWalletRequest) => Promise<RemoveHardwareWalletResponse>,
   'rename_sub_account' : (arg_0: RenameSubAccountRequest) => Promise<RenameSubAccountResponse>,
-  'sync_transactions' : () => Promise<[] | [SyncTransactionsResult]>,
 };

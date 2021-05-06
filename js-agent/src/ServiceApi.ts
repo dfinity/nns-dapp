@@ -72,7 +72,7 @@ export default class ServiceApi {
         });
         this.ledgerService = ledgerBuilder(agent, identity);
         this.nnsUiService = nnsUiBuilder(agent);
-        this.governanceService = governanceBuilder(agent, identity, this.nnsUiService.syncTransactions);
+        this.governanceService = governanceBuilder(agent, identity);
         this.icManagementService = icManagementBuilder(agent);
         this.host = host;
         this.identity = identity;
@@ -125,10 +125,8 @@ export default class ServiceApi {
         return this.nnsUiService.getTransactions(request);
     }
 
-    public sendICPTs = async (request: SendICPTsRequest): Promise<BlockHeight> => {
-        const response = await this.ledgerService.sendICPTs(request);
-        this.nnsUiService.syncTransactions();
-        return response;
+    public sendICPTs = (request: SendICPTsRequest): Promise<BlockHeight> => {
+        return this.ledgerService.sendICPTs(request);
     }
 
     /* 
@@ -278,7 +276,6 @@ export default class ServiceApi {
             amount: e8s
         }
         await anonLedgerService.sendICPTs(req);
-        await this.nnsUiService.syncTransactions();
     }
 
     // Temporary method to trigger test code from the UI

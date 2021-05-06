@@ -19,18 +19,19 @@ pub async fn sync_transactions() -> Option<Result<u32, String>> {
 }
 
 async fn sync_transactions_within_lock() -> Result<u32, String> {
-    let store = &mut STATE.write().unwrap().transactions_store;
-    let next_block_height_required = store.get_next_required_block_height();
+    let next_block_height_required = get_next_required_block_height();
     let latest_block_height = ledger::tip_of_chain().await?;
 
     if latest_block_height < next_block_height_required {
+        let store = &mut STATE.write().unwrap().transactions_store;
+        store.mark_ledger_sync_complete();
         Ok(0)
     } else {
         const MAX_BLOCKS_PER_EXECUTION: u64 = 500;
         let count = min(latest_block_height - next_block_height_required + 1, MAX_BLOCKS_PER_EXECUTION);
 
         let blocks = get_blocks(next_block_height_required, count as u32).await?;
-
+        let store = &mut STATE.write().unwrap().transactions_store;
         let blocks_count = blocks.len() as u32;
         for (block_height, block) in blocks.into_iter() {
             let result = store.append_transaction(block.transaction().into_owned().transfer, block_height, block.timestamp());
@@ -40,9 +41,13 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
             }
         }
         store.mark_ledger_sync_complete();
-
         Ok(blocks_count)
     }
+}
+
+fn get_next_required_block_height() -> u64 {
+    let store = &STATE.read().unwrap().transactions_store;
+    store.get_next_required_block_height()
 }
 
 async fn get_blocks(from: BlockHeight, count: u32) -> Result<Vec<(BlockHeight, Block)>, String> {

@@ -118,10 +118,6 @@ export default ({ IDL }) => {
     'SubAccountNotFound' : IDL.Null,
     'NameTooLong' : IDL.Null,
   });
-  const SyncTransactionsResult = IDL.Variant({
-    'Ok' : IDL.Nat32,
-    'Err' : IDL.Text,
-  });
   return IDL.Service({
     'add_account' : IDL.Func([], [AccountIdentifier], []),
     'attach_canister' : IDL.Func(
@@ -159,6 +155,5 @@ export default ({ IDL }) => {
         [RenameSubAccountResponse],
         [],
     ),
-    'sync_transactions' : IDL.Func([], [IDL.Opt(SyncTransactionsResult)], []),
   });
 };
