@@ -127,11 +127,11 @@ fn init_assets() {
 
               let name_bytes = entry.path_bytes().into_owned().strip_prefix(b".").unwrap().to_vec();
 
-              // ignore directories (crude)
-              if name_bytes.strip_suffix(b"/").is_some() {
-                  continue
+              if !entry.header().entry_type().is_file() {
+                  continue;
               }
-              let name = String::from_utf8_lossy(&name_bytes);
+              let name = String::from_utf8(name_bytes.clone())
+                  .unwrap_or_else(|e| trap(&format!("non-utf8 file name {}: {}", String::from_utf8_lossy(&name_bytes), e)));
 
               let mut bytes = Vec::new();
               entry.read_to_end(&mut bytes).unwrap();
