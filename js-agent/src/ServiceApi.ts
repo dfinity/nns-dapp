@@ -248,7 +248,7 @@ export default class ServiceApi {
         return this.nnsUiService.getCanisters();
     }
 
-    public getCanisterStatus = (canisterId: CanisterId): Promise<CanisterDetailsResponse> => {
+    public getCanisterDetails = (canisterId: CanisterId): Promise<CanisterDetailsResponse> => {
         return this.icManagementService.getCanisterDetails(canisterId);
     }
 

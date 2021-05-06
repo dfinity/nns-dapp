@@ -41,7 +41,7 @@ export async function test_canisters(host: string, identity: SignIdentity): Prom
     }
     {
         console.log("Get canister status");
-        const response = await serviceApi.getCanisterStatus(newCanisterId);
+        const response = await serviceApi.getCanisterDetails(newCanisterId);
         if (response.kind === "userNotTheController") {
             console.log("You are not the owner of this canister");
         } else {
@@ -57,7 +57,7 @@ export async function test_canisters(host: string, identity: SignIdentity): Prom
     }
     {
         console.log("Get canister status");
-        const response = await serviceApi.getCanisterStatus(newCanisterId);
+        const response = await serviceApi.getCanisterDetails(newCanisterId);
         if (response.kind === "userNotTheController") {
             console.log("You are not the owner of this canister");
         } else {
@@ -74,7 +74,7 @@ export async function test_canisters(host: string, identity: SignIdentity): Prom
     }
     {
         console.log("Try changing ownership to anon user");
-        const response = await serviceApi.transferCanisterOwnership({
+        const response = await serviceApi.updateCanisterSettings({
             canisterId: newCanisterId,
             settings: {
                 controller: Principal.anonymous()
@@ -88,7 +88,7 @@ export async function test_canisters(host: string, identity: SignIdentity): Prom
     }
     {
         console.log("Try to get canister status of non-owned canister");
-        const response = await serviceApi.getCanisterStatus(newCanisterId);
+        const response = await serviceApi.getCanisterDetails(newCanisterId);
         if (response.kind === "userNotTheController") {
             console.log("You are not the owner of this canister");
         } else {
