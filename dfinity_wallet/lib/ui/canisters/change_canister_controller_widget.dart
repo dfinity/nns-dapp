@@ -70,9 +70,7 @@ class ChangeCanisterControllerWidget extends StatelessWidget {
           description:
           "You are going to change the controller of canister ${canister.identifier}.\n\nAfter complete, the new controller will be ${controllerField.currentValue}",
           onConfirm: () async {
-            await context.performLoading(() => 2.seconds.delay);
-            canister.controller = controllerField.currentValue;
-            await canister.save();
+            await context.performLoading(() => context.icApi.changeCanisterController(canister.identifier, controllerField.currentValue));
             OverlayBaseWidget.of(context)?.dismiss();
           },
         ));

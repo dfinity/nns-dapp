@@ -192,7 +192,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<double> getICPToCyclesExchangeRate() {
+  Future<BigInt> getICPToCyclesExchangeRate() {
     // TODO: implement getICPToCyclesExchangeRate
     throw UnimplementedError();
   }
@@ -200,6 +200,18 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> topupCanister({required BigInt stake, int? fromSubAccountId, required String targetCanisterId}) {
     // TODO: implement topupCanister
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> getCanister(String canisterId) {
+    // TODO: implement updateCanister
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> changeCanisterController(String canisterId, String newController) {
+    // TODO: implement changeCanisterController
     throw UnimplementedError();
   }
 

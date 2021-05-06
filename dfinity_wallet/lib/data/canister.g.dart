@@ -20,13 +20,14 @@ class CanisterAdapter extends TypeAdapter<Canister> {
       name: fields[0] as String,
       publicKey: fields[1] as String,
       controller: fields[4] as String?,
-    )..cyclesBalance = fields[3] as int?;
+      userIsController: fields[8] as bool?,
+    )..cyclesBalance = fields[3] as String?;
   }
 
   @override
   void write(BinaryWriter writer, Canister obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -34,7 +35,9 @@ class CanisterAdapter extends TypeAdapter<Canister> {
       ..writeByte(3)
       ..write(obj.cyclesBalance)
       ..writeByte(4)
-      ..write(obj.controller);
+      ..write(obj.controller)
+      ..writeByte(8)
+      ..write(obj.userIsController);
   }
 
   @override

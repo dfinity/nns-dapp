@@ -20,6 +20,12 @@ class CanisterDetailWidget extends StatefulWidget {
 
 class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.icApi.getCanister(widget.canister.identifier);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -68,26 +74,54 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                      padding: EdgeInsets.all(24),
+                                ]),
+                            if (canister.userIsController == null)
+                              Card(
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text("Updating canister details"),
+                                  ),
+                                ),
+                              ),
+                            if (canister.userIsController == false)
+                              Card(
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                        "You are not the controller of this canister and cannot access it's details"),
+                                  ),
+                                ),
+                              ),
+                            if (canister.cyclesBalance != null)
+                              Card(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 24.0, left: 24),
+                                      child: Text(
+                                        "Cycles",
+                                        style: context.textTheme.headline3,
+                                      ),
+                                    ),
+                                    Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(24.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                        child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              canister.cyclesBalance
-                                                      ?.toDisplayICPT ??
+                                              canister.cyclesBalance?.toBigInt
+                                                      .toString() ??
                                                   "-",
                                               style: TextStyle(
                                                   color: AppColors.white,
                                                   fontFamily:
                                                       Fonts.circularBold,
-                                                  fontSize: 50),
+                                                  fontSize: 30),
                                             ),
                                             SizedBox(
                                               width: 7,
@@ -100,48 +134,13 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                                     fontSize: 50 * 0.4))
                                           ],
                                         ),
-                                      )),
-                                ]),
-                            if (canister.controller != null)
-                              Card(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        "Controller",
-                                        style: context.textTheme.headline3,
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(canister.controller ?? ""),
-                                    ),
-                                    // if (context.boxes.accounts.values.any(
-                                    //     (element) =>
-                                    //         element.identifier ==
-                                    //         widget.canister.controller))
-                                    Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: ElevatedButton(
-                                          onPressed: () {
-                                            OverlayBaseWidget.show(
-                                                context,
-                                                ChangeCanisterControllerWidget(
-                                                  canister: canister,
-                                                ));
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text("Change Controller"),
-                                          )),
-                                    )
                                   ],
                                 ),
-                              ))
+                              ),
+                            if (canister.controller != null)
+                              buildControllerCard(context, canister),
                           ],
                         ),
                       ),
@@ -186,5 +185,46 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                     ));
               })),
     );
+  }
+
+  Card buildControllerCard(BuildContext context, Canister canister) {
+    return Card(
+        child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Controller",
+              style: context.textTheme.headline3,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SelectableText(
+              canister.controller ?? "",
+              style: context.textTheme.subtitle2,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: ElevatedButton(
+                onPressed: () {
+                  OverlayBaseWidget.show(
+                      context,
+                      ChangeCanisterControllerWidget(
+                        canister: canister,
+                      ));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Change Controller"),
+                )),
+          )
+        ],
+      ),
+    ));
   }
 }

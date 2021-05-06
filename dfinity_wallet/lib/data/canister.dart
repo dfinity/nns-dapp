@@ -14,13 +14,16 @@ class Canister extends DfinityEntity {
   @HiveField(1)
   final String publicKey;
   @HiveField(3)
-  int? cyclesBalance;
+  String? cyclesBalance;
   @HiveField(4)
   String? controller;
+
+  @HiveField(8)
+  bool? userIsController;
 
   @override
   String get identifier => publicKey;
 
   Canister(
-      {required this.name, required this.publicKey, this.controller});
+      {required this.name, required this.publicKey, this.controller, required this.userIsController});
 }

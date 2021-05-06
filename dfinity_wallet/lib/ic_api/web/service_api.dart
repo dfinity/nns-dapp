@@ -25,6 +25,9 @@ class ServiceApi {
   @JS("createSubAccount")
   external Promise<dynamic> createSubAccount(String name);
 
+  @JS("updateCanisterSettings")
+  external Promise<dynamic> updateCanisterSettings(dynamic settings);
+
   @JS("sendICPTs")
   external Promise<dynamic> sendICPTs(Object request);
 
@@ -104,11 +107,14 @@ class ServiceApi {
   @JS("attachCanister")
   external Promise<void> attachCanister(AttachCanisterRequest request);
 
+  @JS("getCanisterDetails")
+  external Promise<void> getCanisterDetails(dynamic canisterId);
+
   @JS("getCanisters")
   external Promise<dynamic> getCanisters();
 
-  @JS("getICPToCyclesExchangeRate")
-  external Promise<double> getICPToCyclesExchangeRate();
+  @JS("getIcpToCyclesConversionRate")
+  external Promise<double> getIcpToCyclesConversionRate();
 }
 
 
@@ -226,6 +232,26 @@ class AttachCanisterRequest {
   external factory AttachCanisterRequest({String name, dynamic canisterId});
 }
 
+@JS()
+@anonymous
+class UpdateSettingsRequest {
+  external dynamic canisterId;
+  external UpdateCanisterSettings settings;
+
+  external factory UpdateSettingsRequest({dynamic canisterId, UpdateCanisterSettings settings});
+}
+
+
+@JS()
+@anonymous
+class UpdateCanisterSettings {
+  dynamic controller;
+
+  external factory UpdateCanisterSettings({dynamic controller});
+}
+
+
+
 enum AttachCanisterResult {
   Ok,
   CanisterAlreadyAttached,
@@ -251,3 +277,4 @@ enum CreateCanisterResult {
   NameAlreadyTaken,
   CanisterLimitExceeded
 }
+

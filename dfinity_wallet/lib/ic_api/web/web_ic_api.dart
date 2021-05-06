@@ -69,7 +69,6 @@ class PlatformICApi extends AbstractPlatformICApi {
       await balanceSyncService!.syncBalances();
       await transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
       await neuronSyncService!.fetchNeurons();
-      await getCanisters();
     }
   }
 
@@ -325,17 +324,15 @@ class PlatformICApi extends AbstractPlatformICApi {
       ...response.map((e) async {
         final id = e.canisterId.toString();
         await hiveBoxes.canisters.put(
-            id,
-            Canister(
-                name: e.name,
-                publicKey: id));
+            id, Canister(name: e.name, publicKey: id, userIsController: null));
       })
     ]);
   }
 
   @override
-  Future<double> getICPToCyclesExchangeRate() async {
-    return 420.0;
+  Future<BigInt> getICPToCyclesExchangeRate() async {
+    return promiseToFuture(serviceApi!.getIcpToCyclesConversionRate())
+        .then((value) => BigInt.parse(value.toString()));
   }
 
   @override
@@ -348,5 +345,30 @@ class PlatformICApi extends AbstractPlatformICApi {
         fromSubAccountId: fromSubAccountId,
         targetCanisterId: createPrincipal(targetCanisterId))));
   }
-}
 
+  @override
+  Future<void> getCanister(String canisterId) async {
+    final res = await promiseToFuture(
+        serviceApi!.getCanisterDetails(createPrincipal(canisterId)));
+    final response = jsonDecode(stringify(res));
+    final canister = hiveBoxes.canisters.get(canisterId)!;
+    canister.userIsController = response['kind'] == "success";
+    if (canister.userIsController == true) {
+      final details = response['details'];
+      canister.cyclesBalance = details['cycles'].toString();
+      canister.controller = res.details.setting.controller.toString();
+    }
+    canister.save();
+  }
+
+  @override
+  Future<void> changeCanisterController(
+      String canisterId, String newController) async {
+    final settings = UpdateSettingsRequest(
+        canisterId: createPrincipal(canisterId),
+        settings:
+            UpdateCanisterSettings(controller: createPrincipal(newController)));
+    await promiseToFuture(serviceApi!.updateCanisterSettings(settings));
+    await getCanister(canisterId);
+  }
+}

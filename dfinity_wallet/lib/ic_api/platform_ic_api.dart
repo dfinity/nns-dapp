@@ -84,7 +84,11 @@ abstract class AbstractPlatformICApi {
 
   Future<void> getCanisters();
 
-  Future<double> getICPToCyclesExchangeRate();
+  Future<BigInt> getICPToCyclesExchangeRate();
+
+  Future<void> getCanister(String canisterId);
+
+  Future<void> changeCanisterController(String canisterId, String newController);
 
   Future<void> test();
 
@@ -94,6 +98,8 @@ abstract class AbstractPlatformICApi {
 
   Future<void> registerHardwareWallet(
       {required String name, dynamic ledgerIdentity});
+
+
 }
 
 
