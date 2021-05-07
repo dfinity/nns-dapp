@@ -75,7 +75,7 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                CycleCalculator(trillionAmount).icpToCycles(amount).toDisplayICPT(myLocale.languageCode),
+                                CycleCalculator(trillionAmount).icpToTrillionCycles(amount).toDisplayICPT(myLocale.languageCode),
                                 style: TextStyle(color: AppColors.white,
                                     fontFamily: Fonts.circularBold,
                                     fontSize: 50),

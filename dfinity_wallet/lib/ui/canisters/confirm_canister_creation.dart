@@ -79,7 +79,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            CycleCalculator(trillionRatio).icpToCycles(amount).toDisplayICPT(myLocale.languageCode),
+                            CycleCalculator(trillionRatio).icpToTrillionCycles(amount).toDisplayICPT(myLocale.languageCode),
                             style: TextStyle(
                                 color: AppColors.white,
                                 fontFamily: Fonts.circularBold,

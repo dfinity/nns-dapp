@@ -31,69 +31,74 @@ class _CansitersPageState extends State<CansitersPage> {
   Widget build(BuildContext context) {
     return RegularRefreshWidget(
       performRefresh: () => context.icApi.refreshCanisters(),
-      child: Column(
-        children: [
-          Expanded(
-            child: FooterGradientButton(
-              footerHeight: null,
-              body: ConstrainWidthAndCenter(
-                child: TabTitleAndContent(
-                  title: "Deploy",
-                  subtitle: '''Canisters are computational units (a form of smart contracts). They are powered by “cycles”, which they must be pre-charged with. You create cycles by converting ICP tokens.
+      child: StreamBuilder(
+        stream: context.boxes.canisters.watch(),
+        builder: (context, snapshot) {
+          return Column(
+            children: [
+              Expanded(
+                child: FooterGradientButton(
+                  footerHeight: null,
+                  body: ConstrainWidthAndCenter(
+                    child: TabTitleAndContent(
+                      title: "Deploy",
+                      subtitle: '''Canisters are computational units (a form of smart contracts). They are powered by “cycles”, which they must be pre-charged with. You create cycles by converting ICP tokens.
 
 • Create new canisters that are precharged with cycles
 
 • Send new cycles to existing canisters''',
-                  children: [
-                    SmallFormDivider(),
-                    ...context.boxes.canisters.values
-                        .mapToList((e) => CanisterRow(
-                              canister: e,
-                              showsWarning: true,
-                              onPressed: () {
-                                context.nav.push(CanisterPageDef.createPageConfig(e));
-                              },
-                            )),
-                    SizedBox(height: 200,)
-                  ],
-                ),
-              ),
-              footer: Align(
-                alignment: Alignment.bottomCenter,
-                child: IntrinsicHeight(
-                  child: Padding(
-                    padding: EdgeInsets.all(32),
-                    child: ElevatedButton(
+                      children: [
+                        SmallFormDivider(),
+                        ...context.boxes.canisters.values
+                            .mapToList((e) => CanisterRow(
+                                  canister: e,
+                                  showsWarning: true,
+                                  onPressed: () {
+                                    context.nav.push(CanisterPageDef.createPageConfig(e));
+                                  },
+                                )),
+                        SizedBox(height: 200,)
+                      ],
+                    ),
+                  ),
+                  footer: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: IntrinsicHeight(
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: SizedBox(
-                          width: 400,
-                          child: Center(
-                            child: Text(
-                              "Create or Link Canister",
-                              textAlign: TextAlign.center,
-                              style: context.textTheme.button
-                                  ?.copyWith(fontSize: 24),
+                        padding: EdgeInsets.all(32),
+                        child: ElevatedButton(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: SizedBox(
+                              width: 400,
+                              child: Center(
+                                child: Text(
+                                  "Create or Link Canister",
+                                  textAlign: TextAlign.center,
+                                  style: context.textTheme.button
+                                      ?.copyWith(fontSize: 24),
+                                ),
+                              ),
                             ),
                           ),
+                          onPressed: () {
+                            OverlayBaseWidget.show(
+                                context,
+                                WizardOverlay(
+                                  rootTitle: "Add Canister",
+                                  rootWidget: SelectCanisterAddActionWidget(),
+                                ),
+                                borderRadius: 20);
+                          },
                         ),
                       ),
-                      onPressed: () {
-                        OverlayBaseWidget.show(
-                            context,
-                            WizardOverlay(
-                              rootTitle: "Add Canister",
-                              rootWidget: SelectCanisterAddActionWidget(),
-                            ),
-                            borderRadius: 20);
-                      },
                     ),
                   ),
                 ),
-              ),
-            ),
-          )
-        ],
+              )
+            ],
+          );
+        }
       ),
     );
   }

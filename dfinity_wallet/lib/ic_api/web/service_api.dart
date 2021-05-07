@@ -296,9 +296,9 @@ class RenameSubAccountRequest {
 @JS()
 @anonymous
 class DetachCanisterRequest {
-  external dynamic principal;
+  external dynamic canisterId;
 
-  external factory DetachCanisterRequest({dynamic principal});
+  external factory DetachCanisterRequest({dynamic canisterId});
 }
 
 

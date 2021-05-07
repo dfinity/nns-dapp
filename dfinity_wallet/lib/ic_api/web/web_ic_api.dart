@@ -80,6 +80,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     await balanceSyncService!.syncBalances();
     await transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
     await neuronSyncService!.fetchNeurons();
+    getCanisters();
   }
 
   @override
@@ -398,8 +399,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> detachCanister(String canisterId) async {
+    print(canisterId);
     await promiseToFuture(serviceApi!.detachCanister(
-        DetachCanisterRequest(principal: createPrincipal(canisterId))));
+        DetachCanisterRequest(canisterId: createPrincipal(canisterId))));
     await getCanisters();
   }
 }
