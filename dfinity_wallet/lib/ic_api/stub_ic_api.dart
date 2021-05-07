@@ -234,4 +234,10 @@ class PlatformICApi extends AbstractPlatformICApi {
     // TODO: implement initialize
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> renameSubAccount({required String accountIdentifier, required String newName}) {
+    // TODO: implement renameSubAccount
+    throw UnimplementedError();
+  }
 }

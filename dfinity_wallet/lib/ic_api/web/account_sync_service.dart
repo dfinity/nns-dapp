@@ -75,6 +75,10 @@ class AccountsSyncService {
               neurons: HiveList(hiveBoxes.neurons),
               hardwareWallet: hardwareWallet
           ));
+    }else{
+      final account = await hiveBoxes.accounts.get(address)!;
+      account.name = name;
+      account.save();
     }
     return address;
   }

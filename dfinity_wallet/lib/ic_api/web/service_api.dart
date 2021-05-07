@@ -97,7 +97,6 @@ class ServiceApi {
   @JS("makeMotionProposal")
   external Promise<dynamic> makeMotionProposal(dynamic request);
 
-  // Canisters
   @JS("createCanister")
   external Promise<dynamic> createCanister(CreateCanisterRequest request);
 
@@ -115,9 +114,10 @@ class ServiceApi {
 
   @JS("getIcpToCyclesConversionRate")
   external Promise<double> getIcpToCyclesConversionRate();
+
+  @JS("renameSubAccount")
+  external Promise<double> renameSubAccount(RenameSubAccountRequest request);
 }
-
-
 
 
 @JS()
@@ -277,4 +277,15 @@ enum CreateCanisterResult {
   NameAlreadyTaken,
   CanisterLimitExceeded
 }
+
+
+@JS()
+@anonymous
+class RenameSubAccountRequest {
+  external String newName;
+  external String accountIdentifier;
+
+  external factory RenameSubAccountRequest({String newName, String accountIdentifier});
+}
+
 

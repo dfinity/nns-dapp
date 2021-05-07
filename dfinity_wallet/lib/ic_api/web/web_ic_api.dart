@@ -368,4 +368,14 @@ class PlatformICApi extends AbstractPlatformICApi {
     await promiseToFuture(serviceApi!.updateCanisterSettings(settings));
     await getCanister(canisterId);
   }
+
+  @override
+  Future<void> renameSubAccount({required String accountIdentifier, required String newName}) async {
+    print("renameSubAccount: accountIdentifier: ${accountIdentifier} newName: ${newName}");
+    await promiseToFuture(serviceApi!.renameSubAccount(RenameSubAccountRequest(
+      newName: newName,
+      accountIdentifier: accountIdentifier,
+    )));
+    await accountsSyncService!.performSync();
+  }
 }

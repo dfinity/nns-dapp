@@ -33,6 +33,32 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
       appBar: AppBar(
         title: Text("Account"),
         backgroundColor: AppColors.background,
+        actions: [
+          if (widget.account.subAccountId != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextButton(
+                  onPressed: () {
+                    OverlayBaseWidget.show(
+                        context,
+                        TextFieldDialogWidget(
+                            title: "Rename Linked Account",
+                            fieldName: "New Name",
+                            buttonTitle: "Rename",
+                            onComplete: (name) async {
+                              context.performLoading(() => context.icApi
+                                  .renameSubAccount(
+                                      accountIdentifier:
+                                          widget.account.identifier,
+                                      newName: name));
+                            }));
+                  },
+                  child: Text(
+                    "Rename",
+                    style: context.textTheme.subtitle2,
+                  )),
+            )
+        ],
       ),
       body: Container(
           color: AppColors.lightBackground,

@@ -13,7 +13,7 @@ part 'account.g.dart';
 @HiveType(typeId: 101)
 class Account extends DfinityEntity with ICPSource {
   @HiveField(0)
-  final String name;
+  String name;
   @HiveField(1)
   String accountIdentifier;
   @HiveField(2)

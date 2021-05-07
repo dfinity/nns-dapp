@@ -100,7 +100,7 @@ abstract class AbstractPlatformICApi {
   Future<void> registerHardwareWallet(
       {required String name, dynamic ledgerIdentity});
 
-
+  Future<void> renameSubAccount({required String accountIdentifier, required String newName});
 }
 
 
