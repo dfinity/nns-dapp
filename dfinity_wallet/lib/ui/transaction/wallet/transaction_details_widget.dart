@@ -16,10 +16,7 @@ class TransactionDetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var transactionFeeICPMsg = TRANSACTION_FEE_ICP.toString() +
-        " ICP (" +
-        TRANSACTION_FEE_E8S.toString() +
-        " e8s)";
+    var transactionFeeICPMsg = TRANSACTION_FEE_ICP.toString() + " ICP";
     return Container(
         child: Center(
       child: IntrinsicWidth(
