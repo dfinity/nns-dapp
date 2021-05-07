@@ -22,6 +22,11 @@ window["createBigInt"] = function(bigIntString: string): BigInt {
     return BigInt(bigIntString)
 }
 
+// This hack is because Dart interop doesn't yet understand bigint
+window["convertBigIntToString"] = function(bigInt: bigint): string {
+    return bigInt.toString();
+}
+
 window["createServiceApi"] = function(host: string, identity: SignIdentity): ServiceApi {
     return new ServiceApi(host, identity);
 }

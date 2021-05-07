@@ -75,7 +75,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
             if(ratio == null)
               Padding(
                 padding: const EdgeInsets.all(18.0),
-                child: Center(child: Text("Fetching conversion ratio...")),
+                child: Center(child: Text("Fetching conversion rate...")),
               ),
             if(ratio != null)
             Row(

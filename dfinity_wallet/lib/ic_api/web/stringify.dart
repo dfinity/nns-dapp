@@ -11,6 +11,9 @@ external String stringify(Object obj);
 @JS('createBigInt')
 external dynamic toJSBigInt(String bigIntString);
 
+@JS('convertBigIntToString')
+external String convertBigIntToString(dynamic bigInt);
+
 @JS('getAccountIdentifier')
 external dynamic getAccountIdentifier(dynamic ledgerIdentity);
 

@@ -46,11 +46,10 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   void authenticate(Function onAuthenticated) async {
-    promiseToFuture(
-        authApi.login(allowInterop((){
-          fetchIdentityAndBuildServices();
-          onAuthenticated();
-        })));
+    promiseToFuture(authApi.login(allowInterop(() {
+      fetchIdentityAndBuildServices();
+      onAuthenticated();
+    })));
   }
 
   void fetchIdentityAndBuildServices() {
@@ -326,8 +325,11 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<BigInt> getICPToCyclesExchangeRate() async {
-    return promiseToFuture(serviceApi!.getIcpToCyclesConversionRate())
-        .then((value) => BigInt.parse(value.toString()));
+    final response =
+        await promiseToFuture(serviceApi!.getIcpToCyclesConversionRate());
+    final string = convertBigIntToString(response);
+    print("getICPToCyclesExchangeRate ${string}");
+    return BigInt.parse(string);
   }
 
   @override
