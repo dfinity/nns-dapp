@@ -43,6 +43,6 @@ window["createPrincipal"] = (text: string) : Principal => {
     return Principal.fromText(text.toString());
 }
 
-window["createAuthApi"] = function(): Promise<AuthApi> {
-    return AuthApi.create();
+window["createAuthApi"] = (onLoggedOut: () => void) : Promise<AuthApi> => {
+    return AuthApi.create(onLoggedOut);
 }

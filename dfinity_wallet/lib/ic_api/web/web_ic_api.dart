@@ -42,7 +42,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   Future initialize() async {
     authApi = await promiseToFuture(createAuthApi(allowInterop((){
-      html.window.open("/auth", "Auth");
+      html.window.location.reload();
     })));
     fetchIdentityAndBuildServices();
   }
