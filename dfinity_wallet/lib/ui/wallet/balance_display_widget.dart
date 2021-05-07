@@ -11,18 +11,20 @@ class BalanceDisplayWidget extends StatelessWidget {
       required this.amount,
       required this.amountSize,
       required this.icpLabelSize,
-        this.amountLabelSuffix})
+      this.amountLabelSuffix})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
+    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "${amount.toDisplayICPT}${amountLabelSuffix??""}",
+          "${amount.toDisplayICPT(myLocale.languageCode)}${amountLabelSuffix ?? ""}",
           style: TextStyle(
               color: AppColors.white,
               fontFamily: Fonts.circularBold,

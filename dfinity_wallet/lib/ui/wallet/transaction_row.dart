@@ -70,6 +70,7 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     final sign = addition ? "+" : "-";
     final color = addition ? AppColors.green500 : AppColors.gray50;
     final secondaryColor = addition ? AppColors.green600 : AppColors.gray200;
@@ -79,7 +80,7 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "$sign${amount.toDisplayICPT}",
+          "$sign${amount.toDisplayICPT(myLocale.languageCode)}",
           style: TextStyle(
               color: color,
               fontFamily: Fonts.circularBold,

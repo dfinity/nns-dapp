@@ -23,6 +23,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Container(
         child: Center(
       child: Padding(
@@ -43,7 +44,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            amount.toDisplayICPT,
+                            amount.toDisplayICPT(myLocale.languageCode),
                             style: TextStyle(
                                 color: AppColors.white,
                                 fontFamily: Fonts.circularBold,
@@ -74,7 +75,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            CycleCalculator.icpToCycles(amount).toDisplayICPT,
+                            CycleCalculator.icpToCycles(amount).toDisplayICPT(myLocale.languageCode),
                             style: TextStyle(
                                 color: AppColors.white,
                                 fontFamily: Fonts.circularBold,

@@ -48,13 +48,7 @@ extension ToICPT on BigInt {
 */
 
 extension DisplayICPTDouble on double {
-  String get toDisplayICPT => NumberFormat("###,##0.00######", "en_US")
-      .format(this)
-      .replaceAll(',', ' ');
-}
-
-extension DisplayICPTInt on int {
-  String get toDisplayICPT => NumberFormat("###,##0.00######", "en_US")
-      .format(this)
-      .replaceAll(',', ' ');
+  Function(String locale) get toDisplayICPT => (String locale) {
+        return NumberFormat("###,##0.00######", locale).format(this);
+      };
 }
