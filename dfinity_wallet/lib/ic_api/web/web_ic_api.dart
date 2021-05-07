@@ -25,7 +25,8 @@ import 'package:dfinity_wallet/dfinity.dart';
 import 'stringify.dart';
 
 class PlatformICApi extends AbstractPlatformICApi {
-  final authApi = new AuthApi();
+
+  AuthApi? authApi;
   ServiceApi? serviceApi;
   AccountsSyncService? accountsSyncService;
   BalanceSyncService? balanceSyncService;
@@ -33,24 +34,45 @@ class PlatformICApi extends AbstractPlatformICApi {
   NeuronSyncService? neuronSyncService;
   ProposalSyncService? proposalSyncService;
 
-  PlatformICApi(HiveBoxesWidget hiveBoxes) : super(hiveBoxes);
+  dynamic? identity;
+  bool get isLoggedIn => identity != null;
+
+  PlatformICApi(HiveBoxesWidget hiveBoxes) : super(hiveBoxes){
+    buildAuthApi();
+  }
+
+  Future buildAuthApi() async {
+    if (authApi == null) {
+      authApi = await promiseToFuture(createAuthApi());
+    }
+    identity = authApi!.tryGetIdentity();
+    if(identity != null) {
+      buildServices(identity);
+    }
+  }
+
 
   @override
   void authenticate(BuildContext context) async {
     await hiveBoxes.authToken.clear();
+    authAndBuildServices();
+  }
 
-    final key = authApi.createKey();
-    await context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
-    authApi.loginWithIdentityProvider(
-        key, "http://" + window.location.host + "/index.html");
+  Future<void> authAndBuildServices() async {
+    var identity = authApi!.tryGetIdentity();
+    if (identity == null) {
+      await promiseToFuture(authApi!.login());
+    } else {
+      buildServices(identity);
+    }
   }
 
   final gatewayHost = "https://cdtesting.dfinity.network/";
 
-  Future<void> buildServices() async {
+  Future<void> buildServices(dynamic identity) async {
     final token = hiveBoxes.authToken.webAuthToken;
     if (token != null && token.data != null && serviceApi == null) {
-      final identity = authApi.createDelegationIdentity(token.key, token.data!);
+      final identity = authApi!.createDelegationIdentity(token.key, token.data!);
       serviceApi = createServiceApi(gatewayHost, identity);
 
       accountsSyncService = AccountsSyncService(serviceApi!, hiveBoxes);
@@ -223,13 +245,13 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<dynamic> connectToHardwareWallet() {
-    return promiseToFuture(authApi.connectToHardwareWallet());
+    return promiseToFuture(authApi!.connectToHardwareWallet());
   }
 
   @override
   Future<HardwareWalletApi> createHardwareWalletApi(
       {dynamic ledgerIdentity}) async {
-    final identity = await promiseToFuture(authApi.connectToHardwareWallet());
+    final identity = await promiseToFuture(authApi!.connectToHardwareWallet());
     return HardwareWalletApi(gatewayHost, identity);
   }
 

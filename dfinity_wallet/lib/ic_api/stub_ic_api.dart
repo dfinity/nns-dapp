@@ -16,7 +16,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     throw UnimplementedError();
   }
 
-  Future<void> buildServices() async {}
+  Future<void> buildServices(dynamic identity) async {}
 
   @override
   Future<void> acquireICPTs(

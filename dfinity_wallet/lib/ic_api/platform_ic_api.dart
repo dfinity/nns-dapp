@@ -11,13 +11,11 @@ import 'dart:js';
 abstract class AbstractPlatformICApi {
   final HiveBoxesWidget hiveBoxes;
 
-  AbstractPlatformICApi(this.hiveBoxes) {
-    buildServices();
-  }
+  AbstractPlatformICApi(this.hiveBoxes);
 
   void authenticate(BuildContext context);
 
-  Future<void> buildServices();
+  Future<void> buildServices(dynamic identity);
 
   Future<void> refreshAccounts();
 

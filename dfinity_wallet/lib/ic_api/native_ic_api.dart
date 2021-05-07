@@ -25,7 +25,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     // return address;
   }
 
-  Future<void> buildServices() async {
+  Future<void> buildServices(dynamic identity) async {
 
   }
 

@@ -7,16 +7,18 @@ import '../models.dart';
 import 'js_utils.dart';
 
 
+@JS("createAuthApi")
+external Promise<dynamic> createAuthApi();
+
 @JS("AuthApi")
 class AuthApi {
   external factory AuthApi();
 
-  @JS("createKey")
-  external String createKey();
+  @JS("tryGetIdentity")
+  external dynamic? tryGetIdentity();
 
-  @JS("createAuthenticationIdentity")
-  external Promise<dynamic> loginWithIdentityProvider(
-      String key, String returnUrl);
+  @JS("login")
+  external Promise<dynamic> login();
 
   @JS("createDelegationIdentity")
   external dynamic createDelegationIdentity(String key, String accessToken);
