@@ -39,6 +39,8 @@ import NnsUiService, {
     AttachCanisterResult,
     CanisterDetails,
     CreateSubAccountResponse,
+    DetachCanisterRequest,
+    DetachCanisterResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
     RegisterHardwareWalletRequest,
@@ -240,6 +242,10 @@ export default class ServiceApi {
 
     public attachCanister = (request: AttachCanisterRequest) : Promise<AttachCanisterResult> => {
         return this.nnsUiService.attachCanister(request);
+    }
+
+    public detachCanister = (request: DetachCanisterRequest) : Promise<DetachCanisterResponse> => {
+        return this.nnsUiService.detachCanister(request);
     }
 
     public getCanisters = (): Promise<Array<CanisterDetails>> => {
