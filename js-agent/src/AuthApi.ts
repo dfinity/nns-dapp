@@ -24,8 +24,8 @@ export default class AuthApi {
             : identity;
     }
 
-    public login = async () : Promise<void> => {
-        await this.authClient.login({ identityProvider: IDENTITY_SERVICE_URL });
+    public login = async (onSuccess: () => void) : Promise<void> => {
+        await this.authClient.login({ identityProvider: IDENTITY_SERVICE_URL, onSuccess });
     }
 
     public logout = async () : Promise<void> => {
