@@ -68,7 +68,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                       WizardOverlay.of(context).replacePage(
                           "Transaction Completed!",
                           TransactionDoneWidget(
-                            amount: widget.amount,
+                            amount: widget.amount+TRANSACTION_FEE_ICP,
                             origin: widget.origin,
                             destination: widget.destination,
                           ));
