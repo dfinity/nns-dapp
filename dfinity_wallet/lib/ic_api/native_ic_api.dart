@@ -232,4 +232,16 @@ class PlatformICApi extends AbstractPlatformICApi {
     throw UnimplementedError();
   }
 
+  @override
+  Future<void> refreshNeurons() {
+    // TODO: implement refreshNeurons
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> refreshCanisters() {
+    // TODO: implement refreshCanisters
+    throw UnimplementedError();
+  }
+
 }

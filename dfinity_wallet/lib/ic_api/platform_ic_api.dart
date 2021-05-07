@@ -101,6 +101,10 @@ abstract class AbstractPlatformICApi {
       {required String name, dynamic ledgerIdentity});
 
   Future<void> renameSubAccount({required String accountIdentifier, required String newName});
+
+  Future<void> refreshNeurons();
+
+  Future<void> refreshCanisters();
 }
 
 

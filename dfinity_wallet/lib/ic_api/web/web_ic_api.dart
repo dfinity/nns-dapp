@@ -263,6 +263,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> refreshAccounts() async {
     await accountsSyncService!.performSync();
+    balanceSyncService!.syncBalances();
+    transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
   }
 
   @override
@@ -380,5 +382,15 @@ class PlatformICApi extends AbstractPlatformICApi {
       accountIdentifier: accountIdentifier,
     )));
     await accountsSyncService!.performSync();
+  }
+
+  @override
+  Future<void> refreshNeurons() async {
+    neuronSyncService?.fetchNeurons();
+  }
+
+  @override
+  Future<void> refreshCanisters() async {
+    getCanisters();
   }
 }

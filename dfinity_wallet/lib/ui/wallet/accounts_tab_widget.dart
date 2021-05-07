@@ -34,106 +34,108 @@ class AccountsTabWidget extends StatefulWidget {
 class _AccountsTabWidgetState extends State<AccountsTabWidget> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Object>(
-        stream: context.boxes.accounts.watch(),
-        builder: (context, snapshot) {
-          final wallets = context.boxes.accounts.values;
-          if (wallets.isEmpty) {
-            return Container(
-              child: Center(
-                child: Text("Loading Accounts..."),
-              ),
-            );
-          }
-          final subAccounts = context.boxes.accounts.subAccounts;
-          final hardwareWallets = context.boxes.accounts.hardwareWallets;
-
-          return FooterGradientButton(
-              footerHeight: null,
-              body: DefaultTabController(
-                length: 2,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ConstrainWidthAndCenter(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 24.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Accounts",
-                                          textAlign: TextAlign.left,
-                                          style: context.textTheme.headline1,
-                                        ),
-                                      ],
+    return RegularRefreshWidget(
+      performRefresh: () => context.icApi.refreshAccounts(),
+      child: StreamBuilder<Object>(
+          stream: context.boxes.accounts.watch(),
+          builder: (context, snapshot) {
+            final wallets = context.boxes.accounts.values;
+            if (wallets.isEmpty) {
+              return Container(
+                child: Center(
+                  child: Text("Loading Accounts..."),
+                ),
+              );
+            }
+            final subAccounts = context.boxes.accounts.subAccounts;
+            final hardwareWallets = context.boxes.accounts.hardwareWallets;
+            return FooterGradientButton(
+                footerHeight: null,
+                body: DefaultTabController(
+                  length: 2,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ConstrainWidthAndCenter(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Accounts",
+                                            textAlign: TextAlign.left,
+                                            style: context.textTheme.headline1,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  BalanceDisplayWidget(
-                                      amount: wallets
-                                          .sumBy((element) => element.icpBalance),
-                                      amountSize: 40,
-                                      icpLabelSize: 20),
-                                ],
+                                    BalanceDisplayWidget(
+                                        amount: wallets
+                                            .sumBy((element) => element.icpBalance),
+                                        amountSize: 40,
+                                        icpLabelSize: 20),
+                                  ],
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            ...wallets.sortedBy((element) => element.primary ? 0 : 1)
-                                .thenByDescending((element) => element.balance.toBigInt)
-                                .mapToList((e) => AccountRow(
-                              account: e,
-                              onTap: () {
-                                context.nav.push(AccountPageDef.createPageConfig(e));
-                              },
-                            )),
-                            SizedBox(
-                              height: 180,
-                            )
-                          ],
+                              SizedBox(
+                                height: 40,
+                              ),
+                              ...wallets.sortedBy((element) => element.primary ? 0 : 1)
+                                  .thenByDescending((element) => element.balance.toBigInt)
+                                  .mapToList((e) => AccountRow(
+                                account: e,
+                                onTap: () {
+                                  context.nav.push(AccountPageDef.createPageConfig(e));
+                                },
+                              )),
+                              SizedBox(
+                                height: 180,
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              footer:  Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: EdgeInsets.all(32),
-                  child: ElevatedButton(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: SizedBox(
-                        width: 400,
-                        child: Text(
-                          "Add Account",
-                          textAlign: TextAlign.center,
-                          style: context.textTheme.button?.copyWith(fontSize: 24),
-                        ),
-                      ),
+                      ],
                     ),
-                    onPressed: () {
-                      OverlayBaseWidget.show(
-                          context,
-                          WizardOverlay(
-                            rootTitle: "Add Account",
-                            rootWidget: SelectAccountAddActionWidget(),
-                          ));
-                    },
                   ),
                 ),
-              ));
-        });
+                footer:  Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.all(32),
+                    child: ElevatedButton(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SizedBox(
+                          width: 400,
+                          child: Text(
+                            "Add Account",
+                            textAlign: TextAlign.center,
+                            style: context.textTheme.button?.copyWith(fontSize: 24),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        OverlayBaseWidget.show(
+                            context,
+                            WizardOverlay(
+                              rootTitle: "Add Account",
+                              rootWidget: SelectAccountAddActionWidget(),
+                            ));
+                      },
+                    ),
+                  ),
+                ));
+          }),
+    );
   }
 }
 
