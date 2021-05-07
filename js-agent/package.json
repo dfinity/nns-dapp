@@ -3,6 +3,7 @@
     "build": "./build.sh"
   },
   "dependencies": {
+    "@dfinity/auth-client": "^0.8.6",
     "@dfinity/authentication": "^0.8.6",
     "@dfinity/identity-ledgerhq": "^0.8.6",
     "borc": "^2.1.2",

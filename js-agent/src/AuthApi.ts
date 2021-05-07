@@ -1,41 +1,35 @@
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
-import * as webauthn from "./auth/webauthn";
-import { WebAuthnIdentity } from "./auth/webauthn";
-import authClient from "./auth/authClient";
-import GOVERNANCE_CANISTER_ID from "./canisters/governance/canisterId";
-import LEDGER_CANISTER_ID from "./canisters/ledger/canisterId";
-import NNS_UI_CANISTER_ID from "./canisters/nnsUI/canisterId";
-import IC_MANAGEMENT_CANISTER_ID from "./canisters/icManagement/canisterId";
+import { AuthClient } from "@dfinity/auth-client";
+import { Identity } from "@dfinity/agent";
+import { Option } from "./canisters/option";
 
-const canisterIds = [
-    GOVERNANCE_CANISTER_ID,
-    LEDGER_CANISTER_ID,
-    NNS_UI_CANISTER_ID,
-    IC_MANAGEMENT_CANISTER_ID
-];
+const IDENTITY_SERVICE_URL = "https://qsgjb-riaaa-aaaaa-aaaga-cai.cdtesting.dfinity.network/";
 
 export default class AuthApi {
+    private readonly authClient: AuthClient;
 
-    public createKey = () : string => {
-        return JSON.stringify(authClient.createKey().toJSON());
+    public static create = async () : Promise<AuthApi> => {
+        const authClient = await AuthClient.create();
+        return new AuthApi(authClient);
     }
 
-    public loginWithIdentityProvider = async (key: string, returnUrl: string) : Promise<void> => {
-        await authClient.loginWithRedirect(
-            Ed25519KeyIdentity.fromJSON(key),
-            {
-                redirectUri: returnUrl,
-                scope: canisterIds
-            });
+    private constructor(authClient: AuthClient) {
+        this.authClient = authClient;
     }
 
-    public createDelegationIdentity = (key: string, accessToken: string) : DelegationIdentity => {
-        return authClient.createDelegationIdentity(Ed25519KeyIdentity.fromJSON(key), accessToken);
+    public tryGetIdentity = () : Option<Identity> => {
+        const identity = this.authClient.getIdentity();
+        return identity.getPrincipal().isAnonymous()
+            ? null
+            : identity;
     }
 
-    public createAuthenticationIdentity = () : Promise<WebAuthnIdentity> => {
-        return webauthn.WebAuthnIdentity.create();
+    public login = async () : Promise<void> => {
+        await this.authClient.login({ identityProvider: IDENTITY_SERVICE_URL });
+    }
+
+    public logout = async () : Promise<void> => {
+        await this.authClient.logout();
     }
 
     public connectToHardwareWallet = () : Promise<LedgerIdentity> => {
