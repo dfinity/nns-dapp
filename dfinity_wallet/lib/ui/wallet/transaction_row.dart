@@ -36,14 +36,19 @@ class TransactionRow extends StatelessWidget {
                     if (transaction.to != currentAccount.accountIdentifier)
                       Text(
                         "To: ${transaction.to}",
-                        style: context.textTheme.bodyText2?.copyWith(fontSize: 16),
+                        style:
+                            context.textTheme.bodyText2?.copyWith(fontSize: 16),
                       ),
-                    SizedBox(height: 5,),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Text("${transaction.date.toString()}")
                   ],
                 ),
               ),
-              SizedBox(width: 20,),
+              SizedBox(
+                width: 20,
+              ),
               TransactionAmountDisplayWidget(
                 amount: transaction.icpt,
                 addition: transaction.from != currentAccount.accountIdentifier,
@@ -59,7 +64,8 @@ class TransactionRow extends StatelessWidget {
 class TransactionAmountDisplayWidget extends StatelessWidget {
   final double amount;
   final bool addition;
-  const TransactionAmountDisplayWidget({Key? key, required this.amount, required this.addition})
+  const TransactionAmountDisplayWidget(
+      {Key? key, required this.amount, required this.addition})
       : super(key: key);
 
   @override
@@ -74,15 +80,20 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
       children: [
         Text(
           "$sign${amount.toDisplayICPT}",
-          style: TextStyle(color: color, fontFamily: Fonts.circularBold, fontSize: 30.toDouble()),
+          style: TextStyle(
+              color: color,
+              fontFamily: Fonts.circularBold,
+              fontSize: 30.toDouble()),
         ),
         SizedBox(
           width: 7,
         ),
         Text("ICP",
-            style: TextStyle(color: secondaryColor, fontFamily: Fonts.circularBook, fontSize: 20.0))
+            style: TextStyle(
+                color: secondaryColor,
+                fontFamily: Fonts.circularBook,
+                fontSize: 20.0))
       ],
     );
   }
 }
-

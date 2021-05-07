@@ -34,10 +34,13 @@ class TransactionSyncService {
       late String from;
       late String to;
       late BigInt doms;
+      late String fee = "0";
+
       if (send != null) {
         from = account.accountIdentifier;
         to = send['to'].toString();
         doms = BigInt.parse(send['amount'].toString());
+        fee = send["fee"].toString();
       }
       if (receive != null) {
         to = account.accountIdentifier;
@@ -51,8 +54,8 @@ class TransactionSyncService {
           to: to,
           from: from,
           date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
-          doms: doms.toString(),
-          fee: e['fees'].toString()));
+          doms: (doms+fee.toBigInt).toString(),
+          fee: fee));
     });
 
     Future.wait(hiveBoxes.accounts.values.map((e) async {

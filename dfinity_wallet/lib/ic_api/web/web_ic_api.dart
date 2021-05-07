@@ -88,10 +88,10 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> sendICPTs(
       {required String toAccount,
-      required BigInt doms,
+      required BigInt e8s,
       int? fromSubAccount}) async {
     await promiseToFuture(serviceApi!.sendICPTs(SendICPTsRequest(
-        to: toAccount, amount: doms.toJS, fromSubAccountId: fromSubAccount)));
+        to: toAccount, amount: e8s.toJS, fromSubAccountId: fromSubAccount)));
     await Future.wait([
       balanceSyncService!.syncBalances(),
       transactionSyncService!.syncAccount(hiveBoxes.accounts.primary)

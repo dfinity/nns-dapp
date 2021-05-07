@@ -46,7 +46,8 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
             TransactionDetailsWidget(
               origin: widget.origin,
               destination: widget.destination,
-              amount: widget.amount,
+              // surfacing fee as part of total
+              amount: (widget.amount + TRANSACTION_FEE_ICP),
             ),
             Expanded(child: Container()),
             SizedBox(
@@ -62,7 +63,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                       await context.performLoading(() => context.icApi
                           .sendICPTs(
                               toAccount: widget.destination,
-                              doms: widget.amount.toE8s,
+                              e8s: widget.amount.toE8s,
                               fromSubAccount: widget.subAccountId));
                       WizardOverlay.of(context).replacePage(
                           "Transaction Completed!",

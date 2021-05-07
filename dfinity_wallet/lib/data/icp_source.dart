@@ -8,11 +8,14 @@ abstract class ICPSource {
   String get balance;
   double get icpBalance => balance.toBigInt.toICPT;
 }
-const DOMS_TO_ICPT = 100000000;
 
-enum ICPSourceType {
-  ACCOUNT, HARDWARE_WALLET, NEURON
-}
+const DOMS_TO_ICPT = 100000000;
+const TRANSACTION_FEE_E8S = 10000;
+const TRANSACTION_FEE_ICP = 10000 / DOMS_TO_ICPT;
+//  Construct ICPTs from E8s,
+//  10E8 E8s == 1 ICP
+
+enum ICPSourceType { ACCOUNT, HARDWARE_WALLET, NEURON }
 
 extension ToDoms on double {
   BigInt get toE8s {
@@ -27,7 +30,6 @@ extension ToDoms on double {
 extension ToICPT on BigInt {
   double get toICPT => this / BigInt.from(DOMS_TO_ICPT);
 }
-
 
 /*
   * The format should be:
@@ -46,8 +48,13 @@ extension ToICPT on BigInt {
 */
 
 extension DisplayICPTDouble on double {
-  String get toDisplayICPT => NumberFormat("###,##0.00######", "en_US").format(this).replaceAll(',', ' ');
+  String get toDisplayICPT => NumberFormat("###,##0.00######", "en_US")
+      .format(this)
+      .replaceAll(',', ' ');
 }
+
 extension DisplayICPTInt on int {
-  String get toDisplayICPT => NumberFormat("###,##0.00######", "en_US").format(this).replaceAll(',', ' ');
+  String get toDisplayICPT => NumberFormat("###,##0.00######", "en_US")
+      .format(this)
+      .replaceAll(',', ' ');
 }

@@ -27,7 +27,7 @@ abstract class AbstractPlatformICApi {
   Future<void> createSubAccount({required String name});
 
   Future<void> sendICPTs(
-      {required String toAccount, required BigInt doms, int? fromSubAccount});
+      {required String toAccount, required BigInt e8s, int? fromSubAccount});
 
   Future<void> createNeuron({required BigInt stakeInDoms, int? fromSubAccount});
 
