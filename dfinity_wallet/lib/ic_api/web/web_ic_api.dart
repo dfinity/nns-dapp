@@ -56,7 +56,6 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   void fetchIdentityAndBuildServices() {
-    print("fetchIdentityAndBuildServices");
     identity = authApi.tryGetIdentity();
     if (identity != null) {
       buildServices(identity);
@@ -66,7 +65,6 @@ class PlatformICApi extends AbstractPlatformICApi {
   final gatewayHost = "https://cdtesting.dfinity.network/";
 
   Future<void> buildServices(dynamic identity) async {
-    print(stringify(identity));
     serviceApi = createServiceApi(gatewayHost, identity);
 
     accountsSyncService = AccountsSyncService(serviceApi!, hiveBoxes);
@@ -292,9 +290,6 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt stake,
       int? fromSubAccountId,
       required String name}) async {
-    print(
-        "CREATE CANISTER stake:${stake}, fromSubAccountId:${fromSubAccountId}, name:${name}");
-
     final res =
         await promiseToFuture(serviceApi!.createCanister(CreateCanisterRequest(
       stake: stake.toJS,
