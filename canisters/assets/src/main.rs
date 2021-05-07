@@ -1,5 +1,4 @@
-use certified_map::{AsHashTree, RbTree};
-use hashtree::Hash;
+use ic_certified_map::{AsHashTree, Hash, labeled, labeled_hash, RbTree};
 use ic_cdk::export::candid::{CandidType, Deserialize};
 use ic_cdk::api::{data_certificate, set_certified_data, print, trap};
 use ic_cdk_macros::{init, post_upgrade, query};
@@ -89,7 +88,7 @@ fn make_asset_certificate_header(
         trap("data certificate is only available in query calls");
     });
     let witness = asset_hashes.witness(asset_name.as_bytes());
-    let tree = hashtree::labeled(LABEL_ASSETS, witness);
+    let tree = labeled(LABEL_ASSETS, witness);
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
     serializer.self_describe().unwrap();
     tree.serialize(&mut serializer)
@@ -128,11 +127,11 @@ fn init_assets() {
 
               let name_bytes = entry.path_bytes().into_owned().strip_prefix(b".").unwrap().to_vec();
 
-              // ignore directories (crude)
-              if name_bytes.strip_suffix(b"/").is_some() {
-                  continue
+              if !entry.header().entry_type().is_file() {
+                  continue;
               }
-              let name = String::from_utf8_lossy(&name_bytes);
+              let name = String::from_utf8(name_bytes.clone())
+                  .unwrap_or_else(|e| trap(&format!("non-utf8 file name {}: {}", String::from_utf8_lossy(&name_bytes), e)));
 
               let mut bytes = Vec::new();
               entry.read_to_end(&mut bytes).unwrap();
@@ -155,8 +154,6 @@ fn init_assets() {
 }
 
 fn update_root_hash(a: &AssetHashes) {
-    use hashtree::labeled_hash;
-
     let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &a.root_hash());
     set_certified_data(&prefixed_root_hash[..]);
 }

@@ -5,8 +5,7 @@ edition = "2018"
 
 [dependencies]
 base64 = "0.13.0"
-certified_map = { path = "../../lib/certified_map" }
-hashtree = { path = "../../lib/hashtree" }
+ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
 hex = "0.4"
 ic-cdk = "0.2.4"
 ic-cdk-macros = "0.2"
