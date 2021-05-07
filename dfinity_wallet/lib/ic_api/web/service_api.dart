@@ -277,4 +277,4 @@ enum CreateCanisterResult {
   NameAlreadyTaken,
   CanisterLimitExceeded
 }
-w
+

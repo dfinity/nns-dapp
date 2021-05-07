@@ -34,7 +34,10 @@ window["getPublicKey"] = (identity: SignIdentity) : string => {
     return identity.getPublicKey().toDer().toString('hex');
 }
 
-
 window["createPrincipal"] = (text: string) : Principal => {
     return Principal.fromText(text.toString());
+}
+
+window["createAuthApi"] = function(): Promise<AuthApi> {
+    return AuthApi.create();
 }

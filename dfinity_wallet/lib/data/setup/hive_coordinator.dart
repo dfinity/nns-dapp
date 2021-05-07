@@ -1,5 +1,3 @@
-import 'package:dfinity_wallet/data/auth_token.dart';
-import 'package:dfinity_wallet/data/auth_token.dart';
 import 'package:dfinity_wallet/data/ballot_info.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/data/followee.dart';
@@ -21,21 +19,17 @@ class HiveBoxes {
   Box<Account>? accounts;
   Box<Neuron>? neurons;
   Box<Proposal>? proposals;
-  Box<AuthToken>? authToken;
 
   bool get areClosed =>
       canisters == null ||
           accounts == null ||
       neurons == null ||
-      proposals == null ||
-      authToken == null;
-
+      proposals == null;
   HiveBoxes(
       {this.canisters,
       this.accounts,
       this.neurons,
-      this.proposals,
-      this.authToken});
+      this.proposals});
 }
 
 final PENDING_OBJECT_KEY = "pending_";
@@ -78,8 +72,6 @@ class HiveCoordinator {
           .then((value) => hiveBoxes.neurons = value),
       Hive.openBox<Proposal>('proposals')
           .then((value) => hiveBoxes.proposals = value),
-      Hive.openBox<AuthToken>('auth_token')
-          .then((value) => hiveBoxes.authToken = value)
     ]);
   }
 
@@ -87,7 +79,6 @@ class HiveCoordinator {
     Hive.registerAdapter<Account>(AccountAdapter());
     Hive.registerAdapter<Canister>(CanisterAdapter());
     Hive.registerAdapter<Neuron>(NeuronAdapter());
-    Hive.registerAdapter<AuthToken>(AuthTokenAdapter());
     Hive.registerAdapter<Proposal>(ProposalAdapter());
     Hive.registerAdapter<Transaction>(TransactionAdapter());
     Hive.registerAdapter<BallotInfo>(BallotInfoAdapter());
@@ -106,7 +97,6 @@ class HiveCoordinator {
       hiveBoxes.accounts,
       hiveBoxes.neurons,
       hiveBoxes.proposals,
-      hiveBoxes.authToken
     ].map((element) async {
       await element?.deleteAll(element.keys);
     }));

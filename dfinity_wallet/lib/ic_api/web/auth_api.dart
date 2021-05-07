@@ -18,7 +18,7 @@ class AuthApi {
   external dynamic? tryGetIdentity();
 
   @JS("login")
-  external Promise<dynamic> login();
+  external Promise<dynamic> login(Function onSuccess);
 
   @JS("createDelegationIdentity")
   external dynamic createDelegationIdentity(String key, String accessToken);

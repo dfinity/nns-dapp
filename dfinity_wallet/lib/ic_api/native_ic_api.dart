@@ -17,7 +17,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   PlatformICApi(HiveBoxesWidget hiveBoxes) : super(hiveBoxes);
 
   @override
-  void authenticate(BuildContext context) {
+  void authenticate(Function onAuthenticate){
     final walletId = "".replaceAll(" ", "_");
     // Map<String, dynamic> response =
     //         await platformChannel.invokeMapMethod("generateKey", {"walletId": walletId}) ?? {};
@@ -212,6 +212,18 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> changeCanisterController(String canisterId, String newController) {
     // TODO: implement changeCanisterController
+    throw UnimplementedError();
+  }
+
+  @override
+  bool isLoggedIn() {
+    // TODO: implement isLoggedIn
+    throw UnimplementedError();
+  }
+
+  @override
+  Future initialize() {
+    // TODO: implement initialize
     throw UnimplementedError();
   }
 

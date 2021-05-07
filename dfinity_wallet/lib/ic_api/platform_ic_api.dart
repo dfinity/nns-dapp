@@ -13,9 +13,12 @@ abstract class AbstractPlatformICApi {
 
   AbstractPlatformICApi(this.hiveBoxes);
 
-  void authenticate(BuildContext context);
+  void authenticate(Function onAuthenticate);
 
-  Future<void> buildServices(dynamic identity);
+  bool isLoggedIn();
+  Future initialize();
+
+    Future<void> buildServices(dynamic identity);
 
   Future<void> refreshAccounts();
 

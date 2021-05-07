@@ -32,7 +32,9 @@ class AuthWidget extends StatelessWidget {
                         ),
                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.gray1000)),
                         onPressed: () {
-                          context.icApi.authenticate(context);
+                          context.icApi.authenticate((){
+                            context.nav.push(AccountsTabPage);
+                          });
                         }),
                     SmallFormDivider(),
                   ],

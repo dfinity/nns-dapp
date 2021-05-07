@@ -1,4 +1,3 @@
-import 'package:dfinity_wallet/data/auth_token.dart';
 import 'package:dfinity_wallet/data/data.dart';
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/account.dart';
@@ -82,7 +81,6 @@ class HiveBoxesWidget extends InheritedWidget {
   final HiveCoordinator hiveCoordinator;
   Box<Canister> get canisters => hiveBoxes.canisters!;
   Box<Account> get accounts => hiveBoxes.accounts!;
-  Box<AuthToken> get authToken => hiveBoxes.authToken!;
   Box<Neuron> get neurons => hiveBoxes.neurons!;
   Box<Proposal> get proposals => hiveBoxes.proposals!;
 

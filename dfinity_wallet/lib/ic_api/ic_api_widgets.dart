@@ -26,13 +26,25 @@ class ICApiManagerState extends State<ICApiManager>{
   void didChangeDependencies() {
     super.didChangeDependencies();
     if(icApi == null){
-      icApi = PlatformICApi(context.boxes);
+      initialiseApi();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return InternetComputerApiWidget(icApi: icApi!, child: widget.child,);
+    if(icApi == null){
+      return Container(color: AppColors.background);
+    }else{
+      return InternetComputerApiWidget(icApi: icApi!, child: widget.child,);
+    }
+  }
+
+  void initialiseApi() async {
+    final api = PlatformICApi(context.boxes);
+    await api.initialize();
+    setState(() {
+      icApi = api;
+    });
   }
 }
 

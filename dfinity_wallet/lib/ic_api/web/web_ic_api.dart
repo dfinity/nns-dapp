@@ -25,8 +25,7 @@ import 'package:dfinity_wallet/dfinity.dart';
 import 'stringify.dart';
 
 class PlatformICApi extends AbstractPlatformICApi {
-
-  AuthApi? authApi;
+  late AuthApi authApi;
   ServiceApi? serviceApi;
   AccountsSyncService? accountsSyncService;
   BalanceSyncService? balanceSyncService;
@@ -35,34 +34,29 @@ class PlatformICApi extends AbstractPlatformICApi {
   ProposalSyncService? proposalSyncService;
 
   dynamic? identity;
-  bool get isLoggedIn => identity != null;
 
-  PlatformICApi(HiveBoxesWidget hiveBoxes) : super(hiveBoxes){
-    buildAuthApi();
+  bool isLoggedIn() => authApi.tryGetIdentity() != null;
+
+  PlatformICApi(HiveBoxesWidget hiveBoxes) : super(hiveBoxes);
+
+  Future initialize() async {
+    authApi = await promiseToFuture(createAuthApi());
+    fetchIdentityAndBuildServices();
   }
-
-  Future buildAuthApi() async {
-    if (authApi == null) {
-      authApi = await promiseToFuture(createAuthApi());
-    }
-    identity = authApi!.tryGetIdentity();
-    if(identity != null) {
-      buildServices(identity);
-    }
-  }
-
 
   @override
-  void authenticate(BuildContext context) async {
-    await hiveBoxes.authToken.clear();
-    authAndBuildServices();
+  void authenticate(Function onAuthenticated) async {
+    promiseToFuture(
+        authApi.login(allowInterop((){
+          fetchIdentityAndBuildServices();
+          onAuthenticated();
+        })));
   }
 
-  Future<void> authAndBuildServices() async {
-    var identity = authApi!.tryGetIdentity();
-    if (identity == null) {
-      await promiseToFuture(authApi!.login());
-    } else {
+  void fetchIdentityAndBuildServices() {
+    print("fetchIdentityAndBuildServices");
+    identity = authApi.tryGetIdentity();
+    if (identity != null) {
       buildServices(identity);
     }
   }
@@ -70,25 +64,22 @@ class PlatformICApi extends AbstractPlatformICApi {
   final gatewayHost = "https://cdtesting.dfinity.network/";
 
   Future<void> buildServices(dynamic identity) async {
-    final token = hiveBoxes.authToken.webAuthToken;
-    if (token != null && token.data != null && serviceApi == null) {
-      final identity = authApi!.createDelegationIdentity(token.key, token.data!);
-      serviceApi = createServiceApi(gatewayHost, identity);
+    print(stringify(identity));
+    serviceApi = createServiceApi(gatewayHost, identity);
 
-      accountsSyncService = AccountsSyncService(serviceApi!, hiveBoxes);
-      balanceSyncService = BalanceSyncService(serviceApi!, hiveBoxes);
-      transactionSyncService =
-          TransactionSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
-      neuronSyncService =
-          NeuronSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
-      proposalSyncService =
-          ProposalSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+    accountsSyncService = AccountsSyncService(serviceApi!, hiveBoxes);
+    balanceSyncService = BalanceSyncService(serviceApi!, hiveBoxes);
+    transactionSyncService =
+        TransactionSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+    neuronSyncService =
+        NeuronSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+    proposalSyncService =
+        ProposalSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
 
-      await accountsSyncService!.performSync();
-      await balanceSyncService!.syncBalances();
-      await transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
-      await neuronSyncService!.fetchNeurons();
-    }
+    await accountsSyncService!.performSync();
+    await balanceSyncService!.syncBalances();
+    await transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
+    await neuronSyncService!.fetchNeurons();
   }
 
   @override
@@ -245,13 +236,13 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<dynamic> connectToHardwareWallet() {
-    return promiseToFuture(authApi!.connectToHardwareWallet());
+    return promiseToFuture(authApi.connectToHardwareWallet());
   }
 
   @override
   Future<HardwareWalletApi> createHardwareWalletApi(
       {dynamic ledgerIdentity}) async {
-    final identity = await promiseToFuture(authApi!.connectToHardwareWallet());
+    final identity = await promiseToFuture(authApi.connectToHardwareWallet());
     return HardwareWalletApi(gatewayHost, identity);
   }
 
@@ -274,7 +265,6 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Neuron> spawnNeuron({required BigInt neuronId}) async {
-
     final spawnResponse = await promiseToFuture(serviceApi!
         .spawn(SpawnRequest(neuronId: neuronId.toJS, newController: null)));
     // print("spawnResponse " + stringify(spawnResponse));
