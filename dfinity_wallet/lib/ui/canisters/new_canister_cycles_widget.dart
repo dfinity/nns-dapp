@@ -1,5 +1,3 @@
-
-
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/canisters/confirm_canister_creation.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
@@ -12,21 +10,29 @@ class NewCanisterCyclesAmountWidget extends StatefulWidget {
   final Account origin;
   final String name;
 
-  const NewCanisterCyclesAmountWidget(
-      {Key? key,
-        required this.origin,
-        required this.name,
-      })
-      : super(key: key);
+  const NewCanisterCyclesAmountWidget({
+    Key? key,
+    required this.origin,
+    required this.name,
+  }) : super(key: key);
 
   @override
-  _NewCanisterCyclesAmountWidgetState createState() => _NewCanisterCyclesAmountWidgetState();
+  _NewCanisterCyclesAmountWidgetState createState() =>
+      _NewCanisterCyclesAmountWidgetState();
 }
 
-
-class _NewCanisterCyclesAmountWidgetState extends State<NewCanisterCyclesAmountWidget> {
-
+class _NewCanisterCyclesAmountWidgetState
+    extends State<NewCanisterCyclesAmountWidget> {
   double? icpAmount;
+  BigInt? trillionRatio;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.icApi.getICPToCyclesExchangeRate().then((value) => setState(() {
+          trillionRatio = value;
+        }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +45,14 @@ class _NewCanisterCyclesAmountWidgetState extends State<NewCanisterCyclesAmountW
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: CycleInputWidget(origin: widget.origin, onChange: (double? icps) {
-                  setState(() {
-                    icpAmount = icps;
-                  });
-                }),
+                child: CycleInputWidget(
+                    ratio: trillionRatio,
+                    origin: widget.origin,
+                    onChange: (double? icps) {
+                      setState(() {
+                        icpAmount = icps;
+                      });
+                    }),
               ),
             ),
             Expanded(child: Container()),
@@ -56,10 +65,11 @@ class _NewCanisterCyclesAmountWidgetState extends State<NewCanisterCyclesAmountW
                     WizardOverlay.of(context).pushPage(
                         "Review Canister Creation",
                         ConfirmCanisterCreationWidget(
-                          amount: icpAmount!.toDouble(),
-                          origin: widget.origin,
-                          name: widget.name,
-                        ));
+                            amount: icpAmount!.toDouble(),
+                            origin: widget.origin,
+                            name: widget.name,
+                            fromSubAccountId: widget.origin.subAccountId,
+                            trillionRatio: trillionRatio!));
                   }.takeIf((e) => icpAmount != null),
                 ))
           ],

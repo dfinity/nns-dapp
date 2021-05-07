@@ -117,6 +117,9 @@ class ServiceApi {
 
   @JS("renameSubAccount")
   external Promise<double> renameSubAccount(RenameSubAccountRequest request);
+
+  @JS("detachCanister")
+  external Promise<double> detachCanister(DetachCanisterRequest request);
 }
 
 
@@ -286,6 +289,16 @@ class RenameSubAccountRequest {
   external String accountIdentifier;
 
   external factory RenameSubAccountRequest({String newName, String accountIdentifier});
+}
+
+
+
+@JS()
+@anonymous
+class DetachCanisterRequest {
+  external dynamic principal;
+
+  external factory DetachCanisterRequest({dynamic principal});
 }
 
 

@@ -105,6 +105,8 @@ abstract class AbstractPlatformICApi {
   Future<void> refreshNeurons();
 
   Future<void> refreshCanisters();
+
+  Future<void> detachCanister(String canisterId);
 }
 
 

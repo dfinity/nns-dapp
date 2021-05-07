@@ -1,12 +1,14 @@
 class CycleCalculator {
-  static const ICP_IN_CYCLE = 0.002380952381;
+  final BigInt trillionRatio;
+  double get ratio => trillionRatio / (BigInt.from(1000000) * BigInt.from(1000000));
 
-  static double icpToCycles(double icp) {
-    final cycleToICP = (1 / ICP_IN_CYCLE).round();
-    return icp * cycleToICP;
+  CycleCalculator(this.trillionRatio);
+
+  double icpToTrillionCycles(double icp) {
+    return icp * ratio.toInt();
   }
 
-  static double cyclesToIcp(double cycles) {
-    return (cycles.toInt() * ICP_IN_CYCLE);
+  double cyclesToIcp(double cycles) {
+    return cycles.toInt() / ratio;
   }
 }

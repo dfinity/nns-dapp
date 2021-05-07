@@ -10,10 +10,11 @@ import 'cycle_calculator.dart';
 class CycleInputWidget extends StatefulWidget {
   final Account origin;
   final Function(double? icps) onChange;
+  final BigInt? ratio;
 
   const CycleInputWidget(
       {Key? key,
-        required this.origin, required this.onChange,
+        required this.origin, required this.onChange, required this.ratio
       })
       : super(key: key);
 
@@ -25,7 +26,6 @@ class CycleInputWidget extends StatefulWidget {
 class _CycleInputWidgetState extends State<CycleInputWidget> {
   late ValidatedTextField icpField;
   late ValidatedTextField cyclesField;
-  double? ratio;
 
   @override
   void initState() {
@@ -51,19 +51,16 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
         inputType: TextInputType.number);
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    context.icApi.getICPToCyclesExchangeRate().then((value) => setState((){
-      ratio = BigInt.one / value;
-    }));
-  }
-
   void callCallback(){
     final amount = (icpField.failedValidation == null) ? icpField.currentValue.toDoubleOrNull() : null;
     widget.onChange(amount);
   }
 
+  @override
+  void didUpdateWidget(covariant CycleInputWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,12 +69,6 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
         padding: const EdgeInsets.all(6.0),
         child: Column(
           children: [
-            if(ratio == null)
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Center(child: Text("Fetching conversion rate...")),
-              ),
-            if(ratio != null)
             Row(
               children: [
                 Expanded(
@@ -86,7 +77,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                     children: [
                       Text("ICP", style: context.textTheme.headline3),
                       DebouncedValidatedFormField(icpField, onChanged: () {
-                        final newCyclesAmount = CycleCalculator.icpToCycles(icpField.currentValue.toDouble());
+                        final newCyclesAmount = CycleCalculator(widget.ratio!).icpToTrillionCycles(icpField.currentValue.toDouble());
                         if(cyclesField.currentValue != newCyclesAmount.toString()){
                           cyclesField.textEditingController.text = newCyclesAmount.toString();
                         }
@@ -102,7 +93,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                     children: [
                       Text("T Cycles", style: context.textTheme.headline3),
                       DebouncedValidatedFormField(cyclesField, onChanged: (){
-                        final newIcpAmount = CycleCalculator.cyclesToIcp(cyclesField.currentValue.toDouble());
+                        final newIcpAmount = CycleCalculator(widget.ratio!).cyclesToIcp(cyclesField.currentValue.toDouble());
                         if(icpField.currentValue != newIcpAmount.toString()){
                           icpField.textEditingController.text = newIcpAmount.toString();
                         }

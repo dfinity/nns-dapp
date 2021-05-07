@@ -12,11 +12,13 @@ class ConfirmCyclesPurchase extends StatelessWidget {
   final double amount;
   final ICPSource origin;
   final Canister destination;
+  final BigInt trillionAmount;
 
   const ConfirmCyclesPurchase({Key? key,
     required this.amount,
     required this.origin,
-    required this.destination})
+    required this.destination,
+    required this.trillionAmount})
       : super(key: key);
 
   @override
@@ -73,7 +75,7 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                CycleCalculator.icpToCycles(amount).toDisplayICPT(myLocale.languageCode),
+                                CycleCalculator(trillionAmount).icpToCycles(amount).toDisplayICPT(myLocale.languageCode),
                                 style: TextStyle(color: AppColors.white,
                                     fontFamily: Fonts.circularBold,
                                     fontSize: 50),

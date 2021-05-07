@@ -314,13 +314,20 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> getCanisters() async {
     final response = await promiseToFuture(serviceApi!.getCanisters());
 
-    await Future.wait(<Future>[
+    final canisterIds = await Future.wait(<Future>[
       ...response.map((e) async {
         final id = e.canisterId.toString();
         await hiveBoxes.canisters.put(
             id, Canister(name: e.name, publicKey: id, userIsController: null));
+        return id;
       })
     ]);
+
+    final canistersToRemove = hiveBoxes.canisters.values
+        .where((element) => !canisterIds.contains(element.identifier));
+    canistersToRemove.forEach((element) {
+      hiveBoxes.canisters.delete(element.identifier);
+    });
   }
 
   @override
@@ -370,8 +377,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> renameSubAccount({required String accountIdentifier, required String newName}) async {
-    print("renameSubAccount: accountIdentifier: ${accountIdentifier} newName: ${newName}");
+  Future<void> renameSubAccount(
+      {required String accountIdentifier, required String newName}) async {
     await promiseToFuture(serviceApi!.renameSubAccount(RenameSubAccountRequest(
       newName: newName,
       accountIdentifier: accountIdentifier,
@@ -387,5 +394,12 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> refreshCanisters() async {
     getCanisters();
+  }
+
+  @override
+  Future<void> detachCanister(String canisterId) async {
+    await promiseToFuture(serviceApi!.detachCanister(
+        DetachCanisterRequest(principal: createPrincipal(canisterId))));
+    await getCanisters();
   }
 }

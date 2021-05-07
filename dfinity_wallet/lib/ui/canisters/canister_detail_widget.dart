@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
@@ -31,6 +32,27 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
       appBar: AppBar(
         title: Text("Canister"),
         backgroundColor: AppColors.background,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: TextButton(
+                onPressed: () {
+                  OverlayBaseWidget.show(
+                      context, ConfirmDialog(
+                    title: 'Confirm Detach',
+                    description: "This will remove the canister from your account, it does not change the controller.\n\If you control the canister, ensure you have it's identifier stored securely",
+                    onConfirm: () async {
+                      await context.performLoading(() => context.icApi.detachCanister(widget.canister.identifier));
+                      context.nav.popRoute();
+                    },
+                  ));
+                },
+                child: Text(
+                  "Detach",
+                  style: context.textTheme.subtitle2,
+                )),
+          )
+        ],
       ),
       body: RegularRefreshWidget(
         performRefresh: () => context.icApi.getCanister(widget.canister.identifier),
@@ -128,7 +150,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                               SizedBox(
                                                 width: 7,
                                               ),
-                                              Text("T Cycles",
+                                              Text("Cycles",
                                                   style: TextStyle(
                                                       color: AppColors.gray200,
                                                       fontFamily:

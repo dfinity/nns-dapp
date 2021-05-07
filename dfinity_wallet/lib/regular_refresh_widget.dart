@@ -19,7 +19,6 @@ class _RegularRefreshWidgetState extends State<RegularRefreshWidget> {
   void initState() {
     super.initState();
     timer = Timer.periodic(10.seconds, (timer) {
-      print("performing refresh");
       widget.performRefresh();
     });
   }

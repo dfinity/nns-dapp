@@ -244,4 +244,10 @@ class PlatformICApi extends AbstractPlatformICApi {
     throw UnimplementedError();
   }
 
+  @override
+  Future<void> detachCanister(String canisterId) {
+    // TODO: implement detachCanister
+    throw UnimplementedError();
+  }
+
 }

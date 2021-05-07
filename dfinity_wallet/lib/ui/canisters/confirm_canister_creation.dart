@@ -13,12 +13,16 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
   final double amount;
   final ICPSource origin;
   final String name;
+  final BigInt trillionRatio;
+  final int? fromSubAccountId;
 
   const ConfirmCanisterCreationWidget(
       {Key? key,
       required this.amount,
       required this.origin,
-      required this.name})
+      required this.name,
+      required this.trillionRatio,
+      required this.fromSubAccountId})
       : super(key: key);
 
   @override
@@ -75,7 +79,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            CycleCalculator.icpToCycles(amount).toDisplayICPT(myLocale.languageCode),
+                            CycleCalculator(trillionRatio).icpToCycles(amount).toDisplayICPT(myLocale.languageCode),
                             style: TextStyle(
                                 color: AppColors.white,
                                 fontFamily: Fonts.circularBold,
@@ -123,7 +127,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                   onPressed: () async {
                     final result = await context.performLoading(() => context
                         .icApi
-                        .createCanister(stake: amount.toE8s, name: name));
+                        .createCanister(stake: amount.toE8s, name: name, fromSubAccountId: fromSubAccountId));
 
                     switch (result.result){
                       case CreateCanisterResult.Ok:

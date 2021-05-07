@@ -6,27 +6,31 @@ import '../../dfinity.dart';
 import 'confirm_cycles_purchase.dart';
 import 'cycles_input_widget.dart';
 
-
-
 class TopUpCyclesAmountWidget extends StatefulWidget {
   final Account origin;
   final Canister destinationCanister;
 
   const TopUpCyclesAmountWidget(
-      {Key? key,
-        required this.origin,
-        required this.destinationCanister
-      })
+      {Key? key, required this.origin, required this.destinationCanister})
       : super(key: key);
 
   @override
-  _TopUpCyclesAmountWidgetState createState() => _TopUpCyclesAmountWidgetState();
+  _TopUpCyclesAmountWidgetState createState() =>
+      _TopUpCyclesAmountWidgetState();
 }
 
-
 class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
-
   double? icpAmount;
+  BigInt? trillionRatio;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.icApi.getICPToCyclesExchangeRate().then((value) => setState(() {
+      trillionRatio = value;
+    }));
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +40,23 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            if(trillionRatio == null)
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(child: Text("Fetching conversion rate...")),
+              ),
+            if(trillionRatio != null)
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: CycleInputWidget(origin: widget.origin, onChange: (double? icps) {
-                  setState(() {
-                    icpAmount = icps;
-                  });
-                }),
+                child: CycleInputWidget(
+                    ratio: trillionRatio,
+                    origin: widget.origin,
+                    onChange: (double? icps) {
+                      setState(() {
+                        icpAmount = icps;
+                      });
+                    }),
               ),
             ),
             TallFormDivider(),
@@ -77,8 +90,9 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
                           amount: icpAmount!.toDouble(),
                           origin: widget.origin,
                           destination: widget.destinationCanister,
+                          trillionAmount: trillionRatio!,
                         ));
-                  }.takeIf((e) => icpAmount != null),
+                  }.takeIf((e) => icpAmount != null && trillionRatio != null),
                 ))
           ],
         ),
@@ -86,6 +100,3 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
     );
   }
 }
-
-
-
