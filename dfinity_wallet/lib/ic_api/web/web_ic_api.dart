@@ -1,6 +1,7 @@
 @JS()
 library dfinity_agent.js;
 
+import 'dart:html' as html;
 import 'dart:convert';
 import 'dart:js_util';
 
@@ -40,7 +41,9 @@ class PlatformICApi extends AbstractPlatformICApi {
   PlatformICApi(HiveBoxesWidget hiveBoxes) : super(hiveBoxes);
 
   Future initialize() async {
-    authApi = await promiseToFuture(createAuthApi());
+    authApi = await promiseToFuture(createAuthApi(allowInterop((){
+      html.window.open("/auth", "Auth");
+    })));
     fetchIdentityAndBuildServices();
   }
 

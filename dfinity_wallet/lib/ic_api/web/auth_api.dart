@@ -8,7 +8,7 @@ import 'js_utils.dart';
 
 
 @JS("createAuthApi")
-external Promise<dynamic> createAuthApi();
+external Promise<dynamic> createAuthApi(Function onLoggedOut);
 
 @JS("AuthApi")
 class AuthApi {
