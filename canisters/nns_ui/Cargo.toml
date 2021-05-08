@@ -6,11 +6,17 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+base64 = "0.13.0"
 candid = "0.6.15"
 getrandom = { version = "0.2.2", features = ["js"] }
 itertools = "0.10.0"
 lazy_static = "1.4.0"
 serde = "1.0"
+serde_bytes = "0.11"
+serde_cbor = "0.11"
+sha2 = "0.9.1"
+lzma-rs = "0.2.0"
+tar = "0.4.33"
 
 dfn_candid = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
 dfn_core = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
@@ -18,6 +24,7 @@ dfn_json = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18
 dfn_macro = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
 dfn_protobuf = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
 ic-base-types = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
+ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
 ic-nns-common = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
 ic-nns-constants = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }
 ledger-canister = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "4ce244fc525a18a6c89f3b6ccad809486401f770" }

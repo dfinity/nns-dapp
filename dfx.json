@@ -4,13 +4,7 @@
       "type": "custom",
       "candid": "canisters/nns_ui/nns_ui.did",
       "wasm": "target/wasm32-unknown-unknown/release/nns_ui-opt.wasm",
-      "build": "./build.sh"
-    },
-    "nns_ui_assets": {
-      "type": "custom",
-      "candid": "canisters/assets/assets.did",
-      "wasm": "target/wasm32-unknown-unknown/release/assets.wasm",
-      "build": "./build-asset.sh",
+      "build": "./build.sh",
       "source": ["assets.tar.xz"]
     }
   },

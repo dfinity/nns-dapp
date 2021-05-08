@@ -52,7 +52,7 @@ import NnsUiService, {
 } from "./canisters/nnsUI/model";
 import icManagementBuilder from "./canisters/icManagement/builder";
 import ICManagementService, { CanisterDetailsResponse, UpdateSettingsRequest, UpdateSettingsResponse } from "./canisters/icManagement/model";
-import { create_dummy_proposals, test_canisters, test_happy_path, vote_for_authorized_subnetworks_proposal } from "./tests";
+import { create_dummy_proposals, test_canisters } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/createNeuron";
 import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/createCanister";
 import { AccountIdentifier, BlockHeight, CanisterId, E8s, NeuronId } from "./canisters/common/types";

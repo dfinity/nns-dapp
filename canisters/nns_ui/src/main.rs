@@ -24,6 +24,7 @@ use dfn_candid::{candid, candid_one};
 use dfn_core::{stable, over, over_async};
 use ledger_canister::AccountIdentifier;
 
+mod assets;
 mod canister_store;
 mod ledger;
 mod ledger_sync;
@@ -34,7 +35,9 @@ const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
 const CYCLES_PER_XDR: u64 = 1_000_000_000_000;
 
 #[export_name = "canister_init"]
-fn main() {}
+fn main() {
+    assets::init_assets();
+}
 
 #[export_name = "canister_pre_upgrade"]
 fn pre_upgrade() {
@@ -47,6 +50,13 @@ fn pre_upgrade() {
 fn post_upgrade() {
     let bytes = stable::get();
     *STATE.write().unwrap() = State::decode(bytes).expect("Decoding stable memory failed");
+
+    assets::init_assets();
+}
+
+#[export_name = "canister_query http_request"]
+pub fn http_request() {
+    over(candid_one, assets::http_request);
 }
 
 #[export_name = "canister_query get_account"]
@@ -171,7 +181,7 @@ pub fn get_icp_to_cycles_conversion_rate() {
 
 async fn get_icp_to_cycles_conversion_rate_impl() -> u64 {
     let xdr_permyriad_per_icp = match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
-        None => 1_000_000, // TODO: put the panic back in! // Using 1 ICP = 100 XDR // panic!("ICP/XDR conversion rate is not available."),
+        None => panic!("ICP/XDR conversion rate is not available."),
         Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
     };
 

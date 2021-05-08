@@ -170,6 +170,26 @@ type Stats =
         seconds_since_last_ledger_sync: nat64;
     };
 
+type HeaderField =
+    record {
+        text; text;
+    };
+
+type HttpRequest =
+    record {
+        method: text;
+        url: text;
+        headers: vec HeaderField;
+        body: blob;
+    };
+
+type HttpResponse =
+    record {
+        status_code: nat16;
+        headers: vec HeaderField;
+        body: blob;
+    };
+
 service : {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
@@ -183,4 +203,6 @@ service : {
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
     get_icp_to_cycles_conversion_rate: () -> (nat64) query;
     get_stats: () -> (Stats) query;
+
+    http_request: (request: HttpRequest) -> (HttpResponse) query;
 }
