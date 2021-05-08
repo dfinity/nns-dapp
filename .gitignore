@@ -138,4 +138,3 @@ node_modules/
 **/*.rs.bk
 
 Cargo.lock
-js-agent/package-lock.json
