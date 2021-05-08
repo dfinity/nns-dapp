@@ -8,7 +8,9 @@ set -e
 
 # build the flutter app
 cd dfinity_wallet || exit
-flutter build web --web-renderer canvaskit --release --no-sound-null-safety
+flutter build web --web-renderer canvaskit --release --no-sound-null-safety  --pwa-strategy=none
+# Remove random hash from flutter output
+sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' build/web/index.html
 
 # Bundle into a tight tarball
 cd build/web/ || exit
@@ -19,9 +21,11 @@ sha256sum assets.tar.xz
 
 
 cargo build --target wasm32-unknown-unknown --release --package nns_ui
+cp target/wasm32-unknown-unknown/release/nns_ui.wasm .
+sha256sum nns_ui.wasm
 
 # If we are in docker build, and the user passed -v out:out, copy files there
 if test -d out;
 then
-  cp -v assets.tar.xz target/wasm32-unknown-unknown/release/nns_ui.wasm out
+  cp -v assets.tar.xz nns_ui.wasm out
 fi
