@@ -123,7 +123,7 @@ pub fn init_assets() {
             for entry in tar.entries().unwrap() {
                 let mut entry = entry.unwrap();
 
-                let name_bytes = entry.path_bytes().into_owned().strip_prefix(b".").unwrap().to_vec();
+                let name_bytes = entry.path().unwrap().strip_prefix(".").unwrap().to_str().unwrap().to_string().into_bytes();
 
                 if !entry.header().entry_type().is_file() {
                     continue;
