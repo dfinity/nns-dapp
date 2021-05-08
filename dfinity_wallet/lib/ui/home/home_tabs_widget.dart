@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                             TextFieldDialogWidget(
                                 title: "How much?",
                                 buttonTitle: "Get",
-                                fieldName: "ICPT",
+                                fieldName: "ICP",
                                 onComplete: (name) {
                                   final amount = BigInt.from(name.toDouble()) *
                                       BigInt.from(100000000);

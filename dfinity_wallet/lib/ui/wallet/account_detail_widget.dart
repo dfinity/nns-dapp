@@ -175,7 +175,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                 OverlayBaseWidget.show(
                                     context,
                                     WizardOverlay(
-                                      rootTitle: "Send ICPT",
+                                      rootTitle: "Send ICP",
                                       rootWidget: SelectDestinationAccountPage(
                                           source: widget.account),
                                     ));
@@ -183,7 +183,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                 OverlayBaseWidget.show(
                                     context,
                                     WizardOverlay(
-                                      rootTitle: "Send ICPT",
+                                      rootTitle: "Send ICP",
                                       rootWidget:
                                           SelectAccountTransactionTypeWidget(
                                         source: widget.account,
