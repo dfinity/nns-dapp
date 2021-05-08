@@ -242,7 +242,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<HardwareWalletApi> createHardwareWalletApi(
       {dynamic ledgerIdentity}) async {
     final identity = await promiseToFuture(authApi.connectToHardwareWallet());
-    return HardwareWalletApi(gatewayHost, identity);
+    return HardwareWalletApi(identity);
   }
 
   @override

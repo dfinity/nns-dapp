@@ -11,7 +11,7 @@ import 'js_utils.dart';
 
 @JS("HardwareWalletApi")
 class HardwareWalletApi {
-  external factory HardwareWalletApi(String host, dynamic identity);
+  external factory HardwareWalletApi(dynamic identity);
 
   @JS("sendICPTs")
   external Promise<void> sendICPTs(
