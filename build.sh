@@ -13,8 +13,8 @@ cd build/web/ || exit
 tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../assets.tar.xz .
 cd ../../.. || exit
 ls -sh assets.tar.xz
-sha256 assets.tar.xz
+sha256sum assets.tar.xz
 
 # TODO: add what this does other than "generate wasm"
 ./generate-wasm.sh nns_ui
-sha256 target/wasm32-unknown-unknown/release/nns_ui.wasm
+sha256sum target/wasm32-unknown-unknown/release/nns_ui.wasm
