@@ -27,8 +27,8 @@ window["convertBigIntToString"] = function(bigInt: bigint): string {
     return bigInt.toString();
 }
 
-window["createServiceApi"] = function(host: string, identity: SignIdentity): ServiceApi {
-    return new ServiceApi(host, identity);
+window["createServiceApi"] = function(identity: SignIdentity): ServiceApi {
+    return new ServiceApi(identity);
 }
 
 window["getAccountIdentifier"] = (identity: SignIdentity) : string => {

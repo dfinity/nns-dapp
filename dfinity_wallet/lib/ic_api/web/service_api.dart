@@ -7,7 +7,7 @@ import '../models.dart';
 import 'js_utils.dart';
 
 @JS('createServiceApi')
-external ServiceApi createServiceApi(String host, dynamic identity);
+external ServiceApi createServiceApi(dynamic identity);
 
 @JS("ServiceApi")
 class ServiceApi {

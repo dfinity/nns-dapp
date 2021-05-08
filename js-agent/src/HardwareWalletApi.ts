@@ -11,9 +11,7 @@ export default class HardwareWalletApi {
     private readonly ledgerService: LedgerService;
 
     constructor(host: string, identity: LedgerIdentity) {
-        console.log(identity);
         const agent = new HttpAgent({
-            host,
             identity
         });
         this.identity = identity;

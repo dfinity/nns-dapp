@@ -4,7 +4,7 @@ import { DelegationIdentity } from "@dfinity/identity";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { Option } from "./canisters/option";
 
-const IDENTITY_SERVICE_URL = "https://qsgjb-riaaa-aaaaa-aaaga-cai.cdtesting.dfinity.network/";
+const IDENTITY_SERVICE_URL = "https://identity.ic0.app/";
 const ONE_MINUTE_MILLIS = 60 * 1000;
 
 export default class AuthApi {
