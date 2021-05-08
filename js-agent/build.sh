@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # install node dependencies
-npm install
+npm ci
 
 # compilation of flutter app and agent
 npx tsc

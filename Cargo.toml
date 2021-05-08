@@ -1,6 +1,7 @@
 [workspace]
 members = [
-    "canisters/nns_ui"
+    "canisters/nns_ui",
+    "dfinity/rs/rust_canisters/dfn_candid"
 ]
 
 [profile.release]

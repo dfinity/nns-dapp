@@ -1,0 +1,17 @@
+.git
+.github
+backend-tests
+node_modules
+demos
+docs
+dist
+screenshots
+target
+.dfx
+out
+asssets.tar.xz
+js-agent/node_modules
+js-agent/build
+dfinity_wallet/.dart_tool
+dfinity/.git
+dfinity/target

@@ -1,0 +1,3 @@
+[submodule "dfinity"]
+	path = dfinity
+	url = git@github.com:dfinity-lab/dfinity
