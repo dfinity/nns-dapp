@@ -19,3 +19,9 @@ sha256sum assets.tar.xz
 
 
 cargo build --target wasm32-unknown-unknown --release --package nns_ui
+
+# If we are in docker build, and the user passed -v out:out, copy files there
+if test -d out;
+then
+  cp -v assets.tar.xz target/wasm32-unknown-unknown/release/nns_ui.wasm out
+fi
