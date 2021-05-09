@@ -9,9 +9,10 @@ screenshots
 target
 .dfx
 out
-asssets.tar.xz
+assets.tar.xz
 js-agent/node_modules
 js-agent/build
 dfinity_wallet/.dart_tool
 dfinity/.git
 dfinity/target
+dfinity_wallet/build/web
