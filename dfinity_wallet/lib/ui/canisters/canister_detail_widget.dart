@@ -104,7 +104,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                   child: Center(
                                     child: Padding(
                                       padding: const EdgeInsets.all(16.0),
-                                      child: Text("Updating canister details"),
+                                      child: Text("Fetching canister details"),
                                     ),
                                   ),
                                 ),
