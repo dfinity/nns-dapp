@@ -25,6 +25,7 @@ class TransactionSyncService {
             pageSize: 100,
             offset: 0)));
     final response = jsonDecode(stringify(res));
+    print("Transactsion response ${response['transactions'].length}");
 
     final transactions = <Transaction>[];
     response['transactions'].forEach((e) {
@@ -57,15 +58,7 @@ class TransactionSyncService {
           doms: (doms+fee.toBigInt).toString(),
           fee: fee));
     });
-
-    Future.wait(hiveBoxes.accounts.values.map((e) async {
-      e.transactions = transactions
-          .filter((element) =>
-              element.to == e.accountIdentifier ||
-              element.from == e.accountIdentifier)
-          .toList();
-      e.save();
-    }));
+    account.transactions = transactions;
   }
 }
 

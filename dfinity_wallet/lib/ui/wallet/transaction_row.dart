@@ -42,7 +42,6 @@ class TransactionRow extends StatelessWidget {
                     SizedBox(
                       height: 5,
                     ),
-                    Text("${transaction.date.toString()}")
                   ],
                 ),
               ),

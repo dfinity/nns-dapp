@@ -258,4 +258,11 @@ class PlatformICApi extends AbstractPlatformICApi {
     // TODO: implement detachCanister
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> refreshAccount(Account account) {
+    // TODO: implement refreshAccount
+    throw UnimplementedError();
+  }
+
 }

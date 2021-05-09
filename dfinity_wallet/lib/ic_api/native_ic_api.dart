@@ -250,4 +250,9 @@ class PlatformICApi extends AbstractPlatformICApi {
     throw UnimplementedError();
   }
 
+  @override
+  Future<void> refreshAccount(Account account) {
+    // TODO: implement refreshAccount
+    throw UnimplementedError();
+  }
 }

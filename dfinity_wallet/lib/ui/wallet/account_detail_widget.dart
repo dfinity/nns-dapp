@@ -61,7 +61,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
         ],
       ),
       body: RegularRefreshWidget(
-        performRefresh: () => context.icApi.refreshAccounts(),
+        performRefresh: () => context.icApi.refreshAccount(widget.account),
         child: Container(
             color: AppColors.lightBackground,
             child: StreamBuilder<Object>(

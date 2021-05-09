@@ -402,4 +402,10 @@ class PlatformICApi extends AbstractPlatformICApi {
         DetachCanisterRequest(canisterId: createPrincipal(canisterId))));
     await getCanisters();
   }
+
+  @override
+  Future<void> refreshAccount(Account account) async {
+    transactionSyncService!.syncAccount(account);
+    balanceSyncService!.fetchBalances([account.identifier]);
+  }
 }
