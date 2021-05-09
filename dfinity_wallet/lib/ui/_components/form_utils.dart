@@ -83,11 +83,13 @@ class StringFieldValidation extends FieldValidation<String> {
           final amount = (e.toDoubleOrNull() ?? 0);
           return amount == 0;
         });
-}
 
-FieldValidation<String> insufficientFundsValidation(double balance) {
-  return FieldValidation<String>(
-      "Insufficient ICP", (e) => (e.toDoubleOrNull() ?? 0.0) >= balance);
+  StringFieldValidation.insufficientFunds(double balance)
+      : this("Insufficient funds", (e) {
+          var modBalance = balance.toDouble() - TRANSACTION_FEE_ICP.toDouble();
+          var sendAmount = (e.toDoubleOrNull() ?? 0.0);
+          return sendAmount > modBalance;
+        });
 }
 
 class VerySmallFormDivider extends StatelessWidget {

@@ -10,7 +10,6 @@ abstract class ICPSource {
 }
 
 const DOMS_TO_ICPT = 100000000;
-const TRANSACTION_FEE_E8S = 10000;
 const TRANSACTION_FEE_ICP = 10000 / DOMS_TO_ICPT;
 //  Construct ICPTs from E8s,
 //  10E8 E8s == 1 ICP
