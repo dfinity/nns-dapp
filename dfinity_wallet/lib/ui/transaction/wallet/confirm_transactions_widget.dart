@@ -47,7 +47,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
               origin: widget.origin,
               destination: widget.destination,
               // surfacing fee as part of total
-              amount: (widget.amount + TRANSACTION_FEE_ICP),
+              amount: (widget.amount),
             ),
             Expanded(child: Container()),
             SizedBox(
@@ -68,7 +68,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                       WizardOverlay.of(context).replacePage(
                           "Transaction Completed!",
                           TransactionDoneWidget(
-                            amount: widget.amount+TRANSACTION_FEE_ICP,
+                            amount: widget.amount,
                             origin: widget.origin,
                             destination: widget.destination,
                           ));
@@ -76,7 +76,8 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                       await context.performLoading(() async {
                         return context.icApi.disburse(
                             neuronId: BigInt.parse(widget.origin.address),
-                            doms: widget.amount.toE8s,
+                            // this is intentional. send all of them.
+                            doms: widget.origin.icpBalance.toE8s,
                             toAccountId: widget.destination);
                       });
                       WizardOverlay.of(context).replacePage(

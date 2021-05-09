@@ -335,7 +335,7 @@ export interface SplitRequest {
 export interface DisburseRequest {
     neuronId: NeuronId,
     toAccountId: AccountIdentifier,
-    amount: E8s,
+    amount?: E8s,
 }
 
 export interface DisburseToNeuronRequest {
