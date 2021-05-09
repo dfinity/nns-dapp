@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                             Tab(text: "ICP"),
                             Tab(text: "NEURONS"),
                             Tab(text: "VOTING"),
-                            Tab(text: "DEPLOY"),
+                            Tab(text: "CANISTERS"),
                           ],
                         ),
                       ),
