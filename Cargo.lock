@@ -380,8 +380,8 @@ dependencies = [
 
 [[package]]
 name = "dfn_candid"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "candid",
  "dfn_core",
@@ -392,8 +392,8 @@ dependencies = [
 
 [[package]]
 name = "dfn_core"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "byteorder",
  "cfg-if 0.1.10",
@@ -405,9 +405,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "dfn_http"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
+dependencies = [
+ "candid",
+ "dfn_candid",
+ "dfn_core",
+ "serde",
+ "serde_bytes",
+]
+
+[[package]]
 name = "dfn_json"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "on_wire",
  "serde",
@@ -416,8 +428,8 @@ dependencies = [
 
 [[package]]
 name = "dfn_macro"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -427,8 +439,8 @@ dependencies = [
 
 [[package]]
 name = "dfn_protobuf"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "dfn_core",
  "ic-base-types",
@@ -741,8 +753,8 @@ dependencies = [
 
 [[package]]
 name = "ic-base-types"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "base32",
  "byte-unit",
@@ -771,8 +783,8 @@ dependencies = [
 
 [[package]]
 name = "ic-crypto-internal-types"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "arrayvec",
  "base64 0.11.0",
@@ -789,8 +801,8 @@ dependencies = [
 
 [[package]]
 name = "ic-crypto-sha256"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "openssl",
  "sha2",
@@ -798,8 +810,8 @@ dependencies = [
 
 [[package]]
 name = "ic-crypto-tree-hash"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "ic-crypto-internal-types",
  "ic-crypto-sha256",
@@ -810,8 +822,8 @@ dependencies = [
 
 [[package]]
 name = "ic-error-types"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "candid",
  "ic-protobuf",
@@ -822,8 +834,8 @@ dependencies = [
 
 [[package]]
 name = "ic-ic00-types"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -839,8 +851,8 @@ dependencies = [
 
 [[package]]
 name = "ic-nns-common"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "candid",
  "dfn_core",
@@ -850,7 +862,7 @@ dependencies = [
  "ic-protobuf",
  "ic-registry-keys",
  "ic-registry-transport",
- "ic-types 0.1.0",
+ "ic-types 0.8.0",
  "lazy_static",
  "on_wire",
  "prost",
@@ -862,12 +874,12 @@ dependencies = [
 
 [[package]]
 name = "ic-nns-constants"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "ed25519-dalek",
  "ic-base-types",
- "ic-types 0.1.0",
+ "ic-types 0.8.0",
  "lazy_static",
  "rand_chacha 0.2.2",
  "rand_core 0.5.1",
@@ -875,8 +887,8 @@ dependencies = [
 
 [[package]]
 name = "ic-protobuf"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "bincode",
  "erased-serde",
@@ -889,17 +901,17 @@ dependencies = [
 
 [[package]]
 name = "ic-registry-keys"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "ic-base-types",
- "ic-types 0.1.0",
+ "ic-types 0.8.0",
 ]
 
 [[package]]
 name = "ic-registry-transport"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "bytes",
  "candid",
@@ -912,8 +924,21 @@ dependencies = [
 
 [[package]]
 name = "ic-types"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "968dbc1cc04bf93e94c2ffd3cb370c451d2136425dd38e9ed4cc5ca425d737af"
+dependencies = [
+ "base32",
+ "crc32fast",
+ "serde",
+ "sha2",
+ "thiserror",
+]
+
+[[package]]
+name = "ic-types"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "base32",
  "base64 0.11.0",
@@ -949,22 +974,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "ic-types"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "968dbc1cc04bf93e94c2ffd3cb370c451d2136425dd38e9ed4cc5ca425d737af"
-dependencies = [
- "base32",
- "crc32fast",
- "serde",
- "sha2",
- "thiserror",
-]
-
-[[package]]
 name = "ic-utils"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "bitflags",
  "cvt",
@@ -1086,20 +1098,22 @@ checksum = "3576a87f2ba00f6f106fdfcd16db1d698d648a26ad8e0573cad8537c3c362d2a"
 
 [[package]]
 name = "ledger-canister"
-version = "0.0.1"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "byteorder",
  "candid",
  "crc32fast",
  "dfn_candid",
  "dfn_core",
+ "dfn_http",
  "dfn_protobuf",
  "digest",
  "hex",
  "ic-base-types",
  "ic-crypto-sha256",
- "ic-types 0.1.0",
+ "ic-nns-constants",
+ "ic-types 0.8.0",
  "intmap",
  "lazy_static",
  "on_wire",
@@ -1108,6 +1122,7 @@ dependencies = [
  "prost-build",
  "prost-derive",
  "serde",
+ "serde_bytes",
  "serde_cbor",
  "yansi",
 ]
@@ -1273,8 +1288,8 @@ dependencies = [
 
 [[package]]
 name = "on_wire"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 
 [[package]]
 name = "once_cell"
@@ -1344,8 +1359,8 @@ dependencies = [
 
 [[package]]
 name = "phantom_newtype"
-version = "0.1.0"
-source = "git+ssh://github.com/dfinity-lab/dfinity?rev=4ce244fc525a18a6c89f3b6ccad809486401f770#4ce244fc525a18a6c89f3b6ccad809486401f770"
+version = "0.8.0"
+source = "git+ssh://github.com/dfinity-lab/dfinity?rev=6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3#6b3f19b8e0ec603edcac6fe8b76e3519641bb5c3"
 dependencies = [
  "candid",
  "proptest",
@@ -1860,9 +1875,9 @@ dependencies = [
 
 [[package]]
 name = "serde_with"
-version = "1.8.1"
+version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "26b0b98f61935da47683bf5c46b965ce1642ef1db78860b8a1defb68bf1b5b43"
+checksum = "33d14cb8c1b03d86e97ecbb3128d3e2f81fd8f02805680537b8d9ccb7dd8960b"
 dependencies = [
  "rustversion",
  "serde",
