@@ -1,4 +1,5 @@
 assets.tar.xz
+out
 
 # Miscellaneous
 *.class
@@ -25,7 +26,6 @@ assets.tar.xz
 **/doc/api/
 .dart_tool/
 .flutter-plugins
-pubspec.lock
 .packages
 .pub-cache/
 .pub/
@@ -136,5 +136,3 @@ dist/
 node_modules/
 
 **/*.rs.bk
-
-Cargo.lock
