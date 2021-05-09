@@ -140,7 +140,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     final res = await promiseToFuture(serviceApi!.disburse(
         DisperseNeuronRequest(
             neuronId: neuronId.toJS,
-            amount: doms.toJS,
+            amount: null,
             toAccountId: toAccountId)));
     await fetchNeuron(neuronId: neuronId);
     balanceSyncService?.syncBalances();

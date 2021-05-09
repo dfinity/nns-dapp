@@ -35,13 +35,14 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
 
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.origin.icpBalance)
+          StringFieldValidation.insufficientFunds(widget.origin.icpBalance),StringFieldValidation.nonZero()
         ],
         inputType: TextInputType.number);
   }
 
   @override
   Widget build(BuildContext context) {
+    var isNeuron = widget.origin.type == ICPSourceType.NEURON;
     return SizedBox.expand(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -80,6 +81,17 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                   Text(widget.destinationAccountIdentifier,
                       style: context.textTheme.bodyText1),
                   TallFormDivider(),
+                  isNeuron
+                ? Row()
+                : Row(
+                    children: [
+                      Text("Transaction Fee",
+                          style: context.textTheme.headline4),
+                      TallFormDivider(),
+                      Text(TRANSACTION_FEE_ICP.toString() + " ICP",
+                          style: context.textTheme.bodyText1),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -90,10 +102,11 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                 child: ValidFieldsSubmitButton(
                   child: Text("Review Transaction"),
                   onPressed: () async {
+                    var amount = amountField.currentValue.toDouble()+TRANSACTION_FEE_ICP;
                     WizardOverlay.of(context).pushPage(
                         "Review Transaction",
                         ConfirmTransactionWidget(
-                          amount: amountField.currentValue.toDouble(),
+                          amount: amount,
                           origin: widget.origin,
                           destination: widget.destinationAccountIdentifier,
                           subAccountId: widget.subAccountId,
