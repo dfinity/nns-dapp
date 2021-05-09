@@ -25,12 +25,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
   @override
   void initState() {
     amountField = ValidatedTextField("Amount in ICP",
-        validations: [
-          FieldValidation("Not enough ICP",
-              (e) => (e.toDoubleOrNull() ?? 0.0) >= widget.source.icpBalance),
-          FieldValidation(
-              "Must be greater than 1", (e) => (e.toDoubleOrNull() ?? 0.0) < 1.0)
-        ],
+        validations: [insufficientFundsValidation(widget.source.icpBalance), StringFieldValidation.nonZero()],
         inputType: TextInputType.number);
   }
 
@@ -111,7 +106,9 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                                     neuron: newNeuron,
                                     completeAction: (context) {
                                       OverlayBaseWidget.of(context)?.dismiss();
-                                      context.nav.push(NeuronPageDef.createPageConfig(newNeuron));
+                                      context.nav.push(
+                                          NeuronPageDef.createPageConfig(
+                                              newNeuron));
                                     },
                                   ));
                             }));

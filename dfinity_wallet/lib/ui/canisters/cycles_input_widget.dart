@@ -33,16 +33,8 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
 
     icpField = ValidatedTextField("Amount",
         validations: [
-          FieldValidation("Must be greater than 0",
-                  (e) {
-                final amount = (e.toDoubleOrNull() ?? 0);
-                return amount == 0;
-              }),
-          FieldValidation("Not enough ICP in account",
-                  (e) {
-                final amount = (e.toDoubleOrNull() ?? 0);
-                return amount > widget.origin.icpBalance;
-              })
+          StringFieldValidation.nonZero(),
+          insufficientFundsValidation(widget.origin.icpBalance)
         ],
         inputType: TextInputType.number);
 

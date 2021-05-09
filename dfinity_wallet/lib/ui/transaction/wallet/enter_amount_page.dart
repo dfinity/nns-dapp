@@ -35,11 +35,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
 
     amountField = ValidatedTextField("Amount",
         validations: [
-          FieldValidation("Not enough ICP in account",
-              (e) {
-                final amount = (e.toDoubleOrNull() ?? 0);
-                    return amount == 0 || amount > widget.origin.icpBalance;
-              })
+          insufficientFundsValidation(widget.origin.icpBalance)
         ],
         inputType: TextInputType.number);
   }
