@@ -68,9 +68,11 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                 stream: context.icApi.hiveBoxes.accounts
                     .watch(key: widget.account.identifier),
                 builder: (context, snapshot) {
+                  final account =
+                      context.boxes.accounts.get(widget.account.identifier)!;
                   return FooterGradientButton(
                       body: ConstrainWidthAndCenter(
-                        child: ListView(
+                        child: Column(
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,28 +85,29 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          widget.account.name,
+                                          account.name,
                                           style: context.textTheme.headline1,
                                         ),
                                         SizedBox(
                                           height: 10,
                                         ),
                                         SelectableText(
-                                          widget.account.accountIdentifier,
+                                          account.accountIdentifier,
                                           style: context.textTheme.bodyText2,
                                         ),
                                         SmallFormDivider(),
-                                        if (widget.account.hardwareWallet)
+                                        if (account.hardwareWallet)
                                           Align(
                                             alignment: Alignment.centerLeft,
                                             child: ElevatedButton(
                                                 style: ButtonStyle(
                                                     backgroundColor:
-                                                        MaterialStateProperty.all(
-                                                            AppColors.gray600)),
+                                                        MaterialStateProperty
+                                                            .all(AppColors
+                                                                .gray600)),
                                                 child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(16.0),
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
                                                   child: Text(
                                                     "Show Address And Public Key On Device",
                                                     style: TextStyle(
@@ -136,13 +139,13 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                 Padding(
                                     padding: EdgeInsets.all(24),
                                     child: BalanceDisplayWidget(
-                                      amount: widget.account.icpBalance,
+                                      amount: account.icpBalance,
                                       amountSize: 40,
                                       icpLabelSize: 25,
                                     )),
                               ],
                             ),
-                            if (widget.account.transactions.isEmpty)
+                            if (account.transactions.isEmpty)
                               Center(
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(vertical: 64),
@@ -153,7 +156,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                   ),
                                 ),
                               ),
-                            TransactionsListWidget(account: widget.account),
+                            TransactionsListWidget(account: account),
                             SizedBox(
                               height: 200,
                             )
@@ -171,13 +174,13 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                               ),
                             ),
                             onPressed: () {
-                              if (widget.account.hardwareWallet) {
+                              if (account.hardwareWallet) {
                                 OverlayBaseWidget.show(
                                     context,
                                     WizardOverlay(
                                       rootTitle: "Send ICP",
                                       rootWidget: SelectDestinationAccountPage(
-                                          source: widget.account),
+                                          source: account),
                                     ));
                               } else {
                                 OverlayBaseWidget.show(
@@ -186,7 +189,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                       rootTitle: "Send ICP",
                                       rootWidget:
                                           SelectAccountTransactionTypeWidget(
-                                        source: widget.account,
+                                        source: account,
                                       ),
                                     ));
                               }
