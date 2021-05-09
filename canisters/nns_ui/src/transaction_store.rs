@@ -401,7 +401,7 @@ impl TransactionStore {
                         Burn { amount, from: _ } => TransferResult::Burn { amount },
                         Mint { amount, to: _ } => TransferResult::Mint { amount },
                         Send { from, to, amount, fee } => {
-                            if &from == &account_identifier {
+                            if &from == &request.account_identifier {
                                 TransferResult::Send { to, amount, fee }
                             } else {
                                 TransferResult::Receive { from, amount, fee }
