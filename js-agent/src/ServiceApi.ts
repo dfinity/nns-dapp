@@ -57,6 +57,7 @@ import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCani
 import { AccountIdentifier, BlockHeight, CanisterId, E8s, NeuronId } from "./canisters/common/types";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { principalToAccountIdentifier } from "./canisters/converter";
+import { HOST } from "./canisters/constants";
 
 export default class ServiceApi {
     private readonly ledgerService: LedgerService;
@@ -67,6 +68,7 @@ export default class ServiceApi {
 
     constructor(identity: SignIdentity) {
         const agent = new HttpAgent({
+            host: HOST,
             identity
         });
         this.ledgerService = ledgerBuilder(agent, identity);

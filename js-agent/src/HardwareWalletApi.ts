@@ -4,6 +4,7 @@ import LedgerService, { SendICPTsRequest } from "./canisters/ledger/model";
 import { AccountIdentifier, BlockHeight } from "./canisters/common/types";
 import { HttpAgent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "./canisters/converter";
+import { HOST } from "./canisters/constants";
 
 export default class HardwareWalletApi {
     private readonly identity: LedgerIdentity;
@@ -12,6 +13,7 @@ export default class HardwareWalletApi {
 
     constructor(identity: LedgerIdentity) {
         const agent = new HttpAgent({
+            host: HOST,
             identity
         });
         this.identity = identity;
