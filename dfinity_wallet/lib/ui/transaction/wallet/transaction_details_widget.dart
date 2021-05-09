@@ -4,19 +4,19 @@ import '../../../dfinity.dart';
 
 class TransactionDetailsWidget extends StatelessWidget {
   final double amount;
-  final ICPSource origin;
+  final ICPSource source;
   final String destination;
 
   const TransactionDetailsWidget(
       {Key? key,
       required this.amount,
-      required this.origin,
+      required this.source,
       required this.destination})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var isNeuron = origin.type == ICPSourceType.NEURON;
+    var isNeuron = source.type == ICPSourceType.NEURON;
 
     return Container(
         child: Center(
@@ -33,9 +33,9 @@ class TransactionDetailsWidget extends StatelessWidget {
               ),
             ),
             TallFormDivider(),
-            Text("Origin", style: context.textTheme.headline4),
+            Text("Source", style: context.textTheme.headline4),
             VerySmallFormDivider(),
-            Text(origin.address, style: context.textTheme.bodyText1),
+            Text(source.address, style: context.textTheme.bodyText1),
             TallFormDivider(),
             Text("Destination", style: context.textTheme.headline4),
             VerySmallFormDivider(),

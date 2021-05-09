@@ -44,7 +44,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TallFormDivider(),
-                        SelectableText("Origin",
+                        SelectableText("Source",
                             style: context.textTheme.headline4),
                         VerySmallFormDivider(),
                         Text(widget.source.address,

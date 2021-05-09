@@ -8,13 +8,13 @@ import 'confirm_cycles_purchase.dart';
 import 'cycle_calculator.dart';
 
 class CycleInputWidget extends StatefulWidget {
-  final Account origin;
+  final Account source;
   final Function(double? icps) onChange;
   final BigInt? ratio;
 
   const CycleInputWidget(
       {Key? key,
-        required this.origin, required this.onChange, required this.ratio
+        required this.source, required this.onChange, required this.ratio
       })
       : super(key: key);
 
@@ -34,7 +34,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
     icpField = ValidatedTextField("Amount",
         validations: [
           StringFieldValidation.nonZero(),
-          StringFieldValidation.insufficientFunds(widget.origin.icpBalance)
+          StringFieldValidation.insufficientFunds(widget.source.icpBalance)
         ],
         inputType: TextInputType.number);
 

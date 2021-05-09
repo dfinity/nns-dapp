@@ -7,12 +7,12 @@ import 'confirm_cycles_purchase.dart';
 import 'cycles_input_widget.dart';
 
 class NewCanisterCyclesAmountWidget extends StatefulWidget {
-  final Account origin;
+  final Account source;
   final String name;
 
   const NewCanisterCyclesAmountWidget({
     Key? key,
-    required this.origin,
+    required this.source,
     required this.name,
   }) : super(key: key);
 
@@ -47,7 +47,7 @@ class _NewCanisterCyclesAmountWidgetState
                 padding: const EdgeInsets.all(16.0),
                 child: CycleInputWidget(
                     ratio: trillionRatio,
-                    origin: widget.origin,
+                    source: widget.source,
                     onChange: (double? icps) {
                       setState(() {
                         icpAmount = icps;
@@ -66,9 +66,9 @@ class _NewCanisterCyclesAmountWidgetState
                         "Review Canister Creation",
                         ConfirmCanisterCreationWidget(
                             amount: icpAmount!.toDouble(),
-                            origin: widget.origin,
+                            source: widget.source,
                             name: widget.name,
-                            fromSubAccountId: widget.origin.subAccountId,
+                            fromSubAccountId: widget.source.subAccountId,
                             trillionRatio: trillionRatio!));
                   }.takeIf((e) => icpAmount != null),
                 ))

@@ -62,7 +62,7 @@ class _SelectDestinationAccountPageState
                                     "Review Transaction",
                                     ConfirmTransactionWidget(
                                       amount: widget.source.icpBalance,
-                                      origin: widget.source,
+                                      source: widget.source,
                                       destination: address,
                                       subAccountId: widget.source.subAccountId,
                                     ));
@@ -70,7 +70,7 @@ class _SelectDestinationAccountPageState
                                 WizardOverlay.of(context).pushPage(
                                     "Enter ICP Amount",
                                     EnterAmountPage(
-                                      origin: widget.source,
+                                      source: widget.source,
                                       destinationAccountIdentifier: address,
                                       subAccountId: widget.source.subAccountId,
                                     ));
@@ -117,7 +117,7 @@ class _SelectDestinationAccountPageState
                                               ConfirmTransactionWidget(
                                                 amount:
                                                     widget.source.icpBalance,
-                                                origin: widget.source,
+                                                source: widget.source,
                                                 destination:
                                                     e.accountIdentifier,
                                                 subAccountId:
@@ -127,7 +127,7 @@ class _SelectDestinationAccountPageState
                                           WizardOverlay.of(context).pushPage(
                                               "Enter ICP Amount",
                                               EnterAmountPage(
-                                                origin: widget.source,
+                                                source: widget.source,
                                                 destinationAccountIdentifier:
                                                     e.accountIdentifier,
                                                 subAccountId:

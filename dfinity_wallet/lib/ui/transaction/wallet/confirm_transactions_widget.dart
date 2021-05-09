@@ -13,14 +13,14 @@ import 'hardware_wallet_transaction_widget.dart';
 
 class ConfirmTransactionWidget extends StatefulWidget {
   final double amount;
-  final ICPSource origin;
+  final ICPSource source;
   final String destination;
   final int? subAccountId;
 
   const ConfirmTransactionWidget(
       {Key? key,
       required this.amount,
-      required this.origin,
+      required this.source,
       required this.destination,
       required this.subAccountId})
       : super(key: key);
@@ -44,7 +44,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             TransactionDetailsWidget(
-              origin: widget.origin,
+              source: widget.source,
               destination: widget.destination,
               // surfacing fee as part of total
               amount: (widget.amount),
@@ -59,7 +59,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                     child: Text("Confirm and Send"),
                   ),
                   onPressed: () async {
-                    if (widget.origin.type == ICPSourceType.ACCOUNT) {
+                    if (widget.source.type == ICPSourceType.ACCOUNT) {
                       await context.performLoading(() => context.icApi
                           .sendICPTs(
                               toAccount: widget.destination,
@@ -69,32 +69,32 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                           "Transaction Completed!",
                           TransactionDoneWidget(
                             amount: widget.amount,
-                            origin: widget.origin,
+                            source: widget.source,
                             destination: widget.destination,
                           ));
-                    } else if (widget.origin.type == ICPSourceType.NEURON) {
+                    } else if (widget.source.type == ICPSourceType.NEURON) {
                       await context.performLoading(() async {
                         return context.icApi.disburse(
-                            neuronId: BigInt.parse(widget.origin.address),
+                            neuronId: BigInt.parse(widget.source.address),
                             // this is intentional. send all of them.
-                            doms: widget.origin.icpBalance.toE8s,
+                            doms: widget.source.icpBalance.toE8s,
                             toAccountId: widget.destination);
                       });
                       WizardOverlay.of(context).replacePage(
                           "Transaction Completed!",
                           TransactionDoneWidget(
                             amount: widget.amount,
-                            origin: widget.origin,
+                            source: widget.source,
                             destination: widget.destination,
                           ));
-                    } else if (widget.origin.type ==
+                    } else if (widget.source.type ==
                         ICPSourceType.HARDWARE_WALLET) {
                       WizardOverlay.of(context).pushPage(
                           "Authorize on Hardware",
                           HardwareWalletTransactionWidget(
                             amount: widget.amount,
                             destination: widget.destination,
-                            account: widget.origin as Account,
+                            account: widget.source as Account,
                           ));
                     }
                   }),
@@ -107,6 +107,6 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
   }
 
   bool canConfirm() =>
-      widget.origin.type != ICPSourceType.HARDWARE_WALLET ||
+      widget.source.type != ICPSourceType.HARDWARE_WALLET ||
       ledgerIdentity != null;
 }

@@ -7,11 +7,11 @@ import 'confirm_cycles_purchase.dart';
 import 'cycles_input_widget.dart';
 
 class TopUpCyclesAmountWidget extends StatefulWidget {
-  final Account origin;
+  final Account source;
   final Canister destinationCanister;
 
   const TopUpCyclesAmountWidget(
-      {Key? key, required this.origin, required this.destinationCanister})
+      {Key? key, required this.source, required this.destinationCanister})
       : super(key: key);
 
   @override
@@ -51,7 +51,7 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
                 padding: const EdgeInsets.all(16.0),
                 child: CycleInputWidget(
                     ratio: trillionRatio,
-                    origin: widget.origin,
+                    source: widget.source,
                     onChange: (double? icps) {
                       setState(() {
                         icpAmount = icps;
@@ -64,9 +64,9 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Origin Wallet", style: context.textTheme.headline4),
+                  Text("Source Wallet", style: context.textTheme.headline4),
                   VerySmallFormDivider(),
-                  Text(widget.origin.address,
+                  Text(widget.source.address,
                       style: context.textTheme.bodyText1),
                   TallFormDivider(),
                   Text("Canister", style: context.textTheme.headline4),
@@ -88,7 +88,7 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
                         "Review Cycles Purchase",
                         ConfirmCyclesPurchase(
                           amount: icpAmount!.toDouble(),
-                          origin: widget.origin,
+                          source: widget.source,
                           destination: widget.destinationCanister,
                           trillionAmount: trillionRatio!,
                         ));

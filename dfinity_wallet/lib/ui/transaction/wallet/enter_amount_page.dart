@@ -11,13 +11,13 @@ import '../wizard_overlay.dart';
 import 'confirm_transactions_widget.dart';
 
 class EnterAmountPage extends StatefulWidget {
-  final ICPSource origin;
+  final ICPSource source;
   final String destinationAccountIdentifier;
   final int? subAccountId;
 
   const EnterAmountPage(
       {Key? key,
-      required this.origin,
+      required this.source,
       required this.destinationAccountIdentifier,
       this.subAccountId})
       : super(key: key);
@@ -35,14 +35,14 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
 
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.origin.icpBalance),StringFieldValidation.nonZero()
+          StringFieldValidation.insufficientFunds(widget.source.icpBalance),StringFieldValidation.nonZero()
         ],
         inputType: TextInputType.number);
   }
 
   @override
   Widget build(BuildContext context) {
-    var isNeuron = widget.origin.type == ICPSourceType.NEURON;
+    var isNeuron = widget.source.type == ICPSourceType.NEURON;
     return SizedBox.expand(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -71,9 +71,9 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Origin", style: context.textTheme.headline4),
+                  Text("Source", style: context.textTheme.headline4),
                   VerySmallFormDivider(),
-                  Text(widget.origin.address,
+                  Text(widget.source.address,
                       style: context.textTheme.bodyText1),
                   TallFormDivider(),
                   Text("Destination", style: context.textTheme.headline4),
@@ -107,7 +107,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                         "Review Transaction",
                         ConfirmTransactionWidget(
                           amount: amount,
-                          origin: widget.origin,
+                          source: widget.source,
                           destination: widget.destinationAccountIdentifier,
                           subAccountId: widget.subAccountId,
                         ));

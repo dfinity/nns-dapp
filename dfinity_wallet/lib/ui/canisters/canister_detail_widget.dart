@@ -198,7 +198,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                               WizardOverlay.of(context).pushPage(
                                                   "Enter ICP Amount",
                                                   TopUpCyclesAmountWidget(
-                                                      origin: account,
+                                                      source: account,
                                                       destinationCanister:
                                                           canister));
                                             },
