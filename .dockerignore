@@ -13,6 +13,17 @@ assets.tar.xz
 js-agent/node_modules
 js-agent/build
 dfinity_wallet/.dart_tool
+dfinity_wallet/.flutter-plugins
+dfinity_wallet/.flutter-plugins-dependencies
+dfinity_wallet/.packages
+dfinity_wallet/assets/dfinity_agent.js
+dfinity_wallet/build
+dfinity_wallet/ios/Flutter/Generated.xcconfig
+dfinity_wallet/ios/Flutter/flutter_export_environment.sh
+dfinity_wallet/ios/Runner/GeneratedPluginRegistrant.h
+dfinity_wallet/ios/Runner/GeneratedPluginRegistrant.m
+dfinity_wallet/lib/generated_plugin_registrant.dart
+dfinity_wallet/pubspec.lock
 dfinity/.git
 dfinity/target
 dfinity_wallet/build/web
