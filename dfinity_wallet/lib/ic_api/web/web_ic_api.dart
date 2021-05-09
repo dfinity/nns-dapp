@@ -62,10 +62,8 @@ class PlatformICApi extends AbstractPlatformICApi {
     }
   }
 
-  final gatewayHost = "https://cdtesting.dfinity.network/";
-
   Future<void> buildServices(dynamic identity) async {
-    serviceApi = createServiceApi(gatewayHost, identity);
+    serviceApi = createServiceApi(identity);
 
     accountsSyncService = AccountsSyncService(serviceApi!, hiveBoxes);
     balanceSyncService = BalanceSyncService(serviceApi!, hiveBoxes);
@@ -244,7 +242,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<HardwareWalletApi> createHardwareWalletApi(
       {dynamic ledgerIdentity}) async {
     final identity = await promiseToFuture(authApi.connectToHardwareWallet());
-    return HardwareWalletApi(gatewayHost, identity);
+    return HardwareWalletApi(identity);
   }
 
   @override

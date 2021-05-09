@@ -19,9 +19,17 @@ pub async fn sync_transactions() -> Option<Result<u32, String>> {
 }
 
 async fn sync_transactions_within_lock() -> Result<u32, String> {
-    let next_block_height_required = get_next_required_block_height();
+    let block_height_synced_up_to = get_block_height_synced_up_to();
     let latest_block_height = ledger::tip_of_chain().await?;
 
+    if block_height_synced_up_to.is_none() {
+        let store = &mut STATE.write().unwrap().transactions_store;
+        store.init_block_height_synced_up_to(latest_block_height);
+        store.mark_ledger_sync_complete();
+        return Ok(0);
+    }
+
+    let next_block_height_required = block_height_synced_up_to.unwrap() + 1;
     if latest_block_height < next_block_height_required {
         let store = &mut STATE.write().unwrap().transactions_store;
         store.mark_ledger_sync_complete();
@@ -45,9 +53,9 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
     }
 }
 
-fn get_next_required_block_height() -> u64 {
+fn get_block_height_synced_up_to() -> Option<BlockHeight> {
     let store = &STATE.read().unwrap().transactions_store;
-    store.get_next_required_block_height()
+    store.get_block_height_synced_up_to()
 }
 
 async fn get_blocks(from: BlockHeight, count: u32) -> Result<Vec<(BlockHeight, Block)>, String> {

@@ -52,7 +52,6 @@ import NnsUiService, {
 } from "./canisters/nnsUI/model";
 import icManagementBuilder from "./canisters/icManagement/builder";
 import ICManagementService, { CanisterDetailsResponse, UpdateSettingsRequest, UpdateSettingsResponse } from "./canisters/icManagement/model";
-import { create_dummy_proposals, test_canisters } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/createNeuron";
 import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/createCanister";
 import { AccountIdentifier, BlockHeight, CanisterId, E8s, NeuronId } from "./canisters/common/types";
@@ -64,19 +63,16 @@ export default class ServiceApi {
     private readonly nnsUiService: NnsUiService;
     private readonly governanceService: GovernanceService;
     private readonly icManagementService: ICManagementService;
-    private readonly host: string;
     private readonly identity: SignIdentity;
 
-    constructor(host: string, identity: SignIdentity) {
+    constructor(identity: SignIdentity) {
         const agent = new HttpAgent({
-            host,
             identity
         });
         this.ledgerService = ledgerBuilder(agent, identity);
         this.nnsUiService = nnsUiBuilder(agent);
         this.governanceService = governanceBuilder(agent, identity);
         this.icManagementService = icManagementBuilder(agent);
-        this.host = host;
         this.identity = identity;
     }
 
@@ -262,37 +258,5 @@ export default class ServiceApi {
 
     public getIcpToCyclesConversionRate = (): Promise<bigint> => {
         return this.nnsUiService.getIcpToCyclesConversionRate();
-    } 
-
-    /* 
-        TEMPOARY 
-    */
-
-    // Temporary method for demo purposes only, to give the specified account some ICPTs
-    // by sending from the anon account which has been gifted lots of ICPTs
-    public acquireICPTs = async (accountIdentifier: AccountIdentifier, e8s: E8s): Promise<void> => {
-        const anonIdentity = new AnonymousIdentity();
-        const agent = new HttpAgent({
-            host: this.host,
-            identity: anonIdentity
-        });
-        const anonLedgerService = ledgerBuilder(agent, anonIdentity);
-        const req = {
-            to: accountIdentifier,
-            amount: e8s
-        }
-        await anonLedgerService.sendICPTs(req);
-    }
-
-    // Temporary method to trigger test code from the UI
-    public integrationTest = async (): Promise<void> => {
-        await test_canisters(this.host, this.identity);
-        // await vote_for_authorized_subnetworks_proposal(this.host, this.identity);
-        // await test_happy_path(this.host, this.identity);
-    }
-
-    // Temporary method to trigger test code from the UI
-    public createDummyProposals = (neuronId: string): Promise<void> => {
-        return create_dummy_proposals(this.host, this.identity, BigInt(neuronId));
     }
 }

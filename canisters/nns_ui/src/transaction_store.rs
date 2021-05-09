@@ -299,12 +299,14 @@ impl TransactionStore {
         block_height: BlockHeight,
         timestamp: TimeStamp,
     ) -> Result<bool, String> {
-        let expected_block_height = self.get_next_required_block_height();
-        if block_height != expected_block_height {
-            return Err(format!(
-                "Expected block height {}. Got block height {}",
-                expected_block_height, block_height
-            ));
+        if let Some(block_height_synced_up_to) = self.get_block_height_synced_up_to() {
+            let expected_block_height = block_height_synced_up_to + 1;
+            if block_height != block_height_synced_up_to + 1 {
+                return Err(format!(
+                    "Expected block height {}. Got block height {}",
+                    expected_block_height, block_height
+                ));
+            }
         }
 
         let mut should_store_transaction = false;
@@ -348,6 +350,14 @@ impl TransactionStore {
     pub fn mark_ledger_sync_complete(&mut self) {
         self.last_ledger_sync_timestamp_nanos = dfn_core::api::now()
             .duration_since(SystemTime::UNIX_EPOCH).unwrap().as_nanos() as u64;
+    }
+
+    pub fn init_block_height_synced_up_to(&mut self, block_height: BlockHeight) {
+        if self.block_height_synced_up_to.is_some() {
+            panic!("This can only be called to initialize the 'block_height_synced_up_to' value");
+        }
+
+        self.block_height_synced_up_to = Some(block_height);
     }
 
     pub fn get_transactions(&self, caller: PrincipalId, request: GetTransactionsRequest) -> GetTransactionsResponse {
@@ -415,11 +425,8 @@ impl TransactionStore {
         }
     }
 
-    pub fn get_next_required_block_height(&self) -> BlockHeight {
-        match self.block_height_synced_up_to {
-            Some(h) => h + 1,
-            None => 0
-        }
+    pub fn get_block_height_synced_up_to(&self) -> Option<BlockHeight> {
+        self.block_height_synced_up_to
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -463,7 +470,7 @@ impl TransactionStore {
             sub_accounts_count: self.sub_accounts_count,
             hardware_wallet_accounts_count: self.hardware_wallet_accounts_count,
             transactions_count: self.transactions.len() as u64,
-            block_height_synced_up_to: self.block_height_synced_up_to.unwrap_or(0),
+            block_height_synced_up_to: self.block_height_synced_up_to,
             earliest_transaction_timestamp_nanos: earliest_transaction.map_or(0, |t| t.timestamp.timestamp_nanos),
             earliest_transaction_block_height: earliest_transaction.map_or(0, |t| t.block_height),
             latest_transaction_timestamp_nanos: latest_transaction.map_or(0, |t| t.timestamp.timestamp_nanos),
@@ -753,7 +760,7 @@ pub struct Stats {
     sub_accounts_count: u64,
     hardware_wallet_accounts_count: u64,
     transactions_count: u64,
-    block_height_synced_up_to: u64,
+    block_height_synced_up_to: Option<u64>,
     earliest_transaction_timestamp_nanos: u64,
     earliest_transaction_block_height: BlockHeight,
     latest_transaction_timestamp_nanos: u64,
