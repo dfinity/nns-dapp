@@ -116,7 +116,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                   ),
                                 ),
                               ),
-                            if (canister.cyclesBalance != null)
+                            if (canister.userIsController == true)
                               Card(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,7 +161,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                   ],
                                 ),
                               ),
-                            if (canister.controller != null)
+                            if (canister.userIsController == true)
                               buildControllerCard(context, canister),
                           ],
                         ),
