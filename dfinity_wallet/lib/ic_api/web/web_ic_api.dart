@@ -313,6 +313,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> getCanisters() async {
     final response = await promiseToFuture(serviceApi!.getCanisters());
 
+
     final canisterIds = await Future.wait(<Future>[
       ...response.map((e) async {
         final id = e.canisterId.toString();
@@ -405,7 +406,10 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> refreshAccount(Account account) async {
     transactionSyncService!.syncAccount(account);
-    balanceSyncService!.fetchBalances([account.identifier]);
+    final res = await balanceSyncService!.fetchBalances([account.accountIdentifier]);
+    account = hiveBoxes.accounts.get(account.accountIdentifier)!;
+    account.balance = res[account.accountIdentifier]!;
+    account.save();
   }
 
   @override
