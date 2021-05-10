@@ -8,7 +8,6 @@ import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/canisters/select_canister_add_action_widget.dart';
-import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/ui.dart';
 import 'package:dfinity_wallet/dfinity.dart';
@@ -48,7 +47,7 @@ class _CansitersPageState extends State<CansitersPage> {
 
 • Top-up canisters with cycles
 
-Your PrincipalId is "${context.icApi.getPrincipal()}"''',
+Your principal id is "${context.icApi.getPrincipal()}"''',
                     children: [
                       SmallFormDivider(),
                       ...context.boxes.canisters.values
