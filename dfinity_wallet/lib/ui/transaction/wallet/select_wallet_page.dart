@@ -26,6 +26,7 @@ class _SelectDestinationAccountPageState
 
   @override
   Widget build(BuildContext context) {
+    final otherAccounts = context.boxes.accounts.values.filter((element) => element != widget.source).toList();
     return Container(
       child: SingleChildScrollView(
         child: Column(
@@ -87,7 +88,7 @@ class _SelectDestinationAccountPageState
                 ),
               ),
             ),
-            if (context.boxes.accounts.values.length > 1)
+            if (otherAccounts.isNotEmpty)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -108,9 +109,8 @@ class _SelectDestinationAccountPageState
                                     side: BorderSide(
                                         width: 2, color: AppColors.gray800))),
                             child: Column(
-                              children: context.boxes.accounts.values
-                                  .filter((element) => element != widget.source)
-                                  .mapToList((e) => _AccountRow(
+                              children:
+                              otherAccounts.mapToList((e) => _AccountRow(
                                       account: e,
                                       onPressed: () {
                                         if (widget.source.type ==
