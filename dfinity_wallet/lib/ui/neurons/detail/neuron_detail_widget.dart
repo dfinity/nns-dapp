@@ -50,7 +50,9 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                       NeuronRewardsCard(neuron: widget.neuron),
                       NeuronVotesCard(neuron: widget.neuron),
                       NeuronFolloweesCard(neuron: widget.neuron),
+                        if(false)
                       NeuronProposalsCard(neuron: widget.neuron),
+
                       TallFormDivider(),
                     ],
                   ),
