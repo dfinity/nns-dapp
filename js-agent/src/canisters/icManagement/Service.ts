@@ -12,13 +12,9 @@ export default class Service implements ServiceInterface {
     }
 
     public getCanisterDetails = async (canisterId: CanisterId) : Promise<CanisterDetailsResponse> => {
-        console.log("getCanisterDetails");
-        console.log(canisterId.toText());
         let rawResponse;
         try {
             rawResponse = await this.service.canister_status({ canister_id: canisterId });
-            console.log("rawResponse");
-            console.log(rawResponse);
         } catch (e) {
             const httpError = toHttpError(e);
             if (httpError.code === 403) {
@@ -53,9 +49,6 @@ export default class Service implements ServiceInterface {
                     : null
             }
         };    
-
-        console.log("result");
-        console.log(result);
 
         return result;
 }
