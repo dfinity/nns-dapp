@@ -37,7 +37,10 @@ class ProposalSyncService {
     stopwatch.start();
     final fetchPromise =
         promiseToFuture(serviceApi.listProposals(jsify(request)));
-    await cleanProposalCache();
+    if(beforeProposal != null){
+      await cleanProposalCache();
+    }
+
     final res = await fetchPromise;
     final string = stringify(res);
     dynamic response = jsonDecode(string);
