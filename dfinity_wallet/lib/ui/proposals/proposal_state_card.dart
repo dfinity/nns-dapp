@@ -103,7 +103,7 @@ class ActionDetailsWidget extends StatelessWidget {
           Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(camelToTitle(actionKey.replaceAll("NetworkEconomics", "ManageNetworkEconomics")), style: context.textTheme.headline4),
+              child: Text(actionKey, style: context.textTheme.headline4),
             ),
           ),
           ...fields.entries.map((entry) => Padding(
@@ -111,7 +111,7 @@ class ActionDetailsWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(camelToTitle(entry.key), style: context.textTheme.bodyText1?.copyWith(fontSize: 14, color: AppColors.gray50),),
+                Text(entry.key, style: context.textTheme.bodyText1?.copyWith(fontSize: 14, color: AppColors.gray50),),
                 Text(entry.value.toString().toString(), style: context.textTheme.subtitle2,)
               ],
             ),
@@ -121,11 +121,6 @@ class ActionDetailsWidget extends StatelessWidget {
     );
   }
 
-  String camelToTitle(String text) {
-    RegExp exp = RegExp(r'(?<=[a-z])[A-Z]');
-    String result = text.capitalize().replaceAllMapped(exp, (Match m) => (' ' + m.group(0)!.toLowerCase().capitalize()));
-    return result;
-  }
 }
 
 
