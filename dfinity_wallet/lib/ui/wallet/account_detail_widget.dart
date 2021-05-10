@@ -70,97 +70,100 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                 builder: (context, snapshot) {
                   final account =
                       context.boxes.accounts.get(widget.account.identifier)!;
+                  print("refreshed account");
                   return FooterGradientButton(
-                      body: ConstrainWidthAndCenter(
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(24.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          account.name,
-                                          style: context.textTheme.headline1,
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        SelectableText(
-                                          account.accountIdentifier,
-                                          style: context.textTheme.bodyText2,
-                                        ),
-                                        SmallFormDivider(),
-                                        if (account.hardwareWallet)
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .all(AppColors
-                                                                .gray600)),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      16.0),
-                                                  child: Text(
-                                                    "Show Address And Public Key On Device",
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontFamily:
-                                                            Fonts.circularBook,
-                                                        color: AppColors.gray50,
-                                                        fontWeight:
-                                                            FontWeight.w100),
-                                                  ),
-                                                ),
-                                                onPressed: () async {
-                                                  final ledgerIdentity =
-                                                      await context.icApi
-                                                          .connectToHardwareWallet();
-                                                  final hardwareWalletApi =
-                                                      await context.icApi
-                                                          .createHardwareWalletApi(
-                                                              ledgerIdentity:
-                                                                  ledgerIdentity);
-                                                  hardwareWalletApi
-                                                      .showAddressAndPubKeyOnDevice();
-                                                }),
+                      body: SingleChildScrollView(
+                        child: ConstrainWidthAndCenter(
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(24.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            account.name,
+                                            style: context.textTheme.headline1,
                                           ),
-                                      ],
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          SelectableText(
+                                            account.accountIdentifier,
+                                            style: context.textTheme.bodyText2,
+                                          ),
+                                          SmallFormDivider(),
+                                          if (account.hardwareWallet)
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all(AppColors
+                                                                  .gray600)),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(
+                                                        16.0),
+                                                    child: Text(
+                                                      "Show Address And Public Key On Device",
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontFamily:
+                                                              Fonts.circularBook,
+                                                          color: AppColors.gray50,
+                                                          fontWeight:
+                                                              FontWeight.w100),
+                                                    ),
+                                                  ),
+                                                  onPressed: () async {
+                                                    final ledgerIdentity =
+                                                        await context.icApi
+                                                            .connectToHardwareWallet();
+                                                    final hardwareWalletApi =
+                                                        await context.icApi
+                                                            .createHardwareWalletApi(
+                                                                ledgerIdentity:
+                                                                    ledgerIdentity);
+                                                    hardwareWalletApi
+                                                        .showAddressAndPubKeyOnDevice();
+                                                  }),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.all(24),
+                                      child: BalanceDisplayWidget(
+                                        amount: account.icpBalance,
+                                        amountSize: 40,
+                                        icpLabelSize: 25,
+                                      )),
+                                ],
+                              ),
+                              if (account.transactions.isEmpty)
+                                Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 64),
+                                    child: Text(
+                                      "No transactions!",
+                                      style: context.textTheme.bodyText1,
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
-                                Padding(
-                                    padding: EdgeInsets.all(24),
-                                    child: BalanceDisplayWidget(
-                                      amount: account.icpBalance,
-                                      amountSize: 40,
-                                      icpLabelSize: 25,
-                                    )),
-                              ],
-                            ),
-                            if (account.transactions.isEmpty)
-                              Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 64),
-                                  child: Text(
-                                    "No transactions!",
-                                    style: context.textTheme.bodyText1,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            TransactionsListWidget(account: account),
-                            SizedBox(
-                              height: 200,
-                            )
-                          ],
+                              TransactionsListWidget(account: account),
+                              SizedBox(
+                                height: 200,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       footer: Center(
