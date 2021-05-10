@@ -200,7 +200,8 @@ impl TransactionStore {
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
         if !Self::validate_account_name(&sub_account_name) {
             CreateSubAccountResponse::NameTooLong
-        } else if let Some(account) = self.try_get_account_mut_by_default_identifier(&AccountIdentifier::from(caller.clone())) {
+        } else if let Some(account_index) = self.try_get_account_index_by_default_identifier(&AccountIdentifier::from(caller.clone())) {
+            let account: &mut Account = self.accounts.get_mut(account_index as usize).unwrap().as_mut().unwrap();
             if account.sub_accounts.len() == (u8::MAX as usize) {
                 CreateSubAccountResponse::SubAccountLimitExceeded
             } else {
@@ -216,6 +217,9 @@ impl TransactionStore {
                     sub_account_identifier.clone());
 
                 account.sub_accounts.insert(sub_account_id, named_sub_account);
+                self.account_identifier_lookup.insert(
+                    sub_account_identifier,
+                    AccountLocation::SubAccount(account_index, sub_account_id));
                 self.sub_accounts_count = self.sub_accounts_count + 1;
 
                 CreateSubAccountResponse::Ok(SubAccountDetails {
@@ -1005,7 +1009,7 @@ mod tests {
                 amount: ICPTs::from_e8s(100_000),
                 from: default_account,
             };
-            store.append_transaction(transfer1, store.get_next_required_block_height(), timestamp).unwrap();
+            store.append_transaction(transfer1, store.get_block_height_synced_up_to().unwrap_or(0) + 1, timestamp).unwrap();
 
             let transfer2 = Send {
                 amount: ICPTs::from_e8s(10_000),
@@ -1013,19 +1017,19 @@ mod tests {
                 to: sub_account,
                 fee: ICPTs::from_e8s(1_000),
             };
-            store.append_transaction(transfer2, store.get_next_required_block_height(), timestamp).unwrap();
+            store.append_transaction(transfer2, store.get_block_height_synced_up_to().unwrap() + 1, timestamp).unwrap();
 
             let transfer3 = Mint {
                 amount: ICPTs::from_e8s(1_000_000_000),
                 to: hw_account,
             };
-            store.append_transaction(transfer3, store.get_next_required_block_height(), timestamp).unwrap();
+            store.append_transaction(transfer3, store.get_block_height_synced_up_to().unwrap() + 1, timestamp).unwrap();
 
             let transfer4 = Mint {
                 amount: ICPTs::from_e8s(1_000_000_000),
                 to: unknown_account,
             };
-            store.append_transaction(transfer4, store.get_next_required_block_height(), timestamp).unwrap();
+            store.append_transaction(transfer4, store.get_block_height_synced_up_to().unwrap() + 1, timestamp).unwrap();
         }
 
         let original_block_heights = store.transactions.iter().map(|t| t.block_height).collect_vec();
@@ -1097,7 +1101,7 @@ mod tests {
         assert_eq!(0, stats.sub_accounts_count);
         assert_eq!(0, stats.hardware_wallet_accounts_count);
         assert_eq!(4, stats.transactions_count);
-        assert_eq!(3, stats.block_height_synced_up_to);
+        assert_eq!(3, stats.block_height_synced_up_to.unwrap());
         assert_eq!(0, stats.earliest_transaction_block_height);
         assert_eq!(3, stats.latest_transaction_block_height);
         assert!(stats.seconds_since_last_ledger_sync > 1_000_000_000);
