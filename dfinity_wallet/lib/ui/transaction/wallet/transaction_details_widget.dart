@@ -39,7 +39,7 @@ class TransactionDetailsWidget extends StatelessWidget {
             VerySmallFormDivider(),
             Text(destination, style: context.textTheme.bodyText1),
             TallFormDivider(),
-            Text("Transaction Fee", style: context.textTheme.headline4),
+            Text("Transaction Fee (billed to source)", style: context.textTheme.headline4),
             VerySmallFormDivider(),
             Text(TRANSACTION_FEE_ICP.toString() + " ICP",
                 style: context.textTheme.bodyText1),
