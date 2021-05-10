@@ -47,7 +47,7 @@ class _TextFieldDialogWidgetState extends State<TextFieldDialogWidget> {
               height: 60.0,
               width: double.infinity,
               child: ValidFieldsSubmitButton(
-                child: Text("Create"),
+                child: Text(widget.buttonTitle),
                 onPressed: () {
                   widget.onComplete(nameField.currentValue);
                   OverlayBaseWidget.of(context)?.dismiss();
