@@ -28,6 +28,7 @@ class TransactionDetailsWidget extends StatelessWidget {
                 amount: amount,
                 amountSize: 50,
                 icpLabelSize: 0,
+                amountLabelSuffix: " ICP"
               ),
             ),
             TallFormDivider(),
