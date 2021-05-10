@@ -48,7 +48,7 @@ class _CansitersPageState extends State<CansitersPage> {
 
 • Link canisters to your account
 
-• Send cycles to canisters''',
+• Top-up canisters with cycles''',
                       children: [
                         SmallFormDivider(),
                         ...context.boxes.canisters.values

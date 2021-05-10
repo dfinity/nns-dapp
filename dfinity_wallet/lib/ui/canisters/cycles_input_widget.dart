@@ -39,7 +39,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
 
     cyclesField = ValidatedTextField("T Cycles",
         validations: [
-          StringFieldValidation("Minimum amount: 2T Cycles", (e) => (e.toDoubleOrNull() ?? 0) < 2),
+          StringFieldValidation("Minimum amount: 2T cycles", (e) => (e.toDoubleOrNull() ?? 0) < 2),
         ],
         inputType: TextInputType.number);
   }
