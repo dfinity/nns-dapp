@@ -12,6 +12,7 @@ import '../wizard_overlay.dart';
 import 'hardware_wallet_transaction_widget.dart';
 
 class ConfirmTransactionWidget extends StatefulWidget {
+  final double fee;
   final double amount;
   final ICPSource source;
   final String destination;
@@ -19,6 +20,7 @@ class ConfirmTransactionWidget extends StatefulWidget {
 
   const ConfirmTransactionWidget(
       {Key? key,
+      required this.fee,
       required this.amount,
       required this.source,
       required this.destination,
@@ -46,8 +48,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
             TransactionDetailsWidget(
               source: widget.source,
               destination: widget.destination,
-              // surfacing fee as part of total
-              amount: (widget.amount),
+              amount: (widget.amount + widget.fee),
             ),
             Expanded(child: Container()),
             SizedBox(
@@ -59,7 +60,12 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                     child: Text("Confirm and Send"),
                   ),
                   onPressed: () async {
-                    if (widget.source.type == ICPSourceType.ACCOUNT) {
+                    var isAccount = widget.source.type == ICPSourceType.ACCOUNT;
+                    var isNeuronTransaction =
+                        widget.source.type == ICPSourceType.NEURON;
+                    var isHardwareTransactoin =
+                        widget.source.type == ICPSourceType.HARDWARE_WALLET;
+                    if (isAccount) {
                       await context.performLoading(() => context.icApi
                           .sendICPTs(
                               toAccount: widget.destination,
@@ -72,7 +78,8 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                             source: widget.source,
                             destination: widget.destination,
                           ));
-                    } else if (widget.source.type == ICPSourceType.NEURON) {
+                    } else if (isNeuronTransaction) {
+                      // send the full balance of the neuron to the owner's accoun t
                       await context.performLoading(() async {
                         return context.icApi.disburse(
                             neuronId: BigInt.parse(widget.source.address),
@@ -80,6 +87,8 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                             doms: widget.source.icpBalance.toE8s,
                             toAccountId: widget.destination);
                       });
+
+                      // then automatically proceed to the completed screen
                       WizardOverlay.of(context).replacePage(
                           "Transaction Completed!",
                           TransactionDoneWidget(
@@ -87,8 +96,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                             source: widget.source,
                             destination: widget.destination,
                           ));
-                    } else if (widget.source.type ==
-                        ICPSourceType.HARDWARE_WALLET) {
+                    } else if (isHardwareTransactoin) {
                       WizardOverlay.of(context).pushPage(
                           "Authorize on Hardware",
                           HardwareWalletTransactionWidget(

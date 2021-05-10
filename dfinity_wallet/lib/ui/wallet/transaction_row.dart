@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';
 
+enum TransactionType { SEND, RECEIVE }
+
 class TransactionRow extends StatelessWidget {
   final Transaction transaction;
   final Account currentAccount;
@@ -15,6 +17,10 @@ class TransactionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateFormatter = DateFormat.yMd().add_jm();
+    var isReceive = transaction.from != currentAccount.accountIdentifier;
+    var isSend = transaction.to != currentAccount.accountIdentifier;
+    TransactionType type =
+        isReceive ? TransactionType.RECEIVE : TransactionType.SEND;
     return Card(
       color: Color(0xff292a2e),
       child: Container(
@@ -30,10 +36,10 @@ class TransactionRow extends StatelessWidget {
                     Text(dateFormatter.format(transaction.date),
                         style: context.textTheme.headline3),
                     SmallFormDivider(),
-                    if (transaction.from != currentAccount.accountIdentifier)
+                    if (isReceive)
                       Text("From: ${transaction.from}",
                           style: context.textTheme.bodyText2),
-                    if (transaction.to != currentAccount.accountIdentifier)
+                    if (isSend)
                       Text(
                         "To: ${transaction.to}",
                         style:
@@ -49,6 +55,8 @@ class TransactionRow extends StatelessWidget {
                 width: 20,
               ),
               TransactionAmountDisplayWidget(
+                fee: transaction.fee.toBigInt.toICPT,
+                transactionType: type,
                 amount: transaction.icpt,
                 addition: transaction.from != currentAccount.accountIdentifier,
               ),
@@ -62,9 +70,16 @@ class TransactionRow extends StatelessWidget {
 
 class TransactionAmountDisplayWidget extends StatelessWidget {
   final double amount;
+  final double fee;
   final bool addition;
+  final TransactionType transactionType;
+
   const TransactionAmountDisplayWidget(
-      {Key? key, required this.amount, required this.addition})
+      {Key? key,
+      required this.fee,
+      required this.amount,
+      required this.addition,
+      required this.transactionType})
       : super(key: key);
 
   @override
@@ -73,13 +88,16 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
     final sign = addition ? "+" : "-";
     final color = addition ? AppColors.green500 : AppColors.gray50;
     final secondaryColor = addition ? AppColors.green600 : AppColors.gray200;
+    final showFee = transactionType == TransactionType.SEND;
+
+    var displayAmount = amount + (showFee ? fee : 0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "$sign${amount.toDisplayICPT(myLocale.languageCode)}",
+          "$sign${(displayAmount).toDisplayICPT(myLocale.languageCode)}",
           style: TextStyle(
               color: color,
               fontFamily: Fonts.circularBold,

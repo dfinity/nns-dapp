@@ -47,6 +47,7 @@ class TransactionSyncService {
         to = account.accountIdentifier;
         from = receive['from'].toString();
         doms = BigInt.parse(receive['amount'].toString());
+        fee = receive["fee"].toString();
       }
 
       final milliseconds =
@@ -55,7 +56,7 @@ class TransactionSyncService {
           to: to,
           from: from,
           date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
-          doms: (doms+fee.toBigInt).toString(),
+          doms: doms.toString(),
           fee: fee));
     });
     account.transactions = transactions;

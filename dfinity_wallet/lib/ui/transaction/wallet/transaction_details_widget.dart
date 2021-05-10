@@ -16,8 +16,6 @@ class TransactionDetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var isNeuron = source.type == ICPSourceType.NEURON;
-
     return Container(
         child: Center(
       child: IntrinsicWidth(
@@ -41,18 +39,10 @@ class TransactionDetailsWidget extends StatelessWidget {
             VerySmallFormDivider(),
             Text(destination, style: context.textTheme.bodyText1),
             TallFormDivider(),
-            // display transaction fee only if it is not a neuron
-            isNeuron
-                ? Row()
-                : Row(
-                    children: [
-                      Text("Transaction Fee",
-                          style: context.textTheme.headline4),
-                      VerySmallFormDivider(),
-                      Text(TRANSACTION_FEE_ICP.toString() + " ICP",
-                          style: context.textTheme.bodyText1),
-                    ],
-                  ),
+            Text("Transaction Fee", style: context.textTheme.headline4),
+            VerySmallFormDivider(),
+            Text(TRANSACTION_FEE_ICP.toString() + " ICP",
+                style: context.textTheme.bodyText1),
             VerySmallFormDivider()
           ],
         ),

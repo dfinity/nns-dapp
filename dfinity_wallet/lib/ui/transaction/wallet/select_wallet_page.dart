@@ -58,9 +58,12 @@ class _SelectDestinationAccountPageState
                               final address = addressField.currentValue;
 
                               if (widget.source.type == ICPSourceType.NEURON) {
+                                // neurons skip entering amount and go right to review
                                 WizardOverlay.of(context).pushPage(
                                     "Review Transaction",
                                     ConfirmTransactionWidget(
+                                      // if we're disbursing, no fee?
+                                      fee: 0,
                                       amount: widget.source.icpBalance,
                                       source: widget.source,
                                       destination: address,
@@ -84,7 +87,7 @@ class _SelectDestinationAccountPageState
                 ),
               ),
             ),
-            if(context.boxes.accounts.values.length >= 1)
+            if (context.boxes.accounts.values.length >= 1)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -115,6 +118,7 @@ class _SelectDestinationAccountPageState
                                           WizardOverlay.of(context).pushPage(
                                               "Review Transaction",
                                               ConfirmTransactionWidget(
+                                                fee: 0,
                                                 amount:
                                                     widget.source.icpBalance,
                                                 source: widget.source,

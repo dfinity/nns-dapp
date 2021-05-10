@@ -35,14 +35,14 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
 
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.source.icpBalance),StringFieldValidation.nonZero()
+          StringFieldValidation.insufficientFunds(widget.source.icpBalance),
+          StringFieldValidation.nonZero()
         ],
         inputType: TextInputType.number);
   }
 
   @override
   Widget build(BuildContext context) {
-    var isNeuron = widget.source.type == ICPSourceType.NEURON;
     return SizedBox.expand(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -81,17 +81,10 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                   Text(widget.destinationAccountIdentifier,
                       style: context.textTheme.bodyText1),
                   TallFormDivider(),
-                  isNeuron
-                ? Row()
-                : Row(
-                    children: [
-                      Text("Transaction Fee",
-                          style: context.textTheme.headline4),
-                      TallFormDivider(),
-                      Text(TRANSACTION_FEE_ICP.toString() + " ICP",
-                          style: context.textTheme.bodyText1),
-                    ],
-                  )
+                  Text("Transaction Fee", style: context.textTheme.headline4),
+                    VerySmallFormDivider(),
+                    Text(TRANSACTION_FEE_ICP.toString() + " ICP",
+                        style: context.textTheme.bodyText1),
                 ],
               ),
             ),
@@ -102,10 +95,11 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                 child: ValidFieldsSubmitButton(
                   child: Text("Review Transaction"),
                   onPressed: () async {
-                    var amount = amountField.currentValue.toDouble()+TRANSACTION_FEE_ICP;
+                    var amount = amountField.currentValue.toDouble();
                     WizardOverlay.of(context).pushPage(
                         "Review Transaction",
                         ConfirmTransactionWidget(
+                          fee: TRANSACTION_FEE_ICP,
                           amount: amount,
                           source: widget.source,
                           destination: widget.destinationAccountIdentifier,

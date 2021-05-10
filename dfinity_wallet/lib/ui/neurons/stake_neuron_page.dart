@@ -24,8 +24,11 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
 
   @override
   void initState() {
-    amountField = ValidatedTextField("Amount in ICP",
-        validations: [StringFieldValidation.insufficientFunds(widget.source.icpBalance), StringFieldValidation.nonZero()],
+    amountField = ValidatedTextField("Amount",
+        validations: [
+          StringFieldValidation.insufficientFunds(widget.source.icpBalance),
+          StringFieldValidation.nonZero()
+        ],
         inputType: TextInputType.number);
   }
 
@@ -50,6 +53,13 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                         Text(widget.source.address,
                             style: context.textTheme.bodyText1),
                         SmallFormDivider(),
+                        Text("Transaction Fee",
+                            style: context.textTheme.headline4),
+                        VerySmallFormDivider(),
+                        // fee is doubled as it is a SEND and NOTIFY
+                        Text((TRANSACTION_FEE_ICP * 2).toString() + " ICP",
+                            style: context.textTheme.bodyText1),
+                        VerySmallFormDivider()
                       ],
                     ),
                   ),
