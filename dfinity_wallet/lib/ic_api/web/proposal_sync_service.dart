@@ -26,7 +26,7 @@ class ProposalSyncService {
       Proposal? beforeProposal}) async {
     final request = {
       'limit': 100,
-      if (beforeProposal != null) 'beforeProposal': beforeProposal.id.toBigInt,
+      if (beforeProposal != null) 'beforeProposal': beforeProposal.id.toBigInt.toJS,
       'includeRewardStatus':
           includeRewardStatus.mapToList((e) => e.index.toInt()),
       'excludeTopic': excludeTopics.mapToList((e) => e.index.toInt()),
