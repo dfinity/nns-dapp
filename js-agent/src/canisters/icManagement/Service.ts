@@ -43,7 +43,7 @@ export default class Service implements ServiceInterface {
                 memorySize: rawResponse.memory_size,
                 cycles: rawResponse.cycles,
                 setting: {
-                    controller: rawResponse.settings.controller,
+                    controller: rawResponse.settings.controller.toText(),
                     freezingThreshold: rawResponse.settings.freezing_threshold,
                     memoryAllocation: rawResponse.settings.memory_allocation,
                     computeAllocation: rawResponse.settings.compute_allocation             
