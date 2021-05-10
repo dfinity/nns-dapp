@@ -70,7 +70,6 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                 builder: (context, snapshot) {
                   final account =
                       context.boxes.accounts.get(widget.account.identifier)!;
-                  print("refreshed account");
                   return FooterGradientButton(
                       body: SingleChildScrollView(
                         child: ConstrainWidthAndCenter(
