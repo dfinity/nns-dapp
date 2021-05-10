@@ -362,7 +362,9 @@ class PlatformICApi extends AbstractPlatformICApi {
     if (canister.userIsController == true) {
       final details = response['details'];
       canister.cyclesBalance = details['cycles'].toString();
-      canister.controller = res['details']['setting']['controller'];
+      final setting = details['setting'];
+      print(setting);
+      canister.controller = setting['controller'].toString();
     }
     canister.save();
   }
