@@ -113,8 +113,10 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> createNeuron(
       {required BigInt stakeInDoms, int? fromSubAccount}) async {
+    print("createNeuron");
     await promiseToFuture(serviceApi!.createNeuron(CreateNeuronRequest(
-        stake: stakeInDoms, fromSubAccountId: fromSubAccount)));
+        stake: stakeInDoms.toJS, fromSubAccountId: fromSubAccount)));
+    print("neuronCreated");
     await neuronSyncService!.fetchNeurons();
   }
 
