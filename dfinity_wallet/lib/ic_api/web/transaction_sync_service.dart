@@ -25,8 +25,6 @@ class TransactionSyncService {
             pageSize: 100,
             offset: 0)));
     final response = jsonDecode(stringify(res));
-    print("Transactsion response ${response['transactions'].length}");
-
     final transactions = <Transaction>[];
     response['transactions'].forEach((e) {
       final send = e['transfer']['Send'];
@@ -60,6 +58,7 @@ class TransactionSyncService {
           fee: fee));
     });
     account.transactions = transactions;
+    account.save();
   }
 }
 
