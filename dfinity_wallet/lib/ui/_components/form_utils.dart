@@ -67,15 +67,15 @@ class StringFieldValidation extends FieldValidation<String> {
       : super(errorMessage, inputIsValid);
 
   StringFieldValidation.minimumLength(int numCharacters)
-      : this("must be longer than $numCharacters characters",
+      : this("Must be longer than $numCharacters characters",
             (e) => e.length < numCharacters);
 
   StringFieldValidation.maximumLength(int numCharacters)
-      : this("must be shorter than $numCharacters characters",
+      : this("Must be shorter than $numCharacters characters",
             (e) => e.length > numCharacters);
 
   StringFieldValidation.boundLength(int minChars, int maxChars)
-      : this("must be between $minChars and $maxChars characters",
+      : this("Must be between $minChars and $maxChars characters",
             (e) => e.length >= maxChars && e.length <= minChars);
 
   StringFieldValidation.nonZero()

@@ -79,7 +79,7 @@ class _DebouncedValidatedFormFieldState extends State<DebouncedValidatedFormFiel
               widget.onChanged?.call();
             },
             validator: (text) =>
-                widget.textField.failedValidation?.errorMessage?.let((e) => "Invalid value for ${widget.textField.name.toLowerCase()}: $e"),
+                widget.textField.failedValidation?.errorMessage?.let((e) => e),
             autovalidateMode: autovalidateMode,
             obscureText: widget.obscureText,
         ),
