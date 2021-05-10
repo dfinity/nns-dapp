@@ -255,4 +255,10 @@ class PlatformICApi extends AbstractPlatformICApi {
     // TODO: implement refreshAccount
     throw UnimplementedError();
   }
+
+  @override
+  String getPrincipal() {
+    // TODO: implement getPrincipal
+    throw UnimplementedError();
+  }
 }

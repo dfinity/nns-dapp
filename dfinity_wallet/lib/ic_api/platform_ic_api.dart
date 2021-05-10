@@ -109,6 +109,8 @@ abstract class AbstractPlatformICApi {
   Future<void> detachCanister(String canisterId);
 
   Future<void> refreshAccount(Account account);
+
+  String getPrincipal();
 }
 
 

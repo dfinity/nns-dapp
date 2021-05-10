@@ -265,4 +265,9 @@ class PlatformICApi extends AbstractPlatformICApi {
     throw UnimplementedError();
   }
 
+  @override
+  String getPrincipal() {
+    // TODO: implement getPrincipal
+    throw UnimplementedError();
+  }
 }

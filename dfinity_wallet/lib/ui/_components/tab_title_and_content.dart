@@ -28,7 +28,7 @@ class TabTitleAndContent extends StatelessWidget {
                   if (subtitle != null)
                     ...[
                       SizedBox(height: 10,),
-                      Text(
+                      SelectableText(
                       subtitle!,
                       style: context.textTheme.subtitle2,
                     )]

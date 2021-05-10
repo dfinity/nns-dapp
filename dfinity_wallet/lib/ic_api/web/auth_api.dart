@@ -20,11 +20,11 @@ class AuthApi {
   @JS("login")
   external Promise<dynamic> login(Function onSuccess);
 
-  @JS("createDelegationIdentity")
-  external dynamic createDelegationIdentity(String key, String accessToken);
+  @JS("logout")
+  external Promise<dynamic> logout();
 
-  @JS("createDelegationIdentity")
-  external Promise<dynamic> createAuthenticationIdentity();
+  @JS("getPrincipal")
+  external String getPrincipal();
 
   @JS("connectToHardwareWallet")
   external Promise<dynamic> connectToHardwareWallet();

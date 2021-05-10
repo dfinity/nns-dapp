@@ -46,7 +46,9 @@ class _CansitersPageState extends State<CansitersPage> {
 
 • Link canisters to your account
 
-• Top-up canisters with cycles''',
+• Top-up canisters with cycles
+
+Your PrincipalId is "${context.icApi.getPrincipal()}"''',
                     children: [
                       SmallFormDivider(),
                       ...context.boxes.canisters.values

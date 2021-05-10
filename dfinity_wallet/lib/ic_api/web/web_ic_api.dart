@@ -410,4 +410,9 @@ class PlatformICApi extends AbstractPlatformICApi {
     transactionSyncService!.syncAccount(account);
     balanceSyncService!.fetchBalances([account.identifier]);
   }
+
+  @override
+  String getPrincipal() {
+    return authApi.getPrincipal();
+  }
 }
