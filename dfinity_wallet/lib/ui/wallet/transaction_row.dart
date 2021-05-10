@@ -37,13 +37,13 @@ class TransactionRow extends StatelessWidget {
                         style: context.textTheme.headline3),
                     SmallFormDivider(),
                     if (isReceive)
-                      Text("From: ${transaction.from}",
-                          style: context.textTheme.bodyText2),
+                      SelectableText(
+                        "From: ${transaction.from}",
+                        style: context.textTheme.bodyText2),
                     if (isSend)
-                      Text(
+                      SelectableText(
                         "To: ${transaction.to}",
-                        style:
-                            context.textTheme.bodyText2?.copyWith(fontSize: 16),
+                        style: context.textTheme.bodyText2,
                       ),
                     SizedBox(
                       height: 5,
