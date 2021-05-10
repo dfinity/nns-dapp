@@ -70,6 +70,10 @@ export default class AuthApi {
         return LedgerIdentity.fromWebUsb();
     }
 
+    public getPrincipal = () : string => {
+        return this.tryGetIdentity()?.getPrincipal().toString();
+    }
+
     private handleDelegationExpiry = () => {
         const durationUntilSessionExpiresMs = this.getDurationUntilSessionExpiresMs();
 
