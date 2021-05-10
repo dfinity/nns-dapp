@@ -172,11 +172,11 @@ class SelectAccountAddActionWidget extends StatelessWidget {
                   }),
               SmallFormDivider(),
               WizardPathButton(title: "Attach Hardware Wallet",
-                  subtitle: "Link a hardware wallet to this account",
+                  subtitle: "Coming Soon...",
                   onPressed: () {
                     WizardOverlay.of(context)
                         .pushPage("Enter Wallet Name", HardwareWalletNameWidget());
-                  }),
+                  }.takeIf((e) => false)),
               SmallFormDivider(),
               SizedBox(
                 height: 50,
