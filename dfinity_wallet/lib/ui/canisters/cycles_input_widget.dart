@@ -33,18 +33,19 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
 
     icpField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.nonZero(),
           StringFieldValidation.insufficientFunds(widget.source.icpBalance)
         ],
         inputType: TextInputType.number);
 
     cyclesField = ValidatedTextField("T Cycles",
-        validations: [],
+        validations: [
+          StringFieldValidation("Minimum amount: 2T Cycles", (e) => (e.toDoubleOrNull() ?? 0) < 2),
+        ],
         inputType: TextInputType.number);
   }
 
   void callCallback(){
-    final amount = (icpField.failedValidation == null) ? icpField.currentValue.toDoubleOrNull() : null;
+    final amount = (icpField.failedValidation == null && cyclesField.failedValidation == null) ? icpField.currentValue.toDoubleOrNull() : null;
     widget.onChange(amount);
   }
 
@@ -98,7 +99,9 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Application subnets are beta and therefore Cycles might be lost"),
+              child: Text('''Minimum amount: 2T Cycles (inclusive of 1T Cycles fee to create the canister)
+              
+              Application subnets are in beta and therefore Cycles might be lost'''),
             )
           ],
         ),
