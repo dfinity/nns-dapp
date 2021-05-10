@@ -29,7 +29,7 @@ class AuthWidget extends StatelessWidget {
                     ElevatedButton(
                         child: Padding(
                           padding: const EdgeInsets.all(32.0),
-                          child: Text("Authenticate", style: context.textTheme.bodyText2?.copyWith(fontSize: 32),),
+                          child: Text("Login", style: context.textTheme.bodyText2?.copyWith(fontSize: 32),),
                         ),
                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.gray1000)),
                         onPressed: () {
