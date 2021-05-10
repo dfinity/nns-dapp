@@ -37,15 +37,14 @@ class ProposalSyncService {
     stopwatch.start();
     final fetchPromise =
         promiseToFuture(serviceApi.listProposals(jsify(request)));
-    if(beforeProposal != null){
-      await cleanProposalCache();
+    if(beforeProposal == null){
+      await hiveBoxes.proposals.clear();
     }
 
     final res = await fetchPromise;
     final string = stringify(res);
     dynamic response = jsonDecode(string);
 
-    await hiveBoxes.proposals.clear();
 
     response!['proposals']?.forEach((e) {
       storeProposal(e);
