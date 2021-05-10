@@ -48,6 +48,17 @@ RUN cargo install --version 0.2.0 ic-cdk-optimizer
 
 COPY . .
 
-# RUN bash -x ./build.sh
-# RUN cp /cargo_target/wasm32-unknown-unknown/release/nns_ui.wasm .
-# RUN sha256sum nns_ui.wasm
+RUN cd js-agent && ./build.sh
+
+RUN cd dfinity_wallet && flutter build web --web-renderer canvaskit --release --no-sound-null-safety --pwa-strategy=none
+# Remove random hash from flutter output
+RUN sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' dfinity_wallet/build/web/index.html
+
+# Bundle into a tight tarball
+RUN cd build/web/ && tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../assets.tar.xz .
+RUN ls -sh assets.tar.xz; sha256sum assets.tar.xz
+
+RUN cargo build --target wasm32-unknown-unknown --release --package nns_ui
+RUN cp target/wasm32-unknown-unknown/release/nns_ui.wasm .
+RUN ic-cdk-optimizer nns_ui.wasm -o nns_ui.wasm
+RUN ls -sh nns_ui.wasm; sha256sum nns_ui.wasm
