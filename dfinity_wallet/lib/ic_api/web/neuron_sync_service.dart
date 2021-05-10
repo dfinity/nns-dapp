@@ -115,8 +115,6 @@ class PrettyPrint {
   static prettyPrintJson(String text, dynamic object) {
     JsonEncoder encoder = new JsonEncoder.withIndent('  ');
     String prettyprint = encoder.convert(object);
-    print("${text} $prettyprint");
-    ;
   }
 }
 

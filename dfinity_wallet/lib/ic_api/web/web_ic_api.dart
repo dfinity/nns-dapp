@@ -113,10 +113,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> createNeuron(
       {required BigInt stakeInDoms, int? fromSubAccount}) async {
-    print("createNeuron");
     await promiseToFuture(serviceApi!.createNeuron(CreateNeuronRequest(
         stake: stakeInDoms.toJS, fromSubAccountId: fromSubAccount)));
-    print("neuronCreated");
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -336,7 +334,6 @@ class PlatformICApi extends AbstractPlatformICApi {
     final response =
         await promiseToFuture(serviceApi!.getIcpToCyclesConversionRate());
     final string = convertBigIntToString(response);
-    print("getICPToCyclesExchangeRate ${string}");
     return BigInt.parse(string);
   }
 
@@ -358,12 +355,10 @@ class PlatformICApi extends AbstractPlatformICApi {
     final response = jsonDecode(stringify(res));
     final canister = hiveBoxes.canisters.get(canisterId)!;
     canister.userIsController = response['kind'] == "success";
-    print(stringify(res));
     if (canister.userIsController == true) {
       final details = response['details'];
       canister.cyclesBalance = details['cycles'].toString();
       final setting = details['setting'];
-      print(setting);
       canister.controller = setting['controller'].toString();
     }
     canister.save();
@@ -402,7 +397,6 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> detachCanister(String canisterId) async {
-    print(canisterId);
     await promiseToFuture(serviceApi!.detachCanister(
         DetachCanisterRequest(canisterId: createPrincipal(canisterId))));
     await getCanisters();
