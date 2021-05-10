@@ -48,7 +48,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
             TransactionDetailsWidget(
               source: widget.source,
               destination: widget.destination,
-              amount: (widget.amount + widget.fee),
+              amount: widget.amount,
             ),
             Expanded(child: Container()),
             SizedBox(
