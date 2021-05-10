@@ -43,7 +43,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                     description: "This will remove the canister from your account, it does not change the controller.\n\If you control the canister, ensure you have it's identifier stored securely",
                     onConfirm: () async {
                       await context.performLoading(() => context.icApi.detachCanister(widget.canister.identifier));
-                      context.nav.popRoute();
+                      context.nav.replace(CanistersTabPage);
                     },
                   ));
                 },
