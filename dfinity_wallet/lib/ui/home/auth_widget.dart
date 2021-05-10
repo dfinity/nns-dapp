@@ -24,9 +24,10 @@ class AuthWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     AutoSizeText(
-                      '''The Internet Computer
-
-Network Nervous System''', style: context.textTheme.headline1, textAlign: TextAlign.center,),
+                      'The Internet Computer', style: context.textTheme.headline1, textAlign: TextAlign.center,),
+                    SizedBox(height:20),
+                    AutoSizeText(
+                      'Network Nervous System', style: context.textTheme.headline2, textAlign: TextAlign.center,),
                     Expanded(child: Container()),
                     ElevatedButton(
                         child: Padding(
