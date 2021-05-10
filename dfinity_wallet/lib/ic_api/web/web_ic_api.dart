@@ -358,10 +358,11 @@ class PlatformICApi extends AbstractPlatformICApi {
     final response = jsonDecode(stringify(res));
     final canister = hiveBoxes.canisters.get(canisterId)!;
     canister.userIsController = response['kind'] == "success";
+    print(stringify(res));
     if (canister.userIsController == true) {
       final details = response['details'];
       canister.cyclesBalance = details['cycles'].toString();
-      canister.controller = res.details.setting.controller.toString();
+      canister.controller = res['details']['setting']['controller'];
     }
     canister.save();
   }
