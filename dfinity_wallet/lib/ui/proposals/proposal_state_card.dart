@@ -35,8 +35,8 @@ class ProposalStateCard extends StatelessWidget {
                   decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
-                          side:
-                              BorderSide(width: 2, color: Color(0xffFBB03B)))),
+                          side: BorderSide(
+                              width: 2, color: proposal.status.color))),
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
@@ -44,7 +44,7 @@ class ProposalStateCard extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 24,
                           fontFamily: Fonts.circularBook,
-                          color: Color(0xffFBB03B),
+                          color: proposal.status.color,
                           fontWeight: FontWeight.normal),
                     ),
                   ),
@@ -67,7 +67,7 @@ class ProposalStateCard extends StatelessWidget {
               style: context.textTheme.subtitle2,
             ),
             Text(
-              "Identifier: ${proposal.id}",
+              "Id: ${proposal.id}",
               style: context.textTheme.subtitle2,
             ),
             SmallFormDivider(),

@@ -254,6 +254,14 @@ class ProposalRow extends StatelessWidget {
                   "Proposer: ${proposal.proposer}",
                   style: context.textTheme.bodyText2,
                 ),
+                Row(
+                  children: [
+                    Text(
+                      "Id: ${proposal.id}",
+                      style: context.textTheme.bodyText2,
+                    ),
+                  ],
+                )
               ],
             ),
           ),
