@@ -136,7 +136,7 @@ export interface Neuron {
     accountPrincipal: ArrayBuffer,
     dissolveState: DissolveState,
     followees: Array<Followees>,
-    transfer: NeuronStakeTransfer,
+    transfer: Option<NeuronStakeTransfer>,
 };
 export enum NeuronState {
 	UNSPECIFIED = 0,

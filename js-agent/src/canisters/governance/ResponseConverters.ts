@@ -181,6 +181,11 @@ export default class ResponseConverters {
     }
 
     private toNeuronStakeTransfer = (neuronStakeTransfer: RawNeuronStakeTransfer) : NeuronStakeTransfer => {
+        if (!neuronStakeTransfer) {
+            // This can be null for a genesis neuron
+            return null;
+        }
+
         return {
             toSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.to_subaccount),
             from: neuronStakeTransfer.from ? neuronStakeTransfer.from[0] : null,
