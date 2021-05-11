@@ -26,7 +26,7 @@ class NeuronVotesCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Text("Voting",
+                      child: Text("Voting History",
                           style: context.textTheme.headline3),
                     ),
                     LabelledBalanceDisplayWidget(
