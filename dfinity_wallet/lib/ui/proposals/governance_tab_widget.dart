@@ -251,7 +251,7 @@ class ProposalRow extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  "By: ${proposal.proposer}",
+                  "Proposer: ${proposal.proposer}",
                   style: context.textTheme.bodyText2,
                 ),
               ],
