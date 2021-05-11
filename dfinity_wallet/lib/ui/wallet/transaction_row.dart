@@ -38,7 +38,7 @@ class TransactionRow extends StatelessWidget {
                     SmallFormDivider(),
                     if (isReceive)
                       SelectableText(
-                        "From: ${transaction.from}",
+                        "Source: ${transaction.from}",
                         style: context.textTheme.bodyText2),
                     if (isSend)
                       SelectableText(
