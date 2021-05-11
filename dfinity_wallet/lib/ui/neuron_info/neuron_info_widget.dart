@@ -164,7 +164,7 @@ class NeuronInfoVotesCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text("Voting", style: context.textTheme.headline3),
+                  child: Text("Voting History", style: context.textTheme.headline3),
                 ),
               ],
             ),
