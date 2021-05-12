@@ -3,14 +3,7 @@ use crate::state::StableState;
 use dfn_candid::Candid;
 use ic_base_types::PrincipalId;
 use itertools::Itertools;
-use ledger_canister::{
-    AccountIdentifier,
-    BlockHeight,
-    Subaccount,
-    TimeStamp,
-    Transfer::{Burn, Mint, Send, self},
-    ICPTs
-};
+use ledger_canister::{AccountIdentifier, BlockHeight, Subaccount, TimeStamp, Transfer::{Burn, Mint, Send, self}, ICPTs, Memo};
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::cmp::min;
@@ -71,6 +64,7 @@ struct Transaction {
     transaction_index: TransactionIndex,
     block_height: BlockHeight,
     timestamp: TimeStamp,
+    memo: Memo,
     transfer: Transfer,
 }
 
@@ -300,6 +294,7 @@ impl TransactionStore {
     pub fn append_transaction(
         &mut self,
         transfer: Transfer,
+        memo: Memo,
         block_height: BlockHeight,
         timestamp: TimeStamp,
     ) -> Result<bool, String> {
@@ -342,6 +337,7 @@ impl TransactionStore {
                 transaction_index,
                 block_height,
                 timestamp,
+                memo,
                 transfer,
             ));
         }
@@ -401,6 +397,7 @@ impl TransactionStore {
                 TransactionResult {
                     block_height: transaction.block_height,
                     timestamp: transaction.timestamp,
+                    memo: transaction.memo,
                     transfer: match transaction.transfer {
                         Burn { amount, from: _ } => TransferResult::Burn { amount },
                         Mint { amount, to: _ } => TransferResult::Mint { amount },
@@ -617,14 +614,26 @@ impl TransactionStore {
     }
 }
 
+#[derive(CandidType, Deserialize)]
+struct TransactionPrevious {
+    transaction_index: TransactionIndex,
+    block_height: BlockHeight,
+    timestamp: TimeStamp,
+    transfer: Transfer,
+}
+
 impl StableState for TransactionStore {
     fn encode(&self) -> Vec<u8> {
         Candid((Vec::from_iter(self.transactions.iter()), &self.accounts, &self.block_height_synced_up_to, &self.last_ledger_sync_timestamp_nanos)).into_bytes().unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64) =
+        let (transactions_previous, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos): (Vec<TransactionPrevious>, Vec<Option<Account>>, Option<BlockHeight>, u64) =
             Candid::from_bytes(bytes).map(|c| c.0)?;
+
+        let transactions: Vec<_> = transactions_previous.into_iter()
+            .map(|t| Transaction::new(t.transaction_index, t.block_height, t.timestamp, Memo(0), t.transfer))
+            .collect();
 
         let mut account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation> = HashMap::new();
         let mut empty_account_indices: Vec<u32> = Vec::new();
@@ -656,7 +665,7 @@ impl StableState for TransactionStore {
             accounts,
             block_height_synced_up_to,
             empty_account_indices,
-            accounts_count: 10,
+            accounts_count,
             sub_accounts_count,
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos
@@ -692,11 +701,17 @@ impl Account {
 }
 
 impl Transaction {
-    pub fn new(transaction_index: TransactionIndex, block_height: BlockHeight, timestamp: TimeStamp, transfer: Transfer) -> Transaction {
+    pub fn new(
+        transaction_index: TransactionIndex,
+        block_height: BlockHeight,
+        timestamp: TimeStamp,
+        memo: Memo,
+        transfer: Transfer) -> Transaction {
         Transaction {
             transaction_index,
             block_height,
             timestamp,
+            memo,
             transfer
         }
     }
@@ -735,6 +750,7 @@ pub struct GetTransactionsResponse {
 pub struct TransactionResult {
     block_height: BlockHeight,
     timestamp: TimeStamp,
+    memo: Memo,
     transfer: TransferResult,
 }
 
@@ -962,13 +978,13 @@ mod tests {
             amount: ICPTs::from_icpts(1).unwrap(),
             to: hw,
         };
-        store.append_transaction(transfer, 4, TimeStamp { timestamp_nanos: 100 }).unwrap();
+        store.append_transaction(transfer, Memo(0), 4, TimeStamp { timestamp_nanos: 100 }).unwrap();
 
         let transfer = Mint {
             amount: ICPTs::from_icpts(2).unwrap(),
             to: hw,
         };
-        store.append_transaction(transfer, 5, TimeStamp { timestamp_nanos: 100 }).unwrap();
+        store.append_transaction(transfer, Memo(0), 5, TimeStamp { timestamp_nanos: 100 }).unwrap();
 
         let get_transactions_request = GetTransactionsRequest {
             account_identifier: hw,
@@ -1009,7 +1025,7 @@ mod tests {
                 amount: ICPTs::from_e8s(100_000),
                 from: default_account,
             };
-            store.append_transaction(transfer1, store.get_block_height_synced_up_to().unwrap_or(0) + 1, timestamp).unwrap();
+            store.append_transaction(transfer1, Memo(0), store.get_block_height_synced_up_to().unwrap_or(0) + 1, timestamp).unwrap();
 
             let transfer2 = Send {
                 amount: ICPTs::from_e8s(10_000),
@@ -1017,19 +1033,19 @@ mod tests {
                 to: sub_account,
                 fee: ICPTs::from_e8s(1_000),
             };
-            store.append_transaction(transfer2, store.get_block_height_synced_up_to().unwrap() + 1, timestamp).unwrap();
+            store.append_transaction(transfer2, Memo(0), store.get_block_height_synced_up_to().unwrap() + 1, timestamp).unwrap();
 
             let transfer3 = Mint {
                 amount: ICPTs::from_e8s(1_000_000_000),
                 to: hw_account,
             };
-            store.append_transaction(transfer3, store.get_block_height_synced_up_to().unwrap() + 1, timestamp).unwrap();
+            store.append_transaction(transfer3, Memo(0), store.get_block_height_synced_up_to().unwrap() + 1, timestamp).unwrap();
 
             let transfer4 = Mint {
                 amount: ICPTs::from_e8s(1_000_000_000),
                 to: unknown_account,
             };
-            store.append_transaction(transfer4, store.get_block_height_synced_up_to().unwrap() + 1, timestamp).unwrap();
+            store.append_transaction(transfer4, Memo(0), store.get_block_height_synced_up_to().unwrap() + 1, timestamp).unwrap();
         }
 
         let original_block_heights = store.transactions.iter().map(|t| t.block_height).collect_vec();
@@ -1151,21 +1167,21 @@ mod tests {
                 amount: ICPTs::from_e8s(1_000_000_000),
                 to: account_identifier1,
             };
-            store.append_transaction(transfer, 0, timestamp).unwrap();
+            store.append_transaction(transfer, Memo(0), 0, timestamp).unwrap();
         }
         {
             let transfer = Mint {
                 amount: ICPTs::from_e8s(1_000_000_000),
                 to: account_identifier1,
             };
-            store.append_transaction(transfer, 1, timestamp).unwrap();
+            store.append_transaction(transfer, Memo(0), 1, timestamp).unwrap();
         }
         {
             let transfer = Burn {
                 amount: ICPTs::from_e8s(500_000_000),
                 from: account_identifier1,
             };
-            store.append_transaction(transfer, 2, timestamp).unwrap();
+            store.append_transaction(transfer, Memo(0), 2, timestamp).unwrap();
         }
         {
             let transfer = Send {
@@ -1174,7 +1190,7 @@ mod tests {
                 from: account_identifier1,
                 to: account_identifier2,
             };
-            store.append_transaction(transfer, 3, timestamp).unwrap();
+            store.append_transaction(transfer, Memo(0), 3, timestamp).unwrap();
         }
         store
     }
