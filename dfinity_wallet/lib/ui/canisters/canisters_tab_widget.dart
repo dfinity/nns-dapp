@@ -45,7 +45,7 @@ class _CansitersPageState extends State<CansitersPage> {
 
 • Link canisters to your account
 
-• Top-up canisters with cycles
+• Send cycles to canisters
 
 Your principal id is "${context.icApi.getPrincipal()}"''',
                     children: [
