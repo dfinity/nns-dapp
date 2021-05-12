@@ -2,9 +2,8 @@ import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:intl/intl.dart';
 
 import '../../dfinity.dart';
-import 'balance_display_widget.dart';
 
-enum TransactionType { SEND, RECEIVE }
+enum TransactionType { SEND, RECEIVE, FEE }
 
 class TransactionRow extends StatelessWidget {
   final Transaction transaction;
@@ -19,8 +18,14 @@ class TransactionRow extends StatelessWidget {
     final dateFormatter = DateFormat.yMd().add_jm();
     var isReceive = transaction.from != currentAccount.accountIdentifier;
     var isSend = transaction.to != currentAccount.accountIdentifier;
-    TransactionType type =
-        isReceive ? TransactionType.RECEIVE : TransactionType.SEND;
+
+    // this can only happen when staking a neuron
+    var isFee = transaction.doms.toInt() == 0;
+    TransactionType type = isFee
+        ? TransactionType.FEE
+        : isReceive
+            ? TransactionType.RECEIVE
+            : TransactionType.SEND;
     return Card(
       color: Color(0xff292a2e),
       child: Container(
@@ -37,14 +42,16 @@ class TransactionRow extends StatelessWidget {
                         style: context.textTheme.headline3),
                     SmallFormDivider(),
                     if (isReceive)
-                      SelectableText(
-                        "Source: ${transaction.from}",
-                        style: context.textTheme.bodyText2),
+                      SelectableText("Source: ${transaction.from}",
+                          style: context.textTheme.bodyText2),
                     if (isSend)
                       SelectableText(
                         "To: ${transaction.to}",
                         style: context.textTheme.bodyText2,
                       ),
+                    if (isFee)
+                      Text("Transaction Fee",
+                          style: TextStyle(color: AppColors.yellow200)),
                     SizedBox(
                       height: 5,
                     ),
@@ -84,11 +91,14 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var isFee = transactionType == TransactionType.FEE;
     final myLocale = Localizations.localeOf(context);
     final sign = addition ? "+" : "-";
-    final color = addition ? AppColors.green500 : AppColors.gray50;
+    final color = addition
+            ? AppColors.green500
+            : AppColors.gray50;
     final secondaryColor = addition ? AppColors.green600 : AppColors.gray200;
-    final showFee = transactionType == TransactionType.SEND;
+    final showFee = transactionType == TransactionType.SEND || isFee;
 
     var displayAmount = amount + (showFee ? fee : 0);
     return Column(
