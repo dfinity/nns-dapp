@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/agent";
 import * as convert from "../converter";
 import {
     AttachCanisterResult,
@@ -10,9 +11,7 @@ import {
     RegisterHardwareWalletResponse,
     RemoveHardwareWalletResponse,
     RenameSubAccountResponse,
-    SubAccountDetails,
-    Transaction,
-    Transfer
+    SubAccountDetails
 } from "./model";
 import {
     AttachCanisterResponse as RawAttachCanisterResponse,
@@ -25,10 +24,9 @@ import {
     RegisterHardwareWalletResponse as RawRegisterHardwareWalletResponse,
     RemoveHardwareWalletResponse as RawRemoveHardwareWalletResponse,
     RenameSubAccountResponse as RawRenameSubAccountResponse,
-    SubAccountDetails as RawSubAccountDetails,
-    Transaction as RawTransaction,
-    Transfer as RawTransfer
+    SubAccountDetails as RawSubAccountDetails
 } from "./rawService";
+import TransactionsConverter from "./TransactionsConverter";
 
 export default class ResponseConverters {
 
@@ -76,10 +74,10 @@ export default class ResponseConverters {
         return response;
     }
 
-    public toGetTransactionsResponse = (response: RawGetTransactionsResponse) : GetTransactionsResponse => {
+    public toGetTransactionsResponse = (response: RawGetTransactionsResponse, principal: Principal) : GetTransactionsResponse => {
         return {
             total: response.total,
-            transactions: response.transactions.map(this.toTransaction)
+            transactions: TransactionsConverter.convert(response.transactions, principal)
         };
     }
 
@@ -115,49 +113,5 @@ export default class ResponseConverters {
             name: hardwareWalletAccount.name,
             accountIdentifier: hardwareWalletAccount.account_identifier
         };
-    }
-
-    private toTransaction = (transaction: RawTransaction) : Transaction => {
-        return {
-            timestamp: transaction.timestamp.timestamp_nanos,
-            blockHeight: transaction.block_height,
-            transfer: this.toTransfer(transaction.transfer)
-        }
-    }
-
-    private toTransfer = (transfer: RawTransfer) : Transfer => {
-        if ("Burn" in transfer) {
-            return {
-                Burn: {
-                    amount: transfer.Burn.amount.e8s
-                }
-            };
-        }
-        if ("Mint" in transfer) {
-            return {
-                Mint: {
-                    amount: transfer.Mint.amount.e8s
-                }
-            };
-        }
-        if ("Send" in transfer) {
-            return {
-                Send: {
-                    to: transfer.Send.to,
-                    amount: transfer.Send.amount.e8s,
-                    fee: transfer.Send.fee.e8s
-                }
-            };
-        }
-        if ("Receive" in transfer) {
-            return {
-                Receive: {
-                    from: transfer.Receive.from,
-                    amount: transfer.Receive.amount.e8s,
-                    fee: transfer.Receive.fee.e8s
-                }
-            };
-        }
-        throw new Error("Unrecognised transfer type - " + JSON.stringify(transfer));
     }
 }

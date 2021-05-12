@@ -17,6 +17,20 @@ export const uint8ArrayToBigInt = (array: Uint8Array) : bigint => {
     }
 }
 
+const TWO_TO_THE_32 = BigInt(1) << BigInt(32);
+export const bigIntToUint8Array = (value: bigint) : Uint8Array => {
+    const array = new Uint8Array(8);
+    const view = new DataView(array.buffer, array.byteOffset, array.byteLength);
+    if (typeof view.getBigUint64 === "function") {
+        view.setBigUint64(0, value);
+    } else {
+        view.setUint32(0, Number(value >> BigInt(32)));
+        view.setUint32(4, Number(value % TWO_TO_THE_32));
+    }
+
+    return array;
+}
+
 export const arrayBufferToArrayOfNumber = (buffer: ArrayBuffer) : Array<number> => {
     const typedArray = new Uint8Array(buffer);
     return Array.from(typedArray);
