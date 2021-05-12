@@ -102,7 +102,7 @@ class _HardwareWalletTransactionWidgetState
                   final walletApi = await context.icApi
                       .createHardwareWalletApi(ledgerIdentity: ledgerIdentity);
 
-                  final response = await context.performLoading(() =>
+                  final response = await context.callUpdate(() =>
                       promiseToFuture(walletApi.sendICPTs(
                           widget.account.accountIdentifier,
                           SendICPTsRequest(

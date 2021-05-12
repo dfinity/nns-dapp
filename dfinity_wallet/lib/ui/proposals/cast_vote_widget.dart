@@ -146,7 +146,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
   }
 
   void castVote(Vote vote) async {
-    await context.performLoading(() async {
+    await context.callUpdate(() async {
       await context.icApi.registerVote(
           neuronIds: selectedNeurons!.map((e) => e.id.toBigInt).toList(),
           proposalId: widget.proposal.id.toBigInt,

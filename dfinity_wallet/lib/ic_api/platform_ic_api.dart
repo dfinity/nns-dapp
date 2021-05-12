@@ -111,6 +111,10 @@ abstract class AbstractPlatformICApi {
   Future<void> refreshAccount(Account account);
 
   String getPrincipal();
+
+  Future<void> logout();
+
+  int getTimeUntilSessionExpiryMs();
 }
 
 

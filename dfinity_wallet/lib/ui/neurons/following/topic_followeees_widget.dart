@@ -144,6 +144,7 @@ class TopicFolloweesWidget extends StatelessWidget {
 
   void saveChanges(BuildContext context) {
     neuron.save();
+    // TODO: Should be using callUpdate
     context.icApi.follow(
         neuronId: neuron.id.toBigInt,
         topic: followees.topic,

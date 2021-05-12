@@ -64,7 +64,7 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
                         child: Text("Send"),
                         onPressed: () async {
 
-                          await context.performLoading(() => context.icApi.topupCanister(
+                          await context.callUpdate(() => context.icApi.topupCanister(
                               stake: amountField.currentValue.toDouble().toE8s,
                               targetCanisterId: widget.canister.identifier,
                               fromSubAccountId: widget.source.subAccountId

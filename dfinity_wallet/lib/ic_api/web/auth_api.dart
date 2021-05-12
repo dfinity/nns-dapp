@@ -23,6 +23,9 @@ class AuthApi {
   @JS("logout")
   external Promise<dynamic> logout();
 
+  @JS("getTimeUntilSessionExpiryMs")
+  external int getTimeUntilSessionExpiryMs();
+
   @JS("getPrincipal")
   external String getPrincipal();
 

@@ -66,7 +66,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                     var isHardwareTransactoin =
                         widget.source.type == ICPSourceType.HARDWARE_WALLET;
                     if (isAccount) {
-                      await context.performLoading(() => context.icApi
+                      await context.callUpdate(() => context.icApi
                           .sendICPTs(
                               toAccount: widget.destination,
                               e8s: widget.amount.toE8s,
@@ -80,7 +80,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                           ));
                     } else if (isNeuronTransaction) {
                       // send the full balance of the neuron to the owner's accoun t
-                      await context.performLoading(() async {
+                      await context.callUpdate(() async {
                         return context.icApi.disburse(
                             neuronId: BigInt.parse(widget.source.address),
                             // this is intentional. send all of them.
