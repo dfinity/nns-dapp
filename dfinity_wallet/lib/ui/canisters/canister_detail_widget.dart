@@ -89,7 +89,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                             height: 10,
                                           ),
                                           SelectableText(
-                                            canister.identifier,
+                                            "Id: ${canister.identifier}",
                                             style: context.textTheme.subtitle2,
                                           )
                                         ],
