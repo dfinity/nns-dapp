@@ -3,6 +3,7 @@ import { Identity } from "@dfinity/agent";
 import { DelegationIdentity } from "@dfinity/identity";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { Option } from "./canisters/option";
+import { executeWithLogging } from "./errorLogger";
 
 // TODO get this from build arg
 const IDENTITY_SERVICE_URL = "https://identity.ic0.app/";
@@ -56,7 +57,7 @@ export default class AuthApi {
             }
         }
 
-        await this.authClient.login(options);
+        await executeWithLogging(() => this.authClient.login(options));
     }
 
     public logout = async () : Promise<void> => {
@@ -64,12 +65,12 @@ export default class AuthApi {
             clearTimeout(this.expireSessionTimeout);
         }
 
-        await this.authClient.logout();
+        await executeWithLogging(() => this.authClient.logout());
         this.onLoggedOut();
     }
 
     public connectToHardwareWallet = () : Promise<LedgerIdentity> => {
-        return LedgerIdentity.fromWebUsb();
+        return executeWithLogging(LedgerIdentity.fromWebUsb);
     }
 
     public getPrincipal = () : string => {

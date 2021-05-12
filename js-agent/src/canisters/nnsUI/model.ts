@@ -1,5 +1,5 @@
+import { Principal } from "@dfinity/agent";
 import { AccountIdentifier, BlockHeight, CanisterId, E8s } from "../common/types";
-import type { Principal } from "@dfinity/agent";
 
 export type Memo = bigint;
 export enum TransactionType {
