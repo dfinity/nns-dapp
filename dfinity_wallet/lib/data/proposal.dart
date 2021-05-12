@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:ui';
+import 'dart:core';
 
 import 'package:dfinity_wallet/data/data.dart';
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/proposal_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
+import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:hive/hive.dart';
 
 part 'proposal.g.dart';
@@ -40,23 +43,25 @@ class Proposal extends DfinityEntity {
   late ProposalStatus status;
   @HiveField(16)
   late ProposalRewardStatus rewardStatus;
+  @HiveField(17)
+  late String raw;
 
   Proposal(
-    this.id,
-    this.summary,
-    this.url,
-    this.proposer,
-    this.no,
-    this.yes,
-    this.executedTimestampSeconds,
-    this.failedTimestampSeconds,
-    this.decidedTimestampSeconds,
-    this.proposalTimestampSeconds,
-    this.cacheUpdateDate,
-    this.topic,
-    this.status,
-    this.rewardStatus,
-  );
+      this.id,
+      this.summary,
+      this.url,
+      this.proposer,
+      this.no,
+      this.yes,
+      this.executedTimestampSeconds,
+      this.failedTimestampSeconds,
+      this.decidedTimestampSeconds,
+      this.proposalTimestampSeconds,
+      this.cacheUpdateDate,
+      this.topic,
+      this.status,
+      this.rewardStatus,
+      this.raw);
 
   Proposal.empty();
 
@@ -64,7 +69,8 @@ class Proposal extends DfinityEntity {
     if (action.containsKey('ExecuteNnsFunction'))
       return ProposalType.ExecuteNnsFunction;
     if (action.containsKey('ManageNeuron')) return ProposalType.ManageNeuron;
-    if (action.containsKey('ApproveGenesisKyc')) return ProposalType.ApproveGenesisKyc;
+    if (action.containsKey('ApproveGenesisKyc'))
+      return ProposalType.ApproveGenesisKyc;
     if (action.containsKey('ManageNetworkEconomics'))
       return ProposalType.ManageNetworkEconomics;
     if (action.containsKey('RewardNodeProvider'))
@@ -83,7 +89,6 @@ class Proposal extends DfinityEntity {
   @override
   String get identifier => id.toString();
 }
-
 
 extension ProposalStatusDisplay on ProposalStatus {
   static final colorMap = {

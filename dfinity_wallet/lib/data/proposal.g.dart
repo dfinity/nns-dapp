@@ -31,13 +31,14 @@ class ProposalAdapter extends TypeAdapter<Proposal> {
       fields[14] as Topic,
       fields[15] as ProposalStatus,
       fields[16] as ProposalRewardStatus,
+      fields[17] as String,
     )..action = (fields[8] as Map).cast<String, dynamic>();
   }
 
   @override
   void write(BinaryWriter writer, Proposal obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -67,7 +68,9 @@ class ProposalAdapter extends TypeAdapter<Proposal> {
       ..writeByte(15)
       ..write(obj.status)
       ..writeByte(16)
-      ..write(obj.rewardStatus);
+      ..write(obj.rewardStatus)
+      ..writeByte(17)
+      ..write(obj.raw);
   }
 
   @override

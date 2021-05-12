@@ -1,16 +1,13 @@
 import 'dart:convert';
-import 'dart:html';
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/setup/hive_loader_widget.dart';
 import 'package:dfinity_wallet/data/topic.dart';
-import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
 import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
 import 'service_api.dart';
-import 'neuron_sync_service.dart';
 import 'stringify.dart';
 
 class ProposalSyncService {
@@ -26,7 +23,8 @@ class ProposalSyncService {
       Proposal? beforeProposal}) async {
     final request = {
       'limit': 100,
-      if (beforeProposal != null) 'beforeProposal': beforeProposal.id.toBigInt.toJS,
+      if (beforeProposal != null)
+        'beforeProposal': beforeProposal.id.toBigInt.toJS,
       'includeRewardStatus':
           includeRewardStatus.mapToList((e) => e.index.toInt()),
       'excludeTopic': excludeTopics.mapToList((e) => e.index.toInt()),
@@ -37,14 +35,13 @@ class ProposalSyncService {
     stopwatch.start();
     final fetchPromise =
         promiseToFuture(serviceApi.listProposals(jsify(request)));
-    if(beforeProposal == null){
+    if (beforeProposal == null) {
       await hiveBoxes.proposals.clear();
     }
 
     final res = await fetchPromise;
     final string = stringify(res);
     dynamic response = jsonDecode(string);
-
 
     response!['proposals']?.forEach((e) {
       storeProposal(e);
@@ -70,8 +67,12 @@ class ProposalSyncService {
 
   void updateProposal(Proposal proposal, String proposalId, dynamic response) {
     proposal.id = proposalId.toString();
-    proposal.summary = (response['proposal']['summary'].toString()).replaceAll("Increase minimum neuron stake", "Reflect falling hardware prices - reduce smart contract memory costs by 5%");
-    proposal.url = response['proposal']['url'].toString().replaceAll("https://www.lipsum.com/", "https://medium.com/zurich-eth/ic-proposal-reduce-smart-contract-memory-costs/");
+    proposal.summary = (response['proposal']['summary'].toString()).replaceAll(
+        "Increase minimum neuron stake",
+        "Reflect falling hardware prices - reduce smart contract memory costs by 5%");
+    proposal.url = response['proposal']['url'].toString().replaceAll(
+        "https://www.lipsum.com/",
+        "https://medium.com/zurich-eth/ic-proposal-reduce-smart-contract-memory-costs/");
     proposal.proposer = response['proposer'].toString();
     proposal.no = response['latestTally']['no'].toString().toInt();
     proposal.yes = response['latestTally']['yes'].toString().toInt();
@@ -92,17 +93,7 @@ class ProposalSyncService {
         ProposalStatus.values[response['status'].toString().toInt()];
     proposal.rewardStatus = ProposalRewardStatus
         .values[response['rewardStatus'].toString().toInt()];
-
-    // print("");
-    // print("proposal");
-    // print("proposal.id: ${proposal.id}");
-    // print("proposal.text: ${proposal.text}");
-    // print("proposal.url: ${proposal.url}");
-    // print("proposal.proposer: ${proposal.proposer}");
-    // print("proposal.status: ${proposal.status}");
-    // print("proposal.no: ${proposal.no}");
-    // print("proposal.yes: ${proposal.yes}");
-
+    proposal.raw = response["proposal"].toString();
   }
 
   void linkProposalsToNeurons() {

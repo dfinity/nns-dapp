@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
+import 'package:flutter/material.dart';
 
 import '../../dfinity.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -56,18 +57,19 @@ class ProposalStateCard extends StatelessWidget {
               onPressed: () => launch(proposal.url),
               child: Text(
                 proposal.url,
-                style: context.textTheme.subtitle2?.copyWith(color: Colors.blue),
+                style:
+                    context.textTheme.subtitle2?.copyWith(color: Colors.blue),
               ),
             ),
             TextButton(
-                    onPressed: () {
-                      OverlayBaseWidget.show(
-                          context, NeuronInfoWidget(proposal.proposer));
-                    },
-                    child: Text(
-                      "Proposer: ${proposal.proposer}",
-                      style: context.textTheme.subtitle2,
-                    )),
+                onPressed: () {
+                  OverlayBaseWidget.show(
+                      context, NeuronInfoWidget(proposal.proposer));
+                },
+                child: Text(
+                  "Proposer: ${proposal.proposer}",
+                  style: context.textTheme.subtitle2,
+                )),
             Text(
               "Topic: ${proposal.topic.toString().removePrefix("Topic.")}",
               style: context.textTheme.subtitle2,
@@ -77,7 +79,24 @@ class ProposalStateCard extends StatelessWidget {
               style: context.textTheme.subtitle2,
             ),
             SmallFormDivider(),
-            ActionDetailsWidget(proposal: proposal,)
+            SmallFormDivider(),
+            ActionDetailsWidget(
+              proposal: proposal,
+            ),
+            SmallFormDivider(),
+            ExpansionTile(
+              collapsedBackgroundColor: AppColors.gray600 ,
+              title: Center(child: Text("raw payload"),),
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(32.0, 0, 32.0, 0),
+                  child: SelectableText(
+                    "${proposal.raw}",
+                    style: TextStyle(color: AppColors.green600),
+                  ),
+                )
+              ],
+            )
           ],
         ),
       ),
@@ -86,23 +105,22 @@ class ProposalStateCard extends StatelessWidget {
 }
 
 class ActionDetailsWidget extends StatelessWidget {
-
   final Proposal proposal;
 
-  const ActionDetailsWidget({Key? key, required this.proposal}) : super(key: key);
+  const ActionDetailsWidget({Key? key, required this.proposal})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final actionKey = proposal.action.keys.firstOrNull;
-    if(actionKey == null) return Container();
+    if (actionKey == null) return Container();
     final fields = proposal.action[actionKey] as Map<dynamic, dynamic>;
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.mediumBackground,
-        borderRadius: BorderRadius.circular(10)
-      ),
+          color: AppColors.mediumBackground,
+          borderRadius: BorderRadius.circular(10)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -113,20 +131,24 @@ class ActionDetailsWidget extends StatelessWidget {
             ),
           ),
           ...fields.entries.map((entry) => Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(entry.key, style: context.textTheme.bodyText1?.copyWith(fontSize: 14, color: AppColors.gray50),),
-                Text(entry.value.toString().toString(), style: context.textTheme.subtitle2,)
-              ],
-            ),
-          ))
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      entry.key,
+                      style: context.textTheme.bodyText1
+                          ?.copyWith(fontSize: 14, color: AppColors.gray50),
+                    ),
+                    Text(
+                      entry.value.toString().toString(),
+                      style: context.textTheme.subtitle2,
+                    )
+                  ],
+                ),
+              ))
         ],
       ),
     );
   }
-
 }
-
-
