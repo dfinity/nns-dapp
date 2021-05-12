@@ -7,6 +7,7 @@ import randomBytes from "randombytes";
 import { E8s, NeuronId } from "./common/types";
 import * as convert from "./converter";
 import { NeuronId as NeuronIdProto } from "./ledger/proto/base_types_pb";
+import { retryAsync } from "./retry";
 
 export type CreateNeuronRequest = {
     stake: E8s
@@ -31,12 +32,12 @@ export default async function(
         fromSubAccountId: request.fromSubAccountId
     });
 
-    const result = await ledgerService.notify({
+    const result = await retryAsync(() => ledgerService.notify({
         toCanister: GOVERNANCE_CANISTER_ID,
         blockHeight,
         toSubAccount,
         fromSubAccountId: request.fromSubAccountId
-    });
+    }), 5);
 
     return BigInt(NeuronIdProto.deserializeBinary(result).getId());
 }
