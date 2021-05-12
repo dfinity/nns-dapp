@@ -77,7 +77,17 @@ class ProposalStateCard extends StatelessWidget {
               style: context.textTheme.subtitle2,
             ),
             SmallFormDivider(),
-            ActionDetailsWidget(proposal: proposal,)
+            Padding(
+              padding: EdgeInsets.fromLTRB(32.0, 0, 32.0, 0),
+              child: SelectableText(
+                "raw: ${proposal.toJSONString()}",
+                style: TextStyle(color: AppColors.green600),
+              ),
+            ),
+            SmallFormDivider(),
+            ActionDetailsWidget(
+              proposal: proposal,
+            )
           ],
         ),
       ),

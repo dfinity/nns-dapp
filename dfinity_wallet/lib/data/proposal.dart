@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:dfinity_wallet/data/data.dart';
@@ -79,6 +80,30 @@ class Proposal extends DfinityEntity {
       int.parse(proposalTimestampSeconds!) * 1000);
 
   String? get motionText => action['Motion']['motionText'];
+
+  String toJSONString() {
+    JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    var map = {
+      "id": id,
+      "summary": summary,
+      "url": url,
+      "proposer": proposer,
+      "no": no,
+      "yes": yes,
+      "executedTimestampSeconds": executedTimestampSeconds,
+      "failedTimestampSeconds": failedTimestampSeconds,
+      "decidedTimestampSeconds": decidedTimestampSeconds,
+      "proposalTimestampSeconds": proposalTimestampSeconds,
+      "cacheUpdateDate": cacheUpdateDate.toString(),
+      "topic": topic.desc,
+      "status": status.description,
+      "rewardStatus": rewardStatus.label,
+      "action": action.toString(),
+      "proposalType": proposalType.description
+    };
+    var prettyString = encoder.convert(map);
+    return prettyString;
+  }
 
   @override
   String get identifier => id.toString();
