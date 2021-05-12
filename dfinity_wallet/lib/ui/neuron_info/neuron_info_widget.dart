@@ -169,6 +169,18 @@ class NeuronInfoVotesCard extends StatelessWidget {
               ],
             ),
             SmallFormDivider(),
+            Container(
+              padding: EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text("Proposal Summary",
+                        style: context.textTheme.bodyText1),
+                  ),
+                  Text("Vote",style: context.textTheme.bodyText1)
+                ],
+              ),
+            ),
             ...neuron.recentBallots
                 .distinctBy((element) => element.proposalId)
                 .map((e) {
