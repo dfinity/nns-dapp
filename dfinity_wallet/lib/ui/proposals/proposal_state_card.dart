@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 
 import '../../dfinity.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -58,10 +59,15 @@ class ProposalStateCard extends StatelessWidget {
                 style: context.textTheme.subtitle2?.copyWith(color: Colors.blue),
               ),
             ),
-            Text(
-              "Proposer: ${proposal.proposer}",
-              style: context.textTheme.subtitle2,
-            ),
+            TextButton(
+                    onPressed: () {
+                      OverlayBaseWidget.show(
+                          context, NeuronInfoWidget(proposal.proposer));
+                    },
+                    child: Text(
+                      "Proposer: ${proposal.proposer}",
+                      style: context.textTheme.subtitle2,
+                    )),
             Text(
               "Topic: ${proposal.topic.toString().removePrefix("Topic.")}",
               style: context.textTheme.subtitle2,

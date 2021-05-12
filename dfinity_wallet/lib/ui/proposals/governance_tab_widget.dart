@@ -9,6 +9,7 @@ import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/multi_select_list.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
+import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
 
 class GovernanceTabWidget extends StatefulWidget {
@@ -250,10 +251,15 @@ class ProposalRow extends StatelessWidget {
                     )
                   ],
                 ),
-                Text(
-                  "Proposer: ${proposal.proposer}",
-                  style: context.textTheme.bodyText2,
-                ),
+                TextButton(
+                    onPressed: () {
+                      OverlayBaseWidget.show(
+                          context, NeuronInfoWidget(proposal.proposer));
+                    },
+                    child: Text(
+                      "Proposer: ${proposal.proposer}",
+                      style: context.textTheme.bodyText2,
+                    )),
                 Row(
                   children: [
                     Text(
