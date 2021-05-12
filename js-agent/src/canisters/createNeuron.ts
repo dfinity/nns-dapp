@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/agent";
+import { sha256 } from "js-sha256";
 import LedgerService from "./ledger/model";
 import { SignIdentity } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "./governance/canisterId";
@@ -20,7 +21,7 @@ export default async function(
 
     const principal = identity.getPrincipal();
     const nonce = new Uint8Array(randomBytes(8));
-    const toSubAccount = await buildSubAccount(nonce, principal);
+    const toSubAccount = buildSubAccount(nonce, principal);
 
     const accountIdentifier = convert.principalToAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
     const blockHeight = await ledgerService.sendICPTs({
@@ -41,13 +42,13 @@ export default async function(
 }
 
 // 32 bytes
-export async function buildSubAccount(nonce: Uint8Array, principal: Principal) : Promise<Uint8Array> {
+export function buildSubAccount(nonce: Uint8Array, principal: Principal) : Uint8Array {
     const padding = convert.asciiStringToByteArray("neuron-stake");
-    const array = new Uint8Array([
-        0x0c, 
-        ...padding, 
+    const shaObj = sha256.create();
+    shaObj.update([
+        0x0c,
+        ...padding,
         ...principal.toBlob(),
         ...nonce]);
-    const result = await crypto.subtle.digest("SHA-256", array);
-    return new Uint8Array(result);
+    return new Uint8Array(shaObj.array());
 }

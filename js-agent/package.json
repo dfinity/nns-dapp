@@ -12,6 +12,7 @@
     "buffer": "^5.4.3",
     "common-shakeify": "^0.6.2",
     "crc": "^3.8.0",
+    "js-sha256": "0.9.0",
     "protobufjs": "^6.10.2",
     "randombytes": "^2.1.0",
     "source-map-explorer": "^2.5.2",
