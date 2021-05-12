@@ -70,7 +70,7 @@ class NeuronStateCard extends StatelessWidget {
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(AppColors.blue600)),
             onPressed: () async {
-              context.performLoading(() =>
+              context.callUpdate(() =>
                   context.icApi.stopDissolving(neuronId: neuron.id.toBigInt));
             });
       case NeuronState.LOCKED:
@@ -83,7 +83,7 @@ class NeuronStateCard extends StatelessWidget {
               child: Text("Start Unlock"),
             ),
             onPressed: () {
-              context.performLoading(() =>
+              context.callUpdate(() =>
                   context.icApi.startDissolving(neuronId: neuron.id.toBigInt));
             });
       case NeuronState.UNLOCKED:

@@ -270,4 +270,16 @@ class PlatformICApi extends AbstractPlatformICApi {
     // TODO: implement getPrincipal
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> logout() {
+    // TODO: implement logout
+    throw UnimplementedError();
+  }
+
+  @override
+  int getTimeUntilSessionExpiryMs() {
+    // TODO: implement getTimeUntilSessionExpiryMs
+    throw UnimplementedError();
+  }
 }

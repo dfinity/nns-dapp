@@ -125,10 +125,12 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                     child: Text("Confirm"),
                   ),
                   onPressed: () async {
-                    final result = await context.performLoading(() => context
+                    final result = await context.callUpdate(() => context
                         .icApi
                         .createCanister(stake: amount.toE8s, name: name, fromSubAccountId: fromSubAccountId));
-
+                    if (result == null) {
+                      return;
+                    }
                     switch (result.result){
                       case CreateCanisterResult.Ok:
 

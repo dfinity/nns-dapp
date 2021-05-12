@@ -46,7 +46,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                             fieldName: "New Name",
                             buttonTitle: "Rename",
                             onComplete: (name) async {
-                              context.performLoading(() => context.icApi
+                              context.callUpdate(() => context.icApi
                                   .renameSubAccount(
                                       accountIdentifier:
                                           widget.account.identifier,

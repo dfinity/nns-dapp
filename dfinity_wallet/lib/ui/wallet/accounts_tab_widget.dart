@@ -162,7 +162,7 @@ class SelectAccountAddActionWidget extends StatelessWidget {
                           buttonTitle: "Create",
                           fieldName: "Account Name",
                           onComplete: (name) {
-                            context.performLoading(() =>
+                            context.callUpdate(() =>
                                 context
                                     .icApi
                                     .createSubAccount(

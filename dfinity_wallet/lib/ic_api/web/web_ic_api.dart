@@ -416,4 +416,14 @@ class PlatformICApi extends AbstractPlatformICApi {
   String getPrincipal() {
     return authApi.getPrincipal();
   }
+
+  @override
+  Future<void> logout() async {
+      await promiseToFuture(authApi.logout());
+  }
+
+  @override
+  int getTimeUntilSessionExpiryMs() {
+    return authApi.getTimeUntilSessionExpiryMs();
+  }
 }

@@ -49,9 +49,7 @@ class _AttachHardwareWalletWidgetState
               child: ElevatedButton(
                 child: Text("Attach Wallet"),
                 onPressed: (() async {
-
-
-                  context.performLoading(() async {
+                  context.callUpdate(() async {
                     await context.icApi.registerHardwareWallet(name: widget.name, ledgerIdentity: ledgerIdentity);
                     await 0.2.seconds.delay;
                     await context.icApi.refreshAccounts();

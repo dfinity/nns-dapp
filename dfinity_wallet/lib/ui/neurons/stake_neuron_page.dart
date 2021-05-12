@@ -93,8 +93,9 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                 padding: EdgeInsets.symmetric(horizontal: 64, vertical: 16),
                 child: ElevatedButton(
                   child: Text("Create"),
-                  onPressed: () async {
-                    await context.performLoading(() => context.icApi
+                  onPressed: () async {                    
+                    // TODO: Should be using the returned neuronId
+                    await context.callUpdate(() => context.icApi
                         .createNeuron(
                             stakeInDoms:
                                 amountField.currentValue.toDouble().toE8s,
@@ -103,7 +104,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                         .sortedByDescending((element) =>
                             element.createdTimestampSeconds.toBigInt)
                         .first;
-
+                        
                     WizardOverlay.of(context).replacePage(
                         "Set Dissolve Delay",
                         IncreaseDissolveDelayWidget(

@@ -170,7 +170,7 @@ class _IncreaseDissolveDelayWidgetState
   }
 
   Future performUpdate(BuildContext context) async {
-    await context.performLoading(() => context.icApi.increaseDissolveDelay(
+    await context.callUpdate(() => context.icApi.increaseDissolveDelay(
         neuronId: widget.neuron.id.toBigInt,
         additionalDissolveDelaySeconds: disperseDelay.currentValue));
     widget.onCompleteAction(context);
