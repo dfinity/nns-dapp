@@ -13,7 +13,7 @@ jobs:
       - run: mkdir out/
       - run: docker run --rm --entrypoint cat dfinity-wallet /nns_ui.wasm > out/nns_ui.wasm
       - run: docker run --rm --entrypoint cat dfinity-wallet /assets.tar.xz > out/assets.tar.xz
-      - run: sha256sum out/nss_ui.wasm
+      - run: sha256sum out/nns_ui.wasm
       - name: 'Upload wasm module'
         uses: actions/upload-artifact@v2
         with:
