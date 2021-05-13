@@ -4,6 +4,7 @@ import 'package:dfinity_wallet/data/followee.dart';
 import 'package:dfinity_wallet/data/neuron.dart';
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/transaction.dart';
+import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:hive/hive.dart';
@@ -81,6 +82,7 @@ class HiveCoordinator {
     Hive.registerAdapter<Neuron>(NeuronAdapter());
     Hive.registerAdapter<Proposal>(ProposalAdapter());
     Hive.registerAdapter<Transaction>(TransactionAdapter());
+    Hive.registerAdapter<TransactionType>(TransactionTypeAdapter());
     Hive.registerAdapter<BallotInfo>(BallotInfoAdapter());
     Hive.registerAdapter<Followee>(FolloweeAdapter());
     Hive.registerAdapter<Topic>(TopicAdapter());

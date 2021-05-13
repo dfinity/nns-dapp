@@ -1,9 +1,8 @@
+import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:intl/intl.dart';
 
 import '../../dfinity.dart';
-
-enum TransactionType { SEND, RECEIVE, FEE }
 
 class TransactionRow extends StatelessWidget {
   final Transaction transaction;
@@ -16,16 +15,11 @@ class TransactionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateFormatter = DateFormat.yMd().add_jm();
-    var isReceive = transaction.from != currentAccount.accountIdentifier;
-    var isSend = transaction.to != currentAccount.accountIdentifier;
-
-    // this can only happen when staking a neuron
-    var isFee = transaction.doms.toInt() == 0;
-    TransactionType type = isFee
-        ? TransactionType.FEE
-        : isReceive
-            ? TransactionType.RECEIVE
-            : TransactionType.SEND;
+    final isReceive = transaction.from != currentAccount.accountIdentifier;
+    final isSend = transaction.to != currentAccount.accountIdentifier;
+    final typeDisplayName = transaction.type.shouldDisplayNameOnUi()
+      ? transaction.type.getName() : null;
+        
     return Card(
       color: Color(0xff292a2e),
       child: Container(
@@ -49,8 +43,8 @@ class TransactionRow extends StatelessWidget {
                         "To: ${transaction.to}",
                         style: context.textTheme.bodyText2,
                       ),
-                    if (isFee)
-                      Text("Transaction Fee",
+                    if (typeDisplayName != null)
+                      Text(typeDisplayName,
                           style: TextStyle(color: AppColors.yellow200)),
                     SizedBox(
                       height: 5,
@@ -63,8 +57,8 @@ class TransactionRow extends StatelessWidget {
               ),
               TransactionAmountDisplayWidget(
                 fee: transaction.fee.toBigInt.toICPT,
-                transactionType: type,
                 amount: transaction.icpt,
+                type: transaction.type,
                 addition: transaction.from != currentAccount.accountIdentifier,
               ),
             ],
@@ -78,29 +72,27 @@ class TransactionRow extends StatelessWidget {
 class TransactionAmountDisplayWidget extends StatelessWidget {
   final double amount;
   final double fee;
+  final TransactionType type;
   final bool addition;
-  final TransactionType transactionType;
 
   const TransactionAmountDisplayWidget(
       {Key? key,
       required this.fee,
       required this.amount,
-      required this.addition,
-      required this.transactionType})
+      required this.type,
+      required this.addition})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var isFee = transactionType == TransactionType.FEE;
     final myLocale = Localizations.localeOf(context);
     final sign = addition ? "+" : "-";
     final color = addition
             ? AppColors.green500
             : AppColors.gray50;
     final secondaryColor = addition ? AppColors.green600 : AppColors.gray200;
-    final showFee = transactionType == TransactionType.SEND || isFee;
 
-    var displayAmount = amount + (showFee ? fee : 0);
+    final displayAmount = amount + (type.shouldShowFee() ? this.fee : 0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.center,

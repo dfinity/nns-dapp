@@ -19,7 +19,7 @@ export interface AccountDetails {
     accountIdentifier: AccountIdentifier,
     hardwareWalletAccounts: Array<HardwareWalletAccountDetails>,
     subAccounts: Array<SubAccountDetails>,
-};
+}
 
 export interface AttachCanisterRequest {
     name: string,

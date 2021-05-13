@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:js_util';
 
+import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
 import 'service_api.dart';
 
@@ -34,6 +35,8 @@ class TransactionSyncService {
       late String to;
       late BigInt doms;
       late String fee = "0";
+      late TransactionType type = TransactionType.values[e['type'].toString().toInt()];
+      late BigInt memo = e['memo'].toString().toBigInt;
 
       if (send != null) {
         from = account.accountIdentifier;
@@ -55,7 +58,9 @@ class TransactionSyncService {
           from: from,
           date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
           doms: doms.toString(),
-          fee: fee));
+          fee: fee,
+          type: type,
+          memo: memo));
     });
     account.transactions = transactions;
     account.save();
