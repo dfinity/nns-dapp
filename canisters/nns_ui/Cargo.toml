@@ -18,14 +18,14 @@ sha2 = "0.9.1"
 lzma-rs = "0.2.0"
 tar = "0.4.33"
 
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "024de2fc73d7f6f5df5a92edf9675851f9ebbf59" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "024de2fc73d7f6f5df5a92edf9675851f9ebbf59" }
-dfn_json = { git = "https://github.com/dfinity/ic", rev = "024de2fc73d7f6f5df5a92edf9675851f9ebbf59" }
-dfn_macro = { git = "https://github.com/dfinity/ic", rev = "024de2fc73d7f6f5df5a92edf9675851f9ebbf59" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "024de2fc73d7f6f5df5a92edf9675851f9ebbf59" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "024de2fc73d7f6f5df5a92edf9675851f9ebbf59" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+dfn_json = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+dfn_macro = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
 ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "024de2fc73d7f6f5df5a92edf9675851f9ebbf59" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "024de2fc73d7f6f5df5a92edf9675851f9ebbf59" }
-ledger-canister = { git = "https://github.com/dfinity/ic", rev = "024de2fc73d7f6f5df5a92edf9675851f9ebbf59" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "024de2fc73d7f6f5df5a92edf9675851f9ebbf59" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+ledger-canister = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
