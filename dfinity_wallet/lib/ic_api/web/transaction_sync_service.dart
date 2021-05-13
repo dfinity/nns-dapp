@@ -35,6 +35,7 @@ class TransactionSyncService {
       late String to;
       late BigInt doms;
       late String fee = "0";
+      late bool incomplete = false;
       late TransactionType type = TransactionType.values[e['type'].toString().toInt()];
       late BigInt memo = e['memo'].toString().toBigInt;
 
@@ -42,13 +43,14 @@ class TransactionSyncService {
         from = account.accountIdentifier;
         to = send['to'].toString();
         doms = BigInt.parse(send['amount'].toString());
-        fee = send["fee"].toString();
+        fee = send['fee'].toString();
+        incomplete = send['incomplete'];
       }
       if (receive != null) {
         to = account.accountIdentifier;
         from = receive['from'].toString();
         doms = BigInt.parse(receive['amount'].toString());
-        fee = receive["fee"].toString();
+        fee = receive['fee'].toString();
       }
 
       final milliseconds =
@@ -60,7 +62,8 @@ class TransactionSyncService {
           doms: doms.toString(),
           fee: fee,
           type: type,
-          memo: memo));
+          memo: memo,
+          incomplete: incomplete));
     });
     account.transactions = transactions;
     account.save();
