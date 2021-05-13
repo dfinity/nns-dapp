@@ -17,19 +17,6 @@ cd build/web/ || exit
 tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../assets.tar.xz .
 cd ../../.. || exit
 ls -sh assets.tar.xz
-sha256sum assets.tar.xz
 
-
-cargo build --target wasm32-unknown-unknown --release --package nns_ui
-cp target/wasm32-unknown-unknown/release/nns_ui.wasm .
-
-# TODO: Make this work outside of docker
-ic-cdk-optimizer nns_ui.wasm -o nns_ui.wasm
-
-sha256sum nns_ui.wasm
-
-# If we are in docker build, and the user passed -v out:out, copy files there
-if test -d out;
-then
-  cp -v assets.tar.xz nns_ui.wasm out
-fi
+# TODO: add what this does other than "generate wasm"
+./generate-wasm.sh nns_ui
