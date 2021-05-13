@@ -17,8 +17,6 @@ class TransactionRow extends StatelessWidget {
     final dateFormatter = DateFormat.yMd().add_jm();
     final isReceive = transaction.from != currentAccount.accountIdentifier;
     final isSend = transaction.to != currentAccount.accountIdentifier;
-    final typeDisplayName = transaction.type.shouldDisplayNameOnUi()
-      ? transaction.type.getName() : null;
         
     return Card(
       color: Color(0xff292a2e),
@@ -32,9 +30,12 @@ class TransactionRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(dateFormatter.format(transaction.date),
+                    Text(transaction.type.getName(),
                         style: context.textTheme.headline3),
-                    SmallFormDivider(),
+                    VerySmallFormDivider(),
+                    Text(dateFormatter.format(transaction.date),
+                        style: context.textTheme.bodyText2),
+                    VerySmallFormDivider(),
                     if (isReceive)
                       SelectableText("Source: ${transaction.from}",
                           style: context.textTheme.bodyText2),
@@ -43,12 +44,6 @@ class TransactionRow extends StatelessWidget {
                         "To: ${transaction.to}",
                         style: context.textTheme.bodyText2,
                       ),
-                    if (typeDisplayName != null)
-                      Text(typeDisplayName,
-                          style: TextStyle(color: AppColors.yellow200)),
-                    SizedBox(
-                      height: 5,
-                    ),
                   ],
                 ),
               ),

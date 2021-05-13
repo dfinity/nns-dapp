@@ -26,22 +26,6 @@ enum TransactionType {
   TopUpCanisterNotification
 }
 
-extension ShouldDisplayNameOnUi on TransactionType {
-  bool shouldDisplayNameOnUi() {
-    switch (this) {
-      case TransactionType.StakeNeuron:
-      case TransactionType.StakeNeuronNotification:
-      case TransactionType.CreateCanister:
-      case TransactionType.CreateCanisterNotification:
-      case TransactionType.TopUpCanister:
-      case TransactionType.TopUpCanisterNotification:
-        return true;
-      default:
-        return false;
-    }
-  }
-}
-
 extension ShouldShowFee on TransactionType {
   bool shouldShowFee() {
     switch (this) {
@@ -58,16 +42,16 @@ extension ShouldShowFee on TransactionType {
 extension GetName on TransactionType {
   String getName() {
     switch (this) {
-      case TransactionType.Send: return "Send";
-      case TransactionType.Receive: return "Receive";
-      case TransactionType.Mint: return "Mint";
-      case TransactionType.Burn: return "Burn";
-      case TransactionType.StakeNeuron: return "Stake Neuron Transfer";
-      case TransactionType.StakeNeuronNotification: return "Stake Neuron Notification";
-      case TransactionType.CreateCanister: return "Create Canister Transfer";
-      case TransactionType.CreateCanisterNotification: return "Create Canister Notification";
-      case TransactionType.TopUpCanister: return "Top-up Canister Transfer";
-      case TransactionType.TopUpCanisterNotification: return "Top-up Canister Notification";
+      case TransactionType.Send: return "Sent ICP";
+      case TransactionType.Receive: return "Received ICP";
+      case TransactionType.Mint: return "Received ICP";
+      case TransactionType.Burn: return "Sent ICP";
+      case TransactionType.StakeNeuron: return "Stake Neuron (Part 1 of 2)";
+      case TransactionType.StakeNeuronNotification: return "Stake Neuron (Part 2 of 2)";
+      case TransactionType.CreateCanister: return "Create Canister (Part 1 of 2)";
+      case TransactionType.CreateCanisterNotification: return "Create Canister (Part 2 of 2)";
+      case TransactionType.TopUpCanister: return "Top-up Canister (Part 1 of 2)";
+      case TransactionType.TopUpCanisterNotification: return "Top-up Canister (Part 2 of 2)";
     }
   }
 }
