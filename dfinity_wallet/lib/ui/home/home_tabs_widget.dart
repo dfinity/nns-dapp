@@ -56,8 +56,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(color: AppColors.white),
                       ),
                       onPressed: () async {
-                        context.boxes.hiveCoordinator.deleteAllData();
-                        context.nav.replaceAll(AuthPage);
+                        context.icApi.logout();
                       },
                     ),
                   )
