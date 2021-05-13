@@ -55,7 +55,7 @@ RUN cd dfinity_wallet && flutter build web --web-renderer canvaskit --release --
 RUN sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' dfinity_wallet/build/web/index.html
 
 # Bundle into a tight tarball
-RUN cd build/web/ && tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../assets.tar.xz .
+RUN cd dfinity_wallet/build/web/ && tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../assets.tar.xz .
 RUN ls -sh assets.tar.xz; sha256sum assets.tar.xz
 
 RUN cargo build --target wasm32-unknown-unknown --release --package nns_ui
