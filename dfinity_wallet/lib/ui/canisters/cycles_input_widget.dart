@@ -2,6 +2,7 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
+import 'package:flutter/services.dart';
 
 import '../../dfinity.dart';
 import 'confirm_cycles_purchase.dart';
@@ -35,7 +36,9 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
         validations: [
           StringFieldValidation.insufficientFunds(widget.source.icpBalance)
         ],
-        inputType: TextInputType.number);
+        inputType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')) ]
+        );
 
     cyclesField = ValidatedTextField("T Cycles",
         validations: [
@@ -100,7 +103,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text('''Minimum amount: 2T Cycles (inclusive of 1T Cycles fee to create the canister)
-              
+
               Application subnets are in beta and therefore Cycles might be lost'''),
             )
           ],

@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
+import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
@@ -29,6 +30,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
           StringFieldValidation.insufficientFunds(widget.source.icpBalance),
           StringFieldValidation("Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
         ],
+        inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')) ],
         inputType: TextInputType.number);
   }
 
@@ -104,7 +106,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                 padding: EdgeInsets.symmetric(horizontal: 64, vertical: 16),
                 child: ElevatedButton(
                   child: Text("Create"),
-                  onPressed: () async {                    
+                  onPressed: () async {
                     // TODO: Should be using the returned neuronId
                     await context.callUpdate(() => context.icApi
                         .createNeuron(
@@ -115,7 +117,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                         .sortedByDescending((element) =>
                             element.createdTimestampSeconds.toBigInt)
                         .first;
-                        
+
                     WizardOverlay.of(context).replacePage(
                         "Set Dissolve Delay",
                         IncreaseDissolveDelayWidget(

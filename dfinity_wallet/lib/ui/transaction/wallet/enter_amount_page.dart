@@ -6,6 +6,7 @@ import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
+import 'package:flutter/services.dart';
 
 import '../wizard_overlay.dart';
 import 'confirm_transactions_widget.dart';
@@ -38,7 +39,10 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
           StringFieldValidation.insufficientFunds(widget.source.icpBalance),
           StringFieldValidation.nonZero()
         ],
-        inputType: TextInputType.number);
+        inputType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
+        ]);
   }
 
   @override
@@ -93,10 +97,11 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                   Text(widget.destinationAccountIdentifier,
                       style: context.textTheme.bodyText1),
                   TallFormDivider(),
-                  Text("Transaction Fee (billed to source)", style: context.textTheme.headline4),
-                    VerySmallFormDivider(),
-                    Text(TRANSACTION_FEE_ICP.toString() + " ICP",
-                        style: context.textTheme.bodyText1),
+                  Text("Transaction Fee (billed to source)",
+                      style: context.textTheme.headline4),
+                  VerySmallFormDivider(),
+                  Text(TRANSACTION_FEE_ICP.toString() + " ICP",
+                      style: context.textTheme.bodyText1),
                 ],
               ),
             ),
