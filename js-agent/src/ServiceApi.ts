@@ -122,7 +122,7 @@ export default class ServiceApi {
     }
 
     public getTransactions = (request: GetTransactionsRequest) : Promise<GetTransactionsResponse> => {
-        return this.nnsUiService.getTransactions(request);
+        return this.nnsUiService.getTransactions(request, this.identity.getPrincipal());
     }
 
     public sendICPTs = (request: SendICPTsRequest): Promise<BlockHeight> => {

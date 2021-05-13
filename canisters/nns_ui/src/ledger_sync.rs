@@ -47,7 +47,8 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
         let store = &mut STATE.write().unwrap().transactions_store;
         let blocks_count = blocks.len() as u32;
         for (block_height, block) in blocks.into_iter() {
-            let result = store.append_transaction(block.transaction().into_owned().transfer, block_height, block.timestamp());
+            let transaction = block.transaction().into_owned();
+            let result = store.append_transaction(transaction.transfer, transaction.memo, block_height, block.timestamp());
 
             if result.is_err() {
                 return Err(result.unwrap_err());

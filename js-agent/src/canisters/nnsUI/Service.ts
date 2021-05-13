@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/agent";
 import { AccountIdentifier } from "../common/types";
 import ServiceInterface, {
     AttachCanisterRequest,
@@ -80,10 +81,10 @@ export default class Service implements ServiceInterface {
         return this.responseConverters.toRemoveHardwareWalletResponse(rawResponse);
     }
 
-    public getTransactions = async (request: GetTransactionsRequest) : Promise<GetTransactionsResponse> => {
+    public getTransactions = async (request: GetTransactionsRequest, principal: Principal) : Promise<GetTransactionsResponse> => {
         const rawRequest = this.requestConverters.fromGetTransactionsRequest(request);
         const rawResponse = await this.service.get_transactions(rawRequest);
-        return this.responseConverters.toGetTransactionsResponse(rawResponse);
+        return this.responseConverters.toGetTransactionsResponse(rawResponse, principal);
     }
 
     public getIcpToCyclesConversionRate = async () : Promise<bigint> => {

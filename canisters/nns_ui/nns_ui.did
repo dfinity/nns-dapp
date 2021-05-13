@@ -63,8 +63,8 @@ type Receive =
 
 type Transfer = 
     variant {
-        Burn: record { amount: ICPTs };
-        Mint: record { amount: ICPTs };
+        Burn: record { amount: ICPTs; };
+        Mint: record { amount: ICPTs; };
         Send: Send;
         Receive: Receive;
     };
@@ -73,6 +73,7 @@ type Transaction =
     record {
         block_height: BlockHeight;
         timestamp: Timestamp;
+        memo: nat64;
         transfer: Transfer;
     };
 

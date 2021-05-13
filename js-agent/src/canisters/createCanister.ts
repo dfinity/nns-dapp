@@ -5,6 +5,7 @@ import MINTING_CANISTER_ID from "./cyclesMinting/canisterId";
 import { CyclesNotificationResponse } from "./ledger/proto/types_pb";
 import { CanisterId, E8s } from "./common/types";
 import * as convert from "./converter";
+import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants";
 
 export type CreateCanisterRequest = {
     stake: E8s
@@ -37,7 +38,7 @@ export async function createCanisterImpl(
         ledgerService, 
         request.stake,
         principal,
-        BigInt(0x41455243), // CREA,
+        CREATE_CANISTER_MEMO,
         request.fromSubAccountId);
 
     let errorMessage;
@@ -56,7 +57,7 @@ export async function createCanisterImpl(
                 case AttachCanisterResult.Ok: return { result: CreateCanisterResult.Ok, canisterId };
                 case AttachCanisterResult.CanisterAlreadyAttached: return { result: CreateCanisterResult.CanisterAlreadyAttached, canisterId };
                 case AttachCanisterResult.NameAlreadyTaken: return { result: CreateCanisterResult.NameAlreadyTaken, canisterId };
-                case AttachCanisterResult.CanisterLimitExceeded: return { result: CreateCanisterResult.CanisterLimitExceeded, canisterId };            
+                case AttachCanisterResult.CanisterLimitExceeded: return { result: CreateCanisterResult.CanisterLimitExceeded, canisterId };
             }
         } catch (e) {
             return {
@@ -88,7 +89,7 @@ export async function topupCanisterImpl(
         ledgerService, 
         request.stake,
         request.targetCanisterId,
-        BigInt(0x50555054), // TPUP
+        TOP_UP_CANISTER_MEMO,
         request.fromSubAccountId);
 
     return response.hasToppedUp();
