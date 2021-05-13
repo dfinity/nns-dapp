@@ -21,7 +21,7 @@ class SelectCyclesOriginWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Select ICP Origin Account",
+                  "Select ICP Source Account",
                   style: context.textTheme.headline3,
                 ),
                 SmallFormDivider(),

@@ -164,11 +164,23 @@ class NeuronInfoVotesCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text("Voting", style: context.textTheme.headline3),
+                  child: Text("Voting History", style: context.textTheme.headline3),
                 ),
               ],
             ),
             SmallFormDivider(),
+            Container(
+              padding: EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text("Proposal Summary",
+                        style: context.textTheme.bodyText1),
+                  ),
+                  Text("Vote",style: context.textTheme.bodyText1)
+                ],
+              ),
+            ),
             ...neuron.recentBallots
                 .distinctBy((element) => element.proposalId)
                 .map((e) {

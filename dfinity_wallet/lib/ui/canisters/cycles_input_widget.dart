@@ -2,19 +2,20 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
+import 'package:flutter/services.dart';
 
 import '../../dfinity.dart';
 import 'confirm_cycles_purchase.dart';
 import 'cycle_calculator.dart';
 
 class CycleInputWidget extends StatefulWidget {
-  final Account origin;
+  final Account source;
   final Function(double? icps) onChange;
   final BigInt? ratio;
 
   const CycleInputWidget(
       {Key? key,
-        required this.origin, required this.onChange, required this.ratio
+        required this.source, required this.onChange, required this.ratio
       })
       : super(key: key);
 
@@ -33,26 +34,21 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
 
     icpField = ValidatedTextField("Amount",
         validations: [
-          FieldValidation("Must be greater than 0",
-                  (e) {
-                final amount = (e.toDoubleOrNull() ?? 0);
-                return amount == 0;
-              }),
-          FieldValidation("Not enough ICP in account",
-                  (e) {
-                final amount = (e.toDoubleOrNull() ?? 0);
-                return amount > widget.origin.icpBalance;
-              })
+          StringFieldValidation.insufficientFunds(widget.source.icpBalance)
         ],
-        inputType: TextInputType.number);
+        inputType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')) ]
+        );
 
     cyclesField = ValidatedTextField("T Cycles",
-        validations: [],
+        validations: [
+          StringFieldValidation("Minimum amount: 2T cycles", (e) => (e.toDoubleOrNull() ?? 0) < 2),
+        ],
         inputType: TextInputType.number);
   }
 
   void callCallback(){
-    final amount = (icpField.failedValidation == null) ? icpField.currentValue.toDoubleOrNull() : null;
+    final amount = (icpField.failedValidation == null && cyclesField.failedValidation == null) ? icpField.currentValue.toDoubleOrNull() : null;
     widget.onChange(amount);
   }
 
@@ -106,7 +102,9 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Application subnets are beta and therefore Cycles might be lost"),
+              child: Text('''Minimum amount: 2T Cycles (inclusive of 1T Cycles fee to create the canister)
+
+              Application subnets are in beta and therefore Cycles might be lost'''),
             )
           ],
         ),

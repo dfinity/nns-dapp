@@ -21,6 +21,7 @@ class _RegularRefreshWidgetState extends State<RegularRefreshWidget> {
     timer = Timer.periodic(10.seconds, (timer) {
       widget.performRefresh();
     });
+    widget.performRefresh();
   }
 
   @override

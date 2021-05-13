@@ -17,7 +17,7 @@ abstract class ValidatedField<T> {
   ValidatedField(this.name, this.validations);
 
   FieldValidation? get failedValidation => validations.firstOrNullWhere(
-          (FieldValidation<T> element) => element.inputIsValid(currentValue));
+      (FieldValidation<T> element) => element.inputIsValid(currentValue));
 }
 
 class ValidatedTextField extends ValidatedField<String> {
@@ -32,14 +32,13 @@ class ValidatedTextField extends ValidatedField<String> {
 
   final focusNode = FocusNode();
 
-  ValidatedTextField(
-      String name,
+  ValidatedTextField(String name,
       {required List<FieldValidation<String>> validations,
       this.inputFormatters,
       this.inputType = TextInputType.text,
       String? defaultText})
       : super(name, validations) {
-    if(defaultText != null){
+    if (defaultText != null) {
       textEditingController.text = defaultText;
     }
   }
@@ -49,7 +48,8 @@ class ValidatedTextField extends ValidatedField<String> {
 }
 
 class IntField extends ValidatedField<int> {
-  IntField(String name, List<FieldValidation<int>> validations) : super(name, validations);
+  IntField(String name, List<FieldValidation<int>> validations)
+      : super(name, validations);
 
   @override
   int currentValue = 0;
@@ -62,19 +62,35 @@ class FieldValidation<T> {
   FieldValidation(this.errorMessage, this.inputIsValid);
 }
 
-class StringFieldValidation extends FieldValidation<String>{
-  StringFieldValidation(String errorMessage, bool Function(String) inputIsValid) : super(errorMessage, inputIsValid);
+class StringFieldValidation extends FieldValidation<String> {
+  StringFieldValidation(String errorMessage, bool Function(String) inputIsValid)
+      : super(errorMessage, inputIsValid);
 
   StringFieldValidation.minimumLength(int numCharacters)
-      : this("must be more than $numCharacters long",
-          (e) => e.length < numCharacters);
+      : this("Must be longer than $numCharacters characters",
+            (e) => e.length < numCharacters);
 
   StringFieldValidation.maximumLength(int numCharacters)
-      : this("must be less than $numCharacters long",
-          (e) => e.length > numCharacters);
+      : this("Must be shorter than $numCharacters characters",
+            (e) => e.length > numCharacters);
+
+  StringFieldValidation.boundLength(int minChars, int maxChars)
+      : this("Must be between $minChars and $maxChars characters",
+            (e) => e.length >= maxChars && e.length <= minChars);
+
+  StringFieldValidation.nonZero()
+      : this("Must be greater than 0", (e) {
+          final amount = (e.toDoubleOrNull() ?? 0);
+          return amount == 0;
+        });
+
+  StringFieldValidation.insufficientFunds(double balance)
+      : this("Insufficient funds", (e) {
+          var modBalance = balance.toDouble() - TRANSACTION_FEE_ICP.toDouble();
+          var sendAmount = (e.toDoubleOrNull() ?? 0.0);
+          return sendAmount > modBalance;
+        });
 }
-
-
 
 class VerySmallFormDivider extends StatelessWidget {
   @override
@@ -112,7 +128,9 @@ class VeryTallFormDivider extends StatelessWidget {
   }
 }
 
-
 extension RandomUUID on BuildContext {
-  String randomUUID() => boxes.accounts.primary.identifier.characters.shuffled().joinToString(separator: "").toString();
+  String randomUUID() => boxes.accounts.primary.identifier.characters
+      .shuffled()
+      .joinToString(separator: "")
+      .toString();
 }

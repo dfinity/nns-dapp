@@ -55,10 +55,13 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
               child: ValidFieldsSubmitButton(
                 child: Text("Attach Canister"),
                 onPressed: () async {
-                  final result = await context.performLoading(() =>
+                  final result = await context.callUpdate(() =>
                       context.icApi.attachCanister(
                           name: nameField.currentValue,
                           canisterId: idField.currentValue));
+                  if (result == null) {
+                    return;
+                  }
                   switch (result) {
                     case AttachCanisterResult.Ok:
                       await context.icApi.getCanisters();
@@ -77,7 +80,6 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
                       showError(context, "Canister Limit Exceeded");
                       break;
                   }
-                  ;
                 },
                 fields: [nameField, idField],
               ))

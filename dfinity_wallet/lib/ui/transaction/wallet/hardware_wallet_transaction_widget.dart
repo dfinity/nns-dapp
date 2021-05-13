@@ -102,7 +102,7 @@ class _HardwareWalletTransactionWidgetState
                   final walletApi = await context.icApi
                       .createHardwareWalletApi(ledgerIdentity: ledgerIdentity);
 
-                  final response = await context.performLoading(() =>
+                  final response = await context.callUpdate(() =>
                       promiseToFuture(walletApi.sendICPTs(
                           widget.account.accountIdentifier,
                           SendICPTsRequest(
@@ -114,7 +114,7 @@ class _HardwareWalletTransactionWidgetState
                         "Transaction Completed!",
                         TransactionDoneWidget(
                           amount: widget.amount,
-                          origin: widget.account,
+                          source: widget.account,
                           destination: widget.destination,
                         ));
                   }
@@ -147,7 +147,7 @@ class _TransactionDetailsWidget extends StatelessWidget {
       children: [
         Text("Transaction Details", style: context.textTheme.headline3),
         TallFormDivider(),
-        Text("Origin", style: context.textTheme.headline4),
+        Text("Source", style: context.textTheme.headline4),
         VerySmallFormDivider(),
         Text(account.address, style: context.textTheme.bodyText1),
         SmallFormDivider(),

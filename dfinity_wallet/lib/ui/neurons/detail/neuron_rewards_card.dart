@@ -63,7 +63,7 @@ class NeuronRewardsCard extends StatelessWidget {
                                 title: "Really Spawn Neuron",
                                 description: "Are you sure you wish to spawn a new neuron?",
                                 onConfirm: () async {
-                                  context.performLoading(() async {
+                                  context.callUpdate(() async {
                                     final newNeuron = await context.icApi.spawnNeuron(neuronId: neuron.identifier.toBigInt);
                                     context.nav.push(NeuronPageDef.createPageConfig(newNeuron));
                                   });

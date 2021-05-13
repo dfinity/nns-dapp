@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:js_util';
 
+import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
 import 'service_api.dart';
 
@@ -25,7 +26,6 @@ class TransactionSyncService {
             pageSize: 100,
             offset: 0)));
     final response = jsonDecode(stringify(res));
-
     final transactions = <Transaction>[];
     response['transactions'].forEach((e) {
       final send = e['transfer']['Send'];
@@ -35,6 +35,8 @@ class TransactionSyncService {
       late String to;
       late BigInt doms;
       late String fee = "0";
+      late TransactionType type = TransactionType.values[e['type'].toString().toInt()];
+      late BigInt memo = e['memo'].toString().toBigInt;
 
       if (send != null) {
         from = account.accountIdentifier;
@@ -46,6 +48,7 @@ class TransactionSyncService {
         to = account.accountIdentifier;
         from = receive['from'].toString();
         doms = BigInt.parse(receive['amount'].toString());
+        fee = receive["fee"].toString();
       }
 
       final milliseconds =
@@ -54,18 +57,13 @@ class TransactionSyncService {
           to: to,
           from: from,
           date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
-          doms: (doms+fee.toBigInt).toString(),
-          fee: fee));
+          doms: doms.toString(),
+          fee: fee,
+          type: type,
+          memo: memo));
     });
-
-    Future.wait(hiveBoxes.accounts.values.map((e) async {
-      e.transactions = transactions
-          .filter((element) =>
-              element.to == e.accountIdentifier ||
-              element.from == e.accountIdentifier)
-          .toList();
-      e.save();
-    }));
+    account.transactions = transactions;
+    account.save();
   }
 }
 

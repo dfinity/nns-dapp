@@ -4,13 +4,13 @@ import 'package:dfinity_wallet/dfinity.dart';
 
 class TransactionDoneWidget extends StatelessWidget {
   final double amount;
-  final ICPSource origin;
+  final ICPSource source;
   final String destination;
 
   const TransactionDoneWidget(
       {Key? key,
       required this.amount,
-      required this.origin,
+      required this.source,
       required this.destination})
       : super(key: key);
 
@@ -25,7 +25,7 @@ class TransactionDoneWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TransactionDetailsWidget(
-                origin: origin,
+                source: source,
                 destination: destination,
                 amount: amount,
               ),

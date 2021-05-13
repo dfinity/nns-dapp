@@ -26,7 +26,7 @@ class ProposalSyncService {
       Proposal? beforeProposal}) async {
     final request = {
       'limit': 100,
-      if (beforeProposal != null) 'beforeProposal': beforeProposal.id.toBigInt,
+      if (beforeProposal != null) 'beforeProposal': beforeProposal.id.toBigInt.toJS,
       'includeRewardStatus':
           includeRewardStatus.mapToList((e) => e.index.toInt()),
       'excludeTopic': excludeTopics.mapToList((e) => e.index.toInt()),
@@ -37,12 +37,14 @@ class ProposalSyncService {
     stopwatch.start();
     final fetchPromise =
         promiseToFuture(serviceApi.listProposals(jsify(request)));
-    await cleanProposalCache();
+    if(beforeProposal == null){
+      await hiveBoxes.proposals.clear();
+    }
+
     final res = await fetchPromise;
     final string = stringify(res);
     dynamic response = jsonDecode(string);
 
-    await hiveBoxes.proposals.clear();
 
     response!['proposals']?.forEach((e) {
       storeProposal(e);

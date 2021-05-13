@@ -48,46 +48,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 actions: [
-                  if(true)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextButton(
-                      child: Text(
-                        "Receive",
-                        style: TextStyle(color: AppColors.white),
-                      ),
-                      onPressed: () async {
-                        OverlayBaseWidget.show(
-                            context,
-                            TextFieldDialogWidget(
-                                title: "How much?",
-                                buttonTitle: "Get",
-                                fieldName: "ICPT",
-                                onComplete: (name) {
-                                  final amount = BigInt.from(name.toDouble()) *
-                                      BigInt.from(100000000);
-                                  context.performLoading(() => context.icApi
-                                      .acquireICPTs(
-                                          accountIdentifier: context
-                                              .boxes
-                                              .accounts
-                                              .primary
-                                              .accountIdentifier,
-                                          doms: amount));
-                                }),
-                            borderRadius: 20);
-                      },
-                    ),
-                  ),
-                  if(true)
-                  TextButton(
-                      child: Text(
-                        "Test",
-                        style: TextStyle(color: AppColors.white),
-                      ),
-                      onPressed: () async {
-                        context.icApi.test();
-                      }),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(
@@ -96,8 +56,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(color: AppColors.white),
                       ),
                       onPressed: () async {
-                        context.boxes.hiveCoordinator.deleteAllData();
-                        context.nav.replaceAll(AuthPage);
+                        context.icApi.logout();
                       },
                     ),
                   )
@@ -131,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                             Tab(text: "ICP"),
                             Tab(text: "NEURONS"),
                             Tab(text: "VOTING"),
-                            Tab(text: "DEPLOY"),
+                            Tab(text: "CANISTERS"),
                           ],
                         ),
                       ),

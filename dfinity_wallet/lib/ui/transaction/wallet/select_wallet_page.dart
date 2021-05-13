@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/canister/topup_canister_page.dart';
+import 'package:dfinity_wallet/ui/transaction/wallet/confirm_transactions_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
 import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
@@ -25,6 +26,7 @@ class _SelectDestinationAccountPageState
 
   @override
   Widget build(BuildContext context) {
+    final otherAccounts = context.boxes.accounts.values.filter((element) => element != widget.source).toList();
     return Container(
       child: SingleChildScrollView(
         child: Column(
@@ -48,20 +50,35 @@ class _SelectDestinationAccountPageState
                             child: Padding(
                               padding: const EdgeInsets.all(24.0),
                               child: Text(
-                                "Send",
+                                "Continue",
                                 style: context.textTheme.subtitle1,
                               ),
                             ),
                             fields: [addressField],
                             onPressed: () {
                               final address = addressField.currentValue;
-                              WizardOverlay.of(context).pushPage(
-                                  "Enter ICP Amount",
-                                  EnterAmountPage(
-                                    origin: widget.source,
-                                    destinationAccountIdentifier: address,
-                                    subAccountId: widget.source.subAccountId,
-                                  ));
+
+                              if (widget.source.type == ICPSourceType.NEURON) {
+                                // neurons skip entering amount and go right to review
+                                WizardOverlay.of(context).pushPage(
+                                    "Review Transaction",
+                                    ConfirmTransactionWidget(
+                                      // if we're disbursing, no fee?
+                                      fee: 0,
+                                      amount: widget.source.icpBalance,
+                                      source: widget.source,
+                                      destination: address,
+                                      subAccountId: widget.source.subAccountId,
+                                    ));
+                              } else {
+                                WizardOverlay.of(context).pushPage(
+                                    "Enter ICP Amount",
+                                    EnterAmountPage(
+                                      source: widget.source,
+                                      destinationAccountIdentifier: address,
+                                      subAccountId: widget.source.subAccountId,
+                                    ));
+                              }
                             },
                           ),
                         ),
@@ -71,46 +88,63 @@ class _SelectDestinationAccountPageState
                 ),
               ),
             ),
-            if(context.boxes.accounts.values.length >= 1)
+            if (otherAccounts.isNotEmpty)
               Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "My Accounts",
-                        style: context.textTheme.headline3,
-                      ),
-                      SmallFormDivider(),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  side: BorderSide(
-                                      width: 2, color: AppColors.gray800))),
-                          child: Column(
-                            children: context.boxes.accounts.values
-                                .filter((element) => element != widget.source)
-                                .mapToList((e) => _AccountRow(
-                                    account: e,
-                                    onPressed: () {
-                                      WizardOverlay.of(context).pushPage(
-                                          "Enter ICP Amount",
-                                          EnterAmountPage(
-                                            origin: widget.source,
-                                            destinationAccountIdentifier: e.accountIdentifier,
-                                            subAccountId: widget.source.subAccountId,
-                                          ));
-                                    })),
-                          ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "My Accounts",
+                          style: context.textTheme.headline3,
                         ),
-                      )
-                    ]),
+                        SmallFormDivider(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    side: BorderSide(
+                                        width: 2, color: AppColors.gray800))),
+                            child: Column(
+                              children:
+                              otherAccounts.mapToList((e) => _AccountRow(
+                                      account: e,
+                                      onPressed: () {
+                                        if (widget.source.type ==
+                                            ICPSourceType.NEURON) {
+                                          WizardOverlay.of(context).pushPage(
+                                              "Review Transaction",
+                                              ConfirmTransactionWidget(
+                                                fee: 0,
+                                                amount:
+                                                    widget.source.icpBalance,
+                                                source: widget.source,
+                                                destination:
+                                                    e.accountIdentifier,
+                                                subAccountId:
+                                                    widget.source.subAccountId,
+                                              ));
+                                        } else {
+                                          WizardOverlay.of(context).pushPage(
+                                              "Enter ICP Amount",
+                                              EnterAmountPage(
+                                                source: widget.source,
+                                                destinationAccountIdentifier:
+                                                    e.accountIdentifier,
+                                                subAccountId:
+                                                    widget.source.subAccountId,
+                                              ));
+                                        }
+                                      })),
+                            ),
+                          ),
+                        )
+                      ]),
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -161,7 +195,8 @@ class _AccountRow extends StatelessWidget {
           ),
           BalanceDisplayWidget(
               amount: account.balance.toBigInt.toICPT,
-              amountSize: 30, icpLabelSize: 20)
+              amountSize: 30,
+              icpLabelSize: 20)
         ],
       ),
     );

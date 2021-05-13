@@ -42,8 +42,8 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                     title: 'Confirm Detach',
                     description: "This will remove the canister from your account, it does not change the controller.\n\If you control the canister, ensure you have it's identifier stored securely",
                     onConfirm: () async {
-                      await context.performLoading(() => context.icApi.detachCanister(widget.canister.identifier));
-                      context.nav.popRoute();
+                      await context.callUpdate(() => context.icApi.detachCanister(widget.canister.identifier));
+                      context.nav.replace(CanistersTabPage);
                     },
                   ));
                 },
@@ -54,161 +54,158 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
           )
         ],
       ),
-      body: RegularRefreshWidget(
-        performRefresh: () => context.icApi.getCanister(widget.canister.identifier),
-        child: Container(
-            color: AppColors.lightBackground,
-            child: StreamBuilder<Object>(
-                stream: context.icApi.hiveBoxes.canisters
-                    .watch(key: widget.canister.identifier),
-                builder: (context, snapshot) {
-                  final canister =
-                      context.boxes.canisters.get(widget.canister.identifier)!;
-                  return FooterGradientButton(
-                      footerHeight: null,
-                      body: SingleChildScrollView(
-                        child: ConstrainWidthAndCenter(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+      body: Container(
+          color: AppColors.lightBackground,
+          child: StreamBuilder<Object>(
+              stream: context.icApi.hiveBoxes.canisters
+                  .watch(key: widget.canister.identifier),
+              builder: (context, snapshot) {
+                final canister =
+                    context.boxes.canisters.get(widget.canister.identifier)!;
+                return FooterGradientButton(
+                    footerHeight: null,
+                    body: SingleChildScrollView(
+                      child: ConstrainWidthAndCenter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(24.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            canister.name,
+                                            style: context.textTheme.headline1,
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          SelectableText(
+                                            "Id: ${canister.identifier}",
+                                            style: context.textTheme.subtitle2,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                            if (canister.userIsController == null)
+                              Card(
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text("Fetching canister details"),
+                                  ),
+                                ),
+                              ),
+                            if (canister.userIsController == false)
+                              Card(
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                        "You are not the controller of this canister and cannot access it's details"),
+                                  ),
+                                ),
+                              ),
+                            if (canister.userIsController == true)
+                              Card(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 24.0, left: 24),
+                                      child: Text(
+                                        "Cycles",
+                                        style: context.textTheme.headline3,
+                                      ),
+                                    ),
+                                    Center(
                                       child: Padding(
                                         padding: const EdgeInsets.all(24.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              canister.name,
-                                              style: context.textTheme.headline1,
+                                              canister.cyclesBalance?.toBigInt
+                                                      .toString() ??
+                                                  "-",
+                                              style: TextStyle(
+                                                  color: AppColors.white,
+                                                  fontFamily:
+                                                      Fonts.circularBold,
+                                                  fontSize: 30),
                                             ),
                                             SizedBox(
-                                              height: 10,
+                                              width: 7,
                                             ),
-                                            SelectableText(
-                                              canister.identifier,
-                                              style: context.textTheme.subtitle2,
-                                            )
+                                            Text("Cycles",
+                                                style: TextStyle(
+                                                    color: AppColors.gray200,
+                                                    fontFamily:
+                                                        Fonts.circularBook,
+                                                    fontSize: 50 * 0.4))
                                           ],
                                         ),
                                       ),
                                     ),
-                                  ]),
-                              if (canister.userIsController == null)
-                                Card(
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text("Updating canister details"),
-                                    ),
-                                  ),
+                                  ],
                                 ),
-                              if (canister.userIsController == false)
-                                Card(
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(
-                                          "You are not the controller of this canister and cannot access it's details"),
-                                    ),
-                                  ),
-                                ),
-                              if (canister.cyclesBalance != null)
-                                Card(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 24.0, left: 24),
-                                        child: Text(
-                                          "Cycles",
-                                          style: context.textTheme.headline3,
-                                        ),
-                                      ),
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(24.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                canister.cyclesBalance?.toBigInt
-                                                        .toString() ??
-                                                    "-",
-                                                style: TextStyle(
-                                                    color: AppColors.white,
-                                                    fontFamily:
-                                                        Fonts.circularBold,
-                                                    fontSize: 30),
-                                              ),
-                                              SizedBox(
-                                                width: 7,
-                                              ),
-                                              Text("Cycles",
-                                                  style: TextStyle(
-                                                      color: AppColors.gray200,
-                                                      fontFamily:
-                                                          Fonts.circularBook,
-                                                      fontSize: 50 * 0.4))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              if (canister.controller != null)
-                                buildControllerCard(context, canister),
-                            ],
-                          ),
+                              ),
+                            if (canister.userIsController == true)
+                              buildControllerCard(context, canister),
+                          ],
                         ),
                       ),
-                      footer: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: IntrinsicHeight(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32.0),
-                            child: ElevatedButton(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: SizedBox(
-                                    width: 400,
-                                    child: Center(
-                                      child: Text(
-                                        "Add Cycles",
-                                        style: context.textTheme.button
-                                            ?.copyWith(fontSize: 24),
-                                      ),
+                    ),
+                    footer: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: IntrinsicHeight(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: ElevatedButton(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: SizedBox(
+                                  width: 400,
+                                  child: Center(
+                                    child: Text(
+                                      "Add Cycles",
+                                      style: context.textTheme.button
+                                          ?.copyWith(fontSize: 24),
                                     ),
                                   ),
                                 ),
-                                onPressed: () {
-                                  OverlayBaseWidget.show(
-                                      context,
-                                      WizardOverlay(
-                                          rootTitle: "Top Up Canister",
-                                          rootWidget: SelectCyclesOriginWidget(
-                                            onSelected: (account, context) {
-                                              WizardOverlay.of(context).pushPage(
-                                                  "Enter ICP Amount",
-                                                  TopUpCyclesAmountWidget(
-                                                      origin: account,
-                                                      destinationCanister:
-                                                          canister));
-                                            },
-                                          )));
-                                }),
-                          ),
+                              ),
+                              onPressed: () {
+                                OverlayBaseWidget.show(
+                                    context,
+                                    WizardOverlay(
+                                        rootTitle: "Top Up Canister",
+                                        rootWidget: SelectCyclesOriginWidget(
+                                          onSelected: (account, context) {
+                                            WizardOverlay.of(context).pushPage(
+                                                "Enter ICP Amount",
+                                                TopUpCyclesAmountWidget(
+                                                    source: account,
+                                                    destinationCanister:
+                                                        canister));
+                                          },
+                                        )));
+                              }),
                         ),
-                      ));
-                })),
-      ),
+                      ),
+                    ));
+              })),
     );
   }
 

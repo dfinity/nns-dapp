@@ -1,8 +1,12 @@
 use crate::ledger;
 use crate::state::STATE;
+use dfn_core::CanisterId;
+use ic_nns_constants::LEDGER_CANISTER_ID;
 use lazy_static::lazy_static;
 use ledger_canister::{Block, BlockHeight};
-use std::cmp::min;
+use ledger_canister::protobuf::ArchiveIndexEntry;
+use std::cmp::{min, max};
+use std::ops::RangeInclusive;
 use std::sync::Mutex;
 
 lazy_static! {
@@ -19,22 +23,32 @@ pub async fn sync_transactions() -> Option<Result<u32, String>> {
 }
 
 async fn sync_transactions_within_lock() -> Result<u32, String> {
-    let next_block_height_required = get_next_required_block_height();
-    let latest_block_height = ledger::tip_of_chain().await?;
+    let block_height_synced_up_to = get_block_height_synced_up_to();
+    let tip_of_chain = ledger::tip_of_chain().await?;
 
-    if latest_block_height < next_block_height_required {
+    if block_height_synced_up_to.is_none() {
+        // We only reach here on service initialization and we don't care about previous blocks, so
+        // we mark that we are synced with the latest tip_of_chain and return so that subsequent
+        // syncs will continue from there
+        let store = &mut STATE.write().unwrap().transactions_store;
+        store.init_block_height_synced_up_to(tip_of_chain);
+        store.mark_ledger_sync_complete();
+        return Ok(0);
+    }
+
+    let next_block_height_required = block_height_synced_up_to.unwrap() + 1;
+    if tip_of_chain < next_block_height_required {
+        // There are no new blocks since our last sync, so mark sync complete and return
         let store = &mut STATE.write().unwrap().transactions_store;
         store.mark_ledger_sync_complete();
         Ok(0)
     } else {
-        const MAX_BLOCKS_PER_EXECUTION: u64 = 500;
-        let count = min(latest_block_height - next_block_height_required + 1, MAX_BLOCKS_PER_EXECUTION);
-
-        let blocks = get_blocks(next_block_height_required, count as u32).await?;
+        let blocks = get_blocks(next_block_height_required, tip_of_chain).await?;
         let store = &mut STATE.write().unwrap().transactions_store;
         let blocks_count = blocks.len() as u32;
         for (block_height, block) in blocks.into_iter() {
-            let result = store.append_transaction(block.transaction().into_owned().transfer, block_height, block.timestamp());
+            let transaction = block.transaction().into_owned();
+            let result = store.append_transaction(transaction.transfer, transaction.memo, block_height, block.timestamp());
 
             if result.is_err() {
                 return Err(result.unwrap_err());
@@ -45,36 +59,42 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
     }
 }
 
-fn get_next_required_block_height() -> u64 {
+fn get_block_height_synced_up_to() -> Option<BlockHeight> {
     let store = &STATE.read().unwrap().transactions_store;
-    store.get_next_required_block_height()
+    store.get_block_height_synced_up_to()
 }
 
-async fn get_blocks(from: BlockHeight, count: u32) -> Result<Vec<(BlockHeight, Block)>, String> {
-    const MAX_BLOCKS_PER_BATCH: u32 = 100;
-    let mut batch_start = from;
-    let mut count_remaining = count;
-    let mut results: Vec<(BlockHeight, Block)> = Vec::with_capacity(count as usize);
+async fn get_blocks(from: BlockHeight, tip_of_chain: BlockHeight) -> Result<Vec<(BlockHeight, Block)>, String> {
+    let archive_index_entries = ledger::get_archive_index().await?.entries;
 
-    loop {
-        let batch_size = min(count_remaining, MAX_BLOCKS_PER_BATCH);
+    let (canister_id, range) = determine_canister_for_blocks(from, tip_of_chain, archive_index_entries);
 
-        let blocks = ledger::get_blocks(batch_start, batch_size).await?;
+    const MAX_BLOCK_PER_ITERATION: u32 = 1000;
+    let count = min((range.end() - range.start() + 1) as u32, MAX_BLOCK_PER_ITERATION);
 
-        for (block_height, block) in blocks
-            .into_iter()
-            .enumerate()
-            .map(|(index, block)| (from + (index as u64), block.decode().unwrap())) {
-            results.push((block_height, block));
-        }
+    let blocks = ledger::get_blocks(canister_id, *range.start(), count).await?;
 
-        count_remaining = count_remaining - batch_size;
-        if count_remaining > 0 {
-            batch_start = batch_start + batch_size as u64;
-        } else {
+    let results: Vec<_> = blocks
+        .into_iter()
+        .enumerate()
+        .map(|(index, block)| (range.start() + (index as u64), block.decode().unwrap()))
+        .collect();
+
+    Ok(results)
+}
+
+fn determine_canister_for_blocks(from: BlockHeight, tip_of_chain: BlockHeight, archive_index_entries: Vec<ArchiveIndexEntry>) -> (CanisterId, RangeInclusive<BlockHeight>) {
+    for archive_index_entry in archive_index_entries.into_iter().rev() {
+        if archive_index_entry.height_to < from {
             break;
+        } else if archive_index_entry.height_from > from {
+            continue;
+        } else {
+            let range_start = max(from, archive_index_entry.height_from);
+            let range_end = min(tip_of_chain, archive_index_entry.height_to);
+            return (CanisterId::new(archive_index_entry.canister_id.unwrap()).unwrap(), range_start..=range_end);
         }
     }
 
-    Ok(results)
+    (LEDGER_CANISTER_ID, from..=tip_of_chain)
 }

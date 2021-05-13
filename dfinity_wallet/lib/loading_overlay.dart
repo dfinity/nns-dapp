@@ -89,23 +89,9 @@ class _NodeState extends State<NodeOverlay> with TickerProviderStateMixin {
                 widthFactor: 0.3,
                 heightFactor: 0.3,
                 child: Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        // color: AppColors.white,
-                        borderRadius: BorderRadius.circular(500),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.black,
-                            blurRadius: 100,
-                          ),
-                          BoxShadow(
-                            color: AppColors.black,
-                            blurRadius: 100,
-                          )
-                        ]),
                     child: SizedBox.expand(
-                      child: Image(
-                        image: AssetImage("assets/glitch-loop.webp"),
+                      child: Center(
+                        child: CircularProgressIndicator(),
                       ),
                     )))),
         // child: IgnorePointer(child: NodeWorld(oscillationMultiplier: 2,))),

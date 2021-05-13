@@ -4,6 +4,6 @@ members = [
 ]
 
 [profile.release]
-lto = true
+lto = false
 opt-level = "z"
 codegen-units = 1

@@ -36,31 +36,30 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
           backgroundColor: AppColors.background,
           title: Text("Neuron"),
         ),
-        body: RegularRefreshWidget(
-          performRefresh: () => context.icApi.fetchNeuron(neuronId: widget.neuron.identifier.toBigInt),
-          child: StreamBuilder<Object>(
-            stream: context.boxes.neurons.watch(key: widget.neuron.identifier),
-            builder: (context, snapshot) {
-              return SingleChildScrollView(
-                child: ConstrainWidthAndCenter(
-                  child: Container(
-                    color: AppColors.lightBackground,
-                    child: Column(
-                      children: [
-                        SmallFormDivider(),
-                        NeuronStateCard(neuron: widget.neuron),
-                        NeuronRewardsCard(neuron: widget.neuron),
-                        NeuronVotesCard(neuron: widget.neuron),
-                        NeuronFolloweesCard(neuron: widget.neuron),
-                        NeuronProposalsCard(neuron: widget.neuron),
-                        TallFormDivider(),
-                      ],
-                    ),
+        body: StreamBuilder<Object>(
+          stream: context.boxes.neurons.watch(key: widget.neuron.identifier),
+          builder: (context, snapshot) {
+            return SingleChildScrollView(
+              child: ConstrainWidthAndCenter(
+                child: Container(
+                  color: AppColors.lightBackground,
+                  child: Column(
+                    children: [
+                      SmallFormDivider(),
+                      NeuronStateCard(neuron: widget.neuron),
+                      NeuronRewardsCard(neuron: widget.neuron),
+                      NeuronVotesCard(neuron: widget.neuron),
+                      NeuronFolloweesCard(neuron: widget.neuron),
+                        if(false)
+                      NeuronProposalsCard(neuron: widget.neuron),
+
+                      TallFormDivider(),
+                    ],
                   ),
                 ),
-              );
-            }
-          ),
+              ),
+            );
+          }
         ));
   }
 }

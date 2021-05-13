@@ -107,6 +107,14 @@ abstract class AbstractPlatformICApi {
   Future<void> refreshCanisters();
 
   Future<void> detachCanister(String canisterId);
+
+  Future<void> refreshAccount(Account account);
+
+  String getPrincipal();
+
+  Future<void> logout();
+
+  int getTimeUntilSessionExpiryMs();
 }
 
 

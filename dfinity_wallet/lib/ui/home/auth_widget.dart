@@ -24,12 +24,15 @@ class AuthWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     AutoSizeText(
-                      "The Internet Computer", style: context.textTheme.headline1, textAlign: TextAlign.center,),
+                      'The Internet Computer', style: context.textTheme.headline1, textAlign: TextAlign.center,),
+                    SizedBox(height:20),
+                    AutoSizeText(
+                      'Network Nervous System', style: context.textTheme.headline2, textAlign: TextAlign.center,),
                     Expanded(child: Container()),
                     ElevatedButton(
                         child: Padding(
                           padding: const EdgeInsets.all(32.0),
-                          child: Text("Authenticate", style: context.textTheme.bodyText2?.copyWith(fontSize: 32),),
+                          child: Text("Login", style: context.textTheme.bodyText2?.copyWith(fontSize: 32),),
                         ),
                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.gray1000)),
                         onPressed: () {
@@ -37,6 +40,9 @@ class AuthWidget extends StatelessWidget {
                             context.nav.push(AccountsTabPage);
                           });
                         }),
+                    SizedBox(height:20),
+                    AutoSizeText(
+                      'Beta', style: context.textTheme.headline4?.copyWith(fontSize: 18), textAlign: TextAlign.center,),
                     SmallFormDivider(),
                   ],
                 ),

@@ -23,7 +23,7 @@ class AccountsSyncService {
 
     final validAccounts = await Future.wait(<Future<dynamic>>[
       storeNewAccount(
-          name: "Default",
+          name: "Main",
           address: res['accountIdentifier'].toString(),
           subAccount: null,
           primary: true,

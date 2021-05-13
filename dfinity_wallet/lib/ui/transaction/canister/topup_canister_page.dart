@@ -3,6 +3,7 @@ import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
+import 'package:flutter/services.dart';
 
 import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
@@ -11,7 +12,9 @@ class TopUpCanisterPage extends StatefulWidget {
   final ICPSource source;
   final Canister canister;
 
-  const TopUpCanisterPage({Key? key, required this.source, required this.canister}) : super(key: key);
+  const TopUpCanisterPage(
+      {Key? key, required this.source, required this.canister})
+      : super(key: key);
 
   @override
   _TopUpCanisterPageState createState() => _TopUpCanisterPageState();
@@ -23,9 +26,14 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
   @override
   void initState() {
     super.initState();
-    amountField = ValidatedTextField(
-        "Amount", validations: [FieldValidation("Not enough ICP in wallet", (e) => (e.toIntOrNull() ?? 0) > widget.source.icpBalance)],
-        inputType: TextInputType.number);
+    amountField = ValidatedTextField("Amount",
+        validations: [
+          StringFieldValidation.insufficientFunds(widget.source.icpBalance)
+        ],
+        inputType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
+        ]);
   }
 
   @override
@@ -36,13 +44,15 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 24.0, left: 24.0, bottom: 24.0),
-              child: Text("Top up Canister", style: context.textTheme.headline2.gray800),
+              padding:
+                  const EdgeInsets.only(top: 24.0, left: 24.0, bottom: 24.0),
+              child: Text("Top up Canister",
+                  style: context.textTheme.headline2.gray800),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child:
-                  Text(widget.canister.publicKey, style: context.textTheme.bodyText2.gray800),
+              child: Text(widget.canister.publicKey,
+                  style: context.textTheme.bodyText2.gray800),
             ),
             SizedBox(
               height: 200,
@@ -63,12 +73,13 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
                       child: ValidFieldsSubmitButton(
                         child: Text("Send"),
                         onPressed: () async {
-
-                          await context.performLoading(() => context.icApi.topupCanister(
-                              stake: amountField.currentValue.toDouble().toE8s,
-                              targetCanisterId: widget.canister.identifier,
-                              fromSubAccountId: widget.source.subAccountId
-                          ));
+                          await context.callUpdate(() => context.icApi
+                              .topupCanister(
+                                  stake:
+                                      amountField.currentValue.toDouble().toE8s,
+                                  targetCanisterId: widget.canister.identifier,
+                                  fromSubAccountId:
+                                      widget.source.subAccountId));
 
                           // WizardOverlay.of(context).pushPage(null, DoneWidget(numCycles: amountField.currentValue, canisterName: widget.canister.name));
                         }.takeIf((e) => widget.canister != null),
@@ -84,12 +95,13 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
   }
 }
 
-
 class DoneWidget extends StatelessWidget {
   final int numCycles;
   final String canisterName;
 
-  const DoneWidget({Key? key, required this.numCycles, required this.canisterName}) : super(key: key);
+  const DoneWidget(
+      {Key? key, required this.numCycles, required this.canisterName})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -101,11 +113,17 @@ class DoneWidget extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(32.0),
-                child: Text("Transaction Completed", style: context.textTheme.headline2?.copyWith(color: AppColors.gray1000),),
+                child: Text(
+                  "Transaction Completed",
+                  style: context.textTheme.headline2
+                      ?.copyWith(color: AppColors.gray1000),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text("${numCycles} Cycles sent to $canisterName", style: context.textTheme.headline3?.copyWith(color: AppColors.gray1000)),
+                child: Text("${numCycles} Cycles sent to $canisterName",
+                    style: context.textTheme.headline3
+                        ?.copyWith(color: AppColors.gray1000)),
               ),
               Expanded(child: Container()),
               Padding(

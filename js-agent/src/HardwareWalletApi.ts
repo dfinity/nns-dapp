@@ -4,6 +4,8 @@ import LedgerService, { SendICPTsRequest } from "./canisters/ledger/model";
 import { AccountIdentifier, BlockHeight } from "./canisters/common/types";
 import { HttpAgent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "./canisters/converter";
+import { HOST } from "./canisters/constants";
+import { executeWithLogging } from "./errorLogger";
 
 export default class HardwareWalletApi {
     private readonly identity: LedgerIdentity;
@@ -12,6 +14,7 @@ export default class HardwareWalletApi {
 
     constructor(identity: LedgerIdentity) {
         const agent = new HttpAgent({
+            host: HOST,
             identity
         });
         this.identity = identity;
@@ -23,10 +26,10 @@ export default class HardwareWalletApi {
         if (fromAccount !== this.accountIdentifier)
             throw new Error("'From Account' does not match the hardware wallet");
 
-        return await this.ledgerService.sendICPTs(request);
+        return await executeWithLogging(() => this.ledgerService.sendICPTs(request));
     }
 
     public showAddressAndPubKeyOnDevice = () : Promise<void> => {
-        return this.identity.showAddressAndPubKeyOnDevice();
+        return executeWithLogging(this.identity.showAddressAndPubKeyOnDevice);
     }
 }

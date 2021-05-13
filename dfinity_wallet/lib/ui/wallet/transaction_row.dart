@@ -1,8 +1,8 @@
+import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:intl/intl.dart';
 
 import '../../dfinity.dart';
-import 'balance_display_widget.dart';
 
 class TransactionRow extends StatelessWidget {
   final Transaction transaction;
@@ -15,6 +15,9 @@ class TransactionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateFormatter = DateFormat.yMd().add_jm();
+    final isReceive = transaction.from != currentAccount.accountIdentifier;
+    final isSend = transaction.to != currentAccount.accountIdentifier;
+        
     return Card(
       color: Color(0xff292a2e),
       child: Container(
@@ -27,22 +30,20 @@ class TransactionRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(dateFormatter.format(transaction.date),
+                    Text(transaction.type.getName(),
                         style: context.textTheme.headline3),
-                    SmallFormDivider(),
-                    if (transaction.from != currentAccount.accountIdentifier)
-                      Text("From: ${transaction.from}",
+                    VerySmallFormDivider(),
+                    Text(dateFormatter.format(transaction.date),
+                        style: context.textTheme.bodyText2),
+                    VerySmallFormDivider(),
+                    if (isReceive)
+                      SelectableText("Source: ${transaction.from}",
                           style: context.textTheme.bodyText2),
-                    if (transaction.to != currentAccount.accountIdentifier)
-                      Text(
+                    if (isSend)
+                      SelectableText(
                         "To: ${transaction.to}",
-                        style:
-                            context.textTheme.bodyText2?.copyWith(fontSize: 16),
+                        style: context.textTheme.bodyText2,
                       ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text("${transaction.date.toString()}")
                   ],
                 ),
               ),
@@ -50,7 +51,9 @@ class TransactionRow extends StatelessWidget {
                 width: 20,
               ),
               TransactionAmountDisplayWidget(
+                fee: transaction.fee.toBigInt.toICPT,
                 amount: transaction.icpt,
+                type: transaction.type,
                 addition: transaction.from != currentAccount.accountIdentifier,
               ),
             ],
@@ -63,24 +66,35 @@ class TransactionRow extends StatelessWidget {
 
 class TransactionAmountDisplayWidget extends StatelessWidget {
   final double amount;
+  final double fee;
+  final TransactionType type;
   final bool addition;
+
   const TransactionAmountDisplayWidget(
-      {Key? key, required this.amount, required this.addition})
+      {Key? key,
+      required this.fee,
+      required this.amount,
+      required this.type,
+      required this.addition})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
     final sign = addition ? "+" : "-";
-    final color = addition ? AppColors.green500 : AppColors.gray50;
+    final color = addition
+            ? AppColors.green500
+            : AppColors.gray50;
     final secondaryColor = addition ? AppColors.green600 : AppColors.gray200;
+
+    final displayAmount = amount + (type.shouldShowFee() ? this.fee : 0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "$sign${amount.toDisplayICPT(myLocale.languageCode)}",
+          "$sign${(displayAmount).toDisplayICPT(myLocale.languageCode)}",
           style: TextStyle(
               color: color,
               fontFamily: Fonts.circularBold,

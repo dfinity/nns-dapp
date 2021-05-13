@@ -4,19 +4,18 @@ import '../../../dfinity.dart';
 
 class TransactionDetailsWidget extends StatelessWidget {
   final double amount;
-  final ICPSource origin;
+  final ICPSource source;
   final String destination;
 
   const TransactionDetailsWidget(
       {Key? key,
       required this.amount,
-      required this.origin,
+      required this.source,
       required this.destination})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var transactionFeeICPMsg = TRANSACTION_FEE_ICP.toString() + " ICP";
     return Container(
         child: Center(
       child: IntrinsicWidth(
@@ -29,20 +28,22 @@ class TransactionDetailsWidget extends StatelessWidget {
                 amount: amount,
                 amountSize: 50,
                 icpLabelSize: 0,
+                amountLabelSuffix: " ICP"
               ),
             ),
             TallFormDivider(),
-            Text("Origin", style: context.textTheme.headline4),
+            Text("Source", style: context.textTheme.headline4),
             VerySmallFormDivider(),
-            Text(origin.address, style: context.textTheme.bodyText1),
+            Text(source.address, style: context.textTheme.bodyText1),
             TallFormDivider(),
             Text("Destination", style: context.textTheme.headline4),
             VerySmallFormDivider(),
             Text(destination, style: context.textTheme.bodyText1),
             TallFormDivider(),
-            Text("Transaction Fee", style: context.textTheme.headline4),
+            Text("Transaction Fee (billed to source)", style: context.textTheme.headline4),
             VerySmallFormDivider(),
-            Text(transactionFeeICPMsg, style: context.textTheme.bodyText1),
+            Text(TRANSACTION_FEE_ICP.toString() + " ICP",
+                style: context.textTheme.bodyText1),
             VerySmallFormDivider()
           ],
         ),

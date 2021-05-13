@@ -10,7 +10,7 @@ import 'new_canister_cycles_widget.dart';
 
 class CanisterNameWidget extends StatelessWidget {
   ValidatedTextField nameField = ValidatedTextField("Canister Name",
-      validations: [StringFieldValidation.minimumLength(2), StringFieldValidation.maximumLength(24)]);
+      validations: [StringFieldValidation.boundLength(2, 24)]);
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +48,12 @@ class CanisterNameWidget extends StatelessWidget {
                 child: Text("Confirm Name"),
                 onPressed: () async {
                   WizardOverlay.of(context).pushPage(
-                      "Select ICP Origin",
+                      "Select ICP Source",
                       SelectCyclesOriginWidget(onSelected: (account, context) {
                     WizardOverlay.of(context).pushPage(
                         "Enter Amount",
                         NewCanisterCyclesAmountWidget(
-                          origin: account,
+                          source: account,
                           name: nameField.currentValue,
                         ));
                   }));

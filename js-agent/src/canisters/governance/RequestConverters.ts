@@ -163,7 +163,7 @@ export default class RequestConverters {
     public fromDisburseRequest = (request: DisburseRequest) : RawManageNeuron => {
         const rawCommand: RawCommand =  { Disburse: { 
             to_account: [this.fromAccountIdentifier(request.toAccountId)],
-            amount : [this.fromAmount(request.amount)]
+            amount : request.amount ? [this.fromAmount(request.amount)] : []
         }};
         return {
             id: [this.fromNeuronId(request.neuronId)],

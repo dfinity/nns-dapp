@@ -1,11 +1,25 @@
+import { Principal } from "@dfinity/agent";
 import { AccountIdentifier, BlockHeight, CanisterId, E8s } from "../common/types";
-import type { Principal } from "@dfinity/agent";
+
+export type Memo = bigint;
+export enum TransactionType {
+    Send,
+    Receive,
+    Mint,
+    Burn,
+    StakeNeuron,
+    StakeNeuronNotification,
+    CreateCanister,
+    CreateCanisterNotification,
+    TopUpCanister,
+    TopUpCanisterNotification
+}
 
 export interface AccountDetails {
     accountIdentifier: AccountIdentifier,
     hardwareWalletAccounts: Array<HardwareWalletAccountDetails>,
     subAccounts: Array<SubAccountDetails>,
-};
+}
 
 export interface AttachCanisterRequest {
     name: string,
@@ -82,6 +96,7 @@ export interface Send {
     to: AccountIdentifier,
     fee: E8s,
     amount: E8s,
+    incomplete: boolean,
 };
 export type SubAccount = Array<number>;
 export interface SubAccountDetails {
@@ -91,8 +106,10 @@ export interface SubAccountDetails {
 };
 export type TimestampNanos = bigint;
 export interface Transaction {
+    type: TransactionType,
     timestamp: TimestampNanos,
     blockHeight: BlockHeight,
+    memo: Memo,
     transfer: Transfer,
 };
 export type Transfer = { Burn: { amount: E8s } } |
@@ -108,7 +125,7 @@ export default interface ServiceInterface {
     getAccount: () => Promise<GetAccountResponse>,
     getCanisters : () => Promise<Array<CanisterDetails>>,
     getIcpToCyclesConversionRate : () => Promise<bigint>,
-    getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
+    getTransactions: (request: GetTransactionsRequest, principal: Principal) => Promise<GetTransactionsResponse>,
     registerHardwareWallet: (request: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
     removeHardwareWallet: (request: RemoveHardwareWalletRequest) => Promise<RemoveHardwareWalletResponse>,
     renameSubAccount: (request: RenameSubAccountRequest) => Promise<RenameSubAccountResponse>,

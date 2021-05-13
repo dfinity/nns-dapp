@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 
 import '../../dfinity.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -35,8 +36,8 @@ class ProposalStateCard extends StatelessWidget {
                   decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
-                          side:
-                              BorderSide(width: 2, color: Color(0xffFBB03B)))),
+                          side: BorderSide(
+                              width: 2, color: proposal.status.color))),
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
@@ -44,7 +45,7 @@ class ProposalStateCard extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 24,
                           fontFamily: Fonts.circularBook,
-                          color: Color(0xffFBB03B),
+                          color: proposal.status.color,
                           fontWeight: FontWeight.normal),
                     ),
                   ),
@@ -58,16 +59,21 @@ class ProposalStateCard extends StatelessWidget {
                 style: context.textTheme.subtitle2?.copyWith(color: Colors.blue),
               ),
             ),
-            Text(
-              "Proposer: ${proposal.proposer}",
-              style: context.textTheme.subtitle2,
-            ),
+            TextButton(
+                    onPressed: () {
+                      OverlayBaseWidget.show(
+                          context, NeuronInfoWidget(proposal.proposer));
+                    },
+                    child: Text(
+                      "Proposer: ${proposal.proposer}",
+                      style: context.textTheme.subtitle2,
+                    )),
             Text(
               "Topic: ${proposal.topic.toString().removePrefix("Topic.")}",
               style: context.textTheme.subtitle2,
             ),
             Text(
-              "Identifier: ${proposal.id}",
+              "Id: ${proposal.id}",
               style: context.textTheme.subtitle2,
             ),
             SmallFormDivider(),
@@ -103,7 +109,7 @@ class ActionDetailsWidget extends StatelessWidget {
           Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(camelToTitle(actionKey.replaceAll("NetworkEconomics", "ManageNetworkEconomics")), style: context.textTheme.headline4),
+              child: Text(actionKey, style: context.textTheme.headline4),
             ),
           ),
           ...fields.entries.map((entry) => Padding(
@@ -111,7 +117,7 @@ class ActionDetailsWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(camelToTitle(entry.key), style: context.textTheme.bodyText1?.copyWith(fontSize: 14, color: AppColors.gray50),),
+                Text(entry.key, style: context.textTheme.bodyText1?.copyWith(fontSize: 14, color: AppColors.gray50),),
                 Text(entry.value.toString().toString(), style: context.textTheme.subtitle2,)
               ],
             ),
@@ -121,11 +127,6 @@ class ActionDetailsWidget extends StatelessWidget {
     );
   }
 
-  String camelToTitle(String text) {
-    RegExp exp = RegExp(r'(?<=[a-z])[A-Z]');
-    String result = text.capitalize().replaceAllMapped(exp, (Match m) => (' ' + m.group(0)!.toLowerCase().capitalize()));
-    return result;
-  }
 }
 
 

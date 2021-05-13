@@ -7,7 +7,28 @@ import { AccountIdentifier } from "./common/types";
 
 export const uint8ArrayToBigInt = (array: Uint8Array) : bigint => {
     const view = new DataView(array.buffer, array.byteOffset, array.byteLength);
-    return view.getBigUint64(0);
+    if (typeof view.getBigUint64 === "function") {
+        return view.getBigUint64(0);
+    } else {
+        const high = BigInt(view.getUint32(0));
+        const low = BigInt(view.getUint32(4));
+
+        return (high << BigInt(32)) + low;
+    }
+}
+
+const TWO_TO_THE_32 = BigInt(1) << BigInt(32);
+export const bigIntToUint8Array = (value: bigint) : Uint8Array => {
+    const array = new Uint8Array(8);
+    const view = new DataView(array.buffer, array.byteOffset, array.byteLength);
+    if (typeof view.setBigUint64 === "function") {
+        view.setBigUint64(0, value);
+    } else {
+        view.setUint32(0, Number(value >> BigInt(32)));
+        view.setUint32(4, Number(value % TWO_TO_THE_32));
+    }
+
+    return array;
 }
 
 export const arrayBufferToArrayOfNumber = (buffer: ArrayBuffer) : Array<number> => {

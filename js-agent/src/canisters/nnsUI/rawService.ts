@@ -38,6 +38,18 @@ export interface HardwareWalletAccountDetails {
   'name' : string,
   'account_identifier' : AccountIdentifier,
 };
+export type HeaderField = [string, string];
+export interface HttpRequest {
+  'url' : string,
+  'method' : string,
+  'body' : Array<number>,
+  'headers' : Array<HeaderField>,
+};
+export interface HttpResponse {
+  'body' : Array<number>,
+  'headers' : Array<HeaderField>,
+  'status_code' : number,
+};
 export interface ICPTs { 'e8s' : bigint };
 export interface Receive {
   'fee' : ICPTs,
@@ -79,7 +91,7 @@ export interface Stats {
   'accounts_count' : bigint,
   'earliest_transaction_block_height' : BlockHeight,
   'transactions_count' : bigint,
-  'block_height_synced_up_to' : bigint,
+  'block_height_synced_up_to' : [] | [bigint],
   'latest_transaction_timestamp_nanos' : bigint,
   'earliest_transaction_timestamp_nanos' : bigint,
 };
@@ -91,6 +103,7 @@ export interface SubAccountDetails {
 };
 export interface Timestamp { 'timestamp_nanos' : bigint };
 export interface Transaction {
+  'memo' : bigint,
   'timestamp' : Timestamp,
   'block_height' : BlockHeight,
   'transfer' : Transfer,
@@ -109,6 +122,7 @@ export default interface _SERVICE {
   'get_icp_to_cycles_conversion_rate' : () => Promise<bigint>,
   'get_stats' : () => Promise<Stats>,
   'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
+  'http_request' : (arg_0: HttpRequest) => Promise<HttpResponse>,
   'register_hardware_wallet' : (arg_0: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
   'remove_hardware_wallet' : (arg_0: RemoveHardwareWalletRequest) => Promise<RemoveHardwareWalletResponse>,
   'rename_sub_account' : (arg_0: RenameSubAccountRequest) => Promise<RenameSubAccountResponse>,

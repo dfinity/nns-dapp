@@ -2,13 +2,17 @@
 import 'package:dartx/dartx.dart';
 import 'package:intl/intl.dart';
 
+const ONE_YEAR_SECONDS = (4 * 365 + 1) * ONE_DAY_SECONDS / 4;
+const ONE_DAY_SECONDS = 24 * 60 * 60;
+
 extension DurationFormatter on Duration {
   String yearsDayHourMinuteSecondFormatted() {
-    this.toString();
-    final years = (inDays / 365).floor();
+    print(inSeconds);
+    final years = (inSeconds / ONE_YEAR_SECONDS).floor();
+    final days = (inSeconds.remainder(ONE_YEAR_SECONDS) / ONE_DAY_SECONDS).floor();
     final nonZeroPeriods = [
       LabelledPeriod("Year", years),
-      LabelledPeriod("Day", this.inDays.remainder(365)),
+      LabelledPeriod("Day", days),
       LabelledPeriod("Hour", this.inHours.remainder(24)),
       LabelledPeriod("Minute", this.inMinutes.remainder(60)),
       LabelledPeriod("Second", this.inSeconds.remainder(60))

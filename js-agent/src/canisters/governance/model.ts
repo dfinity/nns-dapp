@@ -136,7 +136,7 @@ export interface Neuron {
     accountPrincipal: ArrayBuffer,
     dissolveState: DissolveState,
     followees: Array<Followees>,
-    transfer: NeuronStakeTransfer,
+    transfer: Option<NeuronStakeTransfer>,
 };
 export enum NeuronState {
 	UNSPECIFIED = 0,
@@ -335,7 +335,7 @@ export interface SplitRequest {
 export interface DisburseRequest {
     neuronId: NeuronId,
     toAccountId: AccountIdentifier,
-    amount: E8s,
+    amount?: E8s,
 }
 
 export interface DisburseToNeuronRequest {

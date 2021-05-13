@@ -32,14 +32,14 @@ export default class Service implements ServiceInterface {
         } else if ("running" in rawResponse.status) {
             status = CanisterStatus.Running;        
         }
-        return { 
+        const result: CanisterDetailsResponse = { 
             kind: "success", 
             details: {
                 status: status,
                 memorySize: rawResponse.memory_size,
                 cycles: rawResponse.cycles,
                 setting: {
-                    controller: rawResponse.settings.controller,
+                    controller: rawResponse.settings.controller.toText(),
                     freezingThreshold: rawResponse.settings.freezing_threshold,
                     memoryAllocation: rawResponse.settings.memory_allocation,
                     computeAllocation: rawResponse.settings.compute_allocation             
@@ -49,6 +49,8 @@ export default class Service implements ServiceInterface {
                     : null
             }
         };    
+
+        return result;
 }
 
     public updateSettings = async (request: UpdateSettingsRequest) : Promise<UpdateSettingsResponse> => {

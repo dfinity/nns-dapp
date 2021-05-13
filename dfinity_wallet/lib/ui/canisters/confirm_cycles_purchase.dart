@@ -10,13 +10,13 @@ import 'cycle_calculator.dart';
 
 class ConfirmCyclesPurchase extends StatelessWidget {
   final double amount;
-  final ICPSource origin;
+  final ICPSource source;
   final Canister destination;
   final BigInt trillionAmount;
 
   const ConfirmCyclesPurchase({Key? key,
     required this.amount,
-    required this.origin,
+    required this.source,
     required this.destination,
     required this.trillionAmount})
       : super(key: key);
@@ -98,9 +98,9 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [TallFormDivider(),
-                      Text("Origin", style: context.textTheme.headline4),
+                      Text("Source", style: context.textTheme.headline4),
                       VerySmallFormDivider(),
-                      Text(origin.address, style: context.textTheme.bodyText1),
+                      Text(source.address, style: context.textTheme.bodyText1),
                       TallFormDivider(),
                       Text("Destination", style: context.textTheme.headline4),
                       VerySmallFormDivider(),
@@ -121,17 +121,17 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                       ),
                       onPressed: () async {
 
-                        await context.performLoading(() => context.icApi.topupCanister(
+                        await context.callUpdate(() => context.icApi.topupCanister(
                             stake: amount.toE8s,
                             targetCanisterId: destination.identifier,
-                            fromSubAccountId: origin.subAccountId
+                            fromSubAccountId: source.subAccountId
                         ));
 
                         WizardOverlay.of(context).replacePage(
                             "Transaction Completed!",
                             TransactionDoneWidget(
                               amount: amount,
-                              origin: origin,
+                              source: source,
                               destination: destination.identifier,
                             ));
                       }),

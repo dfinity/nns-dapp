@@ -54,7 +54,7 @@ export default ({ IDL }) => {
     'accounts_count' : IDL.Nat64,
     'earliest_transaction_block_height' : BlockHeight,
     'transactions_count' : IDL.Nat64,
-    'block_height_synced_up_to' : IDL.Nat64,
+    'block_height_synced_up_to' : IDL.Opt(IDL.Nat64),
     'latest_transaction_timestamp_nanos' : IDL.Nat64,
     'earliest_transaction_timestamp_nanos' : IDL.Nat64,
   });
@@ -82,6 +82,7 @@ export default ({ IDL }) => {
     'Receive' : Receive,
   });
   const Transaction = IDL.Record({
+    'memo' : IDL.Nat64,
     'timestamp' : Timestamp,
     'block_height' : BlockHeight,
     'transfer' : Transfer,
@@ -89,6 +90,18 @@ export default ({ IDL }) => {
   const GetTransactionsResponse = IDL.Record({
     'total' : IDL.Nat32,
     'transactions' : IDL.Vec(Transaction),
+  });
+  const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
+  const HttpRequest = IDL.Record({
+    'url' : IDL.Text,
+    'method' : IDL.Text,
+    'body' : IDL.Vec(IDL.Nat8),
+    'headers' : IDL.Vec(HeaderField),
+  });
+  const HttpResponse = IDL.Record({
+    'body' : IDL.Vec(IDL.Nat8),
+    'headers' : IDL.Vec(HeaderField),
+    'status_code' : IDL.Nat16,
   });
   const RegisterHardwareWalletRequest = IDL.Record({
     'name' : IDL.Text,
@@ -140,6 +153,7 @@ export default ({ IDL }) => {
         [GetTransactionsResponse],
         ['query'],
     ),
+    'http_request' : IDL.Func([HttpRequest], [HttpResponse], ['query']),
     'register_hardware_wallet' : IDL.Func(
         [RegisterHardwareWalletRequest],
         [RegisterHardwareWalletResponse],
@@ -157,3 +171,4 @@ export default ({ IDL }) => {
     ),
   });
 };
+export const init = ({ IDL }) => { return []; };

@@ -3,9 +3,14 @@ import { Identity } from "@dfinity/agent";
 import { DelegationIdentity } from "@dfinity/identity";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { Option } from "./canisters/option";
+import { executeWithLogging } from "./errorLogger";
 
+// TODO get this from build arg
 const IDENTITY_SERVICE_URL = "https://identity.ic0.app/";
+// const IDENTITY_SERVICE_URL = "https://qvhpv-4qaaa-aaaaa-aaagq-cai.cdtesting.dfinity.network/"; // TEST CONFIG
+
 const ONE_MINUTE_MILLIS = 60 * 1000;
+const SESSION_TIMEOUT_IN_NS = BigInt(1_920_000_000_000) // 32 mins
 
 export default class AuthApi {
     private readonly authClient: AuthClient;
@@ -34,7 +39,7 @@ export default class AuthApi {
         }
 
         // If the identity will expire in less than 5 minutes, don't return the identity
-        const durationUntilLogout = this.getDurationUntilSessionExpiresMs() - ONE_MINUTE_MILLIS;
+        const durationUntilLogout = this.getTimeUntilSessionExpiryMs() - ONE_MINUTE_MILLIS;
         if (durationUntilLogout <= 5 * ONE_MINUTE_MILLIS) {
             return null;
         }
@@ -44,6 +49,7 @@ export default class AuthApi {
 
     public login = async (onSuccess: () => void) : Promise<void> => {
         const options: AuthClientLoginOptions = {
+            maxTimeToLive: SESSION_TIMEOUT_IN_NS,
             identityProvider: IDENTITY_SERVICE_URL,
             onSuccess: () => {
                 this.handleDelegationExpiry();
@@ -51,7 +57,7 @@ export default class AuthApi {
             }
         }
 
-        await this.authClient.login(options);
+        await executeWithLogging(() => this.authClient.login(options));
     }
 
     public logout = async () : Promise<void> => {
@@ -59,16 +65,32 @@ export default class AuthApi {
             clearTimeout(this.expireSessionTimeout);
         }
 
-        await this.authClient.logout();
+        await executeWithLogging(() => this.authClient.logout());
         this.onLoggedOut();
     }
 
     public connectToHardwareWallet = () : Promise<LedgerIdentity> => {
-        return LedgerIdentity.fromWebUsb();
+        return executeWithLogging(LedgerIdentity.fromWebUsb);
+    }
+
+    public getPrincipal = () : string => {
+        return this.tryGetIdentity()?.getPrincipal().toString();
+    }
+
+    public getTimeUntilSessionExpiryMs = () : Option<number> => {
+        const identity = this.authClient.getIdentity();
+        if (identity instanceof DelegationIdentity) {
+            const expiryDateTimestampMs = Number(identity.getDelegation().delegations
+                .map(d => d.delegation.expiration)
+                .reduce((current, next) => next < current ? next : current) / BigInt(1_000_000));
+
+            return expiryDateTimestampMs - Date.now();
+        }
+        return null;
     }
 
     private handleDelegationExpiry = () => {
-        const durationUntilSessionExpiresMs = this.getDurationUntilSessionExpiresMs();
+        const durationUntilSessionExpiresMs = this.getTimeUntilSessionExpiryMs();
 
         if (durationUntilSessionExpiresMs) {
             const durationUntilLogoutMs = durationUntilSessionExpiresMs - ONE_MINUTE_MILLIS;
@@ -80,17 +102,5 @@ export default class AuthApi {
                 this.expireSessionTimeout = setTimeout(() => this.logout(), durationUntilSessionExpiresMs - ONE_MINUTE_MILLIS);
             }
         }
-    }
-
-    private getDurationUntilSessionExpiresMs = () : Option<number> => {
-        const identity = this.authClient.getIdentity();
-        if (identity instanceof DelegationIdentity) {
-            const expiryDateTimestampMs = Number(identity.getDelegation().delegations
-                .map(d => d.delegation.expiration)
-                .reduce((current, next) => next < current ? next : current) / BigInt(1000000));
-
-            return expiryDateTimestampMs - Date.now();
-        }
-        return null;
     }
 }

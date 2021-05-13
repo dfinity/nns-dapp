@@ -1,10 +1,9 @@
 import { Principal } from "@dfinity/agent";
 import { Option } from "../option";
 import { CanisterId } from "../common/types";
-import { HttpError } from "../httpError";
 
 export interface CanisterSettings {
-    controller: Principal,
+    controller: string,
     freezingThreshold: bigint,
     memoryAllocation: bigint,
     computeAllocation: bigint

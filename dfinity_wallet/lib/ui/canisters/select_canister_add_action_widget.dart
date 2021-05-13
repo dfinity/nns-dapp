@@ -21,16 +21,16 @@ class SelectCanisterAddActionWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              WizardPathButton(title: "Attach Existing Canister",
+              WizardPathButton(title: "Create New Canister",
+                  subtitle: "Create a new canister, to deploy your application", onPressed:() {
+                    WizardOverlay.of(context)
+                        .pushPage("Enter Canister Name", CanisterNameWidget());
+                  }),
+              SmallFormDivider(),
+              WizardPathButton(title: "Link Canister To Account",
                   subtitle: "Enter the id of a canister, to top up it's cycles", onPressed:() {
                 WizardOverlay.of(context).pushPage(
                     "Attach Canister", EnterCanisterIdAndNameWidget());
-              }),
-              SmallFormDivider(),
-              WizardPathButton(title: "Create New Canister",
-                  subtitle: "Create a new canister, to deploy your application", onPressed:() {
-                WizardOverlay.of(context)
-                    .pushPage("Enter Canister Name", CanisterNameWidget());
               }),
               SmallFormDivider(),
               SizedBox(

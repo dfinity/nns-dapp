@@ -114,7 +114,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> createNeuron(
       {required BigInt stakeInDoms, int? fromSubAccount}) async {
     await promiseToFuture(serviceApi!.createNeuron(CreateNeuronRequest(
-        stake: stakeInDoms, fromSubAccountId: fromSubAccount)));
+        stake: stakeInDoms.toJS, fromSubAccountId: fromSubAccount)));
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -140,7 +140,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     final res = await promiseToFuture(serviceApi!.disburse(
         DisperseNeuronRequest(
             neuronId: neuronId.toJS,
-            amount: doms.toJS,
+            amount: null,
             toAccountId: toAccountId)));
     await fetchNeuron(neuronId: neuronId);
     balanceSyncService?.syncBalances();
@@ -313,6 +313,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> getCanisters() async {
     final response = await promiseToFuture(serviceApi!.getCanisters());
 
+
     final canisterIds = await Future.wait(<Future>[
       ...response.map((e) async {
         final id = e.canisterId.toString();
@@ -334,7 +335,6 @@ class PlatformICApi extends AbstractPlatformICApi {
     final response =
         await promiseToFuture(serviceApi!.getIcpToCyclesConversionRate());
     final string = convertBigIntToString(response);
-    print("getICPToCyclesExchangeRate ${string}");
     return BigInt.parse(string);
   }
 
@@ -359,7 +359,8 @@ class PlatformICApi extends AbstractPlatformICApi {
     if (canister.userIsController == true) {
       final details = response['details'];
       canister.cyclesBalance = details['cycles'].toString();
-      canister.controller = res.details.setting.controller.toString();
+      final setting = details['setting'];
+      canister.controller = setting['controller'].toString();
     }
     canister.save();
   }
@@ -397,9 +398,32 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> detachCanister(String canisterId) async {
-    print(canisterId);
     await promiseToFuture(serviceApi!.detachCanister(
         DetachCanisterRequest(canisterId: createPrincipal(canisterId))));
     await getCanisters();
+  }
+
+  @override
+  Future<void> refreshAccount(Account account) async {
+    transactionSyncService!.syncAccount(account);
+    final res = await balanceSyncService!.fetchBalances([account.accountIdentifier]);
+    account = hiveBoxes.accounts.get(account.accountIdentifier)!;
+    account.balance = res[account.accountIdentifier]!;
+    account.save();
+  }
+
+  @override
+  String getPrincipal() {
+    return authApi.getPrincipal();
+  }
+
+  @override
+  Future<void> logout() async {
+      await promiseToFuture(authApi.logout());
+  }
+
+  @override
+  int getTimeUntilSessionExpiryMs() {
+    return authApi.getTimeUntilSessionExpiryMs();
   }
 }

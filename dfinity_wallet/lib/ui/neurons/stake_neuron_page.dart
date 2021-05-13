@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
+import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
@@ -24,13 +25,12 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
 
   @override
   void initState() {
-    amountField = ValidatedTextField("Amount in ICP",
+    amountField = ValidatedTextField("Amount",
         validations: [
-          FieldValidation("Not enough ICP",
-              (e) => (e.toDoubleOrNull() ?? 0.0) >= widget.source.icpBalance),
-          FieldValidation(
-              "Must be greater than 1", (e) => (e.toDoubleOrNull() ?? 0.0) < 1.0)
+          StringFieldValidation.insufficientFunds(widget.source.icpBalance),
+          StringFieldValidation("Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
         ],
+        inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')) ],
         inputType: TextInputType.number);
   }
 
@@ -49,15 +49,33 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TallFormDivider(),
-                        SelectableText("Origin",
+                        SelectableText("Source",
                             style: context.textTheme.headline4),
                         VerySmallFormDivider(),
                         Text(widget.source.address,
                             style: context.textTheme.bodyText1),
                         SmallFormDivider(),
+                        Text("Transaction Fee",
+                            style: context.textTheme.headline4),
+                        VerySmallFormDivider(),
+                        // fee is doubled as it is a SEND and NOTIFY
+                        Text((TRANSACTION_FEE_ICP * 2).toString() + " ICP",
+                            style: context.textTheme.bodyText1),
+                        VerySmallFormDivider()
                       ],
                     ),
                   ),
+                  Center(
+                      child: Column(
+                    children: [
+                      Text("Current Balance: "),
+                      BalanceDisplayWidget(
+                        amount: widget.source.icpBalance,
+                        amountSize: 40,
+                        icpLabelSize: 0,
+                      ),
+                    ],
+                  )),
                   Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Center(
@@ -89,7 +107,8 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                 child: ElevatedButton(
                   child: Text("Create"),
                   onPressed: () async {
-                    await context.performLoading(() => context.icApi
+                    // TODO: Should be using the returned neuronId
+                    await context.callUpdate(() => context.icApi
                         .createNeuron(
                             stakeInDoms:
                                 amountField.currentValue.toDouble().toE8s,
@@ -111,7 +130,9 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                                     neuron: newNeuron,
                                     completeAction: (context) {
                                       OverlayBaseWidget.of(context)?.dismiss();
-                                      context.nav.push(NeuronPageDef.createPageConfig(newNeuron));
+                                      context.nav.push(
+                                          NeuronPageDef.createPageConfig(
+                                              newNeuron));
                                     },
                                   ));
                             }));

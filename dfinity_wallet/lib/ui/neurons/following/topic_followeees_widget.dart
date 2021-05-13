@@ -45,7 +45,7 @@ class TopicFolloweesWidget extends StatelessWidget {
                       AppColors.gray800)),
                   child: Padding(
                     padding: EdgeInsets.all(8),
-                    child: Text("Enter Followee"),
+                    child: Text("Add Follow"),
                   ),
                   onPressed: () {
                     OverlayBaseWidget.show(
@@ -144,6 +144,7 @@ class TopicFolloweesWidget extends StatelessWidget {
 
   void saveChanges(BuildContext context) {
     neuron.save();
+    // TODO: Should be using callUpdate
     context.icApi.follow(
         neuronId: neuron.id.toBigInt,
         topic: followees.topic,
@@ -158,7 +159,7 @@ class EnterFolloweeWidget extends StatelessWidget {
       : super(key: key);
 
   final ValidatedTextField addressField = ValidatedTextField(
-      "Followeee Address", inputType: TextInputType.number, validations: []);
+      "Followee Address", inputType: TextInputType.number, validations: []);
 
   final Function(String neuronId) onComplete;
   final Neuron neuron;
@@ -184,7 +185,7 @@ class EnterFolloweeWidget extends StatelessWidget {
                     width: 24,
                   ),
                   Center(
-                      child: Text("Enter New Followeee",
+                      child: Text("Enter New Followee",
                           style: TextStyle(
                               fontFamily: Fonts.circularBook,
                               fontSize: 24,

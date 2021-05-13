@@ -26,7 +26,7 @@ class NeuronVotesCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Text("Voting",
+                      child: Text("Voting History",
                           style: context.textTheme.headline3),
                     ),
                     LabelledBalanceDisplayWidget(
@@ -38,8 +38,17 @@ class NeuronVotesCard extends StatelessWidget {
                   ],
                 ),
                 SmallFormDivider(),
+                if (neuron.recentBallots.isEmpty) Center(
+                  child: Padding(
+                     padding: EdgeInsets.symmetric(vertical: 32),
+                    child: Text(
+                    "no recent ballots",
+                    style: context.textTheme.bodyText1,
+                  ),
+                  )
+                ),
+                if (neuron.recentBallots.isNotEmpty)
                 ...neuron.recentBallots.distinctBy((element) => element.proposalId).map((e) {
-                  final proposal = context.boxes.proposals.get(e.proposalId);
                   return Container(
                     padding: EdgeInsets.all(8),
                   child: Row(
