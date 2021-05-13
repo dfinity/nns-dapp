@@ -57,7 +57,7 @@ RUN sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' 
 RUN cd dfinity_wallet/build/web/ && tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../assets.tar.xz .
 RUN ls -sh assets.tar.xz; sha256sum assets.tar.xz
 
-RUN cargo build --target wasm32-unknown-unknown --release --package nns_ui
+RUN cargo build --locked --target wasm32-unknown-unknown --release --package nns_ui
 RUN cp target/wasm32-unknown-unknown/release/nns_ui.wasm .
 RUN ic-cdk-optimizer nns_ui.wasm -o nns_ui.wasm
 RUN ls -sh nns_ui.wasm; sha256sum nns_ui.wasm
