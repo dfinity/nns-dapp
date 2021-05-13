@@ -50,6 +50,18 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
+              child: Column(
+                children: [
+                  Text("Current Balance: "),
+                  BalanceDisplayWidget(
+                    amount: widget.source.icpBalance,
+                    amountSize: 40,
+                    icpLabelSize: 0,
+                  )
+                ],
+              ),
+            ),
+            Center(
               child: FractionallySizedBox(
                 widthFactor: 0.7,
                 child: Card(
