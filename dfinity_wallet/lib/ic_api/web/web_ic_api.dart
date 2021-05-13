@@ -119,6 +119,16 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<void> retryStakeNeuronNotification(
+      {required BigInt blockHeight,
+        required BigInt nonce,
+        int? fromSubAccount}) async {
+    await promiseToFuture(serviceApi!.retryStakeNeuronNotification(RetryStakeNeuronNotification(
+        blockHeight: blockHeight.toJS, nonce: nonce.toJS, fromSubAccountId: fromSubAccount)));
+    await neuronSyncService!.fetchNeurons();
+  }
+
+  @override
   Future<void> startDissolving({required BigInt neuronId}) async {
     await promiseToFuture(serviceApi!
         .startDissolving(NeuronIdentifierRequest(neuronId: neuronId.toJS)));
