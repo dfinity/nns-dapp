@@ -96,6 +96,7 @@ export interface Send {
     to: AccountIdentifier,
     fee: E8s,
     amount: E8s,
+    incomplete: boolean,
 };
 export type SubAccount = Array<number>;
 export interface SubAccountDetails {
