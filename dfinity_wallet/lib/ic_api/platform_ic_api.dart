@@ -32,6 +32,11 @@ abstract class AbstractPlatformICApi {
 
   Future<void> createNeuron({required BigInt stakeInDoms, int? fromSubAccount});
 
+  Future<void> retryStakeNeuronNotification(
+      {required BigInt blockHeight,
+      required BigInt nonce,
+      int? fromSubAccount});
+
   Future<void> startDissolving({required BigInt neuronId});
 
   Future<void> stopDissolving({required BigInt neuronId});

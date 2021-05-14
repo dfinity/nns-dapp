@@ -99,12 +99,13 @@ export default class TransactionsConverter {
                 } else {
                     if (memo === CREATE_CANISTER_MEMO) {
                         type = TransactionType.CreateCanister;
-                        this.createCanisterRecipientAccountIds.add(rawTransfer.Send.to);
-                        this.blockHeightsWithMissingNotifications.set(blockHeight, index);
+                        // Commenting the lines below out for now since we don't currently support retrying the canister notifications
+                        // this.createCanisterRecipientAccountIds.add(rawTransfer.Send.to);
+                        // this.blockHeightsWithMissingNotifications.set(blockHeight, index);
                     } else if (memo === TOP_UP_CANISTER_MEMO) {
                         type = TransactionType.TopUpCanister;
-                        this.topUpCanisterRecipientAccountIds.add(rawTransfer.Send.to);
-                        this.blockHeightsWithMissingNotifications.set(blockHeight, index);
+                        // this.topUpCanisterRecipientAccountIds.add(rawTransfer.Send.to);
+                        // this.blockHeightsWithMissingNotifications.set(blockHeight, index);
                     } else {
                         const stakeNeuronSubAccount = buildSubAccount(bigIntToUint8Array(memo), principal);
                         const stakeNeuronRecipient = principalToAccountIdentifier(GOVERNANCE_CANISTER_ID, stakeNeuronSubAccount);

@@ -35,32 +35,35 @@ class TransactionSyncService {
       late String to;
       late BigInt doms;
       late String fee = "0";
-      late TransactionType type = TransactionType.values[e['type'].toString().toInt()];
-      late BigInt memo = e['memo'].toString().toBigInt;
-
+      late TransactionType type =
+          TransactionType.values[e['type'].toString().toInt()];
+      late bool incomplete = false;
       if (send != null) {
         from = account.accountIdentifier;
         to = send['to'].toString();
         doms = BigInt.parse(send['amount'].toString());
         fee = send["fee"].toString();
+        incomplete = send["incomplete"];
       }
       if (receive != null) {
         to = account.accountIdentifier;
         from = receive['from'].toString();
         doms = BigInt.parse(receive['amount'].toString());
-        fee = receive["fee"].toString();
       }
 
       final milliseconds =
           BigInt.parse(e['timestamp'].toString()) / BigInt.from(1000000);
       transactions.add(Transaction(
-          to: to,
-          from: from,
-          date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
-          doms: doms.toString(),
-          fee: fee,
-          type: type,
-          memo: memo));
+        to: to,
+        from: from,
+        date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
+        doms: doms.toString(),
+        fee: fee,
+        type: type,
+        memo: e['memo'].toString().toBigInt,
+        incomplete: incomplete,
+        blockHeight: e['blockHeight'].toString().toBigInt
+      ));
     });
     account.transactions = transactions;
     account.save();

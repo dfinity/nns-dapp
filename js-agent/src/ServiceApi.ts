@@ -52,7 +52,7 @@ import NnsUiService, {
 } from "./canisters/nnsUI/model";
 import icManagementBuilder from "./canisters/icManagement/builder";
 import ICManagementService, { CanisterDetailsResponse, UpdateSettingsRequest, UpdateSettingsResponse } from "./canisters/icManagement/model";
-import createNeuronImpl, { CreateNeuronRequest } from "./canisters/createNeuron";
+import createNeuronImpl, { CreateNeuronRequest, NotificationRequest, sendNotification } from "./canisters/createNeuron";
 import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/createCanister";
 import { AccountIdentifier, BlockHeight, CanisterId, E8s, NeuronId } from "./canisters/common/types";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
@@ -216,9 +216,13 @@ export default class ServiceApi {
 
     public createNeuron = (request: CreateNeuronRequest) : Promise<NeuronId> => {
         return executeWithLogging(() => createNeuronImpl(
-            this.identity, 
+            this.identity.getPrincipal(),
             this.ledgerService, 
             request));
+    }
+
+    public retryStakeNeuronNotification = (request: NotificationRequest) : Promise<NeuronId> => {
+        return executeWithLogging(() => sendNotification(this.identity.getPrincipal(), this.ledgerService, request));
     }
 
     /*

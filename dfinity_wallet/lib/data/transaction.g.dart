@@ -24,13 +24,15 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
       fee: fields[4] as String,
       type: fields[5] as TransactionType,
       memo: fields[6] as BigInt,
+      incomplete: fields[7] as bool,
+      blockHeight: fields[8] as BigInt,
     );
   }
 
   @override
   void write(BinaryWriter writer, Transaction obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.from)
       ..writeByte(1)
@@ -44,7 +46,11 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
       ..writeByte(5)
       ..write(obj.type)
       ..writeByte(6)
-      ..write(obj.memo);
+      ..write(obj.memo)
+      ..writeByte(7)
+      ..write(obj.incomplete)
+      ..writeByte(8)
+      ..write(obj.blockHeight);
   }
 
   @override
