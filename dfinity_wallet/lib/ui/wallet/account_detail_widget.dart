@@ -1,17 +1,11 @@
-import 'dart:async';
-
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/resource_orchstrator.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/select_wallet_page.dart';
-import 'package:dfinity_wallet/ui/wallet/transaction_row.dart';
+import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
 import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';

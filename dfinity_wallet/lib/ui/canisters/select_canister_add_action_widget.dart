@@ -1,7 +1,6 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/canisters/cansiter_name_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/select_wallet_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_path_button.dart';
 
 import '../../dfinity.dart';
