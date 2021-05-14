@@ -72,7 +72,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                     padding: const EdgeInsets.only(top: 4, bottom: 4, right: 16),
                     margin: const EdgeInsets.only(bottom: 6),
                     alignment: Alignment.bottomRight,
-                    child: Text("votes", style: context.textTheme.subtitle2)
+                    child: Text("voting power", style: context.textTheme.subtitle2)
                   ),
                 ]),
                 ...widget.neurons
