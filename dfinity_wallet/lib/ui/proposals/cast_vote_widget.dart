@@ -33,59 +33,91 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text("Cast Vote", style: context.textTheme.headline3),
-                ),
-                Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Text(
-                      numVotes,
-                      style: context.textTheme.headline2,
-                    )),
-                Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Text(
-                      "Votes",
-                    )),
-              ],
+            Container(
+              child: Text("Cast Vote", style: context.textTheme.headline3),
+              alignment: Alignment.topLeft,              
             ),
-            ...widget.neurons.map((e) => Container(
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Checkbox(
-                          value: selectedNeurons!.contains(e),
+
+            Table( 
+              border: TableBorder(
+                bottom: BorderSide(color: AppColors.mediumBackground, width: 1)
+              ),
+              columnWidths: const <int, TableColumnWidth>{
+                0: IntrinsicColumnWidth(),
+                1: FlexColumnWidth(),
+                2: IntrinsicColumnWidth(),
+              },              
+              children: [
+                TableRow(children: [
+                  Container(margin: const EdgeInsets.only(top: 20.0)),
+                  Container(margin: const EdgeInsets.only(top: 20.0)),
+                  Container(margin: const EdgeInsets.only(top: 20.0))
+                ]),
+                TableRow(
+                  children: [
+                  Container(
+                    decoration: BoxDecoration(color: AppColors.mediumBackground),
+                    padding: const EdgeInsets.only(top: 4, bottom: 4),
+                    margin: const EdgeInsets.only(bottom: 6),
+                    child: Text("", style: context.textTheme.subtitle2)
+                  ),
+                  Container(
+                    decoration: BoxDecoration(color: AppColors.mediumBackground),
+                    padding: const EdgeInsets.only(top: 4, bottom: 4),
+                    margin: const EdgeInsets.only(bottom: 6),
+                    child: Text("neurons", style: context.textTheme.subtitle2)
+                  ),
+                  Container(
+                    decoration: BoxDecoration(color: AppColors.mediumBackground),
+                    padding: const EdgeInsets.only(top: 4, bottom: 4, right: 16),
+                    margin: const EdgeInsets.only(bottom: 6),
+                    alignment: Alignment.bottomRight,
+                    child: Text("votes", style: context.textTheme.subtitle2)
+                  ),
+                ]),
+                ...widget.neurons
+                  .map((n) => TableRow(children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 6, right: 10),
+                      child: Checkbox(
+                          value: selectedNeurons!.contains(n),
                           onChanged: (bool? value) {
                             setState(() {
                               if (value == true) {
-                                selectedNeurons!.add(e);
+                                selectedNeurons!.add(n);
                               } else {
-                                selectedNeurons!.remove(e);
+                                selectedNeurons!.remove(n);
                               }
                             });
                           },
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Text(e.identifier, style: context.textTheme.subtitle2,)),
-                      ),
-                      Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child:
-                              Text("${e.votingPower.toBigInt.toICPT.toStringAsFixed(2)} votes")),
-                    ],
-                  ),
+                        )
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 6),
+                      alignment: Alignment.bottomLeft,
+                      height: 28,
+                      child: Text(n.identifier, style: context.textTheme.subtitle2),                    
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 6),
+                      alignment: Alignment.bottomRight,
+                      padding: const EdgeInsets.only(right: 16),
+                      height: 28,
+                      child: Text(n.votingPower.toBigInt.toICPT.toStringAsFixed(2))
+                    )
+                  ]
                 )),
+            ]),
+            Container(
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(top: 8, right: 16),
+              child: Text(numVotes, style: context.textTheme.subtitle2),
+            ),
             Row(
               children: [
                 Expanded(
                     child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(right: 8.0, top: 20),
                   child: ElevatedButton(
                     onPressed: () {
                       OverlayBaseWidget.show(
@@ -112,7 +144,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                 )),
                 Expanded(
                     child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(left: 8.0, top: 20),
                   child: ElevatedButton(
                     onPressed: () {
                       OverlayBaseWidget.show(
