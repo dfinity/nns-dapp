@@ -36,36 +36,29 @@ class TransactionRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text(transaction.type.getName(),
-                            style: context.textTheme.headline3),
-                        if (showRetryButton)
-                          Container(
-                            margin: const EdgeInsets.only(left: 4),
-                            child: Tooltip(
-                              message:
-                                  "Part 2 of this operation failed to complete. This can happen if there is a loss of connectivity. Click here to retry.",
-                              child: TextButton(
-                                child: Container(
-                                  padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-                                  child: Text("Retry Part 2", style: context.textTheme.bodyText2?.copyWith(color: AppColors.yellow500))
-                                ),
-                                onPressed: () {
-                                  context.callUpdate(() async {
-                                    await context.icApi.retryStakeNeuronNotification(
-                                      blockHeight: transaction.blockHeight,
-                                      nonce: transaction.memo,
-                                      fromSubAccount: currentAccount.subAccountId);
-                                    await context.icApi.refreshAccount(currentAccount);
-                                  });
-                                },
-                              )
-                            )
-                          )
-                      ],
-                    ),
+                    Text(transaction.type.getName(),
+                        style: context.textTheme.headline3),
                     VerySmallFormDivider(),
+                    if (showRetryButton)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextButton(
+                            child: Text("Part 2 failed. Click here to retry",
+                                style: context.textTheme.bodyText2?.copyWith(color: AppColors.yellow500)),
+                            onPressed: () {
+                              context.callUpdate(() async {
+                                await context.icApi.retryStakeNeuronNotification(
+                                  blockHeight: transaction.blockHeight,
+                                  nonce: transaction.memo,
+                                  fromSubAccount: currentAccount.subAccountId);
+                                await context.icApi.refreshAccount(currentAccount);
+                              });
+                            },
+                          ),
+                          VerySmallFormDivider()
+                        ]
+                      ),
                     Text(dateFormatter.format(transaction.date),
                         style: context.textTheme.bodyText2),
                     VerySmallFormDivider(),
