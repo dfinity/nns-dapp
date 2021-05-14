@@ -38,18 +38,26 @@ class TransactionRow extends StatelessWidget {
                         Text(transaction.type.getName(),
                             style: context.textTheme.headline3),
                         if (showRetryButton)
-                          Tooltip(
+                          Container(
+                            margin: const EdgeInsets.only(left: 4),
+                            child: Tooltip(
                               message:
-                                  "The 'create neuron' operation failed to complete. This can happen if there is a loss of connectivity. Click here to retry.",
+                                  "Part 2 of this operation failed to complete. This can happen if there is a loss of connectivity. Click here to retry.",
                               child: TextButton(
-                                child: Text("Retry"),
+                                child: Container(
+                                  padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                                  child: Text("Retry Part 2", style: context.textTheme.bodyText2?.copyWith(color: AppColors.yellow500))
+                                ),
                                 onPressed: () async {
                                   await context.callUpdate(() =>
                                       context.icApi.retryStakeNeuronNotification(
                                       blockHeight: transaction.blockHeight,
-                                      nonce: transaction.memo));
+                                      nonce: transaction.memo,
+                                      fromSubAccount: currentAccount.subAccountId));
                                 },
-                              ))
+                              )
+                            )
+                          )
                       ],
                     ),
                     VerySmallFormDivider(),

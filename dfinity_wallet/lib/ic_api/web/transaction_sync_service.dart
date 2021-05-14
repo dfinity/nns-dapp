@@ -25,7 +25,6 @@ class TransactionSyncService {
             accountIdentifier: account.accountIdentifier,
             pageSize: 100,
             offset: 0)));
-    print("res: $res");
     final response = jsonDecode(stringify(res));
     final transactions = <Transaction>[];
     response['transactions'].forEach((e) {
