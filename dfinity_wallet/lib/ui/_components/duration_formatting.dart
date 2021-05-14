@@ -7,7 +7,6 @@ const ONE_DAY_SECONDS = 24 * 60 * 60;
 
 extension DurationFormatter on Duration {
   String yearsDayHourMinuteSecondFormatted() {
-    print(inSeconds);
     final years = (inSeconds / ONE_YEAR_SECONDS).floor();
     final days = (inSeconds.remainder(ONE_YEAR_SECONDS) / ONE_DAY_SECONDS).floor();
     final nonZeroPeriods = [

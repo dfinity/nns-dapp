@@ -25,13 +25,15 @@ class IncreaseDissolveDelayWidget extends StatefulWidget {
 
 class _IncreaseDissolveDelayWidgetState
     extends State<IncreaseDissolveDelayWidget> {
-  late IntField disperseDelay;
+  late IntField sliderValueSeconds;
+  late double sliderMinValue;
 
   @override
   void initState() {
     super.initState();
-    disperseDelay = IntField("Disburse Delay", []);
-    disperseDelay.currentValue = 0.days.inSeconds;
+    sliderValueSeconds = IntField("Disburse Delay", []);
+    sliderValueSeconds.currentValue = widget.neuron.dissolveDelay.inSeconds;
+    sliderMinValue = sqrt(widget.neuron.dissolveDelay.inSeconds);
   }
 
   @override
@@ -80,12 +82,13 @@ class _IncreaseDissolveDelayWidgetState
                     child: Column(
                       children: [
                         DissolveDelayWidget(
-                          timeInSeconds: disperseDelay.currentValue,
+                          sliderMinValue: sliderMinValue,
+                          sliderValueSeconds: sliderValueSeconds.currentValue,
                           currentDelay:
                               widget.neuron.dissolveDelaySeconds.toInt(),
                           onUpdate: (delay) {
                             setState(() {
-                              disperseDelay.currentValue = delay;
+                              sliderValueSeconds.currentValue = delay;
                             });
                           },
                         ),
@@ -100,7 +103,7 @@ class _IncreaseDissolveDelayWidgetState
                             Expanded(
                                 child: _FigureWidget(
                               amount:
-                                  newDissolveDelay()
+                                  sliderValueSeconds.currentValue
                                       .seconds
                                       .yearsDayHourMinuteSecondFormatted(),
                               label: "New Dissolve Delay",
@@ -142,19 +145,18 @@ class _IncreaseDissolveDelayWidgetState
                 child: ElevatedButton(
                   child: Text("Update Delay"),
                   onPressed: () {
-                    final increase = disperseDelay.currentValue.seconds;
-                    final newDelay = widget.neuron.dissolveDelay + increase;
+                    final newDelay = sliderValueSeconds.currentValue.seconds;
                     OverlayBaseWidget.show(
                         context,
                         ConfirmDialog(
                           title: "Confirm Dissolve Delay Increase",
                           description:
-                              "You have selected to increase the dissolve delay by ${increase.yearsDayHourMinuteSecondFormatted()}.\n\nAfter complete, the dissolve delay will be ${newDelay.yearsDayHourMinuteSecondFormatted()}",
+                              "After complete, the dissolve delay will be ${newDelay.yearsDayHourMinuteSecondFormatted()}",
                           onConfirm: () async {
                             await performUpdate(context);
                           },
                         ));
-                  }.takeIf((e) => disperseDelay.currentValue > 0),
+                  }.takeIf((e) => sliderValueSeconds.currentValue > widget.neuron.dissolveDelay.inSeconds),
                 ),
               ),
             ],
@@ -164,15 +166,10 @@ class _IncreaseDissolveDelayWidgetState
     );
   }
 
-  int newDissolveDelay() {
-    return (widget.neuron.dissolveDelaySeconds.toInt() +
-                                        disperseDelay.currentValue);
-  }
-
   Future performUpdate(BuildContext context) async {
     await context.callUpdate(() => context.icApi.increaseDissolveDelay(
         neuronId: widget.neuron.id.toBigInt,
-        additionalDissolveDelaySeconds: disperseDelay.currentValue));
+        additionalDissolveDelaySeconds: sliderValueSeconds.currentValue - widget.neuron.dissolveDelaySeconds.toInt()));
     widget.onCompleteAction(context);
   }
 
@@ -184,31 +181,33 @@ class _IncreaseDissolveDelayWidgetState
 
   double votingMultiplier() =>
       1 +
-      (disperseDelay.currentValue
+      (sliderValueSeconds.currentValue
               .toDouble()
               .takeIf((e) => isMoreThan6Months())
               ?.let((e) => e / (365.25 * 8).days.inSeconds) ??
           0);
 
   bool isMoreThan6Months() =>
-      newDissolveDelay() > SIX_MONTHS_IN_SECONDS;
+      sliderValueSeconds.currentValue > SIX_MONTHS_IN_SECONDS;
 }
 
 const SIX_MONTHS_IN_SECONDS = 182.625 * 24 * 60 * 60;
 
 class DissolveDelayWidget extends StatelessWidget {
-  final int timeInSeconds;
+  final double sliderMinValue;
+  final int sliderValueSeconds;
   final Function(int) onUpdate;
   final int currentDelay;
 
   const DissolveDelayWidget(
       {Key? key,
-      required this.timeInSeconds,
+      required this.sliderMinValue,
+      required this.sliderValueSeconds,
       required this.currentDelay,
       required this.onUpdate})
       : super(key: key);
 
-  int get maxDelay => (365.25 * 8).days.inSeconds - currentDelay;
+  int get maxDelay => (365.25 * 8).days.inSeconds;
 
   @override
   Widget build(BuildContext context) {
@@ -237,19 +236,20 @@ class DissolveDelayWidget extends StatelessWidget {
         Slider(
           activeColor: AppColors.white,
           inactiveColor: AppColors.gray600,
-          value: max(minValue(), sqrt(timeInSeconds)),
-          min: minValue(),
+          value: sqrt(sliderValueSeconds),
+          min: 0,
           max: sqrt(maxDelay),
           divisions: 10000,
           onChanged: (double value) {
+            if (value < sliderMinValue) {
+              value = sliderMinValue;
+            }
             onUpdate(min(maxDelay, (value * value).toInt()));
           },
         ),
       ],
     );
   }
-
-  double minValue() => 0.0; // sqrt(sqrt(7.001.days.inSeconds.toDouble()));
 }
 
 class _FigureWidget extends StatelessWidget {
