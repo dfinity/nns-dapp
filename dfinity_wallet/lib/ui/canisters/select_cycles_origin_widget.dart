@@ -1,14 +1,14 @@
-
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/canisters/top_up_cycles_amount_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
+import 'package:flutter/services.dart';
+import 'package:truncate/truncate.dart';
 
 import '../../dfinity.dart';
 
 class SelectCyclesOriginWidget extends StatelessWidget {
   final Function(Account account, BuildContext context) onSelected;
 
-  const SelectCyclesOriginWidget({Key? key, required this.onSelected}) : super(key: key);
+  const SelectCyclesOriginWidget({Key? key, required this.onSelected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +37,10 @@ class SelectCyclesOriginWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: context.boxes.accounts.values
                           .mapToList((e) => _AccountRow(
-                          account: e,
-                          onPressed: () {
-                           onSelected(e, context);
-                          })),
+                              account: e,
+                              onPressed: () {
+                                onSelected(e, context);
+                              })),
                     ),
                   ),
                 )
@@ -51,7 +51,6 @@ class SelectCyclesOriginWidget extends StatelessWidget {
   }
 }
 
-
 class _AccountRow extends StatelessWidget {
   final Account account;
   final VoidCallback onPressed;
@@ -59,14 +58,14 @@ class _AccountRow extends StatelessWidget {
 
   const _AccountRow(
       {Key? key,
-        required this.account,
-        required this.onPressed,
-        this.selected = false})
+      required this.account,
+      required this.onPressed,
+      this.selected = false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       onPressed: onPressed,
       child: Row(
         children: [
@@ -85,9 +84,8 @@ class _AccountRow extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 16.0, bottom: 16.0, right: 16.0),
-                  child: Text(
-                    account.accountIdentifier,
-                    style: context.textTheme.bodyText2,
+                  child: ResponsiveCopyId(
+                    accountIdentifier: account.accountIdentifier,
                   ),
                 )
               ],
@@ -95,11 +93,45 @@ class _AccountRow extends StatelessWidget {
           ),
           BalanceDisplayWidget(
               amount: account.balance.toBigInt.toICPT,
-              amountSize: 30, icpLabelSize: 20)
+              amountSize: 30,
+              icpLabelSize: 20)
         ],
       ),
     );
   }
 }
 
+class ResponsiveCopyId extends StatelessWidget {
+  const ResponsiveCopyId({
+    Key? key,
+    required this.accountIdentifier,
+  }) : super(key: key);
 
+  final String accountIdentifier;
+
+  @override
+  Widget build(BuildContext context) {
+    var displayId =
+        getShortId(MediaQuery.of(context).size.width, accountIdentifier);
+    return Row(
+      children: [
+        Tooltip(
+          message: accountIdentifier,
+          child: Text(
+            displayId,
+            style: context.textTheme.bodyText2,
+            overflow: TextOverflow.fade,
+          ),
+        ),
+        IconButton(
+            icon: Icon(
+              Icons.copy,
+              color: AppColors.gray100,
+            ),
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: accountIdentifier));
+            })
+      ],
+    );
+  }
+}

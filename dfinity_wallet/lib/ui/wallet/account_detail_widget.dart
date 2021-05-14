@@ -3,6 +3,7 @@ import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
+import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
 import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
@@ -86,10 +87,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                           SizedBox(
                                             height: 10,
                                           ),
-                                          SelectableText(
-                                            account.accountIdentifier,
-                                            style: context.textTheme.bodyText2,
-                                          ),
+                                          ResponsiveCopyId(accountIdentifier: account.accountIdentifier),
                                           SmallFormDivider(),
                                           if (account.hardwareWallet)
                                             Align(
