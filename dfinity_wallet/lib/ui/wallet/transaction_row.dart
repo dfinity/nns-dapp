@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 import '../../dfinity.dart';
 
@@ -17,7 +18,8 @@ class TransactionRow extends StatelessWidget {
     final dateFormatter = DateFormat.yMd().add_jm();
     final isReceive = transaction.from != currentAccount.accountIdentifier;
     final isSend = transaction.to != currentAccount.accountIdentifier;
-        
+    final isIncomplete = transaction.incomplete.isNotNullOrEmpty;
+
     return Card(
       color: Color(0xff292a2e),
       child: Container(
@@ -30,8 +32,24 @@ class TransactionRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(transaction.type.getName(),
-                        style: context.textTheme.headline3),
+                    Row(
+                      children: [
+                        Text(transaction.type.getName(),
+                            style: context.textTheme.headline3),
+                        if (isIncomplete)
+                          Tooltip(
+                              message:
+                                  "Your last transaction seems to be missing. This can happen when the app loses connection during a transaction. To remedy, please click Retry",
+                              child: TextButton(
+                                child: Text("Retry"),
+                                onPressed: () {
+                                  context.icApi.retryStakeNeuronNotification(
+                                      blockHeight: transaction.blockHeight,
+                                      nonce: transaction.memo);
+                                },
+                              ))
+                      ],
+                    ),
                     VerySmallFormDivider(),
                     Text(dateFormatter.format(transaction.date),
                         style: context.textTheme.bodyText2),
@@ -82,9 +100,7 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
     final sign = addition ? "+" : "-";
-    final color = addition
-            ? AppColors.green500
-            : AppColors.gray50;
+    final color = addition ? AppColors.green500 : AppColors.gray50;
     final secondaryColor = addition ? AppColors.green600 : AppColors.gray200;
 
     final displayAmount = amount + (type.shouldShowFee() ? this.fee : 0);

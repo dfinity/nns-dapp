@@ -26,17 +26,20 @@ class Transaction extends HiveObject {
   @HiveField(6)
   final BigInt memo;
   @HiveField(7)
-  final bool incomplete;
+  final String incomplete;
+  @HiveField(8)
+  final BigInt blockHeight;
 
   Transaction(
       {required this.from,
-        required this.to,
-        required this.doms,
-        required this.date,
-        required this.fee,
-        required this.type,
-        required this.memo,
-        required this.incomplete});
+      required this.to,
+      required this.doms,
+      required this.date,
+      required this.fee,
+      required this.type,
+      required this.memo,
+      required this.incomplete,
+      required this.blockHeight});
 
   double get icpt => doms.toBigInt.toICPT;
 }

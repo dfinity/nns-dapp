@@ -25,6 +25,7 @@ class TransactionSyncService {
             accountIdentifier: account.accountIdentifier,
             pageSize: 100,
             offset: 0)));
+    print("res: $res");
     final response = jsonDecode(stringify(res));
     final transactions = <Transaction>[];
     response['transactions'].forEach((e) {
@@ -35,16 +36,17 @@ class TransactionSyncService {
       late String to;
       late BigInt doms;
       late String fee = "0";
-      late bool incomplete = false;
-      late TransactionType type = TransactionType.values[e['type'].toString().toInt()];
+      late TransactionType type =
+          TransactionType.values[e['type'].toString().toInt()];
       late BigInt memo = e['memo'].toString().toBigInt;
-
+      late String incomplete = "false";
       if (send != null) {
+        print("send: $send");
         from = account.accountIdentifier;
         to = send['to'].toString();
         doms = BigInt.parse(send['amount'].toString());
-        fee = send['fee'].toString();
-        incomplete = send['incomplete'];
+        fee = send["fee"].toString();
+        incomplete = send["incomplete"];
       }
       if (receive != null) {
         to = account.accountIdentifier;
@@ -56,14 +58,16 @@ class TransactionSyncService {
       final milliseconds =
           BigInt.parse(e['timestamp'].toString()) / BigInt.from(1000000);
       transactions.add(Transaction(
-          to: to,
-          from: from,
-          date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
-          doms: doms.toString(),
-          fee: fee,
-          type: type,
-          memo: memo,
-          incomplete: incomplete));
+        to: to,
+        from: from,
+        date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
+        doms: doms.toString(),
+        fee: fee,
+        type: type,
+        memo: memo,
+        incomplete: incomplete,
+        blockHeight: e['blockHeight'].toString().toBigInt
+      ));
     });
     account.transactions = transactions;
     account.save();
