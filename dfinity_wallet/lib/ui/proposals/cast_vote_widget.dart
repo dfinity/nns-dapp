@@ -111,12 +111,23 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
             Container(
               alignment: Alignment.centerRight,
               padding: const EdgeInsets.only(top: 8, right: 16),
-              child: Text(numVotes, style: context.textTheme.subtitle2),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      alignment: Alignment.bottomRight,
+                      child: Text("total")
+                    ) 
+                  ), 
+                  Text(numVotes, style: context.textTheme.subtitle2),
+                ]
+              )
             ),
             Row(
               children: [
                 Expanded(
-                    child: Padding(
+                  child: Padding(
                   padding: const EdgeInsets.only(right: 8.0, top: 20),
                   child: ElevatedButton(
                     onPressed: () {
