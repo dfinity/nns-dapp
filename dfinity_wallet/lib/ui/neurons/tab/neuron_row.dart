@@ -20,9 +20,15 @@ class NeuronRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SelectableText(
-                neuron.identifier,
-                style: context.textTheme.headline3,
+              Row(
+                children: [
+                  SelectableText(
+                    neuron.identifier,
+                    style: context.textTheme.headline3,
+                  ),
+                  if (!neuron.isCurrentUserController)
+                    Text("[hotkey control]", style: context.textTheme.headline5)
+                ]
               ),
               VerySmallFormDivider(),
               Row(crossAxisAlignment: CrossAxisAlignment.end, children: [

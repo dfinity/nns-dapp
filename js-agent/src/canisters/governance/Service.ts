@@ -33,11 +33,13 @@ import { NeuronId } from "../common/types";
 
 export default class Service implements ServiceInterface {
     private readonly service: RawService;
+    private readonly myPrincipal: Principal;
     private readonly requestConverters: RequestConverters;
     private readonly responseConverters: ResponseConverters;
 
     public constructor(service: RawService, myPrincipal: Principal) {
         this.service = service;
+        this.myPrincipal = myPrincipal;
         this.requestConverters = new RequestConverters(myPrincipal);
         this.responseConverters = new ResponseConverters();
     }
@@ -48,7 +50,7 @@ export default class Service implements ServiceInterface {
             include_neurons_readable_by_caller: false
         }
         const rawResponse = await this.service.list_neurons(rawRequest);
-        const response = this.responseConverters.toArrayOfNeuronInfo(rawResponse);
+        const response = this.responseConverters.toArrayOfNeuronInfo(rawResponse, this.myPrincipal);
         return response.length > 0 ? response[0] : null;
     }
 
@@ -58,7 +60,7 @@ export default class Service implements ServiceInterface {
             include_neurons_readable_by_caller: true
         }
         const rawResponse = await this.service.list_neurons(rawRequest);
-        return this.responseConverters.toArrayOfNeuronInfo(rawResponse);
+        return this.responseConverters.toArrayOfNeuronInfo(rawResponse, this.myPrincipal);
     }
 
     public listProposals = async (request: ListProposalsRequest) : Promise<ListProposalsResponse> => {

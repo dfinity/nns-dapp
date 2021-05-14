@@ -87,6 +87,7 @@ class NeuronSyncService {
     neuron.createdTimestampSeconds =
         fullNeuron['createdTimestampSeconds'].toString();
     neuron.followees = parseFollowees(fullNeuron['followees']);
+    neuron.isCurrentUserController = fullNeuron['isCurrentUserController'];
   }
 
   List<BallotInfo> parseRecentBallots(List<dynamic> recentBallots) =>

@@ -26,6 +26,7 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       cachedNeuronStakeDoms: fields[7] as String,
       proposals: (fields[12] as HiveList?)?.castHiveList(),
       followEditCounter: fields[13] as int,
+      isCurrentUserController: fields[14] as bool,
     )
       ..neuronFeesDoms = fields[8] as String
       ..maturityE8sEquivalent = fields[9] as String
@@ -36,7 +37,7 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
   @override
   void write(BinaryWriter writer, Neuron obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -62,7 +63,9 @@ class NeuronAdapter extends TypeAdapter<Neuron> {
       ..writeByte(12)
       ..write(obj.proposals)
       ..writeByte(13)
-      ..write(obj.followEditCounter);
+      ..write(obj.followEditCounter)
+      ..writeByte(14)
+      ..write(obj.isCurrentUserController);
   }
 
   @override
