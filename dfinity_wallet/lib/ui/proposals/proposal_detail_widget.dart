@@ -1,6 +1,5 @@
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/proposals/proposal_state_card.dart';
 
@@ -15,6 +14,12 @@ class ProposalDetailWidget extends StatefulWidget {
 
   @override
   _ProposalDetailWidgetState createState() => _ProposalDetailWidgetState();
+}
+
+enum ProposalVotingEligibility {
+  eligible,
+  dissolveTooShort,
+  createdSinceProposal
 }
 
 class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
@@ -50,17 +55,25 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                         final updatedNeurons =
                         context.boxes.neurons.values.toList();
 
-                        final ineligibleNeurons = updatedNeurons.filter(
-                                (element) =>
-                                element.createdTimestampSeconds
-                                    .secondsToDateTime()
-                                    .isAfter(widget.proposal.proposalTimestamp) || element.dissolveDelay < 182.625.days)
-                            .toList();
+                        final ineligibleNeurons = updatedNeurons
+                          .map((neuron) {
+                            var eligibility = ProposalVotingEligibility.eligible;  
+                            if (neuron.
+                              createdTimestampSeconds.
+                              secondsToDateTime().
+                              isAfter(widget.proposal.proposalTimestamp)) {
+                              eligibility = ProposalVotingEligibility.createdSinceProposal;
+                            } else if (neuron.dissolveDelay < 182.625.days) {
+                              eligibility = ProposalVotingEligibility.dissolveTooShort;
+                            }
+                            return [neuron, eligibility];
+                          })
+                          .filter((p) => p[1] != ProposalVotingEligibility.eligible)
+                          .toList();
 
                         final notVotedNeurons = updatedNeurons
-                            .filter((element) =>
-                        element.voteForProposal(widget.proposal) ==
-                            null && !ineligibleNeurons.contains(element))
+                            .filter((n) => n.voteForProposal(widget.proposal) == null
+                              && !ineligibleNeurons.map((p) => p[0]).contains(n))
                             .toList();
 
                         final votedNeurons = updatedNeurons
@@ -99,10 +112,9 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
   }
 }
 
-
 class IneligibleNeuronsWidget extends StatelessWidget {
 
-  final List<Neuron> ineligibleNeurons;
+  final List<List<dynamic>> ineligibleNeurons;
 
   const IneligibleNeuronsWidget({Key? key, required this.ineligibleNeurons}) : super(key: key);
 
@@ -111,30 +123,42 @@ class IneligibleNeuronsWidget extends StatelessWidget {
   return Card(
     color: AppColors.background,
     child: Container(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Ineligible Neurons",
-              style: context.textTheme.headline3),
+          Text("Ineligible Neurons", style: context.textTheme.headline3),
           SmallFormDivider(),
-          Text("The following neurons have a dissolve delay of less than 6 months, or were created after the proposal was submitted, and are not able to vote on it",
-              style: context.textTheme.subtitle2),
-          ...ineligibleNeurons
-              .map((e) => Container(
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text(e.identifier, style: context.textTheme.subtitle2)),
-                ),
-              ],
-            ),
-          )),
+          Text("The following neurons have a dissolve delay of less than 6 months, or were created after the proposal was submitted, and therefore are not able to vote on it:", style: context.textTheme.subtitle2),
+          SmallFormDivider(),
+          Table( 
+            columnWidths: const <int, TableColumnWidth>{
+              0: FlexColumnWidth(),
+              1: IntrinsicColumnWidth(),
+            },              
+            defaultVerticalAlignment: TableCellVerticalAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              ...ineligibleNeurons
+                .map((p) => TableRow(children: [
+                  Container(
+                    height: 28,
+                    child: Text(p[0].identifier, style: context.textTheme.subtitle2),                    
+                  ),
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    margin: const EdgeInsets.only(left: 20.0),
+                    height: 28,
+                    child: Text(p[1] == ProposalVotingEligibility.dissolveTooShort 
+                      ? "dissolve delay < 6 months" 
+                      : "created after proposal")
+                  )
+                ]
+              ))
+          ]),
         ],
       ),
     ),
   );
   }
-}
+} 
