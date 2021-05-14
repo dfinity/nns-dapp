@@ -18,7 +18,8 @@ class TransactionRow extends StatelessWidget {
     final dateFormatter = DateFormat.yMd().add_jm();
     final isReceive = transaction.from != currentAccount.accountIdentifier;
     final isSend = transaction.to != currentAccount.accountIdentifier;
-    final isIncomplete = transaction.incomplete.isNotNullOrEmpty;
+    final now = DateTime.now();
+    final showRetryButton = transaction.incomplete && now.difference(transaction.date).inDays < 1;
 
     return Card(
       color: Color(0xff292a2e),
@@ -36,16 +37,17 @@ class TransactionRow extends StatelessWidget {
                       children: [
                         Text(transaction.type.getName(),
                             style: context.textTheme.headline3),
-                        if (isIncomplete)
+                        if (showRetryButton)
                           Tooltip(
                               message:
-                                  "Your last transaction seems to be missing. This can happen when the app loses connection during a transaction. To remedy, please click Retry",
+                                  "The 'create neuron' operation failed to complete. This can happen if there is a loss of connectivity. Click here to retry.",
                               child: TextButton(
                                 child: Text("Retry"),
-                                onPressed: () {
-                                  context.icApi.retryStakeNeuronNotification(
+                                onPressed: () async {
+                                  await context.callUpdate(() =>
+                                      context.icApi.retryStakeNeuronNotification(
                                       blockHeight: transaction.blockHeight,
-                                      nonce: transaction.memo);
+                                      nonce: transaction.memo));
                                 },
                               ))
                       ],

@@ -6,8 +6,8 @@ import { Option } from "./canisters/option";
 import { executeWithLogging } from "./errorLogger";
 
 // TODO get this from build arg
-// const IDENTITY_SERVICE_URL = "https://identity.ic0.app/";
-const IDENTITY_SERVICE_URL = "https://qvhpv-4qaaa-aaaaa-aaagq-cai.cdtesting.dfinity.network/"; // TEST CONFIG
+const IDENTITY_SERVICE_URL = "https://identity.ic0.app/";
+// const IDENTITY_SERVICE_URL = "https://qvhpv-4qaaa-aaaaa-aaagq-cai.cdtesting.dfinity.network/"; // TEST CONFIG
 
 const ONE_MINUTE_MILLIS = 60 * 1000;
 const SESSION_TIMEOUT_IN_NS = BigInt(1_920_000_000_000) // 32 mins

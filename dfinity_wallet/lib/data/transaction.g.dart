@@ -24,7 +24,7 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
       fee: fields[4] as String,
       type: fields[5] as TransactionType,
       memo: fields[6] as BigInt,
-      incomplete: fields[7] as String,
+      incomplete: fields[7] as bool,
       blockHeight: fields[8] as BigInt,
     );
   }

@@ -26,7 +26,7 @@ class Transaction extends HiveObject {
   @HiveField(6)
   final BigInt memo;
   @HiveField(7)
-  final String incomplete;
+  final bool incomplete;
   @HiveField(8)
   final BigInt blockHeight;
 
