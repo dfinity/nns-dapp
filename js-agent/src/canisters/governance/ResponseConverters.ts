@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/agent";
 import { accountIdentifierFromBytes, arrayOfNumberToArrayBuffer } from "../converter";
 import { AccountIdentifier, E8s, NeuronId } from "../common/types";
 import {
@@ -66,15 +67,16 @@ export default class ResponseConverters {
         };
     }
 
-    public toArrayOfNeuronInfo = (response: ListNeuronsResponse) : Array<NeuronInfo> => {
+    public toArrayOfNeuronInfo = (response: ListNeuronsResponse, principal: Principal) : Array<NeuronInfo> => {
         const map = new Map(response.full_neurons.map(n => [n.id[0].id, n]));
+        const principalString = principal.toString();
 
         return response.neuron_infos.map(([id, neuronInfo]) =>
-            this.toNeuronInfo(id, neuronInfo, map.get(id)));
+            this.toNeuronInfo(id, principalString, neuronInfo, map.get(id)));
     }
 
-    private toNeuronInfo(neuronId: bigint, neuronInfo: RawNeuronInfo, rawNeuron?: RawNeuron): NeuronInfo {
-        const fullNeuron = rawNeuron ? this.toNeuron(rawNeuron) : null;
+    private toNeuronInfo(neuronId: bigint, principalString: string, neuronInfo: RawNeuronInfo, rawNeuron?: RawNeuron): NeuronInfo {
+        const fullNeuron = rawNeuron ? this.toNeuron(rawNeuron, principalString) : null;
         return {
             neuronId: neuronId,
             dissolveDelaySeconds: neuronInfo.dissolve_delay_seconds,
@@ -134,9 +136,10 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("response", response);
     } 
 
-    private toNeuron = (neuron: RawNeuron) : Neuron => {
+    private toNeuron = (neuron: RawNeuron, principalString: string) : Neuron => {
         return {
             id: this.toNeuronId(neuron.id[0]),
+            isCurrentUserController: neuron.controller[0].toString() === principalString,
             controller: neuron.controller[0],
             recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
             kycVerified: neuron.kyc_verified,

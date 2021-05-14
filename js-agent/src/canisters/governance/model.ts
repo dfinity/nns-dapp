@@ -123,6 +123,7 @@ export interface NetworkEconomics {
 };
 export interface Neuron {
     id: NeuronId,
+    isCurrentUserController: boolean,
     controller: Principal,
     recentBallots: Array<BallotInfo>,
     kycVerified: boolean,

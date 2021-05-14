@@ -40,6 +40,8 @@ class Neuron extends DfinityEntity with ICPSource {
   HiveList<Proposal>? proposals;
   @HiveField(13)
   late int followEditCounter;
+  @HiveField(14)
+  late bool isCurrentUserController;
 
 
 
@@ -52,7 +54,8 @@ class Neuron extends DfinityEntity with ICPSource {
     required this.dissolveDelaySeconds,
     required this.cachedNeuronStakeDoms,
     required this.proposals,
-    required this.followEditCounter
+    required this.followEditCounter,
+    required this.isCurrentUserController
   });
 
   Neuron.empty();
