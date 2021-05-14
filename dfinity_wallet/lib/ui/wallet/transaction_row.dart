@@ -48,12 +48,14 @@ class TransactionRow extends StatelessWidget {
                                   padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
                                   child: Text("Retry Part 2", style: context.textTheme.bodyText2?.copyWith(color: AppColors.yellow500))
                                 ),
-                                onPressed: () async {
-                                  await context.callUpdate(() =>
-                                      context.icApi.retryStakeNeuronNotification(
+                                onPressed: () {
+                                  context.callUpdate(() async {
+                                    await context.icApi.retryStakeNeuronNotification(
                                       blockHeight: transaction.blockHeight,
                                       nonce: transaction.memo,
-                                      fromSubAccount: currentAccount.subAccountId));
+                                      fromSubAccount: currentAccount.subAccountId);
+                                    await context.icApi.refreshAccount(currentAccount);
+                                  });
                                 },
                               )
                             )
