@@ -10,7 +10,7 @@ import '../../wallet_router_delegate.dart';
 
 class OverlayBaseWidget extends StatefulWidget {
 
-  static OverlayEntry show(BuildContext context, Widget widget, {double borderRadius = 50, Size maxSize = const Size(800, 800)}) {
+  static OverlayEntry show(BuildContext context, Widget widget, {double borderRadius = 20, Size maxSize = const Size(800, 800)}) {
     OverlayEntry? entry;
     final parentContext = context;
     entry = OverlayEntry(builder: (context) {
@@ -31,7 +31,7 @@ class OverlayBaseWidget extends StatefulWidget {
     required this.parentContext,
     required this.child,
     required OverlayEntry? overlayEntry,
-    this.borderRadius = 50,
+    this.borderRadius = 20,
     this.maxSize = const Size(800, 700)
   })   : _overlayEntry = overlayEntry,
         super(key: key);
@@ -96,7 +96,7 @@ class _OverlayBaseWidgetState extends State<OverlayBaseWidget>
                 child: Center(
                   child: Container(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
+                        borderRadius: BorderRadius.circular(widget.borderRadius),
                         boxShadow: [
                           BoxShadow(
                               color:
