@@ -88,7 +88,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                               height: 40,
                             ),
                             ...wallets.sortedBy((element) => element.primary ? 0 : 1)
-                                .thenByDescending((element) => element.balance.toBigInt)
+                                .thenBy((element) => element.name)
                                 .mapToList((e) => AccountRow(
                               account: e,
                               onTap: () {
