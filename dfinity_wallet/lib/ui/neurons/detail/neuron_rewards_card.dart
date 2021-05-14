@@ -58,7 +58,6 @@ class NeuronRewardsCard extends StatelessWidget {
                         alignment: Alignment.bottomRight,
                         child: ElevatedButton(
                             onPressed: () {
-
                               OverlayBaseWidget.show(context, ConfirmDialog(
                                 title: "Really Spawn Neuron",
                                 description: "Are you sure you wish to spawn a new neuron?",
@@ -69,7 +68,7 @@ class NeuronRewardsCard extends StatelessWidget {
                                   });
                                 },
                               ));
-                            }.takeIf((e) => neuron.maturityE8sEquivalent.toDouble() > 0),
+                            }.takeIf((e) => neuron.maturityE8sEquivalent.toDouble() > 0 && neuron.isCurrentUserController),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Text("Spawn Neuron"),

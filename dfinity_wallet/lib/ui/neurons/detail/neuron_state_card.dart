@@ -37,18 +37,19 @@ class NeuronStateCard extends StatelessWidget {
               children: [
                 Expanded(child: Container(),),
                 ElevatedButton(
-                    onPressed: () {
-                      OverlayBaseWidget.show(context, WizardOverlay(
-                          rootTitle: "Increase Dissolve Delay",
-                          rootWidget:
-                          IncreaseDissolveDelayWidget(neuron: neuron, onCompleteAction: (context) {
-                            OverlayBaseWidget.of(context)?.dismiss();
-                          })));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text("Increase Dissolve Delay"),
-                    )),
+                  onPressed: () {
+                    OverlayBaseWidget.show(context, WizardOverlay(
+                        rootTitle: "Increase Dissolve Delay",
+                        rootWidget:
+                        IncreaseDissolveDelayWidget(neuron: neuron, onCompleteAction: (context) {
+                          OverlayBaseWidget.of(context)?.dismiss();
+                        })));
+                  }.takeIf((e) => neuron.isCurrentUserController),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text("Increase Dissolve Delay"),
+                  )
+                ),
                 SizedBox(width: 8),
                 buildStateButton(context),
               ],
@@ -72,11 +73,12 @@ class NeuronStateCard extends StatelessWidget {
             onPressed: () async {
               context.callUpdate(() =>
                   context.icApi.stopDissolving(neuronId: neuron.id.toBigInt));
-            });
+            }.takeIf((e) => neuron.isCurrentUserController)
+          );
       case NeuronState.LOCKED:
         return ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(AppColors.yellow500),
+              backgroundColor: neuron.isCurrentUserController ? MaterialStateProperty.all(AppColors.yellow500) : null,
             ),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -85,7 +87,8 @@ class NeuronStateCard extends StatelessWidget {
             onPressed: () {
               context.callUpdate(() =>
                   context.icApi.startDissolving(neuronId: neuron.id.toBigInt));
-            });
+            }.takeIf((e) => neuron.isCurrentUserController)
+          );
       case NeuronState.UNLOCKED:
         return ElevatedButton(
             style: ButtonStyle(
@@ -104,7 +107,8 @@ class NeuronStateCard extends StatelessWidget {
                       source: neuron,
                     ),
                   ));
-            });
+            }.takeIf((e) => neuron.isCurrentUserController)
+          );
       case NeuronState.UNSPECIFIED:
         return ElevatedButton(child: Text(""), onPressed: () {});
     }

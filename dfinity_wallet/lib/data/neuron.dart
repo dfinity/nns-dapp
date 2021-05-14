@@ -43,8 +43,6 @@ class Neuron extends DfinityEntity with ICPSource {
   @HiveField(14)
   late bool isCurrentUserController;
 
-
-
   Neuron({
     required this.id,
     required this.recentBallots,
