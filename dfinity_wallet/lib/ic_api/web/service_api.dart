@@ -167,12 +167,12 @@ class CreateNeuronRequest {
 
 @JS()
 @anonymous
-class RetryStakeNeuronNotification {
+class RetryStakeNeuronNotificationRequest {
   external dynamic blockHeight;
   external dynamic nonce;
   external int? fromSubAccountId;
 
-  external factory RetryStakeNeuronNotification({dynamic blockHeight, dynamic nonce, int? fromSubAccountId});
+  external factory RetryStakeNeuronNotificationRequest({dynamic blockHeight, dynamic nonce, int? fromSubAccountId});
 }
 
 @JS()

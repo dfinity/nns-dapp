@@ -123,7 +123,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt blockHeight,
         required BigInt nonce,
         int? fromSubAccount}) async {
-    await promiseToFuture(serviceApi!.retryStakeNeuronNotification(RetryStakeNeuronNotification(
+    await promiseToFuture(serviceApi!.retryStakeNeuronNotification(RetryStakeNeuronNotificationRequest(
         blockHeight: blockHeight.toJS, nonce: nonce.toJS, fromSubAccountId: fromSubAccount)));
     await neuronSyncService!.fetchNeurons();
   }
