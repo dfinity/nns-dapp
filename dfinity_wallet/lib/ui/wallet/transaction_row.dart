@@ -19,7 +19,10 @@ class TransactionRow extends StatelessWidget {
     final isReceive = transaction.from != currentAccount.accountIdentifier;
     final isSend = transaction.to != currentAccount.accountIdentifier;
     final now = DateTime.now();
-    final showRetryButton = transaction.incomplete && now.difference(transaction.date).inDays < 1;
+    final showRetryButton =
+      transaction.incomplete &&
+      now.difference(transaction.date).inDays < 1 &&
+      now.difference(transaction.date).inSeconds > 20;
 
     return Card(
       color: Color(0xff292a2e),
