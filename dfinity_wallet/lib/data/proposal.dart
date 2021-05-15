@@ -45,6 +45,8 @@ class Proposal extends DfinityEntity {
   late ProposalRewardStatus rewardStatus;
   @HiveField(17)
   late String raw;
+  @HiveField(18)
+  late Map<String, BigInt> ballots;
 
   Proposal(
       this.id,
@@ -61,7 +63,8 @@ class Proposal extends DfinityEntity {
       this.topic,
       this.status,
       this.rewardStatus,
-      this.raw);
+      this.raw,
+      this.ballots);
 
   Proposal.empty();
 

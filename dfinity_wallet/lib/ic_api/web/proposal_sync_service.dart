@@ -94,6 +94,7 @@ class ProposalSyncService {
     proposal.rewardStatus = ProposalRewardStatus
         .values[response['rewardStatus'].toString().toInt()];
     proposal.raw = response["proposal"].toString();
+    proposal.ballots = parseBallots(response['ballots']);
   }
 
   void linkProposalsToNeurons() {
@@ -113,5 +114,12 @@ class ProposalSyncService {
               element.cacheUpdateDate!.difference(DateTime.now()).inSeconds > 1)
           .map((element) => element.delete()));
     }
+  }
+
+  Map<String, BigInt> parseBallots(List<dynamic> ballots) {
+    return Map.fromIterable(
+      ballots,
+      key: (i) => i['neuronId'].toString(),
+      value: (i) => i['votingPower'].toString().toBigInt);
   }
 }

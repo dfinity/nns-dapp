@@ -28,7 +28,6 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    refreshProposal();
   }
 
   void refreshProposal() {
@@ -63,7 +62,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                               secondsToDateTime().
                               isAfter(widget.proposal.proposalTimestamp)) {
                               eligibility = ProposalVotingEligibility.createdSinceProposal;
-                            } else if (neuron.dissolveDelay < 182.625.days) {
+                            } else if (!widget.proposal.ballots.containsKey(neuron.id)) {
                               eligibility = ProposalVotingEligibility.dissolveTooShort;
                             }
                             return [neuron, eligibility];
@@ -129,7 +128,7 @@ class IneligibleNeuronsWidget extends StatelessWidget {
         children: [
           Text("Ineligible Neurons", style: context.textTheme.headline3),
           SmallFormDivider(),
-          Text("The following neurons have a dissolve delay of less than 6 months, or were created after the proposal was submitted, and therefore are not able to vote on it:", style: context.textTheme.subtitle2),
+          Text("The following neurons had a dissolve delay of less than 6 months at the time the proposal was submitted, or were created after the proposal was submitted, and therefore are not able to vote on it:", style: context.textTheme.subtitle2),
           SmallFormDivider(),
           Table( 
             columnWidths: const <int, TableColumnWidth>{
