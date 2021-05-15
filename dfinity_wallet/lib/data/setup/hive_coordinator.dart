@@ -64,38 +64,23 @@ class HiveCoordinator {
   }
 
   Future<List<Box<HiveObject>>> openAllBoxes() async {
-    try {
-      return await Future.wait([
-        Hive.openBox<Canister>('canisters')
-            .then((value) => hiveBoxes.canisters = value),
-        Hive.openBox<Account>('wallets')
-            .then((value) => hiveBoxes.accounts = value),
-        Hive.openBox<Neuron>('neurons')
-            .then((value) => hiveBoxes.neurons = value),
-        Hive.openBox<Proposal>('proposals')
-            .then((value) => hiveBoxes.proposals = value),
-      ]);
-    }
-    catch (_)
-    {
-      await Future.wait([
-        Hive.deleteBoxFromDisk('canisters'),
-        Hive.deleteBoxFromDisk('wallets'),
-        Hive.deleteBoxFromDisk('neurons'),
-        Hive.deleteBoxFromDisk('proposals')
-      ]);
+    await Future.wait([
+      Hive.deleteBoxFromDisk('canisters'),
+      Hive.deleteBoxFromDisk('wallets'),
+      Hive.deleteBoxFromDisk('neurons'),
+      Hive.deleteBoxFromDisk('proposals')
+    ]);
 
-      return Future.wait([
-        Hive.openBox<Canister>('canisters')
-            .then((value) => hiveBoxes.canisters = value),
-        Hive.openBox<Account>('wallets')
-            .then((value) => hiveBoxes.accounts = value),
-        Hive.openBox<Neuron>('neurons')
-            .then((value) => hiveBoxes.neurons = value),
-        Hive.openBox<Proposal>('proposals')
-            .then((value) => hiveBoxes.proposals = value),
-      ]);
-    }
+    return await Future.wait([
+      Hive.openBox<Canister>('canisters')
+          .then((value) => hiveBoxes.canisters = value),
+      Hive.openBox<Account>('wallets')
+          .then((value) => hiveBoxes.accounts = value),
+      Hive.openBox<Neuron>('neurons')
+          .then((value) => hiveBoxes.neurons = value),
+      Hive.openBox<Proposal>('proposals')
+          .then((value) => hiveBoxes.proposals = value),
+    ]);
   }
 
   Future initializeHive() async {
