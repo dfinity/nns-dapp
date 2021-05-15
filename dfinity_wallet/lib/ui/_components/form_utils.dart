@@ -84,9 +84,9 @@ class StringFieldValidation extends FieldValidation<String> {
           return amount == 0;
         });
 
-  StringFieldValidation.insufficientFunds(double balance)
+  StringFieldValidation.insufficientFunds(double balance, int numberOfTransactions)
       : this("Insufficient funds", (e) {
-          var modBalance = balance.toDouble() - TRANSACTION_FEE_ICP.toDouble();
+          var modBalance = balance.toDouble() - (numberOfTransactions * TRANSACTION_FEE_ICP.toDouble());
           var sendAmount = (e.toDoubleOrNull() ?? 0.0);
           return sendAmount > modBalance;
         });
