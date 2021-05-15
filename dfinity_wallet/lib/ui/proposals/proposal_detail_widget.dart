@@ -62,7 +62,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                               secondsToDateTime().
                               isAfter(widget.proposal.proposalTimestamp)) {
                               eligibility = ProposalVotingEligibility.createdSinceProposal;
-                            } else if (!widget.proposal.ballots.containsKey(neuron.id)) {
+                            } else if (!(widget.proposal.ballots?.containsKey(neuron.id) ?? false)) {
                               eligibility = ProposalVotingEligibility.dissolveTooShort;
                             }
                             return [neuron, eligibility];

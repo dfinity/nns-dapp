@@ -46,7 +46,7 @@ class Proposal extends DfinityEntity {
   @HiveField(17)
   late String raw;
   @HiveField(18)
-  late Map<String, BigInt> ballots;
+  late Map<String, BigInt>? ballots;
 
   Proposal(
       this.id,
