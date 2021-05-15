@@ -34,7 +34,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
 
     icpField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.source.icpBalance)
+          StringFieldValidation.insufficientFunds(widget.source.icpBalance, 2)
         ],
         inputType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')) ]

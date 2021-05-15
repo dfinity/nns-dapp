@@ -27,7 +27,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
   void initState() {
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.source.icpBalance),
+          StringFieldValidation.insufficientFunds(widget.source.icpBalance, 2),
           StringFieldValidation("Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
         ],
         inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')) ],
