@@ -614,26 +614,14 @@ impl TransactionStore {
     }
 }
 
-#[derive(CandidType, Deserialize)]
-struct TransactionPrevious {
-    transaction_index: TransactionIndex,
-    block_height: BlockHeight,
-    timestamp: TimeStamp,
-    transfer: Transfer,
-}
-
 impl StableState for TransactionStore {
     fn encode(&self) -> Vec<u8> {
         Candid((Vec::from_iter(self.transactions.iter()), &self.accounts, &self.block_height_synced_up_to, &self.last_ledger_sync_timestamp_nanos)).into_bytes().unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        let (transactions_previous, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos): (Vec<TransactionPrevious>, Vec<Option<Account>>, Option<BlockHeight>, u64) =
+        let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64) =
             Candid::from_bytes(bytes).map(|c| c.0)?;
-
-        let transactions: Vec<_> = transactions_previous.into_iter()
-            .map(|t| Transaction::new(t.transaction_index, t.block_height, t.timestamp, Memo(0), t.transfer))
-            .collect();
 
         let mut account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation> = HashMap::new();
         let mut empty_account_indices: Vec<u32> = Vec::new();
