@@ -3,7 +3,7 @@ import LedgerService from "./ledger/model";
 import NnsUiService, { AttachCanisterResult } from "./nnsUI/model";
 import MINTING_CANISTER_ID from "./cyclesMinting/canisterId";
 import { CyclesNotificationResponse } from "./ledger/proto/types_pb";
-import { CanisterId, E8s } from "./common/types";
+import { CanisterIdString, E8s, PrincipalString } from "./common/types";
 import * as convert from "./converter";
 import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants";
 
@@ -15,7 +15,7 @@ export type CreateCanisterRequest = {
 
 export interface CreateCanisterResponse {
     result: CreateCanisterResult,
-    canisterId?: CanisterId
+    canisterId?: CanisterIdString
     errorMessage?: string
 }
 
@@ -29,7 +29,7 @@ export enum CreateCanisterResult {
 }   
 
 export async function createCanisterImpl(
-    principal: Principal,
+    principal: PrincipalString,
     ledgerService: LedgerService,
     nnsUiService: NnsUiService,
     request: CreateCanisterRequest) : Promise<CreateCanisterResponse> {
@@ -50,14 +50,14 @@ export async function createCanisterImpl(
         try {
             const attachResult = await nnsUiService.attachCanister({
                 name: request.name,
-                canisterId
+                canisterId: canisterId.toString()
             });
 
             switch (attachResult) {
-                case AttachCanisterResult.Ok: return { result: CreateCanisterResult.Ok, canisterId };
-                case AttachCanisterResult.CanisterAlreadyAttached: return { result: CreateCanisterResult.CanisterAlreadyAttached, canisterId };
-                case AttachCanisterResult.NameAlreadyTaken: return { result: CreateCanisterResult.NameAlreadyTaken, canisterId };
-                case AttachCanisterResult.CanisterLimitExceeded: return { result: CreateCanisterResult.CanisterLimitExceeded, canisterId };
+                case AttachCanisterResult.Ok: return { result: CreateCanisterResult.Ok, canisterId: canisterId.toString() };
+                case AttachCanisterResult.CanisterAlreadyAttached: return { result: CreateCanisterResult.CanisterAlreadyAttached, canisterId: canisterId.toString() };
+                case AttachCanisterResult.NameAlreadyTaken: return { result: CreateCanisterResult.NameAlreadyTaken, canisterId: canisterId.toString() };
+                case AttachCanisterResult.CanisterLimitExceeded: return { result: CreateCanisterResult.CanisterLimitExceeded, canisterId: canisterId.toString() };
             }
         } catch (e) {
             return {
@@ -78,7 +78,7 @@ export async function createCanisterImpl(
 export type TopupCanisterRequest = {
     stake: E8s
     fromSubAccountId?: number,
-    targetCanisterId: CanisterId
+    targetCanisterId: CanisterIdString
 }
 
 export async function topupCanisterImpl(
@@ -95,7 +95,7 @@ export async function topupCanisterImpl(
     return response.hasToppedUp();
 }
 
-async function sendAndNotify(ledgerService: LedgerService, stake: E8s, recipient: Principal, memo: bigint, fromSubAccountId?: number) : Promise<CyclesNotificationResponse> {
+async function sendAndNotify(ledgerService: LedgerService, stake: E8s, recipient: PrincipalString, memo: bigint, fromSubAccountId?: number) : Promise<CyclesNotificationResponse> {
     const toSubAccount = buildSubAccount(recipient);
     const accountIdentifier = convert.principalToAccountIdentifier(MINTING_CANISTER_ID, toSubAccount);
     const blockHeight = await ledgerService.sendICPTs({
@@ -106,7 +106,7 @@ async function sendAndNotify(ledgerService: LedgerService, stake: E8s, recipient
     });
 
     const result = await ledgerService.notify({
-        toCanister: MINTING_CANISTER_ID,
+        toCanister: MINTING_CANISTER_ID.toString(),
         blockHeight,
         toSubAccount,
         fromSubAccountId: fromSubAccountId
@@ -116,8 +116,8 @@ async function sendAndNotify(ledgerService: LedgerService, stake: E8s, recipient
 }
 
 // 32 bytes
-export function buildSubAccount(principal: Principal) : Uint8Array {
-    const blob = principal.toBlob();
+export function buildSubAccount(principal: PrincipalString) : Uint8Array {
+    const blob = Principal.fromText(principal).toBlob();
     const subAccount = new Uint8Array(32);
     subAccount[0] = blob.length;
     subAccount.set(blob, 1);

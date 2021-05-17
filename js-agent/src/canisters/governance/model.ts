@@ -1,6 +1,6 @@
-import type { DerEncodedBlob, Principal } from "@dfinity/agent";
+import type { DerEncodedBlob } from "@dfinity/agent";
 import { Option } from "../option";
-import { AccountIdentifier, E8s, NeuronId } from "../common/types";
+import { AccountIdentifier, CanisterIdString, E8s, NeuronId, PrincipalString } from "../common/types";
 
 export type Action =
     { ExecuteNnsFunction: ExecuteNnsFunction } |
@@ -11,9 +11,9 @@ export type Action =
     { AddOrRemoveNodeProvider: AddOrRemoveNodeProvider } |
     { SetDefaultFollowees: SetDefaultFollowees } |
     { Motion: Motion };
-export interface AddHotKey { newHotKey: Principal };
+export interface AddHotKey { newHotKey: PrincipalString };
 export interface AddOrRemoveNodeProvider { change: Change };
-export interface ApproveGenesisKyc { principals: Array<Principal> };
+export interface ApproveGenesisKyc { principals: Array<PrincipalString> };
 export type AuthzChangeOp = { Authorize: { addSelf: boolean } } |
     { Deauthorize: null };
 export interface Ballot { neuronId: bigint, vote: Vote, votingPower: bigint };
@@ -44,7 +44,7 @@ export interface DisburseToNeuron {
     dissolveDelaySeconds: bigint,
     kycVerified: boolean,
     amount: E8s,
-    newController: Option<Principal>,
+    newController: Option<PrincipalString>,
     nonce: bigint,
 };
 export type DissolveState = { DissolveDelaySeconds: bigint } |
@@ -101,9 +101,9 @@ export interface ManageNeuron {
     command: Command,
 };
 export interface MethodAuthzChange {
-    principal: Option<Principal>,
+    principal: Option<PrincipalString>,
     methodName: string,
-    canister: Principal,
+    canister: CanisterIdString,
     operation: AuthzChangeOp,
 };
 export interface MethodAuthzInfo {
@@ -124,7 +124,7 @@ export interface NetworkEconomics {
 export interface Neuron {
     id: NeuronId,
     isCurrentUserController: boolean,
-    controller: Principal,
+    controller: PrincipalString,
     recentBallots: Array<BallotInfo>,
     kycVerified: boolean,
     notForProfit: boolean,
@@ -133,7 +133,7 @@ export interface Neuron {
     maturityE8sEquivalent: bigint,
     agingSinceTimestampSeconds: bigint,
     neuronFees: E8s,
-    hotKeys: Array<Principal>,
+    hotKeys: Array<PrincipalString>,
     accountPrincipal: ArrayBuffer,
     dissolveState: DissolveState,
     followees: Array<Followees>,
@@ -158,14 +158,14 @@ export interface NeuronInfo {
 };
 export interface NeuronStakeTransfer {
     toSubaccount: ArrayBuffer,
-    from: Option<Principal>,
+    from: Option<PrincipalString>,
     memo: bigint,
     neuronStake: E8s,
     fromSubaccount: ArrayBuffer,
     transferTimestamp: bigint,
     blockHeight: bigint,
 };
-export interface NodeProvider { id: Option<Principal> };
+export interface NodeProvider { id: Option<PrincipalString> };
 export type Operation = { RemoveHotKey: RemoveHotKey } |
     { AddHotKey: AddHotKey } |
     { StopDissolving: {} } |
@@ -243,7 +243,7 @@ export enum Vote {
 	NO = 2
 }  
 export interface RegisterVote { vote: Vote, proposal: ProposalId };
-export interface RemoveHotKey { hotKeyToRemove: Option<Principal> };
+export interface RemoveHotKey { hotKeyToRemove: Option<PrincipalString> };
 
 export type ClaimNeuronRequest = {
     publicKey: DerEncodedBlob,
@@ -265,7 +265,7 @@ export interface RewardNodeProvider {
 export interface SetDefaultFollowees {
     defaultFollowees: Array<Followees>
 };  
-export interface Spawn { newController: Option<Principal> };
+export interface Spawn { newController: Option<PrincipalString> };
 export interface SpawnResponse { createdNeuronId: NeuronId };
 export interface Split { amount: E8s };
 export interface Tally {
@@ -290,12 +290,12 @@ export enum Topic {
 
 export interface AddHotKeyRequest {
     neuronId: NeuronId,
-    principal: Principal
+    principal: PrincipalString
 }
 
 export interface RemoveHotKeyRequest {
     neuronId: NeuronId,
-    principal: Principal
+    principal: PrincipalString
 }
 
 export interface StartDissolvingRequest {
@@ -325,7 +325,7 @@ export interface RegisterVoteRequest {
 
 export interface SpawnRequest {
     neuronId: NeuronId,
-    newController: Option<Principal>
+    newController: Option<PrincipalString>
 }
 
 export interface SplitRequest {
@@ -344,7 +344,7 @@ export interface DisburseToNeuronRequest {
     dissolveDelaySeconds: bigint,
     kycVerified: boolean,
     amount: E8s,
-    newController: Option<Principal>,
+    newController: Option<PrincipalString>,
     nonce: bigint
 }
 
@@ -366,7 +366,7 @@ export interface MakeRewardNodeProviderProposalRequest {
     neuronId: NeuronId,
     summary: string,
     url: string,
-    nodeProvider: Principal,
+    nodeProvider: PrincipalString,
     amount: E8s,
     createNeuron: Option<CreateNeuron>
 }

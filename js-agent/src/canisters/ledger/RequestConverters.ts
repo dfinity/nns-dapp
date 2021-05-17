@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/agent";
 import { Buffer } from "buffer";
 import { GetBalancesRequest, NotifyCanisterRequest, SendICPTsRequest } from "./model";
 import * as convert from "../converter";
@@ -14,7 +15,6 @@ import {
     SendRequest, Subaccount
 } from "./proto/types_pb";
 import { blobToUint8Array } from "../converter";
-import type { Principal } from "@dfinity/agent";
 
 export const TRANSACTION_FEE : bigint = BigInt(10_000);
 
@@ -63,7 +63,7 @@ export default class RequestConverters {
 
     public fromNotifyCanisterRequest = (request: NotifyCanisterRequest) : NotifyRequest => {
         const result = new NotifyRequest();
-        result.setToCanister(this.toPrincipal(request.toCanister));
+        result.setToCanister(this.toPrincipal(Principal.fromText(request.toCanister)));
 
         const blockHeight = new BlockHeight();
         blockHeight.setHeight(request.blockHeight.toString());

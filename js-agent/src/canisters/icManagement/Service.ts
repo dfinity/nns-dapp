@@ -1,6 +1,7 @@
+import { Principal } from "@dfinity/agent";
 import RawService from "./rawService";
 import ServiceInterface, { CanisterStatus, CanisterDetailsResponse, UpdateSettingsRequest, UpdateSettingsResponse } from "./model";
-import { CanisterId } from "../common/types";
+import { CanisterIdString } from "../common/types";
 import * as convert from "../converter";
 import { toHttpError } from "../httpError";
 
@@ -11,10 +12,10 @@ export default class Service implements ServiceInterface {
         this.service = service;
     }
 
-    public getCanisterDetails = async (canisterId: CanisterId) : Promise<CanisterDetailsResponse> => {
+    public getCanisterDetails = async (canisterId: CanisterIdString) : Promise<CanisterDetailsResponse> => {
         let rawResponse;
         try {
-            rawResponse = await this.service.canister_status({ canister_id: canisterId });
+            rawResponse = await this.service.canister_status({ canister_id: Principal.fromText(canisterId) });
         } catch (e) {
             const httpError = toHttpError(e);
             if (httpError.code === 403) {
@@ -39,10 +40,10 @@ export default class Service implements ServiceInterface {
                 memorySize: rawResponse.memory_size,
                 cycles: rawResponse.cycles,
                 setting: {
-                    controller: rawResponse.settings.controller.toText(),
+                    controller: rawResponse.settings.controller.toString(),
                     freezingThreshold: rawResponse.settings.freezing_threshold,
                     memoryAllocation: rawResponse.settings.memory_allocation,
-                    computeAllocation: rawResponse.settings.compute_allocation             
+                    computeAllocation: rawResponse.settings.compute_allocation
                 },
                 moduleHash: rawResponse.module_hash.length 
                     ? convert.arrayOfNumberToArrayBuffer(rawResponse.module_hash[0]) 
@@ -57,7 +58,7 @@ export default class Service implements ServiceInterface {
         const settings = request.settings;
         try {
             await this.service.update_settings({
-                canister_id: request.canisterId, 
+                canister_id: Principal.fromText(request.canisterId),
                 settings: {
                     controller: settings.controller ? [settings.controller] : [],
                     freezing_threshold: settings.freezingThreshold ? [settings.freezingThreshold] : [],

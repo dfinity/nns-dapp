@@ -1,6 +1,6 @@
 import AuthApi from "./src/AuthApi";
 import HardwareWalletApi from "./src/HardwareWalletApi";
-import {Principal, SignIdentity} from "@dfinity/agent";
+import { SignIdentity } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "./src/canisters/converter";
 import ServiceApi from "./src/ServiceApi";
 
@@ -37,10 +37,6 @@ window["getAccountIdentifier"] = (identity: SignIdentity) : string => {
 
 window["getPublicKey"] = (identity: SignIdentity) : string => {
     return identity.getPublicKey().toDer().toString('hex');
-}
-
-window["createPrincipal"] = (text: string) : Principal => {
-    return Principal.fromText(text.toString());
 }
 
 window["createAuthApi"] = (onLoggedOut: () => void) : Promise<AuthApi> => {

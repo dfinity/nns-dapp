@@ -72,7 +72,7 @@ export default class RequestConverters {
     }
 
     public fromAddHotKeyRequest = (request: AddHotKeyRequest) : RawManageNeuron => {
-        const rawOperation: RawOperation = { AddHotKey: { new_hot_key: [request.principal] } };
+        const rawOperation: RawOperation = { AddHotKey: { new_hot_key: [Principal.fromText(request.principal)] } };
         const rawCommand: RawCommand =  { Configure: { operation: [rawOperation] } };
         return {
             id: [this.fromNeuronId(request.neuronId)],
@@ -81,7 +81,7 @@ export default class RequestConverters {
     }
 
     public fromRemoveHotKeyRequest = (request: RemoveHotKeyRequest) : RawManageNeuron => {
-        const rawOperation: RawOperation = { RemoveHotKey: { hot_key_to_remove: [request.principal] } };
+        const rawOperation: RawOperation = { RemoveHotKey: { hot_key_to_remove: [Principal.fromText(request.principal)] } };
         const rawCommand: RawCommand =  { Configure: { operation: [rawOperation] } };
         return {
             id: [this.fromNeuronId(request.neuronId)],
@@ -142,7 +142,7 @@ export default class RequestConverters {
 
     public fromSpawnRequest = (request: SpawnRequest) : RawManageNeuron => {
         const rawCommand: RawCommand =  { Spawn: { 
-            new_controller: request.newController ? [request.newController] : []
+            new_controller: request.newController ? [Principal.fromText(request.newController)] : []
         }};
         return {
             id: [this.fromNeuronId(request.neuronId)],
@@ -176,7 +176,7 @@ export default class RequestConverters {
             dissolve_delay_seconds : request.dissolveDelaySeconds,
             kyc_verified : request.kycVerified,
             amount_e8s : request.amount,
-            new_controller : [request.newController],
+            new_controller : [Principal.fromText(request.newController)],
             nonce : request.nonce
         }};
         return {
@@ -226,7 +226,7 @@ export default class RequestConverters {
             action: [{ RewardNodeProvider: { 
                 amount_e8s: request.amount,
                 node_provider: [{
-                    id: [request.nodeProvider]
+                    id: [Principal.fromText(request.nodeProvider)]
                 }],
                 create_neuron: request.createNeuron != null ? [{ dissolve_delay_seconds: request.createNeuron.dissolveDelaySeconds }] : []
             } }]
@@ -292,7 +292,7 @@ export default class RequestConverters {
             const approveGenesisKyc = action.ApproveGenesisKyc;
             return {
                 ApproveGenesisKyc: {
-                    principals: approveGenesisKyc.principals
+                    principals: approveGenesisKyc.principals.map(Principal.fromText)
                 }
             }
         }
@@ -382,7 +382,7 @@ export default class RequestConverters {
                     dissolve_delay_seconds: disburseToNeuron.dissolveDelaySeconds,
                     kyc_verified: disburseToNeuron.kycVerified,
                     amount_e8s: disburseToNeuron.amount,
-                    new_controller: disburseToNeuron.newController ? [disburseToNeuron.newController] : [],
+                    new_controller: disburseToNeuron.newController ? [Principal.fromText(disburseToNeuron.newController)] : [],
                     nonce: disburseToNeuron.nonce
                 }
             }
@@ -414,7 +414,7 @@ export default class RequestConverters {
             const removeHotKey = operation.RemoveHotKey;
             return {
                 RemoveHotKey: {
-                    hot_key_to_remove: removeHotKey.hotKeyToRemove ? [removeHotKey.hotKeyToRemove] : []
+                    hot_key_to_remove: removeHotKey.hotKeyToRemove ? [Principal.fromText(removeHotKey.hotKeyToRemove)] : []
                 }
             }
         }
@@ -422,7 +422,7 @@ export default class RequestConverters {
             const addHotKey = operation.AddHotKey;
             return {
                 AddHotKey: {
-                    new_hot_key: addHotKey.newHotKey ? [addHotKey.newHotKey] : []
+                    new_hot_key: addHotKey.newHotKey ? [Principal.fromText(addHotKey.newHotKey)] : []
                 }
             }
         }
@@ -463,7 +463,7 @@ export default class RequestConverters {
 
     private fromNodeProvider = (nodeProvider: NodeProvider) : RawNodeProvider => {
         return {
-            id: nodeProvider.id ? [nodeProvider.id] : []
+            id: nodeProvider.id ? [Principal.fromText(nodeProvider.id)] : []
         }
     }
 

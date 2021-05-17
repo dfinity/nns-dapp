@@ -40,7 +40,7 @@ class NeuronVotesCard extends StatelessWidget {
                 SmallFormDivider(),
                 if (neuron.recentBallots.isEmpty) Center(
                   child: Padding(
-                     padding: EdgeInsets.symmetric(vertical: 32),
+                     padding: EdgeInsets.symmetric(vertical: 12),
                     child: Text(
                     "no recent ballots",
                     style: context.textTheme.bodyText1,

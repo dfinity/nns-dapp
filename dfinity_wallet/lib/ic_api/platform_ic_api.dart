@@ -74,8 +74,6 @@ abstract class AbstractPlatformICApi {
 
   Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId});
 
-  Future<void> createDummyProposals({required BigInt neuronId});
-
   // Canisters
   Future<CreateCanisterResponse> createCanister(
       {required BigInt stake, int? fromSubAccountId, required String name});

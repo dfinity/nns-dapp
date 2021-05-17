@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/agent";
 import {
     AttachCanisterRequest,
     DetachCanisterRequest,
@@ -20,13 +21,13 @@ export default class RequestConverters {
     public fromAttachCanisterRequest = (request: AttachCanisterRequest) : RawAttachCanisterRequest => {
         return {
             name: request.name,
-            canister_id: request.canisterId
+            canister_id: Principal.fromText(request.canisterId)
         };
     }
 
     public fromDetachCanisterRequest = (request: DetachCanisterRequest) : RawDetachCanisterRequest => {
         return {
-            canister_id: request.canisterId
+            canister_id: Principal.fromText(request.canisterId)
         };
     }
 

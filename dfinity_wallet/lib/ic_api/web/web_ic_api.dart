@@ -224,16 +224,6 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> createDummyProposals({required BigInt neuronId}) async {
-    await promiseToFuture(
-        serviceApi!.createDummyProposals(neuronId.toString()));
-    await fetchProposals(
-        excludeTopics: [],
-        includeStatus: ProposalStatus.values,
-        includeRewardStatus: ProposalRewardStatus.values);
-  }
-
-  @override
   Future<Proposal> fetchProposal({required BigInt proposalId}) async {
     final response =
         await promiseToFuture(serviceApi!.getProposalInfo(proposalId.toJS));
@@ -288,7 +278,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required String name, required String canisterId}) async {
     final response = await promiseToFuture(serviceApi!.attachCanister(
         AttachCanisterRequest(
-            name: name, canisterId: createPrincipal(canisterId))));
+            name: name, canisterId: canisterId)));
     return AttachCanisterResult.values[response.toInt()];
   }
 
@@ -352,7 +342,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     await promiseToFuture(serviceApi!.topupCanister(TopupCanisterRequest(
         stake: stake,
         fromSubAccountId: fromSubAccountId,
-        targetCanisterId: createPrincipal(targetCanisterId))));
+        targetCanisterId: targetCanisterId)));
     await getCanister(targetCanisterId);
     hiveBoxes.canisters.notifyChange();
   }
@@ -360,7 +350,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> getCanister(String canisterId) async {
     final res = await promiseToFuture(
-        serviceApi!.getCanisterDetails(createPrincipal(canisterId)));
+        serviceApi!.getCanisterDetails(canisterId));
     final response = jsonDecode(stringify(res));
     final canister = hiveBoxes.canisters[canisterId]!;
     canister.userIsController = response['kind'] == "success";
@@ -377,9 +367,9 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> changeCanisterController(
       String canisterId, String newController) async {
     final settings = UpdateSettingsRequest(
-        canisterId: createPrincipal(canisterId),
+        canisterId: canisterId,
         settings:
-            UpdateCanisterSettings(controller: createPrincipal(newController)));
+            UpdateCanisterSettings(controller: newController));
     await promiseToFuture(serviceApi!.updateCanisterSettings(settings));
     await getCanister(canisterId);
     hiveBoxes.canisters.notifyChange();
@@ -408,7 +398,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> detachCanister(String canisterId) async {
     await promiseToFuture(serviceApi!.detachCanister(
-        DetachCanisterRequest(canisterId: createPrincipal(canisterId))));
+        DetachCanisterRequest(canisterId: canisterId)));
     await getCanisters();
   }
 

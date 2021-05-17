@@ -1,5 +1,4 @@
-import { Principal } from "@dfinity/agent";
-import { AccountIdentifier, BlockHeight, E8s, SubAccount } from "../common/types";
+import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, SubAccount } from "../common/types";
 
 export interface GetBalancesRequest {
     accounts: Array<AccountIdentifier>,
@@ -16,7 +15,7 @@ export interface SendICPTsRequest {
 };
 
 export interface NotifyCanisterRequest {
-    toCanister : Principal,
+    toCanister : CanisterIdString,
     blockHeight : BlockHeight,
     toSubAccount? : SubAccount,
     fromSubAccountId? : number,

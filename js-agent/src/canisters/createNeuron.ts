@@ -3,7 +3,7 @@ import { sha256 } from "js-sha256";
 import LedgerService from "./ledger/model";
 import GOVERNANCE_CANISTER_ID from "./governance/canisterId";
 import randomBytes from "randombytes";
-import { BlockHeight, E8s, NeuronId } from "./common/types";
+import { BlockHeight, E8s, NeuronId, PrincipalString } from "./common/types";
 import * as convert from "./converter";
 import { NeuronId as NeuronIdProto } from "./ledger/proto/base_types_pb";
 import { retryAsync } from "./retry";
@@ -21,13 +21,13 @@ export type NotificationRequest = {
 
 // Ported from https://github.com/dfinity-lab/dfinity/blob/master/rs/nns/integration_tests/src/ledger.rs#L29
 export default async function(
-    principal: Principal,
+    principal: PrincipalString,
     ledgerService: LedgerService, 
     request: CreateNeuronRequest) : Promise<NeuronId> {
 
     const nonceBytes = new Uint8Array(randomBytes(8));
     const nonce = convert.uint8ArrayToBigInt(nonceBytes);
-    const toSubAccount = buildSubAccount(nonceBytes, principal);
+    const toSubAccount = buildSubAccount(nonceBytes, Principal.fromText(principal));
 
     const accountIdentifier = convert.principalToAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
     const blockHeight = await ledgerService.sendICPTs({
@@ -46,11 +46,11 @@ export default async function(
     return await sendNotification(principal, ledgerService, notificationRequest);
 }
 
-export const sendNotification = async (principal: Principal, ledgerService: LedgerService, request: NotificationRequest) : Promise<NeuronId> => {
-    const toSubAccount = buildSubAccount(convert.bigIntToUint8Array(request.nonce), principal);
+export const sendNotification = async (principal: PrincipalString, ledgerService: LedgerService, request: NotificationRequest) : Promise<NeuronId> => {
+    const toSubAccount = buildSubAccount(convert.bigIntToUint8Array(request.nonce), Principal.fromText(principal));
 
     const result = await retryAsync(() => ledgerService.notify({
-        toCanister: GOVERNANCE_CANISTER_ID,
+        toCanister: GOVERNANCE_CANISTER_ID.toString(),
         blockHeight: request.blockHeight,
         toSubAccount,
         fromSubAccountId: request.fromSubAccountId

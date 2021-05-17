@@ -1,5 +1,4 @@
-import { Principal } from "@dfinity/agent";
-import { AccountIdentifier, BlockHeight, CanisterId, E8s } from "../common/types";
+import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, PrincipalString } from "../common/types";
 
 export type Memo = bigint;
 export enum TransactionType {
@@ -23,7 +22,7 @@ export interface AccountDetails {
 
 export interface AttachCanisterRequest {
     name: string,
-    canisterId: CanisterId      
+    canisterId: CanisterIdString
 }
 
 export enum AttachCanisterResult {
@@ -36,7 +35,7 @@ export enum AttachCanisterResult {
 
 export interface CanisterDetails {
     name: string,
-    canisterId: CanisterId      
+    canisterId: CanisterIdString
 }
   
 export type CreateSubAccountResponse = { Ok: SubAccountDetails } |
@@ -44,7 +43,7 @@ export type CreateSubAccountResponse = { Ok: SubAccountDetails } |
     { SubAccountLimitExceeded: null } |
     { NameTooLong: null };
 
-export interface DetachCanisterRequest { canisterId: Principal };
+export interface DetachCanisterRequest { canisterId: CanisterIdString };
 export type DetachCanisterResponse = { Ok: null } |
     { CanisterNotFound: null };
 
@@ -125,7 +124,7 @@ export default interface ServiceInterface {
     getAccount: () => Promise<GetAccountResponse>,
     getCanisters : () => Promise<Array<CanisterDetails>>,
     getIcpToCyclesConversionRate : () => Promise<bigint>,
-    getTransactions: (request: GetTransactionsRequest, principal: Principal) => Promise<GetTransactionsResponse>,
+    getTransactions: (request: GetTransactionsRequest, principal: PrincipalString) => Promise<GetTransactionsResponse>,
     registerHardwareWallet: (request: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
     removeHardwareWallet: (request: RemoveHardwareWalletRequest) => Promise<RemoveHardwareWalletResponse>,
     renameSubAccount: (request: RenameSubAccountRequest) => Promise<RenameSubAccountResponse>,

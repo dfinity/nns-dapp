@@ -140,7 +140,7 @@ export default class ResponseConverters {
         return {
             id: this.toNeuronId(neuron.id[0]),
             isCurrentUserController: neuron.controller[0].toString() === principalString,
-            controller: neuron.controller[0],
+            controller: neuron.controller[0].toString(),
             recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
             kycVerified: neuron.kyc_verified,
             notForProfit: neuron.not_for_profit,
@@ -149,7 +149,7 @@ export default class ResponseConverters {
             maturityE8sEquivalent: neuron.maturity_e8s_equivalent,
             agingSinceTimestampSeconds: neuron.aging_since_timestamp_seconds,
             neuronFees: neuron.neuron_fees_e8s,
-            hotKeys: neuron.hot_keys,
+            hotKeys: neuron.hot_keys.map(p => p.toString()),
             accountPrincipal: arrayOfNumberToArrayBuffer(neuron.account),
             dissolveState: this.toDissolveState(neuron.dissolve_state[0]),
             followees: neuron.followees.map(([n, f]) => this.toFollowees(n, f)),
@@ -191,7 +191,7 @@ export default class ResponseConverters {
 
         return {
             toSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.to_subaccount),
-            from: neuronStakeTransfer.from ? neuronStakeTransfer.from[0] : null,
+            from: neuronStakeTransfer.from ? neuronStakeTransfer.from[0].toString() : null,
             memo: neuronStakeTransfer.memo,
             neuronStake: neuronStakeTransfer.neuron_stake_e8s,
             fromSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.from_subaccount),
@@ -243,7 +243,7 @@ export default class ResponseConverters {
             const approveKyc = action.ApproveGenesisKyc;
             return {
                 ApproveGenesisKyc: {
-                    principals: approveKyc.principals
+                    principals: approveKyc.principals.map(p => p.toString())
                 }
             }
         }
@@ -313,7 +313,7 @@ export default class ResponseConverters {
             const spawn = command.Spawn;
             return {
                 Spawn: {
-                    newController: spawn.new_controller.length ? spawn.new_controller[0] : null
+                    newController: spawn.new_controller.length ? spawn.new_controller[0].toString() : null
                 }
             }
         }
@@ -358,7 +358,7 @@ export default class ResponseConverters {
                     dissolveDelaySeconds: disburseToNeuron.dissolve_delay_seconds,
                     kycVerified: disburseToNeuron.kyc_verified,
                     amount: disburseToNeuron.amount_e8s,
-                    newController: disburseToNeuron.new_controller.length ? disburseToNeuron.new_controller[0] : null,
+                    newController: disburseToNeuron.new_controller.length ? disburseToNeuron.new_controller[0].toString() : null,
                     nonce: disburseToNeuron.nonce
                 }
             }
@@ -390,7 +390,7 @@ export default class ResponseConverters {
             const removeHotKey = operation.RemoveHotKey;
             return {
                 RemoveHotKey: {
-                    hotKeyToRemove: removeHotKey.hot_key_to_remove.length ? removeHotKey.hot_key_to_remove[0] : null
+                    hotKeyToRemove: removeHotKey.hot_key_to_remove.length ? removeHotKey.hot_key_to_remove[0].toString() : null
                 }
             }
         }
@@ -398,7 +398,7 @@ export default class ResponseConverters {
             const addHotKey = operation.AddHotKey;
             return {
                 AddHotKey: {
-                    newHotKey: addHotKey.new_hot_key.length ? addHotKey.new_hot_key[0] : null
+                    newHotKey: addHotKey.new_hot_key.length ? addHotKey.new_hot_key[0].toString() : null
                 }
             }
         }
@@ -439,7 +439,7 @@ export default class ResponseConverters {
 
     private toNodeProvider = (nodeProvider: RawNodeProvider) : NodeProvider => {
         return {
-            id: nodeProvider.id.length ? nodeProvider.id[0] : null
+            id: nodeProvider.id.length ? nodeProvider.id[0].toString() : null
         }
     }
 

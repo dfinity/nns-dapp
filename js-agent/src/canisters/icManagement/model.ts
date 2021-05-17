@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/agent";
 import { Option } from "../option";
-import { CanisterId } from "../common/types";
+import { CanisterIdString } from "../common/types";
 
 export interface CanisterSettings {
     controller: string,
@@ -10,7 +10,7 @@ export interface CanisterSettings {
 }
 
 export interface UpdateSettingsRequest {
-    canisterId: CanisterId,
+    canisterId: CanisterIdString,
     settings: {
         controller?: Principal,
         freezingThreshold?: bigint,
@@ -55,6 +55,6 @@ export type UpdateSettingSuccess = {
 }
     
 export default interface ServiceInterface {
-    getCanisterDetails: (canisterId: CanisterId) => Promise<CanisterDetailsResponse>,
+    getCanisterDetails: (canisterId: CanisterIdString) => Promise<CanisterDetailsResponse>,
     updateSettings: (request: UpdateSettingsRequest) => Promise<UpdateSettingsResponse>
 };

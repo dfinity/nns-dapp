@@ -54,7 +54,7 @@ import icManagementBuilder from "./canisters/icManagement/builder";
 import ICManagementService, { CanisterDetailsResponse, UpdateSettingsRequest, UpdateSettingsResponse } from "./canisters/icManagement/model";
 import createNeuronImpl, { CreateNeuronRequest, NotificationRequest, sendNotification } from "./canisters/createNeuron";
 import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/createCanister";
-import { AccountIdentifier, BlockHeight, CanisterId, E8s, NeuronId } from "./canisters/common/types";
+import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, NeuronId } from "./canisters/common/types";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { principalToAccountIdentifier } from "./canisters/converter";
 import { HOST } from "./canisters/constants";
@@ -123,7 +123,7 @@ export default class ServiceApi {
     }
 
     public getTransactions = (request: GetTransactionsRequest) : Promise<GetTransactionsResponse> => {
-        return executeWithLogging(() => this.nnsUiService.getTransactions(request, this.identity.getPrincipal()));
+        return executeWithLogging(() => this.nnsUiService.getTransactions(request, this.identity.getPrincipal().toString()));
     }
 
     public sendICPTs = (request: SendICPTsRequest): Promise<BlockHeight> => {
@@ -216,13 +216,13 @@ export default class ServiceApi {
 
     public createNeuron = (request: CreateNeuronRequest) : Promise<NeuronId> => {
         return executeWithLogging(() => createNeuronImpl(
-            this.identity.getPrincipal(),
+            this.identity.getPrincipal().toString(),
             this.ledgerService, 
             request));
     }
 
     public retryStakeNeuronNotification = (request: NotificationRequest) : Promise<NeuronId> => {
-        return executeWithLogging(() => sendNotification(this.identity.getPrincipal(), this.ledgerService, request));
+        return executeWithLogging(() => sendNotification(this.identity.getPrincipal().toString(), this.ledgerService, request));
     }
 
     /*
@@ -231,7 +231,7 @@ export default class ServiceApi {
 
     public createCanister = (request: CreateCanisterRequest) : Promise<CreateCanisterResponse> => {
         return executeWithLogging(() => createCanisterImpl(
-            this.identity.getPrincipal(), 
+            this.identity.getPrincipal().toString(),
             this.ledgerService, 
             this.nnsUiService,
             request));
@@ -255,7 +255,7 @@ export default class ServiceApi {
         return executeWithLogging(() => this.nnsUiService.getCanisters());
     }
 
-    public getCanisterDetails = (canisterId: CanisterId): Promise<CanisterDetailsResponse> => {
+    public getCanisterDetails = (canisterId: CanisterIdString): Promise<CanisterDetailsResponse> => {
         return executeWithLogging(() => this.icManagementService.getCanisterDetails(canisterId));
     }
 

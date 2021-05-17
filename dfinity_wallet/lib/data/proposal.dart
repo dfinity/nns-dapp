@@ -27,7 +27,7 @@ class Proposal extends DfinityEntity {
   late ProposalStatus status;
   late ProposalRewardStatus rewardStatus;
   late String raw;
-  late Map<String, BigInt>? ballots;
+  late Map<String, BigInt> ballots;
 
   Proposal(
       this.id,
