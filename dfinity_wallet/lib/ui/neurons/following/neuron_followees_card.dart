@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 import 'package:dfinity_wallet/ui/neurons/following/configure_followers_page.dart';
+import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 
 import '../../../dfinity.dart';
 
@@ -120,24 +121,28 @@ class NeuronFolloweesCard extends StatelessWidget {
             Align(
               alignment: Alignment.bottomRight,
               child: ElevatedButton(
-                  onPressed: () {
-                    OverlayBaseWidget.show(
-                        context,
-                        ConfigureFollowersPage(
-                          neuron: neuron,
-                          completeAction: (context) {
-                            OverlayBaseWidget.of(context)?.dismiss();
-                          },
-                        ),
-                        maxSize: Size(
-                            700, MediaQuery.of(context).size.height - 100));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(followeeTopics.isEmpty
-                        ? "Follow Neurons"
-                        : "Edit Followees"),
-                  )),
+                onPressed: () {
+                  OverlayBaseWidget.show(
+                    context,
+                    WizardOverlay(
+                      rootTitle: "Follow Neurons", 
+                      rootWidget: ConfigureFollowersPage(
+                        neuron: neuron,
+                        completeAction: (context) {
+                          OverlayBaseWidget.of(context)?.dismiss();
+                        }
+                      ),
+                    ),
+                    maxSize: Size(700, MediaQuery.of(context).size.height - 100)
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(followeeTopics.isEmpty
+                      ? "Follow Neurons"
+                      : "Edit Followees"),
+                )
+              ),
             )
           ],
         ),
