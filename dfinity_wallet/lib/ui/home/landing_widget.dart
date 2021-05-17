@@ -12,7 +12,7 @@ class LandingPageWidget extends StatelessWidget {
                   widthFactor: 0.3,
                   heightFactor: 0.3,
                   child: SizedBox.expand(
-                      child: SvgPicture.asset("assets/dfinity_logo.svg")))),
+                      child: SvgPicture.asset("assets/ic_logo.svg")))),
         ],
       ),
     );
