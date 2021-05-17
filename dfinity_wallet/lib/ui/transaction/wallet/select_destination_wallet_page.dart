@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
+import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/confirm_transactions_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
 import '../../../dfinity.dart';
