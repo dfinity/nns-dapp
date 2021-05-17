@@ -63,13 +63,12 @@ class _MultiSelectDropdownWidgetState<T>
         Row(
           children: [
             Padding(
-                padding:
-                    const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
+                padding: const EdgeInsets.only(left: 16, top: 8.0, bottom: 8.0),
                 child: Text(
                   widget.field.title,
-                  style: context.textTheme.headline4
-                      ?.copyWith(color: AppColors.white),
-                )),
+                  style: context.textTheme.headline4?.copyWith(color: AppColors.white),
+                )
+              ),
           ],
         ),
         Expanded(
@@ -88,14 +87,13 @@ class _MultiSelectDropdownWidgetState<T>
               child: Row(
                 children: [
                   Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
                     child: Wrap(
                       // scrollDirection: Axis.horizontal,
                       children: widget.field.selectedOptions
                           .mapToList((e) => Container(
-                                margin: EdgeInsets.only(
-                                    left: 8.0, top: 4.0, bottom: 4.0),
+                                margin: EdgeInsets.symmetric(horizontal: 4, vertical: 5),
                                 padding: EdgeInsets.all(8.0),
                                 decoration: ShapeDecoration(
                                     color: AppColors.gray800,

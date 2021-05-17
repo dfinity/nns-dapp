@@ -114,8 +114,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
       body: ConstrainWidthAndCenter(
         child: TabTitleAndContent(
           title: "Voting",
-          subtitle:
-              "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposal, which are decided as the result of voting activity by neurons.",
+          subtitle: "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposal, which are decided as the result of voting activity by neurons.",
           children: [
             IntrinsicHeight(
               child: MultiSelectDropdownWidget(
@@ -159,18 +158,15 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                 ],
               ),
             ),
-            SmallFormDivider(),
+            SizedBox(height: 20),
             StreamBuilder<Object>(
                 stream: context.boxes.proposals.changes,
                 builder: (context, snapshot) {
                   final proposals = context.boxes.proposals.values
-                      .filter((element) =>
-                          topicsField.selectedOptions.contains(element.topic))
-                      .filter((element) =>
-                          statusesField.selectedOptions.contains(element.status))
-                      .filter((element) =>
-                      rewardStatuesField.selectedOptions.contains(element.rewardStatus))
-                  .sortedByDescending((element) => element.proposalTimestamp);
+                    .filter((element) => topicsField.selectedOptions.contains(element.topic))
+                    .filter((element) => statusesField.selectedOptions.contains(element.status))
+                    .filter((element) => rewardStatuesField.selectedOptions.contains(element.rewardStatus))
+                    .sortedByDescending((element) => element.proposalTimestamp);
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -183,28 +179,26 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                           )),
                       SmallFormDivider(),
                       Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextButton(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  "Load More Proposals",
-                                  style: context.textTheme.subtitle2
-                                      ?.copyWith(color: AppColors.gray100),
-                                ),
-                              ),
-                              onPressed: () {
-                                final lastProposal = proposals.lastOrNull;
-                                fetchProposals(
-                                    lastProposal: lastProposal);
-                              }),
-                        ),
+                        child: TextButton(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Load More Proposals",
+                              style: context.textTheme.subtitle2
+                                  ?.copyWith(color: AppColors.gray100),
+                            ),
+                          ),
+                          onPressed: () {
+                            final lastProposal = proposals.lastOrNull;
+                            fetchProposals(
+                                lastProposal: lastProposal);
+                          }),
                       ),
                       SizedBox(height: 200,)
                     ],
                   );
-                }),
+                }
+             ),
           ],
         ),
       ),
