@@ -51,11 +51,10 @@ class TopicFolloweesWidget extends StatelessWidget {
                     OverlayBaseWidget.show(
                         context,
                         EnterFolloweeWidget(
-
                             followees: followees,
                             neuron: neuron,
-                            onComplete: (id) {
-                              addFollower(id, context);
+                            onComplete: (id) async {
+                              await addFollower(id, context);
                             }));
                   },
                 ),
@@ -96,24 +95,10 @@ class TopicFolloweesWidget extends StatelessWidget {
                         },
                       ),
                     ),
-                    if (i != 0)
-                      TextButton(
-                          style: buttonStyle,
-                          onPressed: () {
-                            reorder(context, i, i - 1);
-                          },
-                          child: Text('↑')),
-                    if (i != followees.followees.lastIndex)
-                      TextButton(
-                          style: buttonStyle,
-                          onPressed: () {
-                            reorder(context, i, i + 1);
-                          },
-                          child: Text('↓')),
                     TextButton(
                         style: buttonStyle,
-                        onPressed: () {
-                          removeFollower(e, context);
+                        onPressed: () async {
+                          await removeFollower(e, context);
                         },
                         child: Text('✕'))
                   ],
@@ -124,34 +109,26 @@ class TopicFolloweesWidget extends StatelessWidget {
     );
   }
 
-  void reorder(BuildContext context, int oldIndex, int newIndex) {
-    followees.followees = followees.followees.toList()
-      ..swap(oldIndex, newIndex);
-    saveChanges(context);
+  Future addFollower(String id, BuildContext context) async {
+    final newFollowees = followees.followees.toList()..add(id);
+    await saveChanges(context, newFollowees);
+    followees.followees = newFollowees;
   }
 
-  void addFollower(String id, BuildContext context) {
-    followees.followees = followees.followees.toList()
-      ..add(id);
-    saveChanges(context);
+  Future removeFollower(String id, BuildContext context) async {
+    final newFollowees = followees.followees.toList()..remove(id);
+    await saveChanges(context, newFollowees);
+    followees.followees = newFollowees;
   }
 
-  void removeFollower(String id, BuildContext context) {
-    followees.followees = followees.followees.toList()
-      ..remove(id);
-    saveChanges(context);
-  }
-
-  void saveChanges(BuildContext context) {
+  Future saveChanges(BuildContext context, List<String> newFollowees) async {
     neuron.save();
-    // TODO: Should be using callUpdate
-    context.icApi.follow(
+    await context.callUpdate(() => context.icApi.follow(
         neuronId: neuron.id.toBigInt,
         topic: followees.topic,
-        followees: followees.followees.mapToList((e) => e.toBigInt));
+        followees: newFollowees.mapToList((e) => e.toBigInt)));
   }
 }
-
 
 class EnterFolloweeWidget extends StatelessWidget {
   EnterFolloweeWidget(

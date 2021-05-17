@@ -47,7 +47,7 @@ class WizardOverlayState extends State<WizardOverlay> {
       margin: EdgeInsets.zero,
       color: AppColors.transparent,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(20),
         child: Navigator(
           key: navigatorKey,
           pages: List.of(pages),
