@@ -9,6 +9,7 @@ import 'package:dfinity_wallet/ui/neurons/detail/neuron_detail_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/account_detail_widget.dart';
 import 'package:hive/hive.dart';
+import 'package:observable/observable.dart' hide ChangeNotifier;
 
 import 'dfinity.dart';
 import 'ic_api/platform_ic_api.dart';
@@ -109,7 +110,7 @@ ApiObjectPage NeuronInfoPage = ApiObjectPage("/neuron_info", (identifier) => Neu
 
 
 class EntityPageDefinition<T extends DfinityEntity> {
-  final Box<T> Function(HiveBoxes boxes) fetchBox;
+  final ObservableMap<String, T> Function(HiveBoxes boxes) fetchBox;
   final Widget Function(T entity) createWidget;
   final String pathTemplate;
   final PageConfig parentPage;
@@ -123,7 +124,7 @@ class EntityPageDefinition<T extends DfinityEntity> {
       this.entityFromIC});
 
   T? entityForIdentifier(String entityIdentifier, HiveBoxes boxes) {
-    return fetchBox(boxes).get(entityIdentifier);
+    return fetchBox(boxes)[entityIdentifier];
   }
 
   EntityPage createConfigWithEntity(T entity) {
@@ -168,9 +169,9 @@ EntityPageDefinition CanisterPageDef = EntityPageDefinition<Canister>(
 class WalletRouterDelegate extends RouterDelegate<PageConfig>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageConfig> {
   List<Page> _pages = [];
-  HiveCoordinator hiveCoordinator;
+  HiveBoxes hiveBoxes;
 
-  WalletRouterDelegate(this.hiveCoordinator);
+  WalletRouterDelegate(this.hiveBoxes);
 
   @override
   PageConfig get currentConfiguration => _pages.last.arguments as PageConfig;
@@ -185,7 +186,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
     }
 
     return ResourceOrchestrator(
-      hiveCoordinator: hiveCoordinator,
+      hiveBoxes: hiveBoxes,
       child: Navigator(
         key: navigatorKey,
         onPopPage: _onPopPage,
@@ -297,7 +298,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
       push(destination);
     } else {
       if(configuration.logoutOnFailure){
-        await hiveCoordinator.deleteAllData();
+        await hiveBoxes.deleteAllData();
         push(AuthPage);
       }
     }

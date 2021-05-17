@@ -57,11 +57,10 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
       body: Container(
           color: AppColors.lightBackground,
           child: StreamBuilder<Object>(
-              stream: context.icApi.hiveBoxes.canisters
-                  .watch(key: widget.canister.identifier),
+              stream: context.icApi.hiveBoxes.canisters.changes,
               builder: (context, snapshot) {
                 final canister =
-                    context.boxes.canisters.get(widget.canister.identifier)!;
+                    context.boxes.canisters[widget.canister.identifier]!;
                 return FooterGradientButton(
                     footerHeight: null,
                     body: SingleChildScrollView(

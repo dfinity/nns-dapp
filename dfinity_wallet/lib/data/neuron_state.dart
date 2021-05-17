@@ -1,17 +1,11 @@
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:hive/hive.dart';
 
-part 'neuron_state.g.dart';
 
-@HiveType(typeId: 111)
 enum NeuronState {
-@HiveField(0)
 UNSPECIFIED,
-@HiveField(1)
 LOCKED,
-@HiveField(2)
 DISSOLVING,
-@HiveField(3)
 UNLOCKED
 }
 

@@ -26,9 +26,9 @@ class _ConfigureFollowersPageState extends State<ConfigureFollowersPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Object>(
-        stream: context.boxes.neurons.watch(key: widget.neuron.id),
+        stream: context.boxes.neurons.changes,
         builder: (context, snapshot) {
-          final refreshed = context.boxes.neurons.get(widget.neuron.id)!;
+          final refreshed = context.boxes.neurons[widget.neuron.id];
           final followees = refreshed.followees
               .filterNot((element) => element.topic == Topic.Unspecified)
               .toList();

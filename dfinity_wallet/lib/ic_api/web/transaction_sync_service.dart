@@ -3,6 +3,7 @@ import 'dart:js_util';
 
 import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
+import 'package:observable/observable.dart';
 import 'service_api.dart';
 
 import '../../dfinity.dart';
@@ -17,6 +18,7 @@ class TransactionSyncService {
 
   Future<void> syncAccounts(Iterable<Account> accounts) async {
     await Future.wait(accounts.mapToList((e) => syncAccount(e)));
+    hiveBoxes.accounts.notifyChange();
   }
 
   Future<void> syncAccount(Account account) async {
@@ -66,7 +68,7 @@ class TransactionSyncService {
       ));
     });
     account.transactions = transactions;
-    account.save();
+    hiveBoxes.accounts[account.identifier] = account;
   }
 }
 

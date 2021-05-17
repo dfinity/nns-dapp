@@ -12,10 +12,10 @@ import 'ic_api/stub_ic_api.dart'
     if (dart.library.html) 'ic_api/web/web_ic_api.dart';
 
 void main() {
-  final hiveCoordinator = HiveCoordinator();
-  final router = WalletRouterDelegate(hiveCoordinator);
+  final hiveBoxes = HiveBoxes();
+  final router = WalletRouterDelegate(hiveBoxes);
   runApp(DfinityApp(
-    hiveCoordinator: hiveCoordinator,
+    hiveBoxes: hiveBoxes,
     router: router,
   ));
 }
@@ -49,22 +49,22 @@ class AppLocalizationsDelegate
 }
 
 class DfinityApp extends StatelessWidget {
-  final HiveCoordinator hiveCoordinator;
+  final HiveBoxes hiveBoxes;
   final WalletRouterDelegate router;
 
   const DfinityApp(
-      {Key? key, required this.hiveCoordinator, required this.router})
+      {Key? key, required this.hiveBoxes, required this.router})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return HiveLoader(
-      hiveCoordinator: hiveCoordinator,
+    return HiveBoxesWidget(
+      boxes: hiveBoxes,
       child: ICApiManager(
         child: Builder(builder: (context) {
           return MaterialApp.router(
             routerDelegate: router,
-            routeInformationParser: WalletRouteParser(hiveCoordinator, context),
+            routeInformationParser: WalletRouteParser(hiveBoxes, context),
             title: 'Network Nervous System',
             localizationsDelegates: [
               const AppLocalizationsDelegate(),

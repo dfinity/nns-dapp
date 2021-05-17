@@ -29,7 +29,7 @@ class _CansitersPageState extends State<CansitersPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: context.boxes.canisters.watch(),
+      stream: context.boxes.canisters.changes,
       builder: (context, snapshot) {
         return Column(
           children: [

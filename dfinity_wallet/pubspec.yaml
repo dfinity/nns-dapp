@@ -37,6 +37,7 @@ dependencies:
 #  flutter_gifimage: ^1.0.1
   flutter_spinkit: ^5.0.0
   path_drawing: ^0.5.0
+  observable: ^0.23.0
 
   core:
     path: ../core

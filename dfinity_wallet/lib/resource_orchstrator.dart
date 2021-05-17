@@ -3,17 +3,17 @@ import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 
 class ResourceOrchestrator extends InheritedWidget {
 
-  final HiveCoordinator hiveCoordinator;
+  final HiveBoxes hiveBoxes;
   // final AbstractPlatformICApi? icApi;
 
   ResourceOrchestrator({
     Key? key,
     required Widget child,
-    required this.hiveCoordinator,
+    required this.hiveBoxes,
   }) :super(key: key,
       child: LoadingOverlayController(
-        child: HiveLoader(
-          hiveCoordinator: hiveCoordinator,
+        child: HiveBoxesWidget(
+          boxes: hiveBoxes,
           child: child,
         ),
       ));

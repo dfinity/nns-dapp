@@ -75,12 +75,11 @@ class _OverlayBaseWidgetState extends State<OverlayBaseWidget>
 
   @override
   Widget build(BuildContext context) {
-    final hiveCoordinator = HiveLoader.of(widget.parentContext).hiveCoordinator;
     final delegate = RouterDelegateWidget.of(widget.parentContext).delegate;
     return RouterDelegateWidget(
       delegate: delegate,
       child: ResourceOrchestrator(
-        hiveCoordinator: hiveCoordinator,
+        hiveBoxes: context.boxes.boxes,
         child: Scaffold(
           backgroundColor: AppColors.transparent,
           body: Stack(

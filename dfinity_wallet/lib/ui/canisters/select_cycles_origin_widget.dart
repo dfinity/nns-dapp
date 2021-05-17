@@ -111,8 +111,7 @@ class ResponsiveCopyId extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var displayId =
-        getShortId(MediaQuery.of(context).size.width, accountIdentifier);
+    var displayId = getShortId(MediaQuery.of(context).size.width, accountIdentifier);
     return Row(
       children: [
         Tooltip(

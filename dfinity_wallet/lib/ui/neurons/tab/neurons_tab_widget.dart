@@ -23,7 +23,7 @@ class _NeuronsPageState extends State<NeuronsPage> {
       footerHeight: null,
       body: ConstrainWidthAndCenter(
         child: StreamBuilder<void>(
-            stream: context.boxes.neurons.watch(),
+            stream: context.boxes.neurons.changes,
             builder: (context, snapshot) {
               return TabTitleAndContent(
                 title: "Neurons",
@@ -33,7 +33,7 @@ class _NeuronsPageState extends State<NeuronsPage> {
 Your principal id is "${context.icApi.getPrincipal()}"''',
                 children: [
                   SmallFormDivider(),
-                  ...(context.boxes.accounts.primary.neurons?.sortedByDescending((element) => element.createdTimestampSeconds.toBigInt)?.mapToList((e) => Card(
+                  ...(context.boxes.neurons.values?.sortedByDescending((element) => element.createdTimestampSeconds.toBigInt)?.mapToList((e) => Card(
                         child: FlatButton(
                           onPressed: () {
                             context.nav.push(NeuronPageDef.createPageConfig(e));

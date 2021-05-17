@@ -4,16 +4,16 @@ import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/ui/home/landing_widget.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:observable/observable.dart';
 import 'hive_coordinator.dart';
 import '../data.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
 class HiveLoader extends StatefulWidget {
-  final HiveCoordinator hiveCoordinator;
   final Widget child;
 
   HiveLoader(
-      {Key? key, required this.child, required this.hiveCoordinator})
+      {Key? key, required this.child})
       : super(key: key);
 
   static HiveLoader of(BuildContext context) {
@@ -25,32 +25,7 @@ class HiveLoader extends StatefulWidget {
 }
 
 class _HiveLoaderState extends State<HiveLoader> {
-  bool fadingIn = false;
-  bool animationCompleted = false;
-  Duration animationDuration = 0.3.seconds;
-
-  @override
-  void initState() {
-    super.initState();
-
-    if(widget.hiveCoordinator.boxesClosed){
-      widget.hiveCoordinator.performInitialisation().then((value) async {
-        if (mounted) {
-          setState(() {
-            fadingIn = true;
-          });
-        }
-        await animationDuration.delay;
-        if (!mounted) return;
-        setState(() {
-          animationCompleted = true;
-        });
-      });
-    } else {
-      fadingIn = false;
-      animationCompleted = true;
-    }
-  }
+  final HiveBoxes boxes = HiveBoxes();
 
   @override
   Widget build(BuildContext context) {
@@ -58,18 +33,10 @@ class _HiveLoaderState extends State<HiveLoader> {
       textDirection: TextDirection.ltr,
       child: Stack(
         children: [
-          if (!widget.hiveCoordinator.boxesClosed && (fadingIn || animationCompleted))
             HiveBoxesWidget(
+                boxes:boxes,
                 child: widget.child,
-                hiveCoordinator: widget.hiveCoordinator,
-            ),
-          if (!animationCompleted || widget.hiveCoordinator.boxesClosed)
-            IgnorePointer(
-              child: AnimatedOpacity(
-                  duration: animationDuration,
-                  opacity: fadingIn ? 0 : 1,
-                  child: LandingPageWidget()),
-            ),
+            )
         ],
       ),
     );
@@ -77,17 +44,16 @@ class _HiveLoaderState extends State<HiveLoader> {
 }
 
 class HiveBoxesWidget extends InheritedWidget {
-  HiveBoxes get hiveBoxes => hiveCoordinator.hiveBoxes;
-  final HiveCoordinator hiveCoordinator;
-  Box<Canister> get canisters => hiveBoxes.canisters!;
-  Box<Account> get accounts => hiveBoxes.accounts!;
-  Box<Neuron> get neurons => hiveBoxes.neurons!;
-  Box<Proposal> get proposals => hiveBoxes.proposals!;
+  final HiveBoxes boxes;
+  ObservableMap<String, Canister> get canisters => boxes.canisters;
+  ObservableMap<String, Account> get accounts => boxes.accounts;
+  ObservableMap<String, Neuron> get neurons => boxes.neurons;
+  ObservableMap<String, Proposal> get proposals => boxes.proposals;
 
-  const HiveBoxesWidget({
+  HiveBoxesWidget({
     Key? key,
     required Widget child,
-    required this.hiveCoordinator,
+    required this.boxes
   })   : assert(child != null),
         super(key: key, child: child);
 

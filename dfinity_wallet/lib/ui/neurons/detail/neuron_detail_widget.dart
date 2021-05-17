@@ -37,7 +37,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
           title: Text("Neuron"),
         ),
         body: StreamBuilder<Object>(
-          stream: context.boxes.neurons.watch(key: widget.neuron.identifier),
+          stream: context.boxes.neurons.changes,
           builder: (context, snapshot) {
             return SingleChildScrollView(
               child: ConstrainWidthAndCenter(

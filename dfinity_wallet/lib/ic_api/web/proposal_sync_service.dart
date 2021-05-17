@@ -36,7 +36,7 @@ class ProposalSyncService {
     final fetchPromise =
         promiseToFuture(serviceApi.listProposals(jsify(request)));
     if (beforeProposal == null) {
-      await hiveBoxes.proposals.clear();
+      hiveBoxes.proposals.clear();
     }
 
     final res = await fetchPromise;
@@ -46,21 +46,18 @@ class ProposalSyncService {
     response!['proposals']?.forEach((e) {
       storeProposal(e);
     });
-
-    linkProposalsToNeurons();
   }
 
-  Future<Proposal> storeProposal(dynamic response) async {
+  Proposal storeProposal(dynamic response) {
     final proposalId = response['id'].toString();
     if (!hiveBoxes.proposals.containsKey(proposalId)) {
       final proposal = Proposal.empty();
       updateProposal(proposal, proposalId, response);
-      await hiveBoxes.proposals.put(proposalId, proposal);
+      hiveBoxes.proposals[proposalId] = proposal;
       return proposal;
     } else {
-      final proposal = hiveBoxes.proposals.get(proposalId)!;
+      final proposal = hiveBoxes.proposals[proposalId];
       updateProposal(proposal, proposalId, response);
-      proposal.save();
       return proposal;
     }
   }
@@ -97,24 +94,6 @@ class ProposalSyncService {
     proposal.ballots = parseBallots(response['ballots']);
   }
 
-  void linkProposalsToNeurons() {
-    final byProposer =
-        hiveBoxes.proposals.values.groupBy((element) => element.proposer);
-    hiveBoxes.neurons.values.forEach((element) {
-      element.proposals = HiveList(hiveBoxes.proposals)
-        ..addAll(byProposer[element.id] ?? []);
-    });
-  }
-
-  Future<void> cleanProposalCache() async {
-    if (hiveBoxes.proposals.length > 0) {
-      await Future.wait(hiveBoxes.proposals.values
-          .filter((element) =>
-              element.cacheUpdateDate == null ||
-              element.cacheUpdateDate!.difference(DateTime.now()).inSeconds > 1)
-          .map((element) => element.delete()));
-    }
-  }
 
   Map<String, BigInt> parseBallots(List<dynamic> ballots) {
     return Map.fromIterable(

@@ -1,28 +1,16 @@
 import 'package:hive/hive.dart';
 
-part 'transaction_type.g.dart';
 
-@HiveType(typeId: 114)
 enum TransactionType {
-  @HiveField(0)
   Send,
-  @HiveField(1)
   Receive,
-  @HiveField(2)
   Mint,
-  @HiveField(3)
   Burn,
-  @HiveField(4)
   StakeNeuron,
-  @HiveField(5)
   StakeNeuronNotification,
-  @HiveField(6)
   CreateCanister,
-  @HiveField(7)
   CreateCanisterNotification,
-  @HiveField(8)
   TopUpCanister,
-  @HiveField(9)
   TopUpCanisterNotification
 }
 

@@ -44,12 +44,12 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
         body: Container(
             color: AppColors.lightBackground,
             child: StreamBuilder<Object>(
-                stream: context.boxes.proposals.watch(key: widget.proposal.id),
+                stream: context.boxes.proposals.changes,
                 builder: (context, snapshot) {
                   final latestProposal =
-                  context.boxes.proposals.get(widget.proposal.id);
+                  context.boxes.proposals[widget.proposal.id];
                   return StreamBuilder(
-                      stream: context.boxes.neurons.watch(),
+                      stream: context.boxes.neurons.changes,
                       builder: (context, snapshot) {
                         final updatedNeurons =
                         context.boxes.neurons.values.toList();

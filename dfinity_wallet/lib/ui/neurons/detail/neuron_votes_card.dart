@@ -13,7 +13,7 @@ class NeuronVotesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Object>(
-      stream: context.boxes.proposals.watch(),
+      stream: context.boxes.proposals.changes,
       builder: (context, snapshot) {
         return Card(
           color: AppColors.background,

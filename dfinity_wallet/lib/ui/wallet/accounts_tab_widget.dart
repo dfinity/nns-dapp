@@ -36,7 +36,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Object>(
-        stream: context.boxes.accounts.watch(),
+        stream: context.boxes.accounts.changes,
         builder: (context, snapshot) {
           final wallets = context.boxes.accounts.values;
           if (wallets.isEmpty) {

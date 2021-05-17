@@ -12,10 +12,10 @@ import 'wallet_router_delegate.dart';
 import 'dfinity.dart';
 
 class WalletRouteParser extends RouteInformationParser<PageConfig> {
-  final HiveCoordinator hiveCoordinator;
+  final HiveBoxes hiveBoxes;
   final BuildContext context;
 
-  WalletRouteParser(this.hiveCoordinator, this.context);
+  WalletRouteParser(this.hiveBoxes, this.context);
 
   final staticPages = [
     AccountsTabPage,
@@ -34,7 +34,6 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
       RouteInformation routeInformation) async {
     bool isAuthenticated = context.icApi.isLoggedIn();
     if (!isAuthenticated) {
-      await hiveCoordinator.deleteAllData();
       return AuthPage;
     }
 
@@ -56,10 +55,9 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
 
     final entityPageDef = entityPages[path];
     if (entityPageDef != null) {
-      await hiveCoordinator.performInitialisation();
       final id = uri.pathSegments[1];
       final entity =
-          entityPageDef.entityForIdentifier(id, hiveCoordinator.hiveBoxes);
+          entityPageDef.entityForIdentifier(id, hiveBoxes);
       if (entity != null) {
         final entityPage = entityPageDef.createConfigWithEntity(entity);
         return entityPage;

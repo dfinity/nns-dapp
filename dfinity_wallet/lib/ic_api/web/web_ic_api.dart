@@ -238,9 +238,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     final response =
         await promiseToFuture(serviceApi!.getProposalInfo(proposalId.toJS));
     final json = jsonDecode(stringify(response));
-    final proposal = await proposalSyncService!.storeProposal(json);
-    proposalSyncService!.linkProposalsToNeurons();
-    return Proposal.empty();
+    return proposalSyncService!.storeProposal(json);
   }
 
   @override
@@ -316,27 +314,24 @@ class PlatformICApi extends AbstractPlatformICApi {
         canisterId: canisterId,
         errorMessage: response['errorMessage'],
         canister:
-            (canisterId != null) ? hiveBoxes.canisters.get(canisterId) : null);
+            (canisterId != null) ? hiveBoxes.canisters[canisterId] : null);
   }
 
   @override
   Future<void> getCanisters() async {
-    final response = await promiseToFuture(serviceApi!.getCanisters());
+    final res = await promiseToFuture(serviceApi!.getCanisters());
 
-
-    final canisterIds = await Future.wait(<Future>[
-      ...response.map((e) async {
-        final id = e.canisterId.toString();
-        await hiveBoxes.canisters.put(
-            id, Canister(name: e.name, publicKey: id, userIsController: null));
-        return id;
-      })
-    ]);
+    final response = [...res];
+    final canisterIds = response.mapToList((e) {
+      final id = e.canisterId.toString();
+      hiveBoxes.canisters[id] = Canister(name: e.name, publicKey: id, userIsController: null);
+      return id;
+    });
 
     final canistersToRemove = hiveBoxes.canisters.values
         .where((element) => !canisterIds.contains(element.identifier));
     canistersToRemove.forEach((element) {
-      hiveBoxes.canisters.delete(element.identifier);
+      hiveBoxes.canisters.remove(element.identifier);
     });
   }
 
@@ -364,7 +359,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     final res = await promiseToFuture(
         serviceApi!.getCanisterDetails(createPrincipal(canisterId)));
     final response = jsonDecode(stringify(res));
-    final canister = hiveBoxes.canisters.get(canisterId)!;
+    final canister = hiveBoxes.canisters[canisterId]!;
     canister.userIsController = response['kind'] == "success";
     if (canister.userIsController == true) {
       final details = response['details'];
@@ -372,7 +367,6 @@ class PlatformICApi extends AbstractPlatformICApi {
       final setting = details['setting'];
       canister.controller = setting['controller'].toString();
     }
-    canister.save();
   }
 
   @override
@@ -417,9 +411,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> refreshAccount(Account account) async {
     transactionSyncService!.syncAccount(account);
     final res = await balanceSyncService!.fetchBalances([account.accountIdentifier]);
-    account = hiveBoxes.accounts.get(account.accountIdentifier)!;
+    account = hiveBoxes.accounts[account.accountIdentifier]!;
     account.balance = res[account.accountIdentifier]!;
-    account.save();
   }
 
   @override

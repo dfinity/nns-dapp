@@ -151,7 +151,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
             ),
             SmallFormDivider(),
             StreamBuilder<Object>(
-                stream: context.boxes.proposals.watch(),
+                stream: context.boxes.proposals.changes,
                 builder: (context, snapshot) {
                   final proposals = context.boxes.proposals.values
                       .filter((element) =>

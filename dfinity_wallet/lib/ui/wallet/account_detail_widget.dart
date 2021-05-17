@@ -60,11 +60,10 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
         child: Container(
             color: AppColors.lightBackground,
             child: StreamBuilder<Object>(
-                stream: context.icApi.hiveBoxes.accounts
-                    .watch(key: widget.account.identifier),
+                stream: context.icApi.hiveBoxes.accounts.changes,
                 builder: (context, snapshot) {
                   final account =
-                      context.boxes.accounts.get(widget.account.identifier)!;
+                      context.boxes.accounts[widget.account.identifier];
                   return FooterGradientButton(
                       body: SingleChildScrollView(
                         child: ConstrainWidthAndCenter(

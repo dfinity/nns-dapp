@@ -33,15 +33,7 @@ class NeuronSyncService {
     final string = stringify(res);
     // print("fetched neurons $string");
     dynamic response = (jsonDecode(string) as List<dynamic>).toList();
-
-    final primaryWallet = hiveBoxes.accounts.primary;
-    final neurons = <Neuron>[...response.map((e) => storeNeuron(e))];
-    // print("Stored neurons: ${neurons}");
-
-    primaryWallet.neurons = HiveList(hiveBoxes.neurons, objects: neurons);
-    // print("Stored neurons: ${primaryWallet.neurons!.joinToString(
-    //     transform: (e) => e.id)}");
-    primaryWallet.save();
+    response.forEach((e) => storeNeuron(e));
   }
 
   Neuron storeNeuron(dynamic e) {
@@ -50,12 +42,12 @@ class NeuronSyncService {
       final neuron = Neuron.empty();
       neuron.followEditCounter = 0;
       updateNeuron(neuron, neuronId, e);
-      hiveBoxes.neurons.put(neuronId, neuron);
+      hiveBoxes.neurons[neuronId] = neuron;
       return neuron;
     } else {
-      final neuron = hiveBoxes.neurons.get(neuronId)!;
+      final neuron = hiveBoxes.neurons[neuronId]!;
       updateNeuron(neuron, neuronId, e);
-      neuron.save();
+      hiveBoxes.neurons[neuronId] = neuron;
       return neuron;
     }
   }

@@ -66,7 +66,7 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
                     case AttachCanisterResult.Ok:
                       await context.icApi.getCanisters();
                       final canister =
-                          context.boxes.canisters.get(idField.currentValue)!;
+                          context.boxes.canisters[idField.currentValue]!;
                       context.nav
                           .push(CanisterPageDef.createPageConfig(canister));
                       break;

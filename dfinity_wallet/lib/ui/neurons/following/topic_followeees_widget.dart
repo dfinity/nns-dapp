@@ -122,7 +122,6 @@ class TopicFolloweesWidget extends StatelessWidget {
   }
 
   Future saveChanges(BuildContext context, List<String> newFollowees) async {
-    neuron.save();
     await context.callUpdate(() => context.icApi.follow(
         neuronId: neuron.id.toBigInt,
         topic: followees.topic,

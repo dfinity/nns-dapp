@@ -54,8 +54,7 @@ class _SelectSourceWalletState extends State<SelectSourceWallet> {
                                       account: e,
                                       onPressed: () {
                                         final address = e.accountIdentifier;
-                                        final source = context.boxes.accounts
-                                            .get(address)!;
+                                        final source = context.boxes.accounts[address]!;
                                         WizardOverlay.of(context).pushPage(
                                             "Select Destination",
                                             SelectDestinationAccountPage(

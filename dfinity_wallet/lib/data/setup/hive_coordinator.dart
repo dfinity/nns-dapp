@@ -9,6 +9,7 @@ import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:observable/observable.dart';
 
 import '../neuron_state.dart';
 import '../proposal_reward_status.dart';
@@ -16,98 +17,16 @@ import '../topic.dart';
 import '../vote.dart';
 
 class HiveBoxes {
-  Box<Canister>? canisters;
-  Box<Account>? accounts;
-  Box<Neuron>? neurons;
-  Box<Proposal>? proposals;
+  ObservableMap<String, Canister> canisters = ObservableMap.linked();
+  ObservableMap<String, Account> accounts = ObservableMap.linked();
+  ObservableMap<String, Neuron> neurons = ObservableMap.linked();
+  ObservableMap<String, Proposal> proposals = ObservableMap.linked();
 
-  bool get areClosed =>
-      canisters == null ||
-          accounts == null ||
-      neurons == null ||
-      proposals == null;
-  HiveBoxes(
-      {this.canisters,
-      this.accounts,
-      this.neurons,
-      this.proposals});
-}
-
-final PENDING_OBJECT_KEY = "pending_";
-
-class HiveCoordinator {
-  HiveBoxes hiveBoxes = HiveBoxes();
-
-  static Future? hiveInitFuture;
-  static Future<dynamic>? loadingFuture;
-
-  HiveCoordinator() {
-    performInitialisation();
+  deleteAllData() {
+    canisters.removeWhere((k, v) => true);
+    accounts.removeWhere((k, v) => true);
+    neurons.removeWhere((k, v) => true);
+    proposals.removeWhere((k, v) => true);
   }
 
-  bool get boxesClosed => hiveBoxes.areClosed;
-
-  Future<void> performInitialisation() async {
-
-    if (boxesClosed) {
-      if (hiveInitFuture == null) {
-        hiveInitFuture = initializeHive();
-        await hiveInitFuture;
-      } else {
-        await hiveInitFuture;
-      }
-      if (loadingFuture == null) {
-        loadingFuture = openAllBoxes();
-      }
-      await loadingFuture;
-    }
-  }
-
-  Future<List<Box<HiveObject>>> openAllBoxes() async {
-    await Future.wait([
-      Hive.deleteBoxFromDisk('canisters'),
-      Hive.deleteBoxFromDisk('wallets'),
-      Hive.deleteBoxFromDisk('neurons'),
-      Hive.deleteBoxFromDisk('proposals')
-    ]);
-
-    return await Future.wait([
-      Hive.openBox<Canister>('canisters')
-          .then((value) => hiveBoxes.canisters = value),
-      Hive.openBox<Account>('wallets')
-          .then((value) => hiveBoxes.accounts = value),
-      Hive.openBox<Neuron>('neurons')
-          .then((value) => hiveBoxes.neurons = value),
-      Hive.openBox<Proposal>('proposals')
-          .then((value) => hiveBoxes.proposals = value),
-    ]);
-  }
-
-  Future initializeHive() async {
-    Hive.registerAdapter<Account>(AccountAdapter());
-    Hive.registerAdapter<Canister>(CanisterAdapter());
-    Hive.registerAdapter<Neuron>(NeuronAdapter());
-    Hive.registerAdapter<Proposal>(ProposalAdapter());
-    Hive.registerAdapter<Transaction>(TransactionAdapter());
-    Hive.registerAdapter<TransactionType>(TransactionTypeAdapter());
-    Hive.registerAdapter<BallotInfo>(BallotInfoAdapter());
-    Hive.registerAdapter<Followee>(FolloweeAdapter());
-    Hive.registerAdapter<Topic>(TopicAdapter());
-    Hive.registerAdapter<Vote>(VoteAdapter());
-    Hive.registerAdapter<NeuronState>(NeuronStateAdapter());
-    Hive.registerAdapter<ProposalStatus>(ProposalStatusAdapter());
-    Hive.registerAdapter<ProposalRewardStatus>(ProposalRewardStatusAdapter());
-    await Hive.initFlutter();
-  }
-
-  Future<void> deleteAllData() async {
-    await Future.wait([
-      hiveBoxes.canisters,
-      hiveBoxes.accounts,
-      hiveBoxes.neurons,
-      hiveBoxes.proposals,
-    ].map((element) async {
-      await element?.deleteAll(element.keys);
-    }));
-  }
 }

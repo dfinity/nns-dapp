@@ -10,37 +10,21 @@ import 'neuron_state.dart';
 import 'package:core/extensions.dart';
 import 'package:dartx/dartx.dart';
 
-part 'neuron.g.dart';
 
-@HiveType(typeId: 103)
 class Neuron extends DfinityEntity with ICPSource {
-  @HiveField(1)
   late String id;
-  @HiveField(2)
   late List<BallotInfo> recentBallots;
-  @HiveField(3)
   late String createdTimestampSeconds;
-  @HiveField(4)
   late String votingPower;
-  @HiveField(5)
   late NeuronState state;
-  @HiveField(6)
   late String dissolveDelaySeconds;
-  @HiveField(7)
   late String cachedNeuronStakeDoms;
-  @HiveField(8)
   late String neuronFeesDoms;
-  @HiveField(9)
   late String maturityE8sEquivalent;
-  @HiveField(10)
   late String? whenDissolvedTimestampSeconds;
-  @HiveField(11)
   late List<Followee> followees;
-  @HiveField(12)
-  HiveList<Proposal>? proposals;
-  @HiveField(13)
+  List<Proposal>? proposals;
   late int followEditCounter;
-  @HiveField(14)
   late bool isCurrentUserController;
 
   Neuron({

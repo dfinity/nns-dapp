@@ -9,43 +9,24 @@ import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:hive/hive.dart';
 
-part 'proposal.g.dart';
 
-@HiveType(typeId: 105)
 class Proposal extends DfinityEntity {
-  @HiveField(1)
   late String id;
-  @HiveField(2)
   late String summary;
-  @HiveField(3)
   late String url;
-  @HiveField(4)
   late String proposer;
-  @HiveField(6)
   late int no;
-  @HiveField(7)
   late int yes;
-  @HiveField(8)
   late Map<String, dynamic> action;
-  @HiveField(9)
   String? executedTimestampSeconds;
-  @HiveField(10)
   String? failedTimestampSeconds;
-  @HiveField(11)
   String? decidedTimestampSeconds;
-  @HiveField(12)
   String? proposalTimestampSeconds;
-  @HiveField(13)
   DateTime? cacheUpdateDate;
-  @HiveField(14)
   late Topic topic;
-  @HiveField(15)
   late ProposalStatus status;
-  @HiveField(16)
   late ProposalRewardStatus rewardStatus;
-  @HiveField(17)
   late String raw;
-  @HiveField(18)
   late Map<String, BigInt>? ballots;
 
   Proposal(
