@@ -75,6 +75,7 @@ class AccountsSyncService {
     }else{
       final account = await hiveBoxes.accounts[address];
       account.name = name;
+      hiveBoxes.accounts[address] = account;
     }
     return address;
   }

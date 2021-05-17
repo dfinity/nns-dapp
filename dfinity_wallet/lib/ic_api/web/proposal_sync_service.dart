@@ -46,6 +46,7 @@ class ProposalSyncService {
     response!['proposals']?.forEach((e) {
       storeProposal(e);
     });
+    hiveBoxes.proposals.notifyChange();
   }
 
   Proposal storeProposal(dynamic response) {

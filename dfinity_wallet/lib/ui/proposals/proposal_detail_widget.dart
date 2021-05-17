@@ -87,7 +87,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                                 children: [
                                   SmallFormDivider(),
                                   ProposalStateCard(
-                                      proposal: latestProposal!,
+                                      proposal: latestProposal,
                                       neurons: updatedNeurons),
                                   if(votedNeurons.isNotEmpty)
                                     MyVotesCard(votedNeurons: votedNeurons, proposal: latestProposal,),

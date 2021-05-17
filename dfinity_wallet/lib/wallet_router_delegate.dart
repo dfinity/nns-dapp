@@ -143,20 +143,20 @@ EntityPageDefinition AccountPageDef = EntityPageDefinition<Account>(
     pathTemplate: "/wallet",
     parentPage: AccountsTabPage,
     createWidget: (wallet) => AccountDetailPage(wallet),
-    fetchBox: (boxes) => boxes.accounts!);
+    fetchBox: (boxes) => boxes.accounts);
 
 EntityPageDefinition NeuronPageDef = EntityPageDefinition<Neuron>(
     pathTemplate: "/neuron",
     parentPage: NeuronTabsPage,
     createWidget: (neuron) => NeuronDetailWidget(neuron),
-    fetchBox: (boxes) => boxes.neurons!,
+    fetchBox: (boxes) => boxes.neurons,
     entityFromIC: (neuronId, icApi) => icApi.fetchNeuron(neuronId: BigInt.parse(neuronId)));
 
 EntityPageDefinition ProposalPageDef = EntityPageDefinition<Proposal>(
     pathTemplate: "/proposal",
     parentPage: ProposalsTabPage,
     createWidget: (proposal) => ProposalDetailWidget(proposal),
-    fetchBox: (boxes) => boxes.proposals!,
+    fetchBox: (boxes) => boxes.proposals,
     entityFromIC: (proposalId, icApi) => icApi.fetchProposal(proposalId: BigInt.parse(proposalId)));
 
 
@@ -164,7 +164,7 @@ EntityPageDefinition CanisterPageDef = EntityPageDefinition<Canister>(
     pathTemplate: "/canister",
     parentPage: CanistersTabPage,
     createWidget: (canister) => CanisterDetailWidget(canister),
-    fetchBox: (boxes) => boxes.canisters!);
+    fetchBox: (boxes) => boxes.canisters);
 
 class WalletRouterDelegate extends RouterDelegate<PageConfig>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageConfig> {

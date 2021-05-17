@@ -333,6 +333,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     canistersToRemove.forEach((element) {
       hiveBoxes.canisters.remove(element.identifier);
     });
+    hiveBoxes.canisters.notifyChange();
   }
 
   @override
@@ -352,6 +353,8 @@ class PlatformICApi extends AbstractPlatformICApi {
         stake: stake,
         fromSubAccountId: fromSubAccountId,
         targetCanisterId: createPrincipal(targetCanisterId))));
+    await getCanister(targetCanisterId);
+    hiveBoxes.canisters.notifyChange();
   }
 
   @override
@@ -367,6 +370,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final setting = details['setting'];
       canister.controller = setting['controller'].toString();
     }
+    hiveBoxes.canisters.notifyChange();
   }
 
   @override
@@ -378,6 +382,7 @@ class PlatformICApi extends AbstractPlatformICApi {
             UpdateCanisterSettings(controller: createPrincipal(newController)));
     await promiseToFuture(serviceApi!.updateCanisterSettings(settings));
     await getCanister(canisterId);
+    hiveBoxes.canisters.notifyChange();
   }
 
   @override
@@ -413,6 +418,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     final res = await balanceSyncService!.fetchBalances([account.accountIdentifier]);
     account = hiveBoxes.accounts[account.accountIdentifier]!;
     account.balance = res[account.accountIdentifier]!;
+    hiveBoxes.accounts.notifyChange();
   }
 
   @override

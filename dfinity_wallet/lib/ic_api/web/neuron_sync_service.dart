@@ -50,6 +50,7 @@ class NeuronSyncService {
       hiveBoxes.neurons[neuronId] = neuron;
       return neuron;
     }
+    hiveBoxes.neurons.notifyChange();
   }
 
   void updateNeuron(Neuron neuron, String neuronId, dynamic res) {
@@ -62,6 +63,7 @@ class NeuronSyncService {
     if (fullNeuron != null) {
       parseFullNeuron(fullNeuron, neuron);
     }
+    hiveBoxes.neurons.notifyChange();
   }
 
   void parseFullNeuron(dynamic fullNeuron, Neuron neuron) {
