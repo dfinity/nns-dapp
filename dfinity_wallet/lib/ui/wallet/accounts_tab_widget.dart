@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dfinity_wallet/dfinity.dart';
+import 'package:dfinity_wallet/ui/transaction/wallet/select_source_wallet_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_path_button.dart';
 import 'package:dfinity_wallet/ui/wallet/account_actions_widget.dart';
@@ -68,19 +69,25 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "Accounts",
-                                          textAlign: TextAlign.left,
-                                          style: context.textTheme.headline1,
+                                        Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Text(
+                                            "Accounts",
+                                            textAlign: TextAlign.left,
+                                            style: context.textTheme.headline1,
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  BalanceDisplayWidget(
-                                      amount: wallets
-                                          .sumBy((element) => element.icpBalance),
-                                      amountSize: 40,
-                                      icpLabelSize: 20),
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: BalanceDisplayWidget(
+                                        amount: wallets
+                                            .sumBy((element) => element.icpBalance),
+                                        amountSize: 40,
+                                        icpLabelSize: 20),
+                                  ),
                                 ],
                               ),
                             ),
@@ -109,26 +116,50 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding: EdgeInsets.all(32),
-                  child: ElevatedButton(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: SizedBox(
-                        width: 400,
-                        child: Text(
-                          "Add Account",
-                          textAlign: TextAlign.center,
-                          style: context.textTheme.button?.copyWith(fontSize: 24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: SizedBox(
+                            child: Text(
+                              "New Transaction",
+                              textAlign: TextAlign.center,
+                              style: context.textTheme.button?.copyWith(fontSize: 24),
+                            ),
+                          ),
                         ),
+                        onPressed: () {
+                          OverlayBaseWidget.show(
+                              context,
+                              WizardOverlay(
+                                rootTitle: "Select Source Account",
+                                rootWidget: SelectSourceWallet(),
+                              ));
+                        },
                       ),
-                    ),
-                    onPressed: () {
-                      OverlayBaseWidget.show(
-                          context,
-                          WizardOverlay(
-                            rootTitle: "Add Account",
-                            rootWidget: SelectAccountAddActionWidget(),
-                          ));
-                    },
+                      ElevatedButton(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: SizedBox(
+                            child: Text(
+                              "Add Account",
+                              textAlign: TextAlign.center,
+                              style: context.textTheme.button?.copyWith(fontSize: 24),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          OverlayBaseWidget.show(
+                              context,
+                              WizardOverlay(
+                                rootTitle: "Add Account",
+                                rootWidget: SelectAccountAddActionWidget(),
+                              ));
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ));

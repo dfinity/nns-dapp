@@ -1,12 +1,10 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/transaction/canister/topup_canister_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/confirm_transactions_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
 import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
-import 'new_wallet_page.dart';
 
 class SelectDestinationAccountPage extends StatefulWidget {
   final ICPSource source;
@@ -166,29 +164,26 @@ class _AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      onPressed: onPressed,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    account.name,
-                    style: context.textTheme.headline3,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 16.0, bottom: 16.0, right: 16.0),
-                  child: Text(
-                    account.accountIdentifier,
-                    style: context.textTheme.bodyText2,
-                  ),
+        return FlatButton(
+          onPressed: onPressed,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        account.name,
+                        style: context.textTheme.headline3,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, bottom: 16.0, right: 16.0),
+                      child: ResponsiveCopyId(accountIdentifier: account.accountIdentifier),
                 )
               ],
             ),
