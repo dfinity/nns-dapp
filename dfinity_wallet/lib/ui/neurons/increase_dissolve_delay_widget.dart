@@ -97,7 +97,7 @@ class _IncreaseDissolveDelayWidgetState
                             Expanded(
                               child: _FigureWidget(
                                 amount: votingPower,
-                                label: "New Voting Power",
+                                label: "Voting Power",
                               ),
                             ),
                             Expanded(
@@ -106,7 +106,7 @@ class _IncreaseDissolveDelayWidgetState
                                   sliderValueSeconds.currentValue
                                       .seconds
                                       .yearsDayHourMinuteSecondFormatted(),
-                              label: "New Dissolve Delay",
+                              label: "Dissolve Delay",
                             ))
                           ],
                         )
