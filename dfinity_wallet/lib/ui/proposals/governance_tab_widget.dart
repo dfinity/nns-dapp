@@ -47,7 +47,12 @@ final ValidStatuses = [
   ProposalStatus.Failed,
 ];
 
-final DefaultStatuses = [ProposalStatus.Open];
+final DefaultStatuses = [
+  ProposalStatus.Open,
+  ProposalStatus.Rejected,
+  ProposalStatus.Accepted,
+  ProposalStatus.Executed,
+];
 
 final ValidRewardStatuses = [
   ProposalRewardStatus.AcceptVotes,
@@ -56,7 +61,12 @@ final ValidRewardStatuses = [
   ProposalRewardStatus.Ineligible,
 ];
 
-final DefaultRewardStatuses = [ProposalRewardStatus.AcceptVotes];
+final DefaultRewardStatuses = [
+  ProposalRewardStatus.AcceptVotes,
+  ProposalRewardStatus.ReadyToSettle,
+  ProposalRewardStatus.Settled,
+  ProposalRewardStatus.Ineligible,
+];
 
 class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
   MultiSelectField<Topic> topicsField = MultiSelectField<Topic>(
