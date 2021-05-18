@@ -19,7 +19,7 @@ extension Description on Topic {
 
 
   static const _topicNameMap = {
-    Topic.Unspecified: "Unspecified",
+    Topic.Unspecified: "All topics",
     Topic.NeuronManagement: "Manage Neuron",
     Topic.ExchangeRate: "Exchange Rate",
     Topic.NetworkEconomics: "Network Economics",
@@ -33,7 +33,7 @@ extension Description on Topic {
   };
 
   static const _topicDescriptionMap = {
-    Topic.Unspecified: "Unspecified",
+    Topic.Unspecified: "Follow neurons on all proposal topics",
     Topic.NeuronManagement: "Proposals that manage specific neurons, for example making them perform actions.",
     Topic.ExchangeRate: "All proposals that provide “real time” information about the value of ICP, as measured by an IMF SDR, which allows the NNS to convert ICP to cycles (which power computation) at a rate which keeps their real world cost constant.",
     Topic.NetworkEconomics: "Proposals that administer network economics, for example, determining what rewards should be paid to node operators.",

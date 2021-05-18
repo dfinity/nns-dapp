@@ -44,7 +44,7 @@ class TransactionRow extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextButton(
-                            child: Text("Part 2 failed. Click here to retry",
+                            child: Text("Part 2 failed - click here to retry",
                                 style: context.textTheme.bodyText2?.copyWith(color: AppColors.yellow500)),
                             onPressed: () {
                               context.callUpdate(() async {

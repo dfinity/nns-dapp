@@ -29,9 +29,7 @@ class _ConfigureFollowersPageState extends State<ConfigureFollowersPage> {
         stream: context.boxes.neurons.changes,
         builder: (context, snapshot) {
           final refreshed = context.boxes.neurons[widget.neuron.id];
-          final followees = refreshed.followees
-              .filterNot((element) => element.topic == Topic.Unspecified)
-              .toList();
+          final followees = refreshed.followees;
           rowKeys = followees.map((element) => GlobalKey()).toList();
           return Column(
             children: [
@@ -45,7 +43,7 @@ class _ConfigureFollowersPageState extends State<ConfigureFollowersPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("Follow neurons to automate your voting, and receive the maximum voting rewards", style: context.textTheme.subtitle2),
+                          child: Text("Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.", style: context.textTheme.subtitle2),
                         ),
                         SmallFormDivider(),
                         ClipRRect(
