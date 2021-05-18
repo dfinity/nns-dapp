@@ -165,7 +165,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
               children: [
                 Flexible(
                   child: Text(
-                    "Hide \“Open\” proposals where all your neurons have voted or are ineligible to vote",
+                    "Exclude \"Open\" proposals where all your neurons have voted",
                     softWrap: true,
                   ),
                 ),
