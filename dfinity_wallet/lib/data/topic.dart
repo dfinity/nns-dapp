@@ -19,7 +19,7 @@ extension Description on Topic {
 
 
   static const _topicNameMap = {
-    Topic.Unspecified: "All topics",
+    Topic.Unspecified: "All Topics",
     Topic.NeuronManagement: "Manage Neuron",
     Topic.ExchangeRate: "Exchange Rate",
     Topic.NetworkEconomics: "Network Economics",
@@ -43,7 +43,7 @@ extension Description on Topic {
     Topic.SubnetManagement: "All proposals that administer network subnets, for example creating new subnets, adding and removing subnet nodes, and splitting subnets.",
     Topic.NetworkCanisterManagement: "Installing and upgrading “system” canisters that belong to the network. For example, upgrading the NNS. ",
     Topic.Kyc: "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons.",
-    Topic.NodeProviderRewards: "",
+    Topic.NodeProviderRewards: "Proposals that reward node providers",
   };
 
   String get name => _topicNameMap[this]!;
