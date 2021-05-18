@@ -220,57 +220,53 @@ class ProposalRow extends StatelessWidget {
       child: FlatButton(
         onPressed: onPressed,
         child: Container(
-          width: double.infinity,
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            padding: const EdgeInsets.fromLTRB(10, 18, 10, 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
+                Expanded (
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
                         proposal.summary,
                         style: context.textTheme.subtitle1,
                       ),
-                    ),
-                    Container(
-                      decoration: ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: BorderSide(
-                                  width: 2, color: proposal.status.color))),
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          proposal.status.description,
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontFamily: Fonts.circularBook,
-                              color: proposal.status.color,
-                              fontWeight: FontWeight.normal),
-                        ),
+                      TextButton(
+                        onPressed: () {
+                          OverlayBaseWidget.show(context, NeuronInfoWidget(proposal.proposer));
+                        },
+                        child: Text("Proposer: ${proposal.proposer}", style: context.textTheme.bodyText2)
                       ),
-                    )
-                  ],
+                      Text(
+                        "Id: ${proposal.id}",
+                        style: context.textTheme.bodyText2,
+                      ),
+                    ],
+                  ),
                 ),
-                TextButton(
-                    onPressed: () {
-                      OverlayBaseWidget.show(
-                          context, NeuronInfoWidget(proposal.proposer));
-                    },
+                Container(
+                  margin: const EdgeInsets.only(left: 16),
+                  decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(width: 2, color: proposal.status.color)
+                        )
+                      ),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Text(
-                      "Proposer: ${proposal.proposer}",
-                      style: context.textTheme.bodyText2,
-                    )),
-                Row(
-                  children: [
-                    Text(
-                      "Id: ${proposal.id}",
-                      style: context.textTheme.bodyText2,
+                      proposal.status.description,
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontFamily: Fonts.circularBook,
+                          color: proposal.status.color,
+                          fontWeight: FontWeight.normal),
                     ),
-                  ],
+                  ),
                 )
               ],
             ),
