@@ -37,7 +37,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
     amountField = ValidatedTextField("Amount",
         validations: [
           StringFieldValidation.insufficientFunds(widget.source.icpBalance, 1),
-          StringFieldValidation.nonZero()
+          StringFieldValidation.greaterThanZero()
         ],
         inputType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[

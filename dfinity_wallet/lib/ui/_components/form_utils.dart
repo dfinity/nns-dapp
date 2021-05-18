@@ -78,10 +78,10 @@ class StringFieldValidation extends FieldValidation<String> {
       : this("Must be between $minChars and $maxChars characters",
             (e) => e.length >= maxChars && e.length <= minChars);
 
-  StringFieldValidation.nonZero()
+  StringFieldValidation.greaterThanZero()
       : this("Must be greater than 0", (e) {
           final amount = (e.toDoubleOrNull() ?? 0);
-          return amount == 0;
+          return amount <= 0;
         });
 
   StringFieldValidation.insufficientFunds(double balance, int numberOfTransactions)
