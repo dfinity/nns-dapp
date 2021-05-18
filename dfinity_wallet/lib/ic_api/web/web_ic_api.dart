@@ -20,7 +20,7 @@ import 'auth_api.dart';
 import 'balance_sync_service.dart';
 import 'js_utils.dart';
 import 'service_api.dart';
-import 'hardware_wallet_api.dart';
+import 'hardware_wallet_api.dart' as hardwareWalletApi;
 import 'neuron_sync_service.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'stringify.dart';
@@ -63,7 +63,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   Future<void> buildServices(dynamic identity) async {
-    serviceApi = createServiceApi(identity);
+    serviceApi = await promiseToFuture(createServiceApi(identity));
 
     accountsSyncService = AccountsSyncService(serviceApi!, hiveBoxes);
     balanceSyncService = BalanceSyncService(serviceApi!, hiveBoxes);
@@ -237,10 +237,10 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<HardwareWalletApi> createHardwareWalletApi(
+  Future<hardwareWalletApi.HardwareWalletApi> createHardwareWalletApi(
       {dynamic ledgerIdentity}) async {
     final identity = await promiseToFuture(authApi.connectToHardwareWallet());
-    return HardwareWalletApi(identity);
+    return await promiseToFuture(hardwareWalletApi.createHardwareWalletApi(identity));
   }
 
   @override

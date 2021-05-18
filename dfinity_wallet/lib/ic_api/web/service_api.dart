@@ -6,13 +6,11 @@ import 'package:js/js.dart';
 import '../models.dart';
 import 'js_utils.dart';
 
-@JS('createServiceApi')
-external ServiceApi createServiceApi(dynamic identity);
+@JS("createServiceApi")
+external Promise<ServiceApi> createServiceApi(dynamic identity);
 
 @JS("ServiceApi")
 class ServiceApi {
-  external ServiceApi(String host, dynamic identity);
-
   @JS("acquireICPTs")
   external Promise<void> acquireICPTs(String accountIdentifier, BigInt icpts);
 

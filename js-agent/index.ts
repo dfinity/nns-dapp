@@ -1,12 +1,22 @@
 import AuthApi from "./src/AuthApi";
 import HardwareWalletApi from "./src/HardwareWalletApi";
 import { SignIdentity } from "@dfinity/agent";
+import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { principalToAccountIdentifier } from "./src/canisters/converter";
 import ServiceApi from "./src/ServiceApi";
 
-window["AuthApi"] = AuthApi;
-window["ServiceApi"] = ServiceApi;
-window["HardwareWalletApi"] = HardwareWalletApi;
+
+window["createAuthApi"] = (onLoggedOut: () => void) : Promise<AuthApi> => {
+    return AuthApi.create(onLoggedOut);
+}
+
+window["createServiceApi"] = (identity: SignIdentity) : Promise<ServiceApi> => {
+    return ServiceApi.create(identity);
+}
+
+window["createHardwareWalletApi"] = (identity: LedgerIdentity) : Promise<HardwareWalletApi> => {
+    return HardwareWalletApi.create(identity);
+}
 
 // This hack is because Dart interop doesn't yet understand bigint
 window["Serializer"] = function(object: Object): String {
@@ -27,18 +37,10 @@ window["convertBigIntToString"] = function(bigInt: bigint): string {
     return bigInt.toString();
 }
 
-window["createServiceApi"] = function(identity: SignIdentity): ServiceApi {
-    return new ServiceApi(identity);
-}
-
 window["getAccountIdentifier"] = (identity: SignIdentity) : string => {
     return principalToAccountIdentifier(identity.getPrincipal());
 }
 
 window["getPublicKey"] = (identity: SignIdentity) : string => {
     return identity.getPublicKey().toDer().toString('hex');
-}
-
-window["createAuthApi"] = (onLoggedOut: () => void) : Promise<AuthApi> => {
-    return AuthApi.create(onLoggedOut);
 }

@@ -6,14 +6,11 @@ import 'package:js/js.dart';
 import '../models.dart';
 import 'js_utils.dart';
 
-
 @JS("createAuthApi")
-external Promise<dynamic> createAuthApi(Function onLoggedOut);
+external Promise<AuthApi> createAuthApi(Function onLoggedOut);
 
 @JS("AuthApi")
 class AuthApi {
-  external factory AuthApi();
-
   @JS("tryGetIdentity")
   external dynamic? tryGetIdentity();
 

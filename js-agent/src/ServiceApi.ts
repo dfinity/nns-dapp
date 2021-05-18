@@ -67,11 +67,17 @@ export default class ServiceApi {
     private readonly icManagementService: ICManagementService;
     private readonly identity: SignIdentity;
 
-    constructor(identity: SignIdentity) {
+    public static create = async (identity: SignIdentity) : Promise<ServiceApi> => {
         const agent = new HttpAgent({
             host: HOST,
             identity
         });
+        await agent.fetchRootKey();
+
+        return new ServiceApi(agent, identity);
+    }
+
+    private constructor(agent: HttpAgent, identity: SignIdentity) {
         this.ledgerService = ledgerBuilder(agent, identity);
         this.nnsUiService = nnsUiBuilder(agent);
         this.governanceService = governanceBuilder(agent, identity);

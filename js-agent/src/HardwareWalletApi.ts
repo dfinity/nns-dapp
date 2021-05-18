@@ -12,11 +12,17 @@ export default class HardwareWalletApi {
     private readonly accountIdentifier: AccountIdentifier;
     private readonly ledgerService: LedgerService;
 
-    constructor(identity: LedgerIdentity) {
+    public static create = async (identity: LedgerIdentity) : Promise<HardwareWalletApi> => {
         const agent = new HttpAgent({
             host: HOST,
             identity
         });
+        await agent.fetchRootKey();
+
+        return new HardwareWalletApi(agent, identity);
+    }
+
+    private constructor(agent: HttpAgent, identity: LedgerIdentity) {
         this.identity = identity;
         this.accountIdentifier = principalToAccountIdentifier(identity.getPrincipal());
         this.ledgerService = ledgerBuilder(agent, identity);

@@ -9,10 +9,11 @@ import 'package:js/js.dart';
 import '../models.dart';
 import 'js_utils.dart';
 
+@JS("createHardwareWalletApi")
+external Promise<HardwareWalletApi> createHardwareWalletApi(dynamic identity);
+
 @JS("HardwareWalletApi")
 class HardwareWalletApi {
-  external factory HardwareWalletApi(dynamic identity);
-
   @JS("sendICPTs")
   external Promise<void> sendICPTs(
       String fromAccount, SendICPTsRequest request);
