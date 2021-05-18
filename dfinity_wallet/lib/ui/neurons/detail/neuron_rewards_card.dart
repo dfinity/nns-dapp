@@ -67,7 +67,7 @@ class NeuronRewardsCard extends StatelessWidget {
                                   });
                                 },
                               ));
-                            }.takeIf((e) => neuron.maturityE8sEquivalent.toDouble() > 0 && neuron.isCurrentUserController),
+                            }.takeIf((e) => neuron.maturityE8sEquivalent.toDouble() > E8S_PER_ICP && neuron.isCurrentUserController),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Text("Spawn Neuron"),

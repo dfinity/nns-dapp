@@ -9,8 +9,8 @@ abstract class ICPSource {
   double get icpBalance => balance.toBigInt.toICPT;
 }
 
-const DOMS_TO_ICPT = 100000000;
-const TRANSACTION_FEE_ICP = 10000 / DOMS_TO_ICPT;
+const E8S_PER_ICP = 100000000;
+const TRANSACTION_FEE_ICP = 10000 / E8S_PER_ICP;
 //  Construct ICPTs from E8s,
 //  10E8 E8s == 1 ICP
 
@@ -20,14 +20,14 @@ extension ToDoms on double {
   BigInt get toE8s {
     final floored = this.floor();
     final remainder = this - floored;
-    final domsInt = (BigInt.from(DOMS_TO_ICPT) * BigInt.from(floored)) +
-        BigInt.from(remainder * DOMS_TO_ICPT);
+    final domsInt = (BigInt.from(E8S_PER_ICP) * BigInt.from(floored)) +
+        BigInt.from(remainder * E8S_PER_ICP);
     return domsInt;
   }
 }
 
 extension ToICPT on BigInt {
-  double get toICPT => this / BigInt.from(DOMS_TO_ICPT);
+  double get toICPT => this / BigInt.from(E8S_PER_ICP);
 }
 
 /*
