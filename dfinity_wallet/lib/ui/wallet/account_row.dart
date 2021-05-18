@@ -1,8 +1,5 @@
-import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
-
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';
-import 'package:flutter/services.dart';
 
 class AccountRow extends StatelessWidget {
   final Account account;
@@ -54,16 +51,17 @@ class AccountRow extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(
                     left: 16.0, bottom: 16.0, right: 16.0),
-                child: AccountIdWidget(account: account),
+                child: SelectableText(
+                  account.accountIdentifier.characters.toString(),
+                  style: context.textTheme.bodyText1,
+                ),
               ),
               if (!account.primary)
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 16.0, bottom: 16.0, right: 16.0),
                   child: Text(
-                    account.hardwareWallet
-                        ? "HARDWARE WALLET"
-                        : "LINKED ACCOUNT",
+                    account.hardwareWallet ? "HARDWARE WALLET" : "LINKED ACCOUNT",
                     style: context.textTheme.bodyText2,
                   ),
                 )
@@ -71,22 +69,6 @@ class AccountRow extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class AccountIdWidget extends StatelessWidget {
-  const AccountIdWidget({
-    Key? key,
-    required this.account,
-  }) : super(key: key);
-
-  final Account account;
-
-  @override
-  Widget build(BuildContext context) {
-    return ResponsiveCopyId(
-      accountIdentifier: account.accountIdentifier,
     );
   }
 }

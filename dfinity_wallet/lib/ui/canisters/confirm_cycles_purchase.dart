@@ -1,5 +1,4 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
@@ -101,11 +100,12 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                     children: [TallFormDivider(),
                       Text("Source", style: context.textTheme.headline4),
                       VerySmallFormDivider(),
-                      ResponsiveCopyId(accountIdentifier: source.address),
+                      Text(source.address, style: context.textTheme.bodyText1),
                       TallFormDivider(),
                       Text("Destination", style: context.textTheme.headline4),
                       VerySmallFormDivider(),
-                      ResponsiveCopyId(accountIdentifier: destination.identifier),
+                      Text(destination.identifier,
+                          style: context.textTheme.bodyText1),
                       TallFormDivider(),
                     ],
                   ),

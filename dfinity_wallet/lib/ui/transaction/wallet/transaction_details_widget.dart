@@ -1,5 +1,4 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 
 import '../../../dfinity.dart';
 
@@ -35,11 +34,11 @@ class TransactionDetailsWidget extends StatelessWidget {
             TallFormDivider(),
             Text("Source", style: context.textTheme.headline4),
             VerySmallFormDivider(),
-            ResponsiveCopyId(accountIdentifier: source.address),
+            Text(source.address, style: context.textTheme.bodyText1),
             TallFormDivider(),
             Text("Destination", style: context.textTheme.headline4),
             VerySmallFormDivider(),
-            ResponsiveCopyId(accountIdentifier: destination),
+            Text(destination, style: context.textTheme.bodyText1),
             TallFormDivider(),
             Text("Transaction Fee (billed to source)", style: context.textTheme.headline4),
             VerySmallFormDivider(),

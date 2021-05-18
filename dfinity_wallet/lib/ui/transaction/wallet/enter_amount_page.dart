@@ -1,5 +1,4 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
-import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
@@ -48,7 +47,6 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
     return SizedBox.expand(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -91,12 +89,13 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                 children: [
                   Text("Source", style: context.textTheme.headline4),
                   VerySmallFormDivider(),
-                  ResponsiveCopyId(accountIdentifier: widget.source.address),
+                  Text(widget.source.address,
+                      style: context.textTheme.bodyText1),
                   TallFormDivider(),
                   Text("Destination", style: context.textTheme.headline4),
                   VerySmallFormDivider(),
-                  ResponsiveCopyId(
-                      accountIdentifier: widget.destinationAccountIdentifier),
+                  Text(widget.destinationAccountIdentifier,
+                      style: context.textTheme.bodyText1),
                   TallFormDivider(),
                   Text("Transaction Fee (billed to source)",
                       style: context.textTheme.headline4),

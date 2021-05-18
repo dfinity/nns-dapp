@@ -1,6 +1,5 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:flutter/services.dart';
@@ -53,7 +52,8 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                         SelectableText("Source",
                             style: context.textTheme.headline4),
                         VerySmallFormDivider(),
-                        ResponsiveCopyId(accountIdentifier: widget.source.address),
+                        Text(widget.source.address,
+                            style: context.textTheme.bodyText1),
                         SmallFormDivider(),
                         Text("Transaction Fee",
                             style: context.textTheme.headline4),

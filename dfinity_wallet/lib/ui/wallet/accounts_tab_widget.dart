@@ -69,25 +69,19 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Text(
-                                            "Accounts",
-                                            textAlign: TextAlign.left,
-                                            style: context.textTheme.headline1,
-                                          ),
+                                        Text(
+                                          "Accounts",
+                                          textAlign: TextAlign.left,
+                                          style: context.textTheme.headline1,
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: BalanceDisplayWidget(
-                                        amount: wallets
-                                            .sumBy((element) => element.icpBalance),
-                                        amountSize: 40,
-                                        icpLabelSize: 20),
-                                  ),
+                                  BalanceDisplayWidget(
+                                      amount: wallets
+                                          .sumBy((element) => element.icpBalance),
+                                      amountSize: 40,
+                                      icpLabelSize: 20),
                                 ],
                               ),
                             ),
