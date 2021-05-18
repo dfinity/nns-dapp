@@ -2,8 +2,6 @@ import 'package:dfinity_wallet/data/ballot_info.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/vote.dart';
-import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
-import 'package:hive/hive.dart';
 import 'dfinity_entity.dart';
 import 'followee.dart';
 import 'neuron_state.dart';
