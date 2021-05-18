@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
@@ -10,7 +8,6 @@ import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/multi_select_list.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
-import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
 
 class GovernanceTabWidget extends StatefulWidget {
   @override
@@ -89,6 +86,8 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
           DefaultRewardStatuses,
           (dynamic e) => (e as ProposalRewardStatus?)?.label ?? "");
 
+  bool excludeVotedProposals = false;
+
   @override
   void initState() {
     super.initState();
@@ -96,15 +95,16 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
   }
 
   void fetchProposals({Proposal? lastProposal}) {
-    if(mounted)
-    context.icApi.fetchProposals(
-        excludeTopics: Topic.values
-            .filterNot(
-                (element) => topicsField.selectedOptions.contains(element))
-            .toList(),
+    if (mounted) {
+      context.icApi.fetchProposals(
+        excludeTopics: Topic
+          .values
+          .filterNot((element) => topicsField.selectedOptions.contains(element))
+          .toList(),
         includeStatus: statusesField.selectedOptions,
         includeRewardStatus: rewardStatuesField.selectedOptions,
-      beforeProposal: lastProposal);
+        beforeProposal: lastProposal);
+    }
   }
 
   @override
@@ -158,25 +158,51 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text(
+                    "Exclude \"Open\" proposals where all your neurons have voted",
+                    softWrap: true,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 6),
+                  child: Checkbox(
+                    value: excludeVotedProposals, 
+                    onChanged: (bool? value) { 
+                      setState(() {
+                        excludeVotedProposals = value!;
+                      }); 
+                    },
+                  )
+                ),
+              ],
+            ),
+            SizedBox(height: 4),
             StreamBuilder<Object>(
                 stream: context.boxes.proposals.changes,
                 builder: (context, snapshot) {
                   final proposals = context.boxes.proposals.values
-                    .filter((element) => topicsField.selectedOptions.contains(element.topic))
-                    .filter((element) => statusesField.selectedOptions.contains(element.status))
-                    .filter((element) => rewardStatuesField.selectedOptions.contains(element.rewardStatus))
+                    .filter((proposal) => topicsField.selectedOptions.contains(proposal.topic))
+                    .filter((proposal) => statusesField.selectedOptions.contains(proposal.status))
+                    .filter((proposal) => rewardStatuesField.selectedOptions.contains(proposal.rewardStatus))
+                    .filter((proposal) => !excludeVotedProposals || proposal.status != ProposalStatus.Open || proposal.ballots.values.any((ballot) => ballot.vote == Vote.UNSPECIFIED))
                     .sortedByDescending((element) => element.proposalTimestamp);
+
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ...proposals.mapToList((e) => ProposalRow(
-                            proposal: e,
-                            onPressed: () {
-                              context.nav
-                                  .push(ProposalPageDef.createPageConfig(e));
-                            },
-                          )),
+                          proposal: e,
+                          onPressed: () {
+                            context.nav.push(ProposalPageDef.createPageConfig(e));
+                          },
+                        )
+                      ),
                       SmallFormDivider(),
                       Center(
                         child: TextButton(
@@ -184,14 +210,12 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               "Load More Proposals",
-                              style: context.textTheme.subtitle2
-                                  ?.copyWith(color: AppColors.gray100),
+                              style: context.textTheme.subtitle2?.copyWith(color: AppColors.gray100),
                             ),
                           ),
                           onPressed: () {
                             final lastProposal = proposals.lastOrNull;
-                            fetchProposals(
-                                lastProposal: lastProposal);
+                            fetchProposals(lastProposal: lastProposal);
                           }),
                       ),
                       SizedBox(height: 200,)

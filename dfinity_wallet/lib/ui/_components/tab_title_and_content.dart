@@ -20,7 +20,7 @@ class TabTitleAndContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 24.0, bottom: 24.0),
+              padding: const EdgeInsets.only(top: 24.0, bottom: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

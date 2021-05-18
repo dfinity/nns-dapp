@@ -4,7 +4,6 @@ import 'dart:js_util';
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/setup/hive_loader_widget.dart';
 import 'package:dfinity_wallet/data/topic.dart';
-import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
 import 'service_api.dart';
@@ -25,16 +24,14 @@ class ProposalSyncService {
       'limit': 100,
       if (beforeProposal != null)
         'beforeProposal': beforeProposal.id.toBigInt.toJS,
-      'includeRewardStatus':
-          includeRewardStatus.mapToList((e) => e.index.toInt()),
+      'includeRewardStatus': includeRewardStatus.mapToList((e) => e.index.toInt()),
       'excludeTopic': excludeTopics.mapToList((e) => e.index.toInt()),
       'includeStatus': includeStatus.mapToList((e) => e.index.toInt())
     };
 
     final stopwatch = Stopwatch();
     stopwatch.start();
-    final fetchPromise =
-        promiseToFuture(serviceApi.listProposals(jsify(request)));
+    final fetchPromise = promiseToFuture(serviceApi.listProposals(jsify(request)));
     if (beforeProposal == null) {
       hiveBoxes.proposals.clear();
     }
@@ -95,11 +92,14 @@ class ProposalSyncService {
     proposal.ballots = parseBallots(response['ballots']);
   }
 
-
-  Map<String, BigInt> parseBallots(List<dynamic> ballots) {
+  Map<String, Ballot> parseBallots(List<dynamic> ballots) {
     return Map.fromIterable(
       ballots,
       key: (i) => i['neuronId'].toString(),
-      value: (i) => i['votingPower'].toString().toBigInt);
+      value: (i) => Ballot()
+        ..proposalId = i['proposalId'].toString()
+        ..votingPower = i['votingPower'].toString().toBigInt
+        ..vote = Vote.values[i['vote'].toInt()]      
+    );
   }
 }
