@@ -45,7 +45,7 @@ class TopicFolloweesWidget extends StatelessWidget {
                       AppColors.gray800)),
                   child: Padding(
                     padding: EdgeInsets.all(8),
-                    child: Text("Add Follow"),
+                    child: Text("Add Followee"),
                   ),
                   onPressed: () {
                     OverlayBaseWidget.show(
@@ -54,7 +54,7 @@ class TopicFolloweesWidget extends StatelessWidget {
                             followees: followees,
                             neuron: neuron,
                             onComplete: (id) async {
-                              await addFollower(id, context);
+                              await addFollowee(id, context);
                             }));
                   },
                 ),
@@ -109,7 +109,7 @@ class TopicFolloweesWidget extends StatelessWidget {
     );
   }
 
-  Future addFollower(String id, BuildContext context) async {
+  Future addFollowee(String id, BuildContext context) async {
     final newFollowees = followees.followees.toList()..add(id);
     await saveChanges(context, newFollowees);
     followees.followees = newFollowees;
