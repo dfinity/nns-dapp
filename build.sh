@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -x
+set -e
+
 # build JavaScript agent
 (cd js-agent && ./build.sh)
 
