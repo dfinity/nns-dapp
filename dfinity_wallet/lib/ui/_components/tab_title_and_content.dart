@@ -14,6 +14,7 @@ class TabTitleAndContent extends StatelessWidget {
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: 800),
       child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.max,

@@ -216,6 +216,7 @@ class ProposalRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: const EdgeInsets.symmetric(vertical: 10),
       color: AppColors.background,
       child: FlatButton(
         onPressed: onPressed,

@@ -85,38 +85,47 @@ class _MultiSelectDropdownWidgetState<T>
                   side: MaterialStateProperty.all(
                       BorderSide(color: AppColors.gray600, width: 0))),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
-                    child: Wrap(
-                      // scrollDirection: Axis.horizontal,
-                      children: widget.field.selectedOptions
-                          .mapToList((e) => Container(
-                                margin: EdgeInsets.symmetric(horizontal: 4, vertical: 5),
-                                padding: EdgeInsets.all(8.0),
+                  Expanded(                    
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8, bottom: 6),
+                          child: Wrap(
+                            children: widget.field.selectedOptions
+                              .mapToList((e) => Container(
+                                margin: EdgeInsets.fromLTRB(4, 5, 4, 6),
+                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                                 decoration: ShapeDecoration(
-                                    color: AppColors.gray800,
-                                    shape: StadiumBorder()),
+                                  color: AppColors.gray800,
+                                  shape: StadiumBorder()
+                                ),
                                 child: Text(
                                   widget.field.titleForOption(e),
                                   style: TextStyle(
-                                      fontFamily: Fonts.circularMedium,
-                                      fontSize: 14,
-                                      color: AppColors.gray50),
+                                    fontFamily: Fonts.circularMedium,
+                                    fontSize: 14,
+                                    color: AppColors.gray50),
                                 ),
-                              )),
+                              )
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )),
-                  Center(
-                      child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(16, 16, 8, 16),
                     child: SvgPicture.asset(
                       "assets/down_grey.svg",
                       width: 18,
                       height: 18,
                     ),
-                  ))
+                  )
                 ],
               ),
               onPressed: () {
@@ -268,21 +277,6 @@ class _MultiSelectListState<T> extends State<MultiSelectList<T>> {
                     ),
                   ))
               .toList(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: ElevatedButton(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text("Close"),
-                ),
-                onPressed: () {
-                  widget.onDismissPressed?.call(context);
-                },
-              ),
-            ),
-          )
         ],
       ),
     );
