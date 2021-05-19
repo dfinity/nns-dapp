@@ -1,7 +1,10 @@
-import '../../dfinity.dart';
+import 'package:core/core.dart';
+import 'package:dfinity_wallet/data/icp.dart';
+import 'package:intl/intl.dart';
 
 class BalanceDisplayWidget extends StatelessWidget {
-  final double amount;
+  // Made dynamic for temporary compatibility with the callers.
+  final dynamic amount;
   final int amountSize;
   final int icpLabelSize;
   final String? amountLabelSuffix;
@@ -14,21 +17,34 @@ class BalanceDisplayWidget extends StatelessWidget {
       this.amountLabelSuffix})
       : super(key: key);
 
+  // Temporary method until all callers are not using doubles.
+  String getAmount() {
+    // TODO(NU-58): Use a standard formatting for all locales. For now, en_US is
+    // used.
+    final String languageCode = "en_US";
+    if (amount is ICP) {
+      return "${amount.asString(languageCode)}${amountLabelSuffix ?? ""}";
+    } else if (amount is double) {
+      return "${NumberFormat("###,##0.00######", languageCode).format(amount)}${amountLabelSuffix ?? ""}";
+    } else {
+      throw FormatException("Expected amount to be of type double or ICP");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "${amount.toDisplayICPT(myLocale.languageCode)}${amountLabelSuffix ?? ""}",
+          getAmount(),
           style: TextStyle(
-              color: AppColors.white,
-              fontFamily: Fonts.circularBold,
-              fontSize: amountSize.toDouble()),
+            color: AppColors.white,
+            fontFamily: Fonts.circularBold,
+            fontSize: amountSize.toDouble(),
+          ),
         ),
         SizedBox(
           width: 7,
