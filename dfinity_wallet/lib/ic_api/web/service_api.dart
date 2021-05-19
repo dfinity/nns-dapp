@@ -41,9 +41,6 @@ class ServiceApi {
   @JS("getTransactions")
   external Promise<dynamic> getTransactions(dynamic request);
 
-  @JS("createDummyProposals")
-  external Promise<dynamic> createDummyProposals(String neuronId);
-
   @JS("registerHardwareWallet")
   external Promise<void> registerHardwareWallet(String name, dynamic ledgerIdentity);
 
