@@ -39,8 +39,12 @@ class ICP {
   /// Private constructor.
   ICP._(this._e8s);
 
+  BigInt asE8s() {
+    return this._e8s;
+  }
+
   String asString(String locale) {
-    // Convert them to double for formatting.
+    // Convert ICP to double for formatting.
     final icpDouble = this._e8s / _e8sPerICP;
     return NumberFormat("###,##0.00######", locale).format(icpDouble);
   }
