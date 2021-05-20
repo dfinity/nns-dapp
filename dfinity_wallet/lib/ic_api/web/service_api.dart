@@ -3,7 +3,6 @@ library dfinity_agent.js;
 
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:js/js.dart';
-import '../models.dart';
 import 'js_utils.dart';
 
 @JS("createServiceApi")

@@ -1,10 +1,5 @@
-import 'dart:convert';
-import 'dart:html';
-import 'dart:js';
 import 'dart:js_util';
-import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:js/js.dart';
-import 'dart:collection' show Maps;
 
 
 extension ToJSObject on Map {

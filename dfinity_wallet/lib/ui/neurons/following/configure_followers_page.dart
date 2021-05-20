@@ -1,4 +1,3 @@
-import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/neurons/following/topic_card.dart';
 import 'package:dfinity_wallet/ui/neurons/following/topic_followeees_widget.dart';

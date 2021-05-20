@@ -1,9 +1,5 @@
-import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
-import 'package:intl/intl.dart';
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 
 import '../../dfinity.dart';

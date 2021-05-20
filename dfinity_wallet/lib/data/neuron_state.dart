@@ -1,5 +1,4 @@
 import 'package:dfinity_wallet/dfinity.dart';
-import 'package:hive/hive.dart';
 
 
 enum NeuronState {

@@ -1,8 +1,6 @@
-import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:dfinity_wallet/data/canister.dart';
-import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';

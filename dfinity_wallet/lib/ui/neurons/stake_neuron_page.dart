@@ -3,11 +3,9 @@ import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:flutter/services.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../dfinity.dart';
 import 'package:dartx/dartx.dart';
-import 'dart:math';
 
 import 'following/configure_followers_page.dart';
 

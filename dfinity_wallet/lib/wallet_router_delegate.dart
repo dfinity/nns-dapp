@@ -8,12 +8,10 @@ import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/neuron_detail_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/account_detail_widget.dart';
-import 'package:hive/hive.dart';
 import 'package:observable/observable.dart' hide ChangeNotifier;
 
 import 'dfinity.dart';
 import 'ic_api/platform_ic_api.dart';
-import 'ic_api/web/neuron_sync_service.dart';
 
 const String ProposalDetailPath = '/proposal';
 const String CanisterTabsPath = '/canisters';

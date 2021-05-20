@@ -5,11 +5,9 @@ import 'package:dfinity_wallet/data/followee.dart';
 import 'package:dfinity_wallet/data/neuron_state.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
-import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
 import 'service_api.dart';
-import 'js_utils.dart';
 import 'dart:convert';
 import 'stringify.dart';
 

@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/data/transaction_type.dart';
-import 'package:dfinity_wallet/ic_api/web/js_utils.dart';
-import 'package:observable/observable.dart';
 import 'service_api.dart';
 
 import '../../dfinity.dart';

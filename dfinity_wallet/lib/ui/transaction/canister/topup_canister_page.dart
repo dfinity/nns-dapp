@@ -6,7 +6,6 @@ import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:flutter/services.dart';
 
 import '../../../dfinity.dart';
-import '../wizard_overlay.dart';
 
 class TopUpCanisterPage extends StatefulWidget {
   final ICPSource source;

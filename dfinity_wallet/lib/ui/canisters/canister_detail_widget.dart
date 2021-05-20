@@ -1,11 +1,9 @@
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/canisters/top_up_cycles_amount_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-import 'package:intl/intl.dart';
 
 import '../../dfinity.dart';
 import 'change_canister_controller_widget.dart';
