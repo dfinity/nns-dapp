@@ -1,10 +1,6 @@
-import 'dart:async';
-
 import 'package:core/core.dart';
-import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'package:hive/hive.dart';
-import 'package:uuid/uuid.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
 

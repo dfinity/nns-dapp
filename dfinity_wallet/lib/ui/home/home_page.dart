@@ -1,10 +1,8 @@
 import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/wallet_router_delegate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
-import '../../main.dart';
 import 'home_tabs_widget.dart';
 import 'landing_widget.dart';
 

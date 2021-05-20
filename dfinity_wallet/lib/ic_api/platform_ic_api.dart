@@ -6,7 +6,6 @@ import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 
 import '../dfinity.dart';
-import 'dart:js';
 
 abstract class AbstractPlatformICApi {
   final HiveBoxesWidget hiveBoxes;

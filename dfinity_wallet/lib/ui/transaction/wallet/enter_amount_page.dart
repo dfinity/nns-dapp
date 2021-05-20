@@ -1,9 +1,5 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:flutter/services.dart';

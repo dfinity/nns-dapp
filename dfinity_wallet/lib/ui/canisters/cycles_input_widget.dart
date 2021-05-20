@@ -1,11 +1,8 @@
 
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:flutter/services.dart';
 
 import '../../dfinity.dart';
-import 'confirm_cycles_purchase.dart';
 import 'cycle_calculator.dart';
 
 class CycleInputWidget extends StatefulWidget {

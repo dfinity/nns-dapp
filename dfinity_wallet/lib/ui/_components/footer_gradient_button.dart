@@ -1,5 +1,3 @@
-import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-
 import '../../dfinity.dart';
 
 class FooterGradientButton extends StatelessWidget {

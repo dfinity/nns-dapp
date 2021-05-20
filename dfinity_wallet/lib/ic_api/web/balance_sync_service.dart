@@ -1,6 +1,5 @@
 
 import 'dart:convert';
-import 'dart:html';
 import 'dart:js_util';
 import 'package:dfinity_wallet/data/setup/hive_loader_widget.dart';
 import 'service_api.dart';

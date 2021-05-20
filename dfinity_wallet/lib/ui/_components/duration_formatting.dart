@@ -1,6 +1,5 @@
 
 import 'package:dartx/dartx.dart';
-import 'package:intl/intl.dart';
 
 const ONE_YEAR_SECONDS = (4 * 365 + 1) * ONE_DAY_SECONDS / 4;
 const ONE_DAY_SECONDS = 24 * 60 * 60;

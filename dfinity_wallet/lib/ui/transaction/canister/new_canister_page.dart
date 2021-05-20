@@ -1,11 +1,8 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/transaction/canister/topup_canister_page.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../dfinity.dart';
-import '../wizard_overlay.dart';
 
 class NewCanisterPage extends StatelessWidget {
 

@@ -12,7 +12,6 @@ import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:dfinity_wallet/ic_api/web/proposal_sync_service.dart';
 import 'package:dfinity_wallet/ic_api/web/transaction_sync_service.dart';
 import 'package:js/js.dart';
-import 'dart:html';
 
 import '../../dfinity.dart';
 import 'account_sync_service.dart';

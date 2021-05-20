@@ -1,9 +1,6 @@
 import 'package:dfinity_wallet/data/data.dart';
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/account.dart';
-import 'package:dfinity_wallet/ui/home/landing_widget.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:observable/observable.dart';
 import 'hive_coordinator.dart';
 import '../data.dart';

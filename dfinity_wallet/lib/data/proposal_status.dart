@@ -1,8 +1,3 @@
-
-
-import 'package:hive/hive.dart';
-
-
 enum ProposalStatus {
 Unknown,
 Open,

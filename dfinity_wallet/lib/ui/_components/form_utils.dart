@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:ui';
-
 import 'package:flutter/services.dart';
 
 import '../../dfinity.dart';

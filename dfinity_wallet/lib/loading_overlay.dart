@@ -1,5 +1,4 @@
 import 'package:dfinity_wallet/dfinity.dart';
-import 'package:flutter/gestures.dart';
 // import 'package:flutter_gifimage/flutter_gifimage.dart';
 
 class LoadingOverlayController extends StatefulWidget {

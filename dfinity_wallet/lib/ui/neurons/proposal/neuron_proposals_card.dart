@@ -1,5 +1,3 @@
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/neurons/proposal/new_proposal_dialog.dart';
 
 import '../../../dfinity.dart';
 

@@ -1,5 +1,4 @@
 import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 
 class ResourceOrchestrator extends InheritedWidget {
 

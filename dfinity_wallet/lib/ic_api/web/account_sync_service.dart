@@ -2,10 +2,8 @@
 import 'dart:convert';
 import 'dart:js_util';
 
-import 'js_utils.dart';
 import 'service_api.dart';
 import 'stringify.dart';
-import 'package:hive/hive.dart';
 
 import '../../dfinity.dart';
 
