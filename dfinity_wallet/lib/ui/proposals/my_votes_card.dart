@@ -32,7 +32,7 @@ class MyVotesCard extends StatelessWidget {
                                 style: context.textTheme.headline3,
                               ),
                               Text(
-                                "${proposal.yes}",
+                                "${BigInt.from(proposal.yes).toICPT.toStringAsFixed(2)}",
                                 style: context.textTheme.headline4,
                               ),
                             ],
@@ -66,7 +66,7 @@ class MyVotesCard extends StatelessWidget {
                                 style: context.textTheme.headline3,
                               ),
                               Text(
-                                "${proposal.no}",
+                                "${BigInt.from(proposal.no).toICPT.toStringAsFixed(2)}",
                                 style: context.textTheme.headline4,
                               ),
                             ],
