@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/dfinity.dart';
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_source_wallet_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_path_button.dart';
@@ -26,6 +27,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
         stream: context.boxes.accounts.changes,
         builder: (context, snapshot) {
           final wallets = context.boxes.accounts.values;
+          final btnSizeGrp = AutoSizeGroup();
           if (wallets.isEmpty) {
             return Container(
               child: Center(
@@ -33,8 +35,46 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
               ),
             );
           }
-          final subAccounts = context.boxes.accounts.subAccounts;
-          final hardwareWallets = context.boxes.accounts.hardwareWallets;
+          var buttonGroup = [
+            ElevatedButton(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: AutoSizeText(
+                  "New Transaction",
+                  group: btnSizeGrp,
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.button?.copyWith(fontSize: 24),
+                ),
+              ),
+              onPressed: () {
+                OverlayBaseWidget.show(
+                    context,
+                    WizardOverlay(
+                      rootTitle: "Select Source Account",
+                      rootWidget: SelectSourceWallet(),
+                    ));
+              },
+            ),
+            ElevatedButton(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: AutoSizeText(
+                  "Add Account",
+                  group: btnSizeGrp,
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.button?.copyWith(fontSize: 24),
+                ),
+              ),
+              onPressed: () {
+                OverlayBaseWidget.show(
+                    context,
+                    WizardOverlay(
+                      rootTitle: "Add Account",
+                      rootWidget: SelectAccountAddActionWidget(),
+                    ));
+              },
+            ),
+          ];
           return FooterGradientButton(
               footerHeight: null,
               body: DefaultTabController(
@@ -47,16 +87,18 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 24.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 24.0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text(
+                                        AutoSizeText(
                                           "Accounts",
                                           textAlign: TextAlign.left,
                                           style: context.textTheme.headline1,
@@ -65,8 +107,8 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                     ),
                                   ),
                                   BalanceDisplayWidget(
-                                      amount: wallets
-                                          .sumBy((element) => element.icpBalance),
+                                      amount: wallets.sumBy(
+                                          (element) => element.icpBalance),
                                       amountSize: 40,
                                       icpLabelSize: 20),
                                 ],
@@ -75,14 +117,16 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                             SizedBox(
                               height: 40,
                             ),
-                            ...wallets.sortedBy((element) => element.primary ? 0 : 1)
+                            ...wallets
+                                .sortedBy((element) => element.primary ? 0 : 1)
                                 .thenBy((element) => element.name)
                                 .mapToList((e) => AccountRow(
-                              account: e,
-                              onTap: () {
-                                context.nav.push(AccountPageDef.createPageConfig(e));
-                              },
-                            )),
+                                      account: e,
+                                      onTap: () {
+                                        context.nav.push(
+                                            AccountPageDef.createPageConfig(e));
+                                      },
+                                    )),
                             SizedBox(
                               height: 180,
                             )
@@ -93,61 +137,34 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                   ),
                 ),
               ),
-              footer:  Align(
+              footer: Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: EdgeInsets.all(32),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: SizedBox(
-                            child: Text(
-                              "New Transaction",
-                              textAlign: TextAlign.center,
-                              style: context.textTheme.button?.copyWith(fontSize: 24),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          OverlayBaseWidget.show(
-                              context,
-                              WizardOverlay(
-                                rootTitle: "Select Source Account",
-                                rootWidget: SelectSourceWallet(),
-                              ));
-                        },
-                      ),
-                      ElevatedButton(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: SizedBox(
-                            child: Text(
-                              "Add Account",
-                              textAlign: TextAlign.center,
-                              style: context.textTheme.button?.copyWith(fontSize: 24),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          OverlayBaseWidget.show(
-                              context,
-                              WizardOverlay(
-                                rootTitle: "Add Account",
-                                rootWidget: SelectAccountAddActionWidget(),
-                              ));
-                        },
-                      ),
-                    ],
+                  padding: const EdgeInsets.all(16.0),
+                  child: LayoutBuilder(
+                    builder:
+                        (BuildContext context, BoxConstraints constraints) {
+                      if (constraints.maxWidth > 400) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [...buttonGroup],
+                        );
+                      } else {
+                        return Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              buttonGroup.first,
+                              SizedBox(height: 30), // spacer
+                              buttonGroup.last
+                            ]);
+                      }
+                    },
                   ),
                 ),
               ));
         });
   }
 }
-
 
 class SelectAccountAddActionWidget extends StatelessWidget {
   const SelectAccountAddActionWidget({
@@ -163,31 +180,31 @@ class SelectAccountAddActionWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              WizardPathButton(title: "New Linked-Account",
+              WizardPathButton(
+                  title: "New Linked-Account",
                   subtitle: "Create a new linked account",
                   onPressed: () {
                     // StringFieldValidation.maximumLength(24)
                     WizardOverlay.of(context).pushPage(
-                        "New Linked Account", Center(
+                        "New Linked Account",
+                        Center(
                           child: TextFieldDialogWidget(
-                          title: "New Linked Account",
-                          buttonTitle: "Create",
-                          fieldName: "Account Name",
-                          onComplete: (name) {
-                            context.callUpdate(() =>
-                                context
-                                    .icApi
-                                    .createSubAccount(
-                                    name: name));
-                          }),
+                              title: "New Linked Account",
+                              buttonTitle: "Create",
+                              fieldName: "Account Name",
+                              onComplete: (name) {
+                                context.callUpdate(() =>
+                                    context.icApi.createSubAccount(name: name));
+                              }),
                         ));
                   }),
               SmallFormDivider(),
-              WizardPathButton(title: "Attach Hardware Wallet",
+              WizardPathButton(
+                  title: "Attach Hardware Wallet",
                   subtitle: "Coming Soon...",
                   onPressed: () {
-                    WizardOverlay.of(context)
-                        .pushPage("Enter Wallet Name", HardwareWalletNameWidget());
+                    WizardOverlay.of(context).pushPage(
+                        "Enter Wallet Name", HardwareWalletNameWidget());
                   }.takeIf((e) => false)),
               SmallFormDivider(),
               SizedBox(

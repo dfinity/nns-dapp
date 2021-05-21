@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/neurons/tab/neurons_tab_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/governance_tab_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/accounts_tab_widget.dart';
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final screenSize = context.mediaQuery.size;
+    final tabSizeGrouping = AutoSizeGroup();
     return DefaultTabController(
       initialIndex: widget.initialTabIndex,
       length: 4,
@@ -36,8 +38,9 @@ class _HomePageState extends State<HomePage> {
                 centerTitle: true,
                 title: Padding(
                   padding: const EdgeInsets.only(top: 4.0),
-                  child: Text(
+                  child: AutoSizeText(
                     "NETWORK NERVOUS SYSTEM",
+                    maxLines: 1,
                     style: TextStyle(
                         fontSize: 24,
                         color: AppColors.white,
@@ -85,10 +88,30 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 20,
                               letterSpacing: 1.2),
                           tabs: [
-                            Tab(text: "ICP"),
-                            Tab(text: "NEURONS"),
-                            Tab(text: "VOTING"),
-                            Tab(text: "CANISTERS"),
+                            Tab(
+                                child: AutoSizeText(
+                              "ICP",
+                              group: tabSizeGrouping,
+                              maxLines: 1,
+                            )),
+                            Tab(
+                                child: AutoSizeText(
+                              "NEURONS",
+                              group: tabSizeGrouping,
+                              maxLines: 1,
+                            )),
+                            Tab(
+                                child: AutoSizeText(
+                              "VOTING",
+                              group: tabSizeGrouping,
+                              maxLines: 1,
+                            )),
+                            Tab(
+                                child: AutoSizeText(
+                              "CANISTERS",
+                              group: tabSizeGrouping,
+                              maxLines: 1,
+                            )),
                           ],
                         ),
                       ),

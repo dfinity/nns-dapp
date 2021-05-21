@@ -1,3 +1,5 @@
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
+
 import '../../dfinity.dart';
 
 class WizardOverlay extends StatefulWidget {
@@ -91,7 +93,9 @@ class WizardOverlayState extends State<WizardOverlay> {
                 )),],
             title: Padding(
               padding: const EdgeInsets.all(24.0),
-              child: Text(title,
+              child: AutoSizeText(title,
+              maxLines: 1,
+              overflow: TextOverflow.visible,
                   style: TextStyle(
                       fontSize: 32,
                       fontFamily: Fonts.circularBook,

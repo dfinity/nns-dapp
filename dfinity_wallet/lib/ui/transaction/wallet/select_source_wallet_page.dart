@@ -1,6 +1,8 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
+import 'package:flutter/services.dart';
 import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
 
@@ -19,13 +21,16 @@ class _SelectSourceWalletState extends State<SelectSourceWallet> {
 
   @override
   Widget build(BuildContext context) {
-    final otherAccounts = context.boxes.accounts.values.toList();
+    final allAccounts = context.boxes.accounts.values
+        .toList()
+        .sortedBy((element) => element.primary ? 0 : 1)
+        .thenBy((element) => element.name);
     return Container(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (otherAccounts.isNotEmpty)
+            if (allAccounts.isNotEmpty)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -47,11 +52,12 @@ class _SelectSourceWalletState extends State<SelectSourceWallet> {
                                         width: 2, color: AppColors.gray800))),
                             child: Column(
                               children:
-                                  otherAccounts.mapToList((e) => _AccountRow(
+                                  allAccounts.mapToList((e) => _AccountRow(
                                       account: e,
                                       onPressed: () {
                                         final address = e.accountIdentifier;
-                                        final source = context.boxes.accounts[address]!;
+                                        final source =
+                                            context.boxes.accounts[address]!;
                                         WizardOverlay.of(context).pushPage(
                                             "Select Destination",
                                             SelectDestinationAccountPage(
@@ -101,13 +107,38 @@ class _AccountRow extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 16.0, bottom: 16.0, right: 16.0),
-                  child: Text(
-                    account.accountIdentifier,
-                    style: context.textTheme.bodyText2,
+                  padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: IconButton(
+                              constraints:
+                                  BoxConstraints.tight(Size.square(20.0)),
+                              padding: const EdgeInsets.all(0),
+                              alignment: Alignment.center,
+                              iconSize:
+                                  context.textTheme.bodyText1?.fontSize ?? 24,
+                              icon: Icon(
+                                Icons.copy,
+                                color: context.textTheme.bodyText1?.color,
+                              ),
+                              onPressed: () {
+                                Clipboard.setData(ClipboardData(
+                                    text: account.accountIdentifier));
+                              })),
+                      Expanded(
+                          flex: 12,
+                          child: AutoSizeText(account.accountIdentifier,
+                              textAlign: TextAlign.start,
+                              style: context.textTheme.bodyText1,
+                              selectable: true,
+                              maxLines: 2)),
+                    ],
                   ),
-                )
+                ),
               ],
             ),
           ),

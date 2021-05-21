@@ -1,8 +1,10 @@
 import 'package:dfinity_wallet/data/icp_source.dart';
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/confirm_transactions_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
+import 'package:flutter/services.dart';
 import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
 
@@ -24,7 +26,9 @@ class _SelectDestinationAccountPageState
 
   @override
   Widget build(BuildContext context) {
-    final otherAccounts = context.boxes.accounts.values.filter((element) => element != widget.source).toList();
+    final otherAccounts = context.boxes.accounts.values
+        .filter((element) => element != widget.source)
+        .toList();
     return Container(
       child: SingleChildScrollView(
         child: Column(
@@ -46,11 +50,13 @@ class _SelectDestinationAccountPageState
                           padding: const EdgeInsets.all(8.0),
                           child: ValidFieldsSubmitButton(
                             child: Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Text(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Expanded(
+                                flex: 0,
+                                  child: AutoSizeText(
                                 "Continue",
                                 style: context.textTheme.subtitle1,
-                              ),
+                              )),
                             ),
                             fields: [addressField],
                             onPressed: () {
@@ -108,7 +114,7 @@ class _SelectDestinationAccountPageState
                                         width: 2, color: AppColors.gray800))),
                             child: Column(
                               children:
-                              otherAccounts.mapToList((e) => _AccountRow(
+                                  otherAccounts.mapToList((e) => _AccountRow(
                                       account: e,
                                       onPressed: () {
                                         if (widget.source.type ==
@@ -182,10 +188,28 @@ class _AccountRow extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
-                      left: 16.0, bottom: 16.0, right: 16.0),
-                  child: Text(
-                    account.accountIdentifier,
-                    style: context.textTheme.bodyText2,
+                      left: 16.0, bottom: 16.0),
+                  child: Row(
+                    children: [
+                      Expanded(child: IconButton(
+                          icon: Icon(
+                            Icons.copy,
+                            color: context.textTheme.bodyText2?.color,
+                          ),
+                          onPressed: () {
+                            Clipboard.setData(
+                                ClipboardData(text: account.accountIdentifier));
+                          }),flex: 2,),
+                      Expanded(
+                        flex:12,
+                        child: AutoSizeText(
+                          account.accountIdentifier,
+                          style: context.textTheme.bodyText2,
+                          selectable: true,
+                        ),
+                      ),
+
+                    ],
                   ),
                 )
               ],
