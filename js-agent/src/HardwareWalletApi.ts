@@ -17,7 +17,8 @@ export default class HardwareWalletApi {
             host: HOST,
             identity
         });
-        await agent.fetchRootKey();
+        // TEST CONFIG
+        // await agent.fetchRootKey();
 
         return new HardwareWalletApi(agent, identity);
     }

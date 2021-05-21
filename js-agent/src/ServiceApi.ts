@@ -72,7 +72,8 @@ export default class ServiceApi {
             host: HOST,
             identity
         });
-        await agent.fetchRootKey();
+        // TEST CONFIG
+        // await agent.fetchRootKey();
 
         return new ServiceApi(agent, identity);
     }
