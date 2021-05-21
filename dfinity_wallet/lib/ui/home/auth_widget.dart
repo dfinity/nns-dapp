@@ -1,8 +1,8 @@
 import 'package:dfinity_wallet/ic_api/ic_api_widgets.dart';
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 
 import '../../dfinity.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 class AuthWidget extends StatelessWidget {
 
