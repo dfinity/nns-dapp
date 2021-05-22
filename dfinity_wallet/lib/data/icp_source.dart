@@ -1,12 +1,13 @@
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:intl/intl.dart';
 
+import 'icp.dart';
+
 abstract class ICPSource {
   String get address;
   int? get subAccountId;
   ICPSourceType get type;
-  String get balance;
-  double get icpBalance => balance.toBigInt.toICPT;
+  ICP get icpBalance;
 }
 
 const E8S_PER_ICP = 100000000;

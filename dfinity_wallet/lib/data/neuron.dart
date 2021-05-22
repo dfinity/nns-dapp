@@ -4,10 +4,10 @@ import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/vote.dart';
 import 'dfinity_entity.dart';
 import 'followee.dart';
+import 'icp.dart';
 import 'neuron_state.dart';
 import 'package:core/extensions.dart';
 import 'package:dartx/dartx.dart';
-
 
 class Neuron extends DfinityEntity with ICPSource {
   late String id;
@@ -52,9 +52,10 @@ class Neuron extends DfinityEntity with ICPSource {
   BigInt get stake => cachedNeuronStakeDoms.toBigInt - neuronFeesDoms.toBigInt;
 
   @override
-  String get balance => stake.toString();
+  ICP get icpBalance => ICP.fromString(stake.toString());
 
-  DateTime get whenDissolvedTimestamp => whenDissolvedTimestampSeconds.secondsToDateTime();
+  DateTime get whenDissolvedTimestamp =>
+      whenDissolvedTimestampSeconds.secondsToDateTime();
 
   Duration get durationRemaining => whenDissolvedTimestamp.difference(DateTime.now());
 
@@ -65,7 +66,3 @@ class Neuron extends DfinityEntity with ICPSource {
   @override
   ICPSourceType get type => ICPSourceType.NEURON;
 }
-
-
-
-

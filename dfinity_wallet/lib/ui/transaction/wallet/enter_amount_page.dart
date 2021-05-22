@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
@@ -32,7 +33,8 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
 
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.source.icpBalance, 1),
+          StringFieldValidation.insufficientFunds(
+              widget.source.icpBalance.asDouble(), 1),
           StringFieldValidation.greaterThanZero()
         ],
         inputType: TextInputType.number,
@@ -108,7 +110,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                 child: ValidFieldsSubmitButton(
                   child: Text("Review Transaction"),
                   onPressed: () async {
-                    var amount = amountField.currentValue.toDouble();
+                    var amount = ICP.fromString(amountField.currentValue);
                     WizardOverlay.of(context).pushPage(
                         "Review Transaction",
                         ConfirmTransactionWidget(

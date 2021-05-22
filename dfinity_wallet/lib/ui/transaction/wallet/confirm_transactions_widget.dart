@@ -80,7 +80,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                         return context.icApi.disburse(
                             neuronId: BigInt.parse(widget.source.address),
                             // this is intentional. send all of them.
-                            doms: widget.source.icpBalance.toE8s,
+                            doms: widget.source.icpBalance.asE8s(),
                             toAccountId: widget.destination);
                       });
 
