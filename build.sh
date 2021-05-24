@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
-set -x
 set -e
+
+if ! [[ $DEPLOY_ENV = "staging" ]] && ! [[ $DEPLOY_ENV = "production" ]]; then
+  echo "Which deployment environment? Set DEPLOY_ENV to 'staging' or 'production'"
+	exit 1
+fi
+
+set -x
 
 # build JavaScript agent
 (cd js-agent && ./build.sh)
