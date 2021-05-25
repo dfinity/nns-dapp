@@ -27,7 +27,8 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
     super.initState();
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.source.icpBalance, 2)
+          StringFieldValidation.insufficientFunds(
+              widget.source.icpBalance.asDouble(), 2)
         ],
         inputType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[

@@ -66,7 +66,8 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                   ),
                                   BalanceDisplayWidget(
                                       amount: wallets
-                                          .sumBy((element) => element.icpBalance),
+                                          .sumBy((element) =>
+                                          element.icpBalance.asDouble()),
                                       amountSize: 40,
                                       icpLabelSize: 20),
                                 ],

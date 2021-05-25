@@ -63,7 +63,8 @@ class _SelectDestinationAccountPageState
                                     ConfirmTransactionWidget(
                                       // if we're disbursing, no fee?
                                       fee: 0,
-                                      amount: widget.source.icpBalance,
+                                      amount:
+                                          widget.source.icpBalance.asDouble(),
                                       source: widget.source,
                                       destination: address,
                                       subAccountId: widget.source.subAccountId,
@@ -118,7 +119,8 @@ class _SelectDestinationAccountPageState
                                               ConfirmTransactionWidget(
                                                 fee: 0,
                                                 amount:
-                                                    widget.source.icpBalance,
+                                                    widget.source.icpBalance
+                                                    .asDouble(),
                                                 source: widget.source,
                                                 destination:
                                                     e.accountIdentifier,

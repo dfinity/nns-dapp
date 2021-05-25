@@ -48,4 +48,10 @@ class ICP {
     final icpDouble = this._e8s / _e8sPerICP;
     return NumberFormat("###,##0.00######", locale).format(icpDouble);
   }
+
+  // This is temporary until all ICP uses are migrated to use this type
+  // instead of a double.
+  double asDouble() {
+    return this._e8s / _e8sPerICP;
+  }
 }
