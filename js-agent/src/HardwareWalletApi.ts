@@ -5,6 +5,7 @@ import { AccountIdentifier, BlockHeight } from "./canisters/common/types";
 import { HttpAgent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "./canisters/converter";
 import { HOST } from "./canisters/constants";
+import { FETCH_ROOT_KEY } from "./config.json";
 import { executeWithLogging } from "./errorLogger";
 
 export default class HardwareWalletApi {
@@ -17,7 +18,10 @@ export default class HardwareWalletApi {
             host: HOST,
             identity
         });
-        await agent.fetchRootKey();
+
+        if (FETCH_ROOT_KEY) {
+            await agent.fetchRootKey();
+        }
 
         return new HardwareWalletApi(agent, identity);
     }

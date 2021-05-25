@@ -6,6 +6,8 @@ if ! [[ $DEPLOY_ENV = "staging" ]] && ! [[ $DEPLOY_ENV = "production" ]]; then
 	exit 1
 fi
 
+npm ci
+
 # Create config file with proper configurations.
 if [[ $DEPLOY_ENV = "staging" ]]; then
 	npx gulp create-staging-config

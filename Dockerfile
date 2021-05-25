@@ -47,6 +47,7 @@ RUN cargo install --version 0.2.0 ic-cdk-optimizer
 
 COPY . .
 
+ENV DEPLOY_ENV=production
 RUN cd js-agent && ./build.sh
 
 RUN cd dfinity_wallet && flutter build web --web-renderer canvaskit --release --no-sound-null-safety --pwa-strategy=none
