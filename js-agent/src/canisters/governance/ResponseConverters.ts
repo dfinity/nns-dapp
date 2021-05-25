@@ -68,13 +68,12 @@ export default class ResponseConverters {
     }
 
     public toArrayOfNeuronInfo = (response: ListNeuronsResponse, principal: Principal) : Array<NeuronInfo> => {
-        // NOTE: Safari's implementation of `Map` doesn't support bigint keys.
-        // The ids are therefore encoded as strings for compatibility with Safari.
-        const map = new Map(response.full_neurons.map(n => [n.id[0].id.toString(), n]));
         const principalString = principal.toString();
 
         return response.neuron_infos.map(([id, neuronInfo]) =>
-            this.toNeuronInfo(id, principalString, neuronInfo, map.get(id.toString())));
+            this.toNeuronInfo(id, principalString, neuronInfo, response.full_neurons.find(neuron =>
+                neuron.id.length > 0 && neuron.id[0].id === id
+            )));
     }
 
     private toNeuronInfo(neuronId: bigint, principalString: string, neuronInfo: RawNeuronInfo, rawNeuron?: RawNeuron): NeuronInfo {
