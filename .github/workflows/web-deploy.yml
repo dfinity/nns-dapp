@@ -28,13 +28,13 @@ jobs:
       - run: npm install
         working-directory: ./js-agent
 
-      - run: npm run build
+      - run: DEPLOY_ENV=production npm run build
         working-directory: ./js-agent
 
       # Switching to Flutter beta branch
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '2.0.1'
+          flutter-version: '2.0.6'
           channel: 'stable'
 
       # Get the latest dependencies
