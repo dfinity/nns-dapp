@@ -5,7 +5,7 @@
       "type": "custom",
       "candid": "canisters/nns_ui/nns_ui.did",
       "wasm": "target/wasm32-unknown-unknown/release/nns_ui-opt.wasm",
-      "build": "DEPLOY_ENV=staging ./build.sh",
+      "build": "./build.sh",
       "source": ["assets.tar.xz"]
     }
   },
