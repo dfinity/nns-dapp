@@ -9,26 +9,20 @@ class Account extends DfinityEntity with ICPSource {
   String name;
   final String accountIdentifier;
   final bool primary;
-  String balance;
-  late ICP icpBalance;
+  ICP balance;
   List<Transaction> transactions;
   int? subAccountId;
   bool hardwareWallet;
 
-  Account(this.name, this.accountIdentifier, this.primary, this.balance,
-      this.subAccountId, this.transactions, this.hardwareWallet) {
-    this.icpBalance = ICP.fromString(this.balance);
-  }
-
-  Account.create({required this.name,
+  Account({
+    required this.name,
     required this.accountIdentifier,
     required this.primary,
     required this.subAccountId,
     required this.balance,
     required this.transactions,
-    required this.hardwareWallet}) {
-    this.icpBalance = ICP.fromString(this.balance);
-  }
+    required this.hardwareWallet
+  });
 
   @override
   String get identifier => accountIdentifier;

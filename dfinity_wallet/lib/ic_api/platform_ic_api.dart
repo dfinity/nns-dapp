@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
@@ -27,9 +28,9 @@ abstract class AbstractPlatformICApi {
   Future<void> createSubAccount({required String name});
 
   Future<void> sendICPTs(
-      {required String toAccount, required BigInt e8s, int? fromSubAccount});
+      {required String toAccount, required ICP amount, int? fromSubAccount});
 
-  Future<void> createNeuron({required BigInt stakeInDoms, int? fromSubAccount});
+  Future<void> createNeuron({required ICP stake, int? fromSubAccount});
 
   Future<void> retryStakeNeuronNotification(
       {required BigInt blockHeight,
@@ -58,7 +59,7 @@ abstract class AbstractPlatformICApi {
 
   Future<void> disburse(
       {required BigInt neuronId,
-      required BigInt doms,
+      required ICP amount,
       required String toAccountId});
 
   Future<void> fetchProposals(
@@ -75,10 +76,10 @@ abstract class AbstractPlatformICApi {
 
   // Canisters
   Future<CreateCanisterResponse> createCanister(
-      {required BigInt stake, int? fromSubAccountId, required String name});
+      {required ICP amount, int? fromSubAccountId, required String name});
 
   Future<void> topupCanister(
-      {required BigInt stake,
+      {required ICP amount,
       int? fromSubAccountId,
       required String targetCanisterId});
 

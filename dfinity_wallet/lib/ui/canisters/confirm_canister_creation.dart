@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
@@ -6,7 +7,7 @@ import '../../dfinity.dart';
 import 'cycle_calculator.dart';
 
 class ConfirmCanisterCreationWidget extends StatelessWidget {
-  final double amount;
+  final ICP amount;
   final ICPSource source;
   final String name;
   final BigInt trillionRatio;
@@ -44,7 +45,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            amount.toDisplayICPT(myLocale.languageCode),
+                            amount.asString(myLocale.languageCode),
                             style: TextStyle(
                                 color: AppColors.white,
                                 fontFamily: Fonts.circularBold,
@@ -75,7 +76,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            CycleCalculator(trillionRatio).icpToTrillionCycles(amount).toDisplayICPT(myLocale.languageCode),
+                            CycleCalculator(trillionRatio).icpToCycles(amount).asStringT(myLocale.languageCode),
                             style: TextStyle(
                                 color: AppColors.white,
                                 fontFamily: Fonts.circularBold,
@@ -123,7 +124,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                   onPressed: () async {
                     final result = await context.callUpdate(() => context
                         .icApi
-                        .createCanister(stake: amount.toE8s, name: name, fromSubAccountId: fromSubAccountId));
+                        .createCanister(amount: amount, name: name, fromSubAccountId: fromSubAccountId));
                     if (result == null) {
                       return;
                     }

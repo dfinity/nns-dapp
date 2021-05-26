@@ -1,9 +1,10 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 
 import '../../../dfinity.dart';
 
 class TransactionDetailsWidget extends StatelessWidget {
-  final double amount;
+  final ICP amount;
   final ICPSource source;
   final String destination;
 
@@ -16,6 +17,7 @@ class TransactionDetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Container(
         child: Center(
       child: IntrinsicWidth(
@@ -28,7 +30,8 @@ class TransactionDetailsWidget extends StatelessWidget {
                 amount: amount,
                 amountSize: 50,
                 icpLabelSize: 0,
-                amountLabelSuffix: " ICP"
+                amountLabelSuffix: " ICP",
+                locale: myLocale.languageCode,
               ),
             ),
             TallFormDivider(),
@@ -42,7 +45,7 @@ class TransactionDetailsWidget extends StatelessWidget {
             TallFormDivider(),
             Text("Transaction Fee (billed to source)", style: context.textTheme.headline4),
             VerySmallFormDivider(),
-            Text(TRANSACTION_FEE_ICP.toString() + " ICP",
+            Text(ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)).asString(myLocale.languageCode) + " ICP",
                 style: context.textTheme.bodyText1),
             VerySmallFormDivider()
           ],

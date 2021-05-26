@@ -5,6 +5,7 @@ import 'dart:html' as html;
 import 'dart:convert';
 import 'dart:js_util';
 
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
@@ -99,10 +100,10 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> sendICPTs(
       {required String toAccount,
-      required BigInt e8s,
+      required ICP amount,
       int? fromSubAccount}) async {
     await promiseToFuture(serviceApi!.sendICPTs(SendICPTsRequest(
-        to: toAccount, amount: e8s.toJS, fromSubAccountId: fromSubAccount)));
+        to: toAccount, amount: amount.asE8s().toJS, fromSubAccountId: fromSubAccount)));
     await Future.wait([
       balanceSyncService!.syncBalances(),
       transactionSyncService!.syncAccount(hiveBoxes.accounts.primary)
@@ -111,9 +112,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createNeuron(
-      {required BigInt stakeInDoms, int? fromSubAccount}) async {
+      {required ICP stake, int? fromSubAccount}) async {
     await promiseToFuture(serviceApi!.createNeuron(CreateNeuronRequest(
-        stake: stakeInDoms.toJS, fromSubAccountId: fromSubAccount)));
+        stake: stake.asE8s().toJS, fromSubAccountId: fromSubAccount)));
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -144,7 +145,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> disburse(
       {required BigInt neuronId,
-      required BigInt doms,
+      required ICP amount,
       required String toAccountId}) async {
     final res = await promiseToFuture(serviceApi!.disburse(
         DisperseNeuronRequest(
@@ -283,12 +284,12 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<CreateCanisterResponse> createCanister(
-      {required BigInt stake,
+      {required ICP amount,
       int? fromSubAccountId,
       required String name}) async {
     final res =
         await promiseToFuture(serviceApi!.createCanister(CreateCanisterRequest(
-      stake: stake.toJS,
+      amount: amount.asE8s().toJS,
       fromSubAccountId: fromSubAccountId,
       name: name,
     )));
@@ -335,11 +336,11 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> topupCanister(
-      {required BigInt stake,
+      {required ICP amount,
       int? fromSubAccountId,
       required String targetCanisterId}) async {
     await promiseToFuture(serviceApi!.topupCanister(TopupCanisterRequest(
-        stake: stake,
+        amount: amount.asE8s().toJS,
         fromSubAccountId: fromSubAccountId,
         targetCanisterId: targetCanisterId)));
     await getCanister(targetCanisterId);

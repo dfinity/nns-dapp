@@ -1,4 +1,6 @@
 
+import 'package:dfinity_wallet/data/cycles.dart';
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:flutter/services.dart';
 
@@ -7,7 +9,7 @@ import 'cycle_calculator.dart';
 
 class CycleInputWidget extends StatefulWidget {
   final Account source;
-  final Function(double? icps) onChange;
+  final Function(ICP? icps) onChange;
   final BigInt? ratio;
 
   const CycleInputWidget(
@@ -32,10 +34,10 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
     icpField = ValidatedTextField("Amount",
         validations: [
           StringFieldValidation.insufficientFunds(
-              widget.source.icpBalance.asDouble(), 2)
+              widget.source.balance, 2)
         ],
         inputType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')) ]
+        inputFormatters: <TextInputFormatter>[ ICPTextInputFormatter() ]
         );
 
     cyclesField = ValidatedTextField("T Cycles",
@@ -46,7 +48,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
   }
 
   void callCallback(){
-    final amount = (icpField.failedValidation == null && cyclesField.failedValidation == null) ? icpField.currentValue.toDoubleOrNull() : null;
+    final amount = (icpField.failedValidation == null && cyclesField.failedValidation == null) ? ICP.fromString(icpField.currentValue) : null;
     widget.onChange(amount);
   }
 
@@ -58,6 +60,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(6.0),
@@ -71,9 +74,15 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                     children: [
                       Text("ICP", style: context.textTheme.headline3),
                       DebouncedValidatedFormField(icpField, onChanged: () {
-                        final newCyclesAmount = CycleCalculator(widget.ratio!).icpToTrillionCycles(icpField.currentValue.toDouble());
-                        if(cyclesField.currentValue != newCyclesAmount.toString()){
-                          cyclesField.textEditingController.text = newCyclesAmount.toString();
+                        final newIcpValue = ICP.fromString(
+                            icpField.currentValue.isEmpty ? "0" : icpField.currentValue);
+                        final newCyclesAmount = CycleCalculator(widget.ratio!)
+                            .icpToCycles(newIcpValue);
+                        final currentCyclesAmount = Cycles.fromTs(
+                            cyclesField.currentValue.toDoubleOrNull() ?? 0);
+                        if (newCyclesAmount.amount != currentCyclesAmount.amount){
+                          cyclesField.textEditingController.text =
+                              newCyclesAmount.asStringT(myLocale.languageCode).replaceAll(",", "");
                         }
                         callCallback();
                       }),
@@ -87,9 +96,15 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                     children: [
                       Text("T Cycles", style: context.textTheme.headline3),
                       DebouncedValidatedFormField(cyclesField, onChanged: (){
-                        final newIcpAmount = CycleCalculator(widget.ratio!).cyclesToIcp(cyclesField.currentValue.toDouble());
-                        if(icpField.currentValue != newIcpAmount.toString()){
-                          icpField.textEditingController.text = newIcpAmount.toString();
+                        final newCyclesAmount = Cycles.fromTs(
+                            cyclesField.currentValue.toDoubleOrNull() ?? 0);
+                        final newIcpAmount = CycleCalculator(widget.ratio!)
+                            .cyclesToIcp(newCyclesAmount);
+                        final currentIcpAmount = ICP.fromString(
+                            icpField.currentValue.isEmpty ? "0" : icpField.currentValue);
+                        if (newIcpAmount.asE8s() != currentIcpAmount.asE8s()){
+                          icpField.textEditingController.text = newIcpAmount.asString(
+                              myLocale.languageCode).replaceAll(",", "");
                         }
                         callCallback();
                       },),

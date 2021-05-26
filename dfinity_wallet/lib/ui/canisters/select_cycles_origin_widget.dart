@@ -64,6 +64,7 @@ class _AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return FlatButton(
       onPressed: onPressed,
       child: Row(
@@ -92,8 +93,11 @@ class _AccountRow extends StatelessWidget {
             ),
           ),
           BalanceDisplayWidget(
-              amount: account.balance.toBigInt.toICPT,
-              amountSize: 30, icpLabelSize: 20)
+              amount: account.balance,
+              amountSize: 30,
+              icpLabelSize: 20,
+              locale: myLocale.languageCode,
+          )
         ],
       ),
     );

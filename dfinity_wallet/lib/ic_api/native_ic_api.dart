@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
@@ -36,7 +37,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> createNeuron({required BigInt stakeInDoms, int? fromSubAccount}) {
+  Future<void> createNeuron({required ICP stake, int? fromSubAccount}) {
     // TODO: implement createNeuron
     throw UnimplementedError();
   }
@@ -57,7 +58,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> disburse({required BigInt neuronId, required BigInt doms, required String toAccountId}) {
+  Future<void> disburse({required BigInt neuronId, required ICP amount, required String toAccountId}) {
     // TODO: implement disburse
     throw UnimplementedError();
   }
@@ -96,7 +97,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> sendICPTs({required String toAccount, required BigInt e8s, int? fromSubAccount}) {
+  Future<void> sendICPTs({required String toAccount, required ICP amount, int? fromSubAccount}) {
     // TODO: implement sendICPTs
     throw UnimplementedError();
   }
@@ -183,7 +184,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<CreateCanisterResponse> createCanister({required BigInt stake, int? fromSubAccountId, required String name}) {
+  Future<CreateCanisterResponse> createCanister({required ICP amount, int? fromSubAccountId, required String name}) {
     // TODO: implement createCanister
     throw UnimplementedError();
   }
@@ -201,7 +202,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> topupCanister({required BigInt stake, int? fromSubAccountId, required String targetCanisterId}) {
+  Future<void> topupCanister({required ICP amount, int? fromSubAccountId, required String targetCanisterId}) {
     // TODO: implement topupCanister
     throw UnimplementedError();
   }

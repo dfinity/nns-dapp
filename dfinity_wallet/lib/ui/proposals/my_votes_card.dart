@@ -9,6 +9,7 @@ class MyVotesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Card(
       child: Column(
         children: [
@@ -32,14 +33,14 @@ class MyVotesCard extends StatelessWidget {
                                 style: context.textTheme.headline3,
                               ),
                               Text(
-                                "${proposal.yes}",
+                                "${proposal.yes.asString(myLocale.languageCode, 2, 2)}",
                                 style: context.textTheme.headline4,
                               ),
                             ],
                           ),
                         ),
                         Expanded(
-                          flex: proposal.yes,
+                          flex: (proposal.yes.asDouble() * 1000).toInt(),
                           child: SizedBox(
                             height: 10,
                             child: Container(
@@ -48,7 +49,7 @@ class MyVotesCard extends StatelessWidget {
                           ),
                         ),
                         Expanded(
-                          flex: proposal.no,
+                          flex: (proposal.no.asDouble() * 1000).toInt(),
                           child: SizedBox(
                             height: 10,
                             child: Container(
@@ -66,7 +67,7 @@ class MyVotesCard extends StatelessWidget {
                                 style: context.textTheme.headline3,
                               ),
                               Text(
-                                "${proposal.no}",
+                                "${proposal.no.asString(myLocale.languageCode, 2, 2)}",
                                 style: context.textTheme.headline4,
                               ),
                             ],
@@ -113,7 +114,8 @@ class MyVotesCard extends StatelessWidget {
                       Padding(
                           padding: EdgeInsets.all(16.0),
                           child: Text(
-                            "${e.votingPower.toBigInt.toICPT.toStringAsFixed(2)}", style: context.textTheme.subtitle2,)),
+                            "${e.votingPower.asString(myLocale.languageCode, 2, 2)}",
+                          style: context.textTheme.subtitle2,)),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SizedBox.fromSize(

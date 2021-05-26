@@ -1,7 +1,6 @@
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
-
+import 'package:dfinity_wallet/ui/wallet/percentage_display_widget.dart';
 import '../../../dfinity.dart';
 
 class NeuronRewardsCard extends StatelessWidget {
@@ -11,6 +10,7 @@ class NeuronRewardsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Card(
       color: AppColors.background,
       child: Padding(
@@ -42,11 +42,11 @@ class NeuronRewardsCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      BalanceDisplayWidget(
-                          amount: BigInt.from(100) * neuron.maturityE8sEquivalent.toBigInt / neuron.stake,
-                          amountSize: 30,
-                          icpLabelSize: 0,
-                          amountLabelSuffix: "%"),
+                      PercentageDisplayWidget(
+                        amount: (100 * (neuron.maturityICPEquivalent.asE8s() / neuron.stake.asE8s())),
+                        amountSize: 30,
+                        locale: myLocale.languageCode,
+                      ),
                       Expanded(child: ConstrainedBox(constraints: BoxConstraints(minHeight: 40),
                       child: Container())),
                       Align(
@@ -63,7 +63,7 @@ class NeuronRewardsCard extends StatelessWidget {
                                   });
                                 },
                               ));
-                            }.takeIf((e) => neuron.maturityE8sEquivalent.toDouble() > E8S_PER_ICP && neuron.isCurrentUserController),
+                            }.takeIf((e) => neuron.maturityICPEquivalent.asE8s() > BigInt.from(E8S_PER_ICP) && neuron.isCurrentUserController),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Text("Spawn Neuron"),
