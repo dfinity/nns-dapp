@@ -5,7 +5,7 @@ gulp.task('create-staging-config', function(cb) {
   fs.writeFile('src/config.json', JSON.stringify({
     IDENTITY_SERVICE_URL: "https://qsgjb-riaaa-aaaaa-aaaga-cai.xsmallh.dfinity.network/",
     HOST: "https://xsmallh.dfinity.network/",
-    OWN_CANISTER_ID: "qaa6y-5yaaa-aaaaa-aaafa-cai",
+    OWN_CANISTER_ID: "qhbym-qaaaa-aaaaa-aaafq-cai",
     FETCH_ROOT_KEY: false
   }), cb);
 });

@@ -1,7 +1,10 @@
 {
+  "__Candid_UI": {
+    "testnet": "sp3hj-caaaa-aaaaa-aaajq-cai"
+  },
   "nns_ui": {
     "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai",
     "messaging": "6qpux-vqaaa-aaaaa-qaalq-cai",
-    "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+    "testnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
   }
 }
