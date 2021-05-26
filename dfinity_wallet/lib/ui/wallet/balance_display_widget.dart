@@ -1,12 +1,11 @@
 import 'package:core/core.dart';
 import 'package:dfinity_wallet/data/icp.dart';
-import 'package:intl/intl.dart';
 
 class BalanceDisplayWidget extends StatelessWidget {
-  // Made dynamic for temporary compatibility with the callers.
-  final dynamic amount;
+  final ICP amount;
   final int amountSize;
   final int icpLabelSize;
+  final String locale;
   final String? amountLabelSuffix;
 
   const BalanceDisplayWidget(
@@ -14,21 +13,13 @@ class BalanceDisplayWidget extends StatelessWidget {
       required this.amount,
       required this.amountSize,
       required this.icpLabelSize,
+      required this.locale,
       this.amountLabelSuffix})
       : super(key: key);
 
   // Temporary method until all callers are not using doubles.
   String getAmount() {
-    // TODO(NU-58): Use a standard formatting for all locales. For now, en_US is
-    // used.
-    final String languageCode = "en_US";
-    if (amount is ICP) {
-      return "${amount.asString(languageCode)}${amountLabelSuffix ?? ""}";
-    } else if (amount is double) {
-      return "${NumberFormat("###,##0.00######", languageCode).format(amount)}${amountLabelSuffix ?? ""}";
-    } else {
-      throw FormatException("Expected amount to be of type double or ICP");
-    }
+    return "${amount.asString(this.locale)}${amountLabelSuffix ?? ""}";
   }
 
   @override
@@ -61,7 +52,7 @@ class BalanceDisplayWidget extends StatelessWidget {
 }
 
 class LabelledBalanceDisplayWidget extends StatelessWidget {
-  final double amount;
+  final ICP amount;
   final int amountSize;
   final int icpLabelSize;
   final Text text;
@@ -76,6 +67,7 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -83,6 +75,7 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
           amount: amount,
           amountSize: 30,
           icpLabelSize: icpLabelSize,
+          locale: myLocale.languageCode,
         ),
         SizedBox(height: 5),
         text

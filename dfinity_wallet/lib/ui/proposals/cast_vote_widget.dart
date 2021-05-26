@@ -1,3 +1,5 @@
+import 'package:dfinity_wallet/data/icp.dart';
+
 import '../../dfinity.dart';
 import 'confirm_vote_dialog.dart';
 
@@ -24,9 +26,10 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
     if (selectedNeurons == null) {
       selectedNeurons = neuronsWithoutVote.toList();
     }
+    final myLocale = Localizations.localeOf(context);
     final numVotes = selectedNeurons!
-        .sumBy((element) => element.votingPower.toBigInt.toICPT)
-        .toStringAsFixed(2);
+        .fold(ICP.zero, (ICP curr, next) => curr + next.votingPower)
+        .asString(myLocale.languageCode, 2, 2);
     return Card(
       color: AppColors.background,
       child: Container(
@@ -103,7 +106,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                       alignment: Alignment.bottomRight,
                       padding: const EdgeInsets.only(right: 16),
                       height: 28,
-                      child: Text(n.votingPower.toBigInt.toICPT.toStringAsFixed(2))
+                      child: Text(n.votingPower.asString(myLocale.languageCode, 2, 2))
                     )
                   ]
                 )),

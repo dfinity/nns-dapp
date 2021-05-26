@@ -6,14 +6,16 @@ import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/proposal_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 
+import 'icp.dart';
+
 
 class Proposal extends DfinityEntity {
   late String id;
   late String summary;
   late String url;
   late String proposer;
-  late int no;
-  late int yes;
+  late ICP no;
+  late ICP yes;
   late Map<String, dynamic> action;
   String? executedTimestampSeconds;
   String? failedTimestampSeconds;

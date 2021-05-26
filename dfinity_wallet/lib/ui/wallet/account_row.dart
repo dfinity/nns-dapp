@@ -10,6 +10,7 @@ class AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Card(
       margin: EdgeInsets.only(left: 0, right: 0, bottom: 16),
       color:
@@ -43,9 +44,10 @@ class AccountRow extends StatelessWidget {
                     ),
                   ),
                   BalanceDisplayWidget(
-                      amount: account.icpBalance,
+                      amount: account.balance,
                       amountSize: 30,
-                      icpLabelSize: 20)
+                      icpLabelSize: 20,
+                      locale: myLocale.languageCode)
                 ],
               ),
               Padding(

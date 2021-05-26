@@ -13,12 +13,12 @@ class Neuron extends DfinityEntity with ICPSource {
   late String id;
   late List<BallotInfo> recentBallots;
   late String createdTimestampSeconds;
-  late String votingPower;
+  late ICP votingPower;
   late NeuronState state;
   late String dissolveDelaySeconds;
-  late String cachedNeuronStakeDoms;
-  late String neuronFeesDoms;
-  late String maturityE8sEquivalent;
+  late ICP cachedNeuronStake;
+  late ICP neuronFees;
+  late ICP maturityICPEquivalent;
   late String? whenDissolvedTimestampSeconds;
   late List<Followee> followees;
   List<Proposal>? proposals;
@@ -32,7 +32,7 @@ class Neuron extends DfinityEntity with ICPSource {
     required this.votingPower,
     required this.state,
     required this.dissolveDelaySeconds,
-    required this.cachedNeuronStakeDoms,
+    required this.cachedNeuronStake,
     required this.proposals,
     required this.followEditCounter,
     required this.isCurrentUserController
@@ -49,10 +49,10 @@ class Neuron extends DfinityEntity with ICPSource {
   @override
   int? get subAccountId => null;
 
-  BigInt get stake => cachedNeuronStakeDoms.toBigInt - neuronFeesDoms.toBigInt;
+  ICP get stake => cachedNeuronStake - neuronFees;
 
   @override
-  ICP get icpBalance => ICP.fromString(stake.toString());
+  ICP get balance => stake;
 
   DateTime get whenDissolvedTimestamp =>
       whenDissolvedTimestampSeconds.secondsToDateTime();

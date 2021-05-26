@@ -1,9 +1,10 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
 class TransactionDoneWidget extends StatelessWidget {
-  final double amount;
+  final ICP amount;
   final ICPSource source;
   final String destination;
 

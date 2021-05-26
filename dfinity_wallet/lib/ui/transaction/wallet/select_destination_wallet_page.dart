@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
@@ -62,9 +63,8 @@ class _SelectDestinationAccountPageState
                                     "Review Transaction",
                                     ConfirmTransactionWidget(
                                       // if we're disbursing, no fee?
-                                      fee: 0,
-                                      amount:
-                                          widget.source.icpBalance.asDouble(),
+                                      fee: ICP.zero,
+                                      amount: widget.source.balance,
                                       source: widget.source,
                                       destination: address,
                                       subAccountId: widget.source.subAccountId,
@@ -117,10 +117,8 @@ class _SelectDestinationAccountPageState
                                           WizardOverlay.of(context).pushPage(
                                               "Review Transaction",
                                               ConfirmTransactionWidget(
-                                                fee: 0,
-                                                amount:
-                                                    widget.source.icpBalance
-                                                    .asDouble(),
+                                                fee: ICP.zero,
+                                                amount: widget.source.balance,
                                                 source: widget.source,
                                                 destination:
                                                     e.accountIdentifier,
@@ -166,6 +164,7 @@ class _AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return FlatButton(
       onPressed: onPressed,
       child: Row(
@@ -194,9 +193,11 @@ class _AccountRow extends StatelessWidget {
             ),
           ),
           BalanceDisplayWidget(
-              amount: account.balance.toBigInt.toICPT,
+              amount: account.balance,
               amountSize: 30,
-              icpLabelSize: 20)
+              icpLabelSize: 20,
+              locale: myLocale.languageCode,
+          )
         ],
       ),
     );

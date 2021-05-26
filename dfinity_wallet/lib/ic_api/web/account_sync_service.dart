@@ -2,6 +2,8 @@
 import 'dart:convert';
 import 'dart:js_util';
 
+import 'package:dfinity_wallet/data/icp.dart';
+
 import 'service_api.dart';
 import 'stringify.dart';
 
@@ -61,17 +63,17 @@ class AccountsSyncService {
         required bool primary,
         required bool hardwareWallet}) async {
     if (!hiveBoxes.accounts.containsKey(address)) {
-      hiveBoxes.accounts[address] = Account.create(
-              name: name,
-              accountIdentifier: address,
-              subAccountId: subAccount,
-              primary: primary,
-              balance: BigInt.zero.toString(),
-              transactions: [],
-              hardwareWallet: hardwareWallet
-          );
+      hiveBoxes.accounts[address] = Account(
+        name: name,
+        accountIdentifier: address,
+        primary: primary,
+        subAccountId: subAccount,
+        balance: ICP.zero,
+        transactions: [],
+        hardwareWallet: hardwareWallet
+      );
     }else{
-      final account = await hiveBoxes.accounts[address];
+      final account = hiveBoxes.accounts[address];
       account.name = name;
       hiveBoxes.accounts[address] = account;
     }

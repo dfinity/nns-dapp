@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:flutter/services.dart';
 
 import '../../dfinity.dart';
@@ -81,10 +82,10 @@ class StringFieldValidation extends FieldValidation<String> {
           return amount <= 0;
         });
 
-  StringFieldValidation.insufficientFunds(double balance, int numberOfTransactions)
+  StringFieldValidation.insufficientFunds(ICP balance, int numberOfTransactions)
       : this("Insufficient funds", (e) {
-          var modBalance = balance.toDouble() - (numberOfTransactions * TRANSACTION_FEE_ICP.toDouble());
-          var sendAmount = (e.toDoubleOrNull() ?? 0.0);
+          final BigInt modBalance = balance.asE8s() - BigInt.from(numberOfTransactions * TRANSACTION_FEE_E8S);
+          final BigInt sendAmount = ICP.fromString(e.isEmpty ? "0" : e).asE8s();
           return sendAmount > modBalance;
         });
 }

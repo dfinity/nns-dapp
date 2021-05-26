@@ -1,14 +1,19 @@
+import 'package:dfinity_wallet/data/cycles.dart';
+import 'package:dfinity_wallet/data/icp.dart';
+import 'package:dfinity_wallet/data/icp_source.dart';
+
 class CycleCalculator {
-  final BigInt trillionRatio;
-  double get ratio => trillionRatio / (BigInt.from(1000000) * BigInt.from(1000000));
+  late double e8ToCycleRatio;
 
-  CycleCalculator(this.trillionRatio);
-
-  double icpToTrillionCycles(double icp) {
-    return icp * ratio.toInt();
+  CycleCalculator(BigInt trillionRatio) {
+    this.e8ToCycleRatio = trillionRatio / BigInt.from(E8S_PER_ICP);
   }
 
-  double cyclesToIcp(double cycles) {
-    return cycles.toInt() / ratio;
+  Cycles icpToCycles(ICP icp) {
+    return Cycles.fromBigInt(BigInt.from(icp.asE8s().toDouble() * this.e8ToCycleRatio));
+  }
+
+  ICP cyclesToIcp(Cycles cycles) {
+    return ICP.fromE8s(BigInt.from(cycles.amount.toDouble() / this.e8ToCycleRatio));
   }
 }

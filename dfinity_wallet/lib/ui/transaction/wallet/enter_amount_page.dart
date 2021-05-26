@@ -34,17 +34,18 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
     amountField = ValidatedTextField("Amount",
         validations: [
           StringFieldValidation.insufficientFunds(
-              widget.source.icpBalance.asDouble(), 1),
+              widget.source.balance, 1),
           StringFieldValidation.greaterThanZero()
         ],
         inputType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
+          ICPTextInputFormatter()
         ]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return SizedBox.expand(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -56,9 +57,10 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                 children: [
                   Text("Current Balance: "),
                   BalanceDisplayWidget(
-                    amount: widget.source.icpBalance,
+                    amount: widget.source.balance,
                     amountSize: 40,
                     icpLabelSize: 0,
+                    locale: myLocale.languageCode,
                   )
                 ],
               ),
@@ -98,7 +100,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                   Text("Transaction Fee (billed to source)",
                       style: context.textTheme.headline4),
                   VerySmallFormDivider(),
-                  Text(TRANSACTION_FEE_ICP.toString() + " ICP",
+                  Text(ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)).asString(myLocale.languageCode) + " ICP",
                       style: context.textTheme.bodyText1),
                 ],
               ),
@@ -114,7 +116,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                     WizardOverlay.of(context).pushPage(
                         "Review Transaction",
                         ConfirmTransactionWidget(
-                          fee: TRANSACTION_FEE_ICP,
+                          fee: ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)),
                           amount: amount,
                           source: widget.source,
                           destination: widget.destinationAccountIdentifier,

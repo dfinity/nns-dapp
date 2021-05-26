@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:intl/intl.dart';
@@ -77,8 +78,8 @@ class TransactionRow extends StatelessWidget {
                 width: 20,
               ),
               TransactionAmountDisplayWidget(
-                fee: transaction.fee.toBigInt.toICPT,
-                amount: transaction.icpt,
+                fee: transaction.fee,
+                amount: transaction.amount,
                 type: transaction.type,
                 addition: transaction.from != currentAccount.accountIdentifier,
               ),
@@ -91,8 +92,8 @@ class TransactionRow extends StatelessWidget {
 }
 
 class TransactionAmountDisplayWidget extends StatelessWidget {
-  final double amount;
-  final double fee;
+  final ICP amount;
+  final ICP fee;
   final TransactionType type;
   final bool addition;
 
@@ -111,14 +112,14 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
     final color = addition ? AppColors.green500 : AppColors.gray50;
     final secondaryColor = addition ? AppColors.green600 : AppColors.gray200;
 
-    final displayAmount = amount + (type.shouldShowFee() ? this.fee : 0);
+    final displayAmount = amount + (type.shouldShowFee() ? this.fee : ICP.zero);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "$sign${(displayAmount).toDisplayICPT(myLocale.languageCode)}",
+          "$sign${(displayAmount).asString(myLocale.languageCode)}",
           style: TextStyle(
               color: color,
               fontFamily: Fonts.circularBold,

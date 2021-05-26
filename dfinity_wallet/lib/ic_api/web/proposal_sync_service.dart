@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:js_util';
 
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/setup/hive_loader_widget.dart';
 import 'package:dfinity_wallet/data/topic.dart';
@@ -69,8 +70,8 @@ class ProposalSyncService {
         "https://www.lipsum.com/",
         "https://medium.com/zurich-eth/ic-proposal-reduce-smart-contract-memory-costs/");
     proposal.proposer = response['proposer'].toString();
-    proposal.no = response['latestTally']['no'].toString().toInt();
-    proposal.yes = response['latestTally']['yes'].toString().toInt();
+    proposal.no = ICP.fromE8s(response['latestTally']['no'].toString().toBigInt);
+    proposal.yes = ICP.fromE8s(response['latestTally']['yes'].toString().toBigInt);
     proposal.action = response['proposal']['action'];
 
     proposal.executedTimestampSeconds =

@@ -214,23 +214,23 @@ class SpawnRequest {
 @JS()
 @anonymous
 class CreateCanisterRequest {
-  external dynamic stake;
+  external dynamic amount;
   external int? fromSubAccountId;
   external String name;
 
   external factory CreateCanisterRequest(
-      {dynamic stake, int? fromSubAccountId, String name});
+      {dynamic amount, int? fromSubAccountId, String name});
 }
 
 @JS()
 @anonymous
 class TopupCanisterRequest {
-  external dynamic stake;
+  external dynamic amount;
   external int? fromSubAccountId;
   external dynamic targetCanisterId;
 
   external factory TopupCanisterRequest(
-      {dynamic stake, int? fromSubAccountId, dynamic targetCanisterId});
+      {dynamic amount, int? fromSubAccountId, dynamic targetCanisterId});
 }
 
 @JS()
