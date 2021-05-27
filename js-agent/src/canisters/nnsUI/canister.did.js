@@ -50,6 +50,8 @@ export default ({ IDL }) => {
     'latest_transaction_block_height' : BlockHeight,
     'seconds_since_last_ledger_sync' : IDL.Nat64,
     'sub_accounts_count' : IDL.Nat64,
+    'neuron_accounts_count' : IDL.Nat64,
+    'neurons_refreshed_count' : IDL.Nat64,
     'hardware_wallet_accounts_count' : IDL.Nat64,
     'accounts_count' : IDL.Nat64,
     'earliest_transaction_block_height' : BlockHeight,
@@ -62,6 +64,17 @@ export default ({ IDL }) => {
     'page_size' : IDL.Nat8,
     'offset' : IDL.Nat32,
     'account_identifier' : AccountIdentifier,
+  });
+  const CanisterId = IDL.Principal;
+  const TransactionType = IDL.Variant({
+    'Burn' : IDL.Null,
+    'Mint' : IDL.Null,
+    'Send' : IDL.Null,
+    'StakeNeuronNotification' : IDL.Null,
+    'TopUpCanister' : CanisterId,
+    'CreateCanister' : IDL.Null,
+    'TopUpNeuron' : IDL.Null,
+    'StakeNeuron' : IDL.Null,
   });
   const Timestamp = IDL.Record({ 'timestamp_nanos' : IDL.Nat64 });
   const ICPTs = IDL.Record({ 'e8s' : IDL.Nat64 });
@@ -82,6 +95,7 @@ export default ({ IDL }) => {
     'Receive' : Receive,
   });
   const Transaction = IDL.Record({
+    'transaction_type' : IDL.Opt(TransactionType),
     'memo' : IDL.Nat64,
     'timestamp' : Timestamp,
     'block_height' : BlockHeight,

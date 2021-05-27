@@ -1,4 +1,4 @@
-use crate::ledger;
+use crate::canisters::ledger;
 use crate::state::STATE;
 use dfn_core::CanisterId;
 use ic_nns_constants::LEDGER_CANISTER_ID;

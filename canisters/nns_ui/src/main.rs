@@ -20,13 +20,14 @@ use crate::transaction_store::{
     RenameSubAccountResponse,
     Stats
 };
+use crate::canisters::governance::ClaimOrRefreshNeuronFromAccount;
 use dfn_candid::{candid, candid_one};
 use dfn_core::{stable, over, over_async};
 use ledger_canister::AccountIdentifier;
 
 mod assets;
+mod canisters;
 mod canister_store;
-mod ledger;
 mod ledger_sync;
 mod state;
 mod transaction_store;
@@ -207,6 +208,16 @@ pub fn canister_heartbeat() {
 
 async fn run_periodic_tasks_impl() {
     ledger_sync::sync_transactions().await;
+
+    let maybe_neuron_to_refresh = STATE.write().unwrap().transactions_store.try_take_next_neuron_to_refresh();
+    if let Some(neuron_to_refresh) = maybe_neuron_to_refresh {
+        if let Ok(_) = canisters::governance::claim_or_refresh_neuron_from_account(ClaimOrRefreshNeuronFromAccount {
+            controller: Some(neuron_to_refresh.get_principal()),
+            memo: neuron_to_refresh.get_memo().0
+        }).await {
+            STATE.write().unwrap().transactions_store.mark_neuron_refreshed();
+        }
+    }
 
     if should_prune_transactions() {
         let store = &mut STATE.write().unwrap().transactions_store;

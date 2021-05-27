@@ -1,5 +1,6 @@
 type AccountIdentifier = text;
 type BlockHeight = nat64;
+type CanisterId = principal;
 type ICPTs = record { e8s: nat64; };
 type SubAccount = vec nat8;
 
@@ -75,7 +76,20 @@ type Transaction =
         timestamp: Timestamp;
         memo: nat64;
         transfer: Transfer;
+        transaction_type: opt TransactionType;
     };
+
+type TransactionType =
+    variant {
+         Burn;
+         Mint;
+         Send;
+         StakeNeuron;
+         TopUpNeuron;
+         CreateCanister;
+         TopUpCanister: CanisterId;
+         StakeNeuronNotification;
+     };
 
 type CreateSubAccountResponse =
     variant {
@@ -169,6 +183,8 @@ type Stats =
         latest_transaction_timestamp_nanos: nat64;
         latest_transaction_block_height: BlockHeight;
         seconds_since_last_ledger_sync: nat64;
+        neuron_accounts_count: nat64;
+        neurons_refreshed_count: nat64;
     };
 
 type HeaderField =
