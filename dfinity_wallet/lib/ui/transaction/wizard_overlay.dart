@@ -9,14 +9,12 @@ class WizardOverlay extends StatefulWidget {
   WizardOverlay({Key? key, required this.rootTitle, required this.rootWidget})
       : super(key: key);
 
-
   static WizardOverlayState of(BuildContext context) =>
       context.findAncestorStateOfType<WizardOverlayState>()!;
 
   @override
   WizardOverlayState createState() => WizardOverlayState();
 }
-
 
 class WizardOverlayState extends State<WizardOverlay> {
   final GlobalKey navigatorKey = GlobalKey();
@@ -26,22 +24,21 @@ class WizardOverlayState extends State<WizardOverlay> {
   @override
   void initState() {
     super.initState();
-    pages.add(createPage(title: widget.rootTitle, widget:widget.rootWidget));
+    pages.add(createPage(title: widget.rootTitle, widget: widget.rootWidget));
   }
 
   void pushPage(String? title, Widget widget) {
     setState(() {
-      pages.add(createPage(title:title, widget: widget));
+      pages.add(createPage(title: title, widget: widget));
     });
   }
 
   void replacePage(String? title, Widget widget) {
     setState(() {
       pages.clear();
-      pages.add(createPage(title:title, widget: widget));
+      pages.add(createPage(title: title, widget: widget));
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -68,41 +65,44 @@ class WizardOverlayState extends State<WizardOverlay> {
     );
   }
 
-  MaterialPage createPage({String? title, required Widget widget}) => MaterialPage(
-      child: Scaffold(
-          backgroundColor: AppColors.lighterBackground,
-          appBar: (title != null) ? AppBar(
-            backgroundColor: AppColors.lighterBackground,
-            toolbarHeight: 100,
-            leadingWidth: 100,
-            actions: [AspectRatio(
-                aspectRatio: 1,
-                child: TextButton(
-                  onPressed: () {
-                    OverlayBaseWidget.of(context)?.dismiss();
-                  },
-                  child: Center(
-                    child: Text(
-                      "✕",
-                      style: TextStyle(
-                          fontFamily: Fonts.circularBook,
-                          fontSize: 24,
-                          color: AppColors.white),
-                    ),
-                  ),
-                )),],
-            title: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: AutoSizeText(title,
-              maxLines: 1,
-              overflow: TextOverflow.visible,
-                  style: TextStyle(
-                      fontSize: 32,
-                      fontFamily: Fonts.circularBook,
-                      color: AppColors.gray50)),
-            ),
-          ) : null,
-          body: widget));
+  MaterialPage createPage({String? title, required Widget widget}) =>
+      MaterialPage(
+          child: Scaffold(
+              backgroundColor: AppColors.lighterBackground,
+              appBar: (title != null)
+                  ? AppBar(
+                      backgroundColor: AppColors.lighterBackground,
+                      toolbarHeight: 80,
+                      //leadingWidth: 100,
+                      actions: [
+                        AspectRatio(
+                            aspectRatio: 1,
+                            child: TextButton(
+                              onPressed: () {
+                                OverlayBaseWidget.of(context)?.dismiss();
+                              },
+                              child: Center(
+                                child: Text(
+                                  "✕",
+                                  style: TextStyle(
+                                      fontFamily: Fonts.circularBook,
+                                      fontSize: 24,
+                                      color: AppColors.white),
+                                ),
+                              ),
+                            )),
+                      ],
+                      title: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: AutoSizeText(title,
+                            maxLines: 1,
+                            overflow: TextOverflow.visible,
+                            style: TextStyle(
+                                fontSize: 32,
+                                fontFamily: Fonts.circularBook,
+                                color: AppColors.gray50)),
+                      ),
+                    )
+                  : null,
+              body: widget));
 }
-
-

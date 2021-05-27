@@ -54,7 +54,7 @@ flutter:
   assets:
     - assets/
     - assets/fonts/
-    - assets/dfinity_agent.js
+    #- assets/dfinity_agent.js
 
   fonts:
     - family: Circular-Bold

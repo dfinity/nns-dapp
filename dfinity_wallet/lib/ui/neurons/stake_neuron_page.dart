@@ -23,12 +23,16 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
 
   @override
   void initState() {
+    super.initState();
     amountField = ValidatedTextField("Amount",
         validations: [
           StringFieldValidation.insufficientFunds(widget.source.icpBalance, 2),
-          StringFieldValidation("Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
+          StringFieldValidation(
+              "Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
         ],
-        inputFormatters: <TextInputFormatter>[ FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')) ],
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
+        ],
         inputType: TextInputType.number);
   }
 
@@ -106,11 +110,9 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                   child: Text("Create"),
                   onPressed: () async {
                     // TODO: Should be using the returned neuronId
-                    await context.callUpdate(() => context.icApi
-                        .createNeuron(
-                            stakeInDoms:
-                                amountField.currentValue.toDouble().toE8s,
-                            fromSubAccount: widget.source.subAccountId));
+                    await context.callUpdate(() => context.icApi.createNeuron(
+                        stakeInDoms: amountField.currentValue.toDouble().toE8s,
+                        fromSubAccount: widget.source.subAccountId));
                     final newNeuron = context.boxes.neurons.values
                         .sortedByDescending((element) =>
                             element.createdTimestampSeconds.toBigInt)

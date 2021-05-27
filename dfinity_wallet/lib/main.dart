@@ -30,8 +30,7 @@ class AppLocalizations {
   }
 }
 
-class AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const AppLocalizationsDelegate();
 
   @override
@@ -52,8 +51,7 @@ class DfinityApp extends StatelessWidget {
   final HiveBoxes hiveBoxes;
   final WalletRouterDelegate router;
 
-  const DfinityApp(
-      {Key? key, required this.hiveBoxes, required this.router})
+  const DfinityApp({Key? key, required this.hiveBoxes, required this.router})
       : super(key: key);
 
   @override
@@ -63,6 +61,7 @@ class DfinityApp extends StatelessWidget {
       child: ICApiManager(
         child: Builder(builder: (context) {
           return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             routerDelegate: router,
             routeInformationParser: WalletRouteParser(hiveBoxes, context),
             title: 'Network Nervous System',

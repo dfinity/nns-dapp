@@ -1,3 +1,5 @@
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
+
 import '../../dfinity.dart';
 
 class MultiSelectField<T> {
@@ -40,19 +42,22 @@ class _MultiSelectDropdownWidgetState<T>
   }
 
   void showPopup() {
-    OverlayBaseWidget.show(context, SizedBox(
-      width: 420,
-      child: MultiSelectList(
-          field: widget.field,
-          onChange: () {
-            widget.onChange?.call();
-            setState(() {});
-          },
-          onDismissPressed: (context) {
-            OverlayBaseWidget.of(context)!.dismiss();
-            widget.onDismiss?.call();
-          }),
-    ), borderRadius: 20);
+    OverlayBaseWidget.show(
+        context,
+        SizedBox(
+          width: 500,
+          child: MultiSelectList(
+              field: widget.field,
+              onChange: () {
+                widget.onChange?.call();
+                setState(() {});
+              },
+              onDismissPressed: (context) {
+                OverlayBaseWidget.of(context)!.dismiss();
+                widget.onDismiss?.call();
+              }),
+        ),
+        borderRadius: 20);
   }
 
   @override
@@ -66,9 +71,9 @@ class _MultiSelectDropdownWidgetState<T>
                 padding: const EdgeInsets.only(left: 16, top: 8.0, bottom: 8.0),
                 child: Text(
                   widget.field.title,
-                  style: context.textTheme.headline4?.copyWith(color: AppColors.white),
-                )
-              ),
+                  style: context.textTheme.headline4
+                      ?.copyWith(color: AppColors.white),
+                )),
           ],
         ),
         Expanded(
@@ -78,8 +83,7 @@ class _MultiSelectDropdownWidgetState<T>
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(AppColors.gray600),
                   foregroundColor: MaterialStateProperty.all(AppColors.gray400),
-                  overlayColor: MaterialStateProperty.all(
-                      AppColors.gray400),
+                  overlayColor: MaterialStateProperty.all(AppColors.gray400),
                   textStyle: MaterialStateProperty.all(
                       TextStyle(fontSize: 16, fontFamily: Fonts.circularBook)),
                   side: MaterialStateProperty.all(
@@ -87,7 +91,7 @@ class _MultiSelectDropdownWidgetState<T>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(                    
+                  Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.max,
@@ -97,22 +101,25 @@ class _MultiSelectDropdownWidgetState<T>
                           padding: const EdgeInsets.only(top: 8, bottom: 6),
                           child: Wrap(
                             children: widget.field.selectedOptions
-                              .mapToList((e) => Container(
-                                margin: EdgeInsets.fromLTRB(4, 5, 4, 6),
-                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                                decoration: ShapeDecoration(
-                                  color: AppColors.gray800,
-                                  shape: StadiumBorder()
-                                ),
-                                child: Text(
-                                  widget.field.titleForOption(e),
-                                  style: TextStyle(
-                                    fontFamily: Fonts.circularMedium,
-                                    fontSize: 14,
-                                    color: AppColors.gray50),
-                                ),
-                              )
-                            ),
+                                .mapToList((e) => Container(
+                                      margin: EdgeInsets.fromLTRB(4, 5, 4, 6),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 12),
+                                      decoration: ShapeDecoration(
+                                          color: AppColors.gray800,
+                                          shape: StadiumBorder()),
+                                      child: Text(
+                                        widget.field.titleForOption(e),
+                                        style: TextStyle(
+                                            fontFamily: Fonts.circularMedium,
+                                            fontSize: Responsive.isDesktop(
+                                                        context) |
+                                                    Responsive.isTablet(context)
+                                                ? 14
+                                                : 12,
+                                            color: AppColors.gray50),
+                                      ),
+                                    )),
                           ),
                         )
                       ],
@@ -137,7 +144,6 @@ class _MultiSelectDropdownWidgetState<T>
       ],
     );
   }
-
 }
 
 class MultiSelectList<T> extends StatefulWidget {
