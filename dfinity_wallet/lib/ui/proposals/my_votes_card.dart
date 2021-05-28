@@ -44,7 +44,7 @@ class MyVotesCard extends StatelessWidget {
                           child: SizedBox(
                             height: 10,
                             child: Container(
-                              color: Color(0xffED1E79),
+                              color: Color(0xff80ACF8),
                             ),
                           ),
                         ),
@@ -53,7 +53,7 @@ class MyVotesCard extends StatelessWidget {
                           child: SizedBox(
                             height: 10,
                             child: Container(
-                              color: Color(0xff80ACF8),
+                              color: Color(0xffED1E79),
                             ),
                           ),
                         ),
