@@ -194,23 +194,11 @@ class _AccountRow extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: IconButton(
-                            icon: Icon(
-                              Icons.copy,
-                              color: context.textTheme.bodyText2?.color,
-                            ),
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(
-                                  text: account.accountIdentifier));
-                            }),
-                        flex: 2,
-                      ),
-                      Expanded(
                         flex: 12,
                         child: AutoSizeText(
                           account.accountIdentifier,
                           style: context.textTheme.bodyText2,
-                          selectable: true,
+                          selectable: false,
                         ),
                       ),
                     ],
