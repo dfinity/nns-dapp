@@ -1,12 +1,13 @@
-
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 
 import '../../dfinity.dart';
 
 class SelectCyclesOriginWidget extends StatelessWidget {
   final Function(Account account, BuildContext context) onSelected;
 
-  const SelectCyclesOriginWidget({Key? key, required this.onSelected}) : super(key: key);
+  const SelectCyclesOriginWidget({Key? key, required this.onSelected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,10 @@ class SelectCyclesOriginWidget extends StatelessWidget {
               children: [
                 Text(
                   "Select ICP Source Account",
-                  style: context.textTheme.headline3,
+                  style: Responsive.isDesktop(context) |
+                          Responsive.isTablet(context)
+                      ? context.textTheme.headline3
+                      : context.textTheme.headline4,
                 ),
                 SmallFormDivider(),
                 Padding(
@@ -35,10 +39,10 @@ class SelectCyclesOriginWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: context.boxes.accounts.values
                           .mapToList((e) => _AccountRow(
-                          account: e,
-                          onPressed: () {
-                           onSelected(e, context);
-                          })),
+                              account: e,
+                              onPressed: () {
+                                onSelected(e, context);
+                              })),
                     ),
                   ),
                 )
@@ -49,7 +53,6 @@ class SelectCyclesOriginWidget extends StatelessWidget {
   }
 }
 
-
 class _AccountRow extends StatelessWidget {
   final Account account;
   final VoidCallback onPressed;
@@ -57,9 +60,9 @@ class _AccountRow extends StatelessWidget {
 
   const _AccountRow(
       {Key? key,
-        required this.account,
-        required this.onPressed,
-        this.selected = false})
+      required this.account,
+      required this.onPressed,
+      this.selected = false})
       : super(key: key);
 
   @override
@@ -103,5 +106,3 @@ class _AccountRow extends StatelessWidget {
     );
   }
 }
-
-

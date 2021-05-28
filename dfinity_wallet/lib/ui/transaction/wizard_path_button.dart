@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 
 import '../../dfinity.dart';
 
@@ -8,9 +9,9 @@ class WizardPathButton extends StatelessWidget {
 
   const WizardPathButton(
       {Key? key,
-        required this.title,
-        required this.subtitle,
-        required this.onPressed})
+      required this.title,
+      required this.subtitle,
+      required this.onPressed})
       : super(key: key);
 
   @override
@@ -23,16 +24,18 @@ class WizardPathButton extends StatelessWidget {
             return AppColors.blue600.withOpacity(0.5);
           })),
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(40.0),
         child: SizedBox(
           width: double.infinity,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: context.textTheme.headline3,
-              ),
+              Text(title,
+                  style: Responsive.isDesktop(context) |
+                          Responsive.isTablet(context)
+                      ? context.textTheme.headline3
+                      : context.textTheme.headline4),
               SizedBox(
                 height: 10,
               ),

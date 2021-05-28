@@ -3,6 +3,8 @@ import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
+import 'package:dfinity_wallet/ui/_components/page_button.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 
@@ -31,23 +33,29 @@ class _NeuronsPageState extends State<NeuronsPage> {
 Your principal id is "${context.icApi.getPrincipal()}"''',
                 children: [
                   SmallFormDivider(),
-                  ...(context.boxes.neurons.values?.sortedByDescending((element) => element.createdTimestampSeconds.toBigInt)?.mapToList((e) => Card(
-                        child: FlatButton(
-                          onPressed: () {
-                            context.nav.push(NeuronPageDef.createPageConfig(e));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: NeuronRow(
-                              neuron: e,
-                              showsWarning: true,
-                              onTap: (){
-                                context.nav.push(NeuronPageDef.createPageConfig(e));
-                              },
-                            ),
-                          ),
-                        ),
-                      )) ?? []),
+                  ...(context.boxes.neurons.values
+                          ?.sortedByDescending((element) =>
+                              element.createdTimestampSeconds.toBigInt)
+                          ?.mapToList((e) => Card(
+                                child: FlatButton(
+                                  onPressed: () {
+                                    context.nav.push(
+                                        NeuronPageDef.createPageConfig(e));
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: NeuronRow(
+                                      neuron: e,
+                                      showsWarning: true,
+                                      onTap: () {
+                                        context.nav.push(
+                                            NeuronPageDef.createPageConfig(e));
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              )) ??
+                      []),
                   SizedBox(height: 150)
                 ],
               );
@@ -55,30 +63,18 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
       ),
       footer: Align(
         alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: EdgeInsets.all(32),
-          child: ElevatedButton(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: 400,
-                child: Text(
-                  "Stake Neuron",
-                  textAlign: TextAlign.center,
-                  style: context.textTheme.button?.copyWith(fontSize: 24),
-                ),
+        child: PageButton(
+          title: "Stake Neuron",
+          onPress: () {
+            OverlayBaseWidget.show(
+              context,
+              WizardOverlay(
+                rootTitle: "Stake Neuron",
+                rootWidget:
+                    StakeNeuronPage(source: context.boxes.accounts.primary),
               ),
-            ),
-            onPressed: () {
-              OverlayBaseWidget.show(
-                  context,
-                  WizardOverlay(
-                    rootTitle: "Stake Neuron",
-                    rootWidget: StakeNeuronPage(
-                        source: context.boxes.accounts.primary),
-                  ));
-            },
-          ),
+            );
+          },
         ),
       ),
     );

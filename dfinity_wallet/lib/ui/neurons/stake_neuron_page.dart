@@ -24,6 +24,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
 
   @override
   void initState() {
+    super.initState();
     amountField = ValidatedTextField("Amount",
         validations: [
           StringFieldValidation.insufficientFunds(

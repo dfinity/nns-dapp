@@ -1,5 +1,8 @@
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
+import 'package:flutter/services.dart';
 import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
 
@@ -18,13 +21,16 @@ class _SelectSourceWalletState extends State<SelectSourceWallet> {
 
   @override
   Widget build(BuildContext context) {
-    final otherAccounts = context.boxes.accounts.values.toList();
+    final allAccounts = context.boxes.accounts.values
+        .toList()
+        .sortedBy((element) => element.primary ? 0 : 1)
+        .thenBy((element) => element.name);
     return Container(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (otherAccounts.isNotEmpty)
+            if (allAccounts.isNotEmpty)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -33,7 +39,10 @@ class _SelectSourceWalletState extends State<SelectSourceWallet> {
                       children: [
                         Text(
                           "My Accounts",
-                          style: context.textTheme.headline3,
+                          style: Responsive.isDesktop(context) |
+                                  Responsive.isTablet(context)
+                              ? context.textTheme.headline3
+                              : context.textTheme.headline4,
                         ),
                         SmallFormDivider(),
                         Padding(
@@ -46,11 +55,12 @@ class _SelectSourceWalletState extends State<SelectSourceWallet> {
                                         width: 2, color: AppColors.gray800))),
                             child: Column(
                               children:
-                                  otherAccounts.mapToList((e) => _AccountRow(
+                                  allAccounts.mapToList((e) => _AccountRow(
                                       account: e,
                                       onPressed: () {
                                         final address = e.accountIdentifier;
-                                        final source = context.boxes.accounts[address]!;
+                                        final source =
+                                            context.boxes.accounts[address]!;
                                         WizardOverlay.of(context).pushPage(
                                             "Select Destination",
                                             SelectDestinationAccountPage(
@@ -86,38 +96,44 @@ class _AccountRow extends StatelessWidget {
     final myLocale = Localizations.localeOf(context);
     return FlatButton(
       onPressed: onPressed,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    account.name,
-                    style: context.textTheme.headline3,
-                  ),
+                Text(account.name,
+                    style: Responsive.isDesktop(context) |
+                            Responsive.isTablet(context)
+                        ? context.textTheme.headline3
+                        : context.textTheme.headline4),
+                BalanceDisplayWidget(
+                  amount: account.balance,
+                  amountSize: Responsive.isDesktop(context) |
+                          Responsive.isTablet(context)
+                      ? 30
+                      : 14,
+                  icpLabelSize: 25,
+                  locale: myLocale.languageCode,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 16.0, bottom: 16.0, right: 16.0),
-                  child: Text(
-                    account.accountIdentifier,
-                    style: context.textTheme.bodyText2,
-                  ),
-                )
               ],
             ),
-          ),
-          BalanceDisplayWidget(
-              amount: account.balance,
-              amountSize: 30,
-              icpLabelSize: 20,
-              locale: myLocale.languageCode,
-          )
-        ],
+            SmallFormDivider(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: Text(account.accountIdentifier,
+                        style: context.textTheme.bodyText2,
+                        textAlign: TextAlign.start,
+                        maxLines: 2)),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

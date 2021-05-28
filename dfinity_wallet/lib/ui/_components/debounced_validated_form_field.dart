@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
+
 import '../../dfinity.dart';
 import 'form_utils.dart';
 
 class Debouncer {
   final int milliseconds;
-  Timer?_timer;
+  Timer? _timer;
 
   Debouncer({required this.milliseconds});
 
@@ -25,13 +27,17 @@ class DebouncedValidatedFormField extends StatefulWidget {
   final bool obscureText;
   final Widget? suffix;
 
-  const DebouncedValidatedFormField(this.textField, {Key? key, this.obscureText = false, this.suffix, this.onChanged}) : super(key: key);
+  const DebouncedValidatedFormField(this.textField,
+      {Key? key, this.obscureText = false, this.suffix, this.onChanged})
+      : super(key: key);
 
   @override
-  _DebouncedValidatedFormFieldState createState() => _DebouncedValidatedFormFieldState();
+  _DebouncedValidatedFormFieldState createState() =>
+      _DebouncedValidatedFormFieldState();
 }
 
-class _DebouncedValidatedFormFieldState extends State<DebouncedValidatedFormField> {
+class _DebouncedValidatedFormFieldState
+    extends State<DebouncedValidatedFormField> {
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   final debouncer = Debouncer(milliseconds: 2000);
 
@@ -50,38 +56,43 @@ class _DebouncedValidatedFormFieldState extends State<DebouncedValidatedFormFiel
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: TextFormField(
-            key: widget.textField.key,
-            focusNode: widget.textField.focusNode,
-            controller: widget.textField.textEditingController,
-            inputFormatters: widget.textField.inputFormatters,
-            style: context.textTheme.subtitle1,
-            decoration: InputDecoration(
-                labelText: widget.textField.name,
-                labelStyle: context.textTheme.subtitle1,
-                contentPadding: EdgeInsets.only(left: 20, top: 25, bottom: 25),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(100), borderSide: BorderSide(width: 1, color: AppColors.white)),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(100),
-                    borderSide: BorderSide(width: 1, color: AppColors.white)),
-                suffix: widget.suffix
-            ),
-            onChanged: (e) {
-              if (autovalidateMode != AutovalidateMode.always) {
-                debouncer.run(() {
-                  if (context.findRenderObject()?.attached == true) {
-                    setState(() {
-                      autovalidateMode = AutovalidateMode.always;
-                    });
-                  }
-                });
-              }
-              widget.onChanged?.call();
-            },
-            validator: (text) =>
-                widget.textField.failedValidation?.errorMessage?.let((e) => e),
-            autovalidateMode: autovalidateMode,
-            obscureText: widget.obscureText,
+          key: widget.textField.key,
+          focusNode: widget.textField.focusNode,
+          controller: widget.textField.textEditingController,
+          inputFormatters: widget.textField.inputFormatters,
+          style: Responsive.isDesktop(context) | Responsive.isTablet(context)
+              ? context.textTheme.subtitle1
+              : context.textTheme.subtitle2,
+          decoration: InputDecoration(
+              labelText: widget.textField.name,
+              labelStyle:
+                  Responsive.isDesktop(context) | Responsive.isTablet(context)
+                      ? context.textTheme.subtitle1
+                      : context.textTheme.subtitle2,
+              contentPadding: EdgeInsets.only(left: 20, top: 25, bottom: 25),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(100),
+                  borderSide: BorderSide(width: 1, color: AppColors.white)),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(100),
+                  borderSide: BorderSide(width: 1, color: AppColors.white)),
+              suffix: widget.suffix),
+          onChanged: (e) {
+            if (autovalidateMode != AutovalidateMode.always) {
+              debouncer.run(() {
+                if (context.findRenderObject()?.attached == true) {
+                  setState(() {
+                    autovalidateMode = AutovalidateMode.always;
+                  });
+                }
+              });
+            }
+            widget.onChanged?.call();
+          },
+          validator: (text) =>
+              widget.textField.failedValidation?.errorMessage?.let((e) => e),
+          autovalidateMode: autovalidateMode,
+          obscureText: widget.obscureText,
         ),
       ),
     );

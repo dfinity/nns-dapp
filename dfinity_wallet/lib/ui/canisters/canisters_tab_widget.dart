@@ -1,9 +1,9 @@
-
 import 'package:core/core.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/page_button.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/canisters/select_canister_add_action_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
@@ -11,13 +11,11 @@ import 'package:dfinity_wallet/ui/ui.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
 class CansitersPage extends StatefulWidget {
-
   @override
   _CansitersPageState createState() => _CansitersPageState();
 }
 
 class _CansitersPageState extends State<CansitersPage> {
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -27,17 +25,18 @@ class _CansitersPageState extends State<CansitersPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: context.boxes.canisters.changes,
-      builder: (context, snapshot) {
-        return Column(
-          children: [
-            Expanded(
-              child: FooterGradientButton(
-                footerHeight: null,
-                body: ConstrainWidthAndCenter(
-                  child: TabTitleAndContent(
-                    title: "Canisters",
-                    subtitle: '''Canisters are computational units (a form of smart contracts). They are powered by “cycles”, which they must be pre-charged with. You create cycles by converting ICP tokens.
+        stream: context.boxes.canisters.changes,
+        builder: (context, snapshot) {
+          return Column(
+            children: [
+              Expanded(
+                child: FooterGradientButton(
+                  footerHeight: null,
+                  body: ConstrainWidthAndCenter(
+                    child: TabTitleAndContent(
+                      title: "Canisters",
+                      subtitle:
+                          '''Canisters are computational units (a form of smart contracts). They are powered by “cycles”, which they must be pre-charged with. You create cycles by converting ICP tokens.
 
 • Create new canisters
 
@@ -46,59 +45,45 @@ class _CansitersPageState extends State<CansitersPage> {
 • Send cycles to canisters
 
 Your principal id is "${context.icApi.getPrincipal()}"''',
-                    children: [
-                      SmallFormDivider(),
-                      ...context.boxes.canisters.values
-                          .mapToList((e) => CanisterRow(
-                                canister: e,
-                                showsWarning: true,
-                                onPressed: () {
-                                  context.nav.push(CanisterPageDef.createPageConfig(e));
-                                },
-                              )),
-                      SizedBox(height: 200,)
-                    ],
+                      children: [
+                        SmallFormDivider(),
+                        ...context.boxes.canisters.values
+                            .mapToList((e) => CanisterRow(
+                                  canister: e,
+                                  showsWarning: true,
+                                  onPressed: () {
+                                    context.nav.push(
+                                        CanisterPageDef.createPageConfig(e));
+                                  },
+                                )),
+                        SizedBox(
+                          height: 200,
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                footer: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: IntrinsicHeight(
-                    child: Padding(
-                      padding: EdgeInsets.all(32),
-                      child: ElevatedButton(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: SizedBox(
-                            width: 400,
-                            child: Center(
-                              child: Text(
-                                "Create or Link Canister",
-                                textAlign: TextAlign.center,
-                                style: context.textTheme.button
-                                    ?.copyWith(fontSize: 24),
-                              ),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
+                  footer: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: IntrinsicHeight(
+                      child: PageButton(
+                        title: "Create or Link Canister",
+                        onPress: () {
                           OverlayBaseWidget.show(
-                              context,
-                              WizardOverlay(
-                                rootTitle: "Add Canister",
-                                rootWidget: SelectCanisterAddActionWidget(),
-                              ),
-                              borderRadius: 20);
+                            context,
+                            WizardOverlay(
+                              rootTitle: "Add Canister",
+                              rootWidget: SelectCanisterAddActionWidget(),
+                            ),
+                          );
                         },
                       ),
                     ),
                   ),
                 ),
-              ),
-            )
-          ],
-        );
-      }
-    );
+              )
+            ],
+          );
+        });
   }
 }
 

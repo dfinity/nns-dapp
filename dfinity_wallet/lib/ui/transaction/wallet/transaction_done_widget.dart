@@ -18,32 +18,35 @@ class TransactionDoneWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      child: SingleChildScrollView(
         child: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: IntrinsicWidth(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              TransactionDetailsWidget(
-                source: source,
-                destination: destination,
-                amount: amount,
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: IntrinsicWidth(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  TransactionDetailsWidget(
+                    source: source,
+                    destination: destination,
+                    amount: amount,
+                  ),
+                  SizedBox(
+                    height: 70,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      child: Text("Close"),
+                      onPressed: () async {
+                        OverlayBaseWidget.of(context)?.dismiss();
+                      }
+                    ),
+                  )
+                ],
               ),
-              Expanded(child: Container(),),
-              SizedBox(
-                height: 70,
-                width: double.infinity,
-                child: ElevatedButton(
-                    child: Text("Close"),
-                    onPressed: () async {
-                      OverlayBaseWidget.of(context)?.dismiss();
-                    }),
-              )
-            ],
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 }

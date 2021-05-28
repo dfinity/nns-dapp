@@ -1,17 +1,16 @@
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 
 import '../../dfinity.dart';
 
 class EnterCanisterIdAndNameWidget extends StatelessWidget {
-  ValidatedTextField idField = ValidatedTextField("Canister ID",
-      validations: [StringFieldValidation.minimumLength(10)],
-      defaultText: "");
-  ValidatedTextField nameField = ValidatedTextField("Canister Name",
-      validations: [StringFieldValidation.maximumLength(24)],
-      defaultText: "");
+  final ValidatedTextField idField = ValidatedTextField("Canister ID",
+      validations: [StringFieldValidation.minimumLength(10)], defaultText: "");
+  final ValidatedTextField nameField = ValidatedTextField("Canister Name",
+      validations: [StringFieldValidation.maximumLength(24)], defaultText: "");
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
             child: Align(
               alignment: Alignment(0, -0.5),
               child: FractionallySizedBox(
-                widthFactor: 0.7,
+                widthFactor: 1,
                 child: Card(
                   child: Padding(
                     padding: const EdgeInsets.all(6.0),
@@ -33,10 +32,17 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("Canister Name",
-                            style: context.textTheme.headline3),
+                            style: Responsive.isDesktop(context) |
+                                    Responsive.isTablet(context)
+                                ? context.textTheme.headline3
+                                : context.textTheme.headline4),
                         DebouncedValidatedFormField(nameField),
                         SmallFormDivider(),
-                        Text("Canister ID", style: context.textTheme.headline3),
+                        Text("Canister ID",
+                            style: Responsive.isDesktop(context) |
+                                    Responsive.isTablet(context)
+                                ? context.textTheme.headline3
+                                : context.textTheme.headline4),
                         DebouncedValidatedFormField(idField),
                       ],
                     ),
@@ -47,12 +53,21 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
           ),
           SizedBox(
               height: 70,
-              width: double.infinity,
+              width:
+                  Responsive.isDesktop(context) | Responsive.isTablet(context)
+                      ? 400
+                      : 150,
               child: ValidFieldsSubmitButton(
-                child: Text("Attach Canister"),
+                child: Text(
+                  "Attach Canister",
+                  style: Responsive.isDesktop(context) |
+                          Responsive.isTablet(context)
+                      ? TextStyle(fontSize: 25)
+                      : TextStyle(fontSize: 14),
+                ),
                 onPressed: () async {
-                  final result = await context.callUpdate(() =>
-                      context.icApi.attachCanister(
+                  final result = await context.callUpdate(() => context.icApi
+                      .attachCanister(
                           name: nameField.currentValue,
                           canisterId: idField.currentValue));
                   if (result == null) {

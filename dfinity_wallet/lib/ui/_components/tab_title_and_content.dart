@@ -1,3 +1,5 @@
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
+
 import '../../dfinity.dart';
 
 class TabTitleAndContent extends StatelessWidget {
@@ -5,9 +7,12 @@ class TabTitleAndContent extends StatelessWidget {
   final String? subtitle;
   final List<Widget> children;
 
-  const TabTitleAndContent(
-      {Key? key, required this.title, this.subtitle, required this.children})
-      : super(key: key);
+  const TabTitleAndContent({
+    Key? key,
+    required this.title,
+    this.subtitle,
+    required this.children,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +25,33 @@ class TabTitleAndContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 24.0, bottom: 12.0),
+              padding:
+                  const EdgeInsets.only(top: 24.0, left: 20.0, bottom: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: context.textTheme.headline1),
-                  if (subtitle != null)
-                    ...[
-                      SizedBox(height: 10,),
-                      SelectableText(
+                  Text(
+                    title,
+                    style: Responsive.isDesktop(context) |
+                            Responsive.isTablet(context)
+                        // ? TextStyle(fontSize: 50)
+                        // : TextStyle(fontSize: 25)
+                        ? context.textTheme.headline2
+                        : context.textTheme.headline6,
+                  ),
+                  if (subtitle != null) ...[
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SelectableText(
                       subtitle!,
-                      style: context.textTheme.subtitle2,
-                    )]
+                      style: Responsive.isDesktop(context) |
+                              Responsive.isTablet(context)
+                          ? context
+                              .textTheme.subtitle1 //context.textTheme.headline2
+                          : context.textTheme.subtitle2,
+                    )
+                  ]
                 ],
               ),
             ),

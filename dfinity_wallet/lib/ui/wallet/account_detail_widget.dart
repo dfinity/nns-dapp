@@ -1,11 +1,12 @@
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
 import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
+import 'package:flutter/services.dart';
 
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';
@@ -70,7 +71,8 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Padding(
@@ -79,16 +81,52 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
+                                          AutoSizeText(
                                             account.name,
+                                            maxLines: 1,
                                             style: context.textTheme.headline1,
                                           ),
                                           SizedBox(
                                             height: 10,
                                           ),
-                                          SelectableText(
-                                            account.accountIdentifier,
-                                            style: context.textTheme.bodyText2,
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Flexible(
+                                                child: SelectableText(
+                                                  account.accountIdentifier,
+                                                  style: context
+                                                      .textTheme.bodyText2
+                                                ),
+                                              ),
+                                              IconButton(
+                                                  constraints:
+                                                  BoxConstraints.tight(
+                                                      Size.square(
+                                                          20.0)),
+                                                  padding:
+                                                  const EdgeInsets.all(
+                                                      0),
+                                                  alignment:
+                                                  Alignment.center,
+                                                  iconSize: context
+                                                      .textTheme
+                                                      .bodyText1
+                                                      ?.fontSize ??
+                                                      24,
+                                                  icon: Icon(
+                                                    Icons.copy,
+                                                    color: context.textTheme
+                                                        .bodyText1?.color,
+                                                  ),
+                                                  onPressed: () {
+                                                    Clipboard.setData(
+                                                        ClipboardData(
+                                                            text: account
+                                                                .accountIdentifier));
+                                                  }),
+                                            ],
                                           ),
                                           SmallFormDivider(),
                                           if (account.hardwareWallet)
@@ -101,15 +139,17 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                                               .all(AppColors
                                                                   .gray600)),
                                                   child: Padding(
-                                                    padding: const EdgeInsets.all(
-                                                        16.0),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
                                                     child: Text(
                                                       "Show Address And Public Key On Device",
                                                       style: TextStyle(
                                                           fontSize: 20,
-                                                          fontFamily:
-                                                              Fonts.circularBook,
-                                                          color: AppColors.gray50,
+                                                          fontFamily: Fonts
+                                                              .circularBook,
+                                                          color:
+                                                              AppColors.gray50,
                                                           fontWeight:
                                                               FontWeight.w100),
                                                     ),
@@ -164,7 +204,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                         child: ElevatedButton(
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: Text(
+                              child: AutoSizeText(
                                 "New Transaction",
                                 style: context.textTheme.button
                                     ?.copyWith(fontSize: 24),
@@ -176,8 +216,9 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                     context,
                                     WizardOverlay(
                                       rootTitle: "Send ICP",
-                                      rootWidget: SelectDestinationAccountPage(
-                                          source: account),
+                                      rootWidget:
+                                          SelectAccountTransactionTypeWidget(
+                                              source: account),
                                     ));
                               } else {
                                 OverlayBaseWidget.show(

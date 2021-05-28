@@ -6,6 +6,7 @@ import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/multi_select_list.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 
@@ -66,11 +67,8 @@ final DefaultRewardStatuses = [
 ];
 
 class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
-  MultiSelectField<Topic> topicsField = MultiSelectField<Topic>(
-      "Topics",
-      ValidTopics,
-      DefaultTopics,
-      (dynamic e) => (e as Topic?)?.name ?? "");
+  MultiSelectField<Topic> topicsField = MultiSelectField<Topic>("Topics",
+      ValidTopics, DefaultTopics, (dynamic e) => (e as Topic?)?.name ?? "");
 
   MultiSelectField<ProposalStatus> statusesField =
       MultiSelectField<ProposalStatus>(
@@ -97,13 +95,13 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
   void fetchProposals({Proposal? lastProposal}) {
     if (mounted) {
       context.icApi.fetchProposals(
-        excludeTopics: Topic
-          .values
-          .filterNot((element) => topicsField.selectedOptions.contains(element))
-          .toList(),
-        includeStatus: statusesField.selectedOptions,
-        includeRewardStatus: rewardStatuesField.selectedOptions,
-        beforeProposal: lastProposal);
+          excludeTopics: Topic.values
+              .filterNot(
+                  (element) => topicsField.selectedOptions.contains(element))
+              .toList(),
+          includeStatus: statusesField.selectedOptions,
+          includeRewardStatus: rewardStatuesField.selectedOptions,
+          beforeProposal: lastProposal);
     }
   }
 
@@ -114,7 +112,8 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
       body: ConstrainWidthAndCenter(
         child: TabTitleAndContent(
           title: "Voting",
-          subtitle: "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposal, which are decided as the result of voting activity by neurons.",
+          subtitle:
+              "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposal, which are decided as the result of voting activity by neurons.",
           children: [
             IntrinsicHeight(
               child: MultiSelectDropdownWidget(
@@ -129,34 +128,63 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
             ),
             SizedBox(height: 10),
             IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: MultiSelectDropdownWidget(
-                      rewardStatuesField,
-                      onChange: () {
-                        setState(() {});
-                      },
-                      onDismiss: () {
-                        fetchProposals();
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: MultiSelectDropdownWidget(
-                      statusesField,
-                      onChange: () {
-                        setState(() {});
-                      },
-                      onDismiss: () {
-                        fetchProposals();
-                      },
-                    ),
-                  )
-                ],
-              ),
+              child:
+                  Responsive.isDesktop(context) | Responsive.isTablet(context)
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: MultiSelectDropdownWidget(
+                                rewardStatuesField,
+                                onChange: () {
+                                  setState(() {});
+                                },
+                                onDismiss: () {
+                                  fetchProposals();
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: MultiSelectDropdownWidget(
+                                statusesField,
+                                onChange: () {
+                                  setState(() {});
+                                },
+                                onDismiss: () {
+                                  fetchProposals();
+                                },
+                              ),
+                            )
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            Expanded(
+                              child: MultiSelectDropdownWidget(
+                                rewardStatuesField,
+                                onChange: () {
+                                  setState(() {});
+                                },
+                                onDismiss: () {
+                                  fetchProposals();
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Expanded(
+                              child: MultiSelectDropdownWidget(
+                                statusesField,
+                                onChange: () {
+                                  setState(() {});
+                                },
+                                onDismiss: () {
+                                  fetchProposals();
+                                },
+                              ),
+                            )
+                          ],
+                        ),
             ),
             SizedBox(height: 16),
             Row(
@@ -170,16 +198,15 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(left: 6),
-                  child: Checkbox(
-                    value: excludeVotedProposals, 
-                    onChanged: (bool? value) { 
-                      setState(() {
-                        excludeVotedProposals = value!;
-                      }); 
-                    },
-                  )
-                ),
+                    margin: const EdgeInsets.only(left: 6),
+                    child: Checkbox(
+                      value: excludeVotedProposals,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          excludeVotedProposals = value!;
+                        });
+                      },
+                    )),
               ],
             ),
             SizedBox(height: 4),
@@ -187,42 +214,52 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                 stream: context.boxes.proposals.changes,
                 builder: (context, snapshot) {
                   final proposals = context.boxes.proposals.values
-                    .filter((proposal) => topicsField.selectedOptions.contains(proposal.topic))
-                    .filter((proposal) => statusesField.selectedOptions.contains(proposal.status))
-                    .filter((proposal) => rewardStatuesField.selectedOptions.contains(proposal.rewardStatus))
-                    .filter((proposal) => !excludeVotedProposals || proposal.status != ProposalStatus.Open || proposal.ballots.values.any((ballot) => ballot.vote == Vote.UNSPECIFIED))
-                    .sortedByDescending((element) => element.proposalTimestamp);
+                      .filter((proposal) =>
+                          topicsField.selectedOptions.contains(proposal.topic))
+                      .filter((proposal) => statusesField.selectedOptions
+                          .contains(proposal.status))
+                      .filter((proposal) => rewardStatuesField.selectedOptions
+                          .contains(proposal.rewardStatus))
+                      .filter((proposal) =>
+                          !excludeVotedProposals ||
+                          proposal.status != ProposalStatus.Open ||
+                          proposal.ballots.values
+                              .any((ballot) => ballot.vote == Vote.UNSPECIFIED))
+                      .sortedByDescending(
+                          (element) => element.proposalTimestamp);
 
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ...proposals.mapToList((e) => ProposalRow(
-                          proposal: e,
-                          onPressed: () {
-                            context.nav.push(ProposalPageDef.createPageConfig(e));
-                          },
-                        )
-                      ),
+                            proposal: e,
+                            onPressed: () {
+                              context.nav
+                                  .push(ProposalPageDef.createPageConfig(e));
+                            },
+                          )),
                       SmallFormDivider(),
                       Center(
                         child: TextButton(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Load More Proposals",
-                              style: context.textTheme.subtitle2?.copyWith(color: AppColors.gray100),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Load More Proposals",
+                                style: context.textTheme.subtitle2
+                                    ?.copyWith(color: AppColors.gray100),
+                              ),
                             ),
-                          ),
-                          onPressed: () {
-                            final lastProposal = proposals.lastOrNull;
-                            fetchProposals(lastProposal: lastProposal);
-                          }),
+                            onPressed: () {
+                              final lastProposal = proposals.lastOrNull;
+                              fetchProposals(lastProposal: lastProposal);
+                            }),
                       ),
-                      SizedBox(height: 200,)
+                      SizedBox(
+                        height: 200,
+                      )
                     ],
                   );
-                }
-             ),
+                }),
           ],
         ),
       ),
@@ -251,7 +288,7 @@ class ProposalRow extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded (
+                Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,11 +298,12 @@ class ProposalRow extends StatelessWidget {
                         style: context.textTheme.subtitle1,
                       ),
                       TextButton(
-                        onPressed: () {
-                          OverlayBaseWidget.show(context, NeuronInfoWidget(proposal.proposer));
-                        },
-                        child: Text("Proposer: ${proposal.proposer}", style: context.textTheme.bodyText2)
-                      ),
+                          onPressed: () {
+                            OverlayBaseWidget.show(
+                                context, NeuronInfoWidget(proposal.proposer));
+                          },
+                          child: Text("Proposer: ${proposal.proposer}",
+                              style: context.textTheme.bodyText2)),
                       Text(
                         "Id: ${proposal.id}",
                         style: context.textTheme.bodyText2,
@@ -278,9 +316,8 @@ class ProposalRow extends StatelessWidget {
                   decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(width: 2, color: proposal.status.color)
-                        )
-                      ),
+                          side: BorderSide(
+                              width: 2, color: proposal.status.color))),
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
