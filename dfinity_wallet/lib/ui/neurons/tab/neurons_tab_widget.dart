@@ -37,7 +37,7 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                           ?.sortedByDescending((element) =>
                               element.createdTimestampSeconds.toBigInt)
                           ?.mapToList((e) => Card(
-                                child: TextButton(
+                                child: FlatButton(
                                   onPressed: () {
                                     context.nav.push(
                                         NeuronPageDef.createPageConfig(e));

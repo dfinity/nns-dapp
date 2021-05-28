@@ -26,7 +26,7 @@ class AccountRow extends StatelessWidget {
         child: Container(
           //width: double.infinity,
           child: Padding(
-            padding: const EdgeInsets.all(25.0),
+            padding: const EdgeInsets.all(25),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               //crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -56,48 +56,48 @@ class AccountRow extends StatelessWidget {
                     )
                   ],
                 ),
-                // SizedBox(
-                //   height: 30.0,
-                // ),
                 Row(
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(
-                        width: Responsive.isDesktop(context) |
-                                Responsive.isTablet(context)
-                            ? 500
-                            : 200,
-                        child: Padding(
-                          padding: Responsive.isDesktop(context) |
-                                  Responsive.isTablet(context)
-                              ? const EdgeInsets.only(top: 20.0)
-                              : const EdgeInsets.only(top: 8.0),
+                    Expanded(
+
+                        // width: MediaQuery.of(context).size.width * 0.60 //450
+                        // ,
+                        child: Row(
+                      children: [
+                        Expanded(
                           child: SelectableText.rich(
                             TextSpan(
                               text: account.accountIdentifier,
                               style: context.textTheme.bodyText2,
                             ),
-
                             textAlign: TextAlign.start,
-                            // selectable: true,
-                            maxLines: 2,
+                            maxLines: Responsive.isDesktop(context) |
+                                    Responsive.isTablet(context)
+                                ? 1
+                                : 2,
                           ),
-                        )),
-                    IconButton(
-                        padding: const EdgeInsets.only(top: 0, left: 5),
-                        alignment: Alignment.center,
-                        iconSize: context.textTheme.bodyText1?.fontSize ?? 24,
-                        icon: Icon(
-                          Icons.copy,
-                          color: context.textTheme.bodyText1?.color,
                         ),
-                        onPressed: () {
-                          Clipboard.setData(
-                              ClipboardData(text: account.accountIdentifier));
-                        }),
+                        if (Responsive.isMobile(context))
+                          IconButton(
+                              //padding: const EdgeInsets.only(top: 0, left: 5),
+                              alignment: Alignment.center,
+                              iconSize:
+                                  context.textTheme.bodyText1?.fontSize ?? 24,
+                              icon: Icon(
+                                Icons.copy,
+                                color: context.textTheme.bodyText1?.color,
+                              ),
+                              onPressed: () {
+                                Clipboard.setData(ClipboardData(
+                                    text: account.accountIdentifier));
+                              }),
+                      ],
+                    )),
                   ],
                 ),
+                if (!account.primary) SmallFormDivider(),
                 if (!account.primary)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,

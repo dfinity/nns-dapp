@@ -110,9 +110,9 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                           AccountPageDef.createPageConfig(e));
                                     },
                                   )),
-                          SizedBox(
-                            height: 180,
-                          )
+                          // SizedBox(
+                          //   height: 180,
+                          // )
                         ],
                       ),
                     ),
