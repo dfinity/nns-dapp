@@ -29,7 +29,6 @@ class AccountRow extends StatelessWidget {
             padding: const EdgeInsets.all(25),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              //crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,44 +56,26 @@ class AccountRow extends StatelessWidget {
                   ],
                 ),
                 Row(
-                  // crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Expanded(
-
-                        // width: MediaQuery.of(context).size.width * 0.60 //450
-                        // ,
-                        child: Row(
-                      children: [
-                        Expanded(
-                          child: SelectableText.rich(
-                            TextSpan(
-                              text: account.accountIdentifier,
-                              style: context.textTheme.bodyText2,
-                            ),
-                            textAlign: TextAlign.start,
-                            maxLines: Responsive.isDesktop(context) |
-                                    Responsive.isTablet(context)
-                                ? 1
-                                : 2,
-                          ),
-                        ),
-                        if (Responsive.isMobile(context))
-                          IconButton(
-                              //padding: const EdgeInsets.only(top: 0, left: 5),
-                              alignment: Alignment.center,
-                              iconSize:
-                                  context.textTheme.bodyText1?.fontSize ?? 24,
-                              icon: Icon(
-                                Icons.copy,
-                                color: context.textTheme.bodyText1?.color,
-                              ),
-                              onPressed: () {
-                                Clipboard.setData(ClipboardData(
-                                    text: account.accountIdentifier));
-                              }),
-                      ],
-                    )),
+                    Flexible(
+                      child: Text(account.accountIdentifier,
+                        style: context.textTheme.bodyText2
+                      ),
+                    ),
+                    IconButton(
+                      alignment: Alignment.center,
+                      iconSize:
+                          context.textTheme.bodyText1?.fontSize ?? 24,
+                      icon: Icon(
+                        Icons.copy,
+                        color: context.textTheme.bodyText1?.color,
+                      ),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(
+                            text: account.accountIdentifier));
+                      }
+                    )
                   ],
                 ),
                 if (!account.primary) SmallFormDivider(),
