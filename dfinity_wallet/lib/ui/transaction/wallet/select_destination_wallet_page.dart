@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/confirm_transactions_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
@@ -45,19 +46,20 @@ class _SelectDestinationAccountPageState
                     DebouncedValidatedFormField(addressField),
                     Center(
                       child: FractionallySizedBox(
-                        widthFactor: 0.5,
+                        widthFactor: 1,
                         alignment: Alignment.center,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ValidFieldsSubmitButton(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Expanded(
-                                flex: 0,
-                                  child: AutoSizeText(
+                              child: Text(
                                 "Continue",
-                                style: context.textTheme.subtitle1,
-                              )),
+                                style: Responsive.isDesktop(context) |
+                                        Responsive.isTablet(context)
+                                    ? context.textTheme.subtitle1
+                                    : context.textTheme.subtitle2,
+                              ),
                             ),
                             fields: [addressField],
                             onPressed: () {
@@ -188,28 +190,29 @@ class _AccountRow extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 16.0, bottom: 16.0),
+                  padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
                   child: Row(
                     children: [
-                      Expanded(child: IconButton(
-                          icon: Icon(
-                            Icons.copy,
-                            color: context.textTheme.bodyText2?.color,
-                          ),
-                          onPressed: () {
-                            Clipboard.setData(
-                                ClipboardData(text: account.accountIdentifier));
-                          }),flex: 2,),
                       Expanded(
-                        flex:12,
+                        child: IconButton(
+                            icon: Icon(
+                              Icons.copy,
+                              color: context.textTheme.bodyText2?.color,
+                            ),
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(
+                                  text: account.accountIdentifier));
+                            }),
+                        flex: 2,
+                      ),
+                      Expanded(
+                        flex: 12,
                         child: AutoSizeText(
                           account.accountIdentifier,
                           style: context.textTheme.bodyText2,
                           selectable: true,
                         ),
                       ),
-
                     ],
                   ),
                 )
@@ -217,10 +220,10 @@ class _AccountRow extends StatelessWidget {
             ),
           ),
           BalanceDisplayWidget(
-              amount: account.balance,
-              amountSize: 30,
-              icpLabelSize: 20,
-              locale: myLocale.languageCode,
+            amount: account.balance,
+            amountSize: 30,
+            icpLabelSize: 20,
+            locale: myLocale.languageCode,
           )
         ],
       ),

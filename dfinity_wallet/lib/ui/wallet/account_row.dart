@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:flutter/services.dart';
-
+import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import '../../dfinity.dart';
 import 'balance_display_widget.dart';
 
@@ -23,83 +24,94 @@ class AccountRow extends StatelessWidget {
           this.onTap();
         },
         child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: AutoSizeText(
-                            account.name,
-                            maxLines: 1,
-                            style: context.textTheme.headline3,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  BalanceDisplayWidget(
-                      amount: account.balance,
-                      amountSize: 30,
-                      icpLabelSize: 20,
-                      locale: myLocale.languageCode)
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 16.0, bottom: 16.0),
-                child: Row(
+          //width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              //crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                        flex: 1,
-                        child: IconButton(
-                            constraints:
-                                BoxConstraints.tight(Size.square(20.0)),
-                            padding: const EdgeInsets.all(0),
-                            alignment: Alignment.center,
-                            iconSize:
-                                context.textTheme.bodyText1?.fontSize ?? 24,
-                            icon: Icon(
-                              Icons.copy,
-                              color: context.textTheme.bodyText1?.color,
-                            ),
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(
-                                  text: account.accountIdentifier));
-                            })),
+                      child: Text(
+                        account.name,
+                        style: Responsive.isDesktop(context) |
+                                Responsive.isTablet(context)
+                            ? context.textTheme.headline2
+                            : context.textTheme.headline3,
+                      ),
+                    ),
                     Expanded(
-                        flex: 12,
-                        child: AutoSizeText(account.accountIdentifier,
-                        textAlign: TextAlign.start,
-                            style: context.textTheme.bodyText1,
-                            selectable: true,
-                            maxLines: 2)),
+                      child: BalanceDisplayWidget(
+                          amount: account.balance,
+                          amountSize: Responsive.isDesktop(context) |
+                                  Responsive.isTablet(context)
+                              ? 30
+                              : 24,
+                          icpLabelSize: 25,
+                          locale: myLocale.languageCode),
+                    )
                   ],
                 ),
-              ),
-              if (!account.primary)
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 16.0, bottom: 16.0, right: 16.0),
-                  child: Text(
-                    account.hardwareWallet
-                        ? "HARDWARE WALLET"
-                        : "LINKED ACCOUNT",
-                    style: context.textTheme.bodyText2,
-                  ),
-                )
-            ],
+                // SizedBox(
+                //   height: 30.0,
+                // ),
+                Row(
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                        width: Responsive.isDesktop(context) |
+                                Responsive.isTablet(context)
+                            ? 500
+                            : 200,
+                        child: Padding(
+                          padding: Responsive.isDesktop(context) |
+                                  Responsive.isTablet(context)
+                              ? const EdgeInsets.only(top: 20.0)
+                              : const EdgeInsets.only(top: 8.0),
+                          child: SelectableText.rich(
+                            TextSpan(
+                              text: account.accountIdentifier,
+                              style: context.textTheme.bodyText2,
+                            ),
+
+                            textAlign: TextAlign.start,
+                            // selectable: true,
+                            maxLines: 2,
+                          ),
+                        )),
+                    IconButton(
+                        padding: const EdgeInsets.only(top: 0, left: 5),
+                        alignment: Alignment.center,
+                        iconSize: context.textTheme.bodyText1?.fontSize ?? 24,
+                        icon: Icon(
+                          Icons.copy,
+                          color: context.textTheme.bodyText1?.color,
+                        ),
+                        onPressed: () {
+                          Clipboard.setData(
+                              ClipboardData(text: account.accountIdentifier));
+                        }),
+                  ],
+                ),
+                if (!account.primary)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        account.hardwareWallet
+                            ? "HARDWARE WALLET"
+                            : "LINKED ACCOUNT",
+                        style: context.textTheme.bodyText2,
+                      ),
+                    ],
+                  )
+              ],
+            ),
           ),
         ),
       ),

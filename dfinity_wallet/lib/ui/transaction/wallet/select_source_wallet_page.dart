@@ -1,5 +1,6 @@
 import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
 import 'package:flutter/services.dart';
 import '../../../dfinity.dart';
@@ -38,7 +39,10 @@ class _SelectSourceWalletState extends State<SelectSourceWallet> {
                       children: [
                         Text(
                           "My Accounts",
-                          style: context.textTheme.headline3,
+                          style: Responsive.isDesktop(context) |
+                                  Responsive.isTablet(context)
+                              ? context.textTheme.headline3
+                              : context.textTheme.headline4,
                         ),
                         SmallFormDivider(),
                         Padding(
@@ -92,63 +96,44 @@ class _AccountRow extends StatelessWidget {
     final myLocale = Localizations.localeOf(context);
     return FlatButton(
       onPressed: onPressed,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    account.name,
-                    style: context.textTheme.headline3,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          flex: 1,
-                          child: IconButton(
-                              constraints:
-                                  BoxConstraints.tight(Size.square(20.0)),
-                              padding: const EdgeInsets.all(0),
-                              alignment: Alignment.center,
-                              iconSize:
-                                  context.textTheme.bodyText1?.fontSize ?? 24,
-                              icon: Icon(
-                                Icons.copy,
-                                color: context.textTheme.bodyText1?.color,
-                              ),
-                              onPressed: () {
-                                Clipboard.setData(ClipboardData(
-                                    text: account.accountIdentifier));
-                              })),
-                      Expanded(
-                          flex: 12,
-                          child: AutoSizeText(account.accountIdentifier,
-                              textAlign: TextAlign.start,
-                              style: context.textTheme.bodyText1,
-                              selectable: true,
-                              maxLines: 2)),
-                    ],
-                  ),
+                Text(account.name,
+                    style: Responsive.isDesktop(context) |
+                            Responsive.isTablet(context)
+                        ? context.textTheme.headline3
+                        : context.textTheme.headline4),
+                BalanceDisplayWidget(
+                  amount: account.balance,
+                  amountSize: Responsive.isDesktop(context) |
+                          Responsive.isTablet(context)
+                      ? 30
+                      : 14,
+                  icpLabelSize: 25,
+                  locale: myLocale.languageCode,
                 ),
               ],
             ),
-          ),
-          BalanceDisplayWidget(
-              amount: account.balance,
-              amountSize: 30,
-              icpLabelSize: 20,
-              locale: myLocale.languageCode,
-          )
-        ],
+            SmallFormDivider(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: Text(account.accountIdentifier,
+                        style: context.textTheme.bodyText2,
+                        textAlign: TextAlign.start,
+                        maxLines: 2)),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

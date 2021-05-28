@@ -28,8 +28,8 @@ class WizardPathButton extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           child: Column(
-            //mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title,
                   style: Responsive.isDesktop(context) |

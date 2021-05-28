@@ -64,17 +64,19 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                   ),
                   footer: Align(
                     alignment: Alignment.bottomCenter,
-                    child: PageButton(
-                      title: "Create or Link Canister",
-                      onPress: () {
-                        OverlayBaseWidget.show(
-                          context,
-                          WizardOverlay(
-                            rootTitle: "Add Canister",
-                            rootWidget: SelectCanisterAddActionWidget(),
-                          ),
-                        );
-                      },
+                    child: IntrinsicHeight(
+                      child: PageButton(
+                        title: "Create or Link Canister",
+                        onPress: () {
+                          OverlayBaseWidget.show(
+                            context,
+                            WizardOverlay(
+                              rootTitle: "Add Canister",
+                              rootWidget: SelectCanisterAddActionWidget(),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),

@@ -15,35 +15,35 @@ class SelectCanisterAddActionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: Center(
-        child: Column(
-          //crossAxisAlignment: CrossAxisAlignment.start,
-          //mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            WizardPathButton(
-                title: "Create New Canister",
-                subtitle: "Create a new canister, to deploy your application",
-                onPressed: () {
-                  WizardOverlay.of(context)
-                      .pushPage("Enter Canister Name", CanisterNameWidget());
-                }),
-            // SmallFormDivider(),
-            Divider(
-              height: 3.0,
-              color: Colors.white,
-            ),
-            WizardPathButton(
-                title: "Link Canister To Account",
-                subtitle: "Enter the id of a canister, to top up it's cycles",
-                onPressed: () {
-                  WizardOverlay.of(context).pushPage(
-                      "Attach Canister", EnterCanisterIdAndNameWidget());
-                }),
-            // SmallFormDivider(),
-            // SizedBox(
-            //   height: 50,
-            // )
-          ],
+        child: IntrinsicWidth(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              WizardPathButton(
+                  title: "Create New Canister",
+                  subtitle: "Create a new canister, to deploy your application",
+                  onPressed: () {
+                    WizardOverlay.of(context)
+                        .pushPage("Enter Canister Name", CanisterNameWidget());
+                  }),
+              SizedBox(
+                height: 24.0,
+              ),
+              WizardPathButton(
+                  title: "Link Canister To Account",
+                  subtitle: "Enter the id of a canister, to top up it's cycles",
+                  onPressed: () {
+                    WizardOverlay.of(context).pushPage(
+                        "Attach Canister", EnterCanisterIdAndNameWidget());
+                  }),
+              // SmallFormDivider(),
+              // SizedBox(
+              //   height: 50,
+              // )
+            ],
+          ),
         ),
       ),
     );
