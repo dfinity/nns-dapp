@@ -33,99 +33,103 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
 
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(
-              widget.source.balance, 1),
+          StringFieldValidation.insufficientFunds(widget.source.balance, 1),
           StringFieldValidation.greaterThanZero()
         ],
         inputType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[
-          ICPTextInputFormatter()
-        ]);
+        inputFormatters: <TextInputFormatter>[ICPTextInputFormatter()]);
   }
 
   @override
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
     return SizedBox.expand(
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  Text("Current Balance: "),
-                  BalanceDisplayWidget(
-                    amount: widget.source.balance,
-                    amountSize: 40,
-                    icpLabelSize: 0,
-                    locale: myLocale.languageCode,
-                  )
-                ],
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Text("Current Balance: "),
+                    BalanceDisplayWidget(
+                      amount: widget.source.balance,
+                      amountSize: 40,
+                      icpLabelSize: 0,
+                      locale: myLocale.languageCode,
+                    )
+                  ],
+                ),
               ),
-            ),
-            Center(
-              child: FractionallySizedBox(
-                widthFactor: 0.7,
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Amount", style: context.textTheme.headline3),
-                        DebouncedValidatedFormField(amountField),
-                      ],
+              Center(
+                child: FractionallySizedBox(
+                  widthFactor: 1,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("Amount", style: context.textTheme.headline3),
+                          DebouncedValidatedFormField(amountField),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            TallFormDivider(),
-            IntrinsicWidth(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Source", style: context.textTheme.headline4),
-                  VerySmallFormDivider(),
-                  SelectableText(widget.source.address,
-                      style: context.textTheme.bodyText1),
-                  TallFormDivider(),
-                  Text("Destination", style: context.textTheme.headline4),
-                  VerySmallFormDivider(),
-                  SelectableText(widget.destinationAccountIdentifier,
-                      style: context.textTheme.bodyText1),
-                  TallFormDivider(),
-                  Text("Transaction Fee (billed to source)",
-                      style: context.textTheme.headline4),
-                  VerySmallFormDivider(),
-                  Text(ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)).asString(myLocale.languageCode) + " ICP",
-                      style: context.textTheme.bodyText1),
-                ],
+              TallFormDivider(),
+              IntrinsicWidth(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Source", style: context.textTheme.headline4),
+                    VerySmallFormDivider(),
+                    SelectableText(widget.source.address,
+                        style: context.textTheme.bodyText1),
+                    TallFormDivider(),
+                    Text("Destination", style: context.textTheme.headline4),
+                    VerySmallFormDivider(),
+                    SelectableText(widget.destinationAccountIdentifier,
+                        style: context.textTheme.bodyText1),
+                    TallFormDivider(),
+                    Text("Transaction Fee (billed to source)",
+                        style: context.textTheme.headline4),
+                    VerySmallFormDivider(),
+                    Text(
+                        ICP
+                                .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
+                                .asString(myLocale.languageCode) +
+                            " ICP",
+                        style: context.textTheme.bodyText1),
+                  ],
+                ),
               ),
-            ),
-            Expanded(child: Container()),
-            SizedBox(
-                height: 70,
-                width: double.infinity,
-                child: ValidFieldsSubmitButton(
-                  child: Text("Review Transaction"),
-                  onPressed: () async {
-                    var amount = ICP.fromString(amountField.currentValue);
-                    WizardOverlay.of(context).pushPage(
-                        "Review Transaction",
-                        ConfirmTransactionWidget(
-                          fee: ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)),
-                          amount: amount,
-                          source: widget.source,
-                          destination: widget.destinationAccountIdentifier,
-                          subAccountId: widget.subAccountId,
-                        ));
-                  },
-                  fields: [amountField],
-                ))
-          ],
+              // Expanded(child: Container()),
+              VerySmallFormDivider(),
+              SizedBox(
+                  height: 70,
+                  width: double.infinity,
+                  child: ValidFieldsSubmitButton(
+                    child: Text("Review Transaction"),
+                    onPressed: () async {
+                      var amount = ICP.fromString(amountField.currentValue);
+                      WizardOverlay.of(context).pushPage(
+                          "Review Transaction",
+                          ConfirmTransactionWidget(
+                            fee: ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)),
+                            amount: amount,
+                            source: widget.source,
+                            destination: widget.destinationAccountIdentifier,
+                            subAccountId: widget.subAccountId,
+                          ));
+                    },
+                    fields: [amountField],
+                  ))
+            ],
+          ),
         ),
       ),
     );
