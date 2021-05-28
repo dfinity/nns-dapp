@@ -24,7 +24,6 @@ class AccountRow extends StatelessWidget {
           this.onTap();
         },
         child: Container(
-          //width: double.infinity,
           child: Padding(
             padding: const EdgeInsets.all(25),
             child: Column(

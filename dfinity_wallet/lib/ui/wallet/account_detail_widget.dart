@@ -93,44 +93,39 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Expanded(
-                                                  flex: 2,
-                                                  child: IconButton(
-                                                      constraints:
-                                                          BoxConstraints.tight(
-                                                              Size.square(
-                                                                  20.0)),
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              0),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      iconSize: context
-                                                              .textTheme
-                                                              .bodyText1
-                                                              ?.fontSize ??
-                                                          24,
-                                                      icon: Icon(
-                                                        Icons.copy,
-                                                        color: context.textTheme
-                                                            .bodyText1?.color,
-                                                      ),
-                                                      onPressed: () {
-                                                        Clipboard.setData(
-                                                            ClipboardData(
-                                                                text: account
-                                                                    .accountIdentifier));
-                                                      })),
-                                              Expanded(
-                                                flex: 12,
-                                                child: AutoSizeText(
+                                              Flexible(
+                                                child: SelectableText(
                                                   account.accountIdentifier,
                                                   style: context
-                                                      .textTheme.bodyText2,
-                                                  selectable: true,
-                                                  maxLines: 2,
+                                                      .textTheme.bodyText2
                                                 ),
                                               ),
+                                              IconButton(
+                                                  constraints:
+                                                  BoxConstraints.tight(
+                                                      Size.square(
+                                                          20.0)),
+                                                  padding:
+                                                  const EdgeInsets.all(
+                                                      0),
+                                                  alignment:
+                                                  Alignment.center,
+                                                  iconSize: context
+                                                      .textTheme
+                                                      .bodyText1
+                                                      ?.fontSize ??
+                                                      24,
+                                                  icon: Icon(
+                                                    Icons.copy,
+                                                    color: context.textTheme
+                                                        .bodyText1?.color,
+                                                  ),
+                                                  onPressed: () {
+                                                    Clipboard.setData(
+                                                        ClipboardData(
+                                                            text: account
+                                                                .accountIdentifier));
+                                                  }),
                                             ],
                                           ),
                                           SmallFormDivider(),
