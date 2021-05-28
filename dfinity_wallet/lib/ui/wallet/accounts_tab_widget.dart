@@ -125,7 +125,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                   padding: const EdgeInsets.all(16.0),
                   child: Responsive.isDesktop(context)
                       ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [...buttonGroup],
                         )
                       : Column(
