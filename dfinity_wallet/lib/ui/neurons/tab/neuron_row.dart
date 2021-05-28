@@ -84,7 +84,7 @@ class NeuronRow extends StatelessWidget {
           ),
         ),
         LabelledBalanceDisplayWidget(
-            amount: neuron.stake.toICPT,
+            amount: neuron.stake,
             amountSize: 30,
             icpLabelSize: 15,
             text: Text(

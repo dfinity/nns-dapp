@@ -1,6 +1,7 @@
 import 'dart:js_util';
 
 import 'package:dfinity_wallet/data/account.dart';
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
@@ -11,7 +12,7 @@ import 'package:dfinity_wallet/ui/wallet/hardware_wallet_connection_widget.dart'
 import '../../../dfinity.dart';
 
 class HardwareWalletTransactionWidget extends StatefulWidget {
-  final double amount;
+  final ICP amount;
   final Account account;
   final String destination;
 
@@ -106,7 +107,7 @@ class _HardwareWalletTransactionWidgetState
                           widget.account.accountIdentifier,
                           SendICPTsRequest(
                               to: widget.destination,
-                              amount: widget.amount.toE8s.toJS))));
+                              amount: widget.amount.asE8s().toJS))));
 
                   if(response!= null){
                     WizardOverlay.of(context).replacePage(
@@ -128,7 +129,7 @@ class _HardwareWalletTransactionWidgetState
 
 class _TransactionDetailsWidget extends StatelessWidget {
 
-  final double amount;
+  final ICP amount;
   final Account account;
   final String destination;
 
@@ -141,6 +142,7 @@ class _TransactionDetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -156,7 +158,7 @@ class _TransactionDetailsWidget extends StatelessWidget {
         SmallFormDivider(),
         Text("Amount", style: context.textTheme.headline4),
         VerySmallFormDivider(),
-        Text(amount.toString(), style: context.textTheme.bodyText1),
+        Text(amount.asString(myLocale.languageCode), style: context.textTheme.bodyText1),
         VerySmallFormDivider(),
       ],
     );

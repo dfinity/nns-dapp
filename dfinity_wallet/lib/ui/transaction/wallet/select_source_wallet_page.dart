@@ -1,4 +1,3 @@
-import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
@@ -90,6 +89,7 @@ class _AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return FlatButton(
       onPressed: onPressed,
       child: Row(
@@ -143,9 +143,11 @@ class _AccountRow extends StatelessWidget {
             ),
           ),
           BalanceDisplayWidget(
-              amount: account.balance.toBigInt.toICPT,
+              amount: account.balance,
               amountSize: 30,
-              icpLabelSize: 20)
+              icpLabelSize: 20,
+              locale: myLocale.languageCode,
+          )
         ],
       ),
     );

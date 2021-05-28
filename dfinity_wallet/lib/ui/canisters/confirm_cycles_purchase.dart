@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
@@ -7,7 +8,7 @@ import 'cycle_calculator.dart';
 
 
 class ConfirmCyclesPurchase extends StatelessWidget {
-  final double amount;
+  final ICP amount;
   final ICPSource source;
   final Canister destination;
   final BigInt trillionAmount;
@@ -42,7 +43,7 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                amount.toDisplayICPT(myLocale.languageCode),
+                                amount.asString(myLocale.languageCode),
                                 style: TextStyle(color: AppColors.white,
                                     fontFamily: Fonts.circularBold,
                                     fontSize: 50),
@@ -73,7 +74,7 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                CycleCalculator(trillionAmount).icpToTrillionCycles(amount).toDisplayICPT(myLocale.languageCode),
+                                CycleCalculator(trillionAmount).icpToCycles(amount).asStringT(myLocale.languageCode),
                                 style: TextStyle(color: AppColors.white,
                                     fontFamily: Fonts.circularBold,
                                     fontSize: 50),
@@ -120,7 +121,7 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                       onPressed: () async {
 
                         await context.callUpdate(() => context.icApi.topupCanister(
-                            stake: amount.toE8s,
+                            amount: amount,
                             targetCanisterId: destination.identifier,
                             fromSubAccountId: source.subAccountId
                         ));

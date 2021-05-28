@@ -2,6 +2,7 @@ import 'dart:js_util';
 
 import 'package:dfinity_wallet/data/ballot_info.dart';
 import 'package:dfinity_wallet/data/followee.dart';
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/neuron_state.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/data/vote.dart';
@@ -53,7 +54,7 @@ class NeuronSyncService {
 
   void updateNeuron(Neuron neuron, String neuronId, dynamic res) {
     neuron.id = neuronId;
-    neuron.votingPower = res['votingPower'].toString();
+    neuron.votingPower = ICP.fromE8s(res['votingPower'].toString().toBigInt);
     neuron.state = NeuronState.values[res['state'].toInt()];
     neuron.dissolveDelaySeconds = res['dissolveDelaySeconds'].toString();
 
@@ -70,12 +71,12 @@ class NeuronSyncService {
       neuron.whenDissolvedTimestampSeconds =
           dissolveState['WhenDissolvedTimestampSeconds']?.toString();
     }
-    neuron.cachedNeuronStakeDoms =
-        fullNeuron['cachedNeuronStake'].toString();
+    neuron.cachedNeuronStake =
+        ICP.fromE8s(fullNeuron['cachedNeuronStake'].toString().toBigInt);
     neuron.recentBallots = parseRecentBallots(fullNeuron['recentBallots']);
-    neuron.neuronFeesDoms = fullNeuron['neuronFees'].toString();
-    neuron.maturityE8sEquivalent =
-        fullNeuron['maturityE8sEquivalent'].toString();
+    neuron.neuronFees = ICP.fromE8s(fullNeuron['neuronFees'].toString().toBigInt);
+    neuron.maturityICPEquivalent =
+        ICP.fromE8s(fullNeuron['maturityE8sEquivalent'].toString().toBigInt);
     neuron.createdTimestampSeconds =
         fullNeuron['createdTimestampSeconds'].toString();
     neuron.followees = parseFollowees(fullNeuron['followees']);
@@ -119,7 +120,7 @@ class NeuronInfo extends DfinityEntity {
   final BigInt createdTimestampSeconds;
   final NeuronState state;
   final BigInt retrievedAtTimestampSeconds;
-  final BigInt votingPower;
+  final ICP votingPower;
   final BigInt ageSeconds;
 
   static fromResponse(dynamic response) {
@@ -141,9 +142,9 @@ class NeuronInfo extends DfinityEntity {
       final retrievedAtTimestampSeconds = response['retrievedAtTimestampSeconds']
         .toString()
         .toBigInt;
-      final votingPower = response['votingPower']
+      final votingPower = ICP.fromE8s(response['votingPower']
         .toString()
-        .toBigInt;
+        .toBigInt);
       final ageSeconds = response['ageSeconds']
         .toString()
         .toBigInt;

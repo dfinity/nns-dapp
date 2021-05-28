@@ -4,9 +4,6 @@ import 'package:dfinity_wallet/ui/neurons/following/neuron_followees_card.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/neuron_rewards_card.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/neuron_state_card.dart';
 import 'package:dfinity_wallet/ui/neurons/proposal/neuron_proposals_card.dart';
-import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
-
-
 import '../../../dfinity.dart';
 import 'neuron_votes_card.dart';
 
@@ -61,32 +58,5 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
             );
           }
         ));
-  }
-}
-
-class _LabelledBalanceDisplay extends StatelessWidget {
-  final String label;
-  final double amount;
-
-  const _LabelledBalanceDisplay(
-      {Key? key, required this.label, required this.amount})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Column(
-            children: [
-              Text(label),
-              BalanceDisplayWidget(
-                amount: amount,
-                amountSize: 50,
-                icpLabelSize: 25,
-              ),
-            ],
-          )),
-    );
   }
 }

@@ -13,6 +13,7 @@ void main() {
           amountSize: 50,
           icpLabelSize: 9,
           amountLabelSuffix: " ICP",
+          locale: "en-US",
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -26,10 +27,11 @@ void main() {
       child: MediaQuery(
         data: MediaQueryData(),
         child: BalanceDisplayWidget(
-          amount: 1.23,
+          amount: ICP.fromString("1.23"),
           amountSize: 50,
           icpLabelSize: 9,
           amountLabelSuffix: " SUFFIX",
+          locale: "en-US",
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -43,9 +45,10 @@ void main() {
       child: MediaQuery(
         data: MediaQueryData(),
         child: BalanceDisplayWidget(
-          amount: 1.23,
+          amount: ICP.fromString("1.23"),
           amountSize: 50,
           icpLabelSize: 9,
+          locale: "en-US",
         ),
       ),
       textDirection: TextDirection.ltr,

@@ -8,7 +8,7 @@ import * as convert from "./converter";
 import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants";
 
 export type CreateCanisterRequest = {
-    stake: E8s
+    amount: E8s
     fromSubAccountId?: number,
     name: string
 }
@@ -36,7 +36,7 @@ export async function createCanisterImpl(
 
     const response = await sendAndNotify(
         ledgerService, 
-        request.stake,
+        request.amount,
         principal,
         CREATE_CANISTER_MEMO,
         request.fromSubAccountId);
@@ -76,7 +76,7 @@ export async function createCanisterImpl(
 }
 
 export type TopupCanisterRequest = {
-    stake: E8s
+    amount: E8s
     fromSubAccountId?: number,
     targetCanisterId: CanisterIdString
 }
@@ -87,7 +87,7 @@ export async function topupCanisterImpl(
 
     const response = await sendAndNotify(
         ledgerService, 
-        request.stake,
+        request.amount,
         request.targetCanisterId,
         TOP_UP_CANISTER_MEMO,
         request.fromSubAccountId);
@@ -95,12 +95,12 @@ export async function topupCanisterImpl(
     return response.hasToppedUp();
 }
 
-async function sendAndNotify(ledgerService: LedgerService, stake: E8s, recipient: PrincipalString, memo: bigint, fromSubAccountId?: number) : Promise<CyclesNotificationResponse> {
+async function sendAndNotify(ledgerService: LedgerService, amount: E8s, recipient: PrincipalString, memo: bigint, fromSubAccountId?: number) : Promise<CyclesNotificationResponse> {
     const toSubAccount = buildSubAccount(recipient);
     const accountIdentifier = convert.principalToAccountIdentifier(MINTING_CANISTER_ID, toSubAccount);
     const blockHeight = await ledgerService.sendICPTs({
-        memo: memo,
-        amount: stake,
+        memo,
+        amount,
         to: accountIdentifier,
         fromSubAccountId: fromSubAccountId
     });

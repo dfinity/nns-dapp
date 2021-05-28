@@ -1,7 +1,6 @@
 import { Principal } from "@dfinity/agent";
+import { OWN_CANISTER_ID } from "../../config.json";
 
-// TODO get this from build arg
-const CANISTER_ID = Principal.fromText("qoctq-giaaa-aaaaa-aaaea-cai");
-// const CANISTER_ID = Principal.fromText("qaa6y-5yaaa-aaaaa-aaafa-cai"); // TEST CONFIG
+const CANISTER_ID = Principal.fromText(OWN_CANISTER_ID);
 
 export default CANISTER_ID;

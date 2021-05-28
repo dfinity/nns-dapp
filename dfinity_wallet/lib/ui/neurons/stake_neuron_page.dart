@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
@@ -26,18 +27,17 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
     super.initState();
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.source.icpBalance, 2),
-          StringFieldValidation(
-              "Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
+          StringFieldValidation.insufficientFunds(
+              widget.source.balance, 2),
+          StringFieldValidation("Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
         ],
-        inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
-        ],
+        inputFormatters: <TextInputFormatter>[ ICPTextInputFormatter() ],
         inputType: TextInputType.number);
   }
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Container(
       child: Column(
         children: [
@@ -61,7 +61,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                             style: context.textTheme.headline4),
                         VerySmallFormDivider(),
                         // fee is doubled as it is a SEND and NOTIFY
-                        Text((TRANSACTION_FEE_ICP * 2).toString() + " ICP",
+                        Text((ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S * 2))).asString(myLocale.languageCode) + " ICP",
                             style: context.textTheme.bodyText1),
                         VerySmallFormDivider()
                       ],
@@ -72,9 +72,10 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                     children: [
                       Text("Current Balance: "),
                       BalanceDisplayWidget(
-                        amount: widget.source.icpBalance,
+                        amount: widget.source.balance,
                         amountSize: 40,
                         icpLabelSize: 0,
+                        locale: myLocale.languageCode,
                       ),
                     ],
                   )),
@@ -110,9 +111,10 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                   child: Text("Create"),
                   onPressed: () async {
                     // TODO: Should be using the returned neuronId
-                    await context.callUpdate(() => context.icApi.createNeuron(
-                        stakeInDoms: amountField.currentValue.toDouble().toE8s,
-                        fromSubAccount: widget.source.subAccountId));
+                    await context.callUpdate(() => context.icApi
+                        .createNeuron(
+                            stake: ICP.fromString(amountField.currentValue),
+                            fromSubAccount: widget.source.subAccountId));
                     final newNeuron = context.boxes.neurons.values
                         .sortedByDescending((element) =>
                             element.createdTimestampSeconds.toBigInt)

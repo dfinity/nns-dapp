@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/data/canister.dart';
@@ -27,11 +28,12 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
     super.initState();
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.source.icpBalance, 2)
+          StringFieldValidation.insufficientFunds(
+              widget.source.balance, 2)
         ],
         inputType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
+          ICPTextInputFormatter()
         ]);
   }
 
@@ -74,8 +76,7 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
                         onPressed: () async {
                           await context.callUpdate(() => context.icApi
                               .topupCanister(
-                                  stake:
-                                      amountField.currentValue.toDouble().toE8s,
+                                  amount: ICP.fromString(amountField.currentValue),
                                   targetCanisterId: widget.canister.identifier,
                                   fromSubAccountId:
                                       widget.source.subAccountId));

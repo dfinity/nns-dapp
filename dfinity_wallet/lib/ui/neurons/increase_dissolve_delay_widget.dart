@@ -37,6 +37,7 @@ class _IncreaseDissolveDelayWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -53,7 +54,7 @@ class _IncreaseDissolveDelayWidgetState
                           style: context.textTheme.headline2),
                       RichText(
                           text: TextSpan(
-                              text: widget.neuron.stake.toICPT.toString(),
+                              text: widget.neuron.stake.asString(myLocale.languageCode),
                               style: context.textTheme.bodyText1,
                               children: [
                             TextSpan(
@@ -173,10 +174,8 @@ class _IncreaseDissolveDelayWidgetState
   }
 
   String get votingPower => isMoreThan6Months()
-      ? (amount() * votingMultiplier()).toStringAsFixed(2)
+      ? (widget.neuron.stake.asDouble() * votingMultiplier()).toStringAsFixed(2)
       : "-";
-
-  double amount() => widget.neuron.stake.toICPT;
 
   double votingMultiplier() =>
       1 +

@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
@@ -8,8 +9,8 @@ import '../wizard_overlay.dart';
 import 'hardware_wallet_transaction_widget.dart';
 
 class ConfirmTransactionWidget extends StatefulWidget {
-  final double fee;
-  final double amount;
+  final ICP fee;
+  final ICP amount;
   final ICPSource source;
   final String destination;
   final int? subAccountId;
@@ -59,13 +60,13 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                     var isAccount = widget.source.type == ICPSourceType.ACCOUNT;
                     var isNeuronTransaction =
                         widget.source.type == ICPSourceType.NEURON;
-                    var isHardwareTransactoin =
+                    var isHardwareTransaction =
                         widget.source.type == ICPSourceType.HARDWARE_WALLET;
                     if (isAccount) {
                       await context.callUpdate(() => context.icApi
                           .sendICPTs(
                               toAccount: widget.destination,
-                              e8s: widget.amount.toE8s,
+                              amount: widget.amount,
                               fromSubAccount: widget.subAccountId));
                       WizardOverlay.of(context).replacePage(
                           "Transaction Completed!",
@@ -80,7 +81,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                         return context.icApi.disburse(
                             neuronId: BigInt.parse(widget.source.address),
                             // this is intentional. send all of them.
-                            doms: widget.source.icpBalance.toE8s,
+                            amount: widget.source.balance,
                             toAccountId: widget.destination);
                       });
 
@@ -92,7 +93,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                             source: widget.source,
                             destination: widget.destination,
                           ));
-                    } else if (isHardwareTransactoin) {
+                    } else if (isHardwareTransaction) {
                       WizardOverlay.of(context).pushPage(
                           "Authorize on Hardware",
                           HardwareWalletTransactionWidget(

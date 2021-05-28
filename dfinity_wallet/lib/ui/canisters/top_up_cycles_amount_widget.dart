@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 
@@ -19,7 +20,7 @@ class TopUpCyclesAmountWidget extends StatefulWidget {
 }
 
 class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
-  double? icpAmount;
+  ICP? icpAmount;
   BigInt? trillionRatio;
 
   @override
@@ -51,7 +52,7 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
                 child: CycleInputWidget(
                     ratio: trillionRatio,
                     source: widget.source,
-                    onChange: (double? icps) {
+                    onChange: (ICP? icps) {
                       setState(() {
                         icpAmount = icps;
                       });
@@ -86,7 +87,7 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
                     WizardOverlay.of(context).pushPage(
                         "Review Cycles Purchase",
                         ConfirmCyclesPurchase(
-                          amount: icpAmount!.toDouble(),
+                          amount: icpAmount!,
                           source: widget.source,
                           destination: widget.destinationCanister,
                           trillionAmount: trillionRatio!,

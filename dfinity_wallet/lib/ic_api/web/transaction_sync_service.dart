@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:js_util';
 
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'service_api.dart';
 
@@ -33,22 +34,22 @@ class TransactionSyncService {
 
       late String from;
       late String to;
-      late BigInt doms;
-      late String fee = "0";
+      late ICP amount;
+      late ICP fee = ICP.zero;
       late TransactionType type =
           TransactionType.values[e['type'].toString().toInt()];
       late bool incomplete = false;
       if (send != null) {
         from = account.accountIdentifier;
         to = send['to'].toString();
-        doms = BigInt.parse(send['amount'].toString());
-        fee = send["fee"].toString();
+        amount = ICP.fromE8s(send['amount'].toString().toBigInt);
+        fee = ICP.fromE8s(send["fee"].toString().toBigInt);
         incomplete = send["incomplete"];
       }
       if (receive != null) {
         to = account.accountIdentifier;
         from = receive['from'].toString();
-        doms = BigInt.parse(receive['amount'].toString());
+        amount = ICP.fromE8s(receive['amount'].toString().toBigInt);
       }
 
       final milliseconds =
@@ -57,7 +58,7 @@ class TransactionSyncService {
         to: to,
         from: from,
         date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
-        doms: doms.toString(),
+        amount: amount,
         fee: fee,
         type: type,
         memo: e['memo'].toString().toBigInt,

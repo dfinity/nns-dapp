@@ -62,6 +62,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
             child: StreamBuilder<Object>(
                 stream: context.icApi.hiveBoxes.accounts.changes,
                 builder: (context, snapshot) {
+                  final myLocale = Localizations.localeOf(context);
                   final account =
                       context.boxes.accounts[widget.account.identifier];
                   return FooterGradientButton(
@@ -178,9 +179,10 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                   Padding(
                                       padding: EdgeInsets.all(24),
                                       child: BalanceDisplayWidget(
-                                        amount: account.icpBalance,
+                                        amount: account.balance,
                                         amountSize: 40,
                                         icpLabelSize: 25,
+                                        locale: myLocale.languageCode,
                                       )),
                                 ],
                               ),

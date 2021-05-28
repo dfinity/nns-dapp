@@ -2,28 +2,27 @@ import 'package:dfinity_wallet/data/data.dart';
 import 'package:dfinity_wallet/data/transaction.dart';
 import 'package:observable/observable.dart';
 import 'package:dartx/dartx.dart';
+import 'icp.dart';
 import 'icp_source.dart';
-
 
 class Account extends DfinityEntity with ICPSource {
   String name;
-  String accountIdentifier;
+  final String accountIdentifier;
   final bool primary;
-  late String balance;
+  ICP balance;
   List<Transaction> transactions;
   int? subAccountId;
   bool hardwareWallet;
 
-  Account(this.name, this.accountIdentifier, this.primary, this.balance,
-      this.subAccountId, this.transactions, this.hardwareWallet);
-
-  Account.create({required this.name,
+  Account({
+    required this.name,
     required this.accountIdentifier,
     required this.primary,
     required this.subAccountId,
     required this.balance,
     required this.transactions,
-    required this.hardwareWallet});
+    required this.hardwareWallet
+  });
 
   @override
   String get identifier => accountIdentifier;

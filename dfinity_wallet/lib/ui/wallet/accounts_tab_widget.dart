@@ -1,9 +1,9 @@
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_source_wallet_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_path_button.dart';
-import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
@@ -35,6 +35,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
               ),
             );
           }
+          final myLocale = Localizations.localeOf(context);
           var buttonGroup = [
             ElevatedButton(
               child: Padding(
@@ -107,10 +108,13 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                     ),
                                   ),
                                   BalanceDisplayWidget(
-                                      amount: wallets.sumBy(
-                                          (element) => element.icpBalance),
-                                      amountSize: 40,
-                                      icpLabelSize: 20),
+                                    amount: wallets.fold(
+                                      ICP.zero,
+                                      (curr, next) => curr + next.balance),
+                                    amountSize: 40,
+                                    icpLabelSize: 20,
+                                    locale: myLocale.languageCode,
+                                  ),
                                 ],
                               ),
                             ),
