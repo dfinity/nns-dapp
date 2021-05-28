@@ -43,7 +43,9 @@ class NeuronRewardsCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       PercentageDisplayWidget(
-                        amount: (100 * (neuron.maturityICPEquivalent.asE8s() / neuron.stake.asE8s())),
+                        amount: neuron.stake.asE8s() > BigInt.zero
+                            ? (100 * (neuron.maturityICPEquivalent.asE8s() / neuron.stake.asE8s()))
+                            : 0,
                         amountSize: 30,
                         locale: myLocale.languageCode,
                       ),
