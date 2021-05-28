@@ -842,8 +842,12 @@ impl TransactionStore {
         canister_ids: &Vec<CanisterId>) -> TransactionType {
         if from == to {
             TransactionType::Send
-        } else if self.neuron_accounts.contains_key(&to) && amount.get_e8s() > 0 {
-            TransactionType::TopUpNeuron
+        } else if self.neuron_accounts.contains_key(&to) {
+            if self.is_stake_neuron_notification(memo, &from, &to, amount) {
+                TransactionType::StakeNeuronNotification
+            } else {
+                TransactionType::TopUpNeuron
+            }
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
@@ -851,8 +855,6 @@ impl TransactionStore {
                 TransactionType::TopUpCanister(canister_id)
             } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
                 TransactionType::StakeNeuron
-            } else if self.is_stake_neuron_notification(memo, &from, &to, amount) {
-                TransactionType::StakeNeuronNotification
             } else {
                 TransactionType::Send
             }
@@ -901,7 +903,7 @@ impl TransactionStore {
     }
 
     fn is_stake_neuron_notification(&self, memo: Memo, from: &AccountIdentifier, to: &AccountIdentifier, amount: ICPTs) -> bool {
-        if amount.get_e8s() == 0 {
+        if memo.0 > 0 && amount.get_e8s() == 0 {
             self.get_transaction_by_block_height(memo.0)
                 .filter(|t| t.transaction_type.is_some() && matches!(t.transaction_type.unwrap(), TransactionType::StakeNeuron))
                 .map_or(false, |t| {
