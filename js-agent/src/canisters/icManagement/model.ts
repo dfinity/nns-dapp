@@ -3,7 +3,7 @@ import { Option } from "../option";
 import { CanisterIdString } from "../common/types";
 
 export interface CanisterSettings {
-    controller: string,
+    controllers: string[],
     freezingThreshold: bigint,
     memoryAllocation: bigint,
     computeAllocation: bigint
@@ -12,7 +12,7 @@ export interface CanisterSettings {
 export interface UpdateSettingsRequest {
     canisterId: CanisterIdString,
     settings: {
-        controller?: Principal,
+        controllers?: Array<string>,
         freezingThreshold?: bigint,
         memoryAllocation?: bigint,
         computeAllocation?: bigint

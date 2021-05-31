@@ -5,7 +5,7 @@ class Canister extends DfinityEntity {
   final String name;
   final String publicKey;
   String? cyclesBalance;
-  String? controller;
+  List<String>? controllers;
 
   bool? userIsController;
 
@@ -13,5 +13,8 @@ class Canister extends DfinityEntity {
   String get identifier => publicKey;
 
   Canister(
-      {required this.name, required this.publicKey, this.controller, required this.userIsController});
+      {required this.name,
+      required this.publicKey,
+      this.controllers,
+      required this.userIsController});
 }

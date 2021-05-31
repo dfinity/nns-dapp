@@ -255,9 +255,9 @@ class UpdateSettingsRequest {
 @JS()
 @anonymous
 class UpdateCanisterSettings {
-  dynamic controller;
+  dynamic controllers;
 
-  external factory UpdateCanisterSettings({dynamic controller});
+  external factory UpdateCanisterSettings({dynamic controllers});
 }
 
 
