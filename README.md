@@ -12,7 +12,8 @@ What things you need to install the software and how to install them
 
 1. [Flutter](https://flutter.dev/docs/get-started/install)
 2. [Node/NPM](https://nodejs.org/en/) - Recommended `> 14.16.1`
-2. [DFX](https://sdk.dfinity.org/docs/index.html) - Recommended `> 0.7.0-beta.6 `
+3. [DFX](https://sdk.dfinity.org/docs/index.html) - Recommended `> 0.7.0-beta.6 `
+4. `didc` in your `$PATH`: Can be downloaded [here](https://github.com/dfinity/candid/releases).
 
 ### Installing
 

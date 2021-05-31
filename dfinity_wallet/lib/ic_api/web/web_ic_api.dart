@@ -277,8 +277,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<AttachCanisterResult> attachCanister(
       {required String name, required String canisterId}) async {
     final response = await promiseToFuture(serviceApi!.attachCanister(
-        AttachCanisterRequest(
-            name: name, canisterId: canisterId)));
+        AttachCanisterRequest(name: name, canisterId: canisterId)));
     return AttachCanisterResult.values[response.toInt()];
   }
 
@@ -349,8 +348,8 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> getCanister(String canisterId) async {
-    final res = await promiseToFuture(
-        serviceApi!.getCanisterDetails(canisterId));
+    final res =
+        await promiseToFuture(serviceApi!.getCanisterDetails(canisterId));
     final response = jsonDecode(stringify(res));
     final canister = hiveBoxes.canisters[canisterId]!;
     canister.userIsController = response['kind'] == "success";
@@ -358,7 +357,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final details = response['details'];
       canister.cyclesBalance = details['cycles'].toString();
       final setting = details['setting'];
-      canister.controller = setting['controller'].toString();
+      canister.controllers = List.castFrom(setting['controllers']);
     }
     hiveBoxes.canisters.notifyChange();
   }
@@ -368,9 +367,9 @@ class PlatformICApi extends AbstractPlatformICApi {
       String canisterId, String newController) async {
     final settings = UpdateSettingsRequest(
         canisterId: canisterId,
-        settings:
-            UpdateCanisterSettings(controller: newController));
-    await promiseToFuture(serviceApi!.updateCanisterSettings(settings));
+        settings: UpdateCanisterSettings(controllers: [newController]));
+    final res =
+        await promiseToFuture(serviceApi!.updateCanisterSettings(settings));
     await getCanister(canisterId);
     hiveBoxes.canisters.notifyChange();
   }
@@ -405,7 +404,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> refreshAccount(Account account) async {
     transactionSyncService!.syncAccount(account);
-    final res = await balanceSyncService!.fetchBalances([account.accountIdentifier]);
+    final res =
+        await balanceSyncService!.fetchBalances([account.accountIdentifier]);
     account = hiveBoxes.accounts[account.accountIdentifier]!;
     account.balance = res[account.accountIdentifier]!;
     hiveBoxes.accounts.notifyChange();
@@ -418,7 +418,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> logout() async {
-      await promiseToFuture(authApi.logout());
+    await promiseToFuture(authApi.logout());
   }
 
   @override

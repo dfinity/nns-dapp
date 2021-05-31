@@ -109,7 +109,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(16.0),
                                     child: Text(
-                                        "You are not the controller of this canister and cannot access it's details"),
+                                        "You are not the controller of this canister and cannot access its details"),
                                   ),
                                 ),
                               ),
@@ -223,7 +223,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SelectableText(
-              canister.controller ?? "",
+              canister.controllers?.getOrNull(0) ?? "",
               style: context.textTheme.subtitle2,
             ),
           ),

@@ -1,18 +1,17 @@
 import type { Principal } from '@dfinity/agent';
 export type canister_id = Principal;
 export interface canister_settings {
-  'controller' : [] | [Principal],
   'freezing_threshold' : [] | [bigint],
+  'controllers' : [] | [Array<Principal>],
   'memory_allocation' : [] | [bigint],
   'compute_allocation' : [] | [bigint],
 };
 export interface definite_canister_settings {
-  'controller' : Principal,
   'freezing_threshold' : bigint,
+  'controllers' : Array<Principal>,
   'memory_allocation' : bigint,
   'compute_allocation' : bigint,
 };
-export type unit = Array<number>;
 export type user_id = Principal;
 export type wasm_module = Array<number>;
 export default interface _SERVICE {
