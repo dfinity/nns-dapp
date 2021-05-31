@@ -115,7 +115,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('''Minimum amount: 2T Cycles (inclusive of 1T Cycles fee to create the canister)
+              child: Text('''Minimum amount: 2T Cycles (inclusive of 1T Cycles fee if creating a new canister)
 
               Application subnets are in beta and therefore Cycles might be lost'''),
             )
