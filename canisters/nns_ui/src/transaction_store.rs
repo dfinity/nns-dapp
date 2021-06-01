@@ -80,7 +80,7 @@ struct Transaction {
     transaction_type: Option<TransactionType>
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize)]
+#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 enum TransactionType {
     Burn,
     Mint,
@@ -1238,6 +1238,80 @@ mod tests {
 
         assert_eq!(4, results.total);
         assert_eq!(2, results.transactions.len());
+    }
+
+    #[test]
+    fn add_account_adds_principal_and_sets_transaction_types() {
+        let mut store = setup_test_store();
+
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+        let account_identifier = AccountIdentifier::new(principal, None);
+
+        let account = Account {
+            principal: None,
+            account_identifier,
+            default_account_transactions: Vec::default(),
+            sub_accounts: HashMap::default(),
+            hardware_wallet_accounts: Vec::default()
+        };
+
+        store.account_identifier_lookup.insert(account_identifier, AccountLocation::DefaultAccount(store.accounts.len() as u32));
+        store.accounts.push(Some(account));
+
+        let send = Send {
+            from: account_identifier,
+            to: AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap()),
+            amount: ICPTs::from_icpts(1).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(send, Memo(0), store.get_block_height_synced_up_to().unwrap_or(0) + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
+
+        let stake_neuron = Send {
+            from: account_identifier,
+            to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
+            amount: ICPTs::from_icpts(2).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(stake_neuron, Memo(1678183231181200159), store.get_block_height_synced_up_to().unwrap_or(0) + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
+
+        let topup_neuron = Send {
+            from: account_identifier,
+            to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
+            amount: ICPTs::from_icpts(3).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(topup_neuron, Memo(0), store.get_block_height_synced_up_to().unwrap_or(0) + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
+
+        let original_transaction_types: Vec<_> = store
+            .get_transactions(principal, GetTransactionsRequest {
+                account_identifier,
+                page_size: 10,
+                offset: 0
+            })
+            .transactions
+            .into_iter()
+            .map(|t| t.transaction_type)
+            .collect();
+
+        assert!(original_transaction_types.iter().all(|t| t.is_none()));
+
+        store.add_account(principal);
+
+        let transaction_types: Vec<_> = store
+            .get_transactions(principal, GetTransactionsRequest {
+                account_identifier,
+                page_size: 10,
+                offset: 0
+            })
+            .transactions
+            .into_iter()
+            .map(|t| t.transaction_type.unwrap())
+            .collect();
+
+        let expected_transaction_types = vec!(TransactionType::TopUpNeuron, TransactionType::StakeNeuron, TransactionType::Send);
+        for i in 0..expected_transaction_types.len() {
+            assert_eq!(expected_transaction_types[i], transaction_types[i]);
+        }
     }
 
     #[test]
