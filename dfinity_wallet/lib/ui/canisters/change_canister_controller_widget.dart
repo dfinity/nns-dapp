@@ -4,45 +4,25 @@ import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 
 import '../../dfinity.dart';
 
-
 class ChangeCanisterControllerWidget extends StatelessWidget {
-
   final Canister canister;
 
-  final ValidatedTextField controllerField = ValidatedTextField("New Canister Controller",
-      validations: [StringFieldValidation.minimumLength(20)]);
+  final ValidatedTextField controllerField = ValidatedTextField("",
+      validations: [StringFieldValidation.minimumLength(0)]);
 
-  ChangeCanisterControllerWidget({Key? key, required this.canister}) : super(key: key);
+  ChangeCanisterControllerWidget({Key? key, required this.canister})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    controllerField.initialText = canister.controllers?.join(",") ?? "";
     return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Align(
-              alignment: Alignment(0, -0.5),
-              child: FractionallySizedBox(
-                widthFactor: 0.7,
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("New Canister Controller",
-                            style: context.textTheme.headline3),
-                        DebouncedValidatedFormField(controllerField),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+        padding: const EdgeInsets.all(32.0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Text("Update Controllers", style: context.textTheme.headline3),
+          Text(
+              "\nSpecify the new controller(s) of the canister. Multiple controllers can be specified by separating them with commas (e.g. \"controller_1,controller_2\")."),
+          DebouncedValidatedFormField(controllerField),
           SizedBox(
               height: 70,
               width: double.infinity,
@@ -53,20 +33,31 @@ class ChangeCanisterControllerWidget extends StatelessWidget {
                 },
                 fields: [controllerField],
               ))
-        ],
-      ),
-    );
+        ]));
   }
 
   Future confirmControllerChange(BuildContext context) async {
+    final newControllers = controllerField.currentValue
+        .split(",")
+        .map((e) => e.trim())
+        .filter((e) => e != "")
+        .toList();
+
     OverlayBaseWidget.show(
         context,
         ConfirmDialog(
-          title: "Confirm Change Controller",
-          description:
-          "You are going to change the controller of canister ${canister.identifier}.\n\nAfter complete, the new controller will be ${controllerField.currentValue}",
+          title: "Confirm Change of Controllers",
+          description: newControllers.isNotEmpty
+              ? "The controllers of canister ${canister.identifier} will be updated to the following:\n\n${newControllers.join("\n")}\n\nAre you sure?"
+              : "WARNING: All controllers of canister ${canister.identifier} will be removed. Are you sure?",
           onConfirm: () async {
-            await context.callUpdate(() => context.icApi.changeCanisterController(canister.identifier, controllerField.currentValue));
+            try {
+              await context.callUpdate(() => context.icApi
+                  .changeCanisterControllers(
+                      canister.identifier, newControllers));
+            } catch (err) {
+              // TODO(NU-71): Display error message in case of failure.
+            }
             OverlayBaseWidget.of(context)?.dismiss();
           },
         ));
