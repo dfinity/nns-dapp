@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DEPLOY_ENV: production
+      DEPLOY_ENV: mainnet
 
     steps:
       - name: Checkout
