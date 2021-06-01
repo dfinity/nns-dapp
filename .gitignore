@@ -130,6 +130,7 @@ dfinity_wallet/web/dfinity_agent.js
 js-agent/build/
 js-agent/agent/
 js-agent/src/config.json
+canister_ids.json
 
 .dfx/
 target/

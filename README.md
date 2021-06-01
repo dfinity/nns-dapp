@@ -15,18 +15,19 @@ What things you need to install the software and how to install them
 3. [DFX](https://sdk.dfinity.org/docs/index.html) - Recommended `> 0.7.0-beta.6 `
 4. `didc` in your `$PATH`: Can be downloaded [here](https://github.com/dfinity/candid/releases).
 
-### Installing
+### Deploying
 
-Start DFX
+Locally
 
 ```shell
 dfx start --clean [--background]
+./deploy.sh local
 ```
 
-Deploy canisters
+To a testnet (e.g. `xsmallh`):
 
 ```shell
-dfx deploy
+./deploy.sh xsmallh
 ```
 
 Open the front-end asset canister. The following command will give you a URL to open locally.

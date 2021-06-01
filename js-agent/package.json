@@ -23,6 +23,5 @@
     "typescript": "^4.2.3"
   },
   "devDependencies": {
-    "gulp": "^4.0.2"
   }
 }

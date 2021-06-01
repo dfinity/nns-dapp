@@ -2,8 +2,8 @@
 
 set -e
 
-if ! [[ $DEPLOY_ENV = "staging" ]] && ! [[ $DEPLOY_ENV = "production" ]]; then
-  echo "Which deployment environment? Set DEPLOY_ENV to 'staging' or 'production'"
+if ! [[ $DEPLOY_ENV = "xsmallh" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]]; then
+  echo "Which deployment environment? Set DEPLOY_ENV to 'xsmallh' or 'mainnet'"
 	exit 1
 fi
 
