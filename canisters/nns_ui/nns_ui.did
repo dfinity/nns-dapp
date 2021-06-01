@@ -2,6 +2,8 @@ type AccountIdentifier = text;
 type BlockHeight = nat64;
 type CanisterId = principal;
 type ICPTs = record { e8s: nat64; };
+type Memo = nat64;
+type NeuronId = nat64;
 type SubAccount = vec nat8;
 
 type AccountDetails =
@@ -81,15 +83,15 @@ type Transaction =
 
 type TransactionType =
     variant {
-         Burn;
-         Mint;
-         Send;
-         StakeNeuron;
-         TopUpNeuron;
-         CreateCanister;
-         TopUpCanister: CanisterId;
-         StakeNeuronNotification;
-     };
+        Burn;
+        Mint;
+        Send;
+        StakeNeuron;
+        StakeNeuronNotification;
+        TopUpNeuron;
+        CreateCanister;
+        TopUpCanister;
+    };
 
 type CreateSubAccountResponse =
     variant {
@@ -171,6 +173,20 @@ type DetachCanisterResponse =
         CanisterNotFound;
     };
 
+type GetStakeNeuronStatusRequest =
+    record {
+        block_height: BlockHeight;
+        memo: Memo;
+    };
+
+type GetStakeNeuronStatusResponse =
+    variant {
+        Created: NeuronId;
+        Queued: nat32;
+        PendingSync;
+        NotFound;
+    };
+
 type Stats =
     record {
         accounts_count: nat64;
@@ -218,6 +234,7 @@ service : {
     get_canisters: () -> (vec CanisterDetails) query;
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
+    get_stake_neuron_status: (GetStakeNeuronStatusRequest) -> (GetStakeNeuronStatusResponse) query;
     get_icp_to_cycles_conversion_rate: () -> (nat64) query;
     get_stats: () -> (Stats) query;
 

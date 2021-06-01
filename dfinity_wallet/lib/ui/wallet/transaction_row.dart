@@ -19,11 +19,6 @@ class TransactionRow extends StatelessWidget {
     final dateFormatter = DateFormat.yMd().add_jm();
     final isReceive = transaction.from != currentAccount.accountIdentifier;
     final isSend = transaction.to != currentAccount.accountIdentifier;
-    final now = DateTime.now();
-    final showRetryButton =
-      transaction.incomplete &&
-      now.difference(transaction.date).inDays < 1 &&
-      now.difference(transaction.date).inSeconds > 20;
 
     return Card(
       color: Color(0xff292a2e),
@@ -37,29 +32,9 @@ class TransactionRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(transaction.type.getName(),
+                    Text(transaction.type.getName(isReceive),
                         style: context.textTheme.headline3),
                     VerySmallFormDivider(),
-                    if (showRetryButton)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextButton(
-                            child: Text("Part 2 failed - click here to retry",
-                                style: context.textTheme.bodyText2?.copyWith(color: AppColors.yellow500)),
-                            onPressed: () {
-                              context.callUpdate(() async {
-                                await context.icApi.retryStakeNeuronNotification(
-                                  blockHeight: transaction.blockHeight,
-                                  nonce: transaction.memo,
-                                  fromSubAccount: currentAccount.subAccountId);
-                                await context.icApi.refreshAccount(currentAccount);
-                              });
-                            },
-                          ),
-                          VerySmallFormDivider()
-                        ]
-                      ),
                     Text(dateFormatter.format(transaction.date),
                         style: context.textTheme.bodyText2),
                     VerySmallFormDivider(),
@@ -81,7 +56,7 @@ class TransactionRow extends StatelessWidget {
                 fee: transaction.fee,
                 amount: transaction.amount,
                 type: transaction.type,
-                addition: transaction.from != currentAccount.accountIdentifier,
+                isReceive: isReceive,
               ),
             ],
           ),
@@ -95,24 +70,24 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
   final ICP amount;
   final ICP fee;
   final TransactionType type;
-  final bool addition;
+  final bool isReceive;
 
   const TransactionAmountDisplayWidget(
       {Key? key,
       required this.fee,
       required this.amount,
       required this.type,
-      required this.addition})
+      required this.isReceive})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
-    final sign = addition ? "+" : "-";
-    final color = addition ? AppColors.green500 : AppColors.gray50;
-    final secondaryColor = addition ? AppColors.green600 : AppColors.gray200;
+    final sign = isReceive ? "+" : "-";
+    final color = isReceive ? AppColors.green500 : AppColors.gray50;
+    final secondaryColor = isReceive ? AppColors.green600 : AppColors.gray200;
 
-    final displayAmount = amount + (type.shouldShowFee() ? this.fee : ICP.zero);
+    final displayAmount = amount + (type.shouldShowFee(isReceive) ? this.fee : ICP.zero);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.center,

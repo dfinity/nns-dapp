@@ -3,6 +3,8 @@ use crate::state::StableState;
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha256::Sha256;
+use ic_nns_common::types::NeuronId;
+use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
 use itertools::Itertools;
 use ledger_canister::{AccountIdentifier, BlockHeight, Subaccount, TimeStamp, Transfer::{Burn, Mint, Send, self}, ICPTs, Memo};
 use on_wire::{FromWire, IntoWire};
@@ -11,13 +13,8 @@ use std::cmp::{min, Ordering};
 use std::collections::{hash_map::Entry::{Occupied, Vacant}, HashMap, VecDeque};
 use std::iter::FromIterator;
 use std::ops::RangeTo;
-use std::str::FromStr;
 use std::time::{Duration, SystemTime};
 
-thread_local! {
-    static CYCLES_MINTING_CANISTER_ID: CanisterId = CanisterId::new(PrincipalId::from_str("rkp4c-7iaaa-aaaaa-aaaca-cai").unwrap()).unwrap();
-    static GOVERNANCE_CANISTER_ID: CanisterId = CanisterId::new(PrincipalId::from_str("rrkah-fqaaa-aaaaa-aaaaq-cai").unwrap()).unwrap();
-}
 const MEMO_CREATE_CANISTER: Memo = Memo(0x41455243); // == 'CREA'
 const MEMO_TOP_UP_CANISTER: Memo = Memo(0x50555054); // == 'TPUP'
 
@@ -29,8 +26,8 @@ pub struct TransactionStore {
     transactions: VecDeque<Transaction>,
     accounts: Vec<Option<Account>>,
     block_height_synced_up_to: Option<BlockHeight>,
-    neuron_accounts: HashMap<AccountIdentifier, NeuronAccountDetails>,
-    neurons_to_be_refreshed_queue: VecDeque<NeuronAccountDetails>,
+    neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
+    neurons_to_be_created_or_refreshed_queue: VecDeque<AccountIdentifier>,
 
     // Use these up first before appending to the accounts Vec
     empty_account_indices: Vec<u32>,
@@ -39,6 +36,7 @@ pub struct TransactionStore {
     sub_accounts_count: u64,
     hardware_wallet_accounts_count: u64,
     last_ledger_sync_timestamp_nanos: u64,
+    neurons_created_count: u64,
     neurons_refreshed_count: u64
 }
 
@@ -91,22 +89,32 @@ enum TransactionType {
     StakeNeuronNotification,
     TopUpNeuron,
     CreateCanister,
-    TopUpCanister(CanisterId)
+    TopUpCanister
 }
 
 #[derive(Clone, CandidType, Deserialize)]
-pub struct NeuronAccountDetails {
+pub struct NeuronDetails {
+    account_identifier: AccountIdentifier,
     principal: PrincipalId,
     memo: Memo,
+    neuron_id: Option<NeuronId>
 }
 
-impl NeuronAccountDetails {
+impl NeuronDetails {
     pub fn get_principal(&self) -> PrincipalId {
         self.principal
     }
 
     pub fn get_memo(&self) -> Memo {
         self.memo
+    }
+
+    pub fn get_neuron_id(&self) -> Option<NeuronId> {
+        self.neuron_id
+    }
+
+    pub fn set_neuron_id(&mut self, neuron_id: NeuronId) {
+        self.neuron_id = Some(neuron_id);
     }
 }
 
@@ -179,6 +187,20 @@ pub struct HardwareWalletAccountDetails {
     account_identifier: AccountIdentifier
 }
 
+#[derive(Deserialize)]
+pub struct GetStakeNeuronStatusRequest {
+    block_height: BlockHeight,
+    memo: Memo
+}
+
+#[derive(CandidType)]
+pub enum GetStakeNeuronStatusResponse {
+    Created(NeuronId),
+    Queued(u32),
+    PendingSync,
+    NotFound
+}
+
 impl TransactionStore {
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
@@ -217,6 +239,9 @@ impl TransactionStore {
         }
     }
 
+    // This will be called for new accounts and also for old accounts where the principal has not
+    // yet been stored, allowing us to set the principal (since originally we created accounts
+    // without storing each user's principal).
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
         match self.account_identifier_lookup.entry(AccountIdentifier::from(caller)) {
             Occupied(e) => {
@@ -235,9 +260,9 @@ impl TransactionStore {
                             let canister_ids = Vec::new();
 
                             // Now that we know the principal we can set the transaction types. The
-                            // transactions must be sorted since we need earlier transactions to
-                            // detect the types of later ones. Eg. we can only detect TopUpNeuron
-                            // transactions that happen after StakeNeuron transactions.
+                            // transactions must be sorted since some transaction types can only be
+                            // determined based on earlier transactions (eg. we can only detect
+                            // TopUpNeuron transactions that happen after StakeNeuron transactions).
                             for transaction_index in account.get_all_transactions_linked_to_principal_sorted().iter() {
                                 let transaction = self.get_transaction(*transaction_index).unwrap();
                                 if transaction.transaction_type.is_none() {
@@ -251,23 +276,9 @@ impl TransactionStore {
                                                 TransactionType::Send
                                             } else {
                                                 let memo = transaction.memo;
-                                                let temp = self.get_transaction_type(from, to, amount, memo, &caller, &canister_ids);
-                                                match temp {
-                                                    TransactionType::StakeNeuron => {
-                                                        self.neuron_accounts.insert(to, NeuronAccountDetails {
-                                                            principal: caller,
-                                                            memo
-                                                        });
-                                                    },
-                                                    TransactionType::TopUpNeuron => {
-                                                        self.neurons_to_be_refreshed_queue.push_back(NeuronAccountDetails {
-                                                            principal: caller,
-                                                            memo
-                                                        });
-                                                    },
-                                                    _ => {}
-                                                };
-                                                temp
+                                                let transaction_type = self.get_transaction_type(from, to, amount, memo, &caller, &canister_ids);
+                                                self.process_transaction_type(transaction_type, caller, to, memo);
+                                                transaction_type
                                             }
                                         }
                                     };
@@ -445,34 +456,20 @@ impl TransactionStore {
                         // but we can get away with this for now because canisters are not yet enabled
                         let canister_ids = Vec::new();
                         transaction_type = Some(self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids));
-                        match transaction_type {
-                            Some(TransactionType::StakeNeuron) => {
-                                self.neuron_accounts.insert(to, NeuronAccountDetails {
-                                    principal,
-                                    memo
-                                });
-                            },
-                            Some(TransactionType::TopUpNeuron) => {
-                                let neuron_account_details = self.neuron_accounts.get(&to).unwrap();
-                                self.neurons_to_be_refreshed_queue.push_back(neuron_account_details.clone());
-                            },
-                            _ => {}
-                        };
+                        self.process_transaction_type(transaction_type.unwrap(), principal, to, memo);
                     }
                 }
             }
         }
 
         if should_store_transaction {
-            let transaction = Transaction::new(
+            self.transactions.push_back(Transaction::new(
                 transaction_index,
                 block_height,
                 timestamp,
                 memo,
                 transfer,
-                transaction_type);
-
-            self.transactions.push_back(transaction);
+                transaction_type));
         }
 
         self.block_height_synced_up_to = Some(block_height);
@@ -564,8 +561,40 @@ impl TransactionStore {
         self.block_height_synced_up_to
     }
 
-    pub fn try_take_next_neuron_to_refresh(&mut self) -> Option<NeuronAccountDetails> {
-        self.neurons_to_be_refreshed_queue.pop_front()
+    pub fn get_stake_neuron_status(&self, caller: PrincipalId, request: GetStakeNeuronStatusRequest) -> GetStakeNeuronStatusResponse {
+        if self.get_block_height_synced_up_to().unwrap_or(0) < request.block_height {
+            GetStakeNeuronStatusResponse::PendingSync
+        } else {
+            let account_identifier = Self::generate_stake_neuron_address(&caller, request.memo);
+            if let Some(neuron_details) = self.neuron_accounts.get(&account_identifier) {
+                if neuron_details.neuron_id.is_some() {
+                    GetStakeNeuronStatusResponse::Created(neuron_details.neuron_id.unwrap())
+                } else {
+                    let queue_index = self.neurons_to_be_created_or_refreshed_queue.iter()
+                        .enumerate()
+                        .find(|(_, &n)| n == account_identifier)
+                        .unwrap()
+                        .0;
+
+                    GetStakeNeuronStatusResponse::Queued(queue_index as u32)
+                }
+            } else {
+                GetStakeNeuronStatusResponse::NotFound
+            }
+        }
+    }
+
+    pub fn try_take_next_neuron_to_refresh(&mut self) -> Option<NeuronDetails> {
+        if let Some(account_identifier) = self.neurons_to_be_created_or_refreshed_queue.pop_front() {
+            self.neuron_accounts.get(&account_identifier).cloned()
+        } else {
+            None
+        }
+    }
+
+    pub fn mark_neuron_created(&mut self, neuron_details: NeuronDetails, neuron_id: NeuronId) {
+        self.neuron_accounts.get_mut(&neuron_details.account_identifier).unwrap().set_neuron_id(neuron_id);
+        self.neurons_created_count = self.neurons_created_count + 1;
     }
 
     pub fn mark_neuron_refreshed(&mut self) {
@@ -851,8 +880,8 @@ impl TransactionStore {
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
-            } else if let Some(canister_id) = Self::is_topup_canister_transaction(memo, &to, canister_ids) {
-                TransactionType::TopUpCanister(canister_id)
+            } else if let Some(_) = Self::is_topup_canister_transaction(memo, &to, canister_ids) {
+                TransactionType::TopUpCanister
             } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
                 TransactionType::StakeNeuron
             } else {
@@ -865,7 +894,7 @@ impl TransactionStore {
 
     fn is_create_canister_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
         if memo == MEMO_CREATE_CANISTER {
-            let expected_to = CYCLES_MINTING_CANISTER_ID.with(|c| AccountIdentifier::new(c.get(), Some(principal.into())));
+            let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.get(), Some(principal.into()));
             if *to == expected_to {
                 return true;
             }
@@ -876,7 +905,7 @@ impl TransactionStore {
     fn is_topup_canister_transaction(memo: Memo, to: &AccountIdentifier, canister_ids: &Vec<CanisterId>) -> Option<CanisterId> {
         if memo == MEMO_TOP_UP_CANISTER {
             for canister_id in canister_ids.iter() {
-                let expected_to = CYCLES_MINTING_CANISTER_ID.with(|c| AccountIdentifier::new(c.get(), Some((&canister_id.get()).into())));
+                let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.get(), Some((&canister_id.get()).into()));
                 if *to == expected_to {
                     return Some(*canister_id);
                 }
@@ -887,15 +916,7 @@ impl TransactionStore {
 
     fn is_stake_neuron_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
         if memo.0 > 0 {
-            let subaccount = Subaccount({
-                let mut state = Sha256::new();
-                state.write(&[0x0c]);
-                state.write(b"neuron-stake");
-                state.write(principal.as_slice());
-                state.write(&memo.0.to_be_bytes());
-                state.finish()
-            });
-            let expected_to = GOVERNANCE_CANISTER_ID.with(|c| AccountIdentifier::new(c.get(), Some(subaccount)));
+            let expected_to = Self::generate_stake_neuron_address(principal, memo);
             *to == expected_to
         } else {
             false
@@ -917,6 +938,37 @@ impl TransactionStore {
             false
         }
     }
+
+    fn generate_stake_neuron_address(principal: &PrincipalId, memo: Memo) -> AccountIdentifier {
+        let subaccount = Subaccount({
+            let mut state = Sha256::new();
+            state.write(&[0x0c]);
+            state.write(b"neuron-stake");
+            state.write(principal.as_slice());
+            state.write(&memo.0.to_be_bytes());
+            state.finish()
+        });
+        AccountIdentifier::new(GOVERNANCE_CANISTER_ID.get(), Some(subaccount))
+    }
+
+    fn process_transaction_type(&mut self, transaction_type: TransactionType, principal: PrincipalId, to: AccountIdentifier, memo: Memo) {
+        match transaction_type {
+            TransactionType::StakeNeuron => {
+                let neuron_details = NeuronDetails {
+                    account_identifier: to,
+                    principal,
+                    memo,
+                    neuron_id: None
+                };
+                self.neuron_accounts.insert(to, neuron_details);
+                self.neurons_to_be_created_or_refreshed_queue.push_back(to);
+            },
+            TransactionType::TopUpNeuron => {
+                self.neurons_to_be_created_or_refreshed_queue.push_back(to);
+            },
+            _ => {}
+        };
+    }
 }
 
 impl StableState for TransactionStore {
@@ -927,20 +979,21 @@ impl StableState for TransactionStore {
             &self.block_height_synced_up_to,
             &self.last_ledger_sync_timestamp_nanos,
             &self.neuron_accounts,
-            Vec::from_iter(self.neurons_to_be_refreshed_queue.iter()),
+            Vec::from_iter(self.neurons_to_be_created_or_refreshed_queue.iter()),
             &self.neurons_refreshed_count)).into_bytes().unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        // let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos, neuron_accounts, neurons_to_be_refreshed, neurons_refreshed_count)
-        //     : (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64, HashMap<AccountIdentifier, NeuronAccountDetails>, Vec<NeuronAccountDetails>, u64) =
+        // let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos, neuron_accounts, neurons_to_be_created_or_refreshed, neurons_refreshed_count)
+        //     : (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64, HashMap<AccountIdentifier, NeuronDetails>, Vec<NeuronDetails>, u64) =
         //     Candid::from_bytes(bytes).map(|c| c.0)?;
 
         let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64) =
             Candid::from_bytes(bytes).map(|c| c.0)?;
 
         let neuron_accounts = HashMap::default();
-        let neurons_to_be_refreshed = Vec::default();
+        let neurons_to_be_created_or_refreshed = Vec::default();
+        let neurons_created_count = 0u64;
         let neurons_refreshed_count = 0u64;
 
         let mut account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation> = HashMap::new();
@@ -973,12 +1026,13 @@ impl StableState for TransactionStore {
             accounts,
             block_height_synced_up_to,
             neuron_accounts,
-            neurons_to_be_refreshed_queue: VecDeque::from_iter(neurons_to_be_refreshed),
+            neurons_to_be_created_or_refreshed_queue: VecDeque::from_iter(neurons_to_be_created_or_refreshed),
             empty_account_indices,
             accounts_count,
             sub_accounts_count,
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
+            neurons_created_count,
             neurons_refreshed_count
         })
     }

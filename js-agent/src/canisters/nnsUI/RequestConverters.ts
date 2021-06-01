@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/agent";
 import {
     AttachCanisterRequest,
     DetachCanisterRequest,
+    GetStakeNeuronStatusRequest,
     GetTransactionsRequest,
     RegisterHardwareWalletRequest,
     RemoveHardwareWalletRequest,
@@ -10,6 +11,7 @@ import {
 import {
     AttachCanisterRequest as RawAttachCanisterRequest,
     DetachCanisterRequest as RawDetachCanisterRequest,
+    GetStakeNeuronStatusRequest as RawGetStakeNeuronStatusRequest,
     GetTransactionsRequest as RawGetTransactionsRequest,
     RegisterHardwareWalletRequest as RawRegisterHardwareWalletRequest,
     RemoveHardwareWalletRequest as RawRemoveHardwareWalletRequest,
@@ -28,6 +30,13 @@ export default class RequestConverters {
     public fromDetachCanisterRequest = (request: DetachCanisterRequest) : RawDetachCanisterRequest => {
         return {
             canister_id: Principal.fromText(request.canisterId)
+        };
+    }
+
+    public fromGetStakeNeuronStatusRequest = (request: GetStakeNeuronStatusRequest) : RawGetStakeNeuronStatusRequest => {
+        return {
+            block_height: request.blockHeight,
+            memo: request.memo
         };
     }
 

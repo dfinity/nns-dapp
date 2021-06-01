@@ -26,7 +26,7 @@ pub struct ClaimOrRefreshNeuronFromAccount {
 /// Response to claim_or_refresh_neuron_from_account.
 #[derive(Clone, PartialEq, CandidType, Deserialize)]
 pub struct ClaimOrRefreshNeuronFromAccountResponse {
-    //pub result: ::core::option::Option<claim_or_refresh_neuron_from_account_response::Result>,
+    pub result: ::core::option::Option<claim_or_refresh_neuron_from_account_response::Result>,
 }
 /// Nested message and enum types in `ClaimOrRefreshNeuronFromAccountResponse`.
 pub mod claim_or_refresh_neuron_from_account_response {

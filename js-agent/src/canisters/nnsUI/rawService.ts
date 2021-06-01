@@ -16,6 +16,7 @@ export type AttachCanisterResponse = { 'Ok' : null } |
     { 'CanisterLimitExceeded' : null };
 export type BlockHeight = bigint;
 export interface CanisterDetails { 'name' : string, 'canister_id' : Principal };
+export type CanisterId = Principal;
 export type CreateSubAccountResponse = { 'Ok' : SubAccountDetails } |
     { 'AccountNotFound' : null } |
     { 'NameTooLong' : null } |
@@ -25,6 +26,14 @@ export type DetachCanisterResponse = { 'Ok' : null } |
     { 'CanisterNotFound' : null };
 export type GetAccountResponse = { 'Ok' : AccountDetails } |
     { 'AccountNotFound' : null };
+export interface GetStakeNeuronStatusRequest {
+  'memo' : Memo,
+  'block_height' : BlockHeight,
+};
+export type GetStakeNeuronStatusResponse = { 'Queued' : number } |
+    { 'NotFound' : null } |
+    { 'PendingSync' : null } |
+    { 'Created' : NeuronId };
 export interface GetTransactionsRequest {
   'page_size' : number,
   'offset' : number,
@@ -51,6 +60,8 @@ export interface HttpResponse {
   'status_code' : number,
 };
 export interface ICPTs { 'e8s' : bigint };
+export type Memo = bigint;
+export type NeuronId = bigint;
 export interface Receive {
   'fee' : ICPTs,
   'from' : AccountIdentifier,
@@ -87,6 +98,8 @@ export interface Stats {
   'latest_transaction_block_height' : BlockHeight,
   'seconds_since_last_ledger_sync' : bigint,
   'sub_accounts_count' : bigint,
+  'neuron_accounts_count' : bigint,
+  'neurons_refreshed_count' : bigint,
   'hardware_wallet_accounts_count' : bigint,
   'accounts_count' : bigint,
   'earliest_transaction_block_height' : BlockHeight,
@@ -103,27 +116,51 @@ export interface SubAccountDetails {
 };
 export interface Timestamp { 'timestamp_nanos' : bigint };
 export interface Transaction {
+  'transaction_type' : [] | [TransactionType],
   'memo' : bigint,
   'timestamp' : Timestamp,
   'block_height' : BlockHeight,
   'transfer' : Transfer,
 };
+export type TransactionType = { 'Burn' : null } |
+    { 'Mint' : null } |
+    { 'Send' : null } |
+    { 'StakeNeuronNotification' : null } |
+    { 'TopUpCanister' : null } |
+    { 'CreateCanister' : null } |
+    { 'TopUpNeuron' : null } |
+    { 'StakeNeuron' : null };
 export type Transfer = { 'Burn' : { 'amount' : ICPTs } } |
     { 'Mint' : { 'amount' : ICPTs } } |
     { 'Send' : Send } |
     { 'Receive' : Receive };
 export default interface _SERVICE {
   'add_account' : () => Promise<AccountIdentifier>,
-  'attach_canister' : (arg_0: AttachCanisterRequest) => Promise<AttachCanisterResponse>,
+  'attach_canister' : (arg_0: AttachCanisterRequest) => Promise<
+      AttachCanisterResponse
+      >,
   'create_sub_account' : (arg_0: string) => Promise<CreateSubAccountResponse>,
-  'detach_canister' : (arg_0: DetachCanisterRequest) => Promise<DetachCanisterResponse>,
+  'detach_canister' : (arg_0: DetachCanisterRequest) => Promise<
+      DetachCanisterResponse
+      >,
   'get_account' : () => Promise<GetAccountResponse>,
   'get_canisters' : () => Promise<Array<CanisterDetails>>,
   'get_icp_to_cycles_conversion_rate' : () => Promise<bigint>,
+  'get_stake_neuron_status' : (arg_0: GetStakeNeuronStatusRequest) => Promise<
+      GetStakeNeuronStatusResponse
+      >,
   'get_stats' : () => Promise<Stats>,
-  'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
+  'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<
+      GetTransactionsResponse
+      >,
   'http_request' : (arg_0: HttpRequest) => Promise<HttpResponse>,
-  'register_hardware_wallet' : (arg_0: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
-  'remove_hardware_wallet' : (arg_0: RemoveHardwareWalletRequest) => Promise<RemoveHardwareWalletResponse>,
-  'rename_sub_account' : (arg_0: RenameSubAccountRequest) => Promise<RenameSubAccountResponse>,
+  'register_hardware_wallet' : (
+      arg_0: RegisterHardwareWalletRequest,
+  ) => Promise<RegisterHardwareWalletResponse>,
+  'remove_hardware_wallet' : (arg_0: RemoveHardwareWalletRequest) => Promise<
+      RemoveHardwareWalletResponse
+      >,
+  'rename_sub_account' : (arg_0: RenameSubAccountRequest) => Promise<
+      RenameSubAccountResponse
+      >,
 };

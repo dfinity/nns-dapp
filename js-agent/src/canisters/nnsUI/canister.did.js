@@ -45,7 +45,19 @@ export default ({ IDL }) => {
     'name' : IDL.Text,
     'canister_id' : IDL.Principal,
   });
+  const Memo = IDL.Nat64;
   const BlockHeight = IDL.Nat64;
+  const GetStakeNeuronStatusRequest = IDL.Record({
+    'memo' : Memo,
+    'block_height' : BlockHeight,
+  });
+  const NeuronId = IDL.Nat64;
+  const GetStakeNeuronStatusResponse = IDL.Variant({
+    'Queued' : IDL.Nat32,
+    'NotFound' : IDL.Null,
+    'PendingSync' : IDL.Null,
+    'Created' : NeuronId,
+  });
   const Stats = IDL.Record({
     'latest_transaction_block_height' : BlockHeight,
     'seconds_since_last_ledger_sync' : IDL.Nat64,
@@ -65,13 +77,12 @@ export default ({ IDL }) => {
     'offset' : IDL.Nat32,
     'account_identifier' : AccountIdentifier,
   });
-  const CanisterId = IDL.Principal;
   const TransactionType = IDL.Variant({
     'Burn' : IDL.Null,
     'Mint' : IDL.Null,
     'Send' : IDL.Null,
     'StakeNeuronNotification' : IDL.Null,
-    'TopUpCanister' : CanisterId,
+    'TopUpCanister' : IDL.Null,
     'CreateCanister' : IDL.Null,
     'TopUpNeuron' : IDL.Null,
     'StakeNeuron' : IDL.Null,
@@ -161,6 +172,11 @@ export default ({ IDL }) => {
     'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_canisters' : IDL.Func([], [IDL.Vec(CanisterDetails)], ['query']),
     'get_icp_to_cycles_conversion_rate' : IDL.Func([], [IDL.Nat64], ['query']),
+    'get_stake_neuron_status' : IDL.Func(
+        [GetStakeNeuronStatusRequest],
+        [GetStakeNeuronStatusResponse],
+        ['query'],
+    ),
     'get_stats' : IDL.Func([], [Stats], ['query']),
     'get_transactions' : IDL.Func(
         [GetTransactionsRequest],

@@ -1,17 +1,15 @@
-import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, PrincipalString } from "../common/types";
+import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, NeuronId, PrincipalString } from "../common/types";
 
 export type Memo = bigint;
 export enum TransactionType {
-    Send,
-    Receive,
-    Mint,
     Burn,
+    Mint,
+    Send,
     StakeNeuron,
     StakeNeuronNotification,
+    TopUpNeuron,
     CreateCanister,
-    CreateCanisterNotification,
-    TopUpCanister,
-    TopUpCanisterNotification
+    TopUpCanister
 }
 
 export interface AccountDetails {
@@ -49,6 +47,17 @@ export type DetachCanisterResponse = { Ok: null } |
 
 export type GetAccountResponse = { Ok: AccountDetails } |
     { AccountNotFound: null };
+
+export interface GetStakeNeuronStatusRequest {
+    memo: Memo,
+    blockHeight: BlockHeight,
+};
+
+export type GetStakeNeuronStatusResponse = { Queued: number } |
+    { NotFound: null } |
+    { PendingSync: null } |
+    { Created: NeuronId };
+
 export interface GetTransactionsRequest {
     accountIdentifier: AccountIdentifier,
     pageSize: number,
@@ -95,7 +104,6 @@ export interface Send {
     to: AccountIdentifier,
     fee: E8s,
     amount: E8s,
-    incomplete: boolean,
 };
 export type SubAccount = Array<number>;
 export interface SubAccountDetails {
@@ -124,7 +132,8 @@ export default interface ServiceInterface {
     getAccount: () => Promise<GetAccountResponse>,
     getCanisters : () => Promise<Array<CanisterDetails>>,
     getIcpToCyclesConversionRate : () => Promise<bigint>,
-    getTransactions: (request: GetTransactionsRequest, principal: PrincipalString) => Promise<GetTransactionsResponse>,
+    getStakeNeuronStatus: (request: GetStakeNeuronStatusRequest) => Promise<GetStakeNeuronStatusResponse>,
+    getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
     registerHardwareWallet: (request: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
     removeHardwareWallet: (request: RemoveHardwareWalletRequest) => Promise<RemoveHardwareWalletResponse>,
     renameSubAccount: (request: RenameSubAccountRequest) => Promise<RenameSubAccountResponse>,

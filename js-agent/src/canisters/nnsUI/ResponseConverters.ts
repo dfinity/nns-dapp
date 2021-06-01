@@ -6,6 +6,7 @@ import {
     CreateSubAccountResponse,
     DetachCanisterResponse,
     GetAccountResponse,
+    GetStakeNeuronStatusResponse,
     GetTransactionsResponse,
     HardwareWalletAccountDetails,
     RegisterHardwareWalletResponse,
@@ -19,6 +20,7 @@ import {
     CreateSubAccountResponse as RawCreateSubAccountResponse,
     DetachCanisterResponse as RawDetachCanisterResponse,
     GetAccountResponse as RawGetAccountResponse,
+    GetStakeNeuronStatusResponse as RawGetStakeNeuronStatusResponse,
     GetTransactionsResponse as RawGetTransactionsResponse,
     HardwareWalletAccountDetails as RawHardwareWalletAccountDetails,
     RegisterHardwareWalletResponse as RawRegisterHardwareWalletResponse,
@@ -74,10 +76,14 @@ export default class ResponseConverters {
         return response;
     }
 
-    public toGetTransactionsResponse = (response: RawGetTransactionsResponse, principal: Principal) : GetTransactionsResponse => {
+    public toGetStakeNeuronStatusResponse = (response: RawGetStakeNeuronStatusResponse) : GetStakeNeuronStatusResponse => {
+        return response;
+    }
+
+    public toGetTransactionsResponse = (response: RawGetTransactionsResponse) : GetTransactionsResponse => {
         return {
             total: response.total,
-            transactions: TransactionsConverter.convert(response.transactions, principal)
+            transactions: TransactionsConverter.convert(response.transactions)
         };
     }
 
