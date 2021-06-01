@@ -59,6 +59,7 @@ import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { principalToAccountIdentifier } from "./canisters/converter";
 import { HOST } from "./canisters/constants";
 import { executeWithLogging } from "./errorLogger";
+import { FETCH_ROOT_KEY } from "./config.json";
 
 export default class ServiceApi {
     private readonly ledgerService: LedgerService;
@@ -72,7 +73,10 @@ export default class ServiceApi {
             host: HOST,
             identity
         });
-        await agent.fetchRootKey();
+        
+        if (FETCH_ROOT_KEY) {
+            await agent.fetchRootKey();
+        }
 
         return new ServiceApi(agent, identity);
     }
