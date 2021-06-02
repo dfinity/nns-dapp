@@ -567,16 +567,16 @@ impl TransactionStore {
         } else {
             let account_identifier = Self::generate_stake_neuron_address(&caller, request.memo);
             if let Some(neuron_details) = self.neuron_accounts.get(&account_identifier) {
-                if neuron_details.neuron_id.is_some() {
-                    GetStakeNeuronStatusResponse::Created(neuron_details.neuron_id.unwrap())
-                } else {
-                    let queue_index = self.neurons_to_be_created_or_refreshed_queue.iter()
-                        .enumerate()
-                        .find(|(_, &n)| n == account_identifier)
-                        .unwrap()
-                        .0;
+                if let Some(neuron_id) = neuron_details.neuron_id {
+                    GetStakeNeuronStatusResponse::Created(neuron_id)
+                } else if let Some(queue_index) = self.neurons_to_be_created_or_refreshed_queue.iter()
+                    .enumerate()
+                    .find(|(_, &n)| n == account_identifier)
+                    .map(|(index, _)| index as u32) {
 
-                    GetStakeNeuronStatusResponse::Queued(queue_index as u32)
+                    GetStakeNeuronStatusResponse::Queued(queue_index)
+                } else {
+                    GetStakeNeuronStatusResponse::NotFound
                 }
             } else {
                 GetStakeNeuronStatusResponse::NotFound
@@ -984,6 +984,7 @@ impl StableState for TransactionStore {
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
+        // TODO NU-75 Switch post_upgrade from deserializing the old version's format to the new format
         // let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos, neuron_accounts, neurons_to_be_created_or_refreshed, neurons_refreshed_count)
         //     : (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64, HashMap<AccountIdentifier, NeuronDetails>, Vec<NeuronDetails>, u64) =
         //     Candid::from_bytes(bytes).map(|c| c.0)?;

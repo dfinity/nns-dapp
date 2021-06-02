@@ -243,8 +243,8 @@ async fn create_or_refresh_neuron(neuron_to_refresh: NeuronDetails) {
         memo: neuron_to_refresh.get_memo().0
     };
 
-    if let Ok(response) = canisters::governance::claim_or_refresh_neuron_from_account(request).await {
-        match response.result {
+    match canisters::governance::claim_or_refresh_neuron_from_account(request).await {
+        Ok(response) => match response.result {
             Some(claim_or_refresh_neuron_from_account_response::Result::NeuronId(neuron_id)) => {
                 if neuron_to_refresh.get_neuron_id().is_some() {
                     // If we already know the neuron_id then we must be topping up a neuron
@@ -254,7 +254,12 @@ async fn create_or_refresh_neuron(neuron_to_refresh: NeuronDetails) {
                     STATE.write().unwrap().transactions_store.mark_neuron_created(neuron_to_refresh, neuron_id.into());
                 }
             },
-            _ => {}
+            _ => {
+                // TODO NU-76 Handle any errors returned by the claim_or_refresh_neuron method
+            }
+        },
+        Err(_) => {
+            // TODO NU-76 Handle any errors returned by the claim_or_refresh_neuron method
         }
     }
 }
