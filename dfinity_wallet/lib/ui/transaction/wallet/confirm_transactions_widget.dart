@@ -1,5 +1,7 @@
 import 'package:dfinity_wallet/data/icp.dart';
+import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/hardware_wallet_connection_widget.dart';
@@ -56,7 +58,14 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                 child: ElevatedButton(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text("Confirm and Send"),
+                      child: Text(
+                        "Confirm and Send",
+                        style: TextStyle(
+                            fontSize: Responsive.isTablet(context) |
+                                    Responsive.isDesktop(context)
+                                ? kTextSizeLarge
+                                : kTextSizeSmall),
+                      ),
                     ),
                     onPressed: () async {
                       var isAccount =

@@ -39,29 +39,33 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
           }
           final myLocale = Localizations.localeOf(context);
           var buttonGroup = [
-            PageButton(
-              title: "New Transaction",
-              onPress: () {
-                OverlayBaseWidget.show(
-                  context,
-                  WizardOverlay(
-                    rootTitle: "Select Source Account",
-                    rootWidget: SelectSourceWallet(),
-                  ),
-                );
-              },
+            Flexible(
+              child: PageButton(
+                title: "New Transaction",
+                onPress: () {
+                  OverlayBaseWidget.show(
+                    context,
+                    WizardOverlay(
+                      rootTitle: "Select Source Account",
+                      rootWidget: SelectSourceWallet(),
+                    ),
+                  );
+                },
+              ),
             ),
-            PageButton(
-              title: "Add Account",
-              onPress: () {
-                OverlayBaseWidget.show(
-                  context,
-                  WizardOverlay(
-                    rootTitle: "Add Account",
-                    rootWidget: SelectAccountAddActionWidget(),
-                  ),
-                );
-              },
+            Flexible(
+              child: PageButton(
+                title: "Add Account",
+                onPress: () {
+                  OverlayBaseWidget.show(
+                    context,
+                    WizardOverlay(
+                      rootTitle: "Add Account",
+                      rootWidget: SelectAccountAddActionWidget(),
+                    ),
+                  );
+                },
+              ),
             ),
           ];
           return FooterGradientButton(
@@ -122,17 +126,11 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
               footer: Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Responsive.isDesktop(context)
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [...buttonGroup],
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [...buttonGroup],
-                        ),
-                ),
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [...buttonGroup],
+                    )),
               ));
         });
   }
