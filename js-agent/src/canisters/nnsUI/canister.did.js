@@ -45,11 +45,25 @@ export default ({ IDL }) => {
     'name' : IDL.Text,
     'canister_id' : IDL.Principal,
   });
+  const Memo = IDL.Nat64;
   const BlockHeight = IDL.Nat64;
+  const GetStakeNeuronStatusRequest = IDL.Record({
+    'memo' : Memo,
+    'block_height' : BlockHeight,
+  });
+  const NeuronId = IDL.Nat64;
+  const GetStakeNeuronStatusResponse = IDL.Variant({
+    'Queued' : IDL.Nat32,
+    'NotFound' : IDL.Null,
+    'PendingSync' : IDL.Null,
+    'Created' : NeuronId,
+  });
   const Stats = IDL.Record({
     'latest_transaction_block_height' : BlockHeight,
     'seconds_since_last_ledger_sync' : IDL.Nat64,
     'sub_accounts_count' : IDL.Nat64,
+    'neuron_accounts_count' : IDL.Nat64,
+    'neurons_refreshed_count' : IDL.Nat64,
     'hardware_wallet_accounts_count' : IDL.Nat64,
     'accounts_count' : IDL.Nat64,
     'earliest_transaction_block_height' : BlockHeight,
@@ -62,6 +76,16 @@ export default ({ IDL }) => {
     'page_size' : IDL.Nat8,
     'offset' : IDL.Nat32,
     'account_identifier' : AccountIdentifier,
+  });
+  const TransactionType = IDL.Variant({
+    'Burn' : IDL.Null,
+    'Mint' : IDL.Null,
+    'Send' : IDL.Null,
+    'StakeNeuronNotification' : IDL.Null,
+    'TopUpCanister' : IDL.Null,
+    'CreateCanister' : IDL.Null,
+    'TopUpNeuron' : IDL.Null,
+    'StakeNeuron' : IDL.Null,
   });
   const Timestamp = IDL.Record({ 'timestamp_nanos' : IDL.Nat64 });
   const ICPTs = IDL.Record({ 'e8s' : IDL.Nat64 });
@@ -82,6 +106,7 @@ export default ({ IDL }) => {
     'Receive' : Receive,
   });
   const Transaction = IDL.Record({
+    'transaction_type' : IDL.Opt(TransactionType),
     'memo' : IDL.Nat64,
     'timestamp' : Timestamp,
     'block_height' : BlockHeight,
@@ -147,6 +172,11 @@ export default ({ IDL }) => {
     'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_canisters' : IDL.Func([], [IDL.Vec(CanisterDetails)], ['query']),
     'get_icp_to_cycles_conversion_rate' : IDL.Func([], [IDL.Nat64], ['query']),
+    'get_stake_neuron_status' : IDL.Func(
+        [GetStakeNeuronStatusRequest],
+        [GetStakeNeuronStatusResponse],
+        ['query'],
+    ),
     'get_stats' : IDL.Func([], [Stats], ['query']),
     'get_transactions' : IDL.Func(
         [GetTransactionsRequest],

@@ -1,5 +1,4 @@
-import { Principal } from "@dfinity/agent";
-import { AccountIdentifier, PrincipalString } from "../common/types";
+import { AccountIdentifier } from "../common/types";
 import ServiceInterface, {
     AttachCanisterRequest,
     AttachCanisterResult,
@@ -8,6 +7,8 @@ import ServiceInterface, {
     DetachCanisterRequest,
     DetachCanisterResponse,
     GetAccountResponse,
+    GetStakeNeuronStatusRequest,
+    GetStakeNeuronStatusResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
     RegisterHardwareWalletRequest,
@@ -81,10 +82,16 @@ export default class Service implements ServiceInterface {
         return this.responseConverters.toRemoveHardwareWalletResponse(rawResponse);
     }
 
-    public getTransactions = async (request: GetTransactionsRequest, principal: PrincipalString) : Promise<GetTransactionsResponse> => {
+    public getTransactions = async (request: GetTransactionsRequest) : Promise<GetTransactionsResponse> => {
         const rawRequest = this.requestConverters.fromGetTransactionsRequest(request);
         const rawResponse = await this.service.get_transactions(rawRequest);
-        return this.responseConverters.toGetTransactionsResponse(rawResponse, Principal.fromText(principal));
+        return this.responseConverters.toGetTransactionsResponse(rawResponse);
+    }
+
+    public getStakeNeuronStatus = async (request: GetStakeNeuronStatusRequest) : Promise<GetStakeNeuronStatusResponse> => {
+        const rawRequest = this.requestConverters.fromGetStakeNeuronStatusRequest(request);
+        const rawResponse = await this.service.get_stake_neuron_status(rawRequest);
+        return this.responseConverters.toGetStakeNeuronStatusResponse(rawResponse);
     }
 
     public getIcpToCyclesConversionRate = async () : Promise<bigint> => {

@@ -6,12 +6,19 @@ use crate::canister_store::{
     DetachCanisterResponse,
     NamedCanister
 };
+use crate::canisters::governance::{
+    ClaimOrRefreshNeuronFromAccount,
+    claim_or_refresh_neuron_from_account_response
+};
 use crate::state::{StableState, STATE, State};
 use crate::transaction_store::{
     AccountDetails,
     CreateSubAccountResponse,
+    GetStakeNeuronStatusRequest,
+    GetStakeNeuronStatusResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
+    NeuronDetails,
     RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse,
     RemoveHardwareWalletRequest,
@@ -25,8 +32,8 @@ use dfn_core::{stable, over, over_async};
 use ledger_canister::AccountIdentifier;
 
 mod assets;
+mod canisters;
 mod canister_store;
-mod ledger;
 mod ledger_sync;
 mod state;
 mod transaction_store;
@@ -141,6 +148,17 @@ fn remove_hardware_wallet_impl(request: RemoveHardwareWalletRequest) -> RemoveHa
     store.remove_hardware_wallet(principal, request)
 }
 
+#[export_name = "canister_query get_stake_neuron_status"]
+pub fn get_stake_neuron_status() {
+    over(candid_one, get_stake_neuron_status_impl);
+}
+
+fn get_stake_neuron_status_impl(request: GetStakeNeuronStatusRequest) -> GetStakeNeuronStatusResponse {
+    let principal = dfn_core::api::caller();
+    let store = &STATE.read().unwrap().transactions_store;
+    store.get_stake_neuron_status(principal, request)
+}
+
 #[export_name = "canister_query get_canisters"]
 pub fn get_canisters() {
     over(candid, |()| get_canisters_impl());
@@ -208,9 +226,36 @@ pub fn canister_heartbeat() {
 async fn run_periodic_tasks_impl() {
     ledger_sync::sync_transactions().await;
 
+    let maybe_neuron_to_refresh = STATE.write().unwrap().transactions_store.try_take_next_neuron_to_refresh();
+    if let Some(neuron_to_refresh) = maybe_neuron_to_refresh {
+        create_or_refresh_neuron(neuron_to_refresh).await;
+    }
+
     if should_prune_transactions() {
         let store = &mut STATE.write().unwrap().transactions_store;
         store.prune_transactions(PRUNE_TRANSACTIONS_COUNT);
+    }
+}
+
+async fn create_or_refresh_neuron(neuron_to_refresh: NeuronDetails) {
+    let request = ClaimOrRefreshNeuronFromAccount {
+        controller: Some(neuron_to_refresh.get_principal()),
+        memo: neuron_to_refresh.get_memo().0
+    };
+
+    if let Ok(response) = canisters::governance::claim_or_refresh_neuron_from_account(request).await {
+        match response.result {
+            Some(claim_or_refresh_neuron_from_account_response::Result::NeuronId(neuron_id)) => {
+                if neuron_to_refresh.get_neuron_id().is_some() {
+                    // If we already know the neuron_id then we must be topping up a neuron
+                    STATE.write().unwrap().transactions_store.mark_neuron_refreshed();
+                } else {
+                    // If we didn't know the neuron_id then we must be creating a new neuron
+                    STATE.write().unwrap().transactions_store.mark_neuron_created(neuron_to_refresh, neuron_id.into());
+                }
+            },
+            _ => {}
+        }
     }
 }
 

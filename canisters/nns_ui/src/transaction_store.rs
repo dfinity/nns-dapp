@@ -1,16 +1,22 @@
 use candid::CandidType;
 use crate::state::StableState;
 use dfn_candid::Candid;
-use ic_base_types::PrincipalId;
+use ic_base_types::{CanisterId, PrincipalId};
+use ic_crypto_sha256::Sha256;
+use ic_nns_common::types::NeuronId;
+use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
 use itertools::Itertools;
 use ledger_canister::{AccountIdentifier, BlockHeight, Subaccount, TimeStamp, Transfer::{Burn, Mint, Send, self}, ICPTs, Memo};
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
-use std::cmp::min;
+use std::cmp::{min, Ordering};
 use std::collections::{hash_map::Entry::{Occupied, Vacant}, HashMap, VecDeque};
 use std::iter::FromIterator;
 use std::ops::RangeTo;
-use std::time::{SystemTime, Duration};
+use std::time::{Duration, SystemTime};
+
+const MEMO_CREATE_CANISTER: Memo = Memo(0x41455243); // == 'CREA'
+const MEMO_TOP_UP_CANISTER: Memo = Memo(0x50555054); // == 'TPUP'
 
 type TransactionIndex = u64;
 
@@ -20,6 +26,8 @@ pub struct TransactionStore {
     transactions: VecDeque<Transaction>,
     accounts: Vec<Option<Account>>,
     block_height_synced_up_to: Option<BlockHeight>,
+    neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
+    neurons_to_be_created_or_refreshed_queue: VecDeque<AccountIdentifier>,
 
     // Use these up first before appending to the accounts Vec
     empty_account_indices: Vec<u32>,
@@ -27,7 +35,9 @@ pub struct TransactionStore {
     accounts_count: u64,
     sub_accounts_count: u64,
     hardware_wallet_accounts_count: u64,
-    last_ledger_sync_timestamp_nanos: u64
+    last_ledger_sync_timestamp_nanos: u64,
+    neurons_created_count: u64,
+    neurons_refreshed_count: u64
 }
 
 #[derive(CandidType, Deserialize, Debug)]
@@ -39,10 +49,11 @@ enum AccountLocation {
 
 #[derive(CandidType, Deserialize)]
 struct Account {
+    principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
     default_account_transactions: Vec<TransactionIndex>,
     sub_accounts: HashMap<u8, NamedSubAccount>,
-    hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>
+    hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
 }
 
 #[derive(CandidType, Deserialize)]
@@ -66,6 +77,45 @@ struct Transaction {
     timestamp: TimeStamp,
     memo: Memo,
     transfer: Transfer,
+    transaction_type: Option<TransactionType>
+}
+
+#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
+enum TransactionType {
+    Burn,
+    Mint,
+    Send,
+    StakeNeuron,
+    StakeNeuronNotification,
+    TopUpNeuron,
+    CreateCanister,
+    TopUpCanister
+}
+
+#[derive(Clone, CandidType, Deserialize)]
+pub struct NeuronDetails {
+    account_identifier: AccountIdentifier,
+    principal: PrincipalId,
+    memo: Memo,
+    neuron_id: Option<NeuronId>
+}
+
+impl NeuronDetails {
+    pub fn get_principal(&self) -> PrincipalId {
+        self.principal
+    }
+
+    pub fn get_memo(&self) -> Memo {
+        self.memo
+    }
+
+    pub fn get_neuron_id(&self) -> Option<NeuronId> {
+        self.neuron_id
+    }
+
+    pub fn set_neuron_id(&mut self, neuron_id: NeuronId) {
+        self.neuron_id = Some(neuron_id);
+    }
 }
 
 #[derive(CandidType)]
@@ -137,10 +187,30 @@ pub struct HardwareWalletAccountDetails {
     account_identifier: AccountIdentifier
 }
 
+#[derive(Deserialize)]
+pub struct GetStakeNeuronStatusRequest {
+    block_height: BlockHeight,
+    memo: Memo
+}
+
+#[derive(CandidType)]
+pub enum GetStakeNeuronStatusResponse {
+    Created(NeuronId),
+    Queued(u32),
+    PendingSync,
+    NotFound
+}
+
 impl TransactionStore {
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.try_get_account_by_default_identifier(&account_identifier) {
+            if account.principal.is_none() {
+                // If the principal is empty, return None so that the browser will call add_account
+                // which will allow us to set the principal.
+                return None;
+            }
+
             let sub_accounts = account.sub_accounts
                 .iter()
                 .sorted_unstable_by_key(|(_, sub_account)| sub_account.name.clone())
@@ -169,11 +239,60 @@ impl TransactionStore {
         }
     }
 
+    // This will be called for new accounts and also for old accounts where the principal has not
+    // yet been stored, allowing us to set the principal (since originally we created accounts
+    // without storing each user's principal).
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
         match self.account_identifier_lookup.entry(AccountIdentifier::from(caller)) {
-            Occupied(_) => false,
+            Occupied(e) => {
+                match e.get() {
+                    AccountLocation::DefaultAccount(account_index) => {
+                        let mut account = self.accounts.get_mut(*account_index as usize)
+                            .unwrap()
+                            .as_mut()
+                            .unwrap();
+
+                        if account.principal.is_none() {
+                            account.principal = Some(caller);
+
+                            // TODO We need to get the list of canisters linked to the user's account,
+                            // but we can get away with this for now because canisters are not yet enabled
+                            let canister_ids = Vec::new();
+
+                            // Now that we know the principal we can set the transaction types. The
+                            // transactions must be sorted since some transaction types can only be
+                            // determined based on earlier transactions (eg. we can only detect
+                            // TopUpNeuron transactions that happen after StakeNeuron transactions).
+                            for transaction_index in account.get_all_transactions_linked_to_principal_sorted().iter() {
+                                let transaction = self.get_transaction(*transaction_index).unwrap();
+                                if transaction.transaction_type.is_none() {
+                                    let transaction_type = match transaction.transfer {
+                                        Burn { from: _, amount: _ } => TransactionType::Burn,
+                                        Mint { to: _, amount: _ } => TransactionType::Mint,
+                                        Send { from, to, amount, fee: _ } => {
+                                            if self.account_identifier_lookup.contains_key(&to) {
+                                                // If the recipient in a known account then the transaction must be a basic Send,
+                                                // since for all the 'special' transaction types the recipient is not a user account
+                                                TransactionType::Send
+                                            } else {
+                                                let memo = transaction.memo;
+                                                let transaction_type = self.get_transaction_type(from, to, amount, memo, &caller, &canister_ids);
+                                                self.process_transaction_type(transaction_type, caller, to, memo);
+                                                transaction_type
+                                            }
+                                        }
+                                    };
+                                    self.get_transaction_mut(*transaction_index).unwrap().transaction_type = Some(transaction_type);
+                                }
+                            }
+                        }
+                        false
+                    },
+                    _ => true
+                }
+            },
             Vacant(e) => {
-                let new_account = Account::new(e.key().clone());
+                let new_account = Account::new(caller, e.key().clone());
                 let account_index: u32;
                 if self.empty_account_indices.is_empty() {
                     account_index = self.accounts.len() as u32;
@@ -308,26 +427,37 @@ impl TransactionStore {
             }
         }
 
-        let mut should_store_transaction = false;
         let transaction_index = self.get_next_transaction_index();
+        let mut should_store_transaction = false;
+        let mut transaction_type: Option<TransactionType> = None;
 
         match transfer {
             Burn { from, amount: _ } => {
                 if self.try_add_transaction_to_account(from, transaction_index) {
                     should_store_transaction = true;
+                    transaction_type = Some(TransactionType::Burn);
                 }
             }
             Mint { to, amount: _ } => {
                 if self.try_add_transaction_to_account(to, transaction_index) {
                     should_store_transaction = true;
+                    transaction_type = Some(TransactionType::Mint);
                 }
             }
-            Send { from, to, amount: _, fee: _ } => {
-                if self.try_add_transaction_to_account(from, transaction_index) {
-                    should_store_transaction = true;
-                }
+            Send { from, to, amount, fee: _ } => {
                 if self.try_add_transaction_to_account(to, transaction_index) {
+                    self.try_add_transaction_to_account(from, transaction_index);
                     should_store_transaction = true;
+                    transaction_type = Some(TransactionType::Send);
+                } else if self.try_add_transaction_to_account(from, transaction_index) {
+                    should_store_transaction = true;
+                    if let Some(principal) = self.try_get_principal(&from) {
+                        // TODO We need to get the list of canisters linked to the user's account,
+                        // but we can get away with this for now because canisters are not yet enabled
+                        let canister_ids = Vec::new();
+                        transaction_type = Some(self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids));
+                        self.process_transaction_type(transaction_type.unwrap(), principal, to, memo);
+                    }
                 }
             }
         }
@@ -339,7 +469,7 @@ impl TransactionStore {
                 timestamp,
                 memo,
                 transfer,
-            ));
+                transaction_type));
         }
 
         self.block_height_synced_up_to = Some(block_height);
@@ -408,7 +538,8 @@ impl TransactionStore {
                                 TransferResult::Receive { from, amount, fee }
                             }
                         }
-                    }
+                    },
+                    transaction_type: transaction.transaction_type
                 }
             })
             .collect();
@@ -428,6 +559,46 @@ impl TransactionStore {
 
     pub fn get_block_height_synced_up_to(&self) -> Option<BlockHeight> {
         self.block_height_synced_up_to
+    }
+
+    pub fn get_stake_neuron_status(&self, caller: PrincipalId, request: GetStakeNeuronStatusRequest) -> GetStakeNeuronStatusResponse {
+        if self.get_block_height_synced_up_to().unwrap_or(0) < request.block_height {
+            GetStakeNeuronStatusResponse::PendingSync
+        } else {
+            let account_identifier = Self::generate_stake_neuron_address(&caller, request.memo);
+            if let Some(neuron_details) = self.neuron_accounts.get(&account_identifier) {
+                if neuron_details.neuron_id.is_some() {
+                    GetStakeNeuronStatusResponse::Created(neuron_details.neuron_id.unwrap())
+                } else {
+                    let queue_index = self.neurons_to_be_created_or_refreshed_queue.iter()
+                        .enumerate()
+                        .find(|(_, &n)| n == account_identifier)
+                        .unwrap()
+                        .0;
+
+                    GetStakeNeuronStatusResponse::Queued(queue_index as u32)
+                }
+            } else {
+                GetStakeNeuronStatusResponse::NotFound
+            }
+        }
+    }
+
+    pub fn try_take_next_neuron_to_refresh(&mut self) -> Option<NeuronDetails> {
+        if let Some(account_identifier) = self.neurons_to_be_created_or_refreshed_queue.pop_front() {
+            self.neuron_accounts.get(&account_identifier).cloned()
+        } else {
+            None
+        }
+    }
+
+    pub fn mark_neuron_created(&mut self, neuron_details: NeuronDetails, neuron_id: NeuronId) {
+        self.neuron_accounts.get_mut(&neuron_details.account_identifier).unwrap().set_neuron_id(neuron_id);
+        self.neurons_created_count = self.neurons_created_count + 1;
+    }
+
+    pub fn mark_neuron_refreshed(&mut self) {
+        self.neurons_refreshed_count = self.neurons_refreshed_count + 1;
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -476,7 +647,9 @@ impl TransactionStore {
             earliest_transaction_block_height: earliest_transaction.map_or(0, |t| t.block_height),
             latest_transaction_timestamp_nanos: latest_transaction.map_or(0, |t| t.timestamp.timestamp_nanos),
             latest_transaction_block_height: latest_transaction.map_or(0, |t| t.block_height),
-            seconds_since_last_ledger_sync: duration_since_last_sync.as_secs()
+            seconds_since_last_ledger_sync: duration_since_last_sync.as_secs(),
+            neuron_accounts_count: self.neuron_accounts.len() as u64,
+            neurons_refreshed_count: self.neurons_refreshed_count
         }
     }
 
@@ -502,6 +675,24 @@ impl TransactionStore {
             true
         } else {
             false
+        }
+    }
+
+    fn try_get_principal(&mut self, account_identifier: &AccountIdentifier) -> Option<PrincipalId> {
+        if let Some(location) = self.account_identifier_lookup.get(account_identifier) {
+            match location {
+                AccountLocation::DefaultAccount(index) => {
+                    let account = self.accounts.get_mut(*index as usize).unwrap().as_mut().unwrap();
+                    account.principal
+                },
+                AccountLocation::SubAccount(index, _) => {
+                    let account = self.accounts.get_mut(*index as usize).unwrap().as_mut().unwrap();
+                    account.principal
+                },
+                _ => None
+            }
+        } else {
+            None
         }
     }
 
@@ -536,6 +727,20 @@ impl TransactionStore {
                 } else {
                     let offset = t.transaction_index;
                     self.transactions.get((transaction_index - offset) as usize)
+                }
+            },
+            None => None
+        }
+    }
+
+    fn get_transaction_mut(&mut self, transaction_index: TransactionIndex) -> Option<&mut Transaction> {
+        match self.transactions.front() {
+            Some(t) => {
+                if t.transaction_index > transaction_index {
+                    None
+                } else {
+                    let offset = t.transaction_index;
+                    self.transactions.get_mut((transaction_index - offset) as usize)
                 }
             },
             None => None
@@ -612,16 +817,184 @@ impl TransactionStore {
             }
         }
     }
+
+    fn get_transaction_by_block_height(&self, block_height: BlockHeight) -> Option<&Transaction> {
+        // The binary search methods are taken from here (they will be in stable rust shortly) -
+        // https://github.com/vojtechkral/rust/blob/c7a787a3276cadad7ee51577f65158b4888c058c/library/alloc/src/collections/vec_deque.rs#L2515
+        fn binary_search_by_key<T, B, F>(vec_deque: &VecDeque<T>, b: &B, mut f: F) -> Result<usize, usize>
+            where
+                F: FnMut(&T) -> B,
+                B: Ord,
+        {
+            binary_search_by(vec_deque, |k| f(k).cmp(b))
+        }
+
+        fn binary_search_by<T, F>(vec_deque: &VecDeque<T>, mut f: F) -> Result<usize, usize>
+            where
+                F: FnMut(&T) -> Ordering,
+        {
+            let (front, back) = vec_deque.as_slices();
+
+            let search_back = match back.first().map(|elem| f(elem)) {
+                Some(Ordering::Less) => true,
+                Some(Ordering::Equal) => true,
+                _ => false
+            };
+            if search_back {
+                back.binary_search_by(f).map(|idx| idx + front.len()).map_err(|idx| idx + front.len())
+            } else {
+                front.binary_search_by(f)
+            }
+        }
+
+        if let Some(latest_transaction) = self.transactions.back() {
+            let max_block_height = latest_transaction.block_height;
+            if block_height <= max_block_height {
+                // binary_search_by_key is not yet in stable rust (https://github.com/rust-lang/rust/issues/78021)
+                // TODO uncomment the line below once binary_search_by_key is in stable rust
+                // if let Ok(index) = self.transactions.binary_search_by_key(&block_height, |t| t.block_height) {
+                if let Ok(index) = binary_search_by_key(&self.transactions, &block_height, |t| t.block_height) {
+                    return self.transactions.get(index);
+                }
+            }
+        }
+        None
+    }
+
+    fn get_transaction_type(
+        &self,
+        from: AccountIdentifier,
+        to: AccountIdentifier,
+        amount: ICPTs,
+        memo: Memo,
+        principal: &PrincipalId,
+        canister_ids: &Vec<CanisterId>) -> TransactionType {
+        if from == to {
+            TransactionType::Send
+        } else if self.neuron_accounts.contains_key(&to) {
+            if self.is_stake_neuron_notification(memo, &from, &to, amount) {
+                TransactionType::StakeNeuronNotification
+            } else {
+                TransactionType::TopUpNeuron
+            }
+        } else if memo.0 > 0 {
+            if Self::is_create_canister_transaction(memo, &to, principal) {
+                TransactionType::CreateCanister
+            } else if let Some(_) = Self::is_topup_canister_transaction(memo, &to, canister_ids) {
+                TransactionType::TopUpCanister
+            } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
+                TransactionType::StakeNeuron
+            } else {
+                TransactionType::Send
+            }
+        } else {
+            TransactionType::Send
+        }
+    }
+
+    fn is_create_canister_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
+        if memo == MEMO_CREATE_CANISTER {
+            let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.get(), Some(principal.into()));
+            if *to == expected_to {
+                return true;
+            }
+        }
+        false
+    }
+
+    fn is_topup_canister_transaction(memo: Memo, to: &AccountIdentifier, canister_ids: &Vec<CanisterId>) -> Option<CanisterId> {
+        if memo == MEMO_TOP_UP_CANISTER {
+            for canister_id in canister_ids.iter() {
+                let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.get(), Some((&canister_id.get()).into()));
+                if *to == expected_to {
+                    return Some(*canister_id);
+                }
+            }
+        }
+        None
+    }
+
+    fn is_stake_neuron_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
+        if memo.0 > 0 {
+            let expected_to = Self::generate_stake_neuron_address(principal, memo);
+            *to == expected_to
+        } else {
+            false
+        }
+    }
+
+    fn is_stake_neuron_notification(&self, memo: Memo, from: &AccountIdentifier, to: &AccountIdentifier, amount: ICPTs) -> bool {
+        if memo.0 > 0 && amount.get_e8s() == 0 {
+            self.get_transaction_by_block_height(memo.0)
+                .filter(|t| t.transaction_type.is_some() && matches!(t.transaction_type.unwrap(), TransactionType::StakeNeuron))
+                .map_or(false, |t| {
+                    if let Send { from: original_transaction_from, to: original_transaction_to, amount: _, fee: _ } = t.transfer {
+                        from == &original_transaction_from && to == &original_transaction_to
+                    } else {
+                        false
+                    }
+                })
+        } else {
+            false
+        }
+    }
+
+    fn generate_stake_neuron_address(principal: &PrincipalId, memo: Memo) -> AccountIdentifier {
+        let subaccount = Subaccount({
+            let mut state = Sha256::new();
+            state.write(&[0x0c]);
+            state.write(b"neuron-stake");
+            state.write(principal.as_slice());
+            state.write(&memo.0.to_be_bytes());
+            state.finish()
+        });
+        AccountIdentifier::new(GOVERNANCE_CANISTER_ID.get(), Some(subaccount))
+    }
+
+    fn process_transaction_type(&mut self, transaction_type: TransactionType, principal: PrincipalId, to: AccountIdentifier, memo: Memo) {
+        match transaction_type {
+            TransactionType::StakeNeuron => {
+                let neuron_details = NeuronDetails {
+                    account_identifier: to,
+                    principal,
+                    memo,
+                    neuron_id: None
+                };
+                self.neuron_accounts.insert(to, neuron_details);
+                self.neurons_to_be_created_or_refreshed_queue.push_back(to);
+            },
+            TransactionType::TopUpNeuron => {
+                self.neurons_to_be_created_or_refreshed_queue.push_back(to);
+            },
+            _ => {}
+        };
+    }
 }
 
 impl StableState for TransactionStore {
     fn encode(&self) -> Vec<u8> {
-        Candid((Vec::from_iter(self.transactions.iter()), &self.accounts, &self.block_height_synced_up_to, &self.last_ledger_sync_timestamp_nanos)).into_bytes().unwrap()
+        Candid((
+            Vec::from_iter(self.transactions.iter()),
+            &self.accounts,
+            &self.block_height_synced_up_to,
+            &self.last_ledger_sync_timestamp_nanos,
+            &self.neuron_accounts,
+            Vec::from_iter(self.neurons_to_be_created_or_refreshed_queue.iter()),
+            &self.neurons_refreshed_count)).into_bytes().unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
+        // let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos, neuron_accounts, neurons_to_be_created_or_refreshed, neurons_refreshed_count)
+        //     : (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64, HashMap<AccountIdentifier, NeuronDetails>, Vec<NeuronDetails>, u64) =
+        //     Candid::from_bytes(bytes).map(|c| c.0)?;
+
         let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64) =
             Candid::from_bytes(bytes).map(|c| c.0)?;
+
+        let neuron_accounts = HashMap::default();
+        let neurons_to_be_created_or_refreshed = Vec::default();
+        let neurons_created_count = 0u64;
+        let neurons_refreshed_count = 0u64;
 
         let mut account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation> = HashMap::new();
         let mut empty_account_indices: Vec<u32> = Vec::new();
@@ -652,18 +1025,23 @@ impl StableState for TransactionStore {
             transactions: VecDeque::from_iter(transactions),
             accounts,
             block_height_synced_up_to,
+            neuron_accounts,
+            neurons_to_be_created_or_refreshed_queue: VecDeque::from_iter(neurons_to_be_created_or_refreshed),
             empty_account_indices,
             accounts_count,
             sub_accounts_count,
             hardware_wallet_accounts_count,
-            last_ledger_sync_timestamp_nanos
+            last_ledger_sync_timestamp_nanos,
+            neurons_created_count,
+            neurons_refreshed_count
         })
     }
 }
 
 impl Account {
-    pub fn new(account_identifier: AccountIdentifier) -> Account {
+    pub fn new(principal: PrincipalId, account_identifier: AccountIdentifier) -> Account {
         Account {
+            principal: Some(principal),
             account_identifier,
             default_account_transactions: Vec::new(),
             sub_accounts: HashMap::new(),
@@ -686,6 +1064,14 @@ impl Account {
 
         account.transactions.push(transaction_index);
     }
+
+    pub fn get_all_transactions_linked_to_principal_sorted(&self) -> Vec<TransactionIndex> {
+        self.default_account_transactions.iter()
+            .cloned()
+            .chain(self.sub_accounts.values().map(|a| a.transactions.iter().cloned()).flatten())
+            .sorted()
+            .collect()
+    }
 }
 
 impl Transaction {
@@ -694,13 +1080,15 @@ impl Transaction {
         block_height: BlockHeight,
         timestamp: TimeStamp,
         memo: Memo,
-        transfer: Transfer) -> Transaction {
+        transfer: Transfer,
+        transaction_type: Option<TransactionType>) -> Transaction {
         Transaction {
             transaction_index,
             block_height,
             timestamp,
             memo,
-            transfer
+            transfer,
+            transaction_type
         }
     }
 }
@@ -740,6 +1128,7 @@ pub struct TransactionResult {
     timestamp: TimeStamp,
     memo: Memo,
     transfer: TransferResult,
+    transaction_type: Option<TransactionType>
 }
 
 #[derive(CandidType)]
@@ -774,6 +1163,8 @@ pub struct Stats {
     latest_transaction_timestamp_nanos: u64,
     latest_transaction_block_height: BlockHeight,
     seconds_since_last_ledger_sync: u64,
+    neuron_accounts_count: u64,
+    neurons_refreshed_count: u64,
 }
 
 #[cfg(test)]
@@ -782,8 +1173,8 @@ mod tests {
     use std::str::FromStr;
     use ledger_canister::ICPTs;
 
-    const TEST_ACCOUNT_1: &str = "bngem-gzprz-dtr6o-xnali-fgmfi-fjgpb-rya7j-x2idk-3eh6u-4v7tx-hqe";
-    const TEST_ACCOUNT_2: &str = "c2u3y-w273i-ols77-om7wu-jzrdm-gxxz3-b75cc-3ajdg-mauzk-hm5vh-jag";
+    const TEST_ACCOUNT_1: &str = "h4a5i-5vcfo-5rusv-fmb6m-vrkia-mjnkc-jpoow-h5mam-nthnm-ldqlr-bqe";
+    const TEST_ACCOUNT_2: &str = "bngem-gzprz-dtr6o-xnali-fgmfi-fjgpb-rya7j-x2idk-3eh6u-4v7tx-hqe";
     const TEST_ACCOUNT_3: &str = "347of-sq6dc-h53df-dtzkw-eama6-hfaxk-a7ghn-oumsd-jf2qy-tqvqc-wqe";
     const TEST_ACCOUNT_4: &str = "zrmyx-sbrcv-rod5f-xyd6k-letwb-tukpj-edhrc-sqash-lddmc-7qypw-yqe";
     const TEST_ACCOUNT_5: &str = "2fzwl-cu3hl-bawo2-idwrw-7yygk-uccms-cbo3a-c6kqt-lnk3j-mewg3-hae";
@@ -847,6 +1238,80 @@ mod tests {
 
         assert_eq!(4, results.total);
         assert_eq!(2, results.transactions.len());
+    }
+
+    #[test]
+    fn add_account_adds_principal_and_sets_transaction_types() {
+        let mut store = setup_test_store();
+
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+        let account_identifier = AccountIdentifier::new(principal, None);
+
+        let account = Account {
+            principal: None,
+            account_identifier,
+            default_account_transactions: Vec::default(),
+            sub_accounts: HashMap::default(),
+            hardware_wallet_accounts: Vec::default()
+        };
+
+        store.account_identifier_lookup.insert(account_identifier, AccountLocation::DefaultAccount(store.accounts.len() as u32));
+        store.accounts.push(Some(account));
+
+        let send = Send {
+            from: account_identifier,
+            to: AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap()),
+            amount: ICPTs::from_icpts(1).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(send, Memo(0), store.get_block_height_synced_up_to().unwrap_or(0) + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
+
+        let stake_neuron = Send {
+            from: account_identifier,
+            to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
+            amount: ICPTs::from_icpts(2).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(stake_neuron, Memo(1678183231181200159), store.get_block_height_synced_up_to().unwrap_or(0) + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
+
+        let topup_neuron = Send {
+            from: account_identifier,
+            to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
+            amount: ICPTs::from_icpts(3).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(topup_neuron, Memo(0), store.get_block_height_synced_up_to().unwrap_or(0) + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
+
+        let original_transaction_types: Vec<_> = store
+            .get_transactions(principal, GetTransactionsRequest {
+                account_identifier,
+                page_size: 10,
+                offset: 0
+            })
+            .transactions
+            .into_iter()
+            .map(|t| t.transaction_type)
+            .collect();
+
+        assert!(original_transaction_types.iter().all(|t| t.is_none()));
+
+        store.add_account(principal);
+
+        let transaction_types: Vec<_> = store
+            .get_transactions(principal, GetTransactionsRequest {
+                account_identifier,
+                page_size: 10,
+                offset: 0
+            })
+            .transactions
+            .into_iter()
+            .map(|t| t.transaction_type.unwrap())
+            .collect();
+
+        let expected_transaction_types = vec!(TransactionType::TopUpNeuron, TransactionType::StakeNeuron, TransactionType::Send);
+        for i in 0..expected_transaction_types.len() {
+            assert_eq!(expected_transaction_types[i], transaction_types[i]);
+        }
     }
 
     #[test]
@@ -966,13 +1431,13 @@ mod tests {
             amount: ICPTs::from_icpts(1).unwrap(),
             to: hw,
         };
-        store.append_transaction(transfer, Memo(0), 4, TimeStamp { timestamp_nanos: 100 }).unwrap();
+        store.append_transaction(transfer, Memo(0), store.get_block_height_synced_up_to().unwrap_or(0) + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
 
         let transfer = Mint {
             amount: ICPTs::from_icpts(2).unwrap(),
             to: hw,
         };
-        store.append_transaction(transfer, Memo(0), 5, TimeStamp { timestamp_nanos: 100 }).unwrap();
+        store.append_transaction(transfer, Memo(0), store.get_block_height_synced_up_to().unwrap_or(0) + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
 
         let get_transactions_request = GetTransactionsRequest {
             account_identifier: hw,
@@ -985,6 +1450,48 @@ mod tests {
         assert_eq!(2, response.total);
         assert_eq!(5, response.transactions[0].block_height);
         assert_eq!(4, response.transactions[1].block_height);
+    }
+
+    #[test]
+    fn append_transaction_detects_neuron_transactions() {
+        let mut store = setup_test_store();
+
+        let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
+        let transfer = Send {
+            from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_1).unwrap(), None),
+            to: AccountIdentifier::from_hex("426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91").unwrap(),
+            amount: ICPTs::from_icpts(1).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(transfer, Memo(16656605094239839590), block_height, TimeStamp { timestamp_nanos: 100 }).unwrap();
+        assert!(matches!(store.transactions.back().unwrap().transaction_type.unwrap(), TransactionType::StakeNeuron));
+
+        let notification = Send {
+            from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_1).unwrap(), None),
+            to: AccountIdentifier::from_hex("426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91").unwrap(),
+            amount: ICPTs::from_icpts(0).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(notification, Memo(block_height), block_height + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
+        assert!(matches!(store.transactions.back().unwrap().transaction_type.unwrap(), TransactionType::StakeNeuronNotification));
+
+        let topup1 = Send {
+            from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_1).unwrap(), None),
+            to: AccountIdentifier::from_hex("426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91").unwrap(),
+            amount: ICPTs::from_icpts(2).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(topup1, Memo(0), block_height + 2, TimeStamp { timestamp_nanos: 100 }).unwrap();
+        assert!(matches!(store.transactions.back().unwrap().transaction_type.unwrap(), TransactionType::TopUpNeuron));
+
+        let topup2 = Send {
+            from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_1).unwrap(), None),
+            to: AccountIdentifier::from_hex("426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91").unwrap(),
+            amount: ICPTs::from_icpts(3).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(topup2, Memo(0), block_height + 3, TimeStamp { timestamp_nanos: 100 }).unwrap();
+        assert!(matches!(store.transactions.back().unwrap().transaction_type.unwrap(), TransactionType::TopUpNeuron));
     }
 
     #[test]

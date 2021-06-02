@@ -43,15 +43,6 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> retryStakeNeuronNotification(
-      {required BigInt blockHeight,
-        required BigInt nonce,
-        int? fromSubAccount}) {
-    // TODO: implement retryStakeNeuronNotification
-    throw UnimplementedError();
-  }
-
-  @override
   Future<void> createSubAccount({required String name}) {
     // TODO: implement createSubAccount
     throw UnimplementedError();

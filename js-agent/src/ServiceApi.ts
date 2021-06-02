@@ -52,7 +52,7 @@ import NnsUiService, {
 } from "./canisters/nnsUI/model";
 import icManagementBuilder from "./canisters/icManagement/builder";
 import ICManagementService, { CanisterDetailsResponse, UpdateSettingsRequest, UpdateSettingsResponse } from "./canisters/icManagement/model";
-import createNeuronImpl, { CreateNeuronRequest, NotificationRequest, sendNotification } from "./canisters/createNeuron";
+import createNeuronImpl, { CreateNeuronRequest } from "./canisters/createNeuron";
 import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/createCanister";
 import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, NeuronId } from "./canisters/common/types";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
@@ -73,7 +73,7 @@ export default class ServiceApi {
             host: HOST,
             identity
         });
-        
+
         if (FETCH_ROOT_KEY) {
             await agent.fetchRootKey();
         }
@@ -133,7 +133,7 @@ export default class ServiceApi {
     }
 
     public getTransactions = (request: GetTransactionsRequest) : Promise<GetTransactionsResponse> => {
-        return executeWithLogging(() => this.nnsUiService.getTransactions(request, this.identity.getPrincipal().toString()));
+        return executeWithLogging(() => this.nnsUiService.getTransactions(request));
     }
 
     public sendICPTs = (request: SendICPTsRequest): Promise<BlockHeight> => {
@@ -227,12 +227,9 @@ export default class ServiceApi {
     public createNeuron = (request: CreateNeuronRequest) : Promise<NeuronId> => {
         return executeWithLogging(() => createNeuronImpl(
             this.identity.getPrincipal().toString(),
-            this.ledgerService, 
+            this.ledgerService,
+            this.nnsUiService,
             request));
-    }
-
-    public retryStakeNeuronNotification = (request: NotificationRequest) : Promise<NeuronId> => {
-        return executeWithLogging(() => sendNotification(this.identity.getPrincipal().toString(), this.ledgerService, request));
     }
 
     /*

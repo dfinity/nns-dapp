@@ -1,28 +1,23 @@
 import { Principal } from "@dfinity/agent";
 import { sha256 } from "js-sha256";
 import LedgerService from "./ledger/model";
+import NnsUiService from "./nnsUI/model";
 import GOVERNANCE_CANISTER_ID from "./governance/canisterId";
 import randomBytes from "randombytes";
-import { BlockHeight, E8s, NeuronId, PrincipalString } from "./common/types";
+import { E8s, NeuronId, PrincipalString } from "./common/types";
 import * as convert from "./converter";
-import { NeuronId as NeuronIdProto } from "./ledger/proto/base_types_pb";
-import { retryAsync } from "./retry";
+
+const ONE_MINUTE_MILLIS = 60 * 1000;
 
 export type CreateNeuronRequest = {
     stake: E8s
     fromSubAccountId?: number
 }
 
-export type NotificationRequest = {
-    blockHeight: BlockHeight,
-    nonce: bigint,
-    fromSubAccountId?: number
-}
-
-// Ported from https://github.com/dfinity-lab/dfinity/blob/master/rs/nns/integration_tests/src/ledger.rs#L29
 export default async function(
     principal: PrincipalString,
-    ledgerService: LedgerService, 
+    ledgerService: LedgerService,
+    nnsUiService: NnsUiService,
     request: CreateNeuronRequest) : Promise<NeuronId> {
 
     const nonceBytes = new Uint8Array(randomBytes(8));
@@ -37,26 +32,35 @@ export default async function(
         fromSubAccountId: request.fromSubAccountId
     });
 
-    const notificationRequest: NotificationRequest = {
-        blockHeight,
-        nonce,
-        fromSubAccountId: request.fromSubAccountId
-    };
+    // Once the ICP has been sent, start polling the NNS UI to check on the status of the stake neuron request. Only at
+    // most 1 neuron will be created on each heartbeat so it is possible that a queue may temporarily form. Currently we
+    // wait for up to a minute. In the future we could provide a better UX by displaying the position of the user's
+    // request in the queue.
+    const start = Date.now();
+    while (Date.now() - start < ONE_MINUTE_MILLIS) {
+        // Wait 5 seconds between each attempt
+        await new Promise(resolve => setTimeout(resolve, 5000));
 
-    return await sendNotification(principal, ledgerService, notificationRequest);
-}
+        try {
+            const status = await nnsUiService.getStakeNeuronStatus({
+                blockHeight,
+                memo: nonce
+            });
 
-export const sendNotification = async (principal: PrincipalString, ledgerService: LedgerService, request: NotificationRequest) : Promise<NeuronId> => {
-    const toSubAccount = buildSubAccount(convert.bigIntToUint8Array(request.nonce), Principal.fromText(principal));
+            console.log(status);
 
-    const result = await retryAsync(() => ledgerService.notify({
-        toCanister: GOVERNANCE_CANISTER_ID.toString(),
-        blockHeight: request.blockHeight,
-        toSubAccount,
-        fromSubAccountId: request.fromSubAccountId
-    }), 5);
+            if ("Created" in status) {
+                return status.Created;
+            } else if ("NotFound" in status) {
+                throw new Error("Stake neuron request not found in the NNS UI canister");
+            }
+        } catch (e) {
+            console.log(e);
+            // If there is an error while getting the status simply swallow the error and try again
+        }
+    }
 
-    return BigInt(NeuronIdProto.deserializeBinary(result).getId());
+    throw new Error("Failed to successfully create a neuron. Request may still be queued");
 }
 
 // 32 bytes
