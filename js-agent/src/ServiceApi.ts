@@ -1,4 +1,4 @@
-import { HttpAgent, SignIdentity } from "@dfinity/agent";
+import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
 import { Option } from "./canisters/option";
 import governanceBuilder from "./canisters/governance/builder";
 import GovernanceService, {
@@ -272,5 +272,22 @@ export default class ServiceApi {
 
     public getIcpToCyclesConversionRate = (): Promise<bigint> => {
         return executeWithLogging(() => this.nnsUiService.getIcpToCyclesConversionRate());
+    }
+
+    // Gives the caller the specified amount of (fake) ICPs.
+    // Should/can only be used on testnets.
+    public acquireICPTs = async (accountIdentifier: AccountIdentifier, e8s: E8s): Promise<void> => {
+        const anonIdentity = new AnonymousIdentity();
+        const agent = new HttpAgent({
+            host: HOST,
+            identity: anonIdentity
+        });
+        await agent.fetchRootKey();
+        const anonLedgerService = ledgerBuilder(agent, anonIdentity);
+        const req = {
+            to: accountIdentifier,
+            amount: e8s
+        }
+        await anonLedgerService.sendICPTs(req);
     }
 }

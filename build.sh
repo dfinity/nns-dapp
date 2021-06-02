@@ -14,7 +14,12 @@ set -x
 
 # build the flutter app
 cd dfinity_wallet || exit
-flutter build web --web-renderer canvaskit --release --no-sound-null-safety --pwa-strategy=none
+if [[ $DEPLOY_ENV = "mainnet" ]]; then
+  flutter build web --web-renderer canvaskit --release --no-sound-null-safety --pwa-strategy=none
+else
+  # For all networks that are not main net, build with the staging config
+  flutter build web --web-renderer canvaskit --release --no-sound-null-safety --pwa-strategy=none --dart-define=DEPLOY_ENV=staging
+fi
 sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' build/web/index.html
 
 # Bundle into a tight tarball

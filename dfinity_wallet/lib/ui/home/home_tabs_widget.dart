@@ -166,6 +166,8 @@ import 'package:dfinity_wallet/ui/wallet/accounts_tab_widget.dart';
 
 import '../../dfinity.dart';
 
+const DEPLOY_ENV = String.fromEnvironment('DEPLOY_ENV');
+
 class HomePage extends StatefulWidget {
   final int initialTabIndex;
 
@@ -211,6 +213,48 @@ class _HomePageState extends State<HomePage> {
                           letterSpacing: 2),
                     )),
                 actions: [
+                  if (DEPLOY_ENV == "staging")
+                    Padding(
+                      padding: Responsive.isDesktop(context)
+                          ? const EdgeInsets.only(top: 20.0, right: 20.0)
+                          : Responsive.isTablet(context)
+                              ? const EdgeInsets.only(top: 20.0, right: 40.0)
+                              : const EdgeInsets.only(top: 20.0, right: 8.0),
+                      child: TextButton(
+                        child: Text(
+                          "Get ICPs",
+                          style: Responsive.isDesktop(context)
+                              ? TextStyle(color: AppColors.white, fontSize: 20)
+                              : Responsive.isTablet(context)
+                                  ? TextStyle(
+                                      color: AppColors.white, fontSize: 18)
+                                  : TextStyle(
+                                      color: AppColors.white, fontSize: 9),
+                        ),
+                        onPressed: () async {
+                          OverlayBaseWidget.show(
+                              context,
+                              TextFieldDialogWidget(
+                                  title: "How much?",
+                                  buttonTitle: "Get",
+                                  fieldName: "ICP",
+                                  onComplete: (name) {
+                                    final amount =
+                                        BigInt.from(name.toDouble()) *
+                                            BigInt.from(100000000);
+                                    context.performLoading(() => context.icApi
+                                        .acquireICPTs(
+                                            accountIdentifier: context
+                                                .boxes
+                                                .accounts
+                                                .primary
+                                                .accountIdentifier,
+                                            doms: amount));
+                                  }),
+                              borderRadius: 20);
+                        },
+                      ),
+                    ),
                   Padding(
                     padding: Responsive.isDesktop(context)
                         ? const EdgeInsets.only(top: 20.0, right: 20.0)
