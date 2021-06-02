@@ -67,7 +67,7 @@ export default class AuthApi {
     }
 
     public connectToHardwareWallet = () : Promise<LedgerIdentity> => {
-        return executeWithLogging(LedgerIdentity.fromWebUsb);
+        return executeWithLogging(() => LedgerIdentity.fromWebUsb());
     }
 
     public getPrincipal = () : string => {
