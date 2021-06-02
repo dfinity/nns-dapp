@@ -13,7 +13,9 @@ class PageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(32),
+      padding: Responsive.isDesktop(context) | Responsive.isTablet(context)
+          ? EdgeInsets.symmetric(horizontal: 20, vertical: 32)
+          : EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: ElevatedButton(
         child: Responsive.isDesktop(context) | Responsive.isTablet(context)
             ? Padding(
@@ -28,7 +30,8 @@ class PageButton extends StatelessWidget {
                 ),
               )
             : Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5.0, vertical: 16),
                 child: SizedBox(
                   width: 150,
                   child: Text(

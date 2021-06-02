@@ -5,7 +5,11 @@ class FooterGradientButton extends StatelessWidget {
   final Widget body;
   final double? footerHeight;
 
-  const FooterGradientButton({Key? key, required this.footer, required this.body, this.footerHeight = 100})
+  const FooterGradientButton(
+      {Key? key,
+      required this.footer,
+      required this.body,
+      this.footerHeight = 100})
       : super(key: key);
 
   @override
@@ -19,9 +23,14 @@ class FooterGradientButton extends StatelessWidget {
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
-                  end: Alignment(0.0, 0.5), // 10% of the width, so there are ten blinds.
-                  colors: <Color>[Colors.black, AppColors.transparent], // red to yellow
-                  tileMode: TileMode.clamp, // repeats the gradient over the canvas
+                  end: Alignment(
+                      0.0, 0.5), // 10% of the width, so there are ten blinds.
+                  colors: <Color>[
+                    Colors.black,
+                    AppColors.transparent
+                  ], // red to yellow
+                  tileMode:
+                      TileMode.clamp, // repeats the gradient over the canvas
                 ),
               ),
             ),
@@ -40,6 +49,4 @@ class FooterGradientButton extends StatelessWidget {
       ],
     );
   }
-
-
 }

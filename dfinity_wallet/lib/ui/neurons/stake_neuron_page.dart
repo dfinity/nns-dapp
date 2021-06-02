@@ -1,6 +1,8 @@
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
+import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:flutter/services.dart';
@@ -27,11 +29,11 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
     super.initState();
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(
-              widget.source.balance, 2),
-          StringFieldValidation("Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
+          StringFieldValidation.insufficientFunds(widget.source.balance, 2),
+          StringFieldValidation(
+              "Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
         ],
-        inputFormatters: <TextInputFormatter>[ ICPTextInputFormatter() ],
+        inputFormatters: <TextInputFormatter>[ICPTextInputFormatter()],
         inputType: TextInputType.number);
   }
 
@@ -43,45 +45,72 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IntrinsicWidth(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TallFormDivider(),
-                        SelectableText("Source",
-                            style: context.textTheme.headline4),
-                        VerySmallFormDivider(),
-                        Text(widget.source.address,
-                            style: context.textTheme.bodyText1),
-                        SmallFormDivider(),
-                        Text("Transaction Fee",
-                            style: context.textTheme.headline4),
-                        VerySmallFormDivider(),
-                        // fee is doubled as it is a SEND and NOTIFY
-                        Text((ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S * 2))).asString(myLocale.languageCode) + " ICP",
-                            style: context.textTheme.bodyText1),
-                        VerySmallFormDivider()
-                      ],
-                    ),
-                  ),
-                  Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IntrinsicWidth(
                       child: Column(
-                    children: [
-                      Text("Current Balance: "),
-                      BalanceDisplayWidget(
-                        amount: widget.source.balance,
-                        amountSize: 40,
-                        icpLabelSize: 0,
-                        locale: myLocale.languageCode,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TallFormDivider(),
+                          SelectableText("Source",
+                              style: Responsive.isDesktop(context) |
+                                      Responsive.isTablet(context)
+                                  ? context.textTheme.headline3
+                                  : context.textTheme.headline4),
+                          VerySmallFormDivider(),
+                          Text(widget.source.address,
+                              style: Responsive.isDesktop(context) |
+                                      Responsive.isTablet(context)
+                                  ? context.textTheme.bodyText1
+                                  : context.textTheme.bodyText2),
+                          TallFormDivider(),
+                          Text("Transaction Fee",
+                              style: Responsive.isDesktop(context) |
+                                      Responsive.isTablet(context)
+                                  ? context.textTheme.headline3
+                                  : context.textTheme.headline4),
+                          VerySmallFormDivider(),
+                          // fee is doubled as it is a SEND and NOTIFY
+                          Text(
+                              (ICP.fromE8s(
+                                          BigInt.from(TRANSACTION_FEE_E8S * 2)))
+                                      .asString(myLocale.languageCode) +
+                                  " ICP",
+                              style: Responsive.isDesktop(context) |
+                                      Responsive.isTablet(context)
+                                  ? context.textTheme.bodyText1
+                                  : context.textTheme.bodyText2),
+                          VerySmallFormDivider()
+                        ],
                       ),
-                    ],
-                  )),
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Center(
+                    ),
+                    SmallFormDivider(),
+                    Center(
+                        child: Column(
+                      children: [
+                        Text(
+                          "Current Balance: ",
+                          style: Responsive.isDesktop(context) |
+                                  Responsive.isTablet(context)
+                              ? TextStyle(fontSize: kTextSizeLarge)
+                              : TextStyle(fontSize: kTextSizeSmall),
+                        ),
+                        VerySmallFormDivider(),
+                        BalanceDisplayWidget(
+                          amount: widget.source.balance,
+                          amountSize: Responsive.isDesktop(context) |
+                                  Responsive.isTablet(context)
+                              ? kCurrentBalanceSizeBig
+                              : kCurrentBalanceSizeSmall,
+                          icpLabelSize: 0,
+                          locale: myLocale.languageCode,
+                        ),
+                      ],
+                    )),
+                    Center(
                       child: ConstrainedBox(
                         constraints: BoxConstraints(maxWidth: 500),
                         child: DebouncedValidatedFormField(
@@ -92,29 +121,37 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 100,
-                  )
-                ],
+                    SizedBox(
+                      height: 100,
+                    )
+                  ],
+                ),
               ),
             ),
           ),
           Column(
             children: [
+              Text('(This may take up to 1 minute)',
+                  style: Responsive.isDesktop(context) |
+                          Responsive.isTablet(context)
+                      ? context.textTheme.bodyText1
+                      : context.textTheme.bodyText2),
               Container(
                 width: double.infinity,
-                color: AppColors.lightBackground,
                 height: 100,
-                padding: EdgeInsets.symmetric(horizontal: 64, vertical: 16),
+                padding: EdgeInsets.symmetric(horizontal: 64, vertical: 20),
                 child: ElevatedButton(
-                  child: Text("Create"),
+                  child: Text("Create",
+                      style: TextStyle(
+                          fontSize: Responsive.isTablet(context) |
+                                  Responsive.isDesktop(context)
+                              ? kTextSizeLarge
+                              : kTextSizeSmall)),
                   onPressed: () async {
                     // TODO: Should be using the returned neuronId
-                    await context.callUpdate(() => context.icApi
-                        .createNeuron(
-                            stake: ICP.fromString(amountField.currentValue),
-                            fromSubAccount: widget.source.subAccountId));
+                    await context.callUpdate(() => context.icApi.createNeuron(
+                        stake: ICP.fromString(amountField.currentValue),
+                        fromSubAccount: widget.source.subAccountId));
                     final newNeuron = context.boxes.neurons.values
                         .sortedByDescending((element) =>
                             element.createdTimestampSeconds.toBigInt)

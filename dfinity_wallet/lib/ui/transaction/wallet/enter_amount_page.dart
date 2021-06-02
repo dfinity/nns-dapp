@@ -1,7 +1,9 @@
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/dfinity.dart';
+import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:flutter/services.dart';
 
@@ -53,10 +55,18 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
               Center(
                 child: Column(
                   children: [
-                    Text("Current Balance: "),
+                    Text("Current Balance: ",
+                        style: Responsive.isDesktop(context) |
+                                Responsive.isTablet(context)
+                            ? TextStyle(fontSize: kTextSizeLarge)
+                            : TextStyle(fontSize: kTextSizeSmall)),
+                    SmallFormDivider(),
                     BalanceDisplayWidget(
                       amount: widget.source.balance,
-                      amountSize: 40,
+                      amountSize: Responsive.isDesktop(context) |
+                              Responsive.isTablet(context)
+                          ? kCurrentBalanceSizeBig
+                          : kCurrentBalanceSizeSmall,
                       icpLabelSize: 0,
                       locale: myLocale.languageCode,
                     )
@@ -85,25 +95,45 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Source", style: context.textTheme.headline4),
+                    Text("Source",
+                        style: Responsive.isDesktop(context) |
+                                Responsive.isTablet(context)
+                            ? context.textTheme.headline3
+                            : context.textTheme.headline4),
                     VerySmallFormDivider(),
                     SelectableText(widget.source.address,
-                        style: context.textTheme.bodyText1),
+                        style: Responsive.isDesktop(context) |
+                                Responsive.isTablet(context)
+                            ? context.textTheme.bodyText1
+                            : context.textTheme.bodyText2),
                     TallFormDivider(),
-                    Text("Destination", style: context.textTheme.headline4),
+                    Text("Destination",
+                        style: Responsive.isDesktop(context) |
+                                Responsive.isTablet(context)
+                            ? context.textTheme.headline3
+                            : context.textTheme.headline4),
                     VerySmallFormDivider(),
                     SelectableText(widget.destinationAccountIdentifier,
-                        style: context.textTheme.bodyText1),
+                        style: Responsive.isDesktop(context) |
+                                Responsive.isTablet(context)
+                            ? context.textTheme.bodyText1
+                            : context.textTheme.bodyText2),
                     TallFormDivider(),
                     Text("Transaction Fee (billed to source)",
-                        style: context.textTheme.headline4),
+                        style: Responsive.isDesktop(context) |
+                                Responsive.isTablet(context)
+                            ? context.textTheme.headline3
+                            : context.textTheme.headline4),
                     VerySmallFormDivider(),
                     Text(
                         ICP
                                 .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
                                 .asString(myLocale.languageCode) +
                             " ICP",
-                        style: context.textTheme.bodyText1),
+                        style: Responsive.isDesktop(context) |
+                                Responsive.isTablet(context)
+                            ? context.textTheme.bodyText1
+                            : context.textTheme.bodyText2),
                   ],
                 ),
               ),
@@ -113,7 +143,14 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                   height: 70,
                   width: double.infinity,
                   child: ValidFieldsSubmitButton(
-                    child: Text("Review Transaction"),
+                    child: Text(
+                      "Review Transaction",
+                      style: TextStyle(
+                          fontSize: Responsive.isTablet(context) |
+                                  Responsive.isDesktop(context)
+                              ? kTextSizeLarge
+                              : kTextSizeSmall),
+                    ),
                     onPressed: () async {
                       var amount = ICP.fromString(amountField.currentValue);
                       WizardOverlay.of(context).pushPage(
