@@ -33,17 +33,22 @@ class ICP {
       throw new FormatException("Invalid format for ICP: $s");
     }
 
-    final integral = splits[0];
-    var fractional = (splits.length > 1) ? splits[1] : "";
-    if (fractional.length > 8) {
+    final integralString = splits[0];
+    final integral = integralString.isEmpty
+        ? BigInt.zero
+        : BigInt.parse(integralString);
+
+    var fractionalString = (splits.length > 1) ? splits[1] : "";
+    if (fractionalString.length > 8) {
       throw new FormatException("Fractional can have at most 8 decimal places");
     }
 
-    // Pad the fractional to be 8 digits for easier conversion to BigInt.
-    fractional = fractional.padRight(8, '0');
+    // Pad the fractionalString to be 8 digits for easier conversion to BigInt.
+    fractionalString = fractionalString.padRight(8, '0');
 
-    BigInt value =
-        (BigInt.parse(integral) * _e8sPerICP) + BigInt.parse(fractional);
+    final fractional = BigInt.parse(fractionalString);
+
+    BigInt value = (integral * _e8sPerICP) + fractional;
     return new ICP._(value);
   }
 
