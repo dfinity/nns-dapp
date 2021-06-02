@@ -15,26 +15,28 @@ What things you need to install the software and how to install them
 3. [DFX](https://sdk.dfinity.org/docs/index.html) - Recommended `> 0.7.0-beta.6 `
 4. `didc` in your `$PATH`: Can be downloaded [here](https://github.com/dfinity/candid/releases).
 
-### Installing
+### Development
 
-Start DFX
+Development relies on the presence of a testnet that is setup with the II, governance, ledger, and cycle minting canisters.
 
-```shell
-dfx start --clean [--background]
-```
-
-Deploy canisters
+We rely on the `xsmallh` testnet. To deploy there, run the following:
 
 ```shell
-dfx deploy
+./deploy.sh xsmallh
 ```
 
-Open the front-end asset canister. The following command will give you a URL to open locally.
+Then run the following command to open the UI:
+
+```shell
+open "https://$(dfx canister --no-wallet --network xsmallh id nns_ui).xsmallh.dfinity.network"
+```
+
+To work on the UI locally, either use your IDE, or run the following:
 
 ```
-echo " $(dfx config networks.local.bind)/?canisterId=$(dfx canister id nns_ui_assets)"
+cd dfinity_wallet
+flutter run --no-sound-null-safety --web-port 5021
 ```
-End with an example of getting some data out of the system or using it for a little demo
 
 ## TODO: Running the tests
 
@@ -61,12 +63,6 @@ dfx deploy --network=alpha
 - [DFX](https://sdk.dfinity.org/docs/index.html) - SDK and command line
 - [TypeScript](https://www.typescriptlang.org/) - Front-end typings and compilation
 - [Browserify](http://browserify.org/) - Used to generate RSS Feeds
-
-## Testing
-
-3 settings need to be changed in order to test this locally pointing to the testnet.
-You can find them by searching for 'TEST CONFIG' and switching which value is commented out.
-This is a terrible way of doing it, I'll fix this next week.
 
 ## TODO: License
 

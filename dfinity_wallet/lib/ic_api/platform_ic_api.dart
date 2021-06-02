@@ -87,7 +87,8 @@ abstract class AbstractPlatformICApi {
 
   Future<void> getCanister(String canisterId);
 
-  Future<void> changeCanisterController(String canisterId, String newController);
+  Future<void> changeCanisterControllers(
+      String canisterId, List<String> newControllers);
 
   Future<void> test();
 

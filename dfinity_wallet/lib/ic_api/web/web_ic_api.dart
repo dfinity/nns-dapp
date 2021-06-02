@@ -303,7 +303,8 @@ class PlatformICApi extends AbstractPlatformICApi {
     final response = [...res];
     final canisterIds = response.mapToList((e) {
       final id = e.canisterId.toString();
-      hiveBoxes.canisters[id] = Canister(name: e.name, publicKey: id, userIsController: null);
+      hiveBoxes.canisters[id] =
+          Canister(name: e.name, publicKey: id, userIsController: null);
       return id;
     });
 
@@ -353,13 +354,12 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> changeCanisterController(
-      String canisterId, String newController) async {
+  Future<void> changeCanisterControllers(
+      String canisterId, List<String> newControllers) async {
     final settings = UpdateSettingsRequest(
         canisterId: canisterId,
-        settings: UpdateCanisterSettings(controllers: [newController]));
-    final res =
-        await promiseToFuture(serviceApi!.updateCanisterSettings(settings));
+        settings: UpdateCanisterSettings(controllers: newControllers));
+    await promiseToFuture(serviceApi!.updateCanisterSettings(settings));
     await getCanister(canisterId);
     hiveBoxes.canisters.notifyChange();
   }

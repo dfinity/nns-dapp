@@ -36,14 +36,17 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
             child: TextButton(
                 onPressed: () {
                   OverlayBaseWidget.show(
-                      context, ConfirmDialog(
-                    title: 'Confirm Detach',
-                    description: "This will remove the canister from your account, it does not change the controller.\n\If you control the canister, ensure you have it's identifier stored securely",
-                    onConfirm: () async {
-                      await context.callUpdate(() => context.icApi.detachCanister(widget.canister.identifier));
-                      context.nav.replace(CanistersTabPage);
-                    },
-                  ));
+                      context,
+                      ConfirmDialog(
+                        title: 'Confirm Detach',
+                        description:
+                            "This will remove the canister from your account, it does not change the controller.\n\If you control the canister, ensure you have it's identifier stored securely",
+                        onConfirm: () async {
+                          await context.callUpdate(() => context.icApi
+                              .detachCanister(widget.canister.identifier));
+                          context.nav.replace(CanistersTabPage);
+                        },
+                      ));
                 },
                 child: Text(
                   "Detach",
@@ -207,43 +210,46 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
   }
 
   Card buildControllerCard(BuildContext context, Canister canister) {
+    final children = [
+      [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "Controllers",
+            style: context.textTheme.headline3,
+          ),
+        )
+      ],
+      canister.controllers.map((controller) => Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SelectableText(
+              controller,
+              style: context.textTheme.subtitle2,
+            ))),
+      [
+        Align(
+          alignment: Alignment.bottomRight,
+          child: ElevatedButton(
+              onPressed: () {
+                OverlayBaseWidget.show(
+                    context,
+                    ChangeCanisterControllerWidget(
+                      canister: canister,
+                    ));
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Change Controllers"),
+              )),
+        ),
+      ]
+    ].expand((e) => e).toList();
+
     return Card(
         child: Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Controller",
-              style: context.textTheme.headline3,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SelectableText(
-              canister.controllers?.getOrNull(0) ?? "",
-              style: context.textTheme.subtitle2,
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: ElevatedButton(
-                onPressed: () {
-                  OverlayBaseWidget.show(
-                      context,
-                      ChangeCanisterControllerWidget(
-                        canister: canister,
-                      ));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Change Controller"),
-                )),
-          )
-        ],
-      ),
+          crossAxisAlignment: CrossAxisAlignment.start, children: children),
     ));
   }
 }
