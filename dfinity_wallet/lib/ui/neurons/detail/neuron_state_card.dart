@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/tab/neuron_row.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
@@ -13,6 +14,35 @@ class NeuronStateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var buttonGroup = [
+      // adds left-padding when non-mobile
+      if (!Responsive.isMobile(context))
+        Expanded(
+          child: Container(),
+        ),
+      ElevatedButton(
+          onPressed: () {
+            OverlayBaseWidget.show(
+                context,
+                WizardOverlay(
+                    rootTitle: "Increase Dissolve Delay",
+                    rootWidget: IncreaseDissolveDelayWidget(
+                        neuron: neuron,
+                        onCompleteAction: (context) {
+                          OverlayBaseWidget.of(context)?.dismiss();
+                        })));
+          }.takeIf((e) => neuron.isCurrentUserController),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text("Increase Dissolve Delay"),
+          )),
+      // creates vertical or horizontal gap based on viewport size
+      if (Responsive.isMobile(context))
+        SizedBox(height: 8)
+      else
+        SizedBox(width: 8),
+      buildStateButton(context),
+    ];
     return Card(
       color: AppColors.mediumBackground,
       child: Padding(
@@ -31,27 +61,14 @@ class NeuronStateCard extends StatelessWidget {
                   TextSpan(text: " - Staked"),
                 ])),
             VerySmallFormDivider(),
-            Row(
-              children: [
-                Expanded(child: Container(),),
-                ElevatedButton(
-                  onPressed: () {
-                    OverlayBaseWidget.show(context, WizardOverlay(
-                        rootTitle: "Increase Dissolve Delay",
-                        rootWidget:
-                        IncreaseDissolveDelayWidget(neuron: neuron, onCompleteAction: (context) {
-                          OverlayBaseWidget.of(context)?.dismiss();
-                        })));
-                  }.takeIf((e) => neuron.isCurrentUserController),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text("Increase Dissolve Delay"),
-                  )
+            if (Responsive.isMobile(context))
+              Center(
+                child: Column(
+                  children: buttonGroup,
                 ),
-                SizedBox(width: 8),
-                buildStateButton(context),
-              ],
-            )
+              )
+            else
+              Row(children: buttonGroup),
           ],
         ),
       ),
