@@ -12,7 +12,7 @@ What things you need to install the software and how to install them
 
 1. [Flutter](https://flutter.dev/docs/get-started/install)
 2. [Node/NPM](https://nodejs.org/en/) - Recommended `> 14.16.1`
-3. [DFX](https://sdk.dfinity.org/docs/index.html) - Recommended `> 0.7.0-beta.6 `
+3. [DFX](https://sdk.dfinity.org/docs/index.html) - Recommended `>= 0.7.0`
 4. `didc` in your `$PATH`: Can be downloaded [here](https://github.com/dfinity/candid/releases).
 
 ### Development
@@ -35,7 +35,7 @@ To work on the UI locally, either use your IDE, or run the following:
 
 ```
 cd dfinity_wallet
-flutter run --no-sound-null-safety --web-port 5021
+flutter run --no-sound-null-safety --dart-define=DEPLOY_ENV=staging --web-port 5021
 ```
 
 ## TODO: Running the tests
