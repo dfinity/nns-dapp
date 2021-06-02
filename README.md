@@ -64,12 +64,6 @@ dfx deploy --network=alpha
 - [TypeScript](https://www.typescriptlang.org/) - Front-end typings and compilation
 - [Browserify](http://browserify.org/) - Used to generate RSS Feeds
 
-## Testing
-
-3 settings need to be changed in order to test this locally pointing to the testnet.
-You can find them by searching for 'TEST CONFIG' and switching which value is commented out.
-This is a terrible way of doing it, I'll fix this next week.
-
 ## TODO: License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
