@@ -36,7 +36,6 @@ pub struct TransactionStore {
     sub_accounts_count: u64,
     hardware_wallet_accounts_count: u64,
     last_ledger_sync_timestamp_nanos: u64,
-    neurons_created_count: u64,
     neurons_topped_up_count: u64
 }
 
@@ -585,7 +584,6 @@ impl TransactionStore {
     pub fn mark_neuron_created(&mut self, principal: &PrincipalId, memo: Memo, neuron_id: NeuronId) {
         let account_identifier = Self::generate_stake_neuron_address(principal, memo);
         self.neuron_accounts.get_mut(&account_identifier).unwrap().neuron_id = Some(neuron_id);
-        self.neurons_created_count = self.neurons_created_count + 1;
     }
 
     pub fn mark_neuron_topped_up(&mut self) {
@@ -639,7 +637,7 @@ impl TransactionStore {
             latest_transaction_timestamp_nanos: latest_transaction.map_or(0, |t| t.timestamp.timestamp_nanos),
             latest_transaction_block_height: latest_transaction.map_or(0, |t| t.block_height),
             seconds_since_last_ledger_sync: duration_since_last_sync.as_secs(),
-            neurons_created_count: self.neurons_created_count,
+            neurons_created_count: self.neuron_accounts.len() as u64,
             neurons_topped_up_count: self.neurons_topped_up_count,
             transactions_to_process_queue_length: self.transactions_to_be_processed_queue.len() as u32,
         }
@@ -979,18 +977,9 @@ impl StableState for TransactionStore {
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        // TODO NU-75 Switch post_upgrade from deserializing the old version's format to the new format
-        // let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos, neuron_accounts, transactions_to_be_processed, neurons_topped_up_count)
-        //     : (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64, HashMap<AccountIdentifier, NeuronDetails>, Vec<NeuronDetails>, u64) =
-        //     Candid::from_bytes(bytes).map(|c| c.0)?;
-
-        let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64) =
+        let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos, neuron_accounts, transactions_to_be_processed, neurons_topped_up_count)
+            : (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64, HashMap<AccountIdentifier, NeuronDetails>, Vec<TransactionToBeProcessed>, u64) =
             Candid::from_bytes(bytes).map(|c| c.0)?;
-
-        let neuron_accounts = HashMap::default();
-        let transactions_to_be_processed = Vec::default();
-        let neurons_created_count = 0u64;
-        let neurons_topped_up_count = 0u64;
 
         let mut account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation> = HashMap::new();
         let mut empty_account_indices: Vec<u32> = Vec::new();
@@ -1028,7 +1017,6 @@ impl StableState for TransactionStore {
             sub_accounts_count,
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
-            neurons_created_count,
             neurons_topped_up_count
         })
     }
