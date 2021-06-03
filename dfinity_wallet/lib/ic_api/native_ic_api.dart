@@ -268,4 +268,10 @@ class PlatformICApi extends AbstractPlatformICApi {
     // TODO: implement getTimeUntilSessionExpiryMs
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> changeCanisterControllers(String canisterId, List<String> newControllers) {
+    // TODO: implement changeCanisterControllers
+    throw UnimplementedError();
+  }
 }
