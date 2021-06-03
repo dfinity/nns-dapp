@@ -17,6 +17,8 @@ void main() {
       expect(ICP.fromString("1.00000008").asE8s(), BigInt.from(100000008));
       expect(ICP.fromString("1.23456789").asE8s(), BigInt.from(123456789));
       expect(ICP.fromString("99.00000008").asE8s(), BigInt.from(9900000008));
+      expect(ICP.fromString(".0").asE8s(), BigInt.from(0));
+      expect(ICP.fromString(".01").asE8s(), BigInt.from(1000000));
     });
 
     test('Less than 1e8 throws an error', () {

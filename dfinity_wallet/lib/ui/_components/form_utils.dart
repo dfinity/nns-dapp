@@ -85,7 +85,7 @@ class StringFieldValidation extends FieldValidation<String> {
   StringFieldValidation.insufficientFunds(ICP balance, int numberOfTransactions)
       : this("Insufficient funds", (e) {
           final BigInt modBalance = balance.asE8s() - BigInt.from(numberOfTransactions * TRANSACTION_FEE_E8S);
-          final BigInt sendAmount = ICP.fromString(e.isEmpty ? "0" : e).asE8s();
+          final BigInt sendAmount = (e.isEmpty || e == ".") ? BigInt.zero : ICP.fromString(e).asE8s();
           return sendAmount > modBalance;
         });
 }
