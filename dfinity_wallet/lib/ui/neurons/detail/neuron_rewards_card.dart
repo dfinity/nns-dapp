@@ -1,5 +1,6 @@
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/wallet/percentage_display_widget.dart';
 import '../../../dfinity.dart';
 
@@ -25,15 +26,30 @@ class NeuronRewardsCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Maturity",
-                        style: context.textTheme.headline3,
+                      Row(
+                        children: [
+                          Text(
+                            "Maturity",
+                            style: context.textTheme.headline3?.copyWith(
+                          fontSize: Responsive.isMobile(context)
+                              ? 16
+                              : context.textTheme.headline3?.fontSize),
+                          ),
+                          Tooltip(
+                            padding: const EdgeInsets.all(16.0),
+                            textStyle: context.textTheme.headline3?.copyWith(
+                          fontSize: Responsive.isMobile(context)
+                              ? 16
+                              : context.textTheme.headline3?.fontSize),
+                            message:
+                                "When your neuron votes, its maturity increases. This allows you to spawn a new neuron containing newly minted ICP. Increases in maturity can occur up to 3 days after voting took place.",
+                            child: Icon(
+                              Icons.info,
+                              color: context.textTheme.bodyText1?.color,
+                            ),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          "When your neuron votes, its maturity increases. This allows you to spawn a new neuron containing newly minted ICP. Increases in maturity can occur up to 3 days after voting took place.", style: context.textTheme.subtitle2,),
-                      )
                     ],
                   ),
                 ),
@@ -68,7 +84,7 @@ class NeuronRewardsCard extends StatelessWidget {
                             }.takeIf((e) => neuron.maturityICPEquivalent.asE8s() > BigInt.from(E8S_PER_ICP) && neuron.isCurrentUserController),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
-                              child: Text("Spawn Neuron"),
+                              child: Text("Spawn Neuron",textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75,),
                             )),
                       )
                     ],
@@ -76,7 +92,6 @@ class NeuronRewardsCard extends StatelessWidget {
                 )
               ],
             ),
-
           ],
         ),
       ),
