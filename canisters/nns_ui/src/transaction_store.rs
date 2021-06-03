@@ -27,7 +27,7 @@ pub struct TransactionStore {
     accounts: Vec<Option<Account>>,
     block_height_synced_up_to: Option<BlockHeight>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
-    neurons_to_be_created_or_refreshed_queue: VecDeque<AccountIdentifier>,
+    transactions_to_be_processed_queue: VecDeque<TransactionToBeProcessed>,
 
     // Use these up first before appending to the accounts Vec
     empty_account_indices: Vec<u32>,
@@ -37,7 +37,7 @@ pub struct TransactionStore {
     hardware_wallet_accounts_count: u64,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_created_count: u64,
-    neurons_refreshed_count: u64
+    neurons_topped_up_count: u64
 }
 
 #[derive(CandidType, Deserialize, Debug)]
@@ -80,6 +80,12 @@ struct Transaction {
     transaction_type: Option<TransactionType>
 }
 
+#[derive(Copy, Clone, CandidType, Deserialize)]
+pub enum TransactionToBeProcessed {
+    StakeNeuron(PrincipalId, Memo),
+    TopUpNeuron(PrincipalId, Memo),
+}
+
 #[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 enum TransactionType {
     Burn,
@@ -98,24 +104,6 @@ pub struct NeuronDetails {
     principal: PrincipalId,
     memo: Memo,
     neuron_id: Option<NeuronId>
-}
-
-impl NeuronDetails {
-    pub fn get_principal(&self) -> PrincipalId {
-        self.principal
-    }
-
-    pub fn get_memo(&self) -> Memo {
-        self.memo
-    }
-
-    pub fn get_neuron_id(&self) -> Option<NeuronId> {
-        self.neuron_id
-    }
-
-    pub fn set_neuron_id(&mut self, neuron_id: NeuronId) {
-        self.neuron_id = Some(neuron_id);
-    }
 }
 
 #[derive(CandidType)]
@@ -569,9 +557,15 @@ impl TransactionStore {
             if let Some(neuron_details) = self.neuron_accounts.get(&account_identifier) {
                 if let Some(neuron_id) = neuron_details.neuron_id {
                     GetStakeNeuronStatusResponse::Created(neuron_id)
-                } else if let Some(queue_index) = self.neurons_to_be_created_or_refreshed_queue.iter()
+                } else if let Some(queue_index) = self.transactions_to_be_processed_queue.iter()
                     .enumerate()
-                    .find(|(_, &n)| n == account_identifier)
+                    .find(|(_, t)| {
+                        if let TransactionToBeProcessed::StakeNeuron(principal, memo) = t {
+                            principal == &caller && memo == &request.memo
+                        } else {
+                            false
+                        }
+                    })
                     .map(|(index, _)| index as u32) {
 
                     GetStakeNeuronStatusResponse::Queued(queue_index)
@@ -584,21 +578,18 @@ impl TransactionStore {
         }
     }
 
-    pub fn try_take_next_neuron_to_refresh(&mut self) -> Option<NeuronDetails> {
-        if let Some(account_identifier) = self.neurons_to_be_created_or_refreshed_queue.pop_front() {
-            self.neuron_accounts.get(&account_identifier).cloned()
-        } else {
-            None
-        }
+    pub fn try_take_next_transaction_to_process(&mut self) -> Option<TransactionToBeProcessed> {
+        self.transactions_to_be_processed_queue.pop_front()
     }
 
-    pub fn mark_neuron_created(&mut self, neuron_details: NeuronDetails, neuron_id: NeuronId) {
-        self.neuron_accounts.get_mut(&neuron_details.account_identifier).unwrap().set_neuron_id(neuron_id);
+    pub fn mark_neuron_created(&mut self, principal: &PrincipalId, memo: Memo, neuron_id: NeuronId) {
+        let account_identifier = Self::generate_stake_neuron_address(principal, memo);
+        self.neuron_accounts.get_mut(&account_identifier).unwrap().neuron_id = Some(neuron_id);
         self.neurons_created_count = self.neurons_created_count + 1;
     }
 
-    pub fn mark_neuron_refreshed(&mut self) {
-        self.neurons_refreshed_count = self.neurons_refreshed_count + 1;
+    pub fn mark_neuron_topped_up(&mut self) {
+        self.neurons_topped_up_count = self.neurons_topped_up_count + 1;
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -648,8 +639,9 @@ impl TransactionStore {
             latest_transaction_timestamp_nanos: latest_transaction.map_or(0, |t| t.timestamp.timestamp_nanos),
             latest_transaction_block_height: latest_transaction.map_or(0, |t| t.block_height),
             seconds_since_last_ledger_sync: duration_since_last_sync.as_secs(),
-            neuron_accounts_count: self.neuron_accounts.len() as u64,
-            neurons_refreshed_count: self.neurons_refreshed_count
+            neurons_created_count: self.neurons_created_count,
+            neurons_topped_up_count: self.neurons_topped_up_count,
+            transactions_to_process_queue_length: self.transactions_to_be_processed_queue.len() as u32,
         }
     }
 
@@ -961,10 +953,13 @@ impl TransactionStore {
                     neuron_id: None
                 };
                 self.neuron_accounts.insert(to, neuron_details);
-                self.neurons_to_be_created_or_refreshed_queue.push_back(to);
+                self.transactions_to_be_processed_queue.push_back(TransactionToBeProcessed::StakeNeuron(principal, memo));
             },
             TransactionType::TopUpNeuron => {
-                self.neurons_to_be_created_or_refreshed_queue.push_back(to);
+                if let Some(neuron_account) = self.neuron_accounts.get(&to) {
+                    // We need to use the memo from the original stake neuron transaction
+                    self.transactions_to_be_processed_queue.push_back(TransactionToBeProcessed::TopUpNeuron(principal, neuron_account.memo));
+                }
             },
             _ => {}
         };
@@ -979,13 +974,13 @@ impl StableState for TransactionStore {
             &self.block_height_synced_up_to,
             &self.last_ledger_sync_timestamp_nanos,
             &self.neuron_accounts,
-            Vec::from_iter(self.neurons_to_be_created_or_refreshed_queue.iter()),
-            &self.neurons_refreshed_count)).into_bytes().unwrap()
+            Vec::from_iter(self.transactions_to_be_processed_queue.iter()),
+            &self.neurons_topped_up_count)).into_bytes().unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         // TODO NU-75 Switch post_upgrade from deserializing the old version's format to the new format
-        // let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos, neuron_accounts, neurons_to_be_created_or_refreshed, neurons_refreshed_count)
+        // let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos, neuron_accounts, transactions_to_be_processed, neurons_topped_up_count)
         //     : (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64, HashMap<AccountIdentifier, NeuronDetails>, Vec<NeuronDetails>, u64) =
         //     Candid::from_bytes(bytes).map(|c| c.0)?;
 
@@ -993,9 +988,9 @@ impl StableState for TransactionStore {
             Candid::from_bytes(bytes).map(|c| c.0)?;
 
         let neuron_accounts = HashMap::default();
-        let neurons_to_be_created_or_refreshed = Vec::default();
+        let transactions_to_be_processed = Vec::default();
         let neurons_created_count = 0u64;
-        let neurons_refreshed_count = 0u64;
+        let neurons_topped_up_count = 0u64;
 
         let mut account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation> = HashMap::new();
         let mut empty_account_indices: Vec<u32> = Vec::new();
@@ -1027,14 +1022,14 @@ impl StableState for TransactionStore {
             accounts,
             block_height_synced_up_to,
             neuron_accounts,
-            neurons_to_be_created_or_refreshed_queue: VecDeque::from_iter(neurons_to_be_created_or_refreshed),
+            transactions_to_be_processed_queue: VecDeque::from_iter(transactions_to_be_processed),
             empty_account_indices,
             accounts_count,
             sub_accounts_count,
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
             neurons_created_count,
-            neurons_refreshed_count
+            neurons_topped_up_count
         })
     }
 }
@@ -1164,8 +1159,9 @@ pub struct Stats {
     latest_transaction_timestamp_nanos: u64,
     latest_transaction_block_height: BlockHeight,
     seconds_since_last_ledger_sync: u64,
-    neuron_accounts_count: u64,
-    neurons_refreshed_count: u64,
+    neurons_created_count: u64,
+    neurons_topped_up_count: u64,
+    transactions_to_process_queue_length: u32,
 }
 
 #[cfg(test)]

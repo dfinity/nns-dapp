@@ -47,8 +47,6 @@ export default async function(
                 memo: nonce
             });
 
-            console.log(status);
-
             if ("Created" in status) {
                 return status.Created;
             } else if ("NotFound" in status) {

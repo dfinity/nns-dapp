@@ -29,7 +29,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
     super.initState();
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.source.balance, 2),
+          StringFieldValidation.insufficientFunds(widget.source.balance, 1),
           StringFieldValidation(
               "Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
         ],
@@ -76,7 +76,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                           // fee is doubled as it is a SEND and NOTIFY
                           Text(
                               (ICP.fromE8s(
-                                          BigInt.from(TRANSACTION_FEE_E8S * 2)))
+                                          BigInt.from(TRANSACTION_FEE_E8S)))
                                       .asString(myLocale.languageCode) +
                                   " ICP",
                               style: Responsive.isDesktop(context) |

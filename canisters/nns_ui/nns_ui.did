@@ -199,8 +199,9 @@ type Stats =
         latest_transaction_timestamp_nanos: nat64;
         latest_transaction_block_height: BlockHeight;
         seconds_since_last_ledger_sync: nat64;
-        neuron_accounts_count: nat64;
-        neurons_refreshed_count: nat64;
+        neurons_created_count: nat64;
+        neurons_topped_up_count: nat64;
+        transactions_to_process_queue_length: nat32;
     };
 
 type HeaderField =
