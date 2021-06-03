@@ -6,10 +6,7 @@ use crate::canister_store::{
     DetachCanisterResponse,
     NamedCanister
 };
-use crate::canisters::governance::{
-    ClaimOrRefreshNeuronFromAccount,
-    claim_or_refresh_neuron_from_account_response
-};
+use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, STATE, State};
 use crate::transaction_store::{
     AccountDetails,
@@ -18,7 +15,6 @@ use crate::transaction_store::{
     GetStakeNeuronStatusResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
-    NeuronDetails,
     RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse,
     RemoveHardwareWalletRequest,
@@ -35,10 +31,10 @@ mod assets;
 mod canisters;
 mod canister_store;
 mod ledger_sync;
+mod periodic_tasks_runner;
 mod state;
 mod transaction_store;
 
-const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
 const CYCLES_PER_XDR: u64 = 1_000_000_000_000;
 
 #[export_name = "canister_init"]
@@ -218,67 +214,9 @@ fn get_stats_impl() -> Stats {
 
 #[export_name = "canister_heartbeat"]
 pub fn canister_heartbeat() {
-    let future = run_periodic_tasks_impl();
+    let future = run_periodic_tasks();
 
     dfn_core::api::futures::spawn(future);
-}
-
-async fn run_periodic_tasks_impl() {
-    ledger_sync::sync_transactions().await;
-
-    let maybe_neuron_to_refresh = STATE.write().unwrap().transactions_store.try_take_next_neuron_to_refresh();
-    if let Some(neuron_to_refresh) = maybe_neuron_to_refresh {
-        create_or_refresh_neuron(neuron_to_refresh).await;
-    }
-
-    if should_prune_transactions() {
-        let store = &mut STATE.write().unwrap().transactions_store;
-        store.prune_transactions(PRUNE_TRANSACTIONS_COUNT);
-    }
-}
-
-async fn create_or_refresh_neuron(neuron_to_refresh: NeuronDetails) {
-    let request = ClaimOrRefreshNeuronFromAccount {
-        controller: Some(neuron_to_refresh.get_principal()),
-        memo: neuron_to_refresh.get_memo().0
-    };
-
-    match canisters::governance::claim_or_refresh_neuron_from_account(request).await {
-        Ok(response) => match response.result {
-            Some(claim_or_refresh_neuron_from_account_response::Result::NeuronId(neuron_id)) => {
-                if neuron_to_refresh.get_neuron_id().is_some() {
-                    // If we already know the neuron_id then we must be topping up a neuron
-                    STATE.write().unwrap().transactions_store.mark_neuron_refreshed();
-                } else {
-                    // If we didn't know the neuron_id then we must be creating a new neuron
-                    STATE.write().unwrap().transactions_store.mark_neuron_created(neuron_to_refresh, neuron_id.into());
-                }
-            },
-            _ => {
-                // TODO NU-76 Handle any errors returned by the claim_or_refresh_neuron method
-            }
-        },
-        Err(_) => {
-            // TODO NU-76 Handle any errors returned by the claim_or_refresh_neuron method
-        }
-    }
-}
-
-fn should_prune_transactions() -> bool {
-    #[cfg(target_arch = "wasm32")]
-    {
-        const MEMORY_LIMIT_BYTES: u32 = 1024 * 1024 * 1024; // 1GB
-        let memory_usage_bytes = (core::arch::wasm32::memory_size(0) * 65536) as u32;
-        memory_usage_bytes > MEMORY_LIMIT_BYTES
-    }
-
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        const TRANSACTIONS_COUNT_LIMIT: u32 = 1_000_000;
-        let store = &mut STATE.write().unwrap().transactions_store;
-        let transactions_count = store.get_transactions_count();
-        transactions_count > TRANSACTIONS_COUNT_LIMIT
-    }
 }
 
 #[derive(CandidType)]
