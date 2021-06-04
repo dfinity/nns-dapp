@@ -30,7 +30,7 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
         // We only reach here on service initialization and we don't care about previous blocks, so
         // we mark that we are synced with the latest tip_of_chain and return so that subsequent
         // syncs will continue from there
-        let store = &mut STATE.write().unwrap().transactions_store;
+        let store = &mut STATE.write().unwrap().accounts_store;
         store.init_block_height_synced_up_to(tip_of_chain);
         store.mark_ledger_sync_complete();
         return Ok(0);
@@ -39,12 +39,12 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
     let next_block_height_required = block_height_synced_up_to.unwrap() + 1;
     if tip_of_chain < next_block_height_required {
         // There are no new blocks since our last sync, so mark sync complete and return
-        let store = &mut STATE.write().unwrap().transactions_store;
+        let store = &mut STATE.write().unwrap().accounts_store;
         store.mark_ledger_sync_complete();
         Ok(0)
     } else {
         let blocks = get_blocks(next_block_height_required, tip_of_chain).await?;
-        let store = &mut STATE.write().unwrap().transactions_store;
+        let store = &mut STATE.write().unwrap().accounts_store;
         let blocks_count = blocks.len() as u32;
         for (block_height, block) in blocks.into_iter() {
             let transaction = block.transaction().into_owned();
@@ -60,7 +60,7 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
 }
 
 fn get_block_height_synced_up_to() -> Option<BlockHeight> {
-    let store = &STATE.read().unwrap().transactions_store;
+    let store = &STATE.read().unwrap().accounts_store;
     store.get_block_height_synced_up_to()
 }
 

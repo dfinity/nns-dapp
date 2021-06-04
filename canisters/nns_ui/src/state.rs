@@ -1,5 +1,5 @@
 use crate::canister_store::CanisterStore;
-use crate::transaction_store::TransactionStore;
+use crate::accounts_store::AccountsStore;
 use dfn_candid::Candid;
 use lazy_static::lazy_static;
 use on_wire::{IntoWire, FromWire};
@@ -7,7 +7,7 @@ use std::sync::RwLock;
 
 #[derive(Default)]
 pub struct State {
-    pub transactions_store: TransactionStore,
+    pub accounts_store: AccountsStore,
     pub canisters_store: CanisterStore
 }
 
@@ -22,14 +22,14 @@ lazy_static! {
 
 impl StableState for State {
     fn encode(&self) -> Vec<u8> {
-        Candid((self.transactions_store.encode(), self.canisters_store.encode())).into_bytes().unwrap()
+        Candid((self.accounts_store.encode(), self.canisters_store.encode())).into_bytes().unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        let (transactions_store_bytes, canisters_store_bytes): (Vec<u8>, Vec<u8>) = Candid::from_bytes(bytes).map(|c| c.0)?;
+        let (accounts_store_bytes, canisters_store_bytes): (Vec<u8>, Vec<u8>) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
         Ok(State {
-            transactions_store: TransactionStore::decode(transactions_store_bytes)?,
+            accounts_store: AccountsStore::decode(accounts_store_bytes)?,
             canisters_store: CanisterStore::decode(canisters_store_bytes)?
         })
     }

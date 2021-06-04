@@ -1,7 +1,7 @@
 use crate::canisters::governance::{self, ClaimOrRefreshNeuronFromAccount, claim_or_refresh_neuron_from_account_response};
 use crate::ledger_sync;
 use crate::state::STATE;
-use crate::transaction_store::TransactionToBeProcessed;
+use crate::accounts_store::TransactionToBeProcessed;
 use dfn_core::api::PrincipalId;
 use ledger_canister::Memo;
 
@@ -10,7 +10,7 @@ const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
 pub async fn run_periodic_tasks() {
     ledger_sync::sync_transactions().await;
 
-    let maybe_transaction_to_process = STATE.write().unwrap().transactions_store.try_take_next_transaction_to_process();
+    let maybe_transaction_to_process = STATE.write().unwrap().accounts_store.try_take_next_transaction_to_process();
     if let Some(transaction_to_process) = maybe_transaction_to_process {
         match transaction_to_process {
             TransactionToBeProcessed::StakeNeuron(principal, memo) => {
@@ -23,7 +23,7 @@ pub async fn run_periodic_tasks() {
     }
 
     if should_prune_transactions() {
-        let store = &mut STATE.write().unwrap().transactions_store;
+        let store = &mut STATE.write().unwrap().accounts_store;
         store.prune_transactions(PRUNE_TRANSACTIONS_COUNT);
     }
 }
@@ -46,9 +46,9 @@ async fn claim_or_refresh_neuron(principal: PrincipalId, memo: Memo, is_top_up: 
         Ok(response) => match response.result {
             Some(claim_or_refresh_neuron_from_account_response::Result::NeuronId(neuron_id)) => {
                 if is_top_up {
-                    STATE.write().unwrap().transactions_store.mark_neuron_topped_up();
+                    STATE.write().unwrap().accounts_store.mark_neuron_topped_up();
                 } else {
-                    STATE.write().unwrap().transactions_store.mark_neuron_created(&principal, memo, neuron_id.into());
+                    STATE.write().unwrap().accounts_store.mark_neuron_created(&principal, memo, neuron_id.into());
                 }
             },
             _ => {
@@ -72,7 +72,7 @@ fn should_prune_transactions() -> bool {
     #[cfg(not(target_arch = "wasm32"))]
         {
             const TRANSACTIONS_COUNT_LIMIT: u32 = 1_000_000;
-            let store = &mut STATE.write().unwrap().transactions_store;
+            let store = &mut STATE.write().unwrap().accounts_store;
             let transactions_count = store.get_transactions_count();
             transactions_count > TRANSACTIONS_COUNT_LIMIT
         }
