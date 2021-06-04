@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 
 import '../../../dfinity.dart';
 
@@ -20,16 +21,17 @@ class NeuronRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  SelectableText(
-                    neuron.identifier,
-                    style: context.textTheme.headline3,
-                  ),
-                  if (!neuron.isCurrentUserController)
-                    Text("[hotkey control]", style: context.textTheme.headline5)
-                ]
-              ),
+              Row(children: [
+                SelectableText(
+                  neuron.identifier,
+                  style: context.textTheme.headline3?.copyWith(
+                      fontSize: Responsive.isMobile(context)
+                          ? 16
+                          : context.textTheme.headline3?.fontSize),
+                ),
+                if (!neuron.isCurrentUserController)
+                  Text("[hotkey control]", style: context.textTheme.headline5)
+              ]),
               VerySmallFormDivider(),
               Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Text("${neuron.state.description}",
@@ -85,7 +87,7 @@ class NeuronRow extends StatelessWidget {
         ),
         LabelledBalanceDisplayWidget(
             amount: neuron.stake,
-            amountSize: 30,
+            amountSize: Responsive.isMobile(context) ? 24 : 30,
             icpLabelSize: 15,
             text: Text(
               "Stake",

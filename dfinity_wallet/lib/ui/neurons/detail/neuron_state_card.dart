@@ -34,7 +34,7 @@ class NeuronStateCard extends StatelessWidget {
           }.takeIf((e) => neuron.isCurrentUserController),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text("Increase Dissolve Delay"),
+            child: Text("Increase Dissolve Delay",textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75,),
           )),
       // creates vertical or horizontal gap based on viewport size
       if (Responsive.isMobile(context))
@@ -111,7 +111,7 @@ class NeuronStateCard extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Text("Disburse"),
+              child: Text("Disburse",textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75),
             ),
             onPressed: () {
               OverlayBaseWidget.show(

@@ -73,7 +73,7 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
       children: [
         BalanceDisplayWidget(
           amount: amount,
-          amountSize: 30,
+          amountSize: amountSize,
           icpLabelSize: icpLabelSize,
           locale: myLocale.languageCode,
         ),
