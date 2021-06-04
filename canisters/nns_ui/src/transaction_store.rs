@@ -1499,8 +1499,7 @@ mod tests {
         };
         store.append_transaction(transfer, neuron_memo, block_height, TimeStamp { timestamp_nanos: 100 }).unwrap();
         assert!(matches!(store.transactions.back().unwrap().transaction_type.unwrap(), TransactionType::StakeNeuron));
-
-
+        
         let topup = Send {
             from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap(), None),
             to: AccountIdentifier::from_hex("426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91").unwrap(),
