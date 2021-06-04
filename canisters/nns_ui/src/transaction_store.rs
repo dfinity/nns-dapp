@@ -445,6 +445,9 @@ impl TransactionStore {
                         transaction_type = Some(self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids));
                         self.process_transaction_type(transaction_type.unwrap(), principal, to, memo);
                     }
+                } else if let Some(neuron_details) = self.neuron_accounts.get(&to) {
+                    // Handle the case where people top up their neuron from an external account
+                    self.transactions_to_be_processed_queue.push_back(TransactionToBeProcessed::TopUpNeuron(neuron_details.principal, neuron_details.memo));
                 }
             }
         }
@@ -1477,6 +1480,43 @@ mod tests {
         };
         store.append_transaction(topup2, Memo(0), block_height + 3, TimeStamp { timestamp_nanos: 100 }).unwrap();
         assert!(matches!(store.transactions.back().unwrap().transaction_type.unwrap(), TransactionType::TopUpNeuron));
+    }
+
+
+    #[test]
+    fn append_transaction_detects_neuron_transactions_from_external_accounts() {
+        let mut store = setup_test_store();
+
+        let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
+        let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+        let neuron_memo = Memo(16656605094239839590);
+
+        let transfer = Send {
+            from: AccountIdentifier::new(neuron_principal, None),
+            to: AccountIdentifier::from_hex("426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91").unwrap(),
+            amount: ICPTs::from_icpts(1).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        store.append_transaction(transfer, neuron_memo, block_height, TimeStamp { timestamp_nanos: 100 }).unwrap();
+        assert!(matches!(store.transactions.back().unwrap().transaction_type.unwrap(), TransactionType::StakeNeuron));
+        
+        let topup = Send {
+            from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap(), None),
+            to: AccountIdentifier::from_hex("426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91").unwrap(),
+            amount: ICPTs::from_icpts(2).unwrap(),
+            fee: ICPTs::from_e8s(10000)
+        };
+        let previous_transaction_count = store.transactions.len();
+        store.append_transaction(topup, Memo(0), block_height + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
+
+        // No new transaction should have been added, but the neuron should be queued for refreshing
+        assert_eq!(store.transactions.len(), previous_transaction_count);
+        if let TransactionToBeProcessed::TopUpNeuron(principal, memo) = store.transactions_to_be_processed_queue.back().unwrap() {
+            assert_eq!(*principal, neuron_principal);
+            assert_eq!(*memo, neuron_memo);
+        } else {
+            panic!();
+        }
     }
 
     #[test]
