@@ -62,8 +62,9 @@ export default ({ IDL }) => {
     'latest_transaction_block_height' : BlockHeight,
     'seconds_since_last_ledger_sync' : IDL.Nat64,
     'sub_accounts_count' : IDL.Nat64,
-    'neuron_accounts_count' : IDL.Nat64,
-    'neurons_refreshed_count' : IDL.Nat64,
+    'neurons_topped_up_count' : IDL.Nat64,
+    'transactions_to_process_queue_length' : IDL.Nat32,
+    'neurons_created_count' : IDL.Nat64,
     'hardware_wallet_accounts_count' : IDL.Nat64,
     'accounts_count' : IDL.Nat64,
     'earliest_transaction_block_height' : BlockHeight,
@@ -129,8 +130,8 @@ export default ({ IDL }) => {
     'status_code' : IDL.Nat16,
   });
   const RegisterHardwareWalletRequest = IDL.Record({
+    'principal' : IDL.Principal,
     'name' : IDL.Text,
-    'account_identifier' : AccountIdentifier,
   });
   const RegisterHardwareWalletResponse = IDL.Variant({
     'Ok' : IDL.Null,

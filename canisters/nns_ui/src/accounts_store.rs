@@ -65,6 +65,7 @@ struct NamedSubAccount {
 #[derive(CandidType, Deserialize)]
 struct NamedHardwareWalletAccount {
     name: String,
+    principal: PrincipalId,
     account_identifier: AccountIdentifier,
     transactions: Vec<TransactionIndex>
 }
@@ -130,7 +131,7 @@ pub enum RenameSubAccountResponse {
 #[derive(Deserialize)]
 pub struct RegisterHardwareWalletRequest {
     name: String,
-    account_identifier: AccountIdentifier
+    principal: PrincipalId
 }
 
 #[derive(CandidType)]
@@ -357,17 +358,19 @@ impl AccountsStore {
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
             } else {
-                if account.hardware_wallet_accounts.iter().any(|hw| hw.account_identifier == request.account_identifier) {
+                if account.hardware_wallet_accounts.iter().any(|hw| hw.principal == request.principal) {
                     RegisterHardwareWalletResponse::HardwareWalletAlreadyRegistered
                 } else {
+                    let account_identifier = AccountIdentifier::from(request.principal);
                     account.hardware_wallet_accounts.push(NamedHardwareWalletAccount {
                         name: request.name,
-                        account_identifier: request.account_identifier,
+                        principal: request.principal,
+                        account_identifier,
                         transactions: Vec::new()
                     });
                     account.hardware_wallet_accounts.sort_unstable_by_key(|hw| hw.name.clone());
 
-                    Self::link_hardware_wallet_to_account_index(&mut self.account_identifier_lookup, request.account_identifier, index);
+                    Self::link_hardware_wallet_to_account_index(&mut self.account_identifier_lookup, account_identifier, index);
                     self.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count + 1;
 
                     RegisterHardwareWalletResponse::Ok
@@ -682,7 +685,12 @@ impl AccountsStore {
                     let account = self.accounts.get_mut(*index as usize).unwrap().as_mut().unwrap();
                     account.principal
                 },
-                _ => None
+                AccountLocation::HardwareWallet(indexes) => {
+                    indexes.iter()
+                        .filter_map(|i| if let Some(a) = self.accounts.get(*i as usize) { a.as_ref() } else { None })
+                        .find_map(|a| a.hardware_wallet_accounts.iter().find(|hw| hw.account_identifier == *account_identifier))
+                        .map(|hw| hw.principal)
+                }
             }
         } else {
             None
@@ -988,7 +996,7 @@ impl StableState for AccountsStore {
         let mut empty_account_indices: Vec<u32> = Vec::new();
         let mut accounts_count: u64 = 0;
         let mut sub_accounts_count: u64 = 0;
-        let mut hardware_wallet_accounts_count: u64 = 0;
+        let hardware_wallet_accounts_count: u64 = 0;
 
         for i in 0..accounts.len() {
             if let Some(a) = accounts.get(i).unwrap() {
@@ -997,12 +1005,18 @@ impl StableState for AccountsStore {
                 for (id, sa) in a.sub_accounts.iter() {
                     account_identifier_lookup.insert(sa.account_identifier, AccountLocation::SubAccount(index, *id));
                 }
-                for hw in a.hardware_wallet_accounts.iter() {
-                    Self::link_hardware_wallet_to_account_index(&mut account_identifier_lookup, hw.account_identifier, index);
-                }
+                // TODO re-enable this code after the next release. (NU-103)
+                // From our stats we can see that there are 2 hardware wallets attached which were
+                // attached before the button was disabled. The app is not official yet so these
+                // hardware wallets must have been attached by internal users. So we are fine to
+                // drop these accounts. This means that once we re-enable this code, every hardware
+                // wallet account will have a principal.
+                // for hw in a.hardware_wallet_accounts.iter() {
+                //     Self::link_hardware_wallet_to_account_index(&mut account_identifier_lookup, hw.account_identifier, index);
+                // }
                 accounts_count = accounts_count + 1;
                 sub_accounts_count = sub_accounts_count + a.sub_accounts.len() as u64;
-                hardware_wallet_accounts_count = hardware_wallet_accounts_count + a.hardware_wallet_accounts.len() as u64;
+                // hardware_wallet_accounts_count = hardware_wallet_accounts_count + a.hardware_wallet_accounts.len() as u64;
             } else {
                 empty_account_indices.push(i as u32);
             }
@@ -1346,11 +1360,11 @@ mod tests {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
         let mut store = setup_test_store();
 
-        let hw1 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
-        let hw2 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap());
+        let hw1 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+        let hw2 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
 
-        let res1 = store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW1".to_string(), account_identifier: hw1 });
-        let res2 = store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW2".to_string(), account_identifier: hw2 });
+        let res1 = store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW1".to_string(), principal: hw1 });
+        let res2 = store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW2".to_string(), principal: hw2 });
 
         assert!(matches!(res1, RegisterHardwareWalletResponse::Ok));
         assert!(matches!(res2, RegisterHardwareWalletResponse::Ok));
@@ -1360,8 +1374,8 @@ mod tests {
         assert_eq!(2, account.hardware_wallet_accounts.len());
         assert_eq!("HW1", account.hardware_wallet_accounts[0].name);
         assert_eq!("HW2", account.hardware_wallet_accounts[1].name);
-        assert_eq!(hw1, account.hardware_wallet_accounts[0].account_identifier);
-        assert_eq!(hw2, account.hardware_wallet_accounts[1].account_identifier);
+        assert_eq!(AccountIdentifier::from(hw1), account.hardware_wallet_accounts[0].account_identifier);
+        assert_eq!(AccountIdentifier::from(hw2), account.hardware_wallet_accounts[1].account_identifier);
     }
 
     #[test]
@@ -1369,10 +1383,10 @@ mod tests {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
         let mut store = setup_test_store();
 
-        let hw1 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
+        let hw1 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
 
-        let res1 = store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW1".to_string(), account_identifier: hw1 });
-        let res2 = store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW2".to_string(), account_identifier: hw1 });
+        let res1 = store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW1".to_string(), principal: hw1 });
+        let res2 = store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW2".to_string(), principal: hw1 });
 
         assert!(matches!(res1, RegisterHardwareWalletResponse::Ok));
         assert!(matches!(res2, RegisterHardwareWalletResponse::HardwareWalletAlreadyRegistered));
@@ -1381,7 +1395,7 @@ mod tests {
 
         assert_eq!(1, account.hardware_wallet_accounts.len());
         assert_eq!("HW1", account.hardware_wallet_accounts[0].name);
-        assert_eq!(hw1, account.hardware_wallet_accounts[0].account_identifier);
+        assert_eq!(AccountIdentifier::from(hw1), account.hardware_wallet_accounts[0].account_identifier);
     }
 
     #[test]
@@ -1389,13 +1403,13 @@ mod tests {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
         let mut store = setup_test_store();
 
-        let hw1 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
-        let hw2 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap());
+        let hw1 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+        let hw2 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
 
-        store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW1".to_string(), account_identifier: hw1 });
-        store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW2".to_string(), account_identifier: hw2 });
+        store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW1".to_string(), principal: hw1 });
+        store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW2".to_string(), principal: hw2 });
 
-        let result = store.remove_hardware_wallet(principal, RemoveHardwareWalletRequest { account_identifier: hw1 });
+        let result = store.remove_hardware_wallet(principal, RemoveHardwareWalletRequest { account_identifier: AccountIdentifier::from(hw1) });
 
         assert!(matches!(result, RemoveHardwareWalletResponse::Ok));
 
@@ -1403,7 +1417,7 @@ mod tests {
 
         assert_eq!(1, account.hardware_wallet_accounts.len());
         assert_eq!("HW2", account.hardware_wallet_accounts[0].name);
-        assert_eq!(hw2, account.hardware_wallet_accounts[0].account_identifier);
+        assert_eq!(AccountIdentifier::from(hw2), account.hardware_wallet_accounts[0].account_identifier);
     }
 
     #[test]
@@ -1411,24 +1425,25 @@ mod tests {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
         let mut store = setup_test_store();
 
-        let hw = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
+        let hw_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+        let hw_account_identifier = AccountIdentifier::from(hw_principal);
 
-        store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW".to_string(), account_identifier: hw });
+        store.register_hardware_wallet(principal, RegisterHardwareWalletRequest { name: "HW".to_string(), principal: hw_principal });
 
         let transfer = Mint {
             amount: ICPTs::from_icpts(1).unwrap(),
-            to: hw,
+            to: hw_account_identifier,
         };
         store.append_transaction(transfer, Memo(0), store.get_block_height_synced_up_to().unwrap_or(0) + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
 
         let transfer = Mint {
             amount: ICPTs::from_icpts(2).unwrap(),
-            to: hw,
+            to: hw_account_identifier,
         };
         store.append_transaction(transfer, Memo(0), store.get_block_height_synced_up_to().unwrap_or(0) + 1, TimeStamp { timestamp_nanos: 100 }).unwrap();
 
         let get_transactions_request = GetTransactionsRequest {
-            account_identifier: hw,
+            account_identifier: hw_account_identifier,
             offset: 0,
             page_size: 10
         };
@@ -1526,7 +1541,8 @@ mod tests {
         let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
 
         let default_account = AccountIdentifier::from(principal1);
-        let hw_account = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
+        let hw_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+        let hw_account = AccountIdentifier::from(hw_principal);
         let unknown_account = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap());
 
         let sub_account = if let CreateSubAccountResponse::Ok(response) = store.create_sub_account(principal2, "SUB1".to_string()) {
@@ -1535,7 +1551,7 @@ mod tests {
             panic!("Unable to create sub account");
         };
 
-        store.register_hardware_wallet(principal1, RegisterHardwareWalletRequest { name: "HW".to_string(), account_identifier: hw_account });
+        store.register_hardware_wallet(principal1, RegisterHardwareWalletRequest { name: "HW".to_string(), principal: hw_principal });
 
         let timestamp = TimeStamp {
             timestamp_nanos: 100
@@ -1613,16 +1629,16 @@ mod tests {
         let mut store = setup_test_store();
 
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-        let hw_account1 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_3).unwrap());
-        let hw_account2 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap());
+        let hw1 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+        let hw2 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
 
         let res1 = store.register_hardware_wallet(
             principal,
-            RegisterHardwareWalletRequest { name: "ABCDEFGHIJKLMNOPQRSTUVWX".to_string(), account_identifier: hw_account1 });
+            RegisterHardwareWalletRequest { name: "ABCDEFGHIJKLMNOPQRSTUVWX".to_string(), principal: hw1 });
 
         let res2 = store.register_hardware_wallet(
             principal,
-            RegisterHardwareWalletRequest { name: "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string(), account_identifier: hw_account2 });
+            RegisterHardwareWalletRequest { name: "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string(), principal: hw2 });
 
         assert!(matches!(res1, RegisterHardwareWalletResponse::Ok));
         assert!(matches!(res2, RegisterHardwareWalletResponse::NameTooLong));
@@ -1658,10 +1674,10 @@ mod tests {
             assert_eq!(i, stats.sub_accounts_count);
         }
 
-        let hw1 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_5).unwrap());
-        let hw2 = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_6).unwrap());
-        store.register_hardware_wallet(principal3, RegisterHardwareWalletRequest { name: "HW1".to_string(), account_identifier: hw1 });
-        store.register_hardware_wallet(principal4, RegisterHardwareWalletRequest { name: "HW2".to_string(), account_identifier: hw2 });
+        let hw1 = PrincipalId::from_str(TEST_ACCOUNT_5).unwrap();
+        let hw2 = PrincipalId::from_str(TEST_ACCOUNT_6).unwrap();
+        store.register_hardware_wallet(principal3, RegisterHardwareWalletRequest { name: "HW1".to_string(), principal: hw1 });
+        store.register_hardware_wallet(principal4, RegisterHardwareWalletRequest { name: "HW2".to_string(), principal: hw2 });
 
         let stats = store.get_stats();
         assert_eq!(2, stats.hardware_wallet_accounts_count);

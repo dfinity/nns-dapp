@@ -118,7 +118,7 @@ type RenameSubAccountResponse =
 type RegisterHardwareWalletRequest =
     record {
         name: text;
-        account_identifier: AccountIdentifier;
+        "principal": principal;
     };
 
 type RegisterHardwareWalletResponse =

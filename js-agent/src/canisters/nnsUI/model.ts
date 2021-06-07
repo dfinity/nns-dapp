@@ -78,7 +78,7 @@ export interface Receive {
 };
 export interface RegisterHardwareWalletRequest {
     name: string,
-    accountIdentifier: AccountIdentifier,
+    principal: PrincipalString,
 };
 export type RegisterHardwareWalletResponse = { Ok: null } |
     { AccountNotFound: null } |

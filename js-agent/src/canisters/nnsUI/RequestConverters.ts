@@ -51,7 +51,7 @@ export default class RequestConverters {
     public fromRegisterHardwareWalletRequest = (request: RegisterHardwareWalletRequest) : RawRegisterHardwareWalletRequest => {
         return {
             name: request.name,
-            account_identifier: request.accountIdentifier
+            principal: Principal.fromText(request.principal)
         };
     }
 
