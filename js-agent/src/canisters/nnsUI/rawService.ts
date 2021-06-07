@@ -44,6 +44,7 @@ export interface GetTransactionsResponse {
   'transactions' : Array<Transaction>,
 };
 export interface HardwareWalletAccountDetails {
+  'principal' : Principal,
   'name' : string,
   'account_identifier' : AccountIdentifier,
 };
@@ -76,9 +77,7 @@ export type RegisterHardwareWalletResponse = { 'Ok' : null } |
     { 'HardwareWalletAlreadyRegistered' : null } |
     { 'HardwareWalletLimitExceeded' : null } |
     { 'NameTooLong' : null };
-export interface RemoveHardwareWalletRequest {
-  'account_identifier' : AccountIdentifier,
-};
+export interface RemoveHardwareWalletRequest { 'principal' : Principal };
 export type RemoveHardwareWalletResponse = { 'Ok' : null } |
     { 'HardwareWalletNotFound' : null };
 export interface RenameSubAccountRequest {

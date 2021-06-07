@@ -23,6 +23,7 @@ type SubAccountDetails =
 type HardwareWalletAccountDetails =
     record {
         name: text;
+        "principal": principal;
         account_identifier: AccountIdentifier;
     };
 
@@ -132,7 +133,7 @@ type RegisterHardwareWalletResponse =
 
 type RemoveHardwareWalletRequest =
     record {
-        account_identifier: AccountIdentifier;
+        "principal": principal;
     };
 
 type RemoveHardwareWalletResponse =

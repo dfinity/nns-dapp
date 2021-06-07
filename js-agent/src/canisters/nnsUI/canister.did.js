@@ -29,6 +29,7 @@ export default ({ IDL }) => {
     'CanisterNotFound' : IDL.Null,
   });
   const HardwareWalletAccountDetails = IDL.Record({
+    'principal' : IDL.Principal,
     'name' : IDL.Text,
     'account_identifier' : AccountIdentifier,
   });
@@ -141,7 +142,7 @@ export default ({ IDL }) => {
     'NameTooLong' : IDL.Null,
   });
   const RemoveHardwareWalletRequest = IDL.Record({
-    'account_identifier' : AccountIdentifier,
+    'principal' : IDL.Principal,
   });
   const RemoveHardwareWalletResponse = IDL.Variant({
     'Ok' : IDL.Null,

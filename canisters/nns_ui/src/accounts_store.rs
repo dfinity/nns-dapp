@@ -66,7 +66,6 @@ struct NamedSubAccount {
 struct NamedHardwareWalletAccount {
     name: String,
     principal: PrincipalId,
-    account_identifier: AccountIdentifier,
     transactions: Vec<TransactionIndex>
 }
 
@@ -172,6 +171,7 @@ pub struct SubAccountDetails {
 #[derive(CandidType)]
 pub struct HardwareWalletAccountDetails {
     name: String,
+    principal: PrincipalId,
     account_identifier: AccountIdentifier
 }
 
@@ -213,7 +213,8 @@ impl AccountsStore {
                 .iter()
                 .map(|a| HardwareWalletAccountDetails {
                     name: a.name.clone(),
-                    account_identifier: a.account_identifier.clone()
+                    principal: a.principal,
+                    account_identifier: AccountIdentifier::from(a.principal)
                 })
                 .collect();
 
@@ -365,7 +366,6 @@ impl AccountsStore {
                     account.hardware_wallet_accounts.push(NamedHardwareWalletAccount {
                         name: request.name,
                         principal: request.principal,
-                        account_identifier,
                         transactions: Vec::new()
                     });
                     account.hardware_wallet_accounts.sort_unstable_by_key(|hw| hw.name.clone());
@@ -387,7 +387,7 @@ impl AccountsStore {
 
             if let Some(index) = account.hardware_wallet_accounts.iter()
                 .enumerate()
-                .find(|(_, hw)| hw.account_identifier == request.account_identifier)
+                .find(|(_, hw)| request.account_identifier == AccountIdentifier::from(hw.principal))
                 .map(|(index, _)| index) {
 
                 account.hardware_wallet_accounts.remove(index);
@@ -497,9 +497,11 @@ impl AccountsStore {
         if account_identifier == request.account_identifier {
             transactions = &account.default_account_transactions;
         } else {
-            if let Some(hardware_wallet_account) = account.hardware_wallet_accounts.iter().find(|a| a.account_identifier == request.account_identifier) {
+            if let Some(hardware_wallet_account) = account.hardware_wallet_accounts.iter()
+                .find(|a| request.account_identifier == AccountIdentifier::from(a.principal)) {
                 transactions = &hardware_wallet_account.transactions;
-            } else if let Some(sub_account) = account.sub_accounts.values().find(|a| a.account_identifier == request.account_identifier) {
+            } else if let Some(sub_account) = account.sub_accounts.values()
+                .find(|a| a.account_identifier == request.account_identifier) {
                 transactions = &sub_account.transactions;
             } else {
                 return GetTransactionsResponse {
@@ -688,7 +690,7 @@ impl AccountsStore {
                 AccountLocation::HardwareWallet(indexes) => {
                     indexes.iter()
                         .filter_map(|i| if let Some(a) = self.accounts.get(*i as usize) { a.as_ref() } else { None })
-                        .find_map(|a| a.hardware_wallet_accounts.iter().find(|hw| hw.account_identifier == *account_identifier))
+                        .find_map(|a| a.hardware_wallet_accounts.iter().find(|hw| *account_identifier == AccountIdentifier::from(hw.principal)))
                         .map(|hw| hw.principal)
                 }
             }
@@ -808,7 +810,7 @@ impl AccountsStore {
                     for index in indexes.into_iter() {
                         if let Some(account) = self.accounts.get_mut(*index as usize).unwrap().as_mut() {
                             if let Some(hardware_wallet_account) = account.hardware_wallet_accounts.iter_mut()
-                                .find(|a| a.account_identifier == account_identifier) {
+                                .find(|a| account_identifier == AccountIdentifier::from(a.principal)) {
                                 let transactions = &mut hardware_wallet_account.transactions;
                                 prune_transactions_impl(transactions, prune_blocks_previous_to);
                             }
@@ -1060,7 +1062,7 @@ impl Account {
 
     pub fn append_hardware_wallet_transaction(&mut self, account_identifier: AccountIdentifier, transaction_index: TransactionIndex) {
         let account = self.hardware_wallet_accounts.iter_mut()
-            .find(|a| a.account_identifier == account_identifier)
+            .find(|a| account_identifier == AccountIdentifier::from(a.principal))
             .unwrap();
 
         account.transactions.push(transaction_index);

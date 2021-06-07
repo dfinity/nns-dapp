@@ -69,6 +69,7 @@ export interface GetTransactionsResponse {
 };
 export interface HardwareWalletAccountDetails {
     name: string,
+    principal: PrincipalString,
     accountIdentifier: AccountIdentifier,
 };
 export interface Receive {
@@ -87,7 +88,7 @@ export type RegisterHardwareWalletResponse = { Ok: null } |
     { NameTooLong: null };
 
 export interface RemoveHardwareWalletRequest {
-    accountIdentifier: AccountIdentifier,
+    principal: PrincipalString,
 };
 export type RemoveHardwareWalletResponse = { Ok: null } |
     { HardwareWalletNotFound: null };

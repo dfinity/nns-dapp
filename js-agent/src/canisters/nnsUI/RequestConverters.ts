@@ -57,7 +57,7 @@ export default class RequestConverters {
 
     public fromRemoveHardwareWalletRequest = (request: RemoveHardwareWalletRequest) : RawRemoveHardwareWalletRequest => {
         return {
-            account_identifier: request.accountIdentifier
+            principal: Principal.fromText(request.principal)
         };
     }
 
