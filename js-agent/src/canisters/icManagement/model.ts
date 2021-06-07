@@ -1,4 +1,3 @@
-import { Principal } from "@dfinity/agent";
 import { Option } from "../option";
 import { CanisterIdString } from "../common/types";
 

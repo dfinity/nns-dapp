@@ -1,4 +1,5 @@
-import { Agent, Principal } from "@dfinity/agent";
+import { Agent } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import { AccountIdentifier, BlockHeight, E8s } from "../common/types";
 import ServiceInterface, {
     GetBalancesRequest,
