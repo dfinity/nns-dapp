@@ -4,6 +4,7 @@
     "update_candid": "didc bind src/canisters/icManagement/canister.did -t ts > ./src/canisters/icManagement/rawService.ts; didc bind src/canisters/icManagement/canister.did -t js > ./src/canisters/icManagement/canister.did.js"
   },
   "dependencies": {
+    "@dfinity/agent": "^0.9.0",
     "@dfinity/auth-client": "^0.9.0",
     "@dfinity/authentication": "^0.9.0",
     "@dfinity/candid": "^0.9.0",
