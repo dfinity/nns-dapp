@@ -8,7 +8,7 @@ use crate::canister_store::{
 };
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, STATE, State};
-use crate::transaction_store::{
+use crate::accounts_store::{
     AccountDetails,
     CreateSubAccountResponse,
     GetStakeNeuronStatusRequest,
@@ -27,13 +27,13 @@ use dfn_candid::{candid, candid_one};
 use dfn_core::{stable, over, over_async};
 use ledger_canister::AccountIdentifier;
 
+mod accounts_store;
 mod assets;
 mod canisters;
 mod canister_store;
 mod ledger_sync;
 mod periodic_tasks_runner;
 mod state;
-mod transaction_store;
 
 const CYCLES_PER_XDR: u64 = 1_000_000_000_000;
 
@@ -69,7 +69,7 @@ pub fn get_account() {
 
 fn get_account_impl() -> GetAccountResponse {
     let principal = dfn_core::api::caller();
-    let store = &STATE.read().unwrap().transactions_store;
+    let store = &STATE.read().unwrap().accounts_store;
     if let Some(account) = store.get_account(principal) {
         GetAccountResponse::Ok(account)
     } else {
@@ -84,7 +84,7 @@ pub fn add_account() {
 
 fn add_account_impl() -> AccountIdentifier {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().transactions_store;
+    let store = &mut STATE.write().unwrap().accounts_store;
     store.add_account(principal);
     AccountIdentifier::from(principal)
 }
@@ -96,7 +96,7 @@ pub fn get_transactions() {
 
 fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResponse {
     let principal = dfn_core::api::caller();
-    let store = &STATE.read().unwrap().transactions_store;
+    let store = &STATE.read().unwrap().accounts_store;
     store.get_transactions(principal, request)
 }
 
@@ -107,7 +107,7 @@ pub fn create_sub_account() {
 
 fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().transactions_store;
+    let store = &mut STATE.write().unwrap().accounts_store;
     store.create_sub_account(principal, sub_account_name)
 }
 
@@ -118,7 +118,7 @@ pub fn rename_sub_account() {
 
 fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().transactions_store;
+    let store = &mut STATE.write().unwrap().accounts_store;
     store.rename_sub_account(principal, request)
 }
 
@@ -129,7 +129,7 @@ pub fn register_hardware_wallet() {
 
 fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().transactions_store;
+    let store = &mut STATE.write().unwrap().accounts_store;
     store.register_hardware_wallet(principal, request)
 }
 
@@ -140,7 +140,7 @@ pub fn remove_hardware_wallet() {
 
 fn remove_hardware_wallet_impl(request: RemoveHardwareWalletRequest) -> RemoveHardwareWalletResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().transactions_store;
+    let store = &mut STATE.write().unwrap().accounts_store;
     store.remove_hardware_wallet(principal, request)
 }
 
@@ -151,7 +151,7 @@ pub fn get_stake_neuron_status() {
 
 fn get_stake_neuron_status_impl(request: GetStakeNeuronStatusRequest) -> GetStakeNeuronStatusResponse {
     let principal = dfn_core::api::caller();
-    let store = &STATE.read().unwrap().transactions_store;
+    let store = &STATE.read().unwrap().accounts_store;
     store.get_stake_neuron_status(principal, request)
 }
 
@@ -208,7 +208,7 @@ pub fn get_stats() {
 }
 
 fn get_stats_impl() -> Stats {
-    let store = &STATE.read().unwrap().transactions_store;
+    let store = &STATE.read().unwrap().accounts_store;
     store.get_stats()
 }
 

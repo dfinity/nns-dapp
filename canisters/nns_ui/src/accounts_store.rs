@@ -21,7 +21,7 @@ const MEMO_TOP_UP_CANISTER: Memo = Memo(0x50555054); // == 'TPUP'
 type TransactionIndex = u64;
 
 #[derive(Default)]
-pub struct TransactionStore {
+pub struct AccountsStore {
     account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation>,
     transactions: VecDeque<Transaction>,
     accounts: Vec<Option<Account>>,
@@ -188,7 +188,7 @@ pub enum GetStakeNeuronStatusResponse {
     NotFound
 }
 
-impl TransactionStore {
+impl AccountsStore {
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.try_get_account_by_default_identifier(&account_identifier) {
@@ -967,7 +967,7 @@ impl TransactionStore {
     }
 }
 
-impl StableState for TransactionStore {
+impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
         Candid((
             Vec::from_iter(self.transactions.iter()),
@@ -1008,7 +1008,7 @@ impl StableState for TransactionStore {
             }
         }
 
-        Ok(TransactionStore {
+        Ok(AccountsStore {
             account_identifier_lookup,
             transactions: VecDeque::from_iter(transactions),
             accounts,
@@ -1171,7 +1171,7 @@ mod tests {
     #[test]
     fn get_non_existant_account_produces_empty_results() {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-        let store = TransactionStore::default();
+        let store = AccountsStore::default();
 
         let results = store.get_transactions(principal, GetTransactionsRequest {
             account_identifier: AccountIdentifier::from(principal),
@@ -1671,12 +1671,12 @@ mod tests {
         assert!(stats.seconds_since_last_ledger_sync < 10);
     }
 
-    fn setup_test_store() -> TransactionStore {
+    fn setup_test_store() -> AccountsStore {
         let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
         let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
         let account_identifier1 = AccountIdentifier::from(principal1);
         let account_identifier2 = AccountIdentifier::from(principal2);
-        let mut store = TransactionStore::default();
+        let mut store = AccountsStore::default();
         store.add_account(principal1);
         store.add_account(principal2);
         let timestamp = TimeStamp {
