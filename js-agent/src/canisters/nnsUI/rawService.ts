@@ -1,4 +1,4 @@
-import type { Principal } from '@dfinity/agent';
+import { Principal } from "@dfinity/principal";
 export interface AccountDetails {
   'account_identifier' : AccountIdentifier,
   'hardware_wallet_accounts' : Array<HardwareWalletAccountDetails>,

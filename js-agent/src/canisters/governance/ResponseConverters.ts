@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import { accountIdentifierFromBytes, arrayOfNumberToArrayBuffer } from "../converter";
 import { AccountIdentifier, E8s, NeuronId } from "../common/types";
 import {

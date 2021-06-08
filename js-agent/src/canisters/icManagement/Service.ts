@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import RawService, { definite_canister_settings } from "./rawService";
 import ServiceInterface, { CanisterStatus, CanisterDetailsResponse, UpdateSettingsRequest, UpdateSettingsResponse } from "./model";
 import { CanisterIdString } from "../common/types";

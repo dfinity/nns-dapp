@@ -1,4 +1,4 @@
-import type { Principal } from '@dfinity/agent';
+import { Principal } from "@dfinity/principal";
 export interface AccountIdentifier {
   'hash' : Array<number>,
 };

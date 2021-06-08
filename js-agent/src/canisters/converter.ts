@@ -1,8 +1,9 @@
-import { SUB_ACCOUNT_BYTE_LENGTH } from "./constants";
-import { BinaryBlob, blobFromUint8Array, Principal } from "@dfinity/agent";
+import { BinaryBlob } from "@dfinity/candid";
+import { Principal } from "@dfinity/principal";
+import { sha224 } from "js-sha256";
 import { Buffer } from "buffer";
-import { sha224 } from "@dfinity/agent/lib/cjs/utils/sha224";
 import crc from "crc";
+import { SUB_ACCOUNT_BYTE_LENGTH } from "./constants";
 import { AccountIdentifier } from "./common/types";
 
 export const uint8ArrayToBigInt = (array: Uint8Array) : bigint => {
@@ -71,14 +72,6 @@ export const fromSubAccountId = (subAccountId: number) : Array<number> => {
     return arrayBufferToArrayOfNumber(buffer);
 }
 
-export const uint8ArrayToBlob = (array: Uint8Array) : BinaryBlob => {
-    return Buffer.from(array) as unknown as BinaryBlob;
-}
-
-export const blobToUint8Array = (blob: BinaryBlob) : Uint8Array => {
-    return Buffer.from(blob);
-}
-
 export const accountIdentifierToBytes = (accountIdentifier: AccountIdentifier) : Uint8Array => {
     return Uint8Array.from(Buffer.from(accountIdentifier, "hex")).subarray(4);
 }
@@ -90,23 +83,28 @@ export const accountIdentifierFromBytes = (accountIdentifier: Uint8Array) : Acco
 export const principalToAccountIdentifier = (principal: Principal, subAccount?: Uint8Array) : string => {
     // Hash (sha224) the principal, the subAccount and some padding
     const padding = asciiStringToByteArray("\x0Aaccount-id");
-    const array = new Uint8Array([
+
+    const shaObj = sha224.create();
+    shaObj.update([
         ...padding,
-        ...principal.toBlob(),
+        ...principal.toUint8Array(),
         ...(subAccount ?? Array(32).fill(0))]);
-    const hash = sha224(array);
+    const hash = new Uint8Array(shaObj.array());
 
     // Prepend the checksum of the hash and convert to a hex string
     const checksum = calculateCrc32(hash);
-    const array2 = new Uint8Array([
+    const bytes = new Uint8Array([
         ...checksum,
         ...hash
     ]);
-    return blobFromUint8Array(array2).toString("hex");
+    return toHexString(bytes);
 }
 
+const toHexString = (bytes: Uint8Array) =>
+    bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+
 // 4 bytes
-function calculateCrc32(bytes: BinaryBlob) : Uint8Array {
+const calculateCrc32 = (bytes: Uint8Array) : Uint8Array => {
     const checksumArrayBuf = new ArrayBuffer(4);
     const view = new DataView(checksumArrayBuf);
     view.setUint32(0, crc.crc32(Buffer.from(bytes)), false);

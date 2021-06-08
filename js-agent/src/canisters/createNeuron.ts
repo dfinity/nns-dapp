@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import { sha256 } from "js-sha256";
 import LedgerService from "./ledger/model";
 import NnsUiService from "./nnsUI/model";
@@ -68,7 +68,7 @@ export function buildSubAccount(nonce: Uint8Array, principal: Principal) : Uint8
     shaObj.update([
         0x0c,
         ...padding,
-        ...principal.toBlob(),
+        ...principal.toUint8Array(),
         ...nonce]);
     return new Uint8Array(shaObj.array());
 }

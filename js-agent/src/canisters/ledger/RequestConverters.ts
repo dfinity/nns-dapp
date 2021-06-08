@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import { Buffer } from "buffer";
 import { GetBalancesRequest, NotifyCanisterRequest, SendICPTsRequest } from "./model";
 import * as convert from "../converter";
@@ -14,7 +14,6 @@ import {
     Payment,
     SendRequest, Subaccount
 } from "./proto/types_pb";
-import { blobToUint8Array } from "../converter";
 
 export const TRANSACTION_FEE : bigint = BigInt(10_000);
 
@@ -107,7 +106,7 @@ export default class RequestConverters {
 
     private toPrincipal = (principalId: Principal) : PrincipalId => {
         const result = new PrincipalId();
-        result.setSerializedId(blobToUint8Array(principalId.toBlob()));
+        result.setSerializedId(principalId.toUint8Array());
         return result;
     }
 }

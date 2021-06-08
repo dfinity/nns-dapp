@@ -1,4 +1,5 @@
-import { Actor, Agent, CallConfig, Principal } from "@dfinity/agent";
+import { Actor, Agent, CallConfig } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import Service from "./Service";
 import ServiceInterface from "./model";
 import IDL from "./canister.did.js";

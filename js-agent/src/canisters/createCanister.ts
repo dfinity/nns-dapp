@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import LedgerService from "./ledger/model";
 import NnsUiService, { AttachCanisterResult } from "./nnsUI/model";
 import MINTING_CANISTER_ID from "./cyclesMinting/canisterId";
@@ -43,9 +43,7 @@ export async function createCanisterImpl(
 
     let errorMessage;
     if (response.hasCreatedCanisterId()) {
-        const canisterId = Principal.fromBlob(
-            convert.uint8ArrayToBlob(
-                response.getCreatedCanisterId().getSerializedId_asU8()));
+        const canisterId = Principal.fromUint8Array(response.getCreatedCanisterId().getSerializedId_asU8());
 
         try {
             const attachResult = await nnsUiService.attachCanister({
@@ -117,9 +115,9 @@ async function sendAndNotify(ledgerService: LedgerService, amount: E8s, recipien
 
 // 32 bytes
 export function buildSubAccount(principal: PrincipalString) : Uint8Array {
-    const blob = Principal.fromText(principal).toBlob();
+    const bytes = Principal.fromText(principal).toUint8Array();
     const subAccount = new Uint8Array(32);
-    subAccount[0] = blob.length;
-    subAccount.set(blob, 1);
+    subAccount[0] = bytes.length;
+    subAccount.set(bytes, 1);
     return subAccount;
 }

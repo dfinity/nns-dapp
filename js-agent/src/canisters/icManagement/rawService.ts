@@ -1,4 +1,4 @@
-import type { Principal } from '@dfinity/agent';
+import { Principal } from "@dfinity/principal";
 export type canister_id = Principal;
 export interface canister_settings {
   'freezing_threshold' : [] | [bigint],
