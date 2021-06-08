@@ -1,20 +1,18 @@
 use candid::CandidType;
-use crate::canister_store::{
-    AttachCanisterResponse,
-    AttachCanisterRequest,
-    DetachCanisterRequest,
-    DetachCanisterResponse,
-    NamedCanister
-};
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, STATE, State};
 use crate::accounts_store::{
     AccountDetails,
+    AttachCanisterRequest,
+    AttachCanisterResponse,
     CreateSubAccountResponse,
+    DetachCanisterRequest,
+    DetachCanisterResponse,
     GetStakeNeuronStatusRequest,
     GetStakeNeuronStatusResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
+    NamedCanister,
     RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse,
     RemoveHardwareWalletRequest,
@@ -30,7 +28,6 @@ use ledger_canister::AccountIdentifier;
 mod accounts_store;
 mod assets;
 mod canisters;
-mod canister_store;
 mod ledger_sync;
 mod periodic_tasks_runner;
 mod state;
@@ -162,8 +159,8 @@ pub fn get_canisters() {
 
 fn get_canisters_impl() -> Vec<NamedCanister> {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().canisters_store;
-    store.get_canisters(&principal)
+    let store = &mut STATE.write().unwrap().accounts_store;
+    store.get_canisters(principal)
 }
 
 #[export_name = "canister_update attach_canister"]
@@ -173,7 +170,7 @@ pub fn attach_canister() {
 
 fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().canisters_store;
+    let store = &mut STATE.write().unwrap().accounts_store;
     store.attach_canister(principal, request)
 }
 
@@ -184,7 +181,7 @@ pub fn detach_canister() {
 
 fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().canisters_store;
+    let store = &mut STATE.write().unwrap().accounts_store;
     store.detach_canister(principal, request)
 }
 
