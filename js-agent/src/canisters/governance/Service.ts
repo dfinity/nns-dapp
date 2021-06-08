@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import { Option } from "../option";
 import RawService, { ListNeurons } from "./rawService";
 import ServiceInterface, {

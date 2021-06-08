@@ -1,4 +1,4 @@
-import type { DerEncodedBlob } from "@dfinity/agent";
+import { DerEncodedBlob } from "@dfinity/candid";
 import { Option } from "../option";
 import { AccountIdentifier, CanisterIdString, E8s, NeuronId, PrincipalString } from "../common/types";
 
