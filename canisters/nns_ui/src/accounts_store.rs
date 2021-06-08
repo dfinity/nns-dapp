@@ -53,6 +53,7 @@ struct Account {
     default_account_transactions: Vec<TransactionIndex>,
     sub_accounts: HashMap<u8, NamedSubAccount>,
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
+    canisters: Vec<NamedCanister>,
 }
 
 #[derive(CandidType, Deserialize)]
@@ -67,6 +68,12 @@ struct NamedHardwareWalletAccount {
     name: String,
     principal: PrincipalId,
     transactions: Vec<TransactionIndex>
+}
+
+#[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct NamedCanister {
+    name: String,
+    canister_id: CanisterId,
 }
 
 #[derive(CandidType, Deserialize)]
@@ -176,6 +183,41 @@ pub struct HardwareWalletAccountDetails {
 }
 
 #[derive(Deserialize)]
+pub struct AttachCanisterRequest {
+    name: String,
+    canister_id: CanisterId,
+}
+
+#[derive(CandidType)]
+pub enum AttachCanisterResponse {
+    Ok,
+    CanisterLimitExceeded,
+    CanisterAlreadyAttached,
+    NameAlreadyTaken,
+    NameTooLong,
+    AccountNotFound,
+}
+
+#[derive(Deserialize)]
+pub struct DetachCanisterRequest {
+    canister_id: CanisterId,
+}
+
+#[derive(CandidType)]
+pub enum DetachCanisterResponse {
+    Ok,
+    CanisterNotFound,
+    AccountNotFound,
+}
+
+#[derive(CandidType, Deserialize)]
+pub enum CreateCanisterOutcome {
+    Success(CanisterId),
+    Refunded(BlockHeight),
+    Error(String),
+}
+
+#[derive(Deserialize)]
 pub struct GetStakeNeuronStatusRequest {
     block_height: BlockHeight,
     memo: Memo
@@ -244,9 +286,7 @@ impl AccountsStore {
                         if account.principal.is_none() {
                             account.principal = Some(caller);
 
-                            // TODO We need to get the list of canisters linked to the user's account,
-                            // but we can get away with this for now because canisters are not yet enabled
-                            let canister_ids = Vec::new();
+                            let canister_ids = account.canisters.iter().map(|c| c.canister_id).collect();
 
                             // Now that we know the principal we can set the transaction types. The
                             // transactions must be sorted since some transaction types can only be
@@ -442,9 +482,7 @@ impl AccountsStore {
                 } else if self.try_add_transaction_to_account(from, transaction_index) {
                     should_store_transaction = true;
                     if let Some(principal) = self.try_get_principal(&from) {
-                        // TODO We need to get the list of canisters linked to the user's account,
-                        // but we can get away with this for now because canisters are not yet enabled
-                        let canister_ids = Vec::new();
+                        let canister_ids = self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
                         transaction_type = Some(self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids));
                         self.process_transaction_type(transaction_type.unwrap(), principal, to, memo);
                     }
@@ -542,6 +580,58 @@ impl AccountsStore {
         GetTransactionsResponse {
             transactions: results,
             total: transactions.len() as u32,
+        }
+    }
+
+    pub fn attach_canister(&mut self, caller: PrincipalId, request: AttachCanisterRequest) -> AttachCanisterResponse {
+        if !Self::validate_canister_name(&request.name) {
+            AttachCanisterResponse::NameTooLong
+        } else {
+            let account_identifier = AccountIdentifier::from(caller);
+            if let Some(account) = self.try_get_account_mut_by_default_identifier(&account_identifier) {
+                if account.canisters.len() >= u8::MAX as usize {
+                    return AttachCanisterResponse::CanisterLimitExceeded
+                }
+                for c in account.canisters.iter() {
+                    if c.name == request.name {
+                        return AttachCanisterResponse::NameAlreadyTaken;
+                    } else if c.canister_id == request.canister_id {
+                        return AttachCanisterResponse::CanisterAlreadyAttached;
+                    }
+                }
+                account.canisters.push(NamedCanister { name: request.name, canister_id: request.canister_id });
+                account.canisters.sort_unstable_by_key(|c| c.name.clone());
+                AttachCanisterResponse::Ok
+            } else {
+                AttachCanisterResponse::AccountNotFound
+            }
+        }
+    }
+
+    pub fn detach_canister(&mut self, caller: PrincipalId, request: DetachCanisterRequest) -> DetachCanisterResponse {
+        let account_identifier = AccountIdentifier::from(caller);
+        if let Some(account) = self.try_get_account_mut_by_default_identifier(&account_identifier) {
+            if let Some(index) = account.canisters.iter()
+                .enumerate()
+                .find(|(_, canister)| canister.canister_id == request.canister_id)
+                .map(|(index, _)| index) {
+
+                account.canisters.remove(index);
+                DetachCanisterResponse::Ok
+            } else {
+                DetachCanisterResponse::CanisterNotFound
+            }
+        } else {
+            DetachCanisterResponse::AccountNotFound
+        }
+    }
+
+    pub fn get_canisters(&self, caller: PrincipalId) -> Vec<NamedCanister> {
+        let account_identifier = AccountIdentifier::from(caller);
+        if let Some(account) = self.try_get_account_by_default_identifier(&account_identifier) {
+            account.canisters.iter().cloned().collect()
+        } else {
+            Vec::new()
         }
     }
 
@@ -770,6 +860,12 @@ impl AccountsStore {
         const ACCOUNT_NAME_MAX_LENGTH: usize = 24;
 
         name.len() <= ACCOUNT_NAME_MAX_LENGTH
+    }
+
+    fn validate_canister_name(name: &str) -> bool {
+        const CANISTER_NAME_MAX_LENGTH: usize = 24;
+
+        name.len() <= CANISTER_NAME_MAX_LENGTH
     }
 
     fn prune_transactions_from_account(&mut self, account_identifier: AccountIdentifier, prune_blocks_previous_to: TransactionIndex) {
@@ -1048,7 +1144,8 @@ impl Account {
             account_identifier,
             default_account_transactions: Vec::new(),
             sub_accounts: HashMap::new(),
-            hardware_wallet_accounts: Vec::new()
+            hardware_wallet_accounts: Vec::new(),
+            canisters: Vec::new(),
         }
     }
 
@@ -1534,6 +1631,124 @@ mod tests {
         } else {
             panic!();
         }
+    }
+
+    #[test]
+    fn attach_canister_followed_by_get_canisters() {
+        let mut store = setup_test_store();
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+        let canister_ids: Vec<_> = [TEST_ACCOUNT_2, TEST_ACCOUNT_3, TEST_ACCOUNT_4, TEST_ACCOUNT_5, TEST_ACCOUNT_6]
+            .iter()
+            .map(|&id| CanisterId::from_str(id).unwrap())
+            .collect();
+
+        for (index, canister_id) in canister_ids.iter().enumerate() {
+            let result = store.attach_canister(principal, AttachCanisterRequest {
+                name: index.to_string(),
+                canister_id: canister_id.clone()
+            });
+
+            assert!(matches!(result, AttachCanisterResponse::Ok));
+        }
+
+        let canisters = store.get_canisters(principal);
+
+        let expected: Vec<_> = canister_ids.into_iter()
+            .enumerate()
+            .map(|(index, canister_id)| NamedCanister { name: index.to_string(), canister_id })
+            .collect();
+
+        assert_eq!(expected.len(), canisters.len());
+        for i in 0..canisters.len() {
+            assert_eq!(expected[i], canisters[i]);
+        }
+    }
+
+    #[test]
+    fn attach_canister_name_already_taken() {
+        let mut store = setup_test_store();
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+        let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+        let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+
+        let result1 = store.attach_canister(principal, AttachCanisterRequest { name: "ABC".to_string(), canister_id: canister_id1 });
+        let result2 = store.attach_canister(principal, AttachCanisterRequest { name: "ABC".to_string(), canister_id: canister_id2 });
+
+        assert!(matches!(result1, AttachCanisterResponse::Ok));
+        assert!(matches!(result2, AttachCanisterResponse::NameAlreadyTaken));
+    }
+
+    #[test]
+    fn attach_canister_name_too_long() {
+        let mut store = setup_test_store();
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+        let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+        let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+
+        let result1 = store.attach_canister(principal, AttachCanisterRequest { name: "ABCDEFGHIJKLMNOPQRSTUVWX".to_string(), canister_id: canister_id1 });
+        let result2 = store.attach_canister(principal, AttachCanisterRequest { name: "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string(), canister_id: canister_id2 });
+
+        assert!(matches!(result1, AttachCanisterResponse::Ok));
+        assert!(matches!(result2, AttachCanisterResponse::NameTooLong));
+    }
+
+    #[test]
+    fn attach_canister_canister_already_attached() {
+        let mut store = setup_test_store();
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+        let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+        let result1 = store.attach_canister(principal, AttachCanisterRequest { name: "ABC".to_string(), canister_id });
+        let result2 = store.attach_canister(principal, AttachCanisterRequest { name: "XYZ".to_string(), canister_id });
+
+        assert!(matches!(result1, AttachCanisterResponse::Ok));
+        assert!(matches!(result2, AttachCanisterResponse::CanisterAlreadyAttached));
+    }
+
+    #[test]
+    fn detach_canister() {
+        let mut store = setup_test_store();
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+        let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+        let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+
+
+        store.attach_canister(principal, AttachCanisterRequest { name: "ABC".to_string(), canister_id: canister_id1 });
+        store.attach_canister(principal, AttachCanisterRequest { name: "XYZ".to_string(), canister_id: canister_id2 });
+
+        let result = store.detach_canister(principal, DetachCanisterRequest { canister_id: canister_id1 });
+
+        assert!(matches!(result, DetachCanisterResponse::Ok));
+
+        let canisters = store.get_canisters(principal);
+
+        assert_eq!(1, canisters.len());
+        assert_eq!(canister_id2, canisters[0].canister_id);
+    }
+
+    #[test]
+    fn detach_canister_canister_not_found() {
+        let mut store = setup_test_store();
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+        let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+        let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+
+        store.attach_canister(principal, AttachCanisterRequest { name: "ABC".to_string(), canister_id: canister_id1 });
+
+        let result = store.detach_canister(principal, DetachCanisterRequest { canister_id: canister_id2 });
+
+        assert!(matches!(result, DetachCanisterResponse::CanisterNotFound));
+
+        let canisters = store.get_canisters(principal);
+
+        assert_eq!(1, canisters.len());
+        assert_eq!(canister_id1, canisters[0].canister_id);
     }
 
     #[test]
