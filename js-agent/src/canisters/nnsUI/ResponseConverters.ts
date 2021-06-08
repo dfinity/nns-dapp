@@ -1,4 +1,3 @@
-import { Principal } from "@dfinity/principal";
 import * as convert from "../converter";
 import {
     AttachCanisterResult,
@@ -117,6 +116,7 @@ export default class ResponseConverters {
     private toHardwareWalletAccountDetails = (hardwareWalletAccount: RawHardwareWalletAccountDetails) : HardwareWalletAccountDetails => {
         return {
             name: hardwareWalletAccount.name,
+            principal: hardwareWalletAccount.principal.toString(),
             accountIdentifier: hardwareWalletAccount.account_identifier
         };
     }

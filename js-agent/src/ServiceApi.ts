@@ -102,10 +102,9 @@ export default class ServiceApi {
     }
 
     public registerHardwareWallet = (name: string, identity: LedgerIdentity) : Promise<RegisterHardwareWalletResponse> => {
-        const accountIdentifier = principalToAccountIdentifier(identity.getPrincipal());
         const request: RegisterHardwareWalletRequest = {
             name,
-            accountIdentifier
+            principal: identity.getPrincipal().toString()
         };
         return executeWithLogging(() => this.nnsUiService.registerHardwareWallet(request));
     }

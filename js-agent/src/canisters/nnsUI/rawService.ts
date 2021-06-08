@@ -44,6 +44,7 @@ export interface GetTransactionsResponse {
   'transactions' : Array<Transaction>,
 };
 export interface HardwareWalletAccountDetails {
+  'principal' : Principal,
   'name' : string,
   'account_identifier' : AccountIdentifier,
 };
@@ -68,17 +69,15 @@ export interface Receive {
   'amount' : ICPTs,
 };
 export interface RegisterHardwareWalletRequest {
+  'principal' : Principal,
   'name' : string,
-  'account_identifier' : AccountIdentifier,
 };
 export type RegisterHardwareWalletResponse = { 'Ok' : null } |
     { 'AccountNotFound' : null } |
     { 'HardwareWalletAlreadyRegistered' : null } |
     { 'HardwareWalletLimitExceeded' : null } |
     { 'NameTooLong' : null };
-export interface RemoveHardwareWalletRequest {
-  'account_identifier' : AccountIdentifier,
-};
+export interface RemoveHardwareWalletRequest { 'principal' : Principal };
 export type RemoveHardwareWalletResponse = { 'Ok' : null } |
     { 'HardwareWalletNotFound' : null };
 export interface RenameSubAccountRequest {
@@ -98,8 +97,9 @@ export interface Stats {
   'latest_transaction_block_height' : BlockHeight,
   'seconds_since_last_ledger_sync' : bigint,
   'sub_accounts_count' : bigint,
-  'neuron_accounts_count' : bigint,
-  'neurons_refreshed_count' : bigint,
+  'neurons_topped_up_count' : bigint,
+  'transactions_to_process_queue_length' : number,
+  'neurons_created_count' : bigint,
   'hardware_wallet_accounts_count' : bigint,
   'accounts_count' : bigint,
   'earliest_transaction_block_height' : BlockHeight,
