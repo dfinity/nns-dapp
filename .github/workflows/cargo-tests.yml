@@ -31,6 +31,10 @@ jobs:
           rustup default ${{ matrix.rust }}
           rustup target add wasm32-unknown-unknown
 
+      - name: Create fake assets
+        run : |
+          touch assets.tar.xz
+
       - name: Run Tests
         shell: bash
         run: |
