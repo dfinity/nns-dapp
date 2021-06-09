@@ -10,7 +10,7 @@ if [[ $DEPLOY_ENV = "xsmallh" ]]; then
     # xsmallh config
     cat > js-agent/src/config.json << EOF
 {
-    "IDENTITY_SERVICE_URL": "https://qaa6y-5yaaa-aaaaa-aaafa-cai.xsmallh.dfinity.network/",
+    "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.xsmallh.dfinity.network/",
     "HOST": "https://xsmallh.dfinity.network/",
     "OWN_CANISTER_ID": "$(dfx canister --no-wallet --network xsmallh id nns_ui)",
     "FETCH_ROOT_KEY": true
