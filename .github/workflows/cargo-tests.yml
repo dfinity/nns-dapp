@@ -30,11 +30,14 @@ jobs:
           rustup update ${{ matrix.rust }} --no-self-update
           rustup default ${{ matrix.rust }}
           rustup target add wasm32-unknown-unknown
+          rustup component add clippy
 
       - uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --all-features
+        env:
+          RUST_BACKTRACE: 1
 
       - name: Create fake assets
         run : |
