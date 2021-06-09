@@ -1353,7 +1353,8 @@ mod tests {
             account_identifier,
             default_account_transactions: Vec::default(),
             sub_accounts: HashMap::default(),
-            hardware_wallet_accounts: Vec::default()
+            hardware_wallet_accounts: Vec::default(),
+            canisters: Vec::default(),
         };
 
         store.account_identifier_lookup.insert(account_identifier, AccountLocation::DefaultAccount(store.accounts.len() as u32));
