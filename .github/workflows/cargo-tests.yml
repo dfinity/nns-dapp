@@ -36,17 +36,11 @@ jobs:
         run : |
           touch assets.tar.xz
 
-      - uses: actions-rs/clippy-check@v1
+      - name: Clippy
+        uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --all-targets --all-features
-
-      - name: Run clippy
-        shell: bash
-        run: |
-          cargo clippy --all-targets --all-features
-        env:
-          RUST_BACKTRACE: 1
 
       - name: Run Tests
         shell: bash
