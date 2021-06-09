@@ -398,23 +398,21 @@ impl AccountsStore {
             let account = self.accounts.get_mut(index as usize).unwrap().as_mut().unwrap();
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
+            } else if account.hardware_wallet_accounts.iter().any(|hw| hw.principal == request.principal) {
+                RegisterHardwareWalletResponse::HardwareWalletAlreadyRegistered
             } else {
-                if account.hardware_wallet_accounts.iter().any(|hw| hw.principal == request.principal) {
-                    RegisterHardwareWalletResponse::HardwareWalletAlreadyRegistered
-                } else {
-                    let account_identifier = AccountIdentifier::from(request.principal);
-                    account.hardware_wallet_accounts.push(NamedHardwareWalletAccount {
-                        name: request.name,
-                        principal: request.principal,
-                        transactions: Vec::new()
-                    });
-                    account.hardware_wallet_accounts.sort_unstable_by_key(|hw| hw.name.clone());
+                let account_identifier = AccountIdentifier::from(request.principal);
+                account.hardware_wallet_accounts.push(NamedHardwareWalletAccount {
+                    name: request.name,
+                    principal: request.principal,
+                    transactions: Vec::new()
+                });
+                account.hardware_wallet_accounts.sort_unstable_by_key(|hw| hw.name.clone());
 
-                    Self::link_hardware_wallet_to_account_index(&mut self.account_identifier_lookup, account_identifier, index);
-                    self.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count + 1;
+                Self::link_hardware_wallet_to_account_index(&mut self.account_identifier_lookup, account_identifier, index);
+                self.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count + 1;
 
-                    RegisterHardwareWalletResponse::Ok
-                }
+                RegisterHardwareWalletResponse::Ok
             }
         } else {
             RegisterHardwareWalletResponse::AccountNotFound
@@ -534,19 +532,17 @@ impl AccountsStore {
         let transactions: &Vec<TransactionIndex>;
         if account_identifier == request.account_identifier {
             transactions = &account.default_account_transactions;
+        } else if let Some(hardware_wallet_account) = account.hardware_wallet_accounts.iter()
+            .find(|a| request.account_identifier == AccountIdentifier::from(a.principal)) {
+            transactions = &hardware_wallet_account.transactions;
+        } else if let Some(sub_account) = account.sub_accounts.values()
+            .find(|a| a.account_identifier == request.account_identifier) {
+            transactions = &sub_account.transactions;
         } else {
-            if let Some(hardware_wallet_account) = account.hardware_wallet_accounts.iter()
-                .find(|a| request.account_identifier == AccountIdentifier::from(a.principal)) {
-                transactions = &hardware_wallet_account.transactions;
-            } else if let Some(sub_account) = account.sub_accounts.values()
-                .find(|a| a.account_identifier == request.account_identifier) {
-                transactions = &sub_account.transactions;
-            } else {
-                return GetTransactionsResponse {
-                    transactions: vec![],
-                    total: 0,
-                };
-            }
+            return GetTransactionsResponse {
+                transactions: vec![],
+                total: 0,
+            };
         }
 
         let results: Vec<TransactionResult> = transactions
