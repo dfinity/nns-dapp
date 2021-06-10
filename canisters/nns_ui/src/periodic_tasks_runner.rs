@@ -42,22 +42,18 @@ async fn claim_or_refresh_neuron(principal: PrincipalId, memo: Memo, is_top_up: 
         memo: memo.0
     };
 
-    match governance::claim_or_refresh_neuron_from_account(request).await {
-        Ok(response) => match response.result {
-            Some(claim_or_refresh_neuron_from_account_response::Result::NeuronId(neuron_id)) => {
-                if is_top_up {
-                    STATE.write().unwrap().accounts_store.mark_neuron_topped_up();
-                } else {
-                    STATE.write().unwrap().accounts_store.mark_neuron_created(&principal, memo, neuron_id.into());
-                }
-            },
-            _ => {
-                // TODO NU-76 Handle any errors returned by the claim_or_refresh_neuron method
+    if let Ok(response) = governance::claim_or_refresh_neuron_from_account(request).await {
+        if let Some(claim_or_refresh_neuron_from_account_response::Result::NeuronId(neuron_id)) = response.result {
+            if is_top_up {
+                STATE.write().unwrap().accounts_store.mark_neuron_topped_up();
+            } else {
+                STATE.write().unwrap().accounts_store.mark_neuron_created(&principal, memo, neuron_id.into());
             }
-        },
-        Err(_) => {
-            // TODO NU-76 Handle any errors returned by the claim_or_refresh_neuron method
+        } else {
+           // TODO NU-76 Handle any errors returned by the claim_or_refresh_neuron method
         }
+    } else {
+        // TODO NU-76 Handle any errors returned by the claim_or_refresh_neuron method
     }
 }
 

@@ -43,11 +43,13 @@ impl Default for State {
 
 thread_local! {
     static STATE: State = State::default();
+
+    #[allow(clippy::type_complexity)]
     static ASSETS: RefCell<HashMap<String, (Vec<HeaderField>, Vec<u8>)>> = RefCell::new(HashMap::default());
 }
 
 pub fn http_request(req: HttpRequest) -> HttpResponse {
-    let parts: Vec<&str> = req.url.split("?").collect();
+    let parts: Vec<&str> = req.url.split('?').collect();
     let request_path = parts[0];
 
     let certificate_header = STATE.with(|s| {

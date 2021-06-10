@@ -235,11 +235,9 @@ impl AccountsStore {
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.try_get_account_by_default_identifier(&account_identifier) {
-            if account.principal.is_none() {
-                // If the principal is empty, return None so that the browser will call add_account
-                // which will allow us to set the principal.
-                return None;
-            }
+            // If the principal is empty, return None so that the browser will call add_account
+            // which will allow us to set the principal.
+            account.principal?;
 
             let sub_accounts = account.sub_accounts
                 .iter()
@@ -286,7 +284,7 @@ impl AccountsStore {
                         if account.principal.is_none() {
                             account.principal = Some(caller);
 
-                            let canister_ids = account.canisters.iter().map(|c| c.canister_id).collect();
+                            let canister_ids: Vec<CanisterId> = account.canisters.iter().map(|c| c.canister_id).collect();
 
                             // Now that we know the principal we can set the transaction types. The
                             // transactions must be sorted since some transaction types can only be
@@ -321,7 +319,7 @@ impl AccountsStore {
                 }
             },
             Vacant(e) => {
-                let new_account = Account::new(caller, e.key().clone());
+                let new_account = Account::new(caller, *e.key());
                 let account_index: u32;
                 if self.empty_account_indices.is_empty() {
                     account_index = self.accounts.len() as u32;
@@ -333,7 +331,7 @@ impl AccountsStore {
                     *account = Some(new_account);
                 }
                 e.insert(AccountLocation::DefaultAccount(account_index));
-                self.accounts_count = self.accounts_count + 1;
+                self.accounts_count += 1;
                 true
             }
         }
@@ -342,27 +340,26 @@ impl AccountsStore {
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
         if !Self::validate_account_name(&sub_account_name) {
             CreateSubAccountResponse::NameTooLong
-        } else if let Some(account_index) = self.try_get_account_index_by_default_identifier(&AccountIdentifier::from(caller.clone())) {
+        } else if let Some(account_index) = self.try_get_account_index_by_default_identifier(&AccountIdentifier::from(caller)) {
             let account: &mut Account = self.accounts.get_mut(account_index as usize).unwrap().as_mut().unwrap();
             if account.sub_accounts.len() == (u8::MAX as usize) {
                 CreateSubAccountResponse::SubAccountLimitExceeded
             } else {
                 let sub_account_id = (1..u8::MAX)
-                    .filter(|i| !account.sub_accounts.contains_key(i))
-                    .next()
+                    .find(|i| !account.sub_accounts.contains_key(i))
                     .unwrap();
 
                 let sub_account = convert_byte_to_sub_account(sub_account_id);
                 let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
                 let named_sub_account = NamedSubAccount::new(
                     sub_account_name.clone(),
-                    sub_account_identifier.clone());
+                    sub_account_identifier);
 
                 account.sub_accounts.insert(sub_account_id, named_sub_account);
                 self.account_identifier_lookup.insert(
                     sub_account_identifier,
                     AccountLocation::SubAccount(account_index, sub_account_id));
-                self.sub_accounts_count = self.sub_accounts_count + 1;
+                self.sub_accounts_count += 1;
 
                 CreateSubAccountResponse::Ok(SubAccountDetails {
                     name: sub_account_name,
@@ -410,7 +407,7 @@ impl AccountsStore {
                 account.hardware_wallet_accounts.sort_unstable_by_key(|hw| hw.name.clone());
 
                 Self::link_hardware_wallet_to_account_index(&mut self.account_identifier_lookup, account_identifier, index);
-                self.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count + 1;
+                self.hardware_wallet_accounts_count += 1;
 
                 RegisterHardwareWalletResponse::Ok
             }
@@ -480,7 +477,7 @@ impl AccountsStore {
                 } else if self.try_add_transaction_to_account(from, transaction_index) {
                     should_store_transaction = true;
                     if let Some(principal) = self.try_get_principal(&from) {
-                        let canister_ids = self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
+                        let canister_ids: Vec<CanisterId> = self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
                         transaction_type = Some(self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids));
                         self.process_transaction_type(transaction_type.unwrap(), principal, to, memo);
                     }
@@ -561,7 +558,7 @@ impl AccountsStore {
                         Burn { amount, from: _ } => TransferResult::Burn { amount },
                         Mint { amount, to: _ } => TransferResult::Mint { amount },
                         Send { from, to, amount, fee } => {
-                            if &from == &request.account_identifier {
+                            if from == request.account_identifier {
                                 TransferResult::Send { to, amount, fee }
                             } else {
                                 TransferResult::Receive { from, amount, fee }
@@ -625,7 +622,7 @@ impl AccountsStore {
     pub fn get_canisters(&self, caller: PrincipalId) -> Vec<NamedCanister> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.try_get_account_by_default_identifier(&account_identifier) {
-            account.canisters.iter().cloned().collect()
+            account.canisters.to_vec()
         } else {
             Vec::new()
         }
@@ -681,7 +678,7 @@ impl AccountsStore {
     }
 
     pub fn mark_neuron_topped_up(&mut self) {
-        self.neurons_topped_up_count = self.neurons_topped_up_count + 1;
+        self.neurons_topped_up_count += 1
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -786,10 +783,8 @@ impl AccountsStore {
     }
 
     fn try_get_account_index_by_default_identifier(&self, account_identifier: &AccountIdentifier) -> Option<u32> {
-        if let Some(location) = self.account_identifier_lookup.get(account_identifier) {
-            if let AccountLocation::DefaultAccount(index) = location {
-                return Some(*index)
-            }
+        if let Some(AccountLocation::DefaultAccount(index)) = self.account_identifier_lookup.get(account_identifier) {
+            return Some(*index)
         }
         None
     }
@@ -899,7 +894,7 @@ impl AccountsStore {
                     }
                 },
                 AccountLocation::HardwareWallet(indexes) => {
-                    for index in indexes.into_iter() {
+                    for index in indexes.iter() {
                         if let Some(account) = self.accounts.get_mut(*index as usize).unwrap().as_mut() {
                             if let Some(hardware_wallet_account) = account.hardware_wallet_accounts.iter_mut()
                                 .find(|a| account_identifier == AccountIdentifier::from(a.principal)) {
@@ -930,11 +925,7 @@ impl AccountsStore {
         {
             let (front, back) = vec_deque.as_slices();
 
-            let search_back = match back.first().map(|elem| f(elem)) {
-                Some(Ordering::Less) => true,
-                Some(Ordering::Equal) => true,
-                _ => false
-            };
+            let search_back = matches!(back.first().map(|elem| f(elem)), Some(Ordering::Less) | Some(Ordering::Equal));
             if search_back {
                 back.binary_search_by(f).map(|idx| idx + front.len()).map_err(|idx| idx + front.len())
             } else {
@@ -963,7 +954,7 @@ impl AccountsStore {
         amount: ICPTs,
         memo: Memo,
         principal: &PrincipalId,
-        canister_ids: &Vec<CanisterId>) -> TransactionType {
+        canister_ids: &[CanisterId]) -> TransactionType {
         if from == to {
             TransactionType::Send
         } else if self.neuron_accounts.contains_key(&to) {
@@ -975,7 +966,7 @@ impl AccountsStore {
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
-            } else if let Some(_) = Self::is_topup_canister_transaction(memo, &to, canister_ids) {
+            } else if Self::is_topup_canister_transaction(memo, &to, canister_ids).is_some() {
                 TransactionType::TopUpCanister
             } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
                 TransactionType::StakeNeuron
@@ -997,7 +988,7 @@ impl AccountsStore {
         false
     }
 
-    fn is_topup_canister_transaction(memo: Memo, to: &AccountIdentifier, canister_ids: &Vec<CanisterId>) -> Option<CanisterId> {
+    fn is_topup_canister_transaction(memo: Memo, to: &AccountIdentifier, canister_ids: &[CanisterId]) -> Option<CanisterId> {
         if memo == MEMO_TOP_UP_CANISTER {
             for canister_id in canister_ids.iter() {
                 let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.get(), Some((&canister_id.get()).into()));
@@ -1072,16 +1063,17 @@ impl AccountsStore {
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
         Candid((
-            Vec::from_iter(self.transactions.iter()),
+            self.transactions.iter().collect::<Vec<_>>(),
             &self.accounts,
             &self.block_height_synced_up_to,
             &self.last_ledger_sync_timestamp_nanos,
             &self.neuron_accounts,
-            Vec::from_iter(self.transactions_to_be_processed_queue.iter()),
+            self.transactions_to_be_processed_queue.iter().collect::<Vec<_>>(),
             &self.neurons_topped_up_count)).into_bytes().unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
+        #[allow(clippy::type_complexity)]
         let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos, neuron_accounts, transactions_to_be_processed, neurons_topped_up_count)
             : (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64, HashMap<AccountIdentifier, NeuronDetails>, Vec<TransactionToBeProcessed>, u64) =
             Candid::from_bytes(bytes).map(|c| c.0)?;
@@ -1108,8 +1100,8 @@ impl StableState for AccountsStore {
                 // for hw in a.hardware_wallet_accounts.iter() {
                 //     Self::link_hardware_wallet_to_account_index(&mut account_identifier_lookup, hw.account_identifier, index);
                 // }
-                accounts_count = accounts_count + 1;
-                sub_accounts_count = sub_accounts_count + a.sub_accounts.len() as u64;
+                accounts_count += 1;
+                sub_accounts_count += a.sub_accounts.len() as u64;
                 // hardware_wallet_accounts_count = hardware_wallet_accounts_count + a.hardware_wallet_accounts.len() as u64;
             } else {
                 empty_account_indices.push(i as u32);
@@ -1643,7 +1635,7 @@ mod tests {
         for (index, canister_id) in canister_ids.iter().enumerate() {
             let result = store.attach_canister(principal, AttachCanisterRequest {
                 name: index.to_string(),
-                canister_id: canister_id.clone()
+                canister_id: *canister_id
             });
 
             assert!(matches!(result, AttachCanisterResponse::Ok));
@@ -1817,7 +1809,7 @@ mod tests {
             }
         }
 
-        transaction_indexes_remaining.sort();
+        transaction_indexes_remaining.sort_unstable();
         transaction_indexes_remaining.dedup();
 
         let block_heights_remaining = transaction_indexes_remaining.iter().map(|t| store.get_transaction(*t).unwrap().block_height).collect_vec();
