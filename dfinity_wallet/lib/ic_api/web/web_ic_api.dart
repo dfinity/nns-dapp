@@ -325,15 +325,15 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> topupCanister(
+  Future<void> topUpCanister(
       {required ICP amount,
       int? fromSubAccountId,
-      required String targetCanisterId}) async {
-    await promiseToFuture(serviceApi!.topupCanister(TopupCanisterRequest(
+      required String canisterId}) async {
+    await promiseToFuture(serviceApi!.topUpCanister(TopUpCanisterRequest(
         amount: amount.asE8s().toJS,
         fromSubAccountId: fromSubAccountId,
-        targetCanisterId: targetCanisterId)));
-    await getCanister(targetCanisterId);
+        canisterId: canisterId)));
+    await getCanister(canisterId);
     hiveBoxes.canisters.notifyChange();
   }
 

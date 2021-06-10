@@ -1,8 +1,32 @@
 use dfn_core::CanisterId;
-use dfn_protobuf::protobuf;
+use dfn_protobuf::{protobuf, ToProto};
 use ic_nns_constants::LEDGER_CANISTER_ID;
-use ledger_canister::{BlockHeight, EncodedBlock, GetBlocksArgs, GetBlocksRes, TipOfChainRes};
-use ledger_canister::protobuf::{TipOfChainRequest, ArchiveIndexResponse};
+use ledger_canister::{BlockHeight, CyclesResponse, EncodedBlock, GetBlocksArgs, GetBlocksRes, NotifyCanisterArgs, SendArgs, TipOfChainRes, AccountBalanceArgs};
+use ledger_canister::protobuf::{ArchiveIndexResponse, TipOfChainRequest, AccountBalanceResponse};
+
+pub async fn send(request: SendArgs) -> Result<BlockHeight, String> {
+    dfn_core::call(
+        LEDGER_CANISTER_ID,
+        "send_pb",
+        protobuf,
+        request.to_proto()).await.map_err(|e| e.1)
+}
+
+pub async fn notify(request: NotifyCanisterArgs) -> Result<CyclesResponse, String> {
+    dfn_core::call(
+        LEDGER_CANISTER_ID,
+        "notify_pb",
+        protobuf,
+        request.to_proto()).await.map_err(|e| e.1)
+}
+
+pub async fn account_balance(request: AccountBalanceArgs) -> Result<AccountBalanceResponse, String> {
+    dfn_core::call(
+        LEDGER_CANISTER_ID,
+        "account_balance_pb",
+        protobuf,
+        request.to_proto()).await.map_err(|e| e.1)
+}
 
 pub async fn tip_of_chain() -> Result<BlockHeight, String> {
     let response: TipOfChainRes = dfn_core::call(
@@ -15,13 +39,11 @@ pub async fn tip_of_chain() -> Result<BlockHeight, String> {
 }
 
 pub async fn get_archive_index() -> Result<ArchiveIndexResponse, String> {
-    let response: ArchiveIndexResponse = dfn_core::call(
+    dfn_core::call(
         LEDGER_CANISTER_ID,
         "get_archive_index_pb",
         protobuf,
-        ()).await.map_err(|e| e.1)?;
-
-    Ok(response)
+        ()).await.map_err(|e| e.1)
 }
 
 pub async fn get_blocks(canister_id: CanisterId, from: BlockHeight, length: u32) -> Result<Vec<EncodedBlock>, String> {

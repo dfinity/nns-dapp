@@ -91,7 +91,7 @@ type TransactionType =
         StakeNeuronNotification;
         TopUpNeuron;
         CreateCanister;
-        TopUpCanister;
+        TopUpCanister: CanisterId;
     };
 
 type CreateSubAccountResponse =
@@ -174,18 +174,16 @@ type DetachCanisterResponse =
         CanisterNotFound;
     };
 
-type GetStakeNeuronStatusRequest =
-    record {
-        block_height: BlockHeight;
-        memo: Memo;
-    };
-
-type GetStakeNeuronStatusResponse =
+type MultiPartTransactionStatus =
     variant {
-        Created: NeuronId;
-        Queued: nat32;
-        PendingSync;
+        NeuronCreated: NeuronId;
+        CanisterCreated: CanisterId;
+        Complete;
+        Refunded: BlockHeight;
+        Error: text;
         NotFound;
+        PendingSync;
+        Queued;
     };
 
 type Stats =
@@ -236,7 +234,7 @@ service : {
     get_canisters: () -> (vec CanisterDetails) query;
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
-    get_stake_neuron_status: (GetStakeNeuronStatusRequest) -> (GetStakeNeuronStatusResponse) query;
+    get_multi_part_transaction_status: (BlockHeight) -> (MultiPartTransactionStatus) query;
     get_icp_to_cycles_conversion_rate: () -> (nat64) query;
     get_stats: () -> (Stats) query;
 

@@ -120,9 +120,9 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                       ),
                       onPressed: () async {
 
-                        await context.callUpdate(() => context.icApi.topupCanister(
+                        await context.callUpdate(() => context.icApi.topUpCanister(
                             amount: amount,
-                            targetCanisterId: destination.identifier,
+                            canisterId: destination.identifier,
                             fromSubAccountId: source.subAccountId
                         ));
 

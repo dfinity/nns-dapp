@@ -8,8 +8,6 @@ use crate::accounts_store::{
     CreateSubAccountResponse,
     DetachCanisterRequest,
     DetachCanisterResponse,
-    GetStakeNeuronStatusRequest,
-    GetStakeNeuronStatusResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
     NamedCanister,
@@ -23,14 +21,17 @@ use crate::accounts_store::{
 };
 use dfn_candid::{candid, candid_one};
 use dfn_core::{stable, over, over_async};
-use ledger_canister::AccountIdentifier;
+use ledger_canister::{AccountIdentifier, BlockHeight};
+use crate::multi_part_transactions_processor::MultiPartTransactionStatus;
 
 mod accounts_store;
 mod assets;
 mod canisters;
+mod constants;
 mod ledger_sync;
 mod periodic_tasks_runner;
 mod state;
+mod multi_part_transactions_processor;
 
 const CYCLES_PER_XDR: u64 = 1_000_000_000_000;
 
@@ -141,17 +142,6 @@ fn remove_hardware_wallet_impl(request: RemoveHardwareWalletRequest) -> RemoveHa
     store.remove_hardware_wallet(principal, request)
 }
 
-#[export_name = "canister_query get_stake_neuron_status"]
-pub fn get_stake_neuron_status() {
-    over(candid_one, get_stake_neuron_status_impl);
-}
-
-fn get_stake_neuron_status_impl(request: GetStakeNeuronStatusRequest) -> GetStakeNeuronStatusResponse {
-    let principal = dfn_core::api::caller();
-    let store = &STATE.read().unwrap().accounts_store;
-    store.get_stake_neuron_status(principal, request)
-}
-
 #[export_name = "canister_query get_canisters"]
 pub fn get_canisters() {
     over(candid, |()| get_canisters_impl());
@@ -183,6 +173,17 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
     let principal = dfn_core::api::caller();
     let store = &mut STATE.write().unwrap().accounts_store;
     store.detach_canister(principal, request)
+}
+
+#[export_name = "canister_query get_multi_part_transaction_status"]
+pub fn get_multi_part_transaction_status() {
+    over(candid_one, get_multi_part_transaction_status_impl);
+}
+
+fn get_multi_part_transaction_status_impl(block_height: BlockHeight) -> MultiPartTransactionStatus {
+    let principal = dfn_core::api::caller();
+    let store = &STATE.read().unwrap().accounts_store;
+    store.get_multi_part_transaction_status(principal, block_height)
 }
 
 #[export_name = "canister_query get_icp_to_cycles_conversion_rate"]

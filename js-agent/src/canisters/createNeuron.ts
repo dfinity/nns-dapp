@@ -42,13 +42,10 @@ export default async function(
         await new Promise(resolve => setTimeout(resolve, 5000));
 
         try {
-            const status = await nnsUiService.getStakeNeuronStatus({
-                blockHeight,
-                memo: nonce
-            });
+            const status = await nnsUiService.getMultiPartTransactionStatus(blockHeight);
 
-            if ("Created" in status) {
-                return status.Created;
+            if ("NeuronCreated" in status) {
+                return status.NeuronCreated;
             } else if ("NotFound" in status) {
                 throw new Error("Stake neuron request not found in the NNS UI canister");
             }
