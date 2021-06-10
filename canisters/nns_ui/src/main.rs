@@ -32,8 +32,6 @@ mod ledger_sync;
 mod periodic_tasks_runner;
 mod state;
 
-const CYCLES_PER_XDR: u64 = 1_000_000_000_000;
-
 #[export_name = "canister_init"]
 fn main() {
     assets::init_assets();
@@ -191,12 +189,22 @@ pub fn get_icp_to_cycles_conversion_rate() {
 }
 
 async fn get_icp_to_cycles_conversion_rate_impl() -> u64 {
-    let xdr_permyriad_per_icp = match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
-        None => panic!("ICP/XDR conversion rate is not available."),
-        Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
-    };
+    #[cfg(feature = "mock_conversion_rate")]
+    {
+        100_000_000_000_000 // Assume a conversion rate of 100T cycles per 1 ICP.
+    }
 
-    xdr_permyriad_per_icp * (CYCLES_PER_XDR / 10_000)
+    #[cfg(not(feature = "mock_conversion_rate"))]
+    {
+        const CYCLES_PER_XDR: u64 = 1_000_000_000_000;
+
+        let xdr_permyriad_per_icp = match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
+            None => panic!("ICP/XDR conversion rate is not available."),
+            Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
+        };
+
+        xdr_permyriad_per_icp * (CYCLES_PER_XDR / 10_000)
+    }
 }
 
 #[export_name = "canister_query get_stats"]
