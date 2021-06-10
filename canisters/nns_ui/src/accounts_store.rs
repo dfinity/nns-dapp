@@ -673,8 +673,14 @@ impl AccountsStore {
             MultiPartTransactionStatus::Refunded(refund_block_height));
     }
 
-    pub fn process_multi_part_transaction_error(&mut self, block_height: BlockHeight, error: String) {
-        self.multi_part_transactions_processor.update_status(block_height, MultiPartTransactionStatus::Error(error));
+    pub fn process_multi_part_transaction_error(&mut self, block_height: BlockHeight, error: String, refund_pending: bool) {
+        let status = if refund_pending {
+            MultiPartTransactionStatus::ErrorWithRefundPending(error)
+        } else {
+            MultiPartTransactionStatus::Error(error)
+        };
+
+        self.multi_part_transactions_processor.update_status(block_height, status);
     }
 
     pub fn get_next_transaction_index(&self) -> TransactionIndex {

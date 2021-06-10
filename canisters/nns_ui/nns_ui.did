@@ -181,6 +181,7 @@ type MultiPartTransactionStatus =
         Complete;
         Refunded: BlockHeight;
         Error: text;
+        ErrorWithRefundPending: text;
         NotFound;
         PendingSync;
         Queued;

@@ -29,6 +29,7 @@ pub enum MultiPartTransactionStatus {
     Complete,
     Refunded(BlockHeight),
     Error(String),
+    ErrorWithRefundPending(String),
     NotFound,
     PendingSync,
     Queued,
@@ -45,9 +46,11 @@ impl MultiPartTransactionsProcessor {
     }
 
     pub fn update_status(&mut self, block_height: BlockHeight, status: MultiPartTransactionStatus) {
-        if let MultiPartTransactionStatus::Error(msg) = &status {
-            self.errors.push((block_height, msg.clone()));
-        }
+        match &status {
+            MultiPartTransactionStatus::Error(msg) => self.errors.push((block_height, msg.clone())),
+            MultiPartTransactionStatus::ErrorWithRefundPending(msg) => self.errors.push((block_height, msg.clone())),
+            _ => {}
+        };
 
         if let Some((_, s)) = self.statuses.get_mut(&block_height) {
             *s = status;

@@ -6,9 +6,20 @@ use crate::ledger_sync;
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::STATE;
 use dfn_core::api::{CanisterId, PrincipalId};
-use ledger_canister::{Memo, ICPTs, TRANSACTION_FEE, AccountIdentifier, NotifyCanisterArgs, SendArgs, Subaccount, CyclesResponse, BlockHeight, AccountBalanceArgs};
-use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_nns_common::types::NeuronId;
+use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
+use ledger_canister::{
+    AccountBalanceArgs,
+    AccountIdentifier,
+    BlockHeight,
+    CyclesResponse,
+    ICPTs,
+    Memo,
+    NotifyCanisterArgs,
+    SendArgs,
+    Subaccount,
+    TRANSACTION_FEE,
+};
 
 const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
 
@@ -45,14 +56,14 @@ pub async fn run_periodic_tasks() {
 async fn handle_stake_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
         Ok(neuron_id) => STATE.write().unwrap().accounts_store.mark_neuron_created(&principal, block_height, memo, neuron_id),
-        Err(e) => STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, e)
+        Err(e) => STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, e, false)
     }
 }
 
 async fn handle_top_up_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
         Ok(_) => STATE.write().unwrap().accounts_store.mark_neuron_topped_up(block_height),
-        Err(e) => STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, e)
+        Err(e) => STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, e, false)
     }
 }
 
@@ -69,17 +80,18 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
             let subaccount = (&args.controller).into();
             let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (8 * TRANSACTION_FEE.get_e8s()));
             enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, default_refund_amount, args.refund_address).await;
-            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error);
+            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         },
         Ok(CyclesResponse::ToppedUp(_)) => {
+            // This should never happen
             let error = "Unexpected response, 'topped up'".to_string();
-            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error);
+            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, false);
         }
         Err(error) => {
             let subaccount = (&args.controller).into();
             let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (2 * TRANSACTION_FEE.get_e8s()));
             enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, default_refund_amount, args.refund_address).await;
-            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error);
+            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         }
     }
 }
@@ -93,17 +105,18 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
             let subaccount = (&args.canister_id.get()).into();
             let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (6 * TRANSACTION_FEE.get_e8s()));
             enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, default_refund_amount, args.refund_address).await;
-            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error);
+            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         },
         Ok(CyclesResponse::CanisterCreated(_)) => {
+            // This should never happen
             let error = "Unexpected response, 'canister created'".to_string();
-            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error);
+            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, false);
         }
         Err(error) => {
             let subaccount = (&args.principal).into();
             let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (2 * TRANSACTION_FEE.get_e8s()));
             enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, default_refund_amount, args.refund_address).await;
-            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error);
+            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         }
     }
 }
@@ -127,7 +140,8 @@ async fn handle_refund(args: RefundTransactionArgs) {
         Err(error) => {
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(
                 args.original_transaction_block_height,
-                error);
+                error,
+                false);
         }
     }
 }
@@ -177,7 +191,7 @@ async fn create_canister(principal: PrincipalId, amount: ICPTs) -> Result<Cycles
 
 
 async fn top_up_canister(canister_id: CanisterId, amount: ICPTs) -> Result<CyclesResponse, String> {
-    // We need to hold back 1 transaction fee for the 'send' and also one for the 'notify'
+    // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
     let send_amount = ICPTs::from_e8s(amount.get_e8s() - (2 * TRANSACTION_FEE.get_e8s()));
     let subaccount: Subaccount = (&canister_id).into();
 
@@ -209,14 +223,18 @@ async fn enqueue_create_or_top_up_canister_refund(
     refund_address: AccountIdentifier) {
 
     let balance_request = AccountBalanceArgs { account: AccountIdentifier::new(principal, Some(subaccount)) };
-    let refund_amount = if let Ok(balance_response) = ledger::account_balance(balance_request).await {
-        if let Some(balance) = balance_response.balance {
-            ICPTs::from_e8s(balance.e8s - TRANSACTION_FEE.get_e8s())
-        } else {
-            default_refund_amount
-        }
-    } else {
-        default_refund_amount
+
+    // We don't necessarily need to first check the balance, but by doing so, if the fees ever
+    // change this code will keep working and will always refund the full amount
+    let refund_amount = match ledger::account_balance(balance_request).await {
+        Ok(balance_response) => {
+            if let Some(balance) = balance_response.balance {
+                ICPTs::from_e8s(balance.e8s - TRANSACTION_FEE.get_e8s())
+            } else {
+                default_refund_amount
+            }
+        },
+        Err(_) => default_refund_amount
     };
 
     let refund_args = RefundTransactionArgs {
