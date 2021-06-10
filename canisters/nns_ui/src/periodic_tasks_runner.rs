@@ -65,10 +65,11 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
                 canister_id,
             );
         },
-        Ok(CyclesResponse::Refunded(_, _)) => {
+        Ok(CyclesResponse::Refunded(error, _)) => {
             let subaccount = (&args.controller).into();
             let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (8 * TRANSACTION_FEE.get_e8s()));
             enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, default_refund_amount, args.refund_address).await;
+            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error);
         },
         Ok(CyclesResponse::ToppedUp(_)) => {
             let error = "Unexpected response, 'topped up'".to_string();
@@ -88,10 +89,11 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
         Ok(CyclesResponse::ToppedUp(_)) => {
             STATE.write().unwrap().accounts_store.mark_canister_topped_up(block_height);
         },
-        Ok(CyclesResponse::Refunded(_, _)) => {
+        Ok(CyclesResponse::Refunded(error, _)) => {
             let subaccount = (&args.canister_id.get()).into();
             let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (6 * TRANSACTION_FEE.get_e8s()));
             enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, default_refund_amount, args.refund_address).await;
+            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error);
         },
         Ok(CyclesResponse::CanisterCreated(_)) => {
             let error = "Unexpected response, 'canister created'".to_string();

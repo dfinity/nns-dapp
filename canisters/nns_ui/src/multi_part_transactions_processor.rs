@@ -61,4 +61,8 @@ impl MultiPartTransactionsProcessor {
             .cloned()
             .unwrap_or(MultiPartTransactionStatus::NotFound)
     }
+
+    pub fn get_errors(&self) -> Vec<(BlockHeight, String)> {
+        self.errors.clone()
+    }
 }

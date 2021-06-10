@@ -696,6 +696,10 @@ impl AccountsStore {
         }
     }
 
+    pub fn get_multi_part_transaction_errors(&self) -> Vec<(BlockHeight, String)> {
+        self.multi_part_transactions_processor.get_errors()
+    }
+
     pub fn try_take_next_transaction_to_process(&mut self) -> Option<(BlockHeight, MultiPartTransactionToBeProcessed)> {
         self.multi_part_transactions_processor.take_next()
     }

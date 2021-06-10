@@ -186,6 +186,16 @@ fn get_multi_part_transaction_status_impl(block_height: BlockHeight) -> MultiPar
     store.get_multi_part_transaction_status(principal, block_height)
 }
 
+#[export_name = "canister_query get_multi_part_transaction_errors"]
+pub fn get_multi_part_transaction_errors() {
+    over(candid, |()| get_multi_part_transaction_errors_impl());
+}
+
+fn get_multi_part_transaction_errors_impl() -> Vec<(BlockHeight, String)> {
+    let store = &STATE.read().unwrap().accounts_store;
+    store.get_multi_part_transaction_errors()
+}
+
 #[export_name = "canister_query get_icp_to_cycles_conversion_rate"]
 pub fn get_icp_to_cycles_conversion_rate() {
     over_async(candid, |()| get_icp_to_cycles_conversion_rate_impl());
