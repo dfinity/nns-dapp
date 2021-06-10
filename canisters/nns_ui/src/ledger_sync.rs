@@ -10,7 +10,7 @@ use std::ops::RangeInclusive;
 use std::sync::Mutex;
 
 lazy_static! {
-    static ref LOCK: Mutex<bool> = Mutex::new(false);
+    static ref LOCK: Mutex<()> = Mutex::new(());
 }
 
 pub async fn sync_transactions() -> Option<Result<u32, String>> {

@@ -44,7 +44,7 @@ jobs:
       - name: Run Tests
         shell: bash
         run: |
-          cargo test --all-targets --all-features
+          cargo test --all-targets --all-features -- -D warnings
         env:
           RUST_BACKTRACE: 1
 
