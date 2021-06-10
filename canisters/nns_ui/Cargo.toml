@@ -31,3 +31,6 @@ ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf6
 ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
 ledger-canister = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+
+[features]
+mock_conversion_rate = []
