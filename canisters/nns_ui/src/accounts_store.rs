@@ -1635,7 +1635,7 @@ mod tests {
         for (index, canister_id) in canister_ids.iter().enumerate() {
             let result = store.attach_canister(principal, AttachCanisterRequest {
                 name: index.to_string(),
-                canister_id: canister_id.clone()
+                canister_id: *canister_id
             });
 
             assert!(matches!(result, AttachCanisterResponse::Ok));
@@ -1809,7 +1809,7 @@ mod tests {
             }
         }
 
-        transaction_indexes_remaining.sort();
+        transaction_indexes_remaining.sort_unstable();
         transaction_indexes_remaining.dedup();
 
         let block_heights_remaining = transaction_indexes_remaining.iter().map(|t| store.get_transaction(*t).unwrap().block_height).collect_vec();
