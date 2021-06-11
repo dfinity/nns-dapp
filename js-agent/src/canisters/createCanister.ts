@@ -37,7 +37,7 @@ export async function createCanisterImpl(
     if ("CanisterCreated" in outcome) {
         return { created: outcome.CanisterCreated.toString() }
     } else if ("Refunded" in outcome) {
-        return { error: { message: outcome[1], refunded: true } };
+        return { error: { message: outcome.Refunded[1], refunded: true } };
     } else if ("Error" in outcome) {
         return { error: { message: outcome.Error, refunded: false } };
     } else {

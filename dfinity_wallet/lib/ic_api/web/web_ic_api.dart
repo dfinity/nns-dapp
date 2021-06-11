@@ -290,8 +290,8 @@ class PlatformICApi extends AbstractPlatformICApi {
         ? hiveBoxes.canisters[canisterId]
         : null;
     final error = response['error'];
-    final String? errorMessage = error != null ? error.message : null;
-    final bool refunded = error != null && error.refunded;
+    final String? errorMessage = error != null ? error['message'] : null;
+    final bool refunded = error != null && error['refunded'];
 
     return CreateCanisterResponse(
         canisterId: canisterId,
