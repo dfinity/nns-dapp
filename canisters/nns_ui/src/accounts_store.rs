@@ -1080,6 +1080,7 @@ impl AccountsStore {
         AccountIdentifier::new(GOVERNANCE_CANISTER_ID.get(), Some(subaccount))
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn process_transaction_type(
         &mut self,
         transaction_type: TransactionType,
