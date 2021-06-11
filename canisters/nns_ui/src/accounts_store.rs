@@ -642,7 +642,7 @@ impl AccountsStore {
     }
 
     // We skip the checks here since in this scenario we must store the canister otherwise the user
-    // won't be able to see its Id.
+    // won't be able to retrieve its Id.
     pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, block_height: BlockHeight, canister_id: CanisterId) {
         let mut name = canister_id.to_string();
         name.truncate(5);
@@ -654,12 +654,17 @@ impl AccountsStore {
                 canister_id
             });
             account.canisters.sort_unstable_by_key(|c| c.name.clone());
-            self.multi_part_transactions_processor.update_status(block_height, MultiPartTransactionStatus::CanisterCreated(canister_id));
+            self.multi_part_transactions_processor.update_status(
+                block_height,
+                MultiPartTransactionStatus::CanisterCreated(canister_id));
         }
     }
 
     pub fn enqueue_transaction_to_be_refunded(&mut self, args: RefundTransactionArgs) {
-        self.multi_part_transactions_processor.push(args.recipient_principal, args.original_transaction_block_height, MultiPartTransactionToBeProcessed::RefundTransaction(args));
+        self.multi_part_transactions_processor.push(
+            args.recipient_principal,
+            args.original_transaction_block_height,
+            MultiPartTransactionToBeProcessed::RefundTransaction(args));
     }
 
     pub fn process_transaction_refunded(
@@ -712,16 +717,22 @@ impl AccountsStore {
     pub fn mark_neuron_created(&mut self, principal: &PrincipalId, block_height: BlockHeight, memo: Memo, neuron_id: NeuronId) {
         let account_identifier = Self::generate_stake_neuron_address(principal, memo);
         self.neuron_accounts.get_mut(&account_identifier).unwrap().neuron_id = Some(neuron_id);
-        self.multi_part_transactions_processor.update_status(block_height, MultiPartTransactionStatus::NeuronCreated(neuron_id));
+        self.multi_part_transactions_processor.update_status(
+            block_height,
+            MultiPartTransactionStatus::NeuronCreated(neuron_id));
     }
 
     pub fn mark_neuron_topped_up(&mut self, block_height: BlockHeight) {
         self.neurons_topped_up_count += 1;
-        self.multi_part_transactions_processor.update_status(block_height, MultiPartTransactionStatus::Complete);
+        self.multi_part_transactions_processor.update_status(
+            block_height,
+            MultiPartTransactionStatus::Complete);
     }
 
     pub fn mark_canister_topped_up(&mut self, original_transaction_block_height: BlockHeight) {
-        self.multi_part_transactions_processor.update_status(original_transaction_block_height, MultiPartTransactionStatus::Complete);
+        self.multi_part_transactions_processor.update_status(
+            original_transaction_block_height,
+            MultiPartTransactionStatus::Complete);
     }
 
     #[cfg(not(target_arch = "wasm32"))]
