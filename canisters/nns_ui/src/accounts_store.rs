@@ -1080,6 +1080,10 @@ impl AccountsStore {
         AccountIdentifier::new(GOVERNANCE_CANISTER_ID.get(), Some(subaccount))
     }
 
+    /// Certain transaction types require additional processing (Stake Neuron, Create Canister,
+    /// etc). Each time we detect one of these transaction types we need to add the details to the
+    /// multi_part_transactions_processor which will work through the required actions in the
+    /// background.
     #[allow(clippy::too_many_arguments)]
     fn process_transaction_type(
         &mut self,

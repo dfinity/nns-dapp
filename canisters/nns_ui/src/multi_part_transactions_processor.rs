@@ -69,3 +69,58 @@ impl MultiPartTransactionsProcessor {
         self.errors.clone()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::str::FromStr;
+
+    const TEST_ACCOUNT_1: &str = "h4a5i-5vcfo-5rusv-fmb6m-vrkia-mjnkc-jpoow-h5mam-nthnm-ldqlr-bqe";
+
+    #[test]
+    fn push_then_take_next() {
+        let mut processor = MultiPartTransactionsProcessor::default();
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+        for i in 0..10 {
+            processor.push(principal, i, MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(i)));
+        }
+
+        for i in 0..10 {
+            let (block_height, to_be_processed) = processor.take_next().unwrap();
+            assert_eq!(block_height, i);
+            if let MultiPartTransactionToBeProcessed::StakeNeuron(p, m) = to_be_processed {
+                assert_eq!(p, principal);
+                assert_eq!(m.0, i);
+            }
+        }
+
+        assert!(processor.take_next().is_none());
+    }
+
+    #[test]
+    fn status_updated_correctly() {
+        let mut processor = MultiPartTransactionsProcessor::default();
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+        processor.push(principal, 1, MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(0)));
+        assert!(matches!(processor.get_status(principal, 1), MultiPartTransactionStatus::Queued));
+
+        processor.update_status(1, MultiPartTransactionStatus::Complete);
+        assert!(matches!(processor.get_status(principal, 1), MultiPartTransactionStatus::Complete));
+    }
+
+    #[test]
+    fn errors_are_stored_when_status_is_updated() {
+        let mut processor = MultiPartTransactionsProcessor::default();
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+        let error_message = "Error!".to_string();
+
+        processor.push(principal, 1, MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(0)));
+        processor.update_status(1, MultiPartTransactionStatus::Error(error_message.clone()));
+
+        let errors = processor.get_errors();
+        assert_eq!(errors[0].0, 1);
+        assert_eq!(errors[0].1, error_message);
+    }
+}
