@@ -12,20 +12,20 @@ export const pollUntilComplete = async (nnsUiService: NnsUiService, blockHeight:
         try {
             const status = await nnsUiService.getMultiPartTransactionStatus(blockHeight);
 
-            if ("CanisterCreated" in status) {
-                return status;
-            } else if ("Refunded" in status) {
-                return status
-            } else if ("NotFound" in status) {
-                throw new Error("Create canister request not found in the NNS UI canister");
-            } else if ("Error" in status) {
+            if (!isStillPending(status)) {
                 return status;
             }
         } catch (e) {
-            console.log(e);
             // If there is an error while getting the status simply swallow the error and try again
+            console.log(e);
         }
     }
 
     throw new Error("Failed to complete multi part transaction. Request may still be queued");
+}
+
+const isStillPending = (status: MultiPartTransactionStatus) : boolean => {
+    return "Queued" in status ||
+        "PendingSync" in status ||
+        "ErrorWithRefundPending" in status;
 }
