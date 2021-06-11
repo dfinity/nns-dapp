@@ -9,7 +9,6 @@ import 'cycle_calculator.dart';
 class ConfirmCanisterCreationWidget extends StatelessWidget {
   final ICP amount;
   final ICPSource source;
-  final String name;
   final BigInt trillionRatio;
   final int? fromSubAccountId;
 
@@ -17,7 +16,6 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
       {Key? key,
       required this.amount,
       required this.source,
-      required this.name,
       required this.trillionRatio,
       required this.fromSubAccountId})
       : super(key: key);
@@ -102,10 +100,6 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TallFormDivider(),
-                  Text("Canister Name", style: context.textTheme.headline4),
-                  VerySmallFormDivider(),
-                  Text(name, style: context.textTheme.bodyText1),
-                  TallFormDivider(),
                   Text("Source", style: context.textTheme.headline4),
                   VerySmallFormDivider(),
                   Text(source.address, style: context.textTheme.bodyText1),
@@ -124,7 +118,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                   onPressed: () async {
                     final result = await context.callUpdate(() => context
                         .icApi
-                        .createCanister(amount: amount, name: name, fromSubAccountId: fromSubAccountId));
+                        .createCanister(amount: amount, fromSubAccountId: fromSubAccountId));
                     if (result == null) {
                       return;
                     }

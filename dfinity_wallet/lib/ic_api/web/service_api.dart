@@ -203,10 +203,9 @@ class SpawnRequest {
 class CreateCanisterRequest {
   external dynamic amount;
   external int? fromSubAccountId;
-  external String name;
 
   external factory CreateCanisterRequest(
-      {dynamic amount, int? fromSubAccountId, String name});
+      {dynamic amount, int? fromSubAccountId});
 }
 
 @JS()

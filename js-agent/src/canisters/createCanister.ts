@@ -9,9 +9,8 @@ import { pollUntilComplete } from "./multiPartTransactionPollingHandler";
 
 
 export type CreateCanisterRequest = {
-    amount: E8s
-    fromSubAccountId?: number,
-    name: string
+    amount: E8s,
+    fromSubAccountId?: number
 }
 
 export type CreateCanisterResponse =

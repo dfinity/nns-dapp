@@ -274,13 +274,11 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<CreateCanisterResponse> createCanister(
       {required ICP amount,
-      int? fromSubAccountId,
-      required String name}) async {
+      int? fromSubAccountId}) async {
     final res =
         await promiseToFuture(serviceApi!.createCanister(CreateCanisterRequest(
       amount: amount.asE8s().toJS,
       fromSubAccountId: fromSubAccountId,
-      name: name,
     )));
 
     await getCanisters();
