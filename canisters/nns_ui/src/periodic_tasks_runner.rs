@@ -133,7 +133,7 @@ async fn handle_refund(args: RefundTransactionArgs) {
 
     match ledger::send(send_request.clone()).await {
         Ok(block_height) => {
-            STATE.write().unwrap().accounts_store.process_transaction_refunded(
+            STATE.write().unwrap().accounts_store.process_transaction_refund_completed(
                 args.original_transaction_block_height,
                 block_height,
                 args.error_message);
@@ -236,7 +236,13 @@ async fn enqueue_create_or_top_up_canister_refund(
                 default_refund_amount
             }
         },
-        Err(_) => default_refund_amount
+        Err(error) => {
+            STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(
+                block_height,
+                error,
+                true);
+            default_refund_amount
+        }
     };
 
     let refund_args = RefundTransactionArgs {

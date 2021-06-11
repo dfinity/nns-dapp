@@ -1,6 +1,4 @@
 use candid::CandidType;
-use crate::periodic_tasks_runner::run_periodic_tasks;
-use crate::state::{StableState, STATE, State};
 use crate::accounts_store::{
     AccountDetails,
     AttachCanisterRequest,
@@ -19,19 +17,21 @@ use crate::accounts_store::{
     RenameSubAccountResponse,
     Stats
 };
+use crate::multi_part_transactions_processor::MultiPartTransactionStatus;
+use crate::periodic_tasks_runner::run_periodic_tasks;
+use crate::state::{StableState, STATE, State};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{stable, over, over_async};
 use ledger_canister::{AccountIdentifier, BlockHeight};
-use crate::multi_part_transactions_processor::MultiPartTransactionStatus;
 
 mod accounts_store;
 mod assets;
 mod canisters;
 mod constants;
 mod ledger_sync;
+mod multi_part_transactions_processor;
 mod periodic_tasks_runner;
 mod state;
-mod multi_part_transactions_processor;
 
 #[export_name = "canister_init"]
 fn main() {

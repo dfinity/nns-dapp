@@ -667,7 +667,7 @@ impl AccountsStore {
             MultiPartTransactionToBeProcessed::RefundTransaction(args));
     }
 
-    pub fn process_transaction_refunded(
+    pub fn process_transaction_refund_completed(
         &mut self,
         original_transaction_block_height: BlockHeight,
         refund_block_height: BlockHeight,
@@ -1174,6 +1174,8 @@ impl StableState for AccountsStore {
             : (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64, HashMap<AccountIdentifier, NeuronDetails>, Vec<TransactionToBeProcessed>, u64) =
             Candid::from_bytes(bytes).map(|c| c.0)?;
 
+        // Migrate any pending transactions from the old 'transactions_to_be_processed' queue to the
+        // new 'MultiPartTransactionsProcessor'
         let mut multi_part_transactions_processor = MultiPartTransactionsProcessor::default();
         for (index, t) in transactions_to_be_processed.into_iter().enumerate() {
             match t {
@@ -1451,7 +1453,7 @@ mod tests {
             default_account_transactions: Vec::default(),
             sub_accounts: HashMap::default(),
             hardware_wallet_accounts: Vec::default(),
-            canisters: Vec::default()
+            canisters: Vec::default(),
         };
 
         store.account_identifier_lookup.insert(account_identifier, AccountLocation::DefaultAccount(store.accounts.len() as u32));

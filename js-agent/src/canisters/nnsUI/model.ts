@@ -1,5 +1,5 @@
-import {AccountIdentifier, BlockHeight, CanisterIdString, E8s, NeuronId, PrincipalString} from "../common/types";
-import {CanisterId} from "./rawService";
+import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, NeuronId, PrincipalString } from "../common/types";
+import { CanisterId } from "./rawService";
 
 export type Memo = bigint;
 export enum TransactionType {

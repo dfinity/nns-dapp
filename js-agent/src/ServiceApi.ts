@@ -59,7 +59,7 @@ import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { HOST } from "./canisters/constants";
 import { executeWithLogging } from "./errorLogger";
 import { FETCH_ROOT_KEY } from "./config.json";
-import {topUpCanisterImpl, TopUpCanisterRequest, TopUpCanisterResponse} from "./canisters/topUpCanister";
+import { topUpCanisterImpl, TopUpCanisterRequest, TopUpCanisterResponse } from "./canisters/topUpCanister";
 
 export default class ServiceApi {
     private readonly ledgerService: LedgerService;

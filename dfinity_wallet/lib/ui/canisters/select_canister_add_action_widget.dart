@@ -1,10 +1,10 @@
+import 'package:dfinity_wallet/ui/canisters/enter_canister_id_and_name_widget.dart';
+import 'package:dfinity_wallet/ui/canisters/new_canister_cycles_widget.dart';
 import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_path_button.dart';
 
 import '../../dfinity.dart';
-import 'enter_canister_id_and_name_widget.dart';
-import 'new_canister_cycles_widget.dart';
 
 class SelectCanisterAddActionWidget extends StatelessWidget {
   const SelectCanisterAddActionWidget({
