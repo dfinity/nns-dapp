@@ -13,8 +13,9 @@ export type TopUpCanisterRequest = {
     canisterId: CanisterIdString
 }
 
-export type TopUpCanisterResponse = { complete: null } |
-    { refunded: null };
+export type TopUpCanisterResponse =
+    { complete: null } |
+    { error: { message: string, refunded: boolean } };
 
 export async function topUpCanisterImpl(
     ledgerService: LedgerService,
@@ -35,9 +36,11 @@ export async function topUpCanisterImpl(
     if ("Complete" in outcome) {
         return { complete: null };
     } else if ("Refunded" in outcome) {
-        return { refunded: null };
+        return { error: { message: outcome[1], refunded: true } };
+    } else if ("Error" in outcome) {
+        return { error: { message: outcome.Error, refunded: false } };
     } else {
-        throw new Error("Unable to create neuron");
+        throw new Error("Unable to top-up canister");
     }
 }
 

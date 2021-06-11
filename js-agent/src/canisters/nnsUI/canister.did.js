@@ -52,12 +52,13 @@ export default ({ IDL }) => {
   const MultiPartTransactionStatus = IDL.Variant({
     'Queued' : IDL.Null,
     'Error' : IDL.Text,
-    'Refunded' : BlockHeight,
+    'Refunded' : IDL.Tuple(BlockHeight, IDL.Text),
     'CanisterCreated' : CanisterId,
     'Complete' : IDL.Null,
     'NotFound' : IDL.Null,
     'NeuronCreated' : NeuronId,
     'PendingSync' : IDL.Null,
+    'ErrorWithRefundPending' : IDL.Text,
   });
   const Stats = IDL.Record({
     'latest_transaction_block_height' : BlockHeight,
@@ -174,6 +175,11 @@ export default ({ IDL }) => {
     'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_canisters' : IDL.Func([], [IDL.Vec(CanisterDetails)], ['query']),
     'get_icp_to_cycles_conversion_rate' : IDL.Func([], [IDL.Nat64], ['query']),
+    'get_multi_part_transaction_errors' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Nat64, IDL.Text))],
+        ['query'],
+      ),
     'get_multi_part_transaction_status' : IDL.Func(
         [BlockHeight],
         [MultiPartTransactionStatus],

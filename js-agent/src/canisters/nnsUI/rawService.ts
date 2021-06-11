@@ -56,12 +56,13 @@ export interface ICPTs { 'e8s' : bigint };
 export type Memo = bigint;
 export type MultiPartTransactionStatus = { 'Queued' : null } |
   { 'Error' : string } |
-  { 'Refunded' : BlockHeight } |
+  { 'Refunded' : [BlockHeight, string] } |
   { 'CanisterCreated' : CanisterId } |
   { 'Complete' : null } |
   { 'NotFound' : null } |
   { 'NeuronCreated' : NeuronId } |
-  { 'PendingSync' : null };
+  { 'PendingSync' : null } |
+  { 'ErrorWithRefundPending' : string };
 export type NeuronId = bigint;
 export interface Receive {
   'fee' : ICPTs,
@@ -146,6 +147,7 @@ export default interface _SERVICE {
   'get_account' : () => Promise<GetAccountResponse>,
   'get_canisters' : () => Promise<Array<CanisterDetails>>,
   'get_icp_to_cycles_conversion_rate' : () => Promise<bigint>,
+  'get_multi_part_transaction_errors' : () => Promise<Array<[bigint, string]>>,
   'get_multi_part_transaction_status' : (arg_0: BlockHeight) => Promise<
       MultiPartTransactionStatus
     >,

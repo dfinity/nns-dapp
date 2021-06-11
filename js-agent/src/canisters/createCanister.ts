@@ -14,8 +14,9 @@ export type CreateCanisterRequest = {
     name: string
 }
 
-export type CreateCanisterResponse = { created: CanisterIdString } |
-    { refunded: null };
+export type CreateCanisterResponse =
+    { created: CanisterIdString } |
+    { error: { message: string, refunded: boolean } };
 
 export async function createCanisterImpl(
     principal: PrincipalString,
@@ -37,7 +38,9 @@ export async function createCanisterImpl(
     if ("CanisterCreated" in outcome) {
         return { created: outcome.CanisterCreated.toString() }
     } else if ("Refunded" in outcome) {
-        return { refunded: null }
+        return { error: { message: outcome[1], refunded: true } };
+    } else if ("Error" in outcome) {
+        return { error: { message: outcome.Error, refunded: false } };
     } else {
         throw new Error("Unable to create canister");
     }

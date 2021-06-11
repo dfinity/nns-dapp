@@ -65,12 +65,13 @@ export interface HardwareWalletAccountDetails {
 };
 export type MultiPartTransactionStatus = { Queued: null } |
     { Error: string } |
-    { Refunded: BlockHeight } |
+    { Refunded: [BlockHeight, string] } |
     { CanisterCreated: CanisterId } |
     { Complete: null } |
     { NotFound: null } |
     { NeuronCreated: NeuronId } |
-    { PendingSync: null };
+    { PendingSync: null } |
+    { ErrorWithRefundPending: string };
 export interface Receive {
     fee: E8s,
     from: AccountIdentifier,

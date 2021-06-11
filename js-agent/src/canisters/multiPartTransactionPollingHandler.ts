@@ -19,7 +19,7 @@ export const pollUntilComplete = async (nnsUiService: NnsUiService, blockHeight:
             } else if ("NotFound" in status) {
                 throw new Error("Create canister request not found in the NNS UI canister");
             } else if ("Error" in status) {
-                throw new Error(status.Error);
+                return status;
             }
         } catch (e) {
             console.log(e);

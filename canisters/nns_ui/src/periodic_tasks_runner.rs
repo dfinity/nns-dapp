@@ -79,7 +79,7 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
         Ok(CyclesResponse::Refunded(error, _)) => {
             let subaccount = (&args.controller).into();
             let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (8 * TRANSACTION_FEE.get_e8s()));
-            enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, default_refund_amount, args.refund_address).await;
+            enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, default_refund_amount, args.refund_address, error.clone()).await;
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         },
         Ok(CyclesResponse::ToppedUp(_)) => {
@@ -90,7 +90,7 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
         Err(error) => {
             let subaccount = (&args.controller).into();
             let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (2 * TRANSACTION_FEE.get_e8s()));
-            enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, default_refund_amount, args.refund_address).await;
+            enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, default_refund_amount, args.refund_address, error.clone()).await;
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         }
     }
@@ -104,7 +104,7 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
         Ok(CyclesResponse::Refunded(error, _)) => {
             let subaccount = (&args.canister_id.get()).into();
             let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (6 * TRANSACTION_FEE.get_e8s()));
-            enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, default_refund_amount, args.refund_address).await;
+            enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, default_refund_amount, args.refund_address, error.clone()).await;
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         },
         Ok(CyclesResponse::CanisterCreated(_)) => {
@@ -115,7 +115,7 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
         Err(error) => {
             let subaccount = (&args.principal).into();
             let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (2 * TRANSACTION_FEE.get_e8s()));
-            enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, default_refund_amount, args.refund_address).await;
+            enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, default_refund_amount, args.refund_address, error.clone()).await;
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         }
     }
@@ -135,7 +135,8 @@ async fn handle_refund(args: RefundTransactionArgs) {
         Ok(block_height) => {
             STATE.write().unwrap().accounts_store.process_transaction_refunded(
                 args.original_transaction_block_height,
-                block_height);
+                block_height,
+                args.error_message);
         },
         Err(error) => {
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(
@@ -220,7 +221,8 @@ async fn enqueue_create_or_top_up_canister_refund(
     subaccount: Subaccount,
     block_height: BlockHeight,
     default_refund_amount: ICPTs,
-    refund_address: AccountIdentifier) {
+    refund_address: AccountIdentifier,
+    error_message: String) {
 
     let balance_request = AccountBalanceArgs { account: AccountIdentifier::new(principal, Some(subaccount)) };
 
@@ -243,6 +245,7 @@ async fn enqueue_create_or_top_up_canister_refund(
         amount: refund_amount,
         original_transaction_block_height: block_height,
         refund_address,
+        error_message,
     };
 
     STATE.write().unwrap().accounts_store.enqueue_transaction_to_be_refunded(refund_args);

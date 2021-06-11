@@ -179,7 +179,7 @@ type MultiPartTransactionStatus =
         NeuronCreated: NeuronId;
         CanisterCreated: CanisterId;
         Complete;
-        Refunded: BlockHeight;
+        Refunded: record { BlockHeight; text; };
         Error: text;
         ErrorWithRefundPending: text;
         NotFound;

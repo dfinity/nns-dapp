@@ -13,7 +13,7 @@ pub struct MultiPartTransactionsProcessor {
     errors: Vec<(BlockHeight, String)>,
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize)]
+#[derive(Clone, CandidType, Deserialize)]
 pub enum MultiPartTransactionToBeProcessed {
     StakeNeuron(PrincipalId, Memo),
     TopUpNeuron(PrincipalId, Memo),
@@ -27,7 +27,7 @@ pub enum MultiPartTransactionStatus {
     NeuronCreated(NeuronId),
     CanisterCreated(CanisterId),
     Complete,
-    Refunded(BlockHeight),
+    Refunded(BlockHeight, String),
     Error(String),
     ErrorWithRefundPending(String),
     NotFound,

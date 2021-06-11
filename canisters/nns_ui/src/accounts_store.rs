@@ -112,13 +112,14 @@ pub struct TopUpCanisterArgs {
     pub refund_address: AccountIdentifier,
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize)]
+#[derive(Clone, CandidType, Deserialize)]
 pub struct RefundTransactionArgs {
     pub recipient_principal: PrincipalId,
     pub from_sub_account: Subaccount,
     pub amount: ICPTs,
     pub original_transaction_block_height: BlockHeight,
     pub refund_address: AccountIdentifier,
+    pub error_message: String,
 }
 
 #[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
@@ -667,10 +668,11 @@ impl AccountsStore {
     pub fn process_transaction_refunded(
         &mut self,
         original_transaction_block_height: BlockHeight,
-        refund_block_height: BlockHeight) {
+        refund_block_height: BlockHeight,
+        error_message: String) {
         self.multi_part_transactions_processor.update_status(
             original_transaction_block_height,
-            MultiPartTransactionStatus::Refunded(refund_block_height));
+            MultiPartTransactionStatus::Refunded(refund_block_height, error_message));
     }
 
     pub fn process_multi_part_transaction_error(&mut self, block_height: BlockHeight, error: String, refund_pending: bool) {

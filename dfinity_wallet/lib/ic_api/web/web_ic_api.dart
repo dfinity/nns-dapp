@@ -286,14 +286,20 @@ class PlatformICApi extends AbstractPlatformICApi {
     await getCanisters();
 
     final response = jsonDecode(stringify(res));
-    final canisterId = res.canisterId.toString();
+
+    final String? canisterId = response['created'];
+    final Canister? canister = (canisterId != null)
+        ? hiveBoxes.canisters[canisterId]
+        : null;
+    final error = response['error'];
+    final String? errorMessage = error != null ? error.message : null;
+    final bool refunded = error != null && error.refunded;
+
     return CreateCanisterResponse(
-        result:
-            CreateCanisterResult.values[response['result']!.toString().toInt()],
         canisterId: canisterId,
-        errorMessage: response['errorMessage'],
-        canister:
-            (canisterId != null) ? hiveBoxes.canisters[canisterId] : null);
+        errorMessage: errorMessage,
+        canister: canister,
+        refunded: refunded);
   }
 
   @override

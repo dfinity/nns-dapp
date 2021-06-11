@@ -256,25 +256,14 @@ enum AttachCanisterResult {
   CanisterLimitExceeded,
 }
 
-
-
 class CreateCanisterResponse {
   final String? canisterId;
   final Canister? canister;
+  final bool refunded;
   final String? errorMessage;
-  final CreateCanisterResult result;
 
-  CreateCanisterResponse({required this.result, this.canisterId, this.canister, this.errorMessage});
+  CreateCanisterResponse({this.canisterId, this.canister, required this.refunded, this.errorMessage});
 }
-
-enum CreateCanisterResult {
-  Ok,
-  FailedToCreateCanister,
-  CanisterAlreadyAttached,
-  NameAlreadyTaken,
-  CanisterLimitExceeded
-}
-
 
 @JS()
 @anonymous
