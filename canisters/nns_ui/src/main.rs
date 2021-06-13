@@ -17,7 +17,7 @@ use crate::accounts_store::{
     RenameSubAccountResponse,
     Stats
 };
-use crate::multi_part_transactions_processor::MultiPartTransactionStatus;
+use crate::multi_part_transactions_processor::{MultiPartTransactionStatus, MultiPartTransactionError};
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, STATE, State};
 use dfn_candid::{candid, candid_one};
@@ -189,7 +189,7 @@ pub fn get_multi_part_transaction_errors() {
     over(candid, |()| get_multi_part_transaction_errors_impl());
 }
 
-fn get_multi_part_transaction_errors_impl() -> Vec<(BlockHeight, String)> {
+fn get_multi_part_transaction_errors_impl() -> Vec<MultiPartTransactionError> {
     let store = &STATE.read().unwrap().accounts_store;
     store.get_multi_part_transaction_errors()
 }

@@ -187,6 +187,12 @@ type MultiPartTransactionStatus =
         Queued;
     };
 
+type MultiPartTransactionError =
+    record {
+        block_height: BlockHeight;
+        error_message: text;
+    };
+
 type Stats =
     record {
         accounts_count: nat64;
@@ -236,7 +242,7 @@ service : {
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
     get_multi_part_transaction_status: (BlockHeight) -> (MultiPartTransactionStatus) query;
-    get_multi_part_transaction_errors: () -> (vec record { nat64; text; }) query;
+    get_multi_part_transaction_errors: () -> (vec MultiPartTransactionError) query;
     get_icp_to_cycles_conversion_rate: () -> (nat64) query;
     get_stats: () -> (Stats) query;
 

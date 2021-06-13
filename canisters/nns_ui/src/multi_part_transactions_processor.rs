@@ -10,7 +10,7 @@ use std::collections::{VecDeque, BTreeMap};
 pub struct MultiPartTransactionsProcessor {
     queue: VecDeque<(BlockHeight, MultiPartTransactionToBeProcessed)>,
     statuses: BTreeMap<BlockHeight, (PrincipalId, MultiPartTransactionStatus)>,
-    errors: Vec<(BlockHeight, String)>,
+    errors: Vec<MultiPartTransactionError>,
 }
 
 #[derive(Clone, CandidType, Deserialize)]
@@ -35,6 +35,12 @@ pub enum MultiPartTransactionStatus {
     Queued,
 }
 
+#[derive(Clone, CandidType, Deserialize)]
+pub struct MultiPartTransactionError {
+    block_height: BlockHeight,
+    error_message: String,
+}
+
 impl MultiPartTransactionsProcessor {
     pub fn push(&mut self, principal: PrincipalId, block_height: BlockHeight, transaction_to_be_processed: MultiPartTransactionToBeProcessed) {
         self.queue.push_back((block_height, transaction_to_be_processed));
@@ -47,8 +53,10 @@ impl MultiPartTransactionsProcessor {
 
     pub fn update_status(&mut self, block_height: BlockHeight, status: MultiPartTransactionStatus) {
         match &status {
-            MultiPartTransactionStatus::Error(msg) => self.errors.push((block_height, msg.clone())),
-            MultiPartTransactionStatus::ErrorWithRefundPending(msg) => self.errors.push((block_height, msg.clone())),
+            MultiPartTransactionStatus::Error(msg) => self.errors.push(
+                MultiPartTransactionError { block_height, error_message: msg.clone() }),
+            MultiPartTransactionStatus::ErrorWithRefundPending(msg) => self.errors.push(
+                MultiPartTransactionError { block_height, error_message: msg.clone() }),
             _ => {}
         };
 
@@ -65,7 +73,7 @@ impl MultiPartTransactionsProcessor {
             .unwrap_or(MultiPartTransactionStatus::NotFound)
     }
 
-    pub fn get_errors(&self) -> Vec<(BlockHeight, String)> {
+    pub fn get_errors(&self) -> Vec<MultiPartTransactionError> {
         self.errors.clone()
     }
 }

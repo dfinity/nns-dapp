@@ -3,7 +3,8 @@ use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionsProcessor,
     MultiPartTransactionStatus,
-    MultiPartTransactionToBeProcessed
+    MultiPartTransactionToBeProcessed,
+    MultiPartTransactionError
 };
 use crate::state::StableState;
 use dfn_candid::Candid;
@@ -706,7 +707,7 @@ impl AccountsStore {
         }
     }
 
-    pub fn get_multi_part_transaction_errors(&self) -> Vec<(BlockHeight, String)> {
+    pub fn get_multi_part_transaction_errors(&self) -> Vec<MultiPartTransactionError> {
         self.multi_part_transactions_processor.get_errors()
     }
 
