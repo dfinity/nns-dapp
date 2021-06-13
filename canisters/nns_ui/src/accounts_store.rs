@@ -1726,7 +1726,12 @@ mod tests {
         // No new transaction should have been added, but the neuron should be queued for refreshing
         assert_eq!(store.transactions.len(), previous_transaction_count);
 
-        let _stake_neuron_transaction = store.multi_part_transactions_processor.take_next();
+        if let Some((_, MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo))) = store.multi_part_transactions_processor.take_next() {
+            assert_eq!(principal, neuron_principal);
+            assert_eq!(memo, neuron_memo);
+        } else {
+            panic!();
+        }
 
         if let Some((_, MultiPartTransactionToBeProcessed::TopUpNeuron(principal, memo))) = store.multi_part_transactions_processor.take_next() {
             assert_eq!(principal, neuron_principal);
