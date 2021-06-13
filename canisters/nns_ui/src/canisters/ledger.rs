@@ -1,8 +1,19 @@
 use dfn_core::CanisterId;
 use dfn_protobuf::{protobuf, ToProto};
 use ic_nns_constants::LEDGER_CANISTER_ID;
-use ledger_canister::{BlockHeight, CyclesResponse, EncodedBlock, GetBlocksArgs, GetBlocksRes, NotifyCanisterArgs, SendArgs, TipOfChainRes, AccountBalanceArgs};
-use ledger_canister::protobuf::{ArchiveIndexResponse, TipOfChainRequest, AccountBalanceResponse};
+use ledger_canister::{
+    AccountBalanceArgs,
+    BlockHeight,
+    CyclesResponse,
+    EncodedBlock,
+    GetBlocksArgs,
+    GetBlocksRes,
+    NotifyCanisterArgs,
+    SendArgs,
+    TipOfChainRes,
+    ICPTs
+};
+use ledger_canister::protobuf::{ArchiveIndexResponse, TipOfChainRequest};
 
 pub async fn send(request: SendArgs) -> Result<BlockHeight, String> {
     dfn_core::call(
@@ -20,7 +31,7 @@ pub async fn notify(request: NotifyCanisterArgs) -> Result<CyclesResponse, Strin
         request.to_proto()).await.map_err(|e| e.1)
 }
 
-pub async fn account_balance(request: AccountBalanceArgs) -> Result<AccountBalanceResponse, String> {
+pub async fn account_balance(request: AccountBalanceArgs) -> Result<ICPTs, String> {
     dfn_core::call(
         LEDGER_CANISTER_ID,
         "account_balance_pb",

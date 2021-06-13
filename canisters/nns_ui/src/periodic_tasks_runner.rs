@@ -78,8 +78,7 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
         },
         Ok(CyclesResponse::Refunded(error, _)) => {
             let subaccount = (&args.controller).into();
-            let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (8 * TRANSACTION_FEE.get_e8s()));
-            enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, default_refund_amount, args.refund_address, error.clone()).await;
+            enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, args.refund_address, error.clone()).await;
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         },
         Ok(CyclesResponse::ToppedUp(_)) => {
@@ -89,8 +88,7 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
         }
         Err(error) => {
             let subaccount = (&args.controller).into();
-            let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (2 * TRANSACTION_FEE.get_e8s()));
-            enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, default_refund_amount, args.refund_address, error.clone()).await;
+            enqueue_create_or_top_up_canister_refund(args.controller, subaccount, block_height, args.refund_address, error.clone()).await;
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         }
     }
@@ -103,8 +101,7 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
         },
         Ok(CyclesResponse::Refunded(error, _)) => {
             let subaccount = (&args.canister_id.get()).into();
-            let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (6 * TRANSACTION_FEE.get_e8s()));
-            enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, default_refund_amount, args.refund_address, error.clone()).await;
+            enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, args.refund_address, error.clone()).await;
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         },
         Ok(CyclesResponse::CanisterCreated(_)) => {
@@ -114,8 +111,7 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
         }
         Err(error) => {
             let subaccount = (&args.principal).into();
-            let default_refund_amount = ICPTs::from_e8s(args.amount.get_e8s() - (2 * TRANSACTION_FEE.get_e8s()));
-            enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, default_refund_amount, args.refund_address, error.clone()).await;
+            enqueue_create_or_top_up_canister_refund(args.principal, subaccount, block_height, args.refund_address, error.clone()).await;
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, true);
         }
     }
@@ -220,41 +216,32 @@ async fn enqueue_create_or_top_up_canister_refund(
     principal: PrincipalId,
     subaccount: Subaccount,
     block_height: BlockHeight,
-    default_refund_amount: ICPTs,
     refund_address: AccountIdentifier,
     error_message: String) {
 
-    let balance_request = AccountBalanceArgs { account: AccountIdentifier::new(principal, Some(subaccount)) };
+    let from_account = AccountIdentifier::new(dfn_core::api::id().get(), Some(subaccount));
+    let balance_request = AccountBalanceArgs { account: from_account };
 
-    // We don't necessarily need to first check the balance, but by doing so, if the fees ever
-    // change this code will keep working and will always refund the full amount
-    let refund_amount = match ledger::account_balance(balance_request).await {
-        Ok(balance_response) => {
-            if let Some(balance) = balance_response.balance {
-                ICPTs::from_e8s(balance.e8s - TRANSACTION_FEE.get_e8s())
-            } else {
-                default_refund_amount
-            }
+    match ledger::account_balance(balance_request).await {
+        Ok(balance) => {
+            let refund_amount = ICPTs::from_e8s(balance.get_e8s() - TRANSACTION_FEE.get_e8s());
+            let refund_args = RefundTransactionArgs {
+                recipient_principal: principal,
+                from_sub_account: subaccount,
+                amount: refund_amount,
+                original_transaction_block_height: block_height,
+                refund_address,
+                error_message,
+            };
+            STATE.write().unwrap().accounts_store.enqueue_transaction_to_be_refunded(refund_args);
         },
         Err(error) => {
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(
                 block_height,
                 error,
-                true);
-            default_refund_amount
+                false);
         }
     };
-
-    let refund_args = RefundTransactionArgs {
-        recipient_principal: principal,
-        from_sub_account: subaccount,
-        amount: refund_amount,
-        original_transaction_block_height: block_height,
-        refund_address,
-        error_message,
-    };
-
-    STATE.write().unwrap().accounts_store.enqueue_transaction_to_be_refunded(refund_args);
 }
 
 fn should_prune_transactions() -> bool {
