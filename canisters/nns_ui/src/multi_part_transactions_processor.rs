@@ -128,7 +128,7 @@ mod tests {
         processor.update_status(1, MultiPartTransactionStatus::Error(error_message.clone()));
 
         let errors = processor.get_errors();
-        assert_eq!(errors[0].0, 1);
-        assert_eq!(errors[0].1, error_message);
+        assert_eq!(errors[0].block_height, 1);
+        assert_eq!(errors[0].error_message, error_message);
     }
 }
