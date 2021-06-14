@@ -1,10 +1,10 @@
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/canisters/cansiter_name_widget.dart';
+import 'package:dfinity_wallet/ui/canisters/enter_canister_id_widget.dart';
+import 'package:dfinity_wallet/ui/canisters/new_canister_cycles_widget.dart';
+import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_path_button.dart';
 
 import '../../dfinity.dart';
-import 'enter_canister_id_and_name_widget.dart';
 
 class SelectCanisterAddActionWidget extends StatelessWidget {
   const SelectCanisterAddActionWidget({
@@ -24,10 +24,17 @@ class SelectCanisterAddActionWidget extends StatelessWidget {
               WizardPathButton(
                   title: "Create New Canister",
                   subtitle: "Create a new canister, to deploy your application",
-                  onPressed: () {
-                    WizardOverlay.of(context)
-                        .pushPage("Enter Canister Name", CanisterNameWidget());
-                  }),
+                  onPressed: () async {
+                    WizardOverlay.of(context).pushPage("Select ICP Source",
+                        SelectCyclesOriginWidget(onSelected: (account, context) {
+                          WizardOverlay.of(context).pushPage(
+                              "Enter Amount",
+                              NewCanisterCyclesAmountWidget(
+                                source: account,
+                              ));
+                        }));
+                  }
+              ),
               SizedBox(
                 height: 24.0,
               ),
@@ -36,7 +43,7 @@ class SelectCanisterAddActionWidget extends StatelessWidget {
                   subtitle: "Enter the id of a canister, to top up it's cycles",
                   onPressed: () {
                     WizardOverlay.of(context).pushPage(
-                        "Attach Canister", EnterCanisterIdAndNameWidget());
+                        "Attach Canister", EnterCanisterIdWidget());
                   }),
               // SmallFormDivider(),
               // SizedBox(

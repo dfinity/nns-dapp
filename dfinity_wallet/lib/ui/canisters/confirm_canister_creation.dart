@@ -9,7 +9,6 @@ import 'cycle_calculator.dart';
 class ConfirmCanisterCreationWidget extends StatelessWidget {
   final ICP amount;
   final ICPSource source;
-  final String name;
   final BigInt trillionRatio;
   final int? fromSubAccountId;
 
@@ -17,7 +16,6 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
       {Key? key,
       required this.amount,
       required this.source,
-      required this.name,
       required this.trillionRatio,
       required this.fromSubAccountId})
       : super(key: key);
@@ -102,10 +100,6 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TallFormDivider(),
-                  Text("Canister Name", style: context.textTheme.headline4),
-                  VerySmallFormDivider(),
-                  Text(name, style: context.textTheme.bodyText1),
-                  TallFormDivider(),
                   Text("Source", style: context.textTheme.headline4),
                   VerySmallFormDivider(),
                   Text(source.address, style: context.textTheme.bodyText1),
@@ -124,17 +118,14 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                   onPressed: () async {
                     final result = await context.callUpdate(() => context
                         .icApi
-                        .createCanister(amount: amount, name: name, fromSubAccountId: fromSubAccountId));
+                        .createCanister(amount: amount, fromSubAccountId: fromSubAccountId));
                     if (result == null) {
                       return;
                     }
-                    switch (result.result){
-                      case CreateCanisterResult.Ok:
-
-                        context.nav.push(
-                            CanisterPageDef.createPageConfig(result.canister!));
-                        break;
-                      case CreateCanisterResult.FailedToCreateCanister:
+                    if (result.canister != null) {
+                      context.nav.push(
+                      CanisterPageDef.createPageConfig(result.canister!));
+                    } else if (result.errorMessage != null)
                         OverlayBaseWidget.show(
                             context,
                             ConfirmDialog(
@@ -142,50 +133,8 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                               description:"Error - ${result.errorMessage}",
                               onConfirm: () {},
                             ));
-                        break;
-                      case CreateCanisterResult.CanisterAlreadyAttached:
-                        OverlayBaseWidget.show(
-                            context,
-                            ConfirmDialog(
-                              title: "Failed to Create Canister",
-                              description:"Canister Already Attached - ${result.errorMessage}",
-                              onConfirm: () {},
-                            ));
-                        break;
-                      case CreateCanisterResult.NameAlreadyTaken:
-                        OverlayBaseWidget.show(
-                            context,
-                            ConfirmDialog(
-                              title: "Failed to Create Canister",
-                              description:"Name Already Taken",
-                              onConfirm: () {},
-                            ));
-                        break;
-                      case CreateCanisterResult.CanisterLimitExceeded:
-                        OverlayBaseWidget.show(
-                            context,
-                            ConfirmDialog(
-                              title: "Failed to Create Canister",
-                              description:"CanisterLimitExceeded",
-                              onConfirm: () {},
-                            ));
-                        break;
                     }
-
-                    // if (result.canister != null) {
-                    //
-                    // } else {
-                    //   print("Canister id ${result.canisterId}");
-                    //   OverlayBaseWidget.show(
-                    //       context,
-                    //       ConfirmDialog(
-                    //         title: "Critical Error - ${result.canisterId}",
-                    //         description:
-                    //             "${result.canisterId} has been created, but could not be linked to this account.  Record the Canister ID and contact support",
-                    //         onConfirm: () {},
-                    //       ));
-                    // }
-                  }),
+                  ),
             ),
             SmallFormDivider()
           ],

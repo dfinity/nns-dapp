@@ -75,9 +75,9 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
                         child: Text("Send"),
                         onPressed: () async {
                           await context.callUpdate(() => context.icApi
-                              .topupCanister(
+                              .topUpCanister(
                                   amount: ICP.fromString(amountField.currentValue),
-                                  targetCanisterId: widget.canister.identifier,
+                                  canisterId: widget.canister.identifier,
                                   fromSubAccountId:
                                       widget.source.subAccountId));
 

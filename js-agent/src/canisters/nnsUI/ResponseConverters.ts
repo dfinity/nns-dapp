@@ -5,9 +5,9 @@ import {
     CreateSubAccountResponse,
     DetachCanisterResponse,
     GetAccountResponse,
-    GetStakeNeuronStatusResponse,
     GetTransactionsResponse,
     HardwareWalletAccountDetails,
+    MultiPartTransactionStatus,
     RegisterHardwareWalletResponse,
     RemoveHardwareWalletResponse,
     RenameSubAccountResponse,
@@ -19,9 +19,9 @@ import {
     CreateSubAccountResponse as RawCreateSubAccountResponse,
     DetachCanisterResponse as RawDetachCanisterResponse,
     GetAccountResponse as RawGetAccountResponse,
-    GetStakeNeuronStatusResponse as RawGetStakeNeuronStatusResponse,
     GetTransactionsResponse as RawGetTransactionsResponse,
     HardwareWalletAccountDetails as RawHardwareWalletAccountDetails,
+    MultiPartTransactionStatus as RawMultiPartTransactionStatus,
     RegisterHardwareWalletResponse as RawRegisterHardwareWalletResponse,
     RemoveHardwareWalletResponse as RawRemoveHardwareWalletResponse,
     RenameSubAccountResponse as RawRenameSubAccountResponse,
@@ -75,15 +75,15 @@ export default class ResponseConverters {
         return response;
     }
 
-    public toGetStakeNeuronStatusResponse = (response: RawGetStakeNeuronStatusResponse) : GetStakeNeuronStatusResponse => {
-        return response;
-    }
-
     public toGetTransactionsResponse = (response: RawGetTransactionsResponse) : GetTransactionsResponse => {
         return {
             total: response.total,
             transactions: TransactionsConverter.convert(response.transactions)
         };
+    }
+
+    public toMultiPartTransactionStatus = (response: RawMultiPartTransactionStatus) : MultiPartTransactionStatus => {
+        return response;
     }
 
     public toRegisterHardwareWalletResponse = (response: RawRegisterHardwareWalletResponse) : RegisterHardwareWalletResponse => {
@@ -108,7 +108,7 @@ export default class ResponseConverters {
 
     private toCanisterDetails = (details: RawCanisterDetails) : CanisterDetails => {
         return {
-            name: details.name,
+            name: details.name.length > 0 ? details.name : details.canister_id.toString(),
             canisterId: details.canister_id.toString()
         }
     }
