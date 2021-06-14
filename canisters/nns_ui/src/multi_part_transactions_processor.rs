@@ -6,11 +6,13 @@ use ledger_canister::{Memo, BlockHeight};
 use serde::Deserialize;
 use std::collections::{VecDeque, BTreeMap};
 
+const MAX_ERRORS_TO_HOLD: usize = 500;
+
 #[derive(Default, CandidType, Deserialize)]
 pub struct MultiPartTransactionsProcessor {
     queue: VecDeque<(BlockHeight, MultiPartTransactionToBeProcessed)>,
     statuses: BTreeMap<BlockHeight, (PrincipalId, MultiPartTransactionStatus)>,
-    errors: Vec<MultiPartTransactionError>,
+    errors: VecDeque<MultiPartTransactionError>,
 }
 
 #[derive(Clone, CandidType, Deserialize)]
@@ -53,9 +55,9 @@ impl MultiPartTransactionsProcessor {
 
     pub fn update_status(&mut self, block_height: BlockHeight, status: MultiPartTransactionStatus) {
         match &status {
-            MultiPartTransactionStatus::Error(msg) => self.errors.push(
+            MultiPartTransactionStatus::Error(msg) => self.append_error(
                 MultiPartTransactionError { block_height, error_message: msg.clone() }),
-            MultiPartTransactionStatus::ErrorWithRefundPending(msg) => self.errors.push(
+            MultiPartTransactionStatus::ErrorWithRefundPending(msg) => self.append_error(
                 MultiPartTransactionError { block_height, error_message: msg.clone() }),
             _ => {}
         };
@@ -74,7 +76,14 @@ impl MultiPartTransactionsProcessor {
     }
 
     pub fn get_errors(&self) -> Vec<MultiPartTransactionError> {
-        self.errors.clone()
+        self.errors.iter().cloned().collect()
+    }
+
+    fn append_error(&mut self, error: MultiPartTransactionError) {
+        self.errors.push_back(error);
+        if self.errors.len() > MAX_ERRORS_TO_HOLD {
+            self.errors.pop_front();
+        }
     }
 }
 
