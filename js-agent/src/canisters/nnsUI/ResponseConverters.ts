@@ -108,7 +108,7 @@ export default class ResponseConverters {
 
     private toCanisterDetails = (details: RawCanisterDetails) : CanisterDetails => {
         return {
-            name: details.name,
+            name: details.name.length > 0 ? details.name : details.canister_id.toString(),
             canisterId: details.canister_id.toString()
         }
     }

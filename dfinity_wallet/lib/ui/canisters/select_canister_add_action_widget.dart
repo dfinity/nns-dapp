@@ -1,4 +1,4 @@
-import 'package:dfinity_wallet/ui/canisters/enter_canister_id_and_name_widget.dart';
+import 'package:dfinity_wallet/ui/canisters/enter_canister_id_widget.dart';
 import 'package:dfinity_wallet/ui/canisters/new_canister_cycles_widget.dart';
 import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
@@ -43,7 +43,7 @@ class SelectCanisterAddActionWidget extends StatelessWidget {
                   subtitle: "Enter the id of a canister, to top up it's cycles",
                   onPressed: () {
                     WizardOverlay.of(context).pushPage(
-                        "Attach Canister", EnterCanisterIdAndNameWidget());
+                        "Attach Canister", EnterCanisterIdWidget());
                   }),
               // SmallFormDivider(),
               // SizedBox(

@@ -600,14 +600,15 @@ impl AccountsStore {
                     return AttachCanisterResponse::CanisterLimitExceeded
                 }
                 for c in account.canisters.iter() {
-                    if c.name == request.name {
+                    if !request.name.is_empty() && c.name == request.name {
                         return AttachCanisterResponse::NameAlreadyTaken;
                     } else if c.canister_id == request.canister_id {
                         return AttachCanisterResponse::CanisterAlreadyAttached;
                     }
                 }
                 account.canisters.push(NamedCanister { name: request.name, canister_id: request.canister_id });
-                account.canisters.sort_unstable_by_key(|c| c.name.clone());
+                sort_canisters(&mut account.canisters);
+
                 AttachCanisterResponse::Ok
             } else {
                 AttachCanisterResponse::AccountNotFound
@@ -645,16 +646,13 @@ impl AccountsStore {
     // We skip the checks here since in this scenario we must store the canister otherwise the user
     // won't be able to retrieve its Id.
     pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, block_height: BlockHeight, canister_id: CanisterId) {
-        let mut name = canister_id.to_string();
-        name.truncate(5);
-
         let account_identifier = AccountIdentifier::from(principal);
         if let Some(account) = self.try_get_account_mut_by_default_identifier(&account_identifier) {
             account.canisters.push(NamedCanister {
-                name,
+                name: "".to_string(),
                 canister_id
             });
-            account.canisters.sort_unstable_by_key(|c| c.name.clone());
+            sort_canisters(&mut account.canisters);
             self.multi_part_transactions_processor.update_status(
                 block_height,
                 MultiPartTransactionStatus::CanisterCreated(canister_id));
@@ -1309,6 +1307,18 @@ fn convert_byte_to_sub_account(byte: u8) -> Subaccount {
     Subaccount(bytes)
 }
 
+/// This will sort the canisters such that those with names specified will appear first and will be
+/// sorted by their names. Then those without names will appear last, sorted by their canister Ids.
+fn sort_canisters(canisters: &mut Vec<NamedCanister>) {
+    canisters.sort_unstable_by_key(|c| {
+        if c.name.is_empty() {
+            (true, c.canister_id.to_string())
+        } else {
+            (false, c.name.clone())
+        }
+    });
+}
+
 #[derive(Deserialize)]
 pub struct GetTransactionsRequest {
     account_identifier: AccountIdentifier,
@@ -1819,13 +1829,36 @@ mod tests {
     }
 
     #[test]
+    fn canisters_ordered_by_name_if_exists_then_by_id() {
+        let mut store = setup_test_store();
+        let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+        let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+        let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+        let canister_id3 = CanisterId::from_str(TEST_ACCOUNT_4).unwrap();
+        let canister_id4 = CanisterId::from_str(TEST_ACCOUNT_5).unwrap();
+
+        store.attach_canister(principal, AttachCanisterRequest { name: "".to_string(), canister_id: canister_id1 });
+        store.attach_canister(principal, AttachCanisterRequest { name: "ABC".to_string(), canister_id: canister_id2 });
+        store.attach_canister(principal, AttachCanisterRequest { name: "XYZ".to_string(), canister_id: canister_id3 });
+        store.attach_canister(principal, AttachCanisterRequest { name: "".to_string(), canister_id: canister_id4 });
+
+        let canisters = store.get_canisters(principal);
+
+        assert_eq!(4, canisters.len());
+        assert_eq!(canister_id2, canisters[0].canister_id);
+        assert_eq!(canister_id3, canisters[1].canister_id);
+        assert_eq!(canister_id4, canisters[2].canister_id);
+        assert_eq!(canister_id1, canisters[3].canister_id);
+    }
+
+    #[test]
     fn detach_canister() {
         let mut store = setup_test_store();
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
         let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
         let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
-
 
         store.attach_canister(principal, AttachCanisterRequest { name: "ABC".to_string(), canister_id: canister_id1 });
         store.attach_canister(principal, AttachCanisterRequest { name: "XYZ".to_string(), canister_id: canister_id2 });
