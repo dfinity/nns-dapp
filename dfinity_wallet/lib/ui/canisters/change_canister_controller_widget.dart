@@ -41,9 +41,7 @@ class _ChangeCanisterControllerWidgetState
                 style: Responsive.isMobile(context)
                     ? context.textTheme.headline4
                     : context.textTheme.headline3),
-            Text("\nSpecify the new controller(s) of the canister. "
-                "If a wrong canister controller is entered, the page will show progress indicator forever. "
-                "Refresh page to enter correct controllers again"),
+            Text("\nSpecify the new controller(s) of the canister."),
             ..._getValidatedControllerFields(),
             SizedBox(
               height: 70,
@@ -114,7 +112,7 @@ class _ChangeCanisterControllerWidgetState
             Expanded(
                 child: ControllerTextFields(widget.canister.controllers, i)),
             SizedBox(width: Responsive.isMobile(context) ? 5 : 16),
-            i < kTotalNumberofControllersAllowed - 1
+            i < kTotalNumberOfControllersAllowed - 1
                 ? _addRemoveButton(
                     i == widget.canister.controllers!.length - 1, i)
                 : _addRemoveButton(false, i),
@@ -130,7 +128,7 @@ class _ChangeCanisterControllerWidgetState
       onTap: () {
         if (add) {
           if (widget.canister.controllers!.length <=
-              kTotalNumberofControllersAllowed - 2) {
+              kTotalNumberOfControllersAllowed - 2) {
             index = index + 2;
             widget.canister.controllers!.length++;
             add = false;
