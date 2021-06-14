@@ -71,12 +71,12 @@ abstract class AbstractPlatformICApi {
 
   // Canisters
   Future<CreateCanisterResponse> createCanister(
-      {required ICP amount, int? fromSubAccountId, required String name});
+      {required ICP amount, int? fromSubAccountId});
 
-  Future<void> topupCanister(
+  Future<void> topUpCanister(
       {required ICP amount,
       int? fromSubAccountId,
-      required String targetCanisterId});
+      required String canisterId});
 
   Future<AttachCanisterResult> attachCanister(
       {required String name, required String canisterId});

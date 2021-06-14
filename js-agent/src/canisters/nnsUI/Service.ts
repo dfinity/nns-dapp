@@ -1,4 +1,4 @@
-import { AccountIdentifier } from "../common/types";
+import { AccountIdentifier, BlockHeight } from "../common/types";
 import ServiceInterface, {
     AttachCanisterRequest,
     AttachCanisterResult,
@@ -7,10 +7,9 @@ import ServiceInterface, {
     DetachCanisterRequest,
     DetachCanisterResponse,
     GetAccountResponse,
-    GetStakeNeuronStatusRequest,
-    GetStakeNeuronStatusResponse,
     GetTransactionsRequest,
     GetTransactionsResponse,
+    MultiPartTransactionStatus,
     RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse,
     RemoveHardwareWalletRequest,
@@ -88,13 +87,12 @@ export default class Service implements ServiceInterface {
         return this.responseConverters.toGetTransactionsResponse(rawResponse);
     }
 
-    public getStakeNeuronStatus = async (request: GetStakeNeuronStatusRequest) : Promise<GetStakeNeuronStatusResponse> => {
-        const rawRequest = this.requestConverters.fromGetStakeNeuronStatusRequest(request);
-        const rawResponse = await this.service.get_stake_neuron_status(rawRequest);
-        return this.responseConverters.toGetStakeNeuronStatusResponse(rawResponse);
+    public getMultiPartTransactionStatus = async (blockHeight: BlockHeight) : Promise<MultiPartTransactionStatus> => {
+        const rawResponse = await this.service.get_multi_part_transaction_status(blockHeight);
+        return this.responseConverters.toMultiPartTransactionStatus(rawResponse);
     }
 
-    public getIcpToCyclesConversionRate = async () : Promise<bigint> => {
-        return await this.service.get_icp_to_cycles_conversion_rate();
+    public getIcpToCyclesConversionRate = () : Promise<bigint> => {
+        return this.service.get_icp_to_cycles_conversion_rate();
     }
 }

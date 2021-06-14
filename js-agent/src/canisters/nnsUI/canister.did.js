@@ -46,18 +46,19 @@ export default ({ IDL }) => {
     'name' : IDL.Text,
     'canister_id' : IDL.Principal,
   });
-  const Memo = IDL.Nat64;
   const BlockHeight = IDL.Nat64;
-  const GetStakeNeuronStatusRequest = IDL.Record({
-    'memo' : Memo,
-    'block_height' : BlockHeight,
-  });
+  const CanisterId = IDL.Principal;
   const NeuronId = IDL.Nat64;
-  const GetStakeNeuronStatusResponse = IDL.Variant({
-    'Queued' : IDL.Nat32,
+  const MultiPartTransactionStatus = IDL.Variant({
+    'Queued' : IDL.Null,
+    'Error' : IDL.Text,
+    'Refunded' : IDL.Tuple(BlockHeight, IDL.Text),
+    'CanisterCreated' : CanisterId,
+    'Complete' : IDL.Null,
     'NotFound' : IDL.Null,
+    'NeuronCreated' : NeuronId,
     'PendingSync' : IDL.Null,
-    'Created' : NeuronId,
+    'ErrorWithRefundPending' : IDL.Text,
   });
   const Stats = IDL.Record({
     'latest_transaction_block_height' : BlockHeight,
@@ -84,7 +85,7 @@ export default ({ IDL }) => {
     'Mint' : IDL.Null,
     'Send' : IDL.Null,
     'StakeNeuronNotification' : IDL.Null,
-    'TopUpCanister' : IDL.Null,
+    'TopUpCanister' : CanisterId,
     'CreateCanister' : IDL.Null,
     'TopUpNeuron' : IDL.Null,
     'StakeNeuron' : IDL.Null,
@@ -164,43 +165,48 @@ export default ({ IDL }) => {
         [AttachCanisterRequest],
         [AttachCanisterResponse],
         [],
-    ),
+      ),
     'create_sub_account' : IDL.Func([IDL.Text], [CreateSubAccountResponse], []),
     'detach_canister' : IDL.Func(
         [DetachCanisterRequest],
         [DetachCanisterResponse],
         [],
-    ),
+      ),
     'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_canisters' : IDL.Func([], [IDL.Vec(CanisterDetails)], ['query']),
     'get_icp_to_cycles_conversion_rate' : IDL.Func([], [IDL.Nat64], ['query']),
-    'get_stake_neuron_status' : IDL.Func(
-        [GetStakeNeuronStatusRequest],
-        [GetStakeNeuronStatusResponse],
+    'get_multi_part_transaction_errors' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Nat64, IDL.Text))],
         ['query'],
-    ),
+      ),
+    'get_multi_part_transaction_status' : IDL.Func(
+        [BlockHeight],
+        [MultiPartTransactionStatus],
+        ['query'],
+      ),
     'get_stats' : IDL.Func([], [Stats], ['query']),
     'get_transactions' : IDL.Func(
         [GetTransactionsRequest],
         [GetTransactionsResponse],
         ['query'],
-    ),
+      ),
     'http_request' : IDL.Func([HttpRequest], [HttpResponse], ['query']),
     'register_hardware_wallet' : IDL.Func(
         [RegisterHardwareWalletRequest],
         [RegisterHardwareWalletResponse],
         [],
-    ),
+      ),
     'remove_hardware_wallet' : IDL.Func(
         [RemoveHardwareWalletRequest],
         [RemoveHardwareWalletResponse],
         [],
-    ),
+      ),
     'rename_sub_account' : IDL.Func(
         [RenameSubAccountRequest],
         [RenameSubAccountResponse],
         [],
-    ),
+      ),
   });
 };
 export const init = ({ IDL }) => { return []; };

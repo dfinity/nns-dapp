@@ -175,7 +175,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<CreateCanisterResponse> createCanister({required ICP amount, int? fromSubAccountId, required String name}) {
+  Future<CreateCanisterResponse> createCanister({required ICP amount, int? fromSubAccountId}) {
     // TODO: implement createCanister
     throw UnimplementedError();
   }
@@ -193,8 +193,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> topupCanister({required ICP amount, int? fromSubAccountId, required String targetCanisterId}) {
-    // TODO: implement topupCanister
+  Future<void> topUpCanister({required ICP amount, int? fromSubAccountId, required String canisterId}) {
+    // TODO: implement topUpCanister
     throw UnimplementedError();
   }
 

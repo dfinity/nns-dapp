@@ -53,13 +53,13 @@ import NnsUiService, {
 import icManagementBuilder from "./canisters/icManagement/builder";
 import ICManagementService, { CanisterDetailsResponse, UpdateSettingsRequest, UpdateSettingsResponse } from "./canisters/icManagement/model";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/createNeuron";
-import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/createCanister";
+import { createCanisterImpl, CreateCanisterRequest, CreateCanisterResponse } from "./canisters/createCanister";
 import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, NeuronId } from "./canisters/common/types";
 import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
-import { principalToAccountIdentifier } from "./canisters/converter";
 import { HOST } from "./canisters/constants";
 import { executeWithLogging } from "./errorLogger";
 import { FETCH_ROOT_KEY } from "./config.json";
+import { topUpCanisterImpl, TopUpCanisterRequest, TopUpCanisterResponse } from "./canisters/topUpCanister";
 
 export default class ServiceApi {
     private readonly ledgerService: LedgerService;
@@ -243,9 +243,10 @@ export default class ServiceApi {
             request));
     }
 
-    public topupCanister = (request: TopupCanisterRequest) : Promise<boolean> => {
-        return executeWithLogging(() => topupCanisterImpl(
-            this.ledgerService, 
+    public topUpCanister = (request: TopUpCanisterRequest) : Promise<TopUpCanisterResponse> => {
+        return executeWithLogging(() => topUpCanisterImpl(
+            this.ledgerService,
+            this.nnsUiService,
             request));
     }
 
