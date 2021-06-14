@@ -31,8 +31,6 @@ pub struct AccountsStore {
     accounts: Vec<Option<Account>>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockHeight>,
-    // This will be removed after the next release and is only needed for the post_upgrade
-    transactions_to_be_processed_queue: VecDeque<TransactionToBeProcessed>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
 
     // Use these up first before appending to the accounts Vec
@@ -783,7 +781,7 @@ impl AccountsStore {
             seconds_since_last_ledger_sync: duration_since_last_sync.as_secs(),
             neurons_created_count: self.neuron_accounts.len() as u64,
             neurons_topped_up_count: self.neurons_topped_up_count,
-            transactions_to_process_queue_length: self.transactions_to_be_processed_queue.len() as u32,
+            transactions_to_process_queue_length: self.multi_part_transactions_processor.get_queue_length(),
         }
     }
 
@@ -1203,7 +1201,6 @@ impl StableState for AccountsStore {
             accounts,
             neuron_accounts,
             block_height_synced_up_to,
-            transactions_to_be_processed_queue: VecDeque::default(),
             multi_part_transactions_processor,
             empty_account_indices,
             accounts_count,
