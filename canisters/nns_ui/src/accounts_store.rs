@@ -1162,7 +1162,7 @@ impl AccountsStore {
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
         Candid((
-            self.transactions.iter().collect::<Vec<_>>(),
+            &self.transactions,
             &self.accounts,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
