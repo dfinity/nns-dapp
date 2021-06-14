@@ -58,7 +58,11 @@ struct Account {
     account_identifier: AccountIdentifier,
     default_account_transactions: Vec<TransactionIndex>,
     sub_accounts: HashMap<u8, NamedSubAccount>,
+
+    #[serde(skip_deserializing)]
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
+
+    #[serde(skip_deserializing)]
     canisters: Vec<NamedCanister>,
 }
 
