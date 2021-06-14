@@ -111,12 +111,9 @@ class _ChangeCanisterControllerWidgetState
                   : context.textTheme.headline3,
             ),
             SizedBox(width: Responsive.isMobile(context) ? 5 : 16),
-            // Expanded(child: DebouncedValidatedFormField(controllers[i])),
             Expanded(
                 child: ControllerTextFields(widget.canister.controllers, i)),
             SizedBox(width: Responsive.isMobile(context) ? 5 : 16),
-            /* we need add button at last Controller field row */
-
             i < kTotalNumberofControllersAllowed - 1
                 ? _addRemoveButton(
                     i == widget.canister.controllers!.length - 1, i)
@@ -131,7 +128,6 @@ class _ChangeCanisterControllerWidgetState
   Widget _addRemoveButton(bool add, int index) {
     return InkWell(
       onTap: () {
-        //print('first index is : $index');
         if (add) {
           if (widget.canister.controllers!.length <=
               kTotalNumberofControllersAllowed - 2) {
