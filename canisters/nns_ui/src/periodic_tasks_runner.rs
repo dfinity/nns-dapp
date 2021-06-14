@@ -83,7 +83,7 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
         },
         Ok(CyclesResponse::ToppedUp(_)) => {
             // This should never happen
-            let error = "Unexpected response, 'topped up'".to_string();
+            let error = "Unexpected response in 'create_canister': 'topped up'".to_string();
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, false);
         }
         Err(error) => {
@@ -106,7 +106,7 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
         },
         Ok(CyclesResponse::CanisterCreated(_)) => {
             // This should never happen
-            let error = "Unexpected response, 'canister created'".to_string();
+            let error = "Unexpected response in 'top_up_canister': 'canister created'".to_string();
             STATE.write().unwrap().accounts_store.process_multi_part_transaction_error(block_height, error, false);
         }
         Err(error) => {
