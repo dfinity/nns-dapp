@@ -31,8 +31,6 @@ pub struct AccountsStore {
     accounts: Vec<Option<Account>>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockHeight>,
-    // This will be removed after the next release and is only needed for the post_upgrade
-    transactions_to_be_processed_queue: VecDeque<TransactionToBeProcessed>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
 
     // Use these up first before appending to the accounts Vec
@@ -58,11 +56,7 @@ struct Account {
     account_identifier: AccountIdentifier,
     default_account_transactions: Vec<TransactionIndex>,
     sub_accounts: HashMap<u8, NamedSubAccount>,
-
-    #[serde(skip_deserializing)]
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
-
-    #[serde(skip_deserializing)]
     canisters: Vec<NamedCanister>,
 }
 
@@ -787,7 +781,7 @@ impl AccountsStore {
             seconds_since_last_ledger_sync: duration_since_last_sync.as_secs(),
             neurons_created_count: self.neuron_accounts.len() as u64,
             neurons_topped_up_count: self.neurons_topped_up_count,
-            transactions_to_process_queue_length: self.transactions_to_be_processed_queue.len() as u32,
+            transactions_to_process_queue_length: self.multi_part_transactions_processor.get_queue_length(),
         }
     }
 
@@ -1173,29 +1167,15 @@ impl StableState for AccountsStore {
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         #[allow(clippy::type_complexity)]
-        let (transactions, accounts, block_height_synced_up_to, last_ledger_sync_timestamp_nanos, neuron_accounts, transactions_to_be_processed, neurons_topped_up_count)
-            : (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>, u64, HashMap<AccountIdentifier, NeuronDetails>, Vec<TransactionToBeProcessed>, u64) =
+        let (transactions, accounts, neuron_accounts, block_height_synced_up_to, multi_part_transactions_processor, last_ledger_sync_timestamp_nanos, neurons_topped_up_count)
+            : (VecDeque<Transaction>, Vec<Option<Account>>, HashMap<AccountIdentifier, NeuronDetails>, Option<BlockHeight>, MultiPartTransactionsProcessor, u64, u64) =
             Candid::from_bytes(bytes).map(|c| c.0)?;
-
-        // Migrate any pending transactions from the old 'transactions_to_be_processed' queue to the
-        // new 'MultiPartTransactionsProcessor'
-        let mut multi_part_transactions_processor = MultiPartTransactionsProcessor::default();
-        for (index, t) in transactions_to_be_processed.into_iter().enumerate() {
-            match t {
-                TransactionToBeProcessed::StakeNeuron(p, m) => {
-                    multi_part_transactions_processor.push(p, index as u64, MultiPartTransactionToBeProcessed::StakeNeuron(p, m));
-                },
-                TransactionToBeProcessed::TopUpNeuron(p, m) => {
-                    multi_part_transactions_processor.push(p, index as u64, MultiPartTransactionToBeProcessed::TopUpNeuron(p, m));
-                },
-            };
-        }
 
         let mut account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation> = HashMap::new();
         let mut empty_account_indices: Vec<u32> = Vec::new();
         let mut accounts_count: u64 = 0;
         let mut sub_accounts_count: u64 = 0;
-        let hardware_wallet_accounts_count: u64 = 0;
+        let mut hardware_wallet_accounts_count: u64 = 0;
 
         for i in 0..accounts.len() {
             if let Some(a) = accounts.get(i).unwrap() {
@@ -1204,18 +1184,12 @@ impl StableState for AccountsStore {
                 for (id, sa) in a.sub_accounts.iter() {
                     account_identifier_lookup.insert(sa.account_identifier, AccountLocation::SubAccount(index, *id));
                 }
-                // TODO re-enable this code after the next release. (NU-103)
-                // From our stats we can see that there are 2 hardware wallets attached which were
-                // attached before the button was disabled. The app is not official yet so these
-                // hardware wallets must have been attached by internal users. So we are fine to
-                // drop these accounts. This means that once we re-enable this code, every hardware
-                // wallet account will have a principal.
-                // for hw in a.hardware_wallet_accounts.iter() {
-                //     Self::link_hardware_wallet_to_account_index(&mut account_identifier_lookup, hw.account_identifier, index);
-                // }
+                for hw in a.hardware_wallet_accounts.iter() {
+                    Self::link_hardware_wallet_to_account_index(&mut account_identifier_lookup, AccountIdentifier::from(hw.principal), index);
+                }
                 accounts_count += 1;
                 sub_accounts_count += a.sub_accounts.len() as u64;
-                // hardware_wallet_accounts_count = hardware_wallet_accounts_count + a.hardware_wallet_accounts.len() as u64;
+                hardware_wallet_accounts_count += a.hardware_wallet_accounts.len() as u64;
             } else {
                 empty_account_indices.push(i as u32);
             }
@@ -1227,7 +1201,6 @@ impl StableState for AccountsStore {
             accounts,
             neuron_accounts,
             block_height_synced_up_to,
-            transactions_to_be_processed_queue: VecDeque::default(),
             multi_part_transactions_processor,
             empty_account_indices,
             accounts_count,
