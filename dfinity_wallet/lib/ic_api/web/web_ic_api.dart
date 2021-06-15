@@ -274,26 +274,30 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<CreateCanisterResponse> createCanister(
       {required ICP amount,
-      int? fromSubAccountId,
-      required String name}) async {
+      int? fromSubAccountId}) async {
     final res =
         await promiseToFuture(serviceApi!.createCanister(CreateCanisterRequest(
       amount: amount.asE8s().toJS,
       fromSubAccountId: fromSubAccountId,
-      name: name,
     )));
 
     await getCanisters();
 
     final response = jsonDecode(stringify(res));
-    final canisterId = res.canisterId.toString();
+
+    final String? canisterId = response['created'];
+    final Canister? canister = (canisterId != null)
+        ? hiveBoxes.canisters[canisterId]
+        : null;
+    final error = response['error'];
+    final String? errorMessage = error != null ? error['message'] : null;
+    final bool refunded = error != null && error['refunded'];
+
     return CreateCanisterResponse(
-        result:
-            CreateCanisterResult.values[response['result']!.toString().toInt()],
         canisterId: canisterId,
-        errorMessage: response['errorMessage'],
-        canister:
-            (canisterId != null) ? hiveBoxes.canisters[canisterId] : null);
+        errorMessage: errorMessage,
+        canister: canister,
+        refunded: refunded);
   }
 
   @override
@@ -325,15 +329,15 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> topupCanister(
+  Future<void> topUpCanister(
       {required ICP amount,
       int? fromSubAccountId,
-      required String targetCanisterId}) async {
-    await promiseToFuture(serviceApi!.topupCanister(TopupCanisterRequest(
+      required String canisterId}) async {
+    await promiseToFuture(serviceApi!.topUpCanister(TopUpCanisterRequest(
         amount: amount.asE8s().toJS,
         fromSubAccountId: fromSubAccountId,
-        targetCanisterId: targetCanisterId)));
-    await getCanister(targetCanisterId);
+        canisterId: canisterId)));
+    await getCanister(canisterId);
     hiveBoxes.canisters.notifyChange();
   }
 

@@ -7,12 +7,10 @@ import 'cycles_input_widget.dart';
 
 class NewCanisterCyclesAmountWidget extends StatefulWidget {
   final Account source;
-  final String name;
 
   const NewCanisterCyclesAmountWidget({
     Key? key,
     required this.source,
-    required this.name,
   }) : super(key: key);
 
   @override
@@ -66,7 +64,6 @@ class _NewCanisterCyclesAmountWidgetState
                         ConfirmCanisterCreationWidget(
                             amount: icpAmount!,
                             source: widget.source,
-                            name: widget.name,
                             fromSubAccountId: widget.source.subAccountId,
                             trillionRatio: trillionRatio!));
                   }.takeIf((e) => icpAmount != null),

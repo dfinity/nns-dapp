@@ -6,11 +6,9 @@ import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 
 import '../../dfinity.dart';
 
-class EnterCanisterIdAndNameWidget extends StatelessWidget {
+class EnterCanisterIdWidget extends StatelessWidget {
   final ValidatedTextField idField = ValidatedTextField("Canister ID",
       validations: [StringFieldValidation.minimumLength(10)], defaultText: "");
-  final ValidatedTextField nameField = ValidatedTextField("Canister Name",
-      validations: [StringFieldValidation.maximumLength(24)], defaultText: "");
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +29,6 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("Canister Name",
-                            style: Responsive.isDesktop(context) |
-                                    Responsive.isTablet(context)
-                                ? context.textTheme.headline3
-                                : context.textTheme.headline4),
-                        DebouncedValidatedFormField(nameField),
-                        SmallFormDivider(),
                         Text("Canister ID",
                             style: Responsive.isDesktop(context) |
                                     Responsive.isTablet(context)
@@ -68,7 +59,7 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
                 onPressed: () async {
                   final result = await context.callUpdate(() => context.icApi
                       .attachCanister(
-                          name: nameField.currentValue,
+                          name: "",
                           canisterId: idField.currentValue));
                   if (result == null) {
                     return;
@@ -92,7 +83,7 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
                       break;
                   }
                 },
-                fields: [nameField, idField],
+                fields: [idField],
               ))
         ],
       ),
@@ -104,7 +95,7 @@ class EnterCanisterIdAndNameWidget extends StatelessWidget {
         context,
         ConfirmDialog(
             title: "Failed to Attach Canister",
-            description: name,
+            description: "",
             onConfirm: () {}));
   }
 }

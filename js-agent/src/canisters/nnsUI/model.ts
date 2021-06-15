@@ -1,4 +1,5 @@
 import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, NeuronId, PrincipalString } from "../common/types";
+import { CanisterId } from "./rawService";
 
 export type Memo = bigint;
 export enum TransactionType {
@@ -48,16 +49,6 @@ export type DetachCanisterResponse = { Ok: null } |
 export type GetAccountResponse = { Ok: AccountDetails } |
     { AccountNotFound: null };
 
-export interface GetStakeNeuronStatusRequest {
-    memo: Memo,
-    blockHeight: BlockHeight,
-};
-
-export type GetStakeNeuronStatusResponse = { Queued: number } |
-    { NotFound: null } |
-    { PendingSync: null } |
-    { Created: NeuronId };
-
 export interface GetTransactionsRequest {
     accountIdentifier: AccountIdentifier,
     pageSize: number,
@@ -72,6 +63,15 @@ export interface HardwareWalletAccountDetails {
     principal: PrincipalString,
     accountIdentifier: AccountIdentifier,
 };
+export type MultiPartTransactionStatus = { Queued: null } |
+    { Error: string } |
+    { Refunded: [BlockHeight, string] } |
+    { CanisterCreated: CanisterId } |
+    { Complete: null } |
+    { NotFound: null } |
+    { NeuronCreated: NeuronId } |
+    { PendingSync: null } |
+    { ErrorWithRefundPending: string };
 export interface Receive {
     fee: E8s,
     from: AccountIdentifier,
@@ -127,13 +127,13 @@ export type Transfer = { Burn: { amount: E8s } } |
 
 export default interface ServiceInterface {
     addAccount: () => Promise<AccountIdentifier>,
-    attachCanister : (request: AttachCanisterRequest) => Promise<AttachCanisterResult>,
+    attachCanister: (request: AttachCanisterRequest) => Promise<AttachCanisterResult>,
     createSubAccount: (name: string) => Promise<CreateSubAccountResponse>,
     detachCanister: (request: DetachCanisterRequest) => Promise<DetachCanisterResponse>,
     getAccount: () => Promise<GetAccountResponse>,
-    getCanisters : () => Promise<Array<CanisterDetails>>,
-    getIcpToCyclesConversionRate : () => Promise<bigint>,
-    getStakeNeuronStatus: (request: GetStakeNeuronStatusRequest) => Promise<GetStakeNeuronStatusResponse>,
+    getCanisters: () => Promise<Array<CanisterDetails>>,
+    getIcpToCyclesConversionRate: () => Promise<bigint>,
+    getMultiPartTransactionStatus: (blockHeight: BlockHeight) => Promise<MultiPartTransactionStatus>,
     getTransactions: (request: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
     registerHardwareWallet: (request: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
     removeHardwareWallet: (request: RemoveHardwareWalletRequest) => Promise<RemoveHardwareWalletResponse>,

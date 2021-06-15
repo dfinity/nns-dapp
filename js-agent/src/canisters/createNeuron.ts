@@ -6,8 +6,7 @@ import GOVERNANCE_CANISTER_ID from "./governance/canisterId";
 import randomBytes from "randombytes";
 import { E8s, NeuronId, PrincipalString } from "./common/types";
 import * as convert from "./converter";
-
-const ONE_MINUTE_MILLIS = 60 * 1000;
+import { pollUntilComplete } from "./multiPartTransactionPollingHandler";
 
 export type CreateNeuronRequest = {
     stake: E8s
@@ -32,33 +31,13 @@ export default async function(
         fromSubAccountId: request.fromSubAccountId
     });
 
-    // Once the ICP has been sent, start polling the NNS UI to check on the status of the stake neuron request. Only at
-    // most 1 neuron will be created on each heartbeat so it is possible that a queue may temporarily form. Currently we
-    // wait for up to a minute. In the future we could provide a better UX by displaying the position of the user's
-    // request in the queue.
-    const start = Date.now();
-    while (Date.now() - start < ONE_MINUTE_MILLIS) {
-        // Wait 5 seconds between each attempt
-        await new Promise(resolve => setTimeout(resolve, 5000));
+    const outcome = await pollUntilComplete(nnsUiService, blockHeight);
 
-        try {
-            const status = await nnsUiService.getStakeNeuronStatus({
-                blockHeight,
-                memo: nonce
-            });
-
-            if ("Created" in status) {
-                return status.Created;
-            } else if ("NotFound" in status) {
-                throw new Error("Stake neuron request not found in the NNS UI canister");
-            }
-        } catch (e) {
-            console.log(e);
-            // If there is an error while getting the status simply swallow the error and try again
-        }
+    if ("NeuronCreated" in outcome) {
+        return outcome.NeuronCreated;
+    } else {
+        throw new Error("Unable to create neuron");
     }
-
-    throw new Error("Failed to successfully create a neuron. Request may still be queued");
 }
 
 // 32 bytes

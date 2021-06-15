@@ -94,8 +94,8 @@ class ServiceApi {
   @JS("createCanister")
   external Promise<dynamic> createCanister(CreateCanisterRequest request);
 
-  @JS("topupCanister")
-  external Promise<void> topupCanister(TopupCanisterRequest request);
+  @JS("topUpCanister")
+  external Promise<void> topUpCanister(TopUpCanisterRequest request);
 
   @JS("attachCanister")
   external Promise<void> attachCanister(AttachCanisterRequest request);
@@ -203,21 +203,20 @@ class SpawnRequest {
 class CreateCanisterRequest {
   external dynamic amount;
   external int? fromSubAccountId;
-  external String name;
 
   external factory CreateCanisterRequest(
-      {dynamic amount, int? fromSubAccountId, String name});
+      {dynamic amount, int? fromSubAccountId});
 }
 
 @JS()
 @anonymous
-class TopupCanisterRequest {
+class TopUpCanisterRequest {
   external dynamic amount;
   external int? fromSubAccountId;
-  external dynamic targetCanisterId;
+  external dynamic canisterId;
 
-  external factory TopupCanisterRequest(
-      {dynamic amount, int? fromSubAccountId, dynamic targetCanisterId});
+  external factory TopUpCanisterRequest(
+      {dynamic amount, int? fromSubAccountId, dynamic canisterId});
 }
 
 @JS()
@@ -256,25 +255,14 @@ enum AttachCanisterResult {
   CanisterLimitExceeded,
 }
 
-
-
 class CreateCanisterResponse {
   final String? canisterId;
   final Canister? canister;
+  final bool refunded;
   final String? errorMessage;
-  final CreateCanisterResult result;
 
-  CreateCanisterResponse({required this.result, this.canisterId, this.canister, this.errorMessage});
+  CreateCanisterResponse({this.canisterId, this.canister, required this.refunded, this.errorMessage});
 }
-
-enum CreateCanisterResult {
-  Ok,
-  FailedToCreateCanister,
-  CanisterAlreadyAttached,
-  NameAlreadyTaken,
-  CanisterLimitExceeded
-}
-
 
 @JS()
 @anonymous
