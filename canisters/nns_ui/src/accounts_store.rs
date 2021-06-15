@@ -831,25 +831,23 @@ impl AccountsStore {
                             let memo = transaction.memo;
                             let block_height = transaction.block_height;
                             let transaction_type = self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids);
-                            if transaction_type == TransactionType::StakeNeuron {
-                                if !self.neuron_accounts.contains_key(&to) {
-                                    let neuron_details = NeuronDetails {
-                                        account_identifier: to,
-                                        principal,
-                                        memo,
-                                        neuron_id: None
-                                    };
-                                    self.neuron_accounts.insert(to, neuron_details);
+                            if transaction_type == TransactionType::StakeNeuron && !self.neuron_accounts.contains_key(&to) {
+                                let neuron_details = NeuronDetails {
+                                    account_identifier: to,
+                                    principal,
+                                    memo,
+                                    neuron_id: None
+                                };
+                                self.neuron_accounts.insert(to, neuron_details);
 
-                                    // The only reason we queue up the neuron for processing is so
-                                    // that we can determine the neuronId. We don't currently use
-                                    // the neuronIds but it makes sense to have them there for
-                                    // consistency.
-                                    self.multi_part_transactions_processor.push(
-                                        principal,
-                                        block_height,
-                                        MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo));
-                                }
+                                // The only reason we queue up the neuron for processing is so
+                                // that we can determine the neuronId. We don't currently use
+                                // the neuronIds but it makes sense to have them there for
+                                // consistency.
+                                self.multi_part_transactions_processor.push(
+                                    principal,
+                                    block_height,
+                                    MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo));
                             }
 
                             let transaction = self.get_transaction_mut(index).unwrap();
