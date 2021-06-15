@@ -79,6 +79,10 @@ impl MultiPartTransactionsProcessor {
         self.errors.iter().cloned().collect()
     }
 
+    pub fn get_queue_length(&self) -> u32 {
+        self.queue.len() as u32
+    }
+
     fn append_error(&mut self, error: MultiPartTransactionError) {
         self.errors.push_back(error);
         if self.errors.len() > MAX_ERRORS_TO_HOLD {
