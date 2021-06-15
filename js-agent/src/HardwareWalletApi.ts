@@ -1,4 +1,4 @@
-import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
+import { LedgerIdentity } from "./ledger/identity";
 import ledgerBuilder from "./canisters/ledger/builder";
 import LedgerService, { SendICPTsRequest } from "./canisters/ledger/model";
 import { AccountIdentifier, BlockHeight } from "./canisters/common/types";
