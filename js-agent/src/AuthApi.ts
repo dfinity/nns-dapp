@@ -1,7 +1,7 @@
 import { AuthClient, AuthClientLoginOptions } from "@dfinity/auth-client";
 import { Identity } from "@dfinity/agent";
 import { DelegationIdentity } from "@dfinity/identity";
-import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
+import { LedgerIdentity } from "./ledger/identity";
 import { Option } from "./canisters/option";
 import { executeWithLogging } from "./errorLogger";
 import { IDENTITY_SERVICE_URL } from "./config.json";
@@ -14,6 +14,10 @@ export default class AuthApi {
     private readonly onLoggedOut: () => void;
     private expireSessionTimeout: Option<NodeJS.Timeout>;
 
+    // A cache for the ledger identity. This is needed to ensure the 
+    // transport of the identity is closed before creating a new identity.
+    private ledgerIdentity?: LedgerIdentity;
+
     public static create = async (onLoggedOut: () => void) : Promise<AuthApi> => {
         const authClient = await AuthClient.create();
         return new AuthApi(authClient, onLoggedOut);
@@ -23,6 +27,7 @@ export default class AuthApi {
         this.authClient = authClient;
         this.onLoggedOut = onLoggedOut;
         this.expireSessionTimeout = null;
+        this.ledgerIdentity = null;
 
         if (this.tryGetIdentity()) {
             this.handleDelegationExpiry();
@@ -66,8 +71,23 @@ export default class AuthApi {
         this.onLoggedOut();
     }
 
-    public connectToHardwareWallet = () : Promise<LedgerIdentity> => {
-        return executeWithLogging(() => LedgerIdentity.create());
+    public connectToHardwareWallet = async () : Promise<LedgerIdentity | null> => {
+        if (this.ledgerIdentity) {
+            console.log("Closing existing connection to hardware wallet.");
+            this.ledgerIdentity.close();
+            console.log("Done.");
+            this.ledgerIdentity = null;
+        }
+
+        try {
+            console.log("Creating new connection to hardware wallet");
+            this.ledgerIdentity = await LedgerIdentity.create();
+        } catch (err) {
+            console.log(`An exception has occurred: ${err}`)
+            alert(err);
+        }
+
+        return this.ledgerIdentity
     }
 
     public getPrincipal = () : string => {

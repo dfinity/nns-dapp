@@ -158,13 +158,12 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                                     final ledgerIdentity =
                                                         await context.icApi
                                                             .connectToHardwareWallet();
-                                                    final hardwareWalletApi =
-                                                        await context.icApi
-                                                            .createHardwareWalletApi(
-                                                                ledgerIdentity:
-                                                                    ledgerIdentity);
-                                                    hardwareWalletApi
-                                                        .showAddressAndPubKeyOnDevice();
+
+                                                    if (ledgerIdentity !=
+                                                        null) {
+                                                      await ledgerIdentity
+                                                          .showAddressAndPubKeyOnDevice();
+                                                    }
                                                   }),
                                             ),
                                         ],
