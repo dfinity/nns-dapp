@@ -71,7 +71,6 @@ class _HardwareWalletTransactionWidgetState
                                   connectionState = WalletConnectionState.NOT_CONNECTED;
                                 });
                               });
-                          final json = stringify(ledgerIdentity);
                           final accountIdentifier =
                               getAccountIdentifier(ledgerIdentity)!.toString();
 
@@ -83,7 +82,8 @@ class _HardwareWalletTransactionWidgetState
                           } else {
                             setState(() {
                               this.ledgerIdentity = ledgerIdentity;
-                              connectionState = WalletConnectionState.INCORRECT_DEVICE;
+                              connectionState =
+                                  WalletConnectionState.INCORRECT_DEVICE;
                             });
                           }
                         }),
@@ -109,7 +109,7 @@ class _HardwareWalletTransactionWidgetState
                               to: widget.destination,
                               amount: widget.amount.asE8s().toJS))));
 
-                  if(response!= null){
+                  if (response != null) {
                     WizardOverlay.of(context).replacePage(
                         "Transaction Completed!",
                         TransactionDoneWidget(
@@ -128,16 +128,15 @@ class _HardwareWalletTransactionWidgetState
 }
 
 class _TransactionDetailsWidget extends StatelessWidget {
-
   final ICP amount;
   final Account account;
   final String destination;
 
   const _TransactionDetailsWidget(
       {Key? key,
-        required this.amount,
-        required this.account,
-        required this.destination})
+      required this.amount,
+      required this.account,
+      required this.destination})
       : super(key: key);
 
   @override
@@ -158,10 +157,10 @@ class _TransactionDetailsWidget extends StatelessWidget {
         SmallFormDivider(),
         Text("Amount", style: context.textTheme.headline4),
         VerySmallFormDivider(),
-        Text(amount.asString(myLocale.languageCode), style: context.textTheme.bodyText1),
+        Text(amount.asString(myLocale.languageCode),
+            style: context.textTheme.bodyText1),
         VerySmallFormDivider(),
       ],
     );
   }
 }
-

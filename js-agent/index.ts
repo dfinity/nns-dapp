@@ -1,7 +1,7 @@
 import AuthApi from "./src/AuthApi";
 import HardwareWalletApi from "./src/HardwareWalletApi";
 import { SignIdentity } from "@dfinity/agent";
-import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
+import { LedgerIdentity } from "./src/ledger/identity";
 import { principalToAccountIdentifier } from "./src/canisters/converter";
 import ServiceApi from "./src/ServiceApi";
 

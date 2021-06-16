@@ -5,7 +5,7 @@ import '../../dfinity.dart';
 class WizardPathButton extends StatelessWidget {
   final String title;
   final String subtitle;
-  final Function()? onPressed;
+  final Function() onPressed;
 
   const WizardPathButton(
       {Key? key,

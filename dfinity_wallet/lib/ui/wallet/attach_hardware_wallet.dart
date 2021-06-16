@@ -13,12 +13,11 @@ class AttachHardwareWalletWidget extends StatefulWidget {
       _AttachHardwareWalletWidgetState();
 }
 
-
 class _AttachHardwareWalletWidgetState
     extends State<AttachHardwareWalletWidget> {
   WalletConnectionState connectionState = WalletConnectionState.NOT_CONNECTED;
   dynamic ledgerIdentity;
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -36,10 +35,13 @@ class _AttachHardwareWalletWidgetState
                   });
                   final ledgerIdentity =
                       await context.icApi.connectToHardwareWallet();
-                  final json = stringify(ledgerIdentity);
                   setState(() {
                     this.ledgerIdentity = ledgerIdentity;
-                    connectionState = WalletConnectionState.CONNECTED;
+                    if (this.ledgerIdentity != null) {
+                      connectionState = WalletConnectionState.CONNECTED;
+                    } else {
+                      connectionState = WalletConnectionState.NOT_CONNECTED;
+                    }
                   });
                 }),
           ),
@@ -50,19 +52,23 @@ class _AttachHardwareWalletWidgetState
                 child: Text("Attach Wallet"),
                 onPressed: (() async {
                   context.callUpdate(() async {
-                    await context.icApi.registerHardwareWallet(name: widget.name, ledgerIdentity: ledgerIdentity);
+                    await context.icApi.registerHardwareWallet(
+                        name: widget.name, ledgerIdentity: ledgerIdentity);
                     await 0.2.seconds.delay;
                     await context.icApi.refreshAccounts();
-                    final accountIdentifier = getAccountIdentifier(ledgerIdentity);
-                    final account = context.boxes.accounts.hardwareWallets.firstWhere((element) => element.accountIdentifier == accountIdentifier);
+                    final accountIdentifier =
+                        getAccountIdentifier(ledgerIdentity);
+                    final account = context.boxes.accounts.hardwareWallets
+                        .firstWhere((element) =>
+                            element.accountIdentifier == accountIdentifier);
 
                     context.nav.push(AccountPageDef.createPageConfig(account));
                   });
-                }).takeIf((e) => connectionState == WalletConnectionState.CONNECTED),
+                }).takeIf(
+                    (e) => connectionState == WalletConnectionState.CONNECTED),
               ))
         ],
       ),
     );
   }
 }
-
