@@ -1,12 +1,11 @@
 use candid::CandidType;
-use ic_certified_map::{AsHashTree, Hash, labeled, labeled_hash, RbTree};
+use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
 use serde_bytes::ByteBuf;
+use sha2::{Digest, Sha256};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::io::Read;
-use sha2::{Digest, Sha256};
-
 
 type HeaderField = (String, String);
 
@@ -24,7 +23,6 @@ pub struct HttpResponse {
     headers: Vec<HeaderField>,
     body: ByteBuf,
 }
-
 
 const LABEL_ASSETS: &[u8] = b"http_assets";
 type AssetHashes = RbTree<Vec<u8>, Hash>;
@@ -52,12 +50,8 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
     let parts: Vec<&str> = req.url.split('?').collect();
     let request_path = parts[0];
 
-    let certificate_header = STATE.with(|s| {
-        make_asset_certificate_header(
-            &s.asset_hashes.borrow(),
-            &request_path,
-        )
-    });
+    let certificate_header =
+        STATE.with(|s| make_asset_certificate_header(&s.asset_hashes.borrow(), &request_path));
 
     ASSETS.with(|a| match a.borrow().get(request_path) {
         Some((headers, value)) => {
@@ -78,11 +72,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
     })
 }
 
-
-fn make_asset_certificate_header(
-    asset_hashes: &AssetHashes,
-    asset_name: &str,
-) -> (String, String) {
+fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
     let certificate = dfn_core::api::data_certificate().unwrap_or_else(|| {
         dfn_core::api::trap_with("data certificate is only available in query calls");
         unreachable!()
@@ -91,8 +81,9 @@ fn make_asset_certificate_header(
     let tree = labeled(LABEL_ASSETS, witness);
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
     serializer.self_describe().unwrap();
-    tree.serialize(&mut serializer)
-        .unwrap_or_else(|e| dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e)));
+    tree.serialize(&mut serializer).unwrap_or_else(|e| {
+        dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e))
+    });
     (
         "IC-Certificate".to_string(),
         format!(
@@ -109,7 +100,6 @@ pub fn hash_bytes(value: impl AsRef<[u8]>) -> Hash {
     hasher.finalize().into()
 }
 
-
 // used both in init and post_upgrade
 pub fn init_assets() {
     STATE.with(|s| {
@@ -121,20 +111,28 @@ pub fn init_assets() {
             let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
             let mut decompressed = Vec::new();
             lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
-            let mut tar : tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
+            let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
             for entry in tar.entries().unwrap() {
                 let mut entry = entry.unwrap();
 
-                let name_bytes = entry.path_bytes().into_owned().strip_prefix(b".").unwrap().to_vec();
+                let name_bytes = entry
+                    .path_bytes()
+                    .into_owned()
+                    .strip_prefix(b".")
+                    .unwrap()
+                    .to_vec();
 
                 if !entry.header().entry_type().is_file() {
                     continue;
                 }
-                let name = String::from_utf8(name_bytes.clone())
-                    .unwrap_or_else(|e| {
-                        dfn_core::api::trap_with(&format!("non-utf8 file name {}: {}", String::from_utf8_lossy(&name_bytes), e));
-                        unreachable!()
-                    });
+                let name = String::from_utf8(name_bytes.clone()).unwrap_or_else(|e| {
+                    dfn_core::api::trap_with(&format!(
+                        "non-utf8 file name {}: {}",
+                        String::from_utf8_lossy(&name_bytes),
+                        e
+                    ));
+                    unreachable!()
+                });
 
                 let mut bytes = Vec::new();
                 entry.read_to_end(&mut bytes).unwrap();
