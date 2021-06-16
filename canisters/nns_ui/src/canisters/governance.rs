@@ -5,13 +5,16 @@ use ic_nns_constants::GOVERNANCE_CANISTER_ID;
 use serde::Deserialize;
 
 pub async fn claim_or_refresh_neuron_from_account(
-    request: ClaimOrRefreshNeuronFromAccount) -> Result<ClaimOrRefreshNeuronFromAccountResponse, String> {
-
+    request: ClaimOrRefreshNeuronFromAccount,
+) -> Result<ClaimOrRefreshNeuronFromAccountResponse, String> {
     dfn_core::call(
         GOVERNANCE_CANISTER_ID,
         "claim_or_refresh_neuron_from_account",
         candid,
-        (request,)).await.map_err(|e| e.1)
+        (request,),
+    )
+    .await
+    .map_err(|e| e.1)
 }
 
 /// The arguments to the method `claim_or_refresh_neuron_from_account`.

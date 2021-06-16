@@ -7,7 +7,7 @@ pub struct State {
     pub accounts_store: AccountsStore,
 }
 
-pub trait StableState : Sized {
+pub trait StableState: Sized {
     fn encode(&self) -> Vec<u8>;
     fn decode(bytes: Vec<u8>) -> Result<Self, String>;
 }

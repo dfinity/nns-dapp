@@ -1,27 +1,18 @@
-use candid::CandidType;
 use crate::accounts_store::{
-    AccountDetails,
-    AttachCanisterRequest,
-    AttachCanisterResponse,
-    CreateSubAccountResponse,
-    DetachCanisterRequest,
-    DetachCanisterResponse,
-    GetTransactionsRequest,
-    GetTransactionsResponse,
-    NamedCanister,
-    RegisterHardwareWalletRequest,
-    RegisterHardwareWalletResponse,
-    RemoveHardwareWalletRequest,
-    RemoveHardwareWalletResponse,
-    RenameSubAccountRequest,
-    RenameSubAccountResponse,
-    Stats
+    AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse,
+    DetachCanisterRequest, DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse,
+    NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse,
+    RemoveHardwareWalletRequest, RemoveHardwareWalletResponse, RenameSubAccountRequest,
+    RenameSubAccountResponse, Stats,
 };
-use crate::multi_part_transactions_processor::{MultiPartTransactionStatus, MultiPartTransactionError};
+use crate::multi_part_transactions_processor::{
+    MultiPartTransactionError, MultiPartTransactionStatus,
+};
 use crate::periodic_tasks_runner::run_periodic_tasks;
-use crate::state::{StableState, STATE, State};
+use crate::state::{StableState, State, STATE};
+use candid::CandidType;
 use dfn_candid::{candid, candid_one};
-use dfn_core::{stable, over, over_async};
+use dfn_core::{over, over_async, stable};
 use ledger_canister::{AccountIdentifier, BlockHeight};
 
 mod accounts_store;
@@ -124,7 +115,9 @@ pub fn register_hardware_wallet() {
     over(candid_one, register_hardware_wallet_impl);
 }
 
-fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
+fn register_hardware_wallet_impl(
+    request: RegisterHardwareWalletRequest,
+) -> RegisterHardwareWalletResponse {
     let principal = dfn_core::api::caller();
     let store = &mut STATE.write().unwrap().accounts_store;
     store.register_hardware_wallet(principal, request)
@@ -135,7 +128,9 @@ pub fn remove_hardware_wallet() {
     over(candid_one, remove_hardware_wallet_impl);
 }
 
-fn remove_hardware_wallet_impl(request: RemoveHardwareWalletRequest) -> RemoveHardwareWalletResponse {
+fn remove_hardware_wallet_impl(
+    request: RemoveHardwareWalletRequest,
+) -> RemoveHardwareWalletResponse {
     let principal = dfn_core::api::caller();
     let store = &mut STATE.write().unwrap().accounts_store;
     store.remove_hardware_wallet(principal, request)
@@ -210,10 +205,11 @@ async fn get_icp_to_cycles_conversion_rate_impl() -> u64 {
     {
         const CYCLES_PER_XDR: u64 = 1_000_000_000_000;
 
-        let xdr_permyriad_per_icp = match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
-            None => panic!("ICP/XDR conversion rate is not available."),
-            Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
-        };
+        let xdr_permyriad_per_icp =
+            match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
+                None => panic!("ICP/XDR conversion rate is not available."),
+                Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
+            };
 
         xdr_permyriad_per_icp * (CYCLES_PER_XDR / 10_000)
     }
@@ -244,7 +240,11 @@ pub fn get_recalculate_transaction_type_index() {
 }
 
 fn get_recalculate_transaction_type_index_impl() -> Option<u64> {
-    STATE.read().unwrap().accounts_store.get_recalculate_transaction_type_index()
+    STATE
+        .read()
+        .unwrap()
+        .accounts_store
+        .get_recalculate_transaction_type_index()
 }
 
 #[export_name = "canister_heartbeat"]
@@ -257,5 +257,5 @@ pub fn canister_heartbeat() {
 #[derive(CandidType)]
 pub enum GetAccountResponse {
     Ok(AccountDetails),
-    AccountNotFound
+    AccountNotFound,
 }

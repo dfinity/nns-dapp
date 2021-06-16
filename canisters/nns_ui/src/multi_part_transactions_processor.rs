@@ -1,10 +1,10 @@
+use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
 use candid::CandidType;
-use crate::accounts_store::{CreateCanisterArgs, TopUpCanisterArgs, RefundTransactionArgs};
-use ic_base_types::{PrincipalId, CanisterId};
+use ic_base_types::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
-use ledger_canister::{Memo, BlockHeight};
+use ledger_canister::{BlockHeight, Memo};
 use serde::Deserialize;
-use std::collections::{VecDeque, BTreeMap};
+use std::collections::{BTreeMap, VecDeque};
 
 const MAX_ERRORS_TO_HOLD: usize = 500;
 
@@ -44,9 +44,18 @@ pub struct MultiPartTransactionError {
 }
 
 impl MultiPartTransactionsProcessor {
-    pub fn push(&mut self, principal: PrincipalId, block_height: BlockHeight, transaction_to_be_processed: MultiPartTransactionToBeProcessed) {
-        self.queue.push_back((block_height, transaction_to_be_processed));
-        self.statuses.insert(block_height, (principal, MultiPartTransactionStatus::Queued));
+    pub fn push(
+        &mut self,
+        principal: PrincipalId,
+        block_height: BlockHeight,
+        transaction_to_be_processed: MultiPartTransactionToBeProcessed,
+    ) {
+        self.queue
+            .push_back((block_height, transaction_to_be_processed));
+        self.statuses.insert(
+            block_height,
+            (principal, MultiPartTransactionStatus::Queued),
+        );
     }
 
     pub fn take_next(&mut self) -> Option<(BlockHeight, MultiPartTransactionToBeProcessed)> {
@@ -55,10 +64,18 @@ impl MultiPartTransactionsProcessor {
 
     pub fn update_status(&mut self, block_height: BlockHeight, status: MultiPartTransactionStatus) {
         match &status {
-            MultiPartTransactionStatus::Error(msg) => self.append_error(
-                MultiPartTransactionError { block_height, error_message: msg.clone() }),
-            MultiPartTransactionStatus::ErrorWithRefundPending(msg) => self.append_error(
-                MultiPartTransactionError { block_height, error_message: msg.clone() }),
+            MultiPartTransactionStatus::Error(msg) => {
+                self.append_error(MultiPartTransactionError {
+                    block_height,
+                    error_message: msg.clone(),
+                })
+            }
+            MultiPartTransactionStatus::ErrorWithRefundPending(msg) => {
+                self.append_error(MultiPartTransactionError {
+                    block_height,
+                    error_message: msg.clone(),
+                })
+            }
             _ => {}
         };
 
@@ -67,8 +84,13 @@ impl MultiPartTransactionsProcessor {
         }
     }
 
-    pub fn get_status(&self, principal: PrincipalId, block_height: BlockHeight) -> MultiPartTransactionStatus {
-        self.statuses.get(&block_height)
+    pub fn get_status(
+        &self,
+        principal: PrincipalId,
+        block_height: BlockHeight,
+    ) -> MultiPartTransactionStatus {
+        self.statuses
+            .get(&block_height)
             .filter(|(p, _)| *p == principal)
             .map(|(_, t)| t)
             .cloned()
@@ -104,7 +126,11 @@ mod tests {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
         for i in 0..10 {
-            processor.push(principal, i, MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(i)));
+            processor.push(
+                principal,
+                i,
+                MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(i)),
+            );
         }
 
         for i in 0..10 {
@@ -124,11 +150,21 @@ mod tests {
         let mut processor = MultiPartTransactionsProcessor::default();
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
-        processor.push(principal, 1, MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(0)));
-        assert!(matches!(processor.get_status(principal, 1), MultiPartTransactionStatus::Queued));
+        processor.push(
+            principal,
+            1,
+            MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(0)),
+        );
+        assert!(matches!(
+            processor.get_status(principal, 1),
+            MultiPartTransactionStatus::Queued
+        ));
 
         processor.update_status(1, MultiPartTransactionStatus::Complete);
-        assert!(matches!(processor.get_status(principal, 1), MultiPartTransactionStatus::Complete));
+        assert!(matches!(
+            processor.get_status(principal, 1),
+            MultiPartTransactionStatus::Complete
+        ));
     }
 
     #[test]
@@ -137,7 +173,11 @@ mod tests {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
         let error_message = "Error!".to_string();
 
-        processor.push(principal, 1, MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(0)));
+        processor.push(
+            principal,
+            1,
+            MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(0)),
+        );
         processor.update_status(1, MultiPartTransactionStatus::Error(error_message.clone()));
 
         let errors = processor.get_errors();
