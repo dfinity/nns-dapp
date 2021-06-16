@@ -3,15 +3,17 @@ use dfn_protobuf::{protobuf, ToProto};
 use ic_nns_constants::LEDGER_CANISTER_ID;
 use ledger_canister::{
     AccountBalanceArgs,
+    BlockArg,
     BlockHeight,
+    BlockRes,
     CyclesResponse,
     EncodedBlock,
     GetBlocksArgs,
     GetBlocksRes,
+    ICPTs,
     NotifyCanisterArgs,
     SendArgs,
-    TipOfChainRes,
-    ICPTs
+    TipOfChainRes
 };
 use ledger_canister::protobuf::{ArchiveIndexResponse, TipOfChainRequest};
 
@@ -65,4 +67,18 @@ pub async fn get_blocks(canister_id: CanisterId, from: BlockHeight, length: u32)
         GetBlocksArgs::new(from, length as usize)).await.map_err(|e| e.1)?;
 
     Ok(response.0?)
+}
+
+pub async fn get_block(canister_id: CanisterId, block_height: BlockHeight) -> Result<EncodedBlock, String> {
+    let response: BlockRes = dfn_core::call(
+        canister_id,
+        "block_pb",
+        protobuf,
+        BlockArg(block_height)).await.map_err(|e| e.1)?;
+
+    let block = response.0
+        .ok_or("Block not found")?
+        .map_err(|c| format!("Block is held in canister: {}", c))?;
+
+    Ok(block)
 }

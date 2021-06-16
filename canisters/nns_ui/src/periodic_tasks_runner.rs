@@ -2,7 +2,7 @@ use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCani
 use crate::canisters::governance::{self, ClaimOrRefreshNeuronFromAccount, claim_or_refresh_neuron_from_account_response};
 use crate::canisters::ledger;
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
-use crate::ledger_sync;
+use crate::{ledger_sync, memo_sync};
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::STATE;
 use dfn_core::api::{CanisterId, PrincipalId};
@@ -45,6 +45,15 @@ pub async fn run_periodic_tasks() {
                 handle_refund(args).await;
             }
         }
+    }
+
+    if !memo_sync::is_initialized() {
+        memo_sync::init().await;
+    }
+    if memo_sync::count_remaining() > 0 {
+        memo_sync::sync_next().await.unwrap();
+    } else {
+        STATE.write().unwrap().accounts_store.recalculate_transaction_types(20);
     }
 
     if should_prune_transactions() {

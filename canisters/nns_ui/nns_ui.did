@@ -245,6 +245,8 @@ service : {
     get_multi_part_transaction_errors: () -> (vec MultiPartTransactionError) query;
     get_icp_to_cycles_conversion_rate: () -> (nat64) query;
     get_stats: () -> (Stats) query;
+    get_memo_sync_count_remaining: () -> (nat32) query;
+    get_recalculate_transaction_type_index: () -> (opt nat64) query;
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
 }

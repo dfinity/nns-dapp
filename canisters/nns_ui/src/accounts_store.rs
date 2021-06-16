@@ -40,7 +40,9 @@ pub struct AccountsStore {
     sub_accounts_count: u64,
     hardware_wallet_accounts_count: u64,
     last_ledger_sync_timestamp_nanos: u64,
-    neurons_topped_up_count: u64
+    neurons_topped_up_count: u64,
+
+    recalculate_transaction_type_index: Option<TransactionIndex>,
 }
 
 #[derive(CandidType, Deserialize, Debug)]
@@ -306,7 +308,7 @@ impl AccountsStore {
                                         Mint { to: _, amount: _ } => TransactionType::Mint,
                                         Send { from, to, amount, fee: _ } => {
                                             if self.account_identifier_lookup.contains_key(&to) {
-                                                // If the recipient in a known account then the transaction must be a basic Send,
+                                                // If the recipient is a known account then the transaction must be a basic Send,
                                                 // since for all the 'special' transaction types the recipient is not a user account
                                                 TransactionType::Send
                                             } else {
@@ -785,6 +787,89 @@ impl AccountsStore {
         }
     }
 
+    /// Before May 19th we didn't store the memo values. So this method iterates through all
+    /// transactions until it finds the first one with a memo. This will return a superset of the
+    /// transactions which are missing memos since lots of transactions have a memo of 0.
+    pub fn get_block_heights_with_missing_memo(&self) -> Vec<BlockHeight> {
+        self.transactions.iter()
+            .take_while(|t| t.memo.0 == 0)
+            .map(|t| t.block_height)
+            .collect()
+    }
+
+    pub fn set_memo(&mut self, block_height: BlockHeight, memo: Memo) {
+        if let Some(index) = self.get_transaction_index(block_height) {
+            if let Some(transaction) = self.get_transaction_mut(index) {
+                transaction.memo = memo;
+            }
+        }
+    }
+
+    // Call this method after setting the memos for all transactions.
+    pub fn recalculate_transaction_types(&mut self, count: u32) {
+        if let Some(from) = self.recalculate_transaction_type_index {
+            let max_index = self.transactions.back().unwrap().transaction_index;
+            let to = min(from + (count as u64) - 1, max_index);
+
+            for index in from..=to {
+                if let Some(transaction) = self.get_transaction(index) {
+                    // If the transaction_type is None then we don't know the user's principal so
+                    // we need to wait until the user next signs in.
+                    // If the transaction_type has a value which is not Send then it must already be
+                    // correctly set so we can skip it.
+                    if transaction.transaction_type.is_none() || transaction.transaction_type.unwrap() != TransactionType::Send {
+                        continue;
+                    }
+                    // We only care about Send requests since they are the only ones where special
+                    // transaction types are possible.
+                    if let Send { from, to, amount, fee: _ } = transaction.transfer {
+                        if let Some(principal) = self.try_get_principal(&from) {
+                            let canister_ids: Vec<_> = self.get_canisters(principal)
+                                .iter()
+                                .map(|c| c.canister_id)
+                                .collect();
+                            let memo = transaction.memo;
+                            let block_height = transaction.block_height;
+                            let transaction_type = self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids);
+                            if transaction_type == TransactionType::StakeNeuron && !self.neuron_accounts.contains_key(&to) {
+                                let neuron_details = NeuronDetails {
+                                    account_identifier: to,
+                                    principal,
+                                    memo,
+                                    neuron_id: None
+                                };
+                                self.neuron_accounts.insert(to, neuron_details);
+
+                                // The only reason we queue up the neuron for processing is so
+                                // that we can determine the neuronId. We don't currently use
+                                // the neuronIds but it makes sense to have them there for
+                                // consistency.
+                                self.multi_part_transactions_processor.push(
+                                    principal,
+                                    block_height,
+                                    MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo));
+                            }
+
+                            let transaction = self.get_transaction_mut(index).unwrap();
+                            transaction.transaction_type = Some(transaction_type);
+                        }
+                    }
+                }
+            }
+
+            if to == max_index {
+                // We have recalculated every transaction type
+                self.recalculate_transaction_type_index = None;
+            } else {
+                self.recalculate_transaction_type_index = Some(to + 1);
+            }
+        }
+    }
+
+    pub fn get_recalculate_transaction_type_index(&self) -> Option<TransactionIndex> {
+        self.recalculate_transaction_type_index
+    }
+
     fn try_add_transaction_to_account(&mut self, account_identifier: AccountIdentifier, transaction_index: TransactionIndex) -> bool {
         if let Some(location) = self.account_identifier_lookup.get(&account_identifier) {
             match location {
@@ -810,15 +895,15 @@ impl AccountsStore {
         }
     }
 
-    fn try_get_principal(&mut self, account_identifier: &AccountIdentifier) -> Option<PrincipalId> {
+    fn try_get_principal(&self, account_identifier: &AccountIdentifier) -> Option<PrincipalId> {
         if let Some(location) = self.account_identifier_lookup.get(account_identifier) {
             match location {
                 AccountLocation::DefaultAccount(index) => {
-                    let account = self.accounts.get_mut(*index as usize).unwrap().as_mut().unwrap();
+                    let account = self.accounts.get(*index as usize).unwrap().as_ref().unwrap();
                     account.principal
                 },
                 AccountLocation::SubAccount(index, _) => {
-                    let account = self.accounts.get_mut(*index as usize).unwrap().as_mut().unwrap();
+                    let account = self.accounts.get(*index as usize).unwrap().as_ref().unwrap();
                     account.principal
                 },
                 AccountLocation::HardwareWallet(indexes) => {
@@ -959,7 +1044,7 @@ impl AccountsStore {
         }
     }
 
-    fn get_transaction_by_block_height(&self, block_height: BlockHeight) -> Option<&Transaction> {
+    fn get_transaction_index(&self, block_height: BlockHeight) -> Option<TransactionIndex> {
         // The binary search methods are taken from here (they will be in stable rust shortly) -
         // https://github.com/vojtechkral/rust/blob/c7a787a3276cadad7ee51577f65158b4888c058c/library/alloc/src/collections/vec_deque.rs#L2515
         fn binary_search_by_key<T, B, F>(vec_deque: &VecDeque<T>, b: &B, mut f: F) -> Result<usize, usize>
@@ -989,10 +1074,8 @@ impl AccountsStore {
             if block_height <= max_block_height {
                 // binary_search_by_key is not yet in stable rust (https://github.com/rust-lang/rust/issues/78021)
                 // TODO uncomment the line below once binary_search_by_key is in stable rust
-                // if let Ok(index) = self.transactions.binary_search_by_key(&block_height, |t| t.block_height) {
-                if let Ok(index) = binary_search_by_key(&self.transactions, &block_height, |t| t.block_height) {
-                    return self.transactions.get(index);
-                }
+                // self.transactions.binary_search_by_key(&block_height, |t| t.block_height).ok().map(|i| i as u64)
+                return binary_search_by_key(&self.transactions, &block_height, |t| t.block_height).ok().map(|i| i as u64)
             }
         }
         None
@@ -1062,8 +1145,10 @@ impl AccountsStore {
 
     fn is_stake_neuron_notification(&self, memo: Memo, from: &AccountIdentifier, to: &AccountIdentifier, amount: ICPTs) -> bool {
         if memo.0 > 0 && amount.get_e8s() == 0 {
-            self.get_transaction_by_block_height(memo.0)
-                .filter(|t| t.transaction_type.is_some() && matches!(t.transaction_type.unwrap(), TransactionType::StakeNeuron))
+            self.get_transaction_index(memo.0)
+                .map(|index| self.get_transaction(index))
+                .flatten()
+                .filter(|&t| t.transaction_type.is_some() && matches!(t.transaction_type.unwrap(), TransactionType::StakeNeuron))
                 .map_or(false, |t| {
                     if let Send { from: original_transaction_from, to: original_transaction_to, amount: _, fee: _ } = t.transfer {
                         from == &original_transaction_from && to == &original_transaction_to
@@ -1207,7 +1292,8 @@ impl StableState for AccountsStore {
             sub_accounts_count,
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
-            neurons_topped_up_count
+            neurons_topped_up_count,
+            recalculate_transaction_type_index: Some(0),
         })
     }
 }
