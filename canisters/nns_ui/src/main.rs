@@ -20,7 +20,6 @@ mod assets;
 mod canisters;
 mod constants;
 mod ledger_sync;
-mod memo_sync;
 mod multi_part_transactions_processor;
 mod periodic_tasks_runner;
 mod state;
@@ -223,28 +222,6 @@ pub fn get_stats() {
 fn get_stats_impl() -> Stats {
     let store = &STATE.read().unwrap().accounts_store;
     store.get_stats()
-}
-
-#[export_name = "canister_query get_memo_sync_count_remaining"]
-pub fn get_memo_sync_count_remaining() {
-    over(candid, |()| get_memo_sync_count_remaining_impl());
-}
-
-fn get_memo_sync_count_remaining_impl() -> u32 {
-    memo_sync::count_remaining()
-}
-
-#[export_name = "canister_query get_recalculate_transaction_type_index"]
-pub fn get_recalculate_transaction_type_index() {
-    over(candid, |()| get_recalculate_transaction_type_index_impl());
-}
-
-fn get_recalculate_transaction_type_index_impl() -> Option<u64> {
-    STATE
-        .read()
-        .unwrap()
-        .accounts_store
-        .get_recalculate_transaction_type_index()
 }
 
 #[export_name = "canister_heartbeat"]
