@@ -132,8 +132,10 @@ enum MaturityViewMode { PERCENTAGE, INT }
 
 class _NeuronRewardDisplayWidgetState extends State<NeuronRewardDisplayWidget> {
   bool showIntMode = false;
+
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -147,7 +149,7 @@ class _NeuronRewardDisplayWidgetState extends State<NeuronRewardDisplayWidget> {
         ),
         if (showIntMode)
           Text(
-            widget.neuron.maturityICPEquivalent.asDouble().toString(),
+            widget.neuron.maturityICPEquivalent.asString(myLocale.languageCode, 3 ),
             style: TextStyle(
               color: AppColors.white,
               fontFamily: Fonts.circularBold,
