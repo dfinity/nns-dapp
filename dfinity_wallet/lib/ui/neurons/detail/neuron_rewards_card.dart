@@ -131,7 +131,7 @@ class NeuronRewardDisplayWidget extends StatefulWidget {
 enum MaturityViewMode { PERCENTAGE, INT }
 
 class _NeuronRewardDisplayWidgetState extends State<NeuronRewardDisplayWidget> {
-  bool showIntMode = false;
+  bool showPercentage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -143,11 +143,11 @@ class _NeuronRewardDisplayWidgetState extends State<NeuronRewardDisplayWidget> {
         Row(
           children: [
             Text("Percentage"),
-            Switch(value: showIntMode, onChanged: onChanged,activeColor: AppColors.white,),
+            Switch(value: showPercentage, onChanged: onChanged,activeColor: AppColors.white,),
             Text("ICP"),
           ],
         ),
-        if (showIntMode)
+        if (showPercentage)
           Text(
             widget.neuron.maturityICPEquivalent.asString(myLocale.languageCode, 3 ),
             style: TextStyle(
@@ -172,7 +172,7 @@ class _NeuronRewardDisplayWidgetState extends State<NeuronRewardDisplayWidget> {
 
   void onChanged(bool value) {
     setState(() {
-      showIntMode = value;
+      showPercentage = value;
     });
   }
 }
