@@ -142,13 +142,13 @@ class _NeuronRewardDisplayWidgetState extends State<NeuronRewardDisplayWidget> {
       children: [
         Row(
           children: [
-            Text("Percentage"),
+            Text("ICP"),
             Switch(
               value: showPercentage,
               onChanged: onChanged,
               activeColor: AppColors.white,
             ),
-            Text("ICP"),
+            Text("Percentage"),
           ],
         ),
         if (showPercentage)
