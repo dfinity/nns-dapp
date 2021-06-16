@@ -143,20 +143,15 @@ class _NeuronRewardDisplayWidgetState extends State<NeuronRewardDisplayWidget> {
         Row(
           children: [
             Text("Percentage"),
-            Switch(value: showPercentage, onChanged: onChanged,activeColor: AppColors.white,),
+            Switch(
+              value: showPercentage,
+              onChanged: onChanged,
+              activeColor: AppColors.white,
+            ),
             Text("ICP"),
           ],
         ),
         if (showPercentage)
-          Text(
-            widget.neuron.maturityICPEquivalent.asString(myLocale.languageCode, 3 ),
-            style: TextStyle(
-              color: AppColors.white,
-              fontFamily: Fonts.circularBold,
-              fontSize: 30,
-            ),
-          )
-        else
           PercentageDisplayWidget(
             amount: widget.neuron.stake.asE8s() > BigInt.zero
                 ? (100 *
@@ -165,7 +160,17 @@ class _NeuronRewardDisplayWidgetState extends State<NeuronRewardDisplayWidget> {
                 : 0,
             amountSize: 30,
             locale: widget.myLocale.languageCode,
-          ),
+          )
+        else
+          Text(
+            widget.neuron.maturityICPEquivalent
+                .asString(myLocale.languageCode, 3),
+            style: TextStyle(
+              color: AppColors.white,
+              fontFamily: Fonts.circularBold,
+              fontSize: 30,
+            ),
+          )
       ],
     );
   }
