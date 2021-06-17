@@ -24,10 +24,9 @@ class NeuronRow extends StatelessWidget {
               Row(children: [
                 SelectableText(
                   neuron.identifier,
-                  style: context.textTheme.headline3?.copyWith(
-                      fontSize: Responsive.isMobile(context)
-                          ? 16
-                          : context.textTheme.headline3?.fontSize),
+                  style: Responsive.isMobile(context)
+                      ? context.textTheme.headline6
+                      : context.textTheme.headline2,
                 ),
                 if (!neuron.isCurrentUserController)
                   Text("[hotkey control]", style: context.textTheme.headline5)
