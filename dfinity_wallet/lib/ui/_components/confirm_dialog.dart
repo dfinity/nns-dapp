@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 
 import '../../dfinity.dart';
 
@@ -8,9 +9,9 @@ class ConfirmDialog extends StatelessWidget {
 
   const ConfirmDialog(
       {Key? key,
-        required this.title,
-        required this.description,
-        required this.onConfirm})
+      required this.title,
+      required this.description,
+      required this.onConfirm})
       : super(key: key);
 
   @override
@@ -26,7 +27,12 @@ class ConfirmDialog extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SelectableText(title, style: context.textTheme.headline3),
+                  child: SelectableText(
+                    title,
+                    style: Responsive.isMobile(context)
+                        ? context.textTheme.headline6
+                        : context.textTheme.headline3,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -42,10 +48,14 @@ class ConfirmDialog extends StatelessWidget {
                       child: ElevatedButton(
                           style: ButtonStyle(
                               backgroundColor:
-                              MaterialStateProperty.all(AppColors.gray500)),
+                                  MaterialStateProperty.all(AppColors.gray500)),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Text("Cancel"),
+                            child: Text(
+                              "Cancel",
+                              textScaleFactor:
+                                  Responsive.isMobile(context) ? 0.48 : 1,
+                            ),
                           ),
                           onPressed: () {
                             OverlayBaseWidget.of(context)?.dismiss();
@@ -58,7 +68,11 @@ class ConfirmDialog extends StatelessWidget {
                       child: ElevatedButton(
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Text("Yes, I'm sure"),
+                            child: Text(
+                              "Yes, I'm sure",
+                              textScaleFactor:
+                                  Responsive.isMobile(context) ? 0.48 : 1,
+                            ),
                           ),
                           onPressed: () {
                             OverlayBaseWidget.of(context)?.dismiss();

@@ -21,7 +21,7 @@ class PageButton extends StatelessWidget {
             ? Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SizedBox(
-                  width: 400,
+                  width: MediaQuery.of(context).size.width * 0.30,
                   child: Text(
                     title,
                     textAlign: TextAlign.center,
@@ -33,7 +33,7 @@ class PageButton extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 5.0, vertical: 16),
                 child: SizedBox(
-                  width: 150,
+                  width: MediaQuery.of(context).size.width * 0.30,
                   child: Text(
                     title,
                     textAlign: TextAlign.center,

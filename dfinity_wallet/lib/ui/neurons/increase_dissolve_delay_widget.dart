@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 
 import '../../dfinity.dart';
 
@@ -44,23 +45,36 @@ class _IncreaseDissolveDelayWidgetState
         Expanded(
           child: SingleChildScrollView(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(42.0),
+                  padding: const EdgeInsets.only(
+                      top: 42.0, left: 42.0, right: 42.0, bottom: 20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SelectableText(widget.neuron.identifier,
-                          style: context.textTheme.headline2),
+                      SelectableText(
+                        widget.neuron.identifier,
+                        style: Responsive.isMobile(context)
+                            ? context.textTheme.headline6
+                            : context.textTheme.headline2,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
                       RichText(
                           text: TextSpan(
-                              text: widget.neuron.stake.asString(myLocale.languageCode),
+                              text: widget.neuron.stake
+                                  .asString(myLocale.languageCode),
                               style: context.textTheme.bodyText1,
                               children: [
                             TextSpan(
                                 text: " ICP Stake",
                                 style: context.textTheme.bodyText2)
                           ])),
+                      SizedBox(
+                        height: 10.0,
+                      ),
                       RichText(
                           text: TextSpan(
                               text: widget.neuron.dissolveDelaySeconds
@@ -102,10 +116,8 @@ class _IncreaseDissolveDelayWidgetState
                             ),
                             Expanded(
                                 child: _FigureWidget(
-                              amount:
-                                  sliderValueSeconds.currentValue
-                                      .seconds
-                                      .yearsDayHourMinuteSecondFormatted(),
+                              amount: sliderValueSeconds.currentValue.seconds
+                                  .yearsDayHourMinuteSecondFormatted(),
                               label: "Dissolve Delay",
                             ))
                           ],
@@ -122,7 +134,9 @@ class _IncreaseDissolveDelayWidgetState
           width: double.infinity,
           color: AppColors.lightBackground,
           height: 100,
-          padding: EdgeInsets.symmetric(horizontal: 64, vertical: 16),
+          padding: Responsive.isMobile(context)
+              ? EdgeInsets.symmetric(horizontal: 30, vertical: 16)
+              : EdgeInsets.symmetric(horizontal: 64, vertical: 16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -131,7 +145,10 @@ class _IncreaseDissolveDelayWidgetState
                   style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all(AppColors.gray500)),
-                  child: Text(widget.cancelTitle),
+                  child: Text(
+                    widget.cancelTitle,
+                    textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+                  ),
                   onPressed: () async {
                     widget.onCompleteAction(context);
                   },
@@ -143,7 +160,10 @@ class _IncreaseDissolveDelayWidgetState
               Expanded(
                 flex: 2,
                 child: ElevatedButton(
-                  child: Text("Update Delay"),
+                  child: Text(
+                    "Update Delay",
+                    textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+                  ),
                   onPressed: () {
                     final newDelay = sliderValueSeconds.currentValue.seconds;
                     OverlayBaseWidget.show(
@@ -156,7 +176,9 @@ class _IncreaseDissolveDelayWidgetState
                             await performUpdate(context);
                           },
                         ));
-                  }.takeIf((e) => sliderValueSeconds.currentValue > widget.neuron.dissolveDelay.inSeconds),
+                  }.takeIf((e) =>
+                      sliderValueSeconds.currentValue >
+                      widget.neuron.dissolveDelay.inSeconds),
                 ),
               ),
             ],
@@ -169,7 +191,8 @@ class _IncreaseDissolveDelayWidgetState
   Future performUpdate(BuildContext context) async {
     await context.callUpdate(() => context.icApi.increaseDissolveDelay(
         neuronId: widget.neuron.id.toBigInt,
-        additionalDissolveDelaySeconds: sliderValueSeconds.currentValue - widget.neuron.dissolveDelaySeconds.toInt()));
+        additionalDissolveDelaySeconds: sliderValueSeconds.currentValue -
+            widget.neuron.dissolveDelaySeconds.toInt()));
     widget.onCompleteAction(context);
   }
 
@@ -216,7 +239,9 @@ class DissolveDelayWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 42.0),
           child: Text(
             "Dissolve Delay",
-            style: context.textTheme.headline3,
+            style: Responsive.isMobile(context)
+                ? context.textTheme.headline6
+                : context.textTheme.headline3,
           ),
         ),
         SizedBox(
@@ -265,7 +290,9 @@ class _FigureWidget extends StatelessWidget {
         children: [
           Text(
             amount,
-            style: context.textTheme.headline3,
+            style: Responsive.isMobile(context)
+                ? context.textTheme.headline4
+                : context.textTheme.headline3,
           ),
           SizedBox(
             height: 5,
