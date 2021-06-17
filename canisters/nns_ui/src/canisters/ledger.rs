@@ -75,8 +75,14 @@ pub async fn get_block(
     canister_id: CanisterId,
     block_height: BlockHeight,
 ) -> Result<EncodedBlock, String> {
+    let method_name = if canister_id == LEDGER_CANISTER_ID {
+        "block_pb"
+    } else {
+        "get_block_pb"
+    };
+
     let response: BlockRes =
-        dfn_core::call(canister_id, "block_pb", protobuf, BlockArg(block_height))
+        dfn_core::call(canister_id, method_name, protobuf, BlockArg(block_height))
             .await
             .map_err(|e| e.1)?;
 
