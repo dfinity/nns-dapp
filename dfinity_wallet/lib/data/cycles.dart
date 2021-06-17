@@ -1,4 +1,4 @@
-import 'package:intl/intl.dart';
+import 'number_formatter.dart';
 
 final _oneTrillion = BigInt.from(1000000) * BigInt.from(1000000);
 
@@ -25,7 +25,7 @@ class Cycles {
     return _cycles / _oneTrillion;
   }
 
-  String asStringT(String locale) {
-    return NumberFormat("###,##0.00####", locale).format(asTs());
+  String asStringT(String locale, [int minDecimals = 2, int maxDecimals = 8]) {
+    return format(this._cycles, 12, minDecimals, maxDecimals, locale);
   }
 }

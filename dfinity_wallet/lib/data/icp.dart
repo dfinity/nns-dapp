@@ -1,5 +1,5 @@
+import 'package:dfinity_wallet/data/number_formatter.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 final _e8sPerICP = BigInt.from(100000000);
 
@@ -60,38 +60,7 @@ class ICP {
   }
 
   String asString(String locale, [int minDecimals = 2, int maxDecimals = 8]) {
-    if (minDecimals < 0 || minDecimals > 8) {
-      throw new ArgumentError.value(minDecimals, "minDecimals");
-    }
-    if (maxDecimals < 0 || maxDecimals > 8 || maxDecimals < minDecimals) {
-      throw new ArgumentError.value(maxDecimals, "maxDecimals");
-    }
-
-    final integral = (this._e8s / _e8sPerICP).floor();
-    final integralString = NumberFormat("###,##0", locale).format(integral);
-
-    final fractional = (this._e8s % _e8sPerICP).toInt();
-    var fractionalString = NumberFormat("#######0", locale).format(fractional);
-
-    if (fractionalString.length < 8) {
-      fractionalString = fractionalString.padLeft(8, "0");
-    }
-    fractionalString = fractionalString.substring(0, maxDecimals);
-
-    late int trimCount = 0;
-    for (var i = fractionalString.length - 1; i >= minDecimals; i--) {
-      if (fractionalString[i] != "0") {
-        break;
-      }
-      trimCount++;
-    }
-    if (trimCount > 0) {
-      fractionalString = fractionalString.substring(0, fractionalString.length - trimCount);
-    }
-
-    return fractionalString.length > 0
-      ? integralString + "." + fractionalString
-      : integralString;
+    return format(this._e8s, 8, minDecimals, maxDecimals, locale);
   }
 
   /// Returns the number of ICP as a double. Warning - this can result in loss
