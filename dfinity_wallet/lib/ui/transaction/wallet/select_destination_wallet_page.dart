@@ -178,8 +178,6 @@ class _AccountRow extends StatelessWidget {
       child: Column(
         children: [
           Row(
-            // mainAxisSize: MainAxisSize.min,
-            // crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
