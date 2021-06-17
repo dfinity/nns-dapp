@@ -1,10 +1,11 @@
+import 'cycles.dart';
 import 'dfinity_entity.dart';
 
 
 class Canister extends DfinityEntity {
   final String name;
   final String publicKey;
-  String? cyclesBalance;
+  Cycles? cyclesBalance;
   List<String>? controllers;
 
   bool? userIsController;

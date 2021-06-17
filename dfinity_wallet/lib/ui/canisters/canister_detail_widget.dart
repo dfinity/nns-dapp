@@ -26,6 +26,8 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final myLocale = Localizations.localeOf(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Canister"),
@@ -136,9 +138,8 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              canister.cyclesBalance?.toBigInt
-                                                      .toString() ??
-                                                  "-",
+                                              canister.cyclesBalance?.asStringT(
+                                                  myLocale.languageCode, 3, 3) ?? "-",
                                               style: TextStyle(
                                                   color: AppColors.white,
                                                   fontFamily:
@@ -148,7 +149,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                             SizedBox(
                                               width: 7,
                                             ),
-                                            Text("Cycles",
+                                            Text("T Cycles",
                                                 style: TextStyle(
                                                     color: AppColors.gray200,
                                                     fontFamily:
