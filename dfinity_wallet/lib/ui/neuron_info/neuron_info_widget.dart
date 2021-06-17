@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/proposal_summary_widget.dart';
 
 import '../../dfinity.dart';
@@ -90,7 +91,9 @@ class NeuronInfoCard extends StatelessWidget {
                       children: [
                         SelectableText(
                           neuron.neuronId.toString(),
-                          style: context.textTheme.headline3,
+                          style: Responsive.isMobile(context)
+                              ? context.textTheme.headline6
+                              : context.textTheme.headline2,
                           onTap: () {},
                         ),
                         VerySmallFormDivider(),
@@ -164,7 +167,8 @@ class NeuronInfoVotesCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text("Voting History", style: context.textTheme.headline3),
+                  child: Text("Voting History",
+                      style: context.textTheme.headline3),
                 ),
               ],
             ),
@@ -177,7 +181,7 @@ class NeuronInfoVotesCard extends StatelessWidget {
                     child: Text("Proposal Summary",
                         style: context.textTheme.bodyText1),
                   ),
-                  Text("Vote",style: context.textTheme.bodyText1)
+                  Text("Vote", style: context.textTheme.bodyText1)
                 ],
               ),
             ),
@@ -190,7 +194,7 @@ class NeuronInfoVotesCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ProposalSummaryWidget(
-                       proposalId: e.proposalId.toBigInt,
+                        proposalId: e.proposalId.toBigInt,
                       ),
                     ),
                     Text(e.vote.toString().removePrefix("Vote."),
