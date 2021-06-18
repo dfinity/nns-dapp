@@ -121,17 +121,10 @@ class _AccountRow extends StatelessWidget {
               ],
             ),
             SmallFormDivider(),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                    child: Text(account.accountIdentifier,
-                        style: context.textTheme.bodyText2,
-                        textAlign: TextAlign.start,
-                        maxLines: 2)),
-              ],
-            ),
+            Text(account.accountIdentifier,
+                style: context.textTheme.bodyText2,
+                textAlign: TextAlign.start,
+                maxLines: 2),
           ],
         ),
       ),

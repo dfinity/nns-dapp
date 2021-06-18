@@ -5,6 +5,7 @@ import 'dart:html' as html;
 import 'dart:convert';
 import 'dart:js_util';
 
+import 'package:dfinity_wallet/data/cycles.dart';
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
@@ -350,7 +351,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     canister.userIsController = response['kind'] == "success";
     if (canister.userIsController == true) {
       final details = response['details'];
-      canister.cyclesBalance = details['cycles'].toString();
+      canister.cyclesBalance = Cycles.fromBigInt(BigInt.parse(details['cycles'].toString()));
       final setting = details['setting'];
       canister.controllers = List.castFrom(setting['controllers']);
     }

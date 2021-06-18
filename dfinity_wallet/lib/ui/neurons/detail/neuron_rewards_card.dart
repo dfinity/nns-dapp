@@ -30,22 +30,21 @@ class NeuronRewardsCard extends StatelessWidget {
                         children: [
                           Text(
                             "Maturity",
-                            style: context.textTheme.headline3?.copyWith(
-                          fontSize: Responsive.isMobile(context)
-                              ? 16
-                              : context.textTheme.headline3?.fontSize),
+                            style: Responsive.isMobile(context)
+                                ? context.textTheme.headline6
+                                : context.textTheme.headline2,
                           ),
                           Tooltip(
                             padding: const EdgeInsets.all(16.0),
-                            textStyle: context.textTheme.headline3?.copyWith(
-                          fontSize: Responsive.isMobile(context)
-                              ? 16
-                              : context.textTheme.headline3?.fontSize),
+                            textStyle: Responsive.isMobile(context)
+                                ? context.textTheme.headline4
+                                : context.textTheme.headline3,
                             message:
                                 "When your neuron votes, its maturity increases. This allows you to spawn a new neuron containing newly minted ICP. Increases in maturity can occur up to 3 days after voting took place.",
                             child: Icon(
                               Icons.info,
                               color: context.textTheme.bodyText1?.color,
+                              size: Responsive.isMobile(context) ? 18 : 25,
                             ),
                           ),
                         ],
@@ -62,7 +61,7 @@ class NeuronRewardsCard extends StatelessWidget {
                         amount: neuron.stake.asE8s() > BigInt.zero
                             ? (100 * (neuron.maturityICPEquivalent.asE8s() / neuron.stake.asE8s()))
                             : 0,
-                        amountSize: 30,
+                        amountSize: Responsive.isMobile(context) ? 24 : 30,
                         locale: myLocale.languageCode,
                       ),
                       Expanded(child: ConstrainedBox(constraints: BoxConstraints(minHeight: 40),
