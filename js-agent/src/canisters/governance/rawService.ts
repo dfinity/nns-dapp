@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal";
+import type { Principal } from '@dfinity/principal';
 export interface AccountIdentifier {
   'hash' : Array<number>,
 };
@@ -14,16 +14,20 @@ export interface AddHotKey { 'new_hot_key' : [] | [Principal] };
 export interface AddOrRemoveNodeProvider { 'change' : [] | [Change] };
 export interface Amount { 'e8s' : bigint };
 export interface ApproveGenesisKyc { 'principals' : Array<Principal> };
-export type AuthzChangeOp = { 'Authorize' : { 'add_self' : boolean } } |
-  { 'Deauthorize' : null };
 export interface Ballot { 'vote' : number, 'voting_power' : bigint };
 export interface BallotInfo {
   'vote' : number,
   'proposal_id' : [] | [NeuronId],
 };
-export interface CanisterAuthzInfo { 'methods_authz' : Array<MethodAuthzInfo> };
 export type Change = { 'ToRemove' : NodeProvider } |
   { 'ToAdd' : NodeProvider };
+export interface ClaimOrRefreshNeuronFromAccount {
+  'controller' : [] | [Principal],
+  'memo' : bigint,
+};
+export interface ClaimOrRefreshNeuronFromAccountResponse {
+  'result' : [] | [Result_1],
+};
 export type Command = { 'Spawn' : Spawn } |
   { 'Split' : Split } |
   { 'Follow' : Follow } |
@@ -43,10 +47,10 @@ export type Command_1 = { 'Error' : GovernanceError } |
   { 'Disburse' : DisburseResponse };
 export type Command_2 = { 'Spawn' : Spawn } |
   { 'Split' : Split } |
+  { 'ClaimOrRefresh' : ClaimOrRefreshNeuronFromAccount } |
   { 'DisburseToNeuron' : DisburseToNeuron } |
   { 'Disburse' : Disburse };
 export interface Configure { 'operation' : [] | [Operation] };
-export interface CreateNeuron { 'dissolve_delay_seconds' : bigint };
 export interface Disburse {
   'to_account' : [] | [AccountIdentifier],
   'amount' : [] | [Amount],
@@ -70,7 +74,6 @@ export interface Followees { 'followees' : Array<NeuronId> };
 export interface Governance {
   'default_followees' : Array<[number, Followees]>,
   'wait_for_quiet_threshold_seconds' : bigint,
-  'authz' : [] | [CanisterAuthzInfo],
   'node_providers' : Array<NodeProvider>,
   'economics' : [] | [NetworkEconomics],
   'latest_reward_event' : [] | [RewardEvent],
@@ -112,16 +115,6 @@ export interface ManageNeuron {
   'command' : [] | [Command],
 };
 export interface ManageNeuronResponse { 'command' : [] | [Command_1] };
-export interface MethodAuthzChange {
-  'principal' : [] | [Principal],
-  'method_name' : string,
-  'canister' : Principal,
-  'operation' : AuthzChangeOp,
-};
-export interface MethodAuthzInfo {
-  'method_name' : string,
-  'principal_ids' : Array<Array<number>>,
-};
 export interface Motion { 'motion_text' : string };
 export interface NetworkEconomics {
   'neuron_minimum_stake_e8s' : bigint,
@@ -178,7 +171,8 @@ export type Operation = { 'RemoveHotKey' : RemoveHotKey } |
   { 'AddHotKey' : AddHotKey } |
   { 'StopDissolving' : {} } |
   { 'StartDissolving' : {} } |
-  { 'IncreaseDissolveDelay' : IncreaseDissolveDelay };
+  { 'IncreaseDissolveDelay' : IncreaseDissolveDelay } |
+  { 'SetDissolveTimestamp' : SetDissolveTimestamp };
 export interface Proposal {
   'url' : string,
   'action' : [] | [Action],
@@ -186,6 +180,7 @@ export interface Proposal {
 };
 export interface ProposalData {
   'id' : [] | [NeuronId],
+  'failure_reason' : [] | [GovernanceError],
   'ballots' : Array<[bigint, Ballot]>,
   'proposal_timestamp_seconds' : bigint,
   'reward_event_round' : bigint,
@@ -201,6 +196,7 @@ export interface ProposalInfo {
   'id' : [] | [NeuronId],
   'status' : number,
   'topic' : number,
+  'failure_reason' : [] | [GovernanceError],
   'ballots' : Array<[bigint, Ballot]>,
   'proposal_timestamp_seconds' : bigint,
   'reward_event_round' : bigint,
@@ -217,9 +213,11 @@ export interface RegisterVote { 'vote' : number, 'proposal' : [] | [NeuronId] };
 export interface RemoveHotKey { 'hot_key_to_remove' : [] | [Principal] };
 export type Result = { 'Ok' : null } |
   { 'Err' : GovernanceError };
-export type Result_1 = { 'Ok' : Neuron } |
+export type Result_1 = { 'Error' : GovernanceError } |
+  { 'NeuronId' : NeuronId };
+export type Result_2 = { 'Ok' : Neuron } |
   { 'Err' : GovernanceError };
-export type Result_2 = { 'Ok' : NeuronInfo } |
+export type Result_3 = { 'Ok' : NeuronInfo } |
   { 'Err' : GovernanceError };
 export interface RewardEvent {
   'day_after_genesis' : bigint,
@@ -227,14 +225,19 @@ export interface RewardEvent {
   'distributed_e8s_equivalent' : bigint,
   'settled_proposals' : Array<NeuronId>,
 };
+export type RewardMode = { 'RewardToNeuron' : RewardToNeuron } |
+  { 'RewardToAccount' : RewardToAccount };
 export interface RewardNodeProvider {
   'node_provider' : [] | [NodeProvider],
+  'reward_mode' : [] | [RewardMode],
   'amount_e8s' : bigint,
-  'create_neuron' : [] | [CreateNeuron],
 };
+export interface RewardToAccount { 'to_account' : [] | [AccountIdentifier] };
+export interface RewardToNeuron { 'dissolve_delay_seconds' : bigint };
 export interface SetDefaultFollowees {
   'default_followees' : Array<[number, Followees]>,
 };
+export interface SetDissolveTimestamp { 'dissolve_timestamp_seconds' : bigint };
 export interface Spawn { 'new_controller' : [] | [Principal] };
 export interface SpawnResponse { 'created_neuron_id' : [] | [NeuronId] };
 export interface Split { 'amount_e8s' : bigint };
@@ -248,10 +251,12 @@ export default interface _SERVICE {
   'claim_gtc_neurons' : (arg_0: Principal, arg_1: Array<NeuronId>) => Promise<
       Result
     >,
-  'current_authz' : () => Promise<CanisterAuthzInfo>,
-  'get_full_neuron' : (arg_0: bigint) => Promise<Result_1>,
+  'claim_or_refresh_neuron_from_account' : (
+      arg_0: ClaimOrRefreshNeuronFromAccount,
+    ) => Promise<ClaimOrRefreshNeuronFromAccountResponse>,
+  'get_full_neuron' : (arg_0: bigint) => Promise<Result_2>,
   'get_neuron_ids' : () => Promise<Array<bigint>>,
-  'get_neuron_info' : (arg_0: bigint) => Promise<Result_2>,
+  'get_neuron_info' : (arg_0: bigint) => Promise<Result_3>,
   'get_pending_proposals' : () => Promise<Array<ProposalInfo>>,
   'get_proposal_info' : (arg_0: bigint) => Promise<[] | [ProposalInfo]>,
   'list_neurons' : (arg_0: ListNeurons) => Promise<ListNeuronsResponse>,
@@ -259,11 +264,5 @@ export default interface _SERVICE {
       ListProposalInfoResponse
     >,
   'manage_neuron' : (arg_0: ManageNeuron) => Promise<ManageNeuronResponse>,
-  'submit_proposal' : (
-      arg_0: bigint,
-      arg_1: Proposal,
-      arg_2: Principal,
-    ) => Promise<bigint>,
   'transfer_gtc_neuron' : (arg_0: NeuronId, arg_1: NeuronId) => Promise<Result>,
-  'update_authz' : (arg_0: Array<MethodAuthzChange>) => Promise<undefined>,
 };
