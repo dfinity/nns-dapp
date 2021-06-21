@@ -175,36 +175,39 @@ class _AccountRow extends StatelessWidget {
     final myLocale = Localizations.localeOf(context);
     return FlatButton(
       onPressed: onPressed,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                account.name,
-                style:
-                    Responsive.isDesktop(context) | Responsive.isTablet(context)
-                        ? context.textTheme.headline3
-                        : context.textTheme.headline4,
-              ),
-              BalanceDisplayWidget(
-                amount: account.balance,
-                amountSize:
-                    Responsive.isDesktop(context) | Responsive.isTablet(context)
-                        ? 30
-                        : 14,
-                icpLabelSize: 20,
-                locale: myLocale.languageCode,
-              ),
-            ],
-          ),
-          SmallFormDivider(),
-          AutoSizeText(
-            account.accountIdentifier,
-            style: context.textTheme.bodyText2,
-            selectable: false,
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  account.name,
+                  style: Responsive.isDesktop(context) |
+                          Responsive.isTablet(context)
+                      ? context.textTheme.headline3
+                      : context.textTheme.headline4,
+                ),
+                BalanceDisplayWidget(
+                  amount: account.balance,
+                  amountSize: Responsive.isDesktop(context) |
+                          Responsive.isTablet(context)
+                      ? 30
+                      : 14,
+                  icpLabelSize: 20,
+                  locale: myLocale.languageCode,
+                ),
+              ],
+            ),
+            SmallFormDivider(),
+            AutoSizeText(
+              account.accountIdentifier,
+              style: context.textTheme.bodyText2,
+              selectable: false,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/data/icp.dart';
+import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 
@@ -29,7 +30,10 @@ class TransactionDetailsWidget extends StatelessWidget {
             Center(
               child: BalanceDisplayWidget(
                 amount: amount,
-                amountSize: 50,
+                amountSize:
+                    Responsive.isDesktop(context) | Responsive.isTablet(context)
+                        ? kCurrentBalanceSizeBig
+                        : kCurrentBalanceSizeSmall,
                 icpLabelSize: 0,
                 amountLabelSuffix: " ICP",
                 locale: myLocale.languageCode,

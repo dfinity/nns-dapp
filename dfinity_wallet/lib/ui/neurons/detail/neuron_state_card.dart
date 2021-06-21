@@ -84,7 +84,8 @@ class NeuronStateCard extends StatelessWidget {
         return ElevatedButton(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Text("Lockup"),
+              child: Text("Lockup",
+                  textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75),
             ),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(AppColors.blue600)),
@@ -101,7 +102,8 @@ class NeuronStateCard extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Text("Start Unlock"),
+              child: Text("Start Unlock",
+                  textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75),
             ),
             onPressed: () {
               context.callUpdate(() =>
