@@ -22,6 +22,7 @@ import {
     ProposalId,
     RegisterVoteRequest,
     RemoveHotKeyRequest,
+    RewardMode,
     SpawnRequest,
     SplitRequest,
     StartDissolvingRequest
@@ -37,7 +38,8 @@ import {
     ManageNeuron as RawManageNeuron,
     NeuronId as RawNeuronId,
     NodeProvider as RawNodeProvider,
-    Operation as RawOperation
+    Operation as RawOperation,
+    RewardMode as RawRewardMode
 } from "./rawService";
 
 export default class RequestConverters {
@@ -220,15 +222,15 @@ export default class RequestConverters {
     }
 
     public fromMakeRewardNodeProviderProposalRequest = (request: MakeRewardNodeProviderProposalRequest) : RawManageNeuron => {
-        const rawCommand: RawCommand =  { MakeProposal: { 
+        const rawCommand: RawCommand =  { MakeProposal: {
             url: request.url,
             summary: request.summary,
-            action: [{ RewardNodeProvider: { 
+            action: [{ RewardNodeProvider: {
                 amount_e8s: request.amount,
                 node_provider: [{
                     id: [Principal.fromText(request.nodeProvider)]
                 }],
-                create_neuron: request.createNeuron != null ? [{ dissolve_delay_seconds: request.createNeuron.dissolveDelaySeconds }] : []
+                reward_mode: request.rewardMode != null ? [this.fromRewardMode(request.rewardMode)] : []
             } }]
         }};
         return {
@@ -316,8 +318,8 @@ export default class RequestConverters {
             return {
                 RewardNodeProvider: {
                     node_provider : rewardNodeProvider.nodeProvider ? [this.fromNodeProvider(rewardNodeProvider.nodeProvider)] : [],
-                    amount_e8s : rewardNodeProvider.amount,
-                    create_neuron: rewardNodeProvider.createNeuron != null ? [{ dissolve_delay_seconds: rewardNodeProvider.createNeuron.dissolveDelaySeconds }] : []
+                    amount_e8s : rewardNodeProvider.amountE8s,
+                    reward_mode: rewardNodeProvider.rewardMode != null ? [this.fromRewardMode(rewardNodeProvider.rewardMode)] : []
                 }
             }
         }
@@ -478,6 +480,26 @@ export default class RequestConverters {
         return {
             hash: arrayBufferToArrayOfNumber(bytes)
         };
+    }
+
+    private fromRewardMode(rewardMode: RewardMode) : RawRewardMode {
+        if ("RewardToNeuron" in rewardMode) {
+            return {
+                RewardToNeuron: {
+                    dissolve_delay_seconds: rewardMode.RewardToNeuron.dissolveDelaySeconds
+                }
+            };
+        } else if ("RewardToAccount" in rewardMode) {
+            return {
+                RewardToAccount: {
+                    to_account: rewardMode.RewardToAccount.toAccount != null
+                        ? [this.fromAccountIdentifier(rewardMode.RewardToAccount.toAccount)]
+                        : []
+                }
+            };
+        } else {
+            this.throwUnrecognisedTypeError("rewardMode", rewardMode);
+        }
     }
     
     private throwUnrecognisedTypeError = (name: string, value: any) => {

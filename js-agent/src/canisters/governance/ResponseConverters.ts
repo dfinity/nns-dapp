@@ -20,6 +20,7 @@ import {
     Operation,
     Proposal,
     ProposalInfo,
+    RewardMode,
     SpawnResponse,
     Tally
 } from "./model";
@@ -33,6 +34,9 @@ import {
     Command as RawCommand,
     DissolveState as RawDissolveState,
     Followees as RawFollowees,
+    ListNeuronsResponse as RawListNeuronsResponse,
+    ListProposalInfoResponse as RawListProposalInfoResponse,
+    ManageNeuronResponse as RawManageNeuronResponse,
     Neuron as RawNeuron,
     NeuronId as RawNeuronId,
     NeuronInfo as RawNeuronInfo,
@@ -41,10 +45,8 @@ import {
     Operation as RawOperation,
     Proposal as RawProposal,
     ProposalInfo as RawProposalInfo,
+    RewardMode as RawRewardMode,
     Tally as RawTally,
-    ListProposalInfoResponse,
-    ManageNeuronResponse,
-    ListNeuronsResponse,
 } from "./rawService";
 
 export default class ResponseConverters {
@@ -67,7 +69,7 @@ export default class ResponseConverters {
         };
     }
 
-    public toArrayOfNeuronInfo = (response: ListNeuronsResponse, principal: Principal) : Array<NeuronInfo> => {
+    public toArrayOfNeuronInfo = (response: RawListNeuronsResponse, principal: Principal) : Array<NeuronInfo> => {
         const principalString = principal.toString();
 
         return response.neuron_infos.map(([id, neuronInfo]) =>
@@ -91,13 +93,13 @@ export default class ResponseConverters {
         };
     }
 
-    public toListProposalsResponse = (response: ListProposalInfoResponse) : ListProposalsResponse => {
+    public toListProposalsResponse = (response: RawListProposalInfoResponse) : ListProposalsResponse => {
         return {
             proposals: response.proposal_info.map(this.toProposalInfo)
         };
     }
 
-    public toSpawnResponse = (response: ManageNeuronResponse) : SpawnResponse => {
+    public toSpawnResponse = (response: RawManageNeuronResponse) : SpawnResponse => {
         const command = (response.command)[0];
         if ("Spawn" in command) {
             return {
@@ -107,7 +109,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("response", response);
     } 
 
-    public toDisburseResponse = (response: ManageNeuronResponse) : DisburseResponse => {
+    public toDisburseResponse = (response: RawManageNeuronResponse) : DisburseResponse => {
         const command = (response.command)[0];
         if ("Disburse" in command) {
             return {
@@ -117,7 +119,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("response", response);
     } 
 
-    public toDisburseToNeuronResult = (response: ManageNeuronResponse) : DisburseToNeuronResponse => {
+    public toDisburseToNeuronResult = (response: RawManageNeuronResponse) : DisburseToNeuronResponse => {
         const command = (response.command)[0];
         if ("Spawn" in command) {
             return {
@@ -127,7 +129,7 @@ export default class ResponseConverters {
         this.throwUnrecognisedTypeError("response", response);
     } 
 
-    public toMakeProposalResponse = (response: ManageNeuronResponse) : MakeProposalResponse => {
+    public toMakeProposalResponse = (response: RawManageNeuronResponse) : MakeProposalResponse => {
         const command = (response.command)[0];
         if ("MakeProposal" in command) {
             return {
@@ -268,8 +270,10 @@ export default class ResponseConverters {
             return {
                 RewardNodeProvider: {
                     nodeProvider : rewardNodeProvider.node_provider.length ? this.toNodeProvider(rewardNodeProvider.node_provider[0]) : null,
-                    amount : rewardNodeProvider.amount_e8s,
-                    createNeuron: rewardNodeProvider.create_neuron.length ? { dissolveDelaySeconds: rewardNodeProvider.create_neuron[0].dissolve_delay_seconds } : null,
+                    amountE8s : rewardNodeProvider.amount_e8s,
+                    rewardMode: rewardNodeProvider.reward_mode.length
+                        ? this.toRewardMode(rewardNodeProvider.reward_mode[0])
+                        : null
                 }
             }
         }
@@ -450,6 +454,26 @@ export default class ResponseConverters {
 
     private toAccountIdentifier(accountIdentifier: RawAccountIdentifier): AccountIdentifier {
         return accountIdentifierFromBytes(new Uint8Array(accountIdentifier.hash));
+    }
+
+    private toRewardMode(rewardMode: RawRewardMode) : RewardMode {
+        if ("RewardToNeuron" in rewardMode) {
+            return {
+                RewardToNeuron: {
+                    dissolveDelaySeconds: rewardMode.RewardToNeuron.dissolve_delay_seconds
+                }
+            };
+        } else if ("RewardToAccount" in rewardMode) {
+            return {
+                RewardToAccount: {
+                    toAccount: rewardMode.RewardToAccount.to_account != null && rewardMode.RewardToAccount.to_account.length
+                        ? this.toAccountIdentifier(rewardMode.RewardToAccount.to_account[0])
+                        : null
+                }
+            };
+        } else {
+            this.throwUnrecognisedTypeError("rewardMode", rewardMode);
+        }
     }
 
     private throwUnrecognisedTypeError = (name: string, value: any) => {
