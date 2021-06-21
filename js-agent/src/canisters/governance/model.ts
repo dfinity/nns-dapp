@@ -34,7 +34,6 @@ export type Command =
     { MakeProposal: Proposal } |
     { Disburse: Disburse };
 export interface Configure { operation: Operation };
-export interface CreateNeuron { dissolveDelaySeconds : bigint };
 export interface Disburse {
     toAccountId: AccountIdentifier,
     amount: E8s,
@@ -244,6 +243,10 @@ export enum Vote {
 }  
 export interface RegisterVote { vote: Vote, proposal: ProposalId };
 export interface RemoveHotKey { hotKeyToRemove: Option<PrincipalString> };
+export type RewardMode = { RewardToNeuron: RewardToNeuron } |
+    { RewardToAccount: RewardToAccount };
+export interface RewardToAccount { toAccount: Option<AccountIdentifier> };
+export interface RewardToNeuron { dissolveDelaySeconds: bigint };
 
 export type ClaimNeuronRequest = {
     publicKey: DerEncodedBlob,
@@ -258,9 +261,9 @@ export type GetFullNeuronResponse = { Ok: Neuron } |
 export type GetNeuronInfoResponse = { Ok: NeuronInfo } |
     { Err: GovernanceError };
 export interface RewardNodeProvider {
-    nodeProvider : Option<NodeProvider>,
-    amount : E8s,
-    createNeuron: Option<CreateNeuron>
+    nodeProvider: Option<NodeProvider>,
+    rewardMode: Option<RewardMode>,
+    amountE8s: bigint,
 };
 export interface SetDefaultFollowees {
     defaultFollowees: Array<Followees>
@@ -368,7 +371,7 @@ export interface MakeRewardNodeProviderProposalRequest {
     url: string,
     nodeProvider: PrincipalString,
     amount: E8s,
-    createNeuron: Option<CreateNeuron>
+    rewardMode: Option<RewardMode>
 }
 
 export interface MakeSetDefaultFolloweesProposalRequest {
