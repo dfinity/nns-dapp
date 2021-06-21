@@ -45,8 +45,6 @@ pub struct AccountsStore {
     hardware_wallet_accounts_count: u64,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
-
-    recalculate_transaction_type_index: Option<TransactionIndex>,
 }
 
 #[derive(CandidType, Deserialize, Debug)]
@@ -998,109 +996,6 @@ impl AccountsStore {
         }
     }
 
-    /// Before May 19th we didn't store the memo values. So this method iterates through all
-    /// transactions until it finds the first one with a memo. This will return a superset of the
-    /// transactions which are missing memos since lots of transactions have a memo of 0.
-    pub fn get_block_heights_with_missing_memo(&self) -> Vec<BlockHeight> {
-        self.transactions
-            .iter()
-            .take_while(|t| t.memo.0 == 0)
-            .map(|t| t.block_height)
-            .collect()
-    }
-
-    pub fn set_memo(&mut self, block_height: BlockHeight, memo: Memo) {
-        if let Some(index) = self.get_transaction_index(block_height) {
-            if let Some(transaction) = self.get_transaction_mut(index) {
-                transaction.memo = memo;
-            }
-        }
-    }
-
-    // Call this method after setting the memos for all transactions.
-    pub fn recalculate_transaction_types(&mut self, count: u32) {
-        if let Some(from) = self.recalculate_transaction_type_index {
-            let max_index = self.transactions.back().unwrap().transaction_index;
-            let to = min(from + (count as u64) - 1, max_index);
-
-            for index in from..=to {
-                if let Some(transaction) = self.get_transaction(index) {
-                    // If the transaction_type is None then we don't know the user's principal so
-                    // we need to wait until the user next signs in.
-                    // If the transaction_type has a value which is not Send then it must already be
-                    // correctly set so we can skip it.
-                    if transaction.transaction_type.is_none()
-                        || transaction.transaction_type.unwrap() != TransactionType::Send
-                    {
-                        continue;
-                    }
-                    // We only care about Send requests since they are the only ones where special
-                    // transaction types are possible.
-                    if let Send {
-                        from,
-                        to,
-                        amount,
-                        fee: _,
-                    } = transaction.transfer
-                    {
-                        if let Some(principal) = self.try_get_principal(&from) {
-                            let canister_ids: Vec<_> = self
-                                .get_canisters(principal)
-                                .iter()
-                                .map(|c| c.canister_id)
-                                .collect();
-                            let memo = transaction.memo;
-                            let block_height = transaction.block_height;
-                            let transaction_type = self.get_transaction_type(
-                                from,
-                                to,
-                                amount,
-                                memo,
-                                &principal,
-                                &canister_ids,
-                            );
-                            if transaction_type == TransactionType::StakeNeuron
-                                && !self.neuron_accounts.contains_key(&to)
-                            {
-                                let neuron_details = NeuronDetails {
-                                    account_identifier: to,
-                                    principal,
-                                    memo,
-                                    neuron_id: None,
-                                };
-                                self.neuron_accounts.insert(to, neuron_details);
-
-                                // The only reason we queue up the neuron for processing is so
-                                // that we can determine the neuronId. We don't currently use
-                                // the neuronIds but it makes sense to have them there for
-                                // consistency.
-                                self.multi_part_transactions_processor.push(
-                                    principal,
-                                    block_height,
-                                    MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
-                                );
-                            }
-
-                            let transaction = self.get_transaction_mut(index).unwrap();
-                            transaction.transaction_type = Some(transaction_type);
-                        }
-                    }
-                }
-            }
-
-            if to == max_index {
-                // We have recalculated every transaction type
-                self.recalculate_transaction_type_index = None;
-            } else {
-                self.recalculate_transaction_type_index = Some(to + 1);
-            }
-        }
-    }
-
-    pub fn get_recalculate_transaction_type_index(&self) -> Option<TransactionIndex> {
-        self.recalculate_transaction_type_index
-    }
-
     fn try_add_transaction_to_account(
         &mut self,
         account_identifier: AccountIdentifier,
@@ -1680,7 +1575,6 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
-            recalculate_transaction_type_index: Some(0),
         })
     }
 }
