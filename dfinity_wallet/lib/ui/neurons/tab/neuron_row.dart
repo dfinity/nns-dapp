@@ -78,7 +78,7 @@ class NeuronRow extends StatelessWidget {
                 "${neuron.durationRemaining.yearsDayHourMinuteSecondFormatted()}",
                 style: context.textTheme.subtitle2,
               ),
-              Text("   Remaining", style: context.textTheme.subtitle2)
+              Text(" Remaining", style: context.textTheme.subtitle2)
             ],
           ),
           SizedBox(
@@ -92,7 +92,7 @@ class NeuronRow extends StatelessWidget {
               Text(
                   "${neuron.dissolveDelay.yearsDayHourMinuteSecondFormatted()}",
                   style: context.textTheme.subtitle2),
-              Text("    Dissolve Delay", style: context.textTheme.subtitle2)
+              Text(" Dissolve Delay", style: context.textTheme.subtitle2)
             ],
           ),
           SizedBox(
