@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 
 import '../../../dfinity.dart';
@@ -67,9 +68,18 @@ class FolloweeSuggestionRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextButton(child: Align(alignment: Alignment.bottomLeft, child: Text(suggestion.name, style: context.textTheme.bodyText1)), onPressed: (){
-                    OverlayBaseWidget.show(context, NeuronInfoWidget(suggestion.id));
-                },),
+                TextButton(
+                  child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Text(suggestion.name,
+                          style: Responsive.isMobile(context)
+                              ? context.textTheme.bodyText2
+                              : context.textTheme.bodyText1)),
+                  onPressed: () {
+                    OverlayBaseWidget.show(
+                        context, NeuronInfoWidget(suggestion.id));
+                  },
+                ),
               ],
             ),
           ),
@@ -78,10 +88,15 @@ class FolloweeSuggestionRow extends StatelessWidget {
               padding: EdgeInsets.all(8),
               child: ElevatedButton(
                 onPressed: selected,
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.gray800)),
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(AppColors.gray800)),
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
-                  child: Text("Follow", style: context.textTheme.bodyText1,),
+                  child: Text(
+                    "Follow",
+                    style: context.textTheme.bodyText1,
+                  ),
                 ),
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 
@@ -14,8 +15,7 @@ class TopicFolloweesWidget extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) =>
-      Container(
+  Widget build(BuildContext context) => Container(
         padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
         child: IntrinsicHeight(
           child: currentlyFollowingCard(context),
@@ -33,7 +33,9 @@ class TopicFolloweesWidget extends StatelessWidget {
           children: [
             Text(
               "Currently Following",
-              style: context.textTheme.headline3,
+              style: Responsive.isMobile(context)
+                  ? context.textTheme.headline4
+                  : context.textTheme.headline3,
             ),
             Expanded(child: followingTopicsList(context)),
             Align(
@@ -41,11 +43,15 @@ class TopicFolloweesWidget extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(
-                      AppColors.gray800)),
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(AppColors.gray800)),
                   child: Padding(
                     padding: EdgeInsets.all(8),
-                    child: Text("Add Followee"),
+                    child: Text(
+                      "Add Followee",
+                      textScaleFactor: Responsive.isMobile(context) ? 0.65 : 1,
+                    ),
                   ),
                   onPressed: () {
                     OverlayBaseWidget.show(
@@ -72,8 +78,7 @@ class TopicFolloweesWidget extends StatelessWidget {
         minimumSize: MaterialStateProperty.all(Size.square(40)));
     return Column(
       children: [
-        ...followees.followees.mapIndexed((i, e) =>
-            Container(
+        ...followees.followees.mapIndexed((i, e) => Container(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -84,9 +89,9 @@ class TopicFolloweesWidget extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Text(
                               FolloweeSuggestion.followerSuggestions
-                                  .firstOrNullWhere(
-                                      (element) => element.id == e)
-                                  ?.name ??
+                                      .firstOrNullWhere(
+                                          (element) => element.id == e)
+                                      ?.name ??
                                   e,
                               style: context.textTheme.bodyText2),
                         ),
@@ -131,11 +136,14 @@ class TopicFolloweesWidget extends StatelessWidget {
 
 class EnterFolloweeWidget extends StatelessWidget {
   EnterFolloweeWidget(
-      {Key? key, required this.neuron, required this.followees, required this.onComplete})
+      {Key? key,
+      required this.neuron,
+      required this.followees,
+      required this.onComplete})
       : super(key: key);
 
-  final ValidatedTextField addressField = ValidatedTextField(
-      "Followee Address", inputType: TextInputType.number, validations: []);
+  final ValidatedTextField addressField = ValidatedTextField("Followee Address",
+      inputType: TextInputType.number, validations: []);
 
   final Function(String neuronId) onComplete;
   final Neuron neuron;
@@ -164,7 +172,7 @@ class EnterFolloweeWidget extends StatelessWidget {
                       child: Text("Enter New Followee",
                           style: TextStyle(
                               fontFamily: Fonts.circularBook,
-                              fontSize: 24,
+                              fontSize: Responsive.isMobile(context) ? 20 : 24,
                               color: AppColors.white))),
                   Expanded(child: Container()),
                   AspectRatio(
@@ -195,13 +203,19 @@ class EnterFolloweeWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text("Neuron ID",
-                      style: context.textTheme.headline3),
+                      style: Responsive.isMobile(context)
+                          ? context.textTheme.headline6
+                          : context.textTheme.headline3),
                   DebouncedValidatedFormField(addressField),
                   Center(
                     child: ValidFieldsSubmitButton(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("Follow Neuron"),
+                        child: Text(
+                          "Follow Neuron",
+                          textScaleFactor:
+                              Responsive.isMobile(context) ? 0.75 : 1,
+                        ),
                       ),
                       onPressed: () async {
                         onComplete(addressField.currentValue);
@@ -224,14 +238,16 @@ class EnterFolloweeWidget extends StatelessWidget {
                 children: [
                   Text(
                     "Options for Following",
-                    style: context.textTheme.headline3,
+                    style: Responsive.isMobile(context)
+                        ? context.textTheme.headline6
+                        : context.textTheme.headline3,
                     textAlign: TextAlign.left,
                   ),
                   FolloweeSuggestionWidget(followees.followees,
                       suggestionSelected: (e) {
-                        onComplete(e.id);
-                        OverlayBaseWidget.of(context)?.dismiss();
-                      })
+                    onComplete(e.id);
+                    OverlayBaseWidget.of(context)?.dismiss();
+                  })
                 ],
               ),
             ),
@@ -240,5 +256,4 @@ class EnterFolloweeWidget extends StatelessWidget {
       ),
     );
   }
-
 }
