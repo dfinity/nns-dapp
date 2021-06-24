@@ -1,4 +1,6 @@
+import 'package:core/core.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/following/topic_card.dart';
 import 'package:dfinity_wallet/ui/neurons/following/topic_followeees_widget.dart';
 
@@ -8,7 +10,8 @@ class ConfigureFollowersPage extends StatefulWidget {
   final Neuron neuron;
   final Function(BuildContext) completeAction;
 
-  const ConfigureFollowersPage({Key? key, required this.neuron, required this.completeAction})
+  const ConfigureFollowersPage(
+      {Key? key, required this.neuron, required this.completeAction})
       : super(key: key);
 
   @override
@@ -17,10 +20,11 @@ class ConfigureFollowersPage extends StatefulWidget {
 
 class _ConfigureFollowersPageState extends State<ConfigureFollowersPage> {
   int? expandedIndex;
-  GlobalKey contentKey = GlobalKey();
   ScrollController scrollController = ScrollController();
 
   late List<GlobalKey> rowKeys;
+
+  bool pressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,35 +46,67 @@ class _ConfigureFollowersPageState extends State<ConfigureFollowersPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.", style: context.textTheme.subtitle2),
+                          child: Text(
+                              "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",
+                              style: context.textTheme.subtitle2),
                         ),
                         SmallFormDivider(),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(15),
-                          child: ExpansionPanelList(
-                            key: contentKey,
-                            elevation: 0,
-                            animationDuration: 0.5.seconds,                            
-                            expansionCallback: (i, expanded) {
-                              setState(() {
-                                if (expanded) {
-                                  expandedIndex = null;
-                                } else {
-                                  expandedIndex = i;
-                                }
-                              });
-                            },
-                            children: [
-                              ...followees.mapIndexed((i, e) {
-                                return ExpansionPanel(
-                                    canTapOnHeader: true,
-                                    isExpanded: i == expandedIndex,
+                          child: Container(
+                            color: AppColors.lightBackground,
+                            padding: EdgeInsets.only(left: 0.0, top: 20.0),
+                            child: Column(
+                              children: [
+                                ...followees.mapIndexed((i, e) {
+                                  return ExpansionTile(
                                     backgroundColor: AppColors.lightBackground,
-                                    headerBuilder: (context, expanded) => TopicCard(followees: e, key: rowKeys[i]),
-                                    body: TopicFolloweesWidget(followees: e, neuron: widget.neuron)
+                                    onExpansionChanged: (isExpanded) {
+                                      setState(() {
+                                        pressed = isExpanded;
+                                      });
+                                    },
+                                    title: TopicCardName(followees: e),
+                                    subtitle:
+                                        TopicCardDescription(followees: e),
+                                    children: [
+                                      TopicFolloweesWidget(
+                                          followees: e, neuron: widget.neuron),
+                                    ],
+                                    trailing: Wrap(
+                                      children: [
+                                        SizedBox(
+                                            width: Responsive.isMobile(context)
+                                                ? 10.0
+                                                : 20.0),
+                                        TopicCardFolloweesLength(followees: e),
+                                        SizedBox(
+                                            width: Responsive.isMobile(context)
+                                                ? 10.0
+                                                : 20.0),
+                                        pressed
+                                            ? Icon(
+                                                Icons.keyboard_arrow_up,
+                                                size:
+                                                    Responsive.isMobile(context)
+                                                        ? 25
+                                                        : 40,
+                                                color: AppColors.black,
+                                              )
+                                            : Icon(
+                                                Icons.keyboard_arrow_down,
+                                                size:
+                                                    Responsive.isMobile(context)
+                                                        ? 25
+                                                        : 40,
+                                                color: AppColors.black,
+                                              )
+                                      ],
+                                    ),
                                   );
-                              }),
-                            ],
+                                }),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -80,7 +116,6 @@ class _ConfigureFollowersPageState extends State<ConfigureFollowersPage> {
               ),
             ],
           );
-        }
-      );
+        });
   }
 }
