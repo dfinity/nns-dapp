@@ -27,7 +27,10 @@ class TransactionRow extends StatelessWidget {
       child: Container(
         width: double.infinity,
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: Responsive.isMobile(context)
+              ? const EdgeInsets.all(24.0)
+              : const EdgeInsets.only(
+                  top: 8.0, left: 24.0, right: 24.0, bottom: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
