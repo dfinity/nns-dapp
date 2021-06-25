@@ -1,6 +1,8 @@
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/transaction_type.dart';
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
@@ -25,38 +27,50 @@ class TransactionRow extends StatelessWidget {
       child: Container(
         width: double.infinity,
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Row(
+          padding: Responsive.isMobile(context)
+              ? const EdgeInsets.all(24.0)
+              : const EdgeInsets.only(
+                  top: 8.0, left: 24.0, right: 24.0, bottom: 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(transaction.type.getName(isReceive),
-                        style: context.textTheme.headline3),
-                    VerySmallFormDivider(),
-                    Text(dateFormatter.format(transaction.date),
-                        style: context.textTheme.bodyText2),
-                    VerySmallFormDivider(),
-                    if (isReceive)
-                      SelectableText("Source: ${transaction.from}",
-                          style: context.textTheme.bodyText2),
-                    if (isSend)
-                      SelectableText(
-                        "To: ${transaction.to}",
-                        style: context.textTheme.bodyText2,
-                      ),
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: AutoSizeText(
+                      transaction.type.getName(isReceive),
+                      wrapWords: true,
+                      style: Responsive.isMobile(context)
+                          ? context.textTheme.headline6
+                          : context.textTheme.headline3,
+                    ),
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: TransactionAmountDisplayWidget(
+                      fee: transaction.fee,
+                      amount: transaction.amount,
+                      type: transaction.type,
+                      isReceive: isReceive,
+                    ),
+                  ),
+                ],
               ),
+              VerySmallFormDivider(),
+              Text(dateFormatter.format(transaction.date),
+                  style: context.textTheme.bodyText2),
+              VerySmallFormDivider(),
+              if (isReceive)
+                SelectableText("Source: ${transaction.from}",
+                    style: context.textTheme.bodyText2),
+              if (isSend)
+                SelectableText(
+                  "To: ${transaction.to}",
+                  style: context.textTheme.bodyText2,
+                ),
               SizedBox(
                 width: 20,
-              ),
-              TransactionAmountDisplayWidget(
-                fee: transaction.fee,
-                amount: transaction.amount,
-                type: transaction.type,
-                isReceive: isReceive,
               ),
             ],
           ),
@@ -87,28 +101,35 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
     final color = isReceive ? AppColors.green500 : AppColors.gray50;
     final secondaryColor = isReceive ? AppColors.green600 : AppColors.gray200;
 
-    final displayAmount = amount + (type.shouldShowFee(isReceive) ? this.fee : ICP.zero);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          "$sign${(displayAmount).asString(myLocale.languageCode)}",
-          style: TextStyle(
+    final displayAmount =
+        amount + (type.shouldShowFee(isReceive) ? this.fee : ICP.zero);
+    return Padding(
+      padding: Responsive.isMobile(context)
+          ? const EdgeInsets.only(top: 10.0)
+          : const EdgeInsets.only(top: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AutoSizeText(
+            "$sign${(displayAmount).asString(myLocale.languageCode)}",
+            style: TextStyle(
               color: color,
               fontFamily: Fonts.circularBold,
-              fontSize: 30.toDouble()),
-        ),
-        SizedBox(
-          width: 7,
-        ),
-        Text("ICP",
-            style: TextStyle(
-                color: secondaryColor,
-                fontFamily: Fonts.circularBook,
-                fontSize: 20.0))
-      ],
+              fontSize: Responsive.isMobile(context) ? 20 : 30,
+            ),
+          ),
+          SizedBox(
+            width: 7,
+          ),
+          Text("ICP",
+              style: TextStyle(
+                  color: secondaryColor,
+                  fontFamily: Fonts.circularBook,
+                  fontSize: Responsive.isMobile(context) ? 14 : 20.0))
+        ],
+      ),
     );
   }
 }
