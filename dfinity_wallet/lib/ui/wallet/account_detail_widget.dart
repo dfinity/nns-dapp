@@ -1,9 +1,12 @@
+import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
+import 'package:dfinity_wallet/ui/_components/page_button.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
 import 'package:flutter/services.dart';
@@ -70,115 +73,107 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                         child: ConstrainWidthAndCenter(
                           child: Column(
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(24.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          AutoSizeText(
-                                            account.name,
-                                            maxLines: 1,
-                                            style: context.textTheme.headline1,
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Flexible(
-                                                child: SelectableText(
-                                                  account.accountIdentifier,
-                                                  style: context
-                                                      .textTheme.bodyText2
-                                                ),
-                                              ),
-                                              IconButton(
-                                                  constraints:
-                                                  BoxConstraints.tight(
-                                                      Size.square(
-                                                          20.0)),
-                                                  padding:
-                                                  const EdgeInsets.all(
-                                                      0),
-                                                  alignment:
-                                                  Alignment.center,
-                                                  iconSize: context
-                                                      .textTheme
-                                                      .bodyText1
-                                                      ?.fontSize ??
-                                                      24,
-                                                  icon: Icon(
-                                                    Icons.copy,
-                                                    color: context.textTheme
-                                                        .bodyText1?.color,
-                                                  ),
-                                                  onPressed: () {
-                                                    Clipboard.setData(
-                                                        ClipboardData(
-                                                            text: account
-                                                                .accountIdentifier));
-                                                  }),
-                                            ],
-                                          ),
-                                          SmallFormDivider(),
-                                          if (account.hardwareWallet)
-                                            Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: ElevatedButton(
-                                                  style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all(AppColors
-                                                                  .gray600)),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            16.0),
-                                                    child: Text(
-                                                      "Show Address And Public Key On Device",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontFamily: Fonts
-                                                              .circularBook,
-                                                          color:
-                                                              AppColors.gray50,
-                                                          fontWeight:
-                                                              FontWeight.w100),
-                                                    ),
-                                                  ),
-                                                  onPressed: () async {
-                                                    final ledgerIdentity =
-                                                        await context.icApi
-                                                            .connectToHardwareWallet();
-
-                                                    if (ledgerIdentity !=
-                                                        null) {
-                                                      await ledgerIdentity
-                                                          .showAddressAndPubKeyOnDevice();
-                                                    }
-                                                  }),
-                                            ),
-                                        ],
-                                      ),
+                              Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      account.name,
+                                      style: Responsive.isMobile(context)
+                                          ? context.textTheme.headline2
+                                          : context.textTheme.headline1,
                                     ),
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(24),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
                                       child: BalanceDisplayWidget(
                                         amount: account.balance,
-                                        amountSize: 40,
-                                        icpLabelSize: 25,
+                                        amountSize: Responsive.isMobile(context)
+                                            ? 24
+                                            : 32,
+                                        icpLabelSize: 20,
                                         locale: myLocale.languageCode,
-                                      )),
-                                ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Flexible(
+                                          child: SelectableText(
+                                              account.accountIdentifier,
+                                              style:
+                                                  context.textTheme.bodyText2),
+                                        ),
+                                        IconButton(
+                                            constraints: BoxConstraints.tight(
+                                                Size.square(20.0)),
+                                            padding: const EdgeInsets.all(0),
+                                            alignment: Alignment.center,
+                                            iconSize: context.textTheme
+                                                    .bodyText1?.fontSize ??
+                                                24,
+                                            icon: Icon(
+                                              Icons.copy,
+                                              color: context
+                                                  .textTheme.bodyText1?.color,
+                                            ),
+                                            onPressed: () {
+                                              Clipboard.setData(ClipboardData(
+                                                  text: account
+                                                      .accountIdentifier));
+                                            }),
+                                      ],
+                                    ),
+                                    SmallFormDivider(),
+                                    if (account.hardwareWallet)
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: ElevatedButton(
+                                            style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        AppColors.gray600)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Text(
+                                                "Show Address And Public Key On Device",
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Responsive.isMobile(
+                                                                context)
+                                                            ? 14
+                                                            : 20,
+                                                    fontFamily:
+                                                        Fonts.circularBook,
+                                                    color: AppColors.gray50,
+                                                    fontWeight:
+                                                        FontWeight.w100),
+                                              ),
+                                            ),
+                                            onPressed: () async {
+                                              final ledgerIdentity =
+                                                  await context.icApi
+                                                      .connectToHardwareWallet();
+
+                                              if (ledgerIdentity != null) {
+                                                await ledgerIdentity
+                                                    .showAddressAndPubKeyOnDevice();
+                                              }
+                                            }),
+                                      ),
+                                  ],
+                                ),
                               ),
                               if (account.transactions.isEmpty)
                                 Center(
@@ -193,23 +188,17 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                 ),
                               TransactionsListWidget(account: account),
                               SizedBox(
-                                height: 200,
+                                height: 150,
                               )
                             ],
                           ),
                         ),
                       ),
-                      footer: Center(
-                        child: ElevatedButton(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: AutoSizeText(
-                                "New Transaction",
-                                style: context.textTheme.button
-                                    ?.copyWith(fontSize: 24),
-                              ),
-                            ),
-                            onPressed: () {
+                      footer: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: PageButton(
+                            title: "New Transaction",
+                            onPress: () {
                               if (account.hardwareWallet) {
                                 OverlayBaseWidget.show(
                                     context,

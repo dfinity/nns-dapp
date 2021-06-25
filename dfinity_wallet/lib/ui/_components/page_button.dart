@@ -14,7 +14,7 @@ class PageButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: Responsive.isDesktop(context) | Responsive.isTablet(context)
-          ? EdgeInsets.symmetric(horizontal: 20, vertical: 32)
+          ? EdgeInsets.symmetric(horizontal: 20, vertical: 15)
           : EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: ElevatedButton(
         child: Responsive.isDesktop(context) | Responsive.isTablet(context)
