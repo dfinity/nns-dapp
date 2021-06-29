@@ -73,21 +73,18 @@ export default class AuthApi {
 
     public connectToHardwareWallet = async () : Promise<LedgerIdentity | null> => {
         if (this.ledgerIdentity) {
-            console.log("Closing existing connection to hardware wallet.");
-            this.ledgerIdentity.close();
-            console.log("Done.");
-            this.ledgerIdentity = null;
+            return this.ledgerIdentity;
         }
 
         try {
             console.log("Creating new connection to hardware wallet");
             this.ledgerIdentity = await LedgerIdentity.create();
+            return this.ledgerIdentity;
         } catch (err) {
             console.log(`An exception has occurred: ${err}`)
             alert(err);
+            return null;
         }
-
-        return this.ledgerIdentity
     }
 
     public getPrincipal = () : string => {
