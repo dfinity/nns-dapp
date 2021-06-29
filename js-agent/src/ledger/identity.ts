@@ -29,45 +29,52 @@ import {
      * @param derivePath The derivation path.
      */
     public static async create(derivePath = `m/44'/223'/0'/0/0`): Promise<LedgerIdentity> {
-      const transport = await TransportClass.create();
+      const [app, transport] = await this._connect();
+
       try {
-        const app = new DfinityApp(transport);
-    
-        const resp = await app.getAddressAndPubKey(derivePath);
-        console.log("Response received");
-        console.log(resp);
-
-        if (resp.returnCode == 28161) {
-            // This means the ledger app isn't running.
-            throw "Please open the Internet Computer app on your wallet.";
-        }
-
-        // This type doesn't have the right fields in it, so we have to manually type it.
-        const principal = (resp as unknown as { principalText: string }).principalText;
-        const publicKey = Secp256k1PublicKey.fromRaw(blobFromUint8Array(resp.publicKey));
-        const address = resp.address;
-    
-        if (principal !== Principal.selfAuthenticating(publicKey.toDer()).toText()) {
-            transport.close();
-            throw new Error('Principal returned by device does not match public key.');
-        }
-
-        return new this(app, derivePath, publicKey, address.buffer, transport);
-      } catch (err) {
-          // Always close the transport if some exception is thrown.
-          transport.close();
-          throw err;
+        const publicKey = await this._fetchPublicKeyFromDevice(app, derivePath);
+        return new this(derivePath, publicKey);
+      } finally {
+        // Always close the transport.
+        transport.close();
       }
     }
 
     private constructor(
-      private readonly _app: DfinityApp,
       public readonly derivePath: string,
       private readonly _publicKey: Secp256k1PublicKey,
-      private readonly _address: ArrayBuffer,
-      private readonly _transport: TransportClass,
     ) {
       super();
+    }
+
+    /**
+     * Connect to a ledger hardware wallet.
+     */
+    private static async _connect(): Promise<[DfinityApp, TransportClass]> {
+        const transport = await TransportClass.create();
+        const app = new DfinityApp(transport);
+    
+        return [app, transport];
+    }
+
+    private static async _fetchPublicKeyFromDevice(app: DfinityApp, derivePath: string): Promise<Secp256k1PublicKey> {
+      const resp = await app.getAddressAndPubKey(derivePath);
+
+      if (resp.returnCode == 28161) {
+          throw "Please open the Internet Computer app on your wallet and try again.";
+      } else if (resp.returnCode == 27014) {
+          throw "Ledger Wallet is locked. Unlock it and try again."
+      }
+
+      // This type doesn't have the right fields in it, so we have to manually type it.
+      const principal = (resp as unknown as { principalText: string }).principalText;
+      const publicKey = Secp256k1PublicKey.fromRaw(blobFromUint8Array(resp.publicKey));
+  
+      if (principal !== Principal.selfAuthenticating(publicKey.toDer()).toText()) {
+          throw new Error('Principal returned by device does not match public key.');
+      }
+
+      return publicKey;
     }
   
     /**
@@ -75,33 +82,33 @@ import {
      * and verify the address/pubkey are the same as on the device screen.
      */
     public async showAddressAndPubKeyOnDevice(): Promise<void> {
-      await this._app.showAddressAndPubKey(this.derivePath);
+      this._executeWithApp(async (app: DfinityApp) => {
+        await app.showAddressAndPubKey(this.derivePath);
+      });
     }
   
     public getPublicKey(): PublicKey {
       return this._publicKey;
     }
 
-    public async close(): Promise<void> {
-      await this._transport.close();
-    }
-  
     public async sign(blob: BinaryBlob): Promise<BinaryBlob> {
-      const resp: ResponseSign = await this._app.sign(this.derivePath, Buffer.from(blob));
-      const signatureRS = resp.signatureRS;
-      if (!signatureRS) {
-        throw new Error(
-          `A ledger error happened during signature:\n` +
-            `Code: ${resp.returnCode}\n` +
-            `Message: ${JSON.stringify(resp.errorMessage)}\n`,
-        );
-      }
-  
-      if (signatureRS?.byteLength !== 64) {
-        throw new Error(`Signature must be 64 bytes long (is ${signatureRS.length})`);
-      }
-  
-      return blobFromUint8Array(new Uint8Array(signatureRS));
+      return await this._executeWithApp(async (app: DfinityApp) => {
+          const resp: ResponseSign = await app.sign(this.derivePath, Buffer.from(blob));
+          const signatureRS = resp.signatureRS;
+          if (!signatureRS) {
+            throw new Error(
+              `A ledger error happened during signature:\n` +
+                `Code: ${resp.returnCode}\n` +
+                `Message: ${JSON.stringify(resp.errorMessage)}\n`,
+            );
+          }
+      
+          if (signatureRS?.byteLength !== 64) {
+            throw new Error(`Signature must be 64 bytes long (is ${signatureRS.length})`);
+          }
+      
+          return blobFromUint8Array(new Uint8Array(signatureRS));
+        });
     }
   
     public async transformRequest(request: HttpAgentRequest): Promise<unknown> {
@@ -115,5 +122,22 @@ import {
           sender_sig: signature,
         },
       };
+    }
+
+    private async _executeWithApp<T>(func: (app: DfinityApp) => Promise<T>) : Promise<T> {
+      const [app, transport] = await LedgerIdentity._connect();
+
+      try {
+        // Verify that the public key of the device matches the public key of this identity.
+        const devicePublicKey = await LedgerIdentity._fetchPublicKeyFromDevice(app, this.derivePath);
+        if (JSON.stringify(devicePublicKey) !== JSON.stringify(this._publicKey)) {
+            throw new Error("Found unexpected public key. Are you sure you're using the right wallet?");
+        }
+
+        // Run the provided function.
+        return await func(app);
+      } finally {
+        transport.close();
+      }
     }
   }
