@@ -1,6 +1,6 @@
 enum Topic {
   Unspecified,
-  NeuronManagement,
+  // NeuronManagement - these proposals are not public so we hide this topic
   ExchangeRate,
   NetworkEconomics,
   Governance,
@@ -17,7 +17,6 @@ extension Description on Topic {
 
   static const _topicNameMap = {
     Topic.Unspecified: "All Topics",
-    Topic.NeuronManagement: "Manage Neuron",
     Topic.ExchangeRate: "Exchange Rate",
     Topic.NetworkEconomics: "Network Economics",
     Topic.Governance: "Governance",
@@ -31,7 +30,6 @@ extension Description on Topic {
 
   static const _topicDescriptionMap = {
     Topic.Unspecified: "Follow neurons on all proposal topics",
-    Topic.NeuronManagement: "Proposals that manage specific neurons, for example making them perform actions.",
     Topic.ExchangeRate: "All proposals that provide “real time” information about the value of ICP, as measured by an IMF SDR, which allows the NNS to convert ICP to cycles (which power computation) at a rate which keeps their real world cost constant.",
     Topic.NetworkEconomics: "Proposals that administer network economics, for example, determining what rewards should be paid to node operators.",
     Topic.Governance: "All proposals that administer governance, for example to freeze malicious canisters that are harming the network.",
