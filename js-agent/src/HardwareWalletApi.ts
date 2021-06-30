@@ -36,7 +36,17 @@ export default class HardwareWalletApi {
         if (fromAccount !== this.accountIdentifier)
             throw new Error("'From Account' does not match the hardware wallet");
 
-        return await executeWithLogging(() => this.ledgerService.sendICPTs(request));
+        try {
+            return await this.ledgerService.sendICPTs(request);
+        } catch (err) {
+            if (err instanceof DOMException && err.code == 11) {
+                // An error indicating the device is already open.
+                alert(`Cannot access the ledger wallet. Is there another transaction running on the device?\n\nError received: ${err.message}`)
+            } else {
+                // An unknown error. Display it as-is.
+                alert(err);
+            }
+        }
     }
 
     public showAddressAndPubKeyOnDevice = () : Promise<void> => {
