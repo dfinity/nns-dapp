@@ -5,7 +5,7 @@ The NNS Dapp is a dapp that provides a user friendly way to interact with the NN
 * Send/receive ICP
 * Stake neurons
 * Create canisters
-* Convert ICP to cycles
+* Top up canisters with cycles
 * View and vote on NNS proposals
 
 ## Official build
