@@ -16,7 +16,6 @@ class GovernanceTabWidget extends StatefulWidget {
 }
 
 final DefaultTopics = [
-  //Topic.NeuronManagement,
   Topic.NetworkEconomics,
   Topic.Governance,
   Topic.NodeAdmin,
@@ -26,7 +25,6 @@ final DefaultTopics = [
 ];
 
 final ValidTopics = [
-  //Topic.NeuronManagement,
   Topic.ExchangeRate,
   Topic.NetworkEconomics,
   Topic.Governance,
