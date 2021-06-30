@@ -55,7 +55,7 @@ RUN cd frontend/dart && flutter build web --web-renderer canvaskit --release --n
 RUN sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' frontend/dart/build/web/index.html
 
 # Bundle into a tight tarball
-RUN cd frontend/dart/build/web/ && tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../assets.tar.xz .
+RUN cd frontend/dart/build/web/ && tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz .
 RUN ls -sh assets.tar.xz; sha256sum assets.tar.xz
 
 RUN cargo build --locked --target wasm32-unknown-unknown --release --package nns_ui
