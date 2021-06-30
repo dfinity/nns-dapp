@@ -82,7 +82,12 @@ export default class AuthApi {
             return this.ledgerIdentity;
         } catch (err) {
             console.log(`An exception has occurred: ${err}`)
-            alert(err);
+            if (err instanceof Error && err.message.includes("device is already open")) {
+                alert("The wallet is already being used. Please close any ongoing transactions on the wallet and try again.");
+            } else {
+                // Unkown error. Display as-is.
+                alert(err);
+            }
             return null;
         }
     }
