@@ -1,5 +1,5 @@
 @JS()
-library dfinity_agent.js;
+library ic_agent.js;
 
 import 'dart:html' as html;
 import 'dart:convert';
