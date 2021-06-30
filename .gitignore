@@ -125,8 +125,8 @@ out
 
 frontend/dart/build/**
 frontend/dart/public/**
-frontend/dart/assets/dfinity_agent.js
-frontend/dart/web/dfinity_agent.js
+frontend/dart/assets/ic_agent.js
+frontend/dart/web/ic_agent.js
 frontend/ts/build/
 frontend/ts/agent/
 frontend/ts/src/config.json

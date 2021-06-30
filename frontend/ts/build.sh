@@ -16,5 +16,5 @@ popd
 
 npx tsc
 echo "Bundling..."
-npx browserify ./build/index.js --standalone DfinityAgent > ../dart/assets/dfinity_agent.js
+npx browserify ./build/index.js --standalone IcAgent > ../dart/assets/ic_agent.js
 echo "Done."

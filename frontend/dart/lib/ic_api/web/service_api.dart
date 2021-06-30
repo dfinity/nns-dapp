@@ -1,5 +1,5 @@
 @JS()
-library dfinity_agent.js;
+library ic_agent.js;
 
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:js/js.dart';
