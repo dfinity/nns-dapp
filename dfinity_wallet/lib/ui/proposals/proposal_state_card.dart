@@ -29,12 +29,11 @@ class ProposalStateCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: AutoSizeText(
+                  child: Text(
                     proposal.summary,
                     style: Responsive.isMobile(context)
                         ? context.textTheme.headline6
                         : context.textTheme.headline3,
-                    maxLines: 1,
                   ),
                 ),
                 SizedBox(width: 10),

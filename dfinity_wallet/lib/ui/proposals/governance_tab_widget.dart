@@ -294,13 +294,12 @@ class ProposalRow extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AutoSizeText(
+                      Text(
                         proposal.summary,
                         style: Responsive.isMobile(context)
                             ? context.textTheme.subtitle1!
                                 .copyWith(fontSize: 18.0)
                             : context.textTheme.subtitle1,
-                        maxLines: 1,
                       ),
                       TextButton(
                           onPressed: () {
