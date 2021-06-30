@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/following/topic_card.dart';
@@ -32,7 +33,8 @@ class _ConfigureFollowersPageState extends State<ConfigureFollowersPage> {
         stream: context.boxes.neurons.changes,
         builder: (context, snapshot) {
           final refreshed = context.boxes.neurons[widget.neuron.id];
-          final followees = refreshed.followees;
+          // NeuronManagement proposals are not public so we hide these from the follow options
+          final followees = refreshed.followees.whereNot((e) => e.topic == Topic.NeuronManagement);
           rowKeys = followees.map((element) => GlobalKey()).toList();
           return Column(
             children: [
