@@ -73,21 +73,23 @@ export default class AuthApi {
 
     public connectToHardwareWallet = async () : Promise<LedgerIdentity | null> => {
         if (this.ledgerIdentity) {
-            console.log("Closing existing connection to hardware wallet.");
-            this.ledgerIdentity.close();
-            console.log("Done.");
-            this.ledgerIdentity = null;
+            return this.ledgerIdentity;
         }
 
         try {
             console.log("Creating new connection to hardware wallet");
             this.ledgerIdentity = await LedgerIdentity.create();
+            return this.ledgerIdentity;
         } catch (err) {
             console.log(`An exception has occurred: ${err}`)
-            alert(err);
+            if (err instanceof Error && err.message.includes("device is already open")) {
+                alert("The wallet is already being used. Please close any ongoing transactions on the wallet and try again.");
+            } else {
+                // Unkown error. Display as-is.
+                alert(err);
+            }
+            return null;
         }
-
-        return this.ledgerIdentity
     }
 
     public getPrincipal = () : string => {
