@@ -26,10 +26,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - run: npm install
-        working-directory: ./js-agent
+        working-directory: ./frontend/ts
 
       - run: DEPLOY_ENV=mainnet npm run build
-        working-directory: ./js-agent
+        working-directory: ./frontend/ts
 
       # Switching to Flutter beta branch
       - uses: subosito/flutter-action@v1
@@ -39,15 +39,15 @@ jobs:
 
       # Get the latest dependencies
       - run: flutter pub get
-        working-directory: ./dfinity_wallet
+        working-directory: ./frontend/dart
 
       # Build our
       - run: flutter build web --web-renderer canvaskit --release --no-sound-null-safety
-        working-directory: ./dfinity_wallet
+        working-directory: ./frontend/dart
 
       # Update the index html to contain the build number
       - run: sed -i "s/BUILD_NUMBER/$GITHUB_RUN_ID/g" index.html
-        working-directory: ./dfinity_wallet/build/web
+        working-directory: ./frontend/dart/build/web
 
       # Copy the contents of build/web to the public folder of Firebase
       - name: Upload failed files artifact
@@ -55,8 +55,8 @@ jobs:
         with:
           name: web-build
           path: |
-            dfinity_wallet/build/web
-            dfinity_wallet/build/flutter_assets
+            frontend/dart/build/web
+            frontend/dart/build/flutter_assets
             !**node_modules**
 
 
@@ -66,5 +66,5 @@ jobs:
       #     args: deploy --only hosting
       #   env:
       #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_SECRET }}
-      #     PROJECT_PATH: ./dfinity_wallet
+      #     PROJECT_PATH: ./frontend/dart
           # This is where our stored secret will come in use

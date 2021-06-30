@@ -57,9 +57,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Compile js-agent
+      - name: Compile typescript
         run: npm run build
-        working-directory: ./js-agent
+        working-directory: ./frontend/ts
 
       - name: Flutter setup
         uses: subosito/flutter-action@v1
@@ -68,10 +68,10 @@ jobs:
           channel: 'stable'
 
       - run: flutter pub get
-        working-directory: ./dfinity_wallet
+        working-directory: ./frontend/dart
 
       - run: flutter build web --web-renderer canvaskit --release --no-sound-null-safety
-        working-directory: ./dfinity_wallet
+        working-directory: ./frontend/dart
 
       - run: flutter test
-        working-directory: ./dfinity_wallet
+        working-directory: ./frontend/dart
