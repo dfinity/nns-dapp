@@ -51,6 +51,11 @@ import {
      * Connect to a ledger hardware wallet.
      */
     private static async _connect(): Promise<[DfinityApp, TransportClass]> {
+        if (!await TransportClass.isSupported()) {
+          // Data on browser compatibility is taken from https://caniuse.com/webhid
+          throw "Your browser doesn't support WebHID, which is necessary to communicate with your wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+";
+        }
+
         const transport = await TransportClass.create();
         const app = new DfinityApp(transport);
     
