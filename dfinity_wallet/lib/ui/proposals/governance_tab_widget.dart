@@ -3,6 +3,7 @@ import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/multi_select_list.dart';
@@ -293,9 +294,13 @@ class ProposalRow extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      AutoSizeText(
                         proposal.summary,
-                        style: context.textTheme.subtitle1,
+                        style: Responsive.isMobile(context)
+                            ? context.textTheme.subtitle1!
+                                .copyWith(fontSize: 18.0)
+                            : context.textTheme.subtitle1,
+                        maxLines: 1,
                       ),
                       TextButton(
                           onPressed: () {
@@ -323,7 +328,7 @@ class ProposalRow extends StatelessWidget {
                     child: Text(
                       proposal.status.description,
                       style: TextStyle(
-                          fontSize: 24,
+                          fontSize: Responsive.isMobile(context) ? 15 : 24,
                           fontFamily: Fonts.circularBook,
                           color: proposal.status.color,
                           fontWeight: FontWeight.normal),

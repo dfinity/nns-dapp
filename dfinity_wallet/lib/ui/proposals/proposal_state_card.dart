@@ -1,4 +1,6 @@
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -23,14 +25,19 @@ class ProposalStateCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: Text(
+                  child: AutoSizeText(
                     proposal.summary,
-                    style: context.textTheme.headline3,
+                    style: Responsive.isMobile(context)
+                        ? context.textTheme.headline6
+                        : context.textTheme.headline3,
+                    maxLines: 1,
                   ),
                 ),
+                SizedBox(width: 10),
                 Container(
                   decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
@@ -42,7 +49,7 @@ class ProposalStateCard extends StatelessWidget {
                     child: Text(
                       proposal.status.description,
                       style: TextStyle(
-                          fontSize: 24,
+                          fontSize: Responsive.isMobile(context) ? 12 : 24,
                           fontFamily: Fonts.circularBook,
                           color: proposal.status.color,
                           fontWeight: FontWeight.normal),
@@ -83,8 +90,10 @@ class ProposalStateCard extends StatelessWidget {
             ),
             SmallFormDivider(),
             ExpansionTile(
-              collapsedBackgroundColor: AppColors.gray600 ,
-              title: Center(child: Text("raw payload"),),
+              collapsedBackgroundColor: AppColors.gray600,
+              title: Center(
+                child: Text("raw payload"),
+              ),
               children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(32.0, 0, 32.0, 0),
