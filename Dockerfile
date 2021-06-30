@@ -1,7 +1,7 @@
 # Use this with
 #
-# docker build -t dfinity_wallet .
-# docker run --rm --entrypoint cat dfinity_wallet /nns_ui.wasm > nns_ui.wasm
+# docker build -t nns-dapp .
+# docker run --rm --entrypoint cat nns-dapp /nns_ui.wasm > nns_ui.wasm
 
 FROM ubuntu:20.10
 
