@@ -23,6 +23,7 @@ final DefaultTopics = [
   Topic.ParticipantManagement,
   Topic.SubnetManagement,
   Topic.NetworkCanisterManagement,
+  Topic.NodeProviderRewards,
 ];
 
 final ValidTopics = [
@@ -34,6 +35,7 @@ final ValidTopics = [
   Topic.SubnetManagement,
   Topic.NetworkCanisterManagement,
   Topic.Kyc,
+  Topic.NodeProviderRewards,
 ];
 
 final ValidStatuses = [
