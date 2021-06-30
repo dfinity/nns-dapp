@@ -1,5 +1,6 @@
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/proposal_summary_widget.dart';
@@ -83,18 +84,19 @@ class NeuronInfoCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
+                Flexible(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SelectableText(
+                        AutoSizeText(
                           neuron.neuronId.toString(),
                           style: Responsive.isMobile(context)
                               ? context.textTheme.headline6
                               : context.textTheme.headline2,
-                          onTap: () {},
+                          maxLines: 1,
                         ),
                         VerySmallFormDivider(),
                         Row(
@@ -108,8 +110,8 @@ class NeuronInfoCard extends StatelessWidget {
                                 width: 5,
                               ),
                               SizedBox(
-                                width: 25,
-                                height: 25,
+                                width: 20,
+                                height: 20,
                                 child: SvgPicture.asset(
                                   neuron.state.iconName,
                                   color: neuron.state.statusColor,
@@ -121,10 +123,11 @@ class NeuronInfoCard extends StatelessWidget {
                         )
                       ]),
                 ),
+                SizedBox(width: 10.0),
                 LabelledBalanceDisplayWidget(
                     amount: neuron.votingPower,
-                    amountSize: 30,
-                    icpLabelSize: 15,
+                    amountSize: Responsive.isMobile(context) ? 14 : 30,
+                    icpLabelSize: 30,
                     text: Text(
                       "Stake",
                       style: context.textTheme.subtitle2,
@@ -134,11 +137,12 @@ class NeuronInfoCard extends StatelessWidget {
             RichText(
                 text: TextSpan(style: context.textTheme.subtitle2, children: [
               TextSpan(
-                  text: neuron.createdTimestampSeconds
-                      .toString()
-                      .secondsToDateTime()
-                      .dayFormat,
-                  style: context.textTheme.subtitle2),
+                text: neuron.createdTimestampSeconds
+                    .toString()
+                    .secondsToDateTime()
+                    .dayFormat,
+                style: context.textTheme.subtitle2,
+              ),
               TextSpan(text: " - Staked"),
             ])),
             VerySmallFormDivider(),
@@ -168,28 +172,34 @@ class NeuronInfoVotesCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text("Voting History",
-                      style: context.textTheme.headline3),
+                      style: Responsive.isMobile(context)
+                          ? context.textTheme.headline6
+                          : context.textTheme.headline3),
                 ),
               ],
             ),
             SmallFormDivider(),
             Container(
-              padding: EdgeInsets.all(8),
               child: Row(
                 children: [
                   Expanded(
                     child: Text("Proposal Summary",
-                        style: context.textTheme.bodyText1),
+                        style: Responsive.isMobile(context)
+                            ? context.textTheme.bodyText2
+                            : context.textTheme.bodyText1),
                   ),
-                  Text("Vote", style: context.textTheme.bodyText1)
+                  Text("Vote",
+                      style: Responsive.isMobile(context)
+                          ? context.textTheme.bodyText2
+                          : context.textTheme.bodyText1)
                 ],
               ),
             ),
+            SizedBox(height: 10.0),
             ...neuron.recentBallots
                 .distinctBy((element) => element.proposalId)
                 .map((e) {
               return Container(
-                padding: EdgeInsets.all(8),
                 child: Row(
                   children: [
                     Expanded(
@@ -198,7 +208,11 @@ class NeuronInfoVotesCard extends StatelessWidget {
                       ),
                     ),
                     Text(e.vote.toString().removePrefix("Vote."),
-                        style: context.textTheme.headline3)
+                        style: Responsive.isMobile(context)
+                            ? context.textTheme.headline4!
+                                .copyWith(fontSize: 14)
+                            : context.textTheme.headline3!
+                                .copyWith(fontSize: 18))
                   ],
                 ),
               );
