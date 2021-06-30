@@ -123,13 +123,13 @@ out
 /.flutter-plugins-dependencies
 /ios/Flutter/flutter_export_environment.sh
 
-dfinity_wallet/build/**
-dfinity_wallet/public/**
-dfinity_wallet/assets/dfinity_agent.js
-dfinity_wallet/web/dfinity_agent.js
-js-agent/build/
-js-agent/agent/
-js-agent/src/config.json
+frontend/dart/build/**
+frontend/dart/public/**
+frontend/dart/assets/dfinity_agent.js
+frontend/dart/web/dfinity_agent.js
+frontend/ts/build/
+frontend/ts/agent/
+frontend/ts/src/config.json
 canister_ids.json
 
 .dfx/

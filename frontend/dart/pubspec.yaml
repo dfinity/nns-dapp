@@ -38,7 +38,7 @@ dependencies:
   observable: ^0.23.0
 
   core:
-    path: ../core
+    path: ./core
 #  agent_plugin:
 #    path: ../agent_plugin
 

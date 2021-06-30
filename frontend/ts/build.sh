@@ -10,11 +10,11 @@ npm ci
 
 # Create config file with proper configurations.
 pushd "$(dirname "$0")"
-cd ..
+cd ../..
 ./update_config.sh
 popd
 
 npx tsc
 echo "Bundling..."
-npx browserify ./build/index.js --standalone DfinityAgent > ../dfinity_wallet/assets/dfinity_agent.js
+npx browserify ./build/index.js --standalone DfinityAgent > ../dart/assets/dfinity_agent.js
 echo "Done."

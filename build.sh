@@ -9,11 +9,11 @@ fi
 
 set -x
 
-# build JavaScript agent
-(cd js-agent && ./build.sh)
+# build typescript code
+(cd frontend/ts && ./build.sh)
 
 # build the flutter app
-cd dfinity_wallet || exit
+cd frontend/dart || exit
 if [[ $DEPLOY_ENV = "mainnet" ]]; then
   flutter build web --web-renderer canvaskit --release --no-sound-null-safety --pwa-strategy=none
 else

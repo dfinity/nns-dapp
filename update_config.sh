@@ -8,7 +8,7 @@ fi
 
 if [[ $DEPLOY_ENV = "xsmallh" ]]; then
     # xsmallh config
-    cat > js-agent/src/config.json << EOF
+    cat > frontend/ts/src/config.json << EOF
 {
     "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.xsmallh.dfinity.network/",
     "HOST": "https://xsmallh.dfinity.network/",
@@ -19,7 +19,7 @@ EOF
 
 else
     # mainnet config
-    cat > js-agent/src/config.json << EOF
+    cat > frontend/ts/src/config.json << EOF
 {
     "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
     "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
