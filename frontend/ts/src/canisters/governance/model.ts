@@ -11,15 +11,15 @@ export type Action =
     { AddOrRemoveNodeProvider: AddOrRemoveNodeProvider } |
     { SetDefaultFollowees: SetDefaultFollowees } |
     { Motion: Motion };
-export interface AddHotKey { newHotKey: PrincipalString };
-export interface AddOrRemoveNodeProvider { change: Change };
+export interface AddHotKey { newHotKey: Option<PrincipalString> };
+export interface AddOrRemoveNodeProvider { change: Option<Change> };
 export interface ApproveGenesisKyc { principals: Array<PrincipalString> };
 export type AuthzChangeOp = { Authorize: { addSelf: boolean } } |
     { Deauthorize: null };
 export interface Ballot { neuronId: bigint, vote: Vote, votingPower: bigint };
 export interface BallotInfo {
     vote: Vote,
-    proposalId: ProposalId,
+    proposalId: Option<ProposalId>,
 };
 export interface CanisterAuthzInfo { methodsAuthz: Array<MethodAuthzInfo> };
 export type Change = { ToRemove: NodeProvider } |
@@ -33,10 +33,10 @@ export type Command =
     { DisburseToNeuron: DisburseToNeuron } |
     { MakeProposal: Proposal } |
     { Disburse: Disburse };
-export interface Configure { operation: Operation };
+export interface Configure { operation: Option<Operation> };
 export interface Disburse {
-    toAccountId: AccountIdentifier,
-    amount: E8s,
+    toAccountId: Option<AccountIdentifier>,
+    amount: Option<E8s>,
 };
 export interface DisburseResponse { transferBlockHeight: bigint };
 export interface DisburseToNeuron {
@@ -60,6 +60,9 @@ export interface GovernanceError {
 };
 export interface IncreaseDissolveDelay {
     additionalDissolveDelaySeconds: number,
+};
+export interface SetDissolveTimestamp {
+    dissolveTimestampSeconds : bigint
 };
 export interface ListProposalsRequest {
     // Limit on the number of [ProposalInfo] to return. If no value is
@@ -96,8 +99,8 @@ export interface ListProposalsResponse {
 };
 export interface MakeProposalResponse { proposalId: ProposalId };
 export interface ManageNeuron {
-    id: NeuronId,
-    command: Command,
+    id: Option<NeuronId>,
+    command: Option<Command>,
 };
 export interface MethodAuthzChange {
     principal: Option<PrincipalString>,
@@ -121,9 +124,9 @@ export interface NetworkEconomics {
     maximumNodeProviderRewards: bigint
 };
 export interface Neuron {
-    id: NeuronId,
-    isCurrentUserController: boolean,
-    controller: PrincipalString,
+    id: Option<NeuronId>,
+    isCurrentUserController: Option<boolean>,
+    controller: Option<PrincipalString>,
     recentBallots: Array<BallotInfo>,
     kycVerified: boolean,
     notForProfit: boolean,
@@ -134,7 +137,7 @@ export interface Neuron {
     neuronFees: E8s,
     hotKeys: Array<PrincipalString>,
     accountPrincipal: ArrayBuffer,
-    dissolveState: DissolveState,
+    dissolveState: Option<DissolveState>,
     followees: Array<Followees>,
     transfer: Option<NeuronStakeTransfer>,
 };
@@ -169,7 +172,8 @@ export type Operation = { RemoveHotKey: RemoveHotKey } |
     { AddHotKey: AddHotKey } |
     { StopDissolving: {} } |
     { StartDissolving: {} } |
-    { IncreaseDissolveDelay: IncreaseDissolveDelay };
+    { IncreaseDissolveDelay: IncreaseDissolveDelay } |
+    { SetDissolveTimestamp : SetDissolveTimestamp };
 export interface Proposal {
     url: string,
     action: Option<Action>,
@@ -178,16 +182,16 @@ export interface Proposal {
 export type ProposalId = bigint;
 
 export interface ProposalInfo {
-    id: ProposalId,
+    id: Option<ProposalId>,
     ballots: Array<Ballot>,
     rejectCost: E8s,
     proposalTimestampSeconds: bigint,
     rewardEventRound: bigint,
     failedTimestampSeconds: bigint,
     decidedTimestampSeconds: bigint,
-    latestTally: Tally,
-    proposal: Proposal,
-    proposer: NeuronId,
+    latestTally: Option<Tally>,
+    proposal: Option<Proposal>,
+    proposer: Option<NeuronId>,
     executedTimestampSeconds: bigint,
     topic: Topic,
     status: ProposalStatus,
@@ -241,7 +245,7 @@ export enum Vote {
 	YES = 1,
 	NO = 2
 }  
-export interface RegisterVote { vote: Vote, proposal: ProposalId };
+export interface RegisterVote { vote: Vote, proposal: Option<ProposalId> };
 export interface RemoveHotKey { hotKeyToRemove: Option<PrincipalString> };
 export type RewardMode = { RewardToNeuron: RewardToNeuron } |
     { RewardToAccount: RewardToAccount };
