@@ -371,7 +371,7 @@ export default class RequestConverters {
             const configure = command.Configure;
             return {
                 Configure: {
-                    operation: [this.fromOperation(configure.operation)]
+                    operation: configure.operation ? [this.fromOperation(configure.operation)] : []
                 }
             }
         }
@@ -380,7 +380,7 @@ export default class RequestConverters {
             return {
                 RegisterVote: {
                     vote: registerVote.vote,
-                    proposal: [this.fromProposalId(registerVote.proposal)]
+                    proposal: registerVote.proposal ? [this.fromProposalId(registerVote.proposal)] : []
                 }
             }
         }
@@ -410,7 +410,7 @@ export default class RequestConverters {
             const disburse = command.Disburse;
             return {
                 Disburse: {
-                    to_account: [this.fromAccountIdentifier(disburse.toAccountId)],
+                    to_account: disburse.toAccountId ? [this.fromAccountIdentifier(disburse.toAccountId)] : [],
                     amount: disburse.amount ? [this.fromAmount(disburse.amount)] : []
                 }
             }
@@ -460,6 +460,14 @@ export default class RequestConverters {
             return {
                 IncreaseDissolveDelay: {
                     additional_dissolve_delay_seconds: increaseDissolveDelay.additionalDissolveDelaySeconds
+                }
+            }
+        }
+        if ("SetDissolveTimestamp" in operation) {
+            const setDissolveTimestamp = operation.SetDissolveTimestamp;
+            return {
+                SetDissolveTimestamp: {
+                    dissolve_timestamp_seconds: setDissolveTimestamp.dissolveTimestampSeconds
                 }
             }
         }

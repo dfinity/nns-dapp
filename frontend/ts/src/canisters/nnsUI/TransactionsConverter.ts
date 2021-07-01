@@ -61,6 +61,9 @@ export default class TransactionsConverter {
                 }
             };
         }
+
+        // If there's a case missing, this line will cause a compiler error.
+        throw new UnsupportedValueError(transfer);
     }
 
     private static toTransactionType = (transactionType: RawTransactionType) : TransactionType => {
@@ -81,6 +84,9 @@ export default class TransactionsConverter {
         } else if ("Mint" in transactionType) {
             return TransactionType.Mint;
         }
+
+        // If there's a case missing, this line will cause a compiler error.
+        throw new UnsupportedValueError(transactionType);
     }
 
     // This should never be hit since people running the latest front end code should have had their principal stored in

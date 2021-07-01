@@ -59,9 +59,9 @@ export default class ResponseConverters {
             rewardEventRound: proposalInfo.reward_event_round,
             failedTimestampSeconds: proposalInfo.failed_timestamp_seconds,
             decidedTimestampSeconds: proposalInfo.decided_timestamp_seconds,
-            proposal: this.toProposal(proposalInfo.proposal[0]),
-            proposer: this.toNeuronId(proposalInfo.proposer[0]),
-            latestTally: this.toTally(proposalInfo.latest_tally[0]),
+            proposal: proposalInfo.proposal.length ? this.toProposal(proposalInfo.proposal[0]) : null,
+            proposer: proposalInfo.proposer.length ? this.toNeuronId(proposalInfo.proposer[0]) : null,
+            latestTally: proposalInfo.latest_tally.length ? this.toTally(proposalInfo.latest_tally[0]): null,
             executedTimestampSeconds: proposalInfo.executed_timestamp_seconds,
             topic: proposalInfo.topic,
             status: proposalInfo.status,
@@ -74,7 +74,7 @@ export default class ResponseConverters {
 
         return response.neuron_infos.map(([id, neuronInfo]) =>
             this.toNeuronInfo(id, principalString, neuronInfo, response.full_neurons.find(neuron =>
-                neuron.id.length > 0 && neuron.id[0].id === id
+                neuron.id.length && neuron.id[0].id === id
             )));
     }
 
@@ -100,50 +100,50 @@ export default class ResponseConverters {
     }
 
     public toSpawnResponse = (response: RawManageNeuronResponse) : SpawnResponse => {
-        const command = (response.command)[0];
-        if ("Spawn" in command) {
+        const command = response.command;
+        if (command.length && "Spawn" in command[0] && command[0].Spawn.created_neuron_id.length) {
             return {
-                createdNeuronId: (command.Spawn.created_neuron_id)[0].id
+                createdNeuronId: (command[0].Spawn.created_neuron_id)[0].id
             };    
         }
-        this.throwUnrecognisedTypeError("response", response);
+        throw this.throwUnrecognisedTypeError("response", response);
     } 
 
     public toDisburseResponse = (response: RawManageNeuronResponse) : DisburseResponse => {
-        const command = (response.command)[0];
-        if ("Disburse" in command) {
+        const command = response.command;
+        if (command.length && "Disburse" in command[0]) {
             return {
-                transferBlockHeight: command.Disburse.transfer_block_height
+                transferBlockHeight: command[0].Disburse.transfer_block_height
             };    
         }
-        this.throwUnrecognisedTypeError("response", response);
+        throw this.throwUnrecognisedTypeError("response", response);
     } 
 
     public toDisburseToNeuronResult = (response: RawManageNeuronResponse) : DisburseToNeuronResponse => {
-        const command = (response.command)[0];
-        if ("Spawn" in command) {
+        const command = response.command;
+        if (command.length && "Spawn" in command[0] && command[0].Spawn.created_neuron_id.length) {
             return {
-                createdNeuronId: (command.Spawn.created_neuron_id)[0].id
+                createdNeuronId: (command[0].Spawn.created_neuron_id)[0].id
             };    
         }
-        this.throwUnrecognisedTypeError("response", response);
+        throw this.throwUnrecognisedTypeError("response", response);
     } 
 
     public toMakeProposalResponse = (response: RawManageNeuronResponse) : MakeProposalResponse => {
-        const command = (response.command)[0];
-        if ("MakeProposal" in command) {
+        const command = response.command;
+        if (command.length && "MakeProposal" in command[0] && command[0].MakeProposal.proposal_id.length) {
             return {
-                proposalId: (command.MakeProposal.proposal_id)[0].id
+                proposalId: (command[0].MakeProposal.proposal_id)[0].id
             };    
         }
-        this.throwUnrecognisedTypeError("response", response);
+        throw this.throwUnrecognisedTypeError("response", response);
     } 
 
     private toNeuron = (neuron: RawNeuron, principalString: string) : Neuron => {
         return {
-            id: this.toNeuronId(neuron.id[0]),
-            isCurrentUserController: neuron.controller[0].toString() === principalString,
-            controller: neuron.controller[0].toString(),
+            id: neuron.id.length ? this.toNeuronId(neuron.id[0]): null,
+            isCurrentUserController: neuron.controller.length ? neuron.controller[0].toString() === principalString: null,
+            controller: neuron.controller.length ? neuron.controller[0].toString(): null,
             recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
             kycVerified: neuron.kyc_verified,
             notForProfit: neuron.not_for_profit,
@@ -154,9 +154,9 @@ export default class ResponseConverters {
             neuronFees: neuron.neuron_fees_e8s,
             hotKeys: neuron.hot_keys.map(p => p.toString()),
             accountPrincipal: arrayOfNumberToArrayBuffer(neuron.account),
-            dissolveState: this.toDissolveState(neuron.dissolve_state[0]),
+            dissolveState: neuron.dissolve_state.length ? this.toDissolveState(neuron.dissolve_state[0]) : null,
             followees: neuron.followees.map(([n, f]) => this.toFollowees(n, f)),
-            transfer: this.toNeuronStakeTransfer(neuron.transfer[0])
+            transfer: neuron.transfer.length ? this.toNeuronStakeTransfer(neuron.transfer[0]) : null,
         };
     }
 
@@ -186,7 +186,7 @@ export default class ResponseConverters {
         };
     }
 
-    private toNeuronStakeTransfer = (neuronStakeTransfer: RawNeuronStakeTransfer) : NeuronStakeTransfer => {
+    private toNeuronStakeTransfer = (neuronStakeTransfer: RawNeuronStakeTransfer) : NeuronStakeTransfer | null => {
         if (!neuronStakeTransfer) {
             // This can be null for a genesis neuron
             return null;
@@ -194,7 +194,7 @@ export default class ResponseConverters {
 
         return {
             toSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.to_subaccount),
-            from: neuronStakeTransfer.from ? neuronStakeTransfer.from[0].toString() : null,
+            from: neuronStakeTransfer.from.length ? neuronStakeTransfer.from[0].toString() : null,
             memo: neuronStakeTransfer.memo,
             neuronStake: neuronStakeTransfer.neuron_stake_e8s,
             fromSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.from_subaccount),
@@ -301,7 +301,8 @@ export default class ResponseConverters {
                 }
             };
         }
-        this.throwUnrecognisedTypeError("action", action);
+        
+        throw new UnsupportedValueError(action);
     }
 
     private toTally = (tally: RawTally) : Tally => {
@@ -382,12 +383,12 @@ export default class ResponseConverters {
             const disburse = command.Disburse;
             return {
                 Disburse: {
-                    toAccountId: this.toAccountIdentifier(disburse.to_account[0]),
+                    toAccountId: disburse.to_account.length ? this.toAccountIdentifier(disburse.to_account[0]) : null,
                     amount: disburse.amount.length ? this.toAmount(disburse.amount[0]) : null
                 }
             }
         }
-        this.throwUnrecognisedTypeError("command", command);
+        throw new UnsupportedValueError(command);
     }
 
     private toOperation = (operation: RawOperation) : Operation => {
@@ -425,7 +426,15 @@ export default class ResponseConverters {
                 }
             }
         }
-        this.throwUnrecognisedTypeError("operation", operation);
+        if ("SetDissolveTimestamp" in operation) {
+            const setDissolveTimestamp = operation.SetDissolveTimestamp;
+            return {
+                SetDissolveTimestamp: {
+                    dissolveTimestampSeconds: setDissolveTimestamp.dissolve_timestamp_seconds
+                }
+            }
+        }
+        throw new UnsupportedValueError(operation);
     }
 
     private toChange = (change: RawChange) : Change => {
@@ -439,7 +448,7 @@ export default class ResponseConverters {
                 ToAdd: this.toNodeProvider(change.ToAdd)
             }
         }
-        this.throwUnrecognisedTypeError("change", change);
+        throw new UnsupportedValueError(change);
     }
 
     private toNodeProvider = (nodeProvider: RawNodeProvider) : NodeProvider => {
@@ -472,11 +481,12 @@ export default class ResponseConverters {
                 }
             };
         } else {
-            this.throwUnrecognisedTypeError("rewardMode", rewardMode);
+            // Ensures all cases are covered at compile-time.
+            throw new UnsupportedValueError(rewardMode);
         }
     }
 
-    private throwUnrecognisedTypeError = (name: string, value: any) => {
-        throw new Error(`Unrecognised ${name} type - ${JSON.stringify(value)}`);
+    private throwUnrecognisedTypeError(name: string, value: any) : Error {
+        return new Error(`Unrecognised ${name} type - ${JSON.stringify(value)}`);
     }
 }
