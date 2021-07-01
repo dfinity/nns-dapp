@@ -45,7 +45,7 @@ export async function topUpCanisterImpl(
 }
 
 // 32 bytes
-export function buildSubAccount(canisterId: CanisterIdString) : Uint8Array {
+function buildSubAccount(canisterId: CanisterIdString) : Uint8Array {
     const bytes = Principal.fromText(canisterId).toUint8Array();
     const subAccount = new Uint8Array(32);
     subAccount[0] = bytes.length;
