@@ -41,7 +41,7 @@ export default async function(
 }
 
 // 32 bytes
-export function buildSubAccount(nonce: Uint8Array, principal: Principal) : Uint8Array {
+function buildSubAccount(nonce: Uint8Array, principal: Principal) : Uint8Array {
     const padding = convert.asciiStringToByteArray("neuron-stake");
     const shaObj = sha256.create();
     shaObj.update([
