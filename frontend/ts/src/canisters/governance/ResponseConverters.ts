@@ -1,5 +1,11 @@
 import { Principal } from "@dfinity/principal";
-import { accountIdentifierFromBytes, arrayOfNumberToArrayBuffer } from "../converter";
+import {
+    accountIdentifierFromBytes,
+    arrayOfNumberToArrayBuffer,
+    arrayOfNumberToUint8Array,
+    principalToAccountIdentifier
+} from "../converter";
+import GOVERNANCE_CANISTER_ID from "./canisterId";
 import { AccountIdentifier, E8s, NeuronId } from "../common/types";
 import {
     Action,
@@ -15,7 +21,6 @@ import {
     MakeProposalResponse,
     Neuron,
     NeuronInfo,
-    NeuronStakeTransfer,
     NodeProvider,
     Operation,
     Proposal,
@@ -40,7 +45,6 @@ import {
     Neuron as RawNeuron,
     NeuronId as RawNeuronId,
     NeuronInfo as RawNeuronInfo,
-    NeuronStakeTransfer as RawNeuronStakeTransfer,
     NodeProvider as RawNodeProvider,
     Operation as RawOperation,
     Proposal as RawProposal,
@@ -153,10 +157,9 @@ export default class ResponseConverters {
             agingSinceTimestampSeconds: neuron.aging_since_timestamp_seconds,
             neuronFees: neuron.neuron_fees_e8s,
             hotKeys: neuron.hot_keys.map(p => p.toString()),
-            accountPrincipal: arrayOfNumberToArrayBuffer(neuron.account),
+            accountIdentifier: principalToAccountIdentifier(GOVERNANCE_CANISTER_ID, arrayOfNumberToUint8Array(neuron.account)),
             dissolveState: neuron.dissolve_state.length ? this.toDissolveState(neuron.dissolve_state[0]) : null,
             followees: neuron.followees.map(([n, f]) => this.toFollowees(n, f)),
-            transfer: neuron.transfer.length ? this.toNeuronStakeTransfer(neuron.transfer[0]) : null,
         };
     }
 
@@ -184,23 +187,6 @@ export default class ResponseConverters {
             topic: topic,
             followees: followees.followees.map(this.toNeuronId)
         };
-    }
-
-    private toNeuronStakeTransfer = (neuronStakeTransfer: RawNeuronStakeTransfer) : NeuronStakeTransfer | null => {
-        if (!neuronStakeTransfer) {
-            // This can be null for a genesis neuron
-            return null;
-        }
-
-        return {
-            toSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.to_subaccount),
-            from: neuronStakeTransfer.from.length ? neuronStakeTransfer.from[0].toString() : null,
-            memo: neuronStakeTransfer.memo,
-            neuronStake: neuronStakeTransfer.neuron_stake_e8s,
-            fromSubaccount: arrayOfNumberToArrayBuffer(neuronStakeTransfer.from_subaccount),
-            transferTimestamp: neuronStakeTransfer.transfer_timestamp,
-            blockHeight: neuronStakeTransfer.block_height
-        };        
     }
 
     private toNeuronId = (neuronId: RawNeuronId) : NeuronId => {

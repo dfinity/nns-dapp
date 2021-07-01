@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/tab/neuron_row.dart';
+import 'package:dfinity_wallet/ui/transaction/wallet/select_neuron_top_up_source_wallet_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
 
@@ -20,6 +21,31 @@ class NeuronStateCard extends StatelessWidget {
         Expanded(
           child: Container(),
         ),
+      ElevatedButton(
+          onPressed: () {
+            OverlayBaseWidget.show(
+              context,
+              WizardOverlay(
+                rootTitle: "Select Source Account",
+                rootWidget: SelectNeuronTopUpSourceWallet(
+                  neuron: neuron,
+                ),
+              ),
+            );
+          }.takeIf((e) => neuron.isCurrentUserController),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              "Increase Neuron Stake",
+              textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+            ),
+          )),
+      // adds left-padding when non-mobile
+      // creates vertical or horizontal gap based on viewport size
+      if (Responsive.isMobile(context))
+        SizedBox(height: 8)
+      else
+        SizedBox(width: 8),
       ElevatedButton(
           onPressed: () {
             OverlayBaseWidget.show(

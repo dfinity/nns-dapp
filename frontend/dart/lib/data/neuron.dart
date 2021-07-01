@@ -24,6 +24,7 @@ class Neuron extends DfinityEntity with ICPSource {
   List<Proposal>? proposals;
   late int followEditCounter;
   late bool isCurrentUserController;
+  late String accountIdentifier;
 
   Neuron({
     required this.id,
@@ -35,7 +36,8 @@ class Neuron extends DfinityEntity with ICPSource {
     required this.cachedNeuronStake,
     required this.proposals,
     required this.followEditCounter,
-    required this.isCurrentUserController
+    required this.isCurrentUserController,
+    required this.accountIdentifier,
   });
 
   Neuron.empty();
