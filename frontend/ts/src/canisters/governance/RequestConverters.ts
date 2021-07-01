@@ -41,7 +41,6 @@ import {
     Operation as RawOperation,
     RewardMode as RawRewardMode
 } from "./rawService";
-
 export default class RequestConverters {
     private readonly principal: Principal;
     constructor(principal: Principal) {
@@ -178,7 +177,7 @@ export default class RequestConverters {
             dissolve_delay_seconds : request.dissolveDelaySeconds,
             kyc_verified : request.kycVerified,
             amount_e8s : request.amount,
-            new_controller : [Principal.fromText(request.newController)],
+            new_controller : (request.newController != null) ? [Principal.fromText(request.newController)] : [],
             nonce : request.nonce
         }};
         return {
@@ -284,10 +283,7 @@ export default class RequestConverters {
         if ("ManageNeuron" in action) {
             const manageNeuron = action.ManageNeuron;
             return {
-                ManageNeuron: {
-                    id: manageNeuron.id ? [this.fromNeuronId(manageNeuron.id)] : [],
-                    command: manageNeuron.command ? [this.fromCommand(manageNeuron.command[0])] : []
-                }
+                ManageNeuron: this.fromManageNeuron(manageNeuron)
             }
         }
         if ("ApproveGenesisKyc" in action) {
@@ -339,7 +335,18 @@ export default class RequestConverters {
                 }
             }
         }
-        this.throwUnrecognisedTypeError("action", action);
+
+        if ("SetDefaultFollowees" in action) {
+            const setDefaultFollowees = action.SetDefaultFollowees;
+            return {
+                SetDefaultFollowees: {
+                    default_followees: setDefaultFollowees.defaultFollowees.map(f => [f.topic as number, this.fromFollowees(f.followees)])
+                }
+            }
+        }
+
+        // If there's a missing action, this line will cause a compiler error.
+        throw new UnsupportedValueError(action);
     }
 
     private fromCommand = (command: Command) : RawCommand => {
@@ -408,7 +415,17 @@ export default class RequestConverters {
                 }
             }
         }
-        this.throwUnrecognisedTypeError("command", command);
+        if ("Spawn" in command) {
+            const spawn = command.Spawn;
+            return {
+                Spawn: {
+                    new_controller: spawn.newController ? [Principal.fromText(spawn.newController)] : []
+                }
+            }
+        }
+
+        // If there's a missing command above, this line will cause a compiler error.
+        throw new UnsupportedValueError(command);
     }
 
     private fromOperation = (operation: Operation) : RawOperation => {
@@ -416,7 +433,7 @@ export default class RequestConverters {
             const removeHotKey = operation.RemoveHotKey;
             return {
                 RemoveHotKey: {
-                    hot_key_to_remove: removeHotKey.hotKeyToRemove ? [Principal.fromText(removeHotKey.hotKeyToRemove)] : []
+                    hot_key_to_remove: removeHotKey.hotKeyToRemove != null ? [Principal.fromText(removeHotKey.hotKeyToRemove)] : []
                 }
             }
         }
@@ -446,7 +463,8 @@ export default class RequestConverters {
                 }
             }
         }
-        this.throwUnrecognisedTypeError("operation", operation);
+        // If there's a missing operation above, this line will cause a compiler error.
+        throw new UnsupportedValueError(operation);
     }
 
     private fromChange = (change: Change) : RawChange => {
@@ -460,12 +478,13 @@ export default class RequestConverters {
                 ToAdd: this.fromNodeProvider(change.ToAdd)
             }
         }
-        this.throwUnrecognisedTypeError("change", change);
+        // If there's a missing change above, this line will cause a compiler error.
+        throw new UnsupportedValueError(change);
     }
 
     private fromNodeProvider = (nodeProvider: NodeProvider) : RawNodeProvider => {
         return {
-            id: nodeProvider.id ? [Principal.fromText(nodeProvider.id)] : []
+            id: nodeProvider.id != null ? [Principal.fromText(nodeProvider.id)] : []
         }
     }
 
@@ -498,11 +517,8 @@ export default class RequestConverters {
                 }
             };
         } else {
-            this.throwUnrecognisedTypeError("rewardMode", rewardMode);
+            // If there's a missing rewardMode above, this line will cause a compiler error.
+            throw new UnsupportedValueError(rewardMode);
         }
-    }
-    
-    private throwUnrecognisedTypeError = (name: string, value: any) => {
-        throw new Error(`Unrecognised ${name} type - ${JSON.stringify(value)}`);
     }
 }
