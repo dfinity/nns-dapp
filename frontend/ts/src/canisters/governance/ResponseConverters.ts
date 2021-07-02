@@ -45,7 +45,6 @@ import {
   Neuron as RawNeuron,
   NeuronId as RawNeuronId,
   NeuronInfo as RawNeuronInfo,
-  NeuronStakeTransfer as RawNeuronStakeTransfer,
   NodeProvider as RawNodeProvider,
   Operation as RawOperation,
   Proposal as RawProposal,
