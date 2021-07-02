@@ -32,6 +32,11 @@ abstract class AbstractPlatformICApi {
 
   Future<void> createNeuron({required ICP stake, int? fromSubAccount});
 
+  Future<void> topUpNeuron(
+      {required String neuronAccountIdentifier,
+        required ICP amount,
+        int? fromSubAccount});
+
   Future<void> startDissolving({required BigInt neuronId});
 
   Future<void> stopDissolving({required BigInt neuronId});

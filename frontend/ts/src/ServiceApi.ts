@@ -59,6 +59,7 @@ import ICManagementService, {
 import createNeuronImpl, {
   CreateNeuronRequest,
 } from "./canisters/createNeuron";
+import topUpNeuronImpl, { TopUpNeuronRequest } from "./canisters/topUpNeuron";
 import {
   createCanisterImpl,
   CreateCanisterRequest,
@@ -326,6 +327,12 @@ export default class ServiceApi {
         this.nnsUiService,
         request
       )
+    );
+  };
+
+  public topUpNeuron = (request: TopUpNeuronRequest): Promise<void> => {
+    return executeWithLogging(() =>
+      topUpNeuronImpl(this.ledgerService, this.nnsUiService, request)
     );
   };
 

@@ -16,6 +16,7 @@ class ConfirmTransactionWidget extends StatefulWidget {
   final ICPSource source;
   final String destination;
   final int? subAccountId;
+  final bool isTopUpNeuron;
 
   const ConfirmTransactionWidget(
       {Key? key,
@@ -23,7 +24,8 @@ class ConfirmTransactionWidget extends StatefulWidget {
       required this.amount,
       required this.source,
       required this.destination,
-      required this.subAccountId})
+      required this.subAccountId,
+      required this.isTopUpNeuron})
       : super(key: key);
 
   @override
@@ -74,7 +76,19 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                           widget.source.type == ICPSourceType.NEURON;
                       var isHardwareTransaction =
                           widget.source.type == ICPSourceType.HARDWARE_WALLET;
-                      if (isAccount) {
+                      if (widget.isTopUpNeuron) {
+                        await context.callUpdate(() => context.icApi.topUpNeuron(
+                            neuronAccountIdentifier: widget.destination,
+                            amount: widget.amount,
+                            fromSubAccount: widget.subAccountId));
+                        WizardOverlay.of(context).replacePage(
+                            "Transaction Completed!",
+                            TransactionDoneWidget(
+                              amount: widget.amount,
+                              source: widget.source,
+                              destination: widget.destination,
+                            ));
+                      } else if (isAccount) {
                         await context.callUpdate(() => context.icApi.sendICPTs(
                             toAccount: widget.destination,
                             amount: widget.amount,

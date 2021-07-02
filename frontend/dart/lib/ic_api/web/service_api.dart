@@ -31,6 +31,9 @@ class ServiceApi {
   @JS("createNeuron")
   external Promise<void> createNeuron(dynamic request);
 
+  @JS("topUpNeuron")
+  external Promise<void> topUpNeuron(dynamic request);
+
   @JS("integrationTest")
   external Promise<void> integrationTest();
 
@@ -154,6 +157,17 @@ class CreateNeuronRequest {
   external int? fromSubAccountId;
 
   external factory CreateNeuronRequest({dynamic stake, int? fromSubAccountId});
+}
+
+@JS()
+@anonymous
+class TopUpNeuronRequest {
+  external String neuronAccountIdentifier;
+  external dynamic stake;
+  external int? fromSubAccountId;
+
+  external factory TopUpNeuronRequest(
+      {String neuronAccountIdentifier, dynamic amount, int? fromSubAccountId});
 }
 
 @JS()

@@ -14,12 +14,14 @@ class EnterAmountPage extends StatefulWidget {
   final ICPSource source;
   final String destinationAccountIdentifier;
   final int? subAccountId;
+  final bool isTopUpNeuron;
 
   const EnterAmountPage(
       {Key? key,
       required this.source,
       required this.destinationAccountIdentifier,
-      this.subAccountId})
+      required this.subAccountId,
+      required this.isTopUpNeuron})
       : super(key: key);
 
   @override
@@ -161,6 +163,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                             source: widget.source,
                             destination: widget.destinationAccountIdentifier,
                             subAccountId: widget.subAccountId,
+                            isTopUpNeuron: widget.isTopUpNeuron,
                           ));
                     },
                     fields: [amountField],
