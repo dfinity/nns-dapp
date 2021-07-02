@@ -81,6 +81,9 @@ import {
   TopUpCanisterResponse,
 } from "./canisters/topUpCanister";
 
+/**
+ * An API for interacting with various canisters.
+ */
 export default class ServiceApi {
   private readonly ledgerService: LedgerService;
   private readonly nnsUiService: NnsUiService;
@@ -111,9 +114,7 @@ export default class ServiceApi {
     this.identity = identity;
   }
 
-  /* 
-        ACCOUNTS
-    */
+  /* ACCOUNTS */
 
   public createSubAccount = (
     name: string
@@ -184,9 +185,7 @@ export default class ServiceApi {
     return executeWithLogging(() => this.ledgerService.sendICPTs(request));
   };
 
-  /* 
-        GOVERNANCE
-    */
+  /* GOVERNANCE */
 
   public getNeuron = (neuronId: NeuronId): Promise<Option<NeuronInfo>> => {
     return executeWithLogging(() => this.governanceService.getNeuron(neuronId));
@@ -329,9 +328,7 @@ export default class ServiceApi {
     );
   };
 
-  /*
-        CANISTERS
-    */
+  /* CANISTERS */
 
   public createCanister = (
     request: CreateCanisterRequest
@@ -392,8 +389,10 @@ export default class ServiceApi {
     );
   };
 
-  // Gives the caller the specified amount of (fake) ICPs.
-  // Should/can only be used on testnets.
+  /*
+   * Gives the caller the specified amount of (fake) ICPs.
+   * Should/can only be used on testnets.
+   */
   public acquireICPTs = async (
     accountIdentifier: AccountIdentifier,
     e8s: E8s

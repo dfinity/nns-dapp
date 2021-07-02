@@ -127,7 +127,7 @@ export type TransactionType = { 'Burn' : null } |
   { 'Mint' : null } |
   { 'Send' : null } |
   { 'StakeNeuronNotification' : null } |
-  { 'TopUpCanister' : CanisterId } |
+  { 'TopUpCanister' : null } |
   { 'CreateCanister' : null } |
   { 'TopUpNeuron' : null } |
   { 'StakeNeuron' : null };

@@ -333,7 +333,7 @@ export interface Tally {
   timestampSeconds: bigint;
 }
 export enum Topic {
-  // https://github.com/dfinity-lab/dfinity/blob/99289f7b58f22268d8575b94971655e8f4567a8a/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto#L26
+  // https://github.com/dfinity/ic/blob/master/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto#L27
   Unspecified = 0,
   ManageNeuron = 1,
   ExchangeRate = 2,
