@@ -4,4 +4,4 @@ export const TOP_UP_CANISTER_MEMO = BigInt(0x50555054); // TPUP
 import config from "../config.json";
 
 // @ts-ignore
-export const HOST = ("HOST" in config) ? config["HOST"] : undefined;
+export const HOST = "HOST" in config ? config["HOST"] : undefined;

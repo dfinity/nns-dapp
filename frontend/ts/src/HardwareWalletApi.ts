@@ -9,48 +9,57 @@ import { FETCH_ROOT_KEY } from "./config.json";
 import { executeWithLogging } from "./errorLogger";
 
 export default class HardwareWalletApi {
-    private readonly identity: LedgerIdentity;
-    private readonly accountIdentifier: AccountIdentifier;
-    private readonly ledgerService: LedgerService;
+  private readonly identity: LedgerIdentity;
+  private readonly accountIdentifier: AccountIdentifier;
+  private readonly ledgerService: LedgerService;
 
-    public static create = async (identity: LedgerIdentity) : Promise<HardwareWalletApi> => {
-        const agent = new HttpAgent({
-            host: HOST,
-            identity
-        });
+  public static create = async (
+    identity: LedgerIdentity
+  ): Promise<HardwareWalletApi> => {
+    const agent = new HttpAgent({
+      host: HOST,
+      identity,
+    });
 
-        if (FETCH_ROOT_KEY) {
-            await agent.fetchRootKey();
-        }
-
-        return new HardwareWalletApi(agent, identity);
+    if (FETCH_ROOT_KEY) {
+      await agent.fetchRootKey();
     }
 
-    private constructor(agent: HttpAgent, identity: LedgerIdentity) {
-        this.identity = identity;
-        this.accountIdentifier = principalToAccountIdentifier(identity.getPrincipal());
-        this.ledgerService = ledgerBuilder(agent, identity);
-    }
+    return new HardwareWalletApi(agent, identity);
+  };
 
-    public sendICPTs = async (fromAccount: AccountIdentifier, request: SendICPTsRequest) : Promise<BlockHeight> => {
-        if (fromAccount !== this.accountIdentifier)
-            throw new Error("'From Account' does not match the hardware wallet");
+  private constructor(agent: HttpAgent, identity: LedgerIdentity) {
+    this.identity = identity;
+    this.accountIdentifier = principalToAccountIdentifier(
+      identity.getPrincipal()
+    );
+    this.ledgerService = ledgerBuilder(agent, identity);
+  }
 
-        try {
-            return await this.ledgerService.sendICPTs(request);
-        } catch (err) {
-            if (err instanceof DOMException && err.code == 11) {
-                // An error indicating the device is already open.
-                alert(`Cannot access the ledger wallet. Is there another transaction running on the device?\n\nError received: ${err.message}`)
-            } else {
-                // An unknown error. Display it as-is.
-                alert(err);
-            }
-            throw err;
-        }
-    }
+  public sendICPTs = async (
+    fromAccount: AccountIdentifier,
+    request: SendICPTsRequest
+  ): Promise<BlockHeight> => {
+    if (fromAccount !== this.accountIdentifier)
+      throw new Error("'From Account' does not match the hardware wallet");
 
-    public showAddressAndPubKeyOnDevice = () : Promise<void> => {
-        return executeWithLogging(this.identity.showAddressAndPubKeyOnDevice);
+    try {
+      return await this.ledgerService.sendICPTs(request);
+    } catch (err) {
+      if (err instanceof DOMException && err.code == 11) {
+        // An error indicating the device is already open.
+        alert(
+          `Cannot access the ledger wallet. Is there another transaction running on the device?\n\nError received: ${err.message}`
+        );
+      } else {
+        // An unknown error. Display it as-is.
+        alert(err);
+      }
+      throw err;
     }
+  };
+
+  public showAddressAndPubKeyOnDevice = (): Promise<void> => {
+    return executeWithLogging(this.identity.showAddressAndPubKeyOnDevice);
+  };
 }
