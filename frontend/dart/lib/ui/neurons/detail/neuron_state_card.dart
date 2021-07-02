@@ -32,7 +32,7 @@ class NeuronStateCard extends StatelessWidget {
                 ),
               ),
             );
-          }.takeIf((e) => neuron.isCurrentUserController),
+          },
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(
