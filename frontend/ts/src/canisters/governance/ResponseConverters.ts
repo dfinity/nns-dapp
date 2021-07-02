@@ -48,7 +48,7 @@ import {
     RewardMode as RawRewardMode,
     Tally as RawTally,
 } from "./rawService";
-import { UnsupportedValueError } from "src/utils";
+import { UnsupportedValueError } from "../../utils";
 
 export default class ResponseConverters {
     public toProposalInfo = (proposalInfo: RawProposalInfo) : ProposalInfo => {

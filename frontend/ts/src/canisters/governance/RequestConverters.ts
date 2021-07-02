@@ -41,7 +41,7 @@ import {
     Operation as RawOperation,
     RewardMode as RawRewardMode
 } from "./rawService";
-import { UnsupportedValueError } from "src/utils";
+import { UnsupportedValueError } from "../../utils";
 export default class RequestConverters {
     private readonly principal: Principal;
     constructor(principal: Principal) {

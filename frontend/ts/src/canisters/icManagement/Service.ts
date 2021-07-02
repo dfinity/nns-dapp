@@ -4,7 +4,7 @@ import ServiceInterface, { CanisterStatus, CanisterDetailsResponse, UpdateSettin
 import { CanisterIdString } from "../common/types";
 import * as convert from "../converter";
 import { toHttpError } from "../httpError";
-import { UnsupportedValueError } from "src/utils";
+import { UnsupportedValueError } from "../../utils";
 
 interface CanisterStatusResponse {
     'status' : { 'stopped' : null } |
