@@ -169,7 +169,7 @@ export interface Neuron {
   agingSinceTimestampSeconds: bigint;
   neuronFees: E8s;
   hotKeys: Array<PrincipalString>;
-  accountIdentifier: AccountIdentifier,
+  accountIdentifier: AccountIdentifier;
   dissolveState: Option<DissolveState>;
   followees: Array<Followees>;
 }

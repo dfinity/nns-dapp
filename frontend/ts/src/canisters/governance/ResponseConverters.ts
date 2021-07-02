@@ -207,7 +207,9 @@ export default class ResponseConverters {
       neuronFees: neuron.neuron_fees_e8s,
       hotKeys: neuron.hot_keys.map((p) => p.toString()),
       accountIdentifier: principalToAccountIdentifier(
-          GOVERNANCE_CANISTER_ID, arrayOfNumberToUint8Array(neuron.account)),
+        GOVERNANCE_CANISTER_ID,
+        arrayOfNumberToUint8Array(neuron.account)
+      ),
       dissolveState: neuron.dissolve_state.length
         ? this.toDissolveState(neuron.dissolve_state[0])
         : null,
