@@ -64,6 +64,21 @@ jobs:
       - name: Run ESlint
         run: npm run lint
         working-directory: ./frontend/ts
+      
+      - name: Check formatting
+        run: npm run format
+        working-directory: ./frontend/ts
+      - name: Commit Formatting changes
+        uses: EndBug/add-and-commit@v7.2.0
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          add: .
+          author_name: Formatting Committer
+          author_email: "<nobody@example.com>"
+          message: "Updating frontend formatting"
+          # do not pull: if this branch is behind, then we might as well let
+          # the pushing fail
+          pull_strategy: "NO-PULL"
 
       - name: Flutter setup
         uses: subosito/flutter-action@v1

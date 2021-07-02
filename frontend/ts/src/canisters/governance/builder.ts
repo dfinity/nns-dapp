@@ -5,10 +5,10 @@ import RawService from "./rawService";
 import Service from "./Service";
 import ServiceInterface from "./model";
 
-export default function(agent: Agent, identity: Identity) : ServiceInterface {
-    const rawService = Actor.createActor(IDL, {
-        agent,
-        canisterId: CANISTER_ID,
-    }) as RawService;
-    return new Service(rawService, identity.getPrincipal());
+export default function (agent: Agent, identity: Identity): ServiceInterface {
+  const rawService = Actor.createActor(IDL, {
+    agent,
+    canisterId: CANISTER_ID,
+  }) as RawService;
+  return new Service(rawService, identity.getPrincipal());
 }

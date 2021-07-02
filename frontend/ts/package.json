@@ -2,6 +2,7 @@
   "scripts": {
     "build": "./build.sh",
     "lint": "eslint --max-warnings 0 .",
+    "format": "prettier --write .",
     "update_candid": "didc bind src/canisters/icManagement/canister.did -t ts > ./src/canisters/icManagement/rawService.ts; didc bind src/canisters/icManagement/canister.did -t js > ./src/canisters/icManagement/canister.did.js"
   },
   "dependencies": {
@@ -34,6 +35,7 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
+    "prettier": "2.3.2",
     "typescript": "^4.3.5"
   }
 }
