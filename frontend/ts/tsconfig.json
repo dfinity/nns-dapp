@@ -13,5 +13,5 @@
     // type errors otherwise.
     "skipLibCheck": true
   },
-  "include": ["index.ts", "./src"],
+  "include": ["index.ts", "./src"]
 }

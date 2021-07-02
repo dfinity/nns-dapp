@@ -9,45 +9,47 @@ import * as convert from "./converter";
 import { pollUntilComplete } from "./multiPartTransactionPollingHandler";
 
 export type CreateNeuronRequest = {
-    stake: E8s
-    fromSubAccountId?: number
-}
+  stake: E8s;
+  fromSubAccountId?: number;
+};
 
-export default async function(
-    principal: PrincipalString,
-    ledgerService: LedgerService,
-    nnsUiService: NnsUiService,
-    request: CreateNeuronRequest) : Promise<NeuronId> {
+export default async function (
+  principal: PrincipalString,
+  ledgerService: LedgerService,
+  nnsUiService: NnsUiService,
+  request: CreateNeuronRequest
+): Promise<NeuronId> {
+  const nonceBytes = new Uint8Array(randomBytes(8));
+  const nonce = convert.uint8ArrayToBigInt(nonceBytes);
+  const toSubAccount = buildSubAccount(
+    nonceBytes,
+    Principal.fromText(principal)
+  );
 
-    const nonceBytes = new Uint8Array(randomBytes(8));
-    const nonce = convert.uint8ArrayToBigInt(nonceBytes);
-    const toSubAccount = buildSubAccount(nonceBytes, Principal.fromText(principal));
+  const accountIdentifier = convert.principalToAccountIdentifier(
+    GOVERNANCE_CANISTER_ID,
+    toSubAccount
+  );
+  const blockHeight = await ledgerService.sendICPTs({
+    memo: nonce,
+    amount: request.stake,
+    to: accountIdentifier,
+    fromSubAccountId: request.fromSubAccountId,
+  });
 
-    const accountIdentifier = convert.principalToAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
-    const blockHeight = await ledgerService.sendICPTs({
-        memo: nonce,
-        amount: request.stake,
-        to: accountIdentifier,
-        fromSubAccountId: request.fromSubAccountId
-    });
+  const outcome = await pollUntilComplete(nnsUiService, blockHeight);
 
-    const outcome = await pollUntilComplete(nnsUiService, blockHeight);
-
-    if ("NeuronCreated" in outcome) {
-        return outcome.NeuronCreated;
-    } else {
-        throw new Error("Unable to create neuron");
-    }
+  if ("NeuronCreated" in outcome) {
+    return outcome.NeuronCreated;
+  } else {
+    throw new Error("Unable to create neuron");
+  }
 }
 
 // 32 bytes
-function buildSubAccount(nonce: Uint8Array, principal: Principal) : Uint8Array {
-    const padding = convert.asciiStringToByteArray("neuron-stake");
-    const shaObj = sha256.create();
-    shaObj.update([
-        0x0c,
-        ...padding,
-        ...principal.toUint8Array(),
-        ...nonce]);
-    return new Uint8Array(shaObj.array());
+function buildSubAccount(nonce: Uint8Array, principal: Principal): Uint8Array {
+  const padding = convert.asciiStringToByteArray("neuron-stake");
+  const shaObj = sha256.create();
+  shaObj.update([0x0c, ...padding, ...principal.toUint8Array(), ...nonce]);
+  return new Uint8Array(shaObj.array());
 }

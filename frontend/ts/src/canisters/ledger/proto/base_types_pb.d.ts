@@ -2,7 +2,6 @@
 // file: base_types.proto
 
 import * as jspb from "google-protobuf";
-import * as google_protobuf_descriptor_pb from "google-protobuf/google/protobuf/descriptor_pb";
 
 export class PrincipalId extends jspb.Message {
   getSerializedId(): Uint8Array | string;
