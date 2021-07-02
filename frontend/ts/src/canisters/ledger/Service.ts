@@ -37,7 +37,7 @@ export default class Service implements ServiceInterface {
         });
         const balances = await Promise.all(promises);
 
-        const result = {};
+        const result: {[index: string]: bigint} = {};
         request.accounts.forEach((a, index) => {
             result[a] = balances[index];
         })

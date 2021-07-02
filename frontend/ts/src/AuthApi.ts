@@ -27,7 +27,7 @@ export default class AuthApi {
         this.authClient = authClient;
         this.onLoggedOut = onLoggedOut;
         this.expireSessionTimeout = null;
-        this.ledgerIdentity = null;
+        this.ledgerIdentity = undefined;
 
         if (this.tryGetIdentity()) {
             this.handleDelegationExpiry();
@@ -40,10 +40,13 @@ export default class AuthApi {
             return null;
         }
 
-        // If the identity will expire in less than 5 minutes, don't return the identity
-        const durationUntilLogout = this.getTimeUntilSessionExpiryMs() - ONE_MINUTE_MILLIS;
-        if (durationUntilLogout <= 5 * ONE_MINUTE_MILLIS) {
-            return null;
+        const timeUntilSessionExpiryMs = this.getTimeUntilSessionExpiryMs();
+        if (timeUntilSessionExpiryMs) {
+            // If the identity will expire in less than 5 minutes, don't return the identity
+            const durationUntilLogout = timeUntilSessionExpiryMs - ONE_MINUTE_MILLIS;
+            if (durationUntilLogout <= 5 * ONE_MINUTE_MILLIS) {
+                return null;
+            }
         }
 
         return identity;
@@ -92,7 +95,7 @@ export default class AuthApi {
         }
     }
 
-    public getPrincipal = () : string => {
+    public getPrincipal = () : string | undefined => {
         return this.tryGetIdentity()?.getPrincipal().toString();
     }
 

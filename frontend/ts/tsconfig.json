@@ -4,11 +4,14 @@
     "module": "commonjs",
     "allowJs": true,
     "outDir": "./build",
-    "strict": false,
+    "strict": true,
     "baseUrl": "./",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    // This is enabled because node_modules/@dfinity/candid returns
+    // type errors otherwise.
+    "skipLibCheck": true
   },
-  "include": ["**/*"]
+  "include": ["index.ts", "./src"],
 }

@@ -43,6 +43,8 @@ export default class ResponseConverters {
         } else if ("CanisterLimitExceeded" in response) {
             return AttachCanisterResult.CanisterLimitExceeded;
         }
+        // Check at compile-time that all cases are covered.
+        throw new UnsupportedValueError(response);
     }
 
     public toDetachCanisterResponse = (response: RawDetachCanisterResponse) : DetachCanisterResponse => {

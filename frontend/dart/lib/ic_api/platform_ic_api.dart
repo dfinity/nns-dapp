@@ -113,7 +113,7 @@ abstract class AbstractPlatformICApi {
 
   Future<void> logout();
 
-  int getTimeUntilSessionExpiryMs();
+  int? getTimeUntilSessionExpiryMs();
 }
 
 

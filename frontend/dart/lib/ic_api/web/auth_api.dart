@@ -20,10 +20,10 @@ class AuthApi {
   external Promise<dynamic> logout();
 
   @JS("getTimeUntilSessionExpiryMs")
-  external int getTimeUntilSessionExpiryMs();
+  external int? getTimeUntilSessionExpiryMs();
 
   @JS("getPrincipal")
-  external String getPrincipal();
+  external String? getPrincipal();
 
   @JS("connectToHardwareWallet")
   external Promise<dynamic> connectToHardwareWallet();
