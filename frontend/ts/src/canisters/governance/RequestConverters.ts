@@ -49,8 +49,8 @@ export default class RequestConverters {
 
     public fromManageNeuron = (manageNeuron: ManageNeuron) : RawManageNeuron => {
         return {
-            id: [this.fromNeuronId(manageNeuron.id)],
-            command: [this.fromCommand(manageNeuron.command)]
+            id: manageNeuron.id ? [this.fromNeuronId(manageNeuron.id)] : [],
+            command: manageNeuron.command ? [this.fromCommand(manageNeuron.command)] : []
         }
     }
 

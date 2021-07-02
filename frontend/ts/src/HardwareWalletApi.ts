@@ -46,6 +46,7 @@ export default class HardwareWalletApi {
                 // An unknown error. Display it as-is.
                 alert(err);
             }
+            throw err;
         }
     }
 

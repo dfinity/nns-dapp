@@ -10,6 +10,7 @@ import {
   import { Principal } from '@dfinity/principal';
   import DfinityApp, { ResponseSign } from '@zondax/ledger-dfinity';
   import { Secp256k1PublicKey } from './secp256k1';
+  // @ts-ignore (no types are available)
   import TransportClass from "@ledgerhq/hw-transport-webhid";
   
   /**

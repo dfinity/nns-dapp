@@ -35,18 +35,10 @@ export default class Service implements ServiceInterface {
             }
         }
 
-        let status: CanisterStatus;
-        if ("stopped" in rawResponse.status) {
-            status = CanisterStatus.Stopped;
-        } else if ("stopping" in rawResponse.status) {
-            status = CanisterStatus.Stopping;        
-        } else if ("running" in rawResponse.status) {
-            status = CanisterStatus.Running;        
-        }
         const result: CanisterDetailsResponse = { 
             kind: "success", 
             details: {
-                status: status,
+                status: this.getCanisterStatus(rawResponse),
                 memorySize: rawResponse.memory_size,
                 cycles: rawResponse.cycles,
                 setting: {
@@ -85,5 +77,16 @@ export default class Service implements ServiceInterface {
                 throw e;
             }
         }
+    }
+
+    private getCanisterStatus(rawResponse: CanisterStatusResponse) : CanisterStatus {
+        if ("stopped" in rawResponse.status) {
+            return CanisterStatus.Stopped;
+        } else if ("stopping" in rawResponse.status) {
+            return CanisterStatus.Stopping;
+        } else if ("running" in rawResponse.status) {
+            return CanisterStatus.Running;
+        }
+        throw new UnsupportedValueError(rawResponse.status);
     }
 }

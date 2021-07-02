@@ -37,8 +37,10 @@ Future<void> _showSessionExpiredAlert(BuildContext context) async {
 
 extension CallUpdate on BuildContext {
   Future<T?> callUpdate<T>(Future<T> Function() action) async {
+    // If the session times out in 2 minutes, display that the session
+    // is expired.
     final timeout = this.icApi.getTimeUntilSessionExpiryMs();
-    if (timeout < 120000) {// 2 mins
+    if (timeout != null && timeout < 120000) {
       _showSessionExpiredAlert(this);
       return null;
     }

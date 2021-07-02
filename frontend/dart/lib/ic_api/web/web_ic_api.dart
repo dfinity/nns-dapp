@@ -408,7 +408,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   String getPrincipal() {
-    return authApi.getPrincipal();
+    return authApi.getPrincipal() ?? "null";
   }
 
   @override
@@ -417,7 +417,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  int getTimeUntilSessionExpiryMs() {
+  int? getTimeUntilSessionExpiryMs() {
     return authApi.getTimeUntilSessionExpiryMs();
   }
 }
