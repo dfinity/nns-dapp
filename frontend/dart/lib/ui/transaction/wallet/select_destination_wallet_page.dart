@@ -6,7 +6,6 @@ import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/confirm_transactions_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
-import 'package:flutter/services.dart';
 import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
 
@@ -76,6 +75,7 @@ class _SelectDestinationAccountPageState
                                       source: widget.source,
                                       destination: address,
                                       subAccountId: widget.source.subAccountId,
+                                      isTopUpNeuron: false,
                                     ));
                               } else {
                                 WizardOverlay.of(context).pushPage(
@@ -84,6 +84,7 @@ class _SelectDestinationAccountPageState
                                       source: widget.source,
                                       destinationAccountIdentifier: address,
                                       subAccountId: widget.source.subAccountId,
+                                      isTopUpNeuron: false,
                                     ));
                               }
                             },
@@ -132,6 +133,7 @@ class _SelectDestinationAccountPageState
                                                     e.accountIdentifier,
                                                 subAccountId:
                                                     widget.source.subAccountId,
+                                                isTopUpNeuron: false,
                                               ));
                                         } else {
                                           WizardOverlay.of(context).pushPage(
@@ -142,6 +144,7 @@ class _SelectDestinationAccountPageState
                                                     e.accountIdentifier,
                                                 subAccountId:
                                                     widget.source.subAccountId,
+                                                isTopUpNeuron: false,
                                               ));
                                         }
                                       })),

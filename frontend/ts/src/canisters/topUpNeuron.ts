@@ -1,12 +1,12 @@
 import LedgerService from "./ledger/model";
 import NnsUiService from "./nnsUI/model";
-import { AccountIdentifier, E8s, PrincipalString } from "./common/types";
+import { AccountIdentifier, E8s } from "./common/types";
 import { pollUntilComplete } from "./multiPartTransactionPollingHandler";
 
 export type TopUpNeuronRequest = {
-    stake: E8s
+    amount: E8s
     fromSubAccountId?: number,
-    accountIdentifier: AccountIdentifier
+    neuronAccountIdentifier: AccountIdentifier
 }
 
 export default async function(
@@ -15,8 +15,8 @@ export default async function(
     request: TopUpNeuronRequest) : Promise<void> {
 
     const blockHeight = await ledgerService.sendICPTs({
-        amount: request.stake,
-        to: request.accountIdentifier,
+        amount: request.amount,
+        to: request.neuronAccountIdentifier,
         fromSubAccountId: request.fromSubAccountId
     });
 

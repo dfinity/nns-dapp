@@ -120,6 +120,18 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<void> topUpNeuron(
+      {required String neuronAccountIdentifier,
+        required ICP amount,
+        int? fromSubAccount}) async {
+    await promiseToFuture(serviceApi!.topUpNeuron(TopUpNeuronRequest(
+        neuronAccountIdentifier: neuronAccountIdentifier,
+        amount: amount.asE8s().toJS,
+        fromSubAccountId: fromSubAccount)));
+    await neuronSyncService!.fetchNeurons();
+  }
+
+  @override
   Future<void> startDissolving({required BigInt neuronId}) async {
     await promiseToFuture(serviceApi!
         .startDissolving(NeuronIdentifierRequest(neuronId: neuronId.toJS)));
