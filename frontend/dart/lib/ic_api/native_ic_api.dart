@@ -43,6 +43,15 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<void> topUpNeuron(
+      {required String neuronAccountIdentifier,
+        required ICP amount,
+        int? fromSubAccount}) {
+    // TODO: implement topUpNeuron
+    throw UnimplementedError();
+  }
+
+  @override
   Future<void> createSubAccount({required String name}) {
     // TODO: implement createSubAccount
     throw UnimplementedError();

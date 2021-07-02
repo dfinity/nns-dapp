@@ -169,10 +169,9 @@ export interface Neuron {
   agingSinceTimestampSeconds: bigint;
   neuronFees: E8s;
   hotKeys: Array<PrincipalString>;
-  accountPrincipal: ArrayBuffer;
+  accountIdentifier: AccountIdentifier;
   dissolveState: Option<DissolveState>;
   followees: Array<Followees>;
-  transfer: Option<NeuronStakeTransfer>;
 }
 export enum NeuronState {
   UNSPECIFIED = 0,
@@ -190,15 +189,6 @@ export interface NeuronInfo {
   votingPower: bigint;
   ageSeconds: bigint;
   fullNeuron: Option<Neuron>;
-}
-export interface NeuronStakeTransfer {
-  toSubaccount: ArrayBuffer;
-  from: Option<PrincipalString>;
-  memo: bigint;
-  neuronStake: E8s;
-  fromSubaccount: ArrayBuffer;
-  transferTimestamp: bigint;
-  blockHeight: bigint;
 }
 export interface NodeProvider {
   id: Option<PrincipalString>;
