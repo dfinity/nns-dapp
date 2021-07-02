@@ -42,7 +42,7 @@ export type CreateSubAccountResponse = { Ok: SubAccountDetails } |
     { SubAccountLimitExceeded: null } |
     { NameTooLong: null };
 
-export interface DetachCanisterRequest { canisterId: CanisterIdString };
+export interface DetachCanisterRequest { canisterId: CanisterIdString }
 export type DetachCanisterResponse = { Ok: null } |
     { CanisterNotFound: null };
 
@@ -53,16 +53,16 @@ export interface GetTransactionsRequest {
     accountIdentifier: AccountIdentifier,
     pageSize: number,
     offset: number,
-};
+}
 export interface GetTransactionsResponse {
     total: number,
     transactions: Array<Transaction>,
-};
+}
 export interface HardwareWalletAccountDetails {
     name: string,
     principal: PrincipalString,
     accountIdentifier: AccountIdentifier,
-};
+}
 export type MultiPartTransactionStatus = { Queued: null } |
     { Error: string } |
     { Refunded: [BlockHeight, string] } |
@@ -76,11 +76,11 @@ export interface Receive {
     fee: E8s,
     from: AccountIdentifier,
     amount: E8s,
-};
+}
 export interface RegisterHardwareWalletRequest {
     name: string,
     principal: PrincipalString,
-};
+}
 export type RegisterHardwareWalletResponse = { Ok: null } |
     { AccountNotFound: null } |
     { HardwareWalletAlreadyRegistered: null } |
@@ -89,13 +89,13 @@ export type RegisterHardwareWalletResponse = { Ok: null } |
 
 export interface RemoveHardwareWalletRequest {
     principal: PrincipalString,
-};
+}
 export type RemoveHardwareWalletResponse = { Ok: null } |
     { HardwareWalletNotFound: null };
 export interface RenameSubAccountRequest {
     newName: string,
     accountIdentifier: AccountIdentifier,
-};
+}
 export type RenameSubAccountResponse = { Ok: null } |
     { AccountNotFound: null } |
     { SubAccountNotFound: null } |
@@ -105,13 +105,13 @@ export interface Send {
     to: AccountIdentifier,
     fee: E8s,
     amount: E8s,
-};
+}
 export type SubAccount = Array<number>;
 export interface SubAccountDetails {
     id: number,
     name: string,
     accountIdentifier: AccountIdentifier,
-};
+}
 export type TimestampNanos = bigint;
 export interface Transaction {
     type: TransactionType,
@@ -119,7 +119,7 @@ export interface Transaction {
     blockHeight: BlockHeight,
     memo: Memo,
     transfer: Transfer,
-};
+}
 export type Transfer = { Burn: { amount: E8s } } |
     { Mint: { amount: E8s } } |
     { Send: Send } |
@@ -138,4 +138,4 @@ export default interface ServiceInterface {
     registerHardwareWallet: (request: RegisterHardwareWalletRequest) => Promise<RegisterHardwareWalletResponse>,
     removeHardwareWallet: (request: RemoveHardwareWalletRequest) => Promise<RemoveHardwareWalletResponse>,
     renameSubAccount: (request: RenameSubAccountRequest) => Promise<RenameSubAccountResponse>,
-};
+}

@@ -4,13 +4,17 @@ import Service from "./Service";
 import ServiceInterface from "./model";
 import IDL from "./canister.did.js";
 import RawService from "./rawService";
-import CANISTER_ID from "./canisterId";
+
+// https://sdk.dfinity.org/docs/interface-spec/index.html#ic-management-canister
+const MANAGEMENT_CANISTER_ID = Principal.fromText("aaaaa-aa");
 
 export default function(agent: Agent) : ServiceInterface {
 
-    function transform(methodName: string, args: unknown[], callConfig: CallConfig) {
+    // eslint-disable-next-line
+    function transform(_methodName: string, args: unknown[], _callConfig: CallConfig) {
+        // eslint-disable-next-line
         const first = args[0] as any;
-        let effectiveCanisterId = CANISTER_ID;
+        let effectiveCanisterId = MANAGEMENT_CANISTER_ID;
         if (first && typeof first === 'object' && first.canister_id) {
             effectiveCanisterId = Principal.from(first.canister_id as unknown);
         }
@@ -23,7 +27,7 @@ export default function(agent: Agent) : ServiceInterface {
 
     const rawService = Actor.createActor<RawService>(IDL, {
         ...config,
-        canisterId: CANISTER_ID,
+        canisterId: MANAGEMENT_CANISTER_ID,
         ...{
             callTransform: transform,
             queryTransform: transform,

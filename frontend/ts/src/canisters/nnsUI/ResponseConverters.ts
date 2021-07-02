@@ -1,3 +1,4 @@
+import { UnsupportedValueError } from "src/utils";
 import * as convert from "../converter";
 import {
     AttachCanisterResult,

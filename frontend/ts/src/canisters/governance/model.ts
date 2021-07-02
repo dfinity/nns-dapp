@@ -11,17 +11,17 @@ export type Action =
     { AddOrRemoveNodeProvider: AddOrRemoveNodeProvider } |
     { SetDefaultFollowees: SetDefaultFollowees } |
     { Motion: Motion };
-export interface AddHotKey { newHotKey: Option<PrincipalString> };
-export interface AddOrRemoveNodeProvider { change: Option<Change> };
-export interface ApproveGenesisKyc { principals: Array<PrincipalString> };
+export interface AddHotKey { newHotKey: Option<PrincipalString> }
+export interface AddOrRemoveNodeProvider { change: Option<Change> }
+export interface ApproveGenesisKyc { principals: Array<PrincipalString> }
 export type AuthzChangeOp = { Authorize: { addSelf: boolean } } |
     { Deauthorize: null };
-export interface Ballot { neuronId: bigint, vote: Vote, votingPower: bigint };
+export interface Ballot { neuronId: bigint, vote: Vote, votingPower: bigint }
 export interface BallotInfo {
     vote: Vote,
     proposalId: Option<ProposalId>,
-};
-export interface CanisterAuthzInfo { methodsAuthz: Array<MethodAuthzInfo> };
+}
+export interface CanisterAuthzInfo { methodsAuthz: Array<MethodAuthzInfo> }
 export type Change = { ToRemove: NodeProvider } |
     { ToAdd: NodeProvider };
 export type Command = 
@@ -33,37 +33,37 @@ export type Command =
     { DisburseToNeuron: DisburseToNeuron } |
     { MakeProposal: Proposal } |
     { Disburse: Disburse };
-export interface Configure { operation: Option<Operation> };
+export interface Configure { operation: Option<Operation> }
 export interface Disburse {
     toAccountId: Option<AccountIdentifier>,
     amount: Option<E8s>,
-};
-export interface DisburseResponse { transferBlockHeight: bigint };
+}
+export interface DisburseResponse { transferBlockHeight: bigint }
 export interface DisburseToNeuron {
     dissolveDelaySeconds: bigint,
     kycVerified: boolean,
     amount: E8s,
     newController: Option<PrincipalString>,
     nonce: bigint,
-};
+}
 export type DissolveState = { DissolveDelaySeconds: bigint } |
     { WhenDissolvedTimestampSeconds: bigint };
 export interface ExecuteNnsFunction {
     nnsFunction: number,
     payload: ArrayBuffer,
-};
-export interface Follow { topic: Topic, followees: Array<NeuronId> };
-export interface Followees { topic: Topic, followees: Array<NeuronId> };
+}
+export interface Follow { topic: Topic, followees: Array<NeuronId> }
+export interface Followees { topic: Topic, followees: Array<NeuronId> }
 export interface GovernanceError {
     errorMessage: string,
     errorType: number,
-};
+}
 export interface IncreaseDissolveDelay {
     additionalDissolveDelaySeconds: number,
-};
+}
 export interface SetDissolveTimestamp {
     dissolveTimestampSeconds : bigint
-};
+}
 export interface ListProposalsRequest {
     // Limit on the number of [ProposalInfo] to return. If no value is
     // specified, or if a value greater than 100 is specified, 100
@@ -93,26 +93,26 @@ export interface ListProposalsRequest {
     // [ProposalStatus] for more information). If this list is empty, no
     // restriction is applied.    
     includeStatus : Array<ProposalStatus>,
-};
+}
 export interface ListProposalsResponse {
     proposals : Array<ProposalInfo>,
-};
-export interface MakeProposalResponse { proposalId: ProposalId };
+}
+export interface MakeProposalResponse { proposalId: ProposalId }
 export interface ManageNeuron {
     id: Option<NeuronId>,
     command: Option<Command>,
-};
+}
 export interface MethodAuthzChange {
     principal: Option<PrincipalString>,
     methodName: string,
     canister: CanisterIdString,
     operation: AuthzChangeOp,
-};
+}
 export interface MethodAuthzInfo {
     methodName: string,
     principalIds: Array<ArrayBuffer>,
-};
-export interface Motion { motionText: string };
+}
+export interface Motion { motionText: string }
 export interface NetworkEconomics {
     neuronMinimumStake: E8s,
     maxProposalsToKeepPerTopic: number,
@@ -122,7 +122,7 @@ export interface NetworkEconomics {
     neuronSpawnDissolveDelaySeconds: bigint,
     minimumIcpXdrRate: bigint,
     maximumNodeProviderRewards: bigint
-};
+}
 export interface Neuron {
     id: Option<NeuronId>,
     isCurrentUserController: Option<boolean>,
@@ -140,7 +140,7 @@ export interface Neuron {
     dissolveState: Option<DissolveState>,
     followees: Array<Followees>,
     transfer: Option<NeuronStakeTransfer>,
-};
+}
 export enum NeuronState {
 	UNSPECIFIED = 0,
 	LOCKED = 1,
@@ -157,7 +157,7 @@ export interface NeuronInfo {
     votingPower: bigint,
     ageSeconds: bigint,
     fullNeuron: Option<Neuron>
-};
+}
 export interface NeuronStakeTransfer {
     toSubaccount: ArrayBuffer,
     from: Option<PrincipalString>,
@@ -166,19 +166,19 @@ export interface NeuronStakeTransfer {
     fromSubaccount: ArrayBuffer,
     transferTimestamp: bigint,
     blockHeight: bigint,
-};
-export interface NodeProvider { id: Option<PrincipalString> };
+}
+export interface NodeProvider { id: Option<PrincipalString> }
 export type Operation = { RemoveHotKey: RemoveHotKey } |
     { AddHotKey: AddHotKey } |
-    { StopDissolving: {} } |
-    { StartDissolving: {} } |
+    { StopDissolving: Record<string, never> } |
+    { StartDissolving: Record<string, never> } |
     { IncreaseDissolveDelay: IncreaseDissolveDelay } |
     { SetDissolveTimestamp : SetDissolveTimestamp };
 export interface Proposal {
     url: string,
     action: Option<Action>,
     summary: string,
-};
+}
 export type ProposalId = bigint;
 
 export interface ProposalInfo {
@@ -196,7 +196,7 @@ export interface ProposalInfo {
     topic: Topic,
     status: ProposalStatus,
     rewardStatus: ProposalRewardStatus,
-};
+}
 
 // The proposal status, with respect to reward distribution.
 // See also ProposalStatus.
@@ -245,12 +245,12 @@ export enum Vote {
 	YES = 1,
 	NO = 2
 }  
-export interface RegisterVote { vote: Vote, proposal: Option<ProposalId> };
-export interface RemoveHotKey { hotKeyToRemove: Option<PrincipalString> };
+export interface RegisterVote { vote: Vote, proposal: Option<ProposalId> }
+export interface RemoveHotKey { hotKeyToRemove: Option<PrincipalString> }
 export type RewardMode = { RewardToNeuron: RewardToNeuron } |
     { RewardToAccount: RewardToAccount };
-export interface RewardToAccount { toAccount: Option<AccountIdentifier> };
-export interface RewardToNeuron { dissolveDelaySeconds: bigint };
+export interface RewardToAccount { toAccount: Option<AccountIdentifier> }
+export interface RewardToNeuron { dissolveDelaySeconds: bigint }
 
 export type ClaimNeuronRequest = {
     publicKey: DerEncodedBlob,
@@ -268,19 +268,19 @@ export interface RewardNodeProvider {
     nodeProvider: Option<NodeProvider>,
     rewardMode: Option<RewardMode>,
     amountE8s: bigint,
-};
+}
 export interface SetDefaultFollowees {
     defaultFollowees: Array<Followees>
-};  
-export interface Spawn { newController: Option<PrincipalString> };
-export interface SpawnResponse { createdNeuronId: NeuronId };
-export interface Split { amount: E8s };
+}  
+export interface Spawn { newController: Option<PrincipalString> }
+export interface SpawnResponse { createdNeuronId: NeuronId }
+export interface Split { amount: E8s }
 export interface Tally {
     no: bigint,
     yes: bigint,
     total: bigint,
     timestampSeconds: bigint,
-};
+}
 export enum Topic {
     // https://github.com/dfinity-lab/dfinity/blob/99289f7b58f22268d8575b94971655e8f4567a8a/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto#L26
     Unspecified = 0,
@@ -293,7 +293,7 @@ export enum Topic {
     SubnetManagement = 7,
     NetworkCanisterManagement = 8,
     Kyc = 9,
-};
+}
 
 export interface AddHotKeyRequest {
     neuronId: NeuronId,
@@ -322,7 +322,7 @@ export interface FollowRequest {
     neuronId: NeuronId,
     topic: Topic, 
     followees: Array<NeuronId> 
-};
+}
 
 export interface RegisterVoteRequest {
     neuronId: NeuronId,
@@ -385,8 +385,8 @@ export interface MakeSetDefaultFolloweesProposalRequest {
     followees: Array<Followees>
 }
 
-export interface DisburseToNeuronResponse { createdNeuronId: NeuronId };
-export interface SpawnResponse { createdNeuronId: NeuronId };
+export interface DisburseToNeuronResponse { createdNeuronId: NeuronId }
+export interface SpawnResponse { createdNeuronId: NeuronId }
 export type EmptyResponse = { Ok: null } | { Err: GovernanceError };
 
 export default interface ServiceInterface {
@@ -410,4 +410,4 @@ export default interface ServiceInterface {
     makeNetworkEconomicsProposal: (request: MakeNetworkEconomicsProposalRequest) => Promise<MakeProposalResponse>,
     makeRewardNodeProviderProposal: (request: MakeRewardNodeProviderProposalRequest) => Promise<MakeProposalResponse>,
     makeSetDefaultFolloweesProposal: (request: MakeSetDefaultFolloweesProposalRequest) => Promise<MakeProposalResponse>,
-};
+}

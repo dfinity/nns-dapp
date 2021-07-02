@@ -2,7 +2,7 @@ import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, SubAccount } fro
 
 export interface GetBalancesRequest {
     accounts: Array<AccountIdentifier>,
-};
+}
 
 
 export interface SendICPTsRequest {
@@ -12,7 +12,7 @@ export interface SendICPTsRequest {
     fee?: E8s,
     blockHeight?: BlockHeight,
     fromSubAccountId?: number,
-};
+}
 
 export interface NotifyCanisterRequest {
     toCanister : CanisterIdString,
@@ -20,10 +20,10 @@ export interface NotifyCanisterRequest {
     toSubAccount? : SubAccount,
     fromSubAccountId? : number,
     maxFee? : E8s,
-};
+}
   
 export default interface ServiceInterface {
     getBalances(request: GetBalancesRequest): Promise<Record<AccountIdentifier, E8s>>,
     sendICPTs(request: SendICPTsRequest): Promise<BlockHeight>,
     notify(request: NotifyCanisterRequest): Promise<Uint8Array>
-};
+}

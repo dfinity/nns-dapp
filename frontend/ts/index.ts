@@ -22,7 +22,8 @@ window["createHardwareWalletApi"] = (identity: LedgerIdentity) : Promise<Hardwar
 
 // This hack is because Dart interop doesn't yet understand bigint
 // @ts-ignore
-window["Serializer"] = function(object: Object): String {
+// eslint-disable-next-line
+window["Serializer"] = function(object: any): string {
     return JSON.stringify(object, (_key, value) =>
         typeof value === 'bigint'
             ? value.toString()

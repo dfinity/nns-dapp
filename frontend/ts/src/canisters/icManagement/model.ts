@@ -56,4 +56,4 @@ export type UpdateSettingSuccess = {
 export default interface ServiceInterface {
     getCanisterDetails: (canisterId: CanisterIdString) => Promise<CanisterDetailsResponse>,
     updateSettings: (request: UpdateSettingsRequest) => Promise<UpdateSettingsResponse>
-};
+}
