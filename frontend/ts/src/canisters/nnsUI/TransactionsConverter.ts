@@ -1,5 +1,5 @@
+import { UnsupportedValueError } from "../../utils";
 import {
-    Send,
     Transaction,
     TransactionType,
     Transfer

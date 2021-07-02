@@ -1,6 +1,7 @@
 {
   "scripts": {
     "build": "./build.sh",
+    "lint": "eslint --max-warnings 0 .",
     "update_candid": "didc bind src/canisters/icManagement/canister.did -t ts > ./src/canisters/icManagement/rawService.ts; didc bind src/canisters/icManagement/canister.did -t js > ./src/canisters/icManagement/canister.did.js"
   },
   "dependencies": {
@@ -22,10 +23,17 @@
     "source-map-explorer": "^2.5.2",
     "tinyify": "^3.0.0",
     "ts-protoc-gen": "^0.14.0",
-    "tweetnacl": "^1.0.3",
-    "typescript": "^4.2.3"
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
-    "@types/randombytes": "^2.0.0"
+    "@types/randombytes": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
+    "eslint": "^7.29.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "typescript": "^4.3.5"
   }
 }

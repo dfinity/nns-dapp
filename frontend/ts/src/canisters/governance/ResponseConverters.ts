@@ -48,6 +48,7 @@ import {
     RewardMode as RawRewardMode,
     Tally as RawTally,
 } from "./rawService";
+import { UnsupportedValueError } from "../../utils";
 
 export default class ResponseConverters {
     public toProposalInfo = (proposalInfo: RawProposalInfo) : ProposalInfo => {
@@ -486,6 +487,7 @@ export default class ResponseConverters {
         }
     }
 
+    // eslint-disable-next-line
     private throwUnrecognisedTypeError(name: string, value: any) : Error {
         return new Error(`Unrecognised ${name} type - ${JSON.stringify(value)}`);
     }

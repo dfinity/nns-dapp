@@ -15,7 +15,7 @@ import {
     SendRequest, Subaccount
 } from "./proto/types_pb";
 
-export const TRANSACTION_FEE : bigint = BigInt(10_000);
+export const TRANSACTION_FEE  = BigInt(10_000);
 
 export default class RequestConverters {
     public fromGetBalancesRequest = (request: GetBalancesRequest) : Array<AccountBalanceRequest> => {
