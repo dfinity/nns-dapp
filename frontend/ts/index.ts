@@ -1,3 +1,6 @@
+/**
+ * Methods exposed globally to be invoked by Dart code.
+ */
 import AuthApi from "./src/AuthApi";
 import HardwareWalletApi from "./src/HardwareWalletApi";
 import { SignIdentity } from "@dfinity/agent";
@@ -22,7 +25,7 @@ window["createHardwareWalletApi"] = (
   return HardwareWalletApi.create(identity);
 };
 
-// This hack is because Dart interop doesn't yet understand bigint
+// This is needed because Dart interop doesn't yet understand bigint
 // @ts-ignore
 // eslint-disable-next-line
 window["Serializer"] = function (object: any): string {
@@ -32,13 +35,13 @@ window["Serializer"] = function (object: any): string {
   );
 };
 
-// This hack is because Dart interop doesn't yet understand bigint
+// This is needed because Dart interop doesn't yet understand bigint
 // @ts-ignore
 window["createBigInt"] = function (bigIntString: string): BigInt {
   return BigInt(bigIntString);
 };
 
-// This hack is because Dart interop doesn't yet understand bigint
+// This is needed because Dart interop doesn't yet understand bigint
 // @ts-ignore
 window["convertBigIntToString"] = function (bigInt: bigint): string {
   return bigInt.toString();

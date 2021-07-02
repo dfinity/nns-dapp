@@ -9,13 +9,15 @@ import { IDENTITY_SERVICE_URL } from "./config.json";
 const ONE_MINUTE_MILLIS = 60 * 1000;
 const SESSION_TIMEOUT_IN_NS = BigInt(1_920_000_000_000); // 32 mins
 
+/**
+ * API for authenticating users into the app.
+ */
 export default class AuthApi {
   private readonly authClient: AuthClient;
   private readonly onLoggedOut: () => void;
   private expireSessionTimeout: Option<NodeJS.Timeout>;
 
-  // A cache for the ledger identity. This is needed to ensure the
-  // transport of the identity is closed before creating a new identity.
+  // A cache for the ledger identity.
   private ledgerIdentity?: LedgerIdentity;
 
   public static create = async (onLoggedOut: () => void): Promise<AuthApi> => {
@@ -34,6 +36,10 @@ export default class AuthApi {
     }
   }
 
+  /**
+   * Returns the identity of the user if the user is logged and the session
+   * isn't about to expire, otherwise, returns null.
+   */
   public tryGetIdentity = (): Option<Identity> => {
     const identity = this.authClient.getIdentity();
     if (identity.getPrincipal().isAnonymous()) {
@@ -52,6 +58,9 @@ export default class AuthApi {
     return identity;
   };
 
+  /**
+   * Prompts the user to login by redirecting them to the Internet Identity.
+   */
   public login = async (onSuccess: () => void): Promise<void> => {
     const options: AuthClientLoginOptions = {
       maxTimeToLive: SESSION_TIMEOUT_IN_NS,
@@ -65,6 +74,9 @@ export default class AuthApi {
     await executeWithLogging(() => this.authClient.login(options));
   };
 
+  /**
+   * Logout of the app.
+   */
   public logout = async (): Promise<void> => {
     if (this.expireSessionTimeout) {
       clearTimeout(this.expireSessionTimeout);
@@ -104,6 +116,10 @@ export default class AuthApi {
     return this.tryGetIdentity()?.getPrincipal().toString();
   };
 
+  /**
+   * @returns the amount of time in ms remaining for the session to expire.
+   * Null is returned if the session doesn't expire or if the user isn't logged in.
+   */
   public getTimeUntilSessionExpiryMs = (): Option<number> => {
     const identity = this.authClient.getIdentity();
     if (identity instanceof DelegationIdentity) {
