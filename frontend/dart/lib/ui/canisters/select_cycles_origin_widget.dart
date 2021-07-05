@@ -12,41 +12,46 @@ class SelectCyclesOriginWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Select ICP Source Account",
-                  style: Responsive.isDesktop(context) |
-                          Responsive.isTablet(context)
-                      ? context.textTheme.headline3
-                      : context.textTheme.headline4,
-                ),
-                SmallFormDivider(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(
-                                width: 2, color: AppColors.gray800))),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: context.boxes.accounts.values
-                          .mapToList((e) => _AccountRow(
-                              account: e,
-                              onPressed: () {
-                                onSelected(e, context);
-                              })),
-                    ),
-                  ),
-                )
-              ]),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Select ICP Source Account",
+                        style: Responsive.isMobile(context)
+                            ? context.textTheme.headline4
+                            : context.textTheme.headline3,
+                      ),
+                      SmallFormDivider(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: BorderSide(
+                                      width: 2, color: AppColors.gray800))),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: context.boxes.accounts.values
+                                .mapToList((e) => _AccountRow(
+                                    account: e,
+                                    onPressed: () {
+                                      onSelected(e, context);
+                                    })),
+                          ),
+                        ),
+                      )
+                    ]),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -70,38 +75,35 @@ class _AccountRow extends StatelessWidget {
     final myLocale = Localizations.localeOf(context);
     return FlatButton(
       onPressed: onPressed,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    account.name,
-                    style: context.textTheme.headline3,
-                  ),
+                Text(
+                  account.name,
+                  style: Responsive.isMobile(context)
+                      ? context.textTheme.headline4
+                      : context.textTheme.headline3,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 16.0, bottom: 16.0, right: 16.0),
-                  child: Text(
-                    account.accountIdentifier,
-                    style: context.textTheme.bodyText2,
-                  ),
-                )
+                BalanceDisplayWidget(
+                  amount: account.balance,
+                  amountSize: Responsive.isMobile(context) ? 14 : 30,
+                  icpLabelSize: 25,
+                  locale: myLocale.languageCode,
+                ),
               ],
             ),
-          ),
-          BalanceDisplayWidget(
-              amount: account.balance,
-              amountSize: 30,
-              icpLabelSize: 20,
-              locale: myLocale.languageCode,
-          )
-        ],
+            SmallFormDivider(),
+            Text(
+              account.accountIdentifier,
+              style: context.textTheme.bodyText2,
+            )
+          ],
+        ),
       ),
     );
   }
