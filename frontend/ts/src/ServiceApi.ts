@@ -418,6 +418,8 @@ export default class ServiceApi {
     await anonLedgerService.sendICPTs(req);
   };
 
+  // Uses the passed in neuron to make a few dummy proposals.
+  // Should/can only be used on testnets.
   public makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     {
       console.log("make a 'Motion' proposal");
