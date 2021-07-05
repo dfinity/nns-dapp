@@ -1,7 +1,7 @@
-
 import 'package:dfinity_wallet/data/cycles.dart';
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:flutter/services.dart';
 
 import '../../dfinity.dart';
@@ -14,14 +14,14 @@ class CycleInputWidget extends StatefulWidget {
 
   const CycleInputWidget(
       {Key? key,
-        required this.source, required this.onChange, required this.ratio
-      })
+      required this.source,
+      required this.onChange,
+      required this.ratio})
       : super(key: key);
 
   @override
   _CycleInputWidgetState createState() => _CycleInputWidgetState();
 }
-
 
 class _CycleInputWidgetState extends State<CycleInputWidget> {
   late ValidatedTextField icpField;
@@ -33,22 +33,24 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
 
     icpField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(
-              widget.source.balance, 2)
+          StringFieldValidation.insufficientFunds(widget.source.balance, 2)
         ],
         inputType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[ ICPTextInputFormatter() ]
-        );
+        inputFormatters: <TextInputFormatter>[ICPTextInputFormatter()]);
 
     cyclesField = ValidatedTextField("T Cycles",
         validations: [
-          StringFieldValidation("Minimum amount: 2T cycles", (e) => (e.toDoubleOrNull() ?? 0) < 2),
+          StringFieldValidation("Minimum amount: 2T cycles",
+              (e) => (e.toDoubleOrNull() ?? 0) < 2),
         ],
         inputType: TextInputType.number);
   }
 
-  void callCallback(){
-    final amount = (icpField.failedValidation == null && cyclesField.failedValidation == null) ? ICP.fromString(icpField.currentValue) : null;
+  void callCallback() {
+    final amount = (icpField.failedValidation == null &&
+            cyclesField.failedValidation == null)
+        ? ICP.fromString(icpField.currentValue)
+        : null;
     widget.onChange(amount);
   }
 
@@ -65,59 +67,157 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
       child: Padding(
         padding: const EdgeInsets.all(6.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+            Responsive.isDesktop(context) || Responsive.isTablet(context)
+                ? Row(
                     children: [
-                      Text("ICP", style: context.textTheme.headline3),
-                      DebouncedValidatedFormField(icpField, onChanged: () {
-                        final newIcpValue = ICP.fromString(
-                            icpField.currentValue.isEmpty ? "0" : icpField.currentValue);
-                        final newCyclesAmount = CycleCalculator(widget.ratio!)
-                            .icpToCycles(newIcpValue);
-                        final currentCyclesAmount = Cycles.fromTs(
-                            cyclesField.currentValue.toDoubleOrNull() ?? 0);
-                        if (newCyclesAmount.amount != currentCyclesAmount.amount){
-                          cyclesField.textEditingController.text =
-                              newCyclesAmount.asStringT(myLocale.languageCode).replaceAll(",", "");
-                        }
-                        callCallback();
-                      }),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("ICP", style: context.textTheme.headline3),
+                            DebouncedValidatedFormField(icpField,
+                                onChanged: () {
+                              final newIcpValue = ICP.fromString(
+                                  icpField.currentValue.isEmpty
+                                      ? "0"
+                                      : icpField.currentValue);
+                              final newCyclesAmount =
+                                  CycleCalculator(widget.ratio!)
+                                      .icpToCycles(newIcpValue);
+                              final currentCyclesAmount = Cycles.fromTs(
+                                  cyclesField.currentValue.toDoubleOrNull() ??
+                                      0);
+                              if (newCyclesAmount.amount !=
+                                  currentCyclesAmount.amount) {
+                                cyclesField.textEditingController.text =
+                                    newCyclesAmount
+                                        .asStringT(myLocale.languageCode)
+                                        .replaceAll(",", "");
+                              }
+                              callCallback();
+                            }),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("T Cycles",
+                                style: context.textTheme.headline3),
+                            DebouncedValidatedFormField(
+                              cyclesField,
+                              onChanged: () {
+                                final newCyclesAmount = Cycles.fromTs(
+                                    cyclesField.currentValue.toDoubleOrNull() ??
+                                        0);
+                                final newIcpAmount =
+                                    CycleCalculator(widget.ratio!)
+                                        .cyclesToIcp(newCyclesAmount);
+                                final currentIcpAmount = ICP.fromString(
+                                    icpField.currentValue.isEmpty
+                                        ? "0"
+                                        : icpField.currentValue);
+                                if (newIcpAmount.asE8s() !=
+                                    currentIcpAmount.asE8s()) {
+                                  icpField.textEditingController.text =
+                                      newIcpAmount
+                                          .asString(myLocale.languageCode)
+                                          .replaceAll(",", "");
+                                }
+                                callCallback();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child:
+                                Text("ICP", style: context.textTheme.headline6),
+                          ),
+                          DebouncedValidatedFormField(icpField, onChanged: () {
+                            final newIcpValue = ICP.fromString(
+                                icpField.currentValue.isEmpty
+                                    ? "0"
+                                    : icpField.currentValue);
+                            final newCyclesAmount =
+                                CycleCalculator(widget.ratio!)
+                                    .icpToCycles(newIcpValue);
+                            final currentCyclesAmount = Cycles.fromTs(
+                                cyclesField.currentValue.toDoubleOrNull() ?? 0);
+                            if (newCyclesAmount.amount !=
+                                currentCyclesAmount.amount) {
+                              cyclesField.textEditingController.text =
+                                  newCyclesAmount
+                                      .asStringT(myLocale.languageCode)
+                                      .replaceAll(",", "");
+                            }
+                            callCallback();
+                          }),
+                        ],
+                      ),
+                      SizedBox(width: 20),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("T Cycles",
+                                style: context.textTheme.headline6),
+                          ),
+                          DebouncedValidatedFormField(
+                            cyclesField,
+                            onChanged: () {
+                              final newCyclesAmount = Cycles.fromTs(
+                                  cyclesField.currentValue.toDoubleOrNull() ??
+                                      0);
+                              final newIcpAmount =
+                                  CycleCalculator(widget.ratio!)
+                                      .cyclesToIcp(newCyclesAmount);
+                              final currentIcpAmount = ICP.fromString(
+                                  icpField.currentValue.isEmpty
+                                      ? "0"
+                                      : icpField.currentValue);
+                              if (newIcpAmount.asE8s() !=
+                                  currentIcpAmount.asE8s()) {
+                                icpField.textEditingController.text =
+                                    newIcpAmount
+                                        .asString(myLocale.languageCode)
+                                        .replaceAll(",", "");
+                              }
+                              callCallback();
+                            },
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text("T Cycles", style: context.textTheme.headline3),
-                      DebouncedValidatedFormField(cyclesField, onChanged: (){
-                        final newCyclesAmount = Cycles.fromTs(
-                            cyclesField.currentValue.toDoubleOrNull() ?? 0);
-                        final newIcpAmount = CycleCalculator(widget.ratio!)
-                            .cyclesToIcp(newCyclesAmount);
-                        final currentIcpAmount = ICP.fromString(
-                            icpField.currentValue.isEmpty ? "0" : icpField.currentValue);
-                        if (newIcpAmount.asE8s() != currentIcpAmount.asE8s()){
-                          icpField.textEditingController.text = newIcpAmount.asString(
-                              myLocale.languageCode).replaceAll(",", "");
-                        }
-                        callCallback();
-                      },),
-                    ],
-                  ),
-                ),
-              ],
-            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('''Minimum amount: 2T Cycles (inclusive of 1T Cycles fee if creating a new canister)
-
-              Application subnets are in beta and therefore Cycles might be lost'''),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                      'Minimum amount: 2T Cycles (inclusive of 1T Cycles fee if creating a new canister)'),
+                  SmallFormDivider(),
+                  Text(
+                      'Application subnets are in beta and therefore Cycles might be lost'),
+                ],
+              ),
             )
           ],
         ),
@@ -125,5 +225,3 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
     );
   }
 }
-
-
