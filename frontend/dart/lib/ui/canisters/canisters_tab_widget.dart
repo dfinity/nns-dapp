@@ -1,9 +1,11 @@
 import 'package:core/core.dart';
 import 'package:dfinity_wallet/data/canister.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
+import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/page_button.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
 import 'package:dfinity_wallet/ui/canisters/select_canister_add_action_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
@@ -48,7 +50,7 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                       children: [
                         SmallFormDivider(),
                         ...context.boxes.canisters.values
-                            .mapToList((e) => CanisterRow(
+                            .mapToList((e) => CanisterColumn(
                                   canister: e,
                                   showsWarning: true,
                                   onPressed: () {
@@ -87,12 +89,12 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
   }
 }
 
-class CanisterRow extends StatelessWidget {
+class CanisterColumn extends StatelessWidget {
   final Canister canister;
   final bool showsWarning;
   final VoidCallback onPressed;
 
-  const CanisterRow(
+  const CanisterColumn(
       {Key? key,
       required this.canister,
       required this.onPressed,
@@ -112,9 +114,12 @@ class CanisterRow extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(
+                child: AutoSizeText(
                   canister.name,
-                  style: context.textTheme.headline3,
+                  maxLines: 1,
+                  style: Responsive.isMobile(context)
+                      ? context.textTheme.headline6
+                      : context.textTheme.headline3,
                 ),
               ),
               Padding(
@@ -122,7 +127,9 @@ class CanisterRow extends StatelessWidget {
                     left: 16.0, bottom: 16.0, right: 16.0),
                 child: Text(
                   canister.identifier,
-                  style: context.textTheme.bodyText1,
+                  style: Responsive.isMobile(context)
+                      ? context.textTheme.bodyText2
+                      : context.textTheme.bodyText1,
                 ),
               )
             ],

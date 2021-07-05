@@ -1,6 +1,8 @@
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
+import 'package:dfinity_wallet/ui/_components/page_button.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
 import 'package:dfinity_wallet/ui/canisters/top_up_cycles_amount_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
@@ -85,7 +87,9 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                         children: [
                                           Text(
                                             canister.name,
-                                            style: context.textTheme.headline1,
+                                            style: Responsive.isMobile(context)
+                                                ? context.textTheme.headline3
+                                                : context.textTheme.headline1,
                                           ),
                                           SizedBox(
                                             height: 10,
@@ -139,7 +143,10 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                           children: [
                                             Text(
                                               canister.cyclesBalance?.asStringT(
-                                                  myLocale.languageCode, 3, 3) ?? "-",
+                                                      myLocale.languageCode,
+                                                      3,
+                                                      3) ??
+                                                  "-",
                                               style: TextStyle(
                                                   color: AppColors.white,
                                                   fontFamily:
@@ -173,21 +180,9 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                       child: IntrinsicHeight(
                         child: Padding(
                           padding: const EdgeInsets.all(32.0),
-                          child: ElevatedButton(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: SizedBox(
-                                  width: 400,
-                                  child: Center(
-                                    child: Text(
-                                      "Add Cycles",
-                                      style: context.textTheme.button
-                                          ?.copyWith(fontSize: 24),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
+                          child: PageButton(
+                              title: "Add Cycles",
+                              onPress: () {
                                 OverlayBaseWidget.show(
                                     context,
                                     WizardOverlay(
@@ -222,11 +217,11 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
         )
       ],
       canister.controllers.map((controller) => Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SelectableText(
-              controller,
-              style: context.textTheme.subtitle2,
-            ))),
+          padding: const EdgeInsets.all(8.0),
+          child: SelectableText(
+            controller,
+            style: context.textTheme.subtitle2,
+          ))),
       [
         Align(
           alignment: Alignment.bottomRight,
