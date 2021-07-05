@@ -13,6 +13,9 @@ class ServiceApi {
   @JS("acquireICPTs")
   external Promise<void> acquireICPTs(String accountIdentifier, BigInt icpts);
 
+  @JS("makeDummyProposals")
+  external Promise<void> makeDummyProposals(dynamic neuronId);
+
   @JS("getAccount")
   external Promise<dynamic> getAccount();
 

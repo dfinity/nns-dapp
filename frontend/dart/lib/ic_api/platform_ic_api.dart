@@ -25,6 +25,8 @@ abstract class AbstractPlatformICApi {
   Future<void> acquireICPTs(
       {required String accountIdentifier, required BigInt doms});
 
+  Future<void> makeDummyProposals({required BigInt neuronId});
+
   Future<void> createSubAccount({required String name});
 
   Future<void> sendICPTs(

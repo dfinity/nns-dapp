@@ -37,6 +37,12 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<void> makeDummyProposals({required BigInt neuronId}) {
+    // TODO: implement makeDummyProposals
+    throw UnimplementedError();
+  }
+
+  @override
   Future<void> createNeuron({required ICP stake, int? fromSubAccount}) {
     // TODO: implement createNeuron
     throw UnimplementedError();
