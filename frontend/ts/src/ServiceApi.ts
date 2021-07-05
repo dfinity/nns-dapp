@@ -418,15 +418,14 @@ export default class ServiceApi {
     await anonLedgerService.sendICPTs(req);
   };
 
-  public makeDummyProposals = async (neuronId: NeuronId) : Promise<void> => {
-
+  public makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     {
       console.log("make a 'Motion' proposal");
       const manageNeuronResponse = await this.makeMotionProposal({
         neuronId,
         url: "http://free-stuff-for-all.com",
         text: "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
-        summary: "Change the world with the IC - lower all prices!"
+        summary: "Change the world with the IC - lower all prices!",
       });
       console.log(manageNeuronResponse);
     }
@@ -446,7 +445,7 @@ export default class ServiceApi {
           neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
           minimumIcpXdrRate: BigInt(1),
           maximumNodeProviderRewards: BigInt(10_000_000_000),
-        }
+        },
       });
       console.log(manageNeuronResponse);
     }
@@ -460,10 +459,10 @@ export default class ServiceApi {
         amount: BigInt(10_000_000),
         nodeProvider: this.identity.getPrincipal().toString(),
         rewardMode: {
-          RewardToNeuron: { dissolveDelaySeconds: BigInt(1000) }
-        }
+          RewardToNeuron: { dissolveDelaySeconds: BigInt(1000) },
+        },
       });
       console.log(manageNeuronResponse);
     }
-  }
+  };
 }
