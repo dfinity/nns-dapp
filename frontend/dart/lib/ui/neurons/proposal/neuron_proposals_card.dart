@@ -1,4 +1,4 @@
-
+import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import '../../../dfinity.dart';
 
 class NeuronProposalsCard extends StatelessWidget {
@@ -34,6 +34,20 @@ class NeuronProposalsCard extends StatelessWidget {
                 ],
               ),
             )),
+            SmallFormDivider(),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await context.performLoading(() =>
+                    context.icApi.makeDummyProposals(neuronId: neuron.id.toBigInt));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text("Make Dummy Proposals"),
+                )
+              ),
+            )
           ],
         ),
       ),

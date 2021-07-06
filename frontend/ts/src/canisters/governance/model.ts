@@ -407,7 +407,7 @@ export interface MakeNetworkEconomicsProposalRequest {
   neuronId: NeuronId;
   summary: string;
   url: string;
-  networkEcomomics: NetworkEconomics;
+  networkEconomics: NetworkEconomics;
 }
 
 export interface MakeRewardNodeProviderProposalRequest {

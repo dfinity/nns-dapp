@@ -7,6 +7,8 @@ import 'package:dfinity_wallet/ui/neurons/proposal/neuron_proposals_card.dart';
 import '../../../dfinity.dart';
 import 'neuron_votes_card.dart';
 
+const DEPLOY_ENV = String.fromEnvironment('DEPLOY_ENV');
+
 class NeuronDetailWidget extends StatefulWidget {
   final Neuron neuron;
 
@@ -47,8 +49,8 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                       NeuronRewardsCard(neuron: widget.neuron),
                       NeuronVotesCard(neuron: widget.neuron),
                       NeuronFolloweesCard(neuron: widget.neuron),
-                        if(false)
-                      NeuronProposalsCard(neuron: widget.neuron),
+                      if(DEPLOY_ENV == "staging")
+                        NeuronProposalsCard(neuron: widget.neuron),
 
                       TallFormDivider(),
                     ],

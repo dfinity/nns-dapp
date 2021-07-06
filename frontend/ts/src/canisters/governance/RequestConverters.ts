@@ -257,7 +257,7 @@ export default class RequestConverters {
   public fromMakeNetworkEconomicsProposalRequest = (
     request: MakeNetworkEconomicsProposalRequest
   ): RawManageNeuron => {
-    const networkEconomics = request.networkEcomomics;
+    const networkEconomics = request.networkEconomics;
     const rawCommand: RawCommand = {
       MakeProposal: {
         url: request.url,

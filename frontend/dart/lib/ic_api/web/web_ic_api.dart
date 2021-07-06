@@ -90,6 +90,11 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<void> makeDummyProposals({required BigInt neuronId}) async {
+    await serviceApi!.makeDummyProposals(neuronId.toJS).toFuture();
+  }
+
+  @override
   Future<void> createSubAccount({required String name}) async {
     await promiseToFuture(serviceApi!.createSubAccount(name)).then((value) {
       final json = jsonDecode(stringify(value));
