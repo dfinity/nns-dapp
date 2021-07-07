@@ -7,9 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 // ignore: unused_import
-import 'ic_api/stub_ic_api.dart'
-    if (dart.library.io) 'ic_api/platform_ic_api.dart' // dart:io implementation
-    if (dart.library.html) 'ic_api/web/web_ic_api.dart';
+import 'ic_api/web/web_ic_api.dart';
 
 void main() {
   final hiveBoxes = HiveBoxes();

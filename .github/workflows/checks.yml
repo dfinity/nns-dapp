@@ -89,7 +89,7 @@ jobs:
       - run: flutter pub get
         working-directory: ./frontend/dart
 
-      - run: flutter build web --web-renderer canvaskit --release --no-sound-null-safety
+      - run: flutter build web --web-renderer html --release --no-sound-null-safety
         working-directory: ./frontend/dart
 
       - run: flutter test
