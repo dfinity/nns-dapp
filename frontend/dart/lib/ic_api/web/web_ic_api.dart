@@ -223,10 +223,15 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<Neuron> fetchNeuron({required BigInt neuronId}) async {
+  Future<Neuron?> fetchNeuron({required BigInt neuronId}) async {
     final res = await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS));
-    final neuronInfo = jsonDecode(stringify(res));
-    return neuronSyncService!.storeNeuron(neuronInfo);
+    if (res == null) {
+      neuronSyncService!.removeNeuron(neuronId.toString());
+      return null;
+    } else {
+      final neuronInfo = jsonDecode(stringify(res));
+      return neuronSyncService!.storeNeuron(neuronInfo);
+    }
   }
 
   @override
