@@ -38,16 +38,16 @@ What things you need to install the software and how to install them
 
 Development relies on the presence of a testnet that is setup with the II, governance, ledger, and cycle minting canisters. We do not yet support fully local development.
 
-To deploy to the `xsmallh` testnet, run the following:
+To deploy to the testnet, run the following:
 
 ```shell
-./deploy.sh xsmallh
+./deploy.sh testnet
 ```
 
 You can now access the frontend using:
 
 ```shell
-open "https://$(dfx canister --no-wallet --network xsmallh id nns_ui).xsmallh.dfinity.network"
+open "https://$(dfx canister --no-wallet --network testnet id nns_ui).nnsdapp.dfinity.network"
 ```
 
 To work on the UI locally, either use your IDE, or run the following:

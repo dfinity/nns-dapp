@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-if ! [[ $DEPLOY_ENV = "xsmallh" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]]; then
-  echo "Which deployment environment? Set DEPLOY_ENV to 'xsmallh' or 'mainnet'"
+if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]]; then
+  echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet'"
   exit 1
 fi
 

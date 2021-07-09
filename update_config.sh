@@ -1,18 +1,18 @@
 set -e
 
 
-if ! [[ $DEPLOY_ENV = "xsmallh" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]]; then
-  echo "Which deployment environment? Set DEPLOY_ENV to 'xsmallh' or 'mainnet'"
+if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]]; then
+  echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet'"
 	exit 1
 fi
 
-if [[ $DEPLOY_ENV = "xsmallh" ]]; then
-    # xsmallh config
+if [[ $DEPLOY_ENV = "testnet" ]]; then
+    # testnet config
     cat > frontend/ts/src/config.json << EOF
 {
-    "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.xsmallh.dfinity.network/",
-    "HOST": "https://xsmallh.dfinity.network/",
-    "OWN_CANISTER_ID": "$(dfx canister --no-wallet --network xsmallh id nns_ui)",
+    "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/",
+    "HOST": "https://nnsdapp.dfinity.network/",
+    "OWN_CANISTER_ID": "$(dfx canister --no-wallet --network testnet id nns_ui)",
     "FETCH_ROOT_KEY": true
 }
 EOF
