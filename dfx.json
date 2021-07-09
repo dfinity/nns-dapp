@@ -10,9 +10,9 @@
     }
   },
   "networks": {
-    "xsmallh": {
+    "testnet": {
       "providers": [
-        "http://[2a00:fb01:400:42:5000:13ff:fe3b:451e]:8080"
+        "http://[2a00:fb01:400:42:5000:82ff:fed6:dfdc]:8080"
       ],
       "type": "persistent"
     },
