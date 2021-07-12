@@ -1,10 +1,11 @@
 use crate::accounts_store::AccountsStore;
-use lazy_static::lazy_static;
-use std::sync::RwLock;
+use std::cell::RefCell;
 
 #[derive(Default)]
 pub struct State {
-    pub accounts_store: AccountsStore,
+    // NOTE: When adding new persistent fields here, ensure that these fields
+    // are being persisted in the post_upgrade method.
+    pub accounts_store: RefCell<AccountsStore>,
 }
 
 pub trait StableState: Sized {
@@ -12,18 +13,18 @@ pub trait StableState: Sized {
     fn decode(bytes: Vec<u8>) -> Result<Self, String>;
 }
 
-lazy_static! {
-    pub static ref STATE: RwLock<State> = RwLock::new(State::default());
+thread_local! {
+    pub static STATE: State = State::default();
 }
 
 impl StableState for State {
     fn encode(&self) -> Vec<u8> {
-        self.accounts_store.encode()
+        self.accounts_store.borrow().encode()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         Ok(State {
-            accounts_store: AccountsStore::decode(bytes)?,
+            accounts_store: RefCell::new(AccountsStore::decode(bytes)?),
         })
     }
 }
