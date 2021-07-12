@@ -53,6 +53,7 @@ import {
   Tally as RawTally,
 } from "./rawService";
 import { UnsupportedValueError } from "../../utils";
+import { TRANSACTION_FEE } from "../constants";
 
 export default class ResponseConverters {
   public toProposalInfo = (proposalInfo: RawProposalInfo): ProposalInfo => {
@@ -86,15 +87,23 @@ export default class ResponseConverters {
   ): Array<NeuronInfo> => {
     const principalString = principal.toString();
 
-    return response.neuron_infos.map(([id, neuronInfo]) =>
-      this.toNeuronInfo(
-        id,
-        principalString,
-        neuronInfo,
-        response.full_neurons.find(
-          (neuron) => neuron.id.length && neuron.id[0].id === id
+    return (
+      response.neuron_infos
+        .map(([id, neuronInfo]) =>
+          this.toNeuronInfo(
+            id,
+            principalString,
+            neuronInfo,
+            response.full_neurons.find(
+              (neuron) => neuron.id.length && neuron.id[0].id === id
+            )
+          )
         )
-      )
+        // hide neurons where the stake is less than or equal to 1 transaction fee
+        .filter(
+          (n) =>
+            !n.fullNeuron || n.fullNeuron.cachedNeuronStake > TRANSACTION_FEE
+        )
     );
   };
 
