@@ -13,6 +13,7 @@
     "@dfinity/identity": "^0.9.1",
     "@dfinity/identity-ledgerhq": "^0.9.1",
     "@dfinity/principal": "^0.9.1",
+    "@zondax/ledger-icp": "^0.3.0",
     "borc": "^2.1.2",
     "browserify": "^17.0.0",
     "buffer": "^5.4.3",
