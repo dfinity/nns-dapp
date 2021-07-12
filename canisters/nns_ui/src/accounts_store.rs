@@ -1458,7 +1458,7 @@ impl AccountsStore {
                         principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::TopUpNeuron(
-                            principal,
+                            neuron_account.principal,
                             neuron_account.memo,
                         ),
                     );
