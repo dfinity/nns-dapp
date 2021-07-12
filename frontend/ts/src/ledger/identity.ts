@@ -8,7 +8,7 @@ import {
 } from "@dfinity/agent";
 import { blobFromUint8Array, BinaryBlob } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
-import DfinityApp, { ResponseSign } from "@zondax/ledger-dfinity";
+import LedgerApp, { LedgerError, ResponseSign } from "@zondax/ledger-icp";
 import { Secp256k1PublicKey } from "./secp256k1";
 // @ts-ignore (no types are available)
 import TransportClass from "@ledgerhq/hw-transport-webhid";
@@ -53,28 +53,28 @@ export class LedgerIdentity extends SignIdentity {
   /**
    * Connect to a ledger hardware wallet.
    */
-  private static async _connect(): Promise<[DfinityApp, TransportClass]> {
+  private static async _connect(): Promise<[LedgerApp, TransportClass]> {
     if (!(await TransportClass.isSupported())) {
       // Data on browser compatibility is taken from https://caniuse.com/webhid
       throw "Your browser doesn't support WebHID, which is necessary to communicate with your wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+";
     }
 
     const transport = await TransportClass.create();
-    const app = new DfinityApp(transport);
-
+    const app = new LedgerApp(transport);
     return [app, transport];
   }
 
   private static async _fetchPublicKeyFromDevice(
-    app: DfinityApp,
+    app: LedgerApp,
     derivePath: string
   ): Promise<Secp256k1PublicKey> {
     const resp = await app.getAddressAndPubKey(derivePath);
-
+    // @ts-ignore
     if (resp.returnCode == 28161) {
       throw "Please open the Internet Computer app on your wallet and try again.";
-    } else if (resp.returnCode == 27014) {
+    } else if (resp.returnCode == LedgerError.TransactionRejected) {
       throw "Ledger Wallet is locked. Unlock it and try again.";
+      // @ts-ignore
     } else if (resp.returnCode == 65535) {
       throw "Unable to fetch the public key. Please try again.";
     }
@@ -102,7 +102,7 @@ export class LedgerIdentity extends SignIdentity {
    * and verify the address/pubkey are the same as on the device screen.
    */
   public async showAddressAndPubKeyOnDevice(): Promise<void> {
-    this._executeWithApp(async (app: DfinityApp) => {
+    this._executeWithApp(async (app: LedgerApp) => {
       await app.showAddressAndPubKey(this.derivePath);
     });
   }
@@ -112,7 +112,7 @@ export class LedgerIdentity extends SignIdentity {
   }
 
   public async sign(blob: BinaryBlob): Promise<BinaryBlob> {
-    return await this._executeWithApp(async (app: DfinityApp) => {
+    return await this._executeWithApp(async (app: LedgerApp) => {
       const resp: ResponseSign = await app.sign(
         this.derivePath,
         Buffer.from(blob)
@@ -150,7 +150,7 @@ export class LedgerIdentity extends SignIdentity {
   }
 
   private async _executeWithApp<T>(
-    func: (app: DfinityApp) => Promise<T>
+    func: (app: LedgerApp) => Promise<T>
   ): Promise<T> {
     const [app, transport] = await LedgerIdentity._connect();
 
