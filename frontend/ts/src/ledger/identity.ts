@@ -74,7 +74,7 @@ export class LedgerIdentity extends SignIdentity {
       throw "Please open the Internet Computer app on your wallet and try again.";
     } else if (resp.returnCode == LedgerError.TransactionRejected) {
       throw "Ledger Wallet is locked. Unlock it and try again.";
-    // @ts-ignore
+      // @ts-ignore
     } else if (resp.returnCode == 65535) {
       throw "Unable to fetch the public key. Please try again.";
     }
