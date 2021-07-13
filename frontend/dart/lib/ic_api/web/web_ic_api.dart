@@ -122,7 +122,10 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> createNeuron({required ICP stake, int? fromSubAccount}) async {
     await promiseToFuture(serviceApi!.createNeuron(CreateNeuronRequest(
         stake: stake.asE8s().toJS, fromSubAccountId: fromSubAccount)));
-    await neuronSyncService!.fetchNeurons();
+    await Future.wait([
+      balanceSyncService!.syncBalances(),
+      neuronSyncService!.fetchNeurons()
+    ]);
   }
 
   @override
@@ -134,7 +137,10 @@ class PlatformICApi extends AbstractPlatformICApi {
         neuronAccountIdentifier: neuronAccountIdentifier,
         amount: amount.asE8s().toJS,
         fromSubAccountId: fromSubAccount)));
-    await neuronSyncService!.fetchNeurons();
+    await Future.wait([
+      balanceSyncService!.syncBalances(),
+      neuronSyncService!.fetchNeurons()
+    ]);
   }
 
   @override
@@ -233,10 +239,15 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<Neuron> fetchNeuron({required BigInt neuronId}) async {
+  Future<Neuron?> fetchNeuron({required BigInt neuronId}) async {
     final res = await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS));
-    final neuronInfo = jsonDecode(stringify(res));
-    return neuronSyncService!.storeNeuron(neuronInfo);
+    if (res == null) {
+      neuronSyncService!.removeNeuron(neuronId.toString());
+      return null;
+    } else {
+      final neuronInfo = jsonDecode(stringify(res));
+      return neuronSyncService!.storeNeuron(neuronInfo);
+    }
   }
 
   @override

@@ -65,6 +65,11 @@ class NeuronSyncService {
     hiveBoxes.neurons.notifyChange();
   }
 
+  void removeNeuron(String neuronId) {
+    hiveBoxes.neurons.remove(neuronId);
+    hiveBoxes.neurons.notifyChange();
+  }
+
   void parseFullNeuron(dynamic fullNeuron, Neuron neuron) {
     final dissolveState = fullNeuron['dissolveState'];
     if (dissolveState != null) {

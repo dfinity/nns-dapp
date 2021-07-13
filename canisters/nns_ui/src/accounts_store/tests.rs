@@ -430,19 +430,21 @@ fn append_transaction_detects_neuron_transactions() {
     let mut store = setup_test_store();
 
     let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
+
+    let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let neuron_memo = Memo(16656605094239839590);
+    let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
+
     let transfer = Send {
-        from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_1).unwrap(), None),
-        to: AccountIdentifier::from_hex(
-            "426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91",
-        )
-        .unwrap(),
+        from: AccountIdentifier::new(neuron_principal, None),
+        to: neuron_account,
         amount: ICPTs::from_icpts(1).unwrap(),
         fee: ICPTs::from_e8s(10000),
     };
     store
         .append_transaction(
             transfer,
-            Memo(16656605094239839590),
+            neuron_memo,
             block_height,
             TimeStamp {
                 timestamp_nanos: 100,
@@ -455,11 +457,8 @@ fn append_transaction_detects_neuron_transactions() {
     ));
 
     let notification = Send {
-        from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_1).unwrap(), None),
-        to: AccountIdentifier::from_hex(
-            "426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91",
-        )
-        .unwrap(),
+        from: AccountIdentifier::new(neuron_principal, None),
+        to: neuron_account,
         amount: ICPTs::from_icpts(0).unwrap(),
         fee: ICPTs::from_e8s(10000),
     };
@@ -479,11 +478,8 @@ fn append_transaction_detects_neuron_transactions() {
     ));
 
     let topup1 = Send {
-        from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_1).unwrap(), None),
-        to: AccountIdentifier::from_hex(
-            "426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91",
-        )
-        .unwrap(),
+        from: AccountIdentifier::new(neuron_principal, None),
+        to: neuron_account,
         amount: ICPTs::from_icpts(2).unwrap(),
         fee: ICPTs::from_e8s(10000),
     };
@@ -503,11 +499,8 @@ fn append_transaction_detects_neuron_transactions() {
     ));
 
     let topup2 = Send {
-        from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_1).unwrap(), None),
-        to: AccountIdentifier::from_hex(
-            "426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91",
-        )
-        .unwrap(),
+        from: AccountIdentifier::new(neuron_principal, None),
+        to: neuron_account,
         amount: ICPTs::from_icpts(3).unwrap(),
         fee: ICPTs::from_e8s(10000),
     };
@@ -534,13 +527,11 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
     let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
     let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let neuron_memo = Memo(16656605094239839590);
+    let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
 
     let transfer = Send {
         from: AccountIdentifier::new(neuron_principal, None),
-        to: AccountIdentifier::from_hex(
-            "426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91",
-        )
-        .unwrap(),
+        to: neuron_account,
         amount: ICPTs::from_icpts(1).unwrap(),
         fee: ICPTs::from_e8s(10000),
     };
@@ -561,10 +552,7 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
 
     let topup = Send {
         from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap(), None),
-        to: AccountIdentifier::from_hex(
-            "426f980e6fe0585996c0e9d799237bb5f738d6d5569dfc56e31a98f8a7d40a91",
-        )
-        .unwrap(),
+        to: neuron_account,
         amount: ICPTs::from_icpts(2).unwrap(),
         fee: ICPTs::from_e8s(10000),
     };
@@ -594,6 +582,77 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
 
     if let Some((_, MultiPartTransactionToBeProcessed::TopUpNeuron(principal, memo))) =
         store.multi_part_transactions_processor.take_next()
+    {
+        assert_eq!(principal, neuron_principal);
+        assert_eq!(memo, neuron_memo);
+    } else {
+        panic!();
+    }
+}
+
+#[test]
+fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_principal() {
+    let mut store = setup_test_store();
+
+    let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let neuron_memo = Memo(16656605094239839590);
+    let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
+    let other_principal = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
+    let stake_neuron_transfer = Send {
+        from: AccountIdentifier::new(neuron_principal, None),
+        to: neuron_account,
+        amount: ICPTs::from_icpts(1).unwrap(),
+        fee: ICPTs::from_e8s(10000),
+    };
+    store
+        .append_transaction(
+            stake_neuron_transfer,
+            neuron_memo,
+            block_height,
+            TimeStamp {
+                timestamp_nanos: 100,
+            },
+        )
+        .unwrap();
+    assert!(matches!(
+        store.transactions.back().unwrap().transaction_type.unwrap(),
+        TransactionType::StakeNeuron
+    ));
+
+    let topup = Send {
+        from: AccountIdentifier::new(other_principal, None),
+        to: neuron_account,
+        amount: ICPTs::from_icpts(2).unwrap(),
+        fee: ICPTs::from_e8s(10000),
+    };
+    store
+        .append_transaction(
+            topup,
+            Memo(0),
+            block_height + 1,
+            TimeStamp {
+                timestamp_nanos: 100,
+            },
+        )
+        .unwrap();
+    assert!(matches!(
+        store.transactions.back().unwrap().transaction_type.unwrap(),
+        TransactionType::TopUpNeuron
+    ));
+
+    if let Some((_, MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo))) =
+    store.multi_part_transactions_processor.take_next()
+    {
+        assert_eq!(principal, neuron_principal);
+        assert_eq!(memo, neuron_memo);
+    } else {
+        panic!();
+    }
+
+    if let Some((_, MultiPartTransactionToBeProcessed::TopUpNeuron(principal, memo))) =
+    store.multi_part_transactions_processor.take_next()
     {
         assert_eq!(principal, neuron_principal);
         assert_eq!(memo, neuron_memo);

@@ -6,7 +6,7 @@ import {
   SendICPTsRequest,
 } from "./model";
 import * as convert from "../converter";
-import { SUB_ACCOUNT_BYTE_LENGTH } from "../constants";
+import { TRANSACTION_FEE, SUB_ACCOUNT_BYTE_LENGTH } from "../constants";
 import { PrincipalId } from "./proto/base_types_pb";
 import {
   AccountBalanceRequest,
@@ -19,8 +19,6 @@ import {
   SendRequest,
   Subaccount,
 } from "./proto/types_pb";
-
-export const TRANSACTION_FEE = BigInt(10_000);
 
 export default class RequestConverters {
   public fromGetBalancesRequest = (

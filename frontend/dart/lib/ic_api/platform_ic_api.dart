@@ -77,7 +77,7 @@ abstract class AbstractPlatformICApi {
 
   Future<Proposal> fetchProposal({required BigInt proposalId});
 
-  Future<Neuron> fetchNeuron({required BigInt neuronId});
+  Future<Neuron?> fetchNeuron({required BigInt neuronId});
 
   Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId});
 
