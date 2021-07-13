@@ -20,11 +20,11 @@ const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
 pub async fn run_periodic_tasks() {
     ledger_sync::sync_transactions().await;
 
-    let maybe_transaction_to_process = STATE
-        .write()
-        .unwrap()
-        .accounts_store
-        .try_take_next_transaction_to_process();
+    let maybe_transaction_to_process = STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .try_take_next_transaction_to_process()
+    });
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
@@ -46,51 +46,56 @@ pub async fn run_periodic_tasks() {
     }
 
     if should_prune_transactions() {
-        let store = &mut STATE.write().unwrap().accounts_store;
-        store.prune_transactions(PRUNE_TRANSACTIONS_COUNT);
+        STATE.with(|s| {
+            s.accounts_store
+                .borrow_mut()
+                .prune_transactions(PRUNE_TRANSACTIONS_COUNT)
+        });
     }
 }
 
 async fn handle_stake_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
-        Ok(neuron_id) => STATE.write().unwrap().accounts_store.mark_neuron_created(
-            &principal,
-            block_height,
-            memo,
-            neuron_id,
-        ),
-        Err(e) => STATE
-            .write()
-            .unwrap()
-            .accounts_store
-            .process_multi_part_transaction_error(block_height, e, false),
+        Ok(neuron_id) => STATE.with(|s| {
+            s.accounts_store.borrow_mut().mark_neuron_created(
+                &principal,
+                block_height,
+                memo,
+                neuron_id,
+            )
+        }),
+        Err(e) => STATE.with(|s| {
+            s.accounts_store
+                .borrow_mut()
+                .process_multi_part_transaction_error(block_height, e, false)
+        }),
     }
 }
 
 async fn handle_top_up_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
-        Ok(_) => STATE
-            .write()
-            .unwrap()
-            .accounts_store
-            .mark_neuron_topped_up(block_height),
-        Err(e) => STATE
-            .write()
-            .unwrap()
-            .accounts_store
-            .process_multi_part_transaction_error(block_height, e, false),
+        Ok(_) => STATE.with(|s| {
+            s.accounts_store
+                .borrow_mut()
+                .mark_neuron_topped_up(block_height)
+        }),
+        Err(e) => STATE.with(|s| {
+            s.accounts_store
+                .borrow_mut()
+                .process_multi_part_transaction_error(block_height, e, false)
+        }),
     }
 }
 
 async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterArgs) {
     match create_canister(args.controller, args.amount).await {
-        Ok(CyclesResponse::CanisterCreated(canister_id)) => {
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .attach_newly_created_canister(args.controller, block_height, canister_id);
-        }
+        Ok(CyclesResponse::CanisterCreated(canister_id)) => STATE.with(|s| {
+            s.accounts_store.borrow_mut().attach_newly_created_canister(
+                args.controller,
+                block_height,
+                canister_id,
+            )
+        }),
         Ok(CyclesResponse::Refunded(error, _)) => {
             let subaccount = (&args.controller).into();
             enqueue_create_or_top_up_canister_refund(
@@ -101,20 +106,20 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
                 error.clone(),
             )
             .await;
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .process_multi_part_transaction_error(block_height, error, true);
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error, true)
+            })
         }
         Ok(CyclesResponse::ToppedUp(_)) => {
             // This should never happen
             let error = "Unexpected response in 'create_canister': 'topped up'".to_string();
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .process_multi_part_transaction_error(block_height, error, false);
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error, false)
+            })
         }
         Err(error) => {
             let subaccount = (&args.controller).into();
@@ -126,24 +131,22 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
                 error.clone(),
             )
             .await;
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .process_multi_part_transaction_error(block_height, error, true);
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error, true)
+            })
         }
     }
 }
 
 async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterArgs) {
     match top_up_canister(args.canister_id, args.amount).await {
-        Ok(CyclesResponse::ToppedUp(_)) => {
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .mark_canister_topped_up(block_height);
-        }
+        Ok(CyclesResponse::ToppedUp(_)) => STATE.with(|s| {
+            s.accounts_store
+                .borrow_mut()
+                .mark_canister_topped_up(block_height)
+        }),
         Ok(CyclesResponse::Refunded(error, _)) => {
             let subaccount = (&args.canister_id.get()).into();
             enqueue_create_or_top_up_canister_refund(
@@ -154,20 +157,20 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
                 error.clone(),
             )
             .await;
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .process_multi_part_transaction_error(block_height, error, true);
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error, true)
+            })
         }
         Ok(CyclesResponse::CanisterCreated(_)) => {
             // This should never happen
             let error = "Unexpected response in 'top_up_canister': 'canister created'".to_string();
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .process_multi_part_transaction_error(block_height, error, false);
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error, false)
+            })
         }
         Err(error) => {
             let subaccount = (&args.principal).into();
@@ -179,11 +182,11 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
                 error.clone(),
             )
             .await;
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .process_multi_part_transaction_error(block_height, error, true);
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error, true)
+            })
         }
     }
 }
@@ -200,26 +203,26 @@ async fn handle_refund(args: RefundTransactionArgs) {
 
     match ledger::send(send_request.clone()).await {
         Ok(block_height) => {
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .process_transaction_refund_completed(
-                    args.original_transaction_block_height,
-                    block_height,
-                    args.error_message,
-                );
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_transaction_refund_completed(
+                        args.original_transaction_block_height,
+                        block_height,
+                        args.error_message,
+                    )
+            });
         }
         Err(error) => {
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .process_multi_part_transaction_error(
-                    args.original_transaction_block_height,
-                    error,
-                    false,
-                );
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(
+                        args.original_transaction_block_height,
+                        error,
+                        false,
+                    )
+            });
         }
     }
 }
@@ -319,19 +322,17 @@ async fn enqueue_create_or_top_up_canister_refund(
                 refund_address,
                 error_message,
             };
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .enqueue_transaction_to_be_refunded(refund_args);
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .enqueue_transaction_to_be_refunded(refund_args)
+            })
         }
-        Err(error) => {
-            STATE
-                .write()
-                .unwrap()
-                .accounts_store
-                .process_multi_part_transaction_error(block_height, error, false);
-        }
+        Err(error) => STATE.with(|s| {
+            s.accounts_store
+                .borrow_mut()
+                .process_multi_part_transaction_error(block_height, error, false)
+        }),
     };
 }
 
@@ -346,8 +347,7 @@ fn should_prune_transactions() -> bool {
     #[cfg(not(target_arch = "wasm32"))]
     {
         const TRANSACTIONS_COUNT_LIMIT: u32 = 1_000_000;
-        let store = &mut STATE.write().unwrap().accounts_store;
-        let transactions_count = store.get_transactions_count();
+        let transactions_count = STATE.with(|s| s.accounts_store.borrow().get_transactions_count());
         transactions_count > TRANSACTIONS_COUNT_LIMIT
     }
 }

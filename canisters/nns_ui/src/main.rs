@@ -31,15 +31,20 @@ fn main() {
 
 #[export_name = "canister_pre_upgrade"]
 fn pre_upgrade() {
-    let state = STATE.read().unwrap();
-    let bytes = state.encode();
-    stable::set(&bytes);
+    STATE.with(|s| {
+        let bytes = s.encode();
+        stable::set(&bytes);
+    });
 }
 
 #[export_name = "canister_post_upgrade"]
 fn post_upgrade() {
-    let bytes = stable::get();
-    *STATE.write().unwrap() = State::decode(bytes).expect("Decoding stable memory failed");
+    STATE.with(|s| {
+        let bytes = stable::get();
+        let new_state = State::decode(bytes).expect("Decoding stable memory failed");
+
+        s.accounts_store.replace(new_state.accounts_store.take());
+    });
 
     assets::init_assets();
 }
@@ -56,12 +61,10 @@ pub fn get_account() {
 
 fn get_account_impl() -> GetAccountResponse {
     let principal = dfn_core::api::caller();
-    let store = &STATE.read().unwrap().accounts_store;
-    if let Some(account) = store.get_account(principal) {
-        GetAccountResponse::Ok(account)
-    } else {
-        GetAccountResponse::AccountNotFound
-    }
+    STATE.with(|s| match s.accounts_store.borrow().get_account(principal) {
+        Some(account) => GetAccountResponse::Ok(account),
+        None => GetAccountResponse::AccountNotFound,
+    })
 }
 
 #[export_name = "canister_update add_account"]
@@ -71,8 +74,7 @@ pub fn add_account() {
 
 fn add_account_impl() -> AccountIdentifier {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().accounts_store;
-    store.add_account(principal);
+    STATE.with(|s| s.accounts_store.borrow_mut().add_account(principal));
     AccountIdentifier::from(principal)
 }
 
@@ -83,8 +85,11 @@ pub fn get_transactions() {
 
 fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResponse {
     let principal = dfn_core::api::caller();
-    let store = &STATE.read().unwrap().accounts_store;
-    store.get_transactions(principal, request)
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow()
+            .get_transactions(principal, request)
+    })
 }
 
 #[export_name = "canister_update create_sub_account"]
@@ -94,8 +99,11 @@ pub fn create_sub_account() {
 
 fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().accounts_store;
-    store.create_sub_account(principal, sub_account_name)
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .create_sub_account(principal, sub_account_name)
+    })
 }
 
 #[export_name = "canister_update rename_sub_account"]
@@ -105,8 +113,11 @@ pub fn rename_sub_account() {
 
 fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().accounts_store;
-    store.rename_sub_account(principal, request)
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .rename_sub_account(principal, request)
+    })
 }
 
 #[export_name = "canister_update register_hardware_wallet"]
@@ -118,8 +129,11 @@ fn register_hardware_wallet_impl(
     request: RegisterHardwareWalletRequest,
 ) -> RegisterHardwareWalletResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().accounts_store;
-    store.register_hardware_wallet(principal, request)
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .register_hardware_wallet(principal, request)
+    })
 }
 
 #[export_name = "canister_update remove_hardware_wallet"]
@@ -131,8 +145,11 @@ fn remove_hardware_wallet_impl(
     request: RemoveHardwareWalletRequest,
 ) -> RemoveHardwareWalletResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().accounts_store;
-    store.remove_hardware_wallet(principal, request)
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .remove_hardware_wallet(principal, request)
+    })
 }
 
 #[export_name = "canister_query get_canisters"]
@@ -142,8 +159,7 @@ pub fn get_canisters() {
 
 fn get_canisters_impl() -> Vec<NamedCanister> {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().accounts_store;
-    store.get_canisters(principal)
+    STATE.with(|s| s.accounts_store.borrow_mut().get_canisters(principal))
 }
 
 #[export_name = "canister_update attach_canister"]
@@ -153,8 +169,11 @@ pub fn attach_canister() {
 
 fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().accounts_store;
-    store.attach_canister(principal, request)
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .attach_canister(principal, request)
+    })
 }
 
 #[export_name = "canister_update detach_canister"]
@@ -164,8 +183,11 @@ pub fn detach_canister() {
 
 fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = dfn_core::api::caller();
-    let store = &mut STATE.write().unwrap().accounts_store;
-    store.detach_canister(principal, request)
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .detach_canister(principal, request)
+    })
 }
 
 #[export_name = "canister_query get_multi_part_transaction_status"]
@@ -175,8 +197,11 @@ pub fn get_multi_part_transaction_status() {
 
 fn get_multi_part_transaction_status_impl(block_height: BlockHeight) -> MultiPartTransactionStatus {
     let principal = dfn_core::api::caller();
-    let store = &STATE.read().unwrap().accounts_store;
-    store.get_multi_part_transaction_status(principal, block_height)
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow()
+            .get_multi_part_transaction_status(principal, block_height)
+    })
 }
 
 #[export_name = "canister_query get_multi_part_transaction_errors"]
@@ -185,8 +210,11 @@ pub fn get_multi_part_transaction_errors() {
 }
 
 fn get_multi_part_transaction_errors_impl() -> Vec<MultiPartTransactionError> {
-    let store = &STATE.read().unwrap().accounts_store;
-    store.get_multi_part_transaction_errors()
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow()
+            .get_multi_part_transaction_errors()
+    })
 }
 
 #[export_name = "canister_query get_icp_to_cycles_conversion_rate"]
@@ -220,8 +248,7 @@ pub fn get_stats() {
 }
 
 fn get_stats_impl() -> Stats {
-    let store = &STATE.read().unwrap().accounts_store;
-    store.get_stats()
+    STATE.with(|s| s.accounts_store.borrow().get_stats())
 }
 
 #[export_name = "canister_heartbeat"]
