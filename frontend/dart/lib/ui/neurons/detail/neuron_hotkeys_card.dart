@@ -124,7 +124,7 @@ class _AddHotkeysState extends State<AddHotkeys> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Enter Neuron Principal id :',
+              Text('Enter Hotkey : ',
                   style: Responsive.isDesktop(context) |
                           Responsive.isTablet(context)
                       ? context.textTheme.headline3
