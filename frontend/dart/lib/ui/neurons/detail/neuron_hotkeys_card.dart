@@ -65,7 +65,7 @@ class NeuronHotkeysCard extends StatelessWidget {
                       context,
                       WizardOverlay(
                           rootTitle: "HotKey",
-                          rootWidget: AddHotKeys(
+                          rootWidget: AddHotkeys(
                               neuron: neuron,
                               onCompleteAction: (context) {
                                 OverlayBaseWidget.of(context)?.dismiss();
@@ -74,7 +74,7 @@ class NeuronHotkeysCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
-                    "Add HotKey",
+                    "Add Hotkey",
                     textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
                   ),
                 )),
@@ -84,33 +84,33 @@ class NeuronHotkeysCard extends StatelessWidget {
     );
   }
 
-  void removeHotkey(String hotkey, BuildContext context) {
+  void removeHotkey(String Hotkey, BuildContext context) {
     context.callUpdate(() async {
       await context.icApi
-          .removeHotkey(neuronId: neuron.id.toBigInt, principal: hotkey);
+          .removeHotkey(neuronId: neuron.id.toBigInt, principal: Hotkey);
       return true;
     });
   }
 }
 
-class AddHotKeys extends StatefulWidget {
+class AddHotkeys extends StatefulWidget {
   final Neuron neuron;
   final Function(BuildContext context) onCompleteAction;
 
-  const AddHotKeys({required this.neuron, required this.onCompleteAction});
+  const AddHotkeys({required this.neuron, required this.onCompleteAction});
 
   @override
-  _AddHotKeysState createState() => _AddHotKeysState();
+  _AddHotkeysState createState() => _AddHotkeysState();
 }
 
-class _AddHotKeysState extends State<AddHotKeys> {
-  String hotkey = '';
-  late ValidatedTextField hotKeyValidated;
+class _AddHotkeysState extends State<AddHotkeys> {
+  String Hotkey = '';
+  late ValidatedTextField HotkeyValidated;
 
   @override
   void initState() {
     super.initState();
-    hotKeyValidated = ValidatedTextField(hotkey,
+    HotkeyValidated = ValidatedTextField(Hotkey,
         validations: [StringFieldValidation.minimumLength(60)]);
   }
 
@@ -133,9 +133,9 @@ class _AddHotKeysState extends State<AddHotKeys> {
                 height: 50.0,
               ),
               DebouncedValidatedFormField(
-                hotKeyValidated,
+                HotkeyValidated,
                 onChanged: () {
-                  hotkey = hotKeyValidated.currentValue;
+                  Hotkey = HotkeyValidated.currentValue;
                 },
               ),
             ],
@@ -157,12 +157,12 @@ class _AddHotKeysState extends State<AddHotKeys> {
                     'Confirm',
                     textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
                   ),
-                  fields: [hotKeyValidated],
+                  fields: [HotkeyValidated],
                   onPressed: () async {
-                    widget.neuron.hotkeys.add(hotkey);
+                    widget.neuron.hotkeys.add(Hotkey);
                     await context.callUpdate(() => context.icApi.addHotkey(
                         neuronId: widget.neuron.id.toBigInt,
-                        principal: hotkey));
+                        principal: Hotkey));
 
                     widget.onCompleteAction(context);
                   },
