@@ -198,7 +198,7 @@ export default class ResponseConverters {
   };
 
   private toNeuron = (neuron: RawNeuron, principalString: string): Neuron => {
-     return {
+    return {
       id: neuron.id.length ? this.toNeuronId(neuron.id[0]) : null,
       isCurrentUserController: neuron.controller.length
         ? neuron.controller[0].toString() === principalString
