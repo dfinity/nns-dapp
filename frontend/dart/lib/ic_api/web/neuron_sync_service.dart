@@ -19,8 +19,8 @@ class NeuronSyncService {
   NeuronSyncService({required this.serviceApi, required this.hiveBoxes});
 
   Future<void> syncNeuron(String neuronId) async {
-    dynamic res = (await promiseToFuture(
-        serviceApi.getNeuron(neuronId.toBigInt.toJS)));
+    dynamic res =
+        (await promiseToFuture(serviceApi.getNeuron(neuronId.toBigInt.toJS)));
     final string = stringify(res);
     dynamic response = jsonDecode(string);
     storeNeuron(response);
@@ -74,7 +74,8 @@ class NeuronSyncService {
     neuron.cachedNeuronStake =
         ICP.fromE8s(fullNeuron['cachedNeuronStake'].toString().toBigInt);
     neuron.recentBallots = parseRecentBallots(fullNeuron['recentBallots']);
-    neuron.neuronFees = ICP.fromE8s(fullNeuron['neuronFees'].toString().toBigInt);
+    neuron.neuronFees =
+        ICP.fromE8s(fullNeuron['neuronFees'].toString().toBigInt);
     neuron.maturityICPEquivalent =
         ICP.fromE8s(fullNeuron['maturityE8sEquivalent'].toString().toBigInt);
     neuron.createdTimestampSeconds =
@@ -82,10 +83,10 @@ class NeuronSyncService {
     neuron.followees = parseFollowees(fullNeuron['followees']);
     neuron.isCurrentUserController = fullNeuron['isCurrentUserController'];
     neuron.accountIdentifier = fullNeuron['accountIdentifier'];
+    neuron.hotkeys = fullNeuron['hotKeys'].cast<String>();
   }
 
-  List<BallotInfo> parseRecentBallots(List<dynamic> recentBallots) =>
-      [
+  List<BallotInfo> parseRecentBallots(List<dynamic> recentBallots) => [
         ...recentBallots.map((e) {
           return BallotInfo()
             ..proposalId = e['proposalId'].toString()
@@ -94,13 +95,11 @@ class NeuronSyncService {
       ];
 
   List<Followee> parseFollowees(List<dynamic> folowees) {
-    final map = folowees.associate((e) =>
-        MapEntry(Topic.values[e['topic'] as int],
-            (e['followees'] as List<dynamic>).cast<String>()));
+    final map = folowees.associate((e) => MapEntry(
+        Topic.values[e['topic'] as int],
+        (e['followees'] as List<dynamic>).cast<String>()));
 
-    return Topic.values
-        .mapToList((e) =>
-    Followee()
+    return Topic.values.mapToList((e) => Followee()
       ..topic = e
       ..followees = map[e] ?? []);
   }
@@ -113,7 +112,6 @@ class PrettyPrint {
   }
 }
 
-
 class NeuronInfo extends DfinityEntity {
   final BigInt neuronId;
   final BigInt dissolveDelaySeconds;
@@ -125,53 +123,45 @@ class NeuronInfo extends DfinityEntity {
   final BigInt ageSeconds;
 
   static fromResponse(dynamic response) {
-      final neuronId = response['neuronId']
-        .toString()
-        .toBigInt;
-      final dissolveDelaySeconds = response['dissolveDelaySeconds']
-        .toString()
-        .toBigInt;
-      final recentBallots = <BallotInfo>[...response['recentBallots'].map((e) =>
-    BallotInfo()
-    ..proposalId = e['proposalId'].toString()
-    ..vote = Vote.values[e['vote'].toInt()]
-    )];
-      final createdTimestampSeconds = response['createdTimestampSeconds']
-        .toString()
-        .toBigInt;
-      final state = NeuronState.values[response['state'].toInt()];
-      final retrievedAtTimestampSeconds = response['retrievedAtTimestampSeconds']
-        .toString()
-        .toBigInt;
-      final votingPower = ICP.fromE8s(response['votingPower']
-        .toString()
-        .toBigInt);
-      final ageSeconds = response['ageSeconds']
-        .toString()
-        .toBigInt;
+    final neuronId = response['neuronId'].toString().toBigInt;
+    final dissolveDelaySeconds =
+        response['dissolveDelaySeconds'].toString().toBigInt;
+    final recentBallots = <BallotInfo>[
+      ...response['recentBallots'].map((e) => BallotInfo()
+        ..proposalId = e['proposalId'].toString()
+        ..vote = Vote.values[e['vote'].toInt()])
+    ];
+    final createdTimestampSeconds =
+        response['createdTimestampSeconds'].toString().toBigInt;
+    final state = NeuronState.values[response['state'].toInt()];
+    final retrievedAtTimestampSeconds =
+        response['retrievedAtTimestampSeconds'].toString().toBigInt;
+    final votingPower =
+        ICP.fromE8s(response['votingPower'].toString().toBigInt);
+    final ageSeconds = response['ageSeconds'].toString().toBigInt;
 
     final obj = NeuronInfo(
-        neuronId: neuronId,
-        dissolveDelaySeconds: dissolveDelaySeconds,
-        recentBallots: recentBallots,
-        createdTimestampSeconds: createdTimestampSeconds,
-        state: state,
-        retrievedAtTimestampSeconds: retrievedAtTimestampSeconds,
-        votingPower: votingPower,
-        ageSeconds: ageSeconds,
+      neuronId: neuronId,
+      dissolveDelaySeconds: dissolveDelaySeconds,
+      recentBallots: recentBallots,
+      createdTimestampSeconds: createdTimestampSeconds,
+      state: state,
+      retrievedAtTimestampSeconds: retrievedAtTimestampSeconds,
+      votingPower: votingPower,
+      ageSeconds: ageSeconds,
     );
-      return obj;
+    return obj;
   }
 
-  NeuronInfo({
-    required this.neuronId,
-    required this.dissolveDelaySeconds,
-    required this.recentBallots,
-    required this.createdTimestampSeconds,
-    required this.state,
-    required this.retrievedAtTimestampSeconds,
-    required this.votingPower,
-    required this.ageSeconds});
+  NeuronInfo(
+      {required this.neuronId,
+      required this.dissolveDelaySeconds,
+      required this.recentBallots,
+      required this.createdTimestampSeconds,
+      required this.state,
+      required this.retrievedAtTimestampSeconds,
+      required this.votingPower,
+      required this.ageSeconds});
 
   @override
   String get identifier => neuronId.toString();

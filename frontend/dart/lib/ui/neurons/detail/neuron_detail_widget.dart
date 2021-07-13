@@ -6,6 +6,7 @@ import 'package:dfinity_wallet/ui/neurons/detail/neuron_state_card.dart';
 import 'package:dfinity_wallet/ui/neurons/proposal/neuron_proposals_card.dart';
 import '../../../dfinity.dart';
 import 'neuron_votes_card.dart';
+import 'package:dfinity_wallet/ui/neurons/detail/neuron_hotkeys_card.dart';
 
 const DEPLOY_ENV = String.fromEnvironment('DEPLOY_ENV');
 
@@ -19,8 +20,6 @@ class NeuronDetailWidget extends StatefulWidget {
 }
 
 class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
-
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -36,29 +35,28 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
           title: Text("Neuron"),
         ),
         body: StreamBuilder<Object>(
-          stream: context.boxes.neurons.changes,
-          builder: (context, snapshot) {
-            return SingleChildScrollView(
-              child: ConstrainWidthAndCenter(
-                child: Container(
-                  color: AppColors.lightBackground,
-                  child: Column(
-                    children: [
-                      SmallFormDivider(),
-                      NeuronStateCard(neuron: widget.neuron),
-                      NeuronRewardsCard(neuron: widget.neuron),
-                      NeuronVotesCard(neuron: widget.neuron),
-                      NeuronFolloweesCard(neuron: widget.neuron),
-                      if(DEPLOY_ENV == "staging")
-                        NeuronProposalsCard(neuron: widget.neuron),
-
-                      TallFormDivider(),
-                    ],
+            stream: context.boxes.neurons.changes,
+            builder: (context, snapshot) {
+              return SingleChildScrollView(
+                child: ConstrainWidthAndCenter(
+                  child: Container(
+                    color: AppColors.lightBackground,
+                    child: Column(
+                      children: [
+                        SmallFormDivider(),
+                        NeuronStateCard(neuron: widget.neuron),
+                        NeuronRewardsCard(neuron: widget.neuron),
+                        NeuronVotesCard(neuron: widget.neuron),
+                        NeuronFolloweesCard(neuron: widget.neuron),
+                        if (DEPLOY_ENV == "staging")
+                          NeuronProposalsCard(neuron: widget.neuron),
+                        NeuronHotkeysCard(neuron: widget.neuron),
+                        TallFormDivider(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          }
-        ));
+              );
+            }));
   }
 }

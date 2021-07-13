@@ -18,7 +18,7 @@ abstract class AbstractPlatformICApi {
   bool isLoggedIn();
   Future initialize();
 
-    Future<void> buildServices(dynamic identity);
+  Future<void> buildServices(dynamic identity);
 
   Future<void> refreshAccounts();
 
@@ -36,8 +36,8 @@ abstract class AbstractPlatformICApi {
 
   Future<void> topUpNeuron(
       {required String neuronAccountIdentifier,
-        required ICP amount,
-        int? fromSubAccount});
+      required ICP amount,
+      int? fromSubAccount});
 
   Future<void> startDissolving({required BigInt neuronId});
 
@@ -64,6 +64,11 @@ abstract class AbstractPlatformICApi {
       required ICP amount,
       required String toAccountId});
 
+  Future<void> addHotkey({required BigInt neuronId, required String principal});
+
+  Future<void> removeHotkey(
+      {required BigInt neuronId, required String principal});
+
   Future<void> fetchProposals(
       {required List<Topic> excludeTopics,
       required List<ProposalStatus> includeStatus,
@@ -81,9 +86,7 @@ abstract class AbstractPlatformICApi {
       {required ICP amount, int? fromSubAccountId});
 
   Future<void> topUpCanister(
-      {required ICP amount,
-      int? fromSubAccountId,
-      required String canisterId});
+      {required ICP amount, int? fromSubAccountId, required String canisterId});
 
   Future<AttachCanisterResult> attachCanister(
       {required String name, required String canisterId});
@@ -106,7 +109,8 @@ abstract class AbstractPlatformICApi {
   Future<void> registerHardwareWallet(
       {required String name, dynamic ledgerIdentity});
 
-  Future<void> renameSubAccount({required String accountIdentifier, required String newName});
+  Future<void> renameSubAccount(
+      {required String accountIdentifier, required String newName});
 
   Future<void> refreshNeurons();
 
@@ -122,5 +126,3 @@ abstract class AbstractPlatformICApi {
 
   int? getTimeUntilSessionExpiryMs();
 }
-
-

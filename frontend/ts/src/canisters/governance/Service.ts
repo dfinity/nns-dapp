@@ -98,6 +98,8 @@ export default class Service implements ServiceInterface {
   ): Promise<EmptyResponse> => {
     const rawRequest = this.requestConverters.fromAddHotKeyRequest(request);
     await this.service.manage_neuron(rawRequest);
+    const response = await this.service.manage_neuron(rawRequest);
+    console.log(response);
     return { Ok: null };
   };
 
