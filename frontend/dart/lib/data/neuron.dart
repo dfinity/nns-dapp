@@ -25,20 +25,21 @@ class Neuron extends DfinityEntity with ICPSource {
   late int followEditCounter;
   late bool isCurrentUserController;
   late String accountIdentifier;
+  late List<String> hotkeys;
 
-  Neuron({
-    required this.id,
-    required this.recentBallots,
-    required this.createdTimestampSeconds,
-    required this.votingPower,
-    required this.state,
-    required this.dissolveDelaySeconds,
-    required this.cachedNeuronStake,
-    required this.proposals,
-    required this.followEditCounter,
-    required this.isCurrentUserController,
-    required this.accountIdentifier,
-  });
+  Neuron(
+      {required this.id,
+      required this.recentBallots,
+      required this.createdTimestampSeconds,
+      required this.votingPower,
+      required this.state,
+      required this.dissolveDelaySeconds,
+      required this.cachedNeuronStake,
+      required this.proposals,
+      required this.followEditCounter,
+      required this.isCurrentUserController,
+      required this.accountIdentifier,
+      required this.hotkeys});
 
   Neuron.empty();
 
@@ -59,11 +60,14 @@ class Neuron extends DfinityEntity with ICPSource {
   DateTime get whenDissolvedTimestamp =>
       whenDissolvedTimestampSeconds.secondsToDateTime();
 
-  Duration get durationRemaining => whenDissolvedTimestamp.difference(DateTime.now());
+  Duration get durationRemaining =>
+      whenDissolvedTimestamp.difference(DateTime.now());
 
   Duration get dissolveDelay => int.parse(dissolveDelaySeconds).seconds;
 
-  Vote? voteForProposal(Proposal proposal) => recentBallots.firstOrNullWhere((element) => element.proposalId == proposal.id)?.vote;
+  Vote? voteForProposal(Proposal proposal) => recentBallots
+      .firstOrNullWhere((element) => element.proposalId == proposal.id)
+      ?.vote;
 
   @override
   ICPSourceType get type => ICPSourceType.NEURON;

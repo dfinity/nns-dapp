@@ -44,7 +44,8 @@ class ServiceApi {
   external Promise<dynamic> getTransactions(dynamic request);
 
   @JS("registerHardwareWallet")
-  external Promise<void> registerHardwareWallet(String name, dynamic ledgerIdentity);
+  external Promise<void> registerHardwareWallet(
+      String name, dynamic ledgerIdentity);
 
   @JS("getNeuron")
   external Promise<dynamic> getNeuron(dynamic neuronId);
@@ -122,7 +123,6 @@ class ServiceApi {
   external Promise<double> detachCanister(DetachCanisterRequest request);
 }
 
-
 @JS()
 @anonymous
 class IncreaseDissolveDelayRequest {
@@ -182,6 +182,24 @@ class DisperseNeuronRequest {
 
   external factory DisperseNeuronRequest(
       {dynamic neuronId, dynamic amount, String toAccountId});
+}
+
+@JS()
+@anonymous
+class AddHotkeyRequest {
+  external dynamic neuronId;
+  external String principal;
+
+  external factory AddHotkeyRequest({dynamic neuronId, String principal});
+}
+
+@JS()
+@anonymous
+class RemoveHotkeyRequest {
+  external dynamic neuronId;
+  external String principal;
+
+  external factory RemoveHotkeyRequest({dynamic neuronId, String principal});
 }
 
 @JS()
@@ -251,9 +269,9 @@ class UpdateSettingsRequest {
   external dynamic canisterId;
   external UpdateCanisterSettings settings;
 
-  external factory UpdateSettingsRequest({dynamic canisterId, UpdateCanisterSettings settings});
+  external factory UpdateSettingsRequest(
+      {dynamic canisterId, UpdateCanisterSettings settings});
 }
-
 
 @JS()
 @anonymous
@@ -262,8 +280,6 @@ class UpdateCanisterSettings {
 
   external factory UpdateCanisterSettings({dynamic controllers});
 }
-
-
 
 enum AttachCanisterResult {
   Ok,
@@ -278,7 +294,11 @@ class CreateCanisterResponse {
   final bool refunded;
   final String? errorMessage;
 
-  CreateCanisterResponse({this.canisterId, this.canister, required this.refunded, this.errorMessage});
+  CreateCanisterResponse(
+      {this.canisterId,
+      this.canister,
+      required this.refunded,
+      this.errorMessage});
 }
 
 @JS()
@@ -287,10 +307,9 @@ class RenameSubAccountRequest {
   external String newName;
   external String accountIdentifier;
 
-  external factory RenameSubAccountRequest({String newName, String accountIdentifier});
+  external factory RenameSubAccountRequest(
+      {String newName, String accountIdentifier});
 }
-
-
 
 @JS()
 @anonymous
@@ -299,5 +318,3 @@ class DetachCanisterRequest {
 
   external factory DetachCanisterRequest({dynamic canisterId});
 }
-
-
