@@ -17,16 +17,16 @@ import ServiceInterface, {
   RenameSubAccountRequest,
   RenameSubAccountResponse,
 } from "./model";
-import RawService from "./rawService";
+import { _SERVICE } from "./rawService";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
 
 export default class Service implements ServiceInterface {
-  private readonly service: RawService;
+  private readonly service: _SERVICE;
   private requestConverters: RequestConverters;
   private responseConverters: ResponseConverters;
 
-  public constructor(service: RawService) {
+  public constructor(service: _SERVICE) {
     this.service = service;
     this.requestConverters = new RequestConverters();
     this.responseConverters = new ResponseConverters();

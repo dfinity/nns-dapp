@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal";
-import RawService, { definite_canister_settings } from "./rawService";
+import { definite_canister_settings, _SERVICE } from "./rawService";
 import ServiceInterface, {
   CanisterStatus,
   CanisterDetailsResponse,
@@ -20,9 +20,9 @@ interface CanisterStatusResponse {
 }
 
 export default class Service implements ServiceInterface {
-  private readonly service: RawService;
+  private readonly service: _SERVICE;
 
-  public constructor(service: RawService) {
+  public constructor(service: _SERVICE) {
     this.service = service;
   }
 

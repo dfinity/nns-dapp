@@ -1,20 +1,20 @@
-import { Principal } from "@dfinity/principal";
+import type { Principal } from '@dfinity/principal';
 export type canister_id = Principal;
 export interface canister_settings {
   'freezing_threshold' : [] | [bigint],
   'controllers' : [] | [Array<Principal>],
   'memory_allocation' : [] | [bigint],
   'compute_allocation' : [] | [bigint],
-};
+}
 export interface definite_canister_settings {
   'freezing_threshold' : bigint,
   'controllers' : Array<Principal>,
   'memory_allocation' : bigint,
   'compute_allocation' : bigint,
-};
+}
 export type user_id = Principal;
 export type wasm_module = Array<number>;
-export default interface _SERVICE {
+export interface _SERVICE {
   'canister_status' : (arg_0: { 'canister_id' : canister_id }) => Promise<
       {
         'status' : { 'stopped' : null } |
@@ -67,4 +67,4 @@ export default interface _SERVICE {
   'update_settings' : (
       arg_0: { 'canister_id' : Principal, 'settings' : canister_settings },
     ) => Promise<undefined>,
-};
+}

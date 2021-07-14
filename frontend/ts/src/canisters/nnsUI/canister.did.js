@@ -1,4 +1,4 @@
-export default ({ IDL }) => {
+export const idlFactory = ({ IDL }) => {
   const AccountIdentifier = IDL.Text;
   const AttachCanisterRequest = IDL.Record({
     'name' : IDL.Text,
@@ -47,6 +47,10 @@ export default ({ IDL }) => {
     'canister_id' : IDL.Principal,
   });
   const BlockHeight = IDL.Nat64;
+  const MultiPartTransactionError = IDL.Record({
+    'error_message' : IDL.Text,
+    'block_height' : BlockHeight,
+  });
   const CanisterId = IDL.Principal;
   const NeuronId = IDL.Nat64;
   const MultiPartTransactionStatus = IDL.Variant({
@@ -177,7 +181,7 @@ export default ({ IDL }) => {
     'get_icp_to_cycles_conversion_rate' : IDL.Func([], [IDL.Nat64], ['query']),
     'get_multi_part_transaction_errors' : IDL.Func(
         [],
-        [IDL.Vec(IDL.Tuple(IDL.Nat64, IDL.Text))],
+        [IDL.Vec(MultiPartTransactionError)],
         ['query'],
       ),
     'get_multi_part_transaction_status' : IDL.Func(
