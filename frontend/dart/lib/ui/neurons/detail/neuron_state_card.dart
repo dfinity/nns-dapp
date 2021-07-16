@@ -112,7 +112,7 @@ class NeuronStateCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text("Lockup",
-                  textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75),
+                  textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1),
             ),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(AppColors.blue600)),
@@ -130,15 +130,16 @@ class NeuronStateCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text("Start Unlock",
-                  textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75),
+                  textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1),
             ),
             onPressed: () {
               OverlayBaseWidget.show(
                   context,
                   ConfirmDialog(
                     title: "Confirm Start Unlock",
-                    description: "This will reduce your aging bonus to zero. "
-                        "Are you sure you wish to continue ?",
+                    description:
+                        "This will cause you to lose your aging bonus.\n"
+                        "Are you sure you wish to continue?",
                     onConfirm: () async {
                       await context.callUpdate(() => context.icApi
                           .startDissolving(neuronId: neuron.id.toBigInt));
@@ -153,7 +154,7 @@ class NeuronStateCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text("Disburse",
-                  textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75),
+                  textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1),
             ),
             onPressed: () {
               OverlayBaseWidget.show(
