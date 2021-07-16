@@ -25,7 +25,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
 
-    var ShowCyclesPurchased = [
+    var cyclesPurchasedWidget = [
       Card(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -97,11 +97,11 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                   child: Responsive.isMobile(context)
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [...ShowCyclesPurchased],
+                          children: [...cyclesPurchasedWidget],
                         )
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [...ShowCyclesPurchased],
+                          children: [...cyclesPurchasedWidget],
                         )),
               IntrinsicWidth(
                 child: Column(
