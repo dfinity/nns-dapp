@@ -97,20 +97,20 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
             )
         }),
         Ok(CyclesResponse::Refunded(error, _)) => {
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error.clone(), true)
+            });
             let subaccount = (&args.controller).into();
             enqueue_create_or_top_up_canister_refund(
                 args.controller,
                 subaccount,
                 block_height,
                 args.refund_address,
-                error.clone(),
+                error,
             )
             .await;
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error, true)
-            })
         }
         Ok(CyclesResponse::ToppedUp(_)) => {
             // This should never happen
@@ -122,20 +122,20 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
             })
         }
         Err(error) => {
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error.clone(), true)
+            });
             let subaccount = (&args.controller).into();
             enqueue_create_or_top_up_canister_refund(
                 args.controller,
                 subaccount,
                 block_height,
                 args.refund_address,
-                error.clone(),
+                error,
             )
             .await;
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error, true)
-            })
         }
     }
 }
@@ -148,20 +148,20 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
                 .mark_canister_topped_up(block_height)
         }),
         Ok(CyclesResponse::Refunded(error, _)) => {
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error.clone(), true)
+            });
             let subaccount = (&args.canister_id.get()).into();
             enqueue_create_or_top_up_canister_refund(
                 args.principal,
                 subaccount,
                 block_height,
                 args.refund_address,
-                error.clone(),
+                error,
             )
             .await;
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error, true)
-            })
         }
         Ok(CyclesResponse::CanisterCreated(_)) => {
             // This should never happen
@@ -173,20 +173,20 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
             })
         }
         Err(error) => {
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error.clone(), true)
+            });
             let subaccount = (&args.principal).into();
             enqueue_create_or_top_up_canister_refund(
                 args.principal,
                 subaccount,
                 block_height,
                 args.refund_address,
-                error.clone(),
+                error,
             )
             .await;
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error, true)
-            })
         }
     }
 }
@@ -313,20 +313,29 @@ async fn enqueue_create_or_top_up_canister_refund(
 
     match ledger::account_balance(balance_request).await {
         Ok(balance) => {
-            let refund_amount = ICPTs::from_e8s(balance.get_e8s() - TRANSACTION_FEE.get_e8s());
-            let refund_args = RefundTransactionArgs {
-                recipient_principal: principal,
-                from_sub_account: subaccount,
-                amount: refund_amount,
-                original_transaction_block_height: block_height,
-                refund_address,
-                error_message,
-            };
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .enqueue_transaction_to_be_refunded(refund_args)
-            })
+            let refund_amount_e8s = balance.get_e8s().saturating_sub(TRANSACTION_FEE.get_e8s());
+            if refund_amount_e8s > 0 {
+                let refund_args = RefundTransactionArgs {
+                    recipient_principal: principal,
+                    from_sub_account: subaccount,
+                    amount: ICPTs::from_e8s(refund_amount_e8s),
+                    original_transaction_block_height: block_height,
+                    refund_address,
+                    error_message,
+                };
+                STATE.with(|s| {
+                    s.accounts_store
+                        .borrow_mut()
+                        .enqueue_transaction_to_be_refunded(refund_args)
+                })
+            } else {
+                let error_message = format!("Unable to refund, account balance too low. Account: {}", from_account);
+                STATE.with(|s| {
+                    s.accounts_store
+                        .borrow_mut()
+                        .process_multi_part_transaction_error(block_height, error_message, false)
+                });
+            }
         }
         Err(error) => STATE.with(|s| {
             s.accounts_store
