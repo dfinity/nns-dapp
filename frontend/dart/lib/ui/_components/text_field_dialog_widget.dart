@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 
 import '../../dfinity.dart';
@@ -11,7 +12,11 @@ class TextFieldDialogWidget extends StatefulWidget {
   final String buttonTitle;
 
   TextFieldDialogWidget(
-      {Key? key, required this.title, required this.fieldName, required this.buttonTitle, required this.onComplete})
+      {Key? key,
+      required this.title,
+      required this.fieldName,
+      required this.buttonTitle,
+      required this.onComplete})
       : super(key: key);
 
   @override
@@ -24,7 +29,8 @@ class _TextFieldDialogWidgetState extends State<TextFieldDialogWidget> {
   @override
   void initState() {
     super.initState();
-    nameField = ValidatedTextField(widget.fieldName, validations: [StringFieldValidation.minimumLength(2)]);
+    nameField = ValidatedTextField(widget.fieldName,
+        validations: [StringFieldValidation.minimumLength(2)]);
   }
 
   @override
@@ -36,13 +42,30 @@ class _TextFieldDialogWidgetState extends State<TextFieldDialogWidget> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              widget.title,
-              style: context.textTheme.headline3,
+            Expanded(
+              child: Align(
+                alignment: Alignment(0, -0.5),
+                child: FractionallySizedBox(
+                  widthFactor: 1,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(widget.title,
+                              style: Responsive.isMobile(context)
+                                  ? context.textTheme.headline4
+                                  : context.textTheme.headline3),
+                          DebouncedValidatedFormField(nameField),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-            SmallFormDivider(),
-            DebouncedValidatedFormField(nameField),
-            SmallFormDivider(),
             SizedBox(
               height: 60.0,
               width: double.infinity,
