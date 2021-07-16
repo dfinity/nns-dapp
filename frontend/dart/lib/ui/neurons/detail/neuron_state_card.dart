@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/tab/neuron_row.dart';
@@ -132,8 +133,17 @@ class NeuronStateCard extends StatelessWidget {
                   textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75),
             ),
             onPressed: () {
-              context.callUpdate(() =>
-                  context.icApi.startDissolving(neuronId: neuron.id.toBigInt));
+              OverlayBaseWidget.show(
+                  context,
+                  ConfirmDialog(
+                    title: "Confirm Start Unlock",
+                    description: "This will reduce your aging bonus to zero. "
+                        "Are you sure you wish to continue ?",
+                    onConfirm: () async {
+                      await context.callUpdate(() => context.icApi
+                          .startDissolving(neuronId: neuron.id.toBigInt));
+                    },
+                  ));
             }.takeIf((e) => neuron.isCurrentUserController));
       case NeuronState.UNLOCKED:
         return ElevatedButton(
