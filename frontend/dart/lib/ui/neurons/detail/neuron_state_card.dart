@@ -138,7 +138,7 @@ class NeuronStateCard extends StatelessWidget {
                   ConfirmDialog(
                     title: "Confirm Start Unlock",
                     description:
-                        "This will cause you to lose your aging bonus.\n"
+                        "This will cause your neuron to lose its aging bonus.\n"
                         "Are you sure you wish to continue?",
                     onConfirm: () async {
                       await context.callUpdate(() => context.icApi
