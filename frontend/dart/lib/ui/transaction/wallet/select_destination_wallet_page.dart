@@ -41,7 +41,12 @@ class _SelectDestinationAccountPageState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Enter Address", style: context.textTheme.headline3),
+                    Text(
+                      "Enter Address",
+                      style: Responsive.isMobile(context)
+                          ? context.textTheme.headline4
+                          : context.textTheme.headline3,
+                    ),
                     DebouncedValidatedFormField(addressField),
                     Center(
                       child: FractionallySizedBox(

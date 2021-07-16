@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 
 import '../../dfinity.dart';
 
@@ -70,35 +71,38 @@ class WizardOverlayState extends State<WizardOverlay> {
           child: Scaffold(
               backgroundColor: AppColors.lighterBackground,
               appBar: (title != null)
-                  ? AppBar(
-                      backgroundColor: AppColors.lighterBackground,
-                      toolbarHeight: 80,
-                      //leadingWidth: 100,
-                      actions: [
-                        AspectRatio(
-                            aspectRatio: 1,
-                            child: TextButton(
-                              onPressed: () {
-                                OverlayBaseWidget.of(context)?.dismiss();
-                              },
-                              child: Center(
-                                child: Text(
-                                  "✕",
-                                  style: TextStyle(
-                                      fontFamily: Fonts.circularBook,
-                                      fontSize: 24,
-                                      color: AppColors.white),
+                  ? PreferredSize(
+                      preferredSize: Size.fromHeight(60),
+                      child: AppBar(
+                        backgroundColor: AppColors.lighterBackground,
+                        toolbarHeight: 80,
+                        //leadingWidth: 100,
+                        actions: [
+                          AspectRatio(
+                              aspectRatio: 1,
+                              child: TextButton(
+                                onPressed: () {
+                                  OverlayBaseWidget.of(context)?.dismiss();
+                                },
+                                child: Center(
+                                  child: Text(
+                                    "✕",
+                                    style: TextStyle(
+                                        fontFamily: Fonts.circularBook,
+                                        fontSize: Responsive.isMobile(context)
+                                            ? 16
+                                            : 24,
+                                        color: AppColors.white),
+                                  ),
                                 ),
-                              ),
-                            )),
-                      ],
-                      title: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: AutoSizeText(title,
+                              )),
+                        ],
+                        title: AutoSizeText(title,
                             maxLines: 1,
                             overflow: TextOverflow.visible,
                             style: TextStyle(
-                                fontSize: 32,
+                                fontSize:
+                                    Responsive.isMobile(context) ? 16 : 32,
                                 fontFamily: Fonts.circularBook,
                                 color: AppColors.gray50)),
                       ),

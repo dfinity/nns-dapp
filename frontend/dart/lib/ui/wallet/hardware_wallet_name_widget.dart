@@ -1,5 +1,5 @@
-
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 
@@ -7,22 +7,21 @@ import '../../dfinity.dart';
 import 'attach_hardware_wallet.dart';
 
 class HardwareWalletNameWidget extends StatelessWidget {
-
   ValidatedTextField nameField = ValidatedTextField("Hardware Wallet Name",
       validations: [StringFieldValidation.minimumLength(2)]);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Align(
               alignment: Alignment(0, -0.5),
               child: FractionallySizedBox(
-                widthFactor: 0.7,
+                widthFactor: 1,
                 child: Card(
                   child: Padding(
                     padding: const EdgeInsets.all(6.0),
@@ -39,18 +38,24 @@ class HardwareWalletNameWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
+        ),
+        Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: SizedBox(
               height: 70,
               width: double.infinity,
               child: ValidFieldsSubmitButton(
-                child: Text("Connect to Wallet"),
+                child: Text(
+                  "Connect to Wallet",
+                ),
                 onPressed: () async {
-                  WizardOverlay.of(context).pushPage("Connect to Wallet", AttachHardwareWalletWidget(name: nameField.currentValue));
+                  WizardOverlay.of(context).pushPage("Connect to Wallet",
+                      AttachHardwareWalletWidget(name: nameField.currentValue));
                 },
                 fields: [nameField],
-              ))
-        ],
-      ),
+              )),
+        )
+      ],
     );
   }
 }

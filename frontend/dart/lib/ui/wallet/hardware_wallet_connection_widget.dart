@@ -1,11 +1,17 @@
 import 'package:dfinity_wallet/ic_api/web/stringify.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 
 import '../../dfinity.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 
-enum WalletConnectionState { NOT_CONNECTED, CONNECTING, CONNECTED, INCORRECT_DEVICE }
+enum WalletConnectionState {
+  NOT_CONNECTED,
+  CONNECTING,
+  CONNECTED,
+  INCORRECT_DEVICE
+}
 
 class HardwareConnectionWidget extends StatelessWidget {
   final WalletConnectionState connectionState;
@@ -35,7 +41,7 @@ class HardwareConnectionWidget extends StatelessWidget {
                   child: Text(
                     "Connect to Wallet",
                     style: TextStyle(
-                        fontSize: 30,
+                        fontSize: Responsive.isMobile(context) ? 14 : 30,
                         fontFamily: Fonts.circularBook,
                         color: AppColors.gray50,
                         fontWeight: FontWeight.w100),
