@@ -1,3 +1,4 @@
+import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/tab/neuron_row.dart';
@@ -111,7 +112,7 @@ class NeuronStateCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text("Lockup",
-                  textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75),
+                  textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1),
             ),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(AppColors.blue600)),
@@ -129,11 +130,21 @@ class NeuronStateCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text("Start Unlock",
-                  textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75),
+                  textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1),
             ),
             onPressed: () {
-              context.callUpdate(() =>
-                  context.icApi.startDissolving(neuronId: neuron.id.toBigInt));
+              OverlayBaseWidget.show(
+                  context,
+                  ConfirmDialog(
+                    title: "Confirm Start Unlock",
+                    description:
+                        "This will cause your neuron to lose its aging bonus.\n"
+                        "Are you sure you wish to continue?",
+                    onConfirm: () async {
+                      await context.callUpdate(() => context.icApi
+                          .startDissolving(neuronId: neuron.id.toBigInt));
+                    },
+                  ));
             }.takeIf((e) => neuron.isCurrentUserController));
       case NeuronState.UNLOCKED:
         return ElevatedButton(
@@ -143,7 +154,7 @@ class NeuronStateCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text("Disburse",
-                  textScaleFactor: Responsive.isDesktop(context) ? 1 : 0.75),
+                  textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1),
             ),
             onPressed: () {
               OverlayBaseWidget.show(
