@@ -24,7 +24,10 @@ class NeuronHotkeysCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Hotkeys", style: context.textTheme.headline3),
+                Text("Hotkeys",
+                    style: Responsive.isMobile(context)
+                        ? context.textTheme.headline6
+                        : context.textTheme.headline3),
                 SmallFormDivider(),
                 if (neuron.hotkeys.isEmpty)
                   Center(
@@ -75,7 +78,7 @@ class NeuronHotkeysCard extends StatelessWidget {
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
                     "Add Hotkey",
-                    textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+                    textScaleFactor: Responsive.isMobile(context) ? 0.65 : 0.75,
                   ),
                 )),
           ],

@@ -39,7 +39,7 @@ class NeuronFolloweesCard extends StatelessWidget {
               "Following",
               style: Responsive.isMobile(context)
                   ? context.textTheme.headline6
-                  : context.textTheme.headline2,
+                  : context.textTheme.headline3,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 5.0, right: 50),
@@ -148,7 +148,8 @@ class NeuronFolloweesCard extends StatelessWidget {
                       followeeTopics.isEmpty
                           ? "Follow Neurons"
                           : "Edit Followees",
-                      textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+                      textScaleFactor:
+                          Responsive.isMobile(context) ? 0.65 : 0.75,
                     ),
                   )),
             )

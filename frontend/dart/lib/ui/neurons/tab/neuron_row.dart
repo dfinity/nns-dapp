@@ -30,7 +30,7 @@ class NeuronRow extends StatelessWidget {
                     neuron.identifier,
                     style: Responsive.isMobile(context)
                         ? context.textTheme.headline4
-                        : context.textTheme.headline2,
+                        : context.textTheme.headline3,
                   ),
                   if (!neuron.isCurrentUserController)
                     Text("[hotkey control]",
@@ -61,8 +61,8 @@ class NeuronRow extends StatelessWidget {
               flex: 1,
               child: LabelledBalanceDisplayWidget(
                   amount: neuron.stake,
-                  amountSize: Responsive.isMobile(context) ? 20 : 30,
-                  icpLabelSize: 15,
+                  amountSize: Responsive.isMobile(context) ? 16 : 24,
+                  icpLabelSize: 25,
                   text: Text(
                     "Stake",
                     style: context.textTheme.subtitle2,

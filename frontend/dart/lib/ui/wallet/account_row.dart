@@ -36,19 +36,15 @@ class AccountRow extends StatelessWidget {
                     Expanded(
                       child: Text(
                         account.name,
-                        style: Responsive.isDesktop(context) |
-                                Responsive.isTablet(context)
-                            ? context.textTheme.headline2
+                        style: Responsive.isMobile(context)
+                            ? context.textTheme.headline6
                             : context.textTheme.headline3,
                       ),
                     ),
                     Expanded(
                       child: BalanceDisplayWidget(
                           amount: account.balance,
-                          amountSize: Responsive.isDesktop(context) |
-                                  Responsive.isTablet(context)
-                              ? 30
-                              : 24,
+                          amountSize: Responsive.isMobile(context) ? 16 : 24,
                           icpLabelSize: 25,
                           locale: myLocale.languageCode),
                     )
@@ -59,22 +55,19 @@ class AccountRow extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(account.accountIdentifier,
-                        style: context.textTheme.bodyText2
-                      ),
+                          style: context.textTheme.bodyText2),
                     ),
                     IconButton(
-                      alignment: Alignment.center,
-                      iconSize:
-                          context.textTheme.bodyText1?.fontSize ?? 24,
-                      icon: Icon(
-                        Icons.copy,
-                        color: context.textTheme.bodyText1?.color,
-                      ),
-                      onPressed: () {
-                        Clipboard.setData(ClipboardData(
-                            text: account.accountIdentifier));
-                      }
-                    )
+                        alignment: Alignment.center,
+                        iconSize: context.textTheme.bodyText1?.fontSize ?? 24,
+                        icon: Icon(
+                          Icons.copy,
+                          color: context.textTheme.bodyText1?.color,
+                        ),
+                        onPressed: () {
+                          Clipboard.setData(
+                              ClipboardData(text: account.accountIdentifier));
+                        })
                   ],
                 ),
                 if (!account.primary) SmallFormDivider(),

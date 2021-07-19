@@ -38,7 +38,7 @@ class NeuronStateCard extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: Text(
               "Increase Neuron Stake",
-              textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+              textScaleFactor: Responsive.isMobile(context) ? 0.65 : 0.75,
             ),
           )),
       // adds left-padding when non-mobile
@@ -63,7 +63,7 @@ class NeuronStateCard extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: Text(
               "Increase Dissolve Delay",
-              textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+              textScaleFactor: Responsive.isMobile(context) ? 0.65 : 0.75,
             ),
           )),
       // creates vertical or horizontal gap based on viewport size
@@ -112,7 +112,7 @@ class NeuronStateCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text("Lockup",
-                  textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1),
+                  textScaleFactor: Responsive.isMobile(context) ? 0.65 : 0.75),
             ),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(AppColors.blue600)),
@@ -130,7 +130,7 @@ class NeuronStateCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text("Start Unlock",
-                  textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1),
+                  textScaleFactor: Responsive.isMobile(context) ? 0.65 : 0.75),
             ),
             onPressed: () {
               OverlayBaseWidget.show(
@@ -154,7 +154,7 @@ class NeuronStateCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text("Disburse",
-                  textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1),
+                  textScaleFactor: Responsive.isMobile(context) ? 0.65 : 0.75),
             ),
             onPressed: () {
               OverlayBaseWidget.show(

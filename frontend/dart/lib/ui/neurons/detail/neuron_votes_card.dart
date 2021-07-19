@@ -30,12 +30,12 @@ class NeuronVotesCard extends StatelessWidget {
                           "Voting History",
                           style: Responsive.isMobile(context)
                               ? context.textTheme.headline6
-                              : context.textTheme.headline2,
+                              : context.textTheme.headline3,
                         ),
                       ),
                       LabelledBalanceDisplayWidget(
                           amount: neuron.votingPower,
-                          amountSize: Responsive.isMobile(context) ? 24 : 30,
+                          amountSize: Responsive.isMobile(context) ? 20 : 24,
                           icpLabelSize: 0,
                           text: Text("Voting Power"))
                     ],

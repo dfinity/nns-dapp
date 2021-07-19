@@ -34,7 +34,7 @@ class NeuronRewardsCard extends StatelessWidget {
                             "Maturity",
                             style: Responsive.isMobile(context)
                                 ? context.textTheme.headline6
-                                : context.textTheme.headline2,
+                                : context.textTheme.headline3,
                           ),
                           GestureDetector(
                             onTap: () {
@@ -86,7 +86,7 @@ class NeuronRewardsCard extends StatelessWidget {
                                 (neuron.maturityICPEquivalent.asE8s() /
                                     neuron.stake.asE8s()))
                             : 0,
-                        amountSize: Responsive.isMobile(context) ? 24 : 30,
+                        amountSize: Responsive.isMobile(context) ? 20 : 24,
                         locale: myLocale.languageCode,
                       ),
                       Expanded(
@@ -124,7 +124,7 @@ class NeuronRewardsCard extends StatelessWidget {
                               child: Text(
                                 "Spawn Neuron",
                                 textScaleFactor:
-                                    Responsive.isDesktop(context) ? 1 : 0.75,
+                                    Responsive.isMobile(context) ? 0.65 : 0.75,
                               ),
                             )),
                       )
