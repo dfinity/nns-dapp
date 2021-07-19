@@ -148,8 +148,8 @@ class NeuronFolloweesCard extends StatelessWidget {
                       followeeTopics.isEmpty
                           ? "Follow Neurons"
                           : "Edit Followees",
-                      textScaleFactor:
-                          Responsive.isMobile(context) ? 0.65 : 0.75,
+                      style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 16),
                     ),
                   )),
             )

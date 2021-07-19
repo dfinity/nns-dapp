@@ -51,8 +51,8 @@ class NeuronProposalsCard extends StatelessWidget {
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
                       "Make Dummy Proposals",
-                      textScaleFactor:
-                          Responsive.isMobile(context) ? 0.65 : 0.75,
+                      style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 16),
                     ),
                   )),
             )

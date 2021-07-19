@@ -78,7 +78,8 @@ class NeuronHotkeysCard extends StatelessWidget {
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
                     "Add Hotkey",
-                    textScaleFactor: Responsive.isMobile(context) ? 0.65 : 0.75,
+                    style: TextStyle(
+                        fontSize: Responsive.isMobile(context) ? 14 : 16),
                   ),
                 )),
           ],
@@ -158,7 +159,8 @@ class _AddHotkeysState extends State<AddHotkeys> {
                 child: ValidFieldsSubmitButton(
                   child: Text(
                     'Confirm',
-                    textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+                    style: TextStyle(
+                        fontSize: Responsive.isMobile(context) ? 15 : 20),
                   ),
                   fields: [HotkeyValidated],
                   onPressed: () async {
