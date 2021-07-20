@@ -89,9 +89,7 @@ class WizardOverlayState extends State<WizardOverlay> {
                                     "✕",
                                     style: TextStyle(
                                         fontFamily: Fonts.circularBook,
-                                        fontSize: Responsive.isMobile(context)
-                                            ? 16
-                                            : 24,
+                                        fontSize: 20,
                                         color: AppColors.white),
                                   ),
                                 ),
@@ -101,8 +99,7 @@ class WizardOverlayState extends State<WizardOverlay> {
                             maxLines: 1,
                             overflow: TextOverflow.visible,
                             style: TextStyle(
-                                fontSize:
-                                    Responsive.isMobile(context) ? 16 : 32,
+                                fontSize: 25,
                                 fontFamily: Fonts.circularBook,
                                 color: AppColors.gray50)),
                       ),
