@@ -24,7 +24,10 @@ class NeuronHotkeysCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Hotkeys", style: context.textTheme.headline3),
+                Text("Hotkeys",
+                    style: Responsive.isMobile(context)
+                        ? context.textTheme.headline6
+                        : context.textTheme.headline3),
                 SmallFormDivider(),
                 if (neuron.hotkeys.isEmpty)
                   Center(
@@ -75,7 +78,8 @@ class NeuronHotkeysCard extends StatelessWidget {
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
                     "Add Hotkey",
-                    textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+                    style: TextStyle(
+                        fontSize: Responsive.isMobile(context) ? 14 : 16),
                   ),
                 )),
           ],
@@ -155,7 +159,8 @@ class _AddHotkeysState extends State<AddHotkeys> {
                 child: ValidFieldsSubmitButton(
                   child: Text(
                     'Confirm',
-                    textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+                    style: TextStyle(
+                        fontSize: Responsive.isMobile(context) ? 15 : 20),
                   ),
                   fields: [HotkeyValidated],
                   onPressed: () async {

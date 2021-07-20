@@ -1,8 +1,8 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import '../../../dfinity.dart';
 
 class NeuronProposalsCard extends StatelessWidget {
-
   final Neuron neuron;
 
   const NeuronProposalsCard({Key? key, required this.neuron}) : super(key: key);
@@ -20,33 +20,41 @@ class NeuronProposalsCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text("Proposals",
-                      style: context.textTheme.headline3),
+                      style: Responsive.isMobile(context)
+                          ? context.textTheme.headline6
+                          : context.textTheme.headline3),
                 ),
               ],
             ),
             ...neuron.proposals.map((e) => Container(
-              padding: EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(e.summary.toString(), style: context.textTheme.headline4,),
-                  Text(e.url, style: context.textTheme.bodyText1),
-                ],
-              ),
-            )),
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        e.summary.toString(),
+                        style: context.textTheme.headline4,
+                      ),
+                      Text(e.url, style: context.textTheme.bodyText1),
+                    ],
+                  ),
+                )),
             SmallFormDivider(),
             Align(
               alignment: Alignment.bottomRight,
               child: ElevatedButton(
-                onPressed: () async {
-                  await context.performLoading(() =>
-                    context.icApi.makeDummyProposals(neuronId: neuron.id.toBigInt));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text("Make Dummy Proposals"),
-                )
-              ),
+                  onPressed: () async {
+                    await context.performLoading(() => context.icApi
+                        .makeDummyProposals(neuronId: neuron.id.toBigInt));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      "Make Dummy Proposals",
+                      style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 16),
+                    ),
+                  )),
             )
           ],
         ),
