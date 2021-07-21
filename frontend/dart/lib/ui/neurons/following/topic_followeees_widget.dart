@@ -50,7 +50,8 @@ class TopicFolloweesWidget extends StatelessWidget {
                     padding: EdgeInsets.all(8),
                     child: Text(
                       "Add Followee",
-                      textScaleFactor: Responsive.isMobile(context) ? 0.65 : 1,
+                      style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 16),
                     ),
                   ),
                   onPressed: () {
@@ -105,7 +106,13 @@ class TopicFolloweesWidget extends StatelessWidget {
                         onPressed: () async {
                           await removeFollower(e, context);
                         },
-                        child: Text('✕'))
+                        child: Text(
+                          '✕',
+                          style: TextStyle(
+                            fontFamily: Fonts.circularBook,
+                            fontSize: 15,
+                          ),
+                        ))
                   ],
                 ),
               ),
@@ -213,8 +220,8 @@ class EnterFolloweeWidget extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           "Follow Neuron",
-                          textScaleFactor:
-                              Responsive.isMobile(context) ? 0.75 : 1,
+                          style: TextStyle(
+                              fontSize: Responsive.isMobile(context) ? 14 : 20),
                         ),
                       ),
                       onPressed: () async {

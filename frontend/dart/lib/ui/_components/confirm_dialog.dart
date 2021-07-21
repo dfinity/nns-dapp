@@ -53,8 +53,9 @@ class ConfirmDialog extends StatelessWidget {
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
                               "Cancel",
-                              textScaleFactor:
-                                  Responsive.isMobile(context) ? 0.48 : 1,
+                              style: TextStyle(
+                                  fontSize:
+                                      Responsive.isMobile(context) ? 12 : 15),
                             ),
                           ),
                           onPressed: () {
@@ -70,8 +71,9 @@ class ConfirmDialog extends StatelessWidget {
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
                               "Yes, I'm sure",
-                              textScaleFactor:
-                                  Responsive.isMobile(context) ? 0.48 : 1,
+                              style: TextStyle(
+                                  fontSize:
+                                      Responsive.isMobile(context) ? 12 : 15),
                             ),
                           ),
                           onPressed: () {

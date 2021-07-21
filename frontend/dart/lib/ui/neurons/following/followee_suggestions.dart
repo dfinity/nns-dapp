@@ -92,10 +92,11 @@ class FolloweeSuggestionRow extends StatelessWidget {
                     backgroundColor:
                         MaterialStateProperty.all(AppColors.gray800)),
                 child: Padding(
-                  padding: const EdgeInsets.all(4.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "Follow",
-                    style: context.textTheme.bodyText1,
+                    style: TextStyle(
+                        fontSize: Responsive.isMobile(context) ? 14 : 20),
                   ),
                 ),
               ),
