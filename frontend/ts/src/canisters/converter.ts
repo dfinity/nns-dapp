@@ -112,10 +112,8 @@ export const principalToAccountIdentifier = (
   return toHexString(bytes);
 };
 
-export const principalToSubAccount = (
-  principal: PrincipalString
-): SubAccount => {
-  const bytes = Principal.fromText(principal).toUint8Array();
+export const principalToSubAccount = (principal: Principal): SubAccount => {
+  const bytes = principal.toUint8Array();
   const subAccount = new Uint8Array(32);
   subAccount[0] = bytes.length;
   subAccount.set(bytes, 1);

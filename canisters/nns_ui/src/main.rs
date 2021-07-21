@@ -12,7 +12,8 @@ use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
-use dfn_core::{over, over_async, stable};
+use dfn_core::{api::trap_with, over, over_async, stable};
+use ic_base_types::PrincipalId;
 use ledger_canister::{AccountIdentifier, BlockHeight};
 
 mod accounts_store;
@@ -192,11 +193,46 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
 
 #[export_name = "canister_query get_multi_part_transaction_status"]
 pub fn get_multi_part_transaction_status() {
-    over(candid_one, get_multi_part_transaction_status_impl);
+    over(candid, |(principal, block_height): (PrincipalId, BlockHeight)| {
+        get_multi_part_transaction_status_impl(principal, block_height)
+    });
 }
 
-fn get_multi_part_transaction_status_impl(block_height: BlockHeight) -> MultiPartTransactionStatus {
-    let principal = dfn_core::api::caller();
+fn get_multi_part_transaction_status_impl(
+    principal: PrincipalId,
+    block_height: BlockHeight,
+) -> MultiPartTransactionStatus {
+    // Returns true if `p2` is a principal of an account owned by `p1`.
+    fn is_principal_in_account(account_owner: PrincipalId, principal: PrincipalId) -> bool {
+        if account_owner == principal {
+            // A principal is part of its own account.
+            return true;
+        }
+
+        // Fetch the account of `account_owner`.
+        let account = STATE
+            .with(|s| s.accounts_store.borrow().get_account(account_owner))
+            .unwrap();
+
+        // Return true if `principal` is the principal of one of the hardware wallet accounts.
+        for hw_account in account.hardware_wallet_accounts {
+            if hw_account.principal == principal {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    let caller = dfn_core::api::caller();
+
+    if !is_principal_in_account(caller, principal) {
+        trap_with(&format!(
+            "Principal {} doesn't have access to the transaction statuses of {}",
+            caller, principal
+        ));
+    }
+
     STATE.with(|s| {
         s.accounts_store
             .borrow()

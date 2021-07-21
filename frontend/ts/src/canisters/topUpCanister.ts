@@ -18,6 +18,7 @@ export type TopUpCanisterResponse =
   | { error: { message: string; refunded: boolean } };
 
 export async function topUpCanisterImpl(
+  principal: Principal,
   ledgerService: LedgerService,
   nnsUiService: NnsUiService,
   request: TopUpCanisterRequest
@@ -34,7 +35,7 @@ export async function topUpCanisterImpl(
     fromSubAccountId: request.fromSubAccountId,
   });
 
-  const outcome = await pollUntilComplete(nnsUiService, blockHeight);
+  const outcome = await pollUntilComplete(nnsUiService, principal, blockHeight);
 
   if ("Complete" in outcome) {
     return { complete: null };

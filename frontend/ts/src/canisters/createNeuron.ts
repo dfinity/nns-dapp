@@ -14,17 +14,14 @@ export type CreateNeuronRequest = {
 };
 
 export default async function (
-  principal: PrincipalString,
+  principal: Principal,
   ledgerService: LedgerService,
   nnsUiService: NnsUiService,
   request: CreateNeuronRequest
 ): Promise<NeuronId> {
   const nonceBytes = new Uint8Array(randomBytes(8));
   const nonce = convert.uint8ArrayToBigInt(nonceBytes);
-  const toSubAccount = buildSubAccount(
-    nonceBytes,
-    Principal.fromText(principal)
-  );
+  const toSubAccount = buildSubAccount(nonceBytes, principal);
 
   const accountIdentifier = convert.principalToAccountIdentifier(
     GOVERNANCE_CANISTER_ID,
@@ -37,7 +34,7 @@ export default async function (
     fromSubAccountId: request.fromSubAccountId,
   });
 
-  const outcome = await pollUntilComplete(nnsUiService, blockHeight);
+  const outcome = await pollUntilComplete(nnsUiService, principal, blockHeight);
 
   if ("NeuronCreated" in outcome) {
     return outcome.NeuronCreated;

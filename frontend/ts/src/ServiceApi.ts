@@ -321,7 +321,7 @@ export default class ServiceApi {
   public createNeuron = (request: CreateNeuronRequest): Promise<NeuronId> => {
     return executeWithLogging(() =>
       createNeuronImpl(
-        this.identity.getPrincipal().toString(),
+        this.identity.getPrincipal(),
         this.ledgerService,
         this.nnsUiService,
         request
@@ -331,7 +331,12 @@ export default class ServiceApi {
 
   public topUpNeuron = (request: TopUpNeuronRequest): Promise<void> => {
     return executeWithLogging(() =>
-      topUpNeuronImpl(this.ledgerService, this.nnsUiService, request)
+      topUpNeuronImpl(
+        this.identity.getPrincipal(),
+        this.ledgerService,
+        this.nnsUiService,
+        request
+      )
     );
   };
 
@@ -342,7 +347,7 @@ export default class ServiceApi {
   ): Promise<CreateCanisterResponse> => {
     return executeWithLogging(() =>
       createCanisterImpl(
-        this.identity.getPrincipal().toString(),
+        this.identity.getPrincipal(),
         this.ledgerService,
         this.nnsUiService,
         request
@@ -354,7 +359,12 @@ export default class ServiceApi {
     request: TopUpCanisterRequest
   ): Promise<TopUpCanisterResponse> => {
     return executeWithLogging(() =>
-      topUpCanisterImpl(this.ledgerService, this.nnsUiService, request)
+      topUpCanisterImpl(
+        this.identity.getPrincipal(),
+        this.ledgerService,
+        this.nnsUiService,
+        request
+      )
     );
   };
 

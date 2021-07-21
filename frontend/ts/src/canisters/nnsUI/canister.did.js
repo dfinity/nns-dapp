@@ -185,7 +185,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'get_multi_part_transaction_status' : IDL.Func(
-        [BlockHeight],
+        [IDL.Principal, BlockHeight],
         [MultiPartTransactionStatus],
         ['query'],
       ),

@@ -5,6 +5,7 @@ import { CanisterIdString, E8s, PrincipalString } from "./common/types";
 import * as convert from "./converter";
 import { CREATE_CANISTER_MEMO } from "./constants";
 import { pollUntilComplete } from "./multiPartTransactionPollingHandler";
+import { Principal } from "@dfinity/principal";
 
 export type CreateCanisterRequest = {
   amount: E8s;
@@ -16,7 +17,7 @@ export type CreateCanisterResponse =
   | { error: { message: string; refunded: boolean } };
 
 export async function createCanisterImpl(
-  principal: PrincipalString,
+  principal: Principal,
   ledgerService: LedgerService,
   nnsUiService: NnsUiService,
   request: CreateCanisterRequest
@@ -33,7 +34,7 @@ export async function createCanisterImpl(
     fromSubAccountId: request.fromSubAccountId,
   });
 
-  const outcome = await pollUntilComplete(nnsUiService, blockHeight);
+  const outcome = await pollUntilComplete(nnsUiService, principal, blockHeight);
 
   if ("CanisterCreated" in outcome) {
     return { created: outcome.CanisterCreated.toString() };
