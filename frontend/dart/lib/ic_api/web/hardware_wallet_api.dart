@@ -7,7 +7,8 @@ import 'package:js/js.dart';
 import 'js_utils.dart';
 
 @JS("createHardwareWalletApi")
-external Promise<HardwareWalletApi> createHardwareWalletApi(dynamic identity);
+external Promise<HardwareWalletApi> createHardwareWalletApi(
+    dynamic identity, dynamic mainIdentity);
 
 @JS("HardwareWalletApi")
 class HardwareWalletApi {
@@ -17,4 +18,7 @@ class HardwareWalletApi {
 
   @JS("showAddressAndPubKeyOnDevice")
   external Promise<void> showAddressAndPubKeyOnDevice();
+
+  @JS("createNeuron")
+  external Promise<void> createNeuron(dynamic amount);
 }
