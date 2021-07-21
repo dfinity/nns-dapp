@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:dfinity_wallet/data/ballot_info.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/data/proposal.dart';
 import 'package:dfinity_wallet/data/vote.dart';
+import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'dfinity_entity.dart';
 import 'followee.dart';
 import 'icp.dart';
@@ -15,7 +18,8 @@ class Neuron extends DfinityEntity with ICPSource {
   late String createdTimestampSeconds;
   late ICP votingPower;
   late NeuronState state;
-  late String dissolveDelaySeconds;
+  late int dissolveDelaySeconds;
+  late int ageSeconds;
   late ICP cachedNeuronStake;
   late ICP neuronFees;
   late ICP maturityICPEquivalent;
@@ -34,6 +38,7 @@ class Neuron extends DfinityEntity with ICPSource {
       required this.votingPower,
       required this.state,
       required this.dissolveDelaySeconds,
+      required this.ageSeconds,
       required this.cachedNeuronStake,
       required this.proposals,
       required this.followEditCounter,
@@ -42,6 +47,9 @@ class Neuron extends DfinityEntity with ICPSource {
       required this.hotkeys});
 
   Neuron.empty();
+
+  double get dissolveDelayMultiplier => 1 + (1 * (min(dissolveDelaySeconds, EIGHT_YEARS_IN_SECONDS).toDouble() / EIGHT_YEARS_IN_SECONDS));
+  double get ageBonusMultiplier => 1 + (0.5 * (min(ageSeconds, FOUR_YEARS_IN_SECONDS).toDouble() / FOUR_YEARS_IN_SECONDS));
 
   @override
   String get identifier => id.toString();
@@ -63,7 +71,7 @@ class Neuron extends DfinityEntity with ICPSource {
   Duration get durationRemaining =>
       whenDissolvedTimestamp.difference(DateTime.now());
 
-  Duration get dissolveDelay => int.parse(dissolveDelaySeconds).seconds;
+  Duration get dissolveDelay => dissolveDelaySeconds.seconds;
 
   Vote? voteForProposal(Proposal proposal) => recentBallots
       .firstOrNullWhere((element) => element.proposalId == proposal.id)
