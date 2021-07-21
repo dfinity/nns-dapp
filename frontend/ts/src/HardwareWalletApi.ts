@@ -26,8 +26,6 @@ export default class HardwareWalletApi {
     ledgerIdentity: LedgerIdentity,
     userIdentity: SignIdentity
   ): Promise<HardwareWalletApi> => {
-    console.log("initializing hardware wallet with user identity");
-    console.log(userIdentity);
     const userAgent = new HttpAgent({
       host: HOST,
       identity: userIdentity,
