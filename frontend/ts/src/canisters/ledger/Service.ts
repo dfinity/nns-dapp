@@ -54,18 +54,31 @@ export default class Service implements ServiceInterface {
   public sendICPTs = async (
     request: SendICPTsRequest
   ): Promise<BlockHeight> => {
-    const rawRequest = this.requestConverters.fromSendICPTsRequest(request);
+    try {
+      const rawRequest = this.requestConverters.fromSendICPTsRequest(request);
 
-    const responseBytes = await submitUpdateRequest(
-      this.agent,
-      this.canisterId,
-      "send_pb",
-      rawRequest.serializeBinary()
-    );
+      const responseBytes = await submitUpdateRequest(
+        this.agent,
+        this.canisterId,
+        "send_pb",
+        rawRequest.serializeBinary()
+      );
 
-    return BigInt(
-      BlockHeightProto.deserializeBinary(responseBytes).getHeight()
-    );
+      return BigInt(
+        BlockHeightProto.deserializeBinary(responseBytes).getHeight()
+      );
+    } catch (err) {
+      if (err instanceof DOMException && err.code == 11) {
+        // An error specific to hardware wallets and indicates the device is already open.
+        alert(
+          `The wallet is already being used. Please close any ongoing transactions on the wallet and try again.\n\nError received: ${err.message}`
+        );
+      } else {
+        // An unknown error. Display it as-is.
+        alert(err);
+      }
+      throw err;
+    }
   };
 
   public notify = async (

@@ -20,9 +20,10 @@ window["createServiceApi"] = (identity: SignIdentity): Promise<ServiceApi> => {
 
 // @ts-ignore
 window["createHardwareWalletApi"] = (
-  identity: LedgerIdentity
+  identity: LedgerIdentity,
+  userIdentity: SignIdentity
 ): Promise<HardwareWalletApi> => {
-  return HardwareWalletApi.create(identity);
+  return HardwareWalletApi.create(identity, userIdentity);
 };
 
 // This is needed because Dart interop doesn't yet understand bigint
