@@ -4,7 +4,7 @@ import { Buffer } from "buffer";
 // @ts-ignore (no type definitions for crc are available)
 import crc from "crc";
 import { SUB_ACCOUNT_BYTE_LENGTH } from "./constants";
-import { AccountIdentifier, PrincipalString, SubAccount } from "./common/types";
+import { AccountIdentifier, SubAccount } from "./common/types";
 
 export const uint8ArrayToBigInt = (array: Uint8Array): bigint => {
   const view = new DataView(array.buffer, array.byteOffset, array.byteLength);

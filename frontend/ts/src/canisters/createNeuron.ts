@@ -4,7 +4,7 @@ import LedgerService from "./ledger/model";
 import NnsUiService from "./nnsUI/model";
 import GOVERNANCE_CANISTER_ID from "./governance/canisterId";
 import randomBytes from "randombytes";
-import { E8s, NeuronId, PrincipalString } from "./common/types";
+import { E8s, NeuronId } from "./common/types";
 import * as convert from "./converter";
 import { pollUntilComplete } from "./multiPartTransactionPollingHandler";
 

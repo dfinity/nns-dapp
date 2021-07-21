@@ -1,7 +1,7 @@
 import LedgerService from "./ledger/model";
 import NnsUiService from "./nnsUI/model";
 import NNS_UI_CANISTER_ID from "./nnsUI/canisterId";
-import { CanisterIdString, E8s, PrincipalString } from "./common/types";
+import { CanisterIdString, E8s } from "./common/types";
 import * as convert from "./converter";
 import { CREATE_CANISTER_MEMO } from "./constants";
 import { pollUntilComplete } from "./multiPartTransactionPollingHandler";
