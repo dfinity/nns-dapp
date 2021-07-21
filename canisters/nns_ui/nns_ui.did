@@ -241,7 +241,7 @@ service : {
     get_canisters: () -> (vec CanisterDetails) query;
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
-    get_multi_part_transaction_status: (BlockHeight) -> (MultiPartTransactionStatus) query;
+    get_multi_part_transaction_status: (principal, BlockHeight) -> (MultiPartTransactionStatus) query;
     get_multi_part_transaction_errors: () -> (vec MultiPartTransactionError) query;
     get_icp_to_cycles_conversion_rate: () -> (nat64) query;
     get_stats: () -> (Stats) query;

@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal";
 import {
   AccountIdentifier,
   BlockHeight,
@@ -153,6 +154,7 @@ export default interface ServiceInterface {
   getCanisters: () => Promise<Array<CanisterDetails>>;
   getIcpToCyclesConversionRate: () => Promise<bigint>;
   getMultiPartTransactionStatus: (
+    principal: Principal,
     blockHeight: BlockHeight
   ) => Promise<MultiPartTransactionStatus>;
   getTransactions: (
