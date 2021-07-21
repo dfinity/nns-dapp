@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal";
 import { AccountIdentifier, BlockHeight } from "../common/types";
 import ServiceInterface, {
   AttachCanisterRequest,
@@ -110,9 +111,11 @@ export default class Service implements ServiceInterface {
   };
 
   public getMultiPartTransactionStatus = async (
+    principal: Principal,
     blockHeight: BlockHeight
   ): Promise<MultiPartTransactionStatus> => {
     const rawResponse = await this.service.get_multi_part_transaction_status(
+      principal,
       blockHeight
     );
     return this.responseConverters.toMultiPartTransactionStatus(rawResponse);

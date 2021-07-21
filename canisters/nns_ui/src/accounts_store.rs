@@ -196,9 +196,9 @@ pub enum RemoveHardwareWalletResponse {
 
 #[derive(CandidType)]
 pub struct AccountDetails {
-    account_identifier: AccountIdentifier,
-    sub_accounts: Vec<SubAccountDetails>,
-    hardware_wallet_accounts: Vec<HardwareWalletAccountDetails>,
+    pub account_identifier: AccountIdentifier,
+    pub sub_accounts: Vec<SubAccountDetails>,
+    pub hardware_wallet_accounts: Vec<HardwareWalletAccountDetails>,
 }
 
 #[derive(CandidType)]
@@ -210,9 +210,9 @@ pub struct SubAccountDetails {
 
 #[derive(CandidType)]
 pub struct HardwareWalletAccountDetails {
-    name: String,
-    principal: PrincipalId,
-    account_identifier: AccountIdentifier,
+    pub name: String,
+    pub principal: PrincipalId,
+    pub account_identifier: AccountIdentifier,
 }
 
 #[derive(Deserialize)]

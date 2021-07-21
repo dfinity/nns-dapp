@@ -154,9 +154,10 @@ export interface _SERVICE {
   'get_multi_part_transaction_errors' : () => Promise<
       Array<MultiPartTransactionError>
     >,
-  'get_multi_part_transaction_status' : (arg_0: BlockHeight) => Promise<
-      MultiPartTransactionStatus
-    >,
+  'get_multi_part_transaction_status' : (
+      arg_0: Principal,
+      arg_1: BlockHeight,
+    ) => Promise<MultiPartTransactionStatus>,
   'get_stats' : () => Promise<Stats>,
   'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<
       GetTransactionsResponse

@@ -433,7 +433,8 @@ fn append_transaction_detects_neuron_transactions() {
 
     let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let neuron_memo = Memo(16656605094239839590);
-    let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
+    let neuron_account =
+        AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
 
     let transfer = Send {
         from: AccountIdentifier::new(neuron_principal, None),
@@ -527,7 +528,8 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
     let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
     let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let neuron_memo = Memo(16656605094239839590);
-    let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
+    let neuron_account =
+        AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
 
     let transfer = Send {
         from: AccountIdentifier::new(neuron_principal, None),
@@ -596,7 +598,8 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
 
     let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let neuron_memo = Memo(16656605094239839590);
-    let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
+    let neuron_account =
+        AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
     let other_principal = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
 
     let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
@@ -643,7 +646,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
     ));
 
     if let Some((_, MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo))) =
-    store.multi_part_transactions_processor.take_next()
+        store.multi_part_transactions_processor.take_next()
     {
         assert_eq!(principal, neuron_principal);
         assert_eq!(memo, neuron_memo);
@@ -652,7 +655,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
     }
 
     if let Some((_, MultiPartTransactionToBeProcessed::TopUpNeuron(principal, memo))) =
-    store.multi_part_transactions_processor.take_next()
+        store.multi_part_transactions_processor.take_next()
     {
         assert_eq!(principal, neuron_principal);
         assert_eq!(memo, neuron_memo);
