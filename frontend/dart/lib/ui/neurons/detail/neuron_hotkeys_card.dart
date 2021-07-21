@@ -55,7 +55,13 @@ class NeuronHotkeysCard extends StatelessWidget {
                               onPressed: () {
                                 removeHotkey(e, context);
                               },
-                              child: Text('✕'))
+                              child: Text(
+                                '✕',
+                                style: TextStyle(
+                                  fontFamily: Fonts.circularBook,
+                                  fontSize: 15,
+                                ),
+                              ))
                         ],
                       ),
                     );

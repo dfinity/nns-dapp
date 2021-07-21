@@ -147,7 +147,8 @@ class _IncreaseDissolveDelayWidgetState
                           MaterialStateProperty.all(AppColors.gray500)),
                   child: Text(
                     widget.cancelTitle,
-                    textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+                    style: TextStyle(
+                        fontSize: Responsive.isMobile(context) ? 14 : 16),
                   ),
                   onPressed: () async {
                     widget.onCompleteAction(context);
@@ -162,7 +163,8 @@ class _IncreaseDissolveDelayWidgetState
                 child: ElevatedButton(
                   child: Text(
                     "Update Delay",
-                    textScaleFactor: Responsive.isMobile(context) ? 0.75 : 1,
+                    style: TextStyle(
+                        fontSize: Responsive.isMobile(context) ? 14 : 16),
                   ),
                   onPressed: () {
                     final newDelay = sliderValueSeconds.currentValue.seconds;
