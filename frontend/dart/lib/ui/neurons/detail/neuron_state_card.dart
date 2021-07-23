@@ -9,6 +9,8 @@ import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_p
 import '../../../dfinity.dart';
 import '../increase_dissolve_delay_widget.dart';
 
+GlobalKey _toolTipKey = GlobalKey();
+
 class NeuronStateCard extends StatelessWidget {
   final Neuron neuron;
 
@@ -92,6 +94,56 @@ class NeuronStateCard extends StatelessWidget {
                   style: context.textTheme.subtitle2),
               TextSpan(text: " - Staked"),
             ])),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                RowBalanceDisplayWidget(
+                  amount: neuron.votingPower,
+                  amountDecimalPlaces: 2,
+                  amountSize: Responsive.isMobile(context) ? 15 : 20,
+                  icpLabelSize: 0,
+                  text: Text("Voting Power :"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      final dynamic _toolTip = _toolTipKey.currentState;
+                      _toolTip.ensureTooltipVisible();
+                    },
+                    child: Tooltip(
+                      key: _toolTipKey,
+                      padding: EdgeInsets.all(16),
+                      margin: Responsive.isMobile(context)
+                          ? EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.35,
+                              right: 50.0)
+                          : Responsive.isTablet(context)
+                              ? EdgeInsets.only(
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.25,
+                                  right: 300.0)
+                              : EdgeInsets.only(
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.35,
+                                  right: 600.0),
+                      textStyle: Responsive.isMobile(context)
+                          ? context.textTheme.headline5
+                          : context.textTheme.headline4,
+                      message:
+                          " Calculated as : \n ICP stake x Dissolve Delay Bonus x Age Bonus : \n"
+                          " (${neuron.stake.asDouble().toStringAsFixed(3)}) x (${neuron.dissolveDelayMultiplier.toStringAsFixed(3)}) x (${neuron.ageBonusMultiplier.toStringAsFixed(3)})",
+                      child: Icon(
+                        Icons.info,
+                        color: context.textTheme.bodyText1?.color,
+                        size: Responsive.isMobile(context) ? 15 : 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             VerySmallFormDivider(),
             if (Responsive.isMobile(context))
               Center(

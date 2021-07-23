@@ -22,23 +22,11 @@ class NeuronVotesCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "Voting History",
-                          style: Responsive.isMobile(context)
-                              ? context.textTheme.headline6
-                              : context.textTheme.headline3,
-                        ),
-                      ),
-                      LabelledBalanceDisplayWidget(
-                          amount: neuron.votingPower,
-                          amountSize: Responsive.isMobile(context) ? 20 : 24,
-                          icpLabelSize: 0,
-                          text: Text("Voting Power"))
-                    ],
+                  Text(
+                    "Voting History",
+                    style: Responsive.isMobile(context)
+                        ? context.textTheme.headline6
+                        : context.textTheme.headline3,
                   ),
                   SmallFormDivider(),
                   if (neuron.recentBallots.isEmpty)

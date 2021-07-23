@@ -83,3 +83,40 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
     );
   }
 }
+
+class RowBalanceDisplayWidget extends StatelessWidget {
+  final ICP amount;
+  final int amountSize;
+  final int amountDecimalPlaces;
+  final int icpLabelSize;
+  final Text text;
+
+  const RowBalanceDisplayWidget(
+      {Key? key,
+      required this.amount,
+      required this.amountSize,
+      required this.amountDecimalPlaces,
+      required this.icpLabelSize,
+      required this.text})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        text,
+        SizedBox(width: 5),
+        Text(
+          amount.asDouble().toStringAsFixed(amountDecimalPlaces),
+          style: TextStyle(
+            color: AppColors.white,
+            fontFamily: Fonts.circularBold,
+            fontSize: amountSize.toDouble(),
+          ),
+        ),
+      ],
+    );
+  }
+}

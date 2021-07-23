@@ -56,7 +56,9 @@ class NeuronSyncService {
     neuron.id = neuronId;
     neuron.votingPower = ICP.fromE8s(res['votingPower'].toString().toBigInt);
     neuron.state = NeuronState.values[res['state'].toInt()];
-    neuron.dissolveDelaySeconds = res['dissolveDelaySeconds'].toString();
+    neuron.dissolveDelaySeconds =
+        res['dissolveDelaySeconds'].toString().toInt();
+    neuron.ageSeconds = res['ageSeconds'].toString().toInt();
 
     final fullNeuron = res['fullNeuron'];
     if (fullNeuron != null) {

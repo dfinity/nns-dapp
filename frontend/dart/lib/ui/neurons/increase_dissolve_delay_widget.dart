@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
+import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 
@@ -207,14 +208,12 @@ class _IncreaseDissolveDelayWidgetState
       (sliderValueSeconds.currentValue
               .toDouble()
               .takeIf((e) => isMoreThan6Months())
-              ?.let((e) => e / (365.25 * 8).days.inSeconds) ??
+              ?.let((e) => e / (EIGHT_YEARS_IN_SECONDS).days.inSeconds) ??
           0);
 
   bool isMoreThan6Months() =>
       sliderValueSeconds.currentValue > SIX_MONTHS_IN_SECONDS;
 }
-
-const SIX_MONTHS_IN_SECONDS = 182.625 * 24 * 60 * 60;
 
 class DissolveDelayWidget extends StatelessWidget {
   final double sliderMinValue;
