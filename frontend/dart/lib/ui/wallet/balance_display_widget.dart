@@ -87,6 +87,7 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
 class RowBalanceDisplayWidget extends StatelessWidget {
   final ICP amount;
   final int amountSize;
+  final int amountDecimalPlaces;
   final int icpLabelSize;
   final Text text;
 
@@ -94,6 +95,7 @@ class RowBalanceDisplayWidget extends StatelessWidget {
       {Key? key,
       required this.amount,
       required this.amountSize,
+      required this.amountDecimalPlaces,
       required this.icpLabelSize,
       required this.text})
       : super(key: key);
@@ -107,7 +109,7 @@ class RowBalanceDisplayWidget extends StatelessWidget {
         text,
         SizedBox(width: 5),
         Text(
-          amount.asDouble().toStringAsFixed(2),
+          amount.asDouble().toStringAsFixed(amountDecimalPlaces),
           style: TextStyle(
             color: AppColors.white,
             fontFamily: Fonts.circularBold,

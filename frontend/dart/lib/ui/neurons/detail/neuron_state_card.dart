@@ -100,6 +100,7 @@ class NeuronStateCard extends StatelessWidget {
               children: [
                 RowBalanceDisplayWidget(
                   amount: neuron.votingPower,
+                  amountDecimalPlaces: 2,
                   amountSize: Responsive.isMobile(context) ? 15 : 20,
                   icpLabelSize: 0,
                   text: Text("Voting Power :"),
