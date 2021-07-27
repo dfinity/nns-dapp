@@ -1,15 +1,16 @@
 import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
+import 'package:dfinity_wallet/ui/neurons/stake_neuron_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
 import 'package:flutter/services.dart';
 import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
 
 class SelectSourceWallet extends StatefulWidget {
-  const SelectSourceWallet({
-    Key? key,
-  }) : super(key: key);
+  final neuronStakePressed;
+
+  SelectSourceWallet({required this.neuronStakePressed});
 
   @override
   _SelectSourceWalletState createState() => _SelectSourceWalletState();
@@ -61,10 +62,16 @@ class _SelectSourceWalletState extends State<SelectSourceWallet> {
                                         final address = e.accountIdentifier;
                                         final source =
                                             context.boxes.accounts[address]!;
-                                        WizardOverlay.of(context).pushPage(
-                                            "Select Destination",
-                                            SelectDestinationAccountPage(
-                                                source: source));
+                                        widget.neuronStakePressed
+                                            ? WizardOverlay.of(context)
+                                                .pushPage(
+                                                "Stake Neuron",
+                                                StakeNeuronPage(source: source),
+                                              )
+                                            : WizardOverlay.of(context).pushPage(
+                                                "Select Destination",
+                                                SelectDestinationAccountPage(
+                                                    source: source));
                                       })),
                             ),
                           ),

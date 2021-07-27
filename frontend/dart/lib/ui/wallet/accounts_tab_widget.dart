@@ -47,7 +47,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                     context,
                     WizardOverlay(
                       rootTitle: "Select Source Account",
-                      rootWidget: SelectSourceWallet(),
+                      rootWidget: SelectSourceWallet(neuronStakePressed: false),
                     ),
                   );
                 },
@@ -169,11 +169,12 @@ class SelectAccountAddActionWidget extends StatelessWidget {
                         ));
                   }),
               SmallFormDivider(),
-              WizardPathButton(title: "Attach Hardware Wallet",
+              WizardPathButton(
+                  title: "Attach Hardware Wallet",
                   subtitle: "Link a hardware wallet to this account",
                   onPressed: () {
-                    WizardOverlay.of(context)
-                        .pushPage("Enter Wallet Name", HardwareWalletNameWidget());
+                    WizardOverlay.of(context).pushPage(
+                        "Enter Wallet Name", HardwareWalletNameWidget());
                   }),
               SmallFormDivider(),
               SizedBox(
