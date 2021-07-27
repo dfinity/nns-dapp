@@ -50,18 +50,19 @@ class NeuronHotkeysCard extends StatelessWidget {
                                 style: context.textTheme.bodyText2),
                             flex: 4,
                           ),
-                          TextButton(
-                              style: buttonStyle,
-                              onPressed: () {
-                                removeHotkey(e, context);
-                              },
-                              child: Text(
-                                '✕',
-                                style: TextStyle(
-                                  fontFamily: Fonts.circularBook,
-                                  fontSize: 15,
-                                ),
-                              ))
+                          if (neuron.isCurrentUserController)
+                            TextButton(
+                                style: buttonStyle,
+                                onPressed: () {
+                                  removeHotkey(e, context);
+                                },
+                                child: Text(
+                                  '✕',
+                                  style: TextStyle(
+                                    fontFamily: Fonts.circularBook,
+                                    fontSize: 15,
+                                  ),
+                                ))
                         ],
                       ),
                     );
