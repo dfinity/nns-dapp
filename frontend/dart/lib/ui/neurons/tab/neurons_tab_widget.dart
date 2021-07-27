@@ -6,6 +6,7 @@ import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/ui/_components/page_button.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
+import 'package:dfinity_wallet/ui/transaction/wallet/select_source_wallet_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 
 import '../stake_neuron_page.dart';
@@ -69,9 +70,8 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
             OverlayBaseWidget.show(
               context,
               WizardOverlay(
-                rootTitle: "Stake Neuron",
-                rootWidget:
-                    StakeNeuronPage(source: context.boxes.accounts.primary),
+                rootTitle: "Select Source Account",
+                rootWidget: SelectSourceWallet(isStakeNeuron: true),
               ),
             );
           },
