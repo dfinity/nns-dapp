@@ -47,7 +47,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                     context,
                     WizardOverlay(
                       rootTitle: "Select Source Account",
-                      rootWidget: SelectSourceWallet(neuronStakePressed: false),
+                      rootWidget: SelectSourceWallet(isStakeNeuron: false),
                     ),
                   );
                 },

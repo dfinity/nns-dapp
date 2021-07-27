@@ -8,9 +8,9 @@ import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
 
 class SelectSourceWallet extends StatefulWidget {
-  final neuronStakePressed;
+  final isStakeNeuron;
 
-  SelectSourceWallet({required this.neuronStakePressed});
+  SelectSourceWallet({required this.isStakeNeuron});
 
   @override
   _SelectSourceWalletState createState() => _SelectSourceWalletState();
@@ -62,7 +62,7 @@ class _SelectSourceWalletState extends State<SelectSourceWallet> {
                                         final address = e.accountIdentifier;
                                         final source =
                                             context.boxes.accounts[address]!;
-                                        widget.neuronStakePressed
+                                        widget.isStakeNeuron
                                             ? WizardOverlay.of(context)
                                                 .pushPage(
                                                 "Stake Neuron",
