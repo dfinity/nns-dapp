@@ -208,7 +208,7 @@ class _IncreaseDissolveDelayWidgetState
       (sliderValueSeconds.currentValue
               .toDouble()
               .takeIf((e) => isMoreThan6Months())
-              ?.let((e) => e / (EIGHT_YEARS_IN_SECONDS).days.inSeconds) ??
+              ?.let((e) => e / EIGHT_YEARS_IN_SECONDS) ??
           0);
 
   bool isMoreThan6Months() =>
