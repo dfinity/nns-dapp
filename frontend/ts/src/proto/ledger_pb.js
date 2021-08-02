@@ -1,4 +1,4 @@
-// source: types.proto
+// source: ledger.proto
 /**
  * @fileoverview
  * @enhanceable
