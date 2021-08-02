@@ -9,10 +9,6 @@ fi
 npm ci
 
 pushd "$(dirname "$0")"
-
-# Generate protobuf
-./src/proto/update_proto.sh
-
 cd ../..
 # Create config file with proper configurations.
 ./update_config.sh
