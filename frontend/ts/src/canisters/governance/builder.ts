@@ -10,5 +10,5 @@ export default function (agent: Agent, identity: Identity): ServiceInterface {
     agent,
     canisterId: CANISTER_ID,
   }) as RawService;
-  return new Service(rawService, identity.getPrincipal());
+  return new Service(agent, CANISTER_ID, rawService, identity.getPrincipal());
 }

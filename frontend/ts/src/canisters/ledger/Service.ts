@@ -7,7 +7,7 @@ import ServiceInterface, {
   SendICPTsRequest,
 } from "./model";
 import RequestConverters from "./RequestConverters";
-import { BlockHeight as BlockHeightProto, ICPTs } from "./proto/types_pb";
+import { BlockHeight as BlockHeightProto, ICPTs } from "../..//proto/ledger_pb";
 import { submitQueryRequest } from "../queryRequestHandler";
 import { submitUpdateRequest } from "../updateRequestHandler";
 

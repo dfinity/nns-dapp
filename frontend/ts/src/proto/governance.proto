@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package ic_nns_governance.pb.v1;
+
+import "base_types.proto";
+
+// All operations that modify the state of an existing neuron are
+// represented by instances of `ManageNeuron`.
+//
+// All commands are available to the `controller` of the neuron. In
+// addition, commands related to voting, i.g., [manage_neuron::Follow]
+// and [manage_neuron::RegisterVote], are also available to the
+// registered hot keys of the neuron.
+message ManageNeuron {
+  option (ic_base_types.pb.v1.tui_signed_message) = true;
+
+  // This is the legacy way to specify neuron IDs that is now discouraged.
+  ic_base_types.pb.v1.NeuronId id = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+
+  // The ID of the neuron to manage. This can either be a subaccount or a neuron ID.
+  oneof neuron_id_or_subaccount {
+    bytes subaccount = 11 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+    ic_base_types.pb.v1.NeuronId neuron_id = 12 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  }
+
+  // Add a new hot key that can be used to manage the neuron. This
+  // provides an alternative to using the controller principal’s cold key to
+  // manage the neuron, which might be onerous and difficult to keep
+  // secure, especially if it is used regularly. A hot key might be a
+  // WebAuthn key that is maintained inside a user device, such as a
+  // smartphone.
+  message AddHotKey {
+    ic_base_types.pb.v1.PrincipalId new_hot_key = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  }
+  // Commands that only configure a given neuron, but do not interact
+  // with the outside world. They all require the caller to be the
+  // controller of the neuron.
+  message Configure {
+    oneof operation {
+      AddHotKey add_hot_key = 4;
+    }
+  }
+
+  oneof command {
+    Configure configure = 2;
+  }
+}
+
+
+// The response of the ManageNeuron command
+//
+// There is a dedicated response type for each `ManageNeuron.command` field
+message ManageNeuronResponse {
+  message ConfigureResponse {}
+
+  oneof command {
+    GovernanceError error = 1;
+    ConfigureResponse configure = 2;
+  }
+}
+
+message GovernanceError {
+  enum ErrorType {
+     ERROR_TYPE_UNSPECIFIED = 0;
+     // The operation was successfully completed.
+     ERROR_TYPE_OK = 1;
+     // This operation is not available, e.g., not implemented.
+     ERROR_TYPE_UNAVAILABLE = 2;
+     // The caller is not authorized to perform this operation.
+     ERROR_TYPE_NOT_AUTHORIZED = 3;
+     // Some entity required for the operation (for example, a neuron) was not found.
+     ERROR_TYPE_NOT_FOUND = 4;
+     // The command was missing or invalid. This is a permanent error.
+     ERROR_TYPE_INVALID_COMMAND = 5;
+     // The neuron is dissolving or dissolved and the operation requires it to
+     // be not dissolving (that is, having a non-zero dissolve delay that is
+     // accumulating age).
+     ERROR_TYPE_REQUIRES_NOT_DISSOLVING = 6;
+     // The neuron is not dissolving or dissolved and the operation requires
+     // it to be dissolving (that is, having a non-zero dissolve delay with
+     // zero age that is not accumulating).
+     ERROR_TYPE_REQUIRES_DISSOLVING = 7;
+     // The neuron is not dissolving and not dissolved and the operation
+     // requires it to be dissolved (that is, having a dissolve delay of zero
+     // and an age of zero).
+     ERROR_TYPE_REQUIRES_DISSOLVED = 8;
+     // When adding or removing a hot key: the key to add was already
+     // present or the key to remove was not present or the key to add
+     // was invalid or adding another hot key would bring the total
+     // number of the maximum number of allowed hot keys per neuron.
+     ERROR_TYPE_HOT_KEY = 9;
+     // Some canister side resource is exhausted, so this operation cannot be
+     // performed.
+     ERROR_TYPE_RESOURCE_EXHAUSTED = 10;
+     // Some precondition for executing this method was not met.
+     ERROR_TYPE_PRECONDITION_FAILED = 11;
+     // Executing this method failed for some reason external to the
+     // governance canister.
+     ERROR_TYPE_EXTERNAL = 12;
+     // A neuron has an ongoing ledger update and thus can't be
+     // changed.
+     ERROR_TYPE_LEDGER_UPDATE_ONGOING = 13;
+     // There wasn't enough funds to perform the operation.
+     ERROR_TYPE_INSUFFICIENT_FUNDS = 14;
+     // The principal provided was invalid.
+     ERROR_TYPE_INVALID_PRINCIPAL = 15;
+     // The proposal's parameters violate size restrictions.
+     ERROR_TYPE_INVALID_PROPOSAL = 16;
+  }
+
+  ErrorType error_type = 1;
+  string error_message = 2;
+}
+

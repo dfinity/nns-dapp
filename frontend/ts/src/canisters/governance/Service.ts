@@ -27,17 +27,29 @@ import ServiceInterface, {
   StartDissolvingRequest,
   StopDissolvingRequest,
 } from "./model";
+import { ManageNeuron, ManageNeuronResponse } from "../../proto/governance_pb";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
 import { NeuronId } from "../common/types";
+import { submitUpdateRequest } from "../updateRequestHandler";
+import { Agent } from "@dfinity/agent";
 
 export default class Service implements ServiceInterface {
+  private readonly agent: Agent;
+  private readonly canisterId: Principal;
   private readonly service: RawService;
   private readonly myPrincipal: Principal;
   private readonly requestConverters: RequestConverters;
   private readonly responseConverters: ResponseConverters;
 
-  public constructor(service: RawService, myPrincipal: Principal) {
+  public constructor(
+    agent: Agent,
+    canisterId: Principal,
+    service: RawService,
+    myPrincipal: Principal
+  ) {
+    this.agent = agent;
+    this.canisterId = canisterId;
     this.service = service;
     this.myPrincipal = myPrincipal;
     this.requestConverters = new RequestConverters(myPrincipal);
@@ -97,7 +109,18 @@ export default class Service implements ServiceInterface {
     request: AddHotKeyRequest
   ): Promise<EmptyResponse> => {
     const rawRequest = this.requestConverters.fromAddHotKeyRequest(request);
-    await this.service.manage_neuron(rawRequest);
+
+    const responseBytes = await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      rawRequest.serializeBinary()
+    );
+
+    console.log("Received response");
+    console.log(responseBytes);
+    console.log(ManageNeuronResponse.deserializeBinary(responseBytes));
+
     return { Ok: null };
   };
 

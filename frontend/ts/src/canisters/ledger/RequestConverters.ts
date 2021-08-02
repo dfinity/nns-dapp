@@ -7,7 +7,7 @@ import {
 } from "./model";
 import * as convert from "../converter";
 import { TRANSACTION_FEE, SUB_ACCOUNT_BYTE_LENGTH } from "../constants";
-import { PrincipalId } from "./proto/base_types_pb";
+import { PrincipalId } from "../../proto/base_types_pb";
 import {
   AccountBalanceRequest,
   AccountIdentifier,
@@ -18,7 +18,7 @@ import {
   Payment,
   SendRequest,
   Subaccount,
-} from "./proto/types_pb";
+} from "../../proto/ledger_pb";
 
 export default class RequestConverters {
   public fromGetBalancesRequest = (
