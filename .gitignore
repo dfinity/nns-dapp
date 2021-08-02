@@ -138,7 +138,3 @@ dist/
 node_modules/
 
 **/*.rs.bk
-
-# Protobuf generated files.
-frontend/ts/src/proto/*_pb.d.ts
-frontend/ts/src/proto/*_pb.js
