@@ -27,7 +27,6 @@ import ServiceInterface, {
   StartDissolvingRequest,
   StopDissolvingRequest,
 } from "./model";
-import { ManageNeuron, ManageNeuronResponse } from "../../proto/governance_pb";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
 import { NeuronId } from "../common/types";
@@ -110,16 +109,12 @@ export default class Service implements ServiceInterface {
   ): Promise<EmptyResponse> => {
     const rawRequest = this.requestConverters.fromAddHotKeyRequest(request);
 
-    const responseBytes = await submitUpdateRequest(
+    await submitUpdateRequest(
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
       rawRequest.serializeBinary()
     );
-
-    console.log("Received response");
-    console.log(responseBytes);
-    console.log(ManageNeuronResponse.deserializeBinary(responseBytes));
 
     return { Ok: null };
   };
