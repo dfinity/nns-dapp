@@ -14,7 +14,7 @@ export type Action =
   | { ApproveGenesisKyc: ApproveGenesisKyc }
   | { ManageNetworkEconomics: NetworkEconomics }
   | { RewardNodeProvider: RewardNodeProvider }
-  | { RewardNodeProviders : RewardNodeProviders }
+  | { RewardNodeProviders: RewardNodeProviders }
   | { AddOrRemoveNodeProvider: AddOrRemoveNodeProvider }
   | { SetDefaultFollowees: SetDefaultFollowees }
   | { Motion: Motion };
@@ -39,17 +39,17 @@ export interface BallotInfo {
   vote: Vote;
   proposalId: Option<ProposalId>;
 }
-export type By = { Memo : bigint };
+export type By = { Memo: bigint };
 export interface CanisterAuthzInfo {
   methodsAuthz: Array<MethodAuthzInfo>;
 }
 export type Change = { ToRemove: NodeProvider } | { ToAdd: NodeProvider };
-export type ClaimOrRefresh = { by : Option<By> };
+export type ClaimOrRefresh = { by: Option<By> };
 export type Command =
   | { Spawn: Spawn }
   | { Split: Split }
   | { Follow: Follow }
-  | { ClaimOrRefresh : ClaimOrRefresh }
+  | { ClaimOrRefresh: ClaimOrRefresh }
   | { Configure: Configure }
   | { RegisterVote: RegisterVote }
   | { DisburseToNeuron: DisburseToNeuron }
@@ -178,8 +178,9 @@ export interface Neuron {
   dissolveState: Option<DissolveState>;
   followees: Array<Followees>;
 }
-export type NeuronIdOrSubaccount = { Subaccount: Array<number> }
-    | { NeuronId: NeuronId };
+export type NeuronIdOrSubaccount =
+  | { Subaccount: Array<number> }
+  | { NeuronId: NeuronId };
 export enum NeuronState {
   UNSPECIFIED = 0,
   LOCKED = 1,
@@ -288,7 +289,7 @@ export interface RemoveHotKey {
 export type RewardMode =
   | { RewardToNeuron: RewardToNeuron }
   | { RewardToAccount: RewardToAccount };
-export type RewardNodeProviders = { rewards : Array<RewardNodeProvider> };
+export type RewardNodeProviders = { rewards: Array<RewardNodeProvider> };
 export interface RewardToAccount {
   toAccount: Option<AccountIdentifier>;
 }

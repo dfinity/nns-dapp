@@ -263,7 +263,9 @@ export default class ResponseConverters {
     return neuronId.id;
   };
 
-  private toNeuronIdOrSubaccount = (neuronIdOrSubaccount: RawNeuronIdOrSubaccount): NeuronIdOrSubaccount => {
+  private toNeuronIdOrSubaccount = (
+    neuronIdOrSubaccount: RawNeuronIdOrSubaccount
+  ): NeuronIdOrSubaccount => {
     if ("NeuronId" in neuronIdOrSubaccount) {
       return { NeuronId: neuronIdOrSubaccount.NeuronId.id };
     }
@@ -310,7 +312,9 @@ export default class ResponseConverters {
             ? this.toCommand(manageNeuron.command[0])
             : null,
           neuronIdOrSubaccount: manageNeuron.neuron_id_or_subaccount.length
-            ? this.toNeuronIdOrSubaccount(manageNeuron.neuron_id_or_subaccount[0])
+            ? this.toNeuronIdOrSubaccount(
+                manageNeuron.neuron_id_or_subaccount[0]
+              )
             : null,
         },
       };
@@ -360,7 +364,7 @@ export default class ResponseConverters {
       const rewardNodeProviders = action.RewardNodeProviders;
       return {
         RewardNodeProviders: {
-          rewards: rewardNodeProviders.rewards.map(r => ({
+          rewards: rewardNodeProviders.rewards.map((r) => ({
             nodeProvider: r.node_provider.length
               ? this.toNodeProvider(r.node_provider[0])
               : null,
@@ -368,7 +372,7 @@ export default class ResponseConverters {
             rewardMode: r.reward_mode.length
               ? this.toRewardMode(r.reward_mode[0])
               : null,
-          }))
+          })),
         },
       };
     }
@@ -447,9 +451,9 @@ export default class ResponseConverters {
         ClaimOrRefresh: {
           by: claimOrRefresh.by.length
             ? { Memo: claimOrRefresh.by[0].Memo }
-            : null
-        }
-      }
+            : null,
+        },
+      };
     }
     if ("Configure" in command) {
       const configure = command.Configure;

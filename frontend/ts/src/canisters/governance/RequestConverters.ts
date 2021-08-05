@@ -66,7 +66,7 @@ export default class RequestConverters {
         : [],
       neuron_id_or_subaccount: manageNeuron.neuronIdOrSubaccount
         ? [this.fromNeuronIdOrSubaccount(manageNeuron.neuronIdOrSubaccount)]
-        : []
+        : [],
     };
   };
 
@@ -127,7 +127,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -139,7 +139,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -151,7 +151,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -168,7 +168,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -182,7 +182,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -198,7 +198,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -213,7 +213,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -226,7 +226,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -240,7 +240,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -262,7 +262,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -279,7 +279,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -314,7 +314,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -346,7 +346,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -372,7 +372,7 @@ export default class RequestConverters {
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -388,7 +388,9 @@ export default class RequestConverters {
     };
   };
 
-  private fromNeuronIdOrSubaccount = (neuronIdOrSubaccount: NeuronIdOrSubaccount): RawNeuronIdOrSubaccount => {
+  private fromNeuronIdOrSubaccount = (
+    neuronIdOrSubaccount: NeuronIdOrSubaccount
+  ): RawNeuronIdOrSubaccount => {
     if ("NeuronId" in neuronIdOrSubaccount) {
       return { NeuronId: { id: neuronIdOrSubaccount.NeuronId } };
     }
@@ -466,15 +468,14 @@ export default class RequestConverters {
       const rewardNodeProviders = action.RewardNodeProviders;
       return {
         RewardNodeProviders: {
-          rewards: rewardNodeProviders.rewards.map(r => ({
+          rewards: rewardNodeProviders.rewards.map((r) => ({
             node_provider: r.nodeProvider
               ? [this.fromNodeProvider(r.nodeProvider)]
               : [],
             amount_e8s: r.amountE8s,
-            reward_mode: r.rewardMode != null
-              ? [this.fromRewardMode(r.rewardMode)]
-              : [],
-          }))
+            reward_mode:
+              r.rewardMode != null ? [this.fromRewardMode(r.rewardMode)] : [],
+          })),
         },
       };
     }
@@ -535,9 +536,7 @@ export default class RequestConverters {
       const claimOrRefresh = command.ClaimOrRefresh;
       return {
         ClaimOrRefresh: {
-          by: claimOrRefresh.by
-            ? [{ Memo: claimOrRefresh.by.Memo }]
-            : [],
+          by: claimOrRefresh.by ? [{ Memo: claimOrRefresh.by.Memo }] : [],
         },
       };
     }
