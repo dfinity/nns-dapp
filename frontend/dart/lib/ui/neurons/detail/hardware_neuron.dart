@@ -36,7 +36,6 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // TallFormDivider(),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
