@@ -192,7 +192,6 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                                                           },
                                                         ));
                                               }));
-                                      //OverlayBaseWidget.of(context)?.dismiss();
                                     })));
                         break;
                       case ICPSourceType.ACCOUNT:
