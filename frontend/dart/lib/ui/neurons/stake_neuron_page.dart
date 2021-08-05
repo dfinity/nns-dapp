@@ -159,7 +159,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                         .first;
 
                     switch (widget.source.type) {
-                      case ICPSourceType.ACCOUNT:
+                      case ICPSourceType.HARDWARE_WALLET:
                         OverlayBaseWidget.show(
                             context,
                             WizardOverlay(
