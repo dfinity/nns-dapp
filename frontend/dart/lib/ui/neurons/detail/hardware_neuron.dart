@@ -78,7 +78,6 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                             TallFormDivider(),
                           ],
                         ),
-
                         Divider(height: 30.0),
                         Text(
                           'To see and manage this neuron in the NNS app, '
