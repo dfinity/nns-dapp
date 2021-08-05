@@ -188,21 +188,25 @@ class NeuronMergeMaturity extends StatefulWidget {
 }
 
 class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
-  late IntField sliderValueSeconds;
-  late double sliderMinValue;
+  late IntField sliderValue;
+  late int percentageStake;
 
   @override
   void initState() {
     super.initState();
-    sliderValueSeconds = IntField("Disburse Delay", []);
-    sliderValueSeconds.currentValue = widget.neuron.dissolveDelay.inSeconds;
-    sliderMinValue = sqrt(widget.neuron.dissolveDelay.inSeconds);
+    sliderValue = IntField("Merge Neuron", []);
+    // sliderValue.currentValue = (100 *
+    //         (widget.neuron.maturityICPEquivalent.asE8s() /
+    //             widget.neuron.stake.asE8s()))
+    //     .toInt();
+    sliderValue.currentValue = 0;
   }
 
   Future performUpdate(BuildContext context) async {
+    //TODO : Change this for merging neuron
     await context.callUpdate(() => context.icApi.increaseDissolveDelay(
         neuronId: widget.neuron.id.toBigInt,
-        additionalDissolveDelaySeconds: sliderValueSeconds.currentValue -
+        additionalDissolveDelaySeconds: sliderValue.currentValue -
             widget.neuron.dissolveDelaySeconds.toInt()));
     widget.onCompleteAction(context);
   }
@@ -220,7 +224,7 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 42.0, left: 42.0, right: 42.0, bottom: 20.0),
+                      top: 40.0, left: 40.0, right: 40.0, bottom: 20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -254,32 +258,33 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                     padding: const EdgeInsets.symmetric(vertical: 42.0),
                     child: Column(
                       children: [
-                        DissolveDelayWidget(
-                          sliderMinValue: sliderMinValue,
-                          sliderValueSeconds: sliderValueSeconds.currentValue,
-                          currentDelay:
-                              widget.neuron.dissolveDelaySeconds.toInt(),
-                          onUpdate: (delay) {
+                        StakeRewardsWidget(
+                          sliderValue: sliderValue.currentValue,
+                          onUpdate: (value) {
                             setState(() {
-                              sliderValueSeconds.currentValue = delay;
+                              sliderValue.currentValue = value;
                             });
                           },
                         ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _FigureWidget(
-                                amount: widget.neuron.stake.toString(),
-                                label: "Voting Power",
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '0%',
+                                style: Responsive.isMobile(context)
+                                    ? context.textTheme.headline4
+                                    : context.textTheme.headline3,
                               ),
-                            ),
-                            Expanded(
-                                child: _FigureWidget(
-                              amount: sliderValueSeconds.currentValue.seconds
-                                  .yearsDayHourMinuteSecondFormatted(),
-                              label: "Dissolve Delay",
-                            ))
-                          ],
+                              Text(
+                                '${sliderValue.currentValue}%',
+                                style: Responsive.isMobile(context)
+                                    ? context.textTheme.headline4
+                                    : context.textTheme.headline3,
+                              ),
+                            ],
+                          ),
                         )
                       ],
                     ),
@@ -326,19 +331,21 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                         fontSize: Responsive.isMobile(context) ? 14 : 16),
                   ),
                   onPressed: () {
-                    final newDelay = sliderValueSeconds.currentValue.seconds;
                     OverlayBaseWidget.show(
                         context,
                         ConfirmDialog(
                           title: "Confirm Merge Neuron",
+                          //TODO :change this text to be : Your remaining rewards will be : -- ?
                           description:
-                              "After complete, the dissolve delay will be ${newDelay.yearsDayHourMinuteSecondFormatted()}",
+                              "After complete, the neuron's ICP will be : ${widget.neuron.stake.asString(myLocale.languageCode)} ICP",
+
                           onConfirm: () async {
                             await performUpdate(context);
                           },
                         ));
                   }.takeIf((e) =>
-                      sliderValueSeconds.currentValue >
+                      //TODO : change this ?
+                      sliderValue.currentValue >
                       widget.neuron.dissolveDelay.inSeconds),
                 ),
               ),
@@ -350,21 +357,13 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
   }
 }
 
-class DissolveDelayWidget extends StatelessWidget {
-  final double sliderMinValue;
-  final int sliderValueSeconds;
+class StakeRewardsWidget extends StatelessWidget {
+  final int sliderValue;
   final Function(int) onUpdate;
-  final int currentDelay;
 
-  const DissolveDelayWidget(
-      {Key? key,
-      required this.sliderMinValue,
-      required this.sliderValueSeconds,
-      required this.currentDelay,
-      required this.onUpdate})
+  const StakeRewardsWidget(
+      {Key? key, required this.sliderValue, required this.onUpdate})
       : super(key: key);
-
-  int get maxDelay => (365.25 * 8).days.inSeconds;
 
   @override
   Widget build(BuildContext context) {
@@ -386,7 +385,7 @@ class DissolveDelayWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 42.0),
           child: Text(
-              "Choose your how much of your reward to stake to the neurons in ICP ",
+              "Choose your how much of your reward to stake to the neuron's ICP ",
               style: context.textTheme.subtitle2),
         ),
         SizedBox(
@@ -395,50 +394,15 @@ class DissolveDelayWidget extends StatelessWidget {
         Slider(
           activeColor: AppColors.white,
           inactiveColor: AppColors.gray600,
-          value: sqrt(sliderValueSeconds),
+          value: sliderValue.toDouble(),
           min: 0,
-          max: sqrt(maxDelay),
-          divisions: 10000,
+          max: 100,
           onChanged: (double value) {
-            if (value < sliderMinValue) {
-              value = sliderMinValue;
-            }
-            onUpdate(min(maxDelay, (value * value).toInt()));
+            print('Slider value is : $value');
+            onUpdate(value.toInt());
           },
         ),
       ],
-    );
-  }
-}
-
-class _FigureWidget extends StatelessWidget {
-  final String amount;
-  final String label;
-
-  const _FigureWidget({Key? key, required this.amount, required this.label})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            amount,
-            style: Responsive.isMobile(context)
-                ? context.textTheme.headline4
-                : context.textTheme.headline3,
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            label,
-            style: context.textTheme.subtitle2,
-          ),
-        ],
-      ),
     );
   }
 }
