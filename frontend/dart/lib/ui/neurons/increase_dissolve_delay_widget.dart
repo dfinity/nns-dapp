@@ -73,22 +73,6 @@ class _IncreaseDissolveDelayWidgetState
                           style: Responsive.isMobile(context)
                               ? context.textTheme.headline4
                               : context.textTheme.headline3),
-                      // Text(
-                      //   widget.neuron.stake.asString(myLocale.languageCode),
-                      //   style: Responsive.isMobile(context)
-                      //       ? context.textTheme.bodyText2!
-                      //           .copyWith(fontSize: 16)
-                      //       : context.textTheme.bodyText1!
-                      //           .copyWith(fontSize: 24),
-                      // ),
-                      // Text(
-                      //   " ICP Stake",
-                      //   style: Responsive.isMobile(context)
-                      //       ? context.textTheme.bodyText2!
-                      //           .copyWith(fontSize: 12)
-                      //       : context.textTheme.bodyText1!
-                      //           .copyWith(fontSize: 20),
-                      // ),
                       VerySmallFormDivider(),
                       RichText(
                           text: TextSpan(
