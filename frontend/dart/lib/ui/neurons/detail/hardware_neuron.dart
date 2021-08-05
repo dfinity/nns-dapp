@@ -1,9 +1,11 @@
+import 'package:dfinity_wallet/data/icp.dart';
+import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import '../../../dfinity.dart';
 
 class HardwareWalletNeuron extends StatefulWidget {
   final Neuron neuron;
-  final String amount;
+  final ICP amount;
   final Function(BuildContext context) onCompleteAction;
 
   const HardwareWalletNeuron(
@@ -36,61 +38,52 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                       children: [
                         // TallFormDivider(),
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text('ID : ',
+                            Text('Neuron ID',
+                                style: Responsive.isMobile(context)
+                                    ? context.textTheme.headline4
+                                    : context.textTheme.headline3),
+                            VerySmallFormDivider(),
+                            Text(
+                              widget.neuron.identifier,
+                              style: Responsive.isMobile(context)
+                                  ? context.textTheme.bodyText2!
+                                      .copyWith(fontSize: 16)
+                                  : context.textTheme.bodyText1!
+                                      .copyWith(fontSize: 24),
+                            ),
+                            TallFormDivider(),
+                            Text('Balance',
+                                style: Responsive.isMobile(context)
+                                    ? context.textTheme.headline4
+                                    : context.textTheme.headline3),
+                            VerySmallFormDivider(),
+                            RichText(
+                                text: TextSpan(
+                                    text: widget.amount
+                                        .asString(myLocale.languageCode),
                                     style: Responsive.isMobile(context)
-                                        ? context.textTheme.headline4
-                                        : context.textTheme.headline3),
-                                Text(
-                                  widget.neuron.identifier,
-                                  style: Responsive.isMobile(context)
-                                      ? context.textTheme.bodyText2
-                                      : context.textTheme.bodyText1!
-                                          .copyWith(fontSize: 20),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text('Balance : ',
+                                        ? context.textTheme.bodyText2
+                                        : context.textTheme.bodyText1!
+                                            .copyWith(fontSize: 24),
+                                    children: [
+                                  TextSpan(
+                                    text: " ICP",
                                     style: Responsive.isMobile(context)
-                                        ? context.textTheme.headline4
-                                        : context.textTheme.headline3),
-                                Text(
-                                  widget.amount,
-                                  style: Responsive.isMobile(context)
-                                      ? context.textTheme.bodyText2
-                                      : context.textTheme.bodyText1!
-                                          .copyWith(fontSize: 20),
-                                ),
-                                Text(
-                                  '  ICP',
-                                  style: Responsive.isMobile(context)
-                                      ? context.textTheme.bodyText2
-                                      : context.textTheme.bodyText1!
-                                          .copyWith(fontSize: 20),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
+                                        ? context.textTheme.bodyText2
+                                        : context.textTheme.bodyText1!
+                                            .copyWith(fontSize: 20),
+                                  )
+                                ])),
+                            TallFormDivider(),
                           ],
                         ),
 
                         Divider(height: 30.0),
                         Text(
-                          'In order to see and manage this neuron in the NNS app, '
-                          'please add NNS app as a hotkey.',
+                          'To see and manage this neuron in the NNS app, '
+                          'please add the NNS app as a hotkey.',
                           style: Responsive.isMobile(context)
                               ? context.textTheme.bodyText2
                               : context.textTheme.bodyText1!

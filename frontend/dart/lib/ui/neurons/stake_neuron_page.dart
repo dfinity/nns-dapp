@@ -159,49 +159,40 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                         .first;
 
                     switch (widget.source.type) {
-                      case ICPSourceType.HARDWARE_WALLET:
+                      case ICPSourceType.ACCOUNT:
                         OverlayBaseWidget.show(
                             context,
                             WizardOverlay(
                                 rootTitle: "Neuron Created Successfully",
                                 rootWidget: HardwareWalletNeuron(
-                                    amount: amountField
-                                        .currentValue, //widget.amount,
+                                    amount: ICP
+                                        .fromString(amountField.currentValue),
                                     neuron: newNeuron,
                                     onCompleteAction: (context) {
                                       WizardOverlay.of(context).replacePage(
-                                          "HotKey",
-                                          AddHotkeys(
+                                          "Set Dissolve Delay",
+                                          IncreaseDissolveDelayWidget(
                                               neuron: newNeuron,
+                                              cancelTitle: "Skip",
                                               onCompleteAction: (context) {
                                                 WizardOverlay.of(context)
                                                     .replacePage(
-                                                        "Set Dissolve Delay",
-                                                        IncreaseDissolveDelayWidget(
-                                                            neuron: newNeuron,
-                                                            cancelTitle: "Skip",
-                                                            onCompleteAction:
-                                                                (context) {
-                                                              WizardOverlay.of(
-                                                                      context)
-                                                                  .replacePage(
-                                                                      "Follow Neurons",
-                                                                      ConfigureFollowersPage(
-                                                                        neuron:
-                                                                            newNeuron,
-                                                                        completeAction:
-                                                                            (context) {
-                                                                          OverlayBaseWidget.of(context)
-                                                                              ?.dismiss();
-                                                                          context
-                                                                              .nav
-                                                                              .push(NeuronPageDef.createPageConfig(newNeuron));
-                                                                        },
-                                                                      ));
-                                                            }));
-                                                OverlayBaseWidget.of(context)
-                                                    ?.dismiss();
+                                                        "Follow Neurons",
+                                                        ConfigureFollowersPage(
+                                                          neuron: newNeuron,
+                                                          completeAction:
+                                                              (context) {
+                                                            OverlayBaseWidget
+                                                                    .of(context)
+                                                                ?.dismiss();
+                                                            context.nav.push(
+                                                                NeuronPageDef
+                                                                    .createPageConfig(
+                                                                        newNeuron));
+                                                          },
+                                                        ));
                                               }));
+                                      //OverlayBaseWidget.of(context)?.dismiss();
                                     })));
                         break;
                       case ICPSourceType.ACCOUNT:
