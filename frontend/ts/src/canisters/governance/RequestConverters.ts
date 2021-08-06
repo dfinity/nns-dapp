@@ -20,6 +20,7 @@ import {
   MakeRewardNodeProviderProposalRequest,
   MakeSetDefaultFolloweesProposalRequest,
   ManageNeuron,
+  MergeMaturityRequest,
   NeuronIdOrSubaccount,
   NodeProvider,
   Operation,
@@ -113,6 +114,15 @@ export default class RequestConverters {
     result.setId(neuronId);
 
     return result;
+  };
+
+  public fromMergeMaturityRequest = (request: MergeMaturityRequest) : RawManageNeuron => {
+    const rawCommand: RawCommand = { MergeMaturity: { percentage_to_merge: request.percentageToMerge } };
+    return {
+      id: [],
+      command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+    };
   };
 
   public fromRemoveHotKeyRequest = (
@@ -572,6 +582,14 @@ export default class RequestConverters {
             ? [Principal.fromText(disburseToNeuron.newController)]
             : [],
           nonce: disburseToNeuron.nonce,
+        },
+      };
+    }
+    if ("MergeMaturity" in command) {
+      const mergeMaturity = command.MergeMaturity;
+      return {
+        MergeMaturity: {
+          percentage_to_merge: mergeMaturity.percentageToMerge,
         },
       };
     }

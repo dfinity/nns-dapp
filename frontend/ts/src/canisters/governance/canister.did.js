@@ -77,6 +77,7 @@ export const idlFactory = ({ IDL }) => {
     'new_controller' : IDL.Opt(IDL.Principal),
     'nonce' : IDL.Nat64,
   });
+  const MergeMaturity = IDL.Record({ 'percentage_to_merge' : IDL.Nat32 });
   const AccountIdentifier = IDL.Record({ 'hash' : IDL.Vec(IDL.Nat8) });
   const Amount = IDL.Record({ 'e8s' : IDL.Nat64 });
   const Disburse = IDL.Record({
@@ -92,6 +93,7 @@ export const idlFactory = ({ IDL }) => {
     'RegisterVote' : RegisterVote,
     'DisburseToNeuron' : DisburseToNeuron,
     'MakeProposal' : Proposal,
+    'MergeMaturity' : MergeMaturity,
     'Disburse' : Disburse,
   });
   const NeuronIdOrSubaccount = IDL.Variant({
@@ -176,6 +178,7 @@ export const idlFactory = ({ IDL }) => {
     'Split' : Split,
     'ClaimOrRefresh' : ClaimOrRefreshNeuronFromAccount,
     'DisburseToNeuron' : DisburseToNeuron,
+    'MergeMaturity' : MergeMaturity,
     'Disburse' : Disburse,
   });
   const NeuronInFlightCommand = IDL.Record({
@@ -281,6 +284,10 @@ export const idlFactory = ({ IDL }) => {
   const MakeProposalResponse = IDL.Record({
     'proposal_id' : IDL.Opt(NeuronId),
   });
+  const MergeMaturityResponse = IDL.Record({
+    'merged_maturity_e8s' : IDL.Nat64,
+    'new_stake_e8s' : IDL.Nat64,
+  });
   const DisburseResponse = IDL.Record({ 'transfer_block_height' : IDL.Nat64 });
   const Command_1 = IDL.Variant({
     'Error' : GovernanceError,
@@ -292,6 +299,7 @@ export const idlFactory = ({ IDL }) => {
     'RegisterVote' : IDL.Record({}),
     'DisburseToNeuron' : SpawnResponse,
     'MakeProposal' : MakeProposalResponse,
+    'MergeMaturity' : MergeMaturityResponse,
     'Disburse' : DisburseResponse,
   });
   const ManageNeuronResponse = IDL.Record({ 'command' : IDL.Opt(Command_1) });
@@ -404,6 +412,7 @@ export const init = ({ IDL }) => {
     'new_controller' : IDL.Opt(IDL.Principal),
     'nonce' : IDL.Nat64,
   });
+  const MergeMaturity = IDL.Record({ 'percentage_to_merge' : IDL.Nat32 });
   const AccountIdentifier = IDL.Record({ 'hash' : IDL.Vec(IDL.Nat8) });
   const Amount = IDL.Record({ 'e8s' : IDL.Nat64 });
   const Disburse = IDL.Record({
@@ -419,6 +428,7 @@ export const init = ({ IDL }) => {
     'RegisterVote' : RegisterVote,
     'DisburseToNeuron' : DisburseToNeuron,
     'MakeProposal' : Proposal,
+    'MergeMaturity' : MergeMaturity,
     'Disburse' : Disburse,
   });
   const NeuronIdOrSubaccount = IDL.Variant({
@@ -503,6 +513,7 @@ export const init = ({ IDL }) => {
     'Split' : Split,
     'ClaimOrRefresh' : ClaimOrRefreshNeuronFromAccount,
     'DisburseToNeuron' : DisburseToNeuron,
+    'MergeMaturity' : MergeMaturity,
     'Disburse' : Disburse,
   });
   const NeuronInFlightCommand = IDL.Record({

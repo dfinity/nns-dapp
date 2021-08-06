@@ -37,6 +37,7 @@ export type Command = { 'Spawn' : Spawn } |
     { 'RegisterVote' : RegisterVote } |
     { 'DisburseToNeuron' : DisburseToNeuron } |
     { 'MakeProposal' : Proposal } |
+    { 'MergeMaturity' : MergeMaturity } |
     { 'Disburse' : Disburse };
 export type Command_1 = { 'Error' : GovernanceError } |
     { 'Spawn' : SpawnResponse } |
@@ -47,11 +48,13 @@ export type Command_1 = { 'Error' : GovernanceError } |
     { 'RegisterVote' : {} } |
     { 'DisburseToNeuron' : SpawnResponse } |
     { 'MakeProposal' : MakeProposalResponse } |
+    { 'MergeMaturity' : MergeMaturityResponse } |
     { 'Disburse' : DisburseResponse };
 export type Command_2 = { 'Spawn' : Spawn } |
     { 'Split' : Split } |
     { 'ClaimOrRefresh' : ClaimOrRefreshNeuronFromAccount } |
     { 'DisburseToNeuron' : DisburseToNeuron } |
+    { 'MergeMaturity' : MergeMaturity } |
     { 'Disburse' : Disburse };
 export interface Configure { 'operation' : [] | [Operation] }
 export interface Disburse {
@@ -119,6 +122,11 @@ export interface ManageNeuron {
   'neuron_id_or_subaccount' : [] | [NeuronIdOrSubaccount],
 }
 export interface ManageNeuronResponse { 'command' : [] | [Command_1] }
+export interface MergeMaturity { 'percentage_to_merge' : number }
+export interface MergeMaturityResponse {
+  'merged_maturity_e8s' : bigint,
+  'new_stake_e8s' : bigint,
+}
 export interface Motion { 'motion_text' : string }
 export interface NetworkEconomics {
   'neuron_minimum_stake_e8s' : bigint,
