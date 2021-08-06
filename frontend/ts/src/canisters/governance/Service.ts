@@ -122,35 +122,56 @@ export default class Service implements ServiceInterface {
   public removeHotKey = async (
     request: RemoveHotKeyRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest = this.requestConverters.fromRemoveHotKeyRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters.fromRemoveHotKeyRequest(request).serializeBinary()
+    );
+
     return { Ok: null };
   };
 
   public startDissolving = async (
     request: StartDissolvingRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest =
-      this.requestConverters.fromStartDissolvingRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters
+        .fromStartDissolvingRequest(request)
+        .serializeBinary()
+    );
     return { Ok: null };
   };
 
   public stopDissolving = async (
     request: StopDissolvingRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest =
-      this.requestConverters.fromStopDissolvingRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters
+        .fromStopDissolvingRequest(request)
+        .serializeBinary()
+    );
     return { Ok: null };
   };
 
   public increaseDissolveDelay = async (
     request: IncreaseDissolveDelayRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest =
-      this.requestConverters.fromIncreaseDissolveDelayRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters
+        .fromIncreaseDissolveDelayRequest(request)
+        .serializeBinary()
+    );
+
     return { Ok: null };
   };
 
