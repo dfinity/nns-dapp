@@ -170,6 +170,15 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<void> mergeMaturity(
+      {required BigInt neuronId, required int percentageToMerge}) async {
+    final res = await promiseToFuture(serviceApi!.disburse(MergeMaturityRequest(
+        neuronId: neuronId.toJS, percentageToMerge: percentageToMerge)));
+    await fetchNeuron(neuronId: neuronId);
+    balanceSyncService?.syncBalances();
+  }
+
+  @override
   Future<void> follow(
       {required BigInt neuronId,
       required Topic topic,
@@ -281,8 +290,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
     final ledgerIdentity =
         await promiseToFuture(authApi.connectToHardwareWallet());
-    return await promiseToFuture(
-        hardwareWalletApi.createHardwareWalletApi(
+    return await promiseToFuture(hardwareWalletApi.createHardwareWalletApi(
         ledgerIdentity, userIdentity));
   }
 

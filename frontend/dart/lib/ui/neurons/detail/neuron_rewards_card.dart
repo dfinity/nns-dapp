@@ -203,11 +203,9 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
   }
 
   Future performUpdate(BuildContext context) async {
-    //TODO : Change this for merging neuron
-    await context.callUpdate(() => context.icApi.increaseDissolveDelay(
+    await context.callUpdate(() => context.icApi.mergeMaturity(
         neuronId: widget.neuron.id.toBigInt,
-        additionalDissolveDelaySeconds: sliderValue.currentValue -
-            widget.neuron.dissolveDelaySeconds.toInt()));
+        percentageToMerge: sliderValue.currentValue));
     widget.onCompleteAction(context);
   }
 
@@ -331,11 +329,14 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                         fontSize: Responsive.isMobile(context) ? 14 : 16),
                   ),
                   onPressed: () {
+                    // var cal = widget.neuron.stake +
+                    //     (sliderValue.currentValue *
+                    //         widget.neuron.maturityICPEquivalent);
                     OverlayBaseWidget.show(
                         context,
                         ConfirmDialog(
                           title: "Confirm Merge Neuron",
-                          //TODO :change this text to be : Your remaining rewards will be : -- ?
+                          //TODO :change this text to be : Your remaining maturity will be : -- ?
                           description:
                               "After complete, the neuron's ICP will be : ${widget.neuron.stake.asString(myLocale.languageCode)} ICP",
 
@@ -343,10 +344,7 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                             await performUpdate(context);
                           },
                         ));
-                  }.takeIf((e) =>
-                      //TODO : change this ?
-                      sliderValue.currentValue >
-                      widget.neuron.dissolveDelay.inSeconds),
+                  }.takeIf((e) => sliderValue.currentValue > 0),
                 ),
               ),
             ],
