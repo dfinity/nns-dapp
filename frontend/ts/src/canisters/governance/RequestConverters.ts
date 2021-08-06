@@ -176,7 +176,9 @@ export default class RequestConverters {
     request: IncreaseDissolveDelayRequest
   ): PbManageNeuron => {
     const command = new PbManageNeuron.IncreaseDissolveDelay();
-    command.setAdditionalDissolveDelaySeconds(request.additionalDissolveDelaySeconds);
+    command.setAdditionalDissolveDelaySeconds(
+      request.additionalDissolveDelaySeconds
+    );
 
     const configure = new PbManageNeuron.Configure();
     configure.setIncreaseDissolveDelay(command);

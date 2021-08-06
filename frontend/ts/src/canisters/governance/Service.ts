@@ -139,7 +139,9 @@ export default class Service implements ServiceInterface {
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
-      this.requestConverters.fromStartDissolvingRequest(request).serializeBinary()
+      this.requestConverters
+        .fromStartDissolvingRequest(request)
+        .serializeBinary()
     );
     return { Ok: null };
   };
@@ -151,7 +153,9 @@ export default class Service implements ServiceInterface {
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
-      this.requestConverters.fromStopDissolvingRequest(request).serializeBinary()
+      this.requestConverters
+        .fromStopDissolvingRequest(request)
+        .serializeBinary()
     );
     return { Ok: null };
   };
@@ -163,7 +167,9 @@ export default class Service implements ServiceInterface {
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
-      this.requestConverters.fromIncreaseDissolveDelayRequest(request).serializeBinary()
+      this.requestConverters
+        .fromIncreaseDissolveDelayRequest(request)
+        .serializeBinary()
     );
 
     return { Ok: null };
