@@ -59,6 +59,8 @@ class Proposal extends DfinityEntity {
       return ProposalType.ManageNetworkEconomics;
     if (action.containsKey('RewardNodeProvider'))
       return ProposalType.RewardNodeProvider;
+    if (action.containsKey('RewardNodeProviders'))
+      return ProposalType.RewardNodeProviders;
     if (action.containsKey('AddOrRemoveNodeProvider'))
       return ProposalType.AddOrRemoveNodeProvider;
     if (action.containsKey('Motion')) 
@@ -104,6 +106,7 @@ enum ProposalType {
   ApproveGenesisKyc,
   ManageNetworkEconomics,
   RewardNodeProvider,
+  RewardNodeProviders,
   AddOrRemoveNodeProvider,
   Motion,
   Unspecified,
@@ -116,6 +119,7 @@ extension ProposalTypeDescription on ProposalType {
     ProposalType.ApproveGenesisKyc: "Approve Genesis Kyc",
     ProposalType.ManageNetworkEconomics: "Manage Network Economics",
     ProposalType.RewardNodeProvider: "Reward Node Provider",
+    ProposalType.RewardNodeProviders: "Reward Node Providers",
     ProposalType.AddOrRemoveNodeProvider: "Add Or Remove Node Provider",
     ProposalType.Motion: "Motion",
     ProposalType.Unspecified: "Unspecified",

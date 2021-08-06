@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal";
 import { Option } from "../option";
-import RawService, { ListNeurons } from "./rawService";
+import { _SERVICE, ListNeurons } from "./rawService";
 import ServiceInterface, {
   AddHotKeyRequest,
   DisburseRequest,
@@ -36,7 +36,7 @@ import { Agent } from "@dfinity/agent";
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
   private readonly canisterId: Principal;
-  private readonly service: RawService;
+  private readonly service: _SERVICE;
   private readonly myPrincipal: Principal;
   private readonly requestConverters: RequestConverters;
   private readonly responseConverters: ResponseConverters;
@@ -44,7 +44,7 @@ export default class Service implements ServiceInterface {
   public constructor(
     agent: Agent,
     canisterId: Principal,
-    service: RawService,
+    service: _SERVICE,
     myPrincipal: Principal
   ) {
     this.agent = agent;
