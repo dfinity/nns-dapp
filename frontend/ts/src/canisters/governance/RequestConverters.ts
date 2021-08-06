@@ -20,6 +20,7 @@ import {
   MakeRewardNodeProviderProposalRequest,
   MakeSetDefaultFolloweesProposalRequest,
   ManageNeuron,
+  NeuronIdOrSubaccount,
   NodeProvider,
   Operation,
   ProposalId,
@@ -41,6 +42,7 @@ import {
   ListProposalInfo,
   ManageNeuron as RawManageNeuron,
   NeuronId as RawNeuronId,
+  NeuronIdOrSubaccount as RawNeuronIdOrSubaccount,
   NodeProvider as RawNodeProvider,
   Operation as RawOperation,
   RewardMode as RawRewardMode,
@@ -62,6 +64,9 @@ export default class RequestConverters {
       id: manageNeuron.id ? [this.fromNeuronId(manageNeuron.id)] : [],
       command: manageNeuron.command
         ? [this.fromCommand(manageNeuron.command)]
+        : [],
+      neuron_id_or_subaccount: manageNeuron.neuronIdOrSubaccount
+        ? [this.fromNeuronIdOrSubaccount(manageNeuron.neuronIdOrSubaccount)]
         : [],
     };
   };
@@ -106,7 +111,7 @@ export default class RequestConverters {
     result.setConfigure(configure);
     const neuronId = new PbNeuronId();
     neuronId.setId(request.neuronId.toString());
-    result.setId(neuronId);
+    result.setNeuronId(neuronId);
 
     return result;
   };
@@ -130,7 +135,7 @@ export default class RequestConverters {
 
     const neuronId = new PbNeuronId();
     neuronId.setId(request.neuronId.toString());
-    result.setId(neuronId);
+    result.setNeuronId(neuronId);
 
     return result;
   };
@@ -146,7 +151,7 @@ export default class RequestConverters {
 
     const neuronId = new PbNeuronId();
     neuronId.setId(request.neuronId.toString());
-    result.setId(neuronId);
+    result.setNeuronId(neuronId);
 
     return result;
   };
@@ -162,7 +167,7 @@ export default class RequestConverters {
 
     const neuronId = new PbNeuronId();
     neuronId.setId(request.neuronId.toString());
-    result.setId(neuronId);
+    result.setNeuronId(neuronId);
 
     return result;
   };
@@ -181,7 +186,7 @@ export default class RequestConverters {
 
     const neuronId = new PbNeuronId();
     neuronId.setId(request.neuronId.toString());
-    result.setId(neuronId);
+    result.setNeuronId(neuronId);
 
     return result;
   };
@@ -194,8 +199,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -209,8 +215,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -223,8 +230,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -235,8 +243,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -248,8 +257,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -269,8 +279,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -285,8 +296,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -319,8 +331,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -350,8 +363,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -375,8 +389,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -390,6 +405,18 @@ export default class RequestConverters {
     return {
       id: neuronId,
     };
+  };
+
+  private fromNeuronIdOrSubaccount = (
+    neuronIdOrSubaccount: NeuronIdOrSubaccount
+  ): RawNeuronIdOrSubaccount => {
+    if ("NeuronId" in neuronIdOrSubaccount) {
+      return { NeuronId: { id: neuronIdOrSubaccount.NeuronId } };
+    }
+    if ("Subaccount" in neuronIdOrSubaccount) {
+      return { Subaccount: neuronIdOrSubaccount.Subaccount };
+    }
+    throw new UnsupportedValueError(neuronIdOrSubaccount);
   };
 
   private fromProposalId = (proposalId: ProposalId): RawNeuronId => {
@@ -456,6 +483,21 @@ export default class RequestConverters {
         },
       };
     }
+    if ("RewardNodeProviders" in action) {
+      const rewardNodeProviders = action.RewardNodeProviders;
+      return {
+        RewardNodeProviders: {
+          rewards: rewardNodeProviders.rewards.map((r) => ({
+            node_provider: r.nodeProvider
+              ? [this.fromNodeProvider(r.nodeProvider)]
+              : [],
+            amount_e8s: r.amountE8s,
+            reward_mode:
+              r.rewardMode != null ? [this.fromRewardMode(r.rewardMode)] : [],
+          })),
+        },
+      };
+    }
     if ("AddOrRemoveNodeProvider" in action) {
       const addOrRemoveNodeProvider = action.AddOrRemoveNodeProvider;
       return {
@@ -506,6 +548,14 @@ export default class RequestConverters {
         Follow: {
           topic: follow.topic,
           followees: follow.followees.map(this.fromNeuronId),
+        },
+      };
+    }
+    if ("ClaimOrRefresh" in command) {
+      const claimOrRefresh = command.ClaimOrRefresh;
+      return {
+        ClaimOrRefresh: {
+          by: claimOrRefresh.by ? [{ Memo: claimOrRefresh.by.Memo }] : [],
         },
       };
     }
