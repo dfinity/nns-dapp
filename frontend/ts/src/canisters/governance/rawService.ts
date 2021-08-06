@@ -1,76 +1,82 @@
 import type { Principal } from '@dfinity/principal';
-export interface AccountIdentifier {
-  'hash' : Array<number>,
-};
+export interface AccountIdentifier { 'hash' : Array<number> }
 export type Action = { 'ManageNeuron' : ManageNeuron } |
-  { 'ExecuteNnsFunction' : ExecuteNnsFunction } |
-  { 'RewardNodeProvider' : RewardNodeProvider } |
-  { 'SetDefaultFollowees' : SetDefaultFollowees } |
-  { 'ManageNetworkEconomics' : NetworkEconomics } |
-  { 'ApproveGenesisKyc' : ApproveGenesisKyc } |
-  { 'AddOrRemoveNodeProvider' : AddOrRemoveNodeProvider } |
-  { 'Motion' : Motion };
-export interface AddHotKey { 'new_hot_key' : [] | [Principal] };
-export interface AddOrRemoveNodeProvider { 'change' : [] | [Change] };
-export interface Amount { 'e8s' : bigint };
-export interface ApproveGenesisKyc { 'principals' : Array<Principal> };
-export interface Ballot { 'vote' : number, 'voting_power' : bigint };
-export interface BallotInfo {
-  'vote' : number,
-  'proposal_id' : [] | [NeuronId],
-};
+    { 'ExecuteNnsFunction' : ExecuteNnsFunction } |
+    { 'RewardNodeProvider' : RewardNodeProvider } |
+    { 'SetDefaultFollowees' : SetDefaultFollowees } |
+    { 'RewardNodeProviders' : RewardNodeProviders } |
+    { 'ManageNetworkEconomics' : NetworkEconomics } |
+    { 'ApproveGenesisKyc' : ApproveGenesisKyc } |
+    { 'AddOrRemoveNodeProvider' : AddOrRemoveNodeProvider } |
+    { 'Motion' : Motion };
+export interface AddHotKey { 'new_hot_key' : [] | [Principal] }
+export interface AddOrRemoveNodeProvider { 'change' : [] | [Change] }
+export interface Amount { 'e8s' : bigint }
+export interface ApproveGenesisKyc { 'principals' : Array<Principal> }
+export interface Ballot { 'vote' : number, 'voting_power' : bigint }
+export interface BallotInfo { 'vote' : number, 'proposal_id' : [] | [NeuronId] }
+export type By = { 'Memo' : bigint };
 export type Change = { 'ToRemove' : NodeProvider } |
-  { 'ToAdd' : NodeProvider };
+    { 'ToAdd' : NodeProvider };
+export interface ClaimOrRefresh { 'by' : [] | [By] }
 export interface ClaimOrRefreshNeuronFromAccount {
   'controller' : [] | [Principal],
   'memo' : bigint,
-};
+}
 export interface ClaimOrRefreshNeuronFromAccountResponse {
   'result' : [] | [Result_1],
-};
+}
+export interface ClaimOrRefreshResponse {
+  'refreshed_neuron_id' : [] | [NeuronId],
+}
 export type Command = { 'Spawn' : Spawn } |
-  { 'Split' : Split } |
-  { 'Follow' : Follow } |
-  { 'Configure' : Configure } |
-  { 'RegisterVote' : RegisterVote } |
-  { 'DisburseToNeuron' : DisburseToNeuron } |
-  { 'MakeProposal' : Proposal } |
-  { 'Disburse' : Disburse };
+    { 'Split' : Split } |
+    { 'Follow' : Follow } |
+    { 'ClaimOrRefresh' : ClaimOrRefresh } |
+    { 'Configure' : Configure } |
+    { 'RegisterVote' : RegisterVote } |
+    { 'DisburseToNeuron' : DisburseToNeuron } |
+    { 'MakeProposal' : Proposal } |
+    { 'MergeMaturity' : MergeMaturity } |
+    { 'Disburse' : Disburse };
 export type Command_1 = { 'Error' : GovernanceError } |
-  { 'Spawn' : SpawnResponse } |
-  { 'Split' : SpawnResponse } |
-  { 'Follow' : {} } |
-  { 'Configure' : {} } |
-  { 'RegisterVote' : {} } |
-  { 'DisburseToNeuron' : SpawnResponse } |
-  { 'MakeProposal' : MakeProposalResponse } |
-  { 'Disburse' : DisburseResponse };
+    { 'Spawn' : SpawnResponse } |
+    { 'Split' : SpawnResponse } |
+    { 'Follow' : {} } |
+    { 'ClaimOrRefresh' : ClaimOrRefreshResponse } |
+    { 'Configure' : {} } |
+    { 'RegisterVote' : {} } |
+    { 'DisburseToNeuron' : SpawnResponse } |
+    { 'MakeProposal' : MakeProposalResponse } |
+    { 'MergeMaturity' : MergeMaturityResponse } |
+    { 'Disburse' : DisburseResponse };
 export type Command_2 = { 'Spawn' : Spawn } |
-  { 'Split' : Split } |
-  { 'ClaimOrRefresh' : ClaimOrRefreshNeuronFromAccount } |
-  { 'DisburseToNeuron' : DisburseToNeuron } |
-  { 'Disburse' : Disburse };
-export interface Configure { 'operation' : [] | [Operation] };
+    { 'Split' : Split } |
+    { 'ClaimOrRefresh' : ClaimOrRefreshNeuronFromAccount } |
+    { 'DisburseToNeuron' : DisburseToNeuron } |
+    { 'MergeMaturity' : MergeMaturity } |
+    { 'Disburse' : Disburse };
+export interface Configure { 'operation' : [] | [Operation] }
 export interface Disburse {
   'to_account' : [] | [AccountIdentifier],
   'amount' : [] | [Amount],
-};
-export interface DisburseResponse { 'transfer_block_height' : bigint };
+}
+export interface DisburseResponse { 'transfer_block_height' : bigint }
 export interface DisburseToNeuron {
   'dissolve_delay_seconds' : bigint,
   'kyc_verified' : boolean,
   'amount_e8s' : bigint,
   'new_controller' : [] | [Principal],
   'nonce' : bigint,
-};
+}
 export type DissolveState = { 'DissolveDelaySeconds' : bigint } |
-  { 'WhenDissolvedTimestampSeconds' : bigint };
+    { 'WhenDissolvedTimestampSeconds' : bigint };
 export interface ExecuteNnsFunction {
   'nns_function' : number,
   'payload' : Array<number>,
-};
-export interface Follow { 'topic' : number, 'followees' : Array<NeuronId> };
-export interface Followees { 'followees' : Array<NeuronId> };
+}
+export interface Follow { 'topic' : number, 'followees' : Array<NeuronId> }
+export interface Followees { 'followees' : Array<NeuronId> }
 export interface Governance {
   'default_followees' : Array<[number, Followees]>,
   'wait_for_quiet_threshold_seconds' : bigint,
@@ -83,39 +89,45 @@ export interface Governance {
   'in_flight_commands' : Array<[bigint, NeuronInFlightCommand]>,
   'neurons' : Array<[bigint, Neuron]>,
   'genesis_timestamp_seconds' : bigint,
-};
+}
 export interface GovernanceError {
   'error_message' : string,
   'error_type' : number,
-};
+}
 export interface IncreaseDissolveDelay {
   'additional_dissolve_delay_seconds' : number,
-};
+}
 export interface ListNeurons {
   'neuron_ids' : Array<bigint>,
   'include_neurons_readable_by_caller' : boolean,
-};
+}
 export interface ListNeuronsResponse {
   'neuron_infos' : Array<[bigint, NeuronInfo]>,
   'full_neurons' : Array<Neuron>,
-};
+}
 export interface ListProposalInfo {
   'include_reward_status' : Array<number>,
   'before_proposal' : [] | [NeuronId],
   'limit' : number,
   'exclude_topic' : Array<number>,
   'include_status' : Array<number>,
-};
+}
 export interface ListProposalInfoResponse {
   'proposal_info' : Array<ProposalInfo>,
-};
-export interface MakeProposalResponse { 'proposal_id' : [] | [NeuronId] };
+}
+export interface MakeProposalResponse { 'proposal_id' : [] | [NeuronId] }
 export interface ManageNeuron {
   'id' : [] | [NeuronId],
   'command' : [] | [Command],
-};
-export interface ManageNeuronResponse { 'command' : [] | [Command_1] };
-export interface Motion { 'motion_text' : string };
+  'neuron_id_or_subaccount' : [] | [NeuronIdOrSubaccount],
+}
+export interface ManageNeuronResponse { 'command' : [] | [Command_1] }
+export interface MergeMaturity { 'percentage_to_merge' : number }
+export interface MergeMaturityResponse {
+  'merged_maturity_e8s' : bigint,
+  'new_stake_e8s' : bigint,
+}
+export interface Motion { 'motion_text' : string }
 export interface NetworkEconomics {
   'neuron_minimum_stake_e8s' : bigint,
   'max_proposals_to_keep_per_topic' : number,
@@ -125,7 +137,7 @@ export interface NetworkEconomics {
   'neuron_spawn_dissolve_delay_seconds' : bigint,
   'minimum_icp_xdr_rate' : bigint,
   'maximum_node_provider_rewards_e8s' : bigint,
-};
+}
 export interface Neuron {
   'id' : [] | [NeuronId],
   'controller' : [] | [Principal],
@@ -142,12 +154,14 @@ export interface Neuron {
   'followees' : Array<[number, Followees]>,
   'neuron_fees_e8s' : bigint,
   'transfer' : [] | [NeuronStakeTransfer],
-};
-export interface NeuronId { 'id' : bigint };
+}
+export interface NeuronId { 'id' : bigint }
+export type NeuronIdOrSubaccount = { 'Subaccount' : Array<number> } |
+    { 'NeuronId' : NeuronId };
 export interface NeuronInFlightCommand {
   'command' : [] | [Command_2],
   'timestamp' : bigint,
-};
+}
 export interface NeuronInfo {
   'dissolve_delay_seconds' : bigint,
   'recent_ballots' : Array<BallotInfo>,
@@ -156,7 +170,7 @@ export interface NeuronInfo {
   'retrieved_at_timestamp_seconds' : bigint,
   'voting_power' : bigint,
   'age_seconds' : bigint,
-};
+}
 export interface NeuronStakeTransfer {
   'to_subaccount' : Array<number>,
   'neuron_stake_e8s' : bigint,
@@ -165,19 +179,19 @@ export interface NeuronStakeTransfer {
   'from_subaccount' : Array<number>,
   'transfer_timestamp' : bigint,
   'block_height' : bigint,
-};
-export interface NodeProvider { 'id' : [] | [Principal] };
+}
+export interface NodeProvider { 'id' : [] | [Principal] }
 export type Operation = { 'RemoveHotKey' : RemoveHotKey } |
-  { 'AddHotKey' : AddHotKey } |
-  { 'StopDissolving' : {} } |
-  { 'StartDissolving' : {} } |
-  { 'IncreaseDissolveDelay' : IncreaseDissolveDelay } |
-  { 'SetDissolveTimestamp' : SetDissolveTimestamp };
+    { 'AddHotKey' : AddHotKey } |
+    { 'StopDissolving' : {} } |
+    { 'StartDissolving' : {} } |
+    { 'IncreaseDissolveDelay' : IncreaseDissolveDelay } |
+    { 'SetDissolveTimestamp' : SetDissolveTimestamp };
 export interface Proposal {
   'url' : string,
   'action' : [] | [Action],
   'summary' : string,
-};
+}
 export interface ProposalData {
   'id' : [] | [NeuronId],
   'failure_reason' : [] | [GovernanceError],
@@ -191,7 +205,7 @@ export interface ProposalData {
   'proposal' : [] | [Proposal],
   'proposer' : [] | [NeuronId],
   'executed_timestamp_seconds' : bigint,
-};
+}
 export interface ProposalInfo {
   'id' : [] | [NeuronId],
   'status' : number,
@@ -208,52 +222,53 @@ export interface ProposalInfo {
   'proposal' : [] | [Proposal],
   'proposer' : [] | [NeuronId],
   'executed_timestamp_seconds' : bigint,
-};
-export interface RegisterVote { 'vote' : number, 'proposal' : [] | [NeuronId] };
-export interface RemoveHotKey { 'hot_key_to_remove' : [] | [Principal] };
+}
+export interface RegisterVote { 'vote' : number, 'proposal' : [] | [NeuronId] }
+export interface RemoveHotKey { 'hot_key_to_remove' : [] | [Principal] }
 export type Result = { 'Ok' : null } |
-  { 'Err' : GovernanceError };
+    { 'Err' : GovernanceError };
 export type Result_1 = { 'Error' : GovernanceError } |
-  { 'NeuronId' : NeuronId };
+    { 'NeuronId' : NeuronId };
 export type Result_2 = { 'Ok' : Neuron } |
-  { 'Err' : GovernanceError };
+    { 'Err' : GovernanceError };
 export type Result_3 = { 'Ok' : NeuronInfo } |
-  { 'Err' : GovernanceError };
+    { 'Err' : GovernanceError };
 export interface RewardEvent {
   'day_after_genesis' : bigint,
   'actual_timestamp_seconds' : bigint,
   'distributed_e8s_equivalent' : bigint,
   'settled_proposals' : Array<NeuronId>,
-};
+}
 export type RewardMode = { 'RewardToNeuron' : RewardToNeuron } |
-  { 'RewardToAccount' : RewardToAccount };
+    { 'RewardToAccount' : RewardToAccount };
 export interface RewardNodeProvider {
   'node_provider' : [] | [NodeProvider],
   'reward_mode' : [] | [RewardMode],
   'amount_e8s' : bigint,
-};
-export interface RewardToAccount { 'to_account' : [] | [AccountIdentifier] };
-export interface RewardToNeuron { 'dissolve_delay_seconds' : bigint };
+}
+export interface RewardNodeProviders { 'rewards' : Array<RewardNodeProvider> }
+export interface RewardToAccount { 'to_account' : [] | [AccountIdentifier] }
+export interface RewardToNeuron { 'dissolve_delay_seconds' : bigint }
 export interface SetDefaultFollowees {
   'default_followees' : Array<[number, Followees]>,
-};
-export interface SetDissolveTimestamp { 'dissolve_timestamp_seconds' : bigint };
-export interface Spawn { 'new_controller' : [] | [Principal] };
-export interface SpawnResponse { 'created_neuron_id' : [] | [NeuronId] };
-export interface Split { 'amount_e8s' : bigint };
+}
+export interface SetDissolveTimestamp { 'dissolve_timestamp_seconds' : bigint }
+export interface Spawn { 'new_controller' : [] | [Principal] }
+export interface SpawnResponse { 'created_neuron_id' : [] | [NeuronId] }
+export interface Split { 'amount_e8s' : bigint }
 export interface Tally {
   'no' : bigint,
   'yes' : bigint,
   'total' : bigint,
   'timestamp_seconds' : bigint,
-};
-export default interface _SERVICE {
+}
+export interface _SERVICE {
   'claim_gtc_neurons' : (arg_0: Principal, arg_1: Array<NeuronId>) => Promise<
       Result
-    >,
+      >,
   'claim_or_refresh_neuron_from_account' : (
       arg_0: ClaimOrRefreshNeuronFromAccount,
-    ) => Promise<ClaimOrRefreshNeuronFromAccountResponse>,
+  ) => Promise<ClaimOrRefreshNeuronFromAccountResponse>,
   'get_full_neuron' : (arg_0: bigint) => Promise<Result_2>,
   'get_neuron_ids' : () => Promise<Array<bigint>>,
   'get_neuron_info' : (arg_0: bigint) => Promise<Result_3>,
@@ -262,7 +277,7 @@ export default interface _SERVICE {
   'list_neurons' : (arg_0: ListNeurons) => Promise<ListNeuronsResponse>,
   'list_proposals' : (arg_0: ListProposalInfo) => Promise<
       ListProposalInfoResponse
-    >,
+      >,
   'manage_neuron' : (arg_0: ManageNeuron) => Promise<ManageNeuronResponse>,
   'transfer_gtc_neuron' : (arg_0: NeuronId, arg_1: NeuronId) => Promise<Result>,
-};
+}

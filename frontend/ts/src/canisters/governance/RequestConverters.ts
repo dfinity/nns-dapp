@@ -20,6 +20,8 @@ import {
   MakeRewardNodeProviderProposalRequest,
   MakeSetDefaultFolloweesProposalRequest,
   ManageNeuron,
+  MergeMaturityRequest,
+  NeuronIdOrSubaccount,
   NodeProvider,
   Operation,
   ProposalId,
@@ -40,6 +42,7 @@ import {
   ListProposalInfo,
   ManageNeuron as RawManageNeuron,
   NeuronId as RawNeuronId,
+  NeuronIdOrSubaccount as RawNeuronIdOrSubaccount,
   NodeProvider as RawNodeProvider,
   Operation as RawOperation,
   RewardMode as RawRewardMode,
@@ -61,6 +64,9 @@ export default class RequestConverters {
       id: manageNeuron.id ? [this.fromNeuronId(manageNeuron.id)] : [],
       command: manageNeuron.command
         ? [this.fromCommand(manageNeuron.command)]
+        : [],
+      neuron_id_or_subaccount: manageNeuron.neuronIdOrSubaccount
+        ? [this.fromNeuronIdOrSubaccount(manageNeuron.neuronIdOrSubaccount)]
         : [],
     };
   };
@@ -110,6 +116,15 @@ export default class RequestConverters {
     return result;
   };
 
+  public fromMergeMaturityRequest = (request: MergeMaturityRequest) : RawManageNeuron => {
+    const rawCommand: RawCommand = { MergeMaturity: { percentage_to_merge: request.percentageToMerge } };
+    return {
+      id: [],
+      command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+    };
+  };
+
   public fromRemoveHotKeyRequest = (
     request: RemoveHotKeyRequest
   ): RawManageNeuron => {
@@ -120,8 +135,9 @@ export default class RequestConverters {
     };
     const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -131,8 +147,9 @@ export default class RequestConverters {
     const rawOperation: RawOperation = { StartDissolving: {} };
     const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -142,8 +159,9 @@ export default class RequestConverters {
     const rawOperation: RawOperation = { StopDissolving: {} };
     const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -158,8 +176,9 @@ export default class RequestConverters {
     };
     const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -171,8 +190,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -186,8 +206,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -200,8 +221,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -212,8 +234,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -225,8 +248,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -246,8 +270,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -262,8 +287,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -296,8 +322,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -327,8 +354,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -352,8 +380,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -367,6 +396,18 @@ export default class RequestConverters {
     return {
       id: neuronId,
     };
+  };
+
+  private fromNeuronIdOrSubaccount = (
+    neuronIdOrSubaccount: NeuronIdOrSubaccount
+  ): RawNeuronIdOrSubaccount => {
+    if ("NeuronId" in neuronIdOrSubaccount) {
+      return { NeuronId: { id: neuronIdOrSubaccount.NeuronId } };
+    }
+    if ("Subaccount" in neuronIdOrSubaccount) {
+      return { Subaccount: neuronIdOrSubaccount.Subaccount };
+    }
+    throw new UnsupportedValueError(neuronIdOrSubaccount);
   };
 
   private fromProposalId = (proposalId: ProposalId): RawNeuronId => {
@@ -433,6 +474,21 @@ export default class RequestConverters {
         },
       };
     }
+    if ("RewardNodeProviders" in action) {
+      const rewardNodeProviders = action.RewardNodeProviders;
+      return {
+        RewardNodeProviders: {
+          rewards: rewardNodeProviders.rewards.map((r) => ({
+            node_provider: r.nodeProvider
+              ? [this.fromNodeProvider(r.nodeProvider)]
+              : [],
+            amount_e8s: r.amountE8s,
+            reward_mode:
+              r.rewardMode != null ? [this.fromRewardMode(r.rewardMode)] : [],
+          })),
+        },
+      };
+    }
     if ("AddOrRemoveNodeProvider" in action) {
       const addOrRemoveNodeProvider = action.AddOrRemoveNodeProvider;
       return {
@@ -486,6 +542,14 @@ export default class RequestConverters {
         },
       };
     }
+    if ("ClaimOrRefresh" in command) {
+      const claimOrRefresh = command.ClaimOrRefresh;
+      return {
+        ClaimOrRefresh: {
+          by: claimOrRefresh.by ? [{ Memo: claimOrRefresh.by.Memo }] : [],
+        },
+      };
+    }
     if ("Configure" in command) {
       const configure = command.Configure;
       return {
@@ -518,6 +582,14 @@ export default class RequestConverters {
             ? [Principal.fromText(disburseToNeuron.newController)]
             : [],
           nonce: disburseToNeuron.nonce,
+        },
+      };
+    }
+    if ("MergeMaturity" in command) {
+      const mergeMaturity = command.MergeMaturity;
+      return {
+        MergeMaturity: {
+          percentage_to_merge: mergeMaturity.percentageToMerge,
         },
       };
     }

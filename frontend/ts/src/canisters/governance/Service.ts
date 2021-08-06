@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal";
 import { Option } from "../option";
-import RawService, { ListNeurons } from "./rawService";
+import { _SERVICE, ListNeurons } from "./rawService";
 import ServiceInterface, {
   AddHotKeyRequest,
   DisburseRequest,
@@ -17,6 +17,8 @@ import ServiceInterface, {
   MakeProposalResponse,
   MakeRewardNodeProviderProposalRequest,
   MakeSetDefaultFolloweesProposalRequest,
+  MergeMaturityRequest,
+  MergeMaturityResponse,
   NeuronInfo,
   ProposalInfo,
   RegisterVoteRequest,
@@ -36,7 +38,7 @@ import { Agent } from "@dfinity/agent";
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
   private readonly canisterId: Principal;
-  private readonly service: RawService;
+  private readonly service: _SERVICE;
   private readonly myPrincipal: Principal;
   private readonly requestConverters: RequestConverters;
   private readonly responseConverters: ResponseConverters;
@@ -44,7 +46,7 @@ export default class Service implements ServiceInterface {
   public constructor(
     agent: Agent,
     canisterId: Principal,
-    service: RawService,
+    service: _SERVICE,
     myPrincipal: Principal
   ) {
     this.agent = agent;
@@ -195,6 +197,15 @@ export default class Service implements ServiceInterface {
       this.requestConverters.fromDisburseToNeuronRequest(request);
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toDisburseToNeuronResult(rawResponse);
+  };
+
+  public mergeMaturity = async (
+      request: MergeMaturityRequest
+  ): Promise<MergeMaturityResponse> => {
+    const rawRequest =
+        this.requestConverters.fromMergeMaturityRequest(request);
+    const rawResponse = await this.service.manage_neuron(rawRequest);
+    return this.responseConverters.toMergeMaturityResponse(rawResponse);
   };
 
   public makeMotionProposal = async (

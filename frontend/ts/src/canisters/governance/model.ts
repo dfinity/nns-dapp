@@ -14,6 +14,7 @@ export type Action =
   | { ApproveGenesisKyc: ApproveGenesisKyc }
   | { ManageNetworkEconomics: NetworkEconomics }
   | { RewardNodeProvider: RewardNodeProvider }
+  | { RewardNodeProviders: RewardNodeProviders }
   | { AddOrRemoveNodeProvider: AddOrRemoveNodeProvider }
   | { SetDefaultFollowees: SetDefaultFollowees }
   | { Motion: Motion };
@@ -38,17 +39,21 @@ export interface BallotInfo {
   vote: Vote;
   proposalId: Option<ProposalId>;
 }
+export type By = { Memo: bigint };
 export interface CanisterAuthzInfo {
   methodsAuthz: Array<MethodAuthzInfo>;
 }
 export type Change = { ToRemove: NodeProvider } | { ToAdd: NodeProvider };
+export type ClaimOrRefresh = { by: Option<By> };
 export type Command =
   | { Spawn: Spawn }
   | { Split: Split }
   | { Follow: Follow }
+  | { ClaimOrRefresh: ClaimOrRefresh }
   | { Configure: Configure }
   | { RegisterVote: RegisterVote }
   | { DisburseToNeuron: DisburseToNeuron }
+  | { MergeMaturity: MergeMaturity }
   | { MakeProposal: Proposal }
   | { Disburse: Disburse };
 export interface Configure {
@@ -132,6 +137,16 @@ export interface MakeProposalResponse {
 export interface ManageNeuron {
   id: Option<NeuronId>;
   command: Option<Command>;
+  neuronIdOrSubaccount: Option<NeuronIdOrSubaccount>;
+}
+export interface MergeMaturity {
+  percentageToMerge: number }
+export interface MergeMaturityRequest {
+  neuronId: NeuronId,
+  percentageToMerge: number }
+export interface MergeMaturityResponse {
+  mergedMaturityE8s: bigint,
+  newStakeE8s: bigint,
 }
 export interface MethodAuthzChange {
   principal: Option<PrincipalString>;
@@ -173,6 +188,9 @@ export interface Neuron {
   dissolveState: Option<DissolveState>;
   followees: Array<Followees>;
 }
+export type NeuronIdOrSubaccount =
+  | { Subaccount: Array<number> }
+  | { NeuronId: NeuronId };
 export enum NeuronState {
   UNSPECIFIED = 0,
   LOCKED = 1,
@@ -281,6 +299,7 @@ export interface RemoveHotKey {
 export type RewardMode =
   | { RewardToNeuron: RewardToNeuron }
   | { RewardToAccount: RewardToAccount };
+export type RewardNodeProviders = { rewards: Array<RewardNodeProvider> };
 export interface RewardToAccount {
   toAccount: Option<AccountIdentifier>;
 }
@@ -450,6 +469,7 @@ export default interface ServiceInterface {
     request: IncreaseDissolveDelayRequest
   ) => Promise<EmptyResponse>;
   follow: (request: FollowRequest) => Promise<EmptyResponse>;
+  mergeMaturity: (request: MergeMaturityRequest) => Promise<MergeMaturityResponse>;
   registerVote: (request: RegisterVoteRequest) => Promise<EmptyResponse>;
   spawn: (request: SpawnRequest) => Promise<SpawnResponse>;
   split: (request: SplitRequest) => Promise<EmptyResponse>;

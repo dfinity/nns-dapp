@@ -19,7 +19,9 @@ import {
   Followees,
   ListProposalsResponse,
   MakeProposalResponse,
+  MergeMaturityResponse,
   Neuron,
+  NeuronIdOrSubaccount,
   NeuronInfo,
   NodeProvider,
   Operation,
@@ -44,6 +46,7 @@ import {
   ManageNeuronResponse as RawManageNeuronResponse,
   Neuron as RawNeuron,
   NeuronId as RawNeuronId,
+  NeuronIdOrSubaccount as RawNeuronIdOrSubaccount,
   NeuronInfo as RawNeuronInfo,
   NodeProvider as RawNodeProvider,
   Operation as RawOperation,
@@ -181,6 +184,23 @@ export default class ResponseConverters {
     throw this.throwUnrecognisedTypeError("response", response);
   };
 
+  public toMergeMaturityResponse = (
+      response: RawManageNeuronResponse
+  ): MergeMaturityResponse => {
+    const command = response.command;
+    if (
+        command.length &&
+        "MergeMaturity" in command[0]
+    ) {
+      const mergeMaturity = command[0].MergeMaturity;
+      return {
+        mergedMaturityE8s: mergeMaturity.merged_maturity_e8s,
+        newStakeE8s: mergeMaturity.new_stake_e8s,
+      };
+    }
+    throw this.throwUnrecognisedTypeError("response", response);
+  };
+
   public toMakeProposalResponse = (
     response: RawManageNeuronResponse
   ): MakeProposalResponse => {
@@ -261,6 +281,18 @@ export default class ResponseConverters {
     return neuronId.id;
   };
 
+  private toNeuronIdOrSubaccount = (
+    neuronIdOrSubaccount: RawNeuronIdOrSubaccount
+  ): NeuronIdOrSubaccount => {
+    if ("NeuronId" in neuronIdOrSubaccount) {
+      return { NeuronId: neuronIdOrSubaccount.NeuronId.id };
+    }
+    if ("Subaccount" in neuronIdOrSubaccount) {
+      return { Subaccount: neuronIdOrSubaccount.Subaccount };
+    }
+    throw new UnsupportedValueError(neuronIdOrSubaccount);
+  };
+
   private toBallot = (neuronId: bigint, ballot: RawBallot): Ballot => {
     return {
       neuronId: neuronId,
@@ -296,6 +328,11 @@ export default class ResponseConverters {
             : null,
           command: manageNeuron.command.length
             ? this.toCommand(manageNeuron.command[0])
+            : null,
+          neuronIdOrSubaccount: manageNeuron.neuron_id_or_subaccount.length
+            ? this.toNeuronIdOrSubaccount(
+                manageNeuron.neuron_id_or_subaccount[0]
+              )
             : null,
         },
       };
@@ -338,6 +375,22 @@ export default class ResponseConverters {
           rewardMode: rewardNodeProvider.reward_mode.length
             ? this.toRewardMode(rewardNodeProvider.reward_mode[0])
             : null,
+        },
+      };
+    }
+    if ("RewardNodeProviders" in action) {
+      const rewardNodeProviders = action.RewardNodeProviders;
+      return {
+        RewardNodeProviders: {
+          rewards: rewardNodeProviders.rewards.map((r) => ({
+            nodeProvider: r.node_provider.length
+              ? this.toNodeProvider(r.node_provider[0])
+              : null,
+            amountE8s: r.amount_e8s,
+            rewardMode: r.reward_mode.length
+              ? this.toRewardMode(r.reward_mode[0])
+              : null,
+          })),
         },
       };
     }
@@ -410,6 +463,16 @@ export default class ResponseConverters {
         },
       };
     }
+    if ("ClaimOrRefresh" in command) {
+      const claimOrRefresh = command.ClaimOrRefresh;
+      return {
+        ClaimOrRefresh: {
+          by: claimOrRefresh.by.length
+            ? { Memo: claimOrRefresh.by[0].Memo }
+            : null,
+        },
+      };
+    }
     if ("Configure" in command) {
       const configure = command.Configure;
       return {
@@ -442,6 +505,14 @@ export default class ResponseConverters {
             ? disburseToNeuron.new_controller[0].toString()
             : null,
           nonce: disburseToNeuron.nonce,
+        },
+      };
+    }
+    if ("MergeMaturity" in command) {
+      const mergeMaturity = command.MergeMaturity;
+      return {
+        MergeMaturity: {
+          percentageToMerge: mergeMaturity.percentage_to_merge,
         },
       };
     }

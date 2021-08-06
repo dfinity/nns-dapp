@@ -4,6 +4,7 @@ type Action = variant {
   ExecuteNnsFunction : ExecuteNnsFunction;
   RewardNodeProvider : RewardNodeProvider;
   SetDefaultFollowees : SetDefaultFollowees;
+  RewardNodeProviders : RewardNodeProviders;
   ManageNetworkEconomics : NetworkEconomics;
   ApproveGenesisKyc : ApproveGenesisKyc;
   AddOrRemoveNodeProvider : AddOrRemoveNodeProvider;
@@ -15,20 +16,25 @@ type Amount = record { e8s : nat64 };
 type ApproveGenesisKyc = record { principals : vec principal };
 type Ballot = record { vote : int32; voting_power : nat64 };
 type BallotInfo = record { vote : int32; proposal_id : opt NeuronId };
+type By = variant { Memo : nat64 };
 type Change = variant { ToRemove : NodeProvider; ToAdd : NodeProvider };
+type ClaimOrRefresh = record { by : opt By };
 type ClaimOrRefreshNeuronFromAccount = record {
   controller : opt principal;
   memo : nat64;
 };
 type ClaimOrRefreshNeuronFromAccountResponse = record { result : opt Result_1 };
+type ClaimOrRefreshResponse = record { refreshed_neuron_id : opt NeuronId };
 type Command = variant {
   Spawn : Spawn;
   Split : Split;
   Follow : Follow;
+  ClaimOrRefresh : ClaimOrRefresh;
   Configure : Configure;
   RegisterVote : RegisterVote;
   DisburseToNeuron : DisburseToNeuron;
   MakeProposal : Proposal;
+  MergeMaturity : MergeMaturity;
   Disburse : Disburse;
 };
 type Command_1 = variant {
@@ -36,10 +42,12 @@ type Command_1 = variant {
   Spawn : SpawnResponse;
   Split : SpawnResponse;
   Follow : record {};
+  ClaimOrRefresh : ClaimOrRefreshResponse;
   Configure : record {};
   RegisterVote : record {};
   DisburseToNeuron : SpawnResponse;
   MakeProposal : MakeProposalResponse;
+  MergeMaturity : MergeMaturityResponse;
   Disburse : DisburseResponse;
 };
 type Command_2 = variant {
@@ -47,6 +55,7 @@ type Command_2 = variant {
   Split : Split;
   ClaimOrRefresh : ClaimOrRefreshNeuronFromAccount;
   DisburseToNeuron : DisburseToNeuron;
+  MergeMaturity : MergeMaturity;
   Disburse : Disburse;
 };
 type Configure = record { operation : opt Operation };
@@ -103,8 +112,17 @@ type ListProposalInfo = record {
 };
 type ListProposalInfoResponse = record { proposal_info : vec ProposalInfo };
 type MakeProposalResponse = record { proposal_id : opt NeuronId };
-type ManageNeuron = record { id : opt NeuronId; command : opt Command };
+type ManageNeuron = record {
+  id : opt NeuronId;
+  command : opt Command;
+  neuron_id_or_subaccount : opt NeuronIdOrSubaccount;
+};
 type ManageNeuronResponse = record { command : opt Command_1 };
+type MergeMaturity = record { percentage_to_merge : nat32 };
+type MergeMaturityResponse = record {
+  merged_maturity_e8s : nat64;
+  new_stake_e8s : nat64;
+};
 type Motion = record { motion_text : text };
 type NetworkEconomics = record {
   neuron_minimum_stake_e8s : nat64;
@@ -134,6 +152,10 @@ type Neuron = record {
   transfer : opt NeuronStakeTransfer;
 };
 type NeuronId = record { id : nat64 };
+type NeuronIdOrSubaccount = variant {
+  Subaccount : vec nat8;
+  NeuronId : NeuronId;
+};
 type NeuronInFlightCommand = record {
   command : opt Command_2;
   timestamp : nat64;
@@ -218,6 +240,7 @@ type RewardNodeProvider = record {
   reward_mode : opt RewardMode;
   amount_e8s : nat64;
 };
+type RewardNodeProviders = record { rewards : vec RewardNodeProvider };
 type RewardToAccount = record { to_account : opt AccountIdentifier };
 type RewardToNeuron = record { dissolve_delay_seconds : nat64 };
 type SetDefaultFollowees = record {
