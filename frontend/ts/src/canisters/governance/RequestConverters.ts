@@ -44,6 +44,11 @@ import {
   Operation as RawOperation,
   RewardMode as RawRewardMode,
 } from "./rawService";
+import { ManageNeuron as PbManageNeuron } from "../../proto/governance_pb";
+import {
+  NeuronId as PbNeuronId,
+  PrincipalId as PbPrincipalId,
+} from "../../proto/base_types_pb";
 import { UnsupportedValueError } from "../../utils";
 export default class RequestConverters {
   private readonly principal: Principal;
@@ -84,17 +89,25 @@ export default class RequestConverters {
     };
   };
 
-  public fromAddHotKeyRequest = (
-    request: AddHotKeyRequest
-  ): RawManageNeuron => {
-    const rawOperation: RawOperation = {
-      AddHotKey: { new_hot_key: [Principal.fromText(request.principal)] },
-    };
-    const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
-    return {
-      id: [this.fromNeuronId(request.neuronId)],
-      command: [rawCommand],
-    };
+  public fromAddHotKeyRequest = (request: AddHotKeyRequest): PbManageNeuron => {
+    const hotkeyPrincipal = new PbPrincipalId();
+    hotkeyPrincipal.setSerializedId(
+      Principal.fromText(request.principal).toUint8Array()
+    );
+
+    const hotkey = new PbManageNeuron.AddHotKey();
+    hotkey.setNewHotKey(hotkeyPrincipal);
+
+    const configure = new PbManageNeuron.Configure();
+    configure.setAddHotKey(hotkey);
+
+    const result = new PbManageNeuron();
+    result.setConfigure(configure);
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    result.setId(neuronId);
+
+    return result;
   };
 
   public fromRemoveHotKeyRequest = (

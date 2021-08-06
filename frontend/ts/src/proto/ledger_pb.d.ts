@@ -1,5 +1,5 @@
 // package: ic_ledger.pb.v1
-// file: types.proto
+// file: ledger.proto
 
 import * as jspb from "google-protobuf";
 import * as base_types_pb from "./base_types_pb";

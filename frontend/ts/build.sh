@@ -8,9 +8,9 @@ fi
 
 npm ci
 
-# Create config file with proper configurations.
 pushd "$(dirname "$0")"
 cd ../..
+# Create config file with proper configurations.
 ./update_config.sh
 popd
 
