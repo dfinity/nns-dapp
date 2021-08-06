@@ -23,21 +23,31 @@ message ManageNeuron {
     ic_base_types.pb.v1.NeuronId neuron_id = 12 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
   }
 
-  // Add a new hot key that can be used to manage the neuron. This
-  // provides an alternative to using the controller principal’s cold key to
-  // manage the neuron, which might be onerous and difficult to keep
-  // secure, especially if it is used regularly. A hot key might be a
-  // WebAuthn key that is maintained inside a user device, such as a
-  // smartphone.
+  message IncreaseDissolveDelay {
+    uint32 additional_dissolve_delay_seconds = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  }
+
+  message StartDissolving {}
+  message StopDissolving {} 
+
   message AddHotKey {
     ic_base_types.pb.v1.PrincipalId new_hot_key = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
   }
+
+  message RemoveHotKey {
+    ic_base_types.pb.v1.PrincipalId hot_key_to_remove = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  }
+
   // Commands that only configure a given neuron, but do not interact
   // with the outside world. They all require the caller to be the
   // controller of the neuron.
   message Configure {
     oneof operation {
+      IncreaseDissolveDelay increase_dissolve_delay = 1;
+      StartDissolving start_dissolving = 2;
+      StopDissolving stop_dissolving = 3;
       AddHotKey add_hot_key = 4;
+      RemoveHotKey remove_hot_key = 5;
     }
   }
 

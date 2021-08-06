@@ -47,6 +47,58 @@ export namespace ManageNeuron {
     configure?: ManageNeuron.Configure.AsObject,
   }
 
+  export class IncreaseDissolveDelay extends jspb.Message {
+    getAdditionalDissolveDelaySeconds(): number;
+    setAdditionalDissolveDelaySeconds(value: number): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): IncreaseDissolveDelay.AsObject;
+    static toObject(includeInstance: boolean, msg: IncreaseDissolveDelay): IncreaseDissolveDelay.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: IncreaseDissolveDelay, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): IncreaseDissolveDelay;
+    static deserializeBinaryFromReader(message: IncreaseDissolveDelay, reader: jspb.BinaryReader): IncreaseDissolveDelay;
+  }
+
+  export namespace IncreaseDissolveDelay {
+    export type AsObject = {
+      additionalDissolveDelaySeconds: number,
+    }
+  }
+
+  export class StartDissolving extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): StartDissolving.AsObject;
+    static toObject(includeInstance: boolean, msg: StartDissolving): StartDissolving.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: StartDissolving, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): StartDissolving;
+    static deserializeBinaryFromReader(message: StartDissolving, reader: jspb.BinaryReader): StartDissolving;
+  }
+
+  export namespace StartDissolving {
+    export type AsObject = {
+    }
+  }
+
+  export class StopDissolving extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): StopDissolving.AsObject;
+    static toObject(includeInstance: boolean, msg: StopDissolving): StopDissolving.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: StopDissolving, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): StopDissolving;
+    static deserializeBinaryFromReader(message: StopDissolving, reader: jspb.BinaryReader): StopDissolving;
+  }
+
+  export namespace StopDissolving {
+    export type AsObject = {
+    }
+  }
+
   export class AddHotKey extends jspb.Message {
     hasNewHotKey(): boolean;
     clearNewHotKey(): void;
@@ -69,11 +121,53 @@ export namespace ManageNeuron {
     }
   }
 
+  export class RemoveHotKey extends jspb.Message {
+    hasHotKeyToRemove(): boolean;
+    clearHotKeyToRemove(): void;
+    getHotKeyToRemove(): base_types_pb.PrincipalId | undefined;
+    setHotKeyToRemove(value?: base_types_pb.PrincipalId): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): RemoveHotKey.AsObject;
+    static toObject(includeInstance: boolean, msg: RemoveHotKey): RemoveHotKey.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: RemoveHotKey, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): RemoveHotKey;
+    static deserializeBinaryFromReader(message: RemoveHotKey, reader: jspb.BinaryReader): RemoveHotKey;
+  }
+
+  export namespace RemoveHotKey {
+    export type AsObject = {
+      hotKeyToRemove?: base_types_pb.PrincipalId.AsObject,
+    }
+  }
+
   export class Configure extends jspb.Message {
+    hasIncreaseDissolveDelay(): boolean;
+    clearIncreaseDissolveDelay(): void;
+    getIncreaseDissolveDelay(): ManageNeuron.IncreaseDissolveDelay | undefined;
+    setIncreaseDissolveDelay(value?: ManageNeuron.IncreaseDissolveDelay): void;
+
+    hasStartDissolving(): boolean;
+    clearStartDissolving(): void;
+    getStartDissolving(): ManageNeuron.StartDissolving | undefined;
+    setStartDissolving(value?: ManageNeuron.StartDissolving): void;
+
+    hasStopDissolving(): boolean;
+    clearStopDissolving(): void;
+    getStopDissolving(): ManageNeuron.StopDissolving | undefined;
+    setStopDissolving(value?: ManageNeuron.StopDissolving): void;
+
     hasAddHotKey(): boolean;
     clearAddHotKey(): void;
     getAddHotKey(): ManageNeuron.AddHotKey | undefined;
     setAddHotKey(value?: ManageNeuron.AddHotKey): void;
+
+    hasRemoveHotKey(): boolean;
+    clearRemoveHotKey(): void;
+    getRemoveHotKey(): ManageNeuron.RemoveHotKey | undefined;
+    setRemoveHotKey(value?: ManageNeuron.RemoveHotKey): void;
 
     getOperationCase(): Configure.OperationCase;
     serializeBinary(): Uint8Array;
@@ -88,12 +182,20 @@ export namespace ManageNeuron {
 
   export namespace Configure {
     export type AsObject = {
+      increaseDissolveDelay?: ManageNeuron.IncreaseDissolveDelay.AsObject,
+      startDissolving?: ManageNeuron.StartDissolving.AsObject,
+      stopDissolving?: ManageNeuron.StopDissolving.AsObject,
       addHotKey?: ManageNeuron.AddHotKey.AsObject,
+      removeHotKey?: ManageNeuron.RemoveHotKey.AsObject,
     }
 
     export enum OperationCase {
       OPERATION_NOT_SET = 0,
+      INCREASE_DISSOLVE_DELAY = 1,
+      START_DISSOLVING = 2,
+      STOP_DISSOLVING = 3,
       ADD_HOT_KEY = 4,
+      REMOVE_HOT_KEY = 5,
     }
   }
 
