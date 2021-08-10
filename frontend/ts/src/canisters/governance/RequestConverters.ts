@@ -20,6 +20,7 @@ import {
   MakeRewardNodeProviderProposalRequest,
   MakeSetDefaultFolloweesProposalRequest,
   ManageNeuron,
+  NeuronIdOrSubaccount,
   NodeProvider,
   Operation,
   ProposalId,
@@ -29,6 +30,7 @@ import {
   SpawnRequest,
   SplitRequest,
   StartDissolvingRequest,
+  StopDissolvingRequest,
 } from "./model";
 import {
   AccountIdentifier as RawAccountIdentifier,
@@ -40,6 +42,7 @@ import {
   ListProposalInfo,
   ManageNeuron as RawManageNeuron,
   NeuronId as RawNeuronId,
+  NeuronIdOrSubaccount as RawNeuronIdOrSubaccount,
   NodeProvider as RawNodeProvider,
   Operation as RawOperation,
   RewardMode as RawRewardMode,
@@ -61,6 +64,9 @@ export default class RequestConverters {
       id: manageNeuron.id ? [this.fromNeuronId(manageNeuron.id)] : [],
       command: manageNeuron.command
         ? [this.fromCommand(manageNeuron.command)]
+        : [],
+      neuron_id_or_subaccount: manageNeuron.neuronIdOrSubaccount
+        ? [this.fromNeuronIdOrSubaccount(manageNeuron.neuronIdOrSubaccount)]
         : [],
     };
   };
@@ -105,62 +111,86 @@ export default class RequestConverters {
     result.setConfigure(configure);
     const neuronId = new PbNeuronId();
     neuronId.setId(request.neuronId.toString());
-    result.setId(neuronId);
+    result.setNeuronId(neuronId);
 
     return result;
   };
 
   public fromRemoveHotKeyRequest = (
     request: RemoveHotKeyRequest
-  ): RawManageNeuron => {
-    const rawOperation: RawOperation = {
-      RemoveHotKey: {
-        hot_key_to_remove: [Principal.fromText(request.principal)],
-      },
-    };
-    const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
-    return {
-      id: [this.fromNeuronId(request.neuronId)],
-      command: [rawCommand],
-    };
+  ): PbManageNeuron => {
+    const hotkeyPrincipal = new PbPrincipalId();
+    hotkeyPrincipal.setSerializedId(
+      Principal.fromText(request.principal).toUint8Array()
+    );
+
+    const command = new PbManageNeuron.RemoveHotKey();
+    command.setHotKeyToRemove(hotkeyPrincipal);
+
+    const configure = new PbManageNeuron.Configure();
+    configure.setRemoveHotKey(command);
+
+    const result = new PbManageNeuron();
+    result.setConfigure(configure);
+
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    result.setNeuronId(neuronId);
+
+    return result;
   };
 
   public fromStartDissolvingRequest = (
     request: StartDissolvingRequest
-  ): RawManageNeuron => {
-    const rawOperation: RawOperation = { StartDissolving: {} };
-    const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
-    return {
-      id: [this.fromNeuronId(request.neuronId)],
-      command: [rawCommand],
-    };
+  ): PbManageNeuron => {
+    const configure = new PbManageNeuron.Configure();
+    configure.setStartDissolving(new PbManageNeuron.StartDissolving());
+
+    const result = new PbManageNeuron();
+    result.setConfigure(configure);
+
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    result.setNeuronId(neuronId);
+
+    return result;
   };
 
   public fromStopDissolvingRequest = (
-    request: StartDissolvingRequest
-  ): RawManageNeuron => {
-    const rawOperation: RawOperation = { StopDissolving: {} };
-    const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
-    return {
-      id: [this.fromNeuronId(request.neuronId)],
-      command: [rawCommand],
-    };
+    request: StopDissolvingRequest
+  ): PbManageNeuron => {
+    const configure = new PbManageNeuron.Configure();
+    configure.setStopDissolving(new PbManageNeuron.StopDissolving());
+
+    const result = new PbManageNeuron();
+    result.setConfigure(configure);
+
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    result.setNeuronId(neuronId);
+
+    return result;
   };
 
   public fromIncreaseDissolveDelayRequest = (
     request: IncreaseDissolveDelayRequest
-  ): RawManageNeuron => {
-    const rawOperation: RawOperation = {
-      IncreaseDissolveDelay: {
-        additional_dissolve_delay_seconds:
-          request.additionalDissolveDelaySeconds,
-      },
-    };
-    const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
-    return {
-      id: [this.fromNeuronId(request.neuronId)],
-      command: [rawCommand],
-    };
+  ): PbManageNeuron => {
+    const command = new PbManageNeuron.IncreaseDissolveDelay();
+    command.setAdditionalDissolveDelaySeconds(
+      request.additionalDissolveDelaySeconds
+    );
+
+    const configure = new PbManageNeuron.Configure();
+    configure.setIncreaseDissolveDelay(command);
+
+    const result = new PbManageNeuron();
+    result.setConfigure(configure);
+
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    result.setNeuronId(neuronId);
+
+    return result;
   };
 
   public fromFollowRequest = (request: FollowRequest): RawManageNeuron => {
@@ -171,8 +201,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -186,8 +217,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -200,8 +232,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -212,8 +245,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -225,8 +259,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -246,8 +281,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -262,8 +298,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -296,8 +333,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -327,8 +365,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -352,8 +391,9 @@ export default class RequestConverters {
       },
     };
     return {
-      id: [this.fromNeuronId(request.neuronId)],
+      id: [],
       command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 
@@ -367,6 +407,18 @@ export default class RequestConverters {
     return {
       id: neuronId,
     };
+  };
+
+  private fromNeuronIdOrSubaccount = (
+    neuronIdOrSubaccount: NeuronIdOrSubaccount
+  ): RawNeuronIdOrSubaccount => {
+    if ("NeuronId" in neuronIdOrSubaccount) {
+      return { NeuronId: { id: neuronIdOrSubaccount.NeuronId } };
+    }
+    if ("Subaccount" in neuronIdOrSubaccount) {
+      return { Subaccount: neuronIdOrSubaccount.Subaccount };
+    }
+    throw new UnsupportedValueError(neuronIdOrSubaccount);
   };
 
   private fromProposalId = (proposalId: ProposalId): RawNeuronId => {
@@ -433,6 +485,21 @@ export default class RequestConverters {
         },
       };
     }
+    if ("RewardNodeProviders" in action) {
+      const rewardNodeProviders = action.RewardNodeProviders;
+      return {
+        RewardNodeProviders: {
+          rewards: rewardNodeProviders.rewards.map((r) => ({
+            node_provider: r.nodeProvider
+              ? [this.fromNodeProvider(r.nodeProvider)]
+              : [],
+            amount_e8s: r.amountE8s,
+            reward_mode:
+              r.rewardMode != null ? [this.fromRewardMode(r.rewardMode)] : [],
+          })),
+        },
+      };
+    }
     if ("AddOrRemoveNodeProvider" in action) {
       const addOrRemoveNodeProvider = action.AddOrRemoveNodeProvider;
       return {
@@ -483,6 +550,14 @@ export default class RequestConverters {
         Follow: {
           topic: follow.topic,
           followees: follow.followees.map(this.fromNeuronId),
+        },
+      };
+    }
+    if ("ClaimOrRefresh" in command) {
+      const claimOrRefresh = command.ClaimOrRefresh;
+      return {
+        ClaimOrRefresh: {
+          by: claimOrRefresh.by ? [{ Memo: claimOrRefresh.by.Memo }] : [],
         },
       };
     }

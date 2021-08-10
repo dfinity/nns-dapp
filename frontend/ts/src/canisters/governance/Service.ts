@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal";
 import { Option } from "../option";
-import RawService, { ListNeurons } from "./rawService";
+import { _SERVICE, ListNeurons } from "./rawService";
 import ServiceInterface, {
   AddHotKeyRequest,
   DisburseRequest,
@@ -36,7 +36,7 @@ import { Agent } from "@dfinity/agent";
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
   private readonly canisterId: Principal;
-  private readonly service: RawService;
+  private readonly service: _SERVICE;
   private readonly myPrincipal: Principal;
   private readonly requestConverters: RequestConverters;
   private readonly responseConverters: ResponseConverters;
@@ -44,7 +44,7 @@ export default class Service implements ServiceInterface {
   public constructor(
     agent: Agent,
     canisterId: Principal,
-    service: RawService,
+    service: _SERVICE,
     myPrincipal: Principal
   ) {
     this.agent = agent;
@@ -122,35 +122,56 @@ export default class Service implements ServiceInterface {
   public removeHotKey = async (
     request: RemoveHotKeyRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest = this.requestConverters.fromRemoveHotKeyRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters.fromRemoveHotKeyRequest(request).serializeBinary()
+    );
+
     return { Ok: null };
   };
 
   public startDissolving = async (
     request: StartDissolvingRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest =
-      this.requestConverters.fromStartDissolvingRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters
+        .fromStartDissolvingRequest(request)
+        .serializeBinary()
+    );
     return { Ok: null };
   };
 
   public stopDissolving = async (
     request: StopDissolvingRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest =
-      this.requestConverters.fromStopDissolvingRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters
+        .fromStopDissolvingRequest(request)
+        .serializeBinary()
+    );
     return { Ok: null };
   };
 
   public increaseDissolveDelay = async (
     request: IncreaseDissolveDelayRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest =
-      this.requestConverters.fromIncreaseDissolveDelayRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters
+        .fromIncreaseDissolveDelayRequest(request)
+        .serializeBinary()
+    );
+
     return { Ok: null };
   };
 

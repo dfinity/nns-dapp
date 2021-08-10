@@ -83,7 +83,7 @@ jobs:
       - name: Flutter setup
         uses: subosito/flutter-action@v1
         with:
-          flutter-version: '2.0.6'
+          flutter-version: '2.2.3'
           channel: 'stable'
 
       - run: flutter pub get

@@ -177,18 +177,6 @@ pub enum RegisterHardwareWalletResponse {
     NameTooLong,
 }
 
-#[derive(Deserialize)]
-pub struct RemoveHardwareWalletRequest {
-    account_identifier: AccountIdentifier,
-}
-
-#[derive(CandidType)]
-pub enum RemoveHardwareWalletResponse {
-    Ok,
-    AccountNotFound,
-    HardwareWalletNotFound,
-}
-
 #[derive(CandidType)]
 pub struct AccountDetails {
     pub account_identifier: AccountIdentifier,
@@ -473,31 +461,6 @@ impl AccountsStore {
         );
 
         RegisterHardwareWalletResponse::Ok
-    }
-
-    pub fn remove_hardware_wallet(
-        &mut self,
-        caller: PrincipalId,
-        request: RemoveHardwareWalletRequest,
-    ) -> RemoveHardwareWalletResponse {
-        if let Some(account) =
-            self.try_get_account_mut_by_default_identifier(&AccountIdentifier::from(caller))
-        {
-            if let Some(index) = account
-                .hardware_wallet_accounts
-                .iter()
-                .enumerate()
-                .find(|(_, hw)| request.account_identifier == AccountIdentifier::from(hw.principal))
-                .map(|(index, _)| index)
-            {
-                account.hardware_wallet_accounts.remove(index);
-                RemoveHardwareWalletResponse::Ok
-            } else {
-                RemoveHardwareWalletResponse::HardwareWalletNotFound
-            }
-        } else {
-            RemoveHardwareWalletResponse::AccountNotFound
-        }
     }
 
     pub fn append_transaction(

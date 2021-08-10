@@ -4,7 +4,6 @@ import {
   DetachCanisterRequest,
   GetTransactionsRequest,
   RegisterHardwareWalletRequest,
-  RemoveHardwareWalletRequest,
   RenameSubAccountRequest,
 } from "./model";
 import {
@@ -12,7 +11,6 @@ import {
   DetachCanisterRequest as RawDetachCanisterRequest,
   GetTransactionsRequest as RawGetTransactionsRequest,
   RegisterHardwareWalletRequest as RawRegisterHardwareWalletRequest,
-  RemoveHardwareWalletRequest as RawRemoveHardwareWalletRequest,
   RenameSubAccountRequest as RawRenameSubAccountRequest,
 } from "./rawService";
 
@@ -49,14 +47,6 @@ export default class RequestConverters {
   ): RawRegisterHardwareWalletRequest => {
     return {
       name: request.name,
-      principal: Principal.fromText(request.principal),
-    };
-  };
-
-  public fromRemoveHardwareWalletRequest = (
-    request: RemoveHardwareWalletRequest
-  ): RawRemoveHardwareWalletRequest => {
-    return {
       principal: Principal.fromText(request.principal),
     };
   };

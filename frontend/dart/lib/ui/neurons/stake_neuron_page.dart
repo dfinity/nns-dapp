@@ -3,6 +3,7 @@ import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
+import 'package:dfinity_wallet/ui/neurons/detail/hardware_neuron.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/services.dart';
 import '../../dfinity.dart';
 import 'package:dartx/dartx.dart';
 
+import 'detail/neuron_hotkeys_card.dart';
 import 'following/configure_followers_page.dart';
 
 class StakeNeuronPage extends StatefulWidget {
@@ -75,8 +77,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                           VerySmallFormDivider(),
                           // fee is doubled as it is a SEND and NOTIFY
                           Text(
-                              (ICP.fromE8s(
-                                          BigInt.from(TRANSACTION_FEE_E8S)))
+                              (ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
                                       .asString(myLocale.languageCode) +
                                   " ICP",
                               style: Responsive.isDesktop(context) |
@@ -157,24 +158,63 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                             element.createdTimestampSeconds.toBigInt)
                         .first;
 
-                    WizardOverlay.of(context).replacePage(
-                        "Set Dissolve Delay",
-                        IncreaseDissolveDelayWidget(
-                            neuron: newNeuron,
-                            cancelTitle: "Skip",
-                            onCompleteAction: (context) {
-                              WizardOverlay.of(context).replacePage(
-                                  "Follow Neurons",
-                                  ConfigureFollowersPage(
+                    switch (widget.source.type) {
+                      case ICPSourceType.HARDWARE_WALLET:
+                        OverlayBaseWidget.show(
+                            context,
+                            WizardOverlay(
+                                rootTitle: "Neuron Created Successfully",
+                                rootWidget: HardwareWalletNeuron(
+                                    amount: ICP
+                                        .fromString(amountField.currentValue),
                                     neuron: newNeuron,
-                                    completeAction: (context) {
-                                      OverlayBaseWidget.of(context)?.dismiss();
-                                      context.nav.push(
-                                          NeuronPageDef.createPageConfig(
-                                              newNeuron));
-                                    },
-                                  ));
-                            }));
+                                    onCompleteAction: (context) {
+                                      WizardOverlay.of(context).replacePage(
+                                          "Set Dissolve Delay",
+                                          IncreaseDissolveDelayWidget(
+                                              neuron: newNeuron,
+                                              cancelTitle: "Skip",
+                                              onCompleteAction: (context) {
+                                                WizardOverlay.of(context)
+                                                    .replacePage(
+                                                        "Follow Neurons",
+                                                        ConfigureFollowersPage(
+                                                          neuron: newNeuron,
+                                                          completeAction:
+                                                              (context) {
+                                                            OverlayBaseWidget
+                                                                    .of(context)
+                                                                ?.dismiss();
+                                                            context.nav.push(
+                                                                NeuronPageDef
+                                                                    .createPageConfig(
+                                                                        newNeuron));
+                                                          },
+                                                        ));
+                                              }));
+                                    })));
+                        break;
+                      case ICPSourceType.ACCOUNT:
+                        WizardOverlay.of(context).replacePage(
+                            "Set Dissolve Delay",
+                            IncreaseDissolveDelayWidget(
+                                neuron: newNeuron,
+                                cancelTitle: "Skip",
+                                onCompleteAction: (context) {
+                                  WizardOverlay.of(context).replacePage(
+                                      "Follow Neurons",
+                                      ConfigureFollowersPage(
+                                        neuron: newNeuron,
+                                        completeAction: (context) {
+                                          OverlayBaseWidget.of(context)
+                                              ?.dismiss();
+                                          context.nav.push(
+                                              NeuronPageDef.createPageConfig(
+                                                  newNeuron));
+                                        },
+                                      ));
+                                }));
+                    }
                   }.takeIf((e) => <ValidatedField>[amountField].allAreValid),
                 ),
               ),

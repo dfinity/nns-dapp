@@ -46,48 +46,68 @@ class _IncreaseDissolveDelayWidgetState
         Expanded(
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 42.0, left: 42.0, right: 42.0, bottom: 20.0),
+                      top: 42.0, left: 30.0, right: 42.0, bottom: 20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text('Neuron ID',
+                          style: Responsive.isMobile(context)
+                              ? context.textTheme.headline4
+                              : context.textTheme.headline3),
+                      VerySmallFormDivider(),
                       SelectableText(
                         widget.neuron.identifier,
                         style: Responsive.isMobile(context)
-                            ? context.textTheme.headline6
-                            : context.textTheme.headline2,
+                            ? context.textTheme.bodyText2!
+                                .copyWith(fontSize: 16)
+                            : context.textTheme.bodyText1!
+                                .copyWith(fontSize: 24),
                       ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
+                      TallFormDivider(),
+                      Text('Balance',
+                          style: Responsive.isMobile(context)
+                              ? context.textTheme.headline4
+                              : context.textTheme.headline3),
+                      VerySmallFormDivider(),
                       RichText(
                           text: TextSpan(
                               text: widget.neuron.stake
                                   .asString(myLocale.languageCode),
-                              style: context.textTheme.bodyText1,
+                              style: Responsive.isMobile(context)
+                                  ? context.textTheme.bodyText2
+                                  : context.textTheme.bodyText1!
+                                      .copyWith(fontSize: 24),
                               children: [
                             TextSpan(
-                                text: " ICP Stake",
-                                style: context.textTheme.bodyText2)
+                              text: " ICP Stake",
+                              style: Responsive.isMobile(context)
+                                  ? context.textTheme.bodyText2
+                                  : context.textTheme.bodyText1!
+                                      .copyWith(fontSize: 20),
+                            )
                           ])),
-                      SizedBox(
-                        height: 10.0,
-                      ),
+                      TallFormDivider(),
+                      Text("Current Dissolve Delay",
+                          style: Responsive.isMobile(context)
+                              ? context.textTheme.headline4
+                              : context.textTheme.headline3),
+                      VerySmallFormDivider(),
                       RichText(
                           text: TextSpan(
-                              text: widget.neuron.dissolveDelaySeconds
-                                  .toInt()
-                                  .seconds
-                                  .yearsDayHourMinuteSecondFormatted(),
-                              style: context.textTheme.bodyText1,
-                              children: [
-                            TextSpan(
-                                text: " Current Dissolve Delay",
-                                style: context.textTheme.bodyText2)
-                          ])),
+                        text: widget.neuron.dissolveDelaySeconds
+                            .toInt()
+                            .seconds
+                            .yearsDayHourMinuteSecondFormatted(),
+                        style: Responsive.isMobile(context)
+                            ? context.textTheme.bodyText2
+                            : context.textTheme.bodyText1!
+                                .copyWith(fontSize: 24),
+                      )),
                     ],
                   ),
                 ),

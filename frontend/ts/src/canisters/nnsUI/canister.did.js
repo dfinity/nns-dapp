@@ -146,13 +146,6 @@ export const idlFactory = ({ IDL }) => {
     'HardwareWalletLimitExceeded' : IDL.Null,
     'NameTooLong' : IDL.Null,
   });
-  const RemoveHardwareWalletRequest = IDL.Record({
-    'principal' : IDL.Principal,
-  });
-  const RemoveHardwareWalletResponse = IDL.Variant({
-    'Ok' : IDL.Null,
-    'HardwareWalletNotFound' : IDL.Null,
-  });
   const RenameSubAccountRequest = IDL.Record({
     'new_name' : IDL.Text,
     'account_identifier' : AccountIdentifier,
@@ -199,11 +192,6 @@ export const idlFactory = ({ IDL }) => {
     'register_hardware_wallet' : IDL.Func(
         [RegisterHardwareWalletRequest],
         [RegisterHardwareWalletResponse],
-        [],
-      ),
-    'remove_hardware_wallet' : IDL.Func(
-        [RemoveHardwareWalletRequest],
-        [RemoveHardwareWalletResponse],
         [],
       ),
     'rename_sub_account' : IDL.Func(

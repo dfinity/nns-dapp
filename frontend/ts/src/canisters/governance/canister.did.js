@@ -1,4 +1,4 @@
-export default ({ IDL }) => {
+export const idlFactory = ({ IDL }) => {
   const Proposal = IDL.Rec();
   const NeuronId = IDL.Record({ 'id' : IDL.Nat64 });
   const Followees = IDL.Record({ 'followees' : IDL.Vec(NeuronId) });
@@ -45,6 +45,8 @@ export default ({ IDL }) => {
     'topic' : IDL.Int32,
     'followees' : IDL.Vec(NeuronId),
   });
+  const By = IDL.Variant({ 'Memo' : IDL.Nat64 });
+  const ClaimOrRefresh = IDL.Record({ 'by' : IDL.Opt(By) });
   const RemoveHotKey = IDL.Record({
     'hot_key_to_remove' : IDL.Opt(IDL.Principal),
   });
@@ -85,15 +87,21 @@ export default ({ IDL }) => {
     'Spawn' : Spawn,
     'Split' : Split,
     'Follow' : Follow,
+    'ClaimOrRefresh' : ClaimOrRefresh,
     'Configure' : Configure,
     'RegisterVote' : RegisterVote,
     'DisburseToNeuron' : DisburseToNeuron,
     'MakeProposal' : Proposal,
     'Disburse' : Disburse,
   });
+  const NeuronIdOrSubaccount = IDL.Variant({
+    'Subaccount' : IDL.Vec(IDL.Nat8),
+    'NeuronId' : NeuronId,
+  });
   const ManageNeuron = IDL.Record({
     'id' : IDL.Opt(NeuronId),
     'command' : IDL.Opt(Command),
+    'neuron_id_or_subaccount' : IDL.Opt(NeuronIdOrSubaccount),
   });
   const ExecuteNnsFunction = IDL.Record({
     'nns_function' : IDL.Int32,
@@ -115,6 +123,9 @@ export default ({ IDL }) => {
   const SetDefaultFollowees = IDL.Record({
     'default_followees' : IDL.Vec(IDL.Tuple(IDL.Int32, Followees)),
   });
+  const RewardNodeProviders = IDL.Record({
+    'rewards' : IDL.Vec(RewardNodeProvider),
+  });
   const ApproveGenesisKyc = IDL.Record({
     'principals' : IDL.Vec(IDL.Principal),
   });
@@ -129,17 +140,18 @@ export default ({ IDL }) => {
     'ExecuteNnsFunction' : ExecuteNnsFunction,
     'RewardNodeProvider' : RewardNodeProvider,
     'SetDefaultFollowees' : SetDefaultFollowees,
+    'RewardNodeProviders' : RewardNodeProviders,
     'ManageNetworkEconomics' : NetworkEconomics,
     'ApproveGenesisKyc' : ApproveGenesisKyc,
     'AddOrRemoveNodeProvider' : AddOrRemoveNodeProvider,
     'Motion' : Motion,
   });
   Proposal.fill(
-    IDL.Record({
-      'url' : IDL.Text,
-      'action' : IDL.Opt(Action),
-      'summary' : IDL.Text,
-    })
+      IDL.Record({
+        'url' : IDL.Text,
+        'action' : IDL.Opt(Action),
+        'summary' : IDL.Text,
+      })
   );
   const ProposalData = IDL.Record({
     'id' : IDL.Opt(NeuronId),
@@ -263,6 +275,9 @@ export default ({ IDL }) => {
     'proposal_info' : IDL.Vec(ProposalInfo),
   });
   const SpawnResponse = IDL.Record({ 'created_neuron_id' : IDL.Opt(NeuronId) });
+  const ClaimOrRefreshResponse = IDL.Record({
+    'refreshed_neuron_id' : IDL.Opt(NeuronId),
+  });
   const MakeProposalResponse = IDL.Record({
     'proposal_id' : IDL.Opt(NeuronId),
   });
@@ -272,6 +287,7 @@ export default ({ IDL }) => {
     'Spawn' : SpawnResponse,
     'Split' : SpawnResponse,
     'Follow' : IDL.Record({}),
+    'ClaimOrRefresh' : ClaimOrRefreshResponse,
     'Configure' : IDL.Record({}),
     'RegisterVote' : IDL.Record({}),
     'DisburseToNeuron' : SpawnResponse,
@@ -284,12 +300,12 @@ export default ({ IDL }) => {
         [IDL.Principal, IDL.Vec(NeuronId)],
         [Result],
         [],
-      ),
+    ),
     'claim_or_refresh_neuron_from_account' : IDL.Func(
         [ClaimOrRefreshNeuronFromAccount],
         [ClaimOrRefreshNeuronFromAccountResponse],
         [],
-      ),
+    ),
     'get_full_neuron' : IDL.Func([IDL.Nat64], [Result_2], ['query']),
     'get_neuron_ids' : IDL.Func([], [IDL.Vec(IDL.Nat64)], ['query']),
     'get_neuron_info' : IDL.Func([IDL.Nat64], [Result_3], ['query']),
@@ -298,13 +314,13 @@ export default ({ IDL }) => {
         [IDL.Nat64],
         [IDL.Opt(ProposalInfo)],
         ['query'],
-      ),
+    ),
     'list_neurons' : IDL.Func([ListNeurons], [ListNeuronsResponse], ['query']),
     'list_proposals' : IDL.Func(
         [ListProposalInfo],
         [ListProposalInfoResponse],
         ['query'],
-      ),
+    ),
     'manage_neuron' : IDL.Func([ManageNeuron], [ManageNeuronResponse], []),
     'transfer_gtc_neuron' : IDL.Func([NeuronId, NeuronId], [Result], []),
   });
@@ -356,6 +372,8 @@ export const init = ({ IDL }) => {
     'topic' : IDL.Int32,
     'followees' : IDL.Vec(NeuronId),
   });
+  const By = IDL.Variant({ 'Memo' : IDL.Nat64 });
+  const ClaimOrRefresh = IDL.Record({ 'by' : IDL.Opt(By) });
   const RemoveHotKey = IDL.Record({
     'hot_key_to_remove' : IDL.Opt(IDL.Principal),
   });
@@ -396,15 +414,21 @@ export const init = ({ IDL }) => {
     'Spawn' : Spawn,
     'Split' : Split,
     'Follow' : Follow,
+    'ClaimOrRefresh' : ClaimOrRefresh,
     'Configure' : Configure,
     'RegisterVote' : RegisterVote,
     'DisburseToNeuron' : DisburseToNeuron,
     'MakeProposal' : Proposal,
     'Disburse' : Disburse,
   });
+  const NeuronIdOrSubaccount = IDL.Variant({
+    'Subaccount' : IDL.Vec(IDL.Nat8),
+    'NeuronId' : NeuronId,
+  });
   const ManageNeuron = IDL.Record({
     'id' : IDL.Opt(NeuronId),
     'command' : IDL.Opt(Command),
+    'neuron_id_or_subaccount' : IDL.Opt(NeuronIdOrSubaccount),
   });
   const ExecuteNnsFunction = IDL.Record({
     'nns_function' : IDL.Int32,
@@ -426,6 +450,9 @@ export const init = ({ IDL }) => {
   const SetDefaultFollowees = IDL.Record({
     'default_followees' : IDL.Vec(IDL.Tuple(IDL.Int32, Followees)),
   });
+  const RewardNodeProviders = IDL.Record({
+    'rewards' : IDL.Vec(RewardNodeProvider),
+  });
   const ApproveGenesisKyc = IDL.Record({
     'principals' : IDL.Vec(IDL.Principal),
   });
@@ -440,17 +467,18 @@ export const init = ({ IDL }) => {
     'ExecuteNnsFunction' : ExecuteNnsFunction,
     'RewardNodeProvider' : RewardNodeProvider,
     'SetDefaultFollowees' : SetDefaultFollowees,
+    'RewardNodeProviders' : RewardNodeProviders,
     'ManageNetworkEconomics' : NetworkEconomics,
     'ApproveGenesisKyc' : ApproveGenesisKyc,
     'AddOrRemoveNodeProvider' : AddOrRemoveNodeProvider,
     'Motion' : Motion,
   });
   Proposal.fill(
-    IDL.Record({
-      'url' : IDL.Text,
-      'action' : IDL.Opt(Action),
-      'summary' : IDL.Text,
-    })
+      IDL.Record({
+        'url' : IDL.Text,
+        'action' : IDL.Opt(Action),
+        'summary' : IDL.Text,
+      })
   );
   const ProposalData = IDL.Record({
     'id' : IDL.Opt(NeuronId),
