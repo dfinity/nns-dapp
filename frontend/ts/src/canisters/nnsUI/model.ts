@@ -99,13 +99,6 @@ export type RegisterHardwareWalletResponse =
   | { HardwareWalletAlreadyRegistered: null }
   | { HardwareWalletLimitExceeded: null }
   | { NameTooLong: null };
-
-export interface RemoveHardwareWalletRequest {
-  principal: PrincipalString;
-}
-export type RemoveHardwareWalletResponse =
-  | { Ok: null }
-  | { HardwareWalletNotFound: null };
 export interface RenameSubAccountRequest {
   newName: string;
   accountIdentifier: AccountIdentifier;
@@ -163,9 +156,6 @@ export default interface ServiceInterface {
   registerHardwareWallet: (
     request: RegisterHardwareWalletRequest
   ) => Promise<RegisterHardwareWalletResponse>;
-  removeHardwareWallet: (
-    request: RemoveHardwareWalletRequest
-  ) => Promise<RemoveHardwareWalletResponse>;
   renameSubAccount: (
     request: RenameSubAccountRequest
   ) => Promise<RenameSubAccountResponse>;

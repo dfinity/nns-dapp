@@ -10,7 +10,6 @@ import {
   HardwareWalletAccountDetails,
   MultiPartTransactionStatus,
   RegisterHardwareWalletResponse,
-  RemoveHardwareWalletResponse,
   RenameSubAccountResponse,
   SubAccountDetails,
 } from "./model";
@@ -24,7 +23,6 @@ import {
   HardwareWalletAccountDetails as RawHardwareWalletAccountDetails,
   MultiPartTransactionStatus as RawMultiPartTransactionStatus,
   RegisterHardwareWalletResponse as RawRegisterHardwareWalletResponse,
-  RemoveHardwareWalletResponse as RawRemoveHardwareWalletResponse,
   RenameSubAccountResponse as RawRenameSubAccountResponse,
   SubAccountDetails as RawSubAccountDetails,
 } from "./rawService";
@@ -107,12 +105,6 @@ export default class ResponseConverters {
   public toRegisterHardwareWalletResponse = (
     response: RawRegisterHardwareWalletResponse
   ): RegisterHardwareWalletResponse => {
-    return response;
-  };
-
-  public toRemoveHardwareWalletResponse = (
-    response: RawRemoveHardwareWalletResponse
-  ): RemoveHardwareWalletResponse => {
     return response;
   };
 
