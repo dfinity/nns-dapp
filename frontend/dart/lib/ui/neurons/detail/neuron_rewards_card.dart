@@ -110,12 +110,13 @@ class NeuronRewardsCard extends StatelessWidget {
                                               ?.dismiss();
                                         }));
                               }.takeIf((e) =>
-                                  neuron.stake.asE8s() > BigInt.zero &&
+                                  neuron.maturityICPEquivalent.asE8s() >
+                                      BigInt.zero &&
                                   neuron.isCurrentUserController),
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Text(
-                                  "Merge Neuron",
+                                  "Merge Maturity",
                                   style: TextStyle(
                                       fontSize: Responsive.isMobile(context)
                                           ? 14
@@ -335,11 +336,8 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                     OverlayBaseWidget.show(
                         context,
                         ConfirmDialog(
-                          title: "Confirm Merge Neuron",
-                          //TODO :change this text to be : Your remaining maturity will be : -- ?
-                          description:
-                              "After complete, the neuron's ICP will be : ${widget.neuron.stake.asString(myLocale.languageCode)} ICP",
-
+                          title: "Confirm Merge Maturity",
+                          description: "",
                           onConfirm: () async {
                             await performUpdate(context);
                           },
@@ -371,7 +369,7 @@ class StakeRewardsWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 42.0),
           child: Text(
-            "Merge Neuron",
+            "Merge Maturity",
             style: Responsive.isMobile(context)
                 ? context.textTheme.headline6
                 : context.textTheme.headline3,
@@ -383,7 +381,7 @@ class StakeRewardsWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 42.0),
           child: Text(
-              "Choose your how much of your reward to stake to the neuron's ICP ",
+              "Choose your how much of your maturity to merge into the neuron's stake ",
               style: context.textTheme.subtitle2),
         ),
         SizedBox(
