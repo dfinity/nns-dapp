@@ -82,9 +82,6 @@ export type RegisterHardwareWalletResponse = { 'Ok' : null } |
   { 'HardwareWalletAlreadyRegistered' : null } |
   { 'HardwareWalletLimitExceeded' : null } |
   { 'NameTooLong' : null };
-export interface RemoveHardwareWalletRequest { 'principal' : Principal }
-export type RemoveHardwareWalletResponse = { 'Ok' : null } |
-  { 'HardwareWalletNotFound' : null };
 export interface RenameSubAccountRequest {
   'new_name' : string,
   'account_identifier' : AccountIdentifier,
@@ -166,9 +163,6 @@ export interface _SERVICE {
   'register_hardware_wallet' : (
       arg_0: RegisterHardwareWalletRequest,
     ) => Promise<RegisterHardwareWalletResponse>,
-  'remove_hardware_wallet' : (arg_0: RemoveHardwareWalletRequest) => Promise<
-      RemoveHardwareWalletResponse
-    >,
   'rename_sub_account' : (arg_0: RenameSubAccountRequest) => Promise<
       RenameSubAccountResponse
     >,

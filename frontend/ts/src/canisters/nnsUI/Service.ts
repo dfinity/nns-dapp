@@ -13,8 +13,6 @@ import ServiceInterface, {
   MultiPartTransactionStatus,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
-  RemoveHardwareWalletRequest,
-  RemoveHardwareWalletResponse,
   RenameSubAccountRequest,
   RenameSubAccountResponse,
 } from "./model";
@@ -90,15 +88,6 @@ export default class Service implements ServiceInterface {
     return this.responseConverters.toRegisterHardwareWalletResponse(
       rawResponse
     );
-  };
-
-  public removeHardwareWallet = async (
-    request: RemoveHardwareWalletRequest
-  ): Promise<RemoveHardwareWalletResponse> => {
-    const rawRequest =
-      this.requestConverters.fromRemoveHardwareWalletRequest(request);
-    const rawResponse = await this.service.remove_hardware_wallet(rawRequest);
-    return this.responseConverters.toRemoveHardwareWalletResponse(rawResponse);
   };
 
   public getTransactions = async (
