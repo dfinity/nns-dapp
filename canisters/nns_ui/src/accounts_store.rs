@@ -29,7 +29,7 @@ type TransactionIndex = u64;
 #[derive(Default)]
 pub struct AccountsStore {
     transactions: VecDeque<Transaction>,
-    accounts: HashMap<AccountIdentifier, AccountLocation>,
+    accounts: HashMap<AccountIdentifier, AccountWrapper>,
     // accounts_hashes: RbTree<Vec<u8>, Hash>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockHeight>,
@@ -43,7 +43,7 @@ pub struct AccountsStore {
 }
 
 #[derive(CandidType, Deserialize, Debug)]
-enum AccountLocation {
+enum AccountWrapper {
     DefaultAccount(Account),                // Account Identifier
     SubAccount(AccountIdentifier, u8),      // Account Identifier + SubAccount index
     HardwareWallet(Vec<AccountIdentifier>), // Vec of account Identifier since a hardware wallet could theoretically be shared between multiple accounts
@@ -338,7 +338,7 @@ impl AccountsStore {
                     let new_account = Account::new(caller, account_identifier);
                     self.accounts.insert(
                         account_identifier,
-                        AccountLocation::DefaultAccount(new_account),
+                        AccountWrapper::DefaultAccount(new_account),
                     );
                     self.accounts_count += 1;
                 }
@@ -376,7 +376,7 @@ impl AccountsStore {
                     .insert(sub_account_id, named_sub_account);
                 self.accounts.insert(
                     sub_account_identifier,
-                    AccountLocation::SubAccount(account_identifier, sub_account_id),
+                    AccountWrapper::SubAccount(account_identifier, sub_account_id),
                 );
                 self.sub_accounts_count += 1;
 
@@ -923,14 +923,14 @@ impl AccountsStore {
         transaction_index: TransactionIndex,
     ) -> bool {
         let default_account_identifier_vec = match self.accounts.get_mut(&account_identifier) {
-            Some(AccountLocation::DefaultAccount(account)) => {
+            Some(AccountWrapper::DefaultAccount(account)) => {
                 account.append_default_account_transaction(transaction_index);
                 vec![]
             }
-            Some(AccountLocation::SubAccount(default_account_identifier, sub_account_index)) => {
+            Some(AccountWrapper::SubAccount(default_account_identifier, sub_account_index)) => {
                 vec![(*default_account_identifier, Some(*sub_account_index))]
             }
-            Some(AccountLocation::HardwareWallet(default_account_identifiers)) => {
+            Some(AccountWrapper::HardwareWallet(default_account_identifiers)) => {
                 default_account_identifiers
                     .iter_mut()
                     .map(|default_account_identifier| (*default_account_identifier, None))
@@ -960,14 +960,14 @@ impl AccountsStore {
     fn try_get_principal(&self, account_identifier: &AccountIdentifier) -> Option<PrincipalId> {
         if let Some(account_type) = self.accounts.get(account_identifier) {
             match account_type {
-                AccountLocation::DefaultAccount(account) => account.principal,
-                AccountLocation::SubAccount(default_account_identifier, _) => {
+                AccountWrapper::DefaultAccount(account) => account.principal,
+                AccountWrapper::SubAccount(default_account_identifier, _) => {
                     let account = self
                         .try_get_account_by_default_identifier(default_account_identifier)
                         .unwrap();
                     account.principal
                 }
-                AccountLocation::HardwareWallet(default_account_identifiers) => {
+                AccountWrapper::HardwareWallet(default_account_identifiers) => {
                     default_account_identifiers
                         .iter()
                         .filter_map(|default_account_identifier| {
@@ -991,7 +991,7 @@ impl AccountsStore {
         account_identifier: &AccountIdentifier,
     ) -> Option<&Account> {
         match self.accounts.get(account_identifier) {
-            Some(AccountLocation::DefaultAccount(account)) => Some(account),
+            Some(AccountWrapper::DefaultAccount(account)) => Some(account),
             _ => None,
         }
     }
@@ -1001,7 +1001,7 @@ impl AccountsStore {
         account_identifier: &AccountIdentifier,
     ) -> Option<&mut Account> {
         match self.accounts.get_mut(account_identifier) {
-            Some(AccountLocation::DefaultAccount(account)) => Some(account),
+            Some(AccountWrapper::DefaultAccount(account)) => Some(account),
             _ => None,
         }
     }
@@ -1046,11 +1046,11 @@ impl AccountsStore {
         self.accounts
             .entry(hardware_wallet_account_identifier)
             .and_modify(|e| {
-                if let AccountLocation::HardwareWallet(account_identifiers) = e {
+                if let AccountWrapper::HardwareWallet(account_identifiers) = e {
                     account_identifiers.push(account_identifier);
                 }
             })
-            .or_insert_with(|| AccountLocation::HardwareWallet(vec![account_identifier]));
+            .or_insert_with(|| AccountWrapper::HardwareWallet(vec![account_identifier]));
     }
 
     fn validate_account_name(name: &str) -> bool {
@@ -1093,16 +1093,16 @@ impl AccountsStore {
         let mut default_account_identifier_vec: Vec<(AccountIdentifier, Option<u8>)> = vec![];
         if let Some(account_wrapper) = self.accounts.get_mut(&account_identifier) {
             match account_wrapper {
-                AccountLocation::DefaultAccount(account) => {
+                AccountWrapper::DefaultAccount(account) => {
                     let transactions = &mut account.default_account_transactions;
                     prune_transactions_impl(transactions, prune_blocks_previous_to);
                     return;
                 }
-                AccountLocation::SubAccount(default_account_identifier, sub_account_index) => {
+                AccountWrapper::SubAccount(default_account_identifier, sub_account_index) => {
                     default_account_identifier_vec
                         .push((*default_account_identifier, Some(*sub_account_index)));
                 }
-                AccountLocation::HardwareWallet(default_account_identifiers) => {
+                AccountWrapper::HardwareWallet(default_account_identifiers) => {
                     default_account_identifier_vec = default_account_identifiers
                         .iter_mut()
                         .map(|default_account_identifier| (*default_account_identifier, None))
@@ -1411,7 +1411,7 @@ impl StableState for AccountsStore {
             neurons_topped_up_count,
         ): (
             VecDeque<Transaction>,
-            HashMap<AccountIdentifier, AccountLocation>,
+            HashMap<AccountIdentifier, AccountWrapper>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
             MultiPartTransactionsProcessor,
@@ -1424,7 +1424,7 @@ impl StableState for AccountsStore {
         let mut hardware_wallet_accounts_count: u64 = 0;
 
         for account_wrapper in accounts.values() {
-            if let AccountLocation::DefaultAccount(account) = account_wrapper {
+            if let AccountWrapper::DefaultAccount(account) = account_wrapper {
                 accounts_count += 1;
                 sub_accounts_count += account.sub_accounts.len() as u64;
                 hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
