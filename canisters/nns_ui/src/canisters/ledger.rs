@@ -8,7 +8,7 @@ use ledger_canister::{
 };
 
 pub async fn send(request: SendArgs) -> Result<BlockHeight, String> {
-    dfn_core::call(LEDGER_CANISTER_ID, "send_pb", protobuf, request.to_proto())
+    dfn_core::call(LEDGER_CANISTER_ID, "send_pb", protobuf, request.into_proto())
         .await
         .map_err(|e| e.1)
 }
@@ -18,7 +18,7 @@ pub async fn notify(request: NotifyCanisterArgs) -> Result<CyclesResponse, Strin
         LEDGER_CANISTER_ID,
         "notify_pb",
         protobuf,
-        request.to_proto(),
+        request.into_proto(),
     )
     .await
     .map_err(|e| e.1)
@@ -29,7 +29,7 @@ pub async fn account_balance(request: AccountBalanceArgs) -> Result<ICPTs, Strin
         LEDGER_CANISTER_ID,
         "account_balance_pb",
         protobuf,
-        request.to_proto(),
+        request.into_proto(),
     )
     .await
     .map_err(|e| e.1)

@@ -16,21 +16,21 @@ serde_bytes = "0.11"
 serde_cbor = "0.11"
 sha2 = "0.9.1"
 lzma-rs = "0.2.0"
-tar = "0.4.33"
+tar = "0.4.35"
 
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
-dfn_json = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
-dfn_macro = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+dfn_json = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+dfn_macro = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
 ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
-ic-crypto-sha256 = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
-ledger-canister = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "779549eccfcf61ac702dfc2ee6d76ffdc2db1f7f" }
+ic-crypto-sha256 = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+ledger-canister = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
 
 [features]
 mock_conversion_rate = []
