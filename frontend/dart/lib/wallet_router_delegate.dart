@@ -13,10 +13,6 @@ import 'package:observable/observable.dart' hide ChangeNotifier;
 import 'dfinity.dart';
 import 'ic_api/platform_ic_api.dart';
 
-const String ProposalDetailPath = '/proposal';
-const String CanisterTabsPath = '/canisters';
-const String NeuronsTabsPath = '/neurons';
-
 abstract class PageConfig {
   final String path;
   final bool clearStack;
@@ -56,32 +52,32 @@ class EntityPage extends PageConfig {
   Widget createWidget() => widget;
 }
 
-StaticPage AuthPage = StaticPage('/auth', AuthWidget());
+StaticPage authPage = StaticPage('/auth', AuthWidget());
 
-PageConfig LoadingPage = StaticPage('/loading', LandingPageWidget());
+PageConfig loadingPage = StaticPage('/loading', LandingPageWidget());
 
-PageConfig AccountsTabPage = StaticPage(
+PageConfig accountsTabPage = StaticPage(
     '/accounts',
     HomePage(
       initialTabIndex: 0,
     ),
     clearStack: true);
 
-PageConfig NeuronTabsPage = StaticPage(
+PageConfig neuronTabsPage = StaticPage(
     '/neurons',
     HomePage(
       initialTabIndex: 1,
     ),
     clearStack: true);
 
-PageConfig ProposalsTabPage = StaticPage(
+PageConfig proposalsTabPage = StaticPage(
     '/proposals',
     HomePage(
       initialTabIndex: 2,
     ),
     clearStack: true);
 
-PageConfig CanistersTabPage = StaticPage(
+PageConfig canistersTabPage = StaticPage(
     '/canisters',
     HomePage(
       initialTabIndex: 3,
@@ -102,17 +98,16 @@ class ApiObjectPage {
   }
 }
 
-
-ApiObjectPage NeuronInfoPage = ApiObjectPage("/neuron_info", (identifier) => NeuronInfoWidget(identifier));
-
-
+ApiObjectPage neuronInfoPage =
+    ApiObjectPage("/neuron_info", (identifier) => NeuronInfoWidget(identifier));
 
 class EntityPageDefinition<T extends DfinityEntity> {
   final ObservableMap<String, T> Function(HiveBoxes boxes) fetchBox;
   final Widget Function(T entity) createWidget;
   final String pathTemplate;
   final PageConfig parentPage;
-  final Future<T?> Function(String identifier, AbstractPlatformICApi icApi)? entityFromIC;
+  final Future<T?> Function(String identifier, AbstractPlatformICApi icApi)?
+      entityFromIC;
 
   EntityPageDefinition(
       {required this.pathTemplate,
@@ -137,30 +132,31 @@ class EntityPageDefinition<T extends DfinityEntity> {
   }
 }
 
-EntityPageDefinition AccountPageDef = EntityPageDefinition<Account>(
+EntityPageDefinition accountPageDef = EntityPageDefinition<Account>(
     pathTemplate: "/wallet",
-    parentPage: AccountsTabPage,
+    parentPage: accountsTabPage,
     createWidget: (wallet) => AccountDetailPage(wallet),
     fetchBox: (boxes) => boxes.accounts);
 
-EntityPageDefinition NeuronPageDef = EntityPageDefinition<Neuron>(
+EntityPageDefinition neuronPageDef = EntityPageDefinition<Neuron>(
     pathTemplate: "/neuron",
-    parentPage: NeuronTabsPage,
+    parentPage: neuronTabsPage,
     createWidget: (neuron) => NeuronDetailWidget(neuron),
     fetchBox: (boxes) => boxes.neurons,
-    entityFromIC: (neuronId, icApi) => icApi.fetchNeuron(neuronId: BigInt.parse(neuronId)));
+    entityFromIC: (neuronId, icApi) =>
+        icApi.fetchNeuron(neuronId: BigInt.parse(neuronId)));
 
-EntityPageDefinition ProposalPageDef = EntityPageDefinition<Proposal>(
+EntityPageDefinition proposalPageDef = EntityPageDefinition<Proposal>(
     pathTemplate: "/proposal",
-    parentPage: ProposalsTabPage,
+    parentPage: proposalsTabPage,
     createWidget: (proposal) => ProposalDetailWidget(proposal),
     fetchBox: (boxes) => boxes.proposals,
-    entityFromIC: (proposalId, icApi) => icApi.fetchProposal(proposalId: BigInt.parse(proposalId)));
+    entityFromIC: (proposalId, icApi) =>
+        icApi.fetchProposal(proposalId: BigInt.parse(proposalId)));
 
-
-EntityPageDefinition CanisterPageDef = EntityPageDefinition<Canister>(
+EntityPageDefinition canisterPageDef = EntityPageDefinition<Canister>(
     pathTemplate: "/canister",
-    parentPage: CanistersTabPage,
+    parentPage: canistersTabPage,
     createWidget: (canister) => CanisterDetailWidget(canister),
     fetchBox: (boxes) => boxes.canisters);
 
@@ -180,7 +176,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
   @override
   Widget build(BuildContext context) {
     if (_pages.isEmpty) {
-      _pages.add(createPage(LoadingPage));
+      _pages.add(createPage(loadingPage));
     }
 
     return ResourceOrchestrator(
@@ -200,7 +196,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
 
     if (configuration is ResourcesLoadingPageConfig) {
       redirectWhenLoaded(configuration as ResourcesLoadingPageConfig);
-      addPage(LoadingPage);
+      addPage(loadingPage);
     } else {
       addPage(configuration);
     }
@@ -209,7 +205,6 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
   }
 
   bool _onPopPage(Route<dynamic> route, result) {
-
     // 1
     final didPop = route.didPop(result);
     if (!didPop) {
@@ -229,7 +224,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
         ?.let((e) => (e as PageConfig).key);
     final shouldAddPage = _pages.isEmpty || lastKey != pageConfig.key;
 
-    _pages.removeWhere((element) => element.arguments == LoadingPage);
+    _pages.removeWhere((element) => element.arguments == loadingPage);
 
     if (shouldAddPage) {
       // print("adding page ${pageConfig.key}");
@@ -295,9 +290,9 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
       final destination = await configuration.destinationPage;
       push(destination);
     } else {
-      if(configuration.logoutOnFailure){
+      if (configuration.logoutOnFailure) {
         await hiveBoxes.deleteAllData();
-        push(AuthPage);
+        push(authPage);
       }
     }
   }
@@ -310,7 +305,7 @@ class RouterDelegateWidget extends InheritedWidget {
     Key? key,
     required this.delegate,
     required Widget child,
-  })   : assert(child != null),
+  })  : assert(child != null),
         super(key: key, child: child);
 
   static RouterDelegateWidget of(BuildContext context) {

@@ -38,10 +38,10 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                           ?.sortedByDescending((element) =>
                               element.createdTimestampSeconds.toBigInt)
                           ?.mapToList((e) => Card(
-                                child: FlatButton(
+                                child: TextButton(
                                   onPressed: () {
                                     context.nav.push(
-                                        NeuronPageDef.createPageConfig(e));
+                                        neuronPageDef.createPageConfig(e));
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(16.0),
@@ -50,7 +50,7 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                                       showsWarning: true,
                                       onTap: () {
                                         context.nav.push(
-                                            NeuronPageDef.createPageConfig(e));
+                                            neuronPageDef.createPageConfig(e));
                                       },
                                     ),
                                   ),

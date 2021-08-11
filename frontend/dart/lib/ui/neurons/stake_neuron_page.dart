@@ -186,7 +186,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                                                                     .of(context)
                                                                 ?.dismiss();
                                                             context.nav.push(
-                                                                NeuronPageDef
+                                                                neuronPageDef
                                                                     .createPageConfig(
                                                                         newNeuron));
                                                           },
@@ -208,9 +208,8 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                                         completeAction: (context) {
                                           OverlayBaseWidget.of(context)
                                               ?.dismiss();
-                                          context.nav.push(
-                                              NeuronPageDef.createPageConfig(
-                                                  newNeuron));
+                                          context.nav.push(neuronPageDef
+                                              .createPageConfig(newNeuron));
                                         },
                                       ));
                                 }));

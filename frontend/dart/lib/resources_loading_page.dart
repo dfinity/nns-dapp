@@ -7,7 +7,10 @@ class ResourcesLoadingPageConfig extends PageConfig {
   final Future<bool> loadDestinationResources;
   bool logoutOnFailure;
 
-  ResourcesLoadingPageConfig(this.destinationPage, this.loadDestinationResources, {required this.logoutOnFailure}): super(LoadingPage.path);
+  ResourcesLoadingPageConfig(
+      this.destinationPage, this.loadDestinationResources,
+      {required this.logoutOnFailure})
+      : super(loadingPage.path);
 
   @override
   Widget createWidget() {

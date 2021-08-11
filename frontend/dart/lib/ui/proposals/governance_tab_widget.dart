@@ -236,7 +236,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                             proposal: e,
                             onPressed: () {
                               context.nav
-                                  .push(ProposalPageDef.createPageConfig(e));
+                                  .push(proposalPageDef.createPageConfig(e));
                             },
                           )),
                       SmallFormDivider(),
@@ -280,7 +280,7 @@ class ProposalRow extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       color: AppColors.background,
-      child: FlatButton(
+      child: TextButton(
         onPressed: onPressed,
         child: Container(
           child: Padding(

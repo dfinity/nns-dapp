@@ -109,9 +109,8 @@ class NeuronRewardsCard extends StatelessWidget {
                                             .spawnNeuron(
                                                 neuronId:
                                                     neuron.identifier.toBigInt);
-                                        context.nav.push(
-                                            NeuronPageDef.createPageConfig(
-                                                newNeuron));
+                                        context.nav.push(neuronPageDef
+                                            .createPageConfig(newNeuron));
                                       });
                                     },
                                   ));
