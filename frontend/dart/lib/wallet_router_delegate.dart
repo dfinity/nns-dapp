@@ -91,7 +91,7 @@ class ApiObjectPage {
   ApiObjectPage(this.pathTemplate, this.createWidget);
 
   EntityPage createPageConfig(String identifier) {
-    return EntityPage("$pathTemplate/${identifier}",
+    return EntityPage("$pathTemplate/$identifier",
         widget: createWidget(identifier),
         clearStack: false,
         requiredParent: null);

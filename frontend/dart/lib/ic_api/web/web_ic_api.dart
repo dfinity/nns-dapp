@@ -162,9 +162,8 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId,
       required ICP amount,
       required String toAccountId}) async {
-    final res = await promiseToFuture(serviceApi!.disburse(
-        DisperseNeuronRequest(
-            neuronId: neuronId.toJS, amount: null, toAccountId: toAccountId)));
+    await promiseToFuture(serviceApi!.disburse(DisperseNeuronRequest(
+        neuronId: neuronId.toJS, amount: null, toAccountId: toAccountId)));
     await fetchNeuron(neuronId: neuronId);
     balanceSyncService?.syncBalances();
   }
@@ -174,7 +173,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId,
       required Topic topic,
       required List<BigInt> followees}) async {
-    final result = await promiseToFuture(serviceApi!.follow(FollowRequest(
+    await promiseToFuture(serviceApi!.follow(FollowRequest(
         neuronId: toJSBigInt(neuronId.toString()),
         topic: topic.index,
         followees: followees.mapToList((e) => e.toJS))));
@@ -199,7 +198,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required List<BigInt> neuronIds,
       required BigInt proposalId,
       required Vote vote}) async {
-    final result = await Future.wait(neuronIds.map(
+    await Future.wait(neuronIds.map(
         (e) => promiseToFuture(serviceApi!.registerVote(RegisterVoteRequest(
               neuronId: e.toJS,
               proposal: proposalId.toJS,
@@ -281,8 +280,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
     final ledgerIdentity =
         await promiseToFuture(authApi.connectToHardwareWallet());
-    return await promiseToFuture(
-        hardwareWalletApi.createHardwareWalletApi(
+    return await promiseToFuture(hardwareWalletApi.createHardwareWalletApi(
         ledgerIdentity, userIdentity));
   }
 
