@@ -1,4 +1,4 @@
-import 'dart:js_util';
+import 'package:universal_html/js_util.dart';
 
 import 'package:dfinity_wallet/data/ballot_info.dart';
 import 'package:dfinity_wallet/data/followee.dart';

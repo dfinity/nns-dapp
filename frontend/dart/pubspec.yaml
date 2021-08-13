@@ -40,6 +40,7 @@ dependencies:
   dartx: ^0.6.0
   flutter_svg: 0.21.0-nullsafety.0
   collection: ^1.15.0
+  universal_html: ^2.0.8
 
   core:
     path: ./core

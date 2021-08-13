@@ -3,7 +3,7 @@ library ic_agent.js;
 
 import 'dart:html' as html;
 import 'dart:convert';
-import 'dart:js_util';
+import 'package:universal_html/js_util.dart';
 
 import 'package:dfinity_wallet/data/cycles.dart';
 import 'package:dfinity_wallet/data/icp.dart';
