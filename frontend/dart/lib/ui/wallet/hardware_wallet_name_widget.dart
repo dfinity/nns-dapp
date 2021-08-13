@@ -6,7 +6,8 @@ import '../../dfinity.dart';
 import 'attach_hardware_wallet.dart';
 
 class HardwareWalletNameWidget extends StatelessWidget {
-  ValidatedTextField nameField = ValidatedTextField("Hardware Wallet Name",
+  final ValidatedTextField nameField = ValidatedTextField(
+      "Hardware Wallet Name",
       validations: [StringFieldValidation.minimumLength(2)]);
 
   @override

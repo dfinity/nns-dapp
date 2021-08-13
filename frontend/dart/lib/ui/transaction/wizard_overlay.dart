@@ -2,8 +2,8 @@ import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import '../../dfinity.dart';
 
 class WizardOverlay extends StatefulWidget {
-  late Widget rootWidget;
-  late String rootTitle;
+  final Widget rootWidget;
+  final String rootTitle;
 
   WizardOverlay({Key? key, required this.rootTitle, required this.rootWidget})
       : super(key: key);

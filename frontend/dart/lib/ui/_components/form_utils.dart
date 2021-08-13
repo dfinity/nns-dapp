@@ -1,6 +1,6 @@
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:flutter/services.dart';
-
+import 'package:collection/collection.dart';
 import '../../dfinity.dart';
 
 extension AllValid<T> on List<ValidatedField<T>> {
@@ -14,7 +14,7 @@ abstract class ValidatedField<T> {
   T get currentValue;
   ValidatedField(this.name, this.validations);
 
-  FieldValidation? get failedValidation => validations.firstOrNullWhere(
+  FieldValidation? get failedValidation => validations.firstWhereOrNull(
       (FieldValidation<T> element) => element.inputIsValid(currentValue));
 }
 
@@ -84,8 +84,10 @@ class StringFieldValidation extends FieldValidation<String> {
 
   StringFieldValidation.insufficientFunds(ICP balance, int numberOfTransactions)
       : this("Insufficient funds", (e) {
-          final BigInt modBalance = balance.asE8s() - BigInt.from(numberOfTransactions * TRANSACTION_FEE_E8S);
-          final BigInt sendAmount = (e.isEmpty || e == ".") ? BigInt.zero : ICP.fromString(e).asE8s();
+          final BigInt modBalance = balance.asE8s() -
+              BigInt.from(numberOfTransactions * TRANSACTION_FEE_E8S);
+          final BigInt sendAmount =
+              (e.isEmpty || e == ".") ? BigInt.zero : ICP.fromString(e).asE8s();
           return sendAmount > modBalance;
         });
 }
