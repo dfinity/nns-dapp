@@ -56,7 +56,7 @@ export default class HardwareWalletApi {
     this.accountIdentifier = principalToAccountIdentifier(
       ledgerIdentity.getPrincipal()
     );
-    this.ledgerService = ledgerBuilder(ledgerAgent, ledgerIdentity);
+    this.ledgerService = ledgerBuilder(ledgerAgent);
     this.nnsUiService = nnsUiBuilder(userAgent);
   }
 

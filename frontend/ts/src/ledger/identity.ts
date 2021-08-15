@@ -10,8 +10,10 @@ import { blobFromUint8Array, BinaryBlob } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
 import LedgerApp, { LedgerError, ResponseSign } from "@zondax/ledger-icp";
 import { Secp256k1PublicKey } from "./secp256k1";
+
 // @ts-ignore (no types are available)
-import TransportClass from "@ledgerhq/hw-transport-webhid";
+import TransportWebHID, { Transport } from "@ledgerhq/hw-transport-webhid";
+import TransportNodeHidNoEvents from "@ledgerhq/hw-transport-node-hid-noevents";
 
 /**
  * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
@@ -53,13 +55,19 @@ export class LedgerIdentity extends SignIdentity {
   /**
    * Connect to a ledger hardware wallet.
    */
-  private static async _connect(): Promise<[LedgerApp, TransportClass]> {
-    if (!(await TransportClass.isSupported())) {
-      // Data on browser compatibility is taken from https://caniuse.com/webhid
-      throw "Your browser doesn't support WebHID, which is necessary to communicate with your wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+";
+  private static async _connect(): Promise<[LedgerApp, Transport]> {
+    async function getTransport() {
+      if (await TransportNodeHidNoEvents.isSupported()) {
+        return TransportNodeHidNoEvents.create();
+      } else if (await TransportWebHID.isSupported()) {
+        return TransportWebHID.create();
+      } else {
+        // Data on browser compatibility is taken from https://caniuse.com/webhid
+        throw "Your browser doesn't support WebHID, which is necessary to communicate with your wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+";
+      }
     }
 
-    const transport = await TransportClass.create();
+    const transport = await getTransport();
     const app = new LedgerApp(transport);
     return [app, transport];
   }
