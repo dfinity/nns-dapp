@@ -5,7 +5,7 @@
 
 FROM ubuntu:20.10
 
-ARG rust_version=1.52.0
+ARG rust_version=1.54.0
 ENV NODE_VERSION=14.15.4
 
 ENV TZ=UTC
