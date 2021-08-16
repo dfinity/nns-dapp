@@ -29,7 +29,7 @@ import ServiceInterface, {
 } from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
-import { NeuronId } from "../common/types";
+import { Memo, NeuronId } from "../common/types";
 import { submitUpdateRequest } from "../updateRequestHandler";
 import { Agent } from "@dfinity/agent";
 
@@ -254,5 +254,24 @@ export default class Service implements ServiceInterface {
       );
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
+  };
+
+  public claimOrRefreshNeuronFromAccount = async (
+    controller: Principal,
+    memo: Memo
+  ): Promise<NeuronId> => {
+    const response = await this.service.claim_or_refresh_neuron_from_account(
+      {
+        controller: [controller],
+        memo: memo,
+      }
+    );
+
+    const result = response.result;
+    if (result.length && "NeuronId" in result[0]) {
+      return result[0].NeuronId.id;
+    }
+
+    throw `Error claiming/refreshing neuron: ${JSON.stringify(result)}`;
   };
 }

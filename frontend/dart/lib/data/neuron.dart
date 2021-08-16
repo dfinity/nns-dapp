@@ -12,6 +12,26 @@ import 'neuron_state.dart';
 import 'package:core/extensions.dart';
 import 'package:dartx/dartx.dart';
 
+// TODO: Use NeuronID everywhere.
+class NeuronId {
+  final BigInt _id;
+
+  static NeuronId fromString(String s) {
+    return new NeuronId._(BigInt.parse(s));
+  }
+
+  // Private constructor.
+  NeuronId._(this._id);
+
+  BigInt asBigInt() {
+    return this._id;
+  }
+
+  String toString() {
+    return this._id.toString();
+  }
+}
+
 class Neuron extends DfinityEntity with ICPSource {
   late String id;
   late List<BallotInfo> recentBallots;

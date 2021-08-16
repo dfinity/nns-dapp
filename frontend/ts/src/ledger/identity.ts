@@ -27,6 +27,10 @@ function _prepareCborForLedger(request: ReadRequest | CallRequest): BinaryBlob {
  * A Hardware Ledger Internet Computer Agent identity.
  */
 export class LedgerIdentity extends SignIdentity {
+  // A flag to signal that the next transaction to be signed will be
+  // a "stake neuron" transaction.
+  private _neuronStakeFlag: boolean = false;
+
   /**
    * Create a LedgerIdentity using the Web USB transport.
    * @param derivePath The derivation path.
@@ -57,10 +61,12 @@ export class LedgerIdentity extends SignIdentity {
    */
   private static async _connect(): Promise<[LedgerApp, Transport]> {
     async function getTransport() {
-      if (await TransportNodeHidNoEvents.isSupported()) {
-        return TransportNodeHidNoEvents.create();
-      } else if (await TransportWebHID.isSupported()) {
+      if (await TransportWebHID.isSupported()) {
+        // We're in a web browser.
         return TransportWebHID.create();
+      } else if (await TransportNodeHidNoEvents.isSupported()) {
+        // We're in a CLI.
+        return TransportNodeHidNoEvents.create();
       } else {
         // Data on browser compatibility is taken from https://caniuse.com/webhid
         throw "Your browser doesn't support WebHID, which is necessary to communicate with your wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+";
@@ -123,8 +129,13 @@ export class LedgerIdentity extends SignIdentity {
     return await this._executeWithApp(async (app: LedgerApp) => {
       const resp: ResponseSign = await app.sign(
         this.derivePath,
-        Buffer.from(blob)
+        Buffer.from(blob),
+        this._neuronStakeFlag ? 1 : 0
       );
+
+      // Remove the "neuron stake" flag, since we already signed the transaction.
+      this._neuronStakeFlag = false;
+
       const signatureRS = resp.signatureRS;
       if (!signatureRS) {
         throw new Error(
@@ -142,6 +153,13 @@ export class LedgerIdentity extends SignIdentity {
 
       return blobFromUint8Array(new Uint8Array(signatureRS));
     });
+  }
+
+  /**
+   * Signals that the upcoming transaction to be signed will be a "stake neuron" transaction.
+   */
+  public flagUpcomingStakeNeuron() {
+    this._neuronStakeFlag = true;
   }
 
   public async transformRequest(request: HttpAgentRequest): Promise<unknown> {

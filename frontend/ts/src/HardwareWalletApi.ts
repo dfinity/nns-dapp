@@ -1,7 +1,9 @@
 import { LedgerIdentity } from "./ledger/identity";
 import ledgerBuilder from "./canisters/ledger/builder";
+import governanceBuilder from "./canisters/governance/builder";
 import nnsUiBuilder from "./canisters/nnsUI/builder";
 import NnsUiService from "./canisters/nnsUI/model";
+import GovernanceService from "./canisters/governance/model";
 import LedgerService, { SendICPTsRequest } from "./canisters/ledger/model";
 import {
   AccountIdentifier,
@@ -9,7 +11,7 @@ import {
   E8s,
   NeuronId,
 } from "./canisters/common/types";
-import { HttpAgent, SignIdentity } from "@dfinity/agent";
+import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "./canisters/converter";
 import { HOST } from "./canisters/constants";
 import { FETCH_ROOT_KEY } from "./config.json";
@@ -20,19 +22,18 @@ export default class HardwareWalletApi {
   private readonly identity: LedgerIdentity;
   private readonly accountIdentifier: AccountIdentifier;
   private readonly ledgerService: LedgerService;
-  private readonly nnsUiService: NnsUiService;
+  private readonly governanceService: GovernanceService;
 
   public static create = async (
-    ledgerIdentity: LedgerIdentity,
-    userIdentity: SignIdentity
+    ledgerIdentity: LedgerIdentity
   ): Promise<HardwareWalletApi> => {
-    const userAgent = new HttpAgent({
+    const anonymousAgent = new HttpAgent({
       host: HOST,
-      identity: userIdentity,
+      identity: new AnonymousIdentity(),
     });
 
     if (FETCH_ROOT_KEY) {
-      await userAgent.fetchRootKey();
+      await anonymousAgent.fetchRootKey();
     }
 
     const ledgerAgent = new HttpAgent({
@@ -44,20 +45,30 @@ export default class HardwareWalletApi {
       await ledgerAgent.fetchRootKey();
     }
 
-    return new HardwareWalletApi(ledgerIdentity, ledgerAgent, userAgent);
+    const ledgerService = ledgerBuilder(ledgerAgent);
+    const governanceService = governanceBuilder(
+      anonymousAgent,
+      new AnonymousIdentity()
+    );
+
+    return new HardwareWalletApi(
+      ledgerIdentity,
+      ledgerService,
+      governanceService
+    );
   };
 
   private constructor(
     ledgerIdentity: LedgerIdentity,
-    ledgerAgent: HttpAgent,
-    userAgent: HttpAgent
+    ledgerService: LedgerService,
+    governanceService: GovernanceService
   ) {
     this.identity = ledgerIdentity;
     this.accountIdentifier = principalToAccountIdentifier(
       ledgerIdentity.getPrincipal()
     );
-    this.ledgerService = ledgerBuilder(ledgerAgent);
-    this.nnsUiService = nnsUiBuilder(userAgent);
+    this.ledgerService = ledgerService;
+    this.governanceService = governanceService;
   }
 
   public sendICPTs = async (
@@ -71,15 +82,17 @@ export default class HardwareWalletApi {
   };
 
   public createNeuron = (amount: E8s): Promise<NeuronId> => {
-    return executeWithLogging(() =>
-      createNeuronImpl(
-        this.identity.getPrincipal(),
-        this.ledgerService,
-        this.nnsUiService,
-        {
-          stake: amount,
-        }
-      )
+    // Flag that an upcoming stake neuron transaction is coming to distinguish
+    // it from a "send ICP" transaction on the device.
+    this.identity.flagUpcomingStakeNeuron();
+
+    return createNeuronImpl(
+      this.identity.getPrincipal(),
+      this.ledgerService,
+      this.governanceService,
+      {
+        stake: amount,
+      }
     );
   };
 }

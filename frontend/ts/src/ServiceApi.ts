@@ -308,14 +308,18 @@ export default class ServiceApi {
     );
   };
 
-  public createNeuron = (request: CreateNeuronRequest): Promise<NeuronId> => {
-    return executeWithLogging(() =>
-      createNeuronImpl(
+  public createNeuron = async (request: CreateNeuronRequest): Promise<NeuronId> => {
+    return await executeWithLogging(async () => {
+      const neuronId = await createNeuronImpl(
         this.identity.getPrincipal(),
         this.ledgerService,
-        this.nnsUiService,
+        this.governanceService,
         request
-      )
+      );
+      console.log("Received neuron id");
+      console.log(neuronId);
+      return neuronId;
+    }
     );
   };
 
