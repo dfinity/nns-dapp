@@ -31,6 +31,7 @@ import {
   SpawnRequest,
   SplitRequest,
   StartDissolvingRequest,
+  StopDissolvingRequest,
 } from "./model";
 import {
   AccountIdentifier as RawAccountIdentifier,
@@ -111,7 +112,7 @@ export default class RequestConverters {
     result.setConfigure(configure);
     const neuronId = new PbNeuronId();
     neuronId.setId(request.neuronId.toString());
-    result.setId(neuronId);
+    result.setNeuronId(neuronId);
 
     return result;
   };
@@ -127,59 +128,79 @@ export default class RequestConverters {
 
   public fromRemoveHotKeyRequest = (
     request: RemoveHotKeyRequest
-  ): RawManageNeuron => {
-    const rawOperation: RawOperation = {
-      RemoveHotKey: {
-        hot_key_to_remove: [Principal.fromText(request.principal)],
-      },
-    };
-    const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  ): PbManageNeuron => {
+    const hotkeyPrincipal = new PbPrincipalId();
+    hotkeyPrincipal.setSerializedId(
+      Principal.fromText(request.principal).toUint8Array()
+    );
+
+    const command = new PbManageNeuron.RemoveHotKey();
+    command.setHotKeyToRemove(hotkeyPrincipal);
+
+    const configure = new PbManageNeuron.Configure();
+    configure.setRemoveHotKey(command);
+
+    const result = new PbManageNeuron();
+    result.setConfigure(configure);
+
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    result.setNeuronId(neuronId);
+
+    return result;
   };
 
   public fromStartDissolvingRequest = (
     request: StartDissolvingRequest
-  ): RawManageNeuron => {
-    const rawOperation: RawOperation = { StartDissolving: {} };
-    const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  ): PbManageNeuron => {
+    const configure = new PbManageNeuron.Configure();
+    configure.setStartDissolving(new PbManageNeuron.StartDissolving());
+
+    const result = new PbManageNeuron();
+    result.setConfigure(configure);
+
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    result.setNeuronId(neuronId);
+
+    return result;
   };
 
   public fromStopDissolvingRequest = (
-    request: StartDissolvingRequest
-  ): RawManageNeuron => {
-    const rawOperation: RawOperation = { StopDissolving: {} };
-    const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+    request: StopDissolvingRequest
+  ): PbManageNeuron => {
+    const configure = new PbManageNeuron.Configure();
+    configure.setStopDissolving(new PbManageNeuron.StopDissolving());
+
+    const result = new PbManageNeuron();
+    result.setConfigure(configure);
+
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    result.setNeuronId(neuronId);
+
+    return result;
   };
 
   public fromIncreaseDissolveDelayRequest = (
     request: IncreaseDissolveDelayRequest
-  ): RawManageNeuron => {
-    const rawOperation: RawOperation = {
-      IncreaseDissolveDelay: {
-        additional_dissolve_delay_seconds:
-          request.additionalDissolveDelaySeconds,
-      },
-    };
-    const rawCommand: RawCommand = { Configure: { operation: [rawOperation] } };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  ): PbManageNeuron => {
+    const command = new PbManageNeuron.IncreaseDissolveDelay();
+    command.setAdditionalDissolveDelaySeconds(
+      request.additionalDissolveDelaySeconds
+    );
+
+    const configure = new PbManageNeuron.Configure();
+    configure.setIncreaseDissolveDelay(command);
+
+    const result = new PbManageNeuron();
+    result.setConfigure(configure);
+
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    result.setNeuronId(neuronId);
+
+    return result;
   };
 
   public fromFollowRequest = (request: FollowRequest): RawManageNeuron => {

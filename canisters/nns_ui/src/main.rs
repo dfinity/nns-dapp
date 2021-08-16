@@ -2,7 +2,7 @@ use crate::accounts_store::{
     AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse,
     DetachCanisterRequest, DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse,
     NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse,
-    RemoveHardwareWalletRequest, RemoveHardwareWalletResponse, RenameSubAccountRequest,
+    RenameSubAccountRequest,
     RenameSubAccountResponse, Stats,
 };
 use crate::multi_part_transactions_processor::{
@@ -134,22 +134,6 @@ fn register_hardware_wallet_impl(
         s.accounts_store
             .borrow_mut()
             .register_hardware_wallet(principal, request)
-    })
-}
-
-#[export_name = "canister_update remove_hardware_wallet"]
-pub fn remove_hardware_wallet() {
-    over(candid_one, remove_hardware_wallet_impl);
-}
-
-fn remove_hardware_wallet_impl(
-    request: RemoveHardwareWalletRequest,
-) -> RemoveHardwareWalletResponse {
-    let principal = dfn_core::api::caller();
-    STATE.with(|s| {
-        s.accounts_store
-            .borrow_mut()
-            .remove_hardware_wallet(principal, request)
     })
 }
 

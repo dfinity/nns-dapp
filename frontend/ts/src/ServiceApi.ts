@@ -47,8 +47,6 @@ import NnsUiService, {
   GetTransactionsResponse,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
-  RemoveHardwareWalletRequest,
-  RemoveHardwareWalletResponse,
   RenameSubAccountRequest,
   RenameSubAccountResponse,
 } from "./canisters/nnsUI/model";
@@ -143,14 +141,6 @@ export default class ServiceApi {
     };
     return executeWithLogging(() =>
       this.nnsUiService.registerHardwareWallet(request)
-    );
-  };
-
-  public removeHardwareWallet = (
-    request: RemoveHardwareWalletRequest
-  ): Promise<RemoveHardwareWalletResponse> => {
-    return executeWithLogging(() =>
-      this.nnsUiService.removeHardwareWallet(request)
     );
   };
 

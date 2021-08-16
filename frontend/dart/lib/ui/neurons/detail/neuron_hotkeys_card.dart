@@ -122,7 +122,7 @@ class _AddHotkeysState extends State<AddHotkeys> {
   void initState() {
     super.initState();
     HotkeyValidated = ValidatedTextField(Hotkey,
-        validations: [StringFieldValidation.minimumLength(58)]);
+        validations: [StringFieldValidation.minimumLength(20)]);
   }
 
   @override

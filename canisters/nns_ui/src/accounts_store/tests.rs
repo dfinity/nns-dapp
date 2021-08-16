@@ -325,48 +325,6 @@ fn register_hardware_wallet_hardware_wallet_already_registered() {
 }
 
 #[test]
-fn remove_hardware_wallet() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let mut store = setup_test_store();
-
-    let hw1 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
-    let hw2 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
-
-    store.register_hardware_wallet(
-        principal,
-        RegisterHardwareWalletRequest {
-            name: "HW1".to_string(),
-            principal: hw1,
-        },
-    );
-    store.register_hardware_wallet(
-        principal,
-        RegisterHardwareWalletRequest {
-            name: "HW2".to_string(),
-            principal: hw2,
-        },
-    );
-
-    let result = store.remove_hardware_wallet(
-        principal,
-        RemoveHardwareWalletRequest {
-            account_identifier: AccountIdentifier::from(hw1),
-        },
-    );
-
-    assert!(matches!(result, RemoveHardwareWalletResponse::Ok));
-
-    let account = store.get_account(principal).unwrap();
-
-    assert_eq!(1, account.hardware_wallet_accounts.len());
-    assert_eq!("HW2", account.hardware_wallet_accounts[0].name);
-    assert_eq!(
-        AccountIdentifier::from(hw2),
-        account.hardware_wallet_accounts[0].account_identifier
-    );
-}
-
-#[test]
 fn hardware_wallet_transactions_tracked_correctly() {
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();
