@@ -20,7 +20,7 @@ window["createServiceApi"] = (identity: SignIdentity): Promise<ServiceApi> => {
 
 // @ts-ignore
 window["createHardwareWalletApi"] = (
-  identity: LedgerIdentity,
+  identity: LedgerIdentity
 ): Promise<HardwareWalletApi> => {
   return HardwareWalletApi.create(identity);
 };

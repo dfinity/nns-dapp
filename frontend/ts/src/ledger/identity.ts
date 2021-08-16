@@ -29,7 +29,7 @@ function _prepareCborForLedger(request: ReadRequest | CallRequest): BinaryBlob {
 export class LedgerIdentity extends SignIdentity {
   // A flag to signal that the next transaction to be signed will be
   // a "stake neuron" transaction.
-  private _neuronStakeFlag: boolean = false;
+  private _neuronStakeFlag = false;
 
   /**
    * Create a LedgerIdentity using the Web USB transport.
@@ -158,7 +158,7 @@ export class LedgerIdentity extends SignIdentity {
   /**
    * Signals that the upcoming transaction to be signed will be a "stake neuron" transaction.
    */
-  public flagUpcomingStakeNeuron() {
+  public flagUpcomingStakeNeuron(): void {
     this._neuronStakeFlag = true;
   }
 

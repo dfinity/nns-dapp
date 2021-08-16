@@ -260,12 +260,10 @@ export default class Service implements ServiceInterface {
     controller: Principal,
     memo: Memo
   ): Promise<NeuronId> => {
-    const response = await this.service.claim_or_refresh_neuron_from_account(
-      {
-        controller: [controller],
-        memo: memo,
-      }
-    );
+    const response = await this.service.claim_or_refresh_neuron_from_account({
+      controller: [controller],
+      memo: memo,
+    });
 
     const result = response.result;
     if (result.length && "NeuronId" in result[0]) {

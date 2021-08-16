@@ -308,7 +308,9 @@ export default class ServiceApi {
     );
   };
 
-  public createNeuron = async (request: CreateNeuronRequest): Promise<NeuronId> => {
+  public createNeuron = async (
+    request: CreateNeuronRequest
+  ): Promise<NeuronId> => {
     return await executeWithLogging(async () => {
       const neuronId = await createNeuronImpl(
         this.identity.getPrincipal(),
@@ -319,8 +321,7 @@ export default class ServiceApi {
       console.log("Received neuron id");
       console.log(neuronId);
       return neuronId;
-    }
-    );
+    });
   };
 
   public topUpNeuron = (request: TopUpNeuronRequest): Promise<void> => {

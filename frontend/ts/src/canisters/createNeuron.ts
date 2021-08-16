@@ -2,12 +2,10 @@ import { Principal } from "@dfinity/principal";
 import { sha256 } from "js-sha256";
 import LedgerService from "./ledger/model";
 import GovernanceService from "./governance/model";
-import NnsUiService from "./nnsUI/model";
 import GOVERNANCE_CANISTER_ID from "./governance/canisterId";
 import randomBytes from "randombytes";
-import { BlockHeight, E8s, NeuronId } from "./common/types";
+import { E8s, NeuronId } from "./common/types";
 import * as convert from "./converter";
-import { pollUntilComplete } from "./multiPartTransactionPollingHandler";
 
 export type CreateNeuronRequest = {
   stake: E8s;
@@ -38,7 +36,10 @@ export default async function (
   });
 
   // Notify the governance of the transaction so that the neuron is created.
-  return await governanceService.claimOrRefreshNeuronFromAccount(principal, nonce);
+  return await governanceService.claimOrRefreshNeuronFromAccount(
+    principal,
+    nonce
+  );
 }
 
 // 32 bytes

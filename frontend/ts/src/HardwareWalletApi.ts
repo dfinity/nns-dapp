@@ -1,8 +1,6 @@
 import { LedgerIdentity } from "./ledger/identity";
 import ledgerBuilder from "./canisters/ledger/builder";
 import governanceBuilder from "./canisters/governance/builder";
-import nnsUiBuilder from "./canisters/nnsUI/builder";
-import NnsUiService from "./canisters/nnsUI/model";
 import GovernanceService from "./canisters/governance/model";
 import LedgerService, { SendICPTsRequest } from "./canisters/ledger/model";
 import {
@@ -11,11 +9,10 @@ import {
   E8s,
   NeuronId,
 } from "./canisters/common/types";
-import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
+import { AnonymousIdentity, HttpAgent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "./canisters/converter";
 import { HOST } from "./canisters/constants";
 import { FETCH_ROOT_KEY } from "./config.json";
-import { executeWithLogging } from "./errorLogger";
 import createNeuronImpl from "./canisters/createNeuron";
 
 export default class HardwareWalletApi {
