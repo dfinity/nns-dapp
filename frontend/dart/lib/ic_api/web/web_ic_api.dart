@@ -1,7 +1,7 @@
 @JS()
 library ic_agent.js;
 
-import 'dart:html' as html;
+import 'package:universal_html/html.dart' as html;
 import 'dart:convert';
 import 'package:universal_html/js_util.dart';
 

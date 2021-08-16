@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:js_util';
+import 'package:universal_html/js_util.dart';
 
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/proposal_reward_status.dart';
@@ -25,14 +25,16 @@ class ProposalSyncService {
       'limit': 100,
       if (beforeProposal != null)
         'beforeProposal': beforeProposal.id.toBigInt.toJS,
-      'includeRewardStatus': includeRewardStatus.mapToList((e) => e.index.toInt()),
+      'includeRewardStatus':
+          includeRewardStatus.mapToList((e) => e.index.toInt()),
       'excludeTopic': excludeTopics.mapToList((e) => e.index.toInt()),
       'includeStatus': includeStatus.mapToList((e) => e.index.toInt())
     };
 
     final stopwatch = Stopwatch();
     stopwatch.start();
-    final fetchPromise = promiseToFuture(serviceApi.listProposals(jsify(request)));
+    final fetchPromise =
+        promiseToFuture(serviceApi.listProposals(jsify(request)));
     if (beforeProposal == null) {
       hiveBoxes.proposals.clear();
     }
@@ -70,8 +72,10 @@ class ProposalSyncService {
         "https://www.lipsum.com/",
         "https://medium.com/zurich-eth/ic-proposal-reduce-smart-contract-memory-costs/");
     proposal.proposer = response['proposer'].toString();
-    proposal.no = ICP.fromE8s(response['latestTally']['no'].toString().toBigInt);
-    proposal.yes = ICP.fromE8s(response['latestTally']['yes'].toString().toBigInt);
+    proposal.no =
+        ICP.fromE8s(response['latestTally']['no'].toString().toBigInt);
+    proposal.yes =
+        ICP.fromE8s(response['latestTally']['yes'].toString().toBigInt);
     proposal.action = response['proposal']['action'];
 
     proposal.executedTimestampSeconds =
@@ -94,13 +98,11 @@ class ProposalSyncService {
   }
 
   Map<String, Ballot> parseBallots(List<dynamic> ballots) {
-    return Map.fromIterable(
-      ballots,
-      key: (i) => i['neuronId'].toString(),
-      value: (i) => Ballot()
-        ..proposalId = i['proposalId'].toString()
-        ..votingPower = i['votingPower'].toString().toBigInt
-        ..vote = Vote.values[i['vote'].toInt()]      
-    );
+    return Map.fromIterable(ballots,
+        key: (i) => i['neuronId'].toString(),
+        value: (i) => Ballot()
+          ..proposalId = i['proposalId'].toString()
+          ..votingPower = i['votingPower'].toString().toBigInt
+          ..vote = Vote.values[i['vote'].toInt()]);
   }
 }

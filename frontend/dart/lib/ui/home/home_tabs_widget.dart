@@ -22,7 +22,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final screenSize = context.mediaQuery.size;
-    final tabSizeGrouping = AutoSizeGroup();
     return DefaultTabController(
       initialIndex: widget.initialTabIndex,
       length: 4,
