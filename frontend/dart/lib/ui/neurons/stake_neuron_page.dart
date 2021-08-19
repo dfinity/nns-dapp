@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/max_button.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/hardware_neuron.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
@@ -118,11 +119,15 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                     Center(
                       child: ConstrainedBox(
                         constraints: BoxConstraints(maxWidth: 500),
-                        child: DebouncedValidatedFormField(
-                          amountField,
-                          onChanged: () {
-                            setState(() {});
-                          },
+                        child: Stack(
+                          children: [
+                            DebouncedValidatedFormField(
+                              amountField,
+                            ),
+                            MaxButton(
+                                amountField: amountField,
+                                source: widget.source),
+                          ],
                         ),
                       ),
                     ),
