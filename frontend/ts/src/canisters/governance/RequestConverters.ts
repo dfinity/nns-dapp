@@ -117,12 +117,16 @@ export default class RequestConverters {
     return result;
   };
 
-  public fromMergeMaturityRequest = (request: MergeMaturityRequest) : RawManageNeuron => {
-    const rawCommand: RawCommand = { MergeMaturity: { percentage_to_merge: request.percentageToMerge } };
+  public fromMergeMaturityRequest = (
+    request: MergeMaturityRequest
+  ): RawManageNeuron => {
+    const rawCommand: RawCommand = {
+      MergeMaturity: { percentage_to_merge: request.percentageToMerge },
+    };
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId }}]
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
   };
 

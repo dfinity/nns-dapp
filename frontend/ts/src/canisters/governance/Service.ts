@@ -221,10 +221,9 @@ export default class Service implements ServiceInterface {
   };
 
   public mergeMaturity = async (
-      request: MergeMaturityRequest
+    request: MergeMaturityRequest
   ): Promise<MergeMaturityResponse> => {
-    const rawRequest =
-        this.requestConverters.fromMergeMaturityRequest(request);
+    const rawRequest = this.requestConverters.fromMergeMaturityRequest(request);
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMergeMaturityResponse(rawResponse);
   };

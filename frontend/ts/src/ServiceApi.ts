@@ -280,12 +280,12 @@ export default class ServiceApi {
   };
 
   public mergeMaturity = (
-      request: MergeMaturityRequest
+    request: MergeMaturityRequest
   ): Promise<MergeMaturityResponse> => {
     return executeWithLogging(() =>
       this.governanceService.mergeMaturity(request)
     );
-  }
+  };
 
   public makeMotionProposal = (
     request: MakeMotionProposalRequest

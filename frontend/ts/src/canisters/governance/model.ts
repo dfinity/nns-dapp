@@ -142,13 +142,15 @@ export interface ManageNeuron {
   neuronIdOrSubaccount: Option<NeuronIdOrSubaccount>;
 }
 export interface MergeMaturity {
-  percentageToMerge: number }
+  percentageToMerge: number;
+}
 export interface MergeMaturityRequest {
-  neuronId: NeuronId,
-  percentageToMerge: number }
+  neuronId: NeuronId;
+  percentageToMerge: number;
+}
 export interface MergeMaturityResponse {
-  mergedMaturityE8s: bigint,
-  newStakeE8s: bigint,
+  mergedMaturityE8s: bigint;
+  newStakeE8s: bigint;
 }
 export interface MethodAuthzChange {
   principal: Option<PrincipalString>;
@@ -471,7 +473,9 @@ export default interface ServiceInterface {
     request: IncreaseDissolveDelayRequest
   ) => Promise<EmptyResponse>;
   follow: (request: FollowRequest) => Promise<EmptyResponse>;
-  mergeMaturity: (request: MergeMaturityRequest) => Promise<MergeMaturityResponse>;
+  mergeMaturity: (
+    request: MergeMaturityRequest
+  ) => Promise<MergeMaturityResponse>;
   registerVote: (request: RegisterVoteRequest) => Promise<EmptyResponse>;
   spawn: (request: SpawnRequest) => Promise<SpawnResponse>;
   split: (request: SplitRequest) => Promise<EmptyResponse>;

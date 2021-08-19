@@ -185,13 +185,10 @@ export default class ResponseConverters {
   };
 
   public toMergeMaturityResponse = (
-      response: RawManageNeuronResponse
+    response: RawManageNeuronResponse
   ): MergeMaturityResponse => {
     const command = response.command;
-    if (
-        command.length &&
-        "MergeMaturity" in command[0]
-    ) {
+    if (command.length && "MergeMaturity" in command[0]) {
       const mergeMaturity = command[0].MergeMaturity;
       return {
         mergedMaturityE8s: mergeMaturity.merged_maturity_e8s,
