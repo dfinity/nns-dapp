@@ -282,6 +282,12 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                                     ? context.textTheme.headline4
                                     : context.textTheme.headline3,
                               ),
+                              Text(
+                                '100%',
+                                style: Responsive.isMobile(context)
+                                    ? context.textTheme.headline4
+                                    : context.textTheme.headline3,
+                              ),
                             ],
                           ),
                         )
@@ -393,6 +399,7 @@ class StakeRewardsWidget extends StatelessWidget {
           value: sliderValue.toDouble(),
           min: 0,
           max: 100,
+          label: sliderValue.toString(),
           onChanged: (double value) {
             print('Slider value is : $value');
             onUpdate(value.toInt());
