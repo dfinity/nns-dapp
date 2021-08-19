@@ -3,6 +3,7 @@ import 'package:dfinity_wallet/data/icp_source.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import 'package:dfinity_wallet/ui/_components/max_button.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:flutter/services.dart';
@@ -85,7 +86,14 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text("Amount", style: context.textTheme.headline3),
-                          DebouncedValidatedFormField(amountField),
+                          Stack(
+                            children: [
+                              DebouncedValidatedFormField(amountField),
+                              MaxButton(
+                                  amountField: amountField,
+                                  source: widget.source),
+                            ],
+                          ),
                         ],
                       ),
                     ),
