@@ -267,28 +267,13 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '0%',
-                                style: Responsive.isMobile(context)
-                                    ? context.textTheme.headline4
-                                    : context.textTheme.headline3,
-                              ),
-                              Text(
-                                '${sliderValue.currentValue}%',
-                                style: Responsive.isMobile(context)
-                                    ? context.textTheme.headline4
-                                    : context.textTheme.headline3,
-                              ),
-                              Text(
-                                '100%',
-                                style: Responsive.isMobile(context)
-                                    ? context.textTheme.headline4
-                                    : context.textTheme.headline3,
-                              ),
-                            ],
+                          child: Center(
+                            child: Text(
+                              '${sliderValue.currentValue}%',
+                              style: Responsive.isMobile(context)
+                                  ? context.textTheme.headline4
+                                  : context.textTheme.headline3,
+                            ),
                           ),
                         )
                       ],
@@ -343,7 +328,8 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                         context,
                         ConfirmDialog(
                           title: "Confirm Merge Maturity",
-                          description: "",
+                          description:
+                              "This will merge ${sliderValue.currentValue}% of your neuron's earned maturity into it's stake",
                           onConfirm: () async {
                             await performUpdate(context);
                           },
