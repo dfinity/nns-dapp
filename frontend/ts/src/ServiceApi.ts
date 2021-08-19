@@ -54,7 +54,8 @@ import ICManagementService, {
   UpdateSettingsRequest,
   UpdateSettingsResponse,
 } from "./canisters/icManagement/model";
-import createNeuronImpl, {
+import {
+  createNeuronWithNnsUi,
   CreateNeuronRequest,
 } from "./canisters/createNeuron";
 import topUpNeuronImpl, { TopUpNeuronRequest } from "./canisters/topUpNeuron";
@@ -312,10 +313,10 @@ export default class ServiceApi {
     request: CreateNeuronRequest
   ): Promise<NeuronId> => {
     return await executeWithLogging(async () => {
-      const neuronId = await createNeuronImpl(
+      const neuronId = await createNeuronWithNnsUi(
         this.identity.getPrincipal(),
         this.ledgerService,
-        this.governanceService,
+        this.nnsUiService,
         request
       );
       console.log("Received neuron id");

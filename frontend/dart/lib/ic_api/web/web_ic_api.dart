@@ -121,38 +121,42 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<NeuronId> createNeuron(Account account, ICP stakeAmount) async {
-    final amountJS = stakeAmount.asE8s().toJS;
+    try {
+      final amountJS = stakeAmount.asE8s().toJS;
+      final neuronId = await () async {
+        if (account.hardwareWallet) {
+          final ledgerIdentity = await this.connectToHardwareWallet();
 
-    final neuronId = await () async {
-      if (account.hardwareWallet) {
-        final ledgerIdentity = await this.connectToHardwareWallet();
+          final accountIdentifier =
+              getAccountIdentifier(ledgerIdentity)!.toString();
 
-        final accountIdentifier =
-            getAccountIdentifier(ledgerIdentity)!.toString();
+          if (accountIdentifier != account.accountIdentifier) {
+            throw Exception(
+                "Wallet account identifier doesn't match.\nExpected identified: ${account.accountIdentifier}.\nWallet identifier: ${accountIdentifier}.\nAre you sure you connected the right wallet?");
+          }
 
-        if (accountIdentifier != account.accountIdentifier) {
-          js.context.callMethod("alert", [
-            "Wallet account identifier doesn't match. Are you sure you connected the right wallet?"
-          ]);
+          final walletApi = await this
+              .createHardwareWalletApi(ledgerIdentity: ledgerIdentity);
+
+          return await promiseToFuture(walletApi.createNeuron(amountJS));
+        } else {
+          return await promiseToFuture(serviceApi!.createNeuron(
+              CreateNeuronRequest(
+                  stake: amountJS, fromSubAccountId: account.subAccountId)));
         }
+      }();
 
-        final walletApi =
-            await this.createHardwareWalletApi(ledgerIdentity: ledgerIdentity);
+      await Future.wait([
+        balanceSyncService!.syncBalances(),
+        neuronSyncService!.fetchNeurons()
+      ]);
 
-        return await promiseToFuture(walletApi.createNeuron(amountJS));
-      } else {
-        return await promiseToFuture(serviceApi!.createNeuron(
-            CreateNeuronRequest(
-                stake: amountJS, fromSubAccountId: account.subAccountId)));
-      }
-    }();
-
-    await Future.wait([
-      balanceSyncService!.syncBalances(),
-      neuronSyncService!.fetchNeurons()
-    ]);
-
-    return NeuronId.fromString(neuronId.toString());
+      return NeuronId.fromString(neuronId.toString());
+    } catch (e) {
+      // Alert with the error, then rethrow.
+      js.context.callMethod("alert", ["$e"]);
+      throw e;
+    }
   }
 
   @override

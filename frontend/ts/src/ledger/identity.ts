@@ -65,7 +65,7 @@ export class LedgerIdentity extends SignIdentity {
         // We're in a web browser.
         return TransportWebHID.create();
       } else if (await TransportNodeHidNoEvents.isSupported()) {
-        // We're in a CLI.
+        // Maybe we're in a CLI.
         return TransportNodeHidNoEvents.create();
       } else {
         // Data on browser compatibility is taken from https://caniuse.com/webhid
