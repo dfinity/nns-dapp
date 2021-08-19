@@ -4,9 +4,11 @@ import {
   AccountIdentifier,
   CanisterIdString,
   E8s,
+  Memo,
   NeuronId,
   PrincipalString,
 } from "../common/types";
+import { Principal } from "@dfinity/principal";
 
 export type Action =
   | { ExecuteNnsFunction: ExecuteNnsFunction }
@@ -489,4 +491,8 @@ export default interface ServiceInterface {
   makeSetDefaultFolloweesProposal: (
     request: MakeSetDefaultFolloweesProposalRequest
   ) => Promise<MakeProposalResponse>;
+  claimOrRefreshNeuronFromAccount: (
+    controller: Principal,
+    memo: Memo
+  ) => Promise<NeuronId>;
 }

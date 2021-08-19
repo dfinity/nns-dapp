@@ -4,13 +4,13 @@ import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import '../../../dfinity.dart';
 
 class HardwareWalletNeuron extends StatefulWidget {
-  final Neuron neuron;
+  final NeuronId neuronId;
   final ICP amount;
   final Function(BuildContext context) onCompleteAction;
 
   const HardwareWalletNeuron(
       {Key? key,
-      required this.neuron,
+      required this.neuronId,
       required this.amount,
       required this.onCompleteAction})
       : super(key: key);
@@ -45,7 +45,7 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                                     : context.textTheme.headline3),
                             VerySmallFormDivider(),
                             Text(
-                              widget.neuron.identifier,
+                              widget.neuronId.toString(),
                               style: Responsive.isMobile(context)
                                   ? context.textTheme.bodyText2!
                                       .copyWith(fontSize: 16)

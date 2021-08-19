@@ -32,7 +32,7 @@ abstract class AbstractPlatformICApi {
   Future<void> sendICPTs(
       {required String toAccount, required ICP amount, int? fromSubAccount});
 
-  Future<void> createNeuron({required ICP stake, int? fromSubAccount});
+  Future<NeuronId> createNeuron(Account account, ICP stakeAmount);
 
   Future<void> topUpNeuron(
       {required String neuronAccountIdentifier,
