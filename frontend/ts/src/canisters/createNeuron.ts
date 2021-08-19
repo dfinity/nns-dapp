@@ -18,7 +18,7 @@ export default async function (
   principal: Principal,
   ledgerService: LedgerService,
   governanceService: GovernanceService,
-  request: CreateNeuronRequest,
+  request: CreateNeuronRequest
 ): Promise<NeuronId> {
   const nonceBytes = new Uint8Array(randomBytes(8));
   const nonce = convert.uint8ArrayToBigInt(nonceBytes);
@@ -52,7 +52,7 @@ export async function createNeuronWithNnsUi(
   principal: Principal,
   ledgerService: LedgerService,
   nnsUiService: NnsUiService,
-  request: CreateNeuronRequest,
+  request: CreateNeuronRequest
 ): Promise<BlockHeight> {
   const nonceBytes = new Uint8Array(randomBytes(8));
   const nonce = convert.uint8ArrayToBigInt(nonceBytes);
