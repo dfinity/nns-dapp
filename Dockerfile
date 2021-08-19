@@ -5,7 +5,7 @@
 
 FROM ubuntu:20.10
 
-ARG rust_version=1.52.0
+ARG rust_version=1.54.0
 ENV NODE_VERSION=14.15.4
 
 ENV TZ=UTC
@@ -38,12 +38,12 @@ RUN curl --fail https://sh.rustup.rs -sSf \
 
 ENV PATH=/cargo/bin:$PATH
 
-RUN curl https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_2.0.6-stable.tar.xz -o flutter.tar.xz
+RUN curl https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.2.3-stable.tar.xz -o flutter.tar.xz
 RUN tar xJf flutter.tar.xz
 ENV PATH=/flutter/bin:$PATH
 
 # Install IC CDK optimizer
-RUN cargo install --version 0.2.0 ic-cdk-optimizer
+RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
 COPY . .
 

@@ -14,6 +14,7 @@ import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:dfinity_wallet/ic_api/web/proposal_sync_service.dart';
 import 'package:dfinity_wallet/ic_api/web/transaction_sync_service.dart';
 import 'package:js/js.dart';
+import 'dart:js' as js;
 
 import '../../dfinity.dart';
 import 'account_sync_service.dart';
@@ -35,7 +36,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   NeuronSyncService? neuronSyncService;
   ProposalSyncService? proposalSyncService;
 
-  dynamic? identity;
+  dynamic identity;
 
   bool isLoggedIn() => authApi.tryGetIdentity() != null;
 
@@ -119,13 +120,43 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> createNeuron({required ICP stake, int? fromSubAccount}) async {
-    await promiseToFuture(serviceApi!.createNeuron(CreateNeuronRequest(
-        stake: stake.asE8s().toJS, fromSubAccountId: fromSubAccount)));
-    await Future.wait([
-      balanceSyncService!.syncBalances(),
-      neuronSyncService!.fetchNeurons()
-    ]);
+  Future<NeuronId> createNeuron(Account account, ICP stakeAmount) async {
+    try {
+      final amountJS = stakeAmount.asE8s().toJS;
+      final neuronId = await () async {
+        if (account.hardwareWallet) {
+          final ledgerIdentity = await this.connectToHardwareWallet();
+
+          final accountIdentifier =
+              getAccountIdentifier(ledgerIdentity)!.toString();
+
+          if (accountIdentifier != account.accountIdentifier) {
+            throw Exception(
+                "Wallet account identifier doesn't match.\nExpected identified: ${account.accountIdentifier}.\nWallet identifier: ${accountIdentifier}.\nAre you sure you connected the right wallet?");
+          }
+
+          final walletApi = await this
+              .createHardwareWalletApi(ledgerIdentity: ledgerIdentity);
+
+          return await promiseToFuture(walletApi.createNeuron(amountJS));
+        } else {
+          return await promiseToFuture(serviceApi!.createNeuron(
+              CreateNeuronRequest(
+                  stake: amountJS, fromSubAccountId: account.subAccountId)));
+        }
+      }();
+
+      await Future.wait([
+        balanceSyncService!.syncBalances(),
+        neuronSyncService!.fetchNeurons()
+      ]);
+
+      return NeuronId.fromString(neuronId.toString());
+    } catch (e) {
+      // Alert with the error, then rethrow.
+      js.context.callMethod("alert", ["$e"]);
+      throw e;
+    }
   }
 
   @override
@@ -273,15 +304,10 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<hardwareWalletApi.HardwareWalletApi> createHardwareWalletApi(
       {dynamic ledgerIdentity}) async {
-    final userIdentity = authApi.tryGetIdentity();
-    if (userIdentity == null) {
-      throw "Couldn't get user identity.";
-    }
-
     final ledgerIdentity =
         await promiseToFuture(authApi.connectToHardwareWallet());
-    return await promiseToFuture(hardwareWalletApi.createHardwareWalletApi(
-        ledgerIdentity, userIdentity));
+    return await promiseToFuture(
+        hardwareWalletApi.createHardwareWalletApi(ledgerIdentity));
   }
 
   @override

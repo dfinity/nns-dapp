@@ -10,8 +10,10 @@ import { blobFromUint8Array, BinaryBlob } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
 import LedgerApp, { LedgerError, ResponseSign } from "@zondax/ledger-icp";
 import { Secp256k1PublicKey } from "./secp256k1";
+
 // @ts-ignore (no types are available)
-import TransportClass from "@ledgerhq/hw-transport-webhid";
+import TransportWebHID, { Transport } from "@ledgerhq/hw-transport-webhid";
+import TransportNodeHidNoEvents from "@ledgerhq/hw-transport-node-hid-noevents";
 
 /**
  * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
@@ -25,6 +27,10 @@ function _prepareCborForLedger(request: ReadRequest | CallRequest): BinaryBlob {
  * A Hardware Ledger Internet Computer Agent identity.
  */
 export class LedgerIdentity extends SignIdentity {
+  // A flag to signal that the next transaction to be signed will be
+  // a "stake neuron" transaction.
+  private _neuronStakeFlag = false;
+
   /**
    * Create a LedgerIdentity using the Web USB transport.
    * @param derivePath The derivation path.
@@ -53,13 +59,21 @@ export class LedgerIdentity extends SignIdentity {
   /**
    * Connect to a ledger hardware wallet.
    */
-  private static async _connect(): Promise<[LedgerApp, TransportClass]> {
-    if (!(await TransportClass.isSupported())) {
-      // Data on browser compatibility is taken from https://caniuse.com/webhid
-      throw "Your browser doesn't support WebHID, which is necessary to communicate with your wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+";
+  private static async _connect(): Promise<[LedgerApp, Transport]> {
+    async function getTransport() {
+      if (await TransportWebHID.isSupported()) {
+        // We're in a web browser.
+        return TransportWebHID.create();
+      } else if (await TransportNodeHidNoEvents.isSupported()) {
+        // Maybe we're in a CLI.
+        return TransportNodeHidNoEvents.create();
+      } else {
+        // Data on browser compatibility is taken from https://caniuse.com/webhid
+        throw "Your browser doesn't support WebHID, which is necessary to communicate with your wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+";
+      }
     }
 
-    const transport = await TransportClass.create();
+    const transport = await getTransport();
     const app = new LedgerApp(transport);
     return [app, transport];
   }
@@ -115,8 +129,13 @@ export class LedgerIdentity extends SignIdentity {
     return await this._executeWithApp(async (app: LedgerApp) => {
       const resp: ResponseSign = await app.sign(
         this.derivePath,
-        Buffer.from(blob)
+        Buffer.from(blob),
+        this._neuronStakeFlag ? 1 : 0
       );
+
+      // Remove the "neuron stake" flag, since we already signed the transaction.
+      this._neuronStakeFlag = false;
+
       const signatureRS = resp.signatureRS;
       if (!signatureRS) {
         throw new Error(
@@ -134,6 +153,13 @@ export class LedgerIdentity extends SignIdentity {
 
       return blobFromUint8Array(new Uint8Array(signatureRS));
     });
+  }
+
+  /**
+   * Signals that the upcoming transaction to be signed will be a "stake neuron" transaction.
+   */
+  public flagUpcomingStakeNeuron(): void {
+    this._neuronStakeFlag = true;
   }
 
   public async transformRequest(request: HttpAgentRequest): Promise<unknown> {
