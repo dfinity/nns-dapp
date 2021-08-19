@@ -43,7 +43,7 @@ RUN tar xJf flutter.tar.xz
 ENV PATH=/flutter/bin:$PATH
 
 # Install IC CDK optimizer
-RUN cargo install --version 0.2.0 ic-cdk-optimizer
+RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
 COPY . .
 
