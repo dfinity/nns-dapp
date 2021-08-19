@@ -54,7 +54,8 @@ import ICManagementService, {
   UpdateSettingsRequest,
   UpdateSettingsResponse,
 } from "./canisters/icManagement/model";
-import createNeuronImpl, {
+import {
+  createNeuronWithNnsUi,
   CreateNeuronRequest,
 } from "./canisters/createNeuron";
 import topUpNeuronImpl, { TopUpNeuronRequest } from "./canisters/topUpNeuron";
@@ -308,15 +309,20 @@ export default class ServiceApi {
     );
   };
 
-  public createNeuron = (request: CreateNeuronRequest): Promise<NeuronId> => {
-    return executeWithLogging(() =>
-      createNeuronImpl(
+  public createNeuron = async (
+    request: CreateNeuronRequest
+  ): Promise<NeuronId> => {
+    return await executeWithLogging(async () => {
+      const neuronId = await createNeuronWithNnsUi(
         this.identity.getPrincipal(),
         this.ledgerService,
         this.nnsUiService,
         request
-      )
-    );
+      );
+      console.log("Received neuron id");
+      console.log(neuronId);
+      return neuronId;
+    });
   };
 
   public topUpNeuron = (request: TopUpNeuronRequest): Promise<void> => {
