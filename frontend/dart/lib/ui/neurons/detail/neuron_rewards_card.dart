@@ -196,10 +196,6 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
   void initState() {
     super.initState();
     sliderValue = IntField("Merge Neuron", []);
-    // sliderValue.currentValue = (100 *
-    //         (widget.neuron.maturityICPEquivalent.asE8s() /
-    //             widget.neuron.stake.asE8s()))
-    //     .toInt();
     sliderValue.currentValue = 0;
   }
 
