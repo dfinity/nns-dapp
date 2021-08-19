@@ -176,7 +176,6 @@ class PlatformICApi extends AbstractPlatformICApi {
         MergeMaturityRequest(
             neuronId: neuronId.toJS, percentageToMerge: percentageToMerge)));
     await fetchNeuron(neuronId: neuronId);
-    balanceSyncService?.syncBalances();
   }
 
   @override

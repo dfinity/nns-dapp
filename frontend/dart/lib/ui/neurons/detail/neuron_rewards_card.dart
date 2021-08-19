@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
@@ -111,7 +112,10 @@ class NeuronRewardsCard extends StatelessWidget {
                                         }));
                               }.takeIf((e) =>
                                   neuron.maturityICPEquivalent.asE8s() >
-                                      BigInt.zero &&
+                                      ICP
+                                          .fromE8s(
+                                              BigInt.from(TRANSACTION_FEE_E8S))
+                                          .asE8s() &&
                                   neuron.isCurrentUserController),
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
