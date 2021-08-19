@@ -106,7 +106,7 @@ export default class ServiceApi {
   };
 
   private constructor(agent: HttpAgent, identity: SignIdentity) {
-    this.ledgerService = ledgerBuilder(agent, identity);
+    this.ledgerService = ledgerBuilder(agent);
     this.nnsUiService = nnsUiBuilder(agent);
     this.governanceService = governanceBuilder(agent, identity);
     this.icManagementService = icManagementBuilder(agent);
@@ -404,13 +404,12 @@ export default class ServiceApi {
     accountIdentifier: AccountIdentifier,
     e8s: E8s
   ): Promise<void> => {
-    const anonIdentity = new AnonymousIdentity();
     const agent = new HttpAgent({
       host: HOST,
-      identity: anonIdentity,
+      identity: new AnonymousIdentity(),
     });
     await agent.fetchRootKey();
-    const anonLedgerService = ledgerBuilder(agent, anonIdentity);
+    const anonLedgerService = ledgerBuilder(agent);
     const req = {
       to: accountIdentifier,
       amount: e8s,

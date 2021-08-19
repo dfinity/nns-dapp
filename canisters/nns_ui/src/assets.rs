@@ -51,7 +51,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
     let request_path = parts[0];
 
     let certificate_header =
-        STATE.with(|s| make_asset_certificate_header(&s.asset_hashes.borrow(), &request_path));
+        STATE.with(|s| make_asset_certificate_header(&s.asset_hashes.borrow(), request_path));
 
     ASSETS.with(|a| match a.borrow().get(request_path) {
         Some((headers, value)) => {
