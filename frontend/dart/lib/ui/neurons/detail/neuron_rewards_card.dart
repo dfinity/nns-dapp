@@ -321,9 +321,6 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                         fontSize: Responsive.isMobile(context) ? 14 : 16),
                   ),
                   onPressed: () {
-                    // var cal = widget.neuron.stake +
-                    //     (sliderValue.currentValue *
-                    //         widget.neuron.maturityICPEquivalent);
                     OverlayBaseWidget.show(
                         context,
                         ConfirmDialog(
