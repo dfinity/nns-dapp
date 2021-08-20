@@ -123,6 +123,9 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                           children: [
                             DebouncedValidatedFormField(
                               amountField,
+                              onChanged: () {
+                                setState(() {});
+                              },
                             ),
                             MaxButton(
                                 amountField: amountField,
