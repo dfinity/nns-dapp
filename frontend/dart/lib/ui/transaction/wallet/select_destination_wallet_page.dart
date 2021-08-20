@@ -181,7 +181,7 @@ class _AccountRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
-    return FlatButton(
+    return TextButton(
       onPressed: onPressed,
       child: Column(
         children: [

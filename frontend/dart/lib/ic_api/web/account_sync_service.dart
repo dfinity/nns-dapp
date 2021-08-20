@@ -1,6 +1,5 @@
-
 import 'dart:convert';
-import 'dart:js_util';
+import 'package:universal_html/js_util.dart';
 
 import 'package:dfinity_wallet/data/icp.dart';
 
@@ -29,12 +28,15 @@ class AccountsSyncService {
           primary: true,
           hardwareWallet: false),
       ...res['subAccounts'].map((element) => storeSubAccount(element)),
-      ...res['hardwareWalletAccounts'].map((element) => storeHardwareWalletAccount(element))
+      ...res['hardwareWalletAccounts']
+          .map((element) => storeHardwareWalletAccount(element))
     ]);
 
-   cachedAccounts
-       .filterNot((element) => validAccounts.contains(element.accountIdentifier))
-        .forEach((element) => hiveBoxes.accounts.remove(element.accountIdentifier));
+    cachedAccounts
+        .filterNot(
+            (element) => validAccounts.contains(element.accountIdentifier))
+        .forEach(
+            (element) => hiveBoxes.accounts.remove(element.accountIdentifier));
   }
 
   Future<String> storeSubAccount(element) {
@@ -45,7 +47,6 @@ class AccountsSyncService {
         primary: false,
         hardwareWallet: false);
   }
-
 
   Future<String> storeHardwareWalletAccount(element) {
     return storeNewAccount(
@@ -58,21 +59,20 @@ class AccountsSyncService {
 
   Future<String> storeNewAccount(
       {required String name,
-        required String address,
-        required int? subAccount,
-        required bool primary,
-        required bool hardwareWallet}) async {
+      required String address,
+      required int? subAccount,
+      required bool primary,
+      required bool hardwareWallet}) async {
     if (!hiveBoxes.accounts.containsKey(address)) {
       hiveBoxes.accounts[address] = Account(
-        name: name,
-        accountIdentifier: address,
-        primary: primary,
-        subAccountId: subAccount,
-        balance: ICP.zero,
-        transactions: [],
-        hardwareWallet: hardwareWallet
-      );
-    }else{
+          name: name,
+          accountIdentifier: address,
+          primary: primary,
+          subAccountId: subAccount,
+          balance: ICP.zero,
+          transactions: [],
+          hardwareWallet: hardwareWallet);
+    } else {
       final account = hiveBoxes.accounts[address];
       account.name = name;
       hiveBoxes.accounts[address] = account;

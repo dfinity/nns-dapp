@@ -1,8 +1,5 @@
-import 'dart:js_util';
-
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/icp_source.dart';
-import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/max_button.dart';
@@ -11,12 +8,8 @@ import 'package:dfinity_wallet/ui/neurons/detail/hardware_neuron.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:flutter/services.dart';
-
 import '../../dfinity.dart';
 import 'package:dartx/dartx.dart';
-
-import 'dart:js' as js;
-import 'detail/neuron_hotkeys_card.dart';
 import 'following/configure_followers_page.dart';
 
 class StakeNeuronPage extends StatefulWidget {
@@ -166,7 +159,6 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
 
                     final newNeuron = await context.icApi
                         .fetchNeuron(neuronId: newNeuronId!.asBigInt());
-
                     if (widget.source.type == ICPSourceType.HARDWARE_WALLET) {
                       OverlayBaseWidget.show(
                           context,
@@ -193,7 +185,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                                                                   context)
                                                               ?.dismiss();
                                                           context.nav.push(
-                                                              NeuronPageDef
+                                                              neuronPageDef
                                                                   .createPageConfig(
                                                                       newNeuron));
                                                         },
@@ -214,9 +206,8 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                                       completeAction: (context) {
                                         OverlayBaseWidget.of(context)
                                             ?.dismiss();
-                                        context.nav.push(
-                                            NeuronPageDef.createPageConfig(
-                                                newNeuron));
+                                        context.nav.push(neuronPageDef
+                                            .createPageConfig(newNeuron));
                                       },
                                     ));
                               }));

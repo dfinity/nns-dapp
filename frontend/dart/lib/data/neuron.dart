@@ -11,6 +11,7 @@ import 'icp.dart';
 import 'neuron_state.dart';
 import 'package:core/extensions.dart';
 import 'package:dartx/dartx.dart';
+import 'package:collection/collection.dart';
 
 // TODO: Use NeuronID everywhere.
 class NeuronId {
@@ -68,8 +69,16 @@ class Neuron extends DfinityEntity with ICPSource {
 
   Neuron.empty();
 
-  double get dissolveDelayMultiplier => 1 + (1 * (min(dissolveDelaySeconds, EIGHT_YEARS_IN_SECONDS).toDouble() / EIGHT_YEARS_IN_SECONDS));
-  double get ageBonusMultiplier => 1 + (0.5 * (min(ageSeconds, FOUR_YEARS_IN_SECONDS).toDouble() / FOUR_YEARS_IN_SECONDS));
+  double get dissolveDelayMultiplier =>
+      1 +
+      (1 *
+          (min(dissolveDelaySeconds, EIGHT_YEARS_IN_SECONDS).toDouble() /
+              EIGHT_YEARS_IN_SECONDS));
+  double get ageBonusMultiplier =>
+      1 +
+      (0.5 *
+          (min(ageSeconds, FOUR_YEARS_IN_SECONDS).toDouble() /
+              FOUR_YEARS_IN_SECONDS));
 
   @override
   String get identifier => id.toString();
@@ -94,7 +103,7 @@ class Neuron extends DfinityEntity with ICPSource {
   Duration get dissolveDelay => dissolveDelaySeconds.seconds;
 
   Vote? voteForProposal(Proposal proposal) => recentBallots
-      .firstOrNullWhere((element) => element.proposalId == proposal.id)
+      .firstWhereOrNull((element) => element.proposalId == proposal.id)
       ?.vote;
 
   @override

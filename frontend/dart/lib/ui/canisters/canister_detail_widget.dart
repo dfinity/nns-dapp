@@ -48,7 +48,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                         onConfirm: () async {
                           await context.callUpdate(() => context.icApi
                               .detachCanister(widget.canister.identifier));
-                          context.nav.replace(CanistersTabPage);
+                          context.nav.replace(canistersTabPage);
                         },
                       ));
                 },

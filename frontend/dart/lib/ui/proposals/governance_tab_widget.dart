@@ -3,7 +3,6 @@ import 'package:dfinity_wallet/data/proposal_reward_status.dart';
 import 'package:dfinity_wallet/data/topic.dart';
 import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/multi_select_list.dart';
@@ -16,7 +15,7 @@ class GovernanceTabWidget extends StatefulWidget {
   _GovernanceTabWidgetState createState() => _GovernanceTabWidgetState();
 }
 
-final DefaultTopics = [
+final defaultTopics = [
   Topic.NetworkEconomics,
   Topic.Governance,
   Topic.NodeAdmin,
@@ -26,7 +25,7 @@ final DefaultTopics = [
   Topic.NodeProviderRewards,
 ];
 
-final ValidTopics = [
+final validTopics = [
   Topic.ExchangeRate,
   Topic.NetworkEconomics,
   Topic.Governance,
@@ -38,7 +37,7 @@ final ValidTopics = [
   Topic.NodeProviderRewards,
 ];
 
-final ValidStatuses = [
+final validStatuses = [
   ProposalStatus.Open,
   ProposalStatus.Rejected,
   ProposalStatus.Accepted,
@@ -46,21 +45,21 @@ final ValidStatuses = [
   ProposalStatus.Failed,
 ];
 
-final DefaultStatuses = [
+final defaultStatuses = [
   ProposalStatus.Open,
   ProposalStatus.Rejected,
   ProposalStatus.Accepted,
   ProposalStatus.Executed,
 ];
 
-final ValidRewardStatuses = [
+final validRewardStatuses = [
   ProposalRewardStatus.AcceptVotes,
   ProposalRewardStatus.ReadyToSettle,
   ProposalRewardStatus.Settled,
   ProposalRewardStatus.Ineligible,
 ];
 
-final DefaultRewardStatuses = [
+final defaultRewardStatuses = [
   ProposalRewardStatus.AcceptVotes,
   ProposalRewardStatus.ReadyToSettle,
   ProposalRewardStatus.Settled,
@@ -69,20 +68,20 @@ final DefaultRewardStatuses = [
 
 class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
   MultiSelectField<Topic> topicsField = MultiSelectField<Topic>("Topics",
-      ValidTopics, DefaultTopics, (dynamic e) => (e as Topic?)?.name ?? "");
+      validTopics, defaultTopics, (dynamic e) => (e as Topic?)?.name ?? "");
 
   MultiSelectField<ProposalStatus> statusesField =
       MultiSelectField<ProposalStatus>(
           "Proposal Status",
-          ValidStatuses,
-          DefaultStatuses,
+          validStatuses,
+          defaultStatuses,
           (dynamic e) => (e as ProposalStatus?)?.description ?? "");
 
   MultiSelectField<ProposalRewardStatus> rewardStatuesField =
       MultiSelectField<ProposalRewardStatus>(
           "Reward Status",
-          ValidRewardStatuses,
-          DefaultRewardStatuses,
+          validRewardStatuses,
+          defaultRewardStatuses,
           (dynamic e) => (e as ProposalRewardStatus?)?.label ?? "");
 
   bool excludeVotedProposals = false;
@@ -236,7 +235,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                             proposal: e,
                             onPressed: () {
                               context.nav
-                                  .push(ProposalPageDef.createPageConfig(e));
+                                  .push(proposalPageDef.createPageConfig(e));
                             },
                           )),
                       SmallFormDivider(),
@@ -280,7 +279,7 @@ class ProposalRow extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       color: AppColors.background,
-      child: FlatButton(
+      child: TextButton(
         onPressed: onPressed,
         child: Container(
           child: Padding(

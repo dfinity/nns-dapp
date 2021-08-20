@@ -55,7 +55,7 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                                   showsWarning: true,
                                   onPressed: () {
                                     context.nav.push(
-                                        CanisterPageDef.createPageConfig(e));
+                                        canisterPageDef.createPageConfig(e));
                                   },
                                 )),
                         SizedBox(
@@ -104,7 +104,7 @@ class CanisterColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: FlatButton(
+      child: TextButton(
         onPressed: onPressed,
         child: Container(
           width: double.infinity,

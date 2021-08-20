@@ -1,4 +1,4 @@
-import 'dart:js_util';
+import 'package:universal_html/js_util.dart';
 
 import 'package:dfinity_wallet/data/ballot_info.dart';
 import 'package:dfinity_wallet/data/followee.dart';
@@ -115,7 +115,7 @@ class NeuronSyncService {
 class PrettyPrint {
   static prettyPrintJson(String text, dynamic object) {
     JsonEncoder encoder = new JsonEncoder.withIndent('  ');
-    String prettyprint = encoder.convert(object);
+    /*String prettyprint = encoder.convert(object); */
   }
 }
 

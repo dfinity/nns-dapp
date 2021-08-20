@@ -105,7 +105,7 @@ class DfinityApp extends StatelessWidget {
                       textStyle: MaterialStateProperty.all(
                           TextStyle(color: Colors.white)),
                       overlayColor: MaterialStateProperty.all(
-                          AppColors.white.withOpacity(0.2)))),
+                          AppColors.gray400.withOpacity(0.04)))),
               cardTheme: CardTheme(
                   color: AppColors.background,
                   shape: RoundedRectangleBorder(
