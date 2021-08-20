@@ -55,6 +55,7 @@ export type Command =
   | { Configure: Configure }
   | { RegisterVote: RegisterVote }
   | { DisburseToNeuron: DisburseToNeuron }
+  | { MergeMaturity: MergeMaturity }
   | { MakeProposal: Proposal }
   | { Disburse: Disburse };
 export interface Configure {
@@ -139,6 +140,17 @@ export interface ManageNeuron {
   id: Option<NeuronId>;
   command: Option<Command>;
   neuronIdOrSubaccount: Option<NeuronIdOrSubaccount>;
+}
+export interface MergeMaturity {
+  percentageToMerge: number;
+}
+export interface MergeMaturityRequest {
+  neuronId: NeuronId;
+  percentageToMerge: number;
+}
+export interface MergeMaturityResponse {
+  mergedMaturityE8s: bigint;
+  newStakeE8s: bigint;
 }
 export interface MethodAuthzChange {
   principal: Option<PrincipalString>;
@@ -461,6 +473,9 @@ export default interface ServiceInterface {
     request: IncreaseDissolveDelayRequest
   ) => Promise<EmptyResponse>;
   follow: (request: FollowRequest) => Promise<EmptyResponse>;
+  mergeMaturity: (
+    request: MergeMaturityRequest
+  ) => Promise<MergeMaturityResponse>;
   registerVote: (request: RegisterVoteRequest) => Promise<EmptyResponse>;
   spawn: (request: SpawnRequest) => Promise<SpawnResponse>;
   split: (request: SplitRequest) => Promise<EmptyResponse>;
