@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
 
 import '../../../dfinity.dart';
 import 'followee_suggestions.dart';
+import 'package:collection/collection.dart';
 
 class TopicFolloweesWidget extends StatelessWidget {
   final Neuron neuron;
@@ -90,7 +91,7 @@ class TopicFolloweesWidget extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Text(
                               FolloweeSuggestion.followerSuggestions
-                                      .firstOrNullWhere(
+                                      .firstWhereOrNull(
                                           (element) => element.id == e)
                                       ?.name ??
                                   e,

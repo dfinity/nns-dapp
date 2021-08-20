@@ -1,9 +1,7 @@
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/stake_neuron_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
-import 'package:flutter/services.dart';
 import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
 
@@ -101,7 +99,7 @@ class _AccountRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
-    return FlatButton(
+    return TextButton(
       onPressed: onPressed,
       child: Padding(
         padding: const EdgeInsets.all(8.0),

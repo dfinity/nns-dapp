@@ -28,13 +28,10 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
     super.initState();
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(
-              widget.source.balance, 2)
+          StringFieldValidation.insufficientFunds(widget.source.balance, 2)
         ],
         inputType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[
-          ICPTextInputFormatter()
-        ]);
+        inputFormatters: <TextInputFormatter>[ICPTextInputFormatter()]);
   }
 
   @override
@@ -76,7 +73,8 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
                         onPressed: () async {
                           await context.callUpdate(() => context.icApi
                               .topUpCanister(
-                                  amount: ICP.fromString(amountField.currentValue),
+                                  amount:
+                                      ICP.fromString(amountField.currentValue),
                                   canisterId: widget.canister.identifier,
                                   fromSubAccountId:
                                       widget.source.subAccountId));
@@ -135,7 +133,7 @@ class DoneWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                         onPressed: () {
-                          context.nav.push(CanistersTabPage);
+                          context.nav.push(canistersTabPage);
                         },
                         child: Text("OK")),
                   ),

@@ -164,7 +164,6 @@ class HardwareConnectionWidget extends StatelessWidget {
             ],
           ),
         );
-        break;
     }
   }
 }

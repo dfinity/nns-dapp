@@ -1,6 +1,5 @@
-import 'dart:js_util';
+import 'package:universal_html/js_util.dart';
 import 'package:js/js.dart';
-
 
 extension ToJSObject on Map {
   Object toJsObject() {
@@ -14,13 +13,12 @@ extension ToJSObject on Map {
   }
 }
 
-
 @JS()
 class Promise<T> {
   external Promise(void executor(void resolve(T result), Function reject));
   external Promise then(void onFulfilled(T result), [Function onRejected]);
 }
 
-extension AsFuture<T> on Promise<T>{
+extension AsFuture<T> on Promise<T> {
   Future<T> toFuture() => promiseToFuture(this);
 }

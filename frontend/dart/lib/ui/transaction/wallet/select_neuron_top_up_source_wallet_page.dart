@@ -42,7 +42,7 @@ class _SelectNeuronTopUpSourceWalletState
                         Text(
                           "My Accounts",
                           style: Responsive.isDesktop(context) |
-                          Responsive.isTablet(context)
+                                  Responsive.isTablet(context)
                               ? context.textTheme.headline3
                               : context.textTheme.headline4,
                         ),
@@ -57,22 +57,23 @@ class _SelectNeuronTopUpSourceWalletState
                                         width: 2, color: AppColors.gray800))),
                             child: Column(
                               children:
-                              allAccounts.mapToList((e) => _AccountRow(
-                                  account: e,
-                                  onPressed: () {
-                                    final address = e.accountIdentifier;
-                                    final source =
-                                    context.boxes.accounts[address]!;
-                                    WizardOverlay.of(context).pushPage(
-                                        "Enter ICP Amount",
-                                        EnterAmountPage(
-                                          source: source,
-                                          destinationAccountIdentifier:
-                                          widget.neuron.accountIdentifier,
-                                          subAccountId: source.subAccountId,
-                                          isTopUpNeuron: true,
-                                        ));
-                                  })),
+                                  allAccounts.mapToList((e) => _AccountRow(
+                                      account: e,
+                                      onPressed: () {
+                                        final address = e.accountIdentifier;
+                                        final source =
+                                            context.boxes.accounts[address]!;
+                                        WizardOverlay.of(context).pushPage(
+                                            "Enter ICP Amount",
+                                            EnterAmountPage(
+                                              source: source,
+                                              destinationAccountIdentifier:
+                                                  widget
+                                                      .neuron.accountIdentifier,
+                                              subAccountId: source.subAccountId,
+                                              isTopUpNeuron: true,
+                                            ));
+                                      })),
                             ),
                           ),
                         )
@@ -93,15 +94,15 @@ class _AccountRow extends StatelessWidget {
 
   const _AccountRow(
       {Key? key,
-        required this.account,
-        required this.onPressed,
-        this.selected = false})
+      required this.account,
+      required this.onPressed,
+      this.selected = false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
-    return FlatButton(
+    return TextButton(
       onPressed: onPressed,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -113,13 +114,13 @@ class _AccountRow extends StatelessWidget {
               children: [
                 Text(account.name,
                     style: Responsive.isDesktop(context) |
-                    Responsive.isTablet(context)
+                            Responsive.isTablet(context)
                         ? context.textTheme.headline3
                         : context.textTheme.headline4),
                 BalanceDisplayWidget(
                   amount: account.balance,
                   amountSize: Responsive.isDesktop(context) |
-                  Responsive.isTablet(context)
+                          Responsive.isTablet(context)
                       ? 30
                       : 14,
                   icpLabelSize: 25,

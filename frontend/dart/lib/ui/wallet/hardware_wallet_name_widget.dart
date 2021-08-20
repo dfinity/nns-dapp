@@ -1,5 +1,4 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 
@@ -7,7 +6,8 @@ import '../../dfinity.dart';
 import 'attach_hardware_wallet.dart';
 
 class HardwareWalletNameWidget extends StatelessWidget {
-  ValidatedTextField nameField = ValidatedTextField("Hardware Wallet Name",
+  final ValidatedTextField nameField = ValidatedTextField(
+      "Hardware Wallet Name",
       validations: [StringFieldValidation.minimumLength(2)]);
 
   @override

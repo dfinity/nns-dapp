@@ -1,6 +1,5 @@
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/page_button.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_source_wallet_page.dart';
@@ -29,7 +28,6 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
         stream: context.boxes.accounts.changes,
         builder: (context, snapshot) {
           final wallets = context.boxes.accounts.values;
-          final btnSizeGrp = AutoSizeGroup();
           if (wallets.isEmpty) {
             return Container(
               child: Center(
@@ -111,7 +109,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                     account: e,
                                     onTap: () {
                                       context.nav.push(
-                                          AccountPageDef.createPageConfig(e));
+                                          accountPageDef.createPageConfig(e));
                                     },
                                   )),
                           SizedBox(

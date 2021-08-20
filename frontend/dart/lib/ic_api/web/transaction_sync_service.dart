@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:js_util';
+import 'package:universal_html/js_util.dart';
 
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/transaction_type.dart';
@@ -55,16 +55,15 @@ class TransactionSyncService {
       final milliseconds =
           BigInt.parse(e['timestamp'].toString()) / BigInt.from(1000000);
       transactions.add(Transaction(
-        to: to,
-        from: from,
-        date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
-        amount: amount,
-        fee: fee,
-        type: type,
-        memo: e['memo'].toString().toBigInt,
-        incomplete: incomplete,
-        blockHeight: e['blockHeight'].toString().toBigInt
-      ));
+          to: to,
+          from: from,
+          date: DateTime.fromMillisecondsSinceEpoch(milliseconds.toInt()),
+          amount: amount,
+          fee: fee,
+          type: type,
+          memo: e['memo'].toString().toBigInt,
+          incomplete: incomplete,
+          blockHeight: e['blockHeight'].toString().toBigInt));
     });
     account.transactions = transactions;
     hiveBoxes.accounts[account.identifier] = account;
