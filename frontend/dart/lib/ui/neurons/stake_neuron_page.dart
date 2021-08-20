@@ -4,6 +4,7 @@ import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/max_button.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
+import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/hardware_neuron.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
@@ -143,7 +144,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                 width: double.infinity,
                 height: 100,
                 padding: EdgeInsets.symmetric(horizontal: 64, vertical: 20),
-                child: ElevatedButton(
+                child: ValidFieldsSubmitButton(
                   child: Text("Create",
                       style: TextStyle(
                           fontSize: Responsive.isTablet(context) |
@@ -212,7 +213,8 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                                     ));
                               }));
                     }
-                  }.takeIf((e) => <ValidatedField>[amountField].allAreValid),
+                  },
+                  fields: [amountField],
                 ),
               ),
             ],
