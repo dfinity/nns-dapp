@@ -17,6 +17,8 @@ import GovernanceService, {
   MakeProposalResponse,
   MakeRewardNodeProviderProposalRequest,
   MakeSetDefaultFolloweesProposalRequest,
+  MergeMaturityRequest,
+  MergeMaturityResponse,
   NeuronInfo,
   RegisterVoteRequest,
   RemoveHotKeyRequest,
@@ -274,6 +276,14 @@ export default class ServiceApi {
   ): Promise<DisburseToNeuronResponse> => {
     return executeWithLogging(() =>
       this.governanceService.disburseToNeuron(request)
+    );
+  };
+
+  public mergeMaturity = (
+    request: MergeMaturityRequest
+  ): Promise<MergeMaturityResponse> => {
+    return executeWithLogging(() =>
+      this.governanceService.mergeMaturity(request)
     );
   };
 

@@ -59,8 +59,7 @@ class EnterCanisterIdWidget extends StatelessWidget {
                 onPressed: () async {
                   final result = await context.callUpdate(() => context.icApi
                       .attachCanister(
-                          name: "",
-                          canisterId: idField.currentValue));
+                          name: "", canisterId: idField.currentValue));
                   if (result == null) {
                     return;
                   }
@@ -70,7 +69,7 @@ class EnterCanisterIdWidget extends StatelessWidget {
                       final canister =
                           context.boxes.canisters[idField.currentValue]!;
                       context.nav
-                          .push(CanisterPageDef.createPageConfig(canister));
+                          .push(canisterPageDef.createPageConfig(canister));
                       break;
                     case AttachCanisterResult.CanisterAlreadyAttached:
                       showError(context, "Canister Already Attached");

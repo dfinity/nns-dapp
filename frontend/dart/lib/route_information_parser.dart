@@ -11,23 +11,28 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
   WalletRouteParser(this.hiveBoxes, this.context);
 
   final staticPages = [
-    AccountsTabPage,
-    NeuronTabsPage,
-    ProposalsTabPage,
-    CanistersTabPage
+    accountsTabPage,
+    neuronTabsPage,
+    proposalsTabPage,
+    canistersTabPage
   ].associateBy((e) => e.path.removePrefix('/'));
 
-  final entityPages = [AccountPageDef, NeuronPageDef, ProposalPageDef, CanisterPageDef]
-      .associateBy((e) => e.pathTemplate.removePrefix('/'));
+  final entityPages = [
+    accountPageDef,
+    neuronPageDef,
+    proposalPageDef,
+    canisterPageDef
+  ].associateBy((e) => e.pathTemplate.removePrefix('/'));
 
-  final apiObjectPages = [NeuronInfoPage].associateBy((e) => e.pathTemplate.removePrefix('/'));
+  final apiObjectPages =
+      [neuronInfoPage].associateBy((e) => e.pathTemplate.removePrefix('/'));
 
   @override
   Future<PageConfig> parseRouteInformation(
       RouteInformation routeInformation) async {
     bool isAuthenticated = context.icApi.isLoggedIn();
     if (!isAuthenticated) {
-      return AuthPage;
+      return authPage;
     }
 
     return pageConfigRouteInformation(routeInformation);
@@ -38,7 +43,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     final uri = Uri.parse(routeInformation.location ?? "");
 
     if (uri.pathSegments.isEmpty) {
-      return AccountsTabPage;
+      return accountsTabPage;
     }
     final path = uri.pathSegments[0];
     final staticPage = staticPages[path];
@@ -49,8 +54,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     final entityPageDef = entityPages[path];
     if (entityPageDef != null) {
       final id = uri.pathSegments[1];
-      final entity =
-          entityPageDef.entityForIdentifier(id, hiveBoxes);
+      final entity = entityPageDef.entityForIdentifier(id, hiveBoxes);
       if (entity != null) {
         final entityPage = entityPageDef.createConfigWithEntity(entity);
         return entityPage;
@@ -65,12 +69,12 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
     }
 
     final apiObjectPage = apiObjectPages[path];
-    if(apiObjectPage != null){
+    if (apiObjectPage != null) {
       final id = uri.pathSegments[1];
       return apiObjectPage.createPageConfig(id);
     }
 
-    return AccountsTabPage;
+    return accountsTabPage;
   }
 
   @override

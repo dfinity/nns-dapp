@@ -1,7 +1,6 @@
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 
 import '../../dfinity.dart';
@@ -141,7 +140,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                       }
                       if (result.canister != null) {
                         context.nav.push(
-                            CanisterPageDef.createPageConfig(result.canister!));
+                            canisterPageDef.createPageConfig(result.canister!));
                       } else if (result.errorMessage != null)
                         OverlayBaseWidget.show(
                             context,

@@ -50,6 +50,5 @@ class WizardPathButton extends StatelessWidget {
       ),
       onPressed: onPressed,
     );
-    ;
   }
 }

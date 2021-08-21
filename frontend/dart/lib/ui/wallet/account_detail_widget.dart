@@ -1,6 +1,4 @@
-import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/dfinity.dart';

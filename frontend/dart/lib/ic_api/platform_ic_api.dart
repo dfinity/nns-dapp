@@ -64,6 +64,9 @@ abstract class AbstractPlatformICApi {
       required ICP amount,
       required String toAccountId});
 
+  Future<void> mergeMaturity(
+      {required BigInt neuronId, required int percentageToMerge});
+
   Future<void> addHotkey({required BigInt neuronId, required String principal});
 
   Future<void> removeHotkey(
