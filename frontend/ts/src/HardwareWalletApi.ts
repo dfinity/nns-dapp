@@ -72,8 +72,14 @@ export default class HardwareWalletApi {
     fromAccount: AccountIdentifier,
     request: SendICPTsRequest
   ): Promise<BlockHeight> => {
-    if (fromAccount !== this.accountIdentifier)
+    if (fromAccount !== this.accountIdentifier) {
       throw new Error("'From Account' does not match the hardware wallet");
+    }
+
+    // The Ledger app requires a memo to be explicitly set.
+    if (!request.memo) {
+      request.memo = BigInt(0);
+    }
 
     return await this.ledgerService.sendICPTs(request);
   };
