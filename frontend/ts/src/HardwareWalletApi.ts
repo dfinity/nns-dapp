@@ -23,7 +23,7 @@ export default class HardwareWalletApi {
   private readonly governanceService: GovernanceService;
   /**
    * The anonymous governance service is used for fetching data from the
-   * governance canister that don't need the ledger wallet's authentication.
+   * governance canister that doesn't need the ledger wallet's authentication.
    */
   private readonly anonymousGovernanceService: GovernanceService;
 
@@ -54,10 +54,7 @@ export default class HardwareWalletApi {
       new AnonymousIdentity()
     );
 
-    const governanceService = governanceBuilder(
-      ledgerAgent,
-      ledgerIdentity
-    );
+    const governanceService = governanceBuilder(ledgerAgent, ledgerIdentity);
 
     return new HardwareWalletApi(
       ledgerIdentity,
@@ -113,10 +110,15 @@ export default class HardwareWalletApi {
     );
   };
 
-  public addHotKey = async (neuronId: NeuronId, principal: string): Promise<EmptyResponse> => {
-    return await executeWithLogging(() => this.governanceService.addHotKey({
-      neuronId: neuronId,
-      principal: principal
-    }));
+  public addHotKey = async (
+    neuronId: NeuronId,
+    principal: string
+  ): Promise<EmptyResponse> => {
+    return await executeWithLogging(() =>
+      this.governanceService.addHotKey({
+        neuronId: neuronId,
+        principal: principal,
+      })
+    );
   };
 }
