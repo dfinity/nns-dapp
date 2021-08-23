@@ -1,7 +1,7 @@
 import { LedgerIdentity } from "./ledger/identity";
 import ledgerBuilder from "./canisters/ledger/builder";
 import governanceBuilder from "./canisters/governance/builder";
-import GovernanceService from "./canisters/governance/model";
+import GovernanceService, { EmptyResponse } from "./canisters/governance/model";
 import LedgerService, { SendICPTsRequest } from "./canisters/ledger/model";
 import {
   AccountIdentifier,
@@ -14,12 +14,18 @@ import { principalToAccountIdentifier } from "./canisters/converter";
 import { HOST } from "./canisters/constants";
 import { FETCH_ROOT_KEY } from "./config.json";
 import createNeuronImpl from "./canisters/createNeuron";
+import { executeWithLogging } from "./errorLogger";
 
 export default class HardwareWalletApi {
   private readonly identity: LedgerIdentity;
   private readonly accountIdentifier: AccountIdentifier;
   private readonly ledgerService: LedgerService;
   private readonly governanceService: GovernanceService;
+  /**
+   * The anonymous governance service is used for fetching data from the
+   * governance canister that don't need the ledger wallet's authentication.
+   */
+  private readonly anonymousGovernanceService: GovernanceService;
 
   public static create = async (
     ledgerIdentity: LedgerIdentity
@@ -43,14 +49,20 @@ export default class HardwareWalletApi {
     }
 
     const ledgerService = ledgerBuilder(ledgerAgent);
-    const governanceService = governanceBuilder(
+    const anonymousGovernanceService = governanceBuilder(
       anonymousAgent,
       new AnonymousIdentity()
+    );
+
+    const governanceService = governanceBuilder(
+      ledgerAgent,
+      ledgerIdentity
     );
 
     return new HardwareWalletApi(
       ledgerIdentity,
       ledgerService,
+      anonymousGovernanceService,
       governanceService
     );
   };
@@ -58,6 +70,7 @@ export default class HardwareWalletApi {
   private constructor(
     ledgerIdentity: LedgerIdentity,
     ledgerService: LedgerService,
+    anonymousGovernanceService: GovernanceService,
     governanceService: GovernanceService
   ) {
     this.identity = ledgerIdentity;
@@ -65,6 +78,7 @@ export default class HardwareWalletApi {
       ledgerIdentity.getPrincipal()
     );
     this.ledgerService = ledgerService;
+    this.anonymousGovernanceService = anonymousGovernanceService;
     this.governanceService = governanceService;
   }
 
@@ -92,10 +106,17 @@ export default class HardwareWalletApi {
     return createNeuronImpl(
       this.identity.getPrincipal(),
       this.ledgerService,
-      this.governanceService,
+      this.anonymousGovernanceService,
       {
         stake: amount,
       }
     );
+  };
+
+  public addHotKey = async (neuronId: NeuronId, principal: string): Promise<EmptyResponse> => {
+    return await executeWithLogging(() => this.governanceService.addHotKey({
+      neuronId: neuronId,
+      principal: principal
+    }));
   };
 }
