@@ -44,7 +44,7 @@ abstract class AbstractPlatformICApi {
   Future<void> stopDissolving({required BigInt neuronId});
 
   Future<void> increaseDissolveDelay(
-      {required BigInt neuronId, required int additionalDissolveDelaySeconds});
+      {required Neuron neuron, required int additionalDissolveDelaySeconds});
 
   Future<Neuron> spawnNeuron({required BigInt neuronId});
 
