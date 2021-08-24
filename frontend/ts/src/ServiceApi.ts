@@ -1,4 +1,9 @@
-import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
+import {
+  AnonymousIdentity,
+  HttpAgent,
+  Identity,
+  SignIdentity,
+} from "@dfinity/agent";
 import { Option } from "./canisters/option";
 import governanceBuilder from "./canisters/governance/builder";
 import GovernanceService, {
@@ -240,10 +245,11 @@ export default class ServiceApi {
   };
 
   public increaseDissolveDelay = (
+    identity: Identity,
     request: IncreaseDissolveDelayRequest
   ): Promise<EmptyResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.increaseDissolveDelay(request)
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).increaseDissolveDelay(request)
     );
   };
 
@@ -482,4 +488,22 @@ export default class ServiceApi {
       console.log(manageNeuronResponse);
     }
   };
+}
+
+/**
+ * @returns A service to interact with the governance canister with the given identity.
+ */
+async function governanceService(
+  identity: Identity
+): Promise<GovernanceService> {
+  const agent = new HttpAgent({
+    host: HOST,
+    identity: identity,
+  });
+
+  if (FETCH_ROOT_KEY) {
+    await agent.fetchRootKey();
+  }
+
+  return governanceBuilder(agent, identity);
 }

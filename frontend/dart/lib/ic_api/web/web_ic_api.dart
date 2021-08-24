@@ -223,14 +223,24 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> increaseDissolveDelay(
-      {required BigInt neuronId,
+      {required Neuron neuron,
       required int additionalDissolveDelaySeconds}) async {
+    
+    // If the neuron is controlled by the user, use the user's II, otherwise
+    // we assume it's a hardware wallet and try connecting to the device.
+    final identity = neuron.isCurrentUserController
+        ? this.identity
+        : await this.connectToHardwareWallet();
+
     await promiseToFuture(
-        serviceApi!.increaseDissolveDelay(IncreaseDissolveDelayRequest(
-      neuronId: neuronId.toJS,
+        serviceApi!.increaseDissolveDelay(
+        identity,
+        IncreaseDissolveDelayRequest(
+          neuronId: neuron.id.toString(),
       additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
     )));
-    await fetchNeuron(neuronId: neuronId);
+
+    await fetchNeuron(neuronId: neuron.id.toBigInt);
   }
 
   @override

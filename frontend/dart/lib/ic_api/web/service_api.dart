@@ -75,7 +75,8 @@ class ServiceApi {
   external Promise<dynamic> stopDissolving(dynamic request);
 
   @JS("increaseDissolveDelay")
-  external Promise<dynamic> increaseDissolveDelay(dynamic request);
+  external Promise<dynamic> increaseDissolveDelay(
+      dynamic identity, dynamic request);
 
   @JS("follow")
   external Promise<dynamic> follow(dynamic request);
@@ -129,7 +130,7 @@ class ServiceApi {
 @JS()
 @anonymous
 class IncreaseDissolveDelayRequest {
-  external dynamic get neuronId;
+  external String get neuronId;
 
   external num get additionalDissolveDelaySeconds;
 
