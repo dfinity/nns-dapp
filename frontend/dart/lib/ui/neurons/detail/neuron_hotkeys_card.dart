@@ -50,7 +50,7 @@ class NeuronHotkeysCard extends StatelessWidget {
                                 style: context.textTheme.bodyText2),
                             flex: 4,
                           ),
-                          if (neuron.isCurrentUserController)
+                          if (context.icApi.isNeuronControllable(neuron))
                             TextButton(
                                 style: buttonStyle,
                                 onPressed: () {
@@ -97,8 +97,7 @@ class NeuronHotkeysCard extends StatelessWidget {
 
   void removeHotkey(String hotKey, BuildContext context) {
     context.callUpdate(() async {
-      await context.icApi
-          .removeHotkey(neuronId: neuron.id.toBigInt, principal: hotKey);
+      await context.icApi.removeHotkey(neuron: neuron, principal: hotKey);
       return true;
     });
   }

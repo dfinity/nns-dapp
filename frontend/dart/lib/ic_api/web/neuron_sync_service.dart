@@ -89,6 +89,7 @@ class NeuronSyncService {
         fullNeuron['createdTimestampSeconds'].toString();
     neuron.followees = parseFollowees(fullNeuron['followees']);
     neuron.isCurrentUserController = fullNeuron['isCurrentUserController'];
+    neuron.controller = fullNeuron['controller'];
     neuron.accountIdentifier = fullNeuron['accountIdentifier'];
     neuron.hotkeys = fullNeuron['hotKeys'].cast<String>();
   }
