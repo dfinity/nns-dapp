@@ -1,5 +1,6 @@
 import 'package:dfinity_wallet/data/data.dart';
 import 'package:dfinity_wallet/data/transaction.dart';
+import 'package:dfinity_wallet/ic_api/ic_api.dart';
 import 'package:observable/observable.dart';
 import 'package:dartx/dartx.dart';
 import 'icp.dart';
@@ -8,6 +9,7 @@ import 'package:collection/collection.dart';
 
 class Account extends DfinityEntity with ICPSource {
   String name;
+  final String principal;
   final String accountIdentifier;
   final bool primary;
   ICP balance;
@@ -17,6 +19,7 @@ class Account extends DfinityEntity with ICPSource {
 
   Account(
       {required this.name,
+      required this.principal,
       required this.accountIdentifier,
       required this.primary,
       required this.subAccountId,

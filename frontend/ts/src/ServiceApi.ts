@@ -161,6 +161,7 @@ export default class ServiceApi {
         this.nnsUiService.addAccount()
       );
       return {
+        principal: this.identity.getPrincipal(),
         accountIdentifier,
         subAccounts: [],
         hardwareWalletAccounts: [],
@@ -221,10 +222,11 @@ export default class ServiceApi {
   };
 
   public removeHotKey = (
+    identity: Identity,
     request: RemoveHotKeyRequest
   ): Promise<EmptyResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.removeHotKey(request)
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).removeHotKey(request)
     );
   };
 

@@ -70,7 +70,7 @@ abstract class AbstractPlatformICApi {
   Future<void> addHotkey({required BigInt neuronId, required String principal});
 
   Future<void> removeHotkey(
-      {required BigInt neuronId, required String principal});
+      {required Neuron neuron, required String principal});
 
   Future<void> fetchProposals(
       {required List<Topic> excludeTopics,
@@ -128,4 +128,8 @@ abstract class AbstractPlatformICApi {
   Future<void> logout();
 
   int? getTimeUntilSessionExpiryMs();
+
+  Account? getAccountByPrincipal(String principal);
+
+  bool isNeuronControllable(Neuron neuron);
 }

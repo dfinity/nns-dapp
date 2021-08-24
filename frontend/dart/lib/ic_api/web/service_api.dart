@@ -66,7 +66,7 @@ class ServiceApi {
   external Promise<dynamic> addHotKey(dynamic request);
 
   @JS("removeHotKey")
-  external Promise<dynamic> removeHotKey(dynamic request);
+  external Promise<dynamic> removeHotKey(dynamic identity, dynamic request);
 
   @JS("startDissolving")
   external Promise<dynamic> startDissolving(dynamic request);

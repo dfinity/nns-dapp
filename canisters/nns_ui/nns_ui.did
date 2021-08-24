@@ -8,6 +8,7 @@ type SubAccount = vec nat8;
 
 type AccountDetails =
     record {
+        "principal": principal;
         account_identifier: AccountIdentifier;
         sub_accounts: vec SubAccountDetails;
         hardware_wallet_accounts: vec HardwareWalletAccountDetails;
