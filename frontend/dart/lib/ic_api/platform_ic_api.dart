@@ -39,9 +39,9 @@ abstract class AbstractPlatformICApi {
       required ICP amount,
       int? fromSubAccount});
 
-  Future<void> startDissolving({required BigInt neuronId});
+  Future<void> startDissolving({required Neuron neuron});
 
-  Future<void> stopDissolving({required BigInt neuronId});
+  Future<void> stopDissolving({required Neuron neuron});
 
   Future<void> increaseDissolveDelay(
       {required Neuron neuron, required int additionalDissolveDelaySeconds});
