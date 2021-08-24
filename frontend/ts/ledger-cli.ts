@@ -136,7 +136,9 @@ async function increaseDissolveDelay(
 
 async function startDissolving(neuronId: string) {
   const identity = await LedgerIdentity.create();
-  const response = await (await getGovernanceService(identity)).startDissolving({
+  const response = await (
+    await getGovernanceService(identity)
+  ).startDissolving({
     neuronId: BigInt(neuronId),
   });
   console.log(response);
@@ -144,7 +146,9 @@ async function startDissolving(neuronId: string) {
 
 async function stopDissolving(neuronId: string) {
   const identity = await LedgerIdentity.create();
-  const response = await (await getGovernanceService(identity)).stopDissolving({
+  const response = await (
+    await getGovernanceService(identity)
+  ).stopDissolving({
     neuronId: BigInt(neuronId),
   });
   console.log(response);
