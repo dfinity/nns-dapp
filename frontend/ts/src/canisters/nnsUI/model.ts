@@ -22,7 +22,7 @@ export enum TransactionType {
 }
 
 export interface AccountDetails {
-  principal: Principal,
+  principal: Principal;
   accountIdentifier: AccountIdentifier;
   hardwareWalletAccounts: Array<HardwareWalletAccountDetails>;
   subAccounts: Array<SubAccountDetails>;
