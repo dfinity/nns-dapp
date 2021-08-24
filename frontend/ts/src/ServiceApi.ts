@@ -161,7 +161,7 @@ export default class ServiceApi {
         this.nnsUiService.addAccount()
       );
       return {
-        principal: this.identity.getPrincipal(),
+        principal: this.identity.getPrincipal().toString(),
         accountIdentifier,
         subAccounts: [],
         hardwareWalletAccounts: [],
@@ -231,18 +231,20 @@ export default class ServiceApi {
   };
 
   public startDissolving = (
+    identity: Identity,
     request: StartDissolvingRequest
   ): Promise<EmptyResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.startDissolving(request)
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).startDissolving(request)
     );
   };
 
   public stopDissolving = (
+    identity: Identity,
     request: StopDissolvingRequest
   ): Promise<EmptyResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.stopDissolving(request)
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).stopDissolving(request)
     );
   };
 

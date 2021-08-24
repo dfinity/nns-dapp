@@ -175,16 +175,36 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> startDissolving({required BigInt neuronId}) async {
-    await promiseToFuture(serviceApi!
-        .startDissolving(NeuronIdentifierRequest(neuronId: neuronId.toJS)));
+  Future<void> startDissolving({required Neuron neuron}) async {
+    if (!this.isNeuronControllable(neuron)) {
+      throw "Neuron ${neuron.id} is not controlled by the user.";
+    }
+
+    // If the neuron is controlled by the user, use the user's II, otherwise
+    // we assume it's a hardware wallet and try connecting to the device.
+    final identity = neuron.controller == this.getPrincipal()
+        ? this.identity
+        : await this.connectToHardwareWallet();
+
+    await promiseToFuture(serviceApi!.startDissolving(
+        identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
     await neuronSyncService!.fetchNeurons();
   }
 
   @override
-  Future<void> stopDissolving({required BigInt neuronId}) async {
-    await promiseToFuture(serviceApi!
-        .stopDissolving(NeuronIdentifierRequest(neuronId: neuronId.toJS)));
+  Future<void> stopDissolving({required Neuron neuron}) async {
+    if (!this.isNeuronControllable(neuron)) {
+      throw "Neuron ${neuron.id} is not controlled by the user.";
+    }
+
+    // If the neuron is controlled by the user, use the user's II, otherwise
+    // we assume it's a hardware wallet and try connecting to the device.
+    final identity = neuron.controller == this.getPrincipal()
+        ? this.identity
+        : await this.connectToHardwareWallet();
+
+    await promiseToFuture(serviceApi!.stopDissolving(
+        identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -528,9 +548,11 @@ class PlatformICApi extends AbstractPlatformICApi {
    */
   @override
   Account? getAccountByPrincipal(String principal) {
-    return hiveBoxes.accounts.values.firstWhere((account) =>
-        account.principal == principal &&
-        (account.subAccountId == null || account.subAccountId == 0));
+    return hiveBoxes.accounts.values.firstWhere(
+        (account) =>
+            account.principal == principal &&
+            (account.subAccountId == null || account.subAccountId == 0),
+        orElse: () => null);
   }
 
   /**
