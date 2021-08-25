@@ -709,6 +709,32 @@ impl AccountsStore {
         }
     }
 
+    pub fn get_transactions_certified(
+        &self,
+        caller: PrincipalId,
+        request: GetTransactionsRequest,
+    ) -> GetCertifiedResponse<GetTransactionsResponse> {
+        let get_transactions_opt = self.get_transactions(caller, request);
+
+        // Carry out certification process
+        let certificate = dfn_core::api::data_certificate().unwrap();
+
+        let account_identifier = AccountIdentifier::from(caller);
+        let witness = self.accounts.witness(&account_identifier.to_vec());
+        let tree = labeled(b"ACCOUNTS", witness);
+        let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
+        serializer.self_describe().unwrap();
+        tree.serialize(&mut serializer).unwrap_or_else(|e| {
+            dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e))
+        });
+
+        GetCertifiedResponse {
+            data: Some(get_transactions_opt),
+            hash_tree: base64::encode(&serializer.into_inner()),
+            certificate,
+        }
+    }
+
     pub fn attach_canister(
         &mut self,
         caller: PrincipalId,
@@ -784,6 +810,31 @@ impl AccountsStore {
             account.canisters.to_vec()
         } else {
             Vec::new()
+        }
+    }
+
+    pub fn get_canisters_certified(
+        &self,
+        caller: PrincipalId,
+    ) -> GetCertifiedResponse<Vec<NamedCanister>> {
+        let reponse = self.get_canisters(caller);
+
+        // Carry out certification process
+        let certificate = dfn_core::api::data_certificate().unwrap();
+
+        let account_identifier = AccountIdentifier::from(caller);
+        let witness = self.accounts.witness(&account_identifier.to_vec());
+        let tree = labeled(b"ACCOUNTS", witness);
+        let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
+        serializer.self_describe().unwrap();
+        tree.serialize(&mut serializer).unwrap_or_else(|e| {
+            dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e))
+        });
+
+        GetCertifiedResponse {
+            data: Some(reponse),
+            hash_tree: base64::encode(&serializer.into_inner()),
+            certificate,
         }
     }
 

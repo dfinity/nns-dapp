@@ -106,6 +106,22 @@ fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResp
     })
 }
 
+#[export_name = "canister_query get_transactions"]
+pub fn get_transactions_certified() {
+    over(candid_one, get_transactions_certified_impl);
+}
+
+fn get_transactions_certified_impl(
+    request: GetTransactionsRequest,
+) -> GetCertifiedResponse<GetTransactionsResponse> {
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow()
+            .get_transactions_certified(principal, request)
+    })
+}
+
 #[export_name = "canister_update create_sub_account"]
 pub fn create_sub_account() {
     over(candid_one, create_sub_account_impl);
@@ -158,6 +174,20 @@ pub fn get_canisters() {
 fn get_canisters_impl() -> Vec<NamedCanister> {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().get_canisters(principal))
+}
+
+#[export_name = "canister_query get_canisters_certified"]
+pub fn get_canisters_certified() {
+    over(candid, |()| get_canisters_certified_impl());
+}
+
+fn get_canisters_certified_impl() -> GetCertifiedResponse<Vec<NamedCanister>> {
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .get_canisters_certified(principal)
+    })
 }
 
 #[export_name = "canister_update attach_canister"]
