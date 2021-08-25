@@ -9,7 +9,7 @@ use candid::Encode;
 use candid::{CandidType, Decode};
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_certified_map::{labeled, leaf_hash, AsHashTree, Hash, HashTree, RbTree};
+use ic_certified_map::{labeled, labeled_hash, leaf_hash, AsHashTree, Hash, HashTree, RbTree};
 use ic_crypto_sha256::Sha256;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::GOVERNANCE_CANISTER_ID;
@@ -311,7 +311,7 @@ impl AccountsStore {
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
         let account_identifier = AccountIdentifier::from(caller);
 
-        if self.accounts.get(&account_identifier.to_vec()).is_some() {
+        let retval = if self.accounts.get(&account_identifier.to_vec()).is_some() {
             let mut canister_ids = vec![];
             let mut transactions: Vec<TransactionIndex> = vec![];
             self.accounts
@@ -382,7 +382,13 @@ impl AccountsStore {
             self.accounts_count += 1;
 
             true
-        }
+        };
+
+        // Update canister's certified data
+        let prefixed_root_hash = &labeled_hash(b"ACCOUNTS", &self.accounts.root_hash());
+        dfn_core::api::set_certified_data(&prefixed_root_hash[..]);
+
+        retval
     }
 
     pub fn create_sub_account(
