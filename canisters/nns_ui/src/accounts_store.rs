@@ -1035,7 +1035,7 @@ impl AccountsStore {
         } else {
             match self
                 .hardware_wallets_and_sub_accounts
-                .get(&account_identifier)
+                .get(account_identifier)
             {
                 Some(AccountWrapper::SubAccount(account_identifier, _)) => {
                     // TODO: Should we unwrap here?
@@ -1159,7 +1159,7 @@ impl AccountsStore {
                     self.accounts
                         .modify(&parent_account_identifier.to_vec(), |account| {
                             if let Some(sub_account) =
-                                account.sub_accounts.get_mut(&sub_account_index)
+                                account.sub_accounts.get_mut(sub_account_index)
                             {
                                 let transactions = &mut sub_account.transactions;
                                 prune_transactions_impl(transactions, prune_blocks_previous_to);
