@@ -2,8 +2,7 @@ use crate::accounts_store::{
     AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse,
     DetachCanisterRequest, DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse,
     NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse,
-    RenameSubAccountRequest,
-    RenameSubAccountResponse, Stats,
+    RenameSubAccountRequest, RenameSubAccountResponse, Stats,
 };
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionError, MultiPartTransactionStatus,
@@ -65,6 +64,20 @@ fn get_account_impl() -> GetAccountResponse {
     STATE.with(|s| match s.accounts_store.borrow().get_account(principal) {
         Some(account) => GetAccountResponse::Ok(account),
         None => GetAccountResponse::AccountNotFound,
+    })
+}
+
+#[export_name = "canister_query get_account_certified"]
+pub fn get_account_certified() {
+    over(candid, |()| get_account_certified_impl());
+}
+
+fn get_account_certified_impl() -> GetCertifiedResponse<AccountDetails> {
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .get_account_certified(principal)
     })
 }
 
@@ -177,9 +190,12 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
 
 #[export_name = "canister_query get_multi_part_transaction_status"]
 pub fn get_multi_part_transaction_status() {
-    over(candid, |(principal, block_height): (PrincipalId, BlockHeight)| {
-        get_multi_part_transaction_status_impl(principal, block_height)
-    });
+    over(
+        candid,
+        |(principal, block_height): (PrincipalId, BlockHeight)| {
+            get_multi_part_transaction_status_impl(principal, block_height)
+        },
+    );
 }
 
 fn get_multi_part_transaction_status_impl(
@@ -282,4 +298,11 @@ pub fn canister_heartbeat() {
 pub enum GetAccountResponse {
     Ok(AccountDetails),
     AccountNotFound,
+}
+
+#[derive(CandidType)]
+pub struct GetCertifiedResponse<T: CandidType> {
+    data: Option<T>,
+    hash_tree: String,
+    certificate: Vec<u8>,
 }

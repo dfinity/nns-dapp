@@ -4,11 +4,12 @@ use crate::multi_part_transactions_processor::{
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
-use candid::CandidType;
+use crate::GetCertifiedResponse;
 use candid::Encode;
+use candid::{CandidType, Decode};
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_certified_map::{leaf_hash, AsHashTree, Hash, HashTree, RbTree};
+use ic_certified_map::{labeled, leaf_hash, AsHashTree, Hash, HashTree, RbTree};
 use ic_crypto_sha256::Sha256;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::GOVERNANCE_CANISTER_ID;
@@ -18,7 +19,7 @@ use ledger_canister::{
     Transfer::{self, Burn, Mint, Send},
 };
 use on_wire::{FromWire, IntoWire};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::cmp::{min, Ordering};
 use std::collections::{HashMap, VecDeque};
 use std::iter::FromIterator;
@@ -49,7 +50,7 @@ enum AccountWrapper {
     HardwareWallet(Vec<AccountIdentifier>), // Vec of account Identifier since a hardware wallet could theoretically be shared between multiple accounts
 }
 
-#[derive(CandidType, Clone, Deserialize, Debug)]
+#[derive(CandidType, Deserialize, Debug)]
 struct Account {
     principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
@@ -66,19 +67,19 @@ impl AsHashTree for Account {
     }
 
     fn as_hash_tree(&self) -> HashTree<'_> {
-        let serialized_bytes = Encode!(self).unwrap();
-        HashTree::Leaf(&serialized_bytes)
+        let _serialized_bytes = Encode!(self).unwrap();
+        HashTree::Leaf(&[])
     }
 }
 
-#[derive(CandidType, Clone, Deserialize, Debug)]
+#[derive(CandidType, Deserialize, Debug)]
 struct NamedSubAccount {
     name: String,
     account_identifier: AccountIdentifier,
     transactions: Vec<TransactionIndex>,
 }
 
-#[derive(CandidType, Clone, Deserialize, Debug)]
+#[derive(CandidType, Deserialize, Debug)]
 struct NamedHardwareWalletAccount {
     name: String,
     principal: PrincipalId,
@@ -277,40 +278,56 @@ impl AccountsStore {
         }
     }
 
+    pub fn get_account_certified(
+        &self,
+        caller: PrincipalId,
+    ) -> GetCertifiedResponse<AccountDetails> {
+        let account_details_opt = self.get_account(caller);
+
+        // Carry out certification process
+        let certificate = dfn_core::api::data_certificate().unwrap();
+
+        let account_identifier = AccountIdentifier::from(caller);
+        let witness = self.accounts.witness(&account_identifier.to_vec());
+        let tree = labeled(b"ACCOUNTS", witness);
+        let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
+        serializer.self_describe().unwrap();
+        tree.serialize(&mut serializer).unwrap_or_else(|e| {
+            dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e))
+        });
+
+        GetCertifiedResponse {
+            data: account_details_opt,
+            hash_tree: base64::encode(&serializer.into_inner()),
+            certificate,
+        }
+    }
+
     // This will be called for new accounts and also for old accounts where the principal has not
     // yet been stored, allowing us to set the principal (since originally we created accounts
     // without storing each user's principal).
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
         let account_identifier = AccountIdentifier::from(caller);
 
-        let mut account = match self.accounts.get(&account_identifier.to_vec()) {
-            Some(account) => account.clone(),
-            None => {
-                if self.accounts.get(&account_identifier.to_vec()).is_none() {
-                    let new_account = Account::new(caller, account_identifier);
-                    self.accounts
-                        .insert(account_identifier.to_vec(), new_account);
-                    self.accounts_count += 1;
-                }
-                return true;
-            }
-        };
+        if self.accounts.get(&account_identifier.to_vec()).is_some() {
+            let mut canister_ids = vec![];
+            let mut transactions: Vec<TransactionIndex> = vec![];
+            self.accounts
+                .modify(&account_identifier.to_vec(), |account| {
+                    if account.principal.is_none() {
+                        account.principal = Some(caller);
 
-        if account.principal.is_none() {
-            account.principal = Some(caller);
-
-            let canister_ids: Vec<CanisterId> =
-                account.canisters.iter().map(|c| c.canister_id).collect();
+                        canister_ids = account.canisters.iter().map(|c| c.canister_id).collect();
+                        transactions = account.get_all_transactions_linked_to_principal_sorted();
+                    }
+                });
 
             // Now that we know the principal we can set the transaction types. The
             // transactions must be sorted since some transaction types can only be
             // determined based on earlier transactions (eg. we can only detect
             // TopUpNeuron transactions that happen after StakeNeuron transactions).
-            for transaction_index in account
-                .get_all_transactions_linked_to_principal_sorted()
-                .iter()
-            {
-                let transaction = self.get_transaction(*transaction_index).unwrap();
+            for transaction_index in transactions {
+                let transaction = self.get_transaction(transaction_index).unwrap();
                 if transaction.transaction_type.is_none() {
                     let transaction_type = match transaction.transfer {
                         Burn { from: _, amount: _ } => TransactionType::Burn,
@@ -321,7 +338,7 @@ impl AccountsStore {
                             amount,
                             fee: _,
                         } => {
-                            if self.accounts.get(&account_identifier.to_vec()).is_some() {
+                            if self.accounts.get(&to.to_vec()).is_some() {
                                 // If the recipient is a known account then the transaction must be a basic Send,
                                 // since for all the 'special' transaction types the recipient is not a user account
                                 TransactionType::Send
@@ -349,15 +366,21 @@ impl AccountsStore {
                             }
                         }
                     };
-                    self.get_transaction_mut(*transaction_index)
+                    self.get_transaction_mut(transaction_index)
                         .unwrap()
                         .transaction_type = Some(transaction_type);
                 }
             }
 
-            self.accounts.insert(account_identifier.to_vec(), account);
+            false
+        } else {
+            let new_account = Account::new(caller, account_identifier);
+            self.accounts
+                .insert(account_identifier.to_vec(), new_account);
+            self.accounts_count += 1;
+
+            true
         }
-        false
     }
 
     pub fn create_sub_account(
@@ -366,39 +389,51 @@ impl AccountsStore {
         sub_account_name: String,
     ) -> CreateSubAccountResponse {
         let account_identifier = AccountIdentifier::from(caller);
-        let account_opt = self.accounts.get(&account_identifier.to_vec()).cloned();
 
         if !Self::validate_account_name(&sub_account_name) {
             CreateSubAccountResponse::NameTooLong
-        } else if let Some(mut account) = account_opt {
-            if account.sub_accounts.len() == (u8::MAX as usize) {
-                CreateSubAccountResponse::SubAccountLimitExceeded
-            } else {
-                let sub_account_id = (1..u8::MAX)
-                    .find(|i| !account.sub_accounts.contains_key(i))
-                    .unwrap();
+        } else if self.accounts.get(&account_identifier.to_vec()).is_some() {
+            let mut response = CreateSubAccountResponse::SubAccountLimitExceeded;
+            self.accounts
+                .modify(&account_identifier.to_vec(), |account| {
+                    if account.sub_accounts.len() < (u8::MAX as usize) {
+                        let sub_account_id = (1..u8::MAX)
+                            .find(|i| !account.sub_accounts.contains_key(i))
+                            .unwrap();
 
-                let sub_account = convert_byte_to_sub_account(sub_account_id);
-                let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
-                let named_sub_account =
-                    NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
+                        let sub_account = convert_byte_to_sub_account(sub_account_id);
+                        let sub_account_identifier =
+                            AccountIdentifier::new(caller, Some(sub_account));
+                        let named_sub_account =
+                            NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
 
-                account
-                    .sub_accounts
-                    .insert(sub_account_id, named_sub_account);
-                self.accounts.insert(account_identifier.to_vec(), account);
+                        account
+                            .sub_accounts
+                            .insert(sub_account_id, named_sub_account);
+
+                        response = CreateSubAccountResponse::Ok(SubAccountDetails {
+                            name: sub_account_name,
+                            sub_account,
+                            account_identifier: sub_account_identifier,
+                        });
+                    }
+                });
+
+            if let CreateSubAccountResponse::Ok(SubAccountDetails {
+                name: _,
+                sub_account,
+                account_identifier: sub_account_identifier,
+            }) = response
+            {
+                let sub_account_id = sub_account.0[31];
                 self.hardware_wallets_and_sub_accounts.insert(
                     sub_account_identifier,
                     AccountWrapper::SubAccount(account_identifier, sub_account_id),
                 );
                 self.sub_accounts_count += 1;
-
-                CreateSubAccountResponse::Ok(SubAccountDetails {
-                    name: sub_account_name,
-                    sub_account,
-                    account_identifier: sub_account_identifier,
-                })
             }
+
+            response
         } else {
             CreateSubAccountResponse::AccountNotFound
         }
@@ -410,23 +445,24 @@ impl AccountsStore {
         request: RenameSubAccountRequest,
     ) -> RenameSubAccountResponse {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
-        let account_opt = self.accounts.get(&account_identifier).cloned();
 
         if !Self::validate_account_name(&request.new_name) {
             RenameSubAccountResponse::NameTooLong
-        } else if let Some(mut account) = account_opt {
-            if let Some(sub_account) = account
-                .sub_accounts
-                .values_mut()
-                .find(|sub_account| sub_account.account_identifier == request.account_identifier)
-            {
-                sub_account.name = request.new_name;
-                self.accounts.insert(account_identifier, account);
-
-                RenameSubAccountResponse::Ok
-            } else {
-                RenameSubAccountResponse::SubAccountNotFound
-            }
+        } else if self.accounts.get(&account_identifier.to_vec()).is_some() {
+            let mut response = RenameSubAccountResponse::Ok;
+            self.accounts
+                .modify(&account_identifier.to_vec(), |account| {
+                    if let Some(sub_account) =
+                        account.sub_accounts.values_mut().find(|sub_account| {
+                            sub_account.account_identifier == request.account_identifier
+                        })
+                    {
+                        sub_account.name = request.new_name;
+                    } else {
+                        response = RenameSubAccountResponse::SubAccountNotFound;
+                    }
+                });
+            response
         } else {
             RenameSubAccountResponse::AccountNotFound
         }
@@ -441,36 +477,41 @@ impl AccountsStore {
 
         if !Self::validate_account_name(&request.name) {
             RegisterHardwareWalletResponse::NameTooLong
-        } else if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
-            if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
-                RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
-            } else if account
-                .hardware_wallet_accounts
-                .iter()
-                .any(|hw| hw.principal == request.principal)
-            {
-                RegisterHardwareWalletResponse::HardwareWalletAlreadyRegistered
-            } else {
-                account
-                    .hardware_wallet_accounts
-                    .push(NamedHardwareWalletAccount {
-                        name: request.name,
-                        principal: request.principal,
-                        transactions: Vec::new(),
-                    });
-                account
-                    .hardware_wallet_accounts
-                    .sort_unstable_by_key(|hw| hw.name.clone());
-                self.accounts.insert(account_identifier.to_vec(), account);
+        } else if self.accounts.get(&account_identifier.to_vec()).is_some() {
+            let hardware_wallet_account_identifier = AccountIdentifier::from(request.principal);
+            let mut response = RegisterHardwareWalletResponse::Ok;
 
-                self.hardware_wallet_accounts_count += 1;
-                self.link_hardware_wallet_to_account(
-                    account_identifier,
-                    AccountIdentifier::from(request.principal),
-                );
+            self.accounts
+                .modify(&account_identifier.to_vec(), |account| {
+                    if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
+                        response = RegisterHardwareWalletResponse::HardwareWalletLimitExceeded;
+                    } else if account
+                        .hardware_wallet_accounts
+                        .iter()
+                        .any(|hw| hw.principal == request.principal)
+                    {
+                        response = RegisterHardwareWalletResponse::HardwareWalletAlreadyRegistered;
+                    } else {
+                        account
+                            .hardware_wallet_accounts
+                            .push(NamedHardwareWalletAccount {
+                                name: request.name,
+                                principal: request.principal,
+                                transactions: Vec::new(),
+                            });
+                        account
+                            .hardware_wallet_accounts
+                            .sort_unstable_by_key(|hw| hw.name.clone());
+                    }
+                });
 
-                RegisterHardwareWalletResponse::Ok
-            }
+            self.hardware_wallet_accounts_count += 1;
+            self.link_hardware_wallet_to_account(
+                account_identifier,
+                hardware_wallet_account_identifier,
+            );
+
+            response
         } else {
             RegisterHardwareWalletResponse::AccountNotFound
         }
@@ -676,25 +717,30 @@ impl AccountsStore {
         } else {
             let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-            if let Some(mut account) = self.accounts.get(&account_identifier).cloned() {
-                if account.canisters.len() >= u8::MAX as usize {
-                    return AttachCanisterResponse::CanisterLimitExceeded;
-                }
-                for c in account.canisters.iter() {
-                    if !request.name.is_empty() && c.name == request.name {
-                        return AttachCanisterResponse::NameAlreadyTaken;
-                    } else if c.canister_id == request.canister_id {
-                        return AttachCanisterResponse::CanisterAlreadyAttached;
-                    }
-                }
-                account.canisters.push(NamedCanister {
-                    name: request.name,
-                    canister_id: request.canister_id,
-                });
-                sort_canisters(&mut account.canisters);
-                self.accounts.insert(account_identifier, account);
-
-                AttachCanisterResponse::Ok
+            if self.accounts.get(&account_identifier.to_vec()).is_some() {
+                let mut response = AttachCanisterResponse::Ok;
+                self.accounts
+                    .modify(&account_identifier.to_vec(), |account| {
+                        if account.canisters.len() >= u8::MAX as usize {
+                            response = AttachCanisterResponse::CanisterLimitExceeded;
+                            return;
+                        }
+                        for c in account.canisters.iter() {
+                            if !request.name.is_empty() && c.name == request.name {
+                                response = AttachCanisterResponse::NameAlreadyTaken;
+                                return;
+                            } else if c.canister_id == request.canister_id {
+                                response = AttachCanisterResponse::CanisterAlreadyAttached;
+                                return;
+                            }
+                        }
+                        account.canisters.push(NamedCanister {
+                            name: request.name,
+                            canister_id: request.canister_id,
+                        });
+                        sort_canisters(&mut account.canisters);
+                    });
+                response
             } else {
                 AttachCanisterResponse::AccountNotFound
             }
@@ -708,21 +754,23 @@ impl AccountsStore {
     ) -> DetachCanisterResponse {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-        if let Some(mut account) = self.accounts.get(&account_identifier).cloned() {
-            if let Some(index) = account
-                .canisters
-                .iter()
-                .enumerate()
-                .find(|(_, canister)| canister.canister_id == request.canister_id)
-                .map(|(index, _)| index)
-            {
-                account.canisters.remove(index);
-                self.accounts.insert(account_identifier, account);
-
-                DetachCanisterResponse::Ok
-            } else {
-                DetachCanisterResponse::CanisterNotFound
-            }
+        if self.accounts.get(&account_identifier.to_vec()).is_some() {
+            let mut response = DetachCanisterResponse::Ok;
+            self.accounts
+                .modify(&account_identifier.to_vec(), |account| {
+                    if let Some(index) = account
+                        .canisters
+                        .iter()
+                        .enumerate()
+                        .find(|(_, canister)| canister.canister_id == request.canister_id)
+                        .map(|(index, _)| index)
+                    {
+                        account.canisters.remove(index);
+                    } else {
+                        response = DetachCanisterResponse::CanisterNotFound
+                    }
+                });
+            response
         } else {
             DetachCanisterResponse::AccountNotFound
         }
@@ -746,15 +794,16 @@ impl AccountsStore {
         canister_id: CanisterId,
     ) {
         let account_identifier = AccountIdentifier::from(principal).to_vec();
-        let account_opt = self.accounts.get(&account_identifier).cloned();
-        if let Some(mut account) = account_opt {
-            account.canisters.push(NamedCanister {
-                name: "".to_string(),
-                canister_id,
-            });
-            sort_canisters(&mut account.canisters);
-            self.accounts.insert(account_identifier, account);
 
+        if self.accounts.get(&account_identifier.to_vec()).is_some() {
+            self.accounts
+                .modify(&account_identifier.to_vec(), |account| {
+                    account.canisters.push(NamedCanister {
+                        name: "".to_string(),
+                        canister_id,
+                    });
+                    sort_canisters(&mut account.canisters);
+                });
             self.multi_part_transactions_processor.update_status(
                 block_height,
                 MultiPartTransactionStatus::CanisterCreated(canister_id),
@@ -941,30 +990,34 @@ impl AccountsStore {
         account_identifier: AccountIdentifier,
         transaction_index: TransactionIndex,
     ) -> bool {
-        if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
-            account.append_default_account_transaction(transaction_index);
+        if self.accounts.get(&account_identifier.to_vec()).is_some() {
             self.accounts
-                .insert(account.account_identifier.to_vec(), account);
+                .modify(&account_identifier.to_vec(), |account| {
+                    account.append_default_account_transaction(transaction_index);
+                });
         } else {
             match self
                 .hardware_wallets_and_sub_accounts
                 .get(&account_identifier)
             {
-                Some(AccountWrapper::SubAccount(account_identifier, sub_account_index)) => {
-                    let mut account = self
-                        .accounts
-                        .get(&account_identifier.to_vec())
-                        .unwrap()
-                        .clone();
-                    account.append_sub_account_transaction(*sub_account_index, transaction_index);
+                Some(AccountWrapper::SubAccount(parent_account_identifier, sub_account_index)) => {
                     self.accounts
-                        .insert(account.account_identifier.to_vec(), account);
+                        .modify(&parent_account_identifier.to_vec(), |account| {
+                            account.append_sub_account_transaction(
+                                *sub_account_index,
+                                transaction_index,
+                            );
+                        });
                 }
-                Some(AccountWrapper::HardwareWallet(account_ids)) => {
-                    for account_id in account_ids {
-                        let mut account = self.accounts.get(&account_id.to_vec()).unwrap().clone();
-                        account.append_hardware_wallet_transaction(*account_id, transaction_index);
-                        self.accounts.insert(account_id.to_vec(), account);
+                Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => {
+                    for linked_account_identifier in linked_account_identifiers {
+                        self.accounts
+                            .modify(&linked_account_identifier.to_vec(), |account| {
+                                account.append_hardware_wallet_transaction(
+                                    *linked_account_identifier,
+                                    transaction_index,
+                                );
+                            });
                     }
                 }
                 None => return false,
@@ -987,17 +1040,19 @@ impl AccountsStore {
                     let account = self.accounts.get(&account_identifier.to_vec()).unwrap();
                     account.principal
                 }
-                Some(AccountWrapper::HardwareWallet(account_ids)) => account_ids
-                    .iter()
-                    .filter_map(|account_identifier| {
-                        self.accounts.get(&account_identifier.to_vec())
-                    })
-                    .find_map(|a| {
-                        a.hardware_wallet_accounts
-                            .iter()
-                            .find(|hw| *account_identifier == AccountIdentifier::from(hw.principal))
-                    })
-                    .map(|hw| hw.principal),
+                Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => {
+                    linked_account_identifiers
+                        .iter()
+                        .filter_map(|account_identifier| {
+                            self.accounts.get(&account_identifier.to_vec())
+                        })
+                        .find_map(|a| {
+                            a.hardware_wallet_accounts.iter().find(|hw| {
+                                *account_identifier == AccountIdentifier::from(hw.principal)
+                            })
+                        })
+                        .map(|hw| hw.principal)
+                }
                 None => None,
             }
         }
@@ -1042,13 +1097,12 @@ impl AccountsStore {
     ) {
         self.hardware_wallets_and_sub_accounts
             .entry(hardware_wallet_account_identifier)
-            .and_modify(|account_wrapper| match account_wrapper {
-                AccountWrapper::HardwareWallet(account_identifiers) => {
+            .and_modify(|account_wrapper| {
+                if let AccountWrapper::HardwareWallet(account_identifiers) = account_wrapper {
                     account_identifiers.push(account_identifier);
                 }
-                _ => {}
             })
-            .or_insert(AccountWrapper::HardwareWallet(vec![account_identifier]));
+            .or_insert_with(|| AccountWrapper::HardwareWallet(vec![account_identifier]));
     }
 
     fn validate_account_name(name: &str) -> bool {
@@ -1088,40 +1142,42 @@ impl AccountsStore {
             }
         }
 
-        if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
-            let transactions = &mut account.default_account_transactions;
-            prune_transactions_impl(transactions, prune_blocks_previous_to);
-            self.accounts.insert(account_identifier.to_vec(), account);
+        if self.accounts.get(&account_identifier.to_vec()).is_some() {
+            self.accounts
+                .modify(&account_identifier.to_vec(), |account| {
+                    let transactions = &mut account.default_account_transactions;
+                    prune_transactions_impl(transactions, prune_blocks_previous_to);
+                });
         } else {
             match self
                 .hardware_wallets_and_sub_accounts
                 .get(&account_identifier)
             {
-                Some(AccountWrapper::SubAccount(account_identifier, sub_account_index)) => {
-                    let mut account = self
-                        .accounts
-                        .get(&account_identifier.to_vec())
-                        .unwrap()
-                        .clone();
-                    if let Some(sub_account) = &mut account.sub_accounts.get_mut(&sub_account_index)
-                    {
-                        let transactions = &mut sub_account.transactions;
-                        prune_transactions_impl(transactions, prune_blocks_previous_to);
-                        self.accounts.insert(account_identifier.to_vec(), account);
-                    }
+                Some(AccountWrapper::SubAccount(parent_account_identifier, sub_account_index)) => {
+                    self.accounts
+                        .modify(&parent_account_identifier.to_vec(), |account| {
+                            if let Some(sub_account) =
+                                account.sub_accounts.get_mut(&sub_account_index)
+                            {
+                                let transactions = &mut sub_account.transactions;
+                                prune_transactions_impl(transactions, prune_blocks_previous_to);
+                            }
+                        });
                 }
-                Some(AccountWrapper::HardwareWallet(account_ids)) => {
-                    for account_id in account_ids {
-                        let mut account = self.accounts.get(&account_id.to_vec()).unwrap().clone();
-                        if let Some(hardware_wallet_account) = account
-                            .hardware_wallet_accounts
-                            .iter_mut()
-                            .find(|a| account_id == &AccountIdentifier::from(a.principal))
-                        {
-                            let transactions = &mut hardware_wallet_account.transactions;
-                            prune_transactions_impl(transactions, prune_blocks_previous_to);
-                            self.accounts.insert(account_id.to_vec(), account);
-                        }
+                Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => {
+                    for linked_account_identifier in linked_account_identifiers {
+                        self.accounts
+                            .modify(&linked_account_identifier.to_vec(), |account| {
+                                if let Some(hardware_wallet_account) =
+                                    account.hardware_wallet_accounts.iter_mut().find(|a| {
+                                        linked_account_identifier
+                                            == &AccountIdentifier::from(a.principal)
+                                    })
+                                {
+                                    let transactions = &mut hardware_wallet_account.transactions;
+                                    prune_transactions_impl(transactions, prune_blocks_previous_to);
+                                }
+                            });
                     }
                 }
                 None => {}
@@ -1379,8 +1435,9 @@ impl AccountsStore {
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
         let mut accounts = vec![];
-        self.accounts
-            .for_each(|k, v| accounts.push((k.to_vec(), v.clone())));
+        self.accounts.for_each(|k, v| {
+            accounts.push((k.to_vec(), Encode!(v).unwrap()));
+        });
         Candid((
             &self.transactions,
             accounts,
@@ -1406,7 +1463,7 @@ impl StableState for AccountsStore {
             neurons_topped_up_count,
         ): (
             VecDeque<Transaction>,
-            Vec<(Vec<u8>, Account)>,
+            Vec<(Vec<u8>, Vec<u8>)>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
             MultiPartTransactionsProcessor,
@@ -1432,7 +1489,8 @@ impl StableState for AccountsStore {
             neurons_topped_up_count,
         };
 
-        accounts_vec.iter().for_each(|(_, account)| {
+        accounts_vec.iter().for_each(|(_, account_bytes)| {
+            let account = Decode!(account_bytes, Account).unwrap();
             for (id, sa) in account.sub_accounts.iter() {
                 account_store.hardware_wallets_and_sub_accounts.insert(
                     sa.account_identifier,
@@ -1451,9 +1509,11 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
         });
 
-        accounts_vec
-            .into_iter()
-            .for_each(|(k, v)| account_store.accounts.insert(k.to_vec(), v));
+        accounts_vec.into_iter().for_each(|(k, v)| {
+            account_store
+                .accounts
+                .insert(k.to_vec(), Decode!(&v, Account).unwrap())
+        });
 
         Ok(account_store)
     }
