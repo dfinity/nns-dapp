@@ -62,7 +62,7 @@ class _AttachHardwareWalletWidgetState
                         .firstWhere((element) =>
                             element.accountIdentifier == accountIdentifier);
 
-                    context.nav.push(AccountPageDef.createPageConfig(account));
+                    context.nav.push(accountPageDef.createPageConfig(account));
                   });
                 }).takeIf(
                     (e) => connectionState == WalletConnectionState.CONNECTED),

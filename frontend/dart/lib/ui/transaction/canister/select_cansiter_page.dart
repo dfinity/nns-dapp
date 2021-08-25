@@ -39,14 +39,16 @@ class _SelectCanisterPageState extends State<SelectCanisterPage> {
                     child: EitherWidget(
                   condition: context.boxes.canisters.isNotEmpty,
                   trueWidget: Column(
-                    children: context.boxes.canisters.values.mapToList(
-                        (e) => _CanisterRow(canister: e, onPressed: () {
-                          // NewTransactionOverlay.of(context)
-                          //     .pushPage(TopUpCanisterPage(
-                          //   source: widget.source,
-                          //   canister: e,
-                          // ));
-                        })),
+                    children: context.boxes.canisters.values
+                        .mapToList((e) => _CanisterRow(
+                            canister: e,
+                            onPressed: () {
+                              // NewTransactionOverlay.of(context)
+                              //     .pushPage(TopUpCanisterPage(
+                              //   source: widget.source,
+                              //   canister: e,
+                              // ));
+                            })),
                   ),
                   falseWidget: Align(
                     alignment: Alignment.topCenter,
@@ -128,7 +130,7 @@ class _CanisterRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: FlatButton(
+      child: TextButton(
         onPressed: onPressed,
         child: Container(
           width: double.infinity,

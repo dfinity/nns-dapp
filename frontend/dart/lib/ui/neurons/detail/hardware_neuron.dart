@@ -1,18 +1,21 @@
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
+import 'package:universal_html/js_util.dart';
 import '../../../dfinity.dart';
 
 class HardwareWalletNeuron extends StatefulWidget {
-  final Neuron neuron;
+  final NeuronId neuronId;
   final ICP amount;
-  final Function(BuildContext context) onCompleteAction;
+  final Function(BuildContext context) onAddHotkey;
+  final Function(BuildContext context) onSkip;
 
   const HardwareWalletNeuron(
       {Key? key,
-      required this.neuron,
+      required this.neuronId,
       required this.amount,
-      required this.onCompleteAction})
+      required this.onAddHotkey,
+      required this.onSkip})
       : super(key: key);
 
   @override
@@ -45,7 +48,7 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                                     : context.textTheme.headline3),
                             VerySmallFormDivider(),
                             Text(
-                              widget.neuron.identifier,
+                              widget.neuronId.toString(),
                               style: Responsive.isMobile(context)
                                   ? context.textTheme.bodyText2!
                                       .copyWith(fontSize: 16)
@@ -81,7 +84,8 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                         Divider(height: 30.0),
                         Text(
                           'To see and manage this neuron in the NNS app, '
-                          'please add the NNS app as a hotkey.',
+                          'please add the NNS app as a hotkey.\n\nYour principal '
+                          'on the NNS app is:\n${context.icApi.getPrincipal()}',
                           style: Responsive.isMobile(context)
                               ? context.textTheme.bodyText2
                               : context.textTheme.bodyText1!
@@ -116,7 +120,7 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                         fontSize: Responsive.isMobile(context) ? 14 : 16),
                   ),
                   onPressed: () async {
-                    widget.onCompleteAction(context);
+                    widget.onSkip(context);
                   },
                 ),
               ),
@@ -131,8 +135,17 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                       style: TextStyle(
                           fontSize: Responsive.isMobile(context) ? 14 : 16),
                     ),
-                    onPressed: () {
-                      widget.onCompleteAction(context);
+                    onPressed: () async {
+                      final ledgerIdentity =
+                          await context.icApi.connectToHardwareWallet();
+                      final hwApi = await context.icApi.createHardwareWalletApi(
+                          ledgerIdentity: ledgerIdentity);
+                      await context.callUpdate(() => promiseToFuture(
+                          hwApi.addHotKey(widget.neuronId.toString(),
+                              context.icApi.getPrincipal())));
+                      await context.icApi.refreshNeurons();
+
+                      widget.onAddHotkey(context);
                     }),
               ),
             ],

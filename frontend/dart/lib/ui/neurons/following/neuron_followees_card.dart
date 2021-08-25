@@ -1,4 +1,5 @@
 import 'package:dfinity_wallet/data/topic.dart';
+import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
@@ -52,7 +53,7 @@ class NeuronFolloweesCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8.0),
                 width: double.infinity,
-                decoration: RoundedBorderDecoration,
+                decoration: kRoundedBorderDecoration,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: followeeTopics

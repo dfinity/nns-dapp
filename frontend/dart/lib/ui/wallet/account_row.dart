@@ -1,4 +1,3 @@
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:flutter/services.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
@@ -19,7 +18,7 @@ class AccountRow extends StatelessWidget {
       margin: EdgeInsets.only(left: 0, right: 0, bottom: 16),
       color:
           account.primary ? AppColors.mediumBackground : AppColors.background,
-      child: FlatButton(
+      child: TextButton(
         onPressed: () {
           this.onTap();
         },

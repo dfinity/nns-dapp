@@ -7,7 +7,7 @@ import '../../dfinity.dart';
 import 'wizard_overlay.dart';
 
 class SelectAccountTransactionTypeWidget extends StatelessWidget {
-  final ICPSource source;
+  final Account source;
 
   const SelectAccountTransactionTypeWidget({
     Key? key,

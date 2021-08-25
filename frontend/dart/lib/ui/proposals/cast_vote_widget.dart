@@ -38,99 +38,93 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
           children: [
             Container(
               child: Text("Cast Vote", style: context.textTheme.headline3),
-              alignment: Alignment.topLeft,              
+              alignment: Alignment.topLeft,
             ),
-
-            Table( 
-              border: TableBorder(
-                bottom: BorderSide(color: AppColors.mediumBackground, width: 1)
-              ),
-              columnWidths: const <int, TableColumnWidth>{
-                0: IntrinsicColumnWidth(),
-                1: FlexColumnWidth(),
-                2: IntrinsicColumnWidth(),
-              },              
-              children: [
-                TableRow(children: [
-                  Container(margin: const EdgeInsets.only(top: 20.0)),
-                  Container(margin: const EdgeInsets.only(top: 20.0)),
-                  Container(margin: const EdgeInsets.only(top: 20.0))
-                ]),
-                TableRow(
-                  children: [
-                  Container(
-                    decoration: BoxDecoration(color: AppColors.mediumBackground),
-                    padding: const EdgeInsets.only(top: 4, bottom: 4),
-                    margin: const EdgeInsets.only(bottom: 6),
-                    child: Text("", style: context.textTheme.subtitle2)
-                  ),
-                  Container(
-                    decoration: BoxDecoration(color: AppColors.mediumBackground),
-                    padding: const EdgeInsets.only(top: 4, bottom: 4),
-                    margin: const EdgeInsets.only(bottom: 6),
-                    child: Text("neurons", style: context.textTheme.subtitle2)
-                  ),
-                  Container(
-                    decoration: BoxDecoration(color: AppColors.mediumBackground),
-                    padding: const EdgeInsets.only(top: 4, bottom: 4, right: 16),
-                    margin: const EdgeInsets.only(bottom: 6),
-                    alignment: Alignment.bottomRight,
-                    child: Text("voting power", style: context.textTheme.subtitle2)
-                  ),
-                ]),
-                ...widget.neurons
-                  .map((n) => TableRow(children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 6, right: 10),
-                      child: Checkbox(
-                          value: selectedNeurons!.contains(n),
-                          onChanged: (bool? value) {
-                            setState(() {
-                              if (value == true) {
-                                selectedNeurons!.add(n);
-                              } else {
-                                selectedNeurons!.remove(n);
-                              }
-                            });
-                          },
-                        )
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 6),
-                      alignment: Alignment.bottomLeft,
-                      height: 28,
-                      child: Text(n.identifier, style: context.textTheme.subtitle2),                    
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 6),
-                      alignment: Alignment.bottomRight,
-                      padding: const EdgeInsets.only(right: 16),
-                      height: 28,
-                      child: Text(n.votingPower.asString(myLocale.languageCode, 2, 2))
-                    )
-                  ]
-                )),
-            ]),
-            Container(
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only(top: 8, right: 16),
-              child: Row(
+            Table(
+                border: TableBorder(
+                    bottom: BorderSide(
+                        color: AppColors.mediumBackground, width: 1)),
+                columnWidths: const <int, TableColumnWidth>{
+                  0: IntrinsicColumnWidth(),
+                  1: FlexColumnWidth(),
+                  2: IntrinsicColumnWidth(),
+                },
                 children: [
+                  TableRow(children: [
+                    Container(margin: const EdgeInsets.only(top: 20.0)),
+                    Container(margin: const EdgeInsets.only(top: 20.0)),
+                    Container(margin: const EdgeInsets.only(top: 20.0))
+                  ]),
+                  TableRow(children: [
+                    Container(
+                        decoration:
+                            BoxDecoration(color: AppColors.mediumBackground),
+                        padding: const EdgeInsets.only(top: 4, bottom: 4),
+                        margin: const EdgeInsets.only(bottom: 6),
+                        child: Text("", style: context.textTheme.subtitle2)),
+                    Container(
+                        decoration:
+                            BoxDecoration(color: AppColors.mediumBackground),
+                        padding: const EdgeInsets.only(top: 4, bottom: 4),
+                        margin: const EdgeInsets.only(bottom: 6),
+                        child: Text("neurons",
+                            style: context.textTheme.subtitle2)),
+                    Container(
+                        decoration:
+                            BoxDecoration(color: AppColors.mediumBackground),
+                        padding:
+                            const EdgeInsets.only(top: 4, bottom: 4, right: 16),
+                        margin: const EdgeInsets.only(bottom: 6),
+                        alignment: Alignment.bottomRight,
+                        child: Text("voting power",
+                            style: context.textTheme.subtitle2)),
+                  ]),
+                  ...widget.neurons.map((n) => TableRow(children: [
+                        Container(
+                            margin: const EdgeInsets.only(bottom: 6, right: 10),
+                            child: Checkbox(
+                              value: selectedNeurons!.contains(n),
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  if (value == true) {
+                                    selectedNeurons!.add(n);
+                                  } else {
+                                    selectedNeurons!.remove(n);
+                                  }
+                                });
+                              },
+                            )),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 6),
+                          alignment: Alignment.bottomLeft,
+                          height: 28,
+                          child: Text(n.identifier,
+                              style: context.textTheme.subtitle2),
+                        ),
+                        Container(
+                            margin: const EdgeInsets.only(bottom: 6),
+                            alignment: Alignment.bottomRight,
+                            padding: const EdgeInsets.only(right: 16),
+                            height: 28,
+                            child: Text(n.votingPower
+                                .asString(myLocale.languageCode, 2, 2)))
+                      ])),
+                ]),
+            Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(top: 8, right: 16),
+                child: Row(children: [
                   Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 8),
-                      alignment: Alignment.bottomRight,
-                      child: Text("total")
-                    ) 
-                  ), 
+                      child: Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          alignment: Alignment.bottomRight,
+                          child: Text("total"))),
                   Text(numVotes, style: context.textTheme.subtitle2),
-                ]
-              )
-            ),
+                ])),
             Row(
               children: [
                 Expanded(
-                  child: Padding(
+                    child: Padding(
                   padding: const EdgeInsets.only(right: 8.0, top: 20),
                   child: ElevatedButton(
                     onPressed: () {
@@ -141,7 +135,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                             svgColor: Color(0xff80ACF8),
                             title: "Adopt Proposal",
                             description:
-                            'You are about to cast ${numVotes} votes for this proposal, are you sure you want to proceed? ',
+                                'You are about to cast $numVotes votes for this proposal, are you sure you want to proceed? ',
                             onConfirm: () {
                               castVote(Vote.YES);
                             },
@@ -168,7 +162,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                             svgColor: Color(0xffED1E79),
                             title: "Reject Proposal",
                             description:
-                                'You are about to cast ${numVotes} votes against this proposal, are you sure you want to proceed? ',
+                                'You are about to cast $numVotes votes against this proposal, are you sure you want to proceed? ',
                             onConfirm: () {
                               castVote(Vote.NO);
                             },
@@ -198,6 +192,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
           proposalId: widget.proposal.id.toBigInt,
           vote: vote);
     });
-    await context.icApi.fetchProposal(proposalId: widget.proposal.identifier.toBigInt);
+    await context.icApi
+        .fetchProposal(proposalId: widget.proposal.identifier.toBigInt);
   }
 }

@@ -1,9 +1,9 @@
 @JS()
 library ic_agent.js;
 
-import 'dart:html' as html;
+import 'package:universal_html/html.dart' as html;
 import 'dart:convert';
-import 'dart:js_util';
+import 'package:universal_html/js_util.dart';
 
 import 'package:dfinity_wallet/data/cycles.dart';
 import 'package:dfinity_wallet/data/icp.dart';
@@ -14,6 +14,7 @@ import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:dfinity_wallet/ic_api/web/proposal_sync_service.dart';
 import 'package:dfinity_wallet/ic_api/web/transaction_sync_service.dart';
 import 'package:js/js.dart';
+import 'dart:js' as js;
 
 import '../../dfinity.dart';
 import 'account_sync_service.dart';
@@ -35,7 +36,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   NeuronSyncService? neuronSyncService;
   ProposalSyncService? proposalSyncService;
 
-  dynamic? identity;
+  dynamic identity;
 
   bool isLoggedIn() => authApi.tryGetIdentity() != null;
 
@@ -99,7 +100,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     await promiseToFuture(serviceApi!.createSubAccount(name)).then((value) {
       final json = jsonDecode(stringify(value));
       final res = json['Ok'];
-      accountsSyncService!.storeSubAccount(res);
+      accountsSyncService!.storeSubAccount(res, this.getPrincipal());
     });
   }
 
@@ -119,13 +120,43 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> createNeuron({required ICP stake, int? fromSubAccount}) async {
-    await promiseToFuture(serviceApi!.createNeuron(CreateNeuronRequest(
-        stake: stake.asE8s().toJS, fromSubAccountId: fromSubAccount)));
-    await Future.wait([
-      balanceSyncService!.syncBalances(),
-      neuronSyncService!.fetchNeurons()
-    ]);
+  Future<NeuronId> createNeuron(Account account, ICP stakeAmount) async {
+    try {
+      final amountJS = stakeAmount.asE8s().toJS;
+      final neuronId = await () async {
+        if (account.hardwareWallet) {
+          final ledgerIdentity = await this.connectToHardwareWallet();
+
+          final accountIdentifier =
+              getAccountIdentifier(ledgerIdentity)!.toString();
+
+          if (accountIdentifier != account.accountIdentifier) {
+            throw Exception(
+                "Wallet account identifier doesn't match.\nExpected identified: ${account.accountIdentifier}.\nWallet identifier: ${accountIdentifier}.\nAre you sure you connected the right wallet?");
+          }
+
+          final walletApi = await this
+              .createHardwareWalletApi(ledgerIdentity: ledgerIdentity);
+
+          return await promiseToFuture(walletApi.createNeuron(amountJS));
+        } else {
+          return await promiseToFuture(serviceApi!.createNeuron(
+              CreateNeuronRequest(
+                  stake: amountJS, fromSubAccountId: account.subAccountId)));
+        }
+      }();
+
+      await Future.wait([
+        balanceSyncService!.syncBalances(),
+        neuronSyncService!.fetchNeurons()
+      ]);
+
+      return NeuronId.fromString(neuronId.toString());
+    } catch (e) {
+      // Alert with the error, then rethrow.
+      js.context.callMethod("alert", ["$e"]);
+      throw e;
+    }
   }
 
   @override
@@ -144,16 +175,36 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> startDissolving({required BigInt neuronId}) async {
-    await promiseToFuture(serviceApi!
-        .startDissolving(NeuronIdentifierRequest(neuronId: neuronId.toJS)));
+  Future<void> startDissolving({required Neuron neuron}) async {
+    if (!this.isNeuronControllable(neuron)) {
+      throw "Neuron ${neuron.id} is not controlled by the user.";
+    }
+
+    // If the neuron is controlled by the user, use the user's II, otherwise
+    // we assume it's a hardware wallet and try connecting to the device.
+    final identity = neuron.controller == this.getPrincipal()
+        ? this.identity
+        : await this.connectToHardwareWallet();
+
+    await promiseToFuture(serviceApi!.startDissolving(
+        identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
     await neuronSyncService!.fetchNeurons();
   }
 
   @override
-  Future<void> stopDissolving({required BigInt neuronId}) async {
-    await promiseToFuture(serviceApi!
-        .stopDissolving(NeuronIdentifierRequest(neuronId: neuronId.toJS)));
+  Future<void> stopDissolving({required Neuron neuron}) async {
+    if (!this.isNeuronControllable(neuron)) {
+      throw "Neuron ${neuron.id} is not controlled by the user.";
+    }
+
+    // If the neuron is controlled by the user, use the user's II, otherwise
+    // we assume it's a hardware wallet and try connecting to the device.
+    final identity = neuron.controller == this.getPrincipal()
+        ? this.identity
+        : await this.connectToHardwareWallet();
+
+    await promiseToFuture(serviceApi!.stopDissolving(
+        identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
     await neuronSyncService!.fetchNeurons();
   }
 
@@ -162,11 +213,19 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId,
       required ICP amount,
       required String toAccountId}) async {
-    final res = await promiseToFuture(serviceApi!.disburse(
-        DisperseNeuronRequest(
-            neuronId: neuronId.toJS, amount: null, toAccountId: toAccountId)));
+    await promiseToFuture(serviceApi!.disburse(DisperseNeuronRequest(
+        neuronId: neuronId.toJS, amount: null, toAccountId: toAccountId)));
     await fetchNeuron(neuronId: neuronId);
     balanceSyncService?.syncBalances();
+  }
+
+  @override
+  Future<void> mergeMaturity(
+      {required BigInt neuronId, required int percentageToMerge}) async {
+    final res = await promiseToFuture(serviceApi!.mergeMaturity(
+        MergeMaturityRequest(
+            neuronId: neuronId.toJS, percentageToMerge: percentageToMerge)));
+    await fetchNeuron(neuronId: neuronId);
   }
 
   @override
@@ -174,7 +233,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId,
       required Topic topic,
       required List<BigInt> followees}) async {
-    final result = await promiseToFuture(serviceApi!.follow(FollowRequest(
+    await promiseToFuture(serviceApi!.follow(FollowRequest(
         neuronId: toJSBigInt(neuronId.toString()),
         topic: topic.index,
         followees: followees.mapToList((e) => e.toJS))));
@@ -184,14 +243,22 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> increaseDissolveDelay(
-      {required BigInt neuronId,
+      {required Neuron neuron,
       required int additionalDissolveDelaySeconds}) async {
-    await promiseToFuture(
-        serviceApi!.increaseDissolveDelay(IncreaseDissolveDelayRequest(
-      neuronId: neuronId.toJS,
-      additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
-    )));
-    await fetchNeuron(neuronId: neuronId);
+    // If the neuron is controlled by the user, use the user's II, otherwise
+    // we assume it's a hardware wallet and try connecting to the device.
+    final identity = neuron.isCurrentUserController
+        ? this.identity
+        : await this.connectToHardwareWallet();
+
+    await promiseToFuture(serviceApi!.increaseDissolveDelay(
+        identity,
+        IncreaseDissolveDelayRequest(
+          neuronId: neuron.id.toString(),
+          additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
+        )));
+
+    await fetchNeuron(neuronId: neuron.id.toBigInt);
   }
 
   @override
@@ -199,7 +266,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required List<BigInt> neuronIds,
       required BigInt proposalId,
       required Vote vote}) async {
-    final result = await Future.wait(neuronIds.map(
+    await Future.wait(neuronIds.map(
         (e) => promiseToFuture(serviceApi!.registerVote(RegisterVoteRequest(
               neuronId: e.toJS,
               proposal: proposalId.toJS,
@@ -218,11 +285,21 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> removeHotkey(
-      {required BigInt neuronId, required String principal}) async {
-    final request =
-        RemoveHotkeyRequest(neuronId: neuronId.toJS, principal: principal);
-    await promiseToFuture(serviceApi!.removeHotKey(request));
-    await fetchNeuron(neuronId: neuronId);
+      {required Neuron neuron, required String principal}) async {
+    if (!this.isNeuronControllable(neuron)) {
+      throw "Neuron ${neuron.id} is not controlled by the user.";
+    }
+
+    // If the neuron is controlled by the user, use the user's II, otherwise
+    // we assume it's a hardware wallet and try connecting to the device.
+    final identity = neuron.controller == this.getPrincipal()
+        ? this.identity
+        : await this.connectToHardwareWallet();
+
+    final request = RemoveHotkeyRequest(
+        neuronId: neuron.id.toString(), principal: principal);
+    await promiseToFuture(serviceApi!.removeHotKey(identity, request));
+    await fetchNeuron(neuronId: neuron.id.toBigInt);
   }
 
   @override
@@ -274,16 +351,10 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<hardwareWalletApi.HardwareWalletApi> createHardwareWalletApi(
       {dynamic ledgerIdentity}) async {
-    final userIdentity = authApi.tryGetIdentity();
-    if (userIdentity == null) {
-      throw "Couldn't get user identity.";
-    }
-
     final ledgerIdentity =
         await promiseToFuture(authApi.connectToHardwareWallet());
     return await promiseToFuture(
-        hardwareWalletApi.createHardwareWalletApi(
-        ledgerIdentity, userIdentity));
+        hardwareWalletApi.createHardwareWalletApi(ledgerIdentity));
   }
 
   @override
@@ -470,5 +541,31 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   int? getTimeUntilSessionExpiryMs() {
     return authApi.getTimeUntilSessionExpiryMs();
+  }
+
+  /**
+   * Returns the principal's main account, if available.
+   */
+  @override
+  Account? getAccountByPrincipal(String principal) {
+    return hiveBoxes.accounts.values.firstWhere(
+        (account) =>
+            account.principal == principal &&
+            (account.subAccountId == null || account.subAccountId == 0),
+        orElse: () => null);
+  }
+
+  /**
+   * Returns true if the neuron can be controlled. A neuron can be controlled if:
+   * 
+   *  1. The user is the controller
+   *  OR
+   *  2. The user's hardware wallet is the controller.
+   */
+  @override
+  bool isNeuronControllable(Neuron neuron) {
+    final account = this.getAccountByPrincipal(neuron.controller);
+    return (neuron.isCurrentUserController ||
+        (account != null && account.hardwareWallet));
   }
 }

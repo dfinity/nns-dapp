@@ -50,7 +50,7 @@ class NeuronHotkeysCard extends StatelessWidget {
                                 style: context.textTheme.bodyText2),
                             flex: 4,
                           ),
-                          if (neuron.isCurrentUserController)
+                          if (context.icApi.isNeuronControllable(neuron))
                             TextButton(
                                 style: buttonStyle,
                                 onPressed: () {
@@ -95,10 +95,9 @@ class NeuronHotkeysCard extends StatelessWidget {
     );
   }
 
-  void removeHotkey(String Hotkey, BuildContext context) {
+  void removeHotkey(String hotKey, BuildContext context) {
     context.callUpdate(() async {
-      await context.icApi
-          .removeHotkey(neuronId: neuron.id.toBigInt, principal: Hotkey);
+      await context.icApi.removeHotkey(neuron: neuron, principal: hotKey);
       return true;
     });
   }
@@ -115,13 +114,13 @@ class AddHotkeys extends StatefulWidget {
 }
 
 class _AddHotkeysState extends State<AddHotkeys> {
-  String Hotkey = '';
-  late ValidatedTextField HotkeyValidated;
+  String hotKey = '';
+  late ValidatedTextField hotKeyValidated;
 
   @override
   void initState() {
     super.initState();
-    HotkeyValidated = ValidatedTextField(Hotkey,
+    hotKeyValidated = ValidatedTextField(hotKey,
         validations: [StringFieldValidation.minimumLength(20)]);
   }
 
@@ -144,9 +143,9 @@ class _AddHotkeysState extends State<AddHotkeys> {
                 height: 50.0,
               ),
               DebouncedValidatedFormField(
-                HotkeyValidated,
+                hotKeyValidated,
                 onChanged: () {
-                  Hotkey = HotkeyValidated.currentValue;
+                  hotKey = hotKeyValidated.currentValue;
                 },
               ),
             ],
@@ -169,12 +168,12 @@ class _AddHotkeysState extends State<AddHotkeys> {
                     style: TextStyle(
                         fontSize: Responsive.isMobile(context) ? 15 : 20),
                   ),
-                  fields: [HotkeyValidated],
+                  fields: [hotKeyValidated],
                   onPressed: () async {
-                    widget.neuron.hotkeys.add(Hotkey);
+                    widget.neuron.hotkeys.add(hotKey);
                     await context.callUpdate(() => context.icApi.addHotkey(
                         neuronId: widget.neuron.id.toBigInt,
-                        principal: Hotkey));
+                        principal: hotKey));
 
                     widget.onCompleteAction(context);
                   },

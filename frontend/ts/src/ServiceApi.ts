@@ -1,4 +1,9 @@
-import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
+import {
+  AnonymousIdentity,
+  HttpAgent,
+  Identity,
+  SignIdentity,
+} from "@dfinity/agent";
 import { Option } from "./canisters/option";
 import governanceBuilder from "./canisters/governance/builder";
 import GovernanceService, {
@@ -17,6 +22,8 @@ import GovernanceService, {
   MakeProposalResponse,
   MakeRewardNodeProviderProposalRequest,
   MakeSetDefaultFolloweesProposalRequest,
+  MergeMaturityRequest,
+  MergeMaturityResponse,
   NeuronInfo,
   RegisterVoteRequest,
   RemoveHotKeyRequest,
@@ -54,7 +61,8 @@ import ICManagementService, {
   UpdateSettingsRequest,
   UpdateSettingsResponse,
 } from "./canisters/icManagement/model";
-import createNeuronImpl, {
+import {
+  createNeuronWithNnsUi,
   CreateNeuronRequest,
 } from "./canisters/createNeuron";
 import topUpNeuronImpl, { TopUpNeuronRequest } from "./canisters/topUpNeuron";
@@ -106,7 +114,7 @@ export default class ServiceApi {
   };
 
   private constructor(agent: HttpAgent, identity: SignIdentity) {
-    this.ledgerService = ledgerBuilder(agent, identity);
+    this.ledgerService = ledgerBuilder(agent);
     this.nnsUiService = nnsUiBuilder(agent);
     this.governanceService = governanceBuilder(agent, identity);
     this.icManagementService = icManagementBuilder(agent);
@@ -153,6 +161,7 @@ export default class ServiceApi {
         this.nnsUiService.addAccount()
       );
       return {
+        principal: this.identity.getPrincipal().toString(),
         accountIdentifier,
         subAccounts: [],
         hardwareWalletAccounts: [],
@@ -213,34 +222,38 @@ export default class ServiceApi {
   };
 
   public removeHotKey = (
+    identity: Identity,
     request: RemoveHotKeyRequest
   ): Promise<EmptyResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.removeHotKey(request)
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).removeHotKey(request)
     );
   };
 
   public startDissolving = (
+    identity: Identity,
     request: StartDissolvingRequest
   ): Promise<EmptyResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.startDissolving(request)
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).startDissolving(request)
     );
   };
 
   public stopDissolving = (
+    identity: Identity,
     request: StopDissolvingRequest
   ): Promise<EmptyResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.stopDissolving(request)
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).stopDissolving(request)
     );
   };
 
   public increaseDissolveDelay = (
+    identity: Identity,
     request: IncreaseDissolveDelayRequest
   ): Promise<EmptyResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.increaseDissolveDelay(request)
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).increaseDissolveDelay(request)
     );
   };
 
@@ -276,6 +289,14 @@ export default class ServiceApi {
     );
   };
 
+  public mergeMaturity = (
+    request: MergeMaturityRequest
+  ): Promise<MergeMaturityResponse> => {
+    return executeWithLogging(() =>
+      this.governanceService.mergeMaturity(request)
+    );
+  };
+
   public makeMotionProposal = (
     request: MakeMotionProposalRequest
   ): Promise<MakeProposalResponse> => {
@@ -308,15 +329,20 @@ export default class ServiceApi {
     );
   };
 
-  public createNeuron = (request: CreateNeuronRequest): Promise<NeuronId> => {
-    return executeWithLogging(() =>
-      createNeuronImpl(
+  public createNeuron = async (
+    request: CreateNeuronRequest
+  ): Promise<NeuronId> => {
+    return await executeWithLogging(async () => {
+      const neuronId = await createNeuronWithNnsUi(
         this.identity.getPrincipal(),
         this.ledgerService,
         this.nnsUiService,
         request
-      )
-    );
+      );
+      console.log("Received neuron id");
+      console.log(neuronId);
+      return neuronId;
+    });
   };
 
   public topUpNeuron = (request: TopUpNeuronRequest): Promise<void> => {
@@ -404,13 +430,12 @@ export default class ServiceApi {
     accountIdentifier: AccountIdentifier,
     e8s: E8s
   ): Promise<void> => {
-    const anonIdentity = new AnonymousIdentity();
     const agent = new HttpAgent({
       host: HOST,
-      identity: anonIdentity,
+      identity: new AnonymousIdentity(),
     });
     await agent.fetchRootKey();
-    const anonLedgerService = ledgerBuilder(agent, anonIdentity);
+    const anonLedgerService = ledgerBuilder(agent);
     const req = {
       to: accountIdentifier,
       amount: e8s,
@@ -467,4 +492,22 @@ export default class ServiceApi {
       console.log(manageNeuronResponse);
     }
   };
+}
+
+/**
+ * @returns A service to interact with the governance canister with the given identity.
+ */
+async function governanceService(
+  identity: Identity
+): Promise<GovernanceService> {
+  const agent = new HttpAgent({
+    host: HOST,
+    identity: identity,
+  });
+
+  if (FETCH_ROOT_KEY) {
+    await agent.fetchRootKey();
+  }
+
+  return governanceBuilder(agent, identity);
 }

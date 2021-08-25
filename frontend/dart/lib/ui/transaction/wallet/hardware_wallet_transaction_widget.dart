@@ -1,5 +1,4 @@
-import 'dart:js_util';
-
+import 'package:universal_html/js_util.dart';
 import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
@@ -55,9 +54,8 @@ class _HardwareWalletTransactionWidgetState
                   Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.mediumBackground,
-                      borderRadius: BorderRadius.circular(10)
-                    ),
+                        color: AppColors.mediumBackground,
+                        borderRadius: BorderRadius.circular(10)),
                     child: HardwareConnectionWidget(
                         connectionState: connectionState,
                         ledgerIdentity: ledgerIdentity,
@@ -65,12 +63,14 @@ class _HardwareWalletTransactionWidgetState
                           setState(() {
                             connectionState = WalletConnectionState.CONNECTING;
                           });
-                          final ledgerIdentity =
-                              await context.icApi.connectToHardwareWallet().catchError(() {
-                                setState(() {
-                                  connectionState = WalletConnectionState.NOT_CONNECTED;
-                                });
-                              });
+                          final ledgerIdentity = await context.icApi
+                              .connectToHardwareWallet()
+                              .catchError(() {
+                            setState(() {
+                              connectionState =
+                                  WalletConnectionState.NOT_CONNECTED;
+                            });
+                          });
                           final accountIdentifier =
                               getAccountIdentifier(ledgerIdentity)!.toString();
 

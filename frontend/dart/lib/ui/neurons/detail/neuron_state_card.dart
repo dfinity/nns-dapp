@@ -62,7 +62,7 @@ class NeuronStateCard extends StatelessWidget {
                         onCompleteAction: (context) {
                           OverlayBaseWidget.of(context)?.dismiss();
                         })));
-          }.takeIf((e) => neuron.isCurrentUserController),
+          }.takeIf((e) => context.icApi.isNeuronControllable(neuron)),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(
@@ -162,13 +162,14 @@ class NeuronStateCard extends StatelessWidget {
   }
 
   ElevatedButton buildStateButton(BuildContext context) {
+    final icApi = context.icApi;
     switch (neuron.state) {
       case NeuronState.DISSOLVING:
         return ElevatedButton(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text(
-                "Lockup",
+                "Stop Dissolving",
                 style:
                     TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
               ),
@@ -177,8 +178,8 @@ class NeuronStateCard extends StatelessWidget {
                 backgroundColor: MaterialStateProperty.all(AppColors.blue600)),
             onPressed: () async {
               context.callUpdate(() =>
-                  context.icApi.stopDissolving(neuronId: neuron.id.toBigInt));
-            }.takeIf((e) => neuron.isCurrentUserController));
+                  context.icApi.stopDissolving(neuron: neuron));
+            }.takeIf((e) => icApi.isNeuronControllable(neuron)));
       case NeuronState.LOCKED:
         return ElevatedButton(
             style: ButtonStyle(
@@ -189,7 +190,7 @@ class NeuronStateCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text(
-                "Start Unlock",
+                "Start Dissolving",
                 style:
                     TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
               ),
@@ -198,16 +199,16 @@ class NeuronStateCard extends StatelessWidget {
               OverlayBaseWidget.show(
                   context,
                   ConfirmDialog(
-                    title: "Confirm Start Unlock",
+                    title: "Confirm Start Dissolving",
                     description:
                         "This will cause your neuron to lose its age bonus.\n"
                         "Are you sure you wish to continue?",
                     onConfirm: () async {
-                      await context.callUpdate(() => context.icApi
-                          .startDissolving(neuronId: neuron.id.toBigInt));
+                      await context.callUpdate(
+                          () => context.icApi.startDissolving(neuron: neuron));
                     },
                   ));
-            }.takeIf((e) => neuron.isCurrentUserController));
+            }.takeIf((e) => icApi.isNeuronControllable(neuron)));
       case NeuronState.UNLOCKED:
         return ElevatedButton(
             style: ButtonStyle(

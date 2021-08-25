@@ -14,17 +14,11 @@ import { submitUpdateRequest } from "../updateRequestHandler";
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
   private readonly canisterId: Principal;
-  private readonly myPrincipal: Principal;
   private readonly requestConverters: RequestConverters;
 
-  public constructor(
-    agent: Agent,
-    canisterId: Principal,
-    myPrincipal: Principal
-  ) {
+  public constructor(agent: Agent, canisterId: Principal) {
     this.agent = agent;
     this.canisterId = canisterId;
-    this.myPrincipal = myPrincipal;
     this.requestConverters = new RequestConverters();
   }
 

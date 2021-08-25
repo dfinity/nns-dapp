@@ -4,12 +4,12 @@ import {
   BlockHeight,
   CanisterIdString,
   E8s,
+  Memo,
   NeuronId,
   PrincipalString,
 } from "../common/types";
 import { CanisterId } from "./rawService";
 
-export type Memo = bigint;
 export enum TransactionType {
   Burn,
   Mint,
@@ -22,6 +22,7 @@ export enum TransactionType {
 }
 
 export interface AccountDetails {
+  principal: PrincipalString;
   accountIdentifier: AccountIdentifier;
   hardwareWalletAccounts: Array<HardwareWalletAccountDetails>;
   subAccounts: Array<SubAccountDetails>;

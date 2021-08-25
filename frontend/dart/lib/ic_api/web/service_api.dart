@@ -32,7 +32,7 @@ class ServiceApi {
   external Promise<dynamic> sendICPTs(Object request);
 
   @JS("createNeuron")
-  external Promise<void> createNeuron(dynamic request);
+  external Promise<dynamic> createNeuron(dynamic request);
 
   @JS("topUpNeuron")
   external Promise<void> topUpNeuron(dynamic request);
@@ -66,16 +66,17 @@ class ServiceApi {
   external Promise<dynamic> addHotKey(dynamic request);
 
   @JS("removeHotKey")
-  external Promise<dynamic> removeHotKey(dynamic request);
+  external Promise<dynamic> removeHotKey(dynamic identity, dynamic request);
 
   @JS("startDissolving")
-  external Promise<dynamic> startDissolving(dynamic request);
+  external Promise<dynamic> startDissolving(dynamic identity, dynamic request);
 
   @JS("stopDissolving")
-  external Promise<dynamic> stopDissolving(dynamic request);
+  external Promise<dynamic> stopDissolving(dynamic identity, dynamic request);
 
   @JS("increaseDissolveDelay")
-  external Promise<dynamic> increaseDissolveDelay(dynamic request);
+  external Promise<dynamic> increaseDissolveDelay(
+      dynamic identity, dynamic request);
 
   @JS("follow")
   external Promise<dynamic> follow(dynamic request);
@@ -94,6 +95,9 @@ class ServiceApi {
 
   @JS("disburseToNeuron")
   external Promise<dynamic> disburseToNeuron(dynamic request);
+
+  @JS("mergeMaturity")
+  external Promise<dynamic> mergeMaturity(dynamic request);
 
   @JS("makeMotionProposal")
   external Promise<dynamic> makeMotionProposal(dynamic request);
@@ -126,7 +130,7 @@ class ServiceApi {
 @JS()
 @anonymous
 class IncreaseDissolveDelayRequest {
-  external dynamic get neuronId;
+  external String get neuronId;
 
   external num get additionalDissolveDelaySeconds;
 
@@ -182,6 +186,16 @@ class DisperseNeuronRequest {
 
   external factory DisperseNeuronRequest(
       {dynamic neuronId, dynamic amount, String toAccountId});
+}
+
+@JS()
+@anonymous
+class MergeMaturityRequest {
+  external dynamic neuronId;
+  external int percentageToMerge;
+
+  external factory MergeMaturityRequest(
+      {dynamic neuronId, int percentageToMerge});
 }
 
 @JS()
