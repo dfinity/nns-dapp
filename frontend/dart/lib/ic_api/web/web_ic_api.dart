@@ -542,7 +542,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     return authApi.getTimeUntilSessionExpiryMs();
   }
 
-  /**
+  /*
    * Returns the principal's main account, if available.
    */
   @override
@@ -554,7 +554,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         orElse: () => null);
   }
 
-  /**
+  /*
    * Returns true if the neuron can be controlled. A neuron can be controlled if:
    * 
    *  1. The user is the controller

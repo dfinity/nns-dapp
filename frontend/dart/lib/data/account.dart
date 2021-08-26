@@ -1,6 +1,5 @@
 import 'package:dfinity_wallet/data/data.dart';
 import 'package:dfinity_wallet/data/transaction.dart';
-import 'package:dfinity_wallet/ic_api/ic_api.dart';
 import 'package:observable/observable.dart';
 import 'package:dartx/dartx.dart';
 import 'icp.dart';
