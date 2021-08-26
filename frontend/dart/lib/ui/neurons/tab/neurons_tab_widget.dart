@@ -34,7 +34,7 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                   ...(context.boxes.neurons.values
                           ?.sortedByDescending((element) =>
                               element.createdTimestampSeconds.toBigInt)
-                          ?.mapToList((e) => Card(
+                          .mapToList((e) => Card(
                                 child: TextButton(
                                   onPressed: () {
                                     context.nav.push(

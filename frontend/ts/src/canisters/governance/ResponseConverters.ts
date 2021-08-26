@@ -19,6 +19,7 @@ import {
   Followees,
   ListProposalsResponse,
   MakeProposalResponse,
+  MergeMaturityResponse,
   Neuron,
   NeuronIdOrSubaccount,
   NeuronInfo,
@@ -178,6 +179,20 @@ export default class ResponseConverters {
     ) {
       return {
         createdNeuronId: command[0].Spawn.created_neuron_id[0].id,
+      };
+    }
+    throw this.throwUnrecognisedTypeError("response", response);
+  };
+
+  public toMergeMaturityResponse = (
+    response: RawManageNeuronResponse
+  ): MergeMaturityResponse => {
+    const command = response.command;
+    if (command.length && "MergeMaturity" in command[0]) {
+      const mergeMaturity = command[0].MergeMaturity;
+      return {
+        mergedMaturityE8s: mergeMaturity.merged_maturity_e8s,
+        newStakeE8s: mergeMaturity.new_stake_e8s,
       };
     }
     throw this.throwUnrecognisedTypeError("response", response);
@@ -487,6 +502,14 @@ export default class ResponseConverters {
             ? disburseToNeuron.new_controller[0].toString()
             : null,
           nonce: disburseToNeuron.nonce,
+        },
+      };
+    }
+    if ("MergeMaturity" in command) {
+      const mergeMaturity = command.MergeMaturity;
+      return {
+        MergeMaturity: {
+          percentageToMerge: mergeMaturity.percentage_to_merge,
         },
       };
     }

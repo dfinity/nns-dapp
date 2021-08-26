@@ -75,7 +75,8 @@ class ServiceApi {
   external Promise<dynamic> stopDissolving(dynamic request);
 
   @JS("increaseDissolveDelay")
-  external Promise<dynamic> increaseDissolveDelay(dynamic request);
+  external Promise<dynamic> increaseDissolveDelay(
+      dynamic identity, dynamic request);
 
   @JS("follow")
   external Promise<dynamic> follow(dynamic request);
@@ -94,6 +95,9 @@ class ServiceApi {
 
   @JS("disburseToNeuron")
   external Promise<dynamic> disburseToNeuron(dynamic request);
+
+  @JS("mergeMaturity")
+  external Promise<dynamic> mergeMaturity(dynamic request);
 
   @JS("makeMotionProposal")
   external Promise<dynamic> makeMotionProposal(dynamic request);
@@ -126,7 +130,7 @@ class ServiceApi {
 @JS()
 @anonymous
 class IncreaseDissolveDelayRequest {
-  external dynamic get neuronId;
+  external String get neuronId;
 
   external num get additionalDissolveDelaySeconds;
 
@@ -182,6 +186,16 @@ class DisperseNeuronRequest {
 
   external factory DisperseNeuronRequest(
       {dynamic neuronId, dynamic amount, String toAccountId});
+}
+
+@JS()
+@anonymous
+class MergeMaturityRequest {
+  external dynamic neuronId;
+  external int percentageToMerge;
+
+  external factory MergeMaturityRequest(
+      {dynamic neuronId, int percentageToMerge});
 }
 
 @JS()

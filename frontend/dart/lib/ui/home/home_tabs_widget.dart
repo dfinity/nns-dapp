@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/tab/neurons_tab_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/governance_tab_widget.dart';

@@ -17,6 +17,8 @@ import ServiceInterface, {
   MakeProposalResponse,
   MakeRewardNodeProviderProposalRequest,
   MakeSetDefaultFolloweesProposalRequest,
+  MergeMaturityRequest,
+  MergeMaturityResponse,
   NeuronInfo,
   ProposalInfo,
   RegisterVoteRequest,
@@ -216,6 +218,14 @@ export default class Service implements ServiceInterface {
       this.requestConverters.fromDisburseToNeuronRequest(request);
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toDisburseToNeuronResult(rawResponse);
+  };
+
+  public mergeMaturity = async (
+    request: MergeMaturityRequest
+  ): Promise<MergeMaturityResponse> => {
+    const rawRequest = this.requestConverters.fromMergeMaturityRequest(request);
+    const rawResponse = await this.service.manage_neuron(rawRequest);
+    return this.responseConverters.toMergeMaturityResponse(rawResponse);
   };
 
   public makeMotionProposal = async (

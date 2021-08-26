@@ -9,9 +9,7 @@ import 'package:dfinity_wallet/dfinity.dart';
 class HiveLoader extends StatefulWidget {
   final Widget child;
 
-  HiveLoader(
-      {Key? key, required this.child})
-      : super(key: key);
+  HiveLoader({Key? key, required this.child}) : super(key: key);
 
   static HiveLoader of(BuildContext context) {
     return context.findAncestorWidgetOfExactType<HiveLoader>()!;
@@ -30,10 +28,10 @@ class _HiveLoaderState extends State<HiveLoader> {
       textDirection: TextDirection.ltr,
       child: Stack(
         children: [
-            HiveBoxesWidget(
-                boxes:boxes,
-                child: widget.child,
-            )
+          HiveBoxesWidget(
+            boxes: boxes,
+            child: widget.child,
+          )
         ],
       ),
     );
@@ -47,12 +45,8 @@ class HiveBoxesWidget extends InheritedWidget {
   ObservableMap<String, Neuron> get neurons => boxes.neurons;
   ObservableMap<String, Proposal> get proposals => boxes.proposals;
 
-  HiveBoxesWidget({
-    Key? key,
-    required Widget child,
-    required this.boxes
-  })   : assert(child != null),
-        super(key: key, child: child);
+  HiveBoxesWidget({Key? key, required Widget child, required this.boxes})
+      : super(key: key, child: child);
 
   static HiveBoxesWidget of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<HiveBoxesWidget>()!;

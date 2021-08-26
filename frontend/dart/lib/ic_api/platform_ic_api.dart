@@ -44,11 +44,10 @@ abstract class AbstractPlatformICApi {
   Future<void> stopDissolving({required BigInt neuronId});
 
   Future<void> increaseDissolveDelay(
-      {required BigInt neuronId, required int additionalDissolveDelaySeconds});
+      {required Neuron neuron, required int additionalDissolveDelaySeconds});
 
   Future<Neuron> spawnNeuron({required BigInt neuronId});
 
-  @override
   Future<void> follow(
       {required BigInt neuronId,
       required Topic topic,
@@ -63,6 +62,9 @@ abstract class AbstractPlatformICApi {
       {required BigInt neuronId,
       required ICP amount,
       required String toAccountId});
+
+  Future<void> mergeMaturity(
+      {required BigInt neuronId, required int percentageToMerge});
 
   Future<void> addHotkey({required BigInt neuronId, required String principal});
 

@@ -95,12 +95,12 @@ class _ChangeCanisterControllerWidgetState
   }
 
   List<Widget> _getValidatedControllerFields() {
-    List<Widget> UpdateControllersTextFields = [];
+    List<Widget> updateControllersTextFields = [];
     print(
         'Widget controller length now is : ${widget.canister.controllers!.length}');
     if (widget.canister.controllers != null) {
       for (int i = 0; i < widget.canister.controllers!.length; i++) {
-        UpdateControllersTextFields.add(Row(
+        updateControllersTextFields.add(Row(
           children: [
             Text(
               '${i + 1}.',
@@ -120,7 +120,7 @@ class _ChangeCanisterControllerWidgetState
         ));
       }
     }
-    return UpdateControllersTextFields;
+    return updateControllersTextFields;
   }
 
   Widget _addRemoveButton(bool add, int index) {
@@ -182,7 +182,7 @@ class _ControllerTextFieldsState extends State<ControllerTextFields> {
 
   @override
   Widget build(BuildContext context) {
-    _nameController.text = widget.controllers![widget.index] ?? '';
+    _nameController.text = widget.controllers?[widget.index] ?? '';
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
