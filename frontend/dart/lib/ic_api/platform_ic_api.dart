@@ -48,7 +48,6 @@ abstract class AbstractPlatformICApi {
 
   Future<Neuron> spawnNeuron({required BigInt neuronId});
 
-  @override
   Future<void> follow(
       {required BigInt neuronId,
       required Topic topic,

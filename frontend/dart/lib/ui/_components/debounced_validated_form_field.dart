@@ -90,7 +90,7 @@ class _DebouncedValidatedFormFieldState
             widget.onChanged?.call();
           },
           validator: (text) =>
-              widget.textField.failedValidation?.errorMessage?.let((e) => e),
+              widget.textField.failedValidation?.errorMessage.let((e) => e),
           autovalidateMode: autovalidateMode,
           obscureText: widget.obscureText,
         ),

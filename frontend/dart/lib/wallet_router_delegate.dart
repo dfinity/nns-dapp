@@ -195,7 +195,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
     // print("setNewRoutePath ${configuration.path}");
 
     if (configuration is ResourcesLoadingPageConfig) {
-      redirectWhenLoaded(configuration as ResourcesLoadingPageConfig);
+      redirectWhenLoaded(configuration);
       addPage(loadingPage);
     } else {
       addPage(configuration);
@@ -305,8 +305,7 @@ class RouterDelegateWidget extends InheritedWidget {
     Key? key,
     required this.delegate,
     required Widget child,
-  })  : assert(child != null),
-        super(key: key, child: child);
+  }) : super(key: key, child: child);
 
   static RouterDelegateWidget of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<RouterDelegateWidget>()!;

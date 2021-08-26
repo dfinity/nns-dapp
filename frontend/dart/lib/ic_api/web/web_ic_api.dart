@@ -202,9 +202,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> mergeMaturity(
       {required BigInt neuronId, required int percentageToMerge}) async {
-    final res = await promiseToFuture(serviceApi!.mergeMaturity(
-        MergeMaturityRequest(
-            neuronId: neuronId.toJS, percentageToMerge: percentageToMerge)));
+    await promiseToFuture(serviceApi!.mergeMaturity(MergeMaturityRequest(
+        neuronId: neuronId.toJS, percentageToMerge: percentageToMerge)));
     await fetchNeuron(neuronId: neuronId);
   }
 
@@ -225,20 +224,18 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> increaseDissolveDelay(
       {required Neuron neuron,
       required int additionalDissolveDelaySeconds}) async {
-    
     // If the neuron is controlled by the user, use the user's II, otherwise
     // we assume it's a hardware wallet and try connecting to the device.
     final identity = neuron.isCurrentUserController
         ? this.identity
         : await this.connectToHardwareWallet();
 
-    await promiseToFuture(
-        serviceApi!.increaseDissolveDelay(
+    await promiseToFuture(serviceApi!.increaseDissolveDelay(
         identity,
         IncreaseDissolveDelayRequest(
           neuronId: neuron.id.toString(),
-      additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
-    )));
+          additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
+        )));
 
     await fetchNeuron(neuronId: neuron.id.toBigInt);
   }

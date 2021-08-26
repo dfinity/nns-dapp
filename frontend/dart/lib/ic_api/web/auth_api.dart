@@ -11,7 +11,7 @@ external Promise<AuthApi> createAuthApi(Function onLoggedOut);
 @JS("AuthApi")
 class AuthApi {
   @JS("tryGetIdentity")
-  external dynamic? tryGetIdentity();
+  external dynamic tryGetIdentity();
 
   @JS("login")
   external Promise<dynamic> login(Function onSuccess);

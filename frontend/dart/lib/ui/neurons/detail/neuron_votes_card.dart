@@ -1,8 +1,6 @@
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/proposal_summary_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
-
 import '../../../dfinity.dart';
 
 class NeuronVotesCard extends StatelessWidget {

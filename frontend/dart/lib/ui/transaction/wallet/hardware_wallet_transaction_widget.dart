@@ -65,7 +65,7 @@ class _HardwareWalletTransactionWidgetState
                           });
                           final ledgerIdentity = await context.icApi
                               .connectToHardwareWallet()
-                              .catchError(() {
+                              .catchError((_) {
                             setState(() {
                               connectionState =
                                   WalletConnectionState.NOT_CONNECTED;

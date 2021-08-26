@@ -80,7 +80,7 @@ class _TopUpCanisterPageState extends State<TopUpCanisterPage> {
                                       widget.source.subAccountId));
 
                           // WizardOverlay.of(context).pushPage(null, DoneWidget(numCycles: amountField.currentValue, canisterName: widget.canister.name));
-                        }.takeIf((e) => widget.canister != null),
+                        },
                         fields: [amountField],
                       ))
                 ],
