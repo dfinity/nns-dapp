@@ -20,6 +20,7 @@ use ledger_canister::{
 };
 use on_wire::{FromWire, IntoWire};
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{HashMap, VecDeque};
 use std::iter::FromIterator;
@@ -67,9 +68,8 @@ impl AsHashTree for Account {
     }
 
     fn as_hash_tree(&self) -> HashTree<'_> {
-        let _serialized_bytes = Encode!(self).unwrap();
-        // TODO: Pass the serialized bytes through once issue #121 in cdk-rs is fixed
-        HashTree::Leaf(&[])
+        let serialized_bytes = Encode!(self).unwrap();
+        HashTree::Leaf(Cow::from(serialized_bytes))
     }
 }
 
