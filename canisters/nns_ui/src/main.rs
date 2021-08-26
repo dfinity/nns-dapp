@@ -11,7 +11,10 @@ use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
-use dfn_core::{api::trap_with, over, over_async, stable};
+use dfn_core::{
+    api::{set_certified_data, trap_with},
+    over, over_async, stable,
+};
 use ic_base_types::PrincipalId;
 use ledger_canister::{AccountIdentifier, BlockHeight};
 
@@ -27,6 +30,7 @@ mod state;
 #[export_name = "canister_init"]
 fn main() {
     assets::init_assets();
+    update_root_hash();
 }
 
 #[export_name = "canister_pre_upgrade"]
@@ -47,6 +51,7 @@ fn post_upgrade() {
     });
 
     assets::init_assets();
+    update_root_hash();
 }
 
 #[export_name = "canister_query http_request"]
@@ -89,6 +94,7 @@ pub fn add_account() {
 fn add_account_impl() -> AccountIdentifier {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().add_account(principal));
+    update_root_hash();
     AccountIdentifier::from(principal)
 }
 
@@ -109,6 +115,7 @@ fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResp
 #[export_name = "canister_update create_sub_account"]
 pub fn create_sub_account() {
     over(candid_one, create_sub_account_impl);
+    update_root_hash();
 }
 
 fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse {
@@ -123,6 +130,7 @@ fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse
 #[export_name = "canister_update rename_sub_account"]
 pub fn rename_sub_account() {
     over(candid_one, rename_sub_account_impl);
+    update_root_hash();
 }
 
 fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
@@ -137,6 +145,7 @@ fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccount
 #[export_name = "canister_update register_hardware_wallet"]
 pub fn register_hardware_wallet() {
     over(candid_one, register_hardware_wallet_impl);
+    update_root_hash();
 }
 
 fn register_hardware_wallet_impl(
@@ -163,6 +172,7 @@ fn get_canisters_impl() -> Vec<NamedCanister> {
 #[export_name = "canister_update attach_canister"]
 pub fn attach_canister() {
     over(candid_one, attach_canister_impl);
+    update_root_hash();
 }
 
 fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterResponse {
@@ -177,6 +187,7 @@ fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterRespons
 #[export_name = "canister_update detach_canister"]
 pub fn detach_canister() {
     over(candid_one, detach_canister_impl);
+    update_root_hash();
 }
 
 fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
@@ -305,4 +316,26 @@ pub struct GetCertifiedResponse<T: CandidType> {
     data: Option<T>,
     hash_tree: String,
     certificate: Vec<u8>,
+}
+
+use assets::LABEL_ASSETS;
+use ic_certified_map::{fork_hash, labeled_hash, AsHashTree};
+
+const LABEL_ACCOUNTS: &[u8] = b"ACCOUNTS";
+
+fn update_root_hash() {
+    use crate::assets::STATE as ASSET_STATE;
+    STATE.with(|s| {
+        ASSET_STATE.with(|a| {
+            let prefixed_root_hash = fork_hash(
+                // NB: Labels added in lexicographic order
+                &labeled_hash(
+                    LABEL_ACCOUNTS,
+                    &s.accounts_store.borrow().accounts.root_hash(),
+                ),
+                &labeled_hash(LABEL_ASSETS, &a.asset_hashes.borrow().root_hash()),
+            );
+            set_certified_data(&prefixed_root_hash[..]);
+        });
+    });
 }

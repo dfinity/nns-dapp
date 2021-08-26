@@ -9,7 +9,7 @@ use candid::Encode;
 use candid::{CandidType, Decode};
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_certified_map::{labeled, labeled_hash, leaf_hash, AsHashTree, Hash, HashTree, RbTree};
+use ic_certified_map::{labeled, leaf_hash, AsHashTree, Hash, HashTree, RbTree};
 use ic_crypto_sha256::Sha256;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::GOVERNANCE_CANISTER_ID;
@@ -31,7 +31,7 @@ type TransactionIndex = u64;
 #[derive(Default)]
 pub struct AccountsStore {
     transactions: VecDeque<Transaction>,
-    accounts: RbTree<Vec<u8>, Account>,
+    pub accounts: RbTree<Vec<u8>, Account>,
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockHeight>,
@@ -51,7 +51,7 @@ enum AccountWrapper {
 }
 
 #[derive(CandidType, Deserialize, Debug)]
-struct Account {
+pub struct Account {
     principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
     default_account_transactions: Vec<TransactionIndex>,
@@ -68,6 +68,7 @@ impl AsHashTree for Account {
 
     fn as_hash_tree(&self) -> HashTree<'_> {
         let _serialized_bytes = Encode!(self).unwrap();
+        // TODO: Pass the serialized bytes through once issue #121 in cdk-rs is fixed
         HashTree::Leaf(&[])
     }
 }
@@ -383,10 +384,6 @@ impl AccountsStore {
 
             true
         };
-
-        // Update canister's certified data
-        let prefixed_root_hash = &labeled_hash(b"ACCOUNTS", &self.accounts.root_hash());
-        dfn_core::api::set_certified_data(&prefixed_root_hash[..]);
 
         retval
     }
