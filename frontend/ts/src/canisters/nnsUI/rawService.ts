@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/principal';
 export interface AccountDetails {
+  'principal' : Principal,
   'account_identifier' : AccountIdentifier,
   'hardware_wallet_accounts' : Array<HardwareWalletAccountDetails>,
   'sub_accounts' : Array<SubAccountDetails>,

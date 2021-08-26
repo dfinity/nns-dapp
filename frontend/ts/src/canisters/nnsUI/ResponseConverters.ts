@@ -65,6 +65,7 @@ export default class ResponseConverters {
     if ("Ok" in response) {
       return {
         Ok: {
+          principal: response.Ok.principal.toString(),
           accountIdentifier: response.Ok.account_identifier,
           subAccounts: response.Ok.sub_accounts.map(this.toSubAccountDetails),
           hardwareWalletAccounts: response.Ok.hardware_wallet_accounts.map(

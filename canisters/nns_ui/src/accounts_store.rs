@@ -184,6 +184,7 @@ pub enum RegisterHardwareWalletResponse {
 
 #[derive(CandidType)]
 pub struct AccountDetails {
+    pub principal: PrincipalId,
     pub account_identifier: AccountIdentifier,
     pub sub_accounts: Vec<SubAccountDetails>,
     pub hardware_wallet_accounts: Vec<HardwareWalletAccountDetails>,
@@ -237,7 +238,7 @@ impl AccountsStore {
         if let Some(account) = self.try_get_account_by_default_identifier(&account_identifier) {
             // If the principal is empty, return None so that the browser will call add_account
             // which will allow us to set the principal.
-            account.principal?;
+            let principal = account.principal?;
 
             let sub_accounts = account
                 .sub_accounts
@@ -261,6 +262,7 @@ impl AccountsStore {
                 .collect();
 
             Some(AccountDetails {
+                principal,
                 account_identifier,
                 sub_accounts,
                 hardware_wallet_accounts,

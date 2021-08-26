@@ -49,6 +49,7 @@ class Neuron extends DfinityEntity with ICPSource {
   List<Proposal>? proposals;
   late int followEditCounter;
   late bool isCurrentUserController;
+  late String controller;
   late String accountIdentifier;
   late List<String> hotkeys;
 

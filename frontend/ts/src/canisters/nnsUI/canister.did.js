@@ -34,6 +34,7 @@ export const idlFactory = ({ IDL }) => {
     'account_identifier' : AccountIdentifier,
   });
   const AccountDetails = IDL.Record({
+    'principal' : IDL.Principal,
     'account_identifier' : AccountIdentifier,
     'hardware_wallet_accounts' : IDL.Vec(HardwareWalletAccountDetails),
     'sub_accounts' : IDL.Vec(SubAccountDetails),

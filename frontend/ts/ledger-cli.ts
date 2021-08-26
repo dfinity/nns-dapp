@@ -134,6 +134,26 @@ async function increaseDissolveDelay(
   );
 }
 
+async function startDissolving(neuronId: string) {
+  const identity = await LedgerIdentity.create();
+  const response = await (
+    await getGovernanceService(identity)
+  ).startDissolving({
+    neuronId: BigInt(neuronId),
+  });
+  console.log(response);
+}
+
+async function stopDissolving(neuronId: string) {
+  const identity = await LedgerIdentity.create();
+  const response = await (
+    await getGovernanceService(identity)
+  ).stopDissolving({
+    neuronId: BigInt(neuronId),
+  });
+  console.log(response);
+}
+
 async function main() {
   program
     .description("A CLI for the Ledger hardware wallet.")
@@ -156,7 +176,7 @@ async function main() {
     )
     .addCommand(
       new Command("increase-dissolve-delay")
-        .requiredOption("--neuron-id <neuron-id>", "description")
+        .requiredOption("--neuron-id <neuron-id>")
         .requiredOption("--additional-delay-secs <additional-delay-seconds>")
         .action((args) =>
           increaseDissolveDelay(args.neuronId, args.additionalDelaySecs)
@@ -167,6 +187,20 @@ async function main() {
         .requiredOption("--neuron-id <neuron-id>")
         .requiredOption("--principal <principal>")
         .action((args) => addHotkey(args.neuronId, args.principal))
+    )
+    .addCommand(
+      new Command("start-dissolving")
+        .requiredOption("--neuron-id <neuron-id>")
+        .action((args) => {
+          startDissolving(args.neuronId);
+        })
+    )
+    .addCommand(
+      new Command("stop-dissolving")
+        .requiredOption("--neuron-id <neuron-id>")
+        .action((args) => {
+          stopDissolving(args.neuronId);
+        })
     );
 
   await program.parseAsync(process.argv);
