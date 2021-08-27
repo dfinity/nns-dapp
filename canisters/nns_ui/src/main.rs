@@ -318,10 +318,9 @@ pub struct GetCertifiedResponse<T: CandidType> {
     certificate: Vec<u8>,
 }
 
+use accounts_store::LABEL_ACCOUNTS;
 use assets::LABEL_ASSETS;
 use ic_certified_map::{fork_hash, labeled_hash, AsHashTree};
-
-const LABEL_ACCOUNTS: &[u8] = b"ACCOUNTS";
 
 fn update_root_hash() {
     use crate::assets::STATE as ASSET_STATE;

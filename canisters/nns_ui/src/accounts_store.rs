@@ -29,6 +29,8 @@ use std::time::{Duration, SystemTime};
 
 type TransactionIndex = u64;
 
+pub const LABEL_ACCOUNTS: &[u8] = b"ACCOUNTS";
+
 #[derive(Default)]
 pub struct AccountsStore {
     transactions: VecDeque<Transaction>,
@@ -51,7 +53,7 @@ enum AccountWrapper {
     HardwareWallet(Vec<AccountIdentifier>), // Vec of account Identifier since a hardware wallet could theoretically be shared between multiple accounts
 }
 
-#[derive(CandidType, Deserialize, Debug)]
+#[derive(CandidType, Deserialize)]
 pub struct Account {
     principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
@@ -1019,7 +1021,7 @@ impl AccountsStore {
                         self.accounts
                             .modify(&linked_account_identifier.to_vec(), |account| {
                                 account.append_hardware_wallet_transaction(
-                                    *linked_account_identifier,
+                                    account_identifier,
                                     transaction_index,
                                 );
                             });
@@ -1175,8 +1177,7 @@ impl AccountsStore {
                             .modify(&linked_account_identifier.to_vec(), |account| {
                                 if let Some(hardware_wallet_account) =
                                     account.hardware_wallet_accounts.iter_mut().find(|a| {
-                                        linked_account_identifier
-                                            == &AccountIdentifier::from(a.principal)
+                                        account_identifier == AccountIdentifier::from(a.principal)
                                     })
                                 {
                                     let transactions = &mut hardware_wallet_account.transactions;
