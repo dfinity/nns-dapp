@@ -1,3 +1,6 @@
+@JS()
+library ic_agent.js;
+
 import 'package:universal_html/js_util.dart';
 import 'package:js/js.dart';
 

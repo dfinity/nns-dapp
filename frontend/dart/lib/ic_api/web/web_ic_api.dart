@@ -14,7 +14,7 @@ import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:dfinity_wallet/ic_api/web/proposal_sync_service.dart';
 import 'package:dfinity_wallet/ic_api/web/transaction_sync_service.dart';
 import 'package:js/js.dart';
-import 'dart:js' as js;
+import 'package:universal_html/js.dart' as js;
 
 import '../../dfinity.dart';
 import 'account_sync_service.dart';
@@ -132,7 +132,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
           if (accountIdentifier != account.accountIdentifier) {
             throw Exception(
-                "Wallet account identifier doesn't match.\nExpected identified: ${account.accountIdentifier}.\nWallet identifier: ${accountIdentifier}.\nAre you sure you connected the right wallet?");
+                "Wallet account identifier doesn't match.\nExpected identified: ${account.accountIdentifier}.\nWallet identifier: $accountIdentifier.\nAre you sure you connected the right wallet?");
           }
 
           final walletApi = await this
