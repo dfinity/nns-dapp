@@ -58,7 +58,6 @@ class _NodeState extends State<NodeOverlay> with TickerProviderStateMixin {
     // controller = GifController(vsync: this);
     // controller.repeat(min:0,max:62,period:3.seconds);
 
-
     0.1.seconds.delay.then((value) {
       setState(() {
         visible = true;
@@ -89,10 +88,10 @@ class _NodeState extends State<NodeOverlay> with TickerProviderStateMixin {
                 heightFactor: 0.3,
                 child: Container(
                     child: SizedBox.expand(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    )))),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )))),
         // child: IgnorePointer(child: NodeWorld(oscillationMultiplier: 2,))),
       ),
     );
@@ -113,8 +112,7 @@ class LoadingOverlay extends InheritedWidget {
     this.state, {
     Key? key,
     required Widget child,
-  })   : assert(child != null),
-        super(key: key, child: child);
+  }) : super(key: key, child: child);
 
   static LoadingOverlay of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<LoadingOverlay>()!;

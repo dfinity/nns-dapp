@@ -1,10 +1,11 @@
+@JS()
+library ic_agent.js;
+
 import 'dart:convert';
 import 'package:universal_html/js_util.dart';
-
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'service_api.dart';
-
 import '../../dfinity.dart';
 import 'stringify.dart';
 import 'package:js/js.dart';
@@ -70,7 +71,7 @@ class TransactionSyncService {
   }
 }
 
-@JS()
+@JS("getTransactions")
 @anonymous
 class GetTransactionsRequest {
   external String accountIdentifier;

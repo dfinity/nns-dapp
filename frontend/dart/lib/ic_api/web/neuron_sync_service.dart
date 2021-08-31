@@ -49,7 +49,6 @@ class NeuronSyncService {
       hiveBoxes.neurons[neuronId] = neuron;
       return neuron;
     }
-    hiveBoxes.neurons.notifyChange();
   }
 
   void updateNeuron(Neuron neuron, String neuronId, dynamic res) {
@@ -110,13 +109,6 @@ class NeuronSyncService {
     return Topic.values.mapToList((e) => Followee()
       ..topic = e
       ..followees = map[e] ?? []);
-  }
-}
-
-class PrettyPrint {
-  static prettyPrintJson(String text, dynamic object) {
-    JsonEncoder encoder = new JsonEncoder.withIndent('  ');
-    /*String prettyprint = encoder.convert(object); */
   }
 }
 
