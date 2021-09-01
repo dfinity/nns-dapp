@@ -11,7 +11,9 @@ import {
   Action,
   Ballot,
   BallotInfo,
+  By,
   Change,
+  ClaimOrRefresh,
   Command,
   DisburseResponse,
   DisburseToNeuronResponse,
@@ -37,6 +39,7 @@ import {
   Amount as RawAmount,
   Ballot as RawBallot,
   BallotInfo as RawBallotInfo,
+  By as RawBy,
   Change as RawChange,
   Command as RawCommand,
   DissolveState as RawDissolveState,
@@ -56,7 +59,7 @@ import {
   Tally as RawTally,
 } from "./rawService";
 import { UnsupportedValueError } from "../../utils";
-import { TRANSACTION_FEE } from "../constants";
+import { Option } from "../option";
 
 export default class ResponseConverters {
   public toProposalInfo = (proposalInfo: RawProposalInfo): ProposalInfo => {
@@ -101,11 +104,6 @@ export default class ResponseConverters {
               (neuron) => neuron.id.length && neuron.id[0].id === id
             )
           )
-        )
-        // hide neurons where the stake is less than or equal to 1 transaction fee
-        .filter(
-          (n) =>
-            !n.fullNeuron || n.fullNeuron.cachedNeuronStake > TRANSACTION_FEE
         )
     );
   };
@@ -183,6 +181,19 @@ export default class ResponseConverters {
     }
     throw this.throwUnrecognisedTypeError("response", response);
   };
+
+  public toClaimOrRefreshNeuronResponse = (response: RawManageNeuronResponse): Option<NeuronId> => {
+    const command = response.command;
+    if (
+        command.length &&
+        "ClaimOrRefresh" in command[0]
+    ) {
+      return command[0].ClaimOrRefresh.refreshed_neuron_id.length
+        ? command[0].ClaimOrRefresh.refreshed_neuron_id[0].id
+        : null;
+    }
+    throw this.throwUnrecognisedTypeError("response", response);
+  }
 
   public toMergeMaturityResponse = (
     response: RawManageNeuronResponse
@@ -465,7 +476,7 @@ export default class ResponseConverters {
       return {
         ClaimOrRefresh: {
           by: claimOrRefresh.by.length
-            ? { Memo: claimOrRefresh.by[0].Memo }
+            ? this.toClaimOrRefreshBy(claimOrRefresh.by[0])
             : null,
         },
       };
@@ -646,6 +657,30 @@ export default class ResponseConverters {
     } else {
       // Ensures all cases are covered at compile-time.
       throw new UnsupportedValueError(rewardMode);
+    }
+  }
+
+  private toClaimOrRefreshBy(by: RawBy): By {
+    if ("NeuronIdOrSubaccount" in by) {
+      return {
+        NeuronIdOrSubaccount: {}
+      };
+    } else if ("Memo" in by) {
+      return {
+        Memo: by.Memo
+      };
+    } else if ("MemoAndController" in by) {
+      return {
+        MemoAndController: {
+          memo: by.MemoAndController.memo,
+          controller: by.MemoAndController.controller.length
+            ? by.MemoAndController.controller[0]
+            : null
+        },
+      };
+    } else {
+      // Ensures all cases are covered at compile-time.
+      throw new UnsupportedValueError(by);
     }
   }
 

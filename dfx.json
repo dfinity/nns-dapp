@@ -10,6 +10,12 @@
     }
   },
   "networks": {
+    "ic": {
+      "providers": [
+        "https://ic0.app/"
+      ],
+      "type": "persistent"
+    },
     "testnet": {
       "providers": [
         "http://[2a00:fb01:400:42:5000:82ff:fed6:dfdc]:8080"
