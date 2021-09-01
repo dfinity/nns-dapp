@@ -33,6 +33,7 @@ import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
 import { Memo, NeuronId } from "../common/types";
 import { submitUpdateRequest } from "../updateRequestHandler";
+import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
 import { Agent } from "@dfinity/agent";
 
 export default class Service implements ServiceInterface {
@@ -193,8 +194,15 @@ export default class Service implements ServiceInterface {
 
   public spawn = async (request: SpawnRequest): Promise<SpawnResponse> => {
     const rawRequest = this.requestConverters.fromSpawnRequest(request);
-    const rawResponse = await this.service.manage_neuron(rawRequest);
-    return this.responseConverters.toSpawnResponse(rawResponse);
+    const rawResponse = await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      rawRequest.serializeBinary()
+    );
+
+    const response = PbManageNeuronResponse.deserializeBinary(rawResponse);
+    return this.responseConverters.toSpawnResponse(response);
   };
 
   public split = async (request: SplitRequest): Promise<EmptyResponse> => {
@@ -207,8 +215,15 @@ export default class Service implements ServiceInterface {
     request: DisburseRequest
   ): Promise<DisburseResponse> => {
     const rawRequest = this.requestConverters.fromDisburseRequest(request);
-    const rawResponse = await this.service.manage_neuron(rawRequest);
-    return this.responseConverters.toDisburseResponse(rawResponse);
+    const rawResponse = await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      rawRequest.serializeBinary()
+    );
+
+    const response = PbManageNeuronResponse.deserializeBinary(rawResponse);
+    return this.responseConverters.toDisburseResponse(response);
   };
 
   public disburseToNeuron = async (

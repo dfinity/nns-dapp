@@ -3,6 +3,7 @@ syntax = "proto3";
 package ic_nns_governance.pb.v1;
 
 import "base_types.proto";
+import "ledger.proto";
 
 // All operations that modify the state of an existing neuron are
 // represented by instances of `ManageNeuron`.
@@ -51,8 +52,24 @@ message ManageNeuron {
     }
   }
 
+  message Spawn {
+    ic_base_types.pb.v1.PrincipalId new_controller = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  }
+
+  message Disburse {
+    option (ic_base_types.pb.v1.tui_signed_message) = true;
+    message Amount {
+      option (ic_base_types.pb.v1.tui_signed_message) = true;
+      uint64 e8s = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true, jstype = JS_STRING];
+    }
+    Amount amount = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+    ic_ledger.pb.v1.AccountIdentifier to_account = 2 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+  }
+
   oneof command {
     Configure configure = 2;
+    Disburse disburse = 3;
+    Spawn spawn = 4;
   }
 }
 
@@ -63,9 +80,19 @@ message ManageNeuron {
 message ManageNeuronResponse {
   message ConfigureResponse {}
 
+  message DisburseResponse {
+    uint64 transfer_block_height = 1 [jstype = JS_STRING];
+  }
+
+  message SpawnResponse {
+    ic_base_types.pb.v1.NeuronId created_neuron_id = 1;
+  }
+
   oneof command {
     GovernanceError error = 1;
     ConfigureResponse configure = 2;
+    DisburseResponse disburse = 3;
+    SpawnResponse spawn = 4;
   }
 }
 

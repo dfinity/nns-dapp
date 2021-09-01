@@ -10,7 +10,7 @@ if [[ $DEPLOY_ENV = "testnet" ]]; then
     # testnet config
     cat > frontend/ts/src/config.json << EOF
 {
-    "IDENTITY_SERVICE_URL": "https://qaa6y-5yaaa-aaaaa-aaafa-cai.nnsdapp.dfinity.network/",
+    "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/",
     "HOST": "https://nnsdapp.dfinity.network/",
     "OWN_CANISTER_ID": "$(dfx canister --no-wallet --network testnet id nns_ui)",
     "FETCH_ROOT_KEY": true

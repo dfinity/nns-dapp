@@ -269,16 +269,26 @@ export default class ServiceApi {
     );
   };
 
-  public spawn = (request: SpawnRequest): Promise<SpawnResponse> => {
-    return executeWithLogging(() => this.governanceService.spawn(request));
+  public spawn = (
+    identity: Identity,
+    request: SpawnRequest
+  ): Promise<SpawnResponse> => {
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).spawn(request)
+    );
   };
 
   public split = (request: SplitRequest): Promise<EmptyResponse> => {
     return executeWithLogging(() => this.governanceService.split(request));
   };
 
-  public disburse = (request: DisburseRequest): Promise<DisburseResponse> => {
-    return executeWithLogging(() => this.governanceService.disburse(request));
+  public disburse = (
+    identity: Identity,
+    request: DisburseRequest
+  ): Promise<DisburseResponse> => {
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).disburse(request)
+    );
   };
 
   public disburseToNeuron = (
