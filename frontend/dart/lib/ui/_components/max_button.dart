@@ -32,7 +32,7 @@ class _MaxButtonState extends State<MaxButton> {
           onPressed: () {
             widget.amountField.initialText = (widget.source.balance -
                     ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
-                .asString(myLocale.languageCode);
+                .asString("de-CH");
           },
           child: Padding(
             padding: const EdgeInsets.all(0.0),

@@ -72,6 +72,7 @@ class DfinityApp extends StatelessWidget {
               const Locale('en', 'US'),
               const Locale('en', 'UK'),
               const Locale('es'),
+              const Locale('ch', 'CH'),
             ],
             theme: ThemeData(
               primarySwatch: MaterialColor(AppColors.blue500.value, {

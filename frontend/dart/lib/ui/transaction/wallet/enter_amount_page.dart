@@ -7,6 +7,7 @@ import 'package:dfinity_wallet/ui/_components/max_button.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import '../wizard_overlay.dart';
 import 'confirm_transactions_widget.dart';
@@ -71,7 +72,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                           ? kCurrentBalanceSizeBig
                           : kCurrentBalanceSizeSmall,
                       icpLabelSize: 0,
-                      locale: myLocale.languageCode,
+                      locale: "en-US",
                     )
                   ],
                 ),
@@ -162,6 +163,9 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                               : kTextSizeSmall),
                     ),
                     onPressed: () async {
+                      // var amount = Intl.withLocale(
+                      //     'en', () => ICP.fromString(amountField.currentValue));
+                      // var amount = ICP.fromString(amountField.currentValue);
                       var amount = ICP.fromString(amountField.currentValue);
                       WizardOverlay.of(context).pushPage(
                           "Review Transaction",

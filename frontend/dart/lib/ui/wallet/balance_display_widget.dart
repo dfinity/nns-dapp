@@ -18,8 +18,15 @@ class BalanceDisplayWidget extends StatelessWidget {
       : super(key: key);
 
   // Temporary method until all callers are not using doubles.
+  // String getAmount() {
+  //   return "${amount.asString(this.locale)}${amountLabelSuffix ?? ""}";
+  // }
+  // Temporary method until all callers are not using doubles.
+  // This is using swiss german 'de-CH' for the currency representation.
+  //Change this is have to take the passed locale parameter if you want
+  //currency to be represented based on language.
   String getAmount() {
-    return "${amount.asString(this.locale)}${amountLabelSuffix ?? ""}";
+    return "${amount.asString('de-CH')}${amountLabelSuffix ?? ""}";
   }
 
   @override
