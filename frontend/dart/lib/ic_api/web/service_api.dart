@@ -53,9 +53,6 @@ class ServiceApi {
   @JS("getNeurons")
   external Promise<dynamic> getNeurons();
 
-  @JS("checkAndRefreshNeurons")
-  external Promise<List<dynamic>> checkAndRefreshNeurons(dynamic neurons);
-
   @JS("getPendingProposals")
   external Promise<dynamic> getPendingProposals();
 

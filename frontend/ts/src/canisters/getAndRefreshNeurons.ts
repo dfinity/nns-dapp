@@ -4,22 +4,23 @@ import { NeuronId } from "./common/types";
 import { Option } from "./option";
 
 export default async function (
-    neurons: Array<NeuronInfo>,
-    ledgerService: LedgerService,
-    governanceService: GovernanceService) : Promise<Array<NeuronId>> {
+    governanceService: GovernanceService,
+    ledgerService: LedgerService) : Promise<Array<NeuronInfo>> {
+
+    const neurons = await governanceService.getNeurons();
 
     const neuronsToRefresh = await findNeuronsWhichNeedRefresh(neurons, ledgerService);
     if (!neuronsToRefresh.length) {
-        return [];
+        return neurons;
     }
 
     const promises: Promise<Option<NeuronId>>[] = neuronsToRefresh.map(n => governanceService.claimOrRefreshNeuron({
         neuronId: n,
         by: { NeuronIdOrSubaccount: {} }
     }));
-    const results = await Promise.all(promises);
+    await Promise.all(promises);
 
-    return results.filter(r => r).map(r => r!);
+    return await governanceService.getNeurons();
 }
 
 const findNeuronsWhichNeedRefresh = async (neurons: Array<NeuronInfo>, ledgerService: LedgerService) : Promise<NeuronId[]> => {

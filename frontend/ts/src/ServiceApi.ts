@@ -82,7 +82,7 @@ import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { HOST } from "./canisters/constants";
 import { executeWithLogging } from "./errorLogger";
 import { FETCH_ROOT_KEY } from "./config.json";
-import checkAndRefreshNeurons from "./canisters/checkAndRefreshNeurons";
+import getAndRefreshNeurons from "./canisters/getAndRefreshNeurons";
 import {
   topUpCanisterImpl,
   TopUpCanisterRequest,
@@ -193,11 +193,7 @@ export default class ServiceApi {
   };
 
   public getNeurons = (): Promise<Array<NeuronInfo>> => {
-    return executeWithLogging(() => this.governanceService.getNeurons());
-  };
-
-  public checkAndRefreshNeurons = (neurons: Array<NeuronInfo>) : Promise<NeuronId[]> => {
-    return executeWithLogging(() => checkAndRefreshNeurons(neurons, this.ledgerService, this.governanceService));
+    return executeWithLogging(() => getAndRefreshNeurons(this.governanceService, this.ledgerService));
   };
 
   public getPendingProposals = (): Promise<Array<ProposalInfo>> => {
