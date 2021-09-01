@@ -104,7 +104,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                         // send the full balance of the neuron to the owner's accoun t
                         await context.callUpdate(() async {
                           return context.icApi.disburse(
-                              neuronId: BigInt.parse(widget.source.address),
+                              neuron: widget.source as Neuron,
                               // this is intentional. send all of them.
                               amount: widget.source.balance,
                               toAccountId: widget.destination);
