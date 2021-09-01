@@ -26,28 +26,34 @@ class NeuronSyncService {
     storeNeuron(response);
   }
 
-  Future<void> fetchNeurons() async {
+  Future<void> fetchNeurons([bool checkBalances = true]) async {
     // print("fetching neurons");
     dynamic res = (await promiseToFuture(serviceApi.getNeurons()));
+    if (checkBalances) {
+      checkAndRefreshNeurons(res);
+    }
     final string = stringify(res);
     // print("fetched neurons $string");
     dynamic response = (jsonDecode(string) as List<dynamic>).toList();
     response.forEach((e) => storeNeuron(e));
   }
 
-  Neuron storeNeuron(dynamic e) {
+  Neuron? storeNeuron(dynamic e) {
     final neuronId = e['neuronId'].toString();
+    Neuron neuron;
     if (!hiveBoxes.neurons.containsKey(neuronId)) {
-      final neuron = Neuron.empty();
+      neuron = Neuron.empty();
       neuron.followEditCounter = 0;
-      updateNeuron(neuron, neuronId, e);
+    } else {
+      neuron = hiveBoxes.neurons[neuronId]!;
+    }
+    updateNeuron(neuron, neuronId, e);
+    if (neuron.cachedNeuronStake.asE8s() > BigInt.zero) {
       hiveBoxes.neurons[neuronId] = neuron;
       return neuron;
     } else {
-      final neuron = hiveBoxes.neurons[neuronId]!;
-      updateNeuron(neuron, neuronId, e);
-      hiveBoxes.neurons[neuronId] = neuron;
-      return neuron;
+      removeNeuron(neuronId);
+      return null;
     }
   }
 
@@ -91,6 +97,14 @@ class NeuronSyncService {
     neuron.controller = fullNeuron['controller'];
     neuron.accountIdentifier = fullNeuron['accountIdentifier'];
     neuron.hotkeys = fullNeuron['hotKeys'].cast<String>();
+  }
+
+  void checkAndRefreshNeurons(dynamic neurons) async {
+    List<dynamic> updatedNeurons = await promiseToFuture(serviceApi.checkAndRefreshNeurons(neurons));
+
+    if (updatedNeurons.length > 0) {
+      fetchNeurons(false);
+    }
   }
 
   List<BallotInfo> parseRecentBallots(List<dynamic> recentBallots) => [
