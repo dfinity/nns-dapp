@@ -46,7 +46,7 @@ abstract class AbstractPlatformICApi {
   Future<void> increaseDissolveDelay(
       {required Neuron neuron, required int additionalDissolveDelaySeconds});
 
-  Future<Neuron> spawnNeuron({required BigInt neuronId});
+  Future<Neuron> spawnNeuron({required Neuron neuron});
 
   Future<void> follow(
       {required BigInt neuronId,
@@ -59,7 +59,7 @@ abstract class AbstractPlatformICApi {
       required Vote vote});
 
   Future<void> disburse(
-      {required BigInt neuronId,
+      {required Neuron neuron,
       required ICP amount,
       required String toAccountId});
 

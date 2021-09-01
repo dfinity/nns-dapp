@@ -210,13 +210,28 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> disburse(
-      {required BigInt neuronId,
+      {required Neuron neuron,
       required ICP amount,
       required String toAccountId}) async {
-    await promiseToFuture(serviceApi!.disburse(DisperseNeuronRequest(
-        neuronId: neuronId.toJS, amount: null, toAccountId: toAccountId)));
-    await fetchNeuron(neuronId: neuronId);
-    balanceSyncService?.syncBalances();
+    if (!this.isNeuronControllable(neuron)) {
+      throw "Neuron ${neuron.id} is not controlled by the user.";
+    }
+
+    // If the neuron is controlled by the user, use the user's II, otherwise
+    // we assume it's a hardware wallet and try connecting to the device.
+    final identity = neuron.controller == this.getPrincipal()
+        ? this.identity
+        : await this.connectToHardwareWallet();
+    await promiseToFuture(serviceApi!.disburse(
+        identity,
+        DisperseNeuronRequest(
+            neuronId: neuron.id.toString(),
+            amount: null,
+            toAccountId: toAccountId)));
+    await Future.wait([
+      balanceSyncService!.syncBalances(),
+      neuronSyncService!.fetchNeurons()
+    ]);
   }
 
   @override
@@ -376,9 +391,20 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<Neuron> spawnNeuron({required BigInt neuronId}) async {
+  Future<Neuron> spawnNeuron({required Neuron neuron}) async {
+    if (!this.isNeuronControllable(neuron)) {
+      throw "Neuron ${neuron.id} is not controlled by the user.";
+    }
+
+    // If the neuron is controlled by the user, use the user's II, otherwise
+    // we assume it's a hardware wallet and try connecting to the device.
+    final identity = neuron.controller == this.getPrincipal()
+        ? this.identity
+        : await this.connectToHardwareWallet();
+
     final spawnResponse = await promiseToFuture(serviceApi!
-        .spawn(SpawnRequest(neuronId: neuronId.toJS, newController: null)));
+        .spawn(identity,
+        SpawnRequest(neuronId: neuron.id.toString(), newController: null)));
     dynamic response = jsonDecode(stringify(spawnResponse));
     final createdNeuronId = response['createdNeuronId'].toString();
     await neuronSyncService!.fetchNeurons();

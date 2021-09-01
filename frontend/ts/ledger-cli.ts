@@ -12,7 +12,11 @@ import GovernanceService from "./src/canisters/governance/model";
 import LedgerService from "./src/canisters/ledger/model";
 import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
 import ledgerBuilder from "./src/canisters/ledger/builder";
-import { AccountIdentifier, E8s } from "./src/canisters/common/types";
+import {
+  AccountIdentifier,
+  E8s,
+  PrincipalString,
+} from "./src/canisters/common/types";
 import HardwareWalletApi from "./src/HardwareWalletApi";
 
 // Add polyfill for `window.fetch` for agent-js to work.
@@ -119,6 +123,34 @@ async function addHotkey(neuronId: string, principal: string) {
   console.log(response);
 }
 
+async function disburseNeuron(
+  neuronId: string,
+  to?: AccountIdentifier,
+  amount?: string,
+  subaccount?: string
+) {
+  const identity = await getLedgerIdentity(subaccount);
+  const governance = await getGovernanceService(identity);
+
+  const response = await governance.disburse({
+    neuronId: BigInt(neuronId),
+    toAccountId: to,
+    amount: amount ? BigInt(amount) : undefined,
+  });
+  console.log(response);
+}
+
+async function spawnNeuron(neuronId: string, controller?: PrincipalString) {
+  const identity = await getLedgerIdentity();
+  const governance = await getGovernanceService(identity);
+
+  const response = await governance.spawn({
+    neuronId: BigInt(neuronId),
+    newController: controller ? controller : null,
+  });
+  console.log(response);
+}
+
 async function increaseDissolveDelay(
   neuronId: string,
   additionalDelaySeconds: string
@@ -152,6 +184,11 @@ async function stopDissolving(neuronId: string) {
     neuronId: BigInt(neuronId),
   });
   console.log(response);
+}
+
+async function getLedgerIdentity(subaccount?: string): Promise<LedgerIdentity> {
+  const subaccountId = subaccount ? Number.parseInt(subaccount) : 0;
+  return await LedgerIdentity.create(`m/44'/223'/0'/0/${subaccountId}`);
 }
 
 async function main() {
@@ -193,6 +230,24 @@ async function main() {
         .requiredOption("--neuron-id <neuron-id>")
         .action((args) => {
           startDissolving(args.neuronId);
+        })
+    )
+    .addCommand(
+      new Command("disburse-neuron")
+        .requiredOption("--neuron-id <neuron-id>")
+        .option("--to <account-identifier>")
+        .option("--amount <amount>")
+        .option("--subaccount <subaccount>", "ID of the subaccount")
+        .action((args) => {
+          disburseNeuron(args.neuronId, args.to, args.amount);
+        })
+    )
+    .addCommand(
+      new Command("spawn-neuron")
+        .requiredOption("--neuron-id <neuron-id>")
+        .option("--controller <new-controller>")
+        .action((args) => {
+          spawnNeuron(args.neuronId, args.controller);
         })
     )
     .addCommand(

@@ -3,6 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as base_types_pb from "./base_types_pb";
+import * as ledger_pb from "./ledger_pb";
 
 export class ManageNeuron extends jspb.Message {
   hasId(): boolean;
@@ -27,6 +28,16 @@ export class ManageNeuron extends jspb.Message {
   getConfigure(): ManageNeuron.Configure | undefined;
   setConfigure(value?: ManageNeuron.Configure): void;
 
+  hasDisburse(): boolean;
+  clearDisburse(): void;
+  getDisburse(): ManageNeuron.Disburse | undefined;
+  setDisburse(value?: ManageNeuron.Disburse): void;
+
+  hasSpawn(): boolean;
+  clearSpawn(): void;
+  getSpawn(): ManageNeuron.Spawn | undefined;
+  setSpawn(value?: ManageNeuron.Spawn): void;
+
   getNeuronIdOrSubaccountCase(): ManageNeuron.NeuronIdOrSubaccountCase;
   getCommandCase(): ManageNeuron.CommandCase;
   serializeBinary(): Uint8Array;
@@ -45,6 +56,8 @@ export namespace ManageNeuron {
     subaccount: Uint8Array | string,
     neuronId?: base_types_pb.NeuronId.AsObject,
     configure?: ManageNeuron.Configure.AsObject,
+    disburse?: ManageNeuron.Disburse.AsObject,
+    spawn?: ManageNeuron.Spawn.AsObject,
   }
 
   export class IncreaseDissolveDelay extends jspb.Message {
@@ -199,6 +212,76 @@ export namespace ManageNeuron {
     }
   }
 
+  export class Spawn extends jspb.Message {
+    hasNewController(): boolean;
+    clearNewController(): void;
+    getNewController(): base_types_pb.PrincipalId | undefined;
+    setNewController(value?: base_types_pb.PrincipalId): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Spawn.AsObject;
+    static toObject(includeInstance: boolean, msg: Spawn): Spawn.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Spawn, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Spawn;
+    static deserializeBinaryFromReader(message: Spawn, reader: jspb.BinaryReader): Spawn;
+  }
+
+  export namespace Spawn {
+    export type AsObject = {
+      newController?: base_types_pb.PrincipalId.AsObject,
+    }
+  }
+
+  export class Disburse extends jspb.Message {
+    hasAmount(): boolean;
+    clearAmount(): void;
+    getAmount(): ManageNeuron.Disburse.Amount | undefined;
+    setAmount(value?: ManageNeuron.Disburse.Amount): void;
+
+    hasToAccount(): boolean;
+    clearToAccount(): void;
+    getToAccount(): ledger_pb.AccountIdentifier | undefined;
+    setToAccount(value?: ledger_pb.AccountIdentifier): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Disburse.AsObject;
+    static toObject(includeInstance: boolean, msg: Disburse): Disburse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Disburse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Disburse;
+    static deserializeBinaryFromReader(message: Disburse, reader: jspb.BinaryReader): Disburse;
+  }
+
+  export namespace Disburse {
+    export type AsObject = {
+      amount?: ManageNeuron.Disburse.Amount.AsObject,
+      toAccount?: ledger_pb.AccountIdentifier.AsObject,
+    }
+
+    export class Amount extends jspb.Message {
+      getE8s(): string;
+      setE8s(value: string): void;
+
+      serializeBinary(): Uint8Array;
+      toObject(includeInstance?: boolean): Amount.AsObject;
+      static toObject(includeInstance: boolean, msg: Amount): Amount.AsObject;
+      static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+      static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+      static serializeBinaryToWriter(message: Amount, writer: jspb.BinaryWriter): void;
+      static deserializeBinary(bytes: Uint8Array): Amount;
+      static deserializeBinaryFromReader(message: Amount, reader: jspb.BinaryReader): Amount;
+    }
+
+    export namespace Amount {
+      export type AsObject = {
+        e8s: string,
+      }
+    }
+  }
+
   export enum NeuronIdOrSubaccountCase {
     NEURON_ID_OR_SUBACCOUNT_NOT_SET = 0,
     SUBACCOUNT = 11,
@@ -208,6 +291,8 @@ export namespace ManageNeuron {
   export enum CommandCase {
     COMMAND_NOT_SET = 0,
     CONFIGURE = 2,
+    DISBURSE = 3,
+    SPAWN = 4,
   }
 }
 
@@ -221,6 +306,16 @@ export class ManageNeuronResponse extends jspb.Message {
   clearConfigure(): void;
   getConfigure(): ManageNeuronResponse.ConfigureResponse | undefined;
   setConfigure(value?: ManageNeuronResponse.ConfigureResponse): void;
+
+  hasDisburse(): boolean;
+  clearDisburse(): void;
+  getDisburse(): ManageNeuronResponse.DisburseResponse | undefined;
+  setDisburse(value?: ManageNeuronResponse.DisburseResponse): void;
+
+  hasSpawn(): boolean;
+  clearSpawn(): void;
+  getSpawn(): ManageNeuronResponse.SpawnResponse | undefined;
+  setSpawn(value?: ManageNeuronResponse.SpawnResponse): void;
 
   getCommandCase(): ManageNeuronResponse.CommandCase;
   serializeBinary(): Uint8Array;
@@ -237,6 +332,8 @@ export namespace ManageNeuronResponse {
   export type AsObject = {
     error?: GovernanceError.AsObject,
     configure?: ManageNeuronResponse.ConfigureResponse.AsObject,
+    disburse?: ManageNeuronResponse.DisburseResponse.AsObject,
+    spawn?: ManageNeuronResponse.SpawnResponse.AsObject,
   }
 
   export class ConfigureResponse extends jspb.Message {
@@ -255,10 +352,54 @@ export namespace ManageNeuronResponse {
     }
   }
 
+  export class DisburseResponse extends jspb.Message {
+    getTransferBlockHeight(): string;
+    setTransferBlockHeight(value: string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DisburseResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: DisburseResponse): DisburseResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DisburseResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DisburseResponse;
+    static deserializeBinaryFromReader(message: DisburseResponse, reader: jspb.BinaryReader): DisburseResponse;
+  }
+
+  export namespace DisburseResponse {
+    export type AsObject = {
+      transferBlockHeight: string,
+    }
+  }
+
+  export class SpawnResponse extends jspb.Message {
+    hasCreatedNeuronId(): boolean;
+    clearCreatedNeuronId(): void;
+    getCreatedNeuronId(): base_types_pb.NeuronId | undefined;
+    setCreatedNeuronId(value?: base_types_pb.NeuronId): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SpawnResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: SpawnResponse): SpawnResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SpawnResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SpawnResponse;
+    static deserializeBinaryFromReader(message: SpawnResponse, reader: jspb.BinaryReader): SpawnResponse;
+  }
+
+  export namespace SpawnResponse {
+    export type AsObject = {
+      createdNeuronId?: base_types_pb.NeuronId.AsObject,
+    }
+  }
+
   export enum CommandCase {
     COMMAND_NOT_SET = 0,
     ERROR = 1,
     CONFIGURE = 2,
+    DISBURSE = 3,
+    SPAWN = 4,
   }
 }
 

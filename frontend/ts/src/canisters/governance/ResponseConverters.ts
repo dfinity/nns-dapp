@@ -57,6 +57,7 @@ import {
 } from "./rawService";
 import { UnsupportedValueError } from "../../utils";
 import { TRANSACTION_FEE } from "../constants";
+import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
 
 export default class ResponseConverters {
   public toProposalInfo = (proposalInfo: RawProposalInfo): ProposalInfo => {
@@ -141,31 +142,31 @@ export default class ResponseConverters {
   };
 
   public toSpawnResponse = (
-    response: RawManageNeuronResponse
+    response: PbManageNeuronResponse
   ): SpawnResponse => {
-    const command = response.command;
-    if (
-      command.length &&
-      "Spawn" in command[0] &&
-      command[0].Spawn.created_neuron_id.length
-    ) {
-      return {
-        createdNeuronId: command[0].Spawn.created_neuron_id[0].id,
-      };
+    const createdNeuronId = response.getSpawn()?.getCreatedNeuronId();
+
+    if (!createdNeuronId) {
+      throw this.throwUnrecognisedTypeError("response", response);
     }
-    throw this.throwUnrecognisedTypeError("response", response);
+
+    return {
+      createdNeuronId: BigInt(createdNeuronId.getId()),
+    };
   };
 
   public toDisburseResponse = (
-    response: RawManageNeuronResponse
+    response: PbManageNeuronResponse
   ): DisburseResponse => {
-    const command = response.command;
-    if (command.length && "Disburse" in command[0]) {
-      return {
-        transferBlockHeight: command[0].Disburse.transfer_block_height,
-      };
+    const blockHeight = response.getDisburse()?.getTransferBlockHeight();
+
+    if (!blockHeight) {
+      throw this.throwUnrecognisedTypeError("response", response);
     }
-    throw this.throwUnrecognisedTypeError("response", response);
+
+    return {
+      transferBlockHeight: BigInt(blockHeight),
+    };
   };
 
   public toDisburseToNeuronResult = (

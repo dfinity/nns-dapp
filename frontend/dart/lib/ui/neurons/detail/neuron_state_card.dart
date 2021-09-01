@@ -178,7 +178,7 @@ class NeuronStateCard extends StatelessWidget {
                 backgroundColor: MaterialStateProperty.all(AppColors.blue600)),
             onPressed: () async {
               context.callUpdate(() =>
-                  context.icApi.stopDissolving(neuron: neuron));
+                  icApi.stopDissolving(neuron: neuron));
             }.takeIf((e) => icApi.isNeuronControllable(neuron)));
       case NeuronState.LOCKED:
         return ElevatedButton(
@@ -205,7 +205,7 @@ class NeuronStateCard extends StatelessWidget {
                         "Are you sure you wish to continue?",
                     onConfirm: () async {
                       await context.callUpdate(
-                          () => context.icApi.startDissolving(neuron: neuron));
+                          () => icApi.startDissolving(neuron: neuron));
                     },
                   ));
             }.takeIf((e) => icApi.isNeuronControllable(neuron)));
@@ -231,7 +231,7 @@ class NeuronStateCard extends StatelessWidget {
                       source: neuron,
                     ),
                   ));
-            }.takeIf((e) => neuron.isCurrentUserController));
+            }.takeIf((e) => icApi.isNeuronControllable(neuron)));
       case NeuronState.UNSPECIFIED:
         return ElevatedButton(child: Text(""), onPressed: () {});
     }
