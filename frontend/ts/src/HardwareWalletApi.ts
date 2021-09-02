@@ -95,7 +95,7 @@ export default class HardwareWalletApi {
     return await this.ledgerService.sendICPTs(request);
   };
 
-  public createNeuron = async (amount: E8s): Promise<String> => {
+  public createNeuron = async (amount: E8s): Promise<string> => {
     // Flag that an upcoming stake neuron transaction is coming to distinguish
     // it from a "send ICP" transaction on the device.
     this.identity.flagUpcomingStakeNeuron();

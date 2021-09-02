@@ -87,7 +87,9 @@ export default class AuthApi {
   };
 
   // Return either the identity, or a string with the error.
-  public connectToHardwareWallet = async (): Promise<LedgerIdentity | String> => {
+  public connectToHardwareWallet = async (): Promise<
+    LedgerIdentity | string
+  > => {
     if (this.ledgerIdentity) {
       return this.ledgerIdentity;
     }

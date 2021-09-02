@@ -341,7 +341,7 @@ export default class ServiceApi {
 
   public createNeuron = async (
     request: CreateNeuronRequest
-  ): Promise<String> => {
+  ): Promise<string> => {
     return await executeWithLogging(async () => {
       const neuronId = await createNeuronWithNnsUi(
         this.identity.getPrincipal(),
@@ -351,7 +351,7 @@ export default class ServiceApi {
       );
       console.log("Received neuron id");
       console.log(neuronId);
-      
+
       // NOTE: we're returning the neuron ID as a string for dart compatibility.
       return neuronId.toString();
     });
