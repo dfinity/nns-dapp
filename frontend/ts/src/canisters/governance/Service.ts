@@ -3,6 +3,8 @@ import { Option } from "../option";
 import { _SERVICE, ListNeurons } from "./rawService";
 import ServiceInterface, {
   AddHotKeyRequest,
+  ClaimOrRefreshNeuronFromAccount,
+  ClaimOrRefreshNeuronRequest,
   DisburseRequest,
   DisburseResponse,
   DisburseToNeuronRequest,
@@ -31,7 +33,7 @@ import ServiceInterface, {
 } from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
-import { Memo, NeuronId } from "../common/types";
+import { NeuronId } from "../common/types";
 import { submitUpdateRequest } from "../updateRequestHandler";
 import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
 import { Agent } from "@dfinity/agent";
@@ -281,13 +283,23 @@ export default class Service implements ServiceInterface {
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };
 
+  public claimOrRefreshNeuron = async (
+    request: ClaimOrRefreshNeuronRequest
+  ): Promise<Option<NeuronId>> => {
+    const rawRequest =
+      this.requestConverters.fromClaimOrRefreshNeuronRequest(request);
+    const rawResponse = await this.service.manage_neuron(rawRequest);
+    // This log will come in handy when debugging user issues
+    console.log(rawResponse);
+    return this.responseConverters.toClaimOrRefreshNeuronResponse(rawResponse);
+  };
+
   public claimOrRefreshNeuronFromAccount = async (
-    controller: Principal,
-    memo: Memo
+    request: ClaimOrRefreshNeuronFromAccount
   ): Promise<NeuronId> => {
     const response = await this.service.claim_or_refresh_neuron_from_account({
-      controller: [controller],
-      memo: memo,
+      controller: request.controller ? [request.controller] : [],
+      memo: request.memo,
     });
 
     const result = response.result;

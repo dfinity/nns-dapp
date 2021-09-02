@@ -7,8 +7,10 @@ import { AccountIdentifier, E8s, NeuronId } from "../common/types";
 import {
   Action,
   AddHotKeyRequest,
+  By,
   Change,
   ClaimNeuronRequest,
+  ClaimOrRefreshNeuronRequest,
   Command,
   DisburseRequest,
   DisburseToNeuronRequest,
@@ -38,6 +40,7 @@ import {
   AccountIdentifier as RawAccountIdentifier,
   Action as RawAction,
   Amount,
+  By as RawBy,
   Change as RawChange,
   Command as RawCommand,
   Followees as RawFollowees,
@@ -116,6 +119,19 @@ export default class RequestConverters {
     result.setNeuronId(neuronId);
 
     return result;
+  };
+
+  public fromClaimOrRefreshNeuronRequest = (
+    request: ClaimOrRefreshNeuronRequest
+  ): RawManageNeuron => {
+    const rawCommand: RawCommand = {
+      ClaimOrRefresh: { by: [{ NeuronIdOrSubaccount: {} }] },
+    };
+    return {
+      id: [],
+      command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
+    };
   };
 
   public fromMergeMaturityRequest = (
@@ -590,7 +606,9 @@ export default class RequestConverters {
       const claimOrRefresh = command.ClaimOrRefresh;
       return {
         ClaimOrRefresh: {
-          by: claimOrRefresh.by ? [{ Memo: claimOrRefresh.by.Memo }] : [],
+          by: claimOrRefresh.by
+            ? [this.fromClaimOrRefreshBy(claimOrRefresh.by)]
+            : [],
         },
       };
     }
@@ -789,6 +807,30 @@ export default class RequestConverters {
     } else {
       // If there's a missing rewardMode above, this line will cause a compiler error.
       throw new UnsupportedValueError(rewardMode);
+    }
+  }
+
+  private fromClaimOrRefreshBy(by: By): RawBy {
+    if ("NeuronIdOrSubaccount" in by) {
+      return {
+        NeuronIdOrSubaccount: {},
+      };
+    } else if ("Memo" in by) {
+      return {
+        Memo: by.Memo,
+      };
+    } else if ("MemoAndController" in by) {
+      return {
+        MemoAndController: {
+          memo: by.MemoAndController.memo,
+          controller: by.MemoAndController.controller
+            ? [by.MemoAndController.controller]
+            : [],
+        },
+      };
+    } else {
+      // Ensures all cases are covered at compile-time.
+      throw new UnsupportedValueError(by);
     }
   }
 }

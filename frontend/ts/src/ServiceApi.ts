@@ -82,6 +82,7 @@ import { LedgerIdentity } from "./ledger/identity";
 import { HOST } from "./canisters/constants";
 import { executeWithLogging } from "./errorLogger";
 import { FETCH_ROOT_KEY } from "./config.json";
+import getAndRefreshNeurons from "./canisters/getAndRefreshNeurons";
 import {
   topUpCanisterImpl,
   TopUpCanisterRequest,
@@ -192,7 +193,9 @@ export default class ServiceApi {
   };
 
   public getNeurons = (): Promise<Array<NeuronInfo>> => {
-    return executeWithLogging(() => this.governanceService.getNeurons());
+    return executeWithLogging(() =>
+      getAndRefreshNeurons(this.governanceService, this.ledgerService)
+    );
   };
 
   public getPendingProposals = (): Promise<Array<ProposalInfo>> => {
