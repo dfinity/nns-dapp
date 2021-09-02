@@ -10,7 +10,7 @@
     }
   },
   "networks": {
-    "ic": {
+    "mainnet": {
       "providers": [
         "https://ic0.app/"
       ],

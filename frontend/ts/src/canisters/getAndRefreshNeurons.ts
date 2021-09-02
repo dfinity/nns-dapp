@@ -22,6 +22,8 @@ export default async function (
         neurons = await governanceService.getNeurons();
     }
 
+    // We hide neurons whose balance is <= 1 transaction fee since since they are worthless and many of them can build up.
+    // These will eventually get garbage collected within the governance canister but that isn't implemented yet.
     return neurons.filter(n => n.fullNeuron && n.fullNeuron.cachedNeuronStake > TRANSACTION_FEE);
 }
 
