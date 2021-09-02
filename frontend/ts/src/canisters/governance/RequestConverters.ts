@@ -125,14 +125,14 @@ export default class RequestConverters {
     request: ClaimOrRefreshNeuronRequest
   ): RawManageNeuron => {
     const rawCommand: RawCommand = {
-      ClaimOrRefresh: { by: [{NeuronIdOrSubaccount: {}}] }
+      ClaimOrRefresh: { by: [{ NeuronIdOrSubaccount: {} }] },
     };
     return {
       id: [],
       command: [rawCommand],
       neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
-  }
+  };
 
   public fromMergeMaturityRequest = (
     request: MergeMaturityRequest
@@ -813,19 +813,19 @@ export default class RequestConverters {
   private fromClaimOrRefreshBy(by: By): RawBy {
     if ("NeuronIdOrSubaccount" in by) {
       return {
-        NeuronIdOrSubaccount: {}
+        NeuronIdOrSubaccount: {},
       };
     } else if ("Memo" in by) {
       return {
-        Memo: by.Memo
+        Memo: by.Memo,
       };
     } else if ("MemoAndController" in by) {
       return {
         MemoAndController: {
           memo: by.MemoAndController.memo,
           controller: by.MemoAndController.controller
-              ? [by.MemoAndController.controller]
-              : []
+            ? [by.MemoAndController.controller]
+            : [],
         },
       };
     } else {

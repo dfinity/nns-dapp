@@ -193,7 +193,9 @@ export default class ServiceApi {
   };
 
   public getNeurons = (): Promise<Array<NeuronInfo>> => {
-    return executeWithLogging(() => getAndRefreshNeurons(this.governanceService, this.ledgerService));
+    return executeWithLogging(() =>
+      getAndRefreshNeurons(this.governanceService, this.ledgerService)
+    );
   };
 
   public getPendingProposals = (): Promise<Array<ProposalInfo>> => {

@@ -283,8 +283,11 @@ export default class Service implements ServiceInterface {
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };
 
-  public claimOrRefreshNeuron = async (request: ClaimOrRefreshNeuronRequest): Promise<Option<NeuronId>> => {
-    const rawRequest = this.requestConverters.fromClaimOrRefreshNeuronRequest(request);
+  public claimOrRefreshNeuron = async (
+    request: ClaimOrRefreshNeuronRequest
+  ): Promise<Option<NeuronId>> => {
+    const rawRequest =
+      this.requestConverters.fromClaimOrRefreshNeuronRequest(request);
     const rawResponse = await this.service.manage_neuron(rawRequest);
     // This log will come in handy when debugging user issues
     console.log(rawResponse);

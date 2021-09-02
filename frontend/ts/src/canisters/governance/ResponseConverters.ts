@@ -93,18 +93,15 @@ export default class ResponseConverters {
   ): Array<NeuronInfo> => {
     const principalString = principal.toString();
 
-    return (
-      response.neuron_infos
-        .map(([id, neuronInfo]) =>
-          this.toNeuronInfo(
-            id,
-            principalString,
-            neuronInfo,
-            response.full_neurons.find(
-              (neuron) => neuron.id.length && neuron.id[0].id === id
-            )
-          )
+    return response.neuron_infos.map(([id, neuronInfo]) =>
+      this.toNeuronInfo(
+        id,
+        principalString,
+        neuronInfo,
+        response.full_neurons.find(
+          (neuron) => neuron.id.length && neuron.id[0].id === id
         )
+      )
     );
   };
 
@@ -182,18 +179,17 @@ export default class ResponseConverters {
     throw this.throwUnrecognisedTypeError("response", response);
   };
 
-  public toClaimOrRefreshNeuronResponse = (response: RawManageNeuronResponse): Option<NeuronId> => {
+  public toClaimOrRefreshNeuronResponse = (
+    response: RawManageNeuronResponse
+  ): Option<NeuronId> => {
     const command = response.command;
-    if (
-        command.length &&
-        "ClaimOrRefresh" in command[0]
-    ) {
+    if (command.length && "ClaimOrRefresh" in command[0]) {
       return command[0].ClaimOrRefresh.refreshed_neuron_id.length
         ? command[0].ClaimOrRefresh.refreshed_neuron_id[0].id
         : null;
     }
     throw this.throwUnrecognisedTypeError("response", response);
-  }
+  };
 
   public toMergeMaturityResponse = (
     response: RawManageNeuronResponse
@@ -663,11 +659,11 @@ export default class ResponseConverters {
   private toClaimOrRefreshBy(by: RawBy): By {
     if ("NeuronIdOrSubaccount" in by) {
       return {
-        NeuronIdOrSubaccount: {}
+        NeuronIdOrSubaccount: {},
       };
     } else if ("Memo" in by) {
       return {
-        Memo: by.Memo
+        Memo: by.Memo,
       };
     } else if ("MemoAndController" in by) {
       return {
@@ -675,7 +671,7 @@ export default class ResponseConverters {
           memo: by.MemoAndController.memo,
           controller: by.MemoAndController.controller.length
             ? by.MemoAndController.controller[0]
-            : null
+            : null,
         },
       };
     } else {

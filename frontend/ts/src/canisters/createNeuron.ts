@@ -40,7 +40,7 @@ export default async function (
   // Notify the governance of the transaction so that the neuron is created.
   return await governanceService.claimOrRefreshNeuronFromAccount({
     controller: principal,
-    memo: nonce
+    memo: nonce,
   });
 }
 
