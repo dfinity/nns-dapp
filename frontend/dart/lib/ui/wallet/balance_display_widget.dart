@@ -15,9 +15,6 @@ class BalanceDisplayWidget extends StatelessWidget {
       this.amountLabelSuffix})
       : super(key: key);
 
-  // This is using swiss german 'de-CH' for the currency representation.
-  //Change this is have to take the passed locale parameter if you want
-  //currency to be represented based on language.
   String getAmount() {
     return "${amount.asString(true)}${amountLabelSuffix ?? ""}";
   }

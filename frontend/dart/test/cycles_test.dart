@@ -12,6 +12,6 @@ void main() {
     expect(
         Cycles.fromBigInt(BigInt.from(1234567891234567890))
             .asStringT(true, 0, 0),
-        "1,234,567");
+        "1'234'567");
   });
 }
