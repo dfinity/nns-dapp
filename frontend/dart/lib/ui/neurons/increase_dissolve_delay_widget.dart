@@ -39,7 +39,6 @@ class _IncreaseDissolveDelayWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

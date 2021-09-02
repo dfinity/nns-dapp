@@ -10,7 +10,6 @@ class MyVotesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Card(
       child: Column(
         children: [

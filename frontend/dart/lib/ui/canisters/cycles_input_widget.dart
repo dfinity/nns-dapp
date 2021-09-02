@@ -62,7 +62,6 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(6.0),

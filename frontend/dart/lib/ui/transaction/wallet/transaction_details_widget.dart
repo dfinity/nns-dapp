@@ -19,7 +19,6 @@ class TransactionDetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Container(
         child: Center(
       child: IntrinsicWidth(
@@ -36,7 +35,6 @@ class TransactionDetailsWidget extends StatelessWidget {
                         : kCurrentBalanceSizeSmall,
                 icpLabelSize: 0,
                 amountLabelSuffix: " ICP",
-                locale: myLocale.languageCode,
               ),
             ),
             TallFormDivider(),

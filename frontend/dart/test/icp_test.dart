@@ -48,9 +48,9 @@ void main() {
   });
 
   test("ICP.asString", () {
-    expect(ICP.fromString("1.23").asString("en_US"), "1.23");
-    expect(ICP.fromString("0.000001").asString("en_US"), "0.000001");
-    expect(
-        ICP.fromString("1000000.000001").asString("en_US"), "1,000,000.000001");
+    expect(ICP.fromString("1.23").asString(true, 1, 2), "1.23");
+    expect(ICP.fromString("0.000001").asString(true, 1, 6), "0.000001");
+    expect(ICP.fromString("1000000.000001").asString(true, 1, 6),
+        "1,000,000.000001");
   });
 }

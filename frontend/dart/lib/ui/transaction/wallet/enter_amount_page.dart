@@ -7,7 +7,6 @@ import 'package:dfinity_wallet/ui/_components/max_button.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 import '../wizard_overlay.dart';
 import 'confirm_transactions_widget.dart';
@@ -48,7 +47,6 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return SizedBox.expand(
       child: SingleChildScrollView(
         child: Padding(
@@ -72,7 +70,6 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                           ? kCurrentBalanceSizeBig
                           : kCurrentBalanceSizeSmall,
                       icpLabelSize: 0,
-                      locale: myLocale.languageCode,
                     )
                   ],
                 ),

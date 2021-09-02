@@ -26,7 +26,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
     if (selectedNeurons == null) {
       selectedNeurons = neuronsWithoutVote.toList();
     }
-    final myLocale = Localizations.localeOf(context);
+
     final numVotes = selectedNeurons!
         .fold(ICP.zero, (ICP curr, next) => curr + next.votingPower)
         .asString(true, 2, 2);

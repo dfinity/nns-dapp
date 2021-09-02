@@ -1,12 +1,10 @@
 import 'package:core/core.dart';
 import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
 
 class BalanceDisplayWidget extends StatelessWidget {
   final ICP amount;
   final int amountSize;
   final int icpLabelSize;
-  final String locale;
   final String? amountLabelSuffix;
 
   const BalanceDisplayWidget(
@@ -14,15 +12,9 @@ class BalanceDisplayWidget extends StatelessWidget {
       required this.amount,
       required this.amountSize,
       required this.icpLabelSize,
-      required this.locale,
       this.amountLabelSuffix})
       : super(key: key);
 
-  // Temporary method until all callers are not using doubles.
-  // String getAmount() {
-  //   return "${amount.asString(this.locale)}${amountLabelSuffix ?? ""}";
-  // }
-  // Temporary method until all callers are not using doubles.
   // This is using swiss german 'de-CH' for the currency representation.
   //Change this is have to take the passed locale parameter if you want
   //currency to be represented based on language.
@@ -75,7 +67,6 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -83,7 +74,6 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
           amount: amount,
           amountSize: amountSize,
           icpLabelSize: icpLabelSize,
-          locale: myLocale.languageCode,
         ),
         SizedBox(height: 5),
         text

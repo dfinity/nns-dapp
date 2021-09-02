@@ -4,7 +4,6 @@ import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:flutter/material.dart';
 
 import '../../dfinity.dart';
-import 'constants.dart';
 
 class MaxButton extends StatefulWidget {
   final ValidatedTextField amountField;
@@ -22,7 +21,6 @@ class MaxButton extends StatefulWidget {
 class _MaxButtonState extends State<MaxButton> {
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Positioned(
       top: 30.0,
       right: 35.0,

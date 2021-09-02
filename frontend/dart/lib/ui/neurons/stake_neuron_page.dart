@@ -40,7 +40,6 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Container(
       child: Column(
         children: [
@@ -106,7 +105,6 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                               ? kCurrentBalanceSizeBig
                               : kCurrentBalanceSizeSmall,
                           icpLabelSize: 0,
-                          locale: myLocale.languageCode,
                         ),
                       ],
                     )),

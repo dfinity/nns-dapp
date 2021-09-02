@@ -1,6 +1,5 @@
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
@@ -208,7 +207,6 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

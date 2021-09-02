@@ -22,8 +22,6 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
-
     var cyclesPurchasedWidget = [
       Card(
         child: Padding(
