@@ -86,7 +86,8 @@ export default class AuthApi {
     this.onLoggedOut();
   };
 
-  public connectToHardwareWallet = async (): Promise<LedgerIdentity | null> => {
+  // Return either the identity, or a string with the error.
+  public connectToHardwareWallet = async (): Promise<LedgerIdentity | String> => {
     if (this.ledgerIdentity) {
       return this.ledgerIdentity;
     }
@@ -101,14 +102,10 @@ export default class AuthApi {
         err instanceof Error &&
         err.message.includes("device is already open")
       ) {
-        alert(
-          "The wallet is already being used. Please close any ongoing transactions on the wallet and try again."
-        );
+        return "The wallet is already being used. Please close any ongoing transactions on the wallet and try again.";
       } else {
-        // Unkown error. Display as-is.
-        alert(err);
+        return err.toString();
       }
-      return null;
     }
   };
 

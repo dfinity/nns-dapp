@@ -29,10 +29,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   hive: ^2.0.2
   hive_flutter: ^1.0.0
+  oxidized: ^4.2.0
   uuid: ^3.0.1
   intl: ^0.17.0
   url_launcher: ^6.0.3
-#  flutter_gifimage: ^1.0.1
   flutter_spinkit: ^5.0.0
   path_drawing: ^0.5.0
   observable: ^0.23.0
@@ -44,8 +44,6 @@ dependencies:
 
   core:
     path: ./core
-#  agent_plugin:
-#    path: ../agent_plugin
 
 dev_dependencies:
   hive_generator: ^1.0.1

@@ -4,6 +4,7 @@ library ic_agent.js;
 import 'package:universal_html/html.dart' as html;
 import 'dart:convert';
 import 'package:universal_html/js_util.dart';
+import 'package:oxidized/oxidized.dart';
 
 import 'package:dfinity_wallet/data/cycles.dart';
 import 'package:dfinity_wallet/data/icp.dart';
@@ -120,12 +121,14 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<NeuronId> createNeuron(Account account, ICP stakeAmount) async {
+  Future<Result<NeuronId, Exception>> stakeNeuron(
+      Account account, ICP stakeAmount) async {
     try {
       final amountJS = stakeAmount.asE8s().toJS;
-      final neuronId = await () async {
+      final String neuronId = await () async {
         if (account.hardwareWallet) {
-          final ledgerIdentity = await this.connectToHardwareWallet();
+        final ledgerIdentity =
+              (await this.connectToHardwareWallet()).unwrap();
 
           final accountIdentifier =
               getAccountIdentifier(ledgerIdentity)!.toString();
@@ -151,11 +154,9 @@ class PlatformICApi extends AbstractPlatformICApi {
         neuronSyncService!.fetchNeurons()
       ]);
 
-      return NeuronId.fromString(neuronId.toString());
-    } catch (e) {
-      // Alert with the error, then rethrow.
-      js.context.callMethod("alert", ["$e"]);
-      throw e;
+      return Result.ok(NeuronId.fromString(neuronId));
+    } catch (err) {
+      return Result.err(Exception(err));
     }
   }
 
@@ -209,29 +210,29 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> disburse(
+  Future<Result<Unit, Exception>> disburse(
       {required Neuron neuron,
       required ICP amount,
       required String toAccountId}) async {
-    if (!this.isNeuronControllable(neuron)) {
-      throw "Neuron ${neuron.id} is not controlled by the user.";
-    }
+    try {
+      final identity = (await getControllerIdentity(neuron)).unwrap();
 
-    // If the neuron is controlled by the user, use the user's II, otherwise
-    // we assume it's a hardware wallet and try connecting to the device.
-    final identity = neuron.controller == this.getPrincipal()
-        ? this.identity
-        : await this.connectToHardwareWallet();
-    await promiseToFuture(serviceApi!.disburse(
-        identity,
-        DisperseNeuronRequest(
-            neuronId: neuron.id.toString(),
-            amount: null,
-            toAccountId: toAccountId)));
-    await Future.wait([
-      balanceSyncService!.syncBalances(),
-      neuronSyncService!.fetchNeurons()
-    ]);
+      await promiseToFuture(serviceApi!.disburse(
+          identity,
+          DisperseNeuronRequest(
+              neuronId: neuron.id.toString(),
+              amount: null,
+              toAccountId: toAccountId)));
+
+      await Future.wait([
+        balanceSyncService!.syncBalances(),
+        neuronSyncService!.fetchNeurons()
+      ]);
+
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
   }
 
   @override
@@ -358,8 +359,13 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<dynamic> connectToHardwareWallet() {
-    return promiseToFuture(authApi.connectToHardwareWallet());
+  Future<Result<dynamic, Exception>> connectToHardwareWallet() async {
+    final res = await promiseToFuture(authApi.connectToHardwareWallet());
+    if (res is String) {
+      return Result.err(Exception(res));
+    } else {
+      return Result.ok(res);
+    }
   }
 
   @override
@@ -402,8 +408,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         ? this.identity
         : await this.connectToHardwareWallet();
 
-    final spawnResponse = await promiseToFuture(serviceApi!
-        .spawn(identity,
+    final spawnResponse = await promiseToFuture(serviceApi!.spawn(identity,
         SpawnRequest(neuronId: neuron.id.toString(), newController: null)));
     dynamic response = jsonDecode(stringify(spawnResponse));
     final createdNeuronId = response['createdNeuronId'].toString();
@@ -592,5 +597,22 @@ class PlatformICApi extends AbstractPlatformICApi {
     final account = this.getAccountByPrincipal(neuron.controller);
     return (neuron.isCurrentUserController ||
         (account != null && account.hardwareWallet));
+  }
+
+  /**
+   * Returns the identity associated with the neuron's controller.
+   */
+  Future<Result<dynamic, Exception>> getControllerIdentity(
+      Neuron neuron) async {
+    if (!this.isNeuronControllable(neuron)) {
+      return Result.err(
+          Exception("Neuron ${neuron.id} is not controlled by the user."));
+    }
+
+    // If the neuron is controlled by the user, use the user's II, otherwise
+    // we assume it's a hardware wallet and try connecting to the device.
+    return neuron.controller == this.getPrincipal()
+        ? Result.ok(this.identity)
+        : await this.connectToHardwareWallet();
   }
 }

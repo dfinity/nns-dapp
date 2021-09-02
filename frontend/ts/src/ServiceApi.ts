@@ -78,7 +78,7 @@ import {
   E8s,
   NeuronId,
 } from "./canisters/common/types";
-import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
+import { LedgerIdentity } from "./ledger/identity";
 import { HOST } from "./canisters/constants";
 import { executeWithLogging } from "./errorLogger";
 import { FETCH_ROOT_KEY } from "./config.json";
@@ -341,7 +341,7 @@ export default class ServiceApi {
 
   public createNeuron = async (
     request: CreateNeuronRequest
-  ): Promise<NeuronId> => {
+  ): Promise<String> => {
     return await executeWithLogging(async () => {
       const neuronId = await createNeuronWithNnsUi(
         this.identity.getPrincipal(),
@@ -351,7 +351,9 @@ export default class ServiceApi {
       );
       console.log("Received neuron id");
       console.log(neuronId);
-      return neuronId;
+      
+      // NOTE: we're returning the neuron ID as a string for dart compatibility.
+      return neuronId.toString();
     });
   };
 

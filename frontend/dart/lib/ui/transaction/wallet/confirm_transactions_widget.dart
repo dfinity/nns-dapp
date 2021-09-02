@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/hardware_wallet_connection_widget.dart';
+import 'package:universal_html/js.dart' as js;
 
 import '../../../dfinity.dart';
 import '../wizard_overlay.dart';
@@ -77,10 +78,11 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                       var isHardwareTransaction =
                           widget.source.type == ICPSourceType.HARDWARE_WALLET;
                       if (widget.isTopUpNeuron) {
-                        await context.callUpdate(() => context.icApi.topUpNeuron(
-                            neuronAccountIdentifier: widget.destination,
-                            amount: widget.amount,
-                            fromSubAccount: widget.subAccountId));
+                        await context.callUpdate(() => context.icApi
+                            .topUpNeuron(
+                                neuronAccountIdentifier: widget.destination,
+                                amount: widget.amount,
+                                fromSubAccount: widget.subAccountId));
                         WizardOverlay.of(context).replacePage(
                             "Transaction Completed!",
                             TransactionDoneWidget(
@@ -101,8 +103,8 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                               destination: widget.destination,
                             ));
                       } else if (isNeuronTransaction) {
-                        // send the full balance of the neuron to the owner's accoun t
-                        await context.callUpdate(() async {
+                        // send the full balance of the neuron to the owner's account
+                        final res = await context.callUpdate(() async {
                           return context.icApi.disburse(
                               neuron: widget.source as Neuron,
                               // this is intentional. send all of them.
@@ -110,14 +112,19 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                               toAccountId: widget.destination);
                         });
 
-                        // then automatically proceed to the completed screen
-                        WizardOverlay.of(context).replacePage(
-                            "Transaction Completed!",
-                            TransactionDoneWidget(
-                              amount: widget.amount,
-                              source: widget.source,
-                              destination: widget.destination,
-                            ));
+                        res.when(ok: (unit) {
+                          // Disburse succeeded. Proceed to next screen.
+                          WizardOverlay.of(context).replacePage(
+                              "Transaction Completed!",
+                              TransactionDoneWidget(
+                                amount: widget.amount,
+                                source: widget.source,
+                                destination: widget.destination,
+                              ));
+                        }, err: (err) {
+                          // Disburse failed. Display the error.
+                          js.context.callMethod("alert", ["$err"]);
+                        });
                       } else if (isHardwareTransaction) {
                         WizardOverlay.of(context).pushPage(
                             "Authorize on Hardware",
