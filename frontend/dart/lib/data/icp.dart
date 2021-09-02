@@ -34,9 +34,8 @@ class ICP {
     }
 
     final integralString = splits[0];
-    final integral = integralString.isEmpty
-        ? BigInt.zero
-        : BigInt.parse(integralString);
+    final integral =
+        integralString.isEmpty ? BigInt.zero : BigInt.parse(integralString);
 
     var fractionalString = (splits.length > 1) ? splits[1] : "";
     if (fractionalString.length > 8) {
@@ -59,8 +58,9 @@ class ICP {
     return this._e8s;
   }
 
-  String asString(String locale, [int minDecimals = 2, int maxDecimals = 8]) {
-    return format(this._e8s, 8, minDecimals, maxDecimals, locale);
+  String asString(bool thousandsSeparator,
+      [int minDecimals = 2, int maxDecimals = 8]) {
+    return format(this._e8s, 8, minDecimals, maxDecimals, thousandsSeparator);
   }
 
   /// Returns the number of ICP as a double. Warning - this can result in loss
@@ -85,11 +85,7 @@ class ICPTextInputFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue) {
-    return this.pattern.hasMatch(newValue.text)
-        ? newValue
-        : oldValue;
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return this.pattern.hasMatch(newValue.text) ? newValue : oldValue;
   }
 }
-

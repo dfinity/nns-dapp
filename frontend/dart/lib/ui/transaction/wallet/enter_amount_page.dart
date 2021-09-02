@@ -72,7 +72,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                           ? kCurrentBalanceSizeBig
                           : kCurrentBalanceSizeSmall,
                       icpLabelSize: 0,
-                      locale: "en-US",
+                      locale: myLocale.languageCode,
                     )
                   ],
                 ),
@@ -139,7 +139,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                     Text(
                         ICP
                                 .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
-                                .asString(myLocale.languageCode) +
+                                .asString(true) +
                             " ICP",
                         style: Responsive.isDesktop(context) |
                                 Responsive.isTablet(context)
@@ -163,9 +163,6 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                               : kTextSizeSmall),
                     ),
                     onPressed: () async {
-                      // var amount = Intl.withLocale(
-                      //     'en', () => ICP.fromString(amountField.currentValue));
-                      // var amount = ICP.fromString(amountField.currentValue);
                       var amount = ICP.fromString(amountField.currentValue);
                       WizardOverlay.of(context).pushPage(
                           "Review Transaction",

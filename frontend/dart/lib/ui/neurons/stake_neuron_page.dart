@@ -77,7 +77,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                           // fee is doubled as it is a SEND and NOTIFY
                           Text(
                               (ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
-                                      .asString(myLocale.languageCode) +
+                                      .asString(true) +
                                   " ICP",
                               style: Responsive.isDesktop(context) |
                                       Responsive.isTablet(context)

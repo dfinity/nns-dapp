@@ -1,5 +1,6 @@
 import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
+import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
@@ -233,8 +234,7 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                       ),
                       RichText(
                           text: TextSpan(
-                              text: widget.neuron.stake
-                                  .asString(myLocale.languageCode),
+                              text: widget.neuron.stake.asString(true),
                               style: context.textTheme.bodyText1,
                               children: [
                             TextSpan(

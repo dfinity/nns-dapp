@@ -35,7 +35,7 @@ class ConfirmCyclesPurchase extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                amount.asString(myLocale.languageCode),
+                amount.asString(true),
                 style: TextStyle(
                     color: AppColors.white,
                     fontFamily: Fonts.circularBold,
@@ -70,7 +70,7 @@ class ConfirmCyclesPurchase extends StatelessWidget {
               Text(
                 CycleCalculator(trillionAmount)
                     .icpToCycles(amount)
-                    .asStringT(myLocale.languageCode),
+                    .asStringT(true),
                 style: TextStyle(
                     color: AppColors.white,
                     fontFamily: Fonts.circularBold,

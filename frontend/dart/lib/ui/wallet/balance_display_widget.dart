@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:dfinity_wallet/data/icp.dart';
+import 'package:dfinity_wallet/ui/_components/constants.dart';
 
 class BalanceDisplayWidget extends StatelessWidget {
   final ICP amount;
@@ -26,7 +27,7 @@ class BalanceDisplayWidget extends StatelessWidget {
   //Change this is have to take the passed locale parameter if you want
   //currency to be represented based on language.
   String getAmount() {
-    return "${amount.asString('de-CH')}${amountLabelSuffix ?? ""}";
+    return "${amount.asString(true)}${amountLabelSuffix ?? ""}";
   }
 
   @override

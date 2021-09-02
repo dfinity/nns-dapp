@@ -63,8 +63,7 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                             VerySmallFormDivider(),
                             RichText(
                                 text: TextSpan(
-                                    text: widget.amount
-                                        .asString(myLocale.languageCode),
+                                    text: widget.amount.asString(true),
                                     style: Responsive.isMobile(context)
                                         ? context.textTheme.bodyText2
                                         : context.textTheme.bodyText1!

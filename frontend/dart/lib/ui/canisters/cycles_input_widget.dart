@@ -92,9 +92,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                               if (newCyclesAmount.amount !=
                                   currentCyclesAmount.amount) {
                                 cyclesField.textEditingController.text =
-                                    newCyclesAmount
-                                        .asStringT(myLocale.languageCode)
-                                        .replaceAll(",", "");
+                                    newCyclesAmount.asStringT(false);
                               }
                               callCallback();
                             }),
@@ -124,9 +122,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                                 if (newIcpAmount.asE8s() !=
                                     currentIcpAmount.asE8s()) {
                                   icpField.textEditingController.text =
-                                      newIcpAmount
-                                          .asString(myLocale.languageCode)
-                                          .replaceAll(",", "");
+                                      newIcpAmount.asString(false);
                                 }
                                 callCallback();
                               },
@@ -162,9 +158,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                             if (newCyclesAmount.amount !=
                                 currentCyclesAmount.amount) {
                               cyclesField.textEditingController.text =
-                                  newCyclesAmount
-                                      .asStringT(myLocale.languageCode)
-                                      .replaceAll(",", "");
+                                  newCyclesAmount.asStringT(false);
                             }
                             callCallback();
                           }),
@@ -195,9 +189,7 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                               if (newIcpAmount.asE8s() !=
                                   currentIcpAmount.asE8s()) {
                                 icpField.textEditingController.text =
-                                    newIcpAmount
-                                        .asString(myLocale.languageCode)
-                                        .replaceAll(",", "");
+                                    newIcpAmount.asString(false);
                               }
                               callCallback();
                             },

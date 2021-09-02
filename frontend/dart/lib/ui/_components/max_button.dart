@@ -4,6 +4,7 @@ import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:flutter/material.dart';
 
 import '../../dfinity.dart';
+import 'constants.dart';
 
 class MaxButton extends StatefulWidget {
   final ValidatedTextField amountField;
@@ -32,7 +33,7 @@ class _MaxButtonState extends State<MaxButton> {
           onPressed: () {
             widget.amountField.initialText = (widget.source.balance -
                     ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
-                .asString("de-CH");
+                .asString(false);
           },
           child: Padding(
             padding: const EdgeInsets.all(0.0),

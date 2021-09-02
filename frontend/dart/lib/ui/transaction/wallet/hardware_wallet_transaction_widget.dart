@@ -157,8 +157,7 @@ class _TransactionDetailsWidget extends StatelessWidget {
         SmallFormDivider(),
         Text("Amount", style: context.textTheme.headline4),
         VerySmallFormDivider(),
-        Text(amount.asString(myLocale.languageCode),
-            style: context.textTheme.bodyText1),
+        Text(amount.asString(true), style: context.textTheme.bodyText1),
         VerySmallFormDivider(),
       ],
     );
