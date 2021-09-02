@@ -7,6 +7,7 @@ import 'package:dfinity_wallet/ui/_components/page_button.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
+import 'package:universal_html/js.dart' as js;
 import 'package:flutter/services.dart';
 
 import '../../dfinity.dart';
@@ -160,14 +161,17 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                               ),
                                             ),
                                             onPressed: () async {
-                                              final ledgerIdentity =
-                                                  await context.icApi
-                                                      .connectToHardwareWallet();
-
-                                              if (ledgerIdentity != null) {
+                                              (await context.icApi
+                                                      .connectToHardwareWallet())
+                                                  .when(ok:
+                                                      (ledgerIdentity) async {
                                                 await ledgerIdentity
                                                     .showAddressAndPubKeyOnDevice();
-                                              }
+                                              }, err: (err) {
+                                                // Display the error.
+                                                js.context.callMethod(
+                                                    "alert", ["$err"]);
+                                              });
                                             }),
                                       ),
                                   ],

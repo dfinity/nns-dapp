@@ -32,7 +32,7 @@ class ServiceApi {
   external Promise<dynamic> sendICPTs(Object request);
 
   @JS("createNeuron")
-  external Promise<dynamic> createNeuron(dynamic request);
+  external Promise<String> createNeuron(dynamic request);
 
   @JS("topUpNeuron")
   external Promise<void> topUpNeuron(dynamic request);
