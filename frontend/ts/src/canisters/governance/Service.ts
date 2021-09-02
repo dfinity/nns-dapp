@@ -33,7 +33,7 @@ import ServiceInterface, {
 } from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
-import { Memo, NeuronId } from "../common/types";
+import { NeuronId } from "../common/types";
 import { submitUpdateRequest } from "../updateRequestHandler";
 import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
 import { Agent } from "@dfinity/agent";

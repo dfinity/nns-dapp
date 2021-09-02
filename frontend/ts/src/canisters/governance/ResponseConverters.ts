@@ -13,7 +13,6 @@ import {
   BallotInfo,
   By,
   Change,
-  ClaimOrRefresh,
   Command,
   DisburseResponse,
   DisburseToNeuronResponse,

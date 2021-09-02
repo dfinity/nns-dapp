@@ -4,7 +4,6 @@ import {
   AccountIdentifier,
   CanisterIdString,
   E8s,
-  Memo,
   NeuronId,
   PrincipalString,
 } from "../common/types";

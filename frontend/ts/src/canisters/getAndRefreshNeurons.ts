@@ -1,4 +1,4 @@
-import GovernanceService, { NeuronInfo } from "./governance/model";
+import GovernanceService, { Neuron, NeuronInfo } from "./governance/model";
 import LedgerService, { GetBalancesRequest } from "./ledger/model";
 import { NeuronId } from "./common/types";
 import { Option } from "./option";
@@ -30,7 +30,7 @@ export default async function (
 const findNeuronsWhichNeedRefresh = async (neurons: Array<NeuronInfo>, ledgerService: LedgerService) : Promise<NeuronId[]> => {
     const fullNeurons = neurons
         .filter(n => n.fullNeuron)
-        .map(n => n.fullNeuron!);
+        .map(n => n.fullNeuron as Neuron);
 
     if (!fullNeurons.length) {
         return [];
@@ -43,5 +43,5 @@ const findNeuronsWhichNeedRefresh = async (neurons: Array<NeuronInfo>, ledgerSer
 
     return fullNeurons
         .filter(n => n.id && balances[n.accountIdentifier] != n.cachedNeuronStake)
-        .map(n => n.id!);
+        .map(n => n.id as NeuronId);
 }
