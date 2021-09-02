@@ -95,12 +95,12 @@ export default class HardwareWalletApi {
     return await this.ledgerService.sendICPTs(request);
   };
 
-  public createNeuron = (amount: E8s): Promise<NeuronId> => {
+  public createNeuron = async (amount: E8s): Promise<string> => {
     // Flag that an upcoming stake neuron transaction is coming to distinguish
     // it from a "send ICP" transaction on the device.
     this.identity.flagUpcomingStakeNeuron();
 
-    return createNeuronImpl(
+    const neuronId = await createNeuronImpl(
       this.identity.getPrincipal(),
       this.ledgerService,
       this.anonymousGovernanceService,
@@ -108,6 +108,9 @@ export default class HardwareWalletApi {
         stake: amount,
       }
     );
+
+    // Returning as string for dart compatibility.
+    return neuronId.toString();
   };
 
   public addHotKey = async (

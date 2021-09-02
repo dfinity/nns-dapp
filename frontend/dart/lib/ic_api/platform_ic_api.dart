@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/data/vote.dart';
 import 'package:dfinity_wallet/ic_api/web/hardware_wallet_api.dart';
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
+import 'package:oxidized/oxidized.dart';
 
 import '../dfinity.dart';
 
@@ -32,7 +33,8 @@ abstract class AbstractPlatformICApi {
   Future<void> sendICPTs(
       {required String toAccount, required ICP amount, int? fromSubAccount});
 
-  Future<NeuronId> createNeuron(Account account, ICP stakeAmount);
+  Future<Result<NeuronId, Exception>> stakeNeuron(
+      Account account, ICP stakeAmount);
 
   Future<void> topUpNeuron(
       {required String neuronAccountIdentifier,
@@ -46,7 +48,7 @@ abstract class AbstractPlatformICApi {
   Future<void> increaseDissolveDelay(
       {required Neuron neuron, required int additionalDissolveDelaySeconds});
 
-  Future<Neuron> spawnNeuron({required BigInt neuronId});
+  Future<Neuron> spawnNeuron({required Neuron neuron});
 
   Future<void> follow(
       {required BigInt neuronId,
@@ -58,8 +60,8 @@ abstract class AbstractPlatformICApi {
       required BigInt proposalId,
       required Vote vote});
 
-  Future<void> disburse(
-      {required BigInt neuronId,
+  Future<Result<Unit, Exception>> disburse(
+      {required Neuron neuron,
       required ICP amount,
       required String toAccountId});
 
@@ -104,7 +106,7 @@ abstract class AbstractPlatformICApi {
 
   Future<void> test();
 
-  Future<dynamic> connectToHardwareWallet();
+  Future<Result<dynamic, Exception>> connectToHardwareWallet();
 
   Future<HardwareWalletApi> createHardwareWalletApi({dynamic ledgerIdentity});
 

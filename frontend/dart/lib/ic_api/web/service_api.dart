@@ -32,7 +32,7 @@ class ServiceApi {
   external Promise<dynamic> sendICPTs(Object request);
 
   @JS("createNeuron")
-  external Promise<dynamic> createNeuron(dynamic request);
+  external Promise<String> createNeuron(dynamic request);
 
   @JS("topUpNeuron")
   external Promise<void> topUpNeuron(dynamic request);
@@ -85,13 +85,13 @@ class ServiceApi {
   external Promise<dynamic> registerVote(dynamic request);
 
   @JS("spawn")
-  external Promise<dynamic> spawn(dynamic request);
+  external Promise<dynamic> spawn(dynamic identity, dynamic request);
 
   @JS("split")
   external Promise<dynamic> split(dynamic request);
 
   @JS("disburse")
-  external Promise<dynamic> disburse(dynamic request);
+  external Promise<dynamic> disburse(dynamic identity, dynamic request);
 
   @JS("disburseToNeuron")
   external Promise<dynamic> disburseToNeuron(dynamic request);

@@ -137,9 +137,7 @@ class NeuronRewardsCard extends StatelessWidget {
                                       onConfirm: () async {
                                         context.callUpdate(() async {
                                           final newNeuron = await context.icApi
-                                              .spawnNeuron(
-                                                  neuronId: neuron
-                                                      .identifier.toBigInt);
+                                              .spawnNeuron(neuron: neuron);
                                           context.nav.push(neuronPageDef
                                               .createPageConfig(newNeuron));
                                         });
@@ -148,7 +146,7 @@ class NeuronRewardsCard extends StatelessWidget {
                               }.takeIf((e) =>
                                   neuron.maturityICPEquivalent.asE8s() >
                                       BigInt.from(E8S_PER_ICP) &&
-                                  neuron.isCurrentUserController),
+                                  context.icApi.isNeuronControllable(neuron)),
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Text(

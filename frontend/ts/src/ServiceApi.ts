@@ -78,7 +78,7 @@ import {
   E8s,
   NeuronId,
 } from "./canisters/common/types";
-import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
+import { LedgerIdentity } from "./ledger/identity";
 import { HOST } from "./canisters/constants";
 import { executeWithLogging } from "./errorLogger";
 import { FETCH_ROOT_KEY } from "./config.json";
@@ -270,16 +270,26 @@ export default class ServiceApi {
     );
   };
 
-  public spawn = (request: SpawnRequest): Promise<SpawnResponse> => {
-    return executeWithLogging(() => this.governanceService.spawn(request));
+  public spawn = (
+    identity: Identity,
+    request: SpawnRequest
+  ): Promise<SpawnResponse> => {
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).spawn(request)
+    );
   };
 
   public split = (request: SplitRequest): Promise<EmptyResponse> => {
     return executeWithLogging(() => this.governanceService.split(request));
   };
 
-  public disburse = (request: DisburseRequest): Promise<DisburseResponse> => {
-    return executeWithLogging(() => this.governanceService.disburse(request));
+  public disburse = (
+    identity: Identity,
+    request: DisburseRequest
+  ): Promise<DisburseResponse> => {
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).disburse(request)
+    );
   };
 
   public disburseToNeuron = (
@@ -332,7 +342,7 @@ export default class ServiceApi {
 
   public createNeuron = async (
     request: CreateNeuronRequest
-  ): Promise<NeuronId> => {
+  ): Promise<string> => {
     return await executeWithLogging(async () => {
       const neuronId = await createNeuronWithNnsUi(
         this.identity.getPrincipal(),
@@ -342,7 +352,9 @@ export default class ServiceApi {
       );
       console.log("Received neuron id");
       console.log(neuronId);
-      return neuronId;
+
+      // NOTE: we're returning the neuron ID as a string for dart compatibility.
+      return neuronId.toString();
     });
   };
 

@@ -19,7 +19,7 @@ class HardwareWalletApi {
   external Promise<void> showAddressAndPubKeyOnDevice();
 
   @JS("createNeuron")
-  external Promise<void> createNeuron(dynamic amount);
+  external Promise<String> createNeuron(dynamic amount);
 
   @JS("addHotKey")
   external Promise<dynamic> addHotKey(dynamic neuronId, String principal);

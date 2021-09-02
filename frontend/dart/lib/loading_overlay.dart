@@ -140,8 +140,12 @@ extension ShowLoading on BuildContext {
   Future<T> performLoading<T>(Future<T> Function() action) async {
     final overlay = LoadingOverlay.of(this);
     overlay.showOverlay();
-    T res = await action();
-    overlay.hideOverlay();
-    return res;
+    try {
+      T res = await action();
+      return res;
+    } finally {
+      // Always hide the overlay when complete, even if an exception is thrown.
+      overlay.hideOverlay();
+    }
   }
 }

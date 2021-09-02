@@ -35,6 +35,7 @@ import {
   StartDissolvingRequest,
   StopDissolvingRequest,
 } from "./model";
+import { AccountIdentifier as PbAccountIdentifier } from "../../proto/ledger_pb";
 import {
   AccountIdentifier as RawAccountIdentifier,
   Action as RawAction,
@@ -253,19 +254,24 @@ export default class RequestConverters {
     };
   };
 
-  public fromSpawnRequest = (request: SpawnRequest): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      Spawn: {
-        new_controller: request.newController
-          ? [Principal.fromText(request.newController)]
-          : [],
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  public fromSpawnRequest = (request: SpawnRequest): PbManageNeuron => {
+    const spawn = new PbManageNeuron.Spawn();
+
+    if (request.newController) {
+      const newController = new PbPrincipalId();
+      newController.setSerializedId(
+        Principal.fromText(request.newController).toUint8Array().slice(4)
+      );
+      spawn.setNewController(newController);
+    }
+
+    const manageNeuron = new PbManageNeuron();
+    manageNeuron.setSpawn(spawn);
+
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    manageNeuron.setNeuronId(neuronId);
+    return manageNeuron;
   };
 
   public fromSplitRequest = (request: SplitRequest): RawManageNeuron => {
@@ -281,18 +287,31 @@ export default class RequestConverters {
     };
   };
 
-  public fromDisburseRequest = (request: DisburseRequest): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      Disburse: {
-        to_account: [this.fromAccountIdentifier(request.toAccountId)],
-        amount: request.amount ? [this.fromAmount(request.amount)] : [],
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  public fromDisburseRequest = (request: DisburseRequest): PbManageNeuron => {
+    const disburse = new PbManageNeuron.Disburse();
+
+    if (request.toAccountId) {
+      const toAccountIdentifier = new PbAccountIdentifier();
+      // TODO(EXC-452): Remove the "slice(4,)" once NNS1-680 is addressed.
+      toAccountIdentifier.setHash(
+        Uint8Array.from(Buffer.from(request.toAccountId, "hex")).slice(4)
+      );
+      disburse.setToAccount(toAccountIdentifier);
+    }
+
+    if (request.amount != null) {
+      const amount = new PbManageNeuron.Disburse.Amount();
+      amount.setE8s(request.amount.toString());
+      disburse.setAmount(amount);
+    }
+
+    const manageNeuron = new PbManageNeuron();
+    manageNeuron.setDisburse(disburse);
+
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    manageNeuron.setNeuronId(neuronId);
+    return manageNeuron;
   };
 
   public fromDisburseToNeuronRequest = (
