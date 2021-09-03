@@ -21,7 +21,6 @@ class MaxButton extends StatefulWidget {
 class _MaxButtonState extends State<MaxButton> {
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Positioned(
       top: 30.0,
       right: 35.0,
@@ -32,7 +31,7 @@ class _MaxButtonState extends State<MaxButton> {
           onPressed: () {
             widget.amountField.initialText = (widget.source.balance -
                     ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
-                .asString(myLocale.languageCode);
+                .asString(withSeparators: false);
           },
           child: Padding(
             padding: const EdgeInsets.all(0.0),

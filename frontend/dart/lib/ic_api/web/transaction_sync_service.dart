@@ -16,6 +16,10 @@ class TransactionSyncService {
 
   TransactionSyncService({required this.serviceApi, required this.hiveBoxes});
 
+  Future<void> syncAllAccounts() async {
+    await this.syncAccounts(hiveBoxes.accounts.values);
+  }
+
   Future<void> syncAccounts(Iterable<Account> accounts) async {
     await Future.wait(accounts.mapToList((e) => syncAccount(e)));
     hiveBoxes.accounts.notifyChange();

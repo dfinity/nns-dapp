@@ -4,7 +4,6 @@ import 'package:dfinity_wallet/route_information_parser.dart';
 import 'package:dfinity_wallet/wallet_router_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 // ignore: unused_import
 import 'ic_api/web/web_ic_api.dart';
@@ -63,16 +62,6 @@ class DfinityApp extends StatelessWidget {
             routerDelegate: router,
             routeInformationParser: WalletRouteParser(hiveBoxes, context),
             title: 'Network Nervous System',
-            localizationsDelegates: [
-              const AppLocalizationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en', 'US'),
-              const Locale('en', 'UK'),
-              const Locale('es'),
-            ],
             theme: ThemeData(
               primarySwatch: MaterialColor(AppColors.blue500.value, {
                 1000: AppColors.blue1000,

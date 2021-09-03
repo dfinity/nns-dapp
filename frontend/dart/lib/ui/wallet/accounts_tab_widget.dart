@@ -35,7 +35,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
               ),
             );
           }
-          final myLocale = Localizations.localeOf(context);
+
           var buttonGroup = [
             Flexible(
               child: PageButton(
@@ -95,7 +95,6 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                                     ? 40
                                     : 24,
                                 icpLabelSize: 25,
-                                locale: myLocale.languageCode,
                               ),
                             ],
                           ),

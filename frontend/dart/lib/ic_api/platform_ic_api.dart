@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/data/vote.dart';
 import 'package:dfinity_wallet/ic_api/web/hardware_wallet_api.dart';
 import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
 import 'package:dfinity_wallet/ic_api/web/service_api.dart';
+import 'package:oxidized/oxidized.dart';
 
 import '../dfinity.dart';
 
@@ -29,21 +30,21 @@ abstract class AbstractPlatformICApi {
 
   Future<void> createSubAccount({required String name});
 
-  Future<void> sendICPTs(
-      {required String toAccount, required ICP amount, int? fromSubAccount});
-
-  Future<NeuronId> createNeuron(Account account, ICP stakeAmount);
-
-  Future<void> topUpNeuron(
-      {required String neuronAccountIdentifier,
+  Future<Result<Unit, Exception>> sendICP(
+      {
+      required String fromAccount,
+      required String toAccount,
       required ICP amount,
       int? fromSubAccount});
 
-  Future<void> startDissolving({required Neuron neuron});
+  Future<Result<NeuronId, Exception>> stakeNeuron(
+      Account account, ICP stakeAmount);
 
-  Future<void> stopDissolving({required Neuron neuron});
+  Future<Result<Unit, Exception>> startDissolving({required Neuron neuron});
 
-  Future<void> increaseDissolveDelay(
+  Future<Result<Unit, Exception>> stopDissolving({required Neuron neuron});
+
+  Future<Result<Unit, Exception>> increaseDissolveDelay(
       {required Neuron neuron, required int additionalDissolveDelaySeconds});
 
   Future<Neuron> spawnNeuron({required Neuron neuron});
@@ -58,7 +59,7 @@ abstract class AbstractPlatformICApi {
       required BigInt proposalId,
       required Vote vote});
 
-  Future<void> disburse(
+  Future<Result<Unit, Exception>> disburse(
       {required Neuron neuron,
       required ICP amount,
       required String toAccountId});
@@ -66,9 +67,10 @@ abstract class AbstractPlatformICApi {
   Future<void> mergeMaturity(
       {required BigInt neuronId, required int percentageToMerge});
 
-  Future<void> addHotkey({required BigInt neuronId, required String principal});
+  Future<Result<Unit, Exception>> addHotkey(
+      {required BigInt neuronId, required String principal});
 
-  Future<void> removeHotkey(
+  Future<Result<Unit, Exception>> removeHotkey(
       {required Neuron neuron, required String principal});
 
   Future<void> fetchProposals(
@@ -104,7 +106,7 @@ abstract class AbstractPlatformICApi {
 
   Future<void> test();
 
-  Future<dynamic> connectToHardwareWallet();
+  Future<Result<dynamic, Exception>> connectToHardwareWallet();
 
   Future<HardwareWalletApi> createHardwareWalletApi({dynamic ledgerIdentity});
 

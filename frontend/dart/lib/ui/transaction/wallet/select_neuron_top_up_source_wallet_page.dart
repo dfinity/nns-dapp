@@ -70,8 +70,6 @@ class _SelectNeuronTopUpSourceWalletState
                                               destinationAccountIdentifier:
                                                   widget
                                                       .neuron.accountIdentifier,
-                                              subAccountId: source.subAccountId,
-                                              isTopUpNeuron: true,
                                             ));
                                       })),
                             ),
@@ -101,7 +99,6 @@ class _AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return TextButton(
       onPressed: onPressed,
       child: Padding(
@@ -124,7 +121,6 @@ class _AccountRow extends StatelessWidget {
                       ? 30
                       : 14,
                   icpLabelSize: 25,
-                  locale: myLocale.languageCode,
                 ),
               ],
             ),

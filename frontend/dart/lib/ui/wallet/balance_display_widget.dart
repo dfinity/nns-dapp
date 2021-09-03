@@ -5,7 +5,6 @@ class BalanceDisplayWidget extends StatelessWidget {
   final ICP amount;
   final int amountSize;
   final int icpLabelSize;
-  final String locale;
   final String? amountLabelSuffix;
 
   const BalanceDisplayWidget(
@@ -13,13 +12,11 @@ class BalanceDisplayWidget extends StatelessWidget {
       required this.amount,
       required this.amountSize,
       required this.icpLabelSize,
-      required this.locale,
       this.amountLabelSuffix})
       : super(key: key);
 
-  // Temporary method until all callers are not using doubles.
   String getAmount() {
-    return "${amount.asString(this.locale)}${amountLabelSuffix ?? ""}";
+    return "${amount.asString()}${amountLabelSuffix ?? ""}";
   }
 
   @override
@@ -67,7 +64,6 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -75,7 +71,6 @@ class LabelledBalanceDisplayWidget extends StatelessWidget {
           amount: amount,
           amountSize: amountSize,
           icpLabelSize: icpLabelSize,
-          locale: myLocale.languageCode,
         ),
         SizedBox(height: 5),
         text

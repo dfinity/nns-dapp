@@ -79,8 +79,6 @@ class _SelectDestinationAccountPageState
                                       amount: widget.source.balance,
                                       source: widget.source,
                                       destination: address,
-                                      subAccountId: widget.source.subAccountId,
-                                      isTopUpNeuron: false,
                                     ));
                               } else {
                                 WizardOverlay.of(context).pushPage(
@@ -88,8 +86,6 @@ class _SelectDestinationAccountPageState
                                     EnterAmountPage(
                                       source: widget.source,
                                       destinationAccountIdentifier: address,
-                                      subAccountId: widget.source.subAccountId,
-                                      isTopUpNeuron: false,
                                     ));
                               }
                             },
@@ -136,9 +132,6 @@ class _SelectDestinationAccountPageState
                                                 source: widget.source,
                                                 destination:
                                                     e.accountIdentifier,
-                                                subAccountId:
-                                                    widget.source.subAccountId,
-                                                isTopUpNeuron: false,
                                               ));
                                         } else {
                                           WizardOverlay.of(context).pushPage(
@@ -147,9 +140,6 @@ class _SelectDestinationAccountPageState
                                                 source: widget.source,
                                                 destinationAccountIdentifier:
                                                     e.accountIdentifier,
-                                                subAccountId:
-                                                    widget.source.subAccountId,
-                                                isTopUpNeuron: false,
                                               ));
                                         }
                                       })),
@@ -180,7 +170,6 @@ class _AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return TextButton(
       onPressed: onPressed,
       child: Column(
@@ -202,7 +191,6 @@ class _AccountRow extends StatelessWidget {
                         ? 30
                         : 14,
                 icpLabelSize: 20,
-                locale: myLocale.languageCode,
               ),
             ],
           ),

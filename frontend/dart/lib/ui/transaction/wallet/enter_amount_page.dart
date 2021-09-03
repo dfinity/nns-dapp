@@ -14,16 +14,12 @@ import 'confirm_transactions_widget.dart';
 class EnterAmountPage extends StatefulWidget {
   final ICPSource source;
   final String destinationAccountIdentifier;
-  final int? subAccountId;
-  final bool isTopUpNeuron;
 
-  const EnterAmountPage(
-      {Key? key,
-      required this.source,
-      required this.destinationAccountIdentifier,
-      required this.subAccountId,
-      required this.isTopUpNeuron})
-      : super(key: key);
+  const EnterAmountPage({
+    Key? key,
+    required this.source,
+    required this.destinationAccountIdentifier,
+  }) : super(key: key);
 
   @override
   _EnterAmountPageState createState() => _EnterAmountPageState();
@@ -47,7 +43,6 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return SizedBox.expand(
       child: SingleChildScrollView(
         child: Padding(
@@ -71,7 +66,6 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                           ? kCurrentBalanceSizeBig
                           : kCurrentBalanceSizeSmall,
                       icpLabelSize: 0,
-                      locale: myLocale.languageCode,
                     )
                   ],
                 ),
@@ -138,7 +132,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                     Text(
                         ICP
                                 .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
-                                .asString(myLocale.languageCode) +
+                                .asString() +
                             " ICP",
                         style: Responsive.isDesktop(context) |
                                 Responsive.isTablet(context)
@@ -170,8 +164,6 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                             amount: amount,
                             source: widget.source,
                             destination: widget.destinationAccountIdentifier,
-                            subAccountId: widget.subAccountId,
-                            isTopUpNeuron: widget.isTopUpNeuron,
                           ));
                     },
                     fields: [amountField],

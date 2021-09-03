@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:universal_html/js_util.dart';
+import 'package:universal_html/js.dart' as js;
 import '../../../dfinity.dart';
 
 class HardwareWalletNeuron extends StatefulWidget {
@@ -25,7 +26,6 @@ class HardwareWalletNeuron extends StatefulWidget {
 class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Column(
       children: [
         Expanded(
@@ -63,8 +63,7 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                             VerySmallFormDivider(),
                             RichText(
                                 text: TextSpan(
-                                    text: widget.amount
-                                        .asString(myLocale.languageCode),
+                                    text: widget.amount.asString(),
                                     style: Responsive.isMobile(context)
                                         ? context.textTheme.bodyText2
                                         : context.textTheme.bodyText1!
@@ -140,12 +139,17 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                           await context.icApi.connectToHardwareWallet();
                       final hwApi = await context.icApi.createHardwareWalletApi(
                           ledgerIdentity: ledgerIdentity);
-                      await context.callUpdate(() => promiseToFuture(
-                          hwApi.addHotKey(widget.neuronId.toString(),
-                              context.icApi.getPrincipal())));
-                      await context.icApi.refreshNeurons();
+                      try {
+                        await context.callUpdate(() => promiseToFuture(
+                            hwApi.addHotKey(widget.neuronId.toString(),
+                                context.icApi.getPrincipal())));
+                        await context.icApi.refreshNeurons();
 
-                      widget.onAddHotkey(context);
+                        widget.onAddHotkey(context);
+                      } catch (err) {
+                        // Error occurred adding hotkey. Display the error.
+                        js.context.callMethod("alert", ["$err"]);
+                      }
                     }),
               ),
             ],

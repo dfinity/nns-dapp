@@ -7,6 +7,7 @@ import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/hardware_neuron.dart';
 import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
+import 'package:universal_html/js.dart' as js;
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:flutter/services.dart';
 import '../../dfinity.dart';
@@ -40,7 +41,6 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Container(
       child: Column(
         children: [
@@ -77,7 +77,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                           // fee is doubled as it is a SEND and NOTIFY
                           Text(
                               (ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
-                                      .asString(myLocale.languageCode) +
+                                      .asString() +
                                   " ICP",
                               style: Responsive.isDesktop(context) |
                                       Responsive.isTablet(context)
@@ -106,7 +106,6 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                               ? kCurrentBalanceSizeBig
                               : kCurrentBalanceSizeSmall,
                           icpLabelSize: 0,
-                          locale: myLocale.languageCode,
                         ),
                       ],
                     )),
@@ -155,68 +154,77 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                     final stakeAmount =
                         ICP.fromString(amountField.currentValue);
 
-                    final newNeuronId = await context.callUpdate(() =>
-                        context.icApi.createNeuron(widget.source, stakeAmount));
+                    final res = await context.callUpdate(() =>
+                        context.icApi.stakeNeuron(widget.source, stakeAmount));
 
-                    if (widget.source.type == ICPSourceType.HARDWARE_WALLET) {
-                      WizardOverlay.of(context).replacePage(
-                          "Neuron Created Successfully",
-                          HardwareWalletNeuron(
-                              amount: stakeAmount,
-                              neuronId: newNeuronId!,
-                              onSkip: (context) async {
-                                // User skipped adding the hotkey. Nothing to do.
-                                OverlayBaseWidget.of(context)?.dismiss();
-                              },
-                              onAddHotkey: (context) async {
-                                // User added the hotkey. Fetch the neuron.
-                                final newNeuron = await context.icApi
-                                    .fetchNeuron(
-                                        neuronId: newNeuronId.asBigInt());
+                    res.when(err: (err) {
+                      // Staking failed. Display the error.
+                      js.context.callMethod("alert", ["$err"]);
+                    }, ok: (newNeuronId) async {
+                      if (widget.source.type == ICPSourceType.HARDWARE_WALLET) {
+                        WizardOverlay.of(context).replacePage(
+                            "Neuron Created Successfully",
+                            HardwareWalletNeuron(
+                                amount: stakeAmount,
+                                neuronId: newNeuronId,
+                                onSkip: (context) async {
+                                  // User skipped adding the hotkey. Nothing to do.
+                                  OverlayBaseWidget.of(context)?.dismiss();
+                                },
+                                onAddHotkey: (context) async {
+                                  // User added the hotkey. Fetch the neuron.
+                                  final newNeuron = await context.icApi
+                                      .fetchNeuron(
+                                          neuronId: newNeuronId.asBigInt());
 
-                                // Prompt to set a dissolve delay.
-                                WizardOverlay.of(context).replacePage(
-                                    "Set Dissolve Delay",
-                                    IncreaseDissolveDelayWidget(
-                                        neuron: newNeuron!,
-                                        cancelTitle: "Skip",
-                                        onCompleteAction: (context) {
-                                          WizardOverlay.of(context).replacePage(
-                                              "Follow Neurons",
-                                              ConfigureFollowersPage(
-                                                neuron: newNeuron,
-                                                completeAction: (context) {
-                                                  OverlayBaseWidget.of(context)
-                                                      ?.dismiss();
-                                                  context.nav.push(neuronPageDef
-                                                      .createPageConfig(
-                                                          newNeuron));
-                                                },
-                                              ));
-                                        }));
-                              }));
-                    } else {
-                      final newNeuron = await context.icApi
-                          .fetchNeuron(neuronId: newNeuronId!.asBigInt());
-                      WizardOverlay.of(context).replacePage(
-                          "Set Dissolve Delay",
-                          IncreaseDissolveDelayWidget(
-                              neuron: newNeuron!,
-                              cancelTitle: "Skip",
-                              onCompleteAction: (context) {
-                                WizardOverlay.of(context).replacePage(
-                                    "Follow Neurons",
-                                    ConfigureFollowersPage(
-                                      neuron: newNeuron,
-                                      completeAction: (context) {
-                                        OverlayBaseWidget.of(context)
-                                            ?.dismiss();
-                                        context.nav.push(neuronPageDef
-                                            .createPageConfig(newNeuron));
-                                      },
-                                    ));
-                              }));
-                    }
+                                  // Prompt to set a dissolve delay.
+                                  WizardOverlay.of(context).replacePage(
+                                      "Set Dissolve Delay",
+                                      IncreaseDissolveDelayWidget(
+                                          neuron: newNeuron!,
+                                          cancelTitle: "Skip",
+                                          onCompleteAction: (context) {
+                                            WizardOverlay.of(context)
+                                                .replacePage(
+                                                    "Follow Neurons",
+                                                    ConfigureFollowersPage(
+                                                      neuron: newNeuron,
+                                                      completeAction:
+                                                          (context) {
+                                                        OverlayBaseWidget.of(
+                                                                context)
+                                                            ?.dismiss();
+                                                        context.nav.push(
+                                                            neuronPageDef
+                                                                .createPageConfig(
+                                                                    newNeuron));
+                                                      },
+                                                    ));
+                                          }));
+                                }));
+                      } else {
+                        final newNeuron = await context.icApi
+                            .fetchNeuron(neuronId: newNeuronId.asBigInt());
+                        WizardOverlay.of(context).replacePage(
+                            "Set Dissolve Delay",
+                            IncreaseDissolveDelayWidget(
+                                neuron: newNeuron!,
+                                cancelTitle: "Skip",
+                                onCompleteAction: (context) {
+                                  WizardOverlay.of(context).replacePage(
+                                      "Follow Neurons",
+                                      ConfigureFollowersPage(
+                                        neuron: newNeuron,
+                                        completeAction: (context) {
+                                          OverlayBaseWidget.of(context)
+                                              ?.dismiss();
+                                          context.nav.push(neuronPageDef
+                                              .createPageConfig(newNeuron));
+                                        },
+                                      ));
+                                }));
+                      }
+                    });
                   },
                   fields: [amountField],
                 ),

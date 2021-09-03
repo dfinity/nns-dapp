@@ -7,6 +7,7 @@ import 'package:dfinity_wallet/ui/_components/page_button.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
+import 'package:universal_html/js.dart' as js;
 import 'package:flutter/services.dart';
 
 import '../../dfinity.dart';
@@ -63,7 +64,6 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
             child: StreamBuilder<Object>(
                 stream: context.icApi.hiveBoxes.accounts.changes,
                 builder: (context, snapshot) {
-                  final myLocale = Localizations.localeOf(context);
                   final account =
                       context.boxes.accounts[widget.account.identifier];
                   return FooterGradientButton(
@@ -91,7 +91,6 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                             ? 24
                                             : 32,
                                         icpLabelSize: 20,
-                                        locale: myLocale.languageCode,
                                       ),
                                     ),
                                   ],
@@ -160,14 +159,23 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                               ),
                                             ),
                                             onPressed: () async {
-                                              final ledgerIdentity =
-                                                  await context.icApi
-                                                      .connectToHardwareWallet();
-
-                                              if (ledgerIdentity != null) {
-                                                await ledgerIdentity
-                                                    .showAddressAndPubKeyOnDevice();
-                                              }
+                                              (await context.icApi
+                                                      .connectToHardwareWallet())
+                                                  .when(ok:
+                                                      (ledgerIdentity) async {
+                                                try {
+                                                  await ledgerIdentity
+                                                      .showAddressAndPubKeyOnDevice();
+                                                } catch (err) {
+                                                  // Display the error.
+                                                  js.context.callMethod(
+                                                      "alert", ["$err"]);
+                                                }
+                                              }, err: (err) {
+                                                // Display the error.
+                                                js.context.callMethod(
+                                                    "alert", ["$err"]);
+                                              });
                                             }),
                                       ),
                                   ],

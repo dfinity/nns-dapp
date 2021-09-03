@@ -64,14 +64,11 @@ export default class Service implements ServiceInterface {
     } catch (err) {
       if (err instanceof DOMException && err.code == 11) {
         // An error specific to hardware wallets and indicates the device is already open.
-        alert(
-          `The wallet is already being used. Please close any ongoing transactions on the wallet and try again.\n\nError received: ${err.message}`
-        );
+        throw `The wallet is already being used. Please close any ongoing transactions on the wallet and try again.\n\nError received: ${err.message}`;
       } else {
-        // An unknown error. Display it as-is.
-        alert(err);
+        // An unknown error. Throw as-is.
+        throw err;
       }
-      throw err;
     }
   };
 
