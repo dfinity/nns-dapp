@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 /// When formatting ICP, 1 atom = 1 e8.
 /// When formatting Cycles, 1 atom = 1 cycle.
 String format(BigInt atomCount, int atomsPerIntPow10, int minDecimals,
-    int maxDecimals, bool thousandsSeparator) {
+    int maxDecimals, bool withSeparators) {
   if (minDecimals < 0 || minDecimals > atomsPerIntPow10) {
     throw new ArgumentError.value(minDecimals, "minDecimals");
   }
@@ -16,7 +16,7 @@ String format(BigInt atomCount, int atomsPerIntPow10, int minDecimals,
 
   final atomsPerInt = BigInt.from(10).pow(atomsPerIntPow10);
   final integral = (atomCount / atomsPerInt).floor();
-  final integralString = thousandsSeparator
+  final integralString = withSeparators
       ? NumberFormat("###,##0", "de-CH").format(integral).replaceAll("\’", "\'")
       : NumberFormat("0").format(integral);
 

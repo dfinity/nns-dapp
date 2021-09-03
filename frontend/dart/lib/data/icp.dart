@@ -58,10 +58,6 @@ class ICP {
     return this._e8s;
   }
 
-  getHttpUrl(String server, String path, {int port = 80}) {
-    // ...
-  }
-
   String asString(
       {bool withSeparators = true, int minDecimals = 2, int maxDecimals = 8}) {
     return format(this._e8s, 8, minDecimals, maxDecimals, withSeparators);

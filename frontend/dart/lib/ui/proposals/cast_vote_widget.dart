@@ -29,7 +29,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
 
     final numVotes = selectedNeurons!
         .fold(ICP.zero, (ICP curr, next) => curr + next.votingPower)
-        .asString(withSeparators: true, minDecimals: 2, maxDecimals: 2);
+        .asString(minDecimals: 2, maxDecimals: 2);
     return Card(
       color: AppColors.background,
       child: Container(
@@ -106,10 +106,8 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                             alignment: Alignment.bottomRight,
                             padding: const EdgeInsets.only(right: 16),
                             height: 28,
-                            child: Text(n.votingPower.asString(
-                                withSeparators: true,
-                                minDecimals: 2,
-                                maxDecimals: 2)))
+                            child: Text(n.votingPower
+                                .asString(minDecimals: 2, maxDecimals: 2)))
                       ])),
                 ]),
             Container(

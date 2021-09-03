@@ -141,7 +141,6 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                           children: [
                                             Text(
                                               canister.cyclesBalance?.asStringT(
-                                                      withSeparators: true,
                                                       minDecimals: 3,
                                                       maxDecimals: 3) ??
                                                   "-",

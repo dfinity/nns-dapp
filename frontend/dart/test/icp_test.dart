@@ -48,20 +48,14 @@ void main() {
   });
 
   test("ICP.asString", () {
-    expect(
-        ICP
-            .fromString("1.23")
-            .asString(withSeparators: true, minDecimals: 1, maxDecimals: 2),
+    expect(ICP.fromString("1.23").asString(minDecimals: 1, maxDecimals: 2),
         "1.23");
-    expect(
-        ICP
-            .fromString("0.000001")
-            .asString(withSeparators: true, minDecimals: 1, maxDecimals: 6),
+    expect(ICP.fromString("0.000001").asString(minDecimals: 1, maxDecimals: 6),
         "0.000001");
     expect(
         ICP
             .fromString("1000000.000001")
-            .asString(withSeparators: true, minDecimals: 1, maxDecimals: 6),
+            .asString(minDecimals: 1, maxDecimals: 6),
         "1'000'000.000001");
   });
 }

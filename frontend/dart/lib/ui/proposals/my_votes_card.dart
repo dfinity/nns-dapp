@@ -33,7 +33,7 @@ class MyVotesCard extends StatelessWidget {
                                 style: context.textTheme.headline3,
                               ),
                               Text(
-                                "${proposal.yes.asString(withSeparators: true, minDecimals: 2, maxDecimals: 2)}",
+                                "${proposal.yes.asString(minDecimals: 2, maxDecimals: 2)}",
                                 style: context.textTheme.headline4,
                               ),
                             ],
@@ -67,7 +67,7 @@ class MyVotesCard extends StatelessWidget {
                                 style: context.textTheme.headline3,
                               ),
                               Text(
-                                "${proposal.no.asString(withSeparators: true, minDecimals: 2, maxDecimals: 2)}",
+                                "${proposal.no.asString(minDecimals: 2, maxDecimals: 2)}",
                                 style: context.textTheme.headline4,
                               ),
                             ],
@@ -113,7 +113,7 @@ class MyVotesCard extends StatelessWidget {
                       Padding(
                           padding: EdgeInsets.all(16.0),
                           child: Text(
-                            "${e.votingPower.asString(withSeparators: true, minDecimals: 2, maxDecimals: 2)}",
+                            "${e.votingPower.asString(minDecimals: 2, maxDecimals: 2)}",
                             style: context.textTheme.subtitle2,
                           )),
                       Padding(
