@@ -92,10 +92,8 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                             ));
                       } else if (isAccount) {
                         final res = await context
-                            .callUpdate(() => context.icApi.sendICP(
-                                // HW wallets go through a different path, so we know it's not
-                                // a HW wallet.
-                                fromHardwareWallet: false,
+                            .callUpdate(() => context.icApi
+                            .sendICP(
                                 fromAccount: widget.source.address,
                                 toAccount: widget.destination,
                                 amount: widget.amount,

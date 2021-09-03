@@ -1,10 +1,9 @@
 import 'dart:math';
-
+import 'package:universal_html/js.dart' as js;
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/constants.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
-
 import '../../dfinity.dart';
 
 class IncreaseDissolveDelayWidget extends StatefulWidget {
@@ -210,11 +209,15 @@ class _IncreaseDissolveDelayWidgetState
   }
 
   Future performUpdate(BuildContext context) async {
-    await context.callUpdate(() => context.icApi.increaseDissolveDelay(
-        neuron: widget.neuron,
-        additionalDissolveDelaySeconds: sliderValueSeconds.currentValue -
-            widget.neuron.dissolveDelaySeconds.toInt()));
-    widget.onCompleteAction(context);
+    final res = await context.callUpdate(() => context.icApi
+        .increaseDissolveDelay(
+            neuron: widget.neuron,
+            additionalDissolveDelaySeconds: sliderValueSeconds.currentValue -
+                widget.neuron.dissolveDelaySeconds.toInt()));
+
+    res.when(
+        ok: (unit) => widget.onCompleteAction(context),
+        err: (err) => js.context.callMethod("alert", ["$err"]));
   }
 
   String get votingPower => isMoreThan6Months()

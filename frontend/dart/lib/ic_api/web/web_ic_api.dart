@@ -106,15 +106,13 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Result<Unit, Exception>> sendICP(
-      {required bool fromHardwareWallet,
-      required String fromAccount,
+      {required String fromAccount,
       required String toAccount,
       required ICP amount,
       int? fromSubAccount}) async {
     try {
       final identity =
-          (await this.getAccountIdentity(fromAccount, fromHardwareWallet))
-              .unwrap();
+          (await this.getIdentityByAccountId(fromAccount)).unwrap();
 
       await promiseToFuture(serviceApi!.sendICP(
           identity,
@@ -189,37 +187,31 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> startDissolving({required Neuron neuron}) async {
-    if (!this.isNeuronControllable(neuron)) {
-      throw "Neuron ${neuron.id} is not controlled by the user.";
+  Future<Result<Unit, Exception>> startDissolving(
+      {required Neuron neuron}) async {
+    try {
+      final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
+      await promiseToFuture(serviceApi!.startDissolving(
+          identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
+      await neuronSyncService!.fetchNeurons();
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
     }
-
-    // If the neuron is controlled by the user, use the user's II, otherwise
-    // we assume it's a hardware wallet and try connecting to the device.
-    final identity = neuron.controller == this.getPrincipal()
-        ? this.identity
-        : await this.connectToHardwareWallet();
-
-    await promiseToFuture(serviceApi!.startDissolving(
-        identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
-    await neuronSyncService!.fetchNeurons();
   }
 
   @override
-  Future<void> stopDissolving({required Neuron neuron}) async {
-    if (!this.isNeuronControllable(neuron)) {
-      throw "Neuron ${neuron.id} is not controlled by the user.";
+  Future<Result<Unit, Exception>> stopDissolving(
+      {required Neuron neuron}) async {
+    try {
+      final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
+      await promiseToFuture(serviceApi!.stopDissolving(
+          identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
+      await neuronSyncService!.fetchNeurons();
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
     }
-
-    // If the neuron is controlled by the user, use the user's II, otherwise
-    // we assume it's a hardware wallet and try connecting to the device.
-    final identity = neuron.controller == this.getPrincipal()
-        ? this.identity
-        : await this.connectToHardwareWallet();
-
-    await promiseToFuture(serviceApi!.stopDissolving(
-        identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
-    await neuronSyncService!.fetchNeurons();
   }
 
   @override
@@ -228,7 +220,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       required ICP amount,
       required String toAccountId}) async {
     try {
-      final identity = (await getControllerIdentity(neuron)).unwrap();
+      final identity = (await getIdentityByNeuron(neuron)).unwrap();
 
       await promiseToFuture(serviceApi!.disburse(
           identity,
@@ -270,23 +262,24 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> increaseDissolveDelay(
+  Future<Result<Unit, Exception>> increaseDissolveDelay(
       {required Neuron neuron,
       required int additionalDissolveDelaySeconds}) async {
-    // If the neuron is controlled by the user, use the user's II, otherwise
-    // we assume it's a hardware wallet and try connecting to the device.
-    final identity = neuron.isCurrentUserController
-        ? this.identity
-        : await this.connectToHardwareWallet();
+    try {
+      final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
 
-    await promiseToFuture(serviceApi!.increaseDissolveDelay(
-        identity,
-        IncreaseDissolveDelayRequest(
-          neuronId: neuron.id.toString(),
-          additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
-        )));
+      await promiseToFuture(serviceApi!.increaseDissolveDelay(
+          identity,
+          IncreaseDissolveDelayRequest(
+            neuronId: neuron.id.toString(),
+            additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
+          )));
 
-    await fetchNeuron(neuronId: neuron.id.toBigInt);
+      await fetchNeuron(neuronId: neuron.id.toBigInt);
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
   }
 
   @override
@@ -320,7 +313,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<Result<Unit, Exception>> removeHotkey(
       {required Neuron neuron, required String principal}) async {
     try {
-      final identity = (await this.getControllerIdentity(neuron)).unwrap();
+      final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
       final request = RemoveHotkeyRequest(
           neuronId: neuron.id.toString(), principal: principal);
       await promiseToFuture(serviceApi!.removeHotKey(identity, request));
@@ -616,7 +609,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   /**
    * Returns the identity associated with the neuron's controller.
    */
-  Future<Result<dynamic, Exception>> getControllerIdentity(
+  Future<Result<dynamic, Exception>> getIdentityByNeuron(
       Neuron neuron) async {
     if (!this.isNeuronControllable(neuron)) {
       return Result.err(
@@ -631,11 +624,18 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   /**
-   * Returns the identity of an account.
+   * Returns the identity of an account identifier.
+   * 
+   * NOTE: This method currently supports account IDs of accounts, not neurons.
    */
-  Future<Result<dynamic, Exception>> getAccountIdentity(
-      String accountIdentifier, bool isHardwareWallet) async {
-    if (!isHardwareWallet) {
+  Future<Result<dynamic, Exception>> getIdentityByAccountId(
+      String accountId) async {
+    if (!hiveBoxes.accounts.containsKey(accountId)) {
+      return Result.err(Exception("Unkown account id: ${accountId}"));
+    }
+
+    final account = hiveBoxes.accounts[accountId];
+    if (!account.hardwareWallet) {
       // Not a hardware wallet. Return the user's II.
       return Result.ok(this.identity);
     }
@@ -648,9 +648,9 @@ class PlatformICApi extends AbstractPlatformICApi {
           final hwAccountIdentifier =
               getAccountIdentifier(ledgerIdentity)!.toString();
 
-          if (hwAccountIdentifier != accountIdentifier) {
+          if (hwAccountIdentifier != accountId) {
             return Result.err(Exception(
-                "Wallet account identifier doesn't match.\nExpected identifier: ${accountIdentifier}.\nWallet identifier: ${hwAccountIdentifier}.\nAre you sure you connected the right wallet?"));
+                "Wallet account identifier doesn't match.\nExpected identifier: ${accountId}.\nWallet identifier: ${hwAccountIdentifier}.\nAre you sure you connected the right wallet?"));
           }
 
           return Result.ok(ledgerIdentity);

@@ -5,7 +5,9 @@ import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/neurons/tab/neuron_row.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/select_neuron_top_up_source_wallet_page.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
+import 'package:universal_html/js.dart' as js;
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
+import 'package:oxidized/oxidized.dart';
 
 import '../../../dfinity.dart';
 import '../increase_dissolve_delay_widget.dart';
@@ -177,8 +179,12 @@ class NeuronStateCard extends StatelessWidget {
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(AppColors.blue600)),
             onPressed: () async {
-              context.callUpdate(() =>
-                  icApi.stopDissolving(neuron: neuron));
+              final res = await context
+                  .callUpdate(() => icApi.stopDissolving(neuron: neuron));
+
+              res.when(
+                  ok: (unit) => {}, // Do nothing.
+                  err: (err) => js.context.callMethod("alert", ["$err"]));
             }.takeIf((e) => icApi.isNeuronControllable(neuron)));
       case NeuronState.LOCKED:
         return ElevatedButton(
@@ -204,8 +210,13 @@ class NeuronStateCard extends StatelessWidget {
                         "This will cause your neuron to lose its age bonus.\n"
                         "Are you sure you wish to continue?",
                     onConfirm: () async {
-                      await context.callUpdate(
+                      final res = await context.callUpdate(
                           () => icApi.startDissolving(neuron: neuron));
+
+                      res.when(
+                          ok: (unit) => {}, // Do nothing.
+                          err: (err) =>
+                              js.context.callMethod("alert", ["$err"]));
                     },
                   ));
             }.takeIf((e) => icApi.isNeuronControllable(neuron)));

@@ -1,3 +1,5 @@
+import 'dart:js_util';
+
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
@@ -81,7 +83,7 @@ class NeuronHotkeysCard extends StatelessWidget {
                               onCompleteAction: (context) {
                                 OverlayBaseWidget.of(context)?.dismiss();
                               })));
-                }.takeIf((e) => neuron.isCurrentUserController),
+                }.takeIf((e) => context.icApi.isNeuronControllable(neuron)),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
@@ -175,18 +177,39 @@ class _AddHotkeysState extends State<AddHotkeys> {
                   ),
                   fields: [hotKeyValidated],
                   onPressed: () async {
-                    final res = await context.callUpdate(() => context.icApi
-                        .addHotkey(
-                            neuronId: widget.neuron.id.toBigInt,
-                            principal: hotKey));
+                    // Is this neuron controlled by the user's II.
+                    if (widget.neuron.controller ==
+                        context.icApi.getPrincipal()) {
+                      final res = await context.callUpdate(() => context.icApi
+                          .addHotkey(
+                              neuronId: widget.neuron.id.toBigInt,
+                              principal: hotKey));
 
-                    res.when(
-                        ok: (unit) {
-                          widget.neuron.hotkeys.add(hotKey);
-                          widget.onCompleteAction(context);
-                        },
-                        // Alert the user if an error occurred.
-                        err: (err) => js.context.callMethod("alert", ["$err"]));
+                      res.when(
+                          ok: (unit) {
+                            widget.neuron.hotkeys.add(hotKey);
+                            widget.onCompleteAction(context);
+                          },
+                          // Alert the user if an error occurred.
+                          err: (err) =>
+                              js.context.callMethod("alert", ["$err"]));
+                    } else {
+                      // This neuron is probably controlled by a HW wallet.
+                      final ledgerIdentity =
+                          await context.icApi.connectToHardwareWallet();
+                      final hwApi = await context.icApi.createHardwareWalletApi(
+                          ledgerIdentity: ledgerIdentity);
+                      try {
+                        await context.callUpdate(() => promiseToFuture(hwApi
+                            .addHotKey(widget.neuron.id.toString(), hotKey)));
+                        await context.icApi.refreshNeurons();
+                        widget.neuron.hotkeys.add(hotKey);
+                        widget.onCompleteAction(context);
+                      } catch (err) {
+                        // Error occurred adding hotkey. Display the error.
+                        js.context.callMethod("alert", ["$err"]);
+                      }
+                    }
                   },
                 ),
               ),
