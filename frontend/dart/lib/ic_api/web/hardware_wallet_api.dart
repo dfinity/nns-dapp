@@ -1,7 +1,6 @@
 @JS()
 library ic_agent.js;
 
-import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 import 'package:js/js.dart';
 
 import 'js_utils.dart';

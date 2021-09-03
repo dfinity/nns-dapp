@@ -70,8 +70,6 @@ class _SelectNeuronTopUpSourceWalletState
                                               destinationAccountIdentifier:
                                                   widget
                                                       .neuron.accountIdentifier,
-                                              subAccountId: source.subAccountId,
-                                              isTopUpNeuron: true,
                                             ));
                                       })),
                             ),

@@ -16,18 +16,14 @@ class ConfirmTransactionWidget extends StatefulWidget {
   final ICP amount;
   final ICPSource source;
   final String destination;
-  final int? subAccountId;
-  final bool isTopUpNeuron;
 
-  const ConfirmTransactionWidget(
-      {Key? key,
-      required this.fee,
-      required this.amount,
-      required this.source,
-      required this.destination,
-      required this.subAccountId,
-      required this.isTopUpNeuron})
-      : super(key: key);
+  const ConfirmTransactionWidget({
+    Key? key,
+    required this.fee,
+    required this.amount,
+    required this.source,
+    required this.destination,
+  }) : super(key: key);
 
   @override
   _ConfirmTransactionWidgetState createState() =>
@@ -71,77 +67,60 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                       ),
                     ),
                     onPressed: () async {
-                      var isAccount =
-                          widget.source.type == ICPSourceType.ACCOUNT;
-                      var isNeuronTransaction =
-                          widget.source.type == ICPSourceType.NEURON;
-                      var isHardwareTransaction =
-                          widget.source.type == ICPSourceType.HARDWARE_WALLET;
-                      if (widget.isTopUpNeuron) {
-                        await context.callUpdate(() => context.icApi
-                            .topUpNeuron(
-                                neuronAccountIdentifier: widget.destination,
-                                amount: widget.amount,
-                                fromSubAccount: widget.subAccountId));
-                        WizardOverlay.of(context).replacePage(
-                            "Transaction Completed!",
-                            TransactionDoneWidget(
-                              amount: widget.amount,
-                              source: widget.source,
-                              destination: widget.destination,
-                            ));
-                      } else if (isAccount) {
-                        final res = await context
-                            .callUpdate(() => context.icApi
-                            .sendICP(
-                                fromAccount: widget.source.address,
-                                toAccount: widget.destination,
-                                amount: widget.amount,
-                                fromSubAccount: widget.subAccountId));
+                      switch (widget.source.type) {
+                        case ICPSourceType.ACCOUNT:
+                          final res = await context.callUpdate(() =>
+                              context.icApi.sendICP(
+                                  fromAccount: widget.source.address,
+                                  toAccount: widget.destination,
+                                  amount: widget.amount,
+                                  fromSubAccount: widget.source.subAccountId));
 
-                        res.when(ok: (unit) {
-                          WizardOverlay.of(context).replacePage(
-                              "Transaction Completed!",
-                              TransactionDoneWidget(
-                                amount: widget.amount,
-                                source: widget.source,
-                                destination: widget.destination,
-                              ));
-                        }, err: (err) {
-                          // Send ICP failed. Display the error.
-                          js.context.callMethod("alert", ["$err"]);
-                        });
-                      } else if (isNeuronTransaction) {
-                        // send the full balance of the neuron to the owner's account
-                        final res = await context.callUpdate(() async {
-                          return context.icApi.disburse(
-                              neuron: widget.source as Neuron,
-                              // this is intentional. send all of them.
-                              amount: widget.source.balance,
-                              toAccountId: widget.destination);
-                        });
+                          res.when(ok: (unit) {
+                            WizardOverlay.of(context).replacePage(
+                                "Transaction Completed!",
+                                TransactionDoneWidget(
+                                  amount: widget.amount,
+                                  source: widget.source,
+                                  destination: widget.destination,
+                                ));
+                          }, err: (err) {
+                            // Send ICP failed. Display the error.
+                            js.context.callMethod("alert", ["$err"]);
+                          });
+                          break;
+                        case ICPSourceType.NEURON:
+                          // send the full balance of the neuron to the owner's account
+                          final res = await context.callUpdate(() async {
+                            return context.icApi.disburse(
+                                neuron: widget.source as Neuron,
+                                // this is intentional. send all of them.
+                                amount: widget.source.balance,
+                                toAccountId: widget.destination);
+                          });
 
-                        res.when(ok: (unit) {
-                          // Disburse succeeded. Proceed to next screen.
-                          WizardOverlay.of(context).replacePage(
-                              "Transaction Completed!",
-                              TransactionDoneWidget(
+                          res.when(ok: (unit) {
+                            // Disburse succeeded. Proceed to next screen.
+                            WizardOverlay.of(context).replacePage(
+                                "Transaction Completed!",
+                                TransactionDoneWidget(
+                                  amount: widget.amount,
+                                  source: widget.source,
+                                  destination: widget.destination,
+                                ));
+                          }, err: (err) {
+                            // Disburse failed. Display the error.
+                            js.context.callMethod("alert", ["$err"]);
+                          });
+                          break;
+                        case ICPSourceType.HARDWARE_WALLET:
+                          WizardOverlay.of(context).pushPage(
+                              "Authorize on Hardware",
+                              HardwareWalletTransactionWidget(
                                 amount: widget.amount,
-                                source: widget.source,
                                 destination: widget.destination,
+                                account: widget.source as Account,
                               ));
-                        }, err: (err) {
-                          // Disburse failed. Display the error.
-                          js.context.callMethod("alert", ["$err"]);
-                        });
-                      } else if (isHardwareTransaction) {
-                        WizardOverlay.of(context).pushPage(
-                            "Authorize on Hardware",
-                            HardwareWalletTransactionWidget(
-                              amount: widget.amount,
-                              destination: widget.destination,
-                              account: widget.source as Account,
-                            ));
                       }
                     }),
               ),

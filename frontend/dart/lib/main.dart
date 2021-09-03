@@ -4,7 +4,6 @@ import 'package:dfinity_wallet/route_information_parser.dart';
 import 'package:dfinity_wallet/wallet_router_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 // ignore: unused_import
 import 'ic_api/web/web_ic_api.dart';
