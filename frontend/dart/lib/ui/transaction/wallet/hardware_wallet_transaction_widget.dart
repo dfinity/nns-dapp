@@ -147,7 +147,6 @@ class _TransactionDetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -163,8 +162,7 @@ class _TransactionDetailsWidget extends StatelessWidget {
         SmallFormDivider(),
         Text("Amount", style: context.textTheme.headline4),
         VerySmallFormDivider(),
-        Text(amount.asString(myLocale.languageCode),
-            style: context.textTheme.bodyText1),
+        Text(amount.asString(), style: context.textTheme.bodyText1),
         VerySmallFormDivider(),
       ],
     );

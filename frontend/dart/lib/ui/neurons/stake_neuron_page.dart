@@ -41,7 +41,6 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Container(
       child: Column(
         children: [
@@ -78,7 +77,7 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                           // fee is doubled as it is a SEND and NOTIFY
                           Text(
                               (ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
-                                      .asString(myLocale.languageCode) +
+                                      .asString() +
                                   " ICP",
                               style: Responsive.isDesktop(context) |
                                       Responsive.isTablet(context)
@@ -107,7 +106,6 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                               ? kCurrentBalanceSizeBig
                               : kCurrentBalanceSizeSmall,
                           icpLabelSize: 0,
-                          locale: myLocale.languageCode,
                         ),
                       ],
                     )),

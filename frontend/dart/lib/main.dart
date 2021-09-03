@@ -63,16 +63,6 @@ class DfinityApp extends StatelessWidget {
             routerDelegate: router,
             routeInformationParser: WalletRouteParser(hiveBoxes, context),
             title: 'Network Nervous System',
-            localizationsDelegates: [
-              const AppLocalizationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en', 'US'),
-              const Locale('en', 'UK'),
-              const Locale('es'),
-            ],
             theme: ThemeData(
               primarySwatch: MaterialColor(AppColors.blue500.value, {
                 1000: AppColors.blue1000,

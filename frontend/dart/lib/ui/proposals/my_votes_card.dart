@@ -1,15 +1,15 @@
 import '../../dfinity.dart';
 
 class MyVotesCard extends StatelessWidget {
-
   final List<Neuron> votedNeurons;
   final Proposal proposal;
 
-  const MyVotesCard({Key? key, required this.votedNeurons, required this.proposal}) : super(key: key);
+  const MyVotesCard(
+      {Key? key, required this.votedNeurons, required this.proposal})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Card(
       child: Column(
         children: [
@@ -33,7 +33,7 @@ class MyVotesCard extends StatelessWidget {
                                 style: context.textTheme.headline3,
                               ),
                               Text(
-                                "${proposal.yes.asString(myLocale.languageCode, 2, 2)}",
+                                "${proposal.yes.asString(minDecimals: 2, maxDecimals: 2)}",
                                 style: context.textTheme.headline4,
                               ),
                             ],
@@ -67,7 +67,7 @@ class MyVotesCard extends StatelessWidget {
                                 style: context.textTheme.headline3,
                               ),
                               Text(
-                                "${proposal.no.asString(myLocale.languageCode, 2, 2)}",
+                                "${proposal.no.asString(minDecimals: 2, maxDecimals: 2)}",
                                 style: context.textTheme.headline4,
                               ),
                             ],
@@ -84,8 +84,7 @@ class MyVotesCard extends StatelessWidget {
             margin: EdgeInsets.only(top: 10),
             decoration: BoxDecoration(
                 border: Border.all(color: AppColors.gray600, width: 2),
-                borderRadius: BorderRadius.circular(10)
-            ),
+                borderRadius: BorderRadius.circular(10)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -114,8 +113,9 @@ class MyVotesCard extends StatelessWidget {
                       Padding(
                           padding: EdgeInsets.all(16.0),
                           child: Text(
-                            "${e.votingPower.asString(myLocale.languageCode, 2, 2)}",
-                          style: context.textTheme.subtitle2,)),
+                            "${e.votingPower.asString(minDecimals: 2, maxDecimals: 2)}",
+                            style: context.textTheme.subtitle2,
+                          )),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SizedBox.fromSize(

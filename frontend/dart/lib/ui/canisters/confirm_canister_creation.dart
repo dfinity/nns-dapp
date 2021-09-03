@@ -22,8 +22,6 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
-
     var cyclesPurchasedWidget = [
       Card(
         child: Padding(
@@ -33,7 +31,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                amount.asString(myLocale.languageCode),
+                amount.asString(),
                 style: TextStyle(
                     color: AppColors.white,
                     fontFamily: Fonts.circularBold,
@@ -63,9 +61,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                CycleCalculator(trillionRatio)
-                    .icpToCycles(amount)
-                    .asStringT(myLocale.languageCode),
+                CycleCalculator(trillionRatio).icpToCycles(amount).asStringT(),
                 style: TextStyle(
                     color: AppColors.white,
                     fontFamily: Fonts.circularBold,

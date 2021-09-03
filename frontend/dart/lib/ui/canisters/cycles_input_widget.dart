@@ -62,7 +62,6 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(6.0),
@@ -92,9 +91,8 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                               if (newCyclesAmount.amount !=
                                   currentCyclesAmount.amount) {
                                 cyclesField.textEditingController.text =
-                                    newCyclesAmount
-                                        .asStringT(myLocale.languageCode)
-                                        .replaceAll(",", "");
+                                    newCyclesAmount.asStringT(
+                                        withSeparators: false);
                               }
                               callCallback();
                             }),
@@ -124,9 +122,8 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                                 if (newIcpAmount.asE8s() !=
                                     currentIcpAmount.asE8s()) {
                                   icpField.textEditingController.text =
-                                      newIcpAmount
-                                          .asString(myLocale.languageCode)
-                                          .replaceAll(",", "");
+                                      newIcpAmount.asString(
+                                          withSeparators: false);
                                 }
                                 callCallback();
                               },
@@ -162,9 +159,8 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                             if (newCyclesAmount.amount !=
                                 currentCyclesAmount.amount) {
                               cyclesField.textEditingController.text =
-                                  newCyclesAmount
-                                      .asStringT(myLocale.languageCode)
-                                      .replaceAll(",", "");
+                                  newCyclesAmount.asStringT(
+                                      withSeparators: false);
                             }
                             callCallback();
                           }),
@@ -195,9 +191,8 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                               if (newIcpAmount.asE8s() !=
                                   currentIcpAmount.asE8s()) {
                                 icpField.textEditingController.text =
-                                    newIcpAmount
-                                        .asString(myLocale.languageCode)
-                                        .replaceAll(",", "");
+                                    newIcpAmount.asString(
+                                        withSeparators: false);
                               }
                               callCallback();
                             },

@@ -96,7 +96,6 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     final sign = isReceive ? "+" : "-";
     final color = isReceive ? AppColors.green500 : AppColors.gray50;
     final secondaryColor = isReceive ? AppColors.green600 : AppColors.gray200;
@@ -113,7 +112,7 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           AutoSizeText(
-            "$sign${(displayAmount).asString(myLocale.languageCode)}",
+            "$sign${(displayAmount).asString()}",
             style: TextStyle(
               color: color,
               fontFamily: Fonts.circularBold,

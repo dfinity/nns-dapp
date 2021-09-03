@@ -47,7 +47,6 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return SizedBox.expand(
       child: SingleChildScrollView(
         child: Padding(
@@ -71,7 +70,6 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                           ? kCurrentBalanceSizeBig
                           : kCurrentBalanceSizeSmall,
                       icpLabelSize: 0,
-                      locale: myLocale.languageCode,
                     )
                   ],
                 ),
@@ -138,7 +136,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                     Text(
                         ICP
                                 .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
-                                .asString(myLocale.languageCode) +
+                                .asString() +
                             " ICP",
                         style: Responsive.isDesktop(context) |
                                 Responsive.isTablet(context)

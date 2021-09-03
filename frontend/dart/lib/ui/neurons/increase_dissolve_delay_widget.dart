@@ -39,7 +39,6 @@ class _IncreaseDissolveDelayWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -76,8 +75,7 @@ class _IncreaseDissolveDelayWidgetState
                       VerySmallFormDivider(),
                       RichText(
                           text: TextSpan(
-                              text: widget.neuron.stake
-                                  .asString(myLocale.languageCode),
+                              text: widget.neuron.stake.asString(),
                               style: Responsive.isMobile(context)
                                   ? context.textTheme.bodyText2
                                   : context.textTheme.bodyText1!

@@ -72,7 +72,6 @@ class _AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return TextButton(
       onPressed: onPressed,
       child: Padding(
@@ -93,7 +92,6 @@ class _AccountRow extends StatelessWidget {
                   amount: account.balance,
                   amountSize: Responsive.isMobile(context) ? 14 : 30,
                   icpLabelSize: 25,
-                  locale: myLocale.languageCode,
                 ),
               ],
             ),

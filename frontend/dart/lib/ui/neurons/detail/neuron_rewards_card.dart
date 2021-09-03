@@ -207,7 +207,6 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -233,8 +232,7 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                       ),
                       RichText(
                           text: TextSpan(
-                              text: widget.neuron.stake
-                                  .asString(myLocale.languageCode),
+                              text: widget.neuron.stake.asString(),
                               style: context.textTheme.bodyText1,
                               children: [
                             TextSpan(

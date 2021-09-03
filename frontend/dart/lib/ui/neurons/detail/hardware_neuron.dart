@@ -25,7 +25,6 @@ class HardwareWalletNeuron extends StatefulWidget {
 class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return Column(
       children: [
         Expanded(
@@ -63,8 +62,7 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                             VerySmallFormDivider(),
                             RichText(
                                 text: TextSpan(
-                                    text: widget.amount
-                                        .asString(myLocale.languageCode),
+                                    text: widget.amount.asString(),
                                     style: Responsive.isMobile(context)
                                         ? context.textTheme.bodyText2
                                         : context.textTheme.bodyText1!

@@ -26,10 +26,10 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
     if (selectedNeurons == null) {
       selectedNeurons = neuronsWithoutVote.toList();
     }
-    final myLocale = Localizations.localeOf(context);
+
     final numVotes = selectedNeurons!
         .fold(ICP.zero, (ICP curr, next) => curr + next.votingPower)
-        .asString(myLocale.languageCode, 2, 2);
+        .asString(minDecimals: 2, maxDecimals: 2);
     return Card(
       color: AppColors.background,
       child: Container(
@@ -107,7 +107,7 @@ class _CastVoteWidgetState extends State<CastVoteWidget> {
                             padding: const EdgeInsets.only(right: 16),
                             height: 28,
                             child: Text(n.votingPower
-                                .asString(myLocale.languageCode, 2, 2)))
+                                .asString(minDecimals: 2, maxDecimals: 2)))
                       ])),
                 ]),
             Container(

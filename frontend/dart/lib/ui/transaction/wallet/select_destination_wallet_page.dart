@@ -180,7 +180,6 @@ class _AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myLocale = Localizations.localeOf(context);
     return TextButton(
       onPressed: onPressed,
       child: Column(
@@ -202,7 +201,6 @@ class _AccountRow extends StatelessWidget {
                         ? 30
                         : 14,
                 icpLabelSize: 20,
-                locale: myLocale.languageCode,
               ),
             ],
           ),
