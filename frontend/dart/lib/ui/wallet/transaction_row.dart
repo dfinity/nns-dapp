@@ -112,7 +112,7 @@ class TransactionAmountDisplayWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           AutoSizeText(
-            "$sign${(displayAmount).asString(true)}",
+            "$sign${(displayAmount).asString()}",
             style: TextStyle(
               color: color,
               fontFamily: Fonts.circularBold,

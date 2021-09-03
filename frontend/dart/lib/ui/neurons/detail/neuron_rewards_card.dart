@@ -232,7 +232,7 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                       ),
                       RichText(
                           text: TextSpan(
-                              text: widget.neuron.stake.asString(true),
+                              text: widget.neuron.stake.asString(),
                               style: context.textTheme.bodyText1,
                               children: [
                             TextSpan(

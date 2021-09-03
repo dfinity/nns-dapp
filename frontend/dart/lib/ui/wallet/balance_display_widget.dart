@@ -16,7 +16,7 @@ class BalanceDisplayWidget extends StatelessWidget {
       : super(key: key);
 
   String getAmount() {
-    return "${amount.asString(true)}${amountLabelSuffix ?? ""}";
+    return "${amount.asString()}${amountLabelSuffix ?? ""}";
   }
 
   @override

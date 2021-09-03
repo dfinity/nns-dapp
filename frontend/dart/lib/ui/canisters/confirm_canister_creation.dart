@@ -31,7 +31,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                amount.asString(true),
+                amount.asString(),
                 style: TextStyle(
                     color: AppColors.white,
                     fontFamily: Fonts.circularBold,
@@ -61,9 +61,7 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                CycleCalculator(trillionRatio)
-                    .icpToCycles(amount)
-                    .asStringT(true),
+                CycleCalculator(trillionRatio).icpToCycles(amount).asStringT(),
                 style: TextStyle(
                     color: AppColors.white,
                     fontFamily: Fonts.circularBold,

@@ -136,7 +136,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                     Text(
                         ICP
                                 .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
-                                .asString(true) +
+                                .asString() +
                             " ICP",
                         style: Responsive.isDesktop(context) |
                                 Responsive.isTablet(context)

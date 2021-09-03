@@ -31,7 +31,7 @@ class _MaxButtonState extends State<MaxButton> {
           onPressed: () {
             widget.amountField.initialText = (widget.source.balance -
                     ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
-                .asString(false);
+                .asString(withSeparators: false);
           },
           child: Padding(
             padding: const EdgeInsets.all(0.0),

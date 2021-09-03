@@ -91,7 +91,8 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                               if (newCyclesAmount.amount !=
                                   currentCyclesAmount.amount) {
                                 cyclesField.textEditingController.text =
-                                    newCyclesAmount.asStringT(false);
+                                    newCyclesAmount.asStringT(
+                                        withSeparators: false);
                               }
                               callCallback();
                             }),
@@ -121,7 +122,8 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                                 if (newIcpAmount.asE8s() !=
                                     currentIcpAmount.asE8s()) {
                                   icpField.textEditingController.text =
-                                      newIcpAmount.asString(false);
+                                      newIcpAmount.asString(
+                                          withSeparators: false);
                                 }
                                 callCallback();
                               },
@@ -157,7 +159,8 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                             if (newCyclesAmount.amount !=
                                 currentCyclesAmount.amount) {
                               cyclesField.textEditingController.text =
-                                  newCyclesAmount.asStringT(false);
+                                  newCyclesAmount.asStringT(
+                                      withSeparators: false);
                             }
                             callCallback();
                           }),
@@ -188,7 +191,8 @@ class _CycleInputWidgetState extends State<CycleInputWidget> {
                               if (newIcpAmount.asE8s() !=
                                   currentIcpAmount.asE8s()) {
                                 icpField.textEditingController.text =
-                                    newIcpAmount.asString(false);
+                                    newIcpAmount.asString(
+                                        withSeparators: false);
                               }
                               callCallback();
                             },

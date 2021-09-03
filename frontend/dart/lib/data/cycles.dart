@@ -25,9 +25,8 @@ class Cycles {
     return _cycles / _oneTrillion;
   }
 
-  String asStringT(bool thousandsSeparator,
-      [int minDecimals = 2, int maxDecimals = 8]) {
-    return format(
-        this._cycles, 12, minDecimals, maxDecimals, thousandsSeparator);
+  String asStringT(
+      {bool withSeparators = true, int minDecimals = 2, int maxDecimals = 8}) {
+    return format(this._cycles, 12, minDecimals, maxDecimals, withSeparators);
   }
 }

@@ -75,7 +75,7 @@ class _IncreaseDissolveDelayWidgetState
                       VerySmallFormDivider(),
                       RichText(
                           text: TextSpan(
-                              text: widget.neuron.stake.asString(true),
+                              text: widget.neuron.stake.asString(),
                               style: Responsive.isMobile(context)
                                   ? context.textTheme.bodyText2
                                   : context.textTheme.bodyText1!

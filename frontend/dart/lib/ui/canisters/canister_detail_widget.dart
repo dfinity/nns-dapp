@@ -140,8 +140,10 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              canister.cyclesBalance
-                                                      ?.asStringT(true, 3, 3) ??
+                                              canister.cyclesBalance?.asStringT(
+                                                      withSeparators: true,
+                                                      minDecimals: 3,
+                                                      maxDecimals: 3) ??
                                                   "-",
                                               style: TextStyle(
                                                   color: AppColors.white,

@@ -58,9 +58,13 @@ class ICP {
     return this._e8s;
   }
 
-  String asString(bool thousandsSeparator,
-      [int minDecimals = 2, int maxDecimals = 8]) {
-    return format(this._e8s, 8, minDecimals, maxDecimals, thousandsSeparator);
+  getHttpUrl(String server, String path, {int port = 80}) {
+    // ...
+  }
+
+  String asString(
+      {bool withSeparators = true, int minDecimals = 2, int maxDecimals = 8}) {
+    return format(this._e8s, 8, minDecimals, maxDecimals, withSeparators);
   }
 
   /// Returns the number of ICP as a double. Warning - this can result in loss

@@ -69,7 +69,7 @@ class TransactionDetailsWidget extends StatelessWidget {
                         : context.textTheme.headline4),
             VerySmallFormDivider(),
             Text(
-                ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)).asString(true) +
+                ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)).asString() +
                     " ICP",
                 style: Responsive.isTablet(context)
                     ? context.textTheme.bodyText1
