@@ -1,8 +1,7 @@
-import 'package:universal_html/js_util.dart';
 import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 import 'package:dfinity_wallet/ic_api/web/stringify.dart';
+import 'package:universal_html/js.dart' as js;
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
@@ -63,29 +62,36 @@ class _HardwareWalletTransactionWidgetState
                           setState(() {
                             connectionState = WalletConnectionState.CONNECTING;
                           });
-                          final ledgerIdentity = await context.icApi
-                              .connectToHardwareWallet()
-                              .catchError((_) {
+                          final res =
+                              await context.icApi.connectToHardwareWallet();
+
+                          res.when(ok: (ledgerIdentity) {
+                            final accountIdentifier =
+                                getAccountIdentifier(ledgerIdentity)!
+                                    .toString();
+
+                            if (widget.account.identifier ==
+                                accountIdentifier) {
+                              setState(() {
+                                this.ledgerIdentity = ledgerIdentity;
+                                connectionState =
+                                    WalletConnectionState.CONNECTED;
+                              });
+                            } else {
+                              setState(() {
+                                this.ledgerIdentity = ledgerIdentity;
+                                connectionState =
+                                    WalletConnectionState.INCORRECT_DEVICE;
+                              });
+                            }
+                          }, err: (err) {
                             setState(() {
+                              // Display the error.
+                              js.context.callMethod("alert", ["$err"]);
                               connectionState =
                                   WalletConnectionState.NOT_CONNECTED;
                             });
                           });
-                          final accountIdentifier =
-                              getAccountIdentifier(ledgerIdentity)!.toString();
-
-                          if (widget.account.identifier == accountIdentifier) {
-                            setState(() {
-                              this.ledgerIdentity = ledgerIdentity;
-                              connectionState = WalletConnectionState.CONNECTED;
-                            });
-                          } else {
-                            setState(() {
-                              this.ledgerIdentity = ledgerIdentity;
-                              connectionState =
-                                  WalletConnectionState.INCORRECT_DEVICE;
-                            });
-                          }
                         }),
                   ),
                   TallFormDivider(),
@@ -99,17 +105,14 @@ class _HardwareWalletTransactionWidgetState
               child: ElevatedButton(
                 child: Text("Confirm Transaction"),
                 onPressed: (() async {
-                  final walletApi = await context.icApi
-                      .createHardwareWalletApi(ledgerIdentity: ledgerIdentity);
+                  final res = await context.callUpdate(() => context.icApi
+                      .sendICP(
+                          fromHardwareWallet: true,
+                          fromAccount: widget.account.identifier,
+                          toAccount: widget.destination,
+                          amount: widget.amount));
 
-                  final response = await context.callUpdate(() =>
-                      promiseToFuture(walletApi.sendICPTs(
-                          widget.account.accountIdentifier,
-                          SendICPTsRequest(
-                              to: widget.destination,
-                              amount: widget.amount.asE8s().toJS))));
-
-                  if (response != null) {
+                  res.when(ok: (unit) {
                     WizardOverlay.of(context).replacePage(
                         "Transaction Completed!",
                         TransactionDoneWidget(
@@ -117,7 +120,10 @@ class _HardwareWalletTransactionWidgetState
                           source: widget.account,
                           destination: widget.destination,
                         ));
-                  }
+                      }, err: (err) {
+                    // An error occurred during transfer. Display the error.
+                    js.context.callMethod("alert", ["$err"]);
+                  });
                 }).takeIf(
                     (e) => connectionState == WalletConnectionState.CONNECTED),
               ))

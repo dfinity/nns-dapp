@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import '../../dfinity.dart';
 import 'hardware_wallet_connection_widget.dart';
+import 'package:universal_html/js.dart' as js;
 
 class AttachHardwareWalletWidget extends StatefulWidget {
   final String name;
@@ -33,15 +34,20 @@ class _AttachHardwareWalletWidgetState
                   setState(() {
                     connectionState = WalletConnectionState.CONNECTING;
                   });
-                  final ledgerIdentity =
-                      await context.icApi.connectToHardwareWallet();
-                  setState(() {
-                    this.ledgerIdentity = ledgerIdentity;
-                    if (this.ledgerIdentity != null) {
+                  final res = await context.icApi.connectToHardwareWallet();
+
+                  res.when(ok: (ledgerIdentity) {
+                    setState(() {
+                      this.ledgerIdentity = ledgerIdentity;
                       connectionState = WalletConnectionState.CONNECTED;
-                    } else {
+                    });
+                  }, err: (err) {
+                    setState(() {
+                      this.ledgerIdentity = null;
                       connectionState = WalletConnectionState.NOT_CONNECTED;
-                    }
+                      // Display the error to the user.
+                      js.context.callMethod("alert", ["$err"]);
+                    });
                   });
                 }),
           ),

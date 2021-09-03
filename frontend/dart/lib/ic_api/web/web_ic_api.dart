@@ -15,7 +15,6 @@ import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
 import 'package:dfinity_wallet/ic_api/web/proposal_sync_service.dart';
 import 'package:dfinity_wallet/ic_api/web/transaction_sync_service.dart';
 import 'package:js/js.dart';
-import 'package:universal_html/js.dart' as js;
 
 import '../../dfinity.dart';
 import 'account_sync_service.dart';
@@ -106,18 +105,32 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> sendICPTs(
-      {required String toAccount,
+  Future<Result<Unit, Exception>> sendICP(
+      {required bool fromHardwareWallet,
+      required String fromAccount,
+      required String toAccount,
       required ICP amount,
       int? fromSubAccount}) async {
-    await promiseToFuture(serviceApi!.sendICPTs(SendICPTsRequest(
-        to: toAccount,
-        amount: amount.asE8s().toJS,
-        fromSubAccountId: fromSubAccount)));
-    await Future.wait([
-      balanceSyncService!.syncBalances(),
-      transactionSyncService!.syncAccount(hiveBoxes.accounts.primary)
-    ]);
+    try {
+      final identity =
+          (await this.getAccountIdentity(fromAccount, fromHardwareWallet))
+              .unwrap();
+
+      await promiseToFuture(serviceApi!.sendICP(
+          identity,
+          SendICPRequest(
+              to: toAccount,
+              amount: amount.asE8s().toJS,
+              fromSubAccountId: fromSubAccount)));
+
+      await Future.wait([
+        balanceSyncService!.syncBalances(),
+        transactionSyncService!.syncAccount(hiveBoxes.accounts.primary)
+      ]);
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
   }
 
   @override
@@ -127,7 +140,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final amountJS = stakeAmount.asE8s().toJS;
       final String neuronId = await () async {
         if (account.hardwareWallet) {
-        final ledgerIdentity =
+          final ledgerIdentity =
               (await this.connectToHardwareWallet()).unwrap();
 
           final accountIdentifier =
@@ -291,30 +304,31 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> addHotkey(
+  Future<Result<Unit, Exception>> addHotkey(
       {required BigInt neuronId, required String principal}) async {
-    await promiseToFuture(serviceApi!.addHotKey(
-        AddHotkeyRequest(neuronId: neuronId.toJS, principal: principal)));
-    await fetchNeuron(neuronId: neuronId);
+    try {
+      await promiseToFuture(serviceApi!.addHotKey(
+          AddHotkeyRequest(neuronId: neuronId.toJS, principal: principal)));
+      await fetchNeuron(neuronId: neuronId);
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
   }
 
   @override
-  Future<void> removeHotkey(
+  Future<Result<Unit, Exception>> removeHotkey(
       {required Neuron neuron, required String principal}) async {
-    if (!this.isNeuronControllable(neuron)) {
-      throw "Neuron ${neuron.id} is not controlled by the user.";
+    try {
+      final identity = (await this.getControllerIdentity(neuron)).unwrap();
+      final request = RemoveHotkeyRequest(
+          neuronId: neuron.id.toString(), principal: principal);
+      await promiseToFuture(serviceApi!.removeHotKey(identity, request));
+      await fetchNeuron(neuronId: neuron.id.toBigInt);
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
     }
-
-    // If the neuron is controlled by the user, use the user's II, otherwise
-    // we assume it's a hardware wallet and try connecting to the device.
-    final identity = neuron.controller == this.getPrincipal()
-        ? this.identity
-        : await this.connectToHardwareWallet();
-
-    final request = RemoveHotkeyRequest(
-        neuronId: neuron.id.toString(), principal: principal);
-    await promiseToFuture(serviceApi!.removeHotKey(identity, request));
-    await fetchNeuron(neuronId: neuron.id.toBigInt);
   }
 
   @override
@@ -614,5 +628,33 @@ class PlatformICApi extends AbstractPlatformICApi {
     return neuron.controller == this.getPrincipal()
         ? Result.ok(this.identity)
         : await this.connectToHardwareWallet();
+  }
+
+  /**
+   * Returns the identity of an account.
+   */
+  Future<Result<dynamic, Exception>> getAccountIdentity(
+      String accountIdentifier, bool isHardwareWallet) async {
+    if (!isHardwareWallet) {
+      // Not a hardware wallet. Return the user's II.
+      return Result.ok(this.identity);
+    }
+
+    // Hardware wallet. Get its identity.
+    final hwConnectionRes = await this.connectToHardwareWallet();
+
+    return hwConnectionRes.when(
+        ok: (ledgerIdentity) {
+          final hwAccountIdentifier =
+              getAccountIdentifier(ledgerIdentity)!.toString();
+
+          if (hwAccountIdentifier != accountIdentifier) {
+            return Result.err(Exception(
+                "Wallet account identifier doesn't match.\nExpected identifier: ${accountIdentifier}.\nWallet identifier: ${hwAccountIdentifier}.\nAre you sure you connected the right wallet?"));
+          }
+
+          return Result.ok(ledgerIdentity);
+        },
+        err: (err) => Result.err(Exception(err)));
   }
 }
