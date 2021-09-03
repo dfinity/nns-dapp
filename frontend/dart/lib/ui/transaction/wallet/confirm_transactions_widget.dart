@@ -91,17 +91,28 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                               destination: widget.destination,
                             ));
                       } else if (isAccount) {
-                        await context.callUpdate(() => context.icApi.sendICPTs(
-                            toAccount: widget.destination,
-                            amount: widget.amount,
-                            fromSubAccount: widget.subAccountId));
-                        WizardOverlay.of(context).replacePage(
-                            "Transaction Completed!",
-                            TransactionDoneWidget(
-                              amount: widget.amount,
-                              source: widget.source,
-                              destination: widget.destination,
-                            ));
+                        final res = await context
+                            .callUpdate(() => context.icApi.sendICP(
+                                // HW wallets go through a different path, so we know it's not
+                                // a HW wallet.
+                                fromHardwareWallet: false,
+                                fromAccount: widget.source.address,
+                                toAccount: widget.destination,
+                                amount: widget.amount,
+                                fromSubAccount: widget.subAccountId));
+
+                        res.when(ok: (unit) {
+                          WizardOverlay.of(context).replacePage(
+                              "Transaction Completed!",
+                              TransactionDoneWidget(
+                                amount: widget.amount,
+                                source: widget.source,
+                                destination: widget.destination,
+                              ));
+                        }, err: (err) {
+                          // Send ICP failed. Display the error.
+                          js.context.callMethod("alert", ["$err"]);
+                        });
                       } else if (isNeuronTransaction) {
                         // send the full balance of the neuron to the owner's account
                         final res = await context.callUpdate(() async {

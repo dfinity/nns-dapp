@@ -182,8 +182,18 @@ export default class ServiceApi {
     return executeWithLogging(() => this.nnsUiService.getTransactions(request));
   };
 
-  public sendICPTs = (request: SendICPTsRequest): Promise<BlockHeight> => {
-    return executeWithLogging(() => this.ledgerService.sendICPTs(request));
+  public sendICP = (
+    identity: Identity,
+    request: SendICPTsRequest
+  ): Promise<BlockHeight> => {
+    if (!request.memo) {
+      // Always explicitly set the memo for compatibility with ledger wallet.
+      request.memo = BigInt(0);
+    }
+
+    return executeWithLogging(async () =>
+      (await ledgerService(identity)).sendICPTs(request)
+    );
   };
 
   /* GOVERNANCE */
@@ -525,4 +535,20 @@ async function governanceService(
   }
 
   return governanceBuilder(agent, identity);
+}
+
+/**
+ * @returns A service to interact with the ledger canister with the given identity.
+ */
+async function ledgerService(identity: Identity): Promise<LedgerService> {
+  const agent = new HttpAgent({
+    host: HOST,
+    identity: identity,
+  });
+
+  if (FETCH_ROOT_KEY) {
+    await agent.fetchRootKey();
+  }
+
+  return ledgerBuilder(agent);
 }

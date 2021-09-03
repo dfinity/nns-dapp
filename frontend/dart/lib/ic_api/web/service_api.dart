@@ -28,8 +28,8 @@ class ServiceApi {
   @JS("updateCanisterSettings")
   external Promise<dynamic> updateCanisterSettings(dynamic settings);
 
-  @JS("sendICPTs")
-  external Promise<dynamic> sendICPTs(Object request);
+  @JS("sendICP")
+  external Promise<dynamic> sendICP(dynamic identity, Object request);
 
   @JS("createNeuron")
   external Promise<String> createNeuron(dynamic request);
@@ -218,12 +218,12 @@ class RemoveHotkeyRequest {
 
 @JS()
 @anonymous
-class SendICPTsRequest {
+class SendICPRequest {
   external dynamic to;
   external dynamic amount;
   external int? fromSubAccountId;
 
-  external factory SendICPTsRequest(
+  external factory SendICPRequest(
       {dynamic to, dynamic amount, int? fromSubAccountId});
 }
 
