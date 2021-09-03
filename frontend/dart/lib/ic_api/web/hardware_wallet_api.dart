@@ -11,10 +11,6 @@ external Promise<HardwareWalletApi> createHardwareWalletApi(dynamic identity);
 
 @JS("HardwareWalletApi")
 class HardwareWalletApi {
-  @JS("sendICPTs")
-  external Promise<void> sendICPTs(
-      String fromAccount, SendICPTsRequest request);
-
   @JS("showAddressAndPubKeyOnDevice")
   external Promise<void> showAddressAndPubKeyOnDevice();
 

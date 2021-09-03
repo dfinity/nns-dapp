@@ -30,8 +30,12 @@ abstract class AbstractPlatformICApi {
 
   Future<void> createSubAccount({required String name});
 
-  Future<void> sendICPTs(
-      {required String toAccount, required ICP amount, int? fromSubAccount});
+  Future<Result<Unit, Exception>> sendICP(
+      {required bool fromHardwareWallet,
+      required String fromAccount,
+      required String toAccount,
+      required ICP amount,
+      int? fromSubAccount});
 
   Future<Result<NeuronId, Exception>> stakeNeuron(
       Account account, ICP stakeAmount);
@@ -68,9 +72,10 @@ abstract class AbstractPlatformICApi {
   Future<void> mergeMaturity(
       {required BigInt neuronId, required int percentageToMerge});
 
-  Future<void> addHotkey({required BigInt neuronId, required String principal});
+  Future<Result<Unit, Exception>> addHotkey(
+      {required BigInt neuronId, required String principal});
 
-  Future<void> removeHotkey(
+  Future<Result<Unit, Exception>> removeHotkey(
       {required Neuron neuron, required String principal});
 
   Future<void> fetchProposals(

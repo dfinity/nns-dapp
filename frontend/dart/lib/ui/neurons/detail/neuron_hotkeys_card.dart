@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
+import 'package:universal_html/js.dart' as js;
 import '../../../dfinity.dart';
 
 class NeuronHotkeysCard extends StatelessWidget {
@@ -95,11 +96,15 @@ class NeuronHotkeysCard extends StatelessWidget {
     );
   }
 
-  void removeHotkey(String hotKey, BuildContext context) {
-    context.callUpdate(() async {
-      await context.icApi.removeHotkey(neuron: neuron, principal: hotKey);
-      return true;
+  void removeHotkey(String hotKey, BuildContext context) async {
+    final res = await context.callUpdate(() async {
+      return context.icApi.removeHotkey(neuron: neuron, principal: hotKey);
     });
+
+    if (res.isErr()) {
+      // Remove hotkey. Display the error.
+      js.context.callMethod("alert", ["${res.unwrapErr()}"]);
+    }
   }
 }
 
@@ -171,11 +176,15 @@ class _AddHotkeysState extends State<AddHotkeys> {
                   fields: [hotKeyValidated],
                   onPressed: () async {
                     widget.neuron.hotkeys.add(hotKey);
-                    await context.callUpdate(() => context.icApi.addHotkey(
+                    final res = await context.callUpdate(() => context.icApi
+                        .addHotkey(
                         neuronId: widget.neuron.id.toBigInt,
                         principal: hotKey));
 
-                    widget.onCompleteAction(context);
+                    res.when(
+                        ok: (unit) => widget.onCompleteAction(context),
+                        // Alert the user if an error occurred.
+                        err: (err) => js.context.callMethod("alert", ["$err"]));
                   },
                 ),
               ),
