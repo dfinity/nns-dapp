@@ -47,7 +47,7 @@ abstract class AbstractPlatformICApi {
   Future<Result<Unit, Exception>> increaseDissolveDelay(
       {required Neuron neuron, required int additionalDissolveDelaySeconds});
 
-  Future<Neuron> spawnNeuron({required Neuron neuron});
+  Future<Result<Neuron, Exception>> spawnNeuron({required Neuron neuron});
 
   Future<void> follow(
       {required BigInt neuronId,

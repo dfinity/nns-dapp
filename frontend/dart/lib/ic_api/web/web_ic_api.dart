@@ -391,24 +391,22 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<Neuron> spawnNeuron({required Neuron neuron}) async {
-    if (!this.isNeuronControllable(neuron)) {
-      throw "Neuron ${neuron.id} is not controlled by the user.";
+  Future<Result<Neuron, Exception>> spawnNeuron(
+      {required Neuron neuron}) async {
+    try {
+      final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
+
+      final spawnResponse = await promiseToFuture(serviceApi!.spawn(identity,
+          SpawnRequest(neuronId: neuron.id.toString(), newController: null)));
+      dynamic response = jsonDecode(stringify(spawnResponse));
+      final createdNeuronId = response['createdNeuronId'].toString();
+      await neuronSyncService!.fetchNeurons();
+      final createdNeuron = hiveBoxes.neurons.values
+          .firstWhere((element) => element.identifier == createdNeuronId);
+      return Result.ok(createdNeuron);
+    } catch (err) {
+      return Result.err(Exception(err));
     }
-
-    // If the neuron is controlled by the user, use the user's II, otherwise
-    // we assume it's a hardware wallet and try connecting to the device.
-    final identity = neuron.controller == this.getPrincipal()
-        ? this.identity
-        : await this.connectToHardwareWallet();
-
-    final spawnResponse = await promiseToFuture(serviceApi!.spawn(identity,
-        SpawnRequest(neuronId: neuron.id.toString(), newController: null)));
-    dynamic response = jsonDecode(stringify(spawnResponse));
-    final createdNeuronId = response['createdNeuronId'].toString();
-    await neuronSyncService!.fetchNeurons();
-    return hiveBoxes.neurons.values
-        .firstWhere((element) => element.identifier == createdNeuronId);
   }
 
   @override
@@ -594,11 +592,9 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   /// Returns the identity associated with the neuron's controller.
-  Future<Result<dynamic, Exception>> getIdentityByNeuron(
-      Neuron neuron) async {
+  Future<Result<dynamic, Exception>> getIdentityByNeuron(Neuron neuron) async {
     if (!this.isNeuronControllable(neuron)) {
-      return Result.err(
-          Exception(
+      return Result.err(Exception(
           "Neuron $neuron.id is not controlled by the user.\nIf this neuron is controlled by a hardware wallet, first add the hardware wallet to your account."));
     }
 

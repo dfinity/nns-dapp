@@ -2,6 +2,7 @@ import 'package:dfinity_wallet/data/icp.dart';
 import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
+import 'package:universal_html/js.dart' as js;
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:dfinity_wallet/ui/wallet/percentage_display_widget.dart';
 import '../../../dfinity.dart';
@@ -135,12 +136,18 @@ class NeuronRewardsCard extends StatelessWidget {
                                       description:
                                           "Are you sure you wish to spawn a new neuron?",
                                       onConfirm: () async {
-                                        context.callUpdate(() async {
-                                          final newNeuron = await context.icApi
-                                              .spawnNeuron(neuron: neuron);
-                                          context.nav.push(neuronPageDef
-                                              .createPageConfig(newNeuron));
-                                        });
+                                        final res = await context.callUpdate(
+                                            () async => await context.icApi
+                                                .spawnNeuron(neuron: neuron));
+
+                                        res.when(
+                                            ok: (newNeuron) {
+                                              context.nav.push(neuronPageDef
+                                                  .createPageConfig(newNeuron));
+                                            },
+                                            // Spawn failed. Display the error.
+                                            err: (err) => js.context
+                                                .callMethod("alert", ["$err"]));
                                       },
                                     ));
                               }.takeIf((e) =>
