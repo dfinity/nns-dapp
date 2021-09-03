@@ -123,7 +123,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
       await Future.wait([
         balanceSyncService!.syncBalances(),
-        transactionSyncService!.syncAccount(hiveBoxes.accounts.primary)
+        transactionSyncService!.syncAllAccounts(),
+        // Sync neurons in case we sent funds to them.
+        neuronSyncService!.fetchNeurons()
       ]);
       return Result.ok(unit);
     } catch (err) {
@@ -169,21 +171,6 @@ class PlatformICApi extends AbstractPlatformICApi {
     } catch (err) {
       return Result.err(Exception(err));
     }
-  }
-
-  @override
-  Future<void> topUpNeuron(
-      {required String neuronAccountIdentifier,
-      required ICP amount,
-      int? fromSubAccount}) async {
-    await promiseToFuture(serviceApi!.topUpNeuron(TopUpNeuronRequest(
-        neuronAccountIdentifier: neuronAccountIdentifier,
-        amount: amount.asE8s().toJS,
-        fromSubAccountId: fromSubAccount)));
-    await Future.wait([
-      balanceSyncService!.syncBalances(),
-      neuronSyncService!.fetchNeurons()
-    ]);
   }
 
   @override
@@ -606,14 +593,13 @@ class PlatformICApi extends AbstractPlatformICApi {
         (account != null && account.hardwareWallet));
   }
 
-  /**
-   * Returns the identity associated with the neuron's controller.
-   */
+  /// Returns the identity associated with the neuron's controller.
   Future<Result<dynamic, Exception>> getIdentityByNeuron(
       Neuron neuron) async {
     if (!this.isNeuronControllable(neuron)) {
       return Result.err(
-          Exception("Neuron ${neuron.id} is not controlled by the user."));
+          Exception(
+          "Neuron $neuron.id is not controlled by the user.\nIf this neuron is controlled by a hardware wallet, first add the hardware wallet to your account."));
     }
 
     // If the neuron is controlled by the user, use the user's II, otherwise
@@ -623,11 +609,9 @@ class PlatformICApi extends AbstractPlatformICApi {
         : await this.connectToHardwareWallet();
   }
 
-  /**
-   * Returns the identity of an account identifier.
-   * 
-   * NOTE: This method currently supports account IDs of accounts, not neurons.
-   */
+  /// Returns the identity of an account identifier.
+  ///
+  /// NOTE: This method currently supports account IDs of accounts, not neurons.
   Future<Result<dynamic, Exception>> getIdentityByAccountId(
       String accountId) async {
     if (!hiveBoxes.accounts.containsKey(accountId)) {
@@ -650,7 +634,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
           if (hwAccountIdentifier != accountId) {
             return Result.err(Exception(
-                "Wallet account identifier doesn't match.\nExpected identifier: ${accountId}.\nWallet identifier: ${hwAccountIdentifier}.\nAre you sure you connected the right wallet?"));
+                "Wallet account identifier doesn't match.\nExpected identifier: $accountId.\nWallet identifier: $hwAccountIdentifier.\nAre you sure you connected the right wallet?"));
           }
 
           return Result.ok(ledgerIdentity);

@@ -14,16 +14,12 @@ import 'confirm_transactions_widget.dart';
 class EnterAmountPage extends StatefulWidget {
   final ICPSource source;
   final String destinationAccountIdentifier;
-  final int? subAccountId;
-  final bool isTopUpNeuron;
 
-  const EnterAmountPage(
-      {Key? key,
-      required this.source,
-      required this.destinationAccountIdentifier,
-      required this.subAccountId,
-      required this.isTopUpNeuron})
-      : super(key: key);
+  const EnterAmountPage({
+    Key? key,
+    required this.source,
+    required this.destinationAccountIdentifier,
+  }) : super(key: key);
 
   @override
   _EnterAmountPageState createState() => _EnterAmountPageState();
@@ -168,8 +164,6 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                             amount: amount,
                             source: widget.source,
                             destination: widget.destinationAccountIdentifier,
-                            subAccountId: widget.subAccountId,
-                            isTopUpNeuron: widget.isTopUpNeuron,
                           ));
                     },
                     fields: [amountField],
