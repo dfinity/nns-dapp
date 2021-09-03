@@ -1,8 +1,5 @@
-import 'package:oxidized/oxidized.dart';
-import 'package:universal_html/js_util.dart';
 import 'package:dfinity_wallet/data/account.dart';
 import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ic_api/web/service_api.dart';
 import 'package:dfinity_wallet/ic_api/web/stringify.dart';
 import 'package:universal_html/js.dart' as js;
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';

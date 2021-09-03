@@ -175,14 +175,16 @@ class _AddHotkeysState extends State<AddHotkeys> {
                   ),
                   fields: [hotKeyValidated],
                   onPressed: () async {
-                    widget.neuron.hotkeys.add(hotKey);
                     final res = await context.callUpdate(() => context.icApi
                         .addHotkey(
-                        neuronId: widget.neuron.id.toBigInt,
-                        principal: hotKey));
+                            neuronId: widget.neuron.id.toBigInt,
+                            principal: hotKey));
 
                     res.when(
-                        ok: (unit) => widget.onCompleteAction(context),
+                        ok: (unit) {
+                          widget.neuron.hotkeys.add(hotKey);
+                          widget.onCompleteAction(context);
+                        },
                         // Alert the user if an error occurred.
                         err: (err) => js.context.callMethod("alert", ["$err"]));
                   },
