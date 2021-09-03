@@ -163,8 +163,14 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                                       .connectToHardwareWallet())
                                                   .when(ok:
                                                       (ledgerIdentity) async {
-                                                await ledgerIdentity
-                                                    .showAddressAndPubKeyOnDevice();
+                                                try {
+                                                  await ledgerIdentity
+                                                      .showAddressAndPubKeyOnDevice();
+                                                } catch (err) {
+                                                  // Display the error.
+                                                  js.context.callMethod(
+                                                      "alert", ["$err"]);
+                                                }
                                               }, err: (err) {
                                                 // Display the error.
                                                 js.context.callMethod(

@@ -107,7 +107,6 @@ class _HardwareWalletTransactionWidgetState
                 onPressed: (() async {
                   final res = await context.callUpdate(() => context.icApi
                       .sendICP(
-                          fromHardwareWallet: true,
                           fromAccount: widget.account.identifier,
                           toAccount: widget.destination,
                           amount: widget.amount));

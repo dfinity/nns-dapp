@@ -31,7 +31,7 @@ abstract class AbstractPlatformICApi {
   Future<void> createSubAccount({required String name});
 
   Future<Result<Unit, Exception>> sendICP(
-      {required bool fromHardwareWallet,
+      {
       required String fromAccount,
       required String toAccount,
       required ICP amount,
@@ -45,11 +45,11 @@ abstract class AbstractPlatformICApi {
       required ICP amount,
       int? fromSubAccount});
 
-  Future<void> startDissolving({required Neuron neuron});
+  Future<Result<Unit, Exception>> startDissolving({required Neuron neuron});
 
-  Future<void> stopDissolving({required Neuron neuron});
+  Future<Result<Unit, Exception>> stopDissolving({required Neuron neuron});
 
-  Future<void> increaseDissolveDelay(
+  Future<Result<Unit, Exception>> increaseDissolveDelay(
       {required Neuron neuron, required int additionalDissolveDelaySeconds});
 
   Future<Neuron> spawnNeuron({required Neuron neuron});
