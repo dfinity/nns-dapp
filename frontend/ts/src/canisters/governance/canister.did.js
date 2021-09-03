@@ -45,7 +45,15 @@ export const idlFactory = ({ IDL }) => {
     'topic' : IDL.Int32,
     'followees' : IDL.Vec(NeuronId),
   });
-  const By = IDL.Variant({ 'Memo' : IDL.Nat64 });
+  const ClaimOrRefreshNeuronFromAccount = IDL.Record({
+    'controller' : IDL.Opt(IDL.Principal),
+    'memo' : IDL.Nat64,
+  });
+  const By = IDL.Variant({
+    'NeuronIdOrSubaccount' : IDL.Record({}),
+    'MemoAndController' : ClaimOrRefreshNeuronFromAccount,
+    'Memo' : IDL.Nat64,
+  });
   const ClaimOrRefresh = IDL.Record({ 'by' : IDL.Opt(By) });
   const RemoveHotKey = IDL.Record({
     'hot_key_to_remove' : IDL.Opt(IDL.Principal),
@@ -149,11 +157,11 @@ export const idlFactory = ({ IDL }) => {
     'Motion' : Motion,
   });
   Proposal.fill(
-      IDL.Record({
-        'url' : IDL.Text,
-        'action' : IDL.Opt(Action),
-        'summary' : IDL.Text,
-      })
+    IDL.Record({
+      'url' : IDL.Text,
+      'action' : IDL.Opt(Action),
+      'summary' : IDL.Text,
+    })
   );
   const ProposalData = IDL.Record({
     'id' : IDL.Opt(NeuronId),
@@ -169,15 +177,11 @@ export const idlFactory = ({ IDL }) => {
     'proposer' : IDL.Opt(NeuronId),
     'executed_timestamp_seconds' : IDL.Nat64,
   });
-  const ClaimOrRefreshNeuronFromAccount = IDL.Record({
-    'controller' : IDL.Opt(IDL.Principal),
-    'memo' : IDL.Nat64,
-  });
   const Command_2 = IDL.Variant({
     'Spawn' : Spawn,
     'Split' : Split,
-    'ClaimOrRefresh' : ClaimOrRefreshNeuronFromAccount,
     'DisburseToNeuron' : DisburseToNeuron,
+    'ClaimOrRefreshNeuron' : ClaimOrRefresh,
     'MergeMaturity' : MergeMaturity,
     'Disburse' : Disburse,
   });
@@ -308,12 +312,12 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Principal, IDL.Vec(NeuronId)],
         [Result],
         [],
-    ),
+      ),
     'claim_or_refresh_neuron_from_account' : IDL.Func(
         [ClaimOrRefreshNeuronFromAccount],
         [ClaimOrRefreshNeuronFromAccountResponse],
         [],
-    ),
+      ),
     'get_full_neuron' : IDL.Func([IDL.Nat64], [Result_2], ['query']),
     'get_neuron_ids' : IDL.Func([], [IDL.Vec(IDL.Nat64)], ['query']),
     'get_neuron_info' : IDL.Func([IDL.Nat64], [Result_3], ['query']),
@@ -322,13 +326,13 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Nat64],
         [IDL.Opt(ProposalInfo)],
         ['query'],
-    ),
+      ),
     'list_neurons' : IDL.Func([ListNeurons], [ListNeuronsResponse], ['query']),
     'list_proposals' : IDL.Func(
         [ListProposalInfo],
         [ListProposalInfoResponse],
         ['query'],
-    ),
+      ),
     'manage_neuron' : IDL.Func([ManageNeuron], [ManageNeuronResponse], []),
     'transfer_gtc_neuron' : IDL.Func([NeuronId, NeuronId], [Result], []),
   });
@@ -380,7 +384,15 @@ export const init = ({ IDL }) => {
     'topic' : IDL.Int32,
     'followees' : IDL.Vec(NeuronId),
   });
-  const By = IDL.Variant({ 'Memo' : IDL.Nat64 });
+  const ClaimOrRefreshNeuronFromAccount = IDL.Record({
+    'controller' : IDL.Opt(IDL.Principal),
+    'memo' : IDL.Nat64,
+  });
+  const By = IDL.Variant({
+    'NeuronIdOrSubaccount' : IDL.Record({}),
+    'MemoAndController' : ClaimOrRefreshNeuronFromAccount,
+    'Memo' : IDL.Nat64,
+  });
   const ClaimOrRefresh = IDL.Record({ 'by' : IDL.Opt(By) });
   const RemoveHotKey = IDL.Record({
     'hot_key_to_remove' : IDL.Opt(IDL.Principal),
@@ -484,11 +496,11 @@ export const init = ({ IDL }) => {
     'Motion' : Motion,
   });
   Proposal.fill(
-      IDL.Record({
-        'url' : IDL.Text,
-        'action' : IDL.Opt(Action),
-        'summary' : IDL.Text,
-      })
+    IDL.Record({
+      'url' : IDL.Text,
+      'action' : IDL.Opt(Action),
+      'summary' : IDL.Text,
+    })
   );
   const ProposalData = IDL.Record({
     'id' : IDL.Opt(NeuronId),
@@ -504,15 +516,11 @@ export const init = ({ IDL }) => {
     'proposer' : IDL.Opt(NeuronId),
     'executed_timestamp_seconds' : IDL.Nat64,
   });
-  const ClaimOrRefreshNeuronFromAccount = IDL.Record({
-    'controller' : IDL.Opt(IDL.Principal),
-    'memo' : IDL.Nat64,
-  });
   const Command_2 = IDL.Variant({
     'Spawn' : Spawn,
     'Split' : Split,
-    'ClaimOrRefresh' : ClaimOrRefreshNeuronFromAccount,
     'DisburseToNeuron' : DisburseToNeuron,
+    'ClaimOrRefreshNeuron' : ClaimOrRefresh,
     'MergeMaturity' : MergeMaturity,
     'Disburse' : Disburse,
   });

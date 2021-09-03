@@ -4,7 +4,6 @@ import {
   AccountIdentifier,
   CanisterIdString,
   E8s,
-  Memo,
   NeuronId,
   PrincipalString,
 } from "../common/types";
@@ -41,12 +40,23 @@ export interface BallotInfo {
   vote: Vote;
   proposalId: Option<ProposalId>;
 }
-export type By = { Memo: bigint };
+export type By =
+  | { NeuronIdOrSubaccount: Record<string, never> }
+  | { MemoAndController: ClaimOrRefreshNeuronFromAccount }
+  | { Memo: bigint };
 export interface CanisterAuthzInfo {
   methodsAuthz: Array<MethodAuthzInfo>;
 }
 export type Change = { ToRemove: NodeProvider } | { ToAdd: NodeProvider };
 export type ClaimOrRefresh = { by: Option<By> };
+export interface ClaimOrRefreshNeuronFromAccount {
+  controller: Option<Principal>;
+  memo: bigint;
+}
+export type ClaimOrRefreshNeuronRequest = {
+  neuronId: NeuronId;
+  by: Option<By>;
+};
 export type Command =
   | { Spawn: Spawn }
   | { Split: Split }
@@ -495,8 +505,10 @@ export default interface ServiceInterface {
   makeSetDefaultFolloweesProposal: (
     request: MakeSetDefaultFolloweesProposalRequest
   ) => Promise<MakeProposalResponse>;
+  claimOrRefreshNeuron: (
+    request: ClaimOrRefreshNeuronRequest
+  ) => Promise<Option<NeuronId>>;
   claimOrRefreshNeuronFromAccount: (
-    controller: Principal,
-    memo: Memo
+    request: ClaimOrRefreshNeuronFromAccount
   ) => Promise<NeuronId>;
 }
