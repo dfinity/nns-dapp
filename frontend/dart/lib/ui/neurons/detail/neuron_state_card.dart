@@ -7,6 +7,7 @@ import 'package:dfinity_wallet/ui/transaction/wallet/select_neuron_top_up_source
 import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:universal_html/js.dart' as js;
 import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
+import 'package:oxidized/oxidized.dart';
 
 import '../../../dfinity.dart';
 import '../increase_dissolve_delay_widget.dart';
