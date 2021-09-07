@@ -4,9 +4,10 @@ use crate::multi_part_transactions_processor::{
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
-use candid::CandidType;
+use candid::{CandidType, Encode};
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
+use ic_certified_map::{leaf_hash, AsHashTree, Hash, HashTree, RbTree};
 use ic_crypto_sha256::Sha256;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::GOVERNANCE_CANISTER_ID;
@@ -17,6 +18,7 @@ use ledger_canister::{
 };
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
+use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{
     hash_map::Entry::{Occupied, Vacant},
@@ -29,7 +31,11 @@ use std::time::{Duration, SystemTime};
 type TransactionIndex = u64;
 
 #[derive(Default)]
-pub struct AccountsStore {
+pub struct AccountsStore<'a> {
+    accounts_certifiable: RbTree<Vec<u8>, Account>,
+    transactions_certifiable: RbTree<Vec<u8>, &'a [Transaction]>,
+    hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
+
     account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation>,
     transactions: VecDeque<Transaction>,
     accounts: Vec<Option<Account>>,
@@ -52,6 +58,11 @@ enum AccountLocation {
     DefaultAccount(u32),      // Account index
     SubAccount(u32, u8),      // Account index + SubAccount index
     HardwareWallet(Vec<u32>), // Vec of account index since a hardware wallet could theoretically be shared between multiple accounts
+}
+
+enum AccountWrapper {
+    SubAccount(AccountIdentifier, u8), // Account Identifier + SubAccount index
+    HardwareWallet(Vec<AccountIdentifier>), // Vec of account Identifier since a hardware wallet could theoretically be shared between multiple accounts
 }
 
 #[derive(CandidType, Deserialize)]
@@ -232,7 +243,31 @@ pub enum DetachCanisterResponse {
     AccountNotFound,
 }
 
-impl AccountsStore {
+impl AsHashTree for Account {
+    fn root_hash(&self) -> Hash {
+        let serialized_bytes = Encode!(self).unwrap();
+        leaf_hash(&serialized_bytes)
+    }
+
+    fn as_hash_tree(&self) -> HashTree<'_> {
+        let serialized_bytes = Encode!(self).unwrap();
+        HashTree::Leaf(Cow::from(serialized_bytes))
+    }
+}
+
+impl AsHashTree for Transaction {
+    fn root_hash(&self) -> Hash {
+        let serialized_bytes = Encode!(self).unwrap();
+        leaf_hash(&serialized_bytes)
+    }
+
+    fn as_hash_tree(&self) -> HashTree<'_> {
+        let serialized_bytes = Encode!(self).unwrap();
+        HashTree::Leaf(Cow::from(serialized_bytes))
+    }
+}
+
+impl AccountsStore<'_> {
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.try_get_account_by_default_identifier(&account_identifier) {
@@ -1452,7 +1487,7 @@ impl AccountsStore {
     }
 }
 
-impl StableState for AccountsStore {
+impl StableState for AccountsStore<'_> {
     fn encode(&self) -> Vec<u8> {
         Candid((
             &self.transactions,
@@ -1520,7 +1555,11 @@ impl StableState for AccountsStore {
             }
         }
 
-        Ok(AccountsStore {
+        let mut account_store = AccountsStore {
+            accounts_certifiable: RbTree::new(),
+            transactions_certifiable: RbTree::new(),
+            hardware_wallets_and_sub_accounts: HashMap::new(),
+
             account_identifier_lookup,
             transactions: VecDeque::from_iter(transactions),
             accounts,
@@ -1533,7 +1572,23 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
-        })
+        };
+
+        for i in 0..accounts.len() {
+            if let Some(a) = accounts.get(i).unwrap() {
+                account_store
+                    .accounts_certifiable
+                    .insert(a.account_identifier.to_vec(), a);
+                account_store.insert(
+                    a.account_identifier.to_vec(),
+                    a.transactions
+                        .iter()
+                        .for_each(|ti| account_store.get_transaction(ti)),
+                );
+            }
+        }
+
+        Ok(account_store)
     }
 }
 
