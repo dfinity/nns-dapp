@@ -5,6 +5,7 @@ import 'package:dfinity_wallet/dfinity.dart';
 import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
 import 'package:dfinity_wallet/ui/_components/page_button.dart';
 import 'package:dfinity_wallet/ui/_components/responsive.dart';
+import 'package:dfinity_wallet/ui/neurons/detail/hardware_list_neurons.dart';
 import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
 import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
 import 'package:universal_html/js.dart' as js;
@@ -133,9 +134,8 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                     ),
                                     SmallFormDivider(),
                                     if (account.hardwareWallet)
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: ElevatedButton(
+                                      Row(children: [
+                                        ElevatedButton(
                                             style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all(
@@ -159,11 +159,11 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                               ),
                                             ),
                                             onPressed: () async {
-                                              (await context.icApi
-                                                      .connectToHardwareWallet())
-                                                  .when(ok:
-                                                      (ledgerIdentity) async {
-                                                try {
+                                              try {
+                                                final ledgerIdentity =
+                                                    (await context.icApi
+                                                            .connectToHardwareWallet())
+                                                        .unwrap();
                                                   await ledgerIdentity
                                                       .showAddressAndPubKeyOnDevice();
                                                 } catch (err) {
@@ -171,13 +171,58 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                                   js.context.callMethod(
                                                       "alert", ["$err"]);
                                                 }
-                                              }, err: (err) {
-                                                // Display the error.
-                                                js.context.callMethod(
-                                                    "alert", ["$err"]);
-                                              });
                                             }),
-                                      ),
+                                            Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 16.0),
+                                            child: ElevatedButton(
+                                                style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(AppColors
+                                                                .gray600)),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  child: Text(
+                                                    "Show Neurons",
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                            Responsive.isMobile(
+                                                                    context)
+                                                                ? 14
+                                                                : 20,
+                                                        fontFamily:
+                                                            Fonts.circularBook,
+                                                        color: AppColors.gray50,
+                                                        fontWeight:
+                                                            FontWeight.w100),
+                                                  ),
+                                            ),
+                                                onPressed: () async {
+                                                  final res = await context
+                                                      .callUpdate(() => context
+                                                      .icApi
+                                                      .fetchNeuronsForHW());
+
+                                                  res.when(
+                                                      ok: (neurons) {
+                                                        OverlayBaseWidget.show(
+                                                            context,
+                                                            WizardOverlay(
+                                                                rootTitle:
+                                                                    "Neurons",
+                                                                rootWidget:
+                                                                    HardwareListNeurons(
+                                                                  neurons:
+                                                                      neurons,
+                                                                )));
+                                                      },
+                                                      err: (err) => js.context
+                                                          .callMethod("alert",
+                                                              ["$err"]));
+                                                })),
+                                      ]),
                                   ],
                                 ),
                               ),

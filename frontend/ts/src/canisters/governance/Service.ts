@@ -22,6 +22,7 @@ import ServiceInterface, {
   MergeMaturityRequest,
   MergeMaturityResponse,
   NeuronInfo,
+  NeuronInfoForHw,
   ProposalInfo,
   RegisterVoteRequest,
   RemoveHotKeyRequest,
@@ -33,11 +34,17 @@ import ServiceInterface, {
 } from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
-import { NeuronId } from "../common/types";
+import { NeuronId, PrincipalString } from "../common/types";
 import { submitUpdateRequest } from "../updateRequestHandler";
 import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
 import { Agent } from "@dfinity/agent";
 import { calculateCrc32 } from "../converter";
+import {
+  ListNeurons as PbListNeurons,
+  ListNeuronsResponse as PbListNeuronsResponse,
+  ManageNeuronResponse,
+  Neuron as PbNeuron,
+} from "../../proto/governance_pb";
 
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
@@ -88,6 +95,37 @@ export default class Service implements ServiceInterface {
     );
   };
 
+  public getNeuronsForHW = async (): Promise<Array<NeuronInfoForHw>> => {
+    const request = new PbListNeurons();
+    request.setIncludeNeuronsReadableByCaller(true);
+
+    const rawResponse = await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "list_neurons_pb",
+      request.serializeBinary()
+    );
+
+    const response = PbListNeuronsResponse.deserializeBinary(rawResponse);
+    const neurons = response.getFullNeuronsList();
+    return neurons.map((neuron) => {
+      const id = neuron.getId()?.getId();
+      if (!id) {
+        throw "Neuron must have an ID";
+      }
+
+      return {
+        id: id,
+        amount: neuron.getCachedNeuronStakeE8s(),
+        hotKeys: neuron.getHotKeysList().map((principal) => {
+          return Principal.fromUint8Array(
+            principal.getSerializedId_asU8()
+          ).toText();
+        }),
+      };
+    });
+  };
+
   public listProposals = async (
     request: ListProposalsRequest
   ): Promise<ListProposalsResponse> => {
@@ -115,14 +153,26 @@ export default class Service implements ServiceInterface {
   ): Promise<EmptyResponse> => {
     const rawRequest = this.requestConverters.fromAddHotKeyRequest(request);
 
-    await submitUpdateRequest(
+    const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
       rawRequest.serializeBinary()
     );
 
-    return { Ok: null };
+    const resp = PbManageNeuronResponse.deserializeBinary(rawResponse);
+
+    const error = resp.getError();
+    if (error) {
+      return {
+        Err: {
+          errorMessage: error.getErrorMessage(),
+          errorType: error.getErrorType(),
+        },
+      };
+    } else {
+      return { Ok: null };
+    }
   };
 
   public removeHotKey = async (

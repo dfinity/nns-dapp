@@ -297,6 +297,28 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<Result<Unit, Exception>> addHotkeyForHW(
+      {required BigInt neuronId, required String principal}) async {
+    try {
+      final identity = (await this.connectToHardwareWallet()).unwrap();
+      final hwApi =
+          await this.createHardwareWalletApi(ledgerIdentity: identity);
+
+      final res = await promiseToFuture(
+          hwApi.addHotKey(neuronId.toString(), this.getPrincipal()));
+      final json = jsonDecode(stringify(res));
+      if (json['Err'] != null) {
+        // Error occurred adding hotkey.
+        return Result.err(Exception(json["Err"]["errorMessage"] as String));
+      }
+      await this.refreshNeurons();
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
+  }
+
+  @override
   Future<Result<Unit, Exception>> removeHotkey(
       {required Neuron neuron, required String principal}) async {
     try {
@@ -333,6 +355,27 @@ class PlatformICApi extends AbstractPlatformICApi {
     } else {
       final neuronInfo = jsonDecode(stringify(res));
       return neuronSyncService!.storeNeuron(neuronInfo);
+    }
+  }
+
+  @override
+  Future<Result<List<NeuronInfoForHW>, Exception>> fetchNeuronsForHW() async {
+    try {
+      final identity = (await this.connectToHardwareWallet()).unwrap();
+      final res = await promiseToFuture(serviceApi!.getNeuronsForHw(identity));
+      final string = stringify(res);
+      final response = (jsonDecode(string) as List<dynamic>)
+          .toList()
+          .map((e) => NeuronInfoForHW(
+              id: NeuronId.fromString(e['id']),
+              amount: ICP.fromE8s((e['amount'] as String).toBigInt),
+              hotkeys: (e['hotKeys'] as List<dynamic>)
+                  .map((x) => x.toString())
+                  .toList()))
+          .toList();
+      return Result.ok(response);
+    } catch (err) {
+      return Result.err(Exception(err));
     }
   }
 
@@ -594,11 +637,9 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   /// Returns the identity associated with the neuron's controller.
-  Future<Result<dynamic, Exception>> getIdentityByNeuron(
-      Neuron neuron) async {
+  Future<Result<dynamic, Exception>> getIdentityByNeuron(Neuron neuron) async {
     if (!this.isNeuronControllable(neuron)) {
-      return Result.err(
-          Exception(
+      return Result.err(Exception(
           "Neuron $neuron.id is not controlled by the user.\nIf this neuron is controlled by a hardware wallet, first add the hardware wallet to your account."));
     }
 

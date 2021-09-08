@@ -135,21 +135,15 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                           fontSize: Responsive.isMobile(context) ? 14 : 16),
                     ),
                     onPressed: () async {
-                      final ledgerIdentity =
-                          await context.icApi.connectToHardwareWallet();
-                      final hwApi = await context.icApi.createHardwareWalletApi(
-                          ledgerIdentity: ledgerIdentity);
-                      try {
-                        await context.callUpdate(() => promiseToFuture(
-                            hwApi.addHotKey(widget.neuronId.toString(),
-                                context.icApi.getPrincipal())));
-                        await context.icApi.refreshNeurons();
+                      final res = await context.callUpdate(() => context.icApi
+                          .addHotkeyForHW(
+                              neuronId: widget.neuronId.asBigInt(),
+                              principal: context.icApi.getPrincipal()));
 
-                        widget.onAddHotkey(context);
-                      } catch (err) {
-                        // Error occurred adding hotkey. Display the error.
-                        js.context.callMethod("alert", ["$err"]);
-                      }
+                          res.when(
+                          ok: (unit) => widget.onAddHotkey(context),
+                          err: (err) =>
+                              js.context.callMethod("alert", ["$err"]));
                     }),
               ),
             ],
