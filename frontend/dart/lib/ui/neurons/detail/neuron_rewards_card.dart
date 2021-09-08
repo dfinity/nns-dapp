@@ -319,7 +319,7 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                         ConfirmDialog(
                           title: "Confirm Merge Maturity",
                           description:
-                              "This will merge ${sliderValue.currentValue}% of your neuron's earned maturity into it's stake",
+                              "This will merge ${sliderValue.currentValue}% of your neuron's earned maturity into its stake",
                           onConfirm: () async {
                             await performUpdate(context);
                           },
