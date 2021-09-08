@@ -4,6 +4,8 @@ import { NeuronId } from "./common/types";
 import { Option } from "./option";
 import { TRANSACTION_FEE } from "./constants";
 
+const E8S_PER_ICP = 100_000_000;
+
 export default async function (
   governanceService: GovernanceService,
   ledgerService: LedgerService
@@ -52,6 +54,11 @@ const findNeuronsWhichNeedRefresh = async (
   const balances = await ledgerService.getBalances(request);
 
   return fullNeurons
-    .filter((n) => n.id && balances[n.accountIdentifier] != n.cachedNeuronStake)
+    .filter((n) => {
+      const balance = balances[n.accountIdentifier];
+
+      // We can only refresh a neuron if its balance is at least 1 ICP
+      return n.id && balance != n.cachedNeuronStake && balance >= E8S_PER_ICP;
+    })
     .map((n) => n.id as NeuronId);
 };
