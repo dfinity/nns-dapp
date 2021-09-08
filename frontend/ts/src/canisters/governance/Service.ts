@@ -225,9 +225,15 @@ export default class Service implements ServiceInterface {
 
       const toAccountBytes = Buffer.from(request.toAccountId, "hex");
       const foundChecksum = toAccountBytes.slice(0, 4);
-      const expectedCheckum = Buffer.from(calculateCrc32(toAccountBytes.slice(4)));
+      const expectedCheckum = Buffer.from(
+        calculateCrc32(toAccountBytes.slice(4))
+      );
       if (!expectedCheckum.equals(foundChecksum)) {
-        throw `Account identifier ${request.toAccountId} has an invalid checksum. Are you sure the account identifier is correct?\n\nExpected checksum: ${expectedCheckum.toString("hex")}\nFound checksum: ${foundChecksum.toString("hex")}`;
+        throw `Account identifier ${
+          request.toAccountId
+        } has an invalid checksum. Are you sure the account identifier is correct?\n\nExpected checksum: ${expectedCheckum.toString(
+          "hex"
+        )}\nFound checksum: ${foundChecksum.toString("hex")}`;
       }
     }
 
