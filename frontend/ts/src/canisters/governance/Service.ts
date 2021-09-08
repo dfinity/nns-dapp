@@ -34,7 +34,7 @@ import ServiceInterface, {
 } from "./model";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
-import { NeuronId, PrincipalString } from "../common/types";
+import { NeuronId } from "../common/types";
 import { submitUpdateRequest } from "../updateRequestHandler";
 import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
 import { Agent } from "@dfinity/agent";
@@ -42,8 +42,6 @@ import { calculateCrc32 } from "../converter";
 import {
   ListNeurons as PbListNeurons,
   ListNeuronsResponse as PbListNeuronsResponse,
-  ManageNeuronResponse,
-  Neuron as PbNeuron,
 } from "../../proto/governance_pb";
 
 export default class Service implements ServiceInterface {
