@@ -37,6 +37,7 @@ import { NeuronId } from "../common/types";
 import { submitUpdateRequest } from "../updateRequestHandler";
 import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
 import { Agent } from "@dfinity/agent";
+import { calculateCrc32 } from "../converter";
 
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
@@ -216,6 +217,20 @@ export default class Service implements ServiceInterface {
   public disburse = async (
     request: DisburseRequest
   ): Promise<DisburseResponse> => {
+    // Verify the checksum of the given address.
+    if (request.toAccountId) {
+      if (request.toAccountId.length != 64) {
+        throw `Invalid account identifier ${request.toAccountId}. The account identifier must be 64 chars in length.`;
+      }
+
+      const toAccountBytes = Buffer.from(request.toAccountId, "hex");
+      const foundChecksum = toAccountBytes.slice(0, 4);
+      const expectedCheckum = Buffer.from(calculateCrc32(toAccountBytes.slice(4)));
+      if (!expectedCheckum.equals(foundChecksum)) {
+        throw `Account identifier ${request.toAccountId} has an invalid checksum. Are you sure the account identifier is correct?\n\nExpected checksum: ${expectedCheckum.toString("hex")}\nFound checksum: ${foundChecksum.toString("hex")}`;
+      }
+    }
+
     const rawRequest = this.requestConverters.fromDisburseRequest(request);
     const rawResponse = await submitUpdateRequest(
       this.agent,
