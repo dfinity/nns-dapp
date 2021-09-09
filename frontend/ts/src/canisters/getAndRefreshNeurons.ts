@@ -61,7 +61,7 @@ const findNeuronsWhichNeedRefresh = async (
         // We can only refresh a neuron if its balance is at least 1 ICP
         if (balance < E8S_PER_ICP) {
           console.log(
-            "Neuron ledger balance is less than 1 ICP. NeuronId: " +
+            "Cannot refresh neuron because its ledger balance is less than 1 ICP. NeuronId: " +
               n.id +
               ". AccountIdentifier: " +
               n.accountIdentifier
