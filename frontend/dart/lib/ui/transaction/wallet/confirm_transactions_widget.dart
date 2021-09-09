@@ -107,6 +107,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                                   amount: widget.amount,
                                   source: widget.source,
                                   destination: widget.destination,
+                                  followOnPage: neuronTabsPage,
                                 ));
                           }, err: (err) {
                             // Disburse failed. Display the error.

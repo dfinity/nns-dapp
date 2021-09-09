@@ -212,10 +212,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       await promiseToFuture(serviceApi!.disburse(
           identity,
           DisperseNeuronRequest(
-              neuronId: neuron.id.toString(),
+              neuronId: neuron.id,
               amount: null,
               toAccountId: toAccountId)));
 
+      neuronSyncService!.removeNeuron(neuron.id);
       await Future.wait([
         balanceSyncService!.syncBalances(),
         neuronSyncService!.fetchNeurons()
