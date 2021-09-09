@@ -140,7 +140,7 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                               neuronId: widget.neuronId.asBigInt(),
                               principal: context.icApi.getPrincipal()));
 
-                          res.when(
+                      res.when(
                           ok: (unit) => widget.onAddHotkey(context),
                           err: (err) =>
                               js.context.callMethod("alert", ["$err"]));

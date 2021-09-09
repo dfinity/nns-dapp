@@ -305,7 +305,7 @@ class PlatformICApi extends AbstractPlatformICApi {
           await this.createHardwareWalletApi(ledgerIdentity: identity);
 
       final res = await promiseToFuture(
-          hwApi.addHotKey(neuronId.toString(), this.getPrincipal()));
+          hwApi.addHotKey(neuronId.toString(), principal));
       final json = jsonDecode(stringify(res));
       if (json['Err'] != null) {
         // Error occurred adding hotkey.
