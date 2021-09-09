@@ -76,9 +76,9 @@ class ConfirmDialog extends StatelessWidget {
                                       Responsive.isMobile(context) ? 12 : 15),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
+                            await onConfirm();
                             OverlayBaseWidget.of(context)?.dismiss();
-                            onConfirm();
                           }),
                     )
                   ],
