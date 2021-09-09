@@ -57,8 +57,15 @@ const findNeuronsWhichNeedRefresh = async (
     .filter((n) => {
       const balance = balances[n.accountIdentifier];
 
-      // We can only refresh a neuron if its balance is at least 1 ICP
-      return n.id && balance != n.cachedNeuronStake && balance >= E8S_PER_ICP;
+      if (n.id && balance != n.cachedNeuronStake) {
+          // We can only refresh a neuron if its balance is at least 1 ICP
+          if (balance < E8S_PER_ICP) {
+              console.log("Neuron ledger balance is less than 1 ICP. NeuronId: " + n.id + ". AccountIdentifier: " + n.accountIdentifier);
+              return false;
+          }
+          return true;
+      }
+      return false;
     })
     .map((n) => n.id as NeuronId);
 };
