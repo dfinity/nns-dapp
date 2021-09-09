@@ -69,6 +69,9 @@ abstract class AbstractPlatformICApi {
 
   Future<Result<Unit, Exception>> addHotkey(
       {required BigInt neuronId, required String principal});
+  
+  Future<Result<Unit, Exception>> addHotkeyForHW(
+      {required BigInt neuronId, required String principal});
 
   Future<Result<Unit, Exception>> removeHotkey(
       {required Neuron neuron, required String principal});
@@ -82,6 +85,8 @@ abstract class AbstractPlatformICApi {
   Future<Proposal> fetchProposal({required BigInt proposalId});
 
   Future<Neuron?> fetchNeuron({required BigInt neuronId});
+
+  Future<Result<List<NeuronInfoForHW>, Exception>> fetchNeuronsForHW();
 
   Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId});
 

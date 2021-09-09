@@ -110,3 +110,17 @@ class Neuron extends DfinityEntity with ICPSource {
   @override
   ICPSourceType get type => ICPSourceType.NEURON;
 }
+
+/// A structure used for holding the necessary we need when pulling neuron
+/// info from HW wallets.
+///
+/// TODO(NNS1-698): Remove this once fetchNeurons is fully migrated to using
+/// the protobuf endpoints.
+class NeuronInfoForHW {
+  final NeuronId id;
+  final ICP amount;
+  final List<String> hotkeys;
+
+  NeuronInfoForHW(
+      {required this.id, required this.amount, required this.hotkeys});
+}

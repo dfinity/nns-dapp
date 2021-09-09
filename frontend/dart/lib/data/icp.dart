@@ -76,6 +76,14 @@ class ICP {
   ICP operator -(ICP other) {
     return ICP.fromE8s(_e8s - other._e8s);
   }
+
+  bool operator ==(Object other) {
+    if (other is ICP) {
+      return _e8s == other._e8s;
+    } else {
+      return false;
+    }
+  }
 }
 
 class ICPTextInputFormatter extends TextInputFormatter {

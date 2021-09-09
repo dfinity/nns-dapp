@@ -58,4 +58,10 @@ void main() {
             .asString(minDecimals: 1, maxDecimals: 6),
         "1'000'000.000001");
   });
+
+  test("ICP.==", () {
+    assert(ICP.fromString("1.23") == ICP.fromE8s(BigInt.from(123000000)));
+    assert(ICP.fromString("1.23") != ICP.fromE8s(BigInt.from(123000001)));
+    assert(ICP.fromString("0") == ICP.fromE8s(BigInt.zero));
+  });
 }
