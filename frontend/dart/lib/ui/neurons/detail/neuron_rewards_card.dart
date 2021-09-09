@@ -16,6 +16,63 @@ class NeuronRewardsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
+
+    var buttonGroup = [
+      ElevatedButton(
+          onPressed: () {
+            OverlayBaseWidget.show(
+                context,
+                NeuronMergeMaturity(
+                    neuron: neuron,
+                    cancelTitle: "Skip",
+                    onCompleteAction: (context) {
+                      OverlayBaseWidget.of(context)?.dismiss();
+                    }));
+          }.takeIf((e) =>
+              neuron.maturityICPEquivalent.asE8s() >
+                  ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)).asE8s() &&
+              neuron.isCurrentUserController),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              "Merge Maturity",
+              style:
+                  TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
+            ),
+          )),
+      if (Responsive.isMobile(context))
+        SizedBox(height: 8)
+      else
+        SizedBox(width: 8),
+      ElevatedButton(
+          onPressed: () {
+            OverlayBaseWidget.show(
+                context,
+                ConfirmDialog(
+                  title: "Really Spawn Neuron",
+                  description: "Are you sure you wish to spawn a new neuron?",
+                  onConfirm: () async {
+                    context.callUpdate(() async {
+                      final newNeuron =
+                          await context.icApi.spawnNeuron(neuron: neuron);
+                      context.nav
+                          .push(neuronPageDef.createPageConfig(newNeuron));
+                    });
+                  },
+                ));
+          }.takeIf((e) =>
+              neuron.maturityICPEquivalent.asE8s() > BigInt.from(E8S_PER_ICP) &&
+              context.icApi.isNeuronControllable(neuron)),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              "Spawn Neuron",
+              style:
+                  TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
+            ),
+          )),
+    ];
+
     return Card(
       color: AppColors.background,
       child: Padding(
@@ -78,92 +135,30 @@ class NeuronRewardsCard extends StatelessWidget {
                 SizedBox(
                   width: 24,
                 ),
-                IntrinsicHeight(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      PercentageDisplayWidget(
-                        amount: neuron.stake.asE8s() > BigInt.zero
-                            ? (100 *
-                                (neuron.maturityICPEquivalent.asE8s() /
-                                    neuron.stake.asE8s()))
-                            : 0,
-                        amountSize: Responsive.isMobile(context) ? 20 : 24,
-                        locale: myLocale.languageCode,
-                      ),
-                      Expanded(
-                          child: ConstrainedBox(
-                              constraints: BoxConstraints(minHeight: 40),
-                              child: Container())),
-                      Row(
-                        children: [
-                          ElevatedButton(
-                              onPressed: () {
-                                OverlayBaseWidget.show(
-                                    context,
-                                    NeuronMergeMaturity(
-                                        neuron: neuron,
-                                        cancelTitle: "Skip",
-                                        onCompleteAction: (context) {
-                                          OverlayBaseWidget.of(context)
-                                              ?.dismiss();
-                                        }));
-                              }.takeIf((e) =>
-                                  neuron.maturityICPEquivalent.asE8s() >
-                                      ICP
-                                          .fromE8s(
-                                              BigInt.from(TRANSACTION_FEE_E8S))
-                                          .asE8s() &&
-                                  neuron.isCurrentUserController),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Text(
-                                  "Merge Maturity",
-                                  style: TextStyle(
-                                      fontSize: Responsive.isMobile(context)
-                                          ? 14
-                                          : 16),
-                                ),
-                              )),
-                          SizedBox(width: 10.0),
-                          ElevatedButton(
-                              onPressed: () {
-                                OverlayBaseWidget.show(
-                                    context,
-                                    ConfirmDialog(
-                                      title: "Really Spawn Neuron",
-                                      description:
-                                          "Are you sure you wish to spawn a new neuron?",
-                                      onConfirm: () async {
-                                        context.callUpdate(() async {
-                                          final newNeuron = await context.icApi
-                                              .spawnNeuron(neuron: neuron);
-                                          context.nav.push(neuronPageDef
-                                              .createPageConfig(newNeuron));
-                                        });
-                                      },
-                                    ));
-                              }.takeIf((e) =>
-                                  neuron.maturityICPEquivalent.asE8s() >
-                                      BigInt.from(E8S_PER_ICP) &&
-                                  context.icApi.isNeuronControllable(neuron)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Text(
-                                  "Spawn Neuron",
-                                  style: TextStyle(
-                                      fontSize: Responsive.isMobile(context)
-                                          ? 14
-                                          : 16),
-                                ),
-                              )),
-                        ],
-                      ),
-                    ],
-                  ),
-                )
+                PercentageDisplayWidget(
+                  amount: neuron.stake.asE8s() > BigInt.zero
+                      ? (100 *
+                          (neuron.maturityICPEquivalent.asE8s() /
+                              neuron.stake.asE8s()))
+                      : 0,
+                  amountSize: Responsive.isMobile(context) ? 20 : 24,
+                  locale: myLocale.languageCode,
+                ),
               ],
             ),
+            SizedBox(
+              height: 20,
+            ),
+            if (Responsive.isMobile(context))
+              Center(
+                child: Column(
+                  children: buttonGroup,
+                ),
+              )
+            else
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: buttonGroup)
           ],
         ),
       ),
