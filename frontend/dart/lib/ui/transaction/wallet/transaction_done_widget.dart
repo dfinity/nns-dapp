@@ -7,12 +7,14 @@ class TransactionDoneWidget extends StatelessWidget {
   final ICP amount;
   final ICPSource source;
   final String destination;
+  final PageConfig? followOnPage;
 
   const TransactionDoneWidget(
       {Key? key,
       required this.amount,
       required this.source,
-      required this.destination})
+      required this.destination,
+      this.followOnPage})
       : super(key: key);
 
   @override
@@ -37,7 +39,11 @@ class TransactionDoneWidget extends StatelessWidget {
                     child: ElevatedButton(
                       child: Text("Close"),
                       onPressed: () async {
-                        OverlayBaseWidget.of(context)?.dismiss();
+                        if (this.followOnPage != null) {
+                          context.nav.replace(this.followOnPage!);
+                        } else {
+                          OverlayBaseWidget.of(context)?.dismiss();
+                        }
                       }
                     ),
                   )
