@@ -149,3 +149,72 @@ message GovernanceError {
   string error_message = 2;
 }
 
+message ListNeurons {
+  option (ic_base_types.pb.v1.tui_signed_message) = true;
+  repeated fixed64 neuron_ids = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true, jstype = JS_STRING];
+  bool include_neurons_readable_by_caller = 2 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+}
+
+message ListNeuronsResponse {
+  message NeuronMapEntry {
+    fixed64 key = 1 [jstype = JS_STRING];
+    NeuronInfo value = 2;
+  }
+
+  // Was originally `map<fixed64, NeuronInfo> neuron_infos = 1`
+  // It had to be modified to this form to annotate the key with js_type.
+  repeated NeuronMapEntry neuron_ids = 1;
+  repeated Neuron full_neurons = 2;
+}
+
+message BallotInfo {
+  ic_base_types.pb.v1.ProposalId proposal_id = 1;
+  Vote vote = 2;
+}
+
+message NeuronInfo {
+  uint64 retrieved_at_timestamp_seconds = 1 [jstype = JS_STRING];;
+  uint64 age_seconds = 3 [jstype = JS_STRING];
+  uint64 dissolve_delay_seconds = 4 [jstype = JS_STRING];
+  repeated BallotInfo recent_ballots = 5;
+  uint64 voting_power = 6 [jstype = JS_STRING];
+  uint64 created_timestamp_seconds = 7 [jstype = JS_STRING];
+}
+
+message Neuron {
+  ic_base_types.pb.v1.NeuronId id = 1;
+  bytes account = 2;
+  ic_base_types.pb.v1.PrincipalId controller = 3;
+  repeated ic_base_types.pb.v1.PrincipalId hot_keys = 4;
+  uint64 cached_neuron_stake_e8s = 5 [jstype = JS_STRING];
+  uint64 neuron_fees_e8s = 6 [jstype = JS_STRING];
+  uint64 created_timestamp_seconds = 7 [jstype = JS_STRING];
+  uint64 aging_since_timestamp_seconds = 8 [jstype = JS_STRING];
+  oneof dissolve_state {
+    uint64 when_dissolved_timestamp_seconds = 9 [jstype = JS_STRING];
+    uint64 dissolve_delay_seconds = 10 [jstype = JS_STRING];
+  }
+  message Followees { repeated ic_base_types.pb.v1.NeuronId followees = 1; }
+  map<int32, Followees> followees = 11;
+  repeated BallotInfo recent_ballots = 12;
+  bool kyc_verified = 13;
+  NeuronStakeTransfer transfer = 14;
+  uint64 maturity_e8s_equivalent = 15 [jstype = JS_STRING];
+  bool not_for_profit = 16;
+}
+
+enum Vote {
+  VOTE_UNSPECIFIED = 0;
+  VOTE_YES = 1;
+  VOTE_NO = 2;
+}
+
+message NeuronStakeTransfer {
+  uint64 transfer_timestamp = 1 [jstype = JS_STRING];
+  ic_base_types.pb.v1.PrincipalId from = 2;
+  bytes from_subaccount = 3;
+  bytes to_subaccount = 4;
+  uint64 neuron_stake_e8s = 5 [jstype = JS_STRING];
+  uint64 block_height = 6 [jstype = JS_STRING];
+  uint64 memo = 7 [jstype = JS_STRING];
+}

@@ -79,7 +79,7 @@ class _NodeState extends State<NodeOverlay> with TickerProviderStateMixin {
         widget.tapped();
       },
       child: AnimatedOpacity(
-        opacity: visible ? 1.0 : 0.0,
+        opacity: visible ? 0.7 : 0.0,
         duration: 1.seconds,
         child: Container(
             color: AppColors.lightBackground.withOpacity(0.9),

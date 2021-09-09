@@ -25,6 +25,7 @@ import GovernanceService, {
   MergeMaturityRequest,
   MergeMaturityResponse,
   NeuronInfo,
+  NeuronInfoForHw,
   RegisterVoteRequest,
   RemoveHotKeyRequest,
   SpawnRequest,
@@ -205,6 +206,14 @@ export default class ServiceApi {
   public getNeurons = (): Promise<Array<NeuronInfo>> => {
     return executeWithLogging(() =>
       getAndRefreshNeurons(this.governanceService, this.ledgerService)
+    );
+  };
+
+  public getNeuronsForHw = (
+    identity: Identity
+  ): Promise<Array<NeuronInfoForHw>> => {
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).getNeuronsForHW()
     );
   };
 

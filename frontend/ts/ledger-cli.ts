@@ -191,6 +191,17 @@ async function getLedgerIdentity(subaccount?: string): Promise<LedgerIdentity> {
   return await LedgerIdentity.create(`m/44'/223'/0'/0/${subaccountId}`);
 }
 
+async function listNeurons() {
+  const identity = await LedgerIdentity.create();
+  const res = await (await getGovernanceService(identity)).getNeuronsForHW();
+
+  res.forEach((n) => {
+    console.log(
+      `Neuron ID: ${n.id}, Amount: ${n.amount}, Hotkeys: ${n.hotKeys}`
+    );
+  });
+}
+
 async function main() {
   program
     .description("A CLI for the Ledger hardware wallet.")
@@ -256,7 +267,8 @@ async function main() {
         .action((args) => {
           stopDissolving(args.neuronId);
         })
-    );
+    )
+    .addCommand(new Command("list-neurons").action(listNeurons));
 
   await program.parseAsync(process.argv);
 }

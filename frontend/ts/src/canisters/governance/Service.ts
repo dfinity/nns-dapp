@@ -22,6 +22,7 @@ import ServiceInterface, {
   MergeMaturityRequest,
   MergeMaturityResponse,
   NeuronInfo,
+  NeuronInfoForHw,
   ProposalInfo,
   RegisterVoteRequest,
   RemoveHotKeyRequest,
@@ -37,6 +38,11 @@ import { NeuronId } from "../common/types";
 import { submitUpdateRequest } from "../updateRequestHandler";
 import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
 import { Agent } from "@dfinity/agent";
+import { calculateCrc32 } from "../converter";
+import {
+  ListNeurons as PbListNeurons,
+  ListNeuronsResponse as PbListNeuronsResponse,
+} from "../../proto/governance_pb";
 
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
@@ -87,6 +93,37 @@ export default class Service implements ServiceInterface {
     );
   };
 
+  public getNeuronsForHW = async (): Promise<Array<NeuronInfoForHw>> => {
+    const request = new PbListNeurons();
+    request.setIncludeNeuronsReadableByCaller(true);
+
+    const rawResponse = await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "list_neurons_pb",
+      request.serializeBinary()
+    );
+
+    const response = PbListNeuronsResponse.deserializeBinary(rawResponse);
+    const neurons = response.getFullNeuronsList();
+    return neurons.map((neuron) => {
+      const id = neuron.getId()?.getId();
+      if (!id) {
+        throw "Neuron must have an ID";
+      }
+
+      return {
+        id: id,
+        amount: neuron.getCachedNeuronStakeE8s(),
+        hotKeys: neuron.getHotKeysList().map((principal) => {
+          return Principal.fromUint8Array(
+            principal.getSerializedId_asU8()
+          ).toText();
+        }),
+      };
+    });
+  };
+
   public listProposals = async (
     request: ListProposalsRequest
   ): Promise<ListProposalsResponse> => {
@@ -114,14 +151,26 @@ export default class Service implements ServiceInterface {
   ): Promise<EmptyResponse> => {
     const rawRequest = this.requestConverters.fromAddHotKeyRequest(request);
 
-    await submitUpdateRequest(
+    const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
       rawRequest.serializeBinary()
     );
 
-    return { Ok: null };
+    const resp = PbManageNeuronResponse.deserializeBinary(rawResponse);
+
+    const error = resp.getError();
+    if (error) {
+      return {
+        Err: {
+          errorMessage: error.getErrorMessage(),
+          errorType: error.getErrorType(),
+        },
+      };
+    } else {
+      return { Ok: null };
+    }
   };
 
   public removeHotKey = async (
@@ -216,6 +265,26 @@ export default class Service implements ServiceInterface {
   public disburse = async (
     request: DisburseRequest
   ): Promise<DisburseResponse> => {
+    // Verify the checksum of the given address.
+    if (request.toAccountId) {
+      if (request.toAccountId.length != 64) {
+        throw `Invalid account identifier ${request.toAccountId}. The account identifier must be 64 chars in length.`;
+      }
+
+      const toAccountBytes = Buffer.from(request.toAccountId, "hex");
+      const foundChecksum = toAccountBytes.slice(0, 4);
+      const expectedCheckum = Buffer.from(
+        calculateCrc32(toAccountBytes.slice(4))
+      );
+      if (!expectedCheckum.equals(foundChecksum)) {
+        throw `Account identifier ${
+          request.toAccountId
+        } has an invalid checksum. Are you sure the account identifier is correct?\n\nExpected checksum: ${expectedCheckum.toString(
+          "hex"
+        )}\nFound checksum: ${foundChecksum.toString("hex")}`;
+      }
+    }
+
     const rawRequest = this.requestConverters.fromDisburseRequest(request);
     const rawResponse = await submitUpdateRequest(
       this.agent,

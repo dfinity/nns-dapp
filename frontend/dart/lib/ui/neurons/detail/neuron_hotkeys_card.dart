@@ -194,21 +194,18 @@ class _AddHotkeysState extends State<AddHotkeys> {
                           err: (err) =>
                               js.context.callMethod("alert", ["$err"]));
                     } else {
-                      // This neuron is probably controlled by a HW wallet.
-                      final ledgerIdentity =
-                          await context.icApi.connectToHardwareWallet();
-                      final hwApi = await context.icApi.createHardwareWalletApi(
-                          ledgerIdentity: ledgerIdentity);
-                      try {
-                        await context.callUpdate(() => promiseToFuture(hwApi
-                            .addHotKey(widget.neuron.id.toString(), hotKey)));
-                        await context.icApi.refreshNeurons();
-                        widget.neuron.hotkeys.add(hotKey);
-                        widget.onCompleteAction(context);
-                      } catch (err) {
-                        // Error occurred adding hotkey. Display the error.
-                        js.context.callMethod("alert", ["$err"]);
-                      }
+                      final res = await context.callUpdate(() => context.icApi
+                          .addHotkeyForHW(
+                              neuronId: widget.neuron.id.toBigInt,
+                              principal: hotKey));
+
+                      res.when(
+                          ok: (unit) {
+                            widget.neuron.hotkeys.add(hotKey);
+                            widget.onCompleteAction(context);
+                          },
+                          err: (err) =>
+                              js.context.callMethod("alert", ["$err"]));
                     }
                   },
                 ),

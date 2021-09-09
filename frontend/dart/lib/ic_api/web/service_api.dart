@@ -53,6 +53,9 @@ class ServiceApi {
   @JS("getNeurons")
   external Promise<dynamic> getNeurons();
 
+  @JS("getNeuronsForHw")
+  external Promise<dynamic> getNeuronsForHw(dynamic identity);
+
   @JS("getPendingProposals")
   external Promise<dynamic> getPendingProposals();
 
