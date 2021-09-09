@@ -32,6 +32,8 @@ class NeuronSyncService {
     final string = stringify(res);
     // print("fetched neurons $string");
     dynamic response = (jsonDecode(string) as List<dynamic>).toList();
+    // We've just retrieved all the neurons, so clear whatever we currently have
+    hiveBoxes.neurons.clear();
     response.forEach((e) => storeNeuron(e));
   }
 
