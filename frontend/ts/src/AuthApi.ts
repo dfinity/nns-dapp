@@ -17,9 +17,6 @@ export default class AuthApi {
   private readonly onLoggedOut: () => void;
   private expireSessionTimeout: Option<NodeJS.Timeout>;
 
-  // A cache for the ledger identity.
-  private ledgerIdentity?: LedgerIdentity;
-
   public static create = async (onLoggedOut: () => void): Promise<AuthApi> => {
     const authClient = await AuthClient.create();
     return new AuthApi(authClient, onLoggedOut);
@@ -29,7 +26,6 @@ export default class AuthApi {
     this.authClient = authClient;
     this.onLoggedOut = onLoggedOut;
     this.expireSessionTimeout = null;
-    this.ledgerIdentity = undefined;
 
     if (this.tryGetIdentity()) {
       this.handleDelegationExpiry();
@@ -90,24 +86,12 @@ export default class AuthApi {
   public connectToHardwareWallet = async (): Promise<
     LedgerIdentity | string
   > => {
-    if (this.ledgerIdentity) {
-      return this.ledgerIdentity;
-    }
-
     try {
       console.log("Creating new connection to hardware wallet");
-      this.ledgerIdentity = await LedgerIdentity.create();
-      return this.ledgerIdentity;
+      return await LedgerIdentity.create();
     } catch (err) {
       console.log(`An exception has occurred: ${err}`);
-      if (
-        err instanceof Error &&
-        err.message.includes("device is already open")
-      ) {
-        return "The wallet is already being used. Please close any ongoing transactions on the wallet and try again.";
-      } else {
-        return err.toString();
-      }
+      throw err;
     }
   };
 
