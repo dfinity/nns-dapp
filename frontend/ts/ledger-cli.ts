@@ -123,6 +123,17 @@ async function addHotkey(neuronId: string, principal: string) {
   console.log(response);
 }
 
+async function removeHotkey(neuronId: string, principal: string) {
+  const identity = await LedgerIdentity.create();
+  const governance = await getGovernanceService(identity);
+
+  const response = await governance.removeHotKey({
+    neuronId: BigInt(neuronId),
+    principal: principal,
+  });
+  console.log(response);
+}
+
 async function disburseNeuron(
   neuronId: string,
   to?: AccountIdentifier,
@@ -235,6 +246,12 @@ async function main() {
         .requiredOption("--neuron-id <neuron-id>")
         .requiredOption("--principal <principal>")
         .action((args) => addHotkey(args.neuronId, args.principal))
+    )
+    .addCommand(
+      new Command("remove-hotkey")
+        .requiredOption("--neuron-id <neuron-id>")
+        .requiredOption("--principal <principal>")
+        .action((args) => removeHotkey(args.neuronId, args.principal))
     )
     .addCommand(
       new Command("start-dissolving")
