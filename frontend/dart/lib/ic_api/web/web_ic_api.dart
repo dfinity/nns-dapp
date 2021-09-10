@@ -148,11 +148,10 @@ class PlatformICApi extends AbstractPlatformICApi {
 
           if (accountIdentifier != account.accountIdentifier) {
             throw Exception(
-                "Wallet account identifier doesn't match.\nExpected identified: ${account.accountIdentifier}.\nWallet identifier: $accountIdentifier.\nAre you sure you connected the right wallet?");
+                "Wallet account identifier doesn't match.\nExpected identifier: ${account.accountIdentifier}.\nWallet identifier: $accountIdentifier.\nAre you sure you connected the right wallet?");
           }
 
-          final walletApi = await this
-              .createHardwareWalletApi(ledgerIdentity: ledgerIdentity);
+          final walletApi = await this.createHardwareWalletApi(ledgerIdentity);
 
           return await promiseToFuture(walletApi.createNeuron(amountJS));
         } else {
@@ -178,8 +177,9 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required Neuron neuron}) async {
     try {
       final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
-      await promiseToFuture(serviceApi!.startDissolving(
+      final res = await promiseToFuture(serviceApi!.startDissolving(
           identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
+      validateGovernanceResponse(res);
       await neuronSyncService!.fetchNeurons();
       return Result.ok(unit);
     } catch (err) {
@@ -192,8 +192,9 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required Neuron neuron}) async {
     try {
       final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
-      await promiseToFuture(serviceApi!.stopDissolving(
+      final res = await promiseToFuture(serviceApi!.stopDissolving(
           identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
+      validateGovernanceResponse(res);
       await neuronSyncService!.fetchNeurons();
       return Result.ok(unit);
     } catch (err) {
@@ -212,9 +213,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       await promiseToFuture(serviceApi!.disburse(
           identity,
           DisperseNeuronRequest(
-              neuronId: neuron.id,
-              amount: null,
-              toAccountId: toAccountId)));
+              neuronId: neuron.id, amount: null, toAccountId: toAccountId)));
 
       neuronSyncService!.removeNeuron(neuron.id);
       await Future.wait([
@@ -256,13 +255,13 @@ class PlatformICApi extends AbstractPlatformICApi {
     try {
       final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
 
-      await promiseToFuture(serviceApi!.increaseDissolveDelay(
+      final res = await promiseToFuture(serviceApi!.increaseDissolveDelay(
           identity,
           IncreaseDissolveDelayRequest(
             neuronId: neuron.id.toString(),
             additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
           )));
-
+      validateGovernanceResponse(res);
       await fetchNeuron(neuronId: neuron.id.toBigInt);
       return Result.ok(unit);
     } catch (err) {
@@ -288,8 +287,9 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<Result<Unit, Exception>> addHotkey(
       {required BigInt neuronId, required String principal}) async {
     try {
-      await promiseToFuture(serviceApi!.addHotKey(
+      final res = await promiseToFuture(serviceApi!.addHotKey(
           AddHotkeyRequest(neuronId: neuronId.toJS, principal: principal)));
+      validateGovernanceResponse(res);
       await fetchNeuron(neuronId: neuronId);
       return Result.ok(unit);
     } catch (err) {
@@ -302,16 +302,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId, required String principal}) async {
     try {
       final identity = (await this.connectToHardwareWallet()).unwrap();
-      final hwApi =
-          await this.createHardwareWalletApi(ledgerIdentity: identity);
+      final hwApi = await this.createHardwareWalletApi(identity);
 
       final res = await promiseToFuture(
           hwApi.addHotKey(neuronId.toString(), principal));
-      final json = jsonDecode(stringify(res));
-      if (json['Err'] != null) {
-        // Error occurred adding hotkey.
-        return Result.err(Exception(json["Err"]["errorMessage"] as String));
-      }
+      validateGovernanceResponse(res);
       await this.refreshNeurons();
       return Result.ok(unit);
     } catch (err) {
@@ -324,9 +319,12 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required Neuron neuron, required String principal}) async {
     try {
       final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
+
       final request = RemoveHotkeyRequest(
           neuronId: neuron.id.toString(), principal: principal);
-      await promiseToFuture(serviceApi!.removeHotKey(identity, request));
+      final res =
+          await promiseToFuture(serviceApi!.removeHotKey(identity, request));
+      validateGovernanceResponse(res);
       await fetchNeuron(neuronId: neuron.id.toBigInt);
       return Result.ok(unit);
     } catch (err) {
@@ -360,9 +358,17 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<Result<List<NeuronInfoForHW>, Exception>> fetchNeuronsForHW() async {
+  Future<Result<List<NeuronInfoForHW>, Exception>> fetchNeuronsForHW(
+      Account account) async {
     try {
       final identity = (await this.connectToHardwareWallet()).unwrap();
+
+      // Verify the identity matches the account.
+      if (identity.getPrincipal().toString() != account.principal) {
+        return Result.err(Exception(
+            "The hardware wallet's principal doesn't match the account's principal. Are you sure you connected the right wallet?\nAccount's principal: ${account.principal}\nHardware wallet's principal: ${identity.getPrincipal()}"));
+      }
+
       final res = await promiseToFuture(serviceApi!.getNeuronsForHw(identity));
       final string = stringify(res);
       final response = (jsonDecode(string) as List<dynamic>)
@@ -398,19 +404,17 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Result<dynamic, Exception>> connectToHardwareWallet() async {
-    final res = await promiseToFuture(authApi.connectToHardwareWallet());
-    if (res is String) {
-      return Result.err(Exception(res));
-    } else {
-      return Result.ok(res);
+    try {
+      return Result.ok(
+          await promiseToFuture(authApi.connectToHardwareWallet()));
+    } catch (err) {
+      return Result.err(Exception(err));
     }
   }
 
   @override
   Future<hardwareWalletApi.HardwareWalletApi> createHardwareWalletApi(
-      {dynamic ledgerIdentity}) async {
-    final ledgerIdentity =
-        await promiseToFuture(authApi.connectToHardwareWallet());
+      dynamic ledgerIdentity) async {
     return await promiseToFuture(
         hardwareWalletApi.createHardwareWalletApi(ledgerIdentity));
   }
@@ -422,7 +426,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> registerHardwareWallet(
-      {required String name, dynamic ledgerIdentity}) async {
+      {required String name, required dynamic ledgerIdentity}) async {
     await promiseToFuture(
         serviceApi!.registerHardwareWallet(name, ledgerIdentity));
   }
@@ -632,23 +636,35 @@ class PlatformICApi extends AbstractPlatformICApi {
    */
   @override
   bool isNeuronControllable(Neuron neuron) {
-    final account = this.getAccountByPrincipal(neuron.controller);
-    return (neuron.isCurrentUserController ||
-        (account != null && account.hardwareWallet));
+    return this.getAccountByPrincipal(neuron.controller) != null;
   }
 
   /// Returns the identity associated with the neuron's controller.
   Future<Result<dynamic, Exception>> getIdentityByNeuron(Neuron neuron) async {
-    if (!this.isNeuronControllable(neuron)) {
+    final controllerAccount = this.getAccountByPrincipal(neuron.controller);
+    if (controllerAccount == null) {
       return Result.err(Exception(
-          "Neuron $neuron.id is not controlled by the user.\nIf this neuron is controlled by a hardware wallet, first add the hardware wallet to your account."));
+          "Neuron $neuron.id is not controlled by you.\nIf this neuron is controlled by a hardware wallet, first add the hardware wallet to your account."));
     }
 
-    // If the neuron is controlled by the user, use the user's II, otherwise
-    // we assume it's a hardware wallet and try connecting to the device.
-    return neuron.controller == this.getPrincipal()
-        ? Result.ok(this.identity)
-        : await this.connectToHardwareWallet();
+    assert(neuron.controller == controllerAccount.principal);
+
+    if (controllerAccount.principal == this.getPrincipal()) {
+      // The neuron is controlled by the user's II. Use that.
+      return Result.ok(this.identity);
+    }
+
+    // Assume the user is using a HW wallet. Request it.
+    return (await this.connectToHardwareWallet()).when(
+        ok: (hwIdentity) {
+          // Verify that the hardware wallet being used is the correct one.
+          if (hwIdentity.getPrincipal().toString() != neuron.controller) {
+            return Result.err(Exception(
+                "Principal of the hardware wallet doesn't match the neuron's controller. Are you sure you connected the right wallet?\nNeuron's controller: ${neuron.controller}\nHardware wallet's principal: ${hwIdentity.getPrincipal()}"));
+          }
+          return Result.ok(hwIdentity);
+        },
+        err: (err) => Result.err(Exception(err)));
   }
 
   /// Returns the identity of an account identifier.
@@ -676,11 +692,66 @@ class PlatformICApi extends AbstractPlatformICApi {
 
           if (hwAccountIdentifier != accountId) {
             return Result.err(Exception(
-                "Wallet account identifier doesn't match.\nExpected identifier: $accountId.\nWallet identifier: $hwAccountIdentifier.\nAre you sure you connected the right wallet?"));
+                "Wallet account identifier doesn't match.\n\nExpected identifier: $accountId.\nWallet identifier: $hwAccountIdentifier.\n\nAre you sure you connected the right wallet?"));
           }
 
           return Result.ok(ledgerIdentity);
         },
         err: (err) => Result.err(Exception(err)));
+  }
+
+  Future<void> showPrincipalAndAddressOnDevice(Account account) async {
+    final identity = (await this.connectToHardwareWallet()).unwrap();
+
+    if (identity.getPrincipal().toString() != account.principal) {
+      throw "The hardware wallet's principal doesn't match the account's principal. Are you sure you connected the right wallet?\nAccount's principal: ${account.principal}\nHardware wallet's principal: ${identity.getPrincipal()}";
+    }
+
+    await identity.showAddressAndPubKeyOnDevice();
+  }
+}
+
+void validateGovernanceResponse(dynamic res) {
+  final json = jsonDecode(stringify(res));
+  if (json['Err'] != null) {
+    throw GovernanceError(
+        json["Err"]["errorType"], json["Err"]["errorMessage"]);
+  }
+}
+
+enum GovernanceErrorType {
+  UNSPECIFIED,
+  OK,
+  UNAVAILABLE,
+  NOT_AUTHORIZED,
+  NOT_FOUND,
+  INVALID_COMMAND,
+  REQUIRES_NOT_DISSOLVING,
+  REQUIRES_DISSOLVING,
+  REQUIRES_DISSOLVED,
+  HOT_KEY,
+  RESOURCE_EXHAUSTED,
+  PRECONDITION_FAILED,
+  EXTERNAL,
+  LEDGER_UPDATE_ONGOING,
+  INSUFFICIENT_FUNDS,
+  INVALID_PRINCIPAL,
+  INVALID_PROPOSAL,
+}
+
+class GovernanceError {
+  final int type;
+  final String message;
+
+  GovernanceError(this.type, this.message);
+
+  @override
+  String toString() {
+    // Convert the error type into its corresponding string. If the error type
+    // is unknown, we display the number as-is.
+    final errorTypeString = (this.type < GovernanceErrorType.values.length)
+        ? GovernanceErrorType.values[this.type].toString()
+        : this.type.toString();
+    return "GovernanceError:\nError Type: ${errorTypeString}\nError Message: ${this.message}";
   }
 }
