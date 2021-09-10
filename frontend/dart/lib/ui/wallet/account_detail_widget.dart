@@ -144,7 +144,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                               padding:
                                                   const EdgeInsets.all(16.0),
                                               child: Text(
-                                                "Show Principal and Address On Device",
+                                                "Show Address And Public Key On Device",
                                                 style: TextStyle(
                                                     fontSize:
                                                         Responsive.isMobile(
@@ -159,17 +159,20 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                               ),
                                             ),
                                             onPressed: () async {
-                                              await context
-                                                  .callUpdate(() async {
-                                                await context.icApi
-                                                    .showPrincipalAndAddressOnDevice(
-                                                        account)
-                                                    .catchError((err) =>
-                                                        js.context.callMethod(
-                                                            "alert", ["$err"]));
-                                              });
+                                              try {
+                                                final ledgerIdentity =
+                                                    (await context.icApi
+                                                            .connectToHardwareWallet())
+                                                        .unwrap();
+                                                  await ledgerIdentity
+                                                      .showAddressAndPubKeyOnDevice();
+                                                } catch (err) {
+                                                  // Display the error.
+                                                  js.context.callMethod(
+                                                      "alert", ["$err"]);
+                                                }
                                             }),
-                                        Padding(
+                                            Padding(
                                             padding: const EdgeInsets.only(
                                                 left: 16.0),
                                             child: ElevatedButton(
@@ -195,13 +198,12 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                                         fontWeight:
                                                             FontWeight.w100),
                                                   ),
-                                                ),
+                                            ),
                                                 onPressed: () async {
                                                   final res = await context
                                                       .callUpdate(() => context
-                                                          .icApi
-                                                          .fetchNeuronsForHW(
-                                                              account));
+                                                      .icApi
+                                                      .fetchNeuronsForHW());
 
                                                   res.when(
                                                       ok: (neurons) {
