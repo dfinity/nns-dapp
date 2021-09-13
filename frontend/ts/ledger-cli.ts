@@ -244,15 +244,18 @@ async function listNeurons() {
     });
 }
 
-async function r(x: Function) {
+/**
+ * Runs a function with a try/catch block.
+ */
+async function run(f: () => void) {
   try {
-    await x();
+    await f();
   } catch (err) {
     log(`${chalk.bold(chalk.red("Error:"))} ${err}`);
   }
 }
 
-function ok(message?: String) {
+function ok(message?: string) {
   if (message) {
     log(`${chalk.green(chalk.bold("OK"))}: ${message}`);
   } else {
@@ -260,7 +263,7 @@ function ok(message?: String) {
   }
 }
 
-function err(message: String) {
+function err(message: string) {
   log(`${chalk.bold(chalk.red("Error:"))} ${message}`);
 }
 
@@ -279,14 +282,14 @@ async function main() {
     .addCommand(
       new Command("stake")
         .requiredOption("--amount <amount>", "Amount to stake in e8s.")
-        .action((args) => r(() => stakeNeuron(args.amount)))
+        .action((args) => run(() => stakeNeuron(args.amount)))
     )
     .addCommand(
       new Command("increase-dissolve-delay")
         .requiredOption("--neuron-id <neuron-id>")
         .requiredOption("--additional-delay-secs <additional-delay-seconds>")
         .action((args) =>
-          r(() =>
+          run(() =>
             increaseDissolveDelay(args.neuronId, args.additionalDelaySecs)
           )
         )
@@ -298,7 +301,7 @@ async function main() {
         .option("--amount <amount>")
         .option("--subaccount <subaccount>", "ID of the subaccount")
         .action((args) => {
-          r(() => disburseNeuron(args.neuronId, args.to, args.amount));
+          run(() => disburseNeuron(args.neuronId, args.to, args.amount));
         })
     )
     .addCommand(
@@ -306,35 +309,37 @@ async function main() {
         .requiredOption("--neuron-id <neuron-id>")
         .option("--controller <new-controller>")
         .action((args) => {
-          r(() => spawnNeuron(args.neuronId, args.controller));
+          run(() => spawnNeuron(args.neuronId, args.controller));
         })
     )
     .addCommand(
       new Command("start-dissolving")
         .requiredOption("--neuron-id <neuron-id>")
         .action((args) => {
-          r(() => startDissolving(args.neuronId));
+          run(() => startDissolving(args.neuronId));
         })
     )
     .addCommand(
       new Command("stop-dissolving")
         .requiredOption("--neuron-id <neuron-id>")
         .action((args) => {
-          r(() => stopDissolving(args.neuronId));
+          run(() => stopDissolving(args.neuronId));
         })
     )
-    .addCommand(new Command("list").action(() => r(listNeurons)))
+    .addCommand(new Command("list").action(() => run(listNeurons)))
     .addCommand(
       new Command("add-hotkey")
         .requiredOption("--neuron-id <neuron-id>")
         .requiredOption("--principal <principal>")
-        .action((args) => r(() => addHotkey(args.neuronId, args.principal)))
+        .action((args) => run(() => addHotkey(args.neuronId, args.principal)))
     )
     .addCommand(
       new Command("remove-hotkey")
         .requiredOption("--neuron-id <neuron-id>")
         .requiredOption("--principal <principal>")
-        .action((args) => r(() => removeHotkey(args.neuronId, args.principal)))
+        .action((args) =>
+          run(() => removeHotkey(args.neuronId, args.principal))
+        )
     );
 
   const icp = new Command("icp")
@@ -344,7 +349,7 @@ async function main() {
       new Command("balance")
         .description("Fetch current balance.")
         .action(() => {
-          r(getBalance);
+          run(getBalance);
         })
     )
     .addCommand(
@@ -354,7 +359,7 @@ async function main() {
           "The address to send the funds to."
         )
         .requiredOption("--amount <amount>", "Amount to transfer in e8s.")
-        .action((args) => r(() => sendICP(args.to, args.amount)))
+        .action((args) => run(() => sendICP(args.to, args.amount)))
     );
 
   program
@@ -373,7 +378,7 @@ async function main() {
         .action((args) => {
           console.log(args);
           console.log(program.opts().network);
-          r(() => showInfo(args.showOnDevice));
+          run(() => showInfo(args.showOnDevice));
         })
     )
     .addCommand(icp)
