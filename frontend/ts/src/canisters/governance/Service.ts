@@ -372,8 +372,6 @@ export default class Service implements ServiceInterface {
  * Convert a protobuf manage neuron response to an `EmptyResponse`.
  */
 function toResponse(resp: PbManageNeuronResponse): EmptyResponse {
-  console.log("Converting response");
-  console.log(resp);
   const error = resp.getError();
   if (error) {
     return {
