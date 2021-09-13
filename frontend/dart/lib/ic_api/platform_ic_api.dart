@@ -62,7 +62,7 @@ abstract class AbstractPlatformICApi {
   Future<Result<Unit, Exception>> disburse(
       {required Neuron neuron,
       required ICP amount,
-      required String toAccountId});
+      String? toAccountId});
 
   Future<void> mergeMaturity(
       {required BigInt neuronId, required int percentageToMerge});
@@ -141,4 +141,6 @@ abstract class AbstractPlatformICApi {
   bool isNeuronControllable(Neuron neuron);
 
   Future<void> showPrincipalAndAddressOnDevice(Account account);
+
+  String principalToAccountIdentifier(String principal);
 }

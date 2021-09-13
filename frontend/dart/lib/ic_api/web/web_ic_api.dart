@@ -206,13 +206,13 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<Result<Unit, Exception>> disburse(
       {required Neuron neuron,
       required ICP amount,
-      required String toAccountId}) async {
+      String? toAccountId}) async {
     try {
       final identity = (await getIdentityByNeuron(neuron)).unwrap();
 
       await promiseToFuture(serviceApi!.disburse(
           identity,
-          DisperseNeuronRequest(
+          DisburseNeuronRequest(
               neuronId: neuron.id, amount: null, toAccountId: toAccountId)));
 
       neuronSyncService!.removeNeuron(neuron.id);
@@ -708,6 +708,11 @@ class PlatformICApi extends AbstractPlatformICApi {
     }
 
     await identity.showAddressAndPubKeyOnDevice();
+  }
+
+  @override
+  String principalToAccountIdentifier(String principal) {
+    return serviceApi!.principalToAccountIdentifier(principal);
   }
 }
 
