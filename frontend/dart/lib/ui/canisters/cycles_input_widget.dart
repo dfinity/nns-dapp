@@ -1,10 +1,9 @@
-import 'package:dfinity_wallet/data/cycles.dart';
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:flutter/services.dart';
-
-import '../../dfinity.dart';
+import 'package:nns_dapp/data/cycles.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import '../../nns_dapp.dart';
 import 'cycle_calculator.dart';
 
 class CycleInputWidget extends StatefulWidget {

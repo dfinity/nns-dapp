@@ -1,12 +1,12 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/data/transaction_type.dart';
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/data/transaction_type.dart';
+import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
 
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 class TransactionRow extends StatelessWidget {
   final Transaction transaction;

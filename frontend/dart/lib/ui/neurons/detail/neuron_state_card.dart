@@ -1,15 +1,14 @@
-import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/neurons/tab/neuron_row.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/select_neuron_top_up_source_wallet_page.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-import 'package:universal_html/js.dart' as js;
-import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
-
-import '../../../dfinity.dart';
+import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/neurons/tab/neuron_row.dart';
+import 'package:nns_dapp/ui/transaction/wallet/select_destination_wallet_page.dart';
+import 'package:nns_dapp/ui/transaction/wallet/select_neuron_top_up_source_wallet_page.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import '../../../nns_dapp.dart';
 import '../increase_dissolve_delay_widget.dart';
+import 'package:universal_html/js.dart' as js;
 
 GlobalKey _toolTipKey = GlobalKey();
 

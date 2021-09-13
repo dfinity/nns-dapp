@@ -1,6 +1,6 @@
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:flutter/material.dart';
-import 'package:dfinity_wallet/ui/_components/text_theme.dart';
+import '/ui/_components/text_theme.dart';
+import 'responsive.dart';
 
 class PageButton extends StatelessWidget {
   final void Function()? onPress;

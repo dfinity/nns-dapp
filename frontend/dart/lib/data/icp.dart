@@ -1,5 +1,5 @@
-import 'package:dfinity_wallet/data/number_formatter.dart';
 import 'package:flutter/services.dart';
+import 'number_formatter.dart';
 
 final _e8sPerICP = BigInt.from(100000000);
 

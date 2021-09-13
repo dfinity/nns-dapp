@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
-
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import 'form_utils.dart';
+import 'responsive.dart';
 
 class Debouncer {
   final int milliseconds;

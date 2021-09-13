@@ -1,8 +1,7 @@
-import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
 
-import '../../../dfinity.dart';
-import 'package:dfinity_wallet/ui/_components/debounced_validated_form_field.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
+import '../../../nns_dapp.dart';
 
 class NewProposalDialog extends StatefulWidget {
   final Neuron neuron;
@@ -45,17 +44,15 @@ class _NewProposalDialogState extends State<NewProposalDialog> {
               ),
               SmallFormDivider(),
               ...fields.flatMap((e) => [
-                DebouncedValidatedFormField(e),
-                SmallFormDivider(),
-              ]),
+                    DebouncedValidatedFormField(e),
+                    SmallFormDivider(),
+                  ]),
               SizedBox(
                 height: 60.0,
                 width: double.infinity,
                 child: ValidFieldsSubmitButton(
                   child: Text("Create"),
-                  onPressed: () async {
-
-                  },
+                  onPressed: () async {},
                   fields: fields,
                 ),
               )

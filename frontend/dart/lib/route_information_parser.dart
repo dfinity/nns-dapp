@@ -1,8 +1,8 @@
-import 'package:dfinity_wallet/resources_loading_page.dart';
 import 'package:flutter/material.dart';
 import 'data/data.dart';
+import 'resources_loading_page.dart';
 import 'wallet_router_delegate.dart';
-import 'dfinity.dart';
+import 'nns_dapp.dart';
 
 class WalletRouteParser extends RouteInformationParser<PageConfig> {
   final HiveBoxes hiveBoxes;

@@ -1,31 +1,76 @@
 @JS()
 library ic_agent.js;
 
-import 'package:universal_html/html.dart' as html;
-import 'dart:convert';
-import 'package:universal_html/js_util.dart';
-import 'package:oxidized/oxidized.dart';
-
-import 'package:dfinity_wallet/data/cycles.dart';
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/data/proposal_reward_status.dart';
-import 'package:dfinity_wallet/data/topic.dart';
-import 'package:dfinity_wallet/data/vote.dart';
-import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
-import 'package:dfinity_wallet/ic_api/web/proposal_sync_service.dart';
-import 'package:dfinity_wallet/ic_api/web/transaction_sync_service.dart';
 import 'package:js/js.dart';
-
-import '../../dfinity.dart';
+import 'dart:convert';
+import 'package:nns_dapp/data/cycles.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/data/proposal_reward_status.dart';
+import 'package:nns_dapp/data/topic.dart';
+import 'package:oxidized/oxidized.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:universal_html/js.dart';
+import 'package:universal_html/js_util.dart';
+import 'js_utils.dart';
+import 'hardware_wallet_api.dart' as hardwareWalletApi;
+import '../../nns_dapp.dart';
+import '../platform_ic_api.dart';
 import 'account_sync_service.dart';
 import 'auth_api.dart';
 import 'balance_sync_service.dart';
-import 'js_utils.dart';
-import 'service_api.dart';
-import 'hardware_wallet_api.dart' as hardwareWalletApi;
 import 'neuron_sync_service.dart';
-import 'package:dfinity_wallet/dfinity.dart';
+import 'proposal_sync_service.dart';
+import 'service_api.dart';
 import 'stringify.dart';
+import 'transaction_sync_service.dart';
+
+// import 'package:universal_html/html.dart' as html;
+// import 'dart:convert';
+// import 'package:universal_html/js_util.dart';
+// import 'package:oxidized/oxidized.dart';
+//
+// import 'package:dfinity_wallet/data/cycles.dart';
+// import 'package:dfinity_wallet/data/icp.dart';
+// import 'package:dfinity_wallet/data/proposal_reward_status.dart';
+// import 'package:dfinity_wallet/data/topic.dart';
+// import 'package:dfinity_wallet/data/vote.dart';
+// import 'package:dfinity_wallet/ic_api/platform_ic_api.dart';
+// import 'package:dfinity_wallet/ic_api/web/proposal_sync_service.dart';
+// import 'package:dfinity_wallet/ic_api/web/transaction_sync_service.dart';
+// import 'package:js/js.dart';
+//
+// import '../../nns_dapp.dart';
+// import 'account_sync_service.dart';
+// import 'auth_api.dart';
+// import 'balance_sync_service.dart';
+// import 'js_utils.dart';
+// import 'service_api.dart';
+// import 'hardware_wallet_api.dart' as hardwareWalletApi;
+// import 'neuron_sync_service.dart';
+// import 'package:dfinity_wallet/nns_dapp.dart';
+// import 'stringify.dart';
+
+// import 'package:nns_dapp/data/icp.dart';
+// import 'package:nns_dapp/data/proposal_reward_status.dart';
+// import 'package:nns_dapp/data/topic.dart';
+// import 'package:nns_dapp/ic_api/web/transaction_sync_service.dart';
+// import 'package:universal_html/html.dart' as html;
+// import 'dart:convert';
+// import 'package:universal_html/js_util.dart';
+// import 'package:oxidized/oxidized.dart';
+// import 'package:js/js.dart';
+//
+// import '../../nns_dapp.dart';
+// import '../platform_ic_api.dart';
+// import 'account_sync_service.dart';
+// import 'auth_api.dart';
+// import 'balance_sync_service.dart';
+// import 'js_utils.dart';
+// import 'proposal_sync_service.dart';
+// import 'service_api.dart';
+// import 'hardware_wallet_api.dart' as hardwareWalletApi;
+// import 'neuron_sync_service.dart';
+// import 'stringify.dart';
 
 class PlatformICApi extends AbstractPlatformICApi {
   late AuthApi authApi;
@@ -212,9 +257,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       await promiseToFuture(serviceApi!.disburse(
           identity,
           DisperseNeuronRequest(
-              neuronId: neuron.id,
-              amount: null,
-              toAccountId: toAccountId)));
+              neuronId: neuron.id, amount: null, toAccountId: toAccountId)));
 
       neuronSyncService!.removeNeuron(neuron.id);
       await Future.wait([

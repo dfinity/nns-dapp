@@ -1,8 +1,9 @@
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/neurons/stake_neuron_page.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
-import '../../../dfinity.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/neurons/stake_neuron_page.dart';
+import 'package:nns_dapp/ui/transaction/wallet/select_destination_wallet_page.dart';
+
+import '../../../nns_dapp.dart';
 import '../wizard_overlay.dart';
 
 class SelectSourceWallet extends StatefulWidget {

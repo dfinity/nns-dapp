@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dfinity_wallet/dfinity.dart';
+import '../../nns_dapp.dart';
 
 /// Flutter widget that automatically resizes text to fit perfectly within its
 /// bounds.

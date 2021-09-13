@@ -1,7 +1,6 @@
-import 'package:dfinity_wallet/dfinity.dart';
+import 'nns_dapp.dart';
 
 class ResourceOrchestrator extends InheritedWidget {
-
   final HiveBoxes hiveBoxes;
   // final AbstractPlatformICApi? icApi;
 
@@ -9,13 +8,14 @@ class ResourceOrchestrator extends InheritedWidget {
     Key? key,
     required Widget child,
     required this.hiveBoxes,
-  }) :super(key: key,
-      child: LoadingOverlayController(
-        child: HiveBoxesWidget(
-          boxes: hiveBoxes,
-          child: child,
-        ),
-      ));
+  }) : super(
+            key: key,
+            child: LoadingOverlayController(
+              child: HiveBoxesWidget(
+                boxes: hiveBoxes,
+                child: child,
+              ),
+            ));
 
   static ResourceOrchestrator of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<ResourceOrchestrator>()!;

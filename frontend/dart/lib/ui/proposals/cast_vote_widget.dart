@@ -1,6 +1,6 @@
-import 'package:dfinity_wallet/data/icp.dart';
+import 'package:nns_dapp/data/icp.dart';
 
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import 'confirm_vote_dialog.dart';
 
 class CastVoteWidget extends StatefulWidget {

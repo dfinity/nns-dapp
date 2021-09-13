@@ -1,5 +1,5 @@
 import 'package:core/core.dart';
-import 'package:dfinity_wallet/data/icp.dart';
+import 'package:nns_dapp/data/icp.dart';
 
 class BalanceDisplayWidget extends StatelessWidget {
   final ICP amount;

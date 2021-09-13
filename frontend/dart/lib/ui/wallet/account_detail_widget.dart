@@ -1,17 +1,15 @@
-import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
-import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
-import 'package:dfinity_wallet/ui/_components/page_button.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/neurons/detail/hardware_list_neurons.dart';
-import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/transactions_list_widget.dart';
+import 'package:nns_dapp/ui/_components/constrain_width_and_center.dart';
+import 'package:nns_dapp/ui/_components/footer_gradient_button.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/page_button.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/neurons/detail/hardware_list_neurons.dart';
+import 'package:nns_dapp/ui/transaction/select_transaction_type_widget.dart';
+import 'package:nns_dapp/ui/wallet/transactions_list_widget.dart';
 import 'package:universal_html/js.dart' as js;
 import 'package:flutter/services.dart';
 
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import 'balance_display_widget.dart';
 import '../transaction/wizard_overlay.dart';
 
@@ -164,15 +162,15 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                                     (await context.icApi
                                                             .connectToHardwareWallet())
                                                         .unwrap();
-                                                  await ledgerIdentity
-                                                      .showAddressAndPubKeyOnDevice();
-                                                } catch (err) {
-                                                  // Display the error.
-                                                  js.context.callMethod(
-                                                      "alert", ["$err"]);
-                                                }
+                                                await ledgerIdentity
+                                                    .showAddressAndPubKeyOnDevice();
+                                              } catch (err) {
+                                                // Display the error.
+                                                js.context.callMethod(
+                                                    "alert", ["$err"]);
+                                              }
                                             }),
-                                            Padding(
+                                        Padding(
                                             padding: const EdgeInsets.only(
                                                 left: 16.0),
                                             child: ElevatedButton(
@@ -198,12 +196,12 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                                         fontWeight:
                                                             FontWeight.w100),
                                                   ),
-                                            ),
+                                                ),
                                                 onPressed: () async {
                                                   final res = await context
                                                       .callUpdate(() => context
-                                                      .icApi
-                                                      .fetchNeuronsForHW());
+                                                          .icApi
+                                                          .fetchNeuronsForHW());
 
                                                   res.when(
                                                       ok: (neurons) {

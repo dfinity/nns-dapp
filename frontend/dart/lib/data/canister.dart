@@ -1,8 +1,7 @@
 import 'cycles.dart';
-import 'dfinity_entity.dart';
+import 'nns_dapp_entity.dart';
 
-
-class Canister extends DfinityEntity {
+class Canister extends NnsDappEntity {
   final String name;
   final String publicKey;
   Cycles? cyclesBalance;

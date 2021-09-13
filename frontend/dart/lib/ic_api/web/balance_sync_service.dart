@@ -1,9 +1,8 @@
 import 'dart:convert';
+import 'package:nns_dapp/data/icp.dart';
 import 'package:universal_html/js_util.dart';
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/data/setup/hive_loader_widget.dart';
+import '../../nns_dapp.dart';
 import 'service_api.dart';
-import 'package:dfinity_wallet/dfinity.dart';
 import 'stringify.dart';
 
 class BalanceSyncService {

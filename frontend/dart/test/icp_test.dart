@@ -1,4 +1,4 @@
-import 'package:dfinity_wallet/data/icp.dart';
+import 'package:nns_dapp/data/icp.dart';
 import 'package:test/test.dart';
 
 void main() {

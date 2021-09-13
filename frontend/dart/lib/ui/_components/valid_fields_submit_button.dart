@@ -1,4 +1,4 @@
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import 'form_utils.dart';
 
 class ValidFieldsSubmitButton extends StatefulWidget {

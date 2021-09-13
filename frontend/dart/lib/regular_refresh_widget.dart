@@ -1,18 +1,19 @@
 import 'dart:async';
 
-import 'dfinity.dart';
+import 'nns_dapp.dart';
 
 class RegularRefreshWidget extends StatefulWidget {
   final Function performRefresh;
   final Widget child;
-  RegularRefreshWidget({Key? key, required this.performRefresh, required this.child}) : super(key: key);
+  RegularRefreshWidget(
+      {Key? key, required this.performRefresh, required this.child})
+      : super(key: key);
 
   @override
   _RegularRefreshWidgetState createState() => _RegularRefreshWidgetState();
 }
 
 class _RegularRefreshWidgetState extends State<RegularRefreshWidget> {
-
   late Timer timer;
 
   @override

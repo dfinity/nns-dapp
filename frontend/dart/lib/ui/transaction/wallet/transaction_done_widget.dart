@@ -1,7 +1,7 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:dfinity_wallet/dfinity.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/transaction/wallet/transaction_details_widget.dart';
+
+import '../../../nns_dapp.dart';
 
 class TransactionDoneWidget extends StatelessWidget {
   final ICP amount;
@@ -37,15 +37,14 @@ class TransactionDoneWidget extends StatelessWidget {
                     height: 70,
                     width: double.infinity,
                     child: ElevatedButton(
-                      child: Text("Close"),
-                      onPressed: () async {
-                        if (this.followOnPage != null) {
-                          context.nav.replace(this.followOnPage!);
-                        } else {
-                          OverlayBaseWidget.of(context)?.dismiss();
-                        }
-                      }
-                    ),
+                        child: Text("Close"),
+                        onPressed: () async {
+                          if (this.followOnPage != null) {
+                            context.nav.replace(this.followOnPage!);
+                          } else {
+                            OverlayBaseWidget.of(context)?.dismiss();
+                          }
+                        }),
                   )
                 ],
               ),

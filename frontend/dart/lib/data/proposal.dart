@@ -1,15 +1,14 @@
 import 'dart:ui';
 import 'dart:core';
+import 'package:nns_dapp/data/data.dart';
 
-import 'package:dfinity_wallet/data/data.dart';
-import 'package:dfinity_wallet/data/proposal_reward_status.dart';
-import 'package:dfinity_wallet/data/proposal_status.dart';
-import 'package:dfinity_wallet/data/topic.dart';
-
+import 'ballot.dart';
 import 'icp.dart';
+import 'proposal_reward_status.dart';
+import 'proposal_status.dart';
+import 'topic.dart';
 
-
-class Proposal extends DfinityEntity {
+class Proposal extends NnsDappEntity {
   late String id;
   late String summary;
   late String url;
@@ -51,8 +50,7 @@ class Proposal extends DfinityEntity {
   ProposalType get proposalType {
     if (action.containsKey('ExecuteNnsFunction'))
       return ProposalType.ExecuteNnsFunction;
-    if (action.containsKey('ManageNeuron')) 
-      return ProposalType.ManageNeuron;
+    if (action.containsKey('ManageNeuron')) return ProposalType.ManageNeuron;
     if (action.containsKey('ApproveGenesisKyc'))
       return ProposalType.ApproveGenesisKyc;
     if (action.containsKey('ManageNetworkEconomics'))
@@ -63,8 +61,7 @@ class Proposal extends DfinityEntity {
       return ProposalType.RewardNodeProviders;
     if (action.containsKey('AddOrRemoveNodeProvider'))
       return ProposalType.AddOrRemoveNodeProvider;
-    if (action.containsKey('Motion')) 
-      return ProposalType.Motion;
+    if (action.containsKey('Motion')) return ProposalType.Motion;
     return ProposalType.Unspecified;
   }
 

@@ -1,12 +1,12 @@
-import 'package:dfinity_wallet/data/data.dart';
-import 'package:dfinity_wallet/data/transaction.dart';
+import 'data.dart';
+import 'transaction.dart';
 import 'package:observable/observable.dart';
 import 'package:dartx/dartx.dart';
 import 'icp.dart';
 import 'icp_source.dart';
 import 'package:collection/collection.dart';
 
-class Account extends DfinityEntity with ICPSource {
+class Account extends NnsDappEntity with ICPSource {
   String name;
   final String principal;
   final String accountIdentifier;

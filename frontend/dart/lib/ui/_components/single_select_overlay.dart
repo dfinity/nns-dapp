@@ -1,5 +1,5 @@
 //
-// import '../../dfinity.dart';
+// import '../../nns_dapp.dart';
 //
 // class MultiSelectField<T> {
 //   final String title;

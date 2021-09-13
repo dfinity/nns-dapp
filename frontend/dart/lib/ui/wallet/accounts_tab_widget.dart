@@ -1,16 +1,14 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/ui/_components/page_button.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/select_source_wallet_page.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_path_button.dart';
-import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/text_field_dialog_widget.dart';
-import 'package:dfinity_wallet/wallet_router_delegate.dart';
 import 'package:flutter/foundation.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/constrain_width_and_center.dart';
+import 'package:nns_dapp/ui/_components/footer_gradient_button.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/page_button.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/transaction/wallet/select_source_wallet_page.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import 'package:nns_dapp/ui/transaction/wizard_path_button.dart';
+import '../../nns_dapp.dart';
 import 'account_row.dart';
 import 'balance_display_widget.dart';
 

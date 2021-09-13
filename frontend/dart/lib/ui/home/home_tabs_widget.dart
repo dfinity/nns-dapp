@@ -1,10 +1,7 @@
 import 'package:core/core.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/neurons/tab/neurons_tab_widget.dart';
-import 'package:dfinity_wallet/ui/proposals/governance_tab_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/accounts_tab_widget.dart';
-
-import '../../dfinity.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/proposals/governance_tab_widget.dart';
+import '../../nns_dapp.dart';
 
 const DEPLOY_ENV = String.fromEnvironment('DEPLOY_ENV');
 

@@ -1,12 +1,12 @@
-import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/neurons/following/neuron_followees_card.dart';
-import 'package:dfinity_wallet/ui/neurons/detail/neuron_rewards_card.dart';
-import 'package:dfinity_wallet/ui/neurons/detail/neuron_state_card.dart';
-import 'package:dfinity_wallet/ui/neurons/proposal/neuron_proposals_card.dart';
-import '../../../dfinity.dart';
+import 'package:nns_dapp/ui/_components/constrain_width_and_center.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/neurons/following/neuron_followees_card.dart';
+import 'package:nns_dapp/ui/neurons/proposal/neuron_proposals_card.dart';
+import '../../../nns_dapp.dart';
+import 'neuron_hotkeys_card.dart';
+import 'neuron_rewards_card.dart';
+import 'neuron_state_card.dart';
 import 'neuron_votes_card.dart';
-import 'package:dfinity_wallet/ui/neurons/detail/neuron_hotkeys_card.dart';
 
 const DEPLOY_ENV = String.fromEnvironment('DEPLOY_ENV');
 

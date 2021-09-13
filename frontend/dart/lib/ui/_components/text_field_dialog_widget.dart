@@ -1,9 +1,8 @@
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import 'debounced_validated_form_field.dart';
 import 'form_utils.dart';
+import 'responsive.dart';
+import 'valid_fields_submit_button.dart';
 
 class TextFieldDialogWidget extends StatefulWidget {
   final Function(String walletName) onComplete;

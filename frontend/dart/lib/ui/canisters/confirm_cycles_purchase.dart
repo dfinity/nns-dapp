@@ -1,11 +1,10 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
-
-import '../../dfinity.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/transaction/wallet/transaction_done_widget.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import '../../nns_dapp.dart';
 import 'cycle_calculator.dart';
 
 class ConfirmCyclesPurchase extends StatelessWidget {

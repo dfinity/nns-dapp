@@ -1,6 +1,5 @@
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-
-import '../../../dfinity.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import '../../../nns_dapp.dart';
 
 class ProposalSummaryWidget extends StatelessWidget {
   final BigInt proposalId;

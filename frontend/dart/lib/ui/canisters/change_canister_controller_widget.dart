@@ -1,10 +1,10 @@
-import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
+import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
 
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 class ChangeCanisterControllerWidget extends StatefulWidget {
   final Canister canister;

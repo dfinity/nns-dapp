@@ -1,9 +1,8 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:flutter/material.dart';
-
-import '../../dfinity.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import '../../nns_dapp.dart';
+import 'responsive.dart';
 
 class MaxButton extends StatefulWidget {
   final ValidatedTextField amountField;

@@ -1,7 +1,7 @@
-import 'package:dfinity_wallet/data/icp.dart';
 import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
-import '../../dfinity.dart';
+import 'package:nns_dapp/data/icp.dart';
+import '../../nns_dapp.dart';
 
 extension AllValid<T> on List<ValidatedField<T>> {
   bool get allAreValid =>

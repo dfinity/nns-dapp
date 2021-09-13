@@ -1,6 +1,6 @@
-import 'package:dfinity_wallet/ui/wallet/transaction_row.dart';
+import 'package:nns_dapp/ui/wallet/transaction_row.dart';
 
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 class TransactionsListWidget extends StatelessWidget {
   final Account? account;
@@ -13,7 +13,9 @@ class TransactionsListWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(height: 20,),
+        SizedBox(
+          height: 20,
+        ),
         ...account?.transactions.mapToList((e) =>
                 TransactionRow(transaction: e, currentAccount: account!)) ??
             []

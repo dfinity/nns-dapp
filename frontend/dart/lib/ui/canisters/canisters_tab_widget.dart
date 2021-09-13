@@ -1,16 +1,15 @@
 import 'package:core/core.dart';
-import 'package:dfinity_wallet/data/canister.dart';
-import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
-import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/page_button.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
-import 'package:dfinity_wallet/ui/canisters/select_canister_add_action_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-import 'package:dfinity_wallet/ui/ui.dart';
-import 'package:dfinity_wallet/dfinity.dart';
+import 'package:nns_dapp/ui/_components/constrain_width_and_center.dart';
+import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
+import 'package:nns_dapp/ui/_components/footer_gradient_button.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/page_button.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/tab_title_and_content.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import '../../nns_dapp.dart';
+import '../../wallet_router_delegate.dart';
+import 'select_canister_add_action_widget.dart';
 
 class CansitersPage extends StatefulWidget {
   @override

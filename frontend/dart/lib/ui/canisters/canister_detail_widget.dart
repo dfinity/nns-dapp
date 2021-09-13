@@ -1,14 +1,13 @@
-import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
-import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
-import 'package:dfinity_wallet/ui/_components/page_button.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/canisters/select_cycles_origin_widget.dart';
-import 'package:dfinity_wallet/ui/canisters/top_up_cycles_amount_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-
-import '../../dfinity.dart';
+import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
+import 'package:nns_dapp/ui/_components/constrain_width_and_center.dart';
+import 'package:nns_dapp/ui/_components/footer_gradient_button.dart';
+import 'package:nns_dapp/ui/_components/page_button.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import '../../nns_dapp.dart';
 import 'change_canister_controller_widget.dart';
+import 'select_cycles_origin_widget.dart';
+import 'top_up_cycles_amount_widget.dart';
 
 class CanisterDetailWidget extends StatefulWidget {
   final Canister canister;

@@ -1,8 +1,9 @@
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
-import '../../../dfinity.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+
+import '../../../nns_dapp.dart';
 import '../wizard_overlay.dart';
+import 'enter_amount_page.dart';
 
 class SelectNeuronTopUpSourceWallet extends StatefulWidget {
   final Neuron neuron;

@@ -1,4 +1,4 @@
-import 'package:dfinity_wallet/dfinity.dart';
+import 'nns_dapp.dart';
 
 Future<void> _showSessionExpiredAlert(BuildContext context) async {
   return showDialog<void>(

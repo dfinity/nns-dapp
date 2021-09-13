@@ -1,17 +1,17 @@
-import 'package:dfinity_wallet/resource_orchstrator.dart';
-import 'package:dfinity_wallet/resources_loading_page.dart';
-import 'package:dfinity_wallet/ui/canisters/canister_detail_widget.dart';
-import 'package:dfinity_wallet/ui/home/auth_widget.dart';
-import 'package:dfinity_wallet/ui/home/home_tabs_widget.dart';
-import 'package:dfinity_wallet/ui/home/landing_widget.dart';
-import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
-import 'package:dfinity_wallet/ui/neurons/detail/neuron_detail_widget.dart';
-import 'package:dfinity_wallet/ui/proposals/proposal_detail_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/account_detail_widget.dart';
+import 'package:nns_dapp/resource_orchstrator.dart';
 import 'package:observable/observable.dart' hide ChangeNotifier;
 
-import 'dfinity.dart';
+import 'nns_dapp.dart';
 import 'ic_api/platform_ic_api.dart';
+import 'resources_loading_page.dart';
+import 'ui/canisters/canister_detail_widget.dart';
+import 'ui/home/auth_widget.dart';
+import 'ui/home/home_tabs_widget.dart';
+import 'ui/home/landing_widget.dart';
+import 'ui/neuron_info/neuron_info_widget.dart';
+import 'ui/neurons/detail/neuron_detail_widget.dart';
+import 'ui/proposals/proposal_detail_widget.dart';
+import 'ui/wallet/account_detail_widget.dart';
 
 abstract class PageConfig {
   final String path;
@@ -101,7 +101,7 @@ class ApiObjectPage {
 ApiObjectPage neuronInfoPage =
     ApiObjectPage("/neuron_info", (identifier) => NeuronInfoWidget(identifier));
 
-class EntityPageDefinition<T extends DfinityEntity> {
+class EntityPageDefinition<T extends NnsDappEntity> {
   final ObservableMap<String, T> Function(HiveBoxes boxes) fetchBox;
   final Widget Function(T entity) createWidget;
   final String pathTemplate;

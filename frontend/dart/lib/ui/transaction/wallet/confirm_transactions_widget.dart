@@ -1,13 +1,13 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/hardware_wallet_connection_widget.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/transaction/wallet/transaction_details_widget.dart';
+import 'package:nns_dapp/ui/transaction/wallet/transaction_done_widget.dart';
+import 'package:nns_dapp/ui/wallet/hardware_wallet_connection_widget.dart';
 import 'package:universal_html/js.dart' as js;
 
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
 import '../wizard_overlay.dart';
 import 'hardware_wallet_transaction_widget.dart';
 
