@@ -128,6 +128,9 @@ class ServiceApi {
 
   @JS("detachCanister")
   external Promise<double> detachCanister(DetachCanisterRequest request);
+
+  @JS("principalToAccountIdentifier")
+  external String principalToAccountIdentifier(String principal);
 }
 
 @JS()
@@ -182,13 +185,13 @@ class TopUpNeuronRequest {
 
 @JS()
 @anonymous
-class DisperseNeuronRequest {
+class DisburseNeuronRequest {
   external dynamic neuronId;
   external dynamic amount;
-  external String toAccountId;
+  external String? toAccountId;
 
-  external factory DisperseNeuronRequest(
-      {dynamic neuronId, dynamic amount, String toAccountId});
+  external factory DisburseNeuronRequest(
+      {dynamic neuronId, dynamic amount, String? toAccountId});
 }
 
 @JS()

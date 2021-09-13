@@ -78,6 +78,7 @@ import {
   CanisterIdString,
   E8s,
   NeuronId,
+  PrincipalString,
 } from "./canisters/common/types";
 import { LedgerIdentity } from "./ledger/identity";
 import { HOST } from "./canisters/constants";
@@ -89,6 +90,8 @@ import {
   TopUpCanisterRequest,
   TopUpCanisterResponse,
 } from "./canisters/topUpCanister";
+import { principalToAccountIdentifier } from "./canisters/converter";
+import { Principal } from "@dfinity/principal";
 
 /**
  * An API for interacting with various canisters.
@@ -138,6 +141,12 @@ export default class ServiceApi {
       this.nnsUiService.renameSubAccount(request)
     );
   };
+
+  public principalToAccountIdentifier(
+    principal: PrincipalString
+  ): AccountIdentifier {
+    return principalToAccountIdentifier(Principal.fromText(principal));
+  }
 
   public registerHardwareWallet = (
     name: string,
