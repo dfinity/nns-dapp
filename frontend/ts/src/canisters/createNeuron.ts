@@ -20,6 +20,10 @@ export default async function (
   governanceService: GovernanceService,
   request: CreateNeuronRequest
 ): Promise<NeuronId> {
+  if (request.stake < 100000000) {
+    throw "Need a minimum of 1 ICP to stake a neuron";
+  }
+
   const nonceBytes = new Uint8Array(randomBytes(8));
   const nonce = convert.uint8ArrayToBigInt(nonceBytes);
   const toSubAccount = buildSubAccount(nonceBytes, principal);

@@ -4,13 +4,21 @@
  * As this matures, we may eventually spin it out to a proper tool for
  * people who prefer using CLI over the NNS dapp.
  */
-import { Command } from "commander";
+import { Command, Option } from "commander";
 import { LedgerIdentity } from "./src/ledger/identity";
 import { principalToAccountIdentifier } from "./src/canisters/converter";
 import governanceBuilder from "./src/canisters/governance/builder";
-import GovernanceService from "./src/canisters/governance/model";
+import GovernanceService, {
+  EmptyResponse,
+} from "./src/canisters/governance/model";
 import LedgerService from "./src/canisters/ledger/model";
-import { AnonymousIdentity, HttpAgent, SignIdentity } from "@dfinity/agent";
+import {
+  Agent,
+  AnonymousIdentity,
+  HttpAgent,
+  Identity,
+  SignIdentity,
+} from "@dfinity/agent";
 import ledgerBuilder from "./src/canisters/ledger/builder";
 import {
   AccountIdentifier,
@@ -18,6 +26,7 @@ import {
   PrincipalString,
 } from "./src/canisters/common/types";
 import HardwareWalletApi from "./src/HardwareWalletApi";
+import chalk from "chalk";
 
 // Add polyfill for `window.fetch` for agent-js to work.
 // @ts-ignore (no types are available)
@@ -25,36 +34,58 @@ import fetch from "node-fetch";
 global.fetch = fetch;
 
 const program = new Command();
-
-// TODO: Make this configurable.
-const HOST = "https://nnsdapp.dfinity.network";
+const log = console.log;
 
 async function getGovernanceService(
   identity: SignIdentity
 ): Promise<GovernanceService> {
-  const agent = new HttpAgent({
-    host: HOST,
-    identity: identity,
-  });
-
-  // TODO: only fetch rootkey on testnet.
-  await agent.fetchRootKey();
-
-  return governanceBuilder(agent, identity);
+  return governanceBuilder(await getAgent(identity), identity);
 }
 
-async function getLedgerService(
-  identity: SignIdentity
-): Promise<LedgerService> {
+async function getLedgerService(identity: Identity): Promise<LedgerService> {
+  return ledgerBuilder(await getAgent(identity));
+}
+
+async function getAgent(identity: Identity): Promise<Agent> {
+  const network = program.opts().network;
+
+  // Only fetch the rootkey if the network isn't mainnet.
+  const fetchRootKey = new URL(network).host == "ic0.app" ? false : true;
+
   const agent = new HttpAgent({
-    host: HOST,
+    host: program.opts().network,
     identity: identity,
   });
 
-  // TODO: only fetch rootkey on testnet.
-  await agent.fetchRootKey();
+  if (fetchRootKey) {
+    await agent.fetchRootKey();
+  }
 
-  return ledgerBuilder(agent);
+  return agent;
+}
+
+/**
+ * Displays the account idenifier on the terminal and the wallet's screen.
+ */
+async function showInfo(showOnDevice?: boolean) {
+  const identity = await getLedgerIdentity();
+  const principal = identity.getPrincipal();
+  const accountIdentifier = principalToAccountIdentifier(principal);
+
+  const balance = await (
+    await getLedgerService(new AnonymousIdentity())
+  ).getBalances({
+    accounts: [accountIdentifier],
+  });
+
+  log(chalk.bold(`Principal: `) + principal);
+  log(chalk.bold(`Address (${identity.derivePath}): `) + accountIdentifier);
+  log(chalk.bold(`Balance (e8s): `) + balance[accountIdentifier]);
+
+  if (showOnDevice) {
+    log("Displaying the principal and the address on the device...");
+    await identity.showAddressAndPubKeyOnDevice();
+  }
 }
 
 /**
@@ -66,20 +97,15 @@ async function getBalance() {
     identity.getPrincipal()
   );
 
-  console.log(`Fetching balance for account: ${accountIdentifier}`);
-
-  const ledgerAgent = new HttpAgent({
-    host: HOST,
-    identity: new AnonymousIdentity(),
-  });
-
-  const ledgerService = ledgerBuilder(ledgerAgent);
+  const ledgerService = await getLedgerService(new AnonymousIdentity());
 
   const balances = await ledgerService.getBalances({
     accounts: [accountIdentifier],
   });
 
-  console.log(balances[accountIdentifier]);
+  ok(
+    `Address ${accountIdentifier} has balance ${balances[accountIdentifier]} e8s`
+  );
 }
 
 /**
@@ -91,13 +117,17 @@ async function getBalance() {
 async function sendICP(to: AccountIdentifier, amount: string) {
   const identity = await LedgerIdentity.create();
   const ledger = await getLedgerService(identity);
-  const response = await ledger.sendICPTs({
+  const blockHeight = await ledger.sendICPTs({
     to: to,
     amount: BigInt(amount),
     memo: BigInt(0),
   });
 
-  console.log(response);
+  log(
+    `${chalk.green(
+      chalk.bold("OK")
+    )}: Transaction completed at block height ${blockHeight}.`
+  );
 }
 
 /**
@@ -109,7 +139,7 @@ async function stakeNeuron(amount: E8s) {
   const identity = await LedgerIdentity.create();
   const hwApi = await HardwareWalletApi.create(identity);
   const neuronId = await hwApi.createNeuron(amount);
-  console.log(`Staked neuron with ID: ${neuronId}`);
+  ok(`Staked neuron with ID: ${neuronId}`);
 }
 
 async function addHotkey(neuronId: string, principal: string) {
@@ -120,7 +150,8 @@ async function addHotkey(neuronId: string, principal: string) {
     neuronId: BigInt(neuronId),
     principal: principal,
   });
-  console.log(response);
+
+  logResult(response);
 }
 
 async function removeHotkey(neuronId: string, principal: string) {
@@ -131,7 +162,7 @@ async function removeHotkey(neuronId: string, principal: string) {
     neuronId: BigInt(neuronId),
     principal: principal,
   });
-  console.log(response);
+  logResult(response);
 }
 
 async function disburseNeuron(
@@ -148,7 +179,7 @@ async function disburseNeuron(
     toAccountId: to,
     amount: amount ? BigInt(amount) : undefined,
   });
-  console.log(response);
+  ok(`Disburse completed at block height ${response.transferBlockHeight}`);
 }
 
 async function spawnNeuron(neuronId: string, controller?: PrincipalString) {
@@ -159,7 +190,7 @@ async function spawnNeuron(neuronId: string, controller?: PrincipalString) {
     neuronId: BigInt(neuronId),
     newController: controller ? controller : null,
   });
-  console.log(response);
+  ok(`Spawned neuron with ID ${response.createdNeuronId}`);
 }
 
 async function increaseDissolveDelay(
@@ -169,12 +200,11 @@ async function increaseDissolveDelay(
   const identity = await LedgerIdentity.create();
   const governance = await getGovernanceService(identity);
 
-  console.log(
-    await governance.increaseDissolveDelay({
-      neuronId: BigInt(neuronId),
-      additionalDissolveDelaySeconds: Number.parseInt(additionalDelaySeconds),
-    })
-  );
+  const response = await governance.increaseDissolveDelay({
+    neuronId: BigInt(neuronId),
+    additionalDissolveDelaySeconds: Number.parseInt(additionalDelaySeconds),
+  });
+  logResult(response);
 }
 
 async function startDissolving(neuronId: string) {
@@ -184,7 +214,7 @@ async function startDissolving(neuronId: string) {
   ).startDissolving({
     neuronId: BigInt(neuronId),
   });
-  console.log(response);
+  logResult(response);
 }
 
 async function stopDissolving(neuronId: string) {
@@ -194,7 +224,7 @@ async function stopDissolving(neuronId: string) {
   ).stopDissolving({
     neuronId: BigInt(neuronId),
   });
-  console.log(response);
+  log(response);
 }
 
 async function getLedgerIdentity(subaccount?: string): Promise<LedgerIdentity> {
@@ -206,86 +236,148 @@ async function listNeurons() {
   const identity = await LedgerIdentity.create();
   const res = await (await getGovernanceService(identity)).getNeuronsForHW();
 
-  res.forEach((n) => {
-    console.log(
-      `Neuron ID: ${n.id}, Amount: ${n.amount}, Hotkeys: ${n.hotKeys}`
-    );
-  });
+  // We filter neurons with no ICP, as they'll be garbage collected by the governance canister.
+  res
+    .filter((n) => BigInt(n.amount) > 0)
+    .forEach((n) => {
+      log(`Neuron ID: ${n.id}, Amount: ${n.amount}, Hotkeys: ${n.hotKeys}`);
+    });
+}
+
+async function r(x: Function) {
+  try {
+    await x();
+  } catch (err) {
+    log(`${chalk.bold(chalk.red("Error:"))} ${err}`);
+  }
+}
+
+function ok(message?: String) {
+  if (message) {
+    log(`${chalk.green(chalk.bold("OK"))}: ${message}`);
+  } else {
+    log(`${chalk.green(chalk.bold("OK"))}`);
+  }
+}
+
+function err(message: String) {
+  log(`${chalk.bold(chalk.red("Error:"))} ${message}`);
+}
+
+function logResult(res: EmptyResponse) {
+  if ("Ok" in res) {
+    ok();
+  } else if ("Err" in res) {
+    err(`${res.Err.errorType} ${res.Err.errorMessage}`);
+  }
 }
 
 async function main() {
-  program
-    .description("A CLI for the Ledger hardware wallet.")
+  const neuron = new Command("neuron")
+    .description("Commands for managing neurons.")
+    .showSuggestionAfterError()
     .addCommand(
-      new Command("balance")
-        .description("Fetch current balance.")
-        .action(getBalance)
-    )
-    .addCommand(
-      new Command("send-icp")
-        .requiredOption("--to <account-identifier>")
-        .requiredOption("--amount <amount>", "Amount to transfer in e8s.")
-        .action((args) => sendICP(args.to, args.amount))
-    )
-    .addCommand(
-      new Command("stake-neuron")
-        .description("Stake a new neuron.")
+      new Command("stake")
         .requiredOption("--amount <amount>", "Amount to stake in e8s.")
-        .action((args) => stakeNeuron(args.amount))
+        .action((args) => r(() => stakeNeuron(args.amount)))
     )
     .addCommand(
       new Command("increase-dissolve-delay")
         .requiredOption("--neuron-id <neuron-id>")
         .requiredOption("--additional-delay-secs <additional-delay-seconds>")
         .action((args) =>
-          increaseDissolveDelay(args.neuronId, args.additionalDelaySecs)
+          r(() =>
+            increaseDissolveDelay(args.neuronId, args.additionalDelaySecs)
+          )
         )
     )
     .addCommand(
-      new Command("add-hotkey")
-        .requiredOption("--neuron-id <neuron-id>")
-        .requiredOption("--principal <principal>")
-        .action((args) => addHotkey(args.neuronId, args.principal))
-    )
-    .addCommand(
-      new Command("remove-hotkey")
-        .requiredOption("--neuron-id <neuron-id>")
-        .requiredOption("--principal <principal>")
-        .action((args) => removeHotkey(args.neuronId, args.principal))
-    )
-    .addCommand(
-      new Command("start-dissolving")
-        .requiredOption("--neuron-id <neuron-id>")
-        .action((args) => {
-          startDissolving(args.neuronId);
-        })
-    )
-    .addCommand(
-      new Command("disburse-neuron")
+      new Command("disburse")
         .requiredOption("--neuron-id <neuron-id>")
         .option("--to <account-identifier>")
         .option("--amount <amount>")
         .option("--subaccount <subaccount>", "ID of the subaccount")
         .action((args) => {
-          disburseNeuron(args.neuronId, args.to, args.amount);
+          r(() => disburseNeuron(args.neuronId, args.to, args.amount));
         })
     )
     .addCommand(
-      new Command("spawn-neuron")
+      new Command("spawn")
         .requiredOption("--neuron-id <neuron-id>")
         .option("--controller <new-controller>")
         .action((args) => {
-          spawnNeuron(args.neuronId, args.controller);
+          r(() => spawnNeuron(args.neuronId, args.controller));
+        })
+    )
+    .addCommand(
+      new Command("start-dissolving")
+        .requiredOption("--neuron-id <neuron-id>")
+        .action((args) => {
+          r(() => startDissolving(args.neuronId));
         })
     )
     .addCommand(
       new Command("stop-dissolving")
         .requiredOption("--neuron-id <neuron-id>")
         .action((args) => {
-          stopDissolving(args.neuronId);
+          r(() => stopDissolving(args.neuronId));
         })
     )
-    .addCommand(new Command("list-neurons").action(listNeurons));
+    .addCommand(new Command("list").action(() => r(listNeurons)))
+    .addCommand(
+      new Command("add-hotkey")
+        .requiredOption("--neuron-id <neuron-id>")
+        .requiredOption("--principal <principal>")
+        .action((args) => r(() => addHotkey(args.neuronId, args.principal)))
+    )
+    .addCommand(
+      new Command("remove-hotkey")
+        .requiredOption("--neuron-id <neuron-id>")
+        .requiredOption("--principal <principal>")
+        .action((args) => r(() => removeHotkey(args.neuronId, args.principal)))
+    );
+
+  const icp = new Command("icp")
+    .description("Commands for managing ICP.")
+    .showSuggestionAfterError()
+    .addCommand(
+      new Command("balance")
+        .description("Fetch current balance.")
+        .action(() => {
+          r(getBalance);
+        })
+    )
+    .addCommand(
+      new Command("send")
+        .requiredOption(
+          "--to <account-identifier>",
+          "The address to send the funds to."
+        )
+        .requiredOption("--amount <amount>", "Amount to transfer in e8s.")
+        .action((args) => r(() => sendICP(args.to, args.amount)))
+    );
+
+  program
+    .description("A CLI for the Ledger hardware wallet.")
+    .enablePositionalOptions()
+    .showSuggestionAfterError()
+    .addOption(
+      new Option("--network <network>", "The IC network to talk to.")
+        .default("https://ic0.app")
+        .env("IC_NETWORK")
+    )
+    .addCommand(
+      new Command("info")
+        .option("-n --no-show-on-device")
+        .description("Show the wallet's principal, address, and balance.")
+        .action((args) => {
+          console.log(args);
+          console.log(program.opts().network);
+          r(() => showInfo(args.showOnDevice));
+        })
+    )
+    .addCommand(icp)
+    .addCommand(neuron);
 
   await program.parseAsync(process.argv);
 }
