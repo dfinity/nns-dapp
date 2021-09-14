@@ -1,11 +1,11 @@
-import NnsUiService, { MultiPartTransactionStatus } from "./nnsUI/model";
+import NnsDappService, { MultiPartTransactionStatus } from "./nnsDapp/model";
 import { BlockHeight } from "./common/types";
 import { Principal } from "@dfinity/principal";
 
 const ONE_MINUTE_MILLIS = 60 * 1000;
 
 export const pollUntilComplete = async (
-  nnsUiService: NnsUiService,
+  nnsDappService: NnsDappService,
   principal: Principal,
   blockHeight: BlockHeight
 ): Promise<MultiPartTransactionStatus> => {
@@ -15,7 +15,7 @@ export const pollUntilComplete = async (
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
     try {
-      const status = await nnsUiService.getMultiPartTransactionStatus(
+      const status = await nnsDappService.getMultiPartTransactionStatus(
         principal,
         blockHeight
       );

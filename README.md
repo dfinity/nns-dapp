@@ -17,10 +17,10 @@ We try to achieve some level of reproducibility using a Dockerized build
 environment. The following steps _should_ build the official Wasm image
 
     docker build -t internet-identity-service .
-    docker run --rm --entrypoint cat nns-dapp /nns_ui.wasm > nns_ui.wasm
-    sha256sum nns_ui.wasm
+    docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
+    sha256sum nns-dapp.wasm
 
-The resulting `nns_ui.wasm` is ready for deployment as
+The resulting `nns-dapp.wasm` is ready for deployment as
 `qoctq-giaaa-aaaaa-aaaea-cai`, which is the reserved principal for this service.
 
 Our CI also performs these steps; you can compare the SHA256 with the output there, or download the artifact there.
@@ -47,7 +47,7 @@ To deploy to the testnet, run the following:
 You can now access the frontend using:
 
 ```shell
-open "https://$(dfx canister --no-wallet --network testnet id nns_ui).nnsdapp.dfinity.network"
+open "https://$(dfx canister --no-wallet --network testnet id nns-dapp).nnsdapp.dfinity.network"
 ```
 
 To work on the UI locally, either use your IDE, or run the following:
