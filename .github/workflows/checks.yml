@@ -48,7 +48,7 @@ jobs:
         env:
           RUST_BACKTRACE: 1
 
-  flutter-tests:
+  flutter-build:
     runs-on: ubuntu-latest
     env:
       DEPLOY_ENV: mainnet
@@ -92,5 +92,14 @@ jobs:
       - run: flutter build web --web-renderer canvaskit --release --no-sound-null-safety
         working-directory: ./frontend/dart
 
+  flutter-test:
+    needs: flutter-build
+    steps:
       - run: flutter test
+        working-directory: ./frontend/dart
+
+  flutter-analyze:
+    needs: flutter-build
+    steps:
+      - run: flutter analyze
         working-directory: ./frontend/dart

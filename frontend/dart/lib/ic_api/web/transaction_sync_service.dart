@@ -22,6 +22,7 @@ class TransactionSyncService {
 
   Future<void> syncAccounts(Iterable<Account> accounts) async {
     await Future.wait(accounts.mapToList((e) => syncAccount(e)));
+    // ignore: deprecated_member_use
     hiveBoxes.accounts.notifyChange();
   }
 
