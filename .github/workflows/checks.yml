@@ -48,7 +48,7 @@ jobs:
         env:
           RUST_BACKTRACE: 1
 
-  flutter-build:
+  flutter-tests:
     runs-on: ubuntu-latest
     env:
       DEPLOY_ENV: mainnet
