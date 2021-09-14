@@ -96,7 +96,9 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                                 neuron: widget.source as Neuron,
                                 // this is intentional. send all of them.
                                 amount: widget.source.balance,
-                                toAccountId: widget.destination);
+                                toAccountId: widget.destination.contains("Self")
+                                    ? null
+                                    : widget.destination);
                           });
 
                           res.when(ok: (unit) {

@@ -158,38 +158,26 @@ export default class Service implements ServiceInterface {
       rawRequest.serializeBinary()
     );
 
-    const resp = PbManageNeuronResponse.deserializeBinary(rawResponse);
-
-    const error = resp.getError();
-    if (error) {
-      return {
-        Err: {
-          errorMessage: error.getErrorMessage(),
-          errorType: error.getErrorType(),
-        },
-      };
-    } else {
-      return { Ok: null };
-    }
+    return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
   public removeHotKey = async (
     request: RemoveHotKeyRequest
   ): Promise<EmptyResponse> => {
-    await submitUpdateRequest(
+    const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
       this.requestConverters.fromRemoveHotKeyRequest(request).serializeBinary()
     );
 
-    return { Ok: null };
+    return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
   public startDissolving = async (
     request: StartDissolvingRequest
   ): Promise<EmptyResponse> => {
-    await submitUpdateRequest(
+    const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
@@ -197,13 +185,13 @@ export default class Service implements ServiceInterface {
         .fromStartDissolvingRequest(request)
         .serializeBinary()
     );
-    return { Ok: null };
+    return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
   public stopDissolving = async (
     request: StopDissolvingRequest
   ): Promise<EmptyResponse> => {
-    await submitUpdateRequest(
+    const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
@@ -211,13 +199,13 @@ export default class Service implements ServiceInterface {
         .fromStopDissolvingRequest(request)
         .serializeBinary()
     );
-    return { Ok: null };
+    return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
   public increaseDissolveDelay = async (
     request: IncreaseDissolveDelayRequest
   ): Promise<EmptyResponse> => {
-    await submitUpdateRequest(
+    const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
@@ -226,7 +214,7 @@ export default class Service implements ServiceInterface {
         .serializeBinary()
     );
 
-    return { Ok: null };
+    return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
   public follow = async (request: FollowRequest): Promise<EmptyResponse> => {
@@ -378,4 +366,21 @@ export default class Service implements ServiceInterface {
 
     throw `Error claiming/refreshing neuron: ${JSON.stringify(result)}`;
   };
+}
+
+/**
+ * Convert a protobuf manage neuron response to an `EmptyResponse`.
+ */
+function toResponse(resp: PbManageNeuronResponse): EmptyResponse {
+  const error = resp.getError();
+  if (error) {
+    return {
+      Err: {
+        errorMessage: error.getErrorMessage(),
+        errorType: error.getErrorType(),
+      },
+    };
+  } else {
+    return { Ok: null };
+  }
 }

@@ -31,13 +31,12 @@ class _MaxButtonState extends State<MaxButton> {
             widget.amountField.initialText = (widget.source.balance -
                     ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
                 .asString(withSeparators: false);
-          },
+          }.takeIf((e) => (widget.source.balance != ICP.zero)),
           child: Padding(
             padding: const EdgeInsets.all(0.0),
             child: Text(
               'Max',
-              style:
-                  TextStyle(fontSize: Responsive.isMobile(context) ? 12 : 16),
+              style: TextStyle(fontSize: Responsive.isMobile(context) ? 8 : 16),
             ),
           ),
         ),

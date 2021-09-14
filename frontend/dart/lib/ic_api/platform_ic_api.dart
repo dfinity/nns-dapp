@@ -60,7 +60,7 @@ abstract class AbstractPlatformICApi {
   Future<Result<Unit, Exception>> disburse(
       {required Neuron neuron,
       required ICP amount,
-      required String toAccountId});
+      String? toAccountId});
 
   Future<void> mergeMaturity(
       {required BigInt neuronId, required int percentageToMerge});
@@ -84,7 +84,8 @@ abstract class AbstractPlatformICApi {
 
   Future<Neuron?> fetchNeuron({required BigInt neuronId});
 
-  Future<Result<List<NeuronInfoForHW>, Exception>> fetchNeuronsForHW();
+  Future<Result<List<NeuronInfoForHW>, Exception>> fetchNeuronsForHW(
+      Account account);
 
   Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId});
 
@@ -111,10 +112,10 @@ abstract class AbstractPlatformICApi {
 
   Future<Result<dynamic, Exception>> connectToHardwareWallet();
 
-  Future<HardwareWalletApi> createHardwareWalletApi({dynamic ledgerIdentity});
+  Future<HardwareWalletApi> createHardwareWalletApi(dynamic ledgerIdentity);
 
   Future<void> registerHardwareWallet(
-      {required String name, dynamic ledgerIdentity});
+      {required String name, required dynamic ledgerIdentity});
 
   Future<void> renameSubAccount(
       {required String accountIdentifier, required String newName});
@@ -136,4 +137,8 @@ abstract class AbstractPlatformICApi {
   Account? getAccountByPrincipal(String principal);
 
   bool isNeuronControllable(Neuron neuron);
+
+  Future<void> showPrincipalAndAddressOnDevice(Account account);
+
+  String principalToAccountIdentifier(String principal);
 }
