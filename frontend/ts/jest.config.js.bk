@@ -1,0 +1,7 @@
+module.exports = {
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
+  setupFiles: [`./test-setup.ts`],
+  moduleDirectories: ["node_modules"],
+  modulePathIgnorePatterns: ["./build"]
+};
