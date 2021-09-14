@@ -2,7 +2,7 @@
 library ic_agent.js;
 
 import 'package:js/js.dart';
-import 'package:nns_dapp/data/canister.dart';
+import '../../nns_dapp.dart';
 import 'js_utils.dart';
 
 @JS("createServiceApi")

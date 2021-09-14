@@ -201,7 +201,8 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                                   final res = await context
                                                       .callUpdate(() => context
                                                           .icApi
-                                                          .fetchNeuronsForHW());
+                                                          .fetchNeuronsForHW(
+                                                              account));
 
                                                   res.when(
                                                       ok: (neurons) {

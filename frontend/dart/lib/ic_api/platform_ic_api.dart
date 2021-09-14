@@ -60,7 +60,7 @@ abstract class AbstractPlatformICApi {
   Future<Result<Unit, Exception>> disburse(
       {required Neuron neuron,
       required ICP amount,
-      String? toAccountId});
+      required String? toAccountId});
 
   Future<void> mergeMaturity(
       {required BigInt neuronId, required int percentageToMerge});
