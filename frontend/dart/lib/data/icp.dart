@@ -1,5 +1,5 @@
-import 'package:dfinity_wallet/data/number_formatter.dart';
 import 'package:flutter/services.dart';
+import 'number_formatter.dart';
 
 final _e8sPerICP = BigInt.from(100000000);
 
@@ -75,6 +75,14 @@ class ICP {
 
   ICP operator -(ICP other) {
     return ICP.fromE8s(_e8s - other._e8s);
+  }
+
+  bool operator ==(Object other) {
+    if (other is ICP) {
+      return _e8s == other._e8s;
+    } else {
+      return false;
+    }
   }
 }
 

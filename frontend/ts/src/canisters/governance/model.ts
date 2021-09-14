@@ -222,6 +222,11 @@ export interface NeuronInfo {
   ageSeconds: bigint;
   fullNeuron: Option<Neuron>;
 }
+export interface NeuronInfoForHw {
+  id: string;
+  amount: string; // TODO: make them bigint?
+  hotKeys: Array<PrincipalString>;
+}
 export interface NodeProvider {
   id: Option<PrincipalString>;
 }
@@ -470,6 +475,7 @@ export type EmptyResponse = { Ok: null } | { Err: GovernanceError };
 export default interface ServiceInterface {
   getNeuron: (neuronId: NeuronId) => Promise<Option<NeuronInfo>>;
   getNeurons: () => Promise<Array<NeuronInfo>>;
+  getNeuronsForHW: () => Promise<Array<NeuronInfoForHw>>;
   getPendingProposals: () => Promise<Array<ProposalInfo>>;
   getProposalInfo: (proposalId: bigint) => Promise<Option<ProposalInfo>>;
   listProposals: (

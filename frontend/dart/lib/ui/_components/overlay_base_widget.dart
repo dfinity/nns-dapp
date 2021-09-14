@@ -1,12 +1,10 @@
 import 'dart:math';
-
 import 'package:core/app_colors.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
 import 'package:flutter/material.dart';
-
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import '../../resource_orchstrator.dart';
 import '../../wallet_router_delegate.dart';
+import 'responsive.dart';
 
 class OverlayBaseWidget extends StatefulWidget {
   static OverlayEntry show(

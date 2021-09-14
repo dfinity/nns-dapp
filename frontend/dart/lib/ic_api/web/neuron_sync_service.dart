@@ -1,13 +1,7 @@
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/data/topic.dart';
 import 'package:universal_html/js_util.dart';
-
-import 'package:dfinity_wallet/data/ballot_info.dart';
-import 'package:dfinity_wallet/data/followee.dart';
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/data/neuron_state.dart';
-import 'package:dfinity_wallet/data/topic.dart';
-import 'package:dfinity_wallet/data/vote.dart';
-
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import 'service_api.dart';
 import 'dart:convert';
 import 'stringify.dart';
@@ -112,7 +106,7 @@ class NeuronSyncService {
   }
 }
 
-class NeuronInfo extends DfinityEntity {
+class NeuronInfo extends NnsDappEntity {
   final BigInt neuronId;
   final BigInt dissolveDelaySeconds;
   final List<BallotInfo> recentBallots;

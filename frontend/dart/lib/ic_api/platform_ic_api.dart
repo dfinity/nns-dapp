@@ -1,13 +1,12 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/data/proposal_reward_status.dart';
-import 'package:dfinity_wallet/data/topic.dart';
-import 'package:dfinity_wallet/data/vote.dart';
-import 'package:dfinity_wallet/ic_api/web/hardware_wallet_api.dart';
-import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
-import 'package:dfinity_wallet/ic_api/web/service_api.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/data/proposal_reward_status.dart';
+import 'package:nns_dapp/data/topic.dart';
 import 'package:oxidized/oxidized.dart';
 
-import '../dfinity.dart';
+import '../nns_dapp.dart';
+import 'web/hardware_wallet_api.dart';
+import 'web/neuron_sync_service.dart';
+import 'web/service_api.dart';
 
 abstract class AbstractPlatformICApi {
   final HiveBoxesWidget hiveBoxes;
@@ -31,8 +30,7 @@ abstract class AbstractPlatformICApi {
   Future<void> createSubAccount({required String name});
 
   Future<Result<Unit, Exception>> sendICP(
-      {
-      required String fromAccount,
+      {required String fromAccount,
       required String toAccount,
       required ICP amount,
       int? fromSubAccount});
@@ -62,12 +60,15 @@ abstract class AbstractPlatformICApi {
   Future<Result<Unit, Exception>> disburse(
       {required Neuron neuron,
       required ICP amount,
-      required String toAccountId});
+      required String? toAccountId});
 
   Future<void> mergeMaturity(
       {required BigInt neuronId, required int percentageToMerge});
 
   Future<Result<Unit, Exception>> addHotkey(
+      {required BigInt neuronId, required String principal});
+
+  Future<Result<Unit, Exception>> addHotkeyForHW(
       {required BigInt neuronId, required String principal});
 
   Future<Result<Unit, Exception>> removeHotkey(
@@ -82,6 +83,9 @@ abstract class AbstractPlatformICApi {
   Future<Proposal> fetchProposal({required BigInt proposalId});
 
   Future<Neuron?> fetchNeuron({required BigInt neuronId});
+
+  Future<Result<List<NeuronInfoForHW>, Exception>> fetchNeuronsForHW(
+      Account account);
 
   Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId});
 
@@ -108,10 +112,10 @@ abstract class AbstractPlatformICApi {
 
   Future<Result<dynamic, Exception>> connectToHardwareWallet();
 
-  Future<HardwareWalletApi> createHardwareWalletApi({dynamic ledgerIdentity});
+  Future<HardwareWalletApi> createHardwareWalletApi(dynamic ledgerIdentity);
 
   Future<void> registerHardwareWallet(
-      {required String name, dynamic ledgerIdentity});
+      {required String name, required dynamic ledgerIdentity});
 
   Future<void> renameSubAccount(
       {required String accountIdentifier, required String newName});
@@ -133,4 +137,8 @@ abstract class AbstractPlatformICApi {
   Account? getAccountByPrincipal(String principal);
 
   bool isNeuronControllable(Neuron neuron);
+
+  Future<void> showPrincipalAndAddressOnDevice(Account account);
+
+  String principalToAccountIdentifier(String principal);
 }

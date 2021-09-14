@@ -1,6 +1,5 @@
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
+import 'responsive.dart';
 
 class TabTitleAndContent extends StatelessWidget {
   final String title;

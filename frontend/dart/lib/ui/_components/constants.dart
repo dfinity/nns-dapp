@@ -1,4 +1,4 @@
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 const kTextSizeLarge = 24.0;
 const kTextSizeSmall = 16.0;

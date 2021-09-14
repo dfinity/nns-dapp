@@ -1,4 +1,4 @@
-import 'package:dfinity_wallet/data/icp.dart';
+import 'package:nns_dapp/data/icp.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -57,5 +57,11 @@ void main() {
             .fromString("1000000.000001")
             .asString(minDecimals: 1, maxDecimals: 6),
         "1'000'000.000001");
+  });
+
+  test("ICP.==", () {
+    assert(ICP.fromString("1.23") == ICP.fromE8s(BigInt.from(123000000)));
+    assert(ICP.fromString("1.23") != ICP.fromE8s(BigInt.from(123000001)));
+    assert(ICP.fromString("0") == ICP.fromE8s(BigInt.zero));
   });
 }

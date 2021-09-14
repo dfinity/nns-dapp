@@ -1,10 +1,9 @@
-import 'package:dfinity_wallet/ic_api/web/stringify.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
+import 'package:nns_dapp/ic_api/web/stringify.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
 
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/dfinity.dart';
 
 enum WalletConnectionState {
   NOT_CONNECTED,

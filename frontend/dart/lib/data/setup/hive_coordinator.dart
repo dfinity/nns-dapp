@@ -1,10 +1,5 @@
-import 'package:dfinity_wallet/data/canister.dart';
-import 'package:dfinity_wallet/data/neuron.dart';
-import 'package:dfinity_wallet/data/proposal.dart';
-import 'package:dfinity_wallet/data/account.dart';
-import 'package:dfinity_wallet/dfinity.dart';
+import '../data.dart';
 import 'package:observable/observable.dart';
-
 
 class HiveBoxes {
   ObservableMap<String, Canister> canisters = ObservableMap.linked();
@@ -18,5 +13,4 @@ class HiveBoxes {
     neurons.removeWhere((k, v) => true);
     proposals.removeWhere((k, v) => true);
   }
-
 }

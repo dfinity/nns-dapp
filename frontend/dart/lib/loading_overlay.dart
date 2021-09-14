@@ -1,5 +1,6 @@
-import 'package:dfinity_wallet/dfinity.dart';
 // import 'package:flutter_gifimage/flutter_gifimage.dart';
+
+import 'nns_dapp.dart';
 
 class LoadingOverlayController extends StatefulWidget {
   final Widget child;
@@ -79,7 +80,7 @@ class _NodeState extends State<NodeOverlay> with TickerProviderStateMixin {
         widget.tapped();
       },
       child: AnimatedOpacity(
-        opacity: visible ? 1.0 : 0.0,
+        opacity: visible ? 0.7 : 0.0,
         duration: 1.seconds,
         child: Container(
             color: AppColors.lightBackground.withOpacity(0.9),

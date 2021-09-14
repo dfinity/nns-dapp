@@ -1,7 +1,6 @@
-import 'package:dfinity_wallet/data/vote.dart';
+import 'vote.dart';
 
-class BallotInfo  {
+class BallotInfo {
   late Vote vote;
   late String proposalId;
 }
-

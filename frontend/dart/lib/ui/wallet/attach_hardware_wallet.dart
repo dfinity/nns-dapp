@@ -1,5 +1,6 @@
-import 'package:dfinity_wallet/ic_api/web/stringify.dart';
-import '../../dfinity.dart';
+import 'package:nns_dapp/ic_api/web/stringify.dart';
+
+import '../../nns_dapp.dart';
 import 'hardware_wallet_connection_widget.dart';
 import 'package:universal_html/js.dart' as js;
 

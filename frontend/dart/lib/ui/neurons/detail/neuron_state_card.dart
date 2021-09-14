@@ -1,16 +1,16 @@
-import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/neurons/tab/neuron_row.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/select_neuron_top_up_source_wallet_page.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-import 'package:universal_html/js.dart' as js;
-import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
-import 'package:oxidized/oxidized.dart';
-
-import '../../../dfinity.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/neurons/tab/neuron_row.dart';
+import 'package:nns_dapp/ui/transaction/wallet/confirm_transactions_widget.dart';
+import 'package:nns_dapp/ui/transaction/wallet/select_destination_wallet_page.dart';
+import 'package:nns_dapp/ui/transaction/wallet/select_neuron_top_up_source_wallet_page.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import '../../../nns_dapp.dart';
 import '../increase_dissolve_delay_widget.dart';
+import 'package:universal_html/js.dart' as js;
 
 GlobalKey _toolTipKey = GlobalKey();
 
@@ -234,14 +234,31 @@ class NeuronStateCard extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              OverlayBaseWidget.show(
-                  context,
-                  WizardOverlay(
-                    rootTitle: 'Disburse Neuron',
-                    rootWidget: SelectDestinationAccountPage(
-                      source: neuron,
-                    ),
-                  ));
+              if (neuron.controller != icApi.getPrincipal()) {
+                // This is a disburse for a HW wallet account.
+                // Currently, disbursing is only supported to the neuron's controller.
+                // TODO(EXC-452): Remove this restriction once NNS1-680 is deployed.
+                OverlayBaseWidget.show(
+                    context,
+                    WizardOverlay(
+                        rootTitle: "Review Transaction",
+                        rootWidget: ConfirmTransactionWidget(
+                            // if we're disbursing, no fee?
+                            fee: ICP.zero,
+                            amount: this.neuron.stake,
+                            source: this.neuron,
+                            destination:
+                                "Self (${icApi.principalToAccountIdentifier(neuron.controller)}")));
+              } else {
+                OverlayBaseWidget.show(
+                    context,
+                    WizardOverlay(
+                      rootTitle: 'Disburse Neuron',
+                      rootWidget: SelectDestinationAccountPage(
+                        source: neuron,
+                      ),
+                    ));
+              }
             }.takeIf((e) => icApi.isNeuronControllable(neuron)));
       case NeuronState.UNSPECIFIED:
         return ElevatedButton(child: Text(""), onPressed: () {});

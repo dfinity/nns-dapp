@@ -1,14 +1,14 @@
-import 'package:dfinity_wallet/data/proposal.dart';
-import 'package:dfinity_wallet/data/proposal_reward_status.dart';
-import 'package:dfinity_wallet/data/topic.dart';
-import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/footer_gradient_button.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/multi_select_list.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/_components/tab_title_and_content.dart';
-import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
+import 'package:nns_dapp/data/proposal_reward_status.dart';
+import 'package:nns_dapp/data/topic.dart';
+import 'package:nns_dapp/ui/_components/constrain_width_and_center.dart';
+import 'package:nns_dapp/ui/_components/footer_gradient_button.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/multi_select_list.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/tab_title_and_content.dart';
+import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
+
+import '../../nns_dapp.dart';
 
 class GovernanceTabWidget extends StatefulWidget {
   @override

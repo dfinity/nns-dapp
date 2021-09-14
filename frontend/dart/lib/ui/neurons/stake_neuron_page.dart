@@ -1,18 +1,17 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/data/icp_source.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/max_button.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/neurons/detail/hardware_neuron.dart';
-import 'package:dfinity_wallet/ui/neurons/increase_dissolve_delay_widget.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/max_button.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
 import 'package:universal_html/js.dart' as js;
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
 import 'package:flutter/services.dart';
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import 'package:dartx/dartx.dart';
+import 'detail/hardware_neuron.dart';
 import 'following/configure_followers_page.dart';
+import 'increase_dissolve_delay_widget.dart';
 
 class StakeNeuronPage extends StatefulWidget {
   final Account source;

@@ -449,3 +449,333 @@ export namespace GovernanceError {
   export const ErrorType: ErrorTypeMap;
 }
 
+export class ListNeurons extends jspb.Message {
+  clearNeuronIdsList(): void;
+  getNeuronIdsList(): Array<string>;
+  setNeuronIdsList(value: Array<string>): void;
+  addNeuronIds(value: string, index?: number): string;
+
+  getIncludeNeuronsReadableByCaller(): boolean;
+  setIncludeNeuronsReadableByCaller(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ListNeurons.AsObject;
+  static toObject(includeInstance: boolean, msg: ListNeurons): ListNeurons.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ListNeurons, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ListNeurons;
+  static deserializeBinaryFromReader(message: ListNeurons, reader: jspb.BinaryReader): ListNeurons;
+}
+
+export namespace ListNeurons {
+  export type AsObject = {
+    neuronIdsList: Array<string>,
+    includeNeuronsReadableByCaller: boolean,
+  }
+}
+
+export class ListNeuronsResponse extends jspb.Message {
+  clearNeuronIdsList(): void;
+  getNeuronIdsList(): Array<ListNeuronsResponse.NeuronMapEntry>;
+  setNeuronIdsList(value: Array<ListNeuronsResponse.NeuronMapEntry>): void;
+  addNeuronIds(value?: ListNeuronsResponse.NeuronMapEntry, index?: number): ListNeuronsResponse.NeuronMapEntry;
+
+  clearFullNeuronsList(): void;
+  getFullNeuronsList(): Array<Neuron>;
+  setFullNeuronsList(value: Array<Neuron>): void;
+  addFullNeurons(value?: Neuron, index?: number): Neuron;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ListNeuronsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ListNeuronsResponse): ListNeuronsResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ListNeuronsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ListNeuronsResponse;
+  static deserializeBinaryFromReader(message: ListNeuronsResponse, reader: jspb.BinaryReader): ListNeuronsResponse;
+}
+
+export namespace ListNeuronsResponse {
+  export type AsObject = {
+    neuronIdsList: Array<ListNeuronsResponse.NeuronMapEntry.AsObject>,
+    fullNeuronsList: Array<Neuron.AsObject>,
+  }
+
+  export class NeuronMapEntry extends jspb.Message {
+    getKey(): string;
+    setKey(value: string): void;
+
+    hasValue(): boolean;
+    clearValue(): void;
+    getValue(): NeuronInfo | undefined;
+    setValue(value?: NeuronInfo): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): NeuronMapEntry.AsObject;
+    static toObject(includeInstance: boolean, msg: NeuronMapEntry): NeuronMapEntry.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: NeuronMapEntry, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): NeuronMapEntry;
+    static deserializeBinaryFromReader(message: NeuronMapEntry, reader: jspb.BinaryReader): NeuronMapEntry;
+  }
+
+  export namespace NeuronMapEntry {
+    export type AsObject = {
+      key: string,
+      value?: NeuronInfo.AsObject,
+    }
+  }
+}
+
+export class BallotInfo extends jspb.Message {
+  hasProposalId(): boolean;
+  clearProposalId(): void;
+  getProposalId(): base_types_pb.ProposalId | undefined;
+  setProposalId(value?: base_types_pb.ProposalId): void;
+
+  getVote(): VoteMap[keyof VoteMap];
+  setVote(value: VoteMap[keyof VoteMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): BallotInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: BallotInfo): BallotInfo.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: BallotInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): BallotInfo;
+  static deserializeBinaryFromReader(message: BallotInfo, reader: jspb.BinaryReader): BallotInfo;
+}
+
+export namespace BallotInfo {
+  export type AsObject = {
+    proposalId?: base_types_pb.ProposalId.AsObject,
+    vote: VoteMap[keyof VoteMap],
+  }
+}
+
+export class NeuronInfo extends jspb.Message {
+  getRetrievedAtTimestampSeconds(): string;
+  setRetrievedAtTimestampSeconds(value: string): void;
+
+  getAgeSeconds(): string;
+  setAgeSeconds(value: string): void;
+
+  getDissolveDelaySeconds(): string;
+  setDissolveDelaySeconds(value: string): void;
+
+  clearRecentBallotsList(): void;
+  getRecentBallotsList(): Array<BallotInfo>;
+  setRecentBallotsList(value: Array<BallotInfo>): void;
+  addRecentBallots(value?: BallotInfo, index?: number): BallotInfo;
+
+  getVotingPower(): string;
+  setVotingPower(value: string): void;
+
+  getCreatedTimestampSeconds(): string;
+  setCreatedTimestampSeconds(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): NeuronInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: NeuronInfo): NeuronInfo.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: NeuronInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): NeuronInfo;
+  static deserializeBinaryFromReader(message: NeuronInfo, reader: jspb.BinaryReader): NeuronInfo;
+}
+
+export namespace NeuronInfo {
+  export type AsObject = {
+    retrievedAtTimestampSeconds: string,
+    ageSeconds: string,
+    dissolveDelaySeconds: string,
+    recentBallotsList: Array<BallotInfo.AsObject>,
+    votingPower: string,
+    createdTimestampSeconds: string,
+  }
+}
+
+export class Neuron extends jspb.Message {
+  hasId(): boolean;
+  clearId(): void;
+  getId(): base_types_pb.NeuronId | undefined;
+  setId(value?: base_types_pb.NeuronId): void;
+
+  getAccount(): Uint8Array | string;
+  getAccount_asU8(): Uint8Array;
+  getAccount_asB64(): string;
+  setAccount(value: Uint8Array | string): void;
+
+  hasController(): boolean;
+  clearController(): void;
+  getController(): base_types_pb.PrincipalId | undefined;
+  setController(value?: base_types_pb.PrincipalId): void;
+
+  clearHotKeysList(): void;
+  getHotKeysList(): Array<base_types_pb.PrincipalId>;
+  setHotKeysList(value: Array<base_types_pb.PrincipalId>): void;
+  addHotKeys(value?: base_types_pb.PrincipalId, index?: number): base_types_pb.PrincipalId;
+
+  getCachedNeuronStakeE8s(): string;
+  setCachedNeuronStakeE8s(value: string): void;
+
+  getNeuronFeesE8s(): string;
+  setNeuronFeesE8s(value: string): void;
+
+  getCreatedTimestampSeconds(): string;
+  setCreatedTimestampSeconds(value: string): void;
+
+  getAgingSinceTimestampSeconds(): string;
+  setAgingSinceTimestampSeconds(value: string): void;
+
+  hasWhenDissolvedTimestampSeconds(): boolean;
+  clearWhenDissolvedTimestampSeconds(): void;
+  getWhenDissolvedTimestampSeconds(): string;
+  setWhenDissolvedTimestampSeconds(value: string): void;
+
+  hasDissolveDelaySeconds(): boolean;
+  clearDissolveDelaySeconds(): void;
+  getDissolveDelaySeconds(): string;
+  setDissolveDelaySeconds(value: string): void;
+
+  getFolloweesMap(): jspb.Map<number, Neuron.Followees>;
+  clearFolloweesMap(): void;
+  clearRecentBallotsList(): void;
+  getRecentBallotsList(): Array<BallotInfo>;
+  setRecentBallotsList(value: Array<BallotInfo>): void;
+  addRecentBallots(value?: BallotInfo, index?: number): BallotInfo;
+
+  getKycVerified(): boolean;
+  setKycVerified(value: boolean): void;
+
+  hasTransfer(): boolean;
+  clearTransfer(): void;
+  getTransfer(): NeuronStakeTransfer | undefined;
+  setTransfer(value?: NeuronStakeTransfer): void;
+
+  getMaturityE8sEquivalent(): string;
+  setMaturityE8sEquivalent(value: string): void;
+
+  getNotForProfit(): boolean;
+  setNotForProfit(value: boolean): void;
+
+  getDissolveStateCase(): Neuron.DissolveStateCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Neuron.AsObject;
+  static toObject(includeInstance: boolean, msg: Neuron): Neuron.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Neuron, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Neuron;
+  static deserializeBinaryFromReader(message: Neuron, reader: jspb.BinaryReader): Neuron;
+}
+
+export namespace Neuron {
+  export type AsObject = {
+    id?: base_types_pb.NeuronId.AsObject,
+    account: Uint8Array | string,
+    controller?: base_types_pb.PrincipalId.AsObject,
+    hotKeysList: Array<base_types_pb.PrincipalId.AsObject>,
+    cachedNeuronStakeE8s: string,
+    neuronFeesE8s: string,
+    createdTimestampSeconds: string,
+    agingSinceTimestampSeconds: string,
+    whenDissolvedTimestampSeconds: string,
+    dissolveDelaySeconds: string,
+    followeesMap: Array<[number, Neuron.Followees.AsObject]>,
+    recentBallotsList: Array<BallotInfo.AsObject>,
+    kycVerified: boolean,
+    transfer?: NeuronStakeTransfer.AsObject,
+    maturityE8sEquivalent: string,
+    notForProfit: boolean,
+  }
+
+  export class Followees extends jspb.Message {
+    clearFolloweesList(): void;
+    getFolloweesList(): Array<base_types_pb.NeuronId>;
+    setFolloweesList(value: Array<base_types_pb.NeuronId>): void;
+    addFollowees(value?: base_types_pb.NeuronId, index?: number): base_types_pb.NeuronId;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Followees.AsObject;
+    static toObject(includeInstance: boolean, msg: Followees): Followees.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Followees, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Followees;
+    static deserializeBinaryFromReader(message: Followees, reader: jspb.BinaryReader): Followees;
+  }
+
+  export namespace Followees {
+    export type AsObject = {
+      followeesList: Array<base_types_pb.NeuronId.AsObject>,
+    }
+  }
+
+  export enum DissolveStateCase {
+    DISSOLVE_STATE_NOT_SET = 0,
+    WHEN_DISSOLVED_TIMESTAMP_SECONDS = 9,
+    DISSOLVE_DELAY_SECONDS = 10,
+  }
+}
+
+export class NeuronStakeTransfer extends jspb.Message {
+  getTransferTimestamp(): string;
+  setTransferTimestamp(value: string): void;
+
+  hasFrom(): boolean;
+  clearFrom(): void;
+  getFrom(): base_types_pb.PrincipalId | undefined;
+  setFrom(value?: base_types_pb.PrincipalId): void;
+
+  getFromSubaccount(): Uint8Array | string;
+  getFromSubaccount_asU8(): Uint8Array;
+  getFromSubaccount_asB64(): string;
+  setFromSubaccount(value: Uint8Array | string): void;
+
+  getToSubaccount(): Uint8Array | string;
+  getToSubaccount_asU8(): Uint8Array;
+  getToSubaccount_asB64(): string;
+  setToSubaccount(value: Uint8Array | string): void;
+
+  getNeuronStakeE8s(): string;
+  setNeuronStakeE8s(value: string): void;
+
+  getBlockHeight(): string;
+  setBlockHeight(value: string): void;
+
+  getMemo(): string;
+  setMemo(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): NeuronStakeTransfer.AsObject;
+  static toObject(includeInstance: boolean, msg: NeuronStakeTransfer): NeuronStakeTransfer.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: NeuronStakeTransfer, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): NeuronStakeTransfer;
+  static deserializeBinaryFromReader(message: NeuronStakeTransfer, reader: jspb.BinaryReader): NeuronStakeTransfer;
+}
+
+export namespace NeuronStakeTransfer {
+  export type AsObject = {
+    transferTimestamp: string,
+    from?: base_types_pb.PrincipalId.AsObject,
+    fromSubaccount: Uint8Array | string,
+    toSubaccount: Uint8Array | string,
+    neuronStakeE8s: string,
+    blockHeight: string,
+    memo: string,
+  }
+}
+
+export interface VoteMap {
+  VOTE_UNSPECIFIED: 0;
+  VOTE_YES: 1;
+  VOTE_NO: 2;
+}
+
+export const Vote: VoteMap;
+

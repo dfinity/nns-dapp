@@ -1,9 +1,9 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
 
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
 
 class TransactionDetailsWidget extends StatelessWidget {
   final ICP amount;

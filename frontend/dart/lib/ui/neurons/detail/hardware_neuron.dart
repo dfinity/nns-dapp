@@ -1,9 +1,8 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:universal_html/js_util.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:universal_html/js.dart' as js;
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
 
 class HardwareWalletNeuron extends StatefulWidget {
   final NeuronId neuronId;
@@ -135,21 +134,15 @@ class _HardwareWalletNeuronState extends State<HardwareWalletNeuron> {
                           fontSize: Responsive.isMobile(context) ? 14 : 16),
                     ),
                     onPressed: () async {
-                      final ledgerIdentity =
-                          await context.icApi.connectToHardwareWallet();
-                      final hwApi = await context.icApi.createHardwareWalletApi(
-                          ledgerIdentity: ledgerIdentity);
-                      try {
-                        await context.callUpdate(() => promiseToFuture(
-                            hwApi.addHotKey(widget.neuronId.toString(),
-                                context.icApi.getPrincipal())));
-                        await context.icApi.refreshNeurons();
+                      final res = await context.callUpdate(() => context.icApi
+                          .addHotkeyForHW(
+                              neuronId: widget.neuronId.asBigInt(),
+                              principal: context.icApi.getPrincipal()));
 
-                        widget.onAddHotkey(context);
-                      } catch (err) {
-                        // Error occurred adding hotkey. Display the error.
-                        js.context.callMethod("alert", ["$err"]);
-                      }
+                      res.when(
+                          ok: (unit) => widget.onAddHotkey(context),
+                          err: (err) =>
+                              js.context.callMethod("alert", ["$err"]));
                     }),
               ),
             ],

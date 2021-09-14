@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 
-const DfinityTextTheme = TextTheme(
+const NnsDappTextTheme = TextTheme(
   headline1: TextStyle(
       fontSize: 40,
       fontFamily: Fonts.circularBold,

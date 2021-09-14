@@ -5,7 +5,7 @@ export 'setup/hive_coordinator.dart';
 export 'canister.dart';
 export 'neuron.dart';
 export 'proposal.dart';
-export 'dfinity_entity.dart';
+export 'nns_dapp_entity.dart';
 export 'icp_source.dart';
 export 'neuron_state.dart';
 export 'followee.dart';

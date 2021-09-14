@@ -25,6 +25,7 @@ import GovernanceService, {
   MergeMaturityRequest,
   MergeMaturityResponse,
   NeuronInfo,
+  NeuronInfoForHw,
   RegisterVoteRequest,
   RemoveHotKeyRequest,
   SpawnRequest,
@@ -77,6 +78,7 @@ import {
   CanisterIdString,
   E8s,
   NeuronId,
+  PrincipalString,
 } from "./canisters/common/types";
 import { LedgerIdentity } from "./ledger/identity";
 import { HOST } from "./canisters/constants";
@@ -88,6 +90,8 @@ import {
   TopUpCanisterRequest,
   TopUpCanisterResponse,
 } from "./canisters/topUpCanister";
+import { principalToAccountIdentifier } from "./canisters/converter";
+import { Principal } from "@dfinity/principal";
 
 /**
  * An API for interacting with various canisters.
@@ -137,6 +141,12 @@ export default class ServiceApi {
       this.nnsUiService.renameSubAccount(request)
     );
   };
+
+  public principalToAccountIdentifier(
+    principal: PrincipalString
+  ): AccountIdentifier {
+    return principalToAccountIdentifier(Principal.fromText(principal));
+  }
 
   public registerHardwareWallet = (
     name: string,
@@ -205,6 +215,14 @@ export default class ServiceApi {
   public getNeurons = (): Promise<Array<NeuronInfo>> => {
     return executeWithLogging(() =>
       getAndRefreshNeurons(this.governanceService, this.ledgerService)
+    );
+  };
+
+  public getNeuronsForHw = (
+    identity: Identity
+  ): Promise<Array<NeuronInfoForHw>> => {
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).getNeuronsForHW()
     );
   };
 

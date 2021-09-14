@@ -1,15 +1,16 @@
-import 'package:dfinity_wallet/ui/_components/overlay_base_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-import 'package:dfinity_wallet/ui/transaction/select_transaction_type_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:dfinity_wallet/dfinity.dart';
+import 'package:nns_dapp/data/account.dart';
+import 'package:nns_dapp/ui/_components/overlay_base_widget.dart';
+import 'package:nns_dapp/ui/transaction/select_transaction_type_widget.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import '/ui/_components/text_theme.dart';
 
 class AccountActionsWidget extends StatefulWidget {
-
   final Account primaryAccount;
 
   const AccountActionsWidget({
-    Key? key, required this.primaryAccount,
+    Key? key,
+    required this.primaryAccount,
   }) : super(key: key);
 
   @override
@@ -17,8 +18,6 @@ class AccountActionsWidget extends StatefulWidget {
 }
 
 class _AccountActionsWidgetState extends State<AccountActionsWidget> {
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,15 +40,18 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
               ),
             ),
             onPressed: () {
-              OverlayBaseWidget.show(context, WizardOverlay(
-                rootTitle: 'Manage ICP',
-                rootWidget: SelectAccountTransactionTypeWidget(source: widget.primaryAccount,),
-              ));
+              OverlayBaseWidget.show(
+                  context,
+                  WizardOverlay(
+                    rootTitle: 'Manage ICP',
+                    rootWidget: SelectAccountTransactionTypeWidget(
+                      source: widget.primaryAccount,
+                    ),
+                  ));
             },
           ),
         ],
       ),
     );
   }
-
 }

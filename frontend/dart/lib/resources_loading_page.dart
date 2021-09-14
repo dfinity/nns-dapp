@@ -1,6 +1,5 @@
-import 'package:dfinity_wallet/ui/home/landing_widget.dart';
-
-import 'dfinity.dart';
+import 'nns_dapp.dart';
+import 'ui/home/landing_widget.dart';
 
 class ResourcesLoadingPageConfig extends PageConfig {
   final Future<PageConfig> destinationPage;

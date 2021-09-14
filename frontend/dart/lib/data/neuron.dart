@@ -1,17 +1,16 @@
 import 'dart:math';
-
-import 'package:dfinity_wallet/data/ballot_info.dart';
-import 'package:dfinity_wallet/data/icp_source.dart';
-import 'package:dfinity_wallet/data/proposal.dart';
-import 'package:dfinity_wallet/data/vote.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'dfinity_entity.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'ballot_info.dart';
+import 'icp_source.dart';
+import 'nns_dapp_entity.dart';
 import 'followee.dart';
 import 'icp.dart';
 import 'neuron_state.dart';
 import 'package:core/extensions.dart';
 import 'package:dartx/dartx.dart';
 import 'package:collection/collection.dart';
+import 'proposal.dart';
+import 'vote.dart';
 
 // TODO: Use NeuronID everywhere.
 class NeuronId {
@@ -33,7 +32,7 @@ class NeuronId {
   }
 }
 
-class Neuron extends DfinityEntity with ICPSource {
+class Neuron extends NnsDappEntity with ICPSource {
   late String id;
   late List<BallotInfo> recentBallots;
   late String createdTimestampSeconds;
@@ -109,4 +108,18 @@ class Neuron extends DfinityEntity with ICPSource {
 
   @override
   ICPSourceType get type => ICPSourceType.NEURON;
+}
+
+/// A structure used for holding the necessary we need when pulling neuron
+/// info from HW wallets.
+///
+/// TODO(NNS1-698): Remove this once fetchNeurons is fully migrated to using
+/// the protobuf endpoints.
+class NeuronInfoForHW {
+  final NeuronId id;
+  final ICP amount;
+  final List<String> hotkeys;
+
+  NeuronInfoForHW(
+      {required this.id, required this.amount, required this.hotkeys});
 }

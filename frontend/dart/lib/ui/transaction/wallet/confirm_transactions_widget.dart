@@ -1,13 +1,13 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_details_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/hardware_wallet_connection_widget.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/transaction/wallet/transaction_details_widget.dart';
+import 'package:nns_dapp/ui/transaction/wallet/transaction_done_widget.dart';
+import 'package:nns_dapp/ui/wallet/hardware_wallet_connection_widget.dart';
 import 'package:universal_html/js.dart' as js;
 
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
 import '../wizard_overlay.dart';
 import 'hardware_wallet_transaction_widget.dart';
 
@@ -96,7 +96,9 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                                 neuron: widget.source as Neuron,
                                 // this is intentional. send all of them.
                                 amount: widget.source.balance,
-                                toAccountId: widget.destination);
+                                toAccountId: widget.destination.contains("Self")
+                                    ? null
+                                    : widget.destination);
                           });
 
                           res.when(ok: (unit) {
@@ -107,6 +109,7 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                                   amount: widget.amount,
                                   source: widget.source,
                                   destination: widget.destination,
+                                  followOnPage: neuronTabsPage,
                                 ));
                           }, err: (err) {
                             // Disburse failed. Display the error.

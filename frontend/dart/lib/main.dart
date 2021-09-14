@@ -1,17 +1,14 @@
 import 'package:core/app_colors.dart';
-import 'package:dfinity_wallet/dfinity.dart';
-import 'package:dfinity_wallet/route_information_parser.dart';
-import 'package:dfinity_wallet/wallet_router_delegate.dart';
+import 'nns_dapp.dart';
+import 'route_information_parser.dart';
+import 'wallet_router_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-// ignore: unused_import
-import 'ic_api/web/web_ic_api.dart';
 
 void main() {
   final hiveBoxes = HiveBoxes();
   final router = WalletRouterDelegate(hiveBoxes);
-  runApp(DfinityApp(
+  runApp(NnsDapp(
     hiveBoxes: hiveBoxes,
     router: router,
   ));
@@ -44,11 +41,11 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   bool shouldReload(AppLocalizationsDelegate old) => false;
 }
 
-class DfinityApp extends StatelessWidget {
+class NnsDapp extends StatelessWidget {
   final HiveBoxes hiveBoxes;
   final WalletRouterDelegate router;
 
-  const DfinityApp({Key? key, required this.hiveBoxes, required this.router})
+  const NnsDapp({Key? key, required this.hiveBoxes, required this.router})
       : super(key: key);
 
   @override
@@ -76,7 +73,7 @@ class DfinityApp extends StatelessWidget {
                 100: AppColors.blue100,
                 50: AppColors.blue50,
               }),
-              textTheme: DfinityTextTheme,
+              textTheme: NnsDappTextTheme,
               elevatedButtonTheme: ElevatedButtonThemeData(
                   style: ButtonStyle(
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(

@@ -1,8 +1,8 @@
 @JS()
 library ic_agent.js;
 
-import 'package:dfinity_wallet/data/canister.dart';
 import 'package:js/js.dart';
+import '../../nns_dapp.dart';
 import 'js_utils.dart';
 
 @JS("createServiceApi")
@@ -52,6 +52,9 @@ class ServiceApi {
 
   @JS("getNeurons")
   external Promise<dynamic> getNeurons();
+
+  @JS("getNeuronsForHw")
+  external Promise<dynamic> getNeuronsForHw(dynamic identity);
 
   @JS("getPendingProposals")
   external Promise<dynamic> getPendingProposals();
@@ -125,6 +128,9 @@ class ServiceApi {
 
   @JS("detachCanister")
   external Promise<double> detachCanister(DetachCanisterRequest request);
+
+  @JS("principalToAccountIdentifier")
+  external String principalToAccountIdentifier(String principal);
 }
 
 @JS()
@@ -179,13 +185,13 @@ class TopUpNeuronRequest {
 
 @JS()
 @anonymous
-class DisperseNeuronRequest {
+class DisburseNeuronRequest {
   external dynamic neuronId;
   external dynamic amount;
-  external String toAccountId;
+  external String? toAccountId;
 
-  external factory DisperseNeuronRequest(
-      {dynamic neuronId, dynamic amount, String toAccountId});
+  external factory DisburseNeuronRequest(
+      {dynamic neuronId, dynamic amount, String? toAccountId});
 }
 
 @JS()

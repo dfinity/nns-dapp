@@ -1,11 +1,11 @@
-import 'package:dfinity_wallet/ic_api/web/neuron_sync_service.dart';
-import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/neurons/detail/proposal_summary_widget.dart';
+import 'package:nns_dapp/ic_api/web/neuron_sync_service.dart';
+import 'package:nns_dapp/ui/_components/constrain_width_and_center.dart';
+import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/neurons/detail/proposal_summary_widget.dart';
 
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 class NeuronInfoWidget extends StatefulWidget {
   final String neuronId;

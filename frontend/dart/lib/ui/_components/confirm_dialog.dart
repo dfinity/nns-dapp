@@ -1,6 +1,5 @@
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
+import 'responsive.dart';
 
 class ConfirmDialog extends StatelessWidget {
   final String title;
@@ -76,9 +75,9 @@ class ConfirmDialog extends StatelessWidget {
                                       Responsive.isMobile(context) ? 12 : 15),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
+                            await onConfirm();
                             OverlayBaseWidget.of(context)?.dismiss();
-                            onConfirm();
                           }),
                     )
                   ],

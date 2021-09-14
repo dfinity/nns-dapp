@@ -1,6 +1,6 @@
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
 
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 class WizardPathButton extends StatelessWidget {
   final String title;

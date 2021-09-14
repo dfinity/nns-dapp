@@ -1,11 +1,9 @@
-import 'dart:js_util';
-
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
 import 'package:universal_html/js.dart' as js;
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
 
 class NeuronHotkeysCard extends StatelessWidget {
   final Neuron neuron;
@@ -194,21 +192,18 @@ class _AddHotkeysState extends State<AddHotkeys> {
                           err: (err) =>
                               js.context.callMethod("alert", ["$err"]));
                     } else {
-                      // This neuron is probably controlled by a HW wallet.
-                      final ledgerIdentity =
-                          await context.icApi.connectToHardwareWallet();
-                      final hwApi = await context.icApi.createHardwareWalletApi(
-                          ledgerIdentity: ledgerIdentity);
-                      try {
-                        await context.callUpdate(() => promiseToFuture(hwApi
-                            .addHotKey(widget.neuron.id.toString(), hotKey)));
-                        await context.icApi.refreshNeurons();
-                        widget.neuron.hotkeys.add(hotKey);
-                        widget.onCompleteAction(context);
-                      } catch (err) {
-                        // Error occurred adding hotkey. Display the error.
-                        js.context.callMethod("alert", ["$err"]);
-                      }
+                      final res = await context.callUpdate(() => context.icApi
+                          .addHotkeyForHW(
+                              neuronId: widget.neuron.id.toBigInt,
+                              principal: hotKey));
+
+                      res.when(
+                          ok: (unit) {
+                            widget.neuron.hotkeys.add(hotKey);
+                            widget.onCompleteAction(context);
+                          },
+                          err: (err) =>
+                              js.context.callMethod("alert", ["$err"]));
                     }
                   },
                 ),
