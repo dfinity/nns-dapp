@@ -1,9 +1,8 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:universal_html/js_util.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:universal_html/js.dart' as js;
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
 
 class HardwareWalletNeuron extends StatefulWidget {
   final NeuronId neuronId;

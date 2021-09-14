@@ -1,10 +1,9 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/canisters/confirm_canister_creation.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-
-import '../../dfinity.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import '../../nns_dapp.dart';
+import 'confirm_canister_creation.dart';
 import 'cycles_input_widget.dart';
 
 class NewCanisterCyclesAmountWidget extends StatefulWidget {

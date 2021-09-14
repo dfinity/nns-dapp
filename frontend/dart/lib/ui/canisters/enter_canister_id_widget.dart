@@ -1,10 +1,9 @@
-import 'package:dfinity_wallet/ic_api/web/service_api.dart';
-import 'package:dfinity_wallet/ui/_components/confirm_dialog.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-
-import '../../dfinity.dart';
+import 'package:nns_dapp/ic_api/web/service_api.dart';
+import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
+import '../../nns_dapp.dart';
 
 class EnterCanisterIdWidget extends StatelessWidget {
   final ValidatedTextField idField = ValidatedTextField("Canister ID",

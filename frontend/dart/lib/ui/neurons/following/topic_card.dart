@@ -1,6 +1,6 @@
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
 
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
 import '../../../data/topic.dart';
 
 class TopicCardName extends StatelessWidget {

@@ -1,7 +1,7 @@
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
 
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
 
 class NeuronRow extends StatelessWidget {
   final Neuron neuron;

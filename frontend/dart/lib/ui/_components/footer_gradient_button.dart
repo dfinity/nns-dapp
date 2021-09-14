@@ -1,4 +1,4 @@
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 class FooterGradientButton extends StatelessWidget {
   final Widget footer;

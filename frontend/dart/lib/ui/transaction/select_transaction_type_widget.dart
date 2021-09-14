@@ -1,9 +1,8 @@
-
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/neurons/stake_neuron_page.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/select_destination_wallet_page.dart';
-
-import '../../dfinity.dart';
+import 'package:nns_dapp/data/account.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/neurons/stake_neuron_page.dart';
+import 'package:nns_dapp/ui/transaction/wallet/select_destination_wallet_page.dart';
+import '../../nns_dapp.dart';
 import 'wizard_overlay.dart';
 
 class SelectAccountTransactionTypeWidget extends StatelessWidget {
@@ -25,15 +24,21 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 buildButton(context, "Send", "Send ICP to another account", () {
-                  WizardOverlay.of(context).pushPage("Destination Account", SelectDestinationAccountPage(
-                    source: source,
-                  ));
+                  WizardOverlay.of(context).pushPage(
+                      "Destination Account",
+                      SelectDestinationAccountPage(
+                        source: source,
+                      ));
                 }),
                 SmallFormDivider(),
-                buildButton(context, "Stake", "Stake ICP in a neuron to participate in governance", () {
-                  WizardOverlay.of(context).pushPage("Stake Neuron", StakeNeuronPage(source: source));
+                buildButton(context, "Stake",
+                    "Stake ICP in a neuron to participate in governance", () {
+                  WizardOverlay.of(context).pushPage(
+                      "Stake Neuron", StakeNeuronPage(source: source));
                 }),
-                SizedBox(height: 50,)
+                SizedBox(
+                  height: 50,
+                )
               ],
             ),
           ),
@@ -42,14 +47,15 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
     );
   }
 
-  TextButton buildButton(BuildContext context, String title, String subtitle, Function() onPressed) {
+  TextButton buildButton(BuildContext context, String title, String subtitle,
+      Function() onPressed) {
     return TextButton(
       style: ButtonStyle(
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(24))),
+          shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24))),
           overlayColor: MaterialStateProperty.resolveWith((states) {
-              return AppColors.blue600.withOpacity(0.5);
-          })
-      ),
+            return AppColors.blue600.withOpacity(0.5);
+          })),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: SizedBox(
@@ -61,10 +67,13 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
                 title,
                 style: context.textTheme.headline3,
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Text(
                 subtitle,
-                style: context.textTheme.subtitle2?.copyWith(color: AppColors.gray200),
+                style: context.textTheme.subtitle2
+                    ?.copyWith(color: AppColors.gray200),
               ),
             ],
           ),

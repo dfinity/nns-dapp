@@ -1,4 +1,3 @@
-import 'package:dfinity_wallet/dfinity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,9 +38,15 @@ class _HomePageContainer extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (!landingPageVisible) HomePage(initialTabIndex: 0,),
+        if (!landingPageVisible)
+          HomePage(
+            initialTabIndex: 0,
+          ),
         if (landingPageAnimating || landingPageVisible)
-          AnimatedOpacity(duration: animationDuration, opacity: landingPageVisible ? 1 : 0, child: LandingPageWidget()),
+          AnimatedOpacity(
+              duration: animationDuration,
+              opacity: landingPageVisible ? 1 : 0,
+              child: LandingPageWidget()),
       ],
     );
   }

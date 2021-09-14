@@ -1,4 +1,4 @@
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 class MyVotesCard extends StatelessWidget {
   final List<Neuron> votedNeurons;

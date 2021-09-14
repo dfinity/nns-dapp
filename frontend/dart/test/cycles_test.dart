@@ -1,4 +1,4 @@
-import 'package:dfinity_wallet/data/cycles.dart';
+import 'package:nns_dapp/data/cycles.dart';
 import 'package:test/test.dart';
 
 void main() {

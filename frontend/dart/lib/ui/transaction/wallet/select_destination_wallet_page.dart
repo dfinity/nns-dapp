@@ -1,13 +1,13 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/data/icp_source.dart';
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/confirm_transactions_widget.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/enter_amount_page.dart';
-import '../../../dfinity.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
+
+import '../../../nns_dapp.dart';
 import '../wizard_overlay.dart';
+import 'confirm_transactions_widget.dart';
+import 'enter_amount_page.dart';
 
 class SelectDestinationAccountPage extends StatefulWidget {
   final ICPSource source;

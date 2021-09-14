@@ -1,13 +1,12 @@
-import 'package:dfinity_wallet/data/account.dart';
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ic_api/web/stringify.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ic_api/web/stringify.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/transaction/wallet/transaction_done_widget.dart';
+import 'package:nns_dapp/ui/wallet/hardware_wallet_connection_widget.dart';
 import 'package:universal_html/js.dart' as js;
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
-import 'package:dfinity_wallet/ui/transaction/wallet/transaction_done_widget.dart';
-import 'package:dfinity_wallet/ui/wallet/hardware_wallet_connection_widget.dart';
 
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
+import '../wizard_overlay.dart';
 
 class HardwareWalletTransactionWidget extends StatefulWidget {
   final ICP amount;
@@ -119,7 +118,7 @@ class _HardwareWalletTransactionWidgetState
                           source: widget.account,
                           destination: widget.destination,
                         ));
-                      }, err: (err) {
+                  }, err: (err) {
                     // An error occurred during transfer. Display the error.
                     js.context.callMethod("alert", ["$err"]);
                   });

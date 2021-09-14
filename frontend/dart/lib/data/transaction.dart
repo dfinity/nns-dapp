@@ -1,6 +1,6 @@
-import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'package:hive/hive.dart';
 import 'icp.dart';
+import 'transaction_type.dart';
 
 class Transaction extends HiveObject {
   final String from;

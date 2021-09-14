@@ -1,4 +1,4 @@
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 class SubAccountsListWidget extends StatelessWidget {
   final List<Account> subAccounts;
@@ -10,9 +10,7 @@ class SubAccountsListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: [
-
-      ],
+      children: [],
     );
   }
 }

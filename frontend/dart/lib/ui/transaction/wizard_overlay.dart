@@ -1,5 +1,6 @@
-import 'package:dfinity_wallet/ui/_components/custom_auto_size.dart';
-import '../../dfinity.dart';
+import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
+
+import '../../nns_dapp.dart';
 
 class WizardOverlay extends StatefulWidget {
   final Widget rootWidget;

@@ -1,12 +1,12 @@
-import 'package:dfinity_wallet/data/topic.dart';
-import 'package:dfinity_wallet/ui/_components/constants.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/neuron_info/neuron_info_widget.dart';
-import 'package:dfinity_wallet/ui/neurons/following/configure_followers_page.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
+import 'package:nns_dapp/data/topic.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
 
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
+import 'configure_followers_page.dart';
 
 class TopicFollowee {
   final String neuron;

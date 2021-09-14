@@ -2,11 +2,11 @@
 library ic_agent.js;
 
 import 'dart:convert';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/data/transaction_type.dart';
 import 'package:universal_html/js_util.dart';
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/data/transaction_type.dart';
 import 'service_api.dart';
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import 'stringify.dart';
 import 'package:js/js.dart';
 

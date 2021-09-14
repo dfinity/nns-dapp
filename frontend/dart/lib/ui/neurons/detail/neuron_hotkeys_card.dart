@@ -1,11 +1,9 @@
-import 'dart:js_util';
-
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/_components/responsive.dart';
-import 'package:dfinity_wallet/ui/_components/valid_fields_submit_button.dart';
-import 'package:dfinity_wallet/ui/transaction/wizard_overlay.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
+import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
 import 'package:universal_html/js.dart' as js;
-import '../../../dfinity.dart';
+import '../../../nns_dapp.dart';
 
 class NeuronHotkeysCard extends StatelessWidget {
   final Neuron neuron;

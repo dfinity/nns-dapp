@@ -1,12 +1,6 @@
-import 'package:dfinity_wallet/dfinity.dart';
+import '../nns_dapp.dart';
 
-
-enum NeuronState {
-UNSPECIFIED,
-LOCKED,
-DISSOLVING,
-UNLOCKED
-}
+enum NeuronState { UNSPECIFIED, LOCKED, DISSOLVING, UNLOCKED }
 
 extension NeuronStateDescription on NeuronState {
   String get description {

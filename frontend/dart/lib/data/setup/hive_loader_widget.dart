@@ -1,10 +1,7 @@
-import 'package:dfinity_wallet/data/data.dart';
-import 'package:dfinity_wallet/data/proposal.dart';
-import 'package:dfinity_wallet/data/account.dart';
 import 'package:observable/observable.dart';
 import 'hive_coordinator.dart';
 import '../data.dart';
-import 'package:dfinity_wallet/dfinity.dart';
+import 'package:nns_dapp/nns_dapp.dart';
 
 class HiveLoader extends StatefulWidget {
   final Widget child;

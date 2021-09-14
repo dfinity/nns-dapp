@@ -1,5 +1,6 @@
-import 'package:dfinity_wallet/dfinity.dart';
 // import 'package:flutter_gifimage/flutter_gifimage.dart';
+
+import 'nns_dapp.dart';
 
 class LoadingOverlayController extends StatefulWidget {
   final Widget child;

@@ -1,12 +1,9 @@
 import 'dart:convert';
+import 'package:nns_dapp/data/icp.dart';
 import 'package:universal_html/js_util.dart';
-
-import 'package:dfinity_wallet/data/icp.dart';
-
 import 'service_api.dart';
 import 'stringify.dart';
-
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 class AccountsSyncService {
   final ServiceApi serviceApi;

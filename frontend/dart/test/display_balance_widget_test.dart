@@ -1,7 +1,7 @@
-import 'package:dfinity_wallet/data/icp.dart';
-import 'package:dfinity_wallet/ui/wallet/balance_display_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nns_dapp/data/icp.dart';
+import 'package:nns_dapp/ui/wallet/balance_display_widget.dart';
 
 void main() {
   testWidgets('Display ICP', (WidgetTester tester) async {

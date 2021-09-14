@@ -1,8 +1,8 @@
 @JS()
 library ic_agent.js;
 
-import 'package:dfinity_wallet/data/canister.dart';
 import 'package:js/js.dart';
+import '../../nns_dapp.dart';
 import 'js_utils.dart';
 
 @JS("createServiceApi")

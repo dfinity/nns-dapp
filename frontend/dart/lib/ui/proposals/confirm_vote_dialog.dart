@@ -1,5 +1,4 @@
-
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 
 class ConfirmVoteDialog extends StatelessWidget {
   final String svg;
@@ -10,11 +9,11 @@ class ConfirmVoteDialog extends StatelessWidget {
 
   const ConfirmVoteDialog(
       {Key? key,
-        required this.svg,
-        required this.svgColor,
-        required this.title,
-        required this.description,
-        required this.onConfirm})
+      required this.svg,
+      required this.svgColor,
+      required this.title,
+      required this.description,
+      required this.onConfirm})
       : super(key: key);
 
   @override
@@ -57,7 +56,7 @@ class ConfirmVoteDialog extends StatelessWidget {
                       child: ElevatedButton(
                           style: ButtonStyle(
                               backgroundColor:
-                              MaterialStateProperty.all(AppColors.gray800)),
+                                  MaterialStateProperty.all(AppColors.gray800)),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text("Cancel"),

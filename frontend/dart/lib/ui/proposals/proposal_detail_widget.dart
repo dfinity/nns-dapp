@@ -1,9 +1,8 @@
-import 'package:dfinity_wallet/data/proposal.dart';
-import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
-import 'package:dfinity_wallet/ui/_components/form_utils.dart';
-import 'package:dfinity_wallet/ui/proposals/proposal_state_card.dart';
+import 'package:nns_dapp/ui/_components/constrain_width_and_center.dart';
+import 'package:nns_dapp/ui/_components/form_utils.dart';
+import 'package:nns_dapp/ui/proposals/proposal_state_card.dart';
 
-import '../../dfinity.dart';
+import '../../nns_dapp.dart';
 import 'cast_vote_widget.dart';
 import 'my_votes_card.dart';
 
