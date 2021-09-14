@@ -85,10 +85,10 @@ class ICP {
     }
   }
 
-  // @override
-  // int get hashCode {
-  //   return this._e8s.hashCode;
-  // }
+  @override
+  int get hashCode {
+    return this._e8s.hashCode;
+  }
 }
 
 class ICPTextInputFormatter extends TextInputFormatter {
