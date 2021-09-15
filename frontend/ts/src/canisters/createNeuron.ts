@@ -2,7 +2,7 @@ import { Principal } from "@dfinity/principal";
 import { sha256 } from "js-sha256";
 import LedgerService from "./ledger/model";
 import GovernanceService from "./governance/model";
-import NnsUiService from "./nnsUI/model";
+import NnsDappService from "./nnsDapp/model";
 import GOVERNANCE_CANISTER_ID from "./governance/canisterId";
 import randomBytes from "randombytes";
 import { BlockHeight, E8s, NeuronId } from "./common/types";
@@ -50,12 +50,12 @@ export default async function (
 
 /**
  * Create a neuron by sending a transaction to the Ledger and then waiting for
- * the NNS UI's backend to claim it.
+ * the NNS Dapp's backend to claim it.
  */
-export async function createNeuronWithNnsUi(
+export async function createNeuronWithNnsDapp(
   principal: Principal,
   ledgerService: LedgerService,
-  nnsUiService: NnsUiService,
+  nnsDappService: NnsDappService,
   request: CreateNeuronRequest
 ): Promise<BlockHeight> {
   const nonceBytes = new Uint8Array(randomBytes(8));
@@ -75,7 +75,11 @@ export async function createNeuronWithNnsUi(
     fromSubAccountId: request.fromSubAccountId,
   });
 
-  const outcome = await pollUntilComplete(nnsUiService, principal, blockHeight);
+  const outcome = await pollUntilComplete(
+    nnsDappService,
+    principal,
+    blockHeight
+  );
 
   if ("NeuronCreated" in outcome) {
     return outcome.NeuronCreated;

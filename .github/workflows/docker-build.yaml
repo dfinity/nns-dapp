@@ -13,14 +13,14 @@ jobs:
       - uses: actions/checkout@v2
       - run: docker build -t dfinity-wallet .
       - run: mkdir out/
-      - run: docker run --rm --entrypoint cat dfinity-wallet /nns_ui.wasm > out/nns_ui.wasm
+      - run: docker run --rm --entrypoint cat dfinity-wallet /nns-dapp.wasm > out/nns-dapp.wasm
       - run: docker run --rm --entrypoint cat dfinity-wallet /assets.tar.xz > out/assets.tar.xz
-      - run: sha256sum out/nns_ui.wasm
+      - run: sha256sum out/nns-dapp.wasm
       - name: 'Upload wasm module'
         uses: actions/upload-artifact@v2
         with:
           name: Backend wasm module
-          path: out/nns_ui.wasm
+          path: out/nns-dapp.wasm
       - name: 'Upload frontend assets'
         uses: actions/upload-artifact@v2
         with:

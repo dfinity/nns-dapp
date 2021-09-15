@@ -1,7 +1,7 @@
 import { Principal } from "@dfinity/principal";
 import LedgerService from "./ledger/model";
-import NnsUiService from "./nnsUI/model";
-import NNS_UI_CANISTER_ID from "./nnsUI/canisterId";
+import NnsDappService from "./nnsDapp/model";
+import NNS_DAPP_CANISTER_ID from "./nnsDapp/canisterId";
 import { CanisterIdString, E8s } from "./common/types";
 import * as convert from "./converter";
 import { TOP_UP_CANISTER_MEMO } from "./constants";
@@ -20,12 +20,12 @@ export type TopUpCanisterResponse =
 export async function topUpCanisterImpl(
   principal: Principal,
   ledgerService: LedgerService,
-  nnsUiService: NnsUiService,
+  nnsDappService: NnsDappService,
   request: TopUpCanisterRequest
 ): Promise<TopUpCanisterResponse> {
   const toSubAccount = buildSubAccount(request.canisterId);
   const recipient = convert.principalToAccountIdentifier(
-    NNS_UI_CANISTER_ID,
+    NNS_DAPP_CANISTER_ID,
     toSubAccount
   );
   const blockHeight = await ledgerService.sendICPTs({
@@ -35,7 +35,11 @@ export async function topUpCanisterImpl(
     fromSubAccountId: request.fromSubAccountId,
   });
 
-  const outcome = await pollUntilComplete(nnsUiService, principal, blockHeight);
+  const outcome = await pollUntilComplete(
+    nnsDappService,
+    principal,
+    blockHeight
+  );
 
   if ("Complete" in outcome) {
     return { complete: null };

@@ -108,7 +108,7 @@ pub fn init_assets() {
         ASSETS.with(|a| {
             let mut assets = a.borrow_mut();
 
-            let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
+            let compressed = include_bytes!("../../assets.tar.xz").to_vec();
             let mut decompressed = Vec::new();
             lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
             let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
