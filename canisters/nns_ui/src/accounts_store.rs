@@ -1651,7 +1651,7 @@ impl StableState for AccountsStore {
             }
         }
 
-        let account_store = AccountsStore {
+        Ok(AccountsStore {
             accounts_certifiable,
             transactions_certifiable,
             hardware_wallets_and_sub_accounts,
@@ -1668,9 +1668,7 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
-        };
-
-        Ok(account_store)
+        })
     }
 }
 
