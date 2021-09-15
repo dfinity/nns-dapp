@@ -31,9 +31,12 @@ use std::time::{Duration, SystemTime};
 type TransactionIndex = u64;
 
 #[derive(Default)]
-pub struct AccountsStore<'a> {
+pub struct AccountsStore {
+    #[allow(dead_code)]
     accounts_certifiable: RbTree<Vec<u8>, Account>,
-    transactions_certifiable: RbTree<Vec<u8>, &'a [Transaction]>,
+    #[allow(dead_code)]
+    transactions_certifiable: RbTree<Vec<u8>, TransactionWrapper>,
+    #[allow(dead_code)]
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
 
     account_identifier_lookup: HashMap<AccountIdentifier, AccountLocation>,
@@ -60,12 +63,13 @@ enum AccountLocation {
     HardwareWallet(Vec<u32>), // Vec of account index since a hardware wallet could theoretically be shared between multiple accounts
 }
 
+#[allow(dead_code)]
 enum AccountWrapper {
     SubAccount(AccountIdentifier, u8), // Account Identifier + SubAccount index
-    HardwareWallet(Vec<AccountIdentifier>), // Vec of account Identifier since a hardware wallet could theoretically be shared between multiple accounts
+    HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Clone)]
 struct Account {
     principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
@@ -75,14 +79,14 @@ struct Account {
     canisters: Vec<NamedCanister>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Clone)]
 struct NamedSubAccount {
     name: String,
     account_identifier: AccountIdentifier,
     transactions: Vec<TransactionIndex>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Clone)]
 struct NamedHardwareWalletAccount {
     name: String,
     principal: PrincipalId,
@@ -95,7 +99,7 @@ pub struct NamedCanister {
     canister_id: CanisterId,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Clone)]
 struct Transaction {
     transaction_index: TransactionIndex,
     block_height: BlockHeight,
@@ -255,6 +259,30 @@ impl AsHashTree for Account {
     }
 }
 
+struct TransactionWrapper(Vec<Transaction>);
+
+fn concat_tx_bytes(tx_vec: &[Transaction]) -> Vec<u8> {
+    tx_vec
+        .iter()
+        .map(|tx| tx.root_hash())
+        .fold(vec![], |mut acc, x| {
+            acc.extend(x.to_vec());
+            acc
+        })
+}
+
+impl AsHashTree for TransactionWrapper {
+    fn root_hash(&self) -> Hash {
+        let serialized_bytes = Encode!(&concat_tx_bytes(&self.0)).unwrap();
+        leaf_hash(&serialized_bytes)
+    }
+
+    fn as_hash_tree(&self) -> HashTree<'_> {
+        let serialized_bytes = Encode!(&concat_tx_bytes(&self.0)).unwrap();
+        HashTree::Leaf(Cow::from(serialized_bytes))
+    }
+}
+
 impl AsHashTree for Transaction {
     fn root_hash(&self) -> Hash {
         let serialized_bytes = Encode!(self).unwrap();
@@ -267,7 +295,7 @@ impl AsHashTree for Transaction {
     }
 }
 
-impl AccountsStore<'_> {
+impl AccountsStore {
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.try_get_account_by_default_identifier(&account_identifier) {
@@ -1487,7 +1515,7 @@ impl AccountsStore<'_> {
     }
 }
 
-impl StableState for AccountsStore<'_> {
+impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
         Candid((
             &self.transactions,
@@ -1555,13 +1583,81 @@ impl StableState for AccountsStore<'_> {
             }
         }
 
-        let mut account_store = AccountsStore {
-            accounts_certifiable: RbTree::new(),
-            transactions_certifiable: RbTree::new(),
-            hardware_wallets_and_sub_accounts: HashMap::new(),
+        let transactions = VecDeque::from_iter(transactions);
+
+        let mut accounts_certifiable = RbTree::new();
+        let mut transactions_certifiable = RbTree::new();
+        let hardware_wallets_and_sub_accounts = HashMap::new();
+
+        fn get_transaction(
+            transactions: &VecDeque<Transaction>,
+            transaction_index: TransactionIndex,
+        ) -> Option<&Transaction> {
+            match transactions.front() {
+                Some(t) => {
+                    if t.transaction_index > transaction_index {
+                        None
+                    } else {
+                        let offset = t.transaction_index;
+                        transactions.get((transaction_index - offset) as usize)
+                    }
+                }
+                None => None,
+            }
+        }
+
+        // Delete this for subsequent upgrades
+        for i in 0..accounts.len() {
+            if let Some(a) = accounts.get(i).unwrap() {
+                transactions_certifiable.insert(
+                    a.account_identifier.to_vec(),
+                    TransactionWrapper(
+                        a.default_account_transactions
+                            .iter()
+                            .map(|ti| get_transaction(&transactions, *ti).unwrap().clone())
+                            .collect(),
+                    ),
+                );
+
+                a.sub_accounts.iter().for_each(|(_, sub_account)| {
+                    transactions_certifiable.insert(
+                        sub_account.account_identifier.to_vec(),
+                        TransactionWrapper(
+                            sub_account
+                                .transactions
+                                .iter()
+                                .map(|ti| get_transaction(&transactions, *ti).unwrap().clone())
+                                .collect(),
+                        ),
+                    );
+                });
+
+                a.hardware_wallet_accounts
+                    .iter()
+                    .for_each(|hardware_wallet_account| {
+                        transactions_certifiable.insert(
+                            AccountIdentifier::from(hardware_wallet_account.principal).to_vec(),
+                            TransactionWrapper(
+                                hardware_wallet_account
+                                    .transactions
+                                    .iter()
+                                    .map(|ti| get_transaction(&transactions, *ti).unwrap().clone())
+                                    .collect(),
+                            ),
+                        );
+                    });
+
+                accounts_certifiable.insert(a.account_identifier.to_vec(), a.clone());
+            }
+        }
+
+        let account_store = AccountsStore {
+            accounts_certifiable,
+            transactions_certifiable,
+            hardware_wallets_and_sub_accounts,
 
             account_identifier_lookup,
-            transactions: VecDeque::from_iter(transactions),
+            transactions,
             accounts,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1573,20 +1669,6 @@ impl StableState for AccountsStore<'_> {
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         };
-
-        for i in 0..accounts.len() {
-            if let Some(a) = accounts.get(i).unwrap() {
-                account_store
-                    .accounts_certifiable
-                    .insert(a.account_identifier.to_vec(), a);
-                account_store.insert(
-                    a.account_identifier.to_vec(),
-                    a.transactions
-                        .iter()
-                        .for_each(|ti| account_store.get_transaction(ti)),
-                );
-            }
-        }
 
         Ok(account_store)
     }
