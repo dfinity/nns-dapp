@@ -1527,17 +1527,10 @@ impl StableState for AccountsStore {
         self.transactions_certifiable.for_each(|k, v| {
             transactions_certifiable.push((k.to_vec(), Encode!(v).unwrap()));
         });
-        let mut hardware_wallets_and_sub_accounts = vec![];
-        self.hardware_wallets_and_sub_accounts
-            .iter()
-            .for_each(|(k, v)| {
-                hardware_wallets_and_sub_accounts.push((k.to_vec(), Encode!(v).unwrap()));
-            });
 
         Candid((
             accounts_certifiable,
             transactions_certifiable,
-            hardware_wallets_and_sub_accounts,
             &self.transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
@@ -1608,6 +1601,7 @@ impl StableState for AccountsStore {
         let mut transactions_certifiable = RbTree::new();
         let hardware_wallets_and_sub_accounts = HashMap::new();
 
+        // Delete this for subsequent upgrades
         fn get_transaction(
             transactions: &VecDeque<Transaction>,
             transaction_index: TransactionIndex,
@@ -1625,7 +1619,6 @@ impl StableState for AccountsStore {
             }
         }
 
-        // Delete this for subsequent upgrades
         for i in 0..accounts.len() {
             if let Some(a) = accounts.get(i).unwrap() {
                 transactions_certifiable.insert(
