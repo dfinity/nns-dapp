@@ -102,12 +102,12 @@ class HardwareConnectionWidget extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "Public Key",
+                        "Principal",
                         style: context.textTheme.bodyText1
                             ?.copyWith(fontSize: 14, color: AppColors.gray50),
                       ),
                       Text(
-                        getPublicKey(ledgerIdentity)!,
+                        ledgerIdentity.getPrincipal().toString(),
                         style: context.textTheme.subtitle2,
                       ),
                       SmallFormDivider(),
