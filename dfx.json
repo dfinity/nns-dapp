@@ -18,7 +18,13 @@
     },
     "testnet": {
       "providers": [
-        "http://[2a00:fb01:400:42:5000:82ff:fed6:dfdc]:8080"
+        "http://[2a00:fb01:400:42:5000:6dff:fe7f:6496]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small11": {
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:6dff:fe7f:6496]:8080"
       ],
       "type": "persistent"
     },
