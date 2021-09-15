@@ -64,6 +64,7 @@ enum AccountLocation {
 }
 
 #[allow(dead_code)]
+#[derive(CandidType)]
 enum AccountWrapper {
     SubAccount(AccountIdentifier, u8), // Account Identifier + SubAccount index
     HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
@@ -259,6 +260,7 @@ impl AsHashTree for Account {
     }
 }
 
+#[derive(CandidType)]
 struct TransactionWrapper(Vec<Transaction>);
 
 fn concat_tx_bytes(tx_vec: &[Transaction]) -> Vec<u8> {
@@ -1517,9 +1519,26 @@ impl AccountsStore {
 
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
+        let mut accounts_certifiable = vec![];
+        self.accounts_certifiable.for_each(|k, v| {
+            accounts_certifiable.push((k.to_vec(), Encode!(v).unwrap()));
+        });
+        let mut transactions_certifiable = vec![];
+        self.transactions_certifiable.for_each(|k, v| {
+            transactions_certifiable.push((k.to_vec(), Encode!(v).unwrap()));
+        });
+        let mut hardware_wallets_and_sub_accounts = vec![];
+        self.hardware_wallets_and_sub_accounts
+            .iter()
+            .for_each(|(k, v)| {
+                hardware_wallets_and_sub_accounts.push((k.to_vec(), Encode!(v).unwrap()));
+            });
+
         Candid((
+            accounts_certifiable,
+            transactions_certifiable,
+            hardware_wallets_and_sub_accounts,
             &self.transactions,
-            &self.accounts,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
             &self.multi_part_transactions_processor,
