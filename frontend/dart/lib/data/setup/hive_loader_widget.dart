@@ -1,3 +1,4 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:observable/observable.dart';
 import 'hive_coordinator.dart';
 import '../data.dart';

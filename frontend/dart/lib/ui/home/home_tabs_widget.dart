@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               SizedBox.expand(
                   child: Image.asset(
-                "assets/dfinity_gradient.jpg",
+                "assets/gradient.jpg",
                 fit: BoxFit.fill,
               )),
               AppBar(
