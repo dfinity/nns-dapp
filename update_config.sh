@@ -12,7 +12,7 @@ if [[ $DEPLOY_ENV = "testnet" ]]; then
 {
     "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/",
     "HOST": "https://nnsdapp.dfinity.network/",
-    "OWN_CANISTER_ID": "$(dfx canister --no-wallet --network testnet id nns_ui)",
+    "OWN_CANISTER_ID": "$(dfx canister --no-wallet --network testnet id nns-dapp)",
     "FETCH_ROOT_KEY": true
 }
 EOF
@@ -33,7 +33,7 @@ else
 {
     "IDENTITY_SERVICE_URL": "",
     "HOST": "http://localhost:8080",
-    "OWN_CANISTER_ID": "$(dfx canister --no-wallet --network local id nns_ui)",
+    "OWN_CANISTER_ID": "$(dfx canister --no-wallet --network local id nns-dapp)",
     "FETCH_ROOT_KEY": true
 }
 EOF

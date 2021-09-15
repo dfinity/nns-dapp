@@ -36,12 +36,12 @@ sha256sum assets.tar.xz
 
 echo Compiling rust package
 if [[ $DEPLOY_ENV = "mainnet" ]]; then
-  cargo build --target wasm32-unknown-unknown --release --package nns_ui
+  cargo build --target wasm32-unknown-unknown --release --package nns-dapp
 else
-  cargo build --target wasm32-unknown-unknown --release --package nns_ui --features mock_conversion_rate
+  cargo build --target wasm32-unknown-unknown --release --package nns-dapp --features mock_conversion_rate
 fi
 
 echo Optimising wasm
-wasm-opt target/wasm32-unknown-unknown/release/nns_ui.wasm --strip-debug -Oz -o target/wasm32-unknown-unknown/release/nns_ui-opt.wasm
+wasm-opt target/wasm32-unknown-unknown/release/nns-dapp.wasm --strip-debug -Oz -o target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
 
-sha256sum target/wasm32-unknown-unknown/release/nns_ui-opt.wasm
+sha256sum target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm

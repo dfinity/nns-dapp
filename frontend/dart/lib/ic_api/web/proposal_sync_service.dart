@@ -43,6 +43,7 @@ class ProposalSyncService {
     response!['proposals']?.forEach((e) {
       storeProposal(e);
     });
+    // ignore: deprecated_member_use
     hiveBoxes.proposals.notifyChange();
   }
 

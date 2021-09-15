@@ -59,9 +59,6 @@ class EnterCanisterIdWidget extends StatelessWidget {
                   final result = await context.callUpdate(() => context.icApi
                       .attachCanister(
                           name: "", canisterId: idField.currentValue));
-                  if (result == null) {
-                    return;
-                  }
                   switch (result) {
                     case AttachCanisterResult.Ok:
                       await context.icApi.getCanisters();

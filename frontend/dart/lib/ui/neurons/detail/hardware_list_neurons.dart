@@ -90,7 +90,7 @@ class _HardwareListNeurons extends State<HardwareListNeurons> {
                     ConfirmDialog(
                         title: "Confirm Addition of Hotkey",
                         description:
-                            "This action will add your NNS dapp principal as a hotkey to neuron ${neuron.id.toString()}.\n\nYour NNS dapp principal is: ${principal}.\n\nAre you sure you want to continue?",
+                            "This action will add your NNS dapp principal as a hotkey to neuron ${neuron.id.toString()}.\n\nYour NNS dapp principal is: $principal.\n\nAre you sure you want to continue?",
                         onConfirm: () async {
                           final res = await context.callUpdate(() =>
                               context.icApi.addHotkeyForHW(
