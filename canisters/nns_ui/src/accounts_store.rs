@@ -1512,6 +1512,7 @@ impl StableState for AccountsStore {
         Candid((
             accounts_certifiable,
             transactions_certifiable,
+            &self.transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
             &self.multi_part_transactions_processor,
