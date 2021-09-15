@@ -508,6 +508,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     canistersToRemove.forEach((element) {
       hiveBoxes.canisters.remove(element.identifier);
     });
+    // ignore: deprecated_member_use
     hiveBoxes.canisters.notifyChange();
   }
 
@@ -529,6 +530,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         fromSubAccountId: fromSubAccountId,
         canisterId: canisterId)));
     await getCanister(canisterId);
+    // ignore: deprecated_member_use
     hiveBoxes.canisters.notifyChange();
   }
 
@@ -546,6 +548,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final setting = details['setting'];
       canister.controllers = List.castFrom(setting['controllers']);
     }
+    // ignore: deprecated_member_use
     hiveBoxes.canisters.notifyChange();
   }
 
@@ -557,6 +560,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         settings: UpdateCanisterSettings(controllers: newControllers));
     await promiseToFuture(serviceApi!.updateCanisterSettings(settings));
     await getCanister(canisterId);
+    // ignore: deprecated_member_use
     hiveBoxes.canisters.notifyChange();
   }
 
@@ -594,6 +598,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         await balanceSyncService!.fetchBalances([account.accountIdentifier]);
     account = hiveBoxes.accounts[account.accountIdentifier]!;
     account.balance = res[account.accountIdentifier]!;
+    // ignore: deprecated_member_use
     hiveBoxes.accounts.notifyChange();
   }
 
@@ -670,7 +675,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<Result<dynamic, Exception>> getIdentityByAccountId(
       String accountId) async {
     if (!hiveBoxes.accounts.containsKey(accountId)) {
-      return Result.err(Exception("Unkown account id: ${accountId}"));
+      return Result.err(Exception("Unkown account id: $accountId"));
     }
 
     final account = hiveBoxes.accounts[accountId];
@@ -754,6 +759,6 @@ class GovernanceError {
     final errorTypeString = (this.type < GovernanceErrorType.values.length)
         ? GovernanceErrorType.values[this.type].toString()
         : this.type.toString();
-    return "GovernanceError:\nError Type: ${errorTypeString}\nError Message: ${this.message}";
+    return "GovernanceError:\nError Type: $errorTypeString\nError Message: ${this.message}";
   }
 }

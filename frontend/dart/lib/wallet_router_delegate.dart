@@ -1,4 +1,5 @@
 import 'package:nns_dapp/resource_orchstrator.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:observable/observable.dart' hide ChangeNotifier;
 
 import 'nns_dapp.dart';

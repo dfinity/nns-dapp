@@ -57,11 +57,13 @@ class NeuronSyncService {
     if (fullNeuron != null) {
       parseFullNeuron(fullNeuron, neuron);
     }
+    // ignore: deprecated_member_use
     hiveBoxes.neurons.notifyChange();
   }
 
   void removeNeuron(String neuronId) {
     hiveBoxes.neurons.remove(neuronId);
+    // ignore: deprecated_member_use
     hiveBoxes.neurons.notifyChange();
   }
 
