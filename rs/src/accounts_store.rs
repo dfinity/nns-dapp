@@ -50,7 +50,7 @@ enum AccountWrapper {
     HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
 }
 
-#[derive(CandidType, Deserialize, Clone)]
+#[derive(CandidType, Deserialize)]
 struct Account {
     principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
@@ -60,14 +60,14 @@ struct Account {
     canisters: Vec<NamedCanister>,
 }
 
-#[derive(CandidType, Deserialize, Clone)]
+#[derive(CandidType, Deserialize)]
 struct NamedSubAccount {
     name: String,
     account_identifier: AccountIdentifier,
     transactions: Vec<TransactionIndex>,
 }
 
-#[derive(CandidType, Deserialize, Clone)]
+#[derive(CandidType, Deserialize)]
 struct NamedHardwareWalletAccount {
     name: String,
     principal: PrincipalId,
@@ -80,7 +80,7 @@ pub struct NamedCanister {
     canister_id: CanisterId,
 }
 
-#[derive(CandidType, Deserialize, Clone)]
+#[derive(CandidType, Deserialize)]
 struct Transaction {
     transaction_index: TransactionIndex,
     block_height: BlockHeight,
@@ -1501,11 +1501,8 @@ impl StableState for AccountsStore {
         let mut accounts_certifiable = RbTree::new();
         let mut hardware_wallets_and_sub_accounts = HashMap::new();
 
-        for i in 0..accounts.len() {
-            if let Some(a) = accounts.get(i).unwrap() {
-                accounts_certifiable.insert(a.account_identifier.to_vec(), a.clone());
-                accounts_count += 1;
-
+        for account in accounts.into_iter() {
+            if let Some(a) = account {
                 a.sub_accounts
                     .iter()
                     .for_each(|(sub_account_identifier, sub_account)| {
@@ -1536,6 +1533,9 @@ impl StableState for AccountsStore {
                             });
                     });
                 hardware_wallet_accounts_count += a.hardware_wallet_accounts.len() as u64;
+
+                accounts_certifiable.insert(a.account_identifier.to_vec(), a);
+                accounts_count += 1;
             }
         }
 
