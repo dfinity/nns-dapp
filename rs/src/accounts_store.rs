@@ -4,7 +4,7 @@ use crate::multi_part_transactions_processor::{
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
-use candid::{CandidType, Decode, Encode};
+use candid::{CandidType, Encode};
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_certified_map::{leaf_hash, AsHashTree, Hash, HashTree, RbTree};
@@ -30,8 +30,6 @@ type TransactionIndex = u64;
 #[derive(Default)]
 pub struct AccountsStore {
     accounts_certifiable: RbTree<Vec<u8>, Account>,
-    #[allow(dead_code)]
-    transactions_certifiable: RbTree<Vec<u8>, TransactionWrapper>,
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
 
     transactions: VecDeque<Transaction>,
@@ -46,16 +44,9 @@ pub struct AccountsStore {
     neurons_topped_up_count: u64,
 }
 
-#[derive(CandidType, Deserialize, Debug)]
-enum AccountLocation {
-    DefaultAccount(u32),      // Account index
-    SubAccount(u32, u8),      // Account index + SubAccount index
-    HardwareWallet(Vec<u32>), // Vec of account index since a hardware wallet could theoretically be shared between multiple accounts
-}
-
 #[derive(CandidType)]
 enum AccountWrapper {
-    SubAccount(AccountIdentifier, u8), // Account Identifier + SubAccount index
+    SubAccount(AccountIdentifier, u8), // Account Identifier + Sub Account Identifier
     HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
 }
 
@@ -238,43 +229,6 @@ pub enum DetachCanisterResponse {
 }
 
 impl AsHashTree for Account {
-    fn root_hash(&self) -> Hash {
-        let serialized_bytes = Encode!(self).unwrap();
-        leaf_hash(&serialized_bytes)
-    }
-
-    fn as_hash_tree(&self) -> HashTree<'_> {
-        let serialized_bytes = Encode!(self).unwrap();
-        HashTree::Leaf(Cow::from(serialized_bytes))
-    }
-}
-
-#[derive(CandidType, Deserialize)]
-struct TransactionWrapper(Vec<Transaction>);
-
-fn concat_tx_bytes(tx_vec: &[Transaction]) -> Vec<u8> {
-    tx_vec
-        .iter()
-        .map(|tx| tx.root_hash())
-        .fold(vec![], |mut acc, x| {
-            acc.extend(x.to_vec());
-            acc
-        })
-}
-
-impl AsHashTree for TransactionWrapper {
-    fn root_hash(&self) -> Hash {
-        let serialized_bytes = Encode!(&concat_tx_bytes(&self.0)).unwrap();
-        leaf_hash(&serialized_bytes)
-    }
-
-    fn as_hash_tree(&self) -> HashTree<'_> {
-        let serialized_bytes = Encode!(&concat_tx_bytes(&self.0)).unwrap();
-        HashTree::Leaf(Cow::from(serialized_bytes))
-    }
-}
-
-impl AsHashTree for Transaction {
     fn root_hash(&self) -> Hash {
         let serialized_bytes = Encode!(self).unwrap();
         leaf_hash(&serialized_bytes)
@@ -1504,14 +1458,9 @@ impl StableState for AccountsStore {
         self.accounts_certifiable.for_each(|k, v| {
             accounts_certifiable.push((k.to_vec(), Encode!(v).unwrap()));
         });
-        let mut transactions_certifiable = vec![];
-        self.transactions_certifiable.for_each(|k, v| {
-            transactions_certifiable.push((k.to_vec(), Encode!(v).unwrap()));
-        });
 
         Candid((
             accounts_certifiable,
-            transactions_certifiable,
             &self.transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
@@ -1526,18 +1475,16 @@ impl StableState for AccountsStore {
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         #[allow(clippy::type_complexity)]
         let (
-            accounts_certifiable_vec,
-            transactions_certifiable_vec,
             transactions,
+            accounts,
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         ): (
-            Vec<(Vec<u8>, Vec<u8>)>,
-            Vec<(Vec<u8>, Vec<u8>)>,
             VecDeque<Transaction>,
+            Vec<Option<Account>>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
             MultiPartTransactionsProcessor,
@@ -1549,12 +1496,54 @@ impl StableState for AccountsStore {
         let mut sub_accounts_count: u64 = 0;
         let mut hardware_wallet_accounts_count: u64 = 0;
 
-        let mut account_store = AccountsStore {
-            accounts_certifiable: RbTree::new(),
-            transactions_certifiable: RbTree::new(),
-            hardware_wallets_and_sub_accounts: HashMap::new(),
+        let transactions = VecDeque::from_iter(transactions);
 
-            transactions: VecDeque::from_iter(transactions),
+        let mut accounts_certifiable = RbTree::new();
+        let mut hardware_wallets_and_sub_accounts = HashMap::new();
+
+        for i in 0..accounts.len() {
+            if let Some(a) = accounts.get(i).unwrap() {
+                accounts_certifiable.insert(a.account_identifier.to_vec(), a.clone());
+                accounts_count += 1;
+
+                a.sub_accounts
+                    .iter()
+                    .for_each(|(sub_account_identifier, sub_account)| {
+                        hardware_wallets_and_sub_accounts.insert(
+                            sub_account.account_identifier,
+                            AccountWrapper::SubAccount(
+                                a.account_identifier,
+                                *sub_account_identifier,
+                            ),
+                        );
+                    });
+                sub_accounts_count += a.sub_accounts.len() as u64;
+
+                a.hardware_wallet_accounts
+                    .iter()
+                    .for_each(|hardware_wallet_account| {
+                        hardware_wallets_and_sub_accounts
+                            .entry(AccountIdentifier::from(hardware_wallet_account.principal))
+                            .and_modify(|account_wrapper| {
+                                if let AccountWrapper::HardwareWallet(account_identifiers) =
+                                    account_wrapper
+                                {
+                                    account_identifiers.push(a.account_identifier);
+                                }
+                            })
+                            .or_insert_with(|| {
+                                AccountWrapper::HardwareWallet(vec![a.account_identifier])
+                            });
+                    });
+                hardware_wallet_accounts_count += a.hardware_wallet_accounts.len() as u64;
+            }
+        }
+
+        Ok(AccountsStore {
+            accounts_certifiable,
+            hardware_wallets_and_sub_accounts,
+
+            transactions,
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
@@ -1563,45 +1552,7 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
-        };
-
-        transactions_certifiable_vec
-            .iter()
-            .for_each(|(account_identifier, transaction_bytes)| {
-                account_store.transactions_certifiable.insert(
-                    account_identifier.to_vec(),
-                    Decode!(transaction_bytes, TransactionWrapper).unwrap(),
-                );
-            });
-
-        accounts_certifiable_vec
-            .iter()
-            .for_each(|(account_identifier, account_bytes)| {
-                let account = Decode!(account_bytes, Account).unwrap();
-                for (id, sa) in account.sub_accounts.iter() {
-                    account_store.hardware_wallets_and_sub_accounts.insert(
-                        sa.account_identifier,
-                        AccountWrapper::SubAccount(account.account_identifier, *id),
-                    );
-                }
-                for hw in account.hardware_wallet_accounts.iter() {
-                    account_store.link_hardware_wallet_to_account(
-                        account.account_identifier,
-                        AccountIdentifier::from(hw.principal),
-                    );
-                }
-
-                account_store.accounts_certifiable.insert(
-                    account_identifier.to_vec(),
-                    Decode!(account_bytes, Account).unwrap(),
-                );
-
-                accounts_count += 1;
-                sub_accounts_count += account.sub_accounts.len() as u64;
-                hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
-            });
-
-        Ok(account_store)
+        })
     }
 }
 
