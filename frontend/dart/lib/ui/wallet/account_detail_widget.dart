@@ -142,7 +142,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                               padding:
                                                   const EdgeInsets.all(16.0),
                                               child: Text(
-                                                "Show Address And Public Key On Device",
+                                                "Show Principal And Address On Device",
                                                 style: TextStyle(
                                                     fontSize:
                                                         Responsive.isMobile(
