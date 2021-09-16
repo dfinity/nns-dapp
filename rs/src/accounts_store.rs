@@ -1501,42 +1501,37 @@ impl StableState for AccountsStore {
         let mut accounts_certifiable = RbTree::new();
         let mut hardware_wallets_and_sub_accounts = HashMap::new();
 
-        for account in accounts.into_iter() {
-            if let Some(a) = account {
-                a.sub_accounts
-                    .iter()
-                    .for_each(|(sub_account_identifier, sub_account)| {
-                        hardware_wallets_and_sub_accounts.insert(
-                            sub_account.account_identifier,
-                            AccountWrapper::SubAccount(
-                                a.account_identifier,
-                                *sub_account_identifier,
-                            ),
-                        );
-                    });
-                sub_accounts_count += a.sub_accounts.len() as u64;
+        for a in accounts.into_iter().flatten() {
+            a.sub_accounts
+                .iter()
+                .for_each(|(sub_account_identifier, sub_account)| {
+                    hardware_wallets_and_sub_accounts.insert(
+                        sub_account.account_identifier,
+                        AccountWrapper::SubAccount(a.account_identifier, *sub_account_identifier),
+                    );
+                });
+            sub_accounts_count += a.sub_accounts.len() as u64;
 
-                a.hardware_wallet_accounts
-                    .iter()
-                    .for_each(|hardware_wallet_account| {
-                        hardware_wallets_and_sub_accounts
-                            .entry(AccountIdentifier::from(hardware_wallet_account.principal))
-                            .and_modify(|account_wrapper| {
-                                if let AccountWrapper::HardwareWallet(account_identifiers) =
-                                    account_wrapper
-                                {
-                                    account_identifiers.push(a.account_identifier);
-                                }
-                            })
-                            .or_insert_with(|| {
-                                AccountWrapper::HardwareWallet(vec![a.account_identifier])
-                            });
-                    });
-                hardware_wallet_accounts_count += a.hardware_wallet_accounts.len() as u64;
+            a.hardware_wallet_accounts
+                .iter()
+                .for_each(|hardware_wallet_account| {
+                    hardware_wallets_and_sub_accounts
+                        .entry(AccountIdentifier::from(hardware_wallet_account.principal))
+                        .and_modify(|account_wrapper| {
+                            if let AccountWrapper::HardwareWallet(account_identifiers) =
+                                account_wrapper
+                            {
+                                account_identifiers.push(a.account_identifier);
+                            }
+                        })
+                        .or_insert_with(|| {
+                            AccountWrapper::HardwareWallet(vec![a.account_identifier])
+                        });
+                });
+            hardware_wallet_accounts_count += a.hardware_wallet_accounts.len() as u64;
 
-                accounts_certifiable.insert(a.account_identifier.to_vec(), a);
-                accounts_count += 1;
-            }
+            accounts_certifiable.insert(a.account_identifier.to_vec(), a);
+            accounts_count += 1;
         }
 
         Ok(AccountsStore {
