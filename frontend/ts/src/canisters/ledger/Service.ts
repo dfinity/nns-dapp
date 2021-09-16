@@ -1,3 +1,4 @@
+import async from "async";
 import { Agent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { AccountIdentifier, BlockHeight, E8s } from "../common/types";
@@ -26,7 +27,13 @@ export default class Service implements ServiceInterface {
     request: GetBalancesRequest
   ): Promise<Record<AccountIdentifier, E8s>> => {
     const rawRequests = this.requestConverters.fromGetBalancesRequest(request);
-    const promises = rawRequests.map(async (r) => {
+
+    const balances: Record<AccountIdentifier, E8s> = {};
+
+    // TODO switch to getting multiple balances in a single request once it is supported by the ledger.
+    // Until the above is supported we must limit the max concurrency otherwise our requests may be throttled.
+    const maxConcurrency = 10;
+    await async.eachOfLimit(rawRequests, maxConcurrency, async (r, i) => {
       const responseBytes = await submitQueryRequest(
         this.agent,
         this.canisterId,
@@ -34,15 +41,13 @@ export default class Service implements ServiceInterface {
         r.serializeBinary()
       );
 
-      return BigInt(ICPTs.deserializeBinary(responseBytes).getE8s());
+      const accountIdentifier = request.accounts[i as number];
+      balances[accountIdentifier] = BigInt(
+        ICPTs.deserializeBinary(responseBytes).getE8s()
+      );
     });
-    const balances = await Promise.all(promises);
 
-    const result: { [index: string]: bigint } = {};
-    request.accounts.forEach((a, index) => {
-      result[a] = balances[index];
-    });
-    return result;
+    return balances;
   };
 
   public sendICPTs = async (

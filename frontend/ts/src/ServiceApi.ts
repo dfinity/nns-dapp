@@ -84,7 +84,7 @@ import { LedgerIdentity } from "./ledger/identity";
 import { HOST } from "./canisters/constants";
 import { executeWithLogging } from "./errorLogger";
 import { FETCH_ROOT_KEY } from "./config.json";
-import getAndRefreshNeurons from "./canisters/getAndRefreshNeurons";
+import checkNeuronBalances from "./canisters/checkNeuronBalances";
 import {
   topUpCanisterImpl,
   TopUpCanisterRequest,
@@ -215,8 +215,15 @@ export default class ServiceApi {
   };
 
   public getNeurons = (): Promise<Array<NeuronInfo>> => {
+    return executeWithLogging(this.governanceService.getNeurons);
+  };
+
+  // Returns true if any neurons were refreshed, otherwise false
+  public checkNeuronBalances = (
+    neurons: Array<NeuronInfo>
+  ): Promise<boolean> => {
     return executeWithLogging(() =>
-      getAndRefreshNeurons(this.governanceService, this.ledgerService)
+      checkNeuronBalances(neurons, this.ledgerService, this.governanceService)
     );
   };
 

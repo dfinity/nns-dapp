@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/ui/_components/text_theme.dart';
+import './text_theme.dart';
 import 'responsive.dart';
 
 class PageButton extends StatelessWidget {
