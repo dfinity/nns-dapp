@@ -68,14 +68,19 @@ export class LedgerIdentity extends SignIdentity {
         // Maybe we're in a CLI.
         return TransportNodeHidNoEvents.create();
       } else {
-        // Data on browser compatibility is taken from https://caniuse.com/webhid
-        throw "Your browser doesn't support WebHID, which is necessary to communicate with your wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+";
+        // Unknown environment.
+        throw Error();
       }
     }
 
-    const transport = await getTransport();
-    const app = new LedgerApp(transport);
-    return [app, transport];
+    try {
+      const transport = await getTransport();
+      const app = new LedgerApp(transport);
+      return [app, transport];
+    } catch (err) {
+      // Unsupported browser. Data on browser compatibility is taken from https://caniuse.com/webhid
+      throw "Your browser doesn't support WebHID, which is necessary to communicate with your wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+";
+    }
   }
 
   private static async _fetchPublicKeyFromDevice(
