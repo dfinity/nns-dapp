@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: docker build -t dfinity-wallet .
+      - run: docker build -t nns-dapp .
       - run: mkdir out/
-      - run: docker run --rm --entrypoint cat dfinity-wallet /nns-dapp.wasm > out/nns-dapp.wasm
-      - run: docker run --rm --entrypoint cat dfinity-wallet /assets.tar.xz > out/assets.tar.xz
+      - run: docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > out/nns-dapp.wasm
+      - run: docker run --rm --entrypoint cat nns-dapp /assets.tar.xz > out/assets.tar.xz
       - run: sha256sum out/nns-dapp.wasm
       - name: 'Upload wasm module'
         uses: actions/upload-artifact@v2
