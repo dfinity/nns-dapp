@@ -1,3 +1,4 @@
+use crate::certification::GetCertifiedResponse;
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionError, MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
@@ -7,7 +8,7 @@ use crate::state::StableState;
 use candid::{CandidType, Decode, Encode};
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_certified_map::{leaf_hash, AsHashTree, Hash, HashTree, RbTree};
+use ic_certified_map::{labeled, leaf_hash, AsHashTree, Hash, HashTree, RbTree};
 use ic_crypto_sha256::Sha256;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::GOVERNANCE_CANISTER_ID;
@@ -17,7 +18,7 @@ use ledger_canister::{
     Transfer::{self, Burn, Mint, Send},
 };
 use on_wire::{FromWire, IntoWire};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{HashMap, VecDeque};
@@ -27,10 +28,12 @@ use std::time::{Duration, SystemTime};
 
 type TransactionIndex = u64;
 
+pub const LABEL_ACCOUNTS: &[u8] = b"ACCOUNTS";
+
 #[derive(Default)]
 pub struct AccountsStore {
     // TODO: Use AccountIdentifier directly as the key for this RbTree
-    accounts: RbTree<Vec<u8>, Account>,
+    pub accounts: RbTree<Vec<u8>, Account>,
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
 
     transactions: VecDeque<Transaction>,
@@ -51,8 +54,8 @@ enum AccountWrapper {
     HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
 }
 
-#[derive(CandidType, Deserialize)]
-struct Account {
+#[derive(CandidType, Deserialize, Clone)]
+pub struct Account {
     principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
     default_account_transactions: Vec<TransactionIndex>,
@@ -61,14 +64,14 @@ struct Account {
     canisters: Vec<NamedCanister>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Clone)]
 struct NamedSubAccount {
     name: String,
     account_identifier: AccountIdentifier,
     transactions: Vec<TransactionIndex>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Clone)]
 struct NamedHardwareWalletAccount {
     name: String,
     principal: PrincipalId,
@@ -278,6 +281,31 @@ impl AccountsStore {
             })
         } else {
             None
+        }
+    }
+
+    pub fn get_account_certified(
+        &self,
+        caller: PrincipalId,
+    ) -> GetCertifiedResponse<AccountDetails, Account> {
+        let account_details_opt = self.get_account(caller);
+
+        let certificate = dfn_core::api::data_certificate().unwrap();
+
+        let account_identifier = AccountIdentifier::from(caller);
+        let witness = self.accounts.witness(&account_identifier.to_vec());
+        let tree = labeled(b"ACCOUNTS", witness);
+        let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
+        serializer.self_describe().unwrap();
+        tree.serialize(&mut serializer).unwrap_or_else(|e| {
+            dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e))
+        });
+
+        GetCertifiedResponse {
+            response_data: account_details_opt,
+            certified_data: self.accounts.get(&account_identifier.to_vec()).cloned(),
+            hash_tree: base64::encode(&serializer.into_inner()),
+            certificate,
         }
     }
 
@@ -757,6 +785,31 @@ impl AccountsStore {
             account.canisters.to_vec()
         } else {
             Vec::new()
+        }
+    }
+
+    pub fn get_canisters_certified(
+        &self,
+        caller: PrincipalId,
+    ) -> GetCertifiedResponse<Vec<NamedCanister>, Account> {
+        let reponse = self.get_canisters(caller);
+
+        let certificate = dfn_core::api::data_certificate().unwrap();
+
+        let account_identifier = AccountIdentifier::from(caller);
+        let witness = self.accounts.witness(&account_identifier.to_vec());
+        let tree = labeled(b"ACCOUNTS", witness);
+        let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
+        serializer.self_describe().unwrap();
+        tree.serialize(&mut serializer).unwrap_or_else(|e| {
+            dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e))
+        });
+
+        GetCertifiedResponse {
+            response_data: Some(reponse),
+            certified_data: self.accounts.get(&account_identifier.to_vec()).cloned(),
+            hash_tree: base64::encode(&serializer.into_inner()),
+            certificate,
         }
     }
 

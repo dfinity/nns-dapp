@@ -2,15 +2,18 @@ use crate::accounts_store::{
     AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse,
     DetachCanisterRequest, DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse,
     NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse,
-    RenameSubAccountRequest,
-    RenameSubAccountResponse, Stats,
+    RenameSubAccountRequest, RenameSubAccountResponse, Stats,
 };
+use crate::certification::update_root_hash;
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionError, MultiPartTransactionStatus,
 };
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
+
+use accounts_store::Account;
 use candid::CandidType;
+use certification::GetCertifiedResponse;
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
 use ic_base_types::PrincipalId;
@@ -19,6 +22,7 @@ use ledger_canister::{AccountIdentifier, BlockHeight};
 mod accounts_store;
 mod assets;
 mod canisters;
+mod certification;
 mod constants;
 mod ledger_sync;
 mod multi_part_transactions_processor;
@@ -28,6 +32,7 @@ mod state;
 #[export_name = "canister_init"]
 fn main() {
     assets::init_assets();
+    update_root_hash();
 }
 
 #[export_name = "canister_pre_upgrade"]
@@ -48,6 +53,7 @@ fn post_upgrade() {
     });
 
     assets::init_assets();
+    update_root_hash();
 }
 
 #[export_name = "canister_query http_request"]
@@ -68,9 +74,24 @@ fn get_account_impl() -> GetAccountResponse {
     })
 }
 
+#[export_name = "canister_query get_account_certified"]
+pub fn get_account_certified() {
+    over(candid, |()| get_account_certified_impl());
+}
+
+fn get_account_certified_impl() -> GetCertifiedResponse<AccountDetails, Account> {
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .get_account_certified(principal)
+    })
+}
+
 #[export_name = "canister_update add_account"]
 pub fn add_account() {
     over(candid, |()| add_account_impl());
+    update_root_hash();
 }
 
 fn add_account_impl() -> AccountIdentifier {
@@ -96,6 +117,7 @@ fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResp
 #[export_name = "canister_update create_sub_account"]
 pub fn create_sub_account() {
     over(candid_one, create_sub_account_impl);
+    update_root_hash();
 }
 
 fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse {
@@ -110,6 +132,7 @@ fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse
 #[export_name = "canister_update rename_sub_account"]
 pub fn rename_sub_account() {
     over(candid_one, rename_sub_account_impl);
+    update_root_hash();
 }
 
 fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
@@ -124,6 +147,7 @@ fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccount
 #[export_name = "canister_update register_hardware_wallet"]
 pub fn register_hardware_wallet() {
     over(candid_one, register_hardware_wallet_impl);
+    update_root_hash();
 }
 
 fn register_hardware_wallet_impl(
@@ -147,9 +171,24 @@ fn get_canisters_impl() -> Vec<NamedCanister> {
     STATE.with(|s| s.accounts_store.borrow_mut().get_canisters(principal))
 }
 
+#[export_name = "canister_query get_canisters_certified"]
+pub fn get_canisters_certified() {
+    over(candid, |()| get_canisters_certified_impl());
+}
+
+fn get_canisters_certified_impl() -> GetCertifiedResponse<Vec<NamedCanister>, Account> {
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .get_canisters_certified(principal)
+    })
+}
+
 #[export_name = "canister_update attach_canister"]
 pub fn attach_canister() {
     over(candid_one, attach_canister_impl);
+    update_root_hash();
 }
 
 fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterResponse {
@@ -164,6 +203,7 @@ fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterRespons
 #[export_name = "canister_update detach_canister"]
 pub fn detach_canister() {
     over(candid_one, detach_canister_impl);
+    update_root_hash();
 }
 
 fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
@@ -177,9 +217,12 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
 
 #[export_name = "canister_query get_multi_part_transaction_status"]
 pub fn get_multi_part_transaction_status() {
-    over(candid, |(principal, block_height): (PrincipalId, BlockHeight)| {
-        get_multi_part_transaction_status_impl(principal, block_height)
-    });
+    over(
+        candid,
+        |(principal, block_height): (PrincipalId, BlockHeight)| {
+            get_multi_part_transaction_status_impl(principal, block_height)
+        },
+    );
 }
 
 fn get_multi_part_transaction_status_impl(

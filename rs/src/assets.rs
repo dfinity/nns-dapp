@@ -1,5 +1,5 @@
 use candid::CandidType;
-use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
+use ic_certified_map::{labeled, Hash, RbTree};
 use serde::{Deserialize, Serialize};
 use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha256};
@@ -24,11 +24,11 @@ pub struct HttpResponse {
     body: ByteBuf,
 }
 
-const LABEL_ASSETS: &[u8] = b"http_assets";
+pub const LABEL_ASSETS: &[u8] = b"http_assets";
 type AssetHashes = RbTree<Vec<u8>, Hash>;
 
-struct State {
-    asset_hashes: RefCell<AssetHashes>,
+pub struct State {
+    pub asset_hashes: RefCell<AssetHashes>,
 }
 
 impl Default for State {
@@ -40,7 +40,7 @@ impl Default for State {
 }
 
 thread_local! {
-    static STATE: State = State::default();
+    pub static STATE: State = State::default();
 
     #[allow(clippy::type_complexity)]
     static ASSETS: RefCell<HashMap<String, (Vec<HeaderField>, Vec<u8>)>> = RefCell::new(HashMap::default());
@@ -150,11 +150,5 @@ pub fn init_assets() {
                 assets.insert(name.to_string(), (headers, bytes));
             }
         });
-        update_root_hash(&asset_hashes);
     });
-}
-
-fn update_root_hash(a: &AssetHashes) {
-    let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &a.root_hash());
-    dfn_core::api::set_certified_data(&prefixed_root_hash[..]);
 }
