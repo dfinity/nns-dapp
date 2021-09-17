@@ -76,7 +76,7 @@ class Neuron extends NnsDappEntity with ICPSource {
               EIGHT_YEARS_IN_SECONDS));
   double get ageBonusMultiplier =>
       1 +
-      (0.5 *
+      (0.25 *
           (min(ageSeconds, FOUR_YEARS_IN_SECONDS).toDouble() /
               FOUR_YEARS_IN_SECONDS));
 
