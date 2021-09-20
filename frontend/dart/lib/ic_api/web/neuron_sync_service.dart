@@ -20,28 +20,39 @@ class NeuronSyncService {
     storeNeuron(response);
   }
 
-  Future<void> fetchNeurons() async {
-    // print("fetching neurons");
+  Future<void> fetchNeurons([bool checkBalances = true]) async {
+    // This gets all neurons linked to the current user's principal, even those
+    // with a stake of 0. If 'checkBalances' is true then we will query the
+    // ledger for each neuron and refresh those whose stake does not match their
+    // ledger balance. Neurons whose balances are too low are later discarded
+    // during 'storeNeuron'.
     dynamic res = (await promiseToFuture(serviceApi.getNeurons()));
+    if (checkBalances) {
+      checkNeuronBalances(res);
+    }
+
     final string = stringify(res);
     // print("fetched neurons $string");
     dynamic response = (jsonDecode(string) as List<dynamic>).toList();
     response.forEach((e) => storeNeuron(e));
   }
 
-  Neuron storeNeuron(dynamic e) {
+  Neuron? storeNeuron(dynamic e) {
     final neuronId = e['neuronId'].toString();
+    final Neuron neuron;
     if (!hiveBoxes.neurons.containsKey(neuronId)) {
-      final neuron = Neuron.empty();
-      neuron.followEditCounter = 0;
+      neuron = Neuron.empty();
       updateNeuron(neuron, neuronId, e);
+    } else {
+      neuron = hiveBoxes.neurons[neuronId]!;
+      updateNeuron(neuron, neuronId, e);
+    }
+    if (neuron.cachedNeuronStake.asE8s() > BigInt.from(TRANSACTION_FEE_E8S)) {
       hiveBoxes.neurons[neuronId] = neuron;
       return neuron;
     } else {
-      final neuron = hiveBoxes.neurons[neuronId]!;
-      updateNeuron(neuron, neuronId, e);
-      hiveBoxes.neurons[neuronId] = neuron;
-      return neuron;
+      removeNeuron(neuronId);
+      return null;
     }
   }
 
@@ -105,6 +116,14 @@ class NeuronSyncService {
     return Topic.values.mapToList((e) => Followee()
       ..topic = e
       ..followees = map[e] ?? []);
+  }
+
+  void checkNeuronBalances(dynamic neurons) async {
+    final bool anyRefreshed = await promiseToFuture(serviceApi.checkNeuronBalances(neurons));
+
+    if (anyRefreshed) {
+      fetchNeurons(false);
+    }
   }
 }
 
