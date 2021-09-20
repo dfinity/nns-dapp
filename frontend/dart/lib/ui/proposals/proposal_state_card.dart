@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
 
 import '../../nns_dapp.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'nns_function_status.dart';
 
 class ProposalStateCard extends StatelessWidget {
   final Proposal proposal;
@@ -135,23 +138,62 @@ class ActionDetailsWidget extends StatelessWidget {
               child: Text(actionKey, style: context.textTheme.headline4),
             ),
           ),
-          ...fields.entries.map((entry) => Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      entry.key,
-                      style: context.textTheme.bodyText1
-                          ?.copyWith(fontSize: 14, color: AppColors.gray50),
+          ...fields.entries.map((entry) {
+            if (entry.key == 'nnsFunction') {
+              for (var value in NnsFunction.values) {
+                if (entry.value == value) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.key,
+                          style: context.textTheme.bodyText1
+                              ?.copyWith(fontSize: 14, color: AppColors.gray50),
+                        ),
+                        Text(
+                          value.toString(),
+                          style: context.textTheme.subtitle2,
+                        )
+                      ],
                     ),
-                    Text(
-                      entry.value.toString().toString(),
-                      style: context.textTheme.subtitle2,
-                    )
-                  ],
-                ),
-              ))
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      Text(
+                        entry.key,
+                        style: context.textTheme.bodyText1
+                            ?.copyWith(fontSize: 14, color: AppColors.gray50),
+                      ),
+                      Text(
+                        'Function needs to be defined in enum',
+                        style: context.textTheme.subtitle2,
+                      ),
+                    ],
+                  );
+                }
+              }
+            }
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    entry.key,
+                    style: context.textTheme.bodyText1
+                        ?.copyWith(fontSize: 14, color: AppColors.gray50),
+                  ),
+                  Text(
+                    entry.value.toString().toString(),
+                    style: context.textTheme.subtitle2,
+                  )
+                ],
+              ),
+            );
+          })
         ],
       ),
     );
