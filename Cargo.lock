@@ -974,8 +974,8 @@ dependencies = [
 
 [[package]]
 name = "ic-certified-map"
-version = "0.1.0"
-source = "git+https://github.com/dfinity/cdk-rs?rev=7676e7f#7676e7f47e0d7505d97d4dda1032fbce2d798527"
+version = "0.2.0"
+source = "git+https://github.com/dfinity/cdk-rs?rev=7b635c6b33d3c90be03d0f1041ad60320795a494#7b635c6b33d3c90be03d0f1041ad60320795a494"
 dependencies = [
  "serde",
  "serde_bytes",
