@@ -28,6 +28,8 @@ sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' buil
 # brew install xz
 
 cd build/web/ || exit
+# Remove the assets/NOTICES file, as it's large in size and not used.
+rm assets/NOTICES
 tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz . || \
 gtar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz .
 cd ../../../.. || exit
