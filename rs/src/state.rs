@@ -1,4 +1,8 @@
 use crate::accounts_store::AccountsStore;
+use crate::assets::AssetHashes;
+use crate::assets::Assets;
+use dfn_candid::Candid;
+use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
 
 #[derive(Default)]
@@ -6,6 +10,8 @@ pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
     // are being persisted in the post_upgrade method.
     pub accounts_store: RefCell<AccountsStore>,
+    pub assets: RefCell<Assets>,
+    pub asset_hashes: RefCell<AssetHashes>,
 }
 
 pub trait StableState: Sized {
@@ -19,12 +25,33 @@ thread_local! {
 
 impl StableState for State {
     fn encode(&self) -> Vec<u8> {
-        self.accounts_store.borrow().encode()
+        Candid((
+            self.accounts_store.borrow().encode(),
+            self.assets.borrow().encode(),
+        ))
+        .into_bytes()
+        .unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        Ok(State {
-            accounts_store: RefCell::new(AccountsStore::decode(bytes)?),
-        })
+        match Candid::from_bytes(bytes.clone()).map(|c| c.0) {
+            Ok((account_store_bytes, assets_bytes)) => {
+                Ok(State {
+                    accounts_store: RefCell::new(AccountsStore::decode(account_store_bytes)?),
+                    assets: RefCell::new(Assets::decode(assets_bytes)?),
+                    // Asset hashes get recomputed, so we don't need to persist this.
+                    asset_hashes: RefCell::new(AssetHashes::default()),
+                })
+            }
+            Err(_) => {
+                // Deserialization failed. Try parsing as the old state.
+                // TODO: Delete this code once the nns-dapp is deployed.
+                Ok(State {
+                    accounts_store: RefCell::new(AccountsStore::decode(bytes)?),
+                    assets: RefCell::new(Assets::default()),
+                    asset_hashes: RefCell::new(AssetHashes::default()),
+                })
+            }
+        }
     }
 }

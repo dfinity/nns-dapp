@@ -8,7 +8,6 @@ edition = "2018"
 [dependencies]
 base64 = "0.13.0"
 candid = "0.6.21"
-getrandom = { version = "0.2.2", features = ["js"] }
 itertools = "0.10.0"
 lazy_static = "1.4.0"
 serde = "1.0.119"
@@ -17,6 +16,7 @@ serde_cbor = "0.11"
 sha2 = "0.9.1"
 lzma-rs = "0.2.0"
 tar = "0.4.35"
+hex = "0.4.3"
 
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
 dfn_core = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
@@ -31,6 +31,9 @@ ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd6
 ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
 ledger-canister = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
+
+[dev-dependencies]
+maplit = "1.0.2"
 
 [features]
 mock_conversion_rate = []
