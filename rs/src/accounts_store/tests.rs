@@ -97,7 +97,11 @@ fn add_account_adds_principal_and_sets_transaction_types() {
         canisters: Vec::default(),
     };
 
-    store.accounts.insert(account_identifier.to_vec(), account);
+    store.account_identifier_lookup.insert(
+        account_identifier,
+        AccountLocation::DefaultAccount(store.accounts.len() as u32),
+    );
+    store.accounts.push(Some(account));
 
     let send = Send {
         from: account_identifier,
@@ -967,7 +971,7 @@ fn prune_transactions() {
     );
 
     let mut transaction_indexes_remaining = Vec::new();
-    store.accounts.for_each(|_, account| {
+    for account in store.accounts.iter().map(|a| a.as_ref().unwrap()) {
         transaction_indexes_remaining.append(account.default_account_transactions.clone().as_mut());
 
         for sub_account in account.sub_accounts.values() {
@@ -977,7 +981,7 @@ fn prune_transactions() {
         for hw_account in account.hardware_wallet_accounts.iter() {
             transaction_indexes_remaining.append(hw_account.transactions.clone().as_mut());
         }
-    });
+    }
 
     transaction_indexes_remaining.sort_unstable();
     transaction_indexes_remaining.dedup();

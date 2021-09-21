@@ -24,7 +24,7 @@ dfn_json = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042e
 dfn_macro = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
 dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
 ic-base-types = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
-ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7b635c6b33d3c90be03d0f1041ad60320795a494"}
+ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
 ic-crypto-sha256 = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
 ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
 ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
