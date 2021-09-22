@@ -8,10 +8,18 @@ use std::cell::RefCell;
 #[derive(Default)]
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
-    // are being persisted in the post_upgrade method.
+    // are being persisted in the `replace` method below.
     pub accounts_store: RefCell<AccountsStore>,
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
+}
+
+impl State {
+    pub fn replace(&self, new_state: State) {
+        self.accounts_store.replace(new_state.accounts_store.take());
+        self.assets.replace(new_state.assets.take());
+        self.asset_hashes.replace(new_state.asset_hashes.take());
+    }
 }
 
 pub trait StableState: Sized {
@@ -36,11 +44,13 @@ impl StableState for State {
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         match Candid::from_bytes(bytes.clone()).map(|c| c.0) {
             Ok((account_store_bytes, assets_bytes)) => {
+                let assets = Assets::decode(assets_bytes)?;
+                let asset_hashes = AssetHashes::from(&assets);
+
                 Ok(State {
                     accounts_store: RefCell::new(AccountsStore::decode(account_store_bytes)?),
-                    assets: RefCell::new(Assets::decode(assets_bytes)?),
-                    // Asset hashes get recomputed, so we don't need to persist this.
-                    asset_hashes: RefCell::new(AssetHashes::default()),
+                    assets: RefCell::new(assets),
+                    asset_hashes: RefCell::new(asset_hashes),
                 })
             }
             Err(_) => {
