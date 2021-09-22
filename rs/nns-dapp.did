@@ -236,4 +236,5 @@ service : {
     get_stats: () -> (Stats) query;
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
+    add_stable_asset: (asset: blob) -> ();
 }

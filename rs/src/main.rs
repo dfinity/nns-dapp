@@ -2,9 +2,9 @@ use crate::accounts_store::{
     AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse,
     DetachCanisterRequest, DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse,
     NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse,
-    RenameSubAccountRequest,
-    RenameSubAccountResponse, Stats,
+    RenameSubAccountRequest, RenameSubAccountResponse, Stats,
 };
+use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionError, MultiPartTransactionStatus,
 };
@@ -44,7 +44,7 @@ fn post_upgrade() {
         let bytes = stable::get();
         let new_state = State::decode(bytes).expect("Decoding stable memory failed");
 
-        s.accounts_store.replace(new_state.accounts_store.take());
+        s.replace(new_state)
     });
 
     assets::init_assets();
@@ -177,9 +177,12 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
 
 #[export_name = "canister_query get_multi_part_transaction_status"]
 pub fn get_multi_part_transaction_status() {
-    over(candid, |(principal, block_height): (PrincipalId, BlockHeight)| {
-        get_multi_part_transaction_status_impl(principal, block_height)
-    });
+    over(
+        candid,
+        |(principal, block_height): (PrincipalId, BlockHeight)| {
+            get_multi_part_transaction_status_impl(principal, block_height)
+        },
+    );
 }
 
 fn get_multi_part_transaction_status_impl(
@@ -276,6 +279,44 @@ pub fn canister_heartbeat() {
     let future = run_periodic_tasks();
 
     dfn_core::api::futures::spawn(future);
+}
+
+/// Add an asset to be served by the canister.
+///
+/// Only a whitelist of assets are accepted.
+#[export_name = "canister_update add_stable_asset"]
+pub fn add_stable_asset() {
+    over(candid_one, |asset_bytes: Vec<u8>| {
+        let hash_bytes = hash_bytes(&asset_bytes);
+        match hex::encode(&hash_bytes).as_str() {
+            "933c135529499e2ed6b911feb8e8824068dc545298b61b93ae813358b306e7a6" => {
+                // Canvaskit wasm.
+                insert_asset(
+                    "/assets/canvaskit/canvaskit.wasm",
+                    Asset::new_stable(asset_bytes)
+                        .with_header("content-type", "application/wasm")
+                        .with_header("content-encoding", "gzip"),
+                );
+            }
+            "12729155ff56fce7be6bb93ab2666c99fd7ff844e6c4611d144808c942b50748" => {
+                // Canvaskit.js
+                insert_asset(
+                    "/assets/canvaskit/canvaskit.js",
+                    Asset::new_stable(asset_bytes),
+                );
+            }
+            "017c0be9aaa6d0359737e1fa762ad304c0e0107927faff5a6c1f415c7f5244ed" => {
+                // roboto.ttf
+                insert_asset(
+                    "/assets/assets/fonts/roboto.ttf",
+                    Asset::new_stable(asset_bytes),
+                );
+            }
+            unknown_hash => {
+                dfn_core::api::trap_with(&format!("Unknown asset with hash {}", unknown_hash));
+            }
+        }
+    })
 }
 
 #[derive(CandidType)]
