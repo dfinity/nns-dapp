@@ -145,7 +145,7 @@ pub struct NeuronDetails {
     neuron_id: Option<NeuronId>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub enum CreateSubAccountResponse {
     Ok(SubAccountDetails),
     AccountNotFound,
@@ -153,13 +153,13 @@ pub enum CreateSubAccountResponse {
     NameTooLong,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct RenameSubAccountRequest {
     account_identifier: AccountIdentifier,
     new_name: String,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub enum RenameSubAccountResponse {
     Ok,
     AccountNotFound,
@@ -167,13 +167,13 @@ pub enum RenameSubAccountResponse {
     NameTooLong,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct RegisterHardwareWalletRequest {
     name: String,
     principal: PrincipalId,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub enum RegisterHardwareWalletResponse {
     Ok,
     AccountNotFound,
@@ -182,7 +182,7 @@ pub enum RegisterHardwareWalletResponse {
     NameTooLong,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub struct AccountDetails {
     pub principal: PrincipalId,
     pub account_identifier: AccountIdentifier,
@@ -190,27 +190,27 @@ pub struct AccountDetails {
     pub hardware_wallet_accounts: Vec<HardwareWalletAccountDetails>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub struct SubAccountDetails {
     name: String,
     sub_account: Subaccount,
     account_identifier: AccountIdentifier,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub struct HardwareWalletAccountDetails {
     pub name: String,
     pub principal: PrincipalId,
     pub account_identifier: AccountIdentifier,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct AttachCanisterRequest {
     name: String,
     canister_id: CanisterId,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub enum AttachCanisterResponse {
     Ok,
     CanisterLimitExceeded,
@@ -220,12 +220,12 @@ pub enum AttachCanisterResponse {
     AccountNotFound,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct DetachCanisterRequest {
     canister_id: CanisterId,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub enum DetachCanisterResponse {
     Ok,
     CanisterNotFound,
@@ -1642,20 +1642,20 @@ fn sort_canisters(canisters: &mut Vec<NamedCanister>) {
     });
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct GetTransactionsRequest {
     account_identifier: AccountIdentifier,
     offset: u32,
     page_size: u8,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub struct GetTransactionsResponse {
     transactions: Vec<TransactionResult>,
     total: u32,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub struct TransactionResult {
     block_height: BlockHeight,
     timestamp: TimeStamp,
@@ -1664,7 +1664,7 @@ pub struct TransactionResult {
     transaction_type: Option<TransactionType>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub enum TransferResult {
     Burn {
         amount: ICPTs,
@@ -1684,7 +1684,7 @@ pub enum TransferResult {
     },
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub struct Stats {
     accounts_count: u64,
     sub_accounts_count: u64,
