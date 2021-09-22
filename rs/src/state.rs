@@ -42,26 +42,15 @@ impl StableState for State {
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        match Candid::from_bytes(bytes.clone()).map(|c| c.0) {
-            Ok((account_store_bytes, assets_bytes)) => {
-                let assets = Assets::decode(assets_bytes)?;
-                let asset_hashes = AssetHashes::from(&assets);
+        let (account_store_bytes, assets_bytes) = Candid::from_bytes(bytes.clone()).map(|c| c.0)?;
 
-                Ok(State {
-                    accounts_store: RefCell::new(AccountsStore::decode(account_store_bytes)?),
-                    assets: RefCell::new(assets),
-                    asset_hashes: RefCell::new(asset_hashes),
-                })
-            }
-            Err(_) => {
-                // Deserialization failed. Try parsing as the old state.
-                // TODO: Delete this code once the nns-dapp is deployed.
-                Ok(State {
-                    accounts_store: RefCell::new(AccountsStore::decode(bytes)?),
-                    assets: RefCell::new(Assets::default()),
-                    asset_hashes: RefCell::new(AssetHashes::default()),
-                })
-            }
-        }
+        let assets = Assets::decode(assets_bytes)?;
+        let asset_hashes = AssetHashes::from(&assets);
+
+        Ok(State {
+            accounts_store: RefCell::new(AccountsStore::decode(account_store_bytes)?),
+            assets: RefCell::new(assets),
+            asset_hashes: RefCell::new(asset_hashes),
+        })
     }
 }
