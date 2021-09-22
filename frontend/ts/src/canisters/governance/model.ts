@@ -224,7 +224,7 @@ export interface NeuronInfo {
 }
 export interface NeuronInfoForHw {
   id: string;
-  amount: string; // TODO: make them bigint?
+  amount: string;
   hotKeys: Array<PrincipalString>;
 }
 export interface NodeProvider {

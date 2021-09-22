@@ -26,6 +26,4 @@ frontend/dart/ios/Runner/GeneratedPluginRegistrant.h
 frontend/dart/ios/Runner/GeneratedPluginRegistrant.m
 frontend/dart/lib/generated_plugin_registrant.dart
 frontend/dart/pubspec.lock
-dfinity/.git
-dfinity/target
 frontend/dart/build/web
