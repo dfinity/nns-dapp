@@ -26,7 +26,19 @@ pub struct HttpResponse {
 }
 
 const LABEL_ASSETS: &[u8] = b"http_assets";
-pub type AssetHashes = RbTree<Vec<u8>, Hash>;
+
+#[derive(Default)]
+pub struct AssetHashes(RbTree<Vec<u8>, Hash>);
+
+impl From<&Assets> for AssetHashes {
+    fn from(assets: &Assets) -> Self {
+        let mut asset_hashes = Self::default();
+        for (path, asset) in assets.0.iter() {
+            asset_hashes.0.insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
+        }
+        asset_hashes
+    }
+}
 
 /// An asset to be served via HTTP requests.
 #[derive(CandidType, Clone, Deserialize, PartialEq, Debug)]
@@ -108,7 +120,7 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
         dfn_core::api::trap_with("data certificate is only available in query calls");
         unreachable!()
     });
-    let witness = asset_hashes.witness(asset_name.as_bytes());
+    let witness = asset_hashes.0.witness(asset_name.as_bytes());
     let tree = labeled(LABEL_ASSETS, witness);
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
     serializer.self_describe().unwrap();
@@ -140,11 +152,11 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
         let path = path.into();
 
         if path == "/index.html" {
-            asset_hashes.insert(b"/".to_vec(), hash_bytes(&asset.bytes));
+            asset_hashes.0.insert(b"/".to_vec(), hash_bytes(&asset.bytes));
             assets.insert("/", asset.clone());
         }
 
-        asset_hashes.insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
+        asset_hashes.0.insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
         assets.insert(path, asset);
 
         update_root_hash(&asset_hashes);
@@ -209,7 +221,7 @@ impl StableState for Assets {
 }
 
 fn update_root_hash(a: &AssetHashes) {
-    let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &a.root_hash());
+    let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &a.0.root_hash());
     dfn_core::api::set_certified_data(&prefixed_root_hash[..]);
 }
 
