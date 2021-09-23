@@ -78,7 +78,7 @@ fn get_account_impl() -> GetAccountResponse {
 /// Returns true if the account was created, else false (which happens if the principal already has
 /// an account).
 #[export_name = "canister_update add_account"]
-pub fn add_account() {
+fn add_account() {
     over(candid, |()| add_account_impl());
 }
 

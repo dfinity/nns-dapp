@@ -58,7 +58,6 @@ impl Asset {
         }
     }
 
-    #[allow(dead_code)]
     pub fn new_stable(bytes: Vec<u8>) -> Self {
         Self {
             headers: vec![],
@@ -67,7 +66,6 @@ impl Asset {
         }
     }
 
-    #[allow(dead_code)]
     pub fn with_header<S: Into<String>>(mut self, key: S, val: S) -> Self {
         self.headers.push((key.into(), val.into()));
         self

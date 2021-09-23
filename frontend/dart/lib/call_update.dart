@@ -40,7 +40,6 @@ extension CallUpdate on BuildContext {
     final timeout = this.icApi.getTimeUntilSessionExpiryMs();
     if (timeout != null && timeout < 120000) {
       _showSessionExpiredAlert(this);
-      // TODO: return a Result here.
       throw "Session expired";
     }
     return await this.performLoading(action);

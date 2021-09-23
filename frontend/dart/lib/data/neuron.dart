@@ -12,7 +12,7 @@ import 'package:collection/collection.dart';
 import 'proposal.dart';
 import 'vote.dart';
 
-// TODO: Use NeuronID everywhere.
+// TODO(NNS1-701): Use NeuronID everywhere.
 class NeuronId {
   final BigInt _id;
 
