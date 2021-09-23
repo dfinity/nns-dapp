@@ -47,6 +47,18 @@ class ProposalSyncService {
     hiveBoxes.proposals.notifyChange();
   }
 
+  bool canShowPayload(Proposal proposal) {
+    proposal.topic
+  }
+
+  Future<Proposal> getFullProposal(?? proposalId) async {
+    final response = await promiseToFuture(serviceApi.getProposalInfo(proposalId));
+
+    final proposal = storeProposal(response);
+
+    return proposal;
+  }
+
   Proposal storeProposal(dynamic response) {
     final proposalId = response['id'].toString();
     if (!hiveBoxes.proposals.containsKey(proposalId)) {
