@@ -131,9 +131,6 @@ class ConfirmCanisterCreationWidget extends StatelessWidget {
                           context.icApi.createCanister(
                               amount: amount,
                               fromSubAccountId: fromSubAccountId));
-                      if (result == null) {
-                        return;
-                      }
                       if (result.canister != null) {
                         context.nav.push(
                             canisterPageDef.createPageConfig(result.canister!));

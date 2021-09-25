@@ -1,0 +1,71 @@
+type AddNodeOperatorPayload = record {
+  node_operator_principal_id : opt principal;
+  node_allowance : nat64;
+  node_provider_principal_id : opt principal;
+};
+type AddNodesToSubnetPayload = record {
+  subnet_id : principal;
+  node_ids : vec principal;
+};
+type BlessReplicaVersionPayload = record {
+  node_manager_sha256_hex : text;
+  release_package_url : text;
+  sha256_hex : text;
+  replica_version_id : text;
+  release_package_sha256_hex : text;
+  node_manager_binary_url : text;
+  binary_url : text;
+};
+type CreateSubnetPayload = record {
+  unit_delay_millis : nat64;
+  max_instructions_per_round : nat64;
+  features : SubnetFeatures;
+  max_instructions_per_message : nat64;
+  gossip_registry_poll_period_ms : nat32;
+  max_ingress_bytes_per_message : nat64;
+  dkg_dealings_per_block : nat64;
+  max_block_payload_size : nat64;
+  max_instructions_per_install_code : nat64;
+  start_as_nns : bool;
+  is_halted : bool;
+  gossip_pfn_evaluation_period_ms : nat32;
+  max_ingress_messages_per_block : nat64;
+  gossip_max_artifact_streams_per_peer : nat32;
+  replica_version_id : text;
+  gossip_max_duplicity : nat32;
+  gossip_max_chunk_wait_ms : nat32;
+  dkg_interval_length : nat64;
+  subnet_id_override : opt principal;
+  ingress_bytes_per_block_soft_cap : nat64;
+  initial_notary_delay_millis : nat64;
+  gossip_max_chunk_size : nat32;
+  subnet_type : SubnetType;
+  gossip_retransmission_request_ms : nat32;
+  gossip_receive_check_cache_size : nat32;
+  node_ids : vec principal;
+};
+type RecoverSubnetPayload = record {
+  height : nat64;
+  replacement_nodes : opt vec principal;
+  subnet_id : principal;
+  registry_store_uri : opt record { text; text; nat64 };
+  state_hash : vec nat8;
+  time_ns : nat64;
+};
+type RemoveNodesFromSubnetPayload = record { node_ids : vec principal };
+type SetFirewallConfigPayload = record {
+  ipv4_prefixes : vec text;
+  firewall_config : text;
+  ipv6_prefixes : vec text;
+};
+type SubnetFeatures = record { ecdsa_signatures : bool };
+type SubnetType = variant { application; verified_application; system };
+type UpdateIcpXdrConversionRatePayload = record {
+  data_source : text;
+  xdr_permyriad_per_icp : nat64;
+  timestamp_seconds : nat64;
+};
+type UpdateSubnetReplicaVersionPayload = record {
+  subnet_id : principal;
+  replica_version_id : text;
+};

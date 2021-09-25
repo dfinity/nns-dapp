@@ -89,8 +89,10 @@ export type DissolveState =
   | { DissolveDelaySeconds: bigint }
   | { WhenDissolvedTimestampSeconds: bigint };
 export interface ExecuteNnsFunction {
+  nnsFunctionName: Option<string>,
+  payload: Option<Record<string, unknown>>,
   nnsFunction: number;
-  payload: ArrayBuffer;
+  payloadBytes: ArrayBuffer;
 }
 export interface Follow {
   topic: Topic;
@@ -224,7 +226,7 @@ export interface NeuronInfo {
 }
 export interface NeuronInfoForHw {
   id: string;
-  amount: string; // TODO: make them bigint?
+  amount: string;
   hotKeys: Array<PrincipalString>;
 }
 export interface NodeProvider {

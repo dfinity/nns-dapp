@@ -1,7 +1,7 @@
 # Use this with
 #
 # docker build -t nns-dapp .
-# docker run --rm --entrypoint cat nns-dapp /nns_ui.wasm > nns_ui.wasm
+# docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
 
 FROM ubuntu:20.10
 
@@ -50,7 +50,7 @@ COPY . .
 ENV DEPLOY_ENV=mainnet
 RUN cd frontend/ts && ./build.sh
 
-RUN cd frontend/dart && flutter build web --web-renderer canvaskit --release --no-sound-null-safety --pwa-strategy=none
+RUN cd frontend/dart && flutter build web --web-renderer auto --release --no-sound-null-safety --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/
 # Remove random hash from flutter output
 RUN sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' frontend/dart/build/web/index.html
 
@@ -58,7 +58,7 @@ RUN sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' 
 RUN cd frontend/dart/build/web/ && tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz .
 RUN ls -sh assets.tar.xz; sha256sum assets.tar.xz
 
-RUN cargo build --locked --target wasm32-unknown-unknown --release --package nns_ui
-RUN cp target/wasm32-unknown-unknown/release/nns_ui.wasm .
-RUN ic-cdk-optimizer nns_ui.wasm -o nns_ui.wasm
-RUN ls -sh nns_ui.wasm; sha256sum nns_ui.wasm
+RUN cargo build --locked --target wasm32-unknown-unknown --release --package nns-dapp
+RUN cp target/wasm32-unknown-unknown/release/nns-dapp.wasm .
+RUN ic-cdk-optimizer nns-dapp.wasm -o nns-dapp.wasm
+RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm

@@ -1,10 +1,10 @@
 {
-  "dfx": "0.7.0",
+  "dfx": "0.7.2",
   "canisters": {
-    "nns_ui": {
+    "nns-dapp": {
       "type": "custom",
-      "candid": "canisters/nns_ui/nns_ui.did",
-      "wasm": "target/wasm32-unknown-unknown/release/nns_ui-opt.wasm",
+      "candid": "rs/nns-dapp.did",
+      "wasm": "target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm",
       "build": "./build.sh",
       "source": ["assets.tar.xz"]
     }

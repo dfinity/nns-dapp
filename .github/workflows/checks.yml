@@ -92,5 +92,8 @@ jobs:
       - run: flutter build web --web-renderer canvaskit --release --no-sound-null-safety
         working-directory: ./frontend/dart
 
+      - run: flutter analyze
+        working-directory: ./frontend/dart
+
       - run: flutter test
         working-directory: ./frontend/dart

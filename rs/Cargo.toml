@@ -1,0 +1,39 @@
+[package]
+name = "nns-dapp"
+version = "0.0.1"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+base64 = "0.13.0"
+candid = "0.7.4"
+itertools = "0.10.0"
+lazy_static = "1.4.0"
+serde = "1.0.119"
+serde_bytes = "0.11"
+serde_cbor = "0.11"
+sha2 = "0.9.1"
+lzma-rs = "0.2.0"
+tar = "0.4.35"
+hex = "0.4.3"
+
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+dfn_json = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+dfn_macro = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
+ic-crypto-sha256 = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+ledger-canister = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+
+[dev-dependencies]
+maplit = "1.0.2"
+
+[features]
+mock_conversion_rate = []

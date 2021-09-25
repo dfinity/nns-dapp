@@ -18,6 +18,7 @@ class BalanceSyncService {
       final account = hiveBoxes.accounts[entry.key];
       account.balance = entry.value;
     });
+    // ignore: deprecated_member_use
     hiveBoxes.accounts.notifyChange();
   }
 

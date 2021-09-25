@@ -15,10 +15,10 @@ set -x
 # build the flutter app
 cd frontend/dart || exit
 if [[ $DEPLOY_ENV = "mainnet" ]]; then
-  flutter build web --web-renderer canvaskit --release --no-sound-null-safety --pwa-strategy=none
+  flutter build web --web-renderer auto --release --no-sound-null-safety --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/
 else
   # For all networks that are not main net, build with the staging config
-  flutter build web --web-renderer canvaskit --release --no-sound-null-safety --pwa-strategy=none --dart-define=DEPLOY_ENV=staging
+  flutter build web --web-renderer auto --release --no-sound-null-safety --pwa-strategy=none --dart-define=DEPLOY_ENV=staging
 fi
 sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' build/web/index.html
 
@@ -28,6 +28,8 @@ sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' buil
 # brew install xz
 
 cd build/web/ || exit
+# Remove the assets/NOTICES file, as it's large in size and not used.
+rm assets/NOTICES
 tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz . || \
 gtar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz .
 cd ../../../.. || exit
@@ -36,12 +38,12 @@ sha256sum assets.tar.xz
 
 echo Compiling rust package
 if [[ $DEPLOY_ENV = "mainnet" ]]; then
-  cargo build --target wasm32-unknown-unknown --release --package nns_ui
+  cargo build --target wasm32-unknown-unknown --release --package nns-dapp
 else
-  cargo build --target wasm32-unknown-unknown --release --package nns_ui --features mock_conversion_rate
+  cargo build --target wasm32-unknown-unknown --release --package nns-dapp --features mock_conversion_rate
 fi
 
 echo Optimising wasm
-wasm-opt target/wasm32-unknown-unknown/release/nns_ui.wasm --strip-debug -Oz -o target/wasm32-unknown-unknown/release/nns_ui-opt.wasm
+wasm-opt target/wasm32-unknown-unknown/release/nns-dapp.wasm --strip-debug -Oz -o target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
 
-sha256sum target/wasm32-unknown-unknown/release/nns_ui-opt.wasm
+sha256sum target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm

@@ -482,7 +482,7 @@ export default class RequestConverters {
       return {
         ExecuteNnsFunction: {
           nns_function: executeNnsFunction.nnsFunction,
-          payload: arrayBufferToArrayOfNumber(executeNnsFunction.payload),
+          payload: arrayBufferToArrayOfNumber(executeNnsFunction.payloadBytes),
         },
       };
     }

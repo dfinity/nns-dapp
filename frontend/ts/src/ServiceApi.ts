@@ -40,8 +40,8 @@ import LedgerService, {
   GetBalancesRequest,
   SendICPTsRequest,
 } from "./canisters/ledger/model";
-import nnsUiBuilder from "./canisters/nnsUI/builder";
-import NnsUiService, {
+import nnsDappBuilder from "./canisters/nnsDapp/builder";
+import NnsDappService, {
   AccountDetails,
   AttachCanisterRequest,
   AttachCanisterResult,
@@ -55,7 +55,7 @@ import NnsUiService, {
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
   RenameSubAccountResponse,
-} from "./canisters/nnsUI/model";
+} from "./canisters/nnsDapp/model";
 import icManagementBuilder from "./canisters/icManagement/builder";
 import ICManagementService, {
   CanisterDetailsResponse,
@@ -63,7 +63,7 @@ import ICManagementService, {
   UpdateSettingsResponse,
 } from "./canisters/icManagement/model";
 import {
-  createNeuronWithNnsUi,
+  createNeuronWithNnsDapp,
   CreateNeuronRequest,
 } from "./canisters/createNeuron";
 import topUpNeuronImpl, { TopUpNeuronRequest } from "./canisters/topUpNeuron";
@@ -84,7 +84,7 @@ import { LedgerIdentity } from "./ledger/identity";
 import { HOST } from "./canisters/constants";
 import { executeWithLogging } from "./errorLogger";
 import { FETCH_ROOT_KEY } from "./config.json";
-import getAndRefreshNeurons from "./canisters/getAndRefreshNeurons";
+import checkNeuronBalances from "./canisters/checkNeuronBalances";
 import {
   topUpCanisterImpl,
   TopUpCanisterRequest,
@@ -98,7 +98,7 @@ import { Principal } from "@dfinity/principal";
  */
 export default class ServiceApi {
   private readonly ledgerService: LedgerService;
-  private readonly nnsUiService: NnsUiService;
+  private readonly nnsDappService: NnsDappService;
   private readonly governanceService: GovernanceService;
   private readonly icManagementService: ICManagementService;
   private readonly identity: SignIdentity;
@@ -120,7 +120,7 @@ export default class ServiceApi {
 
   private constructor(agent: HttpAgent, identity: SignIdentity) {
     this.ledgerService = ledgerBuilder(agent);
-    this.nnsUiService = nnsUiBuilder(agent);
+    this.nnsDappService = nnsDappBuilder(agent);
     this.governanceService = governanceBuilder(agent, identity);
     this.icManagementService = icManagementBuilder(agent);
     this.identity = identity;
@@ -131,14 +131,14 @@ export default class ServiceApi {
   public createSubAccount = (
     name: string
   ): Promise<CreateSubAccountResponse> => {
-    return executeWithLogging(() => this.nnsUiService.createSubAccount(name));
+    return executeWithLogging(() => this.nnsDappService.createSubAccount(name));
   };
 
   public renameSubAccount = (
     request: RenameSubAccountRequest
   ): Promise<RenameSubAccountResponse> => {
     return executeWithLogging(() =>
-      this.nnsUiService.renameSubAccount(request)
+      this.nnsDappService.renameSubAccount(request)
     );
   };
 
@@ -157,19 +157,19 @@ export default class ServiceApi {
       principal: identity.getPrincipal().toString(),
     };
     return executeWithLogging(() =>
-      this.nnsUiService.registerHardwareWallet(request)
+      this.nnsDappService.registerHardwareWallet(request)
     );
   };
 
   public getAccount = async (): Promise<AccountDetails> => {
     const response = await executeWithLogging(() =>
-      this.nnsUiService.getAccount()
+      this.nnsDappService.getAccount()
     );
     if ("Ok" in response) {
       return response.Ok;
     } else {
       const accountIdentifier = await executeWithLogging(() =>
-        this.nnsUiService.addAccount()
+        this.nnsDappService.addAccount()
       );
       return {
         principal: this.identity.getPrincipal().toString(),
@@ -189,7 +189,9 @@ export default class ServiceApi {
   public getTransactions = (
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
-    return executeWithLogging(() => this.nnsUiService.getTransactions(request));
+    return executeWithLogging(() =>
+      this.nnsDappService.getTransactions(request)
+    );
   };
 
   public sendICP = (
@@ -213,8 +215,15 @@ export default class ServiceApi {
   };
 
   public getNeurons = (): Promise<Array<NeuronInfo>> => {
+    return executeWithLogging(this.governanceService.getNeurons);
+  };
+
+  // Returns true if any neurons were refreshed, otherwise false
+  public checkNeuronBalances = (
+    neurons: Array<NeuronInfo>
+  ): Promise<boolean> => {
     return executeWithLogging(() =>
-      getAndRefreshNeurons(this.governanceService, this.ledgerService)
+      checkNeuronBalances(neurons, this.ledgerService, this.governanceService)
     );
   };
 
@@ -374,10 +383,10 @@ export default class ServiceApi {
     request: CreateNeuronRequest
   ): Promise<string> => {
     return await executeWithLogging(async () => {
-      const neuronId = await createNeuronWithNnsUi(
+      const neuronId = await createNeuronWithNnsDapp(
         this.identity.getPrincipal(),
         this.ledgerService,
-        this.nnsUiService,
+        this.nnsDappService,
         request
       );
       console.log("Received neuron id");
@@ -393,7 +402,7 @@ export default class ServiceApi {
       topUpNeuronImpl(
         this.identity.getPrincipal(),
         this.ledgerService,
-        this.nnsUiService,
+        this.nnsDappService,
         request
       )
     );
@@ -408,7 +417,7 @@ export default class ServiceApi {
       createCanisterImpl(
         this.identity.getPrincipal(),
         this.ledgerService,
-        this.nnsUiService,
+        this.nnsDappService,
         request
       )
     );
@@ -421,7 +430,7 @@ export default class ServiceApi {
       topUpCanisterImpl(
         this.identity.getPrincipal(),
         this.ledgerService,
-        this.nnsUiService,
+        this.nnsDappService,
         request
       )
     );
@@ -430,17 +439,21 @@ export default class ServiceApi {
   public attachCanister = (
     request: AttachCanisterRequest
   ): Promise<AttachCanisterResult> => {
-    return executeWithLogging(() => this.nnsUiService.attachCanister(request));
+    return executeWithLogging(() =>
+      this.nnsDappService.attachCanister(request)
+    );
   };
 
   public detachCanister = (
     request: DetachCanisterRequest
   ): Promise<DetachCanisterResponse> => {
-    return executeWithLogging(() => this.nnsUiService.detachCanister(request));
+    return executeWithLogging(() =>
+      this.nnsDappService.detachCanister(request)
+    );
   };
 
   public getCanisters = (): Promise<Array<CanisterDetails>> => {
-    return executeWithLogging(() => this.nnsUiService.getCanisters());
+    return executeWithLogging(() => this.nnsDappService.getCanisters());
   };
 
   public getCanisterDetails = (
@@ -461,7 +474,7 @@ export default class ServiceApi {
 
   public getIcpToCyclesConversionRate = (): Promise<bigint> => {
     return executeWithLogging(() =>
-      this.nnsUiService.getIcpToCyclesConversionRate()
+      this.nnsDappService.getIcpToCyclesConversionRate()
     );
   };
 

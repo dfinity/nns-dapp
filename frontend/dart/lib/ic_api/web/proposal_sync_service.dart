@@ -43,7 +43,25 @@ class ProposalSyncService {
     response!['proposals']?.forEach((e) {
       storeProposal(e);
     });
+    // ignore: deprecated_member_use
     hiveBoxes.proposals.notifyChange();
+  }
+
+  bool shouldGetFullProposal(Proposal proposal) {
+    if (proposal.action.containsKey('ExecuteNnsFunction')) {
+      final nnsFunctionNumber = proposal.action['ExecuteNnsFunction'].nnsFunction;
+      const whitelistedNnsFunctions = [1,2,5,6,8,10,11,13,15];
+      return whitelistedNnsFunctions.contains(nnsFunctionNumber);
+    }
+    return false;
+  }
+
+  Future<Proposal> getFullProposal(BigInt proposalId) async {
+    final response = await promiseToFuture(serviceApi.getProposalInfo(proposalId.toJS));
+
+    final proposal = storeProposal(response);
+
+    return proposal;
   }
 
   Proposal storeProposal(dynamic response) {

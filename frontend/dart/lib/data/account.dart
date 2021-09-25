@@ -1,5 +1,6 @@
 import 'data.dart';
 import 'transaction.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:observable/observable.dart';
 import 'package:dartx/dartx.dart';
 import 'icp.dart';

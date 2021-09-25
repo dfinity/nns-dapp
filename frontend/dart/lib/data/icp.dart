@@ -84,6 +84,11 @@ class ICP {
       return false;
     }
   }
+
+  @override
+  int get hashCode {
+    return this._e8s.hashCode;
+  }
 }
 
 class ICPTextInputFormatter extends TextInputFormatter {

@@ -376,8 +376,6 @@ async function main() {
         .option("-n --no-show-on-device")
         .description("Show the wallet's principal, address, and balance.")
         .action((args) => {
-          console.log(args);
-          console.log(program.opts().network);
           run(() => showInfo(args.showOnDevice));
         })
     )
