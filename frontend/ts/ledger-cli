@@ -1,4 +1,9 @@
 #!/bin/bash
+
 pushd "$(dirname "$0")" > /dev/null # Move to the script's directory.
+
+# Ensure the proper config is set.
+DEPLOY_ENV=mainnet ../../update_config.sh
+
 ts-node ledger-cli.ts $@
 popd > /dev/null
