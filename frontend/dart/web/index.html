@@ -30,6 +30,30 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <script type="text/javascript">
+    function iOS() {
+      return [
+        'iPad Simulator',
+        'iPhone Simulator',
+        'iPod Simulator',
+        'iPad',
+        'iPhone',
+        'iPod'
+      ].includes(navigator.platform)
+      // iPad on iOS 13 detection
+      || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+    }
+
+    function isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    if(isMobile() || iOS()) {
+      window.flutterWebRenderer = "html";
+    } else {
+      window.flutterWebRenderer = "canvaskit";
+    }
+  </script>
   <script src="/assets/assets/ic_agent.js" type="application/javascript"></script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
