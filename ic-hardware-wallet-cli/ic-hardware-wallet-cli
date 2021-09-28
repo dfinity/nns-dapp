@@ -6,8 +6,8 @@ if [ ! -d "node_modules" ]; then
   npm install
 fi
 
-# This isn't needed, but is done to keep the TS compiler happy.
+# This isn't needed by the CLI, but is done to keep the TS compiler happy.
 DEPLOY_ENV=testnet ../../update_config.sh
 
-npm run ic-custody --silent -- $@
+npm run ic-hardware-wallet-cli --silent -- $@
 popd > /dev/null
