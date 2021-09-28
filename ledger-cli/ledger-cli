@@ -1,0 +1,13 @@
+#!/bin/bash
+
+pushd "$(dirname "$0")/../frontend/ts" > /dev/null # Move to the script's directory.
+
+if [ ! -d "node_modules" ]; then
+  npm install
+fi
+
+# This isn't needed, but is done to keep the TS compiler happy.
+DEPLOY_ENV=testnet ../../update_config.sh
+
+npm run ledger-cli --silent -- $@
+popd > /dev/null

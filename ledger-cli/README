@@ -1,0 +1,6 @@
+# Ledger CLI
+
+This is a CLI to interact with the Internet App on Ledger Nano S/X devices.
+
+* Install npm >= 6.14
+* Run `./ledger.cli`
