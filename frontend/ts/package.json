@@ -4,7 +4,8 @@
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",
     "update_candid": "bash ./update_candid.sh",
-    "update_proto": "bash ./src/proto/update_proto.sh"
+    "update_proto": "bash ./src/proto/update_proto.sh",
+    "ic-hardware-wallet-cli": "ts-node ./ic-hardware-wallet-cli.ts"
   },
   "dependencies": {
     "@dfinity/agent": "^0.9.1",
@@ -44,6 +45,7 @@
     "eslint-plugin-promise": "^5.1.0",
     "node-fetch": "^2.6.1",
     "prettier": "2.3.2",
+    "ts-node": "^10.2.1",
     "typescript": "^4.3.5"
   }
 }

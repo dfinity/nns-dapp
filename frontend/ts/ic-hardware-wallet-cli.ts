@@ -12,20 +12,14 @@ import GovernanceService, {
   EmptyResponse,
 } from "./src/canisters/governance/model";
 import LedgerService from "./src/canisters/ledger/model";
-import {
-  Agent,
-  AnonymousIdentity,
-  HttpAgent,
-  Identity,
-  SignIdentity,
-} from "@dfinity/agent";
+import { Agent, AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
 import ledgerBuilder from "./src/canisters/ledger/builder";
 import {
   AccountIdentifier,
   E8s,
   PrincipalString,
 } from "./src/canisters/common/types";
-import HardwareWalletApi from "./src/HardwareWalletApi";
+import createNeuronImpl from "./src/canisters/createNeuron";
 import chalk from "chalk";
 
 // Add polyfill for `window.fetch` for agent-js to work.
@@ -37,7 +31,7 @@ const program = new Command();
 const log = console.log;
 
 async function getGovernanceService(
-  identity: SignIdentity
+  identity: Identity
 ): Promise<GovernanceService> {
   return governanceBuilder(await getAgent(identity), identity);
 }
@@ -137,8 +131,22 @@ async function sendICP(to: AccountIdentifier, amount: string) {
  */
 async function stakeNeuron(amount: E8s) {
   const identity = await LedgerIdentity.create();
-  const hwApi = await HardwareWalletApi.create(identity);
-  const neuronId = await hwApi.createNeuron(amount);
+  const ledger = await getLedgerService(identity);
+  const governance = await getGovernanceService(new AnonymousIdentity());
+
+  // Flag that an upcoming stake neuron transaction is coming to distinguish
+  // it from a "send ICP" transaction on the device.
+  identity.flagUpcomingStakeNeuron();
+
+  const neuronId = await createNeuronImpl(
+    identity.getPrincipal(),
+    ledger,
+    governance,
+    {
+      stake: amount,
+    }
+  );
+
   ok(`Staked neuron with ID: ${neuronId}`);
 }
 
