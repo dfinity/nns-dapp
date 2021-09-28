@@ -9,5 +9,5 @@ fi
 # This isn't needed, but is done to keep the TS compiler happy.
 DEPLOY_ENV=testnet ../../update_config.sh
 
-npm run ledger-cli --silent -- $@
+npm run ic-custody --silent -- $@
 popd > /dev/null

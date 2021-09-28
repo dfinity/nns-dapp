@@ -5,7 +5,7 @@
     "format": "prettier --write .",
     "update_candid": "bash ./update_candid.sh",
     "update_proto": "bash ./src/proto/update_proto.sh",
-    "ledger-cli": "ts-node ./ledger-cli.ts"
+    "ic-custody": "ts-node ./ic-custody.ts"
   },
   "dependencies": {
     "@dfinity/agent": "^0.9.1",
