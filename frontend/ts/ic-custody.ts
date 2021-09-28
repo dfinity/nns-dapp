@@ -12,13 +12,7 @@ import GovernanceService, {
   EmptyResponse,
 } from "./src/canisters/governance/model";
 import LedgerService from "./src/canisters/ledger/model";
-import {
-  Agent,
-  AnonymousIdentity,
-  HttpAgent,
-  Identity,
-  SignIdentity,
-} from "@dfinity/agent";
+import { Agent, AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
 import ledgerBuilder from "./src/canisters/ledger/builder";
 import {
   AccountIdentifier,
