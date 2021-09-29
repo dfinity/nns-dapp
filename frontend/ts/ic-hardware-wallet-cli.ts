@@ -4,7 +4,7 @@
  * As this matures, we may eventually spin it out to a proper tool for
  * people who prefer using CLI over the NNS dapp.
  */
-import { Command, Option } from "commander";
+import { Command, Option, InvalidArgumentError } from "commander";
 import { LedgerIdentity } from "./src/ledger/identity";
 import { principalToAccountIdentifier } from "./src/canisters/converter";
 import governanceBuilder from "./src/canisters/governance/builder";
@@ -29,6 +29,11 @@ global.fetch = fetch;
 
 const program = new Command();
 const log = console.log;
+
+const SECONDS_PER_MINUTE = 60;
+const SECONDS_PER_HOUR = 60 * SECONDS_PER_MINUTE;
+const SECONDS_PER_DAY = 24 * SECONDS_PER_HOUR;
+const SECONDS_PER_YEAR = 365 * SECONDS_PER_DAY + 6 * SECONDS_PER_HOUR;
 
 async function getGovernanceService(
   identity: Identity
@@ -202,15 +207,24 @@ async function spawnNeuron(neuronId: string, controller?: PrincipalString) {
 }
 
 async function increaseDissolveDelay(
-  neuronId: string,
-  additionalDelaySeconds: string
+  neuronId: bigint,
+  years: number,
+  days: number,
+  minutes: number,
+  seconds: number
 ) {
   const identity = await LedgerIdentity.create();
   const governance = await getGovernanceService(identity);
 
+  const additionalDissolveDelaySeconds =
+    years * SECONDS_PER_YEAR +
+    days * SECONDS_PER_DAY +
+    minutes * SECONDS_PER_MINUTE +
+    seconds;
+
   const response = await governance.increaseDissolveDelay({
-    neuronId: BigInt(neuronId),
-    additionalDissolveDelaySeconds: Number.parseInt(additionalDelaySeconds),
+    neuronId: neuronId,
+    additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
   });
   logResult(response);
 }
@@ -283,6 +297,22 @@ function logResult(res: EmptyResponse) {
   }
 }
 
+function tryParseInt(value: string): number {
+  const parsedValue = parseInt(value, 10);
+  if (isNaN(parsedValue)) {
+    throw new InvalidArgumentError("Not a number.");
+  }
+  return parsedValue;
+}
+
+function tryParseBigInt(value: string): bigint {
+  try {
+    return BigInt(value);
+  } catch (err) {
+    throw new InvalidArgumentError(err.toString());
+  }
+}
+
 async function main() {
   const neuron = new Command("neuron")
     .description("Commands for managing neurons.")
@@ -294,11 +324,20 @@ async function main() {
     )
     .addCommand(
       new Command("increase-dissolve-delay")
-        .requiredOption("--neuron-id <neuron-id>")
-        .requiredOption("--additional-delay-secs <additional-delay-seconds>")
+        .requiredOption("--neuron-id <neuron-id>", "Neuron ID", tryParseBigInt)
+        .option("--years <years>", "Number of years", tryParseInt)
+        .option("--days <days>", "Number of days", tryParseInt)
+        .option("--minutes <minutes>", "Number of minutes", tryParseInt)
+        .option("--seconds <seconds>", "Number of seconds", tryParseInt)
         .action((args) =>
           run(() =>
-            increaseDissolveDelay(args.neuronId, args.additionalDelaySecs)
+            increaseDissolveDelay(
+              args.neuronId,
+              args.years || 0,
+              args.days || 0,
+              args.minutes || 0,
+              args.seconds || 0
+            )
           )
         )
     )
