@@ -4,7 +4,7 @@ use crate::multi_part_transactions_processor::{
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
-use candid::{CandidType, Encode};
+use candid::{CandidType, Decode};
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha256::Sha256;
@@ -1374,13 +1374,9 @@ impl AccountsStore {
 
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
-        let mut accounts = vec![];
-        for (k, v) in self.accounts.iter() {
-            accounts.push((k.to_vec(), Encode!(v).unwrap()));
-        }
-
         Candid((
-            accounts,
+            &self.accounts,
+            &self.hardware_wallets_and_sub_accounts,
             &self.transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
@@ -1395,16 +1391,16 @@ impl StableState for AccountsStore {
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         #[allow(clippy::type_complexity)]
         let (
+            accounts_vec,
             transactions,
-            accounts_old,
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         ): (
+            Vec<(Vec<u8>, Vec<u8>)>,
             VecDeque<Transaction>,
-            Vec<Option<Account>>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
             MultiPartTransactionsProcessor,
@@ -1421,36 +1417,33 @@ impl StableState for AccountsStore {
         let mut accounts = HashMap::new();
         let mut hardware_wallets_and_sub_accounts = HashMap::new();
 
-        for a in accounts_old.into_iter().flatten() {
-            a.sub_accounts
-                .iter()
-                .for_each(|(sub_account_identifier, sub_account)| {
-                    hardware_wallets_and_sub_accounts.insert(
-                        sub_account.account_identifier,
-                        AccountWrapper::SubAccount(a.account_identifier, *sub_account_identifier),
-                    );
-                });
-            sub_accounts_count += a.sub_accounts.len() as u64;
+        for (account_identifier, account_bytes) in accounts_vec {
+            let account =
+                Decode!(&account_bytes, Account).expect("Failed to decode AccountIdentifier");
+            for (sub_account_identifier, sub_account) in account.sub_accounts.iter() {
+                hardware_wallets_and_sub_accounts.insert(
+                    sub_account.account_identifier,
+                    AccountWrapper::SubAccount(account.account_identifier, *sub_account_identifier),
+                );
+            }
+            sub_accounts_count += account.sub_accounts.len() as u64;
 
-            a.hardware_wallet_accounts
-                .iter()
-                .for_each(|hardware_wallet_account| {
-                    hardware_wallets_and_sub_accounts
-                        .entry(AccountIdentifier::from(hardware_wallet_account.principal))
-                        .and_modify(|account_wrapper| {
-                            if let AccountWrapper::HardwareWallet(account_identifiers) =
-                                account_wrapper
-                            {
-                                account_identifiers.push(a.account_identifier);
-                            }
-                        })
-                        .or_insert_with(|| {
-                            AccountWrapper::HardwareWallet(vec![a.account_identifier])
-                        });
-                });
-            hardware_wallet_accounts_count += a.hardware_wallet_accounts.len() as u64;
+            for hardware_wallet_account in account.hardware_wallet_accounts.iter() {
+                hardware_wallets_and_sub_accounts
+                    .entry(AccountIdentifier::from(hardware_wallet_account.principal))
+                    .and_modify(|account_wrapper| {
+                        if let AccountWrapper::HardwareWallet(account_identifiers) = account_wrapper
+                        {
+                            account_identifiers.push(account.account_identifier);
+                        }
+                    })
+                    .or_insert_with(|| {
+                        AccountWrapper::HardwareWallet(vec![account.account_identifier])
+                    });
+            }
+            hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
 
-            accounts.insert(a.account_identifier.to_vec(), a);
+            accounts.insert(account_identifier.to_vec(), account);
             accounts_count += 1;
         }
 
