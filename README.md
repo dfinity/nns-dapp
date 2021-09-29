@@ -16,7 +16,11 @@ The [NNS front-end Dapp](https://nns.ic0.app/) is a dapp that provides a user fr
 * [Earn Substantial Voting Rewards by Staking in the Network Nervous System](https://medium.com/dfinity/earn-substantial-voting-rewards-by-staking-in-the-network-nervous-system-7eb5cf988182)
 * [Get Started Using the NNS Front-End Dapp and ICP Wallet on the Internet Computer](https://medium.com/dfinity/getting-started-on-the-internet-computers-network-nervous-system-app-wallet-61ecf111ea11)
 
-### Screenshots
+### What it looks like 
+
+![image](./nns-dapp-governance.png)
+
+
 
 ## Official build
 
