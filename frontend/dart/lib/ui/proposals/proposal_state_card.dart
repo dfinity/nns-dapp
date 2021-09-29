@@ -30,14 +30,22 @@ class ProposalStateCard extends StatelessWidget {
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: Text(
-                    proposal.summary,
-                    style: Responsive.isMobile(context)
-                        ? context.textTheme.headline6
-                        : context.textTheme.headline3,
-                  ),
-                ),
+                // Expanded(
+                //   child: Text(
+                //     proposal.summary,
+                //     style: Responsive.isMobile(context)
+                //         ? context.textTheme.headline6
+                //         : context.textTheme.headline3,
+                //   ),
+                // ),
+                MarkdownBody(
+                    data: proposal.summary,
+                    styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
+                        textTheme: TextTheme(
+                            bodyText2: TextStyle(
+                      fontSize: Responsive.isMobile(context) ? 20.0 : 24,
+                      color: Colors.white,
+                    ))))),
                 SizedBox(width: 10),
                 Container(
                   decoration: ShapeDecoration(
@@ -139,43 +147,43 @@ class ActionDetailsWidget extends StatelessWidget {
             ),
           ),
           ...fields.entries.map((entry) {
-            if (entry.key == 'nnsFunction') {
-              for (var value in NnsFunction.values) {
-                if (entry.value == value) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          entry.key,
-                          style: context.textTheme.bodyText1
-                              ?.copyWith(fontSize: 14, color: AppColors.gray50),
-                        ),
-                        Text(
-                          value.toString(),
-                          style: context.textTheme.subtitle2,
-                        )
-                      ],
-                    ),
-                  );
-                } else {
-                  return Column(
-                    children: [
-                      Text(
-                        entry.key,
-                        style: context.textTheme.bodyText1
-                            ?.copyWith(fontSize: 14, color: AppColors.gray50),
-                      ),
-                      Text(
-                        'Function needs to be defined in enum',
-                        style: context.textTheme.subtitle2,
-                      ),
-                    ],
-                  );
-                }
-              }
-            }
+            // if (entry.key == 'nnsFunction') {
+            //   for (var value in NnsFunction.values) {
+            //     if (entry.value == value) {
+            //       return Padding(
+            //         padding: const EdgeInsets.all(8.0),
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: [
+            //             Text(
+            //               entry.key,
+            //               style: context.textTheme.bodyText1
+            //                   ?.copyWith(fontSize: 14, color: AppColors.gray50),
+            //             ),
+            //             Text(
+            //               value.toString(),
+            //               style: context.textTheme.subtitle2,
+            //             )
+            //           ],
+            //         ),
+            //       );
+            //     } else {
+            //       return Column(
+            //         children: [
+            //           Text(
+            //             entry.key,
+            //             style: context.textTheme.bodyText1
+            //                 ?.copyWith(fontSize: 14, color: AppColors.gray50),
+            //           ),
+            //           Text(
+            //             'Function needs to be defined in enum',
+            //             style: context.textTheme.subtitle2,
+            //           ),
+            //         ],
+            //       );
+            //     }
+            //   }
+            // }
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -186,6 +194,14 @@ class ActionDetailsWidget extends StatelessWidget {
                     style: context.textTheme.bodyText1
                         ?.copyWith(fontSize: 14, color: AppColors.gray50),
                   ),
+                  // Container(
+                  //   height: 150,
+                  //   width: 300,
+                  //   child: Markdown(
+                  //     data: entry.value.toString().toString(),
+                  //     //style: context.textTheme.subtitle2,
+                  //   ),
+                  // )
                   Text(
                     entry.value.toString().toString(),
                     style: context.textTheme.subtitle2,
@@ -197,5 +213,79 @@ class ActionDetailsWidget extends StatelessWidget {
         ],
       ),
     );
+
+    // return Container(
+    //   width: double.infinity,
+    //   decoration: BoxDecoration(
+    //       color: AppColors.mediumBackground,
+    //       borderRadius: BorderRadius.circular(10)),
+    //   child: Column(
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     children: [
+    //       Center(
+    //         child: Padding(
+    //           padding: const EdgeInsets.all(8.0),
+    //           child: Text(actionKey, style: context.textTheme.headline4),
+    //         ),
+    //       ),
+    //       ...fields.entries.map((entry) {
+    //         // if (entry.key == 'nnsFunction') {
+    //         //   for (var value in NnsFunction.values) {
+    //         //     if (entry.value == value) {
+    //         //       return Padding(
+    //         //         padding: const EdgeInsets.all(8.0),
+    //         //         child: Column(
+    //         //           crossAxisAlignment: CrossAxisAlignment.start,
+    //         //           children: [
+    //         //             Text(
+    //         //               entry.key,
+    //         //               style: context.textTheme.bodyText1
+    //         //                   ?.copyWith(fontSize: 14, color: AppColors.gray50),
+    //         //             ),
+    //         //             Text(
+    //         //               value.toString(),
+    //         //               style: context.textTheme.subtitle2,
+    //         //             )
+    //         //           ],
+    //         //         ),
+    //         //       );
+    //         //     } else {
+    //         //       return Column(
+    //         //         children: [
+    //         //           Text(
+    //         //             entry.key,
+    //         //             style: context.textTheme.bodyText1
+    //         //                 ?.copyWith(fontSize: 14, color: AppColors.gray50),
+    //         //           ),
+    //         //           Text(
+    //         //             'Function needs to be defined in enum',
+    //         //             style: context.textTheme.subtitle2,
+    //         //           ),
+    //         //         ],
+    //         //       );
+    //         //     }
+    //         //   }
+    //         // }
+    //         return Padding(
+    //           padding: const EdgeInsets.all(8.0),
+    //           child: Column(
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             children: [
+    //               Text(
+    //                 entry.key,
+    //                 style: context.textTheme.bodyText1
+    //                     ?.copyWith(fontSize: 14, color: AppColors.gray50),
+    //               ),
+    //               Text(
+    //                 entry.value.toString().toString(),
+    //                 style: context.textTheme.subtitle2,
+    //               )
+    //             ],
+    //           ),
+    //         );
+    //       })
+    //     ],
+    //   ),
+    // );
   }
 }

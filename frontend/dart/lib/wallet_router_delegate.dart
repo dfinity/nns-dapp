@@ -140,20 +140,18 @@ EntityPageDefinition accountPageDef = EntityPageDefinition<Account>(
     fetchBox: (boxes) => boxes.accounts);
 
 EntityPageDefinition neuronPageDef = EntityPageDefinition<Neuron>(
-    pathTemplate: "/neuron",
-    parentPage: neuronTabsPage,
-    createWidget: (neuron) => NeuronDetailWidget(neuron),
-    fetchBox: (boxes) => boxes.neurons,
-    entityFromIC: (neuronId, icApi) =>
-        icApi.fetchNeuron(neuronId: BigInt.parse(neuronId)));
+  pathTemplate: "/neuron",
+  parentPage: neuronTabsPage,
+  createWidget: (neuron) => NeuronDetailWidget(neuron),
+  fetchBox: (boxes) => boxes.neurons,
+);
 
 EntityPageDefinition proposalPageDef = EntityPageDefinition<Proposal>(
-    pathTemplate: "/proposal",
-    parentPage: proposalsTabPage,
-    createWidget: (proposal) => ProposalDetailWidget(proposal),
-    fetchBox: (boxes) => boxes.proposals,
-    entityFromIC: (proposalId, icApi) =>
-        icApi.fetchProposal(proposalId: BigInt.parse(proposalId)));
+  pathTemplate: "/proposal",
+  parentPage: proposalsTabPage,
+  createWidget: (proposal) => ProposalDetailWidget(proposal),
+  fetchBox: (boxes) => boxes.proposals,
+);
 
 EntityPageDefinition canisterPageDef = EntityPageDefinition<Canister>(
     pathTemplate: "/canister",

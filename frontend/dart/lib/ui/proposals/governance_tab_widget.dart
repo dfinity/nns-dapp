@@ -7,7 +7,6 @@ import 'package:nns_dapp/ui/_components/multi_select_list.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/_components/tab_title_and_content.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
-
 import '../../nns_dapp.dart';
 
 class GovernanceTabWidget extends StatefulWidget {
@@ -233,9 +232,11 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
                     children: [
                       ...proposals.mapToList((e) => ProposalRow(
                             proposal: e,
-                            onPressed: () {
+                            onPressed: () async {
+                              final res = await context.icApi
+                                  .getFullProposalInfo(proposal: e);
                               context.nav
-                                  .push(proposalPageDef.createPageConfig(e));
+                                  .push(proposalPageDef.createPageConfig(res));
                             },
                           )),
                       SmallFormDivider(),
