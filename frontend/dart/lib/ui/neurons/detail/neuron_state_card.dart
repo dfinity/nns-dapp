@@ -221,9 +221,11 @@ class NeuronStateCard extends StatelessWidget {
                   ));
             }.takeIf((e) => icApi.isNeuronControllable(neuron)));
       case NeuronState.UNLOCKED:
+        final disburseEnabled = icApi.isNeuronControllable(neuron);
         return ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(AppColors.yellow500),
+              backgroundColor: MaterialStateProperty.all(
+                  disburseEnabled ? AppColors.yellow500 : AppColors.gray400),
             ),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -259,7 +261,7 @@ class NeuronStateCard extends StatelessWidget {
                       ),
                     ));
               }
-            }.takeIf((e) => icApi.isNeuronControllable(neuron)));
+            }.takeIf((e) => disburseEnabled));
       case NeuronState.UNSPECIFIED:
         return ElevatedButton(child: Text(""), onPressed: () {});
     }
