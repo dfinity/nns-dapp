@@ -7,7 +7,6 @@ use crate::state::StableState;
 use candid::{CandidType, Encode};
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_certified_map::{leaf_hash, AsHashTree, Hash, HashTree};
 use ic_crypto_sha256::Sha256;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::GOVERNANCE_CANISTER_ID;
@@ -18,7 +17,6 @@ use ledger_canister::{
 };
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
-use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{HashMap, VecDeque};
 use std::iter::FromIterator;
@@ -227,18 +225,6 @@ pub enum DetachCanisterResponse {
     Ok,
     CanisterNotFound,
     AccountNotFound,
-}
-
-impl AsHashTree for Account {
-    fn root_hash(&self) -> Hash {
-        let serialized_bytes = Encode!(self).unwrap();
-        leaf_hash(&serialized_bytes)
-    }
-
-    fn as_hash_tree(&self) -> HashTree<'_> {
-        let serialized_bytes = Encode!(self).unwrap();
-        HashTree::Leaf(Cow::from(serialized_bytes))
-    }
 }
 
 impl AccountsStore {
