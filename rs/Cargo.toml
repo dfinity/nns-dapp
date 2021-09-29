@@ -15,7 +15,7 @@ serde_bytes = "0.11"
 serde_cbor = "0.11"
 sha2 = "0.9.1"
 lzma-rs = "0.2.0"
-tar = "0.4.35"
+tar = "0.4.37"
 hex = "0.4.3"
 
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "074feaa2c6cd61f98042ed4adde0a6d913387ff2" }
