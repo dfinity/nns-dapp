@@ -1,15 +1,17 @@
-const SubnetFeatures = IDL.Rec();
-const SubnetType = IDL.Rec();
-const AddNodeOperatorPayload = IDL.Record({
+import { IDL } from "@dfinity/candid";
+
+export const SubnetFeatures = IDL.Rec();
+export const SubnetType = IDL.Rec();
+export const AddNodeOperatorPayload = IDL.Record({
     'node_operator_principal_id' : IDL.Opt(IDL.Principal),
     'node_allowance' : IDL.Nat64,
     'node_provider_principal_id' : IDL.Opt(IDL.Principal),
 });
-const AddNodesToSubnetPayload = IDL.Record({
+export const AddNodesToSubnetPayload = IDL.Record({
     'subnet_id' : IDL.Principal,
     'node_ids' : IDL.Vec(IDL.Principal),
 });
-const BlessReplicaVersionPayload = IDL.Record({
+export const BlessReplicaVersionPayload = IDL.Record({
     'node_manager_sha256_hex' : IDL.Text,
     'release_package_url' : IDL.Text,
     'sha256_hex' : IDL.Text,
@@ -18,7 +20,7 @@ const BlessReplicaVersionPayload = IDL.Record({
     'node_manager_binary_url' : IDL.Text,
     'binary_url' : IDL.Text,
 });
-const CreateSubnetPayload = IDL.Record({
+export const CreateSubnetPayload = IDL.Record({
     'unit_delay_millis' : IDL.Nat64,
     'max_instructions_per_round' : IDL.Nat64,
     'features' : SubnetFeatures,
@@ -46,7 +48,7 @@ const CreateSubnetPayload = IDL.Record({
     'gossip_receive_check_cache_size' : IDL.Nat32,
     'node_ids' : IDL.Vec(IDL.Principal),
 });
-const RecoverSubnetPayload = IDL.Record({
+export const RecoverSubnetPayload = IDL.Record({
     'height' : IDL.Nat64,
     'replacement_nodes' : IDL.Opt(IDL.Vec(IDL.Principal)),
     'subnet_id' : IDL.Principal,
@@ -54,10 +56,10 @@ const RecoverSubnetPayload = IDL.Record({
     'state_hash' : IDL.Vec(IDL.Nat8),
     'time_ns' : IDL.Nat64,
 });
-const RemoveNodesFromSubnetPayload = IDL.Record({
+export const RemoveNodesFromSubnetPayload = IDL.Record({
     'node_ids' : IDL.Vec(IDL.Principal),
 });
-const SetFirewallConfigPayload = IDL.Record({
+export const SetFirewallConfigPayload = IDL.Record({
     'ipv4_prefixes' : IDL.Vec(IDL.Text),
     'firewall_config' : IDL.Text,
     'ipv6_prefixes' : IDL.Vec(IDL.Text),
@@ -70,12 +72,12 @@ SubnetType.fill(
         'system' : IDL.Null,
     })
 );
-const UpdateIcpXdrConversionRatePayload = IDL.Record({
+export const UpdateIcpXdrConversionRatePayload = IDL.Record({
     'data_source' : IDL.Text,
     'xdr_permyriad_per_icp' : IDL.Nat64,
     'timestamp_seconds' : IDL.Nat64,
 });
-const UpdateSubnetReplicaVersionPayload = IDL.Record({
+export const UpdateSubnetReplicaVersionPayload = IDL.Record({
     'subnet_id' : IDL.Principal,
     'replica_version_id' : IDL.Text,
 });

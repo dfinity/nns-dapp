@@ -14,6 +14,7 @@ import ServiceInterface, {
   IncreaseDissolveDelayRequest,
   ListProposalsRequest,
   ListProposalsResponse,
+  MakeExecuteNnsFunctionProposalRequest,
   MakeMotionProposalRequest,
   MakeNetworkEconomicsProposalRequest,
   MakeProposalResponse,
@@ -305,8 +306,16 @@ export default class Service implements ServiceInterface {
   public makeMotionProposal = async (
     request: MakeMotionProposalRequest
   ): Promise<MakeProposalResponse> => {
-    const rawRequest =
-      this.requestConverters.fromMakeMotionProposalRequest(request);
+    const rawRequest = this.requestConverters.fromMakeProposalRequest({
+      neuronId: request.neuronId,
+      url: request.url,
+      summary: request.summary,
+      action: {
+        Motion: {
+          motionText: request.text
+        }
+      }
+    });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };
@@ -314,8 +323,14 @@ export default class Service implements ServiceInterface {
   public makeNetworkEconomicsProposal = async (
     request: MakeNetworkEconomicsProposalRequest
   ): Promise<MakeProposalResponse> => {
-    const rawRequest =
-      this.requestConverters.fromMakeNetworkEconomicsProposalRequest(request);
+    const rawRequest = this.requestConverters.fromMakeProposalRequest({
+      neuronId: request.neuronId,
+      url: request.url,
+      summary: request.summary,
+      action: {
+        ManageNetworkEconomics: request.networkEconomics
+      }
+    });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };
@@ -323,8 +338,20 @@ export default class Service implements ServiceInterface {
   public makeRewardNodeProviderProposal = async (
     request: MakeRewardNodeProviderProposalRequest
   ): Promise<MakeProposalResponse> => {
-    const rawRequest =
-      this.requestConverters.fromMakeRewardNodeProviderProposalRequest(request);
+    const rawRequest = this.requestConverters.fromMakeProposalRequest({
+      neuronId: request.neuronId,
+      url: request.url,
+      summary: request.summary,
+      action: {
+        RewardNodeProvider: {
+          nodeProvider: {
+            id: request.nodeProvider
+          },
+          rewardMode: request.rewardMode,
+          amountE8s: request.amount
+        }
+      }
+    });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };
@@ -332,10 +359,36 @@ export default class Service implements ServiceInterface {
   public makeSetDefaultFolloweesProposal = async (
     request: MakeSetDefaultFolloweesProposalRequest
   ): Promise<MakeProposalResponse> => {
-    const rawRequest =
-      this.requestConverters.fromMakeSetDefaultFolloweesProposalRequest(
-        request
-      );
+    const rawRequest = this.requestConverters.fromMakeProposalRequest({
+      neuronId: request.neuronId,
+      url: request.url,
+      summary: request.summary,
+      action: {
+        SetDefaultFollowees: {
+          defaultFollowees: request.followees
+        }
+      }
+    });
+    const rawResponse = await this.service.manage_neuron(rawRequest);
+    return this.responseConverters.toMakeProposalResponse(rawResponse);
+  };
+
+  public makeExecuteNnsFunctionProposal = async (
+      request: MakeExecuteNnsFunctionProposalRequest
+  ): Promise<MakeProposalResponse> => {
+    const rawRequest = this.requestConverters.fromMakeProposalRequest({
+      neuronId: request.neuronId,
+      url: request.url,
+      summary: request.summary,
+      action: {
+        ExecuteNnsFunction: {
+          nnsFunction: request.nnsFunction,
+          nnsFunctionName: null,
+          payload: {},
+          payloadBytes: request.payload
+        }
+      }
+    });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };

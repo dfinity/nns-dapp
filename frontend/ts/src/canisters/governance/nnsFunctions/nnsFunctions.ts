@@ -1,6 +1,17 @@
 import { Option } from "../../option";
 import { IDL, JsonObject } from "@dfinity/candid";
 import { Buffer } from "buffer/";
+import {
+  AddNodeOperatorPayload,
+  AddNodesToSubnetPayload,
+  BlessReplicaVersionPayload,
+  CreateSubnetPayload,
+  RecoverSubnetPayload,
+  RemoveNodesFromSubnetPayload,
+  SetFirewallConfigPayload,
+  UpdateIcpXdrConversionRatePayload,
+  UpdateSubnetReplicaVersionPayload
+} from "./payloads";
 
 export const getNnsFunctionName = (nnsFunction: number): string => {
   switch (nnsFunction) {

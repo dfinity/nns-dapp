@@ -436,6 +436,13 @@ export interface DisburseToNeuronRequest {
   nonce: bigint;
 }
 
+export interface MakeProposalRequest {
+  neuronId: NeuronId;
+  url: string;
+  summary: string;
+  action: Action;
+}
+
 export interface MakeMotionProposalRequest {
   neuronId: NeuronId;
   url: string;
@@ -464,6 +471,14 @@ export interface MakeSetDefaultFolloweesProposalRequest {
   summary: string;
   url: string;
   followees: Array<Followees>;
+}
+
+export interface MakeExecuteNnsFunctionProposalRequest {
+  neuronId: NeuronId;
+  summary: string;
+  url: string;
+  nnsFunction: number;
+  payload: ArrayBuffer;
 }
 
 export interface DisburseToNeuronResponse {
@@ -512,6 +527,9 @@ export default interface ServiceInterface {
   ) => Promise<MakeProposalResponse>;
   makeSetDefaultFolloweesProposal: (
     request: MakeSetDefaultFolloweesProposalRequest
+  ) => Promise<MakeProposalResponse>;
+  makeExecuteNnsFunctionProposal: (
+      request: MakeExecuteNnsFunctionProposalRequest
   ) => Promise<MakeProposalResponse>;
   claimOrRefreshNeuron: (
     request: ClaimOrRefreshNeuronRequest

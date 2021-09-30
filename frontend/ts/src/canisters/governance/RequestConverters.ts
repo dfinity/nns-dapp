@@ -17,10 +17,7 @@ import {
   FollowRequest,
   IncreaseDissolveDelayRequest,
   ListProposalsRequest,
-  MakeMotionProposalRequest,
-  MakeNetworkEconomicsProposalRequest,
-  MakeRewardNodeProviderProposalRequest,
-  MakeSetDefaultFolloweesProposalRequest,
+  MakeProposalRequest,
   ManageNeuron,
   MergeMaturityRequest,
   NeuronIdOrSubaccount,
@@ -336,14 +333,14 @@ export default class RequestConverters {
     };
   };
 
-  public fromMakeMotionProposalRequest = (
-    request: MakeMotionProposalRequest
+  public fromMakeProposalRequest = (
+    request: MakeProposalRequest
   ): RawManageNeuron => {
     const rawCommand: RawCommand = {
       MakeProposal: {
         url: request.url,
         summary: request.summary,
-        action: [{ Motion: { motion_text: request.text } }],
+        action: [this.fromAction(request.action)],
       },
     };
     return {
@@ -351,100 +348,7 @@ export default class RequestConverters {
       command: [rawCommand],
       neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
-  };
-
-  public fromMakeNetworkEconomicsProposalRequest = (
-    request: MakeNetworkEconomicsProposalRequest
-  ): RawManageNeuron => {
-    const networkEconomics = request.networkEconomics;
-    const rawCommand: RawCommand = {
-      MakeProposal: {
-        url: request.url,
-        summary: request.summary,
-        action: [
-          {
-            ManageNetworkEconomics: {
-              neuron_minimum_stake_e8s: networkEconomics.neuronMinimumStake,
-              max_proposals_to_keep_per_topic:
-                networkEconomics.maxProposalsToKeepPerTopic,
-              neuron_management_fee_per_proposal_e8s:
-                networkEconomics.neuronManagementFeePerProposal,
-              reject_cost_e8s: networkEconomics.rejectCost,
-              transaction_fee_e8s: networkEconomics.transactionFee,
-              neuron_spawn_dissolve_delay_seconds:
-                networkEconomics.neuronSpawnDissolveDelaySeconds,
-              minimum_icp_xdr_rate: networkEconomics.minimumIcpXdrRate,
-              maximum_node_provider_rewards_e8s:
-                networkEconomics.maximumNodeProviderRewards,
-            },
-          },
-        ],
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
-  };
-
-  public fromMakeRewardNodeProviderProposalRequest = (
-    request: MakeRewardNodeProviderProposalRequest
-  ): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      MakeProposal: {
-        url: request.url,
-        summary: request.summary,
-        action: [
-          {
-            RewardNodeProvider: {
-              amount_e8s: request.amount,
-              node_provider: [
-                {
-                  id: [Principal.fromText(request.nodeProvider)],
-                },
-              ],
-              reward_mode:
-                request.rewardMode != null
-                  ? [this.fromRewardMode(request.rewardMode)]
-                  : [],
-            },
-          },
-        ],
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
-  };
-
-  public fromMakeSetDefaultFolloweesProposalRequest = (
-    request: MakeSetDefaultFolloweesProposalRequest
-  ): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      MakeProposal: {
-        url: request.url,
-        summary: request.summary,
-        action: [
-          {
-            SetDefaultFollowees: {
-              default_followees: request.followees.map((f) => [
-                f.topic as number,
-                this.fromFollowees(f.followees),
-              ]),
-            },
-          },
-        ],
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
-  };
+  }
 
   private fromFollowees(followees: Array<NeuronId>): RawFollowees {
     return {
