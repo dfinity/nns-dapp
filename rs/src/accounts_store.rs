@@ -854,7 +854,6 @@ impl AccountsStore {
         );
     }
 
-    #[cfg(not(target_arch = "wasm32"))]
     pub fn get_transactions_count(&self) -> u32 {
         self.transactions.len() as u32
     }
