@@ -49,15 +49,21 @@ class ProposalSyncService {
 
   bool shouldGetFullProposal(Proposal proposal) {
     if (proposal.action.containsKey('ExecuteNnsFunction')) {
-      final nnsFunctionNumber = proposal.action['ExecuteNnsFunction'].nnsFunction;
-      const whitelistedNnsFunctions = [1,2,5,6,8,10,11,13,15];
+      final nnsFunctionNumber =
+          proposal.action['ExecuteNnsFunction']['nnsFunction'];
+
+      const whitelistedNnsFunctions = [1, 2, 5, 6, 8, 10, 11, 13, 15];
       return whitelistedNnsFunctions.contains(nnsFunctionNumber);
     }
     return false;
   }
 
   Future<Proposal> getFullProposal(BigInt proposalId) async {
-    final response = await promiseToFuture(serviceApi.getProposalInfo(proposalId.toJS));
+    final res =
+        await promiseToFuture(serviceApi.getProposalInfo(proposalId.toJS));
+
+    final string = stringify(res);
+    dynamic response = jsonDecode(string);
 
     final proposal = storeProposal(response);
 

@@ -25,10 +25,11 @@ class ProposalStateCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Expanded(
                 //   child: Text(
@@ -38,15 +39,17 @@ class ProposalStateCard extends StatelessWidget {
                 //         : context.textTheme.headline3,
                 //   ),
                 // ),
-                MarkdownBody(
-                    data: proposal.summary,
-                    styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
-                        textTheme: TextTheme(
-                            bodyText2: TextStyle(
-                      fontSize: Responsive.isMobile(context) ? 20.0 : 24,
-                      color: Colors.white,
-                    ))))),
-                SizedBox(width: 10),
+                Expanded(
+                  child: MarkdownBody(
+                      data: proposal.summary,
+                      styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
+                          textTheme: TextTheme(
+                              bodyText2: TextStyle(
+                        fontSize: Responsive.isMobile(context) ? 18.0 : 24,
+                        color: Colors.white,
+                      ))))),
+                ),
+                // SizedBox(width: 10),
                 Container(
                   decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
@@ -58,7 +61,7 @@ class ProposalStateCard extends StatelessWidget {
                     child: Text(
                       proposal.status.description,
                       style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 12 : 24,
+                          fontSize: Responsive.isMobile(context) ? 20 : 24,
                           fontFamily: Fonts.circularBook,
                           color: proposal.status.color,
                           fontWeight: FontWeight.normal),
@@ -67,6 +70,7 @@ class ProposalStateCard extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 10),
             TextButton(
               onPressed: () => launch(proposal.url),
               child: Text(
@@ -195,13 +199,17 @@ class ActionDetailsWidget extends StatelessWidget {
                         ?.copyWith(fontSize: 14, color: AppColors.gray50),
                   ),
                   // Container(
-                  //   height: 150,
-                  //   width: 300,
-                  //   child: Markdown(
-                  //     data: entry.value.toString().toString(),
-                  //     //style: context.textTheme.subtitle2,
-                  //   ),
-                  // )
+                  //     height: 50,
+                  //     width: 300,
+                  //     child: Markdown(
+                  //       data: entry.value.toString().toString(),
+                  //       styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
+                  //           textTheme: TextTheme(
+                  //               bodyText2: TextStyle(
+                  //         fontSize: Responsive.isMobile(context) ? 14.0 : 14,
+                  //         color: Colors.white,
+                  //       )))),
+                  //     )),
                   Text(
                     entry.value.toString().toString(),
                     style: context.textTheme.subtitle2,
@@ -209,7 +217,44 @@ class ActionDetailsWidget extends StatelessWidget {
                 ],
               ),
             );
-          })
+          }),
+          //       ListView(children: fields.entries.map((entry) => Column(children: [
+          //         Text(
+          //           entry.key,
+          //             style: context.textTheme.bodyText1
+          //                 ?.copyWith(fontSize: 14, color: AppColors.gray50),
+          //           ),
+          // ],)));
+          // ListView.builder(
+          //     itemCount: fields.entries.length,
+          //     itemBuilder: (context, index) {
+          //       return Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(
+          //             fields.entries[index].key,
+          //             style: context.textTheme.bodyText1
+          //                 ?.copyWith(fontSize: 14, color: AppColors.gray50),
+          //           ),
+          //           // Container(
+          //           //     height: 50,
+          //           //     width: 300,
+          //           //     child: Markdown(
+          //           //       data: entry.value.toString().toString(),
+          //           //       styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
+          //           //           textTheme: TextTheme(
+          //           //               bodyText2: TextStyle(
+          //           //         fontSize: Responsive.isMobile(context) ? 14.0 : 14,
+          //           //         color: Colors.white,
+          //           //       )))),
+          //           //     )),
+          //           Text(
+          //             entry.value.toString().toString(),
+          //             style: context.textTheme.subtitle2,
+          //           )
+          //         ],
+          //       );
+          //     })
         ],
       ),
     );
