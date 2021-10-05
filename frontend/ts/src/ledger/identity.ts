@@ -79,10 +79,14 @@ export class LedgerIdentity extends SignIdentity {
       return [app, transport];
     } catch (err) {
       // @ts-ignore
-      if (err.id && err.id == 'NoDeviceFound') {
+      if (err.id && err.id == "NoDeviceFound") {
         throw "No Ledger device found. Is the wallet connected and unlocked?";
-      // @ts-ignore
-      } else if (err.message && err.message.includes("cannot open device with path")) {
+      } else if (
+        // @ts-ignore
+        err.message &&
+        // @ts-ignore
+        err.message.includes("cannot open device with path")
+      ) {
         throw "Cannot connect to Ledger device. Please close all other wallet applications (e.g. Ledger Live) and try again.";
       } else {
         // Unsupported browser. Data on browser compatibility is taken from https://caniuse.com/webhid
