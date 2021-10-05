@@ -3,6 +3,7 @@ import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/wallet/percentage_display_widget.dart';
+import 'package:universal_html/js.dart' as js;
 import '../../../nns_dapp.dart';
 
 GlobalKey _toolTipKey = GlobalKey();
@@ -19,6 +20,11 @@ class NeuronRewardsCard extends StatelessWidget {
     var buttonGroup = [
       ElevatedButton(
           onPressed: () {
+            if (!neuron.isCurrentUserController) {
+              js.context.callMethod("alert",
+                  ["Merge Maturity is not yet supported by hardware wallets."]);
+              return;
+            }
             OverlayBaseWidget.show(
                 context,
                 NeuronMergeMaturity(
@@ -30,7 +36,7 @@ class NeuronRewardsCard extends StatelessWidget {
           }.takeIf((e) =>
               neuron.maturityICPEquivalent.asE8s() >
                   ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)).asE8s() &&
-              neuron.isCurrentUserController),
+              context.icApi.isNeuronControllable(neuron)),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(
@@ -52,10 +58,14 @@ class NeuronRewardsCard extends StatelessWidget {
                   description: "Are you sure you wish to spawn a new neuron?",
                   onConfirm: () async {
                     context.callUpdate(() async {
-                      final newNeuron =
-                          await context.icApi.spawnNeuron(neuron: neuron);
-                      context.nav
-                          .push(neuronPageDef.createPageConfig(newNeuron));
+                      try {
+                        final newNeuron =
+                            await context.icApi.spawnNeuron(neuron: neuron);
+                        context.nav
+                            .push(neuronPageDef.createPageConfig(newNeuron));
+                      } catch (err) {
+                        js.context.callMethod("alert", ["$err"]);
+                      }
                     });
                   },
                 ));
