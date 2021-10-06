@@ -27,49 +27,56 @@ class ProposalStateCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Expanded(
-                //   child: Text(
-                //     proposal.summary,
-                //     style: Responsive.isMobile(context)
-                //         ? context.textTheme.headline6
-                //         : context.textTheme.headline3,
-                //   ),
-                // ),
-                Expanded(
-                  child: MarkdownBody(
-                      data: proposal.summary,
-                      styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
-                          textTheme: TextTheme(
-                              bodyText2: TextStyle(
-                        fontSize: Responsive.isMobile(context) ? 18.0 : 24,
-                        color: Colors.white,
-                      ))))),
-                ),
-                // SizedBox(width: 10),
-                Container(
-                  decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(
-                              width: 2, color: proposal.status.color))),
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      proposal.status.description,
-                      style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 20 : 24,
-                          fontFamily: Fonts.circularBook,
-                          color: proposal.status.color,
-                          fontWeight: FontWeight.normal),
-                    ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                            width: 2, color: proposal.status.color))),
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    proposal.status.description,
+                    style: TextStyle(
+                        fontSize: Responsive.isMobile(context) ? 20 : 24,
+                        fontFamily: Fonts.circularBook,
+                        color: proposal.status.color,
+                        fontWeight: FontWeight.normal),
                   ),
                 ),
-              ],
+              ),
             ),
+            SizedBox(height: 20.0),
+            MarkdownBody(
+                data: proposal.summary,
+                styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
+                    textTheme: TextTheme(
+                        bodyText2: TextStyle(
+                  fontSize: Responsive.isMobile(context) ? 18.0 : 24,
+                  color: Colors.white,
+                ))))),
+            //TODO : change to markdown above to this Container when we have the actual data,
+            // Container(
+            //   child: RawScrollbar(
+            //     thumbColor: Colors.redAccent,
+            //     radius: Radius.circular(20),
+            //     thickness: 5,
+            //     child: Container(
+            //       height: 300,
+            //       width: MediaQuery.of(context).size.width,
+            //       child: Markdown(
+            //           data: proposal.summary,
+            //           styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
+            //               textTheme: TextTheme(
+            //                   bodyText2: TextStyle(
+            //             fontSize: Responsive.isMobile(context) ? 18.0 : 24,
+            //             color: Colors.white,
+            //           ))))),
+            //     ),
+            //   ),
+            // ),
             SizedBox(height: 10),
             TextButton(
               onPressed: () => launch(proposal.url),
@@ -101,22 +108,6 @@ class ProposalStateCard extends StatelessWidget {
             ActionDetailsWidget(
               proposal: proposal,
             ),
-            SmallFormDivider(),
-            ExpansionTile(
-              collapsedBackgroundColor: AppColors.gray600,
-              title: Center(
-                child: Text("raw payload"),
-              ),
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(32.0, 0, 32.0, 0),
-                  child: SelectableText(
-                    "${proposal.raw}",
-                    style: TextStyle(color: AppColors.green600),
-                  ),
-                )
-              ],
-            )
           ],
         ),
       ),
