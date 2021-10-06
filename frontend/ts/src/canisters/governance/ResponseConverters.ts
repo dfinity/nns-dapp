@@ -324,9 +324,9 @@ export default class ResponseConverters {
 
       return {
         ExecuteNnsFunction: {
+          nnsFunctionId: executeNnsFunction.nns_function,
           nnsFunctionName: getNnsFunctionName(executeNnsFunction.nns_function),
           payload,
-          nnsFunction: executeNnsFunction.nns_function,
           payloadBytes,
         },
       };

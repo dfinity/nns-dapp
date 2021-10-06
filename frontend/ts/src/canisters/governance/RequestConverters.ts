@@ -385,7 +385,7 @@ export default class RequestConverters {
       const executeNnsFunction = action.ExecuteNnsFunction;
       return {
         ExecuteNnsFunction: {
-          nns_function: executeNnsFunction.nnsFunction,
+          nns_function: executeNnsFunction.nnsFunctionId,
           payload: arrayBufferToArrayOfNumber(executeNnsFunction.payloadBytes),
         },
       };

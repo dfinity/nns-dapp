@@ -89,9 +89,9 @@ export type DissolveState =
   | { DissolveDelaySeconds: bigint }
   | { WhenDissolvedTimestampSeconds: bigint };
 export interface ExecuteNnsFunction {
+  nnsFunctionId: number;
   nnsFunctionName: Option<string>,
   payload: Option<Record<string, unknown>>,
-  nnsFunction: number;
   payloadBytes: ArrayBuffer;
 }
 export interface Follow {

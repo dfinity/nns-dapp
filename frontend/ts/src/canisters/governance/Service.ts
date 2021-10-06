@@ -382,7 +382,7 @@ export default class Service implements ServiceInterface {
       summary: request.summary,
       action: {
         ExecuteNnsFunction: {
-          nnsFunction: request.nnsFunction,
+          nnsFunctionId: request.nnsFunction,
           nnsFunctionName: null,
           payload: {},
           payloadBytes: request.payload
