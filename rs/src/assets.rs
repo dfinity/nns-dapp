@@ -3,10 +3,13 @@ use crate::StableState;
 use candid::{CandidType, Decode, Encode};
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
-use serde_bytes::ByteBuf;
+use serde_bytes::{ByteBuf, Bytes};
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::io::Read;
+use std::borrow::Cow;
+use crate::metrics_encoder::MetricsEncoder;
+use dfn_core::api::ic0::time;
 
 type HeaderField = (String, String);
 
@@ -23,6 +26,7 @@ pub struct HttpResponse {
     status_code: u16,
     headers: Vec<HeaderField>,
     body: ByteBuf,
+    // body: Cow<'static, Bytes>,
 }
 
 const LABEL_ASSETS: &[u8] = b"http_assets";
@@ -85,33 +89,131 @@ impl Assets {
     }
 }
 
-pub fn http_request(req: HttpRequest) -> HttpResponse {
-    let parts: Vec<&str> = req.url.split('?').collect();
-    let request_path = parts[0];
 
+fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     STATE.with(|s| {
-        let certificate_header =
-            make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
-
-        match s.assets.borrow().get(request_path) {
-            Some(asset) => {
-                let mut headers = asset.headers.clone();
-                headers.push(certificate_header);
-
-                HttpResponse {
-                    status_code: 200,
-                    headers,
-                    body: ByteBuf::from(asset.bytes.clone()),
-                }
-            }
-            None => HttpResponse {
-                status_code: 404,
-                headers: vec![certificate_header],
-                body: ByteBuf::from(format!("Asset {} not found.", request_path)),
-            },
-        }
+        let stats = s.accounts_store.borrow().get_stats(); 
+        w.encode_gauge(
+            "neurons_created_count",
+            stats.neurons_created_count as f64,
+            "Number of neurons created.",
+        )?;
+        w.encode_gauge(
+            "neurons_topped_up_count",
+            stats.neurons_topped_up_count as f64,
+            "Number of neurons topped up by the canister.",
+        )?;
+        w.encode_gauge(
+            "transactions_count",
+            stats.transactions_count as f64,
+            "Number of transactions processed by the canister.",
+        )?;
+        w.encode_gauge(
+            "accounts_count",
+            stats.accounts_count as f64,
+            "Number of accounts created.",
+        )?;
+        w.encode_gauge(
+            "sub_accounts_count",
+            stats.sub_accounts_count as f64,
+            "Number of sub accounts created.",
+        )?;
+        Ok(())
     })
 }
+
+
+
+
+pub fn http_request(req: HttpRequest) -> HttpResponse {
+    let parts: Vec<&str>   = req.url.split('?').collect();
+    match parts[0] {
+        "/metrics" => {
+            let now;
+            unsafe {
+                now = time();
+            };
+            let mut writer = MetricsEncoder::new(vec![], now / 1_000_000);
+            match encode_metrics(&mut writer) {
+                Ok(()) => {
+                    let body = writer.into_inner();
+                    HttpResponse {
+                        status_code: 200,
+                        headers: vec![
+                            (
+                                "Content-Type".to_string(),
+                                "text/plain; version=0.0.4".to_string(),
+                            ),
+                            ("Content-Length".to_string(), body.len().to_string()),
+                        ],
+                        body: ByteBuf::from(body),    
+                        // body: Cow::Owned(ByteBuf::from(body)),
+                    }
+                }
+                Err(err) => HttpResponse {
+                    status_code: 500,
+                    headers: vec![],
+                    body: ByteBuf::from(format!("Failed to encode metrics: {}", err)),
+                    // body: Cow::Owned(ByteBuf::from(format!("Failed to encode metrics: {}", err))),
+                },
+            }
+        }
+        request_path => {
+                STATE.with(|s| {
+                let certificate_header =
+                    make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
+
+                match s.assets.borrow().get(request_path) {
+                    Some(asset) => {
+                        let mut headers = asset.headers.clone();
+                        headers.push(certificate_header);
+
+                        HttpResponse {
+                            status_code: 200,
+                            headers,
+                            body: ByteBuf::from(asset.bytes.clone()),
+                            // body: Cow::Owned(ByteBuf::from(asset.bytes.clone())),
+                        }
+                    }
+                    None => HttpResponse {
+                        status_code: 404,
+                        headers: vec![certificate_header],
+                        body: ByteBuf::from(format!("Asset {} not found.", request_path)),
+                        // body: Cow::Owned(ByteBuf::from(format!("Asset {} not found.", request_path))),
+                    },
+                }
+            })
+        }
+    }
+}
+
+// pub fn http_request(req: HttpRequest) -> HttpResponse {
+//     let parts: Vec<&str> = req.url.split('?').collect();
+//     let request_path = parts[0];
+
+//     STATE.with(|s| {
+//         let certificate_header =
+//             make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
+
+//         match s.assets.borrow().get(request_path) {
+//             Some(asset) => {
+//                 let mut headers = asset.headers.clone();
+//                 headers.push(certificate_header);
+
+//                 HttpResponse {
+//                     status_code: 200,
+//                     headers,
+//                     body: ByteBuf::from(asset.bytes.clone()),
+//                 }
+//             }
+//             None => HttpResponse {
+//                 status_code: 404,
+//                 headers: vec![certificate_header],
+//                 body: ByteBuf::from(format!("Asset {} not found.", request_path)),
+//             },
+//         }
+//     })
+// }
 
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
     let certificate = dfn_core::api::data_certificate().unwrap_or_else(|| {
