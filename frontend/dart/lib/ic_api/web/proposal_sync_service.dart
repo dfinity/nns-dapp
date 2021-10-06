@@ -50,7 +50,7 @@ class ProposalSyncService {
   bool shouldGetFullProposal(Proposal proposal) {
     if (proposal.action.containsKey('ExecuteNnsFunction')) {
       final nnsFunctionNumber =
-          proposal.action['ExecuteNnsFunction']['nnsFunction'];
+          proposal.action['ExecuteNnsFunction']['nnsFunctionId'];
 
       const whitelistedNnsFunctions = [1, 2, 5, 6, 8, 10, 11, 13, 15];
       return whitelistedNnsFunctions.contains(nnsFunctionNumber);
