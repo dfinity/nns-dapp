@@ -4,9 +4,15 @@
 import AuthApi from "./src/AuthApi";
 import HardwareWalletApi from "./src/HardwareWalletApi";
 import { SignIdentity } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import { LedgerIdentity } from "./src/ledger/identity";
 import { principalToAccountIdentifier } from "./src/canisters/converter";
 import ServiceApi from "./src/ServiceApi";
+
+// Represent Principals as strings rather than as byte arrays when serializing to JSON strings
+(Principal.prototype as any).toJSON = function() {
+  return this.toString();
+}
 
 // @ts-ignore
 window["createAuthApi"] = (onLoggedOut: () => void): Promise<AuthApi> => {
