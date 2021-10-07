@@ -1578,18 +1578,18 @@ pub enum TransferResult {
 
 #[derive(CandidType)]
 pub struct Stats {
-    accounts_count: u64,
-    sub_accounts_count: u64,
+    pub accounts_count: u64,
+    pub sub_accounts_count: u64,
     hardware_wallet_accounts_count: u64,
-    transactions_count: u64,
+    pub transactions_count: u64,
     block_height_synced_up_to: Option<u64>,
     earliest_transaction_timestamp_nanos: u64,
     earliest_transaction_block_height: BlockHeight,
     latest_transaction_timestamp_nanos: u64,
     latest_transaction_block_height: BlockHeight,
     seconds_since_last_ledger_sync: u64,
-    neurons_created_count: u64,
-    neurons_topped_up_count: u64,
+    pub neurons_created_count: u64,
+    pub neurons_topped_up_count: u64,
     transactions_to_process_queue_length: u32,
 }
 
