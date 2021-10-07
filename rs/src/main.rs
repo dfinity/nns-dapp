@@ -65,6 +65,12 @@ pub fn get_account() {
     over(candid, |()| get_account_impl());
 }
 
+/// Same as `get_account`, used for certification
+#[export_name = "canister_update get_account_update"]
+pub fn get_account_update() {
+    over(candid, |()| get_account_impl());
+}
+
 fn get_account_impl() -> GetAccountResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| match s.accounts_store.borrow().get_account(principal) {
@@ -94,6 +100,12 @@ fn add_account_impl() -> AccountIdentifier {
 /// returned.
 #[export_name = "canister_query get_transactions"]
 pub fn get_transactions() {
+    over(candid_one, get_transactions_impl);
+}
+
+/// Same as `get_transactions`, used for certification
+#[export_name = "canister_update get_transactions_update"]
+pub fn get_transactions_update() {
     over(candid_one, get_transactions_impl);
 }
 
@@ -166,6 +178,12 @@ fn register_hardware_wallet_impl(
 /// Returns the list of canisters which the user has attached to their account.
 #[export_name = "canister_query get_canisters"]
 pub fn get_canisters() {
+    over(candid, |()| get_canisters_impl());
+}
+
+/// Same as `get_canisters`, used for certification
+#[export_name = "canister_update get_canisters_update"]
+pub fn get_canisters_update() {
     over(candid, |()| get_canisters_impl());
 }
 
