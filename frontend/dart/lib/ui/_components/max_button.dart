@@ -25,7 +25,7 @@ class _MaxButtonState extends State<MaxButton> {
       right: 35.0,
       child: SizedBox(
         height: Responsive.isMobile(context) ? 30 : 40.0,
-        width: Responsive.isMobile(context) ? 40 : 70.0,
+        width: Responsive.isMobile(context) ? 55 : 70.0,
         child: ElevatedButton(
           onPressed: () {
             widget.amountField.initialText = (widget.source.balance -
@@ -36,7 +36,8 @@ class _MaxButtonState extends State<MaxButton> {
             padding: const EdgeInsets.all(0.0),
             child: Text(
               'Max',
-              style: TextStyle(fontSize: Responsive.isMobile(context) ? 8 : 16),
+              style:
+                  TextStyle(fontSize: Responsive.isMobile(context) ? 10 : 16),
             ),
           ),
         ),
