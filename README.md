@@ -43,10 +43,6 @@ Our CI also performs these steps; you can compare the SHA256 with the output the
 
 Development relies on the presence of a testnet that is setup with the II, governance, ledger, and cycle minting canisters. Fully local development is unfortunately not yet supported and the tools for setting up a testnet are not yet available publicly. It is on the roadmap to make these tools available publicly for developers.
 
-First, install gnu-tar, flutter and binaryen by typing the following command: 
-    
-    brew install gnu-tar flutter binaryen
-
 To deploy to the testnet, run the following:
 
     ./deploy.sh testnet

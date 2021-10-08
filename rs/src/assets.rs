@@ -1,3 +1,5 @@
+use crate::accounts_store::encode_metrics;
+use crate::metrics_encoder::MetricsEncoder;
 use crate::state::STATE;
 use crate::StableState;
 use candid::{CandidType, Decode, Encode};
@@ -7,8 +9,6 @@ use serde_bytes::{ByteBuf};
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::io::Read;
-
-use crate::metrics_encoder::MetricsEncoder;
 use dfn_core::api::ic0::time;
 
 type HeaderField = (String, String);
@@ -87,41 +87,6 @@ impl Assets {
         self.0.get(path)
     }
 }
-
-
-fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
-    STATE.with(|s| {
-        let stats = s.accounts_store.borrow().get_stats(); 
-        w.encode_gauge(
-            "neurons_created_count",
-            stats.neurons_created_count as f64,
-            "Number of neurons created.",
-        )?;
-        w.encode_gauge(
-            "neurons_topped_up_count",
-            stats.neurons_topped_up_count as f64,
-            "Number of neurons topped up by the canister.",
-        )?;
-        w.encode_gauge(
-            "transactions_count",
-            stats.transactions_count as f64,
-            "Number of transactions processed by the canister.",
-        )?;
-        w.encode_gauge(
-            "accounts_count",
-            stats.accounts_count as f64,
-            "Number of accounts created.",
-        )?;
-        w.encode_gauge(
-            "sub_accounts_count",
-            stats.sub_accounts_count as f64,
-            "Number of sub accounts created.",
-        )?;
-        Ok(())
-    })
-}
-
-
 
 
 pub fn http_request(req: HttpRequest) -> HttpResponse {
