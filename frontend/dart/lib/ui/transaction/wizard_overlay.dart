@@ -1,4 +1,4 @@
-import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
 
 import '../../nns_dapp.dart';
 
@@ -74,8 +74,6 @@ class WizardOverlayState extends State<WizardOverlay> {
                       preferredSize: Size.fromHeight(60),
                       child: AppBar(
                         backgroundColor: AppColors.lighterBackground,
-                        toolbarHeight: 80,
-                        //leadingWidth: 100,
                         actions: [
                           AspectRatio(
                               aspectRatio: 1,
@@ -94,11 +92,11 @@ class WizardOverlayState extends State<WizardOverlay> {
                                 ),
                               )),
                         ],
-                        title: AutoSizeText(title,
-                            maxLines: 1,
+                        title: Text(title,
                             overflow: TextOverflow.visible,
                             style: TextStyle(
-                                fontSize: 25,
+                                fontSize:
+                                    Responsive.isMobile(context) ? 15 : 25,
                                 fontFamily: Fonts.circularBook,
                                 color: AppColors.gray50)),
                       ),
