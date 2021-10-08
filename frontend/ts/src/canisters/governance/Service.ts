@@ -307,8 +307,6 @@ export default class Service implements ServiceInterface {
     request: MergeMaturityRequest
   ): Promise<MergeMaturityResponse> => {
     const rawRequest = this.requestConverters.fromMergeMaturityRequest(request);
-    console.log("in merge maturity");
-    console.log(request);
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
