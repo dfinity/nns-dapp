@@ -26,7 +26,6 @@ pub struct HttpResponse {
     status_code: u16,
     headers: Vec<HeaderField>,
     body: ByteBuf,
-    // body: Cow<'static, Bytes>,
 }
 
 const LABEL_ASSETS: &[u8] = b"http_assets";
@@ -147,14 +146,12 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                             ("Content-Length".to_string(), body.len().to_string()),
                         ],
                         body: ByteBuf::from(body),    
-                        // body: Cow::Owned(ByteBuf::from(body)),
                     }
                 }
                 Err(err) => HttpResponse {
                     status_code: 500,
                     headers: vec![],
                     body: ByteBuf::from(format!("Failed to encode metrics: {}", err)),
-                    // body: Cow::Owned(ByteBuf::from(format!("Failed to encode metrics: {}", err))),
                 },
             }
         }
@@ -172,48 +169,18 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                             status_code: 200,
                             headers,
                             body: ByteBuf::from(asset.bytes.clone()),
-                            // body: Cow::Owned(ByteBuf::from(asset.bytes.clone())),
                         }
                     }
                     None => HttpResponse {
                         status_code: 404,
                         headers: vec![certificate_header],
                         body: ByteBuf::from(format!("Asset {} not found.", request_path)),
-                        // body: Cow::Owned(ByteBuf::from(format!("Asset {} not found.", request_path))),
                     },
                 }
             })
         }
     }
 }
-
-// pub fn http_request(req: HttpRequest) -> HttpResponse {
-//     let parts: Vec<&str> = req.url.split('?').collect();
-//     let request_path = parts[0];
-
-//     STATE.with(|s| {
-//         let certificate_header =
-//             make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
-
-//         match s.assets.borrow().get(request_path) {
-//             Some(asset) => {
-//                 let mut headers = asset.headers.clone();
-//                 headers.push(certificate_header);
-
-//                 HttpResponse {
-//                     status_code: 200,
-//                     headers,
-//                     body: ByteBuf::from(asset.bytes.clone()),
-//                 }
-//             }
-//             None => HttpResponse {
-//                 status_code: 404,
-//                 headers: vec![certificate_header],
-//                 body: ByteBuf::from(format!("Asset {} not found.", request_path)),
-//             },
-//         }
-//     })
-// }
 
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
     let certificate = dfn_core::api::data_certificate().unwrap_or_else(|| {
