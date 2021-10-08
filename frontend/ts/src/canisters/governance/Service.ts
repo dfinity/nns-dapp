@@ -222,8 +222,7 @@ export default class Service implements ServiceInterface {
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
-      this.requestConverters.fromFollowRequest(request)
-        .serializeBinary()
+      this.requestConverters.fromFollowRequest(request).serializeBinary()
     );
 
     return { Ok: null };
@@ -236,8 +235,7 @@ export default class Service implements ServiceInterface {
       this.agent,
       this.canisterId,
       "manage_neuron_pb",
-      this.requestConverters.fromRegisterVoteRequest(request)
-        .serializeBinary()
+      this.requestConverters.fromRegisterVoteRequest(request).serializeBinary()
     );
     return { Ok: null };
   };

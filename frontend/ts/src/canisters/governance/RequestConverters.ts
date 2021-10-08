@@ -228,11 +228,13 @@ export default class RequestConverters {
   public fromFollowRequest = (request: FollowRequest): PbManageNeuron => {
     const follow = new PbManageNeuron.Follow();
     follow.setTopic(request.topic);
-    follow.setFolloweesList(request.followees.map((followee) => {
-      const neuronId = new PbNeuronId();
-      neuronId.setId(followee.toString());
-      return neuronId;
-    }));
+    follow.setFolloweesList(
+      request.followees.map((followee) => {
+        const neuronId = new PbNeuronId();
+        neuronId.setId(followee.toString());
+        return neuronId;
+      })
+    );
     const manageNeuron = new PbManageNeuron();
     const neuronId = new PbNeuronId();
     neuronId.setId(request.neuronId.toString());

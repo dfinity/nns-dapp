@@ -203,7 +203,7 @@ export default class ResponseConverters {
     if (mergeMaturityResponse) {
       return {
         mergedMaturityE8s: BigInt(mergeMaturityResponse.getMergedMaturityE8s()),
-        newStakeE8s: BigInt(mergeMaturityResponse.getNewStakeE8s())
+        newStakeE8s: BigInt(mergeMaturityResponse.getNewStakeE8s()),
       };
     }
 
