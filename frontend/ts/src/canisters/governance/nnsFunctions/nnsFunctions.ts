@@ -7,9 +7,9 @@ import {
   BlessReplicaVersionPayload,
   CreateSubnetPayload,
   RecoverSubnetPayload,
-  RemoveNodesFromSubnetPayload,
-  SetFirewallConfigPayload,
-  UpdateIcpXdrConversionRatePayload,
+  RemoveNodesFromSubnetPayload, SetAuthorizedSubnetworkListArgs,
+  SetFirewallConfigPayload, StopOrStartNnsCanisterProposalPayload,
+  UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateSubnetPayload,
   UpdateSubnetReplicaVersionPayload
 } from "./payloads";
 
@@ -48,18 +48,18 @@ export const convertNnsFunctionPayload = (nnsFunction: number, payload: ArrayBuf
     // case 4: return "Upgrade NNS canister";
     case 5: return IDL.decode([BlessReplicaVersionPayload], buffer)[0] as JsonObject;
     case 6: return IDL.decode([RecoverSubnetPayload], buffer)[0] as JsonObject;
-    // case 7: return "Update subnet config";
+    case 7: return IDL.decode([UpdateSubnetPayload], buffer)[0] as JsonObject;
     case 8: return IDL.decode([AddNodeOperatorPayload], buffer)[0] as JsonObject;
     // case 9: return "Update NNS root canister";
     case 10: return IDL.decode([UpdateIcpXdrConversionRatePayload], buffer)[0] as JsonObject;
     case 11: return IDL.decode([UpdateSubnetReplicaVersionPayload], buffer)[0] as JsonObject;
-    // case 12: return "Clear provisional whitelist";
+    case 12: return {};
     case 13: return IDL.decode([RemoveNodesFromSubnetPayload], buffer)[0] as JsonObject;
-    // case 14: return "Set authorized subnetworks";
+    case 14: return IDL.decode([SetAuthorizedSubnetworkListArgs], buffer)[0] as JsonObject;
     case 15: return IDL.decode([SetFirewallConfigPayload], buffer)[0] as JsonObject;
-    // case 16: return "Update node operator config";
-    // case 17: return "Start or stop NNS canister";
-    // case 18: return "Remove nodes from registry";
+    case 16: return IDL.decode([UpdateNodeOperatorConfigPayload], buffer)[0] as JsonObject;
+    case 17: return IDL.decode([StopOrStartNnsCanisterProposalPayload], buffer)[0] as JsonObject;
+    case 18: return IDL.decode([RemoveNodesFromSubnetPayload], buffer)[0] as JsonObject;;
     // case 19: return "Uninstall code from canister";
     default: return null;
   }

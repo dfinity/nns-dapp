@@ -212,3 +212,21 @@ pub struct StopOrStartNnsCanisterProposalPayload {
     pub canister_id: CanisterId,
     pub action: CanisterAction,
 }
+
+#[derive(Serialize, Deserialize, CandidType, Clone, Hash, Debug, PartialEq, Eq)]
+pub struct SetAuthorizedSubnetworkListArgs {
+    pub who: Option<PrincipalId>,
+    pub subnets: Vec<SubnetId>,
+}
+
+#[derive(CandidType, Deserialize, Clone, PartialEq, Eq, Message)]
+pub struct UpdateNodeOperatorConfigPayload {
+    /// The principal id of the node operator. This principal is the entity that
+    /// is able to add and remove nodes.
+    #[prost(message, optional, tag = "1")]
+    pub node_operator_id: Option<PrincipalId>,
+
+    /// The remaining number of nodes that could be added by this Node Operator.
+    #[prost(message, optional, tag = "2")]
+    pub node_allowance: Option<u64>,
+}
