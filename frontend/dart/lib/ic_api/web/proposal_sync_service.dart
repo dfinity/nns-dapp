@@ -52,7 +52,7 @@ class ProposalSyncService {
       final nnsFunctionNumber =
           proposal.action['ExecuteNnsFunction']['nnsFunctionId'];
 
-      const whitelistedNnsFunctions = [1, 2, 5, 6, 8, 10, 11, 13, 15];
+      const whitelistedNnsFunctions = [1, 2, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18];
       return whitelistedNnsFunctions.contains(nnsFunctionNumber);
     }
     return false;

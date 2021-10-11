@@ -59,7 +59,7 @@ export const convertNnsFunctionPayload = (nnsFunction: number, payload: ArrayBuf
     case 15: return IDL.decode([SetFirewallConfigPayload], buffer)[0] as JsonObject;
     case 16: return IDL.decode([UpdateNodeOperatorConfigPayload], buffer)[0] as JsonObject;
     case 17: return IDL.decode([StopOrStartNnsCanisterProposalPayload], buffer)[0] as JsonObject;
-    case 18: return IDL.decode([RemoveNodesFromSubnetPayload], buffer)[0] as JsonObject;;
+    case 18: return IDL.decode([RemoveNodesFromSubnetPayload], buffer)[0] as JsonObject;
     // case 19: return "Uninstall code from canister";
     default: return null;
   }
