@@ -203,10 +203,14 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
   }
 
   Future performUpdate(BuildContext context) async {
-    await context.callUpdate(() => context.icApi.mergeMaturity(
-        neuronId: widget.neuron.id.toBigInt,
-        percentageToMerge: sliderValue.currentValue));
-    widget.onCompleteAction(context);
+    try {
+      await context.callUpdate(() => context.icApi.mergeMaturity(
+          neuronId: widget.neuron.id.toBigInt,
+          percentageToMerge: sliderValue.currentValue));
+      widget.onCompleteAction(context);
+    } catch (err) {
+      js.context.callMethod("alert", ["$err"]);
+    }
   }
 
   @override
@@ -381,7 +385,6 @@ class StakeRewardsWidget extends StatelessWidget {
           max: 100,
           label: sliderValue.toString(),
           onChanged: (double value) {
-            print('Slider value is : $value');
             onUpdate(value.toInt());
           },
         ),
