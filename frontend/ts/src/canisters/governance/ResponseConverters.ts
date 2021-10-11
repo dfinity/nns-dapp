@@ -308,6 +308,7 @@ export default class ResponseConverters {
 
   private toProposal = (proposal: RawProposal): Proposal => {
     return {
+      title: this.extractTitleFromSummary(proposal.summary),
       url: proposal.url,
       action: proposal.action.length ? this.toAction(proposal.action[0]) : null,
       summary: proposal.summary,
@@ -532,6 +533,7 @@ export default class ResponseConverters {
       const makeProposal = command.MakeProposal;
       return {
         MakeProposal: {
+          title: this.extractTitleFromSummary(makeProposal.summary),
           url: makeProposal.url,
           action: makeProposal.action.length
             ? this.toAction(makeProposal.action[0])
@@ -686,6 +688,11 @@ export default class ResponseConverters {
       // Ensures all cases are covered at compile-time.
       throw new UnsupportedValueError(by);
     }
+  }
+
+  private extractTitleFromSummary(summary: string): string {
+    // Use the first line of the summary as the title and trim to 200 chars.
+    return summary.split('\n', 1)[0].substr(0, 200);
   }
 
   // eslint-disable-next-line
