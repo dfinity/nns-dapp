@@ -13,5 +13,5 @@
     // type errors otherwise.
     "skipLibCheck": true
   },
-  "include": ["index.ts", "./src", "ledger-cli.ts"]
+  "include": ["index.ts", "./src", "ic-hardware-wallet-cli.ts"]
 }
