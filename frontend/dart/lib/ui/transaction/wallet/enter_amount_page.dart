@@ -71,7 +71,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
               ),
               Center(
                 child: FractionallySizedBox(
-                  widthFactor: 1,
+                  widthFactor: Responsive.isMobile(context) ? 1.2 : 1,
                   child: Card(
                     child: Padding(
                       padding: const EdgeInsets.all(6.0),
