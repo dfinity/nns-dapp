@@ -219,16 +219,25 @@ export default class Service implements ServiceInterface {
   };
 
   public follow = async (request: FollowRequest): Promise<EmptyResponse> => {
-    const rawRequest = this.requestConverters.fromFollowRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters.fromFollowRequest(request).serializeBinary()
+    );
+
     return { Ok: null };
   };
 
   public registerVote = async (
     request: RegisterVoteRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest = this.requestConverters.fromRegisterVoteRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters.fromRegisterVoteRequest(request).serializeBinary()
+    );
     return { Ok: null };
   };
 
@@ -299,8 +308,15 @@ export default class Service implements ServiceInterface {
     request: MergeMaturityRequest
   ): Promise<MergeMaturityResponse> => {
     const rawRequest = this.requestConverters.fromMergeMaturityRequest(request);
-    const rawResponse = await this.service.manage_neuron(rawRequest);
-    return this.responseConverters.toMergeMaturityResponse(rawResponse);
+    const rawResponse = await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      rawRequest.serializeBinary()
+    );
+    const response = PbManageNeuronResponse.deserializeBinary(rawResponse);
+
+    return this.responseConverters.toMergeMaturityResponse(response);
   };
 
   public makeMotionProposal = async (

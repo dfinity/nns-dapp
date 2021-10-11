@@ -66,10 +66,27 @@ message ManageNeuron {
     ic_ledger.pb.v1.AccountIdentifier to_account = 2 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
   }
 
+  message Follow {
+    Topic topic = 1;
+    repeated ic_base_types.pb.v1.NeuronId followees = 2;
+  }
+
+  message RegisterVote {
+    ic_base_types.pb.v1.ProposalId proposal = 1;
+    Vote vote = 2;
+  }
+
+  message MergeMaturity {
+    uint32 percentage_to_merge = 1;
+  }
+
   oneof command {
     Configure configure = 2;
     Disburse disburse = 3;
     Spawn spawn = 4;
+    Follow follow = 5;
+    RegisterVote register_vote = 7;
+    MergeMaturity merge_maturity = 13;
   }
 }
 
@@ -88,11 +105,23 @@ message ManageNeuronResponse {
     ic_base_types.pb.v1.NeuronId created_neuron_id = 1;
   }
 
+  message MergeMaturityResponse {
+    uint64 merged_maturity_e8s = 1 [jstype = JS_STRING];
+    uint64 new_stake_e8s = 2 [jstype = JS_STRING];
+  }
+
+  message FollowResponse {}
+
+  message RegisterVoteResponse {}
+
   oneof command {
     GovernanceError error = 1;
     ConfigureResponse configure = 2;
     DisburseResponse disburse = 3;
     SpawnResponse spawn = 4;
+    FollowResponse follow = 5;
+    RegisterVoteResponse register_vote = 7;
+    MergeMaturityResponse merge_maturity = 11;
   }
 }
 
@@ -217,4 +246,18 @@ message NeuronStakeTransfer {
   uint64 neuron_stake_e8s = 5 [jstype = JS_STRING];
   uint64 block_height = 6 [jstype = JS_STRING];
   uint64 memo = 7 [jstype = JS_STRING];
+}
+
+enum Topic {
+  TOPIC_UNSPECIFIED = 0;
+  TOPIC_NEURON_MANAGEMENT = 1;
+  TOPIC_EXCHANGE_RATE = 2;
+  TOPIC_NETWORK_ECONOMICS = 3;
+  TOPIC_GOVERNANCE = 4;
+  TOPIC_NODE_ADMIN = 5;
+  TOPIC_PARTICIPANT_MANAGEMENT = 6;
+  TOPIC_SUBNET_MANAGEMENT = 7;
+  TOPIC_NETWORK_CANISTER_MANAGEMENT = 8;
+  TOPIC_KYC = 9;
+  TOPIC_NODE_PROVIDER_REWARDS = 10;
 }

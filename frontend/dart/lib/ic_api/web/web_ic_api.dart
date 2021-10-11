@@ -447,16 +447,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Neuron> spawnNeuron({required Neuron neuron}) async {
-    if (!this.isNeuronControllable(neuron)) {
-      throw "Neuron ${neuron.id} is not controlled by the user.";
-    }
-
-    // If the neuron is controlled by the user, use the user's II, otherwise
-    // we assume it's a hardware wallet and try connecting to the device.
-    final identity = neuron.controller == this.getPrincipal()
-        ? this.identity
-        : await this.connectToHardwareWallet();
-
+    final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
     final spawnResponse = await promiseToFuture(serviceApi!.spawn(identity,
         SpawnRequest(neuronId: neuron.id.toString(), newController: null)));
     dynamic response = jsonDecode(stringify(spawnResponse));

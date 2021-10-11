@@ -38,6 +38,21 @@ export class ManageNeuron extends jspb.Message {
   getSpawn(): ManageNeuron.Spawn | undefined;
   setSpawn(value?: ManageNeuron.Spawn): void;
 
+  hasFollow(): boolean;
+  clearFollow(): void;
+  getFollow(): ManageNeuron.Follow | undefined;
+  setFollow(value?: ManageNeuron.Follow): void;
+
+  hasRegisterVote(): boolean;
+  clearRegisterVote(): void;
+  getRegisterVote(): ManageNeuron.RegisterVote | undefined;
+  setRegisterVote(value?: ManageNeuron.RegisterVote): void;
+
+  hasMergeMaturity(): boolean;
+  clearMergeMaturity(): void;
+  getMergeMaturity(): ManageNeuron.MergeMaturity | undefined;
+  setMergeMaturity(value?: ManageNeuron.MergeMaturity): void;
+
   getNeuronIdOrSubaccountCase(): ManageNeuron.NeuronIdOrSubaccountCase;
   getCommandCase(): ManageNeuron.CommandCase;
   serializeBinary(): Uint8Array;
@@ -58,6 +73,9 @@ export namespace ManageNeuron {
     configure?: ManageNeuron.Configure.AsObject,
     disburse?: ManageNeuron.Disburse.AsObject,
     spawn?: ManageNeuron.Spawn.AsObject,
+    follow?: ManageNeuron.Follow.AsObject,
+    registerVote?: ManageNeuron.RegisterVote.AsObject,
+    mergeMaturity?: ManageNeuron.MergeMaturity.AsObject,
   }
 
   export class IncreaseDissolveDelay extends jspb.Message {
@@ -282,6 +300,78 @@ export namespace ManageNeuron {
     }
   }
 
+  export class Follow extends jspb.Message {
+    getTopic(): TopicMap[keyof TopicMap];
+    setTopic(value: TopicMap[keyof TopicMap]): void;
+
+    clearFolloweesList(): void;
+    getFolloweesList(): Array<base_types_pb.NeuronId>;
+    setFolloweesList(value: Array<base_types_pb.NeuronId>): void;
+    addFollowees(value?: base_types_pb.NeuronId, index?: number): base_types_pb.NeuronId;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Follow.AsObject;
+    static toObject(includeInstance: boolean, msg: Follow): Follow.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Follow, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Follow;
+    static deserializeBinaryFromReader(message: Follow, reader: jspb.BinaryReader): Follow;
+  }
+
+  export namespace Follow {
+    export type AsObject = {
+      topic: TopicMap[keyof TopicMap],
+      followeesList: Array<base_types_pb.NeuronId.AsObject>,
+    }
+  }
+
+  export class RegisterVote extends jspb.Message {
+    hasProposal(): boolean;
+    clearProposal(): void;
+    getProposal(): base_types_pb.ProposalId | undefined;
+    setProposal(value?: base_types_pb.ProposalId): void;
+
+    getVote(): VoteMap[keyof VoteMap];
+    setVote(value: VoteMap[keyof VoteMap]): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): RegisterVote.AsObject;
+    static toObject(includeInstance: boolean, msg: RegisterVote): RegisterVote.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: RegisterVote, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): RegisterVote;
+    static deserializeBinaryFromReader(message: RegisterVote, reader: jspb.BinaryReader): RegisterVote;
+  }
+
+  export namespace RegisterVote {
+    export type AsObject = {
+      proposal?: base_types_pb.ProposalId.AsObject,
+      vote: VoteMap[keyof VoteMap],
+    }
+  }
+
+  export class MergeMaturity extends jspb.Message {
+    getPercentageToMerge(): number;
+    setPercentageToMerge(value: number): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): MergeMaturity.AsObject;
+    static toObject(includeInstance: boolean, msg: MergeMaturity): MergeMaturity.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: MergeMaturity, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): MergeMaturity;
+    static deserializeBinaryFromReader(message: MergeMaturity, reader: jspb.BinaryReader): MergeMaturity;
+  }
+
+  export namespace MergeMaturity {
+    export type AsObject = {
+      percentageToMerge: number,
+    }
+  }
+
   export enum NeuronIdOrSubaccountCase {
     NEURON_ID_OR_SUBACCOUNT_NOT_SET = 0,
     SUBACCOUNT = 11,
@@ -293,6 +383,9 @@ export namespace ManageNeuron {
     CONFIGURE = 2,
     DISBURSE = 3,
     SPAWN = 4,
+    FOLLOW = 5,
+    REGISTER_VOTE = 7,
+    MERGE_MATURITY = 13,
   }
 }
 
@@ -317,6 +410,21 @@ export class ManageNeuronResponse extends jspb.Message {
   getSpawn(): ManageNeuronResponse.SpawnResponse | undefined;
   setSpawn(value?: ManageNeuronResponse.SpawnResponse): void;
 
+  hasFollow(): boolean;
+  clearFollow(): void;
+  getFollow(): ManageNeuronResponse.FollowResponse | undefined;
+  setFollow(value?: ManageNeuronResponse.FollowResponse): void;
+
+  hasRegisterVote(): boolean;
+  clearRegisterVote(): void;
+  getRegisterVote(): ManageNeuronResponse.RegisterVoteResponse | undefined;
+  setRegisterVote(value?: ManageNeuronResponse.RegisterVoteResponse): void;
+
+  hasMergeMaturity(): boolean;
+  clearMergeMaturity(): void;
+  getMergeMaturity(): ManageNeuronResponse.MergeMaturityResponse | undefined;
+  setMergeMaturity(value?: ManageNeuronResponse.MergeMaturityResponse): void;
+
   getCommandCase(): ManageNeuronResponse.CommandCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ManageNeuronResponse.AsObject;
@@ -334,6 +442,9 @@ export namespace ManageNeuronResponse {
     configure?: ManageNeuronResponse.ConfigureResponse.AsObject,
     disburse?: ManageNeuronResponse.DisburseResponse.AsObject,
     spawn?: ManageNeuronResponse.SpawnResponse.AsObject,
+    follow?: ManageNeuronResponse.FollowResponse.AsObject,
+    registerVote?: ManageNeuronResponse.RegisterVoteResponse.AsObject,
+    mergeMaturity?: ManageNeuronResponse.MergeMaturityResponse.AsObject,
   }
 
   export class ConfigureResponse extends jspb.Message {
@@ -394,12 +505,71 @@ export namespace ManageNeuronResponse {
     }
   }
 
+  export class MergeMaturityResponse extends jspb.Message {
+    getMergedMaturityE8s(): string;
+    setMergedMaturityE8s(value: string): void;
+
+    getNewStakeE8s(): string;
+    setNewStakeE8s(value: string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): MergeMaturityResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: MergeMaturityResponse): MergeMaturityResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: MergeMaturityResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): MergeMaturityResponse;
+    static deserializeBinaryFromReader(message: MergeMaturityResponse, reader: jspb.BinaryReader): MergeMaturityResponse;
+  }
+
+  export namespace MergeMaturityResponse {
+    export type AsObject = {
+      mergedMaturityE8s: string,
+      newStakeE8s: string,
+    }
+  }
+
+  export class FollowResponse extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): FollowResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: FollowResponse): FollowResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: FollowResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): FollowResponse;
+    static deserializeBinaryFromReader(message: FollowResponse, reader: jspb.BinaryReader): FollowResponse;
+  }
+
+  export namespace FollowResponse {
+    export type AsObject = {
+    }
+  }
+
+  export class RegisterVoteResponse extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): RegisterVoteResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: RegisterVoteResponse): RegisterVoteResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: RegisterVoteResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): RegisterVoteResponse;
+    static deserializeBinaryFromReader(message: RegisterVoteResponse, reader: jspb.BinaryReader): RegisterVoteResponse;
+  }
+
+  export namespace RegisterVoteResponse {
+    export type AsObject = {
+    }
+  }
+
   export enum CommandCase {
     COMMAND_NOT_SET = 0,
     ERROR = 1,
     CONFIGURE = 2,
     DISBURSE = 3,
     SPAWN = 4,
+    FOLLOW = 5,
+    REGISTER_VOTE = 7,
+    MERGE_MATURITY = 11,
   }
 }
 
@@ -778,4 +948,20 @@ export interface VoteMap {
 }
 
 export const Vote: VoteMap;
+
+export interface TopicMap {
+  TOPIC_UNSPECIFIED: 0;
+  TOPIC_NEURON_MANAGEMENT: 1;
+  TOPIC_EXCHANGE_RATE: 2;
+  TOPIC_NETWORK_ECONOMICS: 3;
+  TOPIC_GOVERNANCE: 4;
+  TOPIC_NODE_ADMIN: 5;
+  TOPIC_PARTICIPANT_MANAGEMENT: 6;
+  TOPIC_SUBNET_MANAGEMENT: 7;
+  TOPIC_NETWORK_CANISTER_MANAGEMENT: 8;
+  TOPIC_KYC: 9;
+  TOPIC_NODE_PROVIDER_REWARDS: 10;
+}
+
+export const Topic: TopicMap;
 
