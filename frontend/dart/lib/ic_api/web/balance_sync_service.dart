@@ -11,9 +11,22 @@ class BalanceSyncService {
 
   BalanceSyncService(this.serviceApi, this.hiveBoxes);
 
-  Future<void> syncBalances() async {
-    Map<String, ICP> balanceByAddress = await fetchBalances(
-        hiveBoxes.accounts.values.map((e) => e.accountIdentifier).toList());
+  Future<void> syncBalances({List<String>? accountIds}) async {
+    // Do a quick sync with queries.
+    await this._syncBalances(accountIds: accountIds, useUpdateCalls: false);
+
+    // Do a slow sync with update calls in the background.
+    // Note that we don't `await` here as to not block the caller.
+    this._syncBalances(accountIds: accountIds, useUpdateCalls: true);
+  }
+
+  Future<void> _syncBalances(
+      {List<String>? accountIds, required bool useUpdateCalls}) async {
+    // If no accounts are specified, sync all the accounts.
+    accountIds = accountIds ??
+        hiveBoxes.accounts.values.map((e) => e.accountIdentifier).toList();
+    Map<String, ICP> balanceByAddress = await _fetchBalances(
+        accountIds: accountIds, useUpdateCalls: useUpdateCalls);
     balanceByAddress.entries.forEach((entry) {
       final account = hiveBoxes.accounts[entry.key];
       account.balance = entry.value;
@@ -22,8 +35,10 @@ class BalanceSyncService {
     hiveBoxes.accounts.notifyChange();
   }
 
-  Future<Map<String, ICP>> fetchBalances(List<String> accountIds) async {
-    final promise = serviceApi.getBalances(jsify({'accounts': accountIds}));
+  Future<Map<String, ICP>> _fetchBalances(
+      {required List<String> accountIds, bool useUpdateCalls = false}) async {
+    final promise =
+        serviceApi.getBalances(jsify({'accounts': accountIds}), useUpdateCalls);
     final jsonString = stringify(await promiseToFuture(promise));
     Map<String, dynamic> response = jsonDecode(jsonString);
     return response.map(
