@@ -24,6 +24,7 @@ mod ledger_sync;
 mod multi_part_transactions_processor;
 mod periodic_tasks_runner;
 mod state;
+mod metrics_encoder;
 
 #[export_name = "canister_init"]
 fn main() {

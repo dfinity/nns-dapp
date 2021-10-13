@@ -1,3 +1,4 @@
+use crate::STATE;
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionError, MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
@@ -21,6 +22,7 @@ use std::cmp::{min, Ordering};
 use std::collections::{HashMap, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
+use crate::metrics_encoder::MetricsEncoder;
 
 type TransactionIndex = u64;
 
@@ -1575,6 +1577,40 @@ pub enum TransferResult {
         fee: ICPTs,
     },
 }
+
+
+pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
+    STATE.with(|s| {
+        let stats = s.accounts_store.borrow().get_stats(); 
+        w.encode_gauge(
+            "neurons_created_count",
+            stats.neurons_created_count as f64,
+            "Number of neurons created.",
+        )?;
+        w.encode_gauge(
+            "neurons_topped_up_count",
+            stats.neurons_topped_up_count as f64,
+            "Number of neurons topped up by the canister.",
+        )?;
+        w.encode_gauge(
+            "transactions_count",
+            stats.transactions_count as f64,
+            "Number of transactions processed by the canister.",
+        )?;
+        w.encode_gauge(
+            "accounts_count",
+            stats.accounts_count as f64,
+            "Number of accounts created.",
+        )?;
+        w.encode_gauge(
+            "sub_accounts_count",
+            stats.sub_accounts_count as f64,
+            "Number of sub accounts created.",
+        )?;
+        Ok(())
+    })
+}
+
 
 #[derive(CandidType)]
 pub struct Stats {
