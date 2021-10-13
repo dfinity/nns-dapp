@@ -41,26 +41,32 @@ export const getNnsFunctionName = (nnsFunction: number): string => {
 export const convertNnsFunctionPayload = (nnsFunction: number, payload: ArrayBuffer): Option<Record<string, unknown>> => {
   const buffer = new Buffer(payload);
 
-  switch (nnsFunction) {
-    case 1: return IDL.decode([CreateSubnetPayload], buffer)[0] as JsonObject;
-    case 2: return IDL.decode([AddNodesToSubnetPayload], buffer)[0] as JsonObject;
-    // case 3: return "Install NNS canister";
-    // case 4: return "Upgrade NNS canister";
-    case 5: return IDL.decode([BlessReplicaVersionPayload], buffer)[0] as JsonObject;
-    case 6: return IDL.decode([RecoverSubnetPayload], buffer)[0] as JsonObject;
-    case 7: return IDL.decode([UpdateSubnetPayload], buffer)[0] as JsonObject;
-    case 8: return IDL.decode([AddNodeOperatorPayload], buffer)[0] as JsonObject;
-    // case 9: return "Update NNS root canister";
-    case 10: return IDL.decode([UpdateIcpXdrConversionRatePayload], buffer)[0] as JsonObject;
-    case 11: return IDL.decode([UpdateSubnetReplicaVersionPayload], buffer)[0] as JsonObject;
-    case 12: return {};
-    case 13: return IDL.decode([RemoveNodesFromSubnetPayload], buffer)[0] as JsonObject;
-    case 14: return IDL.decode([SetAuthorizedSubnetworkListArgs], buffer)[0] as JsonObject;
-    case 15: return IDL.decode([SetFirewallConfigPayload], buffer)[0] as JsonObject;
-    case 16: return IDL.decode([UpdateNodeOperatorConfigPayload], buffer)[0] as JsonObject;
-    case 17: return IDL.decode([StopOrStartNnsCanisterProposalPayload], buffer)[0] as JsonObject;
-    case 18: return IDL.decode([RemoveNodesFromSubnetPayload], buffer)[0] as JsonObject;
-    // case 19: return "Uninstall code from canister";
-    default: return null;
+  try {
+    switch (nnsFunction) {
+      case 1: return IDL.decode([CreateSubnetPayload], buffer)[0] as JsonObject;
+      case 2: return IDL.decode([AddNodesToSubnetPayload], buffer)[0] as JsonObject;
+      // case 3: return "Install NNS canister";
+      // case 4: return "Upgrade NNS canister";
+      case 5: return IDL.decode([BlessReplicaVersionPayload], buffer)[0] as JsonObject;
+      case 6: return IDL.decode([RecoverSubnetPayload], buffer)[0] as JsonObject;
+      case 7: return IDL.decode([UpdateSubnetPayload], buffer)[0] as JsonObject;
+      case 8: return IDL.decode([AddNodeOperatorPayload], buffer)[0] as JsonObject;
+      // case 9: return "Update NNS root canister";
+      case 10: return IDL.decode([UpdateIcpXdrConversionRatePayload], buffer)[0] as JsonObject;
+      case 11: return IDL.decode([UpdateSubnetReplicaVersionPayload], buffer)[0] as JsonObject;
+      case 12: return {};
+      case 13: return IDL.decode([RemoveNodesFromSubnetPayload], buffer)[0] as JsonObject;
+      case 14: return IDL.decode([SetAuthorizedSubnetworkListArgs], buffer)[0] as JsonObject;
+      case 15: return IDL.decode([SetFirewallConfigPayload], buffer)[0] as JsonObject;
+      case 16: return IDL.decode([UpdateNodeOperatorConfigPayload], buffer)[0] as JsonObject;
+      case 17: return IDL.decode([StopOrStartNnsCanisterProposalPayload], buffer)[0] as JsonObject;
+      case 18: return IDL.decode([RemoveNodesFromSubnetPayload], buffer)[0] as JsonObject;
+      // case 19: return "Uninstall code from canister";
+      default: return null;
+    }
+  } catch (e) {
+    console.log("Unable to deserialize payload. NNS function: " + nnsFunction);
+    console.log(e);
+    return { error: "Unable to deserialize payload" };
   }
 }
