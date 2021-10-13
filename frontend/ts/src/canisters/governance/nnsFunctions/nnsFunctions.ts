@@ -7,9 +7,13 @@ import {
   BlessReplicaVersionPayload,
   CreateSubnetPayload,
   RecoverSubnetPayload,
-  RemoveNodesFromSubnetPayload, SetAuthorizedSubnetworkListArgs,
-  SetFirewallConfigPayload, StopOrStartNnsCanisterProposalPayload,
-  UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateSubnetPayload,
+  RemoveNodesFromSubnetPayload,
+  SetAuthorizedSubnetworkListArgs,
+  SetFirewallConfigPayload,
+  StopOrStartNnsCanisterProposalPayload,
+  UpdateIcpXdrConversionRatePayload,
+  UpdateNodeOperatorConfigPayload,
+  UpdateSubnetPayload,
   UpdateSubnetReplicaVersionPayload
 } from "./payloads";
 
