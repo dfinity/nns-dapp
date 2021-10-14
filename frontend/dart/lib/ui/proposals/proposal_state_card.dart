@@ -27,56 +27,99 @@ class ProposalStateCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(
-                            width: 2, color: proposal.status.color))),
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
                   child: Text(
-                    proposal.status.description,
-                    style: TextStyle(
-                        fontSize: Responsive.isMobile(context) ? 20 : 24,
-                        fontFamily: Fonts.circularBook,
-                        color: proposal.status.color,
-                        fontWeight: FontWeight.normal),
+                    proposal.title,
+                    style: Responsive.isMobile(context)
+                        ? context.textTheme.headline6
+                        : context.textTheme.headline3,
                   ),
+                ),
+                SizedBox(width: 20),
+                Container(
+                  decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(
+                              width: 2, color: proposal.status.color))),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      proposal.status.description,
+                      style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 20 : 24,
+                          fontFamily: Fonts.circularBook,
+                          color: proposal.status.color,
+                          fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            // MarkdownBody(
+            //     data: proposal.summary,
+            //     styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
+            //         textTheme: TextTheme(
+            //             bodyText2: TextStyle(
+            //       fontSize: Responsive.isMobile(context) ? 18.0 : 24,
+            //       color: Colors.white,
+            //     ))))),
+            //TODO : change to markdown above to this Container when we have the actual data,
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.black,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.black,
+                    spreadRadius: 5,
+                  )
+                ],
+              ),
+              child: ClipRRect(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                child: ExpansionTile(
+                  initiallyExpanded: true,
+                  backgroundColor: AppColors.mediumBackground,
+                  collapsedBackgroundColor: AppColors.mediumBackground,
+                  title: Center(
+                    child: Text(
+                      "Proposal Summary",
+                      style: context.textTheme.headline4,
+                    ),
+                  ),
+                  children: [
+                    Container(
+                      color: AppColors.mediumBackground,
+                      child: RawScrollbar(
+                        thumbColor: Colors.redAccent,
+                        radius: Radius.circular(20),
+                        thickness: 5,
+                        child: Container(
+                          height: 300,
+                          width: MediaQuery.of(context).size.width,
+                          child: Markdown(
+                              data: proposal.summary,
+                              styleSheet:
+                                  MarkdownStyleSheet.fromTheme(ThemeData(
+                                      textTheme: TextTheme(
+                                          bodyText2: TextStyle(
+                                fontSize:
+                                    Responsive.isMobile(context) ? 14.0 : 18,
+                                color: Colors.white,
+                              ))))),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            SizedBox(height: 20.0),
-            MarkdownBody(
-                data: proposal.summary,
-                styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
-                    textTheme: TextTheme(
-                        bodyText2: TextStyle(
-                  fontSize: Responsive.isMobile(context) ? 18.0 : 24,
-                  color: Colors.white,
-                ))))),
-            //TODO : change to markdown above to this Container when we have the actual data,
-            // Container(
-            //   child: RawScrollbar(
-            //     thumbColor: Colors.redAccent,
-            //     radius: Radius.circular(20),
-            //     thickness: 5,
-            //     child: Container(
-            //       height: 300,
-            //       width: MediaQuery.of(context).size.width,
-            //       child: Markdown(
-            //           data: proposal.summary,
-            //           styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
-            //               textTheme: TextTheme(
-            //                   bodyText2: TextStyle(
-            //             fontSize: Responsive.isMobile(context) ? 18.0 : 24,
-            //             color: Colors.white,
-            //           ))))),
-            //     ),
-            //   ),
-            // ),
             SizedBox(height: 10),
             TextButton(
               onPressed: () => launch(proposal.url),

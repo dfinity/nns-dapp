@@ -52,7 +52,23 @@ class ProposalSyncService {
       final nnsFunctionNumber =
           proposal.action['ExecuteNnsFunction']['nnsFunctionId'];
 
-      const whitelistedNnsFunctions = [1, 2, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+      const whitelistedNnsFunctions = [
+        1,
+        2,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ];
       return whitelistedNnsFunctions.contains(nnsFunctionNumber);
     }
     return false;
@@ -86,12 +102,9 @@ class ProposalSyncService {
 
   void updateProposal(Proposal proposal, String proposalId, dynamic response) {
     proposal.id = proposalId.toString();
-    proposal.summary = (response['proposal']['summary'].toString()).replaceAll(
-        "Increase minimum neuron stake",
-        "Reflect falling hardware prices - reduce smart contract memory costs by 5%");
-    proposal.url = response['proposal']['url'].toString().replaceAll(
-        "https://www.lipsum.com/",
-        "https://medium.com/zurich-eth/ic-proposal-reduce-smart-contract-memory-costs/");
+    proposal.title = response['proposal']['title'].toString();
+    proposal.summary = response['proposal']['summary'].toString();
+    proposal.url = response['proposal']['url'].toString();
     proposal.proposer = response['proposer'].toString();
     proposal.no =
         ICP.fromE8s(response['latestTally']['no'].toString().toBigInt);

@@ -59,7 +59,6 @@ flutter:
     - assets/
     - assets/fonts/
     - assets/ic_agent.js
-    - assets/hello.md
 
   fonts:
     - family: Circular-Bold
