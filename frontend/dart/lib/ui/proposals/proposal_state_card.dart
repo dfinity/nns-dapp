@@ -60,15 +60,6 @@ class ProposalStateCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20.0),
-            // MarkdownBody(
-            //     data: proposal.summary,
-            //     styleSheet: MarkdownStyleSheet.fromTheme(ThemeData(
-            //         textTheme: TextTheme(
-            //             bodyText2: TextStyle(
-            //       fontSize: Responsive.isMobile(context) ? 18.0 : 24,
-            //       color: Colors.white,
-            //     ))))),
-            //TODO : change to markdown above to this Container when we have the actual data,
             Container(
               decoration: BoxDecoration(
                 color: AppColors.black,
@@ -101,7 +92,7 @@ class ProposalStateCard extends StatelessWidget {
                         radius: Radius.circular(20),
                         thickness: 5,
                         child: Container(
-                          height: 300,
+                          height: proposal.summary.length.toDouble(),
                           width: MediaQuery.of(context).size.width,
                           child: Markdown(
                               data: proposal.summary,
