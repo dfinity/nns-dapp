@@ -177,9 +177,12 @@ export default class ServiceApi {
   };
 
   public getBalances = (
-    request: GetBalancesRequest
+    request: GetBalancesRequest,
+    useUpdateCalls = false
   ): Promise<Record<AccountIdentifier, E8s>> => {
-    return executeWithLogging(() => this.ledgerService.getBalances(request));
+    return executeWithLogging(() =>
+      this.ledgerService.getBalances(request, useUpdateCalls)
+    );
   };
 
   public getTransactions = (

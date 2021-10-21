@@ -1,3 +1,4 @@
+use crate::STATE;
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionError, MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
@@ -21,6 +22,7 @@ use std::cmp::{min, Ordering};
 use std::collections::{HashMap, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
+use crate::metrics_encoder::MetricsEncoder;
 
 type TransactionIndex = u64;
 
@@ -138,7 +140,7 @@ pub struct NeuronDetails {
     neuron_id: Option<NeuronId>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum CreateSubAccountResponse {
     Ok(SubAccountDetails),
     AccountNotFound,
@@ -146,13 +148,13 @@ pub enum CreateSubAccountResponse {
     NameTooLong,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(Deserialize)]
 pub struct RenameSubAccountRequest {
     account_identifier: AccountIdentifier,
     new_name: String,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum RenameSubAccountResponse {
     Ok,
     AccountNotFound,
@@ -160,13 +162,13 @@ pub enum RenameSubAccountResponse {
     NameTooLong,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(Deserialize)]
 pub struct RegisterHardwareWalletRequest {
     name: String,
     principal: PrincipalId,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum RegisterHardwareWalletResponse {
     Ok,
     AccountNotFound,
@@ -175,7 +177,7 @@ pub enum RegisterHardwareWalletResponse {
     NameTooLong,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub struct AccountDetails {
     pub principal: PrincipalId,
     pub account_identifier: AccountIdentifier,
@@ -183,27 +185,27 @@ pub struct AccountDetails {
     pub hardware_wallet_accounts: Vec<HardwareWalletAccountDetails>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub struct SubAccountDetails {
     name: String,
     sub_account: Subaccount,
     account_identifier: AccountIdentifier,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub struct HardwareWalletAccountDetails {
     pub name: String,
     pub principal: PrincipalId,
     pub account_identifier: AccountIdentifier,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(Deserialize)]
 pub struct AttachCanisterRequest {
     name: String,
     canister_id: CanisterId,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum AttachCanisterResponse {
     Ok,
     CanisterLimitExceeded,
@@ -213,12 +215,12 @@ pub enum AttachCanisterResponse {
     AccountNotFound,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(Deserialize)]
 pub struct DetachCanisterRequest {
     canister_id: CanisterId,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum DetachCanisterResponse {
     Ok,
     CanisterNotFound,
@@ -1534,20 +1536,20 @@ fn sort_canisters(canisters: &mut Vec<NamedCanister>) {
     });
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(Deserialize)]
 pub struct GetTransactionsRequest {
     account_identifier: AccountIdentifier,
     offset: u32,
     page_size: u8,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub struct GetTransactionsResponse {
     transactions: Vec<TransactionResult>,
     total: u32,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub struct TransactionResult {
     block_height: BlockHeight,
     timestamp: TimeStamp,
@@ -1556,7 +1558,7 @@ pub struct TransactionResult {
     transaction_type: Option<TransactionType>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum TransferResult {
     Burn {
         amount: ICPTs,
@@ -1576,7 +1578,41 @@ pub enum TransferResult {
     },
 }
 
-#[derive(CandidType, Deserialize)]
+
+pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
+    STATE.with(|s| {
+        let stats = s.accounts_store.borrow().get_stats(); 
+        w.encode_gauge(
+            "neurons_created_count",
+            stats.neurons_created_count as f64,
+            "Number of neurons created.",
+        )?;
+        w.encode_gauge(
+            "neurons_topped_up_count",
+            stats.neurons_topped_up_count as f64,
+            "Number of neurons topped up by the canister.",
+        )?;
+        w.encode_gauge(
+            "transactions_count",
+            stats.transactions_count as f64,
+            "Number of transactions processed by the canister.",
+        )?;
+        w.encode_gauge(
+            "accounts_count",
+            stats.accounts_count as f64,
+            "Number of accounts created.",
+        )?;
+        w.encode_gauge(
+            "sub_accounts_count",
+            stats.sub_accounts_count as f64,
+            "Number of sub accounts created.",
+        )?;
+        Ok(())
+    })
+}
+
+
+#[derive(CandidType)]
 pub struct Stats {
     accounts_count: u64,
     sub_accounts_count: u64,

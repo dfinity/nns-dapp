@@ -595,12 +595,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> refreshAccount(Account account) async {
     transactionSyncService!.syncAccount(account);
-    final res =
-        await balanceSyncService!.fetchBalances([account.accountIdentifier]);
-    account = hiveBoxes.accounts[account.accountIdentifier]!;
-    account.balance = res[account.accountIdentifier]!;
-    // ignore: deprecated_member_use
-    hiveBoxes.accounts.notifyChange();
+    await balanceSyncService!
+        .syncBalances(accountIds: [account.accountIdentifier]);
   }
 
   @override
