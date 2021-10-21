@@ -56,6 +56,7 @@ import { ManageNeuron as PbManageNeuron } from "../../proto/governance_pb";
 import {
   NeuronId as PbNeuronId,
   PrincipalId as PbPrincipalId,
+  ProposalId as PbProposalId,
 } from "../../proto/base_types_pb";
 import { UnsupportedValueError } from "../../utils";
 export default class RequestConverters {
@@ -136,15 +137,15 @@ export default class RequestConverters {
 
   public fromMergeMaturityRequest = (
     request: MergeMaturityRequest
-  ): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      MergeMaturity: { percentage_to_merge: request.percentageToMerge },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  ): PbManageNeuron => {
+    const mergeMaturity = new PbManageNeuron.MergeMaturity();
+    mergeMaturity.setPercentageToMerge(request.percentageToMerge);
+    const manageNeuron = new PbManageNeuron();
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    manageNeuron.setNeuronId(neuronId);
+    manageNeuron.setMergeMaturity(mergeMaturity);
+    return manageNeuron;
   };
 
   public fromRemoveHotKeyRequest = (
@@ -224,34 +225,38 @@ export default class RequestConverters {
     return result;
   };
 
-  public fromFollowRequest = (request: FollowRequest): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      Follow: {
-        topic: request.topic,
-        followees: request.followees.map(this.fromNeuronId),
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  public fromFollowRequest = (request: FollowRequest): PbManageNeuron => {
+    const follow = new PbManageNeuron.Follow();
+    follow.setTopic(request.topic);
+    follow.setFolloweesList(
+      request.followees.map((followee) => {
+        const neuronId = new PbNeuronId();
+        neuronId.setId(followee.toString());
+        return neuronId;
+      })
+    );
+    const manageNeuron = new PbManageNeuron();
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    manageNeuron.setNeuronId(neuronId);
+    manageNeuron.setFollow(follow);
+    return manageNeuron;
   };
 
   public fromRegisterVoteRequest = (
     request: RegisterVoteRequest
-  ): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      RegisterVote: {
-        vote: request.vote,
-        proposal: [this.fromProposalId(request.proposal)],
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  ): PbManageNeuron => {
+    const registerVote = new PbManageNeuron.RegisterVote();
+    registerVote.setVote(request.vote);
+    const proposal = new PbProposalId();
+    proposal.setId(request.proposal.toString());
+    registerVote.setProposal(proposal);
+    const manageNeuron = new PbManageNeuron();
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    manageNeuron.setNeuronId(neuronId);
+    manageNeuron.setRegisterVote(registerVote);
+    return manageNeuron;
   };
 
   public fromSpawnRequest = (request: SpawnRequest): PbManageNeuron => {

@@ -192,16 +192,21 @@ export default class ResponseConverters {
   };
 
   public toMergeMaturityResponse = (
-    response: RawManageNeuronResponse
+    response: PbManageNeuronResponse
   ): MergeMaturityResponse => {
-    const command = response.command;
-    if (command.length && "MergeMaturity" in command[0]) {
-      const mergeMaturity = command[0].MergeMaturity;
+    const error = response.getError();
+    if (error) {
+      throw error.getErrorMessage();
+    }
+
+    const mergeMaturityResponse = response.getMergeMaturity();
+    if (mergeMaturityResponse) {
       return {
-        mergedMaturityE8s: mergeMaturity.merged_maturity_e8s,
-        newStakeE8s: mergeMaturity.new_stake_e8s,
+        mergedMaturityE8s: BigInt(mergeMaturityResponse.getMergedMaturityE8s()),
+        newStakeE8s: BigInt(mergeMaturityResponse.getNewStakeE8s()),
       };
     }
+
     throw this.throwUnrecognisedTypeError("response", response);
   };
 

@@ -1,12 +1,15 @@
+use crate::accounts_store::encode_metrics;
+use crate::metrics_encoder::MetricsEncoder;
 use crate::state::STATE;
 use crate::StableState;
 use candid::{CandidType, Decode, Encode};
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
-use serde_bytes::ByteBuf;
+use serde_bytes::{ByteBuf};
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::io::Read;
+use dfn_core::api::ic0::time;
 
 type HeaderField = (String, String);
 
@@ -85,32 +88,63 @@ impl Assets {
     }
 }
 
+
 pub fn http_request(req: HttpRequest) -> HttpResponse {
-    let parts: Vec<&str> = req.url.split('?').collect();
-    let request_path = parts[0];
-
-    STATE.with(|s| {
-        let certificate_header =
-            make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
-
-        match s.assets.borrow().get(request_path) {
-            Some(asset) => {
-                let mut headers = asset.headers.clone();
-                headers.push(certificate_header);
-
-                HttpResponse {
-                    status_code: 200,
-                    headers,
-                    body: ByteBuf::from(asset.bytes.clone()),
+    let parts: Vec<&str>   = req.url.split('?').collect();
+    match parts[0] {
+        "/metrics" => {
+            let now;
+            unsafe {
+                now = time();
+            };
+            let mut writer = MetricsEncoder::new(vec![], now / 1_000_000);
+            match encode_metrics(&mut writer) {
+                Ok(()) => {
+                    let body = writer.into_inner();
+                    HttpResponse {
+                        status_code: 200,
+                        headers: vec![
+                            (
+                                "Content-Type".to_string(),
+                                "text/plain; version=0.0.4".to_string(),
+                            ),
+                            ("Content-Length".to_string(), body.len().to_string()),
+                        ],
+                        body: ByteBuf::from(body),    
+                    }
                 }
+                Err(err) => HttpResponse {
+                    status_code: 500,
+                    headers: vec![],
+                    body: ByteBuf::from(format!("Failed to encode metrics: {}", err)),
+                },
             }
-            None => HttpResponse {
-                status_code: 404,
-                headers: vec![certificate_header],
-                body: ByteBuf::from(format!("Asset {} not found.", request_path)),
-            },
         }
-    })
+        request_path => {
+                STATE.with(|s| {
+                let certificate_header =
+                    make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
+
+                match s.assets.borrow().get(request_path) {
+                    Some(asset) => {
+                        let mut headers = asset.headers.clone();
+                        headers.push(certificate_header);
+
+                        HttpResponse {
+                            status_code: 200,
+                            headers,
+                            body: ByteBuf::from(asset.bytes.clone()),
+                        }
+                    }
+                    None => HttpResponse {
+                        status_code: 404,
+                        headers: vec![certificate_header],
+                        body: ByteBuf::from(format!("Asset {} not found.", request_path)),
+                    },
+                }
+            })
+        }
+    }
 }
 
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
