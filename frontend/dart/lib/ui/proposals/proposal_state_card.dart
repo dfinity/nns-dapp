@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
@@ -92,7 +93,11 @@ class ProposalStateCard extends StatelessWidget {
                         radius: Radius.circular(20),
                         thickness: 5,
                         child: Container(
-                          height: proposal.summary.length.toDouble(),
+                          height: proposal.summary.length.toDouble() <
+                                  kProposalSummaryBoxMaxHeight
+                              ? proposal.summary.length.toDouble() +
+                                  kProposalSummaryBoxMinHeight
+                              : kProposalSummaryBoxMaxHeight,
                           width: MediaQuery.of(context).size.width,
                           child: Markdown(
                               data: proposal.summary,
