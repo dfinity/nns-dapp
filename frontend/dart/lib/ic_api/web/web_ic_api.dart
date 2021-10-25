@@ -73,7 +73,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     proposalSyncService =
         ProposalSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
 
-    await accountsSyncService!.performSync();
+    await accountsSyncService!.sync();
     await balanceSyncService!.syncBalances();
     await transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
     await neuronSyncService!.fetchNeurons();
@@ -94,11 +94,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createSubAccount({required String name}) async {
-    await promiseToFuture(serviceApi!.createSubAccount(name)).then((value) {
-      final json = jsonDecode(stringify(value));
-      final res = json['Ok'];
-      accountsSyncService!.storeSubAccount(res, this.getPrincipal());
-    });
+    await promiseToFuture(serviceApi!.createSubAccount(name));
+    // TODO(NNS1-826): verify that account is created successfully.
+    await accountsSyncService!.sync();
   }
 
   @override
@@ -430,7 +428,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> refreshAccounts() async {
-    await accountsSyncService!.performSync();
+    await accountsSyncService!.sync();
     balanceSyncService!.syncBalances();
     transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
   }
@@ -562,7 +560,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       newName: newName,
       accountIdentifier: accountIdentifier,
     )));
-    await accountsSyncService!.performSync();
+    await accountsSyncService!.sync();
   }
 
   @override
