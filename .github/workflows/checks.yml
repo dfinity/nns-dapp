@@ -64,6 +64,10 @@ jobs:
       - name: Run ESlint
         run: npm run lint
         working-directory: ./frontend/ts
+
+      - name: Run TS tests
+        run: npm run test
+        working-directory: ./frontend/ts
       
       - name: Check formatting
         run: npm run format
