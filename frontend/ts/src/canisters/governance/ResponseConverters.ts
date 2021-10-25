@@ -313,7 +313,7 @@ export default class ResponseConverters {
 
   private toProposal = (proposal: RawProposal): Proposal => {
     return {
-      title: this.extractTitleFromSummary(proposal.summary),
+      title: proposal.title.length ? proposal.title[0] : this.extractTitleFromSummary(proposal.summary),
       url: proposal.url,
       action: proposal.action.length ? this.toAction(proposal.action[0]) : null,
       summary: proposal.summary,
@@ -538,7 +538,9 @@ export default class ResponseConverters {
       const makeProposal = command.MakeProposal;
       return {
         MakeProposal: {
-          title: this.extractTitleFromSummary(makeProposal.summary),
+          title: makeProposal.title.length
+            ? makeProposal.title[0]
+            : this.extractTitleFromSummary(makeProposal.summary),
           url: makeProposal.url,
           action: makeProposal.action.length
             ? this.toAction(makeProposal.action[0])

@@ -344,6 +344,7 @@ export default class RequestConverters {
     const rawCommand: RawCommand = {
       MakeProposal: {
         url: request.url,
+        title: [],
         summary: request.summary,
         action: [this.fromAction(request.action)],
       },
@@ -569,6 +570,7 @@ export default class RequestConverters {
       return {
         MakeProposal: {
           url: makeProposal.url,
+          title: [],
           action: makeProposal.action
             ? [this.fromAction(makeProposal.action)]
             : [],
