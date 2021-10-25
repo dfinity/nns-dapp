@@ -16,22 +16,36 @@ class TransactionSyncService {
 
   TransactionSyncService({required this.serviceApi, required this.hiveBoxes});
 
-  Future<void> syncAllAccounts() async {
-    await this.syncAccounts(hiveBoxes.accounts.values);
+  Future<void> syncAllAccounts({List<Account>? accounts}) async {
+    await this._syncAccounts(accounts ?? hiveBoxes.accounts.values);
   }
 
-  Future<void> syncAccounts(Iterable<Account> accounts) async {
+  Future<void> _syncAccounts(Iterable<Account> accounts) async {
     await Future.wait(accounts.mapToList((e) => syncAccount(e)));
-    // ignore: deprecated_member_use
-    hiveBoxes.accounts.notifyChange();
   }
 
   Future<void> syncAccount(Account account) async {
+    print(
+        "${DateTime.now()}] Syncing transactions of ${account.accountIdentifier} with a query call...");
+    await this._syncAccount(account, false);
+
+    // Do a slow sync with update calls in the background.
+    // Note that we don't `await` here as to not block the caller.
+    print(
+        "${DateTime.now()}] Syncing transactions of ${account.accountIdentifier} with an update call...");
+    this._syncAccount(account, true).then((_) => {
+          print(
+              "${DateTime.now()}] Syncing transactions of account ${account.accountIdentifier} complete.")
+        });
+  }
+
+  Future<void> _syncAccount(Account account, bool useUpdateCalls) async {
     final res = await promiseToFuture(serviceApi.getTransactions(
         GetTransactionsRequest(
             accountIdentifier: account.accountIdentifier,
             pageSize: 100,
-            offset: 0)));
+            offset: 0),
+        useUpdateCalls));
     final response = jsonDecode(stringify(res));
     final transactions = <Transaction>[];
     response['transactions'].forEach((e) {
@@ -73,6 +87,9 @@ class TransactionSyncService {
     });
     account.transactions = transactions;
     hiveBoxes.accounts[account.identifier] = account;
+
+    // ignore: deprecated_member_use
+    hiveBoxes.accounts.notifyChange();
   }
 }
 

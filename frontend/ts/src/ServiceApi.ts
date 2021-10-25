@@ -161,9 +161,9 @@ export default class ServiceApi {
     );
   };
 
-  public getAccount = async (): Promise<AccountDetails> => {
+  public getAccount = async (certified = true): Promise<AccountDetails> => {
     const response = await executeWithLogging(() =>
-      this.nnsDappService.getAccount()
+      this.nnsDappService.getAccount(certified)
     );
     if ("Ok" in response) {
       return response.Ok;
@@ -190,10 +190,11 @@ export default class ServiceApi {
   };
 
   public getTransactions = (
-    request: GetTransactionsRequest
+    request: GetTransactionsRequest,
+    certified: boolean
   ): Promise<GetTransactionsResponse> => {
     return executeWithLogging(() =>
-      this.nnsDappService.getTransactions(request)
+      this.nnsDappService.getTransactions(request, certified)
     );
   };
 

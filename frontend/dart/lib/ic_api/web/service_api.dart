@@ -17,7 +17,7 @@ class ServiceApi {
   external Promise<void> makeDummyProposals(dynamic neuronId);
 
   @JS("getAccount")
-  external Promise<dynamic> getAccount();
+  external Promise<dynamic> getAccount(bool certified);
 
   @JS("getBalances")
   external Promise<dynamic> getBalances(Object request, bool useUpdateCalls);
@@ -41,7 +41,7 @@ class ServiceApi {
   external Promise<void> integrationTest();
 
   @JS("getTransactions")
-  external Promise<dynamic> getTransactions(dynamic request);
+  external Promise<dynamic> getTransactions(dynamic request, bool certified);
 
   @JS("registerHardwareWallet")
   external Promise<void> registerHardwareWallet(
