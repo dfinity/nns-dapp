@@ -95,7 +95,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> createSubAccount({required String name}) async {
     await promiseToFuture(serviceApi!.createSubAccount(name));
-    // TODO: verify that account is created successfully.
+    // TODO(NNS1-826): verify that account is created successfully.
     await accountsSyncService!.sync();
   }
 
@@ -497,7 +497,6 @@ class PlatformICApi extends AbstractPlatformICApi {
     canistersToRemove.forEach((element) {
       hiveBoxes.canisters.remove(element.identifier);
     });
-    // ignore: deprecated_member_use
     hiveBoxes.canisters.notifyChange();
   }
 

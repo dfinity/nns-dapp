@@ -99,7 +99,7 @@ export default class Service implements ServiceInterface {
   ): Promise<GetTransactionsResponse> => {
     const rawRequest =
       this.requestConverters.fromGetTransactionsRequest(request);
-    const serviceToUse = certified ? this.certifiedService: this.service;
+    const serviceToUse = certified ? this.certifiedService : this.service;
     const rawResponse = await serviceToUse.get_transactions(rawRequest);
     return this.responseConverters.toGetTransactionsResponse(rawResponse);
   };
