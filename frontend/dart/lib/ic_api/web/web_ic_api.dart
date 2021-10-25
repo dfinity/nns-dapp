@@ -497,6 +497,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     canistersToRemove.forEach((element) {
       hiveBoxes.canisters.remove(element.identifier);
     });
+    // ignore: deprecated_member_use
     hiveBoxes.canisters.notifyChange();
   }
 
