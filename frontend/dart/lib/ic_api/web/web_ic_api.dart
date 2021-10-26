@@ -17,19 +17,15 @@ import '../../nns_dapp.dart';
 import '../platform_ic_api.dart';
 import 'account_sync_service.dart';
 import 'auth_api.dart';
-import 'balance_sync_service.dart';
 import 'neuron_sync_service.dart';
 import 'proposal_sync_service.dart';
 import 'service_api.dart';
 import 'stringify.dart';
-import 'transaction_sync_service.dart';
 
 class PlatformICApi extends AbstractPlatformICApi {
   late AuthApi authApi;
   ServiceApi? serviceApi;
   AccountsSyncService? accountsSyncService;
-  BalanceSyncService? balanceSyncService;
-  TransactionSyncService? transactionSyncService;
   NeuronSyncService? neuronSyncService;
   ProposalSyncService? proposalSyncService;
 
@@ -64,19 +60,18 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> buildServices(dynamic identity) async {
     serviceApi = await promiseToFuture(createServiceApi(identity));
 
-    accountsSyncService = AccountsSyncService(serviceApi!, hiveBoxes);
-    balanceSyncService = BalanceSyncService(serviceApi!, hiveBoxes);
-    transactionSyncService =
-        TransactionSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+    accountsSyncService =
+        await AccountsSyncService.initialize(serviceApi!, hiveBoxes);
     neuronSyncService =
         NeuronSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
     proposalSyncService =
         ProposalSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
 
-    await accountsSyncService!.sync();
-    await balanceSyncService!.syncBalances();
-    await transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
-    await neuronSyncService!.fetchNeurons();
+    await Future.wait([
+      accountsSyncService!.syncBalances(),
+      accountsSyncService!.syncTransactions(),
+      neuronSyncService!.fetchNeurons(),
+    ]);
     getCanisters();
   }
 
@@ -84,7 +79,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> acquireICPTs(
       {required String accountIdentifier, required BigInt doms}) async {
     await serviceApi!.acquireICPTs(accountIdentifier, doms).toFuture();
-    await balanceSyncService!.syncBalances();
+    await accountsSyncService!.syncBalances();
   }
 
   @override
@@ -96,7 +91,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> createSubAccount({required String name}) async {
     await promiseToFuture(serviceApi!.createSubAccount(name));
     // TODO(NNS1-826): verify that account is created successfully.
-    await accountsSyncService!.sync();
+    await accountsSyncService!.syncAll();
   }
 
   @override
@@ -117,8 +112,8 @@ class PlatformICApi extends AbstractPlatformICApi {
               fromSubAccountId: fromSubAccount)));
 
       await Future.wait([
-        balanceSyncService!.syncBalances(),
-        transactionSyncService!.syncAllAccounts(),
+        accountsSyncService!.syncBalances(),
+        accountsSyncService!.syncTransactions(),
         // Sync neurons in case we sent funds to them.
         neuronSyncService!.fetchNeurons()
       ]);
@@ -157,7 +152,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       }();
 
       await Future.wait([
-        balanceSyncService!.syncBalances(),
+        accountsSyncService!.syncBalances(),
         neuronSyncService!.fetchNeurons()
       ]);
 
@@ -212,7 +207,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
       neuronSyncService!.removeNeuron(neuron.id);
       await Future.wait([
-        balanceSyncService!.syncBalances(),
+        accountsSyncService!.syncBalances(),
         neuronSyncService!.fetchNeurons()
       ]);
 
@@ -428,9 +423,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> refreshAccounts() async {
-    await accountsSyncService!.sync();
-    balanceSyncService!.syncBalances();
-    transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
+    await accountsSyncService!.syncAll();
   }
 
   @override
@@ -560,7 +553,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       newName: newName,
       accountIdentifier: accountIdentifier,
     )));
-    await accountsSyncService!.sync();
+    await accountsSyncService!.syncAll();
   }
 
   @override
@@ -582,9 +575,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> refreshAccount(Account account) async {
-    transactionSyncService!.syncAccount(account);
-    await balanceSyncService!
-        .syncBalances(accountIds: [account.accountIdentifier]);
+    await accountsSyncService!.syncAll(accounts: [account]);
   }
 
   @override
