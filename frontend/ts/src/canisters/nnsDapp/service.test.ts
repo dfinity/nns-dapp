@@ -71,3 +71,32 @@ describe("getTransactions", () => {
     expect(certified.get_transactions).toBeCalledTimes(1);
   });
 });
+
+describe("getCanisters", () => {
+  test("respects the certified flag", () => {
+    const uncertified = mock<_SERVICE>();
+    const uncertifiedResponse = [
+      {
+        name: "malicious_name",
+        canister_id: Principal.fromText("aaaaa-aa"),
+      },
+    ];
+    uncertified.get_canisters.mockReturnValue(
+      Promise.resolve(uncertifiedResponse)
+    );
+
+    const certified = mock<_SERVICE>();
+    certified.get_canisters.mockReturnValue(Promise.resolve([]));
+
+    const dapp = new Service(uncertified, certified);
+    expect(dapp.getCanisters(false)).resolves.toStrictEqual([
+      {
+        name: "malicious_name",
+        canisterId: "aaaaa-aa",
+      },
+    ]);
+    expect(dapp.getCanisters(true)).resolves.toStrictEqual([]);
+    expect(uncertified.get_canisters).toBeCalledTimes(1);
+    expect(certified.get_canisters).toBeCalledTimes(1);
+  });
+});
