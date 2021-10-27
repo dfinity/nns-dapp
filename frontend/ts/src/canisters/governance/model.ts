@@ -474,8 +474,10 @@ export interface SpawnResponse {
 export type EmptyResponse = { Ok: null } | { Err: GovernanceError };
 
 export default interface ServiceInterface {
-  getNeuron: (neuronId: NeuronId) => Promise<Option<NeuronInfo>>;
-  getNeurons: () => Promise<Array<NeuronInfo>>;
+  getNeurons: (
+    certified: boolean,
+    neuronIds?: NeuronId[]
+  ) => Promise<Array<NeuronInfo>>;
   getNeuronsForHW: () => Promise<Array<NeuronInfoForHw>>;
   getPendingProposals: () => Promise<Array<ProposalInfo>>;
   getProposalInfo: (proposalId: bigint) => Promise<Option<ProposalInfo>>;

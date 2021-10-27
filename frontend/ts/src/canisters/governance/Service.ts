@@ -48,6 +48,7 @@ export default class Service implements ServiceInterface {
   private readonly agent: Agent;
   private readonly canisterId: Principal;
   private readonly service: _SERVICE;
+  private readonly certifiedService: _SERVICE;
   private readonly myPrincipal: Principal;
   private readonly requestConverters: RequestConverters;
   private readonly responseConverters: ResponseConverters;
@@ -56,37 +57,28 @@ export default class Service implements ServiceInterface {
     agent: Agent,
     canisterId: Principal,
     service: _SERVICE,
+    certifiedService: _SERVICE,
     myPrincipal: Principal
   ) {
     this.agent = agent;
     this.canisterId = canisterId;
     this.service = service;
+    this.certifiedService = certifiedService;
     this.myPrincipal = myPrincipal;
     this.requestConverters = new RequestConverters(myPrincipal);
     this.responseConverters = new ResponseConverters();
   }
 
-  public getNeuron = async (
-    neuronId: NeuronId
-  ): Promise<Option<NeuronInfo>> => {
+  public getNeurons = async (
+    certified = true,
+    neuronIds?: NeuronId[]
+  ): Promise<Array<NeuronInfo>> => {
     const rawRequest: ListNeurons = {
-      neuron_ids: [neuronId],
-      include_neurons_readable_by_caller: false,
+      neuron_ids: neuronIds ?? [],
+      include_neurons_readable_by_caller: neuronIds ? false : true,
     };
-    const rawResponse = await this.service.list_neurons(rawRequest);
-    const response = this.responseConverters.toArrayOfNeuronInfo(
-      rawResponse,
-      this.myPrincipal
-    );
-    return response.length > 0 ? response[0] : null;
-  };
-
-  public getNeurons = async (): Promise<Array<NeuronInfo>> => {
-    const rawRequest: ListNeurons = {
-      neuron_ids: [],
-      include_neurons_readable_by_caller: true,
-    };
-    const rawResponse = await this.service.list_neurons(rawRequest);
+    const serviceToUse = certified ? this.certifiedService : this.service;
+    const rawResponse = await serviceToUse.list_neurons(rawRequest);
     return this.responseConverters.toArrayOfNeuronInfo(
       rawResponse,
       this.myPrincipal

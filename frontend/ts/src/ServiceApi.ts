@@ -214,12 +214,15 @@ export default class ServiceApi {
 
   /* GOVERNANCE */
 
-  public getNeuron = (neuronId: NeuronId): Promise<Option<NeuronInfo>> => {
-    return executeWithLogging(() => this.governanceService.getNeuron(neuronId));
+  public getNeuron = (neuronId: NeuronId, certified = true): Promise<Option<NeuronInfo>> => {
+    return executeWithLogging(async () => {
+      const res = await this.governanceService.getNeurons(certified, [neuronId]);
+      return res.length > 0 ? res[0] : null;
+    });
   };
 
-  public getNeurons = (): Promise<Array<NeuronInfo>> => {
-    return executeWithLogging(this.governanceService.getNeurons);
+  public getNeurons = (certified = true): Promise<Array<NeuronInfo>> => {
+    return executeWithLogging(() => this.governanceService.getNeurons(certified));
   };
 
   // Returns true if any neurons were refreshed, otherwise false
