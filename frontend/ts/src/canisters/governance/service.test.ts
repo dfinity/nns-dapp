@@ -12,9 +12,7 @@ describe("getNeurons", () => {
       neuron_infos: [],
       full_neurons: [],
     };
-    uncertified.list_neurons.mockReturnValue(
-      Promise.resolve(res)
-    );
+    uncertified.list_neurons.mockReturnValue(Promise.resolve(res));
 
     const certified = mock<_SERVICE>();
     certified.list_neurons.mockReturnValue(Promise.resolve(res));

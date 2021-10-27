@@ -15,5 +15,11 @@ export default function (agent: Agent, identity: Identity): ServiceInterface {
     agent,
     canisterId: CANISTER_ID,
   }) as _SERVICE;
-  return new Service(agent, CANISTER_ID, uncertifiedService, certifiedService, identity.getPrincipal());
+  return new Service(
+    agent,
+    CANISTER_ID,
+    uncertifiedService,
+    certifiedService,
+    identity.getPrincipal()
+  );
 }
