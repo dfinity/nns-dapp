@@ -60,17 +60,22 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> buildServices(dynamic identity) async {
     serviceApi = await promiseToFuture(createServiceApi(identity));
 
-    accountsSyncService =
-        await AccountsSyncService.initialize(serviceApi!, hiveBoxes);
     neuronSyncService =
         NeuronSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+
     proposalSyncService =
         ProposalSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
 
     await Future.wait([
-      accountsSyncService!.syncBalances(),
-      accountsSyncService!.syncTransactions(),
-      neuronSyncService!.fetchNeurons(),
+      neuronSyncService!.sync(),
+      AccountsSyncService.initialize(serviceApi!, hiveBoxes)
+          .then((service) async {
+        accountsSyncService = service;
+        await Future.wait([
+          accountsSyncService!.syncBalances(),
+          accountsSyncService!.syncTransactions()
+        ]);
+      }),
       getCanisters()
     ]);
   }
@@ -115,7 +120,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         accountsSyncService!.syncBalances(),
         accountsSyncService!.syncTransactions(),
         // Sync neurons in case we sent funds to them.
-        neuronSyncService!.fetchNeurons()
+        neuronSyncService!.sync()
       ]);
       return Result.ok(unit);
     } catch (err) {
@@ -153,7 +158,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
       await Future.wait([
         accountsSyncService!.syncBalances(),
-        neuronSyncService!.fetchNeurons()
+        neuronSyncService!.sync()
       ]);
 
       return Result.ok(NeuronId.fromString(neuronId));
@@ -170,7 +175,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final res = await promiseToFuture(serviceApi!.startDissolving(
           identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
       validateGovernanceResponse(res);
-      await neuronSyncService!.fetchNeurons();
+      await neuronSyncService!.sync();
       return Result.ok(unit);
     } catch (err) {
       return Result.err(Exception(err));
@@ -185,7 +190,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final res = await promiseToFuture(serviceApi!.stopDissolving(
           identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
       validateGovernanceResponse(res);
-      await neuronSyncService!.fetchNeurons();
+      await neuronSyncService!.sync();
       return Result.ok(unit);
     } catch (err) {
       return Result.err(Exception(err));
@@ -208,7 +213,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       neuronSyncService!.removeNeuron(neuron.id);
       await Future.wait([
         accountsSyncService!.syncBalances(),
-        neuronSyncService!.fetchNeurons()
+        neuronSyncService!.sync()
       ]);
 
       return Result.ok(unit);
@@ -235,7 +240,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         topic: topic.index,
         followees: followees.mapToList((e) => e.toJS))));
 
-    await neuronSyncService!.fetchNeurons();
+    await neuronSyncService!.sync();
   }
 
   @override
@@ -270,7 +275,7 @@ class PlatformICApi extends AbstractPlatformICApi {
               proposal: proposalId.toJS,
               vote: vote.index,
             )))));
-    await neuronSyncService!.fetchNeurons();
+    await neuronSyncService!.sync();
   }
 
   @override
@@ -337,7 +342,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Neuron?> fetchNeuron({required BigInt neuronId}) async {
-    final res = await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS));
+    // Fetch the neuron's info in a certified way.
+    final res =
+        await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS, true));
     if (res == null) {
       neuronSyncService!.removeNeuron(neuronId.toString());
       return null;
@@ -378,7 +385,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId}) async {
-    final res = await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS));
+    // Fetch the neuron's info in a certified way.
+    final res =
+        await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS, true));
     final neuronInfo = jsonDecode(stringify(res));
     final nInfo = NeuronInfo.fromResponse(neuronInfo);
     return nInfo;
@@ -433,7 +442,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         SpawnRequest(neuronId: neuron.id.toString(), newController: null)));
     dynamic response = jsonDecode(stringify(spawnResponse));
     final createdNeuronId = response['createdNeuronId'].toString();
-    await neuronSyncService!.fetchNeurons();
+    await neuronSyncService!.sync();
     return hiveBoxes.neurons.values
         .firstWhere((element) => element.identifier == createdNeuronId);
   }
@@ -568,7 +577,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> refreshNeurons() async {
-    neuronSyncService?.fetchNeurons();
+    neuronSyncService?.sync();
   }
 
   @override

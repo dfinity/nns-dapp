@@ -48,10 +48,10 @@ class ServiceApi {
       String name, dynamic ledgerIdentity);
 
   @JS("getNeuron")
-  external Promise<dynamic> getNeuron(dynamic neuronId);
+  external Promise<dynamic> getNeuron(dynamic neuronId, bool certified);
 
   @JS("getNeurons")
-  external Promise<dynamic> getNeurons();
+  external Promise<dynamic> getNeurons(bool certified);
 
   @JS("checkNeuronBalances")
   external Promise<bool> checkNeuronBalances(dynamic neurons);
