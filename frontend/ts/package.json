@@ -37,6 +37,7 @@
     "@types/async": "^3.2.7",
     "@types/jest": "^27.0.2",
     "@types/randombytes": "^2.0.0",
+    "@types/text-encoding": "0.0.36",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "chalk": "^4.1.2",
