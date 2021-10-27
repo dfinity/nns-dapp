@@ -71,8 +71,8 @@ class PlatformICApi extends AbstractPlatformICApi {
       accountsSyncService!.syncBalances(),
       accountsSyncService!.syncTransactions(),
       neuronSyncService!.fetchNeurons(),
+      getCanisters()
     ]);
-    getCanisters();
   }
 
   @override
@@ -475,23 +475,33 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> getCanisters() async {
-    final res = await promiseToFuture(serviceApi!.getCanisters());
+    Future<void> _getCanisters(bool useUpdateCalls) async {
+      final res =
+          await promiseToFuture(serviceApi!.getCanisters(useUpdateCalls));
 
-    final response = [...res];
-    final canisterIds = response.mapToList((e) {
-      final id = e.canisterId.toString();
-      hiveBoxes.canisters[id] =
-          Canister(name: e.name, publicKey: id, userIsController: null);
-      return id;
-    });
+      final response = [...res];
+      final canisterIds = response.mapToList((e) {
+        final id = e.canisterId.toString();
+        hiveBoxes.canisters[id] =
+            Canister(name: e.name, publicKey: id, userIsController: null);
+        return id;
+      });
 
-    final canistersToRemove = hiveBoxes.canisters.values
-        .where((element) => !canisterIds.contains(element.identifier));
-    canistersToRemove.forEach((element) {
-      hiveBoxes.canisters.remove(element.identifier);
-    });
-    // ignore: deprecated_member_use
-    hiveBoxes.canisters.notifyChange();
+      final canistersToRemove = hiveBoxes.canisters.values
+          .where((element) => !canisterIds.contains(element.identifier));
+      canistersToRemove.forEach((element) {
+        hiveBoxes.canisters.remove(element.identifier);
+      });
+      // ignore: deprecated_member_use
+      hiveBoxes.canisters.notifyChange();
+    }
+
+    print("[${DateTime.now()}] Syncing canisters with a query call...");
+    await _getCanisters(false);
+
+    print("[${DateTime.now()}] Syncing canisters with an update call...");
+    _getCanisters(true).then(
+        (_) => {print("[${DateTime.now()}] Syncing canisters complete.")});
   }
 
   @override

@@ -51,8 +51,11 @@ export default class Service implements ServiceInterface {
     return this.responseConverters.toDetachCanisterResponse(rawResponse);
   };
 
-  public getCanisters = async (): Promise<Array<CanisterDetails>> => {
-    const rawResponse = await this.service.get_canisters();
+  public getCanisters = async (
+    certified = true
+  ): Promise<Array<CanisterDetails>> => {
+    const serviceToUse = certified ? this.certifiedService : this.service;
+    const rawResponse = await serviceToUse.get_canisters();
     return this.responseConverters.toArrayOfCanisterDetail(rawResponse);
   };
 

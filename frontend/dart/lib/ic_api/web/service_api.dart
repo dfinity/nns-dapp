@@ -121,7 +121,7 @@ class ServiceApi {
   external Promise<void> getCanisterDetails(dynamic canisterId);
 
   @JS("getCanisters")
-  external Promise<dynamic> getCanisters();
+  external Promise<dynamic> getCanisters(bool certified);
 
   @JS("getIcpToCyclesConversionRate")
   external Promise<double> getIcpToCyclesConversionRate();
