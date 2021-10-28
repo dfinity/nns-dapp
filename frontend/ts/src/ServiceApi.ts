@@ -17,11 +17,6 @@ import GovernanceService, {
   IncreaseDissolveDelayRequest,
   ListProposalsRequest,
   ListProposalsResponse,
-  MakeMotionProposalRequest,
-  MakeNetworkEconomicsProposalRequest,
-  MakeProposalResponse,
-  MakeRewardNodeProviderProposalRequest,
-  MakeSetDefaultFolloweesProposalRequest,
   MergeMaturityRequest,
   MergeMaturityResponse,
   NeuronInfo,
@@ -92,6 +87,10 @@ import {
 } from "./canisters/topUpCanister";
 import { principalToAccountIdentifier } from "./canisters/converter";
 import { Principal } from "@dfinity/principal";
+import {
+  addNodeToSubnetPayload,
+  updateSubnetPayload,
+} from "./canisters/governance/nnsFunctions/samplePayloads";
 
 /**
  * An API for interacting with various canisters.
@@ -361,38 +360,6 @@ export default class ServiceApi {
     );
   };
 
-  public makeMotionProposal = (
-    request: MakeMotionProposalRequest
-  ): Promise<MakeProposalResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.makeMotionProposal(request)
-    );
-  };
-
-  public makeNetworkEconomicsProposal = (
-    request: MakeNetworkEconomicsProposalRequest
-  ): Promise<MakeProposalResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.makeNetworkEconomicsProposal(request)
-    );
-  };
-
-  public makeRewardNodeProviderProposal = (
-    request: MakeRewardNodeProviderProposalRequest
-  ): Promise<MakeProposalResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.makeRewardNodeProviderProposal(request)
-    );
-  };
-
-  public makeSetDefaultFolloweesProposal = (
-    request: MakeSetDefaultFolloweesProposalRequest
-  ): Promise<MakeProposalResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.makeSetDefaultFolloweesProposal(request)
-    );
-  };
-
   public createNeuron = async (
     request: CreateNeuronRequest
   ): Promise<string> => {
@@ -518,47 +485,77 @@ export default class ServiceApi {
   public makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     {
       console.log("make a 'Motion' proposal");
-      const manageNeuronResponse = await this.makeMotionProposal({
-        neuronId,
-        url: "http://free-stuff-for-all.com",
-        text: "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
-        summary: "Change the world with the IC - lower all prices!",
-      });
+      const manageNeuronResponse =
+        await this.governanceService.makeMotionProposal({
+          neuronId,
+          url: "http://free-stuff-for-all.com",
+          text: "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
+          summary: "Change the world with the IC - lower all prices!",
+        });
       console.log(manageNeuronResponse);
     }
 
     {
       console.log("make a 'NetworkEconomics' proposal");
-      const manageNeuronResponse = await this.makeNetworkEconomicsProposal({
-        neuronId,
-        url: "https://www.lipsum.com/",
-        summary: "Increase minimum neuron stake",
-        networkEconomics: {
-          neuronMinimumStake: BigInt(100_000_000),
-          maxProposalsToKeepPerTopic: 1000,
-          neuronManagementFeePerProposal: BigInt(10_000),
-          rejectCost: BigInt(10_000_000),
-          transactionFee: BigInt(1000),
-          neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
-          minimumIcpXdrRate: BigInt(1),
-          maximumNodeProviderRewards: BigInt(10_000_000_000),
-        },
-      });
+      const manageNeuronResponse =
+        await this.governanceService.makeNetworkEconomicsProposal({
+          neuronId,
+          url: "https://www.lipsum.com/",
+          summary: "Increase minimum neuron stake",
+          networkEconomics: {
+            neuronMinimumStake: BigInt(100_000_000),
+            maxProposalsToKeepPerTopic: 1000,
+            neuronManagementFeePerProposal: BigInt(10_000),
+            rejectCost: BigInt(10_000_000),
+            transactionFee: BigInt(1000),
+            neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
+            minimumIcpXdrRate: BigInt(1),
+            maximumNodeProviderRewards: BigInt(10_000_000_000),
+          },
+        });
       console.log(manageNeuronResponse);
     }
 
     {
       console.log("make a 'RewardNodeProvider' proposal");
-      const manageNeuronResponse = await this.makeRewardNodeProviderProposal({
-        neuronId,
-        url: "https://www.lipsum.com/",
-        summary: "Reward for Node Provider 'ABC'",
-        amount: BigInt(10_000_000),
-        nodeProvider: this.identity.getPrincipal().toString(),
-        rewardMode: {
-          RewardToNeuron: { dissolveDelaySeconds: BigInt(1000) },
-        },
-      });
+      const manageNeuronResponse =
+        await this.governanceService.makeRewardNodeProviderProposal({
+          neuronId,
+          url: "https://www.lipsum.com/",
+          summary: "Reward for Node Provider 'ABC'",
+          amount: BigInt(10_000_000),
+          nodeProvider: this.identity.getPrincipal().toString(),
+          rewardMode: {
+            RewardToNeuron: { dissolveDelaySeconds: BigInt(1000) },
+          },
+        });
+      console.log(manageNeuronResponse);
+    }
+
+    {
+      console.log("make an 'Add node to subnet' proposal");
+      const manageNeuronResponse =
+        await this.governanceService.makeExecuteNnsFunctionProposal({
+          neuronId,
+          url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
+          summary: "Add node(s) to subnet 10",
+          nnsFunction: 2,
+          payload: addNodeToSubnetPayload,
+        });
+      console.log(manageNeuronResponse);
+    }
+
+    {
+      console.log("make an 'Update subnet' proposal");
+      const manageNeuronResponse =
+        await this.governanceService.makeExecuteNnsFunctionProposal({
+          neuronId,
+          url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
+          summary:
+            "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+          nnsFunction: 11,
+          payload: updateSubnetPayload,
+        });
       console.log(manageNeuronResponse);
     }
   };

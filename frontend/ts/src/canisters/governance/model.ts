@@ -89,8 +89,10 @@ export type DissolveState =
   | { DissolveDelaySeconds: bigint }
   | { WhenDissolvedTimestampSeconds: bigint };
 export interface ExecuteNnsFunction {
-  nnsFunction: number;
-  payload: ArrayBuffer;
+  nnsFunctionId: number;
+  nnsFunctionName: Option<string>;
+  payload: Option<Record<string, unknown>>;
+  payloadBytes: ArrayBuffer;
 }
 export interface Follow {
   topic: Topic;
@@ -238,6 +240,7 @@ export type Operation =
   | { IncreaseDissolveDelay: IncreaseDissolveDelay }
   | { SetDissolveTimestamp: SetDissolveTimestamp };
 export interface Proposal {
+  title: Option<string>;
   url: string;
   action: Option<Action>;
   summary: string;
@@ -435,6 +438,13 @@ export interface DisburseToNeuronRequest {
   nonce: bigint;
 }
 
+export interface MakeProposalRequest {
+  neuronId: NeuronId;
+  url: string;
+  summary: string;
+  action: Action;
+}
+
 export interface MakeMotionProposalRequest {
   neuronId: NeuronId;
   url: string;
@@ -463,6 +473,14 @@ export interface MakeSetDefaultFolloweesProposalRequest {
   summary: string;
   url: string;
   followees: Array<Followees>;
+}
+
+export interface MakeExecuteNnsFunctionProposalRequest {
+  neuronId: NeuronId;
+  summary: string;
+  url: string;
+  nnsFunction: number;
+  payload: ArrayBuffer;
 }
 
 export interface DisburseToNeuronResponse {
@@ -513,6 +531,9 @@ export default interface ServiceInterface {
   ) => Promise<MakeProposalResponse>;
   makeSetDefaultFolloweesProposal: (
     request: MakeSetDefaultFolloweesProposalRequest
+  ) => Promise<MakeProposalResponse>;
+  makeExecuteNnsFunctionProposal: (
+    request: MakeExecuteNnsFunctionProposalRequest
   ) => Promise<MakeProposalResponse>;
   claimOrRefreshNeuron: (
     request: ClaimOrRefreshNeuronRequest

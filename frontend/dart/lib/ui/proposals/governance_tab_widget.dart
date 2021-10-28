@@ -294,7 +294,7 @@ class ProposalRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        proposal.summary,
+                        proposal.title,
                         style: Responsive.isMobile(context)
                             ? context.textTheme.subtitle1!
                                 .copyWith(fontSize: 18.0)

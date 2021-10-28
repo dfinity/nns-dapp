@@ -10,6 +10,7 @@ import 'topic.dart';
 
 class Proposal extends NnsDappEntity {
   late String id;
+  late String title;
   late String summary;
   late String url;
   late String proposer;
@@ -29,6 +30,7 @@ class Proposal extends NnsDappEntity {
 
   Proposal(
       this.id,
+      this.title,
       this.summary,
       this.url,
       this.proposer,
