@@ -30,7 +30,6 @@ class WizardOverlayState extends State<WizardOverlay> {
   @override
   void initState() {
     super.initState();
-    // pages.add(createPage(title: widget.rootTitle, widget: widget.rootWidget));
   }
 
   void pushPage(String? title, Widget widget) {
