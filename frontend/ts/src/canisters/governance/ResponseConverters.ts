@@ -60,7 +60,10 @@ import {
 import { UnsupportedValueError } from "../../utils";
 import { Option } from "../option";
 import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
-import { convertNnsFunctionPayload, getNnsFunctionName } from "./nnsFunctions/nnsFunctions";
+import {
+  convertNnsFunctionPayload,
+  getNnsFunctionName,
+} from "./nnsFunctions/nnsFunctions";
 
 export default class ResponseConverters {
   public toProposalInfo = (proposalInfo: RawProposalInfo): ProposalInfo => {
@@ -313,7 +316,7 @@ export default class ResponseConverters {
 
   private toProposal = (proposal: RawProposal): Proposal => {
     return {
-      title: proposal.title.length ? proposal.title[0] : this.extractTitleFromSummary(proposal.summary),
+      title: proposal.title.length ? proposal.title[0] : null,
       url: proposal.url,
       action: proposal.action.length ? this.toAction(proposal.action[0]) : null,
       summary: proposal.summary,
@@ -323,9 +326,14 @@ export default class ResponseConverters {
   private toAction = (action: RawAction): Action => {
     if ("ExecuteNnsFunction" in action) {
       const executeNnsFunction = action.ExecuteNnsFunction;
-      const payloadBytes = arrayOfNumberToArrayBuffer(executeNnsFunction.payload);
+      const payloadBytes = arrayOfNumberToArrayBuffer(
+        executeNnsFunction.payload
+      );
       const payload = payloadBytes.byteLength
-        ? convertNnsFunctionPayload(executeNnsFunction.nns_function, payloadBytes)
+        ? convertNnsFunctionPayload(
+            executeNnsFunction.nns_function,
+            payloadBytes
+          )
         : null;
 
       return {
@@ -538,9 +546,7 @@ export default class ResponseConverters {
       const makeProposal = command.MakeProposal;
       return {
         MakeProposal: {
-          title: makeProposal.title.length
-            ? makeProposal.title[0]
-            : this.extractTitleFromSummary(makeProposal.summary),
+          title: makeProposal.title.length ? makeProposal.title[0] : null,
           url: makeProposal.url,
           action: makeProposal.action.length
             ? this.toAction(makeProposal.action[0])

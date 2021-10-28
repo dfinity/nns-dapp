@@ -8,5 +8,13 @@
     "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/ban-ts-comment": "off"
   },
-  "ignorePatterns": ["build/", "*.did.js", "rawService.ts", "*_pb.d.ts"]
+  "ignorePatterns": [
+    "build/",
+    "*.did.js",
+    "rawService.ts",
+    "*_pb.d.ts",
+    "babel.config.js",
+    "jest.config.js",
+    "test-setup.ts"
+  ]
 }

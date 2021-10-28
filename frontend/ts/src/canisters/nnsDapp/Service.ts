@@ -22,11 +22,13 @@ import ResponseConverters from "./ResponseConverters";
 
 export default class Service implements ServiceInterface {
   private readonly service: _SERVICE;
+  private readonly certifiedService: _SERVICE;
   private requestConverters: RequestConverters;
   private responseConverters: ResponseConverters;
 
-  public constructor(service: _SERVICE) {
+  public constructor(service: _SERVICE, serviceCertified: _SERVICE) {
     this.service = service;
+    this.certifiedService = serviceCertified;
     this.requestConverters = new RequestConverters();
     this.responseConverters = new ResponseConverters();
   }
@@ -49,13 +51,17 @@ export default class Service implements ServiceInterface {
     return this.responseConverters.toDetachCanisterResponse(rawResponse);
   };
 
-  public getCanisters = async (): Promise<Array<CanisterDetails>> => {
-    const rawResponse = await this.service.get_canisters();
+  public getCanisters = async (
+    certified = true
+  ): Promise<Array<CanisterDetails>> => {
+    const serviceToUse = certified ? this.certifiedService : this.service;
+    const rawResponse = await serviceToUse.get_canisters();
     return this.responseConverters.toArrayOfCanisterDetail(rawResponse);
   };
 
-  public getAccount = async (): Promise<GetAccountResponse> => {
-    const rawResponse = await this.service.get_account();
+  public getAccount = async (certified = true): Promise<GetAccountResponse> => {
+    const serviceToUse = certified ? this.certifiedService : this.service;
+    const rawResponse = await serviceToUse.get_account();
     return this.responseConverters.toGetAccountResponse(rawResponse);
   };
 
@@ -91,11 +97,13 @@ export default class Service implements ServiceInterface {
   };
 
   public getTransactions = async (
-    request: GetTransactionsRequest
+    request: GetTransactionsRequest,
+    certified: boolean
   ): Promise<GetTransactionsResponse> => {
     const rawRequest =
       this.requestConverters.fromGetTransactionsRequest(request);
-    const rawResponse = await this.service.get_transactions(rawRequest);
+    const serviceToUse = certified ? this.certifiedService : this.service;
+    const rawResponse = await serviceToUse.get_transactions(rawRequest);
     return this.responseConverters.toGetTransactionsResponse(rawResponse);
   };
 

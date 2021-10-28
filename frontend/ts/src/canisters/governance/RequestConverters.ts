@@ -294,9 +294,8 @@ export default class RequestConverters {
 
     if (request.toAccountId) {
       const toAccountIdentifier = new PbAccountIdentifier();
-      // TODO(EXC-452): Remove the "slice(4,)" once NNS1-680 is addressed.
       toAccountIdentifier.setHash(
-        Uint8Array.from(Buffer.from(request.toAccountId, "hex")).slice(4)
+        Uint8Array.from(Buffer.from(request.toAccountId, "hex"))
       );
       disburse.setToAccount(toAccountIdentifier);
     }
@@ -354,7 +353,7 @@ export default class RequestConverters {
       command: [rawCommand],
       neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
-  }
+  };
 
   private fromFollowees(followees: Array<NeuronId>): RawFollowees {
     return {
