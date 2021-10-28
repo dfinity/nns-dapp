@@ -403,6 +403,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Proposal> getFullProposalInfo({required Proposal proposal}) async {
+    // We only need to get the full proposal info if we want to show the deserialized proposal payload.
+    // If the proposal does not have a payload or we will not be able to deserialize it, simply return the proposal
+    // details which we already know.
     if (proposalSyncService!.shouldGetFullProposal(proposal)) {
       final response =
           await proposalSyncService!.getFullProposal(proposal.id.toBigInt);
