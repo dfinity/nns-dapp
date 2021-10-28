@@ -240,7 +240,7 @@ export type Operation =
   | { IncreaseDissolveDelay: IncreaseDissolveDelay }
   | { SetDissolveTimestamp: SetDissolveTimestamp };
 export interface Proposal {
-  title: string,
+  title: Option<string>,
   url: string;
   action: Option<Action>;
   summary: string;

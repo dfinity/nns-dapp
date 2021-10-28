@@ -103,7 +103,7 @@ class ProposalSyncService {
 
   void updateProposal(Proposal proposal, String proposalId, dynamic response) {
     proposal.id = proposalId.toString();
-    proposal.title = response['proposal']['title'].toString();
+    proposal.title = getTitle(response);
     proposal.summary = response['proposal']['summary'].toString();
     proposal.url = response['proposal']['url'].toString();
     proposal.proposer = response['proposer'].toString();
@@ -139,5 +139,16 @@ class ProposalSyncService {
           ..proposalId = i['proposalId'].toString()
           ..votingPower = i['votingPower'].toString().toBigInt
           ..vote = Vote.values[i['vote'].toInt()]);
+  }
+
+  String getTitle(dynamic proposalResponse) {
+    final titleField = proposalResponse['proposal']['title'];
+    if (titleField != null) {
+      return titleField.toString();
+    }
+
+    final summary = proposalResponse['proposal']['summary'].toString();
+    final firstLine = summary.split('\n')[0];
+    return firstLine.substring(0, 200);
   }
 }

@@ -30,6 +30,7 @@ class Proposal extends NnsDappEntity {
 
   Proposal(
       this.id,
+      this.title,
       this.summary,
       this.url,
       this.proposer,
