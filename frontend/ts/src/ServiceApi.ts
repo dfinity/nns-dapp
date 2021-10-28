@@ -103,7 +103,7 @@ export default class ServiceApi {
   private readonly identity: SignIdentity;
 
   public static create = async (
-      identity: SignIdentity
+    identity: SignIdentity
   ): Promise<ServiceApi> => {
     const agent = new HttpAgent({
       host: HOST,
@@ -128,47 +128,47 @@ export default class ServiceApi {
   /* ACCOUNTS */
 
   public createSubAccount = (
-      name: string
+    name: string
   ): Promise<CreateSubAccountResponse> => {
     return executeWithLogging(() => this.nnsDappService.createSubAccount(name));
   };
 
   public renameSubAccount = (
-      request: RenameSubAccountRequest
+    request: RenameSubAccountRequest
   ): Promise<RenameSubAccountResponse> => {
     return executeWithLogging(() =>
-        this.nnsDappService.renameSubAccount(request)
+      this.nnsDappService.renameSubAccount(request)
     );
   };
 
   public principalToAccountIdentifier(
-      principal: PrincipalString
+    principal: PrincipalString
   ): AccountIdentifier {
     return principalToAccountIdentifier(Principal.fromText(principal));
   }
 
   public registerHardwareWallet = (
-      name: string,
-      identity: LedgerIdentity
+    name: string,
+    identity: LedgerIdentity
   ): Promise<RegisterHardwareWalletResponse> => {
     const request: RegisterHardwareWalletRequest = {
       name,
       principal: identity.getPrincipal().toString(),
     };
     return executeWithLogging(() =>
-        this.nnsDappService.registerHardwareWallet(request)
+      this.nnsDappService.registerHardwareWallet(request)
     );
   };
 
   public getAccount = async (certified = true): Promise<AccountDetails> => {
     const response = await executeWithLogging(() =>
-        this.nnsDappService.getAccount(certified)
+      this.nnsDappService.getAccount(certified)
     );
     if ("Ok" in response) {
       return response.Ok;
     } else {
       const accountIdentifier = await executeWithLogging(() =>
-          this.nnsDappService.addAccount()
+        this.nnsDappService.addAccount()
       );
       return {
         principal: this.identity.getPrincipal().toString(),
@@ -180,26 +180,26 @@ export default class ServiceApi {
   };
 
   public getBalances = (
-      request: GetBalancesRequest,
-      certified: boolean
+    request: GetBalancesRequest,
+    certified: boolean
   ): Promise<Record<AccountIdentifier, E8s>> => {
     return executeWithLogging(() =>
-        this.ledgerService.getBalances(request, certified)
+      this.ledgerService.getBalances(request, certified)
     );
   };
 
   public getTransactions = (
-      request: GetTransactionsRequest,
-      certified: boolean
+    request: GetTransactionsRequest,
+    certified: boolean
   ): Promise<GetTransactionsResponse> => {
     return executeWithLogging(() =>
-        this.nnsDappService.getTransactions(request, certified)
+      this.nnsDappService.getTransactions(request, certified)
     );
   };
 
   public sendICP = (
-      identity: Identity,
-      request: SendICPTsRequest
+    identity: Identity,
+    request: SendICPTsRequest
   ): Promise<BlockHeight> => {
     if (!request.memo) {
       // Always explicitly set the memo for compatibility with ledger wallet.
@@ -207,15 +207,15 @@ export default class ServiceApi {
     }
 
     return executeWithLogging(async () =>
-        (await ledgerService(identity)).sendICPTs(request)
+      (await ledgerService(identity)).sendICPTs(request)
     );
   };
 
   /* GOVERNANCE */
 
   public getNeuron = (
-      neuronId: NeuronId,
-      certified = true
+    neuronId: NeuronId,
+    certified = true
   ): Promise<Option<NeuronInfo>> => {
     return executeWithLogging(async () => {
       const res = await this.governanceService.getNeurons(certified, [
@@ -227,46 +227,46 @@ export default class ServiceApi {
 
   public getNeurons = (certified = true): Promise<Array<NeuronInfo>> => {
     return executeWithLogging(() =>
-        this.governanceService.getNeurons(certified)
+      this.governanceService.getNeurons(certified)
     );
   };
 
   // Returns true if any neurons were refreshed, otherwise false
   public checkNeuronBalances = (
-      neurons: Array<NeuronInfo>
+    neurons: Array<NeuronInfo>
   ): Promise<boolean> => {
     return executeWithLogging(() =>
-        checkNeuronBalances(neurons, this.ledgerService, this.governanceService)
+      checkNeuronBalances(neurons, this.ledgerService, this.governanceService)
     );
   };
 
   public getNeuronsForHw = (
-      identity: Identity
+    identity: Identity
   ): Promise<Array<NeuronInfoForHw>> => {
     return executeWithLogging(async () =>
-        (await governanceService(identity)).getNeuronsForHW()
+      (await governanceService(identity)).getNeuronsForHW()
     );
   };
 
   public getPendingProposals = (): Promise<Array<ProposalInfo>> => {
     return executeWithLogging(() =>
-        this.governanceService.getPendingProposals()
+      this.governanceService.getPendingProposals()
     );
   };
 
   public getProposalInfo = (
-      proposalId: bigint
+    proposalId: bigint
   ): Promise<Option<ProposalInfo>> => {
     return executeWithLogging(() =>
-        this.governanceService.getProposalInfo(proposalId)
+      this.governanceService.getProposalInfo(proposalId)
     );
   };
 
   public listProposals = (
-      request: ListProposalsRequest
+    request: ListProposalsRequest
   ): Promise<ListProposalsResponse> => {
     return executeWithLogging(() =>
-        this.governanceService.listProposals(request)
+      this.governanceService.listProposals(request)
     );
   };
 
@@ -275,38 +275,38 @@ export default class ServiceApi {
   };
 
   public removeHotKey = (
-      identity: Identity,
-      request: RemoveHotKeyRequest
+    identity: Identity,
+    request: RemoveHotKeyRequest
   ): Promise<EmptyResponse> => {
     return executeWithLogging(async () =>
-        (await governanceService(identity)).removeHotKey(request)
+      (await governanceService(identity)).removeHotKey(request)
     );
   };
 
   public startDissolving = (
-      identity: Identity,
-      request: StartDissolvingRequest
+    identity: Identity,
+    request: StartDissolvingRequest
   ): Promise<EmptyResponse> => {
     return executeWithLogging(async () =>
-        (await governanceService(identity)).startDissolving(request)
+      (await governanceService(identity)).startDissolving(request)
     );
   };
 
   public stopDissolving = (
-      identity: Identity,
-      request: StopDissolvingRequest
+    identity: Identity,
+    request: StopDissolvingRequest
   ): Promise<EmptyResponse> => {
     return executeWithLogging(async () =>
-        (await governanceService(identity)).stopDissolving(request)
+      (await governanceService(identity)).stopDissolving(request)
     );
   };
 
   public increaseDissolveDelay = (
-      identity: Identity,
-      request: IncreaseDissolveDelayRequest
+    identity: Identity,
+    request: IncreaseDissolveDelayRequest
   ): Promise<EmptyResponse> => {
     return executeWithLogging(async () =>
-        (await governanceService(identity)).increaseDissolveDelay(request)
+      (await governanceService(identity)).increaseDissolveDelay(request)
     );
   };
 
@@ -315,19 +315,19 @@ export default class ServiceApi {
   };
 
   public registerVote = (
-      request: RegisterVoteRequest
+    request: RegisterVoteRequest
   ): Promise<EmptyResponse> => {
     return executeWithLogging(() =>
-        this.governanceService.registerVote(request)
+      this.governanceService.registerVote(request)
     );
   };
 
   public spawn = (
-      identity: Identity,
-      request: SpawnRequest
+    identity: Identity,
+    request: SpawnRequest
   ): Promise<SpawnResponse> => {
     return executeWithLogging(async () =>
-        (await governanceService(identity)).spawn(request)
+      (await governanceService(identity)).spawn(request)
     );
   };
 
@@ -336,39 +336,39 @@ export default class ServiceApi {
   };
 
   public disburse = (
-      identity: Identity,
-      request: DisburseRequest
+    identity: Identity,
+    request: DisburseRequest
   ): Promise<DisburseResponse> => {
     return executeWithLogging(async () =>
-        (await governanceService(identity)).disburse(request)
+      (await governanceService(identity)).disburse(request)
     );
   };
 
   public disburseToNeuron = (
-      request: DisburseToNeuronRequest
+    request: DisburseToNeuronRequest
   ): Promise<DisburseToNeuronResponse> => {
     return executeWithLogging(() =>
-        this.governanceService.disburseToNeuron(request)
+      this.governanceService.disburseToNeuron(request)
     );
   };
 
   public mergeMaturity = (
-      request: MergeMaturityRequest
+    request: MergeMaturityRequest
   ): Promise<MergeMaturityResponse> => {
     return executeWithLogging(() =>
-        this.governanceService.mergeMaturity(request)
+      this.governanceService.mergeMaturity(request)
     );
   };
 
   public createNeuron = async (
-      request: CreateNeuronRequest
+    request: CreateNeuronRequest
   ): Promise<string> => {
     return await executeWithLogging(async () => {
       const neuronId = await createNeuronWithNnsDapp(
-          this.identity.getPrincipal(),
-          this.ledgerService,
-          this.nnsDappService,
-          request
+        this.identity.getPrincipal(),
+        this.ledgerService,
+        this.nnsDappService,
+        request
       );
       console.log("Received neuron id");
       console.log(neuronId);
@@ -380,56 +380,56 @@ export default class ServiceApi {
 
   public topUpNeuron = (request: TopUpNeuronRequest): Promise<void> => {
     return executeWithLogging(() =>
-        topUpNeuronImpl(
-            this.identity.getPrincipal(),
-            this.ledgerService,
-            this.nnsDappService,
-            request
-        )
+      topUpNeuronImpl(
+        this.identity.getPrincipal(),
+        this.ledgerService,
+        this.nnsDappService,
+        request
+      )
     );
   };
 
   /* CANISTERS */
 
   public createCanister = (
-      request: CreateCanisterRequest
+    request: CreateCanisterRequest
   ): Promise<CreateCanisterResponse> => {
     return executeWithLogging(() =>
-        createCanisterImpl(
-            this.identity.getPrincipal(),
-            this.ledgerService,
-            this.nnsDappService,
-            request
-        )
+      createCanisterImpl(
+        this.identity.getPrincipal(),
+        this.ledgerService,
+        this.nnsDappService,
+        request
+      )
     );
   };
 
   public topUpCanister = (
-      request: TopUpCanisterRequest
+    request: TopUpCanisterRequest
   ): Promise<TopUpCanisterResponse> => {
     return executeWithLogging(() =>
-        topUpCanisterImpl(
-            this.identity.getPrincipal(),
-            this.ledgerService,
-            this.nnsDappService,
-            request
-        )
+      topUpCanisterImpl(
+        this.identity.getPrincipal(),
+        this.ledgerService,
+        this.nnsDappService,
+        request
+      )
     );
   };
 
   public attachCanister = (
-      request: AttachCanisterRequest
+    request: AttachCanisterRequest
   ): Promise<AttachCanisterResult> => {
     return executeWithLogging(() =>
-        this.nnsDappService.attachCanister(request)
+      this.nnsDappService.attachCanister(request)
     );
   };
 
   public detachCanister = (
-      request: DetachCanisterRequest
+    request: DetachCanisterRequest
   ): Promise<DetachCanisterResponse> => {
     return executeWithLogging(() =>
-        this.nnsDappService.detachCanister(request)
+      this.nnsDappService.detachCanister(request)
     );
   };
 
@@ -438,24 +438,24 @@ export default class ServiceApi {
   };
 
   public getCanisterDetails = (
-      canisterId: CanisterIdString
+    canisterId: CanisterIdString
   ): Promise<CanisterDetailsResponse> => {
     return executeWithLogging(() =>
-        this.icManagementService.getCanisterDetails(canisterId)
+      this.icManagementService.getCanisterDetails(canisterId)
     );
   };
 
   public updateCanisterSettings = (
-      request: UpdateSettingsRequest
+    request: UpdateSettingsRequest
   ): Promise<UpdateSettingsResponse> => {
     return executeWithLogging(() =>
-        this.icManagementService.updateSettings(request)
+      this.icManagementService.updateSettings(request)
     );
   };
 
   public getIcpToCyclesConversionRate = (): Promise<bigint> => {
     return executeWithLogging(() =>
-        this.nnsDappService.getIcpToCyclesConversionRate()
+      this.nnsDappService.getIcpToCyclesConversionRate()
     );
   };
 
@@ -464,8 +464,8 @@ export default class ServiceApi {
    * Should/can only be used on testnets.
    */
   public acquireICPTs = async (
-      accountIdentifier: AccountIdentifier,
-      e8s: E8s
+    accountIdentifier: AccountIdentifier,
+    e8s: E8s
   ): Promise<void> => {
     const agent = new HttpAgent({
       host: HOST,
@@ -486,76 +486,76 @@ export default class ServiceApi {
     {
       console.log("make a 'Motion' proposal");
       const manageNeuronResponse =
-          await this.governanceService.makeMotionProposal({
-            neuronId,
-            url: "http://free-stuff-for-all.com",
-            text: "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
-            summary: "Change the world with the IC - lower all prices!",
-          });
+        await this.governanceService.makeMotionProposal({
+          neuronId,
+          url: "http://free-stuff-for-all.com",
+          text: "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
+          summary: "Change the world with the IC - lower all prices!",
+        });
       console.log(manageNeuronResponse);
     }
 
     {
       console.log("make a 'NetworkEconomics' proposal");
       const manageNeuronResponse =
-          await this.governanceService.makeNetworkEconomicsProposal({
-            neuronId,
-            url: "https://www.lipsum.com/",
-            summary: "Increase minimum neuron stake",
-            networkEconomics: {
-              neuronMinimumStake: BigInt(100_000_000),
-              maxProposalsToKeepPerTopic: 1000,
-              neuronManagementFeePerProposal: BigInt(10_000),
-              rejectCost: BigInt(10_000_000),
-              transactionFee: BigInt(1000),
-              neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
-              minimumIcpXdrRate: BigInt(1),
-              maximumNodeProviderRewards: BigInt(10_000_000_000),
-            },
-          });
+        await this.governanceService.makeNetworkEconomicsProposal({
+          neuronId,
+          url: "https://www.lipsum.com/",
+          summary: "Increase minimum neuron stake",
+          networkEconomics: {
+            neuronMinimumStake: BigInt(100_000_000),
+            maxProposalsToKeepPerTopic: 1000,
+            neuronManagementFeePerProposal: BigInt(10_000),
+            rejectCost: BigInt(10_000_000),
+            transactionFee: BigInt(1000),
+            neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
+            minimumIcpXdrRate: BigInt(1),
+            maximumNodeProviderRewards: BigInt(10_000_000_000),
+          },
+        });
       console.log(manageNeuronResponse);
     }
 
     {
       console.log("make a 'RewardNodeProvider' proposal");
       const manageNeuronResponse =
-          await this.governanceService.makeRewardNodeProviderProposal({
-            neuronId,
-            url: "https://www.lipsum.com/",
-            summary: "Reward for Node Provider 'ABC'",
-            amount: BigInt(10_000_000),
-            nodeProvider: this.identity.getPrincipal().toString(),
-            rewardMode: {
-              RewardToNeuron: { dissolveDelaySeconds: BigInt(1000) },
-            },
-          });
+        await this.governanceService.makeRewardNodeProviderProposal({
+          neuronId,
+          url: "https://www.lipsum.com/",
+          summary: "Reward for Node Provider 'ABC'",
+          amount: BigInt(10_000_000),
+          nodeProvider: this.identity.getPrincipal().toString(),
+          rewardMode: {
+            RewardToNeuron: { dissolveDelaySeconds: BigInt(1000) },
+          },
+        });
       console.log(manageNeuronResponse);
     }
 
     {
       console.log("make an 'Add node to subnet' proposal");
       const manageNeuronResponse =
-          await this.governanceService.makeExecuteNnsFunctionProposal({
-            neuronId,
-            url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
-            summary: "Add node(s) to subnet 10",
-            nnsFunction: 2,
-            payload: addNodeToSubnetPayload,
-          });
+        await this.governanceService.makeExecuteNnsFunctionProposal({
+          neuronId,
+          url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
+          summary: "Add node(s) to subnet 10",
+          nnsFunction: 2,
+          payload: addNodeToSubnetPayload,
+        });
       console.log(manageNeuronResponse);
     }
 
     {
       console.log("make an 'Update subnet' proposal");
       const manageNeuronResponse =
-          await this.governanceService.makeExecuteNnsFunctionProposal({
-            neuronId,
-            url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
-            summary:
-                "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
-            nnsFunction: 11,
-            payload: updateSubnetPayload,
-          });
+        await this.governanceService.makeExecuteNnsFunctionProposal({
+          neuronId,
+          url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
+          summary:
+            "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+          nnsFunction: 11,
+          payload: updateSubnetPayload,
+        });
       console.log(manageNeuronResponse);
     }
   };
@@ -565,7 +565,7 @@ export default class ServiceApi {
  * @returns A service to interact with the governance canister with the given identity.
  */
 async function governanceService(
-    identity: Identity
+  identity: Identity
 ): Promise<GovernanceService> {
   const agent = new HttpAgent({
     host: HOST,

@@ -76,14 +76,14 @@ export default class ResponseConverters {
       failedTimestampSeconds: proposalInfo.failed_timestamp_seconds,
       decidedTimestampSeconds: proposalInfo.decided_timestamp_seconds,
       proposal: proposalInfo.proposal.length
-          ? this.toProposal(proposalInfo.proposal[0])
-          : null,
+        ? this.toProposal(proposalInfo.proposal[0])
+        : null,
       proposer: proposalInfo.proposer.length
-          ? this.toNeuronId(proposalInfo.proposer[0])
-          : null,
+        ? this.toNeuronId(proposalInfo.proposer[0])
+        : null,
       latestTally: proposalInfo.latest_tally.length
-          ? this.toTally(proposalInfo.latest_tally[0])
-          : null,
+        ? this.toTally(proposalInfo.latest_tally[0])
+        : null,
       executedTimestampSeconds: proposalInfo.executed_timestamp_seconds,
       topic: proposalInfo.topic,
       status: proposalInfo.status,
@@ -92,32 +92,32 @@ export default class ResponseConverters {
   };
 
   public toArrayOfNeuronInfo = (
-      response: RawListNeuronsResponse,
-      principal: Principal
+    response: RawListNeuronsResponse,
+    principal: Principal
   ): Array<NeuronInfo> => {
     const principalString = principal.toString();
 
     return response.neuron_infos.map(([id, neuronInfo]) =>
-        this.toNeuronInfo(
-            id,
-            principalString,
-            neuronInfo,
-            response.full_neurons.find(
-                (neuron) => neuron.id.length && neuron.id[0].id === id
-            )
+      this.toNeuronInfo(
+        id,
+        principalString,
+        neuronInfo,
+        response.full_neurons.find(
+          (neuron) => neuron.id.length && neuron.id[0].id === id
         )
+      )
     );
   };
 
   private toNeuronInfo(
-      neuronId: bigint,
-      principalString: string,
-      neuronInfo: RawNeuronInfo,
-      rawNeuron?: RawNeuron
+    neuronId: bigint,
+    principalString: string,
+    neuronInfo: RawNeuronInfo,
+    rawNeuron?: RawNeuron
   ): NeuronInfo {
     const fullNeuron = rawNeuron
-        ? this.toNeuron(rawNeuron, principalString)
-        : null;
+      ? this.toNeuron(rawNeuron, principalString)
+      : null;
     return {
       neuronId: neuronId,
       dissolveDelaySeconds: neuronInfo.dissolve_delay_seconds,
@@ -132,7 +132,7 @@ export default class ResponseConverters {
   }
 
   public toListProposalsResponse = (
-      response: RawListProposalInfoResponse
+    response: RawListProposalInfoResponse
   ): ListProposalsResponse => {
     return {
       proposals: response.proposal_info.map(this.toProposalInfo),
@@ -140,7 +140,7 @@ export default class ResponseConverters {
   };
 
   public toSpawnResponse = (
-      response: PbManageNeuronResponse
+    response: PbManageNeuronResponse
   ): SpawnResponse => {
     const createdNeuronId = response.getSpawn()?.getCreatedNeuronId();
 
@@ -154,7 +154,7 @@ export default class ResponseConverters {
   };
 
   public toDisburseResponse = (
-      response: PbManageNeuronResponse
+    response: PbManageNeuronResponse
   ): DisburseResponse => {
     const blockHeight = response.getDisburse()?.getTransferBlockHeight();
 
@@ -168,13 +168,13 @@ export default class ResponseConverters {
   };
 
   public toDisburseToNeuronResult = (
-      response: RawManageNeuronResponse
+    response: RawManageNeuronResponse
   ): DisburseToNeuronResponse => {
     const command = response.command;
     if (
-        command.length &&
-        "Spawn" in command[0] &&
-        command[0].Spawn.created_neuron_id.length
+      command.length &&
+      "Spawn" in command[0] &&
+      command[0].Spawn.created_neuron_id.length
     ) {
       return {
         createdNeuronId: command[0].Spawn.created_neuron_id[0].id,
@@ -184,19 +184,19 @@ export default class ResponseConverters {
   };
 
   public toClaimOrRefreshNeuronResponse = (
-      response: RawManageNeuronResponse
+    response: RawManageNeuronResponse
   ): Option<NeuronId> => {
     const command = response.command;
     if (command.length && "ClaimOrRefresh" in command[0]) {
       return command[0].ClaimOrRefresh.refreshed_neuron_id.length
-          ? command[0].ClaimOrRefresh.refreshed_neuron_id[0].id
-          : null;
+        ? command[0].ClaimOrRefresh.refreshed_neuron_id[0].id
+        : null;
     }
     throw this.throwUnrecognisedTypeError("response", response);
   };
 
   public toMergeMaturityResponse = (
-      response: PbManageNeuronResponse
+    response: PbManageNeuronResponse
   ): MergeMaturityResponse => {
     const error = response.getError();
     if (error) {
@@ -215,13 +215,13 @@ export default class ResponseConverters {
   };
 
   public toMakeProposalResponse = (
-      response: RawManageNeuronResponse
+    response: RawManageNeuronResponse
   ): MakeProposalResponse => {
     const command = response.command;
     if (
-        command.length &&
-        "MakeProposal" in command[0] &&
-        command[0].MakeProposal.proposal_id.length
+      command.length &&
+      "MakeProposal" in command[0] &&
+      command[0].MakeProposal.proposal_id.length
     ) {
       return {
         proposalId: command[0].MakeProposal.proposal_id[0].id,
@@ -234,11 +234,11 @@ export default class ResponseConverters {
     return {
       id: neuron.id.length ? this.toNeuronId(neuron.id[0]) : null,
       isCurrentUserController: neuron.controller.length
-          ? neuron.controller[0].toString() === principalString
-          : null,
+        ? neuron.controller[0].toString() === principalString
+        : null,
       controller: neuron.controller.length
-          ? neuron.controller[0].toString()
-          : null,
+        ? neuron.controller[0].toString()
+        : null,
       recentBallots: neuron.recent_ballots.map(this.toBallotInfo),
       kycVerified: neuron.kyc_verified,
       notForProfit: neuron.not_for_profit,
@@ -249,12 +249,12 @@ export default class ResponseConverters {
       neuronFees: neuron.neuron_fees_e8s,
       hotKeys: neuron.hot_keys.map((p) => p.toString()),
       accountIdentifier: principalToAccountIdentifier(
-          GOVERNANCE_CANISTER_ID,
-          arrayOfNumberToUint8Array(neuron.account)
+        GOVERNANCE_CANISTER_ID,
+        arrayOfNumberToUint8Array(neuron.account)
       ),
       dissolveState: neuron.dissolve_state.length
-          ? this.toDissolveState(neuron.dissolve_state[0])
-          : null,
+        ? this.toDissolveState(neuron.dissolve_state[0])
+        : null,
       followees: neuron.followees.map(([n, f]) => this.toFollowees(n, f)),
     };
   };
@@ -263,13 +263,13 @@ export default class ResponseConverters {
     return {
       vote: ballotInfo.vote,
       proposalId: ballotInfo.proposal_id.length
-          ? this.toNeuronId(ballotInfo.proposal_id[0])
-          : null,
+        ? this.toNeuronId(ballotInfo.proposal_id[0])
+        : null,
     };
   };
 
   private toDissolveState = (
-      dissolveState: RawDissolveState
+    dissolveState: RawDissolveState
   ): DissolveState => {
     if ("DissolveDelaySeconds" in dissolveState) {
       return {
@@ -278,7 +278,7 @@ export default class ResponseConverters {
     } else {
       return {
         WhenDissolvedTimestampSeconds:
-        dissolveState.WhenDissolvedTimestampSeconds,
+          dissolveState.WhenDissolvedTimestampSeconds,
       };
     }
   };
@@ -295,7 +295,7 @@ export default class ResponseConverters {
   };
 
   private toNeuronIdOrSubaccount = (
-      neuronIdOrSubaccount: RawNeuronIdOrSubaccount
+    neuronIdOrSubaccount: RawNeuronIdOrSubaccount
   ): NeuronIdOrSubaccount => {
     if ("NeuronId" in neuronIdOrSubaccount) {
       return { NeuronId: neuronIdOrSubaccount.NeuronId.id };
@@ -327,14 +327,14 @@ export default class ResponseConverters {
     if ("ExecuteNnsFunction" in action) {
       const executeNnsFunction = action.ExecuteNnsFunction;
       const payloadBytes = arrayOfNumberToArrayBuffer(
-          executeNnsFunction.payload
+        executeNnsFunction.payload
       );
       const payload = payloadBytes.byteLength
-          ? convertNnsFunctionPayload(
-              executeNnsFunction.nns_function,
-              payloadBytes
+        ? convertNnsFunctionPayload(
+            executeNnsFunction.nns_function,
+            payloadBytes
           )
-          : null;
+        : null;
 
       return {
         ExecuteNnsFunction: {
@@ -350,16 +350,16 @@ export default class ResponseConverters {
       return {
         ManageNeuron: {
           id: manageNeuron.id.length
-              ? this.toNeuronId(manageNeuron.id[0])
-              : null,
+            ? this.toNeuronId(manageNeuron.id[0])
+            : null,
           command: manageNeuron.command.length
-              ? this.toCommand(manageNeuron.command[0])
-              : null,
+            ? this.toCommand(manageNeuron.command[0])
+            : null,
           neuronIdOrSubaccount: manageNeuron.neuron_id_or_subaccount.length
-              ? this.toNeuronIdOrSubaccount(
-                  manageNeuron.neuron_id_or_subaccount[0]
+            ? this.toNeuronIdOrSubaccount(
+                manageNeuron.neuron_id_or_subaccount[0]
               )
-              : null,
+            : null,
         },
       };
     }
@@ -377,16 +377,16 @@ export default class ResponseConverters {
         ManageNetworkEconomics: {
           neuronMinimumStake: networkEconomics.neuron_minimum_stake_e8s,
           maxProposalsToKeepPerTopic:
-          networkEconomics.max_proposals_to_keep_per_topic,
+            networkEconomics.max_proposals_to_keep_per_topic,
           neuronManagementFeePerProposal:
-          networkEconomics.neuron_management_fee_per_proposal_e8s,
+            networkEconomics.neuron_management_fee_per_proposal_e8s,
           rejectCost: networkEconomics.reject_cost_e8s,
           transactionFee: networkEconomics.transaction_fee_e8s,
           neuronSpawnDissolveDelaySeconds:
-          networkEconomics.neuron_spawn_dissolve_delay_seconds,
+            networkEconomics.neuron_spawn_dissolve_delay_seconds,
           minimumIcpXdrRate: networkEconomics.minimum_icp_xdr_rate,
           maximumNodeProviderRewards:
-          networkEconomics.maximum_node_provider_rewards_e8s,
+            networkEconomics.maximum_node_provider_rewards_e8s,
         },
       };
     }
@@ -395,12 +395,12 @@ export default class ResponseConverters {
       return {
         RewardNodeProvider: {
           nodeProvider: rewardNodeProvider.node_provider.length
-              ? this.toNodeProvider(rewardNodeProvider.node_provider[0])
-              : null,
+            ? this.toNodeProvider(rewardNodeProvider.node_provider[0])
+            : null,
           amountE8s: rewardNodeProvider.amount_e8s,
           rewardMode: rewardNodeProvider.reward_mode.length
-              ? this.toRewardMode(rewardNodeProvider.reward_mode[0])
-              : null,
+            ? this.toRewardMode(rewardNodeProvider.reward_mode[0])
+            : null,
         },
       };
     }
@@ -410,12 +410,12 @@ export default class ResponseConverters {
         RewardNodeProviders: {
           rewards: rewardNodeProviders.rewards.map((r) => ({
             nodeProvider: r.node_provider.length
-                ? this.toNodeProvider(r.node_provider[0])
-                : null,
+              ? this.toNodeProvider(r.node_provider[0])
+              : null,
             amountE8s: r.amount_e8s,
             rewardMode: r.reward_mode.length
-                ? this.toRewardMode(r.reward_mode[0])
-                : null,
+              ? this.toRewardMode(r.reward_mode[0])
+              : null,
           })),
         },
       };
@@ -425,8 +425,8 @@ export default class ResponseConverters {
       return {
         AddOrRemoveNodeProvider: {
           change: addOrRemoveNodeProvider.change.length
-              ? this.toChange(addOrRemoveNodeProvider.change[0])
-              : null,
+            ? this.toChange(addOrRemoveNodeProvider.change[0])
+            : null,
         },
       };
     }
@@ -443,7 +443,7 @@ export default class ResponseConverters {
       return {
         SetDefaultFollowees: {
           defaultFollowees: setDefaultFollowees.default_followees.map(
-              ([n, f]) => this.toFollowees(n, f)
+            ([n, f]) => this.toFollowees(n, f)
           ),
         },
       };
@@ -467,8 +467,8 @@ export default class ResponseConverters {
       return {
         Spawn: {
           newController: spawn.new_controller.length
-              ? spawn.new_controller[0].toString()
-              : null,
+            ? spawn.new_controller[0].toString()
+            : null,
         },
       };
     }
@@ -494,8 +494,8 @@ export default class ResponseConverters {
       return {
         ClaimOrRefresh: {
           by: claimOrRefresh.by.length
-              ? this.toClaimOrRefreshBy(claimOrRefresh.by[0])
-              : null,
+            ? this.toClaimOrRefreshBy(claimOrRefresh.by[0])
+            : null,
         },
       };
     }
@@ -504,8 +504,8 @@ export default class ResponseConverters {
       return {
         Configure: {
           operation: configure.operation.length
-              ? this.toOperation(configure.operation[0])
-              : null,
+            ? this.toOperation(configure.operation[0])
+            : null,
         },
       };
     }
@@ -515,8 +515,8 @@ export default class ResponseConverters {
         RegisterVote: {
           vote: registerVote.vote,
           proposal: registerVote.proposal.length
-              ? this.toNeuronId(registerVote.proposal[0])
-              : null,
+            ? this.toNeuronId(registerVote.proposal[0])
+            : null,
         },
       };
     }
@@ -528,8 +528,8 @@ export default class ResponseConverters {
           kycVerified: disburseToNeuron.kyc_verified,
           amount: disburseToNeuron.amount_e8s,
           newController: disburseToNeuron.new_controller.length
-              ? disburseToNeuron.new_controller[0].toString()
-              : null,
+            ? disburseToNeuron.new_controller[0].toString()
+            : null,
           nonce: disburseToNeuron.nonce,
         },
       };
@@ -549,8 +549,8 @@ export default class ResponseConverters {
           title: makeProposal.title.length ? makeProposal.title[0] : null,
           url: makeProposal.url,
           action: makeProposal.action.length
-              ? this.toAction(makeProposal.action[0])
-              : null,
+            ? this.toAction(makeProposal.action[0])
+            : null,
           summary: makeProposal.summary,
         },
       };
@@ -560,11 +560,11 @@ export default class ResponseConverters {
       return {
         Disburse: {
           toAccountId: disburse.to_account.length
-              ? this.toAccountIdentifier(disburse.to_account[0])
-              : null,
+            ? this.toAccountIdentifier(disburse.to_account[0])
+            : null,
           amount: disburse.amount.length
-              ? this.toAmount(disburse.amount[0])
-              : null,
+            ? this.toAmount(disburse.amount[0])
+            : null,
         },
       };
     }
@@ -577,8 +577,8 @@ export default class ResponseConverters {
       return {
         RemoveHotKey: {
           hotKeyToRemove: removeHotKey.hot_key_to_remove.length
-              ? removeHotKey.hot_key_to_remove[0].toString()
-              : null,
+            ? removeHotKey.hot_key_to_remove[0].toString()
+            : null,
         },
       };
     }
@@ -587,8 +587,8 @@ export default class ResponseConverters {
       return {
         AddHotKey: {
           newHotKey: addHotKey.new_hot_key.length
-              ? addHotKey.new_hot_key[0].toString()
-              : null,
+            ? addHotKey.new_hot_key[0].toString()
+            : null,
         },
       };
     }
@@ -607,7 +607,7 @@ export default class ResponseConverters {
       return {
         IncreaseDissolveDelay: {
           additionalDissolveDelaySeconds:
-          increaseDissolveDelay.additional_dissolve_delay_seconds,
+            increaseDissolveDelay.additional_dissolve_delay_seconds,
         },
       };
     }
@@ -616,7 +616,7 @@ export default class ResponseConverters {
       return {
         SetDissolveTimestamp: {
           dissolveTimestampSeconds:
-          setDissolveTimestamp.dissolve_timestamp_seconds,
+            setDissolveTimestamp.dissolve_timestamp_seconds,
         },
       };
     }
@@ -648,7 +648,7 @@ export default class ResponseConverters {
   };
 
   private toAccountIdentifier(
-      accountIdentifier: RawAccountIdentifier
+    accountIdentifier: RawAccountIdentifier
   ): AccountIdentifier {
     return accountIdentifierFromBytes(new Uint8Array(accountIdentifier.hash));
   }
@@ -658,19 +658,19 @@ export default class ResponseConverters {
       return {
         RewardToNeuron: {
           dissolveDelaySeconds:
-          rewardMode.RewardToNeuron.dissolve_delay_seconds,
+            rewardMode.RewardToNeuron.dissolve_delay_seconds,
         },
       };
     } else if ("RewardToAccount" in rewardMode) {
       return {
         RewardToAccount: {
           toAccount:
-              rewardMode.RewardToAccount.to_account != null &&
-              rewardMode.RewardToAccount.to_account.length
-                  ? this.toAccountIdentifier(
+            rewardMode.RewardToAccount.to_account != null &&
+            rewardMode.RewardToAccount.to_account.length
+              ? this.toAccountIdentifier(
                   rewardMode.RewardToAccount.to_account[0]
-                  )
-                  : null,
+                )
+              : null,
         },
       };
     } else {
@@ -693,8 +693,8 @@ export default class ResponseConverters {
         MemoAndController: {
           memo: by.MemoAndController.memo,
           controller: by.MemoAndController.controller.length
-              ? by.MemoAndController.controller[0]
-              : null,
+            ? by.MemoAndController.controller[0]
+            : null,
         },
       };
     } else {
