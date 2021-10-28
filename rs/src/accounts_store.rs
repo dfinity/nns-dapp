@@ -140,7 +140,7 @@ pub struct NeuronDetails {
     neuron_id: Option<NeuronId>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum CreateSubAccountResponse {
     Ok(SubAccountDetails),
     AccountNotFound,
@@ -154,7 +154,7 @@ pub struct RenameSubAccountRequest {
     new_name: String,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum RenameSubAccountResponse {
     Ok,
     AccountNotFound,
@@ -168,7 +168,7 @@ pub struct RegisterHardwareWalletRequest {
     principal: PrincipalId,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum RegisterHardwareWalletResponse {
     Ok,
     AccountNotFound,
@@ -177,7 +177,7 @@ pub enum RegisterHardwareWalletResponse {
     NameTooLong,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub struct AccountDetails {
     pub principal: PrincipalId,
     pub account_identifier: AccountIdentifier,
@@ -185,14 +185,14 @@ pub struct AccountDetails {
     pub hardware_wallet_accounts: Vec<HardwareWalletAccountDetails>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub struct SubAccountDetails {
     name: String,
     sub_account: Subaccount,
     account_identifier: AccountIdentifier,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub struct HardwareWalletAccountDetails {
     pub name: String,
     pub principal: PrincipalId,
@@ -205,7 +205,7 @@ pub struct AttachCanisterRequest {
     canister_id: CanisterId,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum AttachCanisterResponse {
     Ok,
     CanisterLimitExceeded,
@@ -220,7 +220,7 @@ pub struct DetachCanisterRequest {
     canister_id: CanisterId,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum DetachCanisterResponse {
     Ok,
     CanisterNotFound,
@@ -1543,13 +1543,13 @@ pub struct GetTransactionsRequest {
     page_size: u8,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub struct GetTransactionsResponse {
     transactions: Vec<TransactionResult>,
     total: u32,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub struct TransactionResult {
     block_height: BlockHeight,
     timestamp: TimeStamp,
@@ -1558,7 +1558,7 @@ pub struct TransactionResult {
     transaction_type: Option<TransactionType>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType)]
 pub enum TransferResult {
     Burn {
         amount: ICPTs,
