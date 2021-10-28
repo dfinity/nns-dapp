@@ -15,6 +15,7 @@ use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
 use ic_base_types::PrincipalId;
 use ledger_canister::{AccountIdentifier, BlockHeight};
+use serde::Deserialize;
 
 mod accounts_store;
 mod assets;
@@ -366,7 +367,7 @@ pub fn add_stable_asset() {
     })
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub enum GetAccountResponse {
     Ok(AccountDetails),
     AccountNotFound,
