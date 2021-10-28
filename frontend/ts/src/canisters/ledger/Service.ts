@@ -25,7 +25,7 @@ export default class Service implements ServiceInterface {
 
   public getBalances = async (
     request: GetBalancesRequest,
-      certified = true
+    certified = true
   ): Promise<Record<AccountIdentifier, E8s>> => {
     const rawRequests = this.requestConverters.fromGetBalancesRequest(request);
 
@@ -35,9 +35,7 @@ export default class Service implements ServiceInterface {
     // Until the above is supported we must limit the max concurrency otherwise our requests may be throttled.
     const maxConcurrency = 10;
     await async.eachOfLimit(rawRequests, maxConcurrency, async (r, i) => {
-      const callMethod = certified
-        ? submitUpdateRequest
-        : submitQueryRequest;
+      const callMethod = certified ? submitUpdateRequest : submitQueryRequest;
       const responseBytes = await callMethod(
         this.agent,
         this.canisterId,
