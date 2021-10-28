@@ -1,5 +1,3 @@
-import 'package:nns_dapp/ui/_components/responsive.dart';
-
 import '../../nns_dapp.dart';
 
 class WizardOverlay extends StatefulWidget {
