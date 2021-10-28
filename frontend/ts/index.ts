@@ -10,9 +10,9 @@ import { principalToAccountIdentifier } from "./src/canisters/converter";
 import ServiceApi from "./src/ServiceApi";
 
 // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
-Principal.prototype.toJSON = function() {
+Principal.prototype.toJSON = function () {
   return this.toString();
-}
+};
 
 // @ts-ignore
 window["createAuthApi"] = (onLoggedOut: () => void): Promise<AuthApi> => {

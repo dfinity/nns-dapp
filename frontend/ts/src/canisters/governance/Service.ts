@@ -320,9 +320,9 @@ export default class Service implements ServiceInterface {
       summary: request.summary,
       action: {
         Motion: {
-          motionText: request.text
-        }
-      }
+          motionText: request.text,
+        },
+      },
     });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
@@ -336,8 +336,8 @@ export default class Service implements ServiceInterface {
       url: request.url,
       summary: request.summary,
       action: {
-        ManageNetworkEconomics: request.networkEconomics
-      }
+        ManageNetworkEconomics: request.networkEconomics,
+      },
     });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
@@ -353,12 +353,12 @@ export default class Service implements ServiceInterface {
       action: {
         RewardNodeProvider: {
           nodeProvider: {
-            id: request.nodeProvider
+            id: request.nodeProvider,
           },
           rewardMode: request.rewardMode,
-          amountE8s: request.amount
-        }
-      }
+          amountE8s: request.amount,
+        },
+      },
     });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
@@ -373,16 +373,16 @@ export default class Service implements ServiceInterface {
       summary: request.summary,
       action: {
         SetDefaultFollowees: {
-          defaultFollowees: request.followees
-        }
-      }
+          defaultFollowees: request.followees,
+        },
+      },
     });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };
 
   public makeExecuteNnsFunctionProposal = async (
-      request: MakeExecuteNnsFunctionProposalRequest
+    request: MakeExecuteNnsFunctionProposalRequest
   ): Promise<MakeProposalResponse> => {
     const rawRequest = this.requestConverters.fromMakeProposalRequest({
       neuronId: request.neuronId,
@@ -393,9 +393,9 @@ export default class Service implements ServiceInterface {
           nnsFunctionId: request.nnsFunction,
           nnsFunctionName: null,
           payload: {},
-          payloadBytes: request.payload
-        }
-      }
+          payloadBytes: request.payload,
+        },
+      },
     });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);

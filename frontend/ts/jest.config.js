@@ -5,7 +5,7 @@ module.exports = {
   modulePathIgnorePatterns: ["./build"],
   setupFiles: [`<rootDir>/test-setup.ts`],
   transform: {
-    '^.+\\.(ts|tsx)?$': 'ts-jest',
+    "^.+\\.(ts|tsx)?$": "ts-jest",
     "^.+\\.(js|jsx)$": "babel-jest",
   },
 };

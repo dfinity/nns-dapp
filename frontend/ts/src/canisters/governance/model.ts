@@ -90,8 +90,8 @@ export type DissolveState =
   | { WhenDissolvedTimestampSeconds: bigint };
 export interface ExecuteNnsFunction {
   nnsFunctionId: number;
-  nnsFunctionName: Option<string>,
-  payload: Option<Record<string, unknown>>,
+  nnsFunctionName: Option<string>;
+  payload: Option<Record<string, unknown>>;
   payloadBytes: ArrayBuffer;
 }
 export interface Follow {
@@ -240,7 +240,7 @@ export type Operation =
   | { IncreaseDissolveDelay: IncreaseDissolveDelay }
   | { SetDissolveTimestamp: SetDissolveTimestamp };
 export interface Proposal {
-  title: Option<string>,
+  title: Option<string>;
   url: string;
   action: Option<Action>;
   summary: string;
@@ -533,7 +533,7 @@ export default interface ServiceInterface {
     request: MakeSetDefaultFolloweesProposalRequest
   ) => Promise<MakeProposalResponse>;
   makeExecuteNnsFunctionProposal: (
-      request: MakeExecuteNnsFunctionProposalRequest
+    request: MakeExecuteNnsFunctionProposalRequest
   ) => Promise<MakeProposalResponse>;
   claimOrRefreshNeuron: (
     request: ClaimOrRefreshNeuronRequest

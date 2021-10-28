@@ -353,7 +353,7 @@ export default class RequestConverters {
       command: [rawCommand],
       neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
     };
-  }
+  };
 
   private fromFollowees(followees: Array<NeuronId>): RawFollowees {
     return {
