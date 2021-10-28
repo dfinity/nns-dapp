@@ -1,0 +1,17 @@
+[package]
+name = "nns_functions_candid_gen"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+candid = "0.7.4"
+candid_derive = "0.4.5"
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+ic-registry-subnet-type = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
+prost = "0.7.0"
+serde = "1.0.119"
+
+[build-dependencies]
+prost-build = "0.7.0"
