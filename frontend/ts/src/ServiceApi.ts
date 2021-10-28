@@ -182,10 +182,10 @@ export default class ServiceApi {
 
   public getBalances = (
     request: GetBalancesRequest,
-    useUpdateCalls = false
+    certified: boolean
   ): Promise<Record<AccountIdentifier, E8s>> => {
     return executeWithLogging(() =>
-      this.ledgerService.getBalances(request, useUpdateCalls)
+      this.ledgerService.getBalances(request, certified)
     );
   };
 
