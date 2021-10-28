@@ -538,9 +538,7 @@ export default class ResponseConverters {
       const makeProposal = command.MakeProposal;
       return {
         MakeProposal: {
-          title: makeProposal.title.length
-            ? makeProposal.title[0]
-            : this.extractTitleFromSummary(makeProposal.summary),
+          title: makeProposal.title.length ? makeProposal.title[0] : null,
           url: makeProposal.url,
           action: makeProposal.action.length
             ? this.toAction(makeProposal.action[0])
