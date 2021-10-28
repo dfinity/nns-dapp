@@ -236,31 +236,14 @@ class NeuronStateCard extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              if (neuron.controller != icApi.getPrincipal()) {
-                // This is a disburse for a HW wallet account.
-                // Currently, disbursing is only supported to the neuron's controller.
-                // TODO(EXC-452): Remove this restriction once NNS1-680 is deployed.
-                OverlayBaseWidget.show(
-                    context,
-                    WizardOverlay(
-                        rootTitle: "Review Transaction",
-                        rootWidget: ConfirmTransactionWidget(
-                            // if we're disbursing, no fee?
-                            fee: ICP.zero,
-                            amount: this.neuron.stake,
-                            source: this.neuron,
-                            destination:
-                                "Self (${icApi.principalToAccountIdentifier(neuron.controller)}")));
-              } else {
-                OverlayBaseWidget.show(
-                    context,
-                    WizardOverlay(
-                      rootTitle: 'Disburse Neuron',
-                      rootWidget: SelectDestinationAccountPage(
-                        source: neuron,
-                      ),
-                    ));
-              }
+              OverlayBaseWidget.show(
+                  context,
+                  WizardOverlay(
+                    rootTitle: 'Disburse Neuron',
+                    rootWidget: SelectDestinationAccountPage(
+                      source: neuron,
+                    ),
+                  ));
             }.takeIf((e) => disburseEnabled));
       case NeuronState.UNSPECIFIED:
         return ElevatedButton(child: Text(""), onPressed: () {});
