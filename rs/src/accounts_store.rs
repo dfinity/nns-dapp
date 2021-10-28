@@ -148,7 +148,7 @@ pub enum CreateSubAccountResponse {
     NameTooLong,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct RenameSubAccountRequest {
     account_identifier: AccountIdentifier,
     new_name: String,
@@ -162,7 +162,7 @@ pub enum RenameSubAccountResponse {
     NameTooLong,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct RegisterHardwareWalletRequest {
     name: String,
     principal: PrincipalId,
@@ -199,7 +199,7 @@ pub struct HardwareWalletAccountDetails {
     pub account_identifier: AccountIdentifier,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct AttachCanisterRequest {
     name: String,
     canister_id: CanisterId,
@@ -215,7 +215,7 @@ pub enum AttachCanisterResponse {
     AccountNotFound,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct DetachCanisterRequest {
     canister_id: CanisterId,
 }
@@ -1536,7 +1536,7 @@ fn sort_canisters(canisters: &mut Vec<NamedCanister>) {
     });
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct GetTransactionsRequest {
     account_identifier: AccountIdentifier,
     offset: u32,
@@ -1578,7 +1578,6 @@ pub enum TransferResult {
     },
 }
 
-
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     STATE.with(|s| {
         let stats = s.accounts_store.borrow().get_stats(); 
@@ -1611,8 +1610,7 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     })
 }
 
-
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 pub struct Stats {
     accounts_count: u64,
     sub_accounts_count: u64,
