@@ -561,25 +561,28 @@ export default class ServiceApi {
 
     {
       console.log("make an 'Add node to subnet' proposal");
-      const manageNeuronResponse = await this.governanceService.makeExecuteNnsFunctionProposal({
-        neuronId,
-        url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
-        summary: "Add node(s) to subnet 10",
-        nnsFunction: 2,
-        payload: addNodeToSubnetPayload
-      });
+      const manageNeuronResponse =
+        await this.governanceService.makeExecuteNnsFunctionProposal({
+          neuronId,
+          url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
+          summary: "Add node(s) to subnet 10",
+          nnsFunction: 2,
+          payload: addNodeToSubnetPayload,
+        });
       console.log(manageNeuronResponse);
     }
 
     {
       console.log("make an 'Update subnet' proposal");
-      const manageNeuronResponse = await this.governanceService.makeExecuteNnsFunctionProposal({
-        neuronId,
-        url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
-        summary: "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
-        nnsFunction: 11,
-        payload: updateSubnetPayload
-      });
+      const manageNeuronResponse =
+        await this.governanceService.makeExecuteNnsFunctionProposal({
+          neuronId,
+          url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
+          summary:
+            "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+          nnsFunction: 11,
+          payload: updateSubnetPayload,
+        });
       console.log(manageNeuronResponse);
     }
   };

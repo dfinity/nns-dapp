@@ -705,7 +705,7 @@ export default class ResponseConverters {
 
   private extractTitleFromSummary(summary: string): string {
     // Use the first line of the summary as the title and trim to 200 chars.
-    return summary.split('\n', 1)[0].substr(0, 200);
+    return summary.split("\n", 1)[0].substr(0, 200);
   }
 
   // eslint-disable-next-line
