@@ -402,6 +402,16 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<Proposal> getFullProposalInfo({required Proposal proposal}) async {
+    if (proposalSyncService!.shouldGetFullProposal(proposal)) {
+      final response =
+          await proposalSyncService!.getFullProposal(proposal.id.toBigInt);
+      return response;
+    } else
+      return proposal;
+  }
+
+  @override
   Future<Result<dynamic, Exception>> connectToHardwareWallet() async {
     try {
       return Result.ok(

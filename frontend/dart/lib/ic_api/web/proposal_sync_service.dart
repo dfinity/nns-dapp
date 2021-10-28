@@ -47,6 +47,45 @@ class ProposalSyncService {
     hiveBoxes.proposals.notifyChange();
   }
 
+  bool shouldGetFullProposal(Proposal proposal) {
+    if (proposal.action.containsKey('ExecuteNnsFunction')) {
+      final nnsFunctionNumber =
+          proposal.action['ExecuteNnsFunction']['nnsFunctionId'];
+
+      const whitelistedNnsFunctions = [
+        1,
+        2,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ];
+      return whitelistedNnsFunctions.contains(nnsFunctionNumber);
+    }
+    return false;
+  }
+
+  Future<Proposal> getFullProposal(BigInt proposalId) async {
+    final res =
+        await promiseToFuture(serviceApi.getProposalInfo(proposalId.toJS));
+
+    final string = stringify(res);
+    dynamic response = jsonDecode(string);
+
+    final proposal = storeProposal(response);
+
+    return proposal;
+  }
+
   Proposal storeProposal(dynamic response) {
     final proposalId = response['id'].toString();
     if (!hiveBoxes.proposals.containsKey(proposalId)) {
@@ -63,12 +102,9 @@ class ProposalSyncService {
 
   void updateProposal(Proposal proposal, String proposalId, dynamic response) {
     proposal.id = proposalId.toString();
-    proposal.summary = (response['proposal']['summary'].toString()).replaceAll(
-        "Increase minimum neuron stake",
-        "Reflect falling hardware prices - reduce smart contract memory costs by 5%");
-    proposal.url = response['proposal']['url'].toString().replaceAll(
-        "https://www.lipsum.com/",
-        "https://medium.com/zurich-eth/ic-proposal-reduce-smart-contract-memory-costs/");
+    proposal.title = response['proposal']['title'].toString();
+    proposal.summary = response['proposal']['summary'].toString();
+    proposal.url = response['proposal']['url'].toString();
     proposal.proposer = response['proposer'].toString();
     proposal.no =
         ICP.fromE8s(response['latestTally']['no'].toString().toBigInt);

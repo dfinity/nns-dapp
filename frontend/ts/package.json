@@ -21,7 +21,7 @@
     "async": "^3.2.1",
     "borc": "^2.1.2",
     "browserify": "^17.0.0",
-    "buffer": "^5.4.3",
+    "buffer": "^6.0.3",
     "common-shakeify": "^0.6.2",
     "crc": "^3.8.0",
     "js-sha256": "0.9.0",
