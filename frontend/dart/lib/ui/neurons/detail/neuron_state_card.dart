@@ -1,10 +1,8 @@
-import 'package:nns_dapp/data/icp.dart';
 import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
 import 'package:nns_dapp/ui/_components/constants.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neurons/tab/neuron_row.dart';
-import 'package:nns_dapp/ui/transaction/wallet/confirm_transactions_widget.dart';
 import 'package:nns_dapp/ui/transaction/wallet/select_destination_wallet_page.dart';
 import 'package:nns_dapp/ui/transaction/wallet/select_neuron_top_up_source_wallet_page.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
