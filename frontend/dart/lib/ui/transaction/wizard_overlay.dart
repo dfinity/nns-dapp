@@ -22,9 +22,15 @@ class WizardOverlayState extends State<WizardOverlay> {
   List<MaterialPage> pages = [];
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    pages.add(createPage(title: widget.rootTitle, widget: widget.rootWidget));
+  }
+
+  @override
   void initState() {
     super.initState();
-    pages.add(createPage(title: widget.rootTitle, widget: widget.rootWidget));
+    // pages.add(createPage(title: widget.rootTitle, widget: widget.rootWidget));
   }
 
   void pushPage(String? title, Widget widget) {
@@ -92,13 +98,11 @@ class WizardOverlayState extends State<WizardOverlay> {
                                 ),
                               )),
                         ],
-                        title: Text(title,
-                            overflow: TextOverflow.visible,
-                            style: TextStyle(
-                                fontSize:
-                                    Responsive.isMobile(context) ? 15 : 25,
-                                fontFamily: Fonts.circularBook,
-                                color: AppColors.gray50)),
+                        title: Text(
+                          title,
+                          overflow: TextOverflow.visible,
+                          style: context.textTheme.headline3,
+                        ),
                       ),
                     )
                   : null,
