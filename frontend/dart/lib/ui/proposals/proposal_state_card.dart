@@ -101,7 +101,7 @@ class ProposalStateCard extends StatelessWidget {
                               styleSheet: MarkdownStyleSheet.fromTheme(
                                   ThemeData(
                                       cardColor: AppColors.black,
-                                      textTheme: NnsDappTextTheme(
+                                      textTheme: nnsDappTextTheme(
                                           Responsive.isMobile(context))))),
                         ),
                       ),

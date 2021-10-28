@@ -75,7 +75,7 @@ class NnsDapp extends StatelessWidget {
                   100: AppColors.blue100,
                   50: AppColors.blue50,
                 }),
-                textTheme: NnsDappTextTheme(Responsive.isMobile(context)),
+                textTheme: nnsDappTextTheme(Responsive.isMobile(context)),
                 elevatedButtonTheme: ElevatedButtonThemeData(
                     style: ButtonStyle(
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(

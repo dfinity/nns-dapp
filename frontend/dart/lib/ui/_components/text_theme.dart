@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 
-TextTheme NnsDappTextTheme(bool isMobile) {
+TextTheme nnsDappTextTheme(bool isMobile) {
   return TextTheme(
     headline1: TextStyle(
         fontSize: isMobile ? 32 : 40,
