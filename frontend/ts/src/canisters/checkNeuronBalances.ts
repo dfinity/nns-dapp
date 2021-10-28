@@ -44,7 +44,10 @@ const findNeuronsWhichNeedRefresh = async (
   const request: GetBalancesRequest = {
     accounts: fullNeurons.map((n) => n.accountIdentifier),
   };
-  const balances = await ledgerService.getBalances(request);
+  // NOTE: We fetch the balance in an uncertified way as it's more efficient,
+  // and a malicious actor wouldn't gain anything by spoofing this value in
+  // this context.
+  const balances = await ledgerService.getBalances(request, false);
 
   return fullNeurons
     .filter((n) => {
