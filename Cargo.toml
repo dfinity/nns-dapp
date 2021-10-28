@@ -1,6 +1,7 @@
 [workspace]
 members = [
-    "rs"
+    "rs",
+    "rs/nns_functions_candid_gen"
 ]
 
 [profile.release]
