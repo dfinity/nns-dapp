@@ -48,6 +48,7 @@ class ProposalSyncService {
   }
 
   bool shouldGetFullProposal(Proposal proposal) {
+    // Only get the full info for ExecuteNnsFunction proposals whose payloads we are able to deserialize.
     if (proposal.action.containsKey('ExecuteNnsFunction')) {
       final nnsFunctionNumber =
           proposal.action['ExecuteNnsFunction']['nnsFunctionId'];
