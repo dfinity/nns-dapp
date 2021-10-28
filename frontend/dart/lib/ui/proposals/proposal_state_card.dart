@@ -1,3 +1,4 @@
+import 'package:core/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:nns_dapp/ui/_components/constants.dart';
@@ -8,7 +9,6 @@ import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
 import '../../nns_dapp.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'nns_function_status.dart';
 
 class ProposalStateCard extends StatelessWidget {
   final Proposal proposal;
@@ -34,9 +34,7 @@ class ProposalStateCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     proposal.title,
-                    style: Responsive.isMobile(context)
-                        ? context.textTheme.headline6
-                        : context.textTheme.headline3,
+                    style: context.textTheme.headline3,
                   ),
                 ),
                 SizedBox(width: 20),
@@ -82,7 +80,7 @@ class ProposalStateCard extends StatelessWidget {
                   title: Center(
                     child: Text(
                       "Proposal Summary",
-                      style: context.textTheme.headline4,
+                      style: context.textTheme.headline3,
                     ),
                   ),
                   children: [
@@ -101,14 +99,11 @@ class ProposalStateCard extends StatelessWidget {
                           width: MediaQuery.of(context).size.width,
                           child: Markdown(
                               data: proposal.summary,
-                              styleSheet:
-                                  MarkdownStyleSheet.fromTheme(ThemeData(
-                                      textTheme: TextTheme(
-                                          bodyText2: TextStyle(
-                                fontSize:
-                                    Responsive.isMobile(context) ? 14.0 : 18,
-                                color: Colors.white,
-                              ))))),
+                              styleSheet: MarkdownStyleSheet.fromTheme(
+                                  ThemeData(
+                                      cardColor: AppColors.black,
+                                      textTheme: NnsDappTextTheme(
+                                          Responsive.isMobile(context))))),
                         ),
                       ),
                     ),

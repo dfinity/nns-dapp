@@ -132,9 +132,7 @@ class NeuronStateCard extends StatelessWidget {
                                     left: MediaQuery.of(context).size.width *
                                         0.35,
                                     right: 600.0),
-                        textStyle: Responsive.isMobile(context)
-                            ? context.textTheme.headline5
-                            : context.textTheme.headline4,
+                        textStyle: context.textTheme.headline4,
                         message:
                             " Calculated as : \n ICP stake x Dissolve Delay Bonus x Age Bonus : \n"
                             " (${neuron.stake.asDouble().toStringAsFixed(3)}) x (${neuron.dissolveDelayMultiplier.toStringAsFixed(3)}) x (${neuron.ageBonusMultiplier.toStringAsFixed(3)})",

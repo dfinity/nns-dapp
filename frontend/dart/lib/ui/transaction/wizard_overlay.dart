@@ -1,4 +1,4 @@
-import 'package:nns_dapp/ui/_components/responsive.dart';
+
 
 import '../../nns_dapp.dart';
 
@@ -95,8 +95,7 @@ class WizardOverlayState extends State<WizardOverlay> {
                         title: Text(title,
                             overflow: TextOverflow.visible,
                             style: TextStyle(
-                                fontSize:
-                                    Responsive.isMobile(context) ? 15 : 25,
+                                fontSize: 15,
                                 fontFamily: Fonts.circularBook,
                                 color: AppColors.gray50)),
                       ),
