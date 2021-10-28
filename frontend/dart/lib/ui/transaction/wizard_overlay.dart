@@ -1,5 +1,3 @@
-
-
 import '../../nns_dapp.dart';
 
 class WizardOverlay extends StatefulWidget {

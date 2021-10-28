@@ -9,7 +9,6 @@ import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
 import '../../nns_dapp.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class ProposalStateCard extends StatelessWidget {
   final Proposal proposal;
   final List<Neuron> neurons;
