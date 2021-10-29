@@ -487,6 +487,7 @@ export default class ServiceApi {
       console.log("make a 'Motion' proposal");
       const manageNeuronResponse =
         await this.governanceService.makeMotionProposal({
+          title: "Test proposal title - Lower all prices!",
           neuronId,
           url: "http://free-stuff-for-all.com",
           text: "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
@@ -500,6 +501,7 @@ export default class ServiceApi {
       const manageNeuronResponse =
         await this.governanceService.makeNetworkEconomicsProposal({
           neuronId,
+          title: null,
           url: "https://www.lipsum.com/",
           summary: "Increase minimum neuron stake",
           networkEconomics: {
@@ -522,6 +524,7 @@ export default class ServiceApi {
         await this.governanceService.makeRewardNodeProviderProposal({
           neuronId,
           url: "https://www.lipsum.com/",
+          title: null,
           summary: "Reward for Node Provider 'ABC'",
           amount: BigInt(10_000_000),
           nodeProvider: this.identity.getPrincipal().toString(),
@@ -537,6 +540,7 @@ export default class ServiceApi {
       const manageNeuronResponse =
         await this.governanceService.makeExecuteNnsFunctionProposal({
           neuronId,
+          title: null,
           url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
           summary: "Add node(s) to subnet 10",
           nnsFunction: 2,
@@ -550,6 +554,7 @@ export default class ServiceApi {
       const manageNeuronResponse =
         await this.governanceService.makeExecuteNnsFunctionProposal({
           neuronId,
+          title: null,
           url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
           summary:
             "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",

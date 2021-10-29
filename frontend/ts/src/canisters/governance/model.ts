@@ -440,6 +440,7 @@ export interface DisburseToNeuronRequest {
 
 export interface MakeProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   url: string;
   summary: string;
   action: Action;
@@ -447,6 +448,7 @@ export interface MakeProposalRequest {
 
 export interface MakeMotionProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   url: string;
   text: string;
   summary: string;
@@ -454,6 +456,7 @@ export interface MakeMotionProposalRequest {
 
 export interface MakeNetworkEconomicsProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   summary: string;
   url: string;
   networkEconomics: NetworkEconomics;
@@ -461,6 +464,7 @@ export interface MakeNetworkEconomicsProposalRequest {
 
 export interface MakeRewardNodeProviderProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   summary: string;
   url: string;
   nodeProvider: PrincipalString;
@@ -470,6 +474,7 @@ export interface MakeRewardNodeProviderProposalRequest {
 
 export interface MakeSetDefaultFolloweesProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   summary: string;
   url: string;
   followees: Array<Followees>;
@@ -477,6 +482,7 @@ export interface MakeSetDefaultFolloweesProposalRequest {
 
 export interface MakeExecuteNnsFunctionProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   summary: string;
   url: string;
   nnsFunction: number;

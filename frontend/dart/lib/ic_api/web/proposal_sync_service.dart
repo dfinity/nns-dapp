@@ -149,6 +149,6 @@ class ProposalSyncService {
 
     final summary = proposalResponse['proposal']['summary'].toString();
     final firstLine = summary.split('\n')[0];
-    return firstLine.substring(0, 200);
+    return firstLine.length < 200 ? firstLine : firstLine.substring(0, 200);
   }
 }

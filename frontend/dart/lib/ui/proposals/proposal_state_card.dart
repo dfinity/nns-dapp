@@ -1,4 +1,7 @@
+import 'package:core/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:nns_dapp/ui/_components/constants.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
@@ -22,20 +25,18 @@ class ProposalStateCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
-                    proposal.summary,
-                    style: Responsive.isMobile(context)
-                        ? context.textTheme.headline6
-                        : context.textTheme.headline3,
+                    proposal.title,
+                    style: context.textTheme.headline3,
                   ),
                 ),
-                SizedBox(width: 10),
+                SizedBox(width: 20),
                 Container(
                   decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
@@ -47,7 +48,7 @@ class ProposalStateCard extends StatelessWidget {
                     child: Text(
                       proposal.status.description,
                       style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 12 : 24,
+                          fontSize: Responsive.isMobile(context) ? 20 : 24,
                           fontFamily: Fonts.circularBook,
                           color: proposal.status.color,
                           fontWeight: FontWeight.normal),
@@ -56,6 +57,60 @@ class ProposalStateCard extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 20.0),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.black,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.black,
+                    spreadRadius: 5,
+                  )
+                ],
+              ),
+              child: ClipRRect(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                child: ExpansionTile(
+                  initiallyExpanded: true,
+                  backgroundColor: AppColors.mediumBackground,
+                  collapsedBackgroundColor: AppColors.mediumBackground,
+                  title: Center(
+                    child: Text(
+                      "Proposal Summary",
+                      style: context.textTheme.headline3,
+                    ),
+                  ),
+                  children: [
+                    Container(
+                      color: AppColors.mediumBackground,
+                      child: RawScrollbar(
+                        thumbColor: Colors.redAccent,
+                        radius: Radius.circular(20),
+                        thickness: 5,
+                        child: Container(
+                          height: proposal.summary.length.toDouble() <
+                                  kProposalSummaryBoxMaxHeight
+                              ? proposal.summary.length.toDouble() +
+                                  kProposalSummaryBoxMinHeight
+                              : kProposalSummaryBoxMaxHeight,
+                          width: MediaQuery.of(context).size.width,
+                          child: Markdown(
+                              data: proposal.summary,
+                              styleSheet: MarkdownStyleSheet.fromTheme(
+                                  ThemeData(
+                                      cardColor: AppColors.black,
+                                      textTheme: nnsDappTextTheme(
+                                          Responsive.isMobile(context))))),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
             TextButton(
               onPressed: () => launch(proposal.url),
               child: Text(
@@ -86,22 +141,6 @@ class ProposalStateCard extends StatelessWidget {
             ActionDetailsWidget(
               proposal: proposal,
             ),
-            SmallFormDivider(),
-            ExpansionTile(
-              collapsedBackgroundColor: AppColors.gray600,
-              title: Center(
-                child: Text("raw payload"),
-              ),
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(32.0, 0, 32.0, 0),
-                  child: SelectableText(
-                    "${proposal.raw}",
-                    style: TextStyle(color: AppColors.green600),
-                  ),
-                )
-              ],
-            )
           ],
         ),
       ),
@@ -135,23 +174,27 @@ class ActionDetailsWidget extends StatelessWidget {
               child: Text(actionKey, style: context.textTheme.headline4),
             ),
           ),
-          ...fields.entries.map((entry) => Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      entry.key,
-                      style: context.textTheme.bodyText1
-                          ?.copyWith(fontSize: 14, color: AppColors.gray50),
-                    ),
-                    Text(
-                      entry.value.toString().toString(),
-                      style: context.textTheme.subtitle2,
-                    )
-                  ],
-                ),
-              ))
+          ...fields.entries
+              .filter((entry) => entry.key != 'payloadBytes')
+              .map((entry) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    entry.key,
+                    style: context.textTheme.bodyText1
+                        ?.copyWith(fontSize: 14, color: AppColors.gray50),
+                  ),
+                  Text(
+                    entry.value.toString().toString(),
+                    style: context.textTheme.subtitle2,
+                  )
+                ],
+              ),
+            );
+          }),
         ],
       ),
     );
