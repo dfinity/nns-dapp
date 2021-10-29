@@ -1,5 +1,5 @@
 // We only want to export the types and not the full service.
-// So to update this file, first run 'didc bind -t ts payloads.did > payload.js', then copy the types out from the
+// So to update this file, first run 'didc bind -t js payloads.did > payloads.js', then copy the types out from the
 // service factory function, and then export them all (use 'export const' rather than just 'const').
 
 import { IDL } from "@dfinity/candid";
@@ -113,6 +113,7 @@ export const UpdateSubnetPayload = IDL.Record({
   ingress_bytes_per_block_soft_cap: IDL.Opt(IDL.Nat64),
   max_chunk_size: IDL.Opt(IDL.Nat32),
   initial_notary_delay_millis: IDL.Opt(IDL.Nat64),
+  relay_percentage: IDL.Opt(IDL.Nat32),
   max_artifact_streams_per_peer: IDL.Opt(IDL.Nat32),
   subnet_type: IDL.Opt(SubnetType),
 });
