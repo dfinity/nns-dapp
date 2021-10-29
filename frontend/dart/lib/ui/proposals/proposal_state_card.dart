@@ -189,7 +189,7 @@ class ActionDetailsWidget extends StatelessWidget {
                   ),
                   Text(
                     entry.value.toString().toString(),
-                    style: context.textTheme.subtitle2,
+                    style: context.textTheme.bodyText2,
                   )
                 ],
               ),
