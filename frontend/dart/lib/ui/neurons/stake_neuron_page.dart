@@ -153,14 +153,19 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                     final stakeAmount =
                         ICP.fromString(amountField.currentValue);
 
-                    final res = await context.callUpdate(() =>
-                        context.icApi.stakeNeuron(widget.source, stakeAmount));
+                    context.showLoadingOverlay();
+
+                    final res = await context.icApi
+                        .stakeNeuron(widget.source, stakeAmount);
 
                     res.when(err: (err) {
+                      context.hideLoadingOverlay();
                       // Staking failed. Display the error.
                       js.context.callMethod("alert", ["$err"]);
                     }, ok: (newNeuronId) async {
                       if (widget.source.type == ICPSourceType.HARDWARE_WALLET) {
+                        context.hideLoadingOverlay();
+
                         WizardOverlay.of(context).replacePage(
                             "Neuron Created Successfully",
                             HardwareWalletNeuron(
@@ -171,16 +176,15 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                                   OverlayBaseWidget.of(context)?.dismiss();
                                 },
                                 onAddHotkey: (context) async {
-                                  // User added the hotkey. Fetch the neuron.
-                                  final newNeuron = await context.icApi
-                                      .fetchNeuron(
-                                          neuronId: newNeuronId.asBigInt());
+                                  // User added the hotkey.
+                                  final newNeuron = context
+                                      .boxes.neurons[newNeuronId.toString()];
 
                                   // Prompt to set a dissolve delay.
                                   WizardOverlay.of(context).replacePage(
                                       "Set Dissolve Delay",
                                       IncreaseDissolveDelayWidget(
-                                          neuron: newNeuron!,
+                                          neuron: newNeuron,
                                           cancelTitle: "Skip",
                                           onCompleteAction: (context) {
                                             WizardOverlay.of(context)
@@ -202,12 +206,15 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
                                           }));
                                 }));
                       } else {
-                        final newNeuron = await context.icApi
-                            .fetchNeuron(neuronId: newNeuronId.asBigInt());
+                        await context.icApi.refreshNeurons();
+                        final newNeuron =
+                            context.boxes.neurons[newNeuronId.toString()];
+                        context.hideLoadingOverlay();
+
                         WizardOverlay.of(context).replacePage(
                             "Set Dissolve Delay",
                             IncreaseDissolveDelayWidget(
-                                neuron: newNeuron!,
+                                neuron: newNeuron,
                                 cancelTitle: "Skip",
                                 onCompleteAction: (context) {
                                   WizardOverlay.of(context).replacePage(
