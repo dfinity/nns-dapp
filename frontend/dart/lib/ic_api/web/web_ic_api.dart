@@ -156,10 +156,8 @@ class PlatformICApi extends AbstractPlatformICApi {
         }
       }();
 
-      await Future.wait([
-        accountsSyncService!.syncBalances(),
-        neuronSyncService!.sync()
-      ]);
+      await Future.wait(
+          [accountsSyncService!.syncBalances(), neuronSyncService!.sync()]);
 
       return Result.ok(NeuronId.fromString(neuronId));
     } catch (err) {
@@ -211,10 +209,8 @@ class PlatformICApi extends AbstractPlatformICApi {
               neuronId: neuron.id, amount: null, toAccountId: toAccountId)));
 
       neuronSyncService!.removeNeuron(neuron.id);
-      await Future.wait([
-        accountsSyncService!.syncBalances(),
-        neuronSyncService!.sync()
-      ]);
+      await Future.wait(
+          [accountsSyncService!.syncBalances(), neuronSyncService!.sync()]);
 
       return Result.ok(unit);
     } catch (err) {
@@ -302,7 +298,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final res = await promiseToFuture(
           hwApi.addHotKey(neuronId.toString(), principal));
       validateGovernanceResponse(res);
-      await this.refreshNeurons();
+      await neuronSyncService!.sync();
       return Result.ok(unit);
     } catch (err) {
       return Result.err(Exception(err));
