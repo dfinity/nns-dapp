@@ -316,6 +316,7 @@ export default class Service implements ServiceInterface {
   ): Promise<MakeProposalResponse> => {
     const rawRequest = this.requestConverters.fromMakeProposalRequest({
       neuronId: request.neuronId,
+      title: request.title,
       url: request.url,
       summary: request.summary,
       action: {
@@ -333,6 +334,7 @@ export default class Service implements ServiceInterface {
   ): Promise<MakeProposalResponse> => {
     const rawRequest = this.requestConverters.fromMakeProposalRequest({
       neuronId: request.neuronId,
+      title: request.title,
       url: request.url,
       summary: request.summary,
       action: {
@@ -348,6 +350,7 @@ export default class Service implements ServiceInterface {
   ): Promise<MakeProposalResponse> => {
     const rawRequest = this.requestConverters.fromMakeProposalRequest({
       neuronId: request.neuronId,
+      title: request.title,
       url: request.url,
       summary: request.summary,
       action: {
@@ -369,6 +372,7 @@ export default class Service implements ServiceInterface {
   ): Promise<MakeProposalResponse> => {
     const rawRequest = this.requestConverters.fromMakeProposalRequest({
       neuronId: request.neuronId,
+      title: request.title,
       url: request.url,
       summary: request.summary,
       action: {
@@ -386,6 +390,7 @@ export default class Service implements ServiceInterface {
   ): Promise<MakeProposalResponse> => {
     const rawRequest = this.requestConverters.fromMakeProposalRequest({
       neuronId: request.neuronId,
+      title: request.title,
       url: request.url,
       summary: request.summary,
       action: {

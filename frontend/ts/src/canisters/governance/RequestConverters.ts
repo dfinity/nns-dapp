@@ -343,7 +343,7 @@ export default class RequestConverters {
     const rawCommand: RawCommand = {
       MakeProposal: {
         url: request.url,
-        title: [],
+        title: request.title != null ? [request.title] : [],
         summary: request.summary,
         action: [this.fromAction(request.action)],
       },
