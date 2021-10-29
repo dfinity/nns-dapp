@@ -74,8 +74,10 @@ export const convertNnsFunctionPayload = (
         return IDL.decode([CreateSubnetPayload], buffer)[0] as JsonObject;
       case 2:
         return IDL.decode([AddNodesToSubnetPayload], buffer)[0] as JsonObject;
-      // case 3: return "Install NNS canister";
-      // case 4: return "Upgrade NNS canister";
+      case 3:
+        return { "Unable to display payload": "Payload too large" };
+      case 4:
+        return { "Unable to display payload": "Payload too large" };
       case 5:
         return IDL.decode(
           [BlessReplicaVersionPayload],
@@ -87,7 +89,8 @@ export const convertNnsFunctionPayload = (
         return IDL.decode([UpdateSubnetPayload], buffer)[0] as JsonObject;
       case 8:
         return IDL.decode([AddNodeOperatorPayload], buffer)[0] as JsonObject;
-      // case 9: return "Update NNS root canister";
+      case 9:
+        return { "Unable to display payload": "Payload too large" };
       case 10:
         return IDL.decode(
           [UpdateIcpXdrConversionRatePayload],
