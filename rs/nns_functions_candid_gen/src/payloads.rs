@@ -90,7 +90,7 @@ pub struct BlessReplicaVersionPayload {
     pub release_package_sha256_hex: String,
 }
 
-// https://github.com/dfinity-lab/dfinity/blob/bd842628a462dfa30604a2e2352fe50e9066d637/rs/registry/canister/src/mutations/do_update_subnet.rs#L51
+// https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/registry/canister/src/mutations/do_update_subnet.rs#L51
 #[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct UpdateSubnetPayload {
     pub subnet_id: SubnetId,
@@ -111,6 +111,7 @@ pub struct UpdateSubnetPayload {
     pub pfn_evaluation_period_ms: Option<u32>,
     pub registry_poll_period_ms: Option<u32>,
     pub retransmission_request_ms: Option<u32>,
+    pub relay_percentage: Option<u32>,
 
     pub set_gossip_config_to_default: bool,
 
