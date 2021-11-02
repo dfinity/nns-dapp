@@ -141,4 +141,6 @@ abstract class AbstractPlatformICApi {
   Future<void> showPrincipalAndAddressOnDevice(Account account);
 
   String principalToAccountIdentifier(String principal);
+
+  Future<Proposal> getFullProposalInfo({required Proposal proposal});
 }

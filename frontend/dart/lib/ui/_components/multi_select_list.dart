@@ -70,7 +70,7 @@ class _MultiSelectDropdownWidgetState<T>
                 padding: const EdgeInsets.only(left: 16, top: 8.0, bottom: 8.0),
                 child: Text(
                   widget.field.title,
-                  style: context.textTheme.headline4
+                  style: context.textTheme.headline3
                       ?.copyWith(color: AppColors.white),
                 )),
           ],

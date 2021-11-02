@@ -156,10 +156,8 @@ class PlatformICApi extends AbstractPlatformICApi {
         }
       }();
 
-      await Future.wait([
-        accountsSyncService!.syncBalances(),
-        neuronSyncService!.sync()
-      ]);
+      await Future.wait(
+          [accountsSyncService!.syncBalances(), neuronSyncService!.sync()]);
 
       return Result.ok(NeuronId.fromString(neuronId));
     } catch (err) {
@@ -211,10 +209,8 @@ class PlatformICApi extends AbstractPlatformICApi {
               neuronId: neuron.id, amount: null, toAccountId: toAccountId)));
 
       neuronSyncService!.removeNeuron(neuron.id);
-      await Future.wait([
-        accountsSyncService!.syncBalances(),
-        neuronSyncService!.sync()
-      ]);
+      await Future.wait(
+          [accountsSyncService!.syncBalances(), neuronSyncService!.sync()]);
 
       return Result.ok(unit);
     } catch (err) {
@@ -302,7 +298,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final res = await promiseToFuture(
           hwApi.addHotKey(neuronId.toString(), principal));
       validateGovernanceResponse(res);
-      await this.refreshNeurons();
+      await neuronSyncService!.sync();
       return Result.ok(unit);
     } catch (err) {
       return Result.err(Exception(err));
@@ -399,6 +395,19 @@ class PlatformICApi extends AbstractPlatformICApi {
         await promiseToFuture(serviceApi!.getProposalInfo(proposalId.toJS));
     final json = jsonDecode(stringify(response));
     return proposalSyncService!.storeProposal(json);
+  }
+
+  @override
+  Future<Proposal> getFullProposalInfo({required Proposal proposal}) async {
+    // We only need to get the full proposal info if we want to show the deserialized proposal payload.
+    // If the proposal does not have a payload or we will not be able to deserialize it, simply return the proposal
+    // details which we already know.
+    if (proposalSyncService!.shouldGetFullProposal(proposal)) {
+      final response =
+          await proposalSyncService!.getFullProposal(proposal.id.toBigInt);
+      return response;
+    } else
+      return proposal;
   }
 
   @override

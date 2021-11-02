@@ -89,8 +89,10 @@ export type DissolveState =
   | { DissolveDelaySeconds: bigint }
   | { WhenDissolvedTimestampSeconds: bigint };
 export interface ExecuteNnsFunction {
-  nnsFunction: number;
-  payload: ArrayBuffer;
+  nnsFunctionId: number;
+  nnsFunctionName: Option<string>;
+  payload: Option<Record<string, unknown>>;
+  payloadBytes: ArrayBuffer;
 }
 export interface Follow {
   topic: Topic;
@@ -238,6 +240,7 @@ export type Operation =
   | { IncreaseDissolveDelay: IncreaseDissolveDelay }
   | { SetDissolveTimestamp: SetDissolveTimestamp };
 export interface Proposal {
+  title: Option<string>;
   url: string;
   action: Option<Action>;
   summary: string;
@@ -435,8 +438,17 @@ export interface DisburseToNeuronRequest {
   nonce: bigint;
 }
 
+export interface MakeProposalRequest {
+  neuronId: NeuronId;
+  title: Option<string>;
+  url: string;
+  summary: string;
+  action: Action;
+}
+
 export interface MakeMotionProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   url: string;
   text: string;
   summary: string;
@@ -444,6 +456,7 @@ export interface MakeMotionProposalRequest {
 
 export interface MakeNetworkEconomicsProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   summary: string;
   url: string;
   networkEconomics: NetworkEconomics;
@@ -451,6 +464,7 @@ export interface MakeNetworkEconomicsProposalRequest {
 
 export interface MakeRewardNodeProviderProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   summary: string;
   url: string;
   nodeProvider: PrincipalString;
@@ -460,9 +474,19 @@ export interface MakeRewardNodeProviderProposalRequest {
 
 export interface MakeSetDefaultFolloweesProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   summary: string;
   url: string;
   followees: Array<Followees>;
+}
+
+export interface MakeExecuteNnsFunctionProposalRequest {
+  neuronId: NeuronId;
+  title: Option<string>;
+  summary: string;
+  url: string;
+  nnsFunction: number;
+  payload: ArrayBuffer;
 }
 
 export interface DisburseToNeuronResponse {
@@ -513,6 +537,9 @@ export default interface ServiceInterface {
   ) => Promise<MakeProposalResponse>;
   makeSetDefaultFolloweesProposal: (
     request: MakeSetDefaultFolloweesProposalRequest
+  ) => Promise<MakeProposalResponse>;
+  makeExecuteNnsFunctionProposal: (
+    request: MakeExecuteNnsFunctionProposalRequest
   ) => Promise<MakeProposalResponse>;
   claimOrRefreshNeuron: (
     request: ClaimOrRefreshNeuronRequest
