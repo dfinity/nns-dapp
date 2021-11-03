@@ -124,6 +124,9 @@ export default class ResponseConverters {
       recentBallots: neuronInfo.recent_ballots.map(this.toBallotInfo),
       createdTimestampSeconds: neuronInfo.created_timestamp_seconds,
       state: neuronInfo.state,
+      joinedCommunityFundTimestampSeconds: neuronInfo.joined_community_fund_timestamp_seconds.length
+        ? neuronInfo.joined_community_fund_timestamp_seconds[0]
+        : null,
       retrievedAtTimestampSeconds: neuronInfo.retrieved_at_timestamp_seconds,
       votingPower: neuronInfo.voting_power,
       ageSeconds: neuronInfo.age_seconds,
@@ -252,6 +255,9 @@ export default class ResponseConverters {
         GOVERNANCE_CANISTER_ID,
         arrayOfNumberToUint8Array(neuron.account)
       ),
+      joinedCommunityFundTimestampSeconds: neuron.joined_community_fund_timestamp_seconds.length
+        ? neuron.joined_community_fund_timestamp_seconds[0]
+        : null,
       dissolveState: neuron.dissolve_state.length
         ? this.toDissolveState(neuron.dissolve_state[0])
         : null,
@@ -611,6 +617,9 @@ export default class ResponseConverters {
         },
       };
     }
+    if ("JoinCommunityFund" in operation) {
+      return operation;
+    }
     if ("SetDissolveTimestamp" in operation) {
       const setDissolveTimestamp = operation.SetDissolveTimestamp;
       return {
@@ -640,6 +649,7 @@ export default class ResponseConverters {
   private toNodeProvider = (nodeProvider: RawNodeProvider): NodeProvider => {
     return {
       id: nodeProvider.id.length ? nodeProvider.id[0].toString() : null,
+      rewardAccount: nodeProvider.reward_account.length ? this.toAccountIdentifier(nodeProvider.reward_account[0]) : null
     };
   };
 

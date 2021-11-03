@@ -50,6 +50,7 @@ class Neuron extends NnsDappEntity with ICPSource {
   late bool isCurrentUserController;
   late String controller;
   late String accountIdentifier;
+  late BigInt? joinedCommunityFundSeconds;
   late List<String> hotkeys;
 
   Neuron(
@@ -65,6 +66,7 @@ class Neuron extends NnsDappEntity with ICPSource {
       required this.followEditCounter,
       required this.isCurrentUserController,
       required this.accountIdentifier,
+      required this.joinedCommunityFundSeconds,
       required this.hotkeys});
 
   Neuron.empty();
@@ -90,6 +92,8 @@ class Neuron extends NnsDappEntity with ICPSource {
   int? get subAccountId => null;
 
   ICP get stake => cachedNeuronStake - neuronFees;
+
+  bool get isCommunityFundNeuron => joinedCommunityFundSeconds != null;
 
   @override
   ICP get balance => stake;

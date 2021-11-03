@@ -16,6 +16,7 @@ import {
   DisburseToNeuronRequest,
   FollowRequest,
   IncreaseDissolveDelayRequest,
+  JoinCommunityFundRequest,
   ListProposalsRequest,
   MakeProposalRequest,
   ManageNeuron,
@@ -337,6 +338,19 @@ export default class RequestConverters {
     };
   };
 
+  public fromJoinCommunityFundRequest = (request: JoinCommunityFundRequest): RawManageNeuron => {
+    const rawCommand: RawCommand = {
+      Configure: {
+        operation: [{JoinCommunityFund: {}}]
+      },
+    };
+    return {
+      id: [],
+      command: [rawCommand],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
+    };
+  };
+
   public fromMakeProposalRequest = (
     request: MakeProposalRequest
   ): RawManageNeuron => {
@@ -644,6 +658,9 @@ export default class RequestConverters {
         },
       };
     }
+    if ("JoinCommunityFund" in operation) {
+      return operation;
+    }
     if ("SetDissolveTimestamp" in operation) {
       const setDissolveTimestamp = operation.SetDissolveTimestamp;
       return {
@@ -675,6 +692,7 @@ export default class RequestConverters {
   private fromNodeProvider = (nodeProvider: NodeProvider): RawNodeProvider => {
     return {
       id: nodeProvider.id != null ? [Principal.fromText(nodeProvider.id)] : [],
+      reward_account: nodeProvider.rewardAccount != null ? [this.fromAccountIdentifier(nodeProvider.rewardAccount)] : []
     };
   };
 

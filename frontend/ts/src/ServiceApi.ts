@@ -15,6 +15,7 @@ import GovernanceService, {
   EmptyResponse,
   FollowRequest,
   IncreaseDissolveDelayRequest,
+  JoinCommunityFundRequest,
   ListProposalsRequest,
   ListProposalsResponse,
   MergeMaturityRequest,
@@ -307,6 +308,15 @@ export default class ServiceApi {
   ): Promise<EmptyResponse> => {
     return executeWithLogging(async () =>
       (await governanceService(identity)).increaseDissolveDelay(request)
+    );
+  };
+
+  public joinCommunityFund = (
+      identity: Identity,
+      request: JoinCommunityFundRequest
+  ): Promise<EmptyResponse> => {
+    return executeWithLogging(async () =>
+        (await governanceService(identity)).joinCommunityFund(request)
     );
   };
 

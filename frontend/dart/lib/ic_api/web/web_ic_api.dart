@@ -261,6 +261,25 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<Result<Unit, Exception>> joinCommunityFund({required Neuron neuron}) async {
+    try {
+      final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
+
+      final res = await promiseToFuture(serviceApi!.joinCommunityFund(
+        identity,
+        JoinCommunityFundRequest(
+          neuronId: neuron.id.toString(),
+        )));
+
+      validateGovernanceResponse(res);
+      await fetchNeuron(neuronId: neuron.id.toBigInt);
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
+  }
+
+  @override
   Future<void> registerVote(
       {required List<BigInt> neuronIds,
       required BigInt proposalId,
