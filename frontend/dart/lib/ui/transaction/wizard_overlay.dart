@@ -21,19 +21,9 @@ class WizardOverlayState extends State<WizardOverlay> {
   bool _didChangeDependencies = false;
 
   @override
-  void didChangeDependencies() {
-    // Only run 'didChangeDependencies' once
-    if (_didChangeDependencies) {
-      return;
-    }
-    _didChangeDependencies = true;
-    super.didChangeDependencies();
-    pages.add(createPage(title: widget.rootTitle, widget: widget.rootWidget));
-  }
-
-  @override
   void initState() {
     super.initState();
+    pages.add(createPage(title: widget.rootTitle, widget: widget.rootWidget));
   }
 
   void pushPage(String? title, Widget widget) {
@@ -104,7 +94,11 @@ class WizardOverlayState extends State<WizardOverlay> {
                         title: Text(
                           title,
                           overflow: TextOverflow.visible,
-                          style: context.textTheme.headline3,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: Fonts.circularBold,
+                            color: AppColors.gray50,
+                          ),
                         ),
                       ),
                     )
