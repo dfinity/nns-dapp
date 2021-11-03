@@ -18,7 +18,6 @@ class WizardOverlayState extends State<WizardOverlay> {
   final GlobalKey navigatorKey = GlobalKey();
 
   List<MaterialPage> pages = [];
-  bool _didChangeDependencies = false;
 
   @override
   void initState() {
