@@ -38,7 +38,6 @@ class NeuronStateCard extends StatelessWidget {
                     () => context.icApi.joinCommunityFund(neuron: neuron));
               },
             ));
-        print('neuron.isCommunityFundNeuron : ${neuron.isCommunityFundNeuron}');
       }.takeIf((e) =>
           !neuron.isCommunityFundNeuron && neuron.isCurrentUserController),
     );
