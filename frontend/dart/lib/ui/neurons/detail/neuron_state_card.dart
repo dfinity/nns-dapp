@@ -19,12 +19,44 @@ class NeuronStateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var joinCommunityButton = ElevatedButton(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Text(
+            "Join Community Fund",
+            style: TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
+          ),
+        ),
+        onPressed: () {
+          OverlayBaseWidget.show(
+              context,
+              ConfirmDialog(
+                title: "Confirm",
+                description: '',
+                onConfirm: () async {
+                  await context.icApi.joinCommunityFund(neuron: neuron);
+                },
+              ));
+        });
     var buttonGroup = [
       // adds left-padding when non-mobile
       if (!Responsive.isMobile(context))
         Expanded(
           child: Container(),
         ),
+
+      // adds left-padding when non-mobile
+      // creates vertical or horizontal gap based on viewport size
+      if (Responsive.isMobile(context))
+        SizedBox(height: 8)
+      else
+        SizedBox(width: 8),
+
+      Visibility(
+        visible: Responsive.isMobile(context),
+        child: joinCommunityButton,
+      ),
+      if (Responsive.isMobile(context)) SizedBox(height: 8),
       ElevatedButton(
           onPressed: () {
             OverlayBaseWidget.show(
@@ -86,15 +118,26 @@ class NeuronStateCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NeuronRow(neuron: neuron),
-            RichText(
-                text: TextSpan(style: context.textTheme.subtitle2, children: [
-              TextSpan(
-                  text: neuron.createdTimestampSeconds
-                      .secondsToDateTime()
-                      .dayFormat,
-                  style: context.textTheme.subtitle2),
-              TextSpan(text: " - Staked"),
-            ])),
+            SmallFormDivider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                RichText(
+                    text:
+                        TextSpan(style: context.textTheme.subtitle2, children: [
+                  TextSpan(
+                      text: neuron.createdTimestampSeconds
+                          .secondsToDateTime()
+                          .dayFormat,
+                      style: context.textTheme.subtitle2),
+                  TextSpan(text: " - Staked"),
+                ])),
+                Visibility(
+                  visible: !Responsive.isMobile(context),
+                  child: joinCommunityButton,
+                ),
+              ],
+            ),
             if (neuron.dissolveDelaySeconds > SIX_MONTHS_IN_SECONDS)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
