@@ -31,6 +31,9 @@ class NeuronRow extends StatelessWidget {
                         ? context.textTheme.headline4
                         : context.textTheme.headline3,
                   ),
+                  if (neuron.isCommunityFundNeuron)
+                    Text("[community fund]",
+                        style: context.textTheme.headline5),
                   if (!neuron.isCurrentUserController)
                     Text("[hotkey control]",
                         style: context.textTheme.headline5),

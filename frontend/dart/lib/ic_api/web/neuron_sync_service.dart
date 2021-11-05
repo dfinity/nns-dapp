@@ -102,7 +102,7 @@ class NeuronSyncService {
     neuron.isCurrentUserController = fullNeuron['isCurrentUserController'];
     neuron.controller = fullNeuron['controller'];
     neuron.accountIdentifier = fullNeuron['accountIdentifier'];
-    neuron.joinedCommunityFundSeconds = fullNeuron['joinedCommunityFundSeconds']?.toString().toBigInt;
+    neuron.joinedCommunityFundTimestampSeconds = fullNeuron['joinedCommunityFundTimestampSeconds']?.toString().toBigInt;
     neuron.hotkeys = fullNeuron['hotKeys'].cast<String>();
   }
 
