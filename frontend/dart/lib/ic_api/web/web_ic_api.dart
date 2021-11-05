@@ -268,7 +268,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final res = await promiseToFuture(serviceApi!.joinCommunityFund(
         identity,
         JoinCommunityFundRequest(
-          neuronId: neuron.id.toString(),
+          neuronId: toJSBigInt(neuron.id.toString()),
         )));
 
       validateGovernanceResponse(res);
