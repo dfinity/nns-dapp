@@ -20,24 +20,28 @@ class NeuronStateCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var joinCommunityButton = ElevatedButton(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Text(
-            "Join Community Fund",
-            style: TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
-          ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Text(
+          "Join Community Fund",
+          style: TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
         ),
-        onPressed: () {
-          OverlayBaseWidget.show(
-              context,
-              ConfirmDialog(
-                title: "Confirm",
-                description: '',
-                onConfirm: () async {
-                  await context.icApi.joinCommunityFund(neuron: neuron);
-                },
-              ));
-        });
+      ),
+      onPressed: () {
+        OverlayBaseWidget.show(
+            context,
+            ConfirmDialog(
+              title: "Confirm",
+              description: '',
+              onConfirm: () async {
+                await context.callUpdate(
+                    () => context.icApi.joinCommunityFund(neuron: neuron));
+              },
+            ));
+        print('neuron.isCommunityFundNeuron : ${neuron.isCommunityFundNeuron}');
+      }.takeIf((e) =>
+          !neuron.isCommunityFundNeuron && neuron.isCurrentUserController),
+    );
     var buttonGroup = [
       // adds left-padding when non-mobile
       if (!Responsive.isMobile(context))
