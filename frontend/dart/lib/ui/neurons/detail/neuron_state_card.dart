@@ -32,7 +32,8 @@ class NeuronStateCard extends StatelessWidget {
             context,
             ConfirmDialog(
               title: "Confirm",
-              description: 'Are you sure you want this neuron to join the community fund? This action is irreversible',
+              description:
+                  'Are you sure you want this neuron to join the community fund? This action is irreversible',
               onConfirm: () async {
                 await context.callUpdate(
                     () => context.icApi.joinCommunityFund(neuron: neuron));
