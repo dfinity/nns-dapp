@@ -233,7 +233,7 @@ export interface NeuronInfoForHw {
 }
 export interface NodeProvider {
   id: Option<PrincipalString>;
-  rewardAccount: Option<AccountIdentifier>,
+  rewardAccount: Option<AccountIdentifier>;
 }
 export type Operation =
   | { RemoveHotKey: RemoveHotKey }

@@ -312,11 +312,11 @@ export default class ServiceApi {
   };
 
   public joinCommunityFund = (
-      identity: Identity,
-      request: JoinCommunityFundRequest
+    identity: Identity,
+    request: JoinCommunityFundRequest
   ): Promise<EmptyResponse> => {
     return executeWithLogging(async () =>
-        (await governanceService(identity)).joinCommunityFund(request)
+      (await governanceService(identity)).joinCommunityFund(request)
     );
   };
 

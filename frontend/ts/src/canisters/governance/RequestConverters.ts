@@ -338,10 +338,12 @@ export default class RequestConverters {
     };
   };
 
-  public fromJoinCommunityFundRequest = (request: JoinCommunityFundRequest): RawManageNeuron => {
+  public fromJoinCommunityFundRequest = (
+    request: JoinCommunityFundRequest
+  ): RawManageNeuron => {
     const rawCommand: RawCommand = {
       Configure: {
-        operation: [{JoinCommunityFund: {}}]
+        operation: [{ JoinCommunityFund: {} }],
       },
     };
     return {
@@ -692,7 +694,10 @@ export default class RequestConverters {
   private fromNodeProvider = (nodeProvider: NodeProvider): RawNodeProvider => {
     return {
       id: nodeProvider.id != null ? [Principal.fromText(nodeProvider.id)] : [],
-      reward_account: nodeProvider.rewardAccount != null ? [this.fromAccountIdentifier(nodeProvider.rewardAccount)] : []
+      reward_account:
+        nodeProvider.rewardAccount != null
+          ? [this.fromAccountIdentifier(nodeProvider.rewardAccount)]
+          : [],
     };
   };
 

@@ -211,8 +211,11 @@ export default class Service implements ServiceInterface {
     return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
-  public joinCommunityFund = async (request: JoinCommunityFundRequest): Promise<EmptyResponse> => {
-    const rawRequest = this.requestConverters.fromJoinCommunityFundRequest(request);
+  public joinCommunityFund = async (
+    request: JoinCommunityFundRequest
+  ): Promise<EmptyResponse> => {
+    const rawRequest =
+      this.requestConverters.fromJoinCommunityFundRequest(request);
     await this.service.manage_neuron(rawRequest);
     return { Ok: null };
   };
