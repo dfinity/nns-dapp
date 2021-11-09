@@ -84,6 +84,10 @@ class ServiceApi {
   external Promise<dynamic> increaseDissolveDelay(
       dynamic identity, dynamic request);
 
+  @JS("joinCommunityFund")
+  external Promise<dynamic> joinCommunityFund(
+      dynamic identity, dynamic request);
+
   @JS("follow")
   external Promise<dynamic> follow(dynamic request);
 
@@ -145,6 +149,15 @@ class IncreaseDissolveDelayRequest {
 
   external factory IncreaseDissolveDelayRequest(
       {dynamic neuronId, num additionalDissolveDelaySeconds});
+}
+
+@JS()
+@anonymous
+class JoinCommunityFundRequest {
+  external String get neuronId;
+
+  external factory JoinCommunityFundRequest(
+      {dynamic neuronId});
 }
 
 @JS()

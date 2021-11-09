@@ -201,6 +201,7 @@ export interface Neuron {
   neuronFees: E8s;
   hotKeys: Array<PrincipalString>;
   accountIdentifier: AccountIdentifier;
+  joinedCommunityFundTimestampSeconds: Option<bigint>;
   dissolveState: Option<DissolveState>;
   followees: Array<Followees>;
 }
@@ -219,6 +220,7 @@ export interface NeuronInfo {
   recentBallots: Array<BallotInfo>;
   createdTimestampSeconds: bigint;
   state: NeuronState;
+  joinedCommunityFundTimestampSeconds: Option<bigint>;
   retrievedAtTimestampSeconds: bigint;
   votingPower: bigint;
   ageSeconds: bigint;
@@ -231,6 +233,7 @@ export interface NeuronInfoForHw {
 }
 export interface NodeProvider {
   id: Option<PrincipalString>;
+  rewardAccount: Option<AccountIdentifier>;
 }
 export type Operation =
   | { RemoveHotKey: RemoveHotKey }
@@ -238,6 +241,7 @@ export type Operation =
   | { StopDissolving: Record<string, never> }
   | { StartDissolving: Record<string, never> }
   | { IncreaseDissolveDelay: IncreaseDissolveDelay }
+  | { JoinCommunityFund: Record<string, never> }
   | { SetDissolveTimestamp: SetDissolveTimestamp };
 export interface Proposal {
   title: Option<string>;
@@ -438,6 +442,10 @@ export interface DisburseToNeuronRequest {
   nonce: bigint;
 }
 
+export interface JoinCommunityFundRequest {
+  neuronId: NeuronId;
+}
+
 export interface MakeProposalRequest {
   neuronId: NeuronId;
   title: Option<string>;
@@ -514,6 +522,9 @@ export default interface ServiceInterface {
   stopDissolving: (request: StopDissolvingRequest) => Promise<EmptyResponse>;
   increaseDissolveDelay: (
     request: IncreaseDissolveDelayRequest
+  ) => Promise<EmptyResponse>;
+  joinCommunityFund: (
+    request: JoinCommunityFundRequest
   ) => Promise<EmptyResponse>;
   follow: (request: FollowRequest) => Promise<EmptyResponse>;
   mergeMaturity: (

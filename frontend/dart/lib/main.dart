@@ -57,56 +57,65 @@ class NnsDapp extends StatelessWidget {
         child: ICApiManager(
           child: Builder(builder: (context) {
             return MaterialApp.router(
+              builder: (context, child) {
+                return Theme(
+                  data: getTheme(Responsive.isMobile(context)),
+                  child: child!
+                );
+              },
               debugShowCheckedModeBanner: false,
               routerDelegate: router,
               routeInformationParser: WalletRouteParser(hiveBoxes, context),
               title: 'Network Nervous System',
-              theme: ThemeData(
-                primarySwatch: MaterialColor(AppColors.blue500.value, {
-                  1000: AppColors.blue1000,
-                  900: AppColors.blue900,
-                  800: AppColors.blue800,
-                  700: AppColors.blue700,
-                  600: AppColors.blue600,
-                  500: AppColors.blue500,
-                  400: AppColors.blue400,
-                  300: AppColors.blue300,
-                  200: AppColors.blue200,
-                  100: AppColors.blue100,
-                  50: AppColors.blue50,
-                }),
-                textTheme: nnsDappTextTheme(Responsive.isMobile(context)),
-                elevatedButtonTheme: ElevatedButtonThemeData(
-                    style: ButtonStyle(
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10))),
-                  backgroundColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.disabled)) {
-                      return AppColors.gray400;
-                    } else {
-                      return AppColors.blue600;
-                    }
-                  }),
-                )),
-                textButtonTheme: TextButtonThemeData(
-                    style: ButtonStyle(
-                        textStyle: MaterialStateProperty.all(
-                            TextStyle(color: Colors.white)),
-                        overlayColor: MaterialStateProperty.all(
-                            AppColors.gray400.withOpacity(0.04)))),
-                cardTheme: CardTheme(
-                    color: AppColors.background,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    shadowColor: Colors.white.withOpacity(0.3),
-                    elevation: 7,
-                    margin: EdgeInsets.only(
-                        left: 20, right: 20, top: 20, bottom: 0)),
-              ),
             );
           }),
         ),
       ),
+    );
+  }
+
+  ThemeData getTheme(bool isMobile) {
+    return ThemeData(
+      primarySwatch: MaterialColor(AppColors.blue500.value, {
+        1000: AppColors.blue1000,
+        900: AppColors.blue900,
+        800: AppColors.blue800,
+        700: AppColors.blue700,
+        600: AppColors.blue600,
+        500: AppColors.blue500,
+        400: AppColors.blue400,
+        300: AppColors.blue300,
+        200: AppColors.blue200,
+        100: AppColors.blue100,
+        50: AppColors.blue50,
+      }),
+      textTheme: nnsDappTextTheme(isMobile),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10))),
+          backgroundColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.disabled)) {
+              return AppColors.gray400;
+            } else {
+              return AppColors.blue600;
+            }
+          }),
+        )),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          textStyle: MaterialStateProperty.all(
+            TextStyle(color: Colors.white)),
+          overlayColor: MaterialStateProperty.all(
+            AppColors.gray400.withOpacity(0.04)))),
+      cardTheme: CardTheme(
+        color: AppColors.background,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20)),
+        shadowColor: Colors.white.withOpacity(0.3),
+        elevation: 7,
+        margin: EdgeInsets.only(
+          left: 20, right: 20, top: 20, bottom: 0)),
     );
   }
 }
