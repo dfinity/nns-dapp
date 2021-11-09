@@ -12,6 +12,7 @@ import ServiceInterface, {
   EmptyResponse,
   FollowRequest,
   IncreaseDissolveDelayRequest,
+  JoinCommunityFundRequest,
   ListProposalsRequest,
   ListProposalsResponse,
   MakeExecuteNnsFunctionProposalRequest,
@@ -210,6 +211,15 @@ export default class Service implements ServiceInterface {
     return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
+  public joinCommunityFund = async (
+    request: JoinCommunityFundRequest
+  ): Promise<EmptyResponse> => {
+    const rawRequest =
+      this.requestConverters.fromJoinCommunityFundRequest(request);
+    await this.service.manage_neuron(rawRequest);
+    return { Ok: null };
+  };
+
   public follow = async (request: FollowRequest): Promise<EmptyResponse> => {
     await submitUpdateRequest(
       this.agent,
@@ -357,6 +367,7 @@ export default class Service implements ServiceInterface {
         RewardNodeProvider: {
           nodeProvider: {
             id: request.nodeProvider,
+            rewardAccount: null,
           },
           rewardMode: request.rewardMode,
           amountE8s: request.amount,

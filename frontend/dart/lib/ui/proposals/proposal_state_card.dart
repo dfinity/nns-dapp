@@ -187,7 +187,7 @@ class ActionDetailsWidget extends StatelessWidget {
                     style: context.textTheme.bodyText1
                         ?.copyWith(fontSize: 14, color: AppColors.gray50),
                   ),
-                  Text(
+                  SelectableText(
                     entry.value.toString().toString(),
                     style: context.textTheme.bodyText2,
                   )
