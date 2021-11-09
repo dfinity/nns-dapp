@@ -18,7 +18,7 @@
     },
     "testnet": {
       "providers": [
-        "http://[2a00:fb01:400:42:5000:f2ff:feb6:3619]:8080"
+        "http://[2a00:fb01:400:42:5000:e8ff:feee:ac2a]:8080"
       ],
       "type": "persistent"
     },
