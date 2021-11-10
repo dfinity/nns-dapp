@@ -20,7 +20,7 @@ abstract class AbstractPlatformICApi {
 
   Future<void> buildServices(dynamic identity);
 
-  Future<void> refreshAccounts();
+  Future<void> refreshAccounts({bool waitForFullSync = false});
 
   Future<void> acquireICPTs(
       {required String accountIdentifier, required BigInt doms});
