@@ -459,8 +459,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> refreshAccounts() async {
-    await accountsSyncService!.syncAll();
+  Future<void> refreshAccounts({bool waitForFullSync = false}) async {
+    await accountsSyncService!.syncAll(waitForFullSync: waitForFullSync);
   }
 
   @override

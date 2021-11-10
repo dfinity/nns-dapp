@@ -35,17 +35,24 @@ class AccountsSyncService {
   }
 
   /// Syncs accounts along with their balances and transactions.
-  Future<void> syncAll({List<Account>? accounts}) async {
+  Future<void> syncAll(
+      {List<Account>? accounts, bool waitForFullSync = false}) async {
     // Do a quick sync with queries.
     print("[${DateTime.now()}] Syncing accounts with a query call...");
     await this._syncAll(accounts: accounts, useUpdateCalls: false);
 
-    // Do a slow sync with update calls in the background.
-    // Note that we don't `await` here as to not block the caller.
+    // Do a slow sync with update calls.
     print("[${DateTime.now()}] Syncing accounts with an update call...");
-    this
-        ._syncAll(accounts: accounts, useUpdateCalls: true)
-        .then((_) => {print("[${DateTime.now()}] Syncing accounts complete.")});
+    if (waitForFullSync) {
+      // Wait for the sync to happen.
+      await this._syncAll(accounts: accounts, useUpdateCalls: true);
+      print("[${DateTime.now()}] Syncing accounts complete.");
+    } else {
+      // The sync happens in the background.
+      // Note that we don't `await` here as to not block the caller.
+      this._syncAll(accounts: accounts, useUpdateCalls: true).then(
+          (_) => {print("[${DateTime.now()}] Syncing accounts complete.")});
+    }
   }
 
   Future<void> syncBalances({List<String>? accountIds}) async {
