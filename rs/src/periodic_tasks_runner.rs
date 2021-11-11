@@ -346,7 +346,7 @@ async fn enqueue_create_or_top_up_canister_refund(
 }
 
 fn should_prune_transactions() -> bool {
-    const TRANSACTIONS_COUNT_LIMIT: u32 = 1_000_000;
+    const TRANSACTIONS_COUNT_LIMIT: u32 = 200_000;
     let transactions_count = STATE.with(|s| s.accounts_store.borrow().get_transactions_count());
     transactions_count > TRANSACTIONS_COUNT_LIMIT
 }
