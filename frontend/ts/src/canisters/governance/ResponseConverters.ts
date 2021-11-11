@@ -60,6 +60,10 @@ import {
 import { UnsupportedValueError } from "../../utils";
 import { Option } from "../option";
 import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
+import {
+  convertNnsFunctionPayload,
+  getNnsFunctionName,
+} from "./nnsFunctions/nnsFunctions";
 
 export default class ResponseConverters {
   public toProposalInfo = (proposalInfo: RawProposalInfo): ProposalInfo => {
@@ -120,6 +124,10 @@ export default class ResponseConverters {
       recentBallots: neuronInfo.recent_ballots.map(this.toBallotInfo),
       createdTimestampSeconds: neuronInfo.created_timestamp_seconds,
       state: neuronInfo.state,
+      joinedCommunityFundTimestampSeconds: neuronInfo
+        .joined_community_fund_timestamp_seconds.length
+        ? neuronInfo.joined_community_fund_timestamp_seconds[0]
+        : null,
       retrievedAtTimestampSeconds: neuronInfo.retrieved_at_timestamp_seconds,
       votingPower: neuronInfo.voting_power,
       ageSeconds: neuronInfo.age_seconds,
@@ -192,16 +200,21 @@ export default class ResponseConverters {
   };
 
   public toMergeMaturityResponse = (
-    response: RawManageNeuronResponse
+    response: PbManageNeuronResponse
   ): MergeMaturityResponse => {
-    const command = response.command;
-    if (command.length && "MergeMaturity" in command[0]) {
-      const mergeMaturity = command[0].MergeMaturity;
+    const error = response.getError();
+    if (error) {
+      throw error.getErrorMessage();
+    }
+
+    const mergeMaturityResponse = response.getMergeMaturity();
+    if (mergeMaturityResponse) {
       return {
-        mergedMaturityE8s: mergeMaturity.merged_maturity_e8s,
-        newStakeE8s: mergeMaturity.new_stake_e8s,
+        mergedMaturityE8s: BigInt(mergeMaturityResponse.getMergedMaturityE8s()),
+        newStakeE8s: BigInt(mergeMaturityResponse.getNewStakeE8s()),
       };
     }
+
     throw this.throwUnrecognisedTypeError("response", response);
   };
 
@@ -243,6 +256,10 @@ export default class ResponseConverters {
         GOVERNANCE_CANISTER_ID,
         arrayOfNumberToUint8Array(neuron.account)
       ),
+      joinedCommunityFundTimestampSeconds: neuron
+        .joined_community_fund_timestamp_seconds.length
+        ? neuron.joined_community_fund_timestamp_seconds[0]
+        : null,
       dissolveState: neuron.dissolve_state.length
         ? this.toDissolveState(neuron.dissolve_state[0])
         : null,
@@ -307,6 +324,7 @@ export default class ResponseConverters {
 
   private toProposal = (proposal: RawProposal): Proposal => {
     return {
+      title: proposal.title.length ? proposal.title[0] : null,
       url: proposal.url,
       action: proposal.action.length ? this.toAction(proposal.action[0]) : null,
       summary: proposal.summary,
@@ -316,10 +334,22 @@ export default class ResponseConverters {
   private toAction = (action: RawAction): Action => {
     if ("ExecuteNnsFunction" in action) {
       const executeNnsFunction = action.ExecuteNnsFunction;
+      const payloadBytes = arrayOfNumberToArrayBuffer(
+        executeNnsFunction.payload
+      );
+      const payload = payloadBytes.byteLength
+        ? convertNnsFunctionPayload(
+            executeNnsFunction.nns_function,
+            payloadBytes
+          )
+        : null;
+
       return {
         ExecuteNnsFunction: {
-          nnsFunction: executeNnsFunction.nns_function,
-          payload: arrayOfNumberToArrayBuffer(executeNnsFunction.payload),
+          nnsFunctionId: executeNnsFunction.nns_function,
+          nnsFunctionName: getNnsFunctionName(executeNnsFunction.nns_function),
+          payload,
+          payloadBytes,
         },
       };
     }
@@ -524,6 +554,7 @@ export default class ResponseConverters {
       const makeProposal = command.MakeProposal;
       return {
         MakeProposal: {
+          title: makeProposal.title.length ? makeProposal.title[0] : null,
           url: makeProposal.url,
           action: makeProposal.action.length
             ? this.toAction(makeProposal.action[0])
@@ -588,6 +619,9 @@ export default class ResponseConverters {
         },
       };
     }
+    if ("JoinCommunityFund" in operation) {
+      return operation;
+    }
     if ("SetDissolveTimestamp" in operation) {
       const setDissolveTimestamp = operation.SetDissolveTimestamp;
       return {
@@ -617,6 +651,9 @@ export default class ResponseConverters {
   private toNodeProvider = (nodeProvider: RawNodeProvider): NodeProvider => {
     return {
       id: nodeProvider.id.length ? nodeProvider.id[0].toString() : null,
+      rewardAccount: nodeProvider.reward_account.length
+        ? this.toAccountIdentifier(nodeProvider.reward_account[0])
+        : null,
     };
   };
 

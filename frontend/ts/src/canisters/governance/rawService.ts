@@ -82,6 +82,7 @@ export interface Followees { 'followees' : Array<NeuronId> }
 export interface Governance {
   'default_followees' : Array<[number, Followees]>,
   'wait_for_quiet_threshold_seconds' : bigint,
+  'metrics' : [] | [GovernanceCachedMetrics],
   'node_providers' : Array<NodeProvider>,
   'economics' : [] | [NetworkEconomics],
   'latest_reward_event' : [] | [RewardEvent],
@@ -91,6 +92,24 @@ export interface Governance {
   'in_flight_commands' : Array<[bigint, NeuronInFlightCommand]>,
   'neurons' : Array<[bigint, Neuron]>,
   'genesis_timestamp_seconds' : bigint,
+}
+export interface GovernanceCachedMetrics {
+  'not_dissolving_neurons_e8s_buckets' : Array<[bigint, number]>,
+  'garbage_collectable_neurons_count' : bigint,
+  'neurons_with_invalid_stake_count' : bigint,
+  'not_dissolving_neurons_count_buckets' : Array<[bigint, bigint]>,
+  'total_supply_icp' : bigint,
+  'neurons_with_less_than_6_months_dissolve_delay_count' : bigint,
+  'dissolved_neurons_count' : bigint,
+  'total_staked_e8s' : bigint,
+  'not_dissolving_neurons_count' : bigint,
+  'dissolved_neurons_e8s' : bigint,
+  'neurons_with_less_than_6_months_dissolve_delay_e8s' : bigint,
+  'dissolving_neurons_count_buckets' : Array<[bigint, bigint]>,
+  'dissolving_neurons_count' : bigint,
+  'dissolving_neurons_e8s_buckets' : Array<[bigint, number]>,
+  'community_fund_total_staked_e8s' : bigint,
+  'timestamp_seconds' : bigint,
 }
 export interface GovernanceError {
   'error_message' : string,
@@ -152,6 +171,7 @@ export interface Neuron {
   'aging_since_timestamp_seconds' : bigint,
   'hot_keys' : Array<Principal>,
   'account' : Array<number>,
+  'joined_community_fund_timestamp_seconds' : [] | [bigint],
   'dissolve_state' : [] | [DissolveState],
   'followees' : Array<[number, Followees]>,
   'neuron_fees_e8s' : bigint,
@@ -169,6 +189,8 @@ export interface NeuronInfo {
   'recent_ballots' : Array<BallotInfo>,
   'created_timestamp_seconds' : bigint,
   'state' : number,
+  'stake_e8s' : bigint,
+  'joined_community_fund_timestamp_seconds' : [] | [bigint],
   'retrieved_at_timestamp_seconds' : bigint,
   'voting_power' : bigint,
   'age_seconds' : bigint,
@@ -182,15 +204,20 @@ export interface NeuronStakeTransfer {
   'transfer_timestamp' : bigint,
   'block_height' : bigint,
 }
-export interface NodeProvider { 'id' : [] | [Principal] }
+export interface NodeProvider {
+  'id' : [] | [Principal],
+  'reward_account' : [] | [AccountIdentifier],
+}
 export type Operation = { 'RemoveHotKey' : RemoveHotKey } |
   { 'AddHotKey' : AddHotKey } |
   { 'StopDissolving' : {} } |
   { 'StartDissolving' : {} } |
   { 'IncreaseDissolveDelay' : IncreaseDissolveDelay } |
+  { 'JoinCommunityFund' : {} } |
   { 'SetDissolveTimestamp' : SetDissolveTimestamp };
 export interface Proposal {
   'url' : string,
+  'title' : [] | [string],
   'action' : [] | [Action],
   'summary' : string,
 }
@@ -264,6 +291,9 @@ export interface Tally {
   'total' : bigint,
   'timestamp_seconds' : bigint,
 }
+export interface UpdateNodeProvider {
+  'reward_account' : [] | [AccountIdentifier],
+}
 export interface _SERVICE {
   'claim_gtc_neurons' : (arg_0: Principal, arg_1: Array<NeuronId>) => Promise<
       Result
@@ -272,8 +302,14 @@ export interface _SERVICE {
       arg_0: ClaimOrRefreshNeuronFromAccount,
     ) => Promise<ClaimOrRefreshNeuronFromAccountResponse>,
   'get_full_neuron' : (arg_0: bigint) => Promise<Result_2>,
+  'get_full_neuron_by_id_or_subaccount' : (
+      arg_0: NeuronIdOrSubaccount,
+    ) => Promise<Result_2>,
   'get_neuron_ids' : () => Promise<Array<bigint>>,
   'get_neuron_info' : (arg_0: bigint) => Promise<Result_3>,
+  'get_neuron_info_by_id_or_subaccount' : (
+      arg_0: NeuronIdOrSubaccount,
+    ) => Promise<Result_3>,
   'get_pending_proposals' : () => Promise<Array<ProposalInfo>>,
   'get_proposal_info' : (arg_0: bigint) => Promise<[] | [ProposalInfo]>,
   'list_neurons' : (arg_0: ListNeurons) => Promise<ListNeuronsResponse>,
@@ -282,4 +318,5 @@ export interface _SERVICE {
     >,
   'manage_neuron' : (arg_0: ManageNeuron) => Promise<ManageNeuronResponse>,
   'transfer_gtc_neuron' : (arg_0: NeuronId, arg_1: NeuronId) => Promise<Result>,
+  'update_node_provider' : (arg_0: UpdateNodeProvider) => Promise<Result>,
 }

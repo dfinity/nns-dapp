@@ -17,10 +17,10 @@ class ServiceApi {
   external Promise<void> makeDummyProposals(dynamic neuronId);
 
   @JS("getAccount")
-  external Promise<dynamic> getAccount();
+  external Promise<dynamic> getAccount(bool certified);
 
   @JS("getBalances")
-  external Promise<dynamic> getBalances(Object request);
+  external Promise<dynamic> getBalances(Object request, bool useUpdateCalls);
 
   @JS("createSubAccount")
   external Promise<dynamic> createSubAccount(String name);
@@ -41,17 +41,17 @@ class ServiceApi {
   external Promise<void> integrationTest();
 
   @JS("getTransactions")
-  external Promise<dynamic> getTransactions(dynamic request);
+  external Promise<dynamic> getTransactions(dynamic request, bool certified);
 
   @JS("registerHardwareWallet")
   external Promise<void> registerHardwareWallet(
       String name, dynamic ledgerIdentity);
 
   @JS("getNeuron")
-  external Promise<dynamic> getNeuron(dynamic neuronId);
+  external Promise<dynamic> getNeuron(dynamic neuronId, bool certified);
 
   @JS("getNeurons")
-  external Promise<dynamic> getNeurons();
+  external Promise<dynamic> getNeurons(bool certified);
 
   @JS("checkNeuronBalances")
   external Promise<bool> checkNeuronBalances(dynamic neurons);
@@ -82,6 +82,10 @@ class ServiceApi {
 
   @JS("increaseDissolveDelay")
   external Promise<dynamic> increaseDissolveDelay(
+      dynamic identity, dynamic request);
+
+  @JS("joinCommunityFund")
+  external Promise<dynamic> joinCommunityFund(
       dynamic identity, dynamic request);
 
   @JS("follow")
@@ -121,7 +125,7 @@ class ServiceApi {
   external Promise<void> getCanisterDetails(dynamic canisterId);
 
   @JS("getCanisters")
-  external Promise<dynamic> getCanisters();
+  external Promise<dynamic> getCanisters(bool certified);
 
   @JS("getIcpToCyclesConversionRate")
   external Promise<double> getIcpToCyclesConversionRate();
@@ -145,6 +149,15 @@ class IncreaseDissolveDelayRequest {
 
   external factory IncreaseDissolveDelayRequest(
       {dynamic neuronId, num additionalDissolveDelaySeconds});
+}
+
+@JS()
+@anonymous
+class JoinCommunityFundRequest {
+  external String get neuronId;
+
+  external factory JoinCommunityFundRequest(
+      {dynamic neuronId});
 }
 
 @JS()

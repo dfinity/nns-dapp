@@ -29,7 +29,8 @@ export interface NotifyCanisterRequest {
 
 export default interface ServiceInterface {
   getBalances(
-    request: GetBalancesRequest
+    request: GetBalancesRequest,
+    certified?: boolean
   ): Promise<Record<AccountIdentifier, E8s>>;
   sendICPTs(request: SendICPTsRequest): Promise<BlockHeight>;
   notify(request: NotifyCanisterRequest): Promise<Uint8Array>;

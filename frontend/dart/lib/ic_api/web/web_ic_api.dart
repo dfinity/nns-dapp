@@ -17,19 +17,15 @@ import '../../nns_dapp.dart';
 import '../platform_ic_api.dart';
 import 'account_sync_service.dart';
 import 'auth_api.dart';
-import 'balance_sync_service.dart';
 import 'neuron_sync_service.dart';
 import 'proposal_sync_service.dart';
 import 'service_api.dart';
 import 'stringify.dart';
-import 'transaction_sync_service.dart';
 
 class PlatformICApi extends AbstractPlatformICApi {
   late AuthApi authApi;
   ServiceApi? serviceApi;
   AccountsSyncService? accountsSyncService;
-  BalanceSyncService? balanceSyncService;
-  TransactionSyncService? transactionSyncService;
   NeuronSyncService? neuronSyncService;
   ProposalSyncService? proposalSyncService;
 
@@ -64,27 +60,31 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<void> buildServices(dynamic identity) async {
     serviceApi = await promiseToFuture(createServiceApi(identity));
 
-    accountsSyncService = AccountsSyncService(serviceApi!, hiveBoxes);
-    balanceSyncService = BalanceSyncService(serviceApi!, hiveBoxes);
-    transactionSyncService =
-        TransactionSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
     neuronSyncService =
         NeuronSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+
     proposalSyncService =
         ProposalSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
 
-    await accountsSyncService!.performSync();
-    await balanceSyncService!.syncBalances();
-    await transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
-    await neuronSyncService!.fetchNeurons();
-    getCanisters();
+    await Future.wait([
+      neuronSyncService!.sync(),
+      AccountsSyncService.initialize(serviceApi!, hiveBoxes)
+          .then((service) async {
+        accountsSyncService = service;
+        await Future.wait([
+          accountsSyncService!.syncBalances(),
+          accountsSyncService!.syncTransactions()
+        ]);
+      }),
+      getCanisters()
+    ]);
   }
 
   @override
   Future<void> acquireICPTs(
       {required String accountIdentifier, required BigInt doms}) async {
     await serviceApi!.acquireICPTs(accountIdentifier, doms).toFuture();
-    await balanceSyncService!.syncBalances();
+    await accountsSyncService!.syncBalances();
   }
 
   @override
@@ -94,11 +94,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createSubAccount({required String name}) async {
-    await promiseToFuture(serviceApi!.createSubAccount(name)).then((value) {
-      final json = jsonDecode(stringify(value));
-      final res = json['Ok'];
-      accountsSyncService!.storeSubAccount(res, this.getPrincipal());
-    });
+    await promiseToFuture(serviceApi!.createSubAccount(name));
+    // TODO(NNS1-826): verify that account is created successfully.
+    await accountsSyncService!.syncAll();
   }
 
   @override
@@ -119,10 +117,10 @@ class PlatformICApi extends AbstractPlatformICApi {
               fromSubAccountId: fromSubAccount)));
 
       await Future.wait([
-        balanceSyncService!.syncBalances(),
-        transactionSyncService!.syncAllAccounts(),
+        accountsSyncService!.syncBalances(),
+        accountsSyncService!.syncTransactions(),
         // Sync neurons in case we sent funds to them.
-        neuronSyncService!.fetchNeurons()
+        neuronSyncService!.sync()
       ]);
       return Result.ok(unit);
     } catch (err) {
@@ -158,10 +156,8 @@ class PlatformICApi extends AbstractPlatformICApi {
         }
       }();
 
-      await Future.wait([
-        balanceSyncService!.syncBalances(),
-        neuronSyncService!.fetchNeurons()
-      ]);
+      await Future.wait(
+          [accountsSyncService!.syncBalances(), neuronSyncService!.sync()]);
 
       return Result.ok(NeuronId.fromString(neuronId));
     } catch (err) {
@@ -177,7 +173,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final res = await promiseToFuture(serviceApi!.startDissolving(
           identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
       validateGovernanceResponse(res);
-      await neuronSyncService!.fetchNeurons();
+      await neuronSyncService!.sync();
       return Result.ok(unit);
     } catch (err) {
       return Result.err(Exception(err));
@@ -192,7 +188,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final res = await promiseToFuture(serviceApi!.stopDissolving(
           identity, NeuronIdentifierRequest(neuronId: neuron.id.toString())));
       validateGovernanceResponse(res);
-      await neuronSyncService!.fetchNeurons();
+      await neuronSyncService!.sync();
       return Result.ok(unit);
     } catch (err) {
       return Result.err(Exception(err));
@@ -213,10 +209,8 @@ class PlatformICApi extends AbstractPlatformICApi {
               neuronId: neuron.id, amount: null, toAccountId: toAccountId)));
 
       neuronSyncService!.removeNeuron(neuron.id);
-      await Future.wait([
-        balanceSyncService!.syncBalances(),
-        neuronSyncService!.fetchNeurons()
-      ]);
+      await Future.wait(
+          [accountsSyncService!.syncBalances(), neuronSyncService!.sync()]);
 
       return Result.ok(unit);
     } catch (err) {
@@ -242,7 +236,7 @@ class PlatformICApi extends AbstractPlatformICApi {
         topic: topic.index,
         followees: followees.mapToList((e) => e.toJS))));
 
-    await neuronSyncService!.fetchNeurons();
+    await neuronSyncService!.sync();
   }
 
   @override
@@ -267,6 +261,25 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<Result<Unit, Exception>> joinCommunityFund({required Neuron neuron}) async {
+    try {
+      final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
+
+      final res = await promiseToFuture(serviceApi!.joinCommunityFund(
+        identity,
+        JoinCommunityFundRequest(
+          neuronId: toJSBigInt(neuron.id.toString()),
+        )));
+
+      validateGovernanceResponse(res);
+      await fetchNeuron(neuronId: neuron.id.toBigInt);
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
+  }
+
+  @override
   Future<void> registerVote(
       {required List<BigInt> neuronIds,
       required BigInt proposalId,
@@ -277,7 +290,7 @@ class PlatformICApi extends AbstractPlatformICApi {
               proposal: proposalId.toJS,
               vote: vote.index,
             )))));
-    await neuronSyncService!.fetchNeurons();
+    await neuronSyncService!.sync();
   }
 
   @override
@@ -304,7 +317,7 @@ class PlatformICApi extends AbstractPlatformICApi {
       final res = await promiseToFuture(
           hwApi.addHotKey(neuronId.toString(), principal));
       validateGovernanceResponse(res);
-      await this.refreshNeurons();
+      await neuronSyncService!.sync();
       return Result.ok(unit);
     } catch (err) {
       return Result.err(Exception(err));
@@ -344,7 +357,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Neuron?> fetchNeuron({required BigInt neuronId}) async {
-    final res = await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS));
+    // Fetch the neuron's info in a certified way.
+    final res =
+        await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS, true));
     if (res == null) {
       neuronSyncService!.removeNeuron(neuronId.toString());
       return null;
@@ -385,7 +400,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<NeuronInfo> fetchNeuronInfo({required BigInt neuronId}) async {
-    final res = await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS));
+    // Fetch the neuron's info in a certified way.
+    final res =
+        await promiseToFuture(serviceApi!.getNeuron(neuronId.toJS, true));
     final neuronInfo = jsonDecode(stringify(res));
     final nInfo = NeuronInfo.fromResponse(neuronInfo);
     return nInfo;
@@ -397,6 +414,19 @@ class PlatformICApi extends AbstractPlatformICApi {
         await promiseToFuture(serviceApi!.getProposalInfo(proposalId.toJS));
     final json = jsonDecode(stringify(response));
     return proposalSyncService!.storeProposal(json);
+  }
+
+  @override
+  Future<Proposal> getFullProposalInfo({required Proposal proposal}) async {
+    // We only need to get the full proposal info if we want to show the deserialized proposal payload.
+    // If the proposal does not have a payload or we will not be able to deserialize it, simply return the proposal
+    // details which we already know.
+    if (proposalSyncService!.shouldGetFullProposal(proposal)) {
+      final response =
+          await proposalSyncService!.getFullProposal(proposal.id.toBigInt);
+      return response;
+    } else
+      return proposal;
   }
 
   @override
@@ -429,29 +459,18 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> refreshAccounts() async {
-    await accountsSyncService!.performSync();
-    balanceSyncService!.syncBalances();
-    transactionSyncService!.syncAccount(hiveBoxes.accounts.primary);
+  Future<void> refreshAccounts({bool waitForFullSync = false}) async {
+    await accountsSyncService!.syncAll(waitForFullSync: waitForFullSync);
   }
 
   @override
   Future<Neuron> spawnNeuron({required Neuron neuron}) async {
-    if (!this.isNeuronControllable(neuron)) {
-      throw "Neuron ${neuron.id} is not controlled by the user.";
-    }
-
-    // If the neuron is controlled by the user, use the user's II, otherwise
-    // we assume it's a hardware wallet and try connecting to the device.
-    final identity = neuron.controller == this.getPrincipal()
-        ? this.identity
-        : await this.connectToHardwareWallet();
-
+    final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
     final spawnResponse = await promiseToFuture(serviceApi!.spawn(identity,
         SpawnRequest(neuronId: neuron.id.toString(), newController: null)));
     dynamic response = jsonDecode(stringify(spawnResponse));
     final createdNeuronId = response['createdNeuronId'].toString();
-    await neuronSyncService!.fetchNeurons();
+    await neuronSyncService!.sync();
     return hiveBoxes.neurons.values
         .firstWhere((element) => element.identifier == createdNeuronId);
   }
@@ -493,23 +512,33 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> getCanisters() async {
-    final res = await promiseToFuture(serviceApi!.getCanisters());
+    Future<void> _getCanisters(bool useUpdateCalls) async {
+      final res =
+          await promiseToFuture(serviceApi!.getCanisters(useUpdateCalls));
 
-    final response = [...res];
-    final canisterIds = response.mapToList((e) {
-      final id = e.canisterId.toString();
-      hiveBoxes.canisters[id] =
-          Canister(name: e.name, publicKey: id, userIsController: null);
-      return id;
-    });
+      final response = [...res];
+      final canisterIds = response.mapToList((e) {
+        final id = e.canisterId.toString();
+        hiveBoxes.canisters[id] =
+            Canister(name: e.name, publicKey: id, userIsController: null);
+        return id;
+      });
 
-    final canistersToRemove = hiveBoxes.canisters.values
-        .where((element) => !canisterIds.contains(element.identifier));
-    canistersToRemove.forEach((element) {
-      hiveBoxes.canisters.remove(element.identifier);
-    });
-    // ignore: deprecated_member_use
-    hiveBoxes.canisters.notifyChange();
+      final canistersToRemove = hiveBoxes.canisters.values
+          .where((element) => !canisterIds.contains(element.identifier));
+      canistersToRemove.forEach((element) {
+        hiveBoxes.canisters.remove(element.identifier);
+      });
+      // ignore: deprecated_member_use
+      hiveBoxes.canisters.notifyChange();
+    }
+
+    print("[${DateTime.now()}] Syncing canisters with a query call...");
+    await _getCanisters(false);
+
+    print("[${DateTime.now()}] Syncing canisters with an update call...");
+    _getCanisters(true).then(
+        (_) => {print("[${DateTime.now()}] Syncing canisters complete.")});
   }
 
   @override
@@ -571,12 +600,12 @@ class PlatformICApi extends AbstractPlatformICApi {
       newName: newName,
       accountIdentifier: accountIdentifier,
     )));
-    await accountsSyncService!.performSync();
+    await accountsSyncService!.syncAll();
   }
 
   @override
   Future<void> refreshNeurons() async {
-    neuronSyncService?.fetchNeurons();
+    neuronSyncService?.sync();
   }
 
   @override
@@ -593,13 +622,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> refreshAccount(Account account) async {
-    transactionSyncService!.syncAccount(account);
-    final res =
-        await balanceSyncService!.fetchBalances([account.accountIdentifier]);
-    account = hiveBoxes.accounts[account.accountIdentifier]!;
-    account.balance = res[account.accountIdentifier]!;
-    // ignore: deprecated_member_use
-    hiveBoxes.accounts.notifyChange();
+    await accountsSyncService!.syncAll(accounts: [account]);
   }
 
   @override

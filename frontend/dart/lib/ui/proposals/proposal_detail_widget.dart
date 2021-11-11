@@ -36,7 +36,7 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Proposal"),
+          title: Text("Proposal", style: context.textTheme.headline3),
           backgroundColor: AppColors.background,
         ),
         body: Container(

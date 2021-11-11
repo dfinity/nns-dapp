@@ -85,6 +85,7 @@ type Followees = record { followees : vec NeuronId };
 type Governance = record {
   default_followees : vec record { int32; Followees };
   wait_for_quiet_threshold_seconds : nat64;
+  metrics : opt GovernanceCachedMetrics;
   node_providers : vec NodeProvider;
   economics : opt NetworkEconomics;
   latest_reward_event : opt RewardEvent;
@@ -94,6 +95,24 @@ type Governance = record {
   in_flight_commands : vec record { nat64; NeuronInFlightCommand };
   neurons : vec record { nat64; Neuron };
   genesis_timestamp_seconds : nat64;
+};
+type GovernanceCachedMetrics = record {
+  not_dissolving_neurons_e8s_buckets : vec record { nat64; float64 };
+  garbage_collectable_neurons_count : nat64;
+  neurons_with_invalid_stake_count : nat64;
+  not_dissolving_neurons_count_buckets : vec record { nat64; nat64 };
+  total_supply_icp : nat64;
+  neurons_with_less_than_6_months_dissolve_delay_count : nat64;
+  dissolved_neurons_count : nat64;
+  total_staked_e8s : nat64;
+  not_dissolving_neurons_count : nat64;
+  dissolved_neurons_e8s : nat64;
+  neurons_with_less_than_6_months_dissolve_delay_e8s : nat64;
+  dissolving_neurons_count_buckets : vec record { nat64; nat64 };
+  dissolving_neurons_count : nat64;
+  dissolving_neurons_e8s_buckets : vec record { nat64; float64 };
+  community_fund_total_staked_e8s : nat64;
+  timestamp_seconds : nat64;
 };
 type GovernanceError = record { error_message : text; error_type : int32 };
 type IncreaseDissolveDelay = record {
@@ -150,6 +169,7 @@ type Neuron = record {
   aging_since_timestamp_seconds : nat64;
   hot_keys : vec principal;
   account : vec nat8;
+  joined_community_fund_timestamp_seconds : opt nat64;
   dissolve_state : opt DissolveState;
   followees : vec record { int32; Followees };
   neuron_fees_e8s : nat64;
@@ -169,6 +189,8 @@ type NeuronInfo = record {
   recent_ballots : vec BallotInfo;
   created_timestamp_seconds : nat64;
   state : int32;
+  stake_e8s : nat64;
+  joined_community_fund_timestamp_seconds : opt nat64;
   retrieved_at_timestamp_seconds : nat64;
   voting_power : nat64;
   age_seconds : nat64;
@@ -182,16 +204,25 @@ type NeuronStakeTransfer = record {
   transfer_timestamp : nat64;
   block_height : nat64;
 };
-type NodeProvider = record { id : opt principal };
+type NodeProvider = record {
+  id : opt principal;
+  reward_account : opt AccountIdentifier;
+};
 type Operation = variant {
   RemoveHotKey : RemoveHotKey;
   AddHotKey : AddHotKey;
   StopDissolving : record {};
   StartDissolving : record {};
   IncreaseDissolveDelay : IncreaseDissolveDelay;
+  JoinCommunityFund : record {};
   SetDissolveTimestamp : SetDissolveTimestamp;
 };
-type Proposal = record { url : text; action : opt Action; summary : text };
+type Proposal = record {
+  url : text;
+  title : opt text;
+  action : opt Action;
+  summary : text;
+};
 type ProposalData = record {
   id : opt NeuronId;
   failure_reason : opt GovernanceError;
@@ -260,18 +291,26 @@ type Tally = record {
   total : nat64;
   timestamp_seconds : nat64;
 };
+type UpdateNodeProvider = record { reward_account : opt AccountIdentifier };
 service : (Governance) -> {
   claim_gtc_neurons : (principal, vec NeuronId) -> (Result);
   claim_or_refresh_neuron_from_account : (ClaimOrRefreshNeuronFromAccount) -> (
       ClaimOrRefreshNeuronFromAccountResponse,
     );
   get_full_neuron : (nat64) -> (Result_2) query;
+  get_full_neuron_by_id_or_subaccount : (NeuronIdOrSubaccount) -> (
+      Result_2,
+    ) query;
   get_neuron_ids : () -> (vec nat64) query;
   get_neuron_info : (nat64) -> (Result_3) query;
+  get_neuron_info_by_id_or_subaccount : (NeuronIdOrSubaccount) -> (
+      Result_3,
+    ) query;
   get_pending_proposals : () -> (vec ProposalInfo) query;
   get_proposal_info : (nat64) -> (opt ProposalInfo) query;
   list_neurons : (ListNeurons) -> (ListNeuronsResponse) query;
   list_proposals : (ListProposalInfo) -> (ListProposalInfoResponse) query;
   manage_neuron : (ManageNeuron) -> (ManageNeuronResponse);
   transfer_gtc_neuron : (NeuronId, NeuronId) -> (Result);
+  update_node_provider : (UpdateNodeProvider) -> (Result) query;
 }

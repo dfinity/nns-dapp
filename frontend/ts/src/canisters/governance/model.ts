@@ -89,8 +89,10 @@ export type DissolveState =
   | { DissolveDelaySeconds: bigint }
   | { WhenDissolvedTimestampSeconds: bigint };
 export interface ExecuteNnsFunction {
-  nnsFunction: number;
-  payload: ArrayBuffer;
+  nnsFunctionId: number;
+  nnsFunctionName: Option<string>;
+  payload: Option<Record<string, unknown>>;
+  payloadBytes: ArrayBuffer;
 }
 export interface Follow {
   topic: Topic;
@@ -199,6 +201,7 @@ export interface Neuron {
   neuronFees: E8s;
   hotKeys: Array<PrincipalString>;
   accountIdentifier: AccountIdentifier;
+  joinedCommunityFundTimestampSeconds: Option<bigint>;
   dissolveState: Option<DissolveState>;
   followees: Array<Followees>;
 }
@@ -217,6 +220,7 @@ export interface NeuronInfo {
   recentBallots: Array<BallotInfo>;
   createdTimestampSeconds: bigint;
   state: NeuronState;
+  joinedCommunityFundTimestampSeconds: Option<bigint>;
   retrievedAtTimestampSeconds: bigint;
   votingPower: bigint;
   ageSeconds: bigint;
@@ -229,6 +233,7 @@ export interface NeuronInfoForHw {
 }
 export interface NodeProvider {
   id: Option<PrincipalString>;
+  rewardAccount: Option<AccountIdentifier>;
 }
 export type Operation =
   | { RemoveHotKey: RemoveHotKey }
@@ -236,8 +241,10 @@ export type Operation =
   | { StopDissolving: Record<string, never> }
   | { StartDissolving: Record<string, never> }
   | { IncreaseDissolveDelay: IncreaseDissolveDelay }
+  | { JoinCommunityFund: Record<string, never> }
   | { SetDissolveTimestamp: SetDissolveTimestamp };
 export interface Proposal {
+  title: Option<string>;
   url: string;
   action: Option<Action>;
   summary: string;
@@ -372,6 +379,7 @@ export enum Topic {
   SubnetManagement = 7,
   NetworkCanisterManagement = 8,
   Kyc = 9,
+  NodeProviderRewards = 10,
 }
 
 export interface AddHotKeyRequest {
@@ -434,8 +442,21 @@ export interface DisburseToNeuronRequest {
   nonce: bigint;
 }
 
+export interface JoinCommunityFundRequest {
+  neuronId: NeuronId;
+}
+
+export interface MakeProposalRequest {
+  neuronId: NeuronId;
+  title: Option<string>;
+  url: string;
+  summary: string;
+  action: Action;
+}
+
 export interface MakeMotionProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   url: string;
   text: string;
   summary: string;
@@ -443,6 +464,7 @@ export interface MakeMotionProposalRequest {
 
 export interface MakeNetworkEconomicsProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   summary: string;
   url: string;
   networkEconomics: NetworkEconomics;
@@ -450,6 +472,7 @@ export interface MakeNetworkEconomicsProposalRequest {
 
 export interface MakeRewardNodeProviderProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   summary: string;
   url: string;
   nodeProvider: PrincipalString;
@@ -459,9 +482,19 @@ export interface MakeRewardNodeProviderProposalRequest {
 
 export interface MakeSetDefaultFolloweesProposalRequest {
   neuronId: NeuronId;
+  title: Option<string>;
   summary: string;
   url: string;
   followees: Array<Followees>;
+}
+
+export interface MakeExecuteNnsFunctionProposalRequest {
+  neuronId: NeuronId;
+  title: Option<string>;
+  summary: string;
+  url: string;
+  nnsFunction: number;
+  payload: ArrayBuffer;
 }
 
 export interface DisburseToNeuronResponse {
@@ -473,8 +506,10 @@ export interface SpawnResponse {
 export type EmptyResponse = { Ok: null } | { Err: GovernanceError };
 
 export default interface ServiceInterface {
-  getNeuron: (neuronId: NeuronId) => Promise<Option<NeuronInfo>>;
-  getNeurons: () => Promise<Array<NeuronInfo>>;
+  getNeurons: (
+    certified: boolean,
+    neuronIds?: NeuronId[]
+  ) => Promise<Array<NeuronInfo>>;
   getNeuronsForHW: () => Promise<Array<NeuronInfoForHw>>;
   getPendingProposals: () => Promise<Array<ProposalInfo>>;
   getProposalInfo: (proposalId: bigint) => Promise<Option<ProposalInfo>>;
@@ -487,6 +522,9 @@ export default interface ServiceInterface {
   stopDissolving: (request: StopDissolvingRequest) => Promise<EmptyResponse>;
   increaseDissolveDelay: (
     request: IncreaseDissolveDelayRequest
+  ) => Promise<EmptyResponse>;
+  joinCommunityFund: (
+    request: JoinCommunityFundRequest
   ) => Promise<EmptyResponse>;
   follow: (request: FollowRequest) => Promise<EmptyResponse>;
   mergeMaturity: (
@@ -510,6 +548,9 @@ export default interface ServiceInterface {
   ) => Promise<MakeProposalResponse>;
   makeSetDefaultFolloweesProposal: (
     request: MakeSetDefaultFolloweesProposalRequest
+  ) => Promise<MakeProposalResponse>;
+  makeExecuteNnsFunctionProposal: (
+    request: MakeExecuteNnsFunctionProposalRequest
   ) => Promise<MakeProposalResponse>;
   claimOrRefreshNeuron: (
     request: ClaimOrRefreshNeuronRequest

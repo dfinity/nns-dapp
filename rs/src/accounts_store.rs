@@ -1,10 +1,11 @@
+use crate::STATE;
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionError, MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
-use candid::{CandidType, Decode};
+use candid::CandidType;
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha256::Sha256;
@@ -19,15 +20,15 @@ use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::cmp::{min, Ordering};
 use std::collections::{HashMap, VecDeque};
-use std::iter::FromIterator;
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
+use crate::metrics_encoder::MetricsEncoder;
 
 type TransactionIndex = u64;
 
 #[derive(Default)]
 pub struct AccountsStore {
-    // TODO: Use AccountIdentifier directly as the key for this HashMap
+    // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts: HashMap<Vec<u8>, Account>,
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
 
@@ -36,14 +37,13 @@ pub struct AccountsStore {
     block_height_synced_up_to: Option<BlockHeight>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
 
-    accounts_count: u64,
     sub_accounts_count: u64,
     hardware_wallet_accounts_count: u64,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize)]
 enum AccountWrapper {
     SubAccount(AccountIdentifier, u8), // Account Identifier + Sub Account Identifier
     HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
@@ -148,7 +148,7 @@ pub enum CreateSubAccountResponse {
     NameTooLong,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct RenameSubAccountRequest {
     account_identifier: AccountIdentifier,
     new_name: String,
@@ -162,7 +162,7 @@ pub enum RenameSubAccountResponse {
     NameTooLong,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct RegisterHardwareWalletRequest {
     name: String,
     principal: PrincipalId,
@@ -199,7 +199,7 @@ pub struct HardwareWalletAccountDetails {
     pub account_identifier: AccountIdentifier,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct AttachCanisterRequest {
     name: String,
     canister_id: CanisterId,
@@ -215,7 +215,7 @@ pub enum AttachCanisterResponse {
     AccountNotFound,
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct DetachCanisterRequest {
     canister_id: CanisterId,
 }
@@ -335,7 +335,6 @@ impl AccountsStore {
             let new_account = Account::new(caller, account_identifier);
             self.accounts
                 .insert(account_identifier.to_vec(), new_account);
-            self.accounts_count += 1;
 
             true
         };
@@ -906,7 +905,7 @@ impl AccountsStore {
             Duration::from_nanos(timestamp_now_nanos - self.last_ledger_sync_timestamp_nanos);
 
         Stats {
-            accounts_count: self.accounts_count,
+            accounts_count: self.accounts.len() as u64,
             sub_accounts_count: self.sub_accounts_count,
             hardware_wallet_accounts_count: self.hardware_wallet_accounts_count,
             transactions_count: self.transactions.len() as u64,
@@ -1390,7 +1389,8 @@ impl StableState for AccountsStore {
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         #[allow(clippy::type_complexity)]
         let (
-            accounts_vec,
+            accounts,
+            hardware_wallets_and_sub_accounts,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1398,7 +1398,8 @@ impl StableState for AccountsStore {
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         ): (
-            Vec<(Vec<u8>, Vec<u8>)>,
+            HashMap<Vec<u8>, Account>,
+            HashMap<AccountIdentifier, AccountWrapper>,
             VecDeque<Transaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
@@ -1407,54 +1408,20 @@ impl StableState for AccountsStore {
             u64,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
-        let mut accounts_count: u64 = 0;
         let mut sub_accounts_count: u64 = 0;
         let mut hardware_wallet_accounts_count: u64 = 0;
-
-        let transactions = VecDeque::from_iter(transactions);
-
-        let mut accounts = HashMap::new();
-        let mut hardware_wallets_and_sub_accounts = HashMap::new();
-
-        for (account_identifier, account_bytes) in accounts_vec {
-            let account =
-                Decode!(&account_bytes, Account).expect("Failed to decode AccountIdentifier");
-            for (sub_account_identifier, sub_account) in account.sub_accounts.iter() {
-                hardware_wallets_and_sub_accounts.insert(
-                    sub_account.account_identifier,
-                    AccountWrapper::SubAccount(account.account_identifier, *sub_account_identifier),
-                );
-            }
+        for account in accounts.values() {
             sub_accounts_count += account.sub_accounts.len() as u64;
-
-            for hardware_wallet_account in account.hardware_wallet_accounts.iter() {
-                hardware_wallets_and_sub_accounts
-                    .entry(AccountIdentifier::from(hardware_wallet_account.principal))
-                    .and_modify(|account_wrapper| {
-                        if let AccountWrapper::HardwareWallet(account_identifiers) = account_wrapper
-                        {
-                            account_identifiers.push(account.account_identifier);
-                        }
-                    })
-                    .or_insert_with(|| {
-                        AccountWrapper::HardwareWallet(vec![account.account_identifier])
-                    });
-            }
             hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
-
-            accounts.insert(account_identifier.to_vec(), account);
-            accounts_count += 1;
         }
 
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
-
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
-            accounts_count,
             sub_accounts_count,
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
@@ -1568,7 +1535,7 @@ fn sort_canisters(canisters: &mut Vec<NamedCanister>) {
     });
 }
 
-#[derive(Deserialize)]
+#[derive(CandidType, Deserialize)]
 pub struct GetTransactionsRequest {
     account_identifier: AccountIdentifier,
     offset: u32,
@@ -1610,7 +1577,39 @@ pub enum TransferResult {
     },
 }
 
-#[derive(CandidType)]
+pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
+    STATE.with(|s| {
+        let stats = s.accounts_store.borrow().get_stats(); 
+        w.encode_gauge(
+            "neurons_created_count",
+            stats.neurons_created_count as f64,
+            "Number of neurons created.",
+        )?;
+        w.encode_gauge(
+            "neurons_topped_up_count",
+            stats.neurons_topped_up_count as f64,
+            "Number of neurons topped up by the canister.",
+        )?;
+        w.encode_gauge(
+            "transactions_count",
+            stats.transactions_count as f64,
+            "Number of transactions processed by the canister.",
+        )?;
+        w.encode_gauge(
+            "accounts_count",
+            stats.accounts_count as f64,
+            "Number of accounts created.",
+        )?;
+        w.encode_gauge(
+            "sub_accounts_count",
+            stats.sub_accounts_count as f64,
+            "Number of sub accounts created.",
+        )?;
+        Ok(())
+    })
+}
+
+#[derive(CandidType, Deserialize)]
 pub struct Stats {
     accounts_count: u64,
     sub_accounts_count: u64,

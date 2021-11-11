@@ -16,11 +16,9 @@ import {
   DisburseToNeuronRequest,
   FollowRequest,
   IncreaseDissolveDelayRequest,
+  JoinCommunityFundRequest,
   ListProposalsRequest,
-  MakeMotionProposalRequest,
-  MakeNetworkEconomicsProposalRequest,
-  MakeRewardNodeProviderProposalRequest,
-  MakeSetDefaultFolloweesProposalRequest,
+  MakeProposalRequest,
   ManageNeuron,
   MergeMaturityRequest,
   NeuronIdOrSubaccount,
@@ -56,6 +54,7 @@ import { ManageNeuron as PbManageNeuron } from "../../proto/governance_pb";
 import {
   NeuronId as PbNeuronId,
   PrincipalId as PbPrincipalId,
+  ProposalId as PbProposalId,
 } from "../../proto/base_types_pb";
 import { UnsupportedValueError } from "../../utils";
 export default class RequestConverters {
@@ -136,15 +135,15 @@ export default class RequestConverters {
 
   public fromMergeMaturityRequest = (
     request: MergeMaturityRequest
-  ): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      MergeMaturity: { percentage_to_merge: request.percentageToMerge },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  ): PbManageNeuron => {
+    const mergeMaturity = new PbManageNeuron.MergeMaturity();
+    mergeMaturity.setPercentageToMerge(request.percentageToMerge);
+    const manageNeuron = new PbManageNeuron();
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    manageNeuron.setNeuronId(neuronId);
+    manageNeuron.setMergeMaturity(mergeMaturity);
+    return manageNeuron;
   };
 
   public fromRemoveHotKeyRequest = (
@@ -224,34 +223,38 @@ export default class RequestConverters {
     return result;
   };
 
-  public fromFollowRequest = (request: FollowRequest): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      Follow: {
-        topic: request.topic,
-        followees: request.followees.map(this.fromNeuronId),
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  public fromFollowRequest = (request: FollowRequest): PbManageNeuron => {
+    const follow = new PbManageNeuron.Follow();
+    follow.setTopic(request.topic);
+    follow.setFolloweesList(
+      request.followees.map((followee) => {
+        const neuronId = new PbNeuronId();
+        neuronId.setId(followee.toString());
+        return neuronId;
+      })
+    );
+    const manageNeuron = new PbManageNeuron();
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    manageNeuron.setNeuronId(neuronId);
+    manageNeuron.setFollow(follow);
+    return manageNeuron;
   };
 
   public fromRegisterVoteRequest = (
     request: RegisterVoteRequest
-  ): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      RegisterVote: {
-        vote: request.vote,
-        proposal: [this.fromProposalId(request.proposal)],
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
+  ): PbManageNeuron => {
+    const registerVote = new PbManageNeuron.RegisterVote();
+    registerVote.setVote(request.vote);
+    const proposal = new PbProposalId();
+    proposal.setId(request.proposal.toString());
+    registerVote.setProposal(proposal);
+    const manageNeuron = new PbManageNeuron();
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    manageNeuron.setNeuronId(neuronId);
+    manageNeuron.setRegisterVote(registerVote);
+    return manageNeuron;
   };
 
   public fromSpawnRequest = (request: SpawnRequest): PbManageNeuron => {
@@ -292,9 +295,8 @@ export default class RequestConverters {
 
     if (request.toAccountId) {
       const toAccountIdentifier = new PbAccountIdentifier();
-      // TODO(EXC-452): Remove the "slice(4,)" once NNS1-680 is addressed.
       toAccountIdentifier.setHash(
-        Uint8Array.from(Buffer.from(request.toAccountId, "hex")).slice(4)
+        Uint8Array.from(Buffer.from(request.toAccountId, "hex"))
       );
       disburse.setToAccount(toAccountIdentifier);
     }
@@ -336,14 +338,12 @@ export default class RequestConverters {
     };
   };
 
-  public fromMakeMotionProposalRequest = (
-    request: MakeMotionProposalRequest
+  public fromJoinCommunityFundRequest = (
+    request: JoinCommunityFundRequest
   ): RawManageNeuron => {
     const rawCommand: RawCommand = {
-      MakeProposal: {
-        url: request.url,
-        summary: request.summary,
-        action: [{ Motion: { motion_text: request.text } }],
+      Configure: {
+        operation: [{ JoinCommunityFund: {} }],
       },
     };
     return {
@@ -353,90 +353,15 @@ export default class RequestConverters {
     };
   };
 
-  public fromMakeNetworkEconomicsProposalRequest = (
-    request: MakeNetworkEconomicsProposalRequest
-  ): RawManageNeuron => {
-    const networkEconomics = request.networkEconomics;
-    const rawCommand: RawCommand = {
-      MakeProposal: {
-        url: request.url,
-        summary: request.summary,
-        action: [
-          {
-            ManageNetworkEconomics: {
-              neuron_minimum_stake_e8s: networkEconomics.neuronMinimumStake,
-              max_proposals_to_keep_per_topic:
-                networkEconomics.maxProposalsToKeepPerTopic,
-              neuron_management_fee_per_proposal_e8s:
-                networkEconomics.neuronManagementFeePerProposal,
-              reject_cost_e8s: networkEconomics.rejectCost,
-              transaction_fee_e8s: networkEconomics.transactionFee,
-              neuron_spawn_dissolve_delay_seconds:
-                networkEconomics.neuronSpawnDissolveDelaySeconds,
-              minimum_icp_xdr_rate: networkEconomics.minimumIcpXdrRate,
-              maximum_node_provider_rewards_e8s:
-                networkEconomics.maximumNodeProviderRewards,
-            },
-          },
-        ],
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
-  };
-
-  public fromMakeRewardNodeProviderProposalRequest = (
-    request: MakeRewardNodeProviderProposalRequest
+  public fromMakeProposalRequest = (
+    request: MakeProposalRequest
   ): RawManageNeuron => {
     const rawCommand: RawCommand = {
       MakeProposal: {
         url: request.url,
+        title: request.title != null ? [request.title] : [],
         summary: request.summary,
-        action: [
-          {
-            RewardNodeProvider: {
-              amount_e8s: request.amount,
-              node_provider: [
-                {
-                  id: [Principal.fromText(request.nodeProvider)],
-                },
-              ],
-              reward_mode:
-                request.rewardMode != null
-                  ? [this.fromRewardMode(request.rewardMode)]
-                  : [],
-            },
-          },
-        ],
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
-  };
-
-  public fromMakeSetDefaultFolloweesProposalRequest = (
-    request: MakeSetDefaultFolloweesProposalRequest
-  ): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      MakeProposal: {
-        url: request.url,
-        summary: request.summary,
-        action: [
-          {
-            SetDefaultFollowees: {
-              default_followees: request.followees.map((f) => [
-                f.topic as number,
-                this.fromFollowees(f.followees),
-              ]),
-            },
-          },
-        ],
+        action: [this.fromAction(request.action)],
       },
     };
     return {
@@ -481,8 +406,8 @@ export default class RequestConverters {
       const executeNnsFunction = action.ExecuteNnsFunction;
       return {
         ExecuteNnsFunction: {
-          nns_function: executeNnsFunction.nnsFunction,
-          payload: arrayBufferToArrayOfNumber(executeNnsFunction.payload),
+          nns_function: executeNnsFunction.nnsFunctionId,
+          payload: arrayBufferToArrayOfNumber(executeNnsFunction.payloadBytes),
         },
       };
     }
@@ -660,6 +585,7 @@ export default class RequestConverters {
       return {
         MakeProposal: {
           url: makeProposal.url,
+          title: [],
           action: makeProposal.action
             ? [this.fromAction(makeProposal.action)]
             : [],
@@ -734,6 +660,9 @@ export default class RequestConverters {
         },
       };
     }
+    if ("JoinCommunityFund" in operation) {
+      return operation;
+    }
     if ("SetDissolveTimestamp" in operation) {
       const setDissolveTimestamp = operation.SetDissolveTimestamp;
       return {
@@ -765,6 +694,10 @@ export default class RequestConverters {
   private fromNodeProvider = (nodeProvider: NodeProvider): RawNodeProvider => {
     return {
       id: nodeProvider.id != null ? [Principal.fromText(nodeProvider.id)] : [],
+      reward_account:
+        nodeProvider.rewardAccount != null
+          ? [this.fromAccountIdentifier(nodeProvider.rewardAccount)]
+          : [],
     };
   };
 

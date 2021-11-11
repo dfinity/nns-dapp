@@ -12,8 +12,10 @@ import ServiceInterface, {
   EmptyResponse,
   FollowRequest,
   IncreaseDissolveDelayRequest,
+  JoinCommunityFundRequest,
   ListProposalsRequest,
   ListProposalsResponse,
+  MakeExecuteNnsFunctionProposalRequest,
   MakeMotionProposalRequest,
   MakeNetworkEconomicsProposalRequest,
   MakeProposalResponse,
@@ -48,6 +50,7 @@ export default class Service implements ServiceInterface {
   private readonly agent: Agent;
   private readonly canisterId: Principal;
   private readonly service: _SERVICE;
+  private readonly certifiedService: _SERVICE;
   private readonly myPrincipal: Principal;
   private readonly requestConverters: RequestConverters;
   private readonly responseConverters: ResponseConverters;
@@ -56,37 +59,28 @@ export default class Service implements ServiceInterface {
     agent: Agent,
     canisterId: Principal,
     service: _SERVICE,
+    certifiedService: _SERVICE,
     myPrincipal: Principal
   ) {
     this.agent = agent;
     this.canisterId = canisterId;
     this.service = service;
+    this.certifiedService = certifiedService;
     this.myPrincipal = myPrincipal;
     this.requestConverters = new RequestConverters(myPrincipal);
     this.responseConverters = new ResponseConverters();
   }
 
-  public getNeuron = async (
-    neuronId: NeuronId
-  ): Promise<Option<NeuronInfo>> => {
+  public getNeurons = async (
+    certified = true,
+    neuronIds?: NeuronId[]
+  ): Promise<Array<NeuronInfo>> => {
     const rawRequest: ListNeurons = {
-      neuron_ids: [neuronId],
-      include_neurons_readable_by_caller: false,
+      neuron_ids: neuronIds ?? [],
+      include_neurons_readable_by_caller: neuronIds ? false : true,
     };
-    const rawResponse = await this.service.list_neurons(rawRequest);
-    const response = this.responseConverters.toArrayOfNeuronInfo(
-      rawResponse,
-      this.myPrincipal
-    );
-    return response.length > 0 ? response[0] : null;
-  };
-
-  public getNeurons = async (): Promise<Array<NeuronInfo>> => {
-    const rawRequest: ListNeurons = {
-      neuron_ids: [],
-      include_neurons_readable_by_caller: true,
-    };
-    const rawResponse = await this.service.list_neurons(rawRequest);
+    const serviceToUse = certified ? this.certifiedService : this.service;
+    const rawResponse = await serviceToUse.list_neurons(rawRequest);
     return this.responseConverters.toArrayOfNeuronInfo(
       rawResponse,
       this.myPrincipal
@@ -217,17 +211,35 @@ export default class Service implements ServiceInterface {
     return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
-  public follow = async (request: FollowRequest): Promise<EmptyResponse> => {
-    const rawRequest = this.requestConverters.fromFollowRequest(request);
+  public joinCommunityFund = async (
+    request: JoinCommunityFundRequest
+  ): Promise<EmptyResponse> => {
+    const rawRequest =
+      this.requestConverters.fromJoinCommunityFundRequest(request);
     await this.service.manage_neuron(rawRequest);
+    return { Ok: null };
+  };
+
+  public follow = async (request: FollowRequest): Promise<EmptyResponse> => {
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters.fromFollowRequest(request).serializeBinary()
+    );
+
     return { Ok: null };
   };
 
   public registerVote = async (
     request: RegisterVoteRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest = this.requestConverters.fromRegisterVoteRequest(request);
-    await this.service.manage_neuron(rawRequest);
+    await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      this.requestConverters.fromRegisterVoteRequest(request).serializeBinary()
+    );
     return { Ok: null };
   };
 
@@ -298,15 +310,31 @@ export default class Service implements ServiceInterface {
     request: MergeMaturityRequest
   ): Promise<MergeMaturityResponse> => {
     const rawRequest = this.requestConverters.fromMergeMaturityRequest(request);
-    const rawResponse = await this.service.manage_neuron(rawRequest);
-    return this.responseConverters.toMergeMaturityResponse(rawResponse);
+    const rawResponse = await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      rawRequest.serializeBinary()
+    );
+    const response = PbManageNeuronResponse.deserializeBinary(rawResponse);
+
+    return this.responseConverters.toMergeMaturityResponse(response);
   };
 
   public makeMotionProposal = async (
     request: MakeMotionProposalRequest
   ): Promise<MakeProposalResponse> => {
-    const rawRequest =
-      this.requestConverters.fromMakeMotionProposalRequest(request);
+    const rawRequest = this.requestConverters.fromMakeProposalRequest({
+      neuronId: request.neuronId,
+      title: request.title,
+      url: request.url,
+      summary: request.summary,
+      action: {
+        Motion: {
+          motionText: request.text,
+        },
+      },
+    });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };
@@ -314,8 +342,15 @@ export default class Service implements ServiceInterface {
   public makeNetworkEconomicsProposal = async (
     request: MakeNetworkEconomicsProposalRequest
   ): Promise<MakeProposalResponse> => {
-    const rawRequest =
-      this.requestConverters.fromMakeNetworkEconomicsProposalRequest(request);
+    const rawRequest = this.requestConverters.fromMakeProposalRequest({
+      neuronId: request.neuronId,
+      title: request.title,
+      url: request.url,
+      summary: request.summary,
+      action: {
+        ManageNetworkEconomics: request.networkEconomics,
+      },
+    });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };
@@ -323,8 +358,22 @@ export default class Service implements ServiceInterface {
   public makeRewardNodeProviderProposal = async (
     request: MakeRewardNodeProviderProposalRequest
   ): Promise<MakeProposalResponse> => {
-    const rawRequest =
-      this.requestConverters.fromMakeRewardNodeProviderProposalRequest(request);
+    const rawRequest = this.requestConverters.fromMakeProposalRequest({
+      neuronId: request.neuronId,
+      title: request.title,
+      url: request.url,
+      summary: request.summary,
+      action: {
+        RewardNodeProvider: {
+          nodeProvider: {
+            id: request.nodeProvider,
+            rewardAccount: null,
+          },
+          rewardMode: request.rewardMode,
+          amountE8s: request.amount,
+        },
+      },
+    });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };
@@ -332,10 +381,38 @@ export default class Service implements ServiceInterface {
   public makeSetDefaultFolloweesProposal = async (
     request: MakeSetDefaultFolloweesProposalRequest
   ): Promise<MakeProposalResponse> => {
-    const rawRequest =
-      this.requestConverters.fromMakeSetDefaultFolloweesProposalRequest(
-        request
-      );
+    const rawRequest = this.requestConverters.fromMakeProposalRequest({
+      neuronId: request.neuronId,
+      title: request.title,
+      url: request.url,
+      summary: request.summary,
+      action: {
+        SetDefaultFollowees: {
+          defaultFollowees: request.followees,
+        },
+      },
+    });
+    const rawResponse = await this.service.manage_neuron(rawRequest);
+    return this.responseConverters.toMakeProposalResponse(rawResponse);
+  };
+
+  public makeExecuteNnsFunctionProposal = async (
+    request: MakeExecuteNnsFunctionProposalRequest
+  ): Promise<MakeProposalResponse> => {
+    const rawRequest = this.requestConverters.fromMakeProposalRequest({
+      neuronId: request.neuronId,
+      title: request.title,
+      url: request.url,
+      summary: request.summary,
+      action: {
+        ExecuteNnsFunction: {
+          nnsFunctionId: request.nnsFunction,
+          nnsFunctionName: null,
+          payload: {},
+          payloadBytes: request.payload,
+        },
+      },
+    });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
   };

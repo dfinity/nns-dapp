@@ -144,7 +144,7 @@ export default interface ServiceInterface {
   detachCanister: (
     request: DetachCanisterRequest
   ) => Promise<DetachCanisterResponse>;
-  getAccount: () => Promise<GetAccountResponse>;
+  getAccount: (certified: boolean) => Promise<GetAccountResponse>;
   getCanisters: () => Promise<Array<CanisterDetails>>;
   getIcpToCyclesConversionRate: () => Promise<bigint>;
   getMultiPartTransactionStatus: (
@@ -152,7 +152,8 @@ export default interface ServiceInterface {
     blockHeight: BlockHeight
   ) => Promise<MultiPartTransactionStatus>;
   getTransactions: (
-    request: GetTransactionsRequest
+    request: GetTransactionsRequest,
+    certified: boolean
   ) => Promise<GetTransactionsResponse>;
   registerHardwareWallet: (
     request: RegisterHardwareWalletRequest

@@ -29,15 +29,7 @@ class TabTitleAndContent extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: Responsive.isDesktop(context) |
-                            Responsive.isTablet(context)
-                        // ? TextStyle(fontSize: 50)
-                        // : TextStyle(fontSize: 25)
-                        ? context.textTheme.headline2
-                        : context.textTheme.headline6,
-                  ),
+                  Text(title, style: context.textTheme.headline2),
                   if (subtitle != null) ...[
                     SizedBox(
                       height: 10,

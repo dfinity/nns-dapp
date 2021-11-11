@@ -5,7 +5,8 @@
     "format": "prettier --write .",
     "update_candid": "bash ./update_candid.sh",
     "update_proto": "bash ./src/proto/update_proto.sh",
-    "ic-hardware-wallet-cli": "ts-node ./ic-hardware-wallet-cli.ts"
+    "ic-hardware-wallet-cli": "ts-node ./ic-hardware-wallet-cli.ts",
+    "test": "jest"
   },
   "dependencies": {
     "@dfinity/agent": "^0.9.1",
@@ -20,7 +21,7 @@
     "async": "^3.2.1",
     "borc": "^2.1.2",
     "browserify": "^17.0.0",
-    "buffer": "^5.4.3",
+    "buffer": "^6.0.3",
     "common-shakeify": "^0.6.2",
     "crc": "^3.8.0",
     "js-sha256": "0.9.0",
@@ -32,10 +33,15 @@
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.15.8",
+    "@trust/webcrypto": "^0.9.2",
     "@types/async": "^3.2.7",
+    "@types/jest": "^27.0.2",
     "@types/randombytes": "^2.0.0",
+    "@types/text-encoding": "0.0.36",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
+    "babel-jest": "^27.3.1",
     "chalk": "^4.1.2",
     "commander": "^8.2.0",
     "eslint": "^7.29.0",
@@ -43,9 +49,14 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
+    "jest": "^27.3.1",
+    "jest-mock-extended": "^2.0.4",
     "node-fetch": "^2.6.1",
     "prettier": "2.3.2",
+    "text-encoding": "^0.7.0",
+    "ts-jest": "^27.0.7",
     "ts-node": "^10.2.1",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "whatwg-fetch": "^3.6.2"
   }
 }

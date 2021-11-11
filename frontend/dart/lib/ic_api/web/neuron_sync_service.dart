@@ -12,29 +12,34 @@ class NeuronSyncService {
 
   NeuronSyncService({required this.serviceApi, required this.hiveBoxes});
 
-  Future<void> syncNeuron(String neuronId) async {
-    dynamic res =
-        (await promiseToFuture(serviceApi.getNeuron(neuronId.toBigInt.toJS)));
-    final string = stringify(res);
-    dynamic response = jsonDecode(string);
-    storeNeuron(response);
+  Future<void> sync({bool checkBalances = true}) async {
+    print("[${DateTime.now()}] Syncing neurons with a query call...");
+    await _sync(useUpdateCalls: false, checkBalances: false);
+
+    print("[${DateTime.now()}] Syncing neurons with an update call...");
+    _sync(useUpdateCalls: true, checkBalances: true)
+        .then((_) => {print("[${DateTime.now()}] Syncing neurons complete.")});
   }
 
-  Future<void> fetchNeurons([bool checkBalances = true]) async {
+  Future<void> _sync(
+      {required bool useUpdateCalls, bool checkBalances = true}) async {
     // This gets all neurons linked to the current user's principal, even those
     // with a stake of 0. If 'checkBalances' is true then we will query the
     // ledger for each neuron and refresh those whose stake does not match their
     // ledger balance. Neurons whose balances are too low are later discarded
     // during 'storeNeuron'.
-    dynamic res = (await promiseToFuture(serviceApi.getNeurons()));
-    if (checkBalances) {
-      checkNeuronBalances(res);
-    }
-
+    dynamic res =
+        (await promiseToFuture(serviceApi.getNeurons(useUpdateCalls)));
     final string = stringify(res);
-    // print("fetched neurons $string");
     dynamic response = (jsonDecode(string) as List<dynamic>).toList();
     response.forEach((e) => storeNeuron(e));
+
+    // ignore: deprecated_member_use
+    hiveBoxes.neurons.notifyChange();
+
+    if (checkBalances) {
+      _checkNeuronBalances(res);
+    }
   }
 
   Neuron? storeNeuron(dynamic e) {
@@ -42,10 +47,10 @@ class NeuronSyncService {
     final Neuron neuron;
     if (!hiveBoxes.neurons.containsKey(neuronId)) {
       neuron = Neuron.empty();
-      updateNeuron(neuron, neuronId, e);
+      _updateNeuron(neuron, neuronId, e);
     } else {
       neuron = hiveBoxes.neurons[neuronId]!;
-      updateNeuron(neuron, neuronId, e);
+      _updateNeuron(neuron, neuronId, e);
     }
     if (neuron.cachedNeuronStake.asE8s() > BigInt.from(TRANSACTION_FEE_E8S)) {
       hiveBoxes.neurons[neuronId] = neuron;
@@ -56,7 +61,7 @@ class NeuronSyncService {
     }
   }
 
-  void updateNeuron(Neuron neuron, String neuronId, dynamic res) {
+  void _updateNeuron(Neuron neuron, String neuronId, dynamic res) {
     neuron.id = neuronId;
     neuron.votingPower = ICP.fromE8s(res['votingPower'].toString().toBigInt);
     neuron.state = NeuronState.values[res['state'].toInt()];
@@ -66,7 +71,7 @@ class NeuronSyncService {
 
     final fullNeuron = res['fullNeuron'];
     if (fullNeuron != null) {
-      parseFullNeuron(fullNeuron, neuron);
+      _parseFullNeuron(fullNeuron, neuron);
     }
     // ignore: deprecated_member_use
     hiveBoxes.neurons.notifyChange();
@@ -78,7 +83,7 @@ class NeuronSyncService {
     hiveBoxes.neurons.notifyChange();
   }
 
-  void parseFullNeuron(dynamic fullNeuron, Neuron neuron) {
+  void _parseFullNeuron(dynamic fullNeuron, Neuron neuron) {
     final dissolveState = fullNeuron['dissolveState'];
     if (dissolveState != null) {
       neuron.whenDissolvedTimestampSeconds =
@@ -86,21 +91,22 @@ class NeuronSyncService {
     }
     neuron.cachedNeuronStake =
         ICP.fromE8s(fullNeuron['cachedNeuronStake'].toString().toBigInt);
-    neuron.recentBallots = parseRecentBallots(fullNeuron['recentBallots']);
+    neuron.recentBallots = _parseRecentBallots(fullNeuron['recentBallots']);
     neuron.neuronFees =
         ICP.fromE8s(fullNeuron['neuronFees'].toString().toBigInt);
     neuron.maturityICPEquivalent =
         ICP.fromE8s(fullNeuron['maturityE8sEquivalent'].toString().toBigInt);
     neuron.createdTimestampSeconds =
         fullNeuron['createdTimestampSeconds'].toString();
-    neuron.followees = parseFollowees(fullNeuron['followees']);
+    neuron.followees = _parseFollowees(fullNeuron['followees']);
     neuron.isCurrentUserController = fullNeuron['isCurrentUserController'];
     neuron.controller = fullNeuron['controller'];
     neuron.accountIdentifier = fullNeuron['accountIdentifier'];
+    neuron.joinedCommunityFundTimestampSeconds = fullNeuron['joinedCommunityFundTimestampSeconds']?.toString().toBigInt;
     neuron.hotkeys = fullNeuron['hotKeys'].cast<String>();
   }
 
-  List<BallotInfo> parseRecentBallots(List<dynamic> recentBallots) => [
+  List<BallotInfo> _parseRecentBallots(List<dynamic> recentBallots) => [
         ...recentBallots.map((e) {
           return BallotInfo()
             ..proposalId = e['proposalId'].toString()
@@ -108,7 +114,7 @@ class NeuronSyncService {
         })
       ];
 
-  List<Followee> parseFollowees(List<dynamic> folowees) {
+  List<Followee> _parseFollowees(List<dynamic> folowees) {
     final map = folowees.associate((e) => MapEntry(
         Topic.values[e['topic'] as int],
         (e['followees'] as List<dynamic>).cast<String>()));
@@ -118,11 +124,13 @@ class NeuronSyncService {
       ..followees = map[e] ?? []);
   }
 
-  void checkNeuronBalances(dynamic neurons) async {
-    final bool anyRefreshed = await promiseToFuture(serviceApi.checkNeuronBalances(neurons));
+  void _checkNeuronBalances(dynamic neurons) async {
+    final bool anyRefreshed =
+        await promiseToFuture(serviceApi.checkNeuronBalances(neurons));
 
     if (anyRefreshed) {
-      fetchNeurons(false);
+      print("Found neurons needing to be refreshed. Resyncing neurons...");
+      sync(checkBalances: false);
     }
   }
 }

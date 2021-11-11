@@ -1,10 +1,8 @@
-import 'package:nns_dapp/data/icp.dart';
 import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
 import 'package:nns_dapp/ui/_components/constants.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neurons/tab/neuron_row.dart';
-import 'package:nns_dapp/ui/transaction/wallet/confirm_transactions_widget.dart';
 import 'package:nns_dapp/ui/transaction/wallet/select_destination_wallet_page.dart';
 import 'package:nns_dapp/ui/transaction/wallet/select_neuron_top_up_source_wallet_page.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
@@ -21,12 +19,48 @@ class NeuronStateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var joinCommunityButton = ElevatedButton(
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Text(
+          "Join Community Fund",
+          style: TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
+        ),
+      ),
+      onPressed: () {
+        OverlayBaseWidget.show(
+            context,
+            ConfirmDialog(
+              title: "Confirm",
+              description:
+                  'Are you sure you want this neuron to join the community fund? This action is irreversible',
+              onConfirm: () async {
+                await context.callUpdate(
+                    () => context.icApi.joinCommunityFund(neuron: neuron));
+              },
+            ));
+      }.takeIf((e) =>
+          !neuron.isCommunityFundNeuron && neuron.isCurrentUserController),
+    );
     var buttonGroup = [
       // adds left-padding when non-mobile
       if (!Responsive.isMobile(context))
         Expanded(
           child: Container(),
         ),
+
+      // adds left-padding when non-mobile
+      // creates vertical or horizontal gap based on viewport size
+      if (Responsive.isMobile(context))
+        SizedBox(height: 8)
+      else
+        SizedBox(width: 8),
+
+      Visibility(
+        visible: Responsive.isMobile(context),
+        child: joinCommunityButton,
+      ),
+      if (Responsive.isMobile(context)) SizedBox(height: 8),
       ElevatedButton(
           onPressed: () {
             OverlayBaseWidget.show(
@@ -88,15 +122,26 @@ class NeuronStateCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NeuronRow(neuron: neuron),
-            RichText(
-                text: TextSpan(style: context.textTheme.subtitle2, children: [
-              TextSpan(
-                  text: neuron.createdTimestampSeconds
-                      .secondsToDateTime()
-                      .dayFormat,
-                  style: context.textTheme.subtitle2),
-              TextSpan(text: " - Staked"),
-            ])),
+            SmallFormDivider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                RichText(
+                    text:
+                        TextSpan(style: context.textTheme.subtitle2, children: [
+                  TextSpan(
+                      text: neuron.createdTimestampSeconds
+                          .secondsToDateTime()
+                          .dayFormat,
+                      style: context.textTheme.subtitle2),
+                  TextSpan(text: " - Staked"),
+                ])),
+                Visibility(
+                  visible: !Responsive.isMobile(context),
+                  child: joinCommunityButton,
+                ),
+              ],
+            ),
             if (neuron.dissolveDelaySeconds > SIX_MONTHS_IN_SECONDS)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -132,9 +177,7 @@ class NeuronStateCard extends StatelessWidget {
                                     left: MediaQuery.of(context).size.width *
                                         0.35,
                                     right: 600.0),
-                        textStyle: Responsive.isMobile(context)
-                            ? context.textTheme.headline5
-                            : context.textTheme.headline4,
+                        textStyle: context.textTheme.headline4,
                         message:
                             " Calculated as : \n ICP stake x Dissolve Delay Bonus x Age Bonus : \n"
                             " (${neuron.stake.asDouble().toStringAsFixed(3)}) x (${neuron.dissolveDelayMultiplier.toStringAsFixed(3)}) x (${neuron.ageBonusMultiplier.toStringAsFixed(3)})",
@@ -236,31 +279,14 @@ class NeuronStateCard extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              if (neuron.controller != icApi.getPrincipal()) {
-                // This is a disburse for a HW wallet account.
-                // Currently, disbursing is only supported to the neuron's controller.
-                // TODO(EXC-452): Remove this restriction once NNS1-680 is deployed.
-                OverlayBaseWidget.show(
-                    context,
-                    WizardOverlay(
-                        rootTitle: "Review Transaction",
-                        rootWidget: ConfirmTransactionWidget(
-                            // if we're disbursing, no fee?
-                            fee: ICP.zero,
-                            amount: this.neuron.stake,
-                            source: this.neuron,
-                            destination:
-                                "Self (${icApi.principalToAccountIdentifier(neuron.controller)}")));
-              } else {
-                OverlayBaseWidget.show(
-                    context,
-                    WizardOverlay(
-                      rootTitle: 'Disburse Neuron',
-                      rootWidget: SelectDestinationAccountPage(
-                        source: neuron,
-                      ),
-                    ));
-              }
+              OverlayBaseWidget.show(
+                  context,
+                  WizardOverlay(
+                    rootTitle: 'Disburse Neuron',
+                    rootWidget: SelectDestinationAccountPage(
+                      source: neuron,
+                    ),
+                  ));
             }.takeIf((e) => disburseEnabled));
       case NeuronState.UNSPECIFIED:
         return ElevatedButton(child: Text(""), onPressed: () {});

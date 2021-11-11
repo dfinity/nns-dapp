@@ -61,8 +61,7 @@ class _AttachHardwareWalletWidgetState
                   context.callUpdate(() async {
                     await context.icApi.registerHardwareWallet(
                         name: widget.name, ledgerIdentity: ledgerIdentity);
-                    await 0.2.seconds.delay;
-                    await context.icApi.refreshAccounts();
+                    await context.icApi.refreshAccounts(waitForFullSync: true);
                     final accountIdentifier =
                         getAccountIdentifier(ledgerIdentity);
                     final account = context.boxes.accounts.hardwareWallets

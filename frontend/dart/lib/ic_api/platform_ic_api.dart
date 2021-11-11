@@ -20,7 +20,7 @@ abstract class AbstractPlatformICApi {
 
   Future<void> buildServices(dynamic identity);
 
-  Future<void> refreshAccounts();
+  Future<void> refreshAccounts({bool waitForFullSync = false});
 
   Future<void> acquireICPTs(
       {required String accountIdentifier, required BigInt doms});
@@ -44,6 +44,8 @@ abstract class AbstractPlatformICApi {
 
   Future<Result<Unit, Exception>> increaseDissolveDelay(
       {required Neuron neuron, required int additionalDissolveDelaySeconds});
+
+  Future<Result<Unit, Exception>> joinCommunityFund({required Neuron neuron});
 
   Future<Neuron> spawnNeuron({required Neuron neuron});
 
@@ -141,4 +143,6 @@ abstract class AbstractPlatformICApi {
   Future<void> showPrincipalAndAddressOnDevice(Account account);
 
   String principalToAccountIdentifier(String principal);
+
+  Future<Proposal> getFullProposalInfo({required Proposal proposal});
 }
