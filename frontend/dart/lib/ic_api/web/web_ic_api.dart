@@ -476,6 +476,24 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<Result<Unit, Exception>> splitNeuron({required Neuron neuron, required ICPTs amount}) async {
+    try {
+      final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
+
+      await promiseToFuture(serviceApi!.split(
+        identity,
+        SplitNeuronRequest(
+          neuronId: toJSBigInt(neuron.id.toString()),
+          amountE8s: toJSBigInt(amount.doms.toString()),
+        )));
+      await refreshNeurons();
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
+  }
+
+  @override
   Future<AttachCanisterResult> attachCanister(
       {required String name, required String canisterId}) async {
     final response = await promiseToFuture(serviceApi!.attachCanister(

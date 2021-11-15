@@ -341,8 +341,10 @@ export default class ServiceApi {
     );
   };
 
-  public split = (request: SplitRequest): Promise<EmptyResponse> => {
-    return executeWithLogging(() => this.governanceService.split(request));
+  public split = (identity: Identity, request: SplitRequest): Promise<NeuronId> => {
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).split(request)
+    );
   };
 
   public disburse = (
