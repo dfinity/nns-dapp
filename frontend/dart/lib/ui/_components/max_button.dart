@@ -28,9 +28,14 @@ class _MaxButtonState extends State<MaxButton> {
         width: Responsive.isMobile(context) ? 55 : 70.0,
         child: ElevatedButton(
           onPressed: () {
-            widget.amountField.initialText = (widget.source.balance -
-                    ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
-                .asString(withSeparators: false);
+            if (widget.source.type == ICPSourceType.NEURON)
+              widget.amountField.initialText = (widget.source.balance -
+                      ICP.fromE8s(BigInt.from(E8S_PER_ICP)))
+                  .asString(withSeparators: false);
+            else
+              widget.amountField.initialText = (widget.source.balance -
+                      ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)))
+                  .asString(withSeparators: false);
           }.takeIf((e) => (widget.source.balance != ICP.zero)),
           child: Padding(
             padding: const EdgeInsets.all(0.0),
