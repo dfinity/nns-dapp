@@ -39,8 +39,7 @@ class _SplitNeuronStakePageState extends State<SplitNeuronStakePage> {
               "Minimum amount: 2.0001 ICP",
               (e) =>
                   (e.toDoubleOrNull() ?? 0) <
-                  (1 +
-                      1 +
+                  (2 +
                       ICP
                           .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
                           .asDouble())),
@@ -103,13 +102,16 @@ class _SplitNeuronStakePageState extends State<SplitNeuronStakePage> {
                 ),
               ),
               // Expanded(child: Container()),
-              SizedBox(height: 250),
+              SizedBox(height: 200),
+              Text('Transaction fee is : 0.0001 ICP',
+                  style: context.textTheme.bodyText1),
+              SizedBox(height: 20),
               SizedBox(
                   height: 70,
                   width: double.infinity,
                   child: ValidFieldsSubmitButton(
                     child: Text(
-                      "Confirm Transaction",
+                      "Confirm Split",
                       style: TextStyle(
                           fontSize: Responsive.isTablet(context) |
                                   Responsive.isDesktop(context)
