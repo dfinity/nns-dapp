@@ -486,7 +486,7 @@ class PlatformICApi extends AbstractPlatformICApi {
           identity,
           SplitNeuronRequest(
             neuronId: toJSBigInt(neuron.id.toString()),
-            amountE8s: amount.asE8s().toJS,
+            amount: amount.asE8s().toJS,
           )));
       await refreshNeurons();
       return Result.ok(unit);

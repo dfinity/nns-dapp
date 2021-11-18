@@ -175,10 +175,10 @@ class FollowRequest {
 @anonymous
 class SplitNeuronRequest {
   external dynamic get neuronId;
-  external dynamic get amountE8s;
+  external dynamic get amount;
 
   external factory SplitNeuronRequest(
-      {dynamic neuronId, dynamic amountE8s});
+      {dynamic neuronId, dynamic amount});
 }
 
 @JS()
