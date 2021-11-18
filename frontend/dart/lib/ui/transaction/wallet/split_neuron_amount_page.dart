@@ -28,12 +28,19 @@ class _SplitNeuronStakePageState extends State<SplitNeuronStakePage> {
 
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.neuron.balance, 1),
+          StringFieldValidation.insufficientFunds(
+              widget.neuron.balance,
+              (1 +
+                  ICP
+                      .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
+                      .asDouble()
+                      .toInt())),
           StringFieldValidation(
-              "Minimum amount: 1.0001 ICP",
+              "Minimum amount: 2.0001 ICP",
               (e) =>
                   (e.toDoubleOrNull() ?? 0) <
                   (1 +
+                      1 +
                       ICP
                           .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
                           .asDouble())),
