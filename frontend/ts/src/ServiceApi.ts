@@ -341,9 +341,11 @@ export default class ServiceApi {
     );
   };
 
-  public split = (identity: Identity, request: SplitRequest):
-  Promise<NeuronId> => {
-  console.log("im in split :",identity,request);
+  public split = (
+    identity: Identity,
+    request: SplitRequest
+  ): Promise<NeuronId> => {
+    console.log("im in split :", identity, request);
     return executeWithLogging(async () =>
       (await governanceService(identity)).split(request)
     );

@@ -157,9 +157,7 @@ export default class ResponseConverters {
     };
   };
 
-  public toSplitResponse = (
-      response: RawManageNeuronResponse
-  ): NeuronId => {
+  public toSplitResponse = (response: RawManageNeuronResponse): NeuronId => {
     const command = response.command.length ? response.command[0] : null;
 
     if (command && "Split" in command) {
