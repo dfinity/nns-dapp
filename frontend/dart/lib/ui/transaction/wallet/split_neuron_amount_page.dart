@@ -5,10 +5,7 @@ import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/max_button.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
-
 import '../../../nns_dapp.dart';
-import '../wizard_overlay.dart';
-import 'confirm_transactions_widget.dart';
 
 class SplitNeuronStakePage extends StatefulWidget {
   final Neuron neuron;
@@ -33,7 +30,13 @@ class _SplitNeuronStakePageState extends State<SplitNeuronStakePage> {
         validations: [
           StringFieldValidation.insufficientFunds(widget.neuron.balance, 1),
           StringFieldValidation(
-              "Minimum amount: 1 ICP", (e) => (e.toDoubleOrNull() ?? 0) < 1),
+              "Minimum amount: 1.0001 ICP",
+              (e) =>
+                  (e.toDoubleOrNull() ?? 0) <
+                  (1 +
+                      ICP
+                          .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
+                          .asDouble())),
         ],
         inputType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[ICPTextInputFormatter()]);
@@ -93,7 +96,7 @@ class _SplitNeuronStakePageState extends State<SplitNeuronStakePage> {
                 ),
               ),
               // Expanded(child: Container()),
-              VerySmallFormDivider(),
+              SizedBox(height: 250),
               SizedBox(
                   height: 70,
                   width: double.infinity,
@@ -111,6 +114,7 @@ class _SplitNeuronStakePageState extends State<SplitNeuronStakePage> {
                       await context.callUpdate(() => context.icApi.splitNeuron(
                           neuron: widget.neuron,
                           amount: ICP.fromString(amountField.currentValue)));
+                      OverlayBaseWidget.of(context)?.dismiss();
                     },
                     fields: [amountField],
                   ))
