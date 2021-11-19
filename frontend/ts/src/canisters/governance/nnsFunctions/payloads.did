@@ -107,8 +107,8 @@ type UpdateSubnetPayload = record {
   max_artifact_streams_per_peer : opt nat32;
   subnet_type : opt SubnetType;
   max_number_of_canisters : opt nat64;
-  ssh_readonly_access : opt vec principal;
-  ssh_backup_access : opt vec principal;
+  ssh_readonly_access : opt vec text;
+  ssh_backup_access : opt vec text;
 };
 type UpdateSubnetReplicaVersionPayload = record {
   subnet_id : principal;
