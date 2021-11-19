@@ -116,6 +116,27 @@ fn remove_nodes(_: RemoveNodesFromSubnetPayload) {
 
 // 19 - UninstallCode (Skipped because there is no payload)
 
+// 20 - UpdateNodeRewardsTable
+#[allow(dead_code)]
+#[candid_method(update)]
+fn update_node_rewards_table(_: UpdateNodeRewardsTableProposalPayload) {
+    unimplemented!();
+}
+
+// 21 - AddOrRemoveDataCenters
+#[allow(dead_code)]
+#[candid_method(update)]
+fn add_or_remove_data_centers(_: AddOrRemoveDataCentersProposalPayload) {
+    unimplemented!();
+}
+
+// 22 - UpdateUnassignedNodesConfig
+#[allow(dead_code)]
+#[candid_method(update)]
+fn update_unassigned_nodes_config(_: UpdateUnassignedNodesConfigPayload) {
+    unimplemented!();
+}
+
 fn main() {
     candid::export_service!();
     std::print!("{}", __export_service());

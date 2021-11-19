@@ -90,7 +90,7 @@ pub struct BlessReplicaVersionPayload {
     pub release_package_sha256_hex: String,
 }
 
-// https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/registry/canister/src/mutations/do_update_subnet.rs#L51
+// https://gitlab.com/dfinity-lab/core/ic/-/blob/0ebe354b26d904326536d8725c8a5056f0ebb0d8/rs/registry/canister/src/mutations/do_update_subnet.rs#L51
 #[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct UpdateSubnetPayload {
     pub subnet_id: SubnetId,
@@ -111,7 +111,7 @@ pub struct UpdateSubnetPayload {
     pub pfn_evaluation_period_ms: Option<u32>,
     pub registry_poll_period_ms: Option<u32>,
     pub retransmission_request_ms: Option<u32>,
-    pub relay_percentage: Option<u32>,
+    pub advert_best_effort_percentage: Option<u32>,
 
     pub set_gossip_config_to_default: bool,
 
@@ -125,6 +125,11 @@ pub struct UpdateSubnetPayload {
     pub max_instructions_per_round: Option<u64>,
     pub max_instructions_per_install_code: Option<u64>,
     pub features: Option<SubnetFeatures>,
+
+    pub max_number_of_canisters: Option<u64>,
+
+    pub ssh_readonly_access: Option<Vec<String>>,
+    pub ssh_backup_access: Option<Vec<String>>,
 }
 
 // https://github.com/dfinity-lab/dfinity/blob/bd842628a462dfa30604a2e2352fe50e9066d637/rs/registry/canister/src/mutations/do_recover_subnet.rs#L141
@@ -201,14 +206,14 @@ pub struct RemoveNodesFromSubnetPayload {
     pub node_ids: Vec<NodeId>,
 }
 
-#[derive(candid::CandidType, candid::Deserialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Clone, Debug)]
 pub enum CanisterAction {
     Stop,
     Start,
 }
 
 // https://github.com/dfinity-lab/dfinity/blob/349420cc17cdab85827a5584886e377bf38ec9a6/rs/nns/handlers/root/src/common.rs#L180
-#[derive(candid::CandidType, candid::Deserialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Clone, Debug)]
 pub struct StopOrStartNnsCanisterProposalPayload {
     pub canister_id: CanisterId,
     pub action: CanisterAction,
@@ -230,4 +235,64 @@ pub struct UpdateNodeOperatorConfigPayload {
     /// The remaining number of nodes that could be added by this Node Operator.
     #[prost(message, optional, tag = "2")]
     pub node_allowance: Option<u64>,
+}
+
+// https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/protobuf/def/registry/node_rewards/v2/node_rewards.proto#L24
+#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+pub struct UpdateNodeRewardsTableProposalPayload {
+    /// Maps regions to the node reward rates in that region
+    #[prost(btree_map="string, message", tag="1")]
+    pub new_entries: ::prost::alloc::collections::BTreeMap<::prost::alloc::string::String, NodeRewardRates>,
+}
+
+#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+pub struct NodeRewardRate {
+    /// The number of 10,000ths of IMF SDR (currency code XDR) to be rewarded per
+    /// node per month.
+    #[prost(uint64, tag="1")]
+    pub xdr_permyriad_per_node_per_month: u64,
+}
+
+#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+pub struct NodeRewardRates {
+    /// Maps node types to the reward rate for that node type
+    #[prost(btree_map="string, message", tag="1")]
+    pub rates: ::prost::alloc::collections::BTreeMap<::prost::alloc::string::String, NodeRewardRate>,
+}
+
+// https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/protobuf/def/registry/dc/v1/dc.proto#L27
+#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+pub struct AddOrRemoveDataCentersProposalPayload {
+    #[prost(message, repeated, tag="1")]
+    pub data_centers_to_add: ::prost::alloc::vec::Vec<DataCenterRecord>,
+    /// The IDs of data centers to remove
+    #[prost(string, repeated, tag="2")]
+    pub data_centers_to_remove: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+
+#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+pub struct DataCenterRecord {
+    #[prost(string, tag="1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub region: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub owner: ::prost::alloc::string::String,
+    #[prost(message, optional, tag="4")]
+    pub gps: ::core::option::Option<Gps>,
+}
+
+#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+pub struct Gps {
+    #[prost(float, tag="1")]
+    pub latitude: f32,
+    #[prost(float, tag="2")]
+    pub longitude: f32,
+}
+
+// https://gitlab.com/dfinity-lab/core/ic/-/blob/master/rs/registry/canister/src/mutations/do_update_unassigned_nodes_config.rs#L55
+#[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct UpdateUnassignedNodesConfigPayload {
+    pub ssh_readonly_access: Option<Vec<String>>,
+    pub replica_version: Option<String>,
 }
