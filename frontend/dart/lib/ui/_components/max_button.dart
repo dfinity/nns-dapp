@@ -29,8 +29,7 @@ class _MaxButtonState extends State<MaxButton> {
         child: ElevatedButton(
           onPressed: () {
             if (widget.source.type == ICPSourceType.NEURON)
-              widget.amountField.initialText = (widget.source.balance -
-                      ICP.fromE8s(BigInt.from(E8S_PER_ICP)))
+              widget.amountField.initialText = (widget.source.balance - ICP.one)
                   .asString(withSeparators: false);
             else
               widget.amountField.initialText = (widget.source.balance -
