@@ -17,6 +17,11 @@ class ICP {
     return new ICP._(BigInt.zero);
   }
 
+  /// Returns an ICP instance whose value is 1 ICP.
+  static ICP get one {
+    return new ICP._(_e8sPerICP);
+  }
+
   /// Initialize ICP from a string.
   static ICP fromString(String s) {
     // First try to parse the string as a double to ensure the input is sane.

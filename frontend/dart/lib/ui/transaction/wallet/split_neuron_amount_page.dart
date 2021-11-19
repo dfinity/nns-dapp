@@ -28,7 +28,9 @@ class _SplitNeuronStakePageState extends State<SplitNeuronStakePage> {
 
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(widget.neuron.balance, 1),
+          // The numberOfTransactions arg is 0 because the fee is taken out of
+          // the new neuron's stake rather than the sending neuron's.
+          StringFieldValidation.insufficientFunds(widget.neuron.balance - ICP.one, 0),
           StringFieldValidation("Minimum amount: 1.0001 ICP",
               (e) => (e.toDoubleOrNull() ?? 0) < 1.0001),
         ],
@@ -124,7 +126,6 @@ class _SplitNeuronStakePageState extends State<SplitNeuronStakePage> {
                               : kTextSizeSmall),
                     ),
                     onPressed: () async {
-                      print("Im in split neuron");
                       await context.callUpdate(() => context.icApi.splitNeuron(
                           neuron: widget.neuron,
                           amount: ICP.fromString(amountField.currentValue)));
