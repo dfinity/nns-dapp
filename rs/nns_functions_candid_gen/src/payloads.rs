@@ -111,7 +111,6 @@ pub struct UpdateSubnetPayload {
     pub pfn_evaluation_period_ms: Option<u32>,
     pub registry_poll_period_ms: Option<u32>,
     pub retransmission_request_ms: Option<u32>,
-    pub relay_percentage: Option<u32>,
 
     pub set_gossip_config_to_default: bool,
 
