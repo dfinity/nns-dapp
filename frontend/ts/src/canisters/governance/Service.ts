@@ -256,10 +256,10 @@ export default class Service implements ServiceInterface {
     return this.responseConverters.toSpawnResponse(response);
   };
 
-  public split = async (request: SplitRequest): Promise<EmptyResponse> => {
+  public split = async (request: SplitRequest): Promise<NeuronId> => {
     const rawRequest = this.requestConverters.fromSplitRequest(request);
-    await this.service.manage_neuron(rawRequest);
-    return { Ok: null };
+    const rawResponse = await this.service.manage_neuron(rawRequest);
+    return this.responseConverters.toSplitResponse(rawResponse);
   };
 
   public disburse = async (

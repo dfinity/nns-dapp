@@ -49,6 +49,9 @@ abstract class AbstractPlatformICApi {
 
   Future<Neuron> spawnNeuron({required Neuron neuron});
 
+  Future<Result<Unit, Exception>> splitNeuron(
+      {required Neuron neuron, required ICP amount});
+
   Future<void> follow(
       {required BigInt neuronId,
       required Topic topic,

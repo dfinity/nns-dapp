@@ -157,6 +157,18 @@ export default class ResponseConverters {
     };
   };
 
+  public toSplitResponse = (response: RawManageNeuronResponse): NeuronId => {
+    const command = response.command.length ? response.command[0] : null;
+
+    if (command && "Split" in command) {
+      const createdNeuronId = command.Split.created_neuron_id;
+      if (createdNeuronId.length) {
+        return createdNeuronId[0].id;
+      }
+    }
+    throw this.throwUnrecognisedTypeError("response", response);
+  };
+
   public toDisburseResponse = (
     response: PbManageNeuronResponse
   ): DisburseResponse => {

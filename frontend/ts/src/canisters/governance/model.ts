@@ -532,7 +532,7 @@ export default interface ServiceInterface {
   ) => Promise<MergeMaturityResponse>;
   registerVote: (request: RegisterVoteRequest) => Promise<EmptyResponse>;
   spawn: (request: SpawnRequest) => Promise<SpawnResponse>;
-  split: (request: SplitRequest) => Promise<EmptyResponse>;
+  split: (request: SplitRequest) => Promise<NeuronId>;
   disburse: (request: DisburseRequest) => Promise<DisburseResponse>;
   disburseToNeuron: (
     request: DisburseToNeuronRequest

@@ -5,6 +5,7 @@ import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neurons/tab/neuron_row.dart';
 import 'package:nns_dapp/ui/transaction/wallet/select_destination_wallet_page.dart';
 import 'package:nns_dapp/ui/transaction/wallet/select_neuron_top_up_source_wallet_page.dart';
+import 'package:nns_dapp/ui/transaction/wallet/split_neuron_amount_page.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
 import '../../../nns_dapp.dart';
 import '../increase_dissolve_delay_widget.dart';
@@ -42,7 +43,7 @@ class NeuronStateCard extends StatelessWidget {
       }.takeIf((e) =>
           !neuron.isCommunityFundNeuron && neuron.isCurrentUserController),
     );
-    var buttonGroup = [
+    var buttonGroup1 = [
       // adds left-padding when non-mobile
       if (!Responsive.isMobile(context))
         Expanded(
@@ -61,6 +62,38 @@ class NeuronStateCard extends StatelessWidget {
         child: joinCommunityButton,
       ),
       if (Responsive.isMobile(context)) SizedBox(height: 8),
+
+      ElevatedButton(
+          onPressed: () {
+            OverlayBaseWidget.show(
+                context,
+                WizardOverlay(
+                    rootTitle: "Increase Dissolve Delay",
+                    rootWidget: IncreaseDissolveDelayWidget(
+                        neuron: neuron,
+                        onCompleteAction: (context) {
+                          OverlayBaseWidget.of(context)?.dismiss();
+                        })));
+          }.takeIf((e) => context.icApi.isNeuronControllable(neuron)),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              "Increase Dissolve Delay",
+              style:
+                  TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
+            ),
+          )),
+      // creates vertical or horizontal gap based on viewport size
+      // adds left-padding when non-mobile
+      // creates vertical or horizontal gap based on viewport size
+      if (Responsive.isMobile(context))
+        SizedBox(height: 8)
+      else
+        SizedBox(width: 8),
+      buildStateButton(context),
+    ];
+
+    var buttonGroup2 = [
       ElevatedButton(
           onPressed: () {
             OverlayBaseWidget.show(
@@ -90,29 +123,22 @@ class NeuronStateCard extends StatelessWidget {
       ElevatedButton(
           onPressed: () {
             OverlayBaseWidget.show(
-                context,
-                WizardOverlay(
-                    rootTitle: "Increase Dissolve Delay",
-                    rootWidget: IncreaseDissolveDelayWidget(
-                        neuron: neuron,
-                        onCompleteAction: (context) {
-                          OverlayBaseWidget.of(context)?.dismiss();
-                        })));
-          }.takeIf((e) => context.icApi.isNeuronControllable(neuron)),
+              context,
+              SplitNeuronStakePage(
+                neuron: neuron,
+              ),
+            );
+          }.takeIf((e) =>
+              neuron.balance.asE8s() >=
+              BigInt.from((2 * E8S_PER_ICP) + TRANSACTION_FEE_E8S)),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(
-              "Increase Dissolve Delay",
+              "Split Neuron",
               style:
                   TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
             ),
           )),
-      // creates vertical or horizontal gap based on viewport size
-      if (Responsive.isMobile(context))
-        SizedBox(height: 8)
-      else
-        SizedBox(width: 8),
-      buildStateButton(context),
     ];
     return Card(
       color: AppColors.mediumBackground,
@@ -195,11 +221,27 @@ class NeuronStateCard extends StatelessWidget {
             if (Responsive.isMobile(context))
               Center(
                 child: Column(
-                  children: buttonGroup,
+                  children: [
+                    Column(
+                      children: buttonGroup1,
+                    ),
+                    SizedBox(height: 8.0),
+                    Column(
+                      children: buttonGroup2,
+                    ),
+                  ],
                 ),
+              ),
+            if (!Responsive.isMobile(context))
+              Column(
+                children: [
+                  Row(children: buttonGroup1),
+                  SizedBox(height: 10.0),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: buttonGroup2),
+                ],
               )
-            else
-              Row(children: buttonGroup),
           ],
         ),
       ),

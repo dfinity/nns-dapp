@@ -98,7 +98,7 @@ class ServiceApi {
   external Promise<dynamic> spawn(dynamic identity, dynamic request);
 
   @JS("split")
-  external Promise<dynamic> split(dynamic request);
+  external Promise<dynamic> split(dynamic identity, dynamic request);
 
   @JS("disburse")
   external Promise<dynamic> disburse(dynamic identity, dynamic request);
@@ -154,7 +154,7 @@ class IncreaseDissolveDelayRequest {
 @JS()
 @anonymous
 class JoinCommunityFundRequest {
-  external String get neuronId;
+  external dynamic get neuronId;
 
   external factory JoinCommunityFundRequest(
       {dynamic neuronId});
@@ -169,6 +169,16 @@ class FollowRequest {
 
   external factory FollowRequest(
       {dynamic neuronId, int topic, List<dynamic> followees});
+}
+
+@JS()
+@anonymous
+class SplitNeuronRequest {
+  external dynamic get neuronId;
+  external dynamic get amount;
+
+  external factory SplitNeuronRequest(
+      {dynamic neuronId, dynamic amount});
 }
 
 @JS()
