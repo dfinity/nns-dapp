@@ -563,15 +563,15 @@ export default class ServiceApi {
     {
       console.log("make an 'Update subnet config' proposal");
       const manageNeuronResponse =
-          await this.governanceService.makeExecuteNnsFunctionProposal({
-            neuronId,
-            title: "Update configuration of subnet: tdb26-",
-            url: "",
-            summary:
-                "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
-            nnsFunction: 7,
-            payload: updateSubnetConfigPayload,
-          });
+        await this.governanceService.makeExecuteNnsFunctionProposal({
+          neuronId,
+          title: "Update configuration of subnet: tdb26-",
+          url: "",
+          summary:
+            "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
+          nnsFunction: 7,
+          payload: updateSubnetConfigPayload,
+        });
       console.log(manageNeuronResponse);
     }
 
