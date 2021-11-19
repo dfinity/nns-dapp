@@ -112,6 +112,7 @@ type UpdateSubnetPayload = record {
   start_as_nns : opt bool;
   is_halted : opt bool;
   max_number_of_canisters : opt nat64;
+  advert_best_effort_percentage : opt nat32;
   retransmission_request_ms : opt nat32;
   dkg_interval_length : opt nat64;
   registry_poll_period_ms : opt nat32;

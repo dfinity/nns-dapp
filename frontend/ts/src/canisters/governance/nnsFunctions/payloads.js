@@ -129,6 +129,7 @@ export const UpdateSubnetPayload = IDL.Record({
   start_as_nns: IDL.Opt(IDL.Bool),
   is_halted: IDL.Opt(IDL.Bool),
   max_number_of_canisters: IDL.Opt(IDL.Nat64),
+  advert_best_effort_percentage: IDL.Opt(IDL.Nat32),
   retransmission_request_ms: IDL.Opt(IDL.Nat32),
   dkg_interval_length: IDL.Opt(IDL.Nat64),
   registry_poll_period_ms: IDL.Opt(IDL.Nat32),
