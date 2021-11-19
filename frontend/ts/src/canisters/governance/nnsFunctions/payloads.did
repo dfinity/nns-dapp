@@ -9,6 +9,10 @@ type AddNodesToSubnetPayload = record {
   subnet_id : principal;
   node_ids : vec principal;
 };
+type AddOrRemoveDataCentersProposalPayload = record {
+  data_centers_to_add : vec DataCenterRecord;
+  data_centers_to_remove : vec text;
+};
 type BlessReplicaVersionPayload = record {
   node_manager_sha256_hex : text;
   release_package_url : text;
@@ -47,6 +51,15 @@ type CreateSubnetPayload = record {
   gossip_receive_check_cache_size : nat32;
   node_ids : vec principal;
 };
+type DataCenterRecord = record {
+  id : text;
+  gps : opt Gps;
+  region : text;
+  owner : text;
+};
+type Gps = record { latitude : float32; longitude : float32 };
+type NodeRewardRate = record { xdr_permyriad_per_node_per_month : nat64 };
+type NodeRewardRates = record { rates : vec record { text; NodeRewardRate } };
 type RecoverSubnetPayload = record {
   height : nat64;
   replacement_nodes : opt vec principal;
@@ -80,6 +93,9 @@ type UpdateNodeOperatorConfigPayload = record {
   node_operator_id : opt principal;
   node_allowance : opt nat64;
 };
+type UpdateNodeRewardsTableProposalPayload = record {
+  new_entries : vec record { text; NodeRewardRates };
+};
 type UpdateSubnetPayload = record {
   unit_delay_millis : opt nat64;
   max_duplicity : opt nat32;
@@ -111,9 +127,14 @@ type UpdateSubnetReplicaVersionPayload = record {
   subnet_id : principal;
   replica_version_id : text;
 };
+type UpdateUnassignedNodesConfigPayload = record {
+  replica_version : opt text;
+  ssh_readonly_access : opt vec text;
+};
 service : {
   add_node_operator : (AddNodeOperatorPayload) -> ();
   add_nodes_to_subnet : (AddNodesToSubnetPayload) -> ();
+  add_or_remove_data_centers : (AddOrRemoveDataCentersProposalPayload) -> ();
   bless_replica_version : (BlessReplicaVersionPayload) -> ();
   clear_provisional_whitelist : () -> ();
   create_subnet : (CreateSubnetPayload) -> ();
@@ -125,6 +146,8 @@ service : {
   stop_or_start_nns_canister : (StopOrStartNnsCanisterProposalPayload) -> ();
   update_icp_xdr_conversion_rate : (UpdateIcpXdrConversionRatePayload) -> ();
   update_node_operator_config : (UpdateNodeOperatorConfigPayload) -> ();
+  update_node_rewards_table : (UpdateNodeRewardsTableProposalPayload) -> ();
   update_subnet : (UpdateSubnetPayload) -> ();
   update_subnet_replica_version : (UpdateSubnetReplicaVersionPayload) -> ();
+  update_unassigned_nodes_config : (UpdateUnassignedNodesConfigPayload) -> ();
 }

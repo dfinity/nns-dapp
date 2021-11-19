@@ -13,6 +13,20 @@ export const AddNodesToSubnetPayload = IDL.Record({
   subnet_id: IDL.Principal,
   node_ids: IDL.Vec(IDL.Principal),
 });
+export const Gps = IDL.Record({
+  latitude: IDL.Float32,
+  longitude: IDL.Float32,
+});
+export const DataCenterRecord = IDL.Record({
+  id: IDL.Text,
+  gps: IDL.Opt(Gps),
+  region: IDL.Text,
+  owner: IDL.Text,
+});
+export const AddOrRemoveDataCentersProposalPayload = IDL.Record({
+  data_centers_to_add: IDL.Vec(DataCenterRecord),
+  data_centers_to_remove: IDL.Vec(IDL.Text),
+});
 export const BlessReplicaVersionPayload = IDL.Record({
   node_manager_sha256_hex: IDL.Text,
   release_package_url: IDL.Text,
@@ -90,6 +104,15 @@ export const UpdateNodeOperatorConfigPayload = IDL.Record({
   node_operator_id: IDL.Opt(IDL.Principal),
   node_allowance: IDL.Opt(IDL.Nat64),
 });
+export const NodeRewardRate = IDL.Record({
+  xdr_permyriad_per_node_per_month: IDL.Nat64,
+});
+export const NodeRewardRates = IDL.Record({
+  rates: IDL.Vec(IDL.Tuple(IDL.Text, NodeRewardRate)),
+});
+export const UpdateNodeRewardsTableProposalPayload = IDL.Record({
+  new_entries: IDL.Vec(IDL.Tuple(IDL.Text, NodeRewardRates)),
+});
 export const UpdateSubnetPayload = IDL.Record({
   unit_delay_millis: IDL.Opt(IDL.Nat64),
   max_duplicity: IDL.Opt(IDL.Nat32),
@@ -120,4 +143,8 @@ export const UpdateSubnetPayload = IDL.Record({
 export const UpdateSubnetReplicaVersionPayload = IDL.Record({
   subnet_id: IDL.Principal,
   replica_version_id: IDL.Text,
+});
+export const UpdateUnassignedNodesConfigPayload = IDL.Record({
+  replica_version: IDL.Opt(IDL.Text),
+  ssh_readonly_access: IDL.Opt(IDL.Vec(IDL.Text)),
 });
