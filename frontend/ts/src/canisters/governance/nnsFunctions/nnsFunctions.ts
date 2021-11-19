@@ -136,18 +136,18 @@ export const convertNnsFunctionPayload = (
       // case 19: return "Uninstall code from canister";
       case 20:
         return IDL.decode(
-            [UpdateNodeRewardsTableProposalPayload],
-            buffer
+          [UpdateNodeRewardsTableProposalPayload],
+          buffer
         )[0] as JsonObject;
       case 21:
         return IDL.decode(
-            [AddOrRemoveDataCentersProposalPayload],
-            buffer
+          [AddOrRemoveDataCentersProposalPayload],
+          buffer
         )[0] as JsonObject;
       case 22:
         return IDL.decode(
-            [UpdateUnassignedNodesConfigPayload],
-            buffer
+          [UpdateUnassignedNodesConfigPayload],
+          buffer
         )[0] as JsonObject;
       default:
         return null;
