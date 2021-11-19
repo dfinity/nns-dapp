@@ -125,6 +125,11 @@ pub struct UpdateSubnetPayload {
     pub max_instructions_per_round: Option<u64>,
     pub max_instructions_per_install_code: Option<u64>,
     pub features: Option<SubnetFeatures>,
+
+    pub max_number_of_canisters: Option<u64>,
+
+    pub ssh_readonly_access: Option<Vec<String>>,
+    pub ssh_backup_access: Option<Vec<String>>,
 }
 
 // https://github.com/dfinity-lab/dfinity/blob/bd842628a462dfa30604a2e2352fe50e9066d637/rs/registry/canister/src/mutations/do_recover_subnet.rs#L141

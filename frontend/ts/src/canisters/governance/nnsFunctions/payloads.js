@@ -116,6 +116,9 @@ export const UpdateSubnetPayload = IDL.Record({
   relay_percentage: IDL.Opt(IDL.Nat32),
   max_artifact_streams_per_peer: IDL.Opt(IDL.Nat32),
   subnet_type: IDL.Opt(SubnetType),
+  max_number_of_canisters: IDL.Opt(IDL.Nat64),
+  ssh_readonly_access: IDL.Opt(IDL.Vec(IDL.Principal)),
+  ssh_backup_access: IDL.Opt(IDL.Vec(IDL.Principal)),
 });
 export const UpdateSubnetReplicaVersionPayload = IDL.Record({
   subnet_id: IDL.Principal,
