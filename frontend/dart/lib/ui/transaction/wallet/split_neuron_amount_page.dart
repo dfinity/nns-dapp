@@ -28,21 +28,9 @@ class _SplitNeuronStakePageState extends State<SplitNeuronStakePage> {
 
     amountField = ValidatedTextField("Amount",
         validations: [
-          StringFieldValidation.insufficientFunds(
-              widget.neuron.balance,
-              (1 +
-                  ICP
-                      .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
-                      .asDouble()
-                      .toInt())),
-          StringFieldValidation(
-              "Minimum amount: 2.0001 ICP",
-              (e) =>
-                  (e.toDoubleOrNull() ?? 0) <
-                  (2 +
-                      ICP
-                          .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
-                          .asDouble())),
+          StringFieldValidation.insufficientFunds(widget.neuron.balance, 1),
+          StringFieldValidation("Minimum amount: 1.0001 ICP",
+              (e) => (e.toDoubleOrNull() ?? 0) < 1.0001),
         ],
         inputType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[ICPTextInputFormatter()]);
@@ -102,10 +90,27 @@ class _SplitNeuronStakePageState extends State<SplitNeuronStakePage> {
                 ),
               ),
               // Expanded(child: Container()),
-              SizedBox(height: 200),
-              Text('Transaction fee is : 0.0001 ICP',
-                  style: context.textTheme.bodyText1),
-              SizedBox(height: 20),
+              SizedBox(height: 150),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text("Transaction Fee",
+                    style: Responsive.isDesktop(context) |
+                            Responsive.isTablet(context)
+                        ? context.textTheme.headline3
+                        : context.textTheme.headline4),
+              ),
+              VerySmallFormDivider(),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                    ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)).asString() +
+                        " ICP",
+                    style: Responsive.isDesktop(context) |
+                            Responsive.isTablet(context)
+                        ? context.textTheme.bodyText1
+                        : context.textTheme.bodyText2),
+              ),
+              SizedBox(height: 40),
               SizedBox(
                   height: 70,
                   width: double.infinity,

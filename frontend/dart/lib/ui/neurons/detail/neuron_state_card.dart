@@ -1,3 +1,4 @@
+import 'package:nns_dapp/data/icp.dart';
 import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
 import 'package:nns_dapp/ui/_components/constants.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
@@ -124,14 +125,13 @@ class NeuronStateCard extends StatelessWidget {
           onPressed: () {
             OverlayBaseWidget.show(
               context,
-              WizardOverlay(
-                rootTitle: "Split Neuron",
-                rootWidget: SplitNeuronStakePage(
-                  neuron: neuron,
-                ),
+              SplitNeuronStakePage(
+                neuron: neuron,
               ),
             );
-          },
+          }.takeIf((e) =>
+              neuron.balance.asE8s() >=
+              BigInt.from((2 * E8S_PER_ICP) + TRANSACTION_FEE_E8S)),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(
