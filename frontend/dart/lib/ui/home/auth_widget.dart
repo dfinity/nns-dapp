@@ -1,5 +1,4 @@
 import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
-import 'package:nns_dapp/ui/_components/form_utils.dart';
 
 import '../../nns_dapp.dart';
 
