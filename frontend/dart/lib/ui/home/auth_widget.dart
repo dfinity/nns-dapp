@@ -46,14 +46,6 @@ class AuthWidget extends StatelessWidget {
                             context.nav.push(accountsTabPage);
                           });
                         }),
-                    SizedBox(height: 20),
-                    AutoSizeText(
-                      'Beta',
-                      style:
-                          context.textTheme.headline4?.copyWith(fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                    SmallFormDivider(),
                   ],
                 ),
               ),
