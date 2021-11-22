@@ -1,5 +1,4 @@
 import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
-import 'package:nns_dapp/ui/_components/form_utils.dart';
 
 import '../../nns_dapp.dart';
 
@@ -46,14 +45,6 @@ class AuthWidget extends StatelessWidget {
                             context.nav.push(accountsTabPage);
                           });
                         }),
-                    SizedBox(height: 20),
-                    AutoSizeText(
-                      'Beta',
-                      style:
-                          context.textTheme.headline4?.copyWith(fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                    SmallFormDivider(),
                   ],
                 ),
               ),
