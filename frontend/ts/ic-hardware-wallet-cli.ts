@@ -178,6 +178,16 @@ async function removeHotkey(neuronId: string, principal: string) {
   logResult(response);
 }
 
+async function joinCommunityFund(neuronId: string) {
+  const identity = await LedgerIdentity.create();
+  const governance = await getGovernanceService(identity);
+
+  const response = await governance.joinCommunityFund({
+    neuronId: BigInt(neuronId),
+  });
+  logResult(response);
+}
+
 async function disburseNeuron(
   neuronId: string,
   to?: AccountIdentifier,
@@ -387,6 +397,11 @@ async function main() {
         .action((args) =>
           run(() => removeHotkey(args.neuronId, args.principal))
         )
+    )
+    .addCommand(
+      new Command("join-community-fund")
+        .requiredOption("--neuron-id <neuron-id>")
+        .action((args) => run(() => joinCommunityFund(args.neuronId)))
     );
 
   const icp = new Command("icp")
