@@ -16,7 +16,6 @@ import {
   DisburseToNeuronRequest,
   FollowRequest,
   IncreaseDissolveDelayRequest,
-  JoinCommunityFundRequest,
   ListProposalsRequest,
   MakeProposalRequest,
   ManageNeuron,

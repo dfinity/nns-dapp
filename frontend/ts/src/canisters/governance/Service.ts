@@ -46,9 +46,7 @@ import {
   ListNeurons as PbListNeurons,
   ListNeuronsResponse as PbListNeuronsResponse,
 } from "../../proto/governance_pb";
-import {
-  NeuronId as PbNeuronId,
-} from "../../proto/base_types_pb";
+import { NeuronId as PbNeuronId } from "../../proto/base_types_pb";
 
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
