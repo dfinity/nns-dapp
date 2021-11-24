@@ -338,21 +338,6 @@ export default class RequestConverters {
     };
   };
 
-  public fromJoinCommunityFundRequest = (
-    request: JoinCommunityFundRequest
-  ): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      Configure: {
-        operation: [{ JoinCommunityFund: {} }],
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
-  };
-
   public fromMakeProposalRequest = (
     request: MakeProposalRequest
   ): RawManageNeuron => {

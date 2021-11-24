@@ -49,6 +49,7 @@ message ManageNeuron {
       StopDissolving stop_dissolving = 3;
       AddHotKey add_hot_key = 4;
       RemoveHotKey remove_hot_key = 5;
+      JoinCommunityFund join_community_fund = 7;
     }
   }
 
@@ -79,6 +80,8 @@ message ManageNeuron {
   message MergeMaturity {
     uint32 percentage_to_merge = 1;
   }
+
+  message JoinCommunityFund {}
 
   oneof command {
     Configure configure = 2;

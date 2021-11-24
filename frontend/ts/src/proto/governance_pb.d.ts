@@ -200,6 +200,11 @@ export namespace ManageNeuron {
     getRemoveHotKey(): ManageNeuron.RemoveHotKey | undefined;
     setRemoveHotKey(value?: ManageNeuron.RemoveHotKey): void;
 
+    hasJoinCommunityFund(): boolean;
+    clearJoinCommunityFund(): void;
+    getJoinCommunityFund(): ManageNeuron.JoinCommunityFund | undefined;
+    setJoinCommunityFund(value?: ManageNeuron.JoinCommunityFund): void;
+
     getOperationCase(): Configure.OperationCase;
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Configure.AsObject;
@@ -218,6 +223,7 @@ export namespace ManageNeuron {
       stopDissolving?: ManageNeuron.StopDissolving.AsObject,
       addHotKey?: ManageNeuron.AddHotKey.AsObject,
       removeHotKey?: ManageNeuron.RemoveHotKey.AsObject,
+      joinCommunityFund?: ManageNeuron.JoinCommunityFund.AsObject,
     }
 
     export enum OperationCase {
@@ -227,6 +233,7 @@ export namespace ManageNeuron {
       STOP_DISSOLVING = 3,
       ADD_HOT_KEY = 4,
       REMOVE_HOT_KEY = 5,
+      JOIN_COMMUNITY_FUND = 7,
     }
   }
 
@@ -369,6 +376,22 @@ export namespace ManageNeuron {
   export namespace MergeMaturity {
     export type AsObject = {
       percentageToMerge: number,
+    }
+  }
+
+  export class JoinCommunityFund extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): JoinCommunityFund.AsObject;
+    static toObject(includeInstance: boolean, msg: JoinCommunityFund): JoinCommunityFund.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: JoinCommunityFund, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): JoinCommunityFund;
+    static deserializeBinaryFromReader(message: JoinCommunityFund, reader: jspb.BinaryReader): JoinCommunityFund;
+  }
+
+  export namespace JoinCommunityFund {
+    export type AsObject = {
     }
   }
 
