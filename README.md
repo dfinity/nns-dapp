@@ -46,6 +46,7 @@ Development relies on the presence of a testnet that is setup with the II, gover
 To deploy to the testnet, run the following:
 
     docker build -t nns-dapp --build-arg DEPLOY_ENV=testnet .
+    mkdir -p target/wasm32-unknown-unknown/release
     docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
     ./deploy.sh testnet
 
