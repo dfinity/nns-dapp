@@ -16,7 +16,6 @@ import {
   DisburseToNeuronRequest,
   FollowRequest,
   IncreaseDissolveDelayRequest,
-  JoinCommunityFundRequest,
   ListProposalsRequest,
   MakeProposalRequest,
   ManageNeuron,
@@ -329,21 +328,6 @@ export default class RequestConverters {
             ? [Principal.fromText(request.newController)]
             : [],
         nonce: request.nonce,
-      },
-    };
-    return {
-      id: [],
-      command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
-    };
-  };
-
-  public fromJoinCommunityFundRequest = (
-    request: JoinCommunityFundRequest
-  ): RawManageNeuron => {
-    const rawCommand: RawCommand = {
-      Configure: {
-        operation: [{ JoinCommunityFund: {} }],
       },
     };
     return {
