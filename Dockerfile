@@ -5,6 +5,7 @@
 
 FROM ubuntu:20.10
 
+ARG DEPLOY_ENV=mainnet
 ARG rust_version=1.54.0
 ENV NODE_VERSION=14.15.4
 
@@ -47,7 +48,6 @@ RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
 COPY . .
 
-ENV DEPLOY_ENV=mainnet
 RUN cd frontend/ts && ./build.sh
 
 RUN cd frontend/dart && flutter build web --web-renderer auto --release --no-sound-null-safety --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/
