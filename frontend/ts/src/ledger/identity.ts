@@ -90,7 +90,7 @@ export class LedgerIdentity extends SignIdentity {
         throw "Cannot connect to Ledger device. Please close all other wallet applications (e.g. Ledger Live) and try again.";
       } else {
         // Unsupported browser. Data on browser compatibility is taken from https://caniuse.com/webhid
-        throw "Your browser doesn't support WebHID, which is necessary to communicate with your Ledger hardware wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+";
+        throw `Cannot connect to Ledger Wallet. Either you have other wallet applications open (e.g. Ledger Live), or your browser doesn't support WebHID, which is necessary to communicate with your Ledger hardware wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+\n\nError: ${err}`;
       }
     }
   }
