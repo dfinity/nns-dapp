@@ -50,7 +50,7 @@ COPY . .
 ENV DEPLOY_ENV=mainnet
 RUN cd frontend/ts && ./build.sh
 
-RUN cd frontend/dart && flutter build web --web-renderer auto --release --no-sound-null-safety --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/
+RUN cd frontend/dart && flutter build web --web-renderer html --release --no-sound-null-safety --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/
 # Remove random hash from flutter output
 RUN sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' frontend/dart/build/web/index.html
 
