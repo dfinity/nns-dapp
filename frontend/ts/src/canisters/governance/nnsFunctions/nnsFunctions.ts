@@ -60,6 +60,12 @@ export const getNnsFunctionName = (nnsFunction: number): string => {
       return "Remove nodes from registry";
     case 19:
       return "Uninstall code from canister";
+    case 20:
+      return "Update the node rewards table";
+    case 21:
+      return "Add or remove data centers";
+    case 22:
+      return "Update unassigned nodes config";
     default:
       return "--Unknown--";
   }
