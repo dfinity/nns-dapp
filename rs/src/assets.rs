@@ -151,7 +151,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
 }
 
 fn content_type_of(request_path: &str) -> Option<&'static str> {
-    request_path.split(".").last().map(|suffix|
+    request_path.split('.').last().map(|suffix|
         match suffix {
          "css" => Some("text/css"),
          "html" => Some("text/html"),
