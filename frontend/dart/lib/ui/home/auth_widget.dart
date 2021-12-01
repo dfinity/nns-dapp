@@ -1,10 +1,11 @@
 import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
-
+import 'dart:html' as html;
 import '../../nns_dapp.dart';
 
 class AuthWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    html.window.open('/v2/index.html',"_self");
     return Container(
       constraints: BoxConstraints.expand(),
       decoration: BoxDecoration(
@@ -32,22 +33,6 @@ class AuthWidget extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     Expanded(child: Container()),
-                    ElevatedButton(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                            "LOGIN",
-                            style: context.textTheme.headline3,
-                          ),
-                        ),
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(AppColors.blue800)),
-                        onPressed: () {
-                          context.icApi.authenticate(() {
-                            context.nav.push(accountsTabPage);
-                          });
-                        }),
                   ],
                 ),
               ),

@@ -83,6 +83,13 @@ export default {
             ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
             : "https://identity.ic0.app/")
       ),
+      "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
+        process.env.REDIRECT_TO_LEGACY !== undefined
+          ? true
+          : process.env.DEPLOY_ENV === undefined
+          ? false
+          : true
+      ),
     }),
 
     // In dev mode, call `npm run start` once

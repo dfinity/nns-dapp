@@ -45,6 +45,9 @@
 
   // Gets a local copy of user data.
   const onSignIn = async () => {
+    if (process.env.REDIRECT_TO_LEGACY) {
+      window.open(`/${window.location.hash}`, "_self");
+    }
     const identity = authClient.getIdentity();
     principal = identity.getPrincipal().toString();
     signedIn = true;
