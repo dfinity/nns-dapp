@@ -22,7 +22,6 @@ Future<void> _showSessionExpiredAlert(BuildContext context) async {
                 child: Text('Ok'),
               ),
               onPressed: () {
-                context.icApi.logout();
                 Navigator.of(context).pop();
               },
             ),
@@ -39,8 +38,8 @@ extension CallUpdate on BuildContext {
     // is expired.
     final timeout = this.icApi.getTimeUntilSessionExpiryMs();
     if (timeout != null && timeout < 120000) {
-      _showSessionExpiredAlert(this);
-      throw "Session expired";
+      await _showSessionExpiredAlert(this);
+      this.icApi.logout();
     }
     return await this.performLoading(action);
   }
