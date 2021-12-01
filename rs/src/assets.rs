@@ -129,6 +129,9 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                     Some(asset) => {
                         let mut headers = asset.headers.clone();
                         headers.push(certificate_header);
+                        if let Some(content_type) = content_type_of(request_path) {
+                           headers.push(("Content-Type".to_string(), content_type.to_string()));
+                        }
 
                         HttpResponse {
                             status_code: 200,
@@ -145,6 +148,18 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
             })
         }
     }
+}
+
+fn content_type_of(request_path: &str) -> Option<&'static str> {
+    request_path.split('.').last().map(|suffix|
+        match suffix {
+         "css" => Some("text/css"),
+         "html" => Some("text/html"),
+         "js" => Some("application/javascript"),
+         "json" => Some("application/json"),
+         _    => None,
+        }
+    ).flatten()
 }
 
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
