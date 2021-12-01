@@ -1,5 +1,3 @@
-import 'package:universal_html/js_util.dart';
-
 import 'nns_dapp.dart';
 
 Future<void> _showSessionExpiredAlert(BuildContext context) async {
