@@ -6,6 +6,7 @@ import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
 import typescript from "@rollup/plugin-typescript";
 import css from "rollup-plugin-css-only";
+import inject from "rollup-plugin-inject";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -38,7 +39,7 @@ export default {
   input: "src/main.ts",
   output: {
     sourcemap: true,
-    format: "iife",
+    format: "es",
     name: "app",
     file: "public/build/bundle.js",
   },
@@ -60,6 +61,7 @@ export default {
     // consult the documentation for details:
     // https://github.com/rollup/plugins/tree/master/packages/commonjs
     resolve({
+      preferBuiltins: false,
       browser: true,
       dedupe: ["svelte"],
     }),
@@ -68,6 +70,7 @@ export default {
       sourceMap: !production,
       inlineSources: !production,
     }),
+    inject({ Buffer: ["buffer", "Buffer"] }),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated
