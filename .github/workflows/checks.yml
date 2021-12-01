@@ -111,6 +111,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./frontend/svelte
+
       - name: Compile typescript
         run: npm run build
         working-directory: ./frontend/svelte
