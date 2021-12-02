@@ -12,18 +12,29 @@ export class PrincipalId extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PrincipalId.AsObject;
-  static toObject(includeInstance: boolean, msg: PrincipalId): PrincipalId.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: PrincipalId, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: PrincipalId
+  ): PrincipalId.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: PrincipalId,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): PrincipalId;
-  static deserializeBinaryFromReader(message: PrincipalId, reader: jspb.BinaryReader): PrincipalId;
+  static deserializeBinaryFromReader(
+    message: PrincipalId,
+    reader: jspb.BinaryReader
+  ): PrincipalId;
 }
 
 export namespace PrincipalId {
   export type AsObject = {
-    serializedId: Uint8Array | string,
-  }
+    serializedId: Uint8Array | string;
+  };
 }
 
 export class CanisterId extends jspb.Message {
@@ -34,18 +45,29 @@ export class CanisterId extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CanisterId.AsObject;
-  static toObject(includeInstance: boolean, msg: CanisterId): CanisterId.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: CanisterId, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: CanisterId
+  ): CanisterId.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: CanisterId,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): CanisterId;
-  static deserializeBinaryFromReader(message: CanisterId, reader: jspb.BinaryReader): CanisterId;
+  static deserializeBinaryFromReader(
+    message: CanisterId,
+    reader: jspb.BinaryReader
+  ): CanisterId;
 }
 
 export namespace CanisterId {
   export type AsObject = {
-    serializedId: Uint8Array | string,
-  }
+    serializedId: Uint8Array | string;
+  };
 }
 
 export class NeuronId extends jspb.Message {
@@ -55,17 +77,25 @@ export class NeuronId extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NeuronId.AsObject;
   static toObject(includeInstance: boolean, msg: NeuronId): NeuronId.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: NeuronId, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: NeuronId,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): NeuronId;
-  static deserializeBinaryFromReader(message: NeuronId, reader: jspb.BinaryReader): NeuronId;
+  static deserializeBinaryFromReader(
+    message: NeuronId,
+    reader: jspb.BinaryReader
+  ): NeuronId;
 }
 
 export namespace NeuronId {
   export type AsObject = {
-    id: string,
-  }
+    id: string;
+  };
 }
 
 export class ProposalId extends jspb.Message {
@@ -74,18 +104,29 @@ export class ProposalId extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ProposalId.AsObject;
-  static toObject(includeInstance: boolean, msg: ProposalId): ProposalId.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ProposalId, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: ProposalId
+  ): ProposalId.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: ProposalId,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): ProposalId;
-  static deserializeBinaryFromReader(message: ProposalId, reader: jspb.BinaryReader): ProposalId;
+  static deserializeBinaryFromReader(
+    message: ProposalId,
+    reader: jspb.BinaryReader
+  ): ProposalId;
 }
 
 export namespace ProposalId {
   export type AsObject = {
-    id: string,
-  }
+    id: string;
+  };
 }
 
 export class MethodAuthzInfo extends jspb.Message {
@@ -97,23 +138,37 @@ export class MethodAuthzInfo extends jspb.Message {
   getPrincipalIdsList_asU8(): Array<Uint8Array>;
   getPrincipalIdsList_asB64(): Array<string>;
   setPrincipalIdsList(value: Array<Uint8Array | string>): void;
-  addPrincipalIds(value: Uint8Array | string, index?: number): Uint8Array | string;
+  addPrincipalIds(
+    value: Uint8Array | string,
+    index?: number
+  ): Uint8Array | string;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): MethodAuthzInfo.AsObject;
-  static toObject(includeInstance: boolean, msg: MethodAuthzInfo): MethodAuthzInfo.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: MethodAuthzInfo, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: MethodAuthzInfo
+  ): MethodAuthzInfo.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: MethodAuthzInfo,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): MethodAuthzInfo;
-  static deserializeBinaryFromReader(message: MethodAuthzInfo, reader: jspb.BinaryReader): MethodAuthzInfo;
+  static deserializeBinaryFromReader(
+    message: MethodAuthzInfo,
+    reader: jspb.BinaryReader
+  ): MethodAuthzInfo;
 }
 
 export namespace MethodAuthzInfo {
   export type AsObject = {
-    methodName: string,
-    principalIdsList: Array<Uint8Array | string>,
-  }
+    methodName: string;
+    principalIdsList: Array<Uint8Array | string>;
+  };
 }
 
 export class CanisterAuthzInfo extends jspb.Message {
@@ -124,21 +179,31 @@ export class CanisterAuthzInfo extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CanisterAuthzInfo.AsObject;
-  static toObject(includeInstance: boolean, msg: CanisterAuthzInfo): CanisterAuthzInfo.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: CanisterAuthzInfo, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: CanisterAuthzInfo
+  ): CanisterAuthzInfo.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: CanisterAuthzInfo,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): CanisterAuthzInfo;
-  static deserializeBinaryFromReader(message: CanisterAuthzInfo, reader: jspb.BinaryReader): CanisterAuthzInfo;
+  static deserializeBinaryFromReader(
+    message: CanisterAuthzInfo,
+    reader: jspb.BinaryReader
+  ): CanisterAuthzInfo;
 }
 
 export namespace CanisterAuthzInfo {
   export type AsObject = {
-    methodsAuthzList: Array<MethodAuthzInfo.AsObject>,
-  }
+    methodsAuthzList: Array<MethodAuthzInfo.AsObject>;
+  };
 }
 
-  export const tuiSignedMessage: jspb.ExtensionFieldInfo<boolean>;
+export const tuiSignedMessage: jspb.ExtensionFieldInfo<boolean>;
 
-  export const tuiSignedDisplayQ22021: jspb.ExtensionFieldInfo<boolean>;
-
+export const tuiSignedDisplayQ22021: jspb.ExtensionFieldInfo<boolean>;
