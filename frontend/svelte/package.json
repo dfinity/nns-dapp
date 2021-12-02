@@ -29,7 +29,7 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
-    "@dfinity/nns": "github:dfinity/nns-js#db4d9957acd56475309f865f25efb11f7cc9be7a",
+    "@dfinity/nns": "file:./nns-js",
     "sirv-cli": "^1.0.0"
   }
 }
