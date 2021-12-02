@@ -104,6 +104,10 @@ jobs:
 
   svelte-tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./frontend/svelte
     env:
       DEPLOY_ENV: mainnet
 
@@ -113,28 +117,24 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./frontend/svelte
 
       - name: Compile typescript
         run: npm run build
-        working-directory: ./frontend/svelte
 
       - name: Run linter
         run: npm run check
-        working-directory: ./frontend/svelte
 
       - name: Check formatting
         run: npm run format
-        working-directory: ./frontend/svelte
 
-      - name: Commit Formatting changes
+      - name: Commit Formatting changes - will not trigger rebuild
         uses: EndBug/add-and-commit@v7.2.0
         if: ${{ github.event_name == 'pull_request' }}
         with:
           add: .
           author_name: Formatting Committer
           author_email: "<nobody@example.com>"
-          message: "Updating frontend formatting"
+          message: "Updating svelte frontend formatting"
           # do not pull: if this branch is behind, then we might as well let
           # the pushing fail
           pull_strategy: "NO-PULL"
