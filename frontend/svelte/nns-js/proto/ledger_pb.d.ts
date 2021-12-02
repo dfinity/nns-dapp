@@ -42,24 +42,35 @@ export class SendRequest extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SendRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: SendRequest): SendRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: SendRequest, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: SendRequest
+  ): SendRequest.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: SendRequest,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): SendRequest;
-  static deserializeBinaryFromReader(message: SendRequest, reader: jspb.BinaryReader): SendRequest;
+  static deserializeBinaryFromReader(
+    message: SendRequest,
+    reader: jspb.BinaryReader
+  ): SendRequest;
 }
 
 export namespace SendRequest {
   export type AsObject = {
-    memo?: Memo.AsObject,
-    payment?: Payment.AsObject,
-    maxFee?: ICPTs.AsObject,
-    fromSubaccount?: Subaccount.AsObject,
-    to?: AccountIdentifier.AsObject,
-    createdAt?: BlockHeight.AsObject,
-    createdAtTime?: TimeStamp.AsObject,
-  }
+    memo?: Memo.AsObject;
+    payment?: Payment.AsObject;
+    maxFee?: ICPTs.AsObject;
+    fromSubaccount?: Subaccount.AsObject;
+    to?: AccountIdentifier.AsObject;
+    createdAt?: BlockHeight.AsObject;
+    createdAtTime?: TimeStamp.AsObject;
+  };
 }
 
 export class SendResponse extends jspb.Message {
@@ -70,18 +81,29 @@ export class SendResponse extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SendResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: SendResponse): SendResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: SendResponse, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: SendResponse
+  ): SendResponse.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: SendResponse,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): SendResponse;
-  static deserializeBinaryFromReader(message: SendResponse, reader: jspb.BinaryReader): SendResponse;
+  static deserializeBinaryFromReader(
+    message: SendResponse,
+    reader: jspb.BinaryReader
+  ): SendResponse;
 }
 
 export namespace SendResponse {
   export type AsObject = {
-    resultingHeight?: BlockHeight.AsObject,
-  }
+    resultingHeight?: BlockHeight.AsObject;
+  };
 }
 
 export class NotifyRequest extends jspb.Message {
@@ -112,38 +134,59 @@ export class NotifyRequest extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NotifyRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: NotifyRequest): NotifyRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: NotifyRequest, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: NotifyRequest
+  ): NotifyRequest.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: NotifyRequest,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): NotifyRequest;
-  static deserializeBinaryFromReader(message: NotifyRequest, reader: jspb.BinaryReader): NotifyRequest;
+  static deserializeBinaryFromReader(
+    message: NotifyRequest,
+    reader: jspb.BinaryReader
+  ): NotifyRequest;
 }
 
 export namespace NotifyRequest {
   export type AsObject = {
-    blockHeight?: BlockHeight.AsObject,
-    maxFee?: ICPTs.AsObject,
-    fromSubaccount?: Subaccount.AsObject,
-    toCanister?: base_types_pb.PrincipalId.AsObject,
-    toSubaccount?: Subaccount.AsObject,
-  }
+    blockHeight?: BlockHeight.AsObject;
+    maxFee?: ICPTs.AsObject;
+    fromSubaccount?: Subaccount.AsObject;
+    toCanister?: base_types_pb.PrincipalId.AsObject;
+    toSubaccount?: Subaccount.AsObject;
+  };
 }
 
 export class NotifyResponse extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NotifyResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: NotifyResponse): NotifyResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: NotifyResponse, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: NotifyResponse
+  ): NotifyResponse.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: NotifyResponse,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): NotifyResponse;
-  static deserializeBinaryFromReader(message: NotifyResponse, reader: jspb.BinaryReader): NotifyResponse;
+  static deserializeBinaryFromReader(
+    message: NotifyResponse,
+    reader: jspb.BinaryReader
+  ): NotifyResponse;
 }
 
 export namespace NotifyResponse {
-  export type AsObject = {
-  }
+  export type AsObject = {};
 }
 
 export class TransactionNotificationRequest extends jspb.Message {
@@ -184,24 +227,35 @@ export class TransactionNotificationRequest extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TransactionNotificationRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: TransactionNotificationRequest): TransactionNotificationRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: TransactionNotificationRequest, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: TransactionNotificationRequest
+  ): TransactionNotificationRequest.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: TransactionNotificationRequest,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): TransactionNotificationRequest;
-  static deserializeBinaryFromReader(message: TransactionNotificationRequest, reader: jspb.BinaryReader): TransactionNotificationRequest;
+  static deserializeBinaryFromReader(
+    message: TransactionNotificationRequest,
+    reader: jspb.BinaryReader
+  ): TransactionNotificationRequest;
 }
 
 export namespace TransactionNotificationRequest {
   export type AsObject = {
-    from?: base_types_pb.PrincipalId.AsObject,
-    fromSubaccount?: Subaccount.AsObject,
-    to?: base_types_pb.PrincipalId.AsObject,
-    toSubaccount?: Subaccount.AsObject,
-    blockHeight?: BlockHeight.AsObject,
-    amount?: ICPTs.AsObject,
-    memo?: Memo.AsObject,
-  }
+    from?: base_types_pb.PrincipalId.AsObject;
+    fromSubaccount?: Subaccount.AsObject;
+    to?: base_types_pb.PrincipalId.AsObject;
+    toSubaccount?: Subaccount.AsObject;
+    blockHeight?: BlockHeight.AsObject;
+    amount?: ICPTs.AsObject;
+    memo?: Memo.AsObject;
+  };
 }
 
 export class TransactionNotificationResponse extends jspb.Message {
@@ -212,18 +266,29 @@ export class TransactionNotificationResponse extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TransactionNotificationResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: TransactionNotificationResponse): TransactionNotificationResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: TransactionNotificationResponse, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: TransactionNotificationResponse
+  ): TransactionNotificationResponse.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: TransactionNotificationResponse,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): TransactionNotificationResponse;
-  static deserializeBinaryFromReader(message: TransactionNotificationResponse, reader: jspb.BinaryReader): TransactionNotificationResponse;
+  static deserializeBinaryFromReader(
+    message: TransactionNotificationResponse,
+    reader: jspb.BinaryReader
+  ): TransactionNotificationResponse;
 }
 
 export namespace TransactionNotificationResponse {
   export type AsObject = {
-    response: Uint8Array | string,
-  }
+    response: Uint8Array | string;
+  };
 }
 
 export class CyclesNotificationResponse extends jspb.Message {
@@ -245,20 +310,31 @@ export class CyclesNotificationResponse extends jspb.Message {
   getResponseCase(): CyclesNotificationResponse.ResponseCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CyclesNotificationResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: CyclesNotificationResponse): CyclesNotificationResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: CyclesNotificationResponse, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: CyclesNotificationResponse
+  ): CyclesNotificationResponse.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: CyclesNotificationResponse,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): CyclesNotificationResponse;
-  static deserializeBinaryFromReader(message: CyclesNotificationResponse, reader: jspb.BinaryReader): CyclesNotificationResponse;
+  static deserializeBinaryFromReader(
+    message: CyclesNotificationResponse,
+    reader: jspb.BinaryReader
+  ): CyclesNotificationResponse;
 }
 
 export namespace CyclesNotificationResponse {
   export type AsObject = {
-    createdCanisterId?: base_types_pb.PrincipalId.AsObject,
-    refund?: Refund.AsObject,
-    toppedUp?: ToppedUp.AsObject,
-  }
+    createdCanisterId?: base_types_pb.PrincipalId.AsObject;
+    refund?: Refund.AsObject;
+    toppedUp?: ToppedUp.AsObject;
+  };
 
   export enum ResponseCase {
     RESPONSE_NOT_SET = 0,
@@ -276,18 +352,29 @@ export class AccountBalanceRequest extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AccountBalanceRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: AccountBalanceRequest): AccountBalanceRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AccountBalanceRequest, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: AccountBalanceRequest
+  ): AccountBalanceRequest.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: AccountBalanceRequest,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): AccountBalanceRequest;
-  static deserializeBinaryFromReader(message: AccountBalanceRequest, reader: jspb.BinaryReader): AccountBalanceRequest;
+  static deserializeBinaryFromReader(
+    message: AccountBalanceRequest,
+    reader: jspb.BinaryReader
+  ): AccountBalanceRequest;
 }
 
 export namespace AccountBalanceRequest {
   export type AsObject = {
-    account?: AccountIdentifier.AsObject,
-  }
+    account?: AccountIdentifier.AsObject;
+  };
 }
 
 export class AccountBalanceResponse extends jspb.Message {
@@ -298,34 +385,55 @@ export class AccountBalanceResponse extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AccountBalanceResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: AccountBalanceResponse): AccountBalanceResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AccountBalanceResponse, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: AccountBalanceResponse
+  ): AccountBalanceResponse.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: AccountBalanceResponse,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): AccountBalanceResponse;
-  static deserializeBinaryFromReader(message: AccountBalanceResponse, reader: jspb.BinaryReader): AccountBalanceResponse;
+  static deserializeBinaryFromReader(
+    message: AccountBalanceResponse,
+    reader: jspb.BinaryReader
+  ): AccountBalanceResponse;
 }
 
 export namespace AccountBalanceResponse {
   export type AsObject = {
-    balance?: ICPTs.AsObject,
-  }
+    balance?: ICPTs.AsObject;
+  };
 }
 
 export class TipOfChainRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TipOfChainRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: TipOfChainRequest): TipOfChainRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: TipOfChainRequest, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: TipOfChainRequest
+  ): TipOfChainRequest.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: TipOfChainRequest,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): TipOfChainRequest;
-  static deserializeBinaryFromReader(message: TipOfChainRequest, reader: jspb.BinaryReader): TipOfChainRequest;
+  static deserializeBinaryFromReader(
+    message: TipOfChainRequest,
+    reader: jspb.BinaryReader
+  ): TipOfChainRequest;
 }
 
 export namespace TipOfChainRequest {
-  export type AsObject = {
-  }
+  export type AsObject = {};
 }
 
 export class TipOfChainResponse extends jspb.Message {
@@ -341,19 +449,30 @@ export class TipOfChainResponse extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TipOfChainResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: TipOfChainResponse): TipOfChainResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: TipOfChainResponse, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: TipOfChainResponse
+  ): TipOfChainResponse.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: TipOfChainResponse,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): TipOfChainResponse;
-  static deserializeBinaryFromReader(message: TipOfChainResponse, reader: jspb.BinaryReader): TipOfChainResponse;
+  static deserializeBinaryFromReader(
+    message: TipOfChainResponse,
+    reader: jspb.BinaryReader
+  ): TipOfChainResponse;
 }
 
 export namespace TipOfChainResponse {
   export type AsObject = {
-    certification?: Certification.AsObject,
-    chainLength?: BlockHeight.AsObject,
-  }
+    certification?: Certification.AsObject;
+    chainLength?: BlockHeight.AsObject;
+  };
 }
 
 export class EncodedBlock extends jspb.Message {
@@ -364,18 +483,29 @@ export class EncodedBlock extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): EncodedBlock.AsObject;
-  static toObject(includeInstance: boolean, msg: EncodedBlock): EncodedBlock.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: EncodedBlock, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: EncodedBlock
+  ): EncodedBlock.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: EncodedBlock,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): EncodedBlock;
-  static deserializeBinaryFromReader(message: EncodedBlock, reader: jspb.BinaryReader): EncodedBlock;
+  static deserializeBinaryFromReader(
+    message: EncodedBlock,
+    reader: jspb.BinaryReader
+  ): EncodedBlock;
 }
 
 export namespace EncodedBlock {
   export type AsObject = {
-    block: Uint8Array | string,
-  }
+    block: Uint8Array | string;
+  };
 }
 
 export class GetBlocksRequest extends jspb.Message {
@@ -387,19 +517,30 @@ export class GetBlocksRequest extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetBlocksRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetBlocksRequest): GetBlocksRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetBlocksRequest, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: GetBlocksRequest
+  ): GetBlocksRequest.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: GetBlocksRequest,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): GetBlocksRequest;
-  static deserializeBinaryFromReader(message: GetBlocksRequest, reader: jspb.BinaryReader): GetBlocksRequest;
+  static deserializeBinaryFromReader(
+    message: GetBlocksRequest,
+    reader: jspb.BinaryReader
+  ): GetBlocksRequest;
 }
 
 export namespace GetBlocksRequest {
   export type AsObject = {
-    start: string,
-    length: string,
-  }
+    start: string;
+    length: string;
+  };
 }
 
 export class Refund extends jspb.Message {
@@ -414,34 +555,49 @@ export class Refund extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Refund.AsObject;
   static toObject(includeInstance: boolean, msg: Refund): Refund.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Refund, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Refund,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Refund;
-  static deserializeBinaryFromReader(message: Refund, reader: jspb.BinaryReader): Refund;
+  static deserializeBinaryFromReader(
+    message: Refund,
+    reader: jspb.BinaryReader
+  ): Refund;
 }
 
 export namespace Refund {
   export type AsObject = {
-    refund?: BlockHeight.AsObject,
-    error: string,
-  }
+    refund?: BlockHeight.AsObject;
+    error: string;
+  };
 }
 
 export class ToppedUp extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ToppedUp.AsObject;
   static toObject(includeInstance: boolean, msg: ToppedUp): ToppedUp.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ToppedUp, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: ToppedUp,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): ToppedUp;
-  static deserializeBinaryFromReader(message: ToppedUp, reader: jspb.BinaryReader): ToppedUp;
+  static deserializeBinaryFromReader(
+    message: ToppedUp,
+    reader: jspb.BinaryReader
+  ): ToppedUp;
 }
 
 export namespace ToppedUp {
-  export type AsObject = {
-  }
+  export type AsObject = {};
 }
 
 export class EncodedBlocks extends jspb.Message {
@@ -452,18 +608,29 @@ export class EncodedBlocks extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): EncodedBlocks.AsObject;
-  static toObject(includeInstance: boolean, msg: EncodedBlocks): EncodedBlocks.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: EncodedBlocks, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: EncodedBlocks
+  ): EncodedBlocks.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: EncodedBlocks,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): EncodedBlocks;
-  static deserializeBinaryFromReader(message: EncodedBlocks, reader: jspb.BinaryReader): EncodedBlocks;
+  static deserializeBinaryFromReader(
+    message: EncodedBlocks,
+    reader: jspb.BinaryReader
+  ): EncodedBlocks;
 }
 
 export namespace EncodedBlocks {
   export type AsObject = {
-    blocksList: Array<EncodedBlock.AsObject>,
-  }
+    blocksList: Array<EncodedBlock.AsObject>;
+  };
 }
 
 export class GetBlocksResponse extends jspb.Message {
@@ -480,19 +647,30 @@ export class GetBlocksResponse extends jspb.Message {
   getGetBlocksContentCase(): GetBlocksResponse.GetBlocksContentCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetBlocksResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetBlocksResponse): GetBlocksResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetBlocksResponse, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: GetBlocksResponse
+  ): GetBlocksResponse.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: GetBlocksResponse,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): GetBlocksResponse;
-  static deserializeBinaryFromReader(message: GetBlocksResponse, reader: jspb.BinaryReader): GetBlocksResponse;
+  static deserializeBinaryFromReader(
+    message: GetBlocksResponse,
+    reader: jspb.BinaryReader
+  ): GetBlocksResponse;
 }
 
 export namespace GetBlocksResponse {
   export type AsObject = {
-    blocks?: EncodedBlocks.AsObject,
-    error: string,
-  }
+    blocks?: EncodedBlocks.AsObject;
+    error: string;
+  };
 
   export enum GetBlocksContentCase {
     GET_BLOCKS_CONTENT_NOT_SET = 0,
@@ -508,17 +686,25 @@ export class ICPTs extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ICPTs.AsObject;
   static toObject(includeInstance: boolean, msg: ICPTs): ICPTs.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ICPTs, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: ICPTs,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): ICPTs;
-  static deserializeBinaryFromReader(message: ICPTs, reader: jspb.BinaryReader): ICPTs;
+  static deserializeBinaryFromReader(
+    message: ICPTs,
+    reader: jspb.BinaryReader
+  ): ICPTs;
 }
 
 export namespace ICPTs {
   export type AsObject = {
-    e8s: string,
-  }
+    e8s: string;
+  };
 }
 
 export class Payment extends jspb.Message {
@@ -530,17 +716,25 @@ export class Payment extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Payment.AsObject;
   static toObject(includeInstance: boolean, msg: Payment): Payment.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Payment, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Payment,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Payment;
-  static deserializeBinaryFromReader(message: Payment, reader: jspb.BinaryReader): Payment;
+  static deserializeBinaryFromReader(
+    message: Payment,
+    reader: jspb.BinaryReader
+  ): Payment;
 }
 
 export namespace Payment {
   export type AsObject = {
-    receiverGets?: ICPTs.AsObject,
-  }
+    receiverGets?: ICPTs.AsObject;
+  };
 }
 
 export class BlockHeight extends jspb.Message {
@@ -549,18 +743,29 @@ export class BlockHeight extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): BlockHeight.AsObject;
-  static toObject(includeInstance: boolean, msg: BlockHeight): BlockHeight.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: BlockHeight, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: BlockHeight
+  ): BlockHeight.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: BlockHeight,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): BlockHeight;
-  static deserializeBinaryFromReader(message: BlockHeight, reader: jspb.BinaryReader): BlockHeight;
+  static deserializeBinaryFromReader(
+    message: BlockHeight,
+    reader: jspb.BinaryReader
+  ): BlockHeight;
 }
 
 export namespace BlockHeight {
   export type AsObject = {
-    height: string,
-  }
+    height: string;
+  };
 }
 
 export class Block extends jspb.Message {
@@ -582,19 +787,27 @@ export class Block extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Block.AsObject;
   static toObject(includeInstance: boolean, msg: Block): Block.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Block, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Block,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Block;
-  static deserializeBinaryFromReader(message: Block, reader: jspb.BinaryReader): Block;
+  static deserializeBinaryFromReader(
+    message: Block,
+    reader: jspb.BinaryReader
+  ): Block;
 }
 
 export namespace Block {
   export type AsObject = {
-    parentHash?: Hash.AsObject,
-    timestamp?: TimeStamp.AsObject,
-    transaction?: Transaction.AsObject,
-  }
+    parentHash?: Hash.AsObject;
+    timestamp?: TimeStamp.AsObject;
+    transaction?: Transaction.AsObject;
+  };
 }
 
 export class Hash extends jspb.Message {
@@ -606,17 +819,25 @@ export class Hash extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Hash.AsObject;
   static toObject(includeInstance: boolean, msg: Hash): Hash.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Hash, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Hash,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Hash;
-  static deserializeBinaryFromReader(message: Hash, reader: jspb.BinaryReader): Hash;
+  static deserializeBinaryFromReader(
+    message: Hash,
+    reader: jspb.BinaryReader
+  ): Hash;
 }
 
 export namespace Hash {
   export type AsObject = {
-    hash: Uint8Array | string,
-  }
+    hash: Uint8Array | string;
+  };
 }
 
 export class Account extends jspb.Message {
@@ -633,18 +854,26 @@ export class Account extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Account.AsObject;
   static toObject(includeInstance: boolean, msg: Account): Account.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Account, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Account,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Account;
-  static deserializeBinaryFromReader(message: Account, reader: jspb.BinaryReader): Account;
+  static deserializeBinaryFromReader(
+    message: Account,
+    reader: jspb.BinaryReader
+  ): Account;
 }
 
 export namespace Account {
   export type AsObject = {
-    identifier?: AccountIdentifier.AsObject,
-    balance?: ICPTs.AsObject,
-  }
+    identifier?: AccountIdentifier.AsObject;
+    balance?: ICPTs.AsObject;
+  };
 }
 
 export class Transaction extends jspb.Message {
@@ -681,23 +910,34 @@ export class Transaction extends jspb.Message {
   getTransferCase(): Transaction.TransferCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Transaction.AsObject;
-  static toObject(includeInstance: boolean, msg: Transaction): Transaction.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Transaction, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: Transaction
+  ): Transaction.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Transaction,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Transaction;
-  static deserializeBinaryFromReader(message: Transaction, reader: jspb.BinaryReader): Transaction;
+  static deserializeBinaryFromReader(
+    message: Transaction,
+    reader: jspb.BinaryReader
+  ): Transaction;
 }
 
 export namespace Transaction {
   export type AsObject = {
-    burn?: Burn.AsObject,
-    mint?: Mint.AsObject,
-    send?: Send.AsObject,
-    memo?: Memo.AsObject,
-    createdAt?: BlockHeight.AsObject,
-    createdAtTime?: TimeStamp.AsObject,
-  }
+    burn?: Burn.AsObject;
+    mint?: Mint.AsObject;
+    send?: Send.AsObject;
+    memo?: Memo.AsObject;
+    createdAt?: BlockHeight.AsObject;
+    createdAtTime?: TimeStamp.AsObject;
+  };
 
   export enum TransferCase {
     TRANSFER_NOT_SET = 0,
@@ -731,20 +971,28 @@ export class Send extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Send.AsObject;
   static toObject(includeInstance: boolean, msg: Send): Send.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Send, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Send,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Send;
-  static deserializeBinaryFromReader(message: Send, reader: jspb.BinaryReader): Send;
+  static deserializeBinaryFromReader(
+    message: Send,
+    reader: jspb.BinaryReader
+  ): Send;
 }
 
 export namespace Send {
   export type AsObject = {
-    from?: AccountIdentifier.AsObject,
-    to?: AccountIdentifier.AsObject,
-    amount?: ICPTs.AsObject,
-    maxFee?: ICPTs.AsObject,
-  }
+    from?: AccountIdentifier.AsObject;
+    to?: AccountIdentifier.AsObject;
+    amount?: ICPTs.AsObject;
+    maxFee?: ICPTs.AsObject;
+  };
 }
 
 export class Mint extends jspb.Message {
@@ -761,18 +1009,26 @@ export class Mint extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Mint.AsObject;
   static toObject(includeInstance: boolean, msg: Mint): Mint.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Mint, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Mint,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Mint;
-  static deserializeBinaryFromReader(message: Mint, reader: jspb.BinaryReader): Mint;
+  static deserializeBinaryFromReader(
+    message: Mint,
+    reader: jspb.BinaryReader
+  ): Mint;
 }
 
 export namespace Mint {
   export type AsObject = {
-    to?: AccountIdentifier.AsObject,
-    amount?: ICPTs.AsObject,
-  }
+    to?: AccountIdentifier.AsObject;
+    amount?: ICPTs.AsObject;
+  };
 }
 
 export class Burn extends jspb.Message {
@@ -789,18 +1045,26 @@ export class Burn extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Burn.AsObject;
   static toObject(includeInstance: boolean, msg: Burn): Burn.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Burn, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Burn,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Burn;
-  static deserializeBinaryFromReader(message: Burn, reader: jspb.BinaryReader): Burn;
+  static deserializeBinaryFromReader(
+    message: Burn,
+    reader: jspb.BinaryReader
+  ): Burn;
 }
 
 export namespace Burn {
   export type AsObject = {
-    from?: AccountIdentifier.AsObject,
-    amount?: ICPTs.AsObject,
-  }
+    from?: AccountIdentifier.AsObject;
+    amount?: ICPTs.AsObject;
+  };
 }
 
 export class AccountIdentifier extends jspb.Message {
@@ -811,18 +1075,29 @@ export class AccountIdentifier extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AccountIdentifier.AsObject;
-  static toObject(includeInstance: boolean, msg: AccountIdentifier): AccountIdentifier.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AccountIdentifier, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: AccountIdentifier
+  ): AccountIdentifier.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: AccountIdentifier,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): AccountIdentifier;
-  static deserializeBinaryFromReader(message: AccountIdentifier, reader: jspb.BinaryReader): AccountIdentifier;
+  static deserializeBinaryFromReader(
+    message: AccountIdentifier,
+    reader: jspb.BinaryReader
+  ): AccountIdentifier;
 }
 
 export namespace AccountIdentifier {
   export type AsObject = {
-    hash: Uint8Array | string,
-  }
+    hash: Uint8Array | string;
+  };
 }
 
 export class Subaccount extends jspb.Message {
@@ -833,18 +1108,29 @@ export class Subaccount extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Subaccount.AsObject;
-  static toObject(includeInstance: boolean, msg: Subaccount): Subaccount.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Subaccount, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: Subaccount
+  ): Subaccount.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Subaccount,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Subaccount;
-  static deserializeBinaryFromReader(message: Subaccount, reader: jspb.BinaryReader): Subaccount;
+  static deserializeBinaryFromReader(
+    message: Subaccount,
+    reader: jspb.BinaryReader
+  ): Subaccount;
 }
 
 export namespace Subaccount {
   export type AsObject = {
-    subAccount: Uint8Array | string,
-  }
+    subAccount: Uint8Array | string;
+  };
 }
 
 export class Memo extends jspb.Message {
@@ -854,17 +1140,25 @@ export class Memo extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Memo.AsObject;
   static toObject(includeInstance: boolean, msg: Memo): Memo.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Memo, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Memo,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Memo;
-  static deserializeBinaryFromReader(message: Memo, reader: jspb.BinaryReader): Memo;
+  static deserializeBinaryFromReader(
+    message: Memo,
+    reader: jspb.BinaryReader
+  ): Memo;
 }
 
 export namespace Memo {
   export type AsObject = {
-    memo: string,
-  }
+    memo: string;
+  };
 }
 
 export class TimeStamp extends jspb.Message {
@@ -874,17 +1168,25 @@ export class TimeStamp extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TimeStamp.AsObject;
   static toObject(includeInstance: boolean, msg: TimeStamp): TimeStamp.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: TimeStamp, writer: jspb.BinaryWriter): void;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: TimeStamp,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): TimeStamp;
-  static deserializeBinaryFromReader(message: TimeStamp, reader: jspb.BinaryReader): TimeStamp;
+  static deserializeBinaryFromReader(
+    message: TimeStamp,
+    reader: jspb.BinaryReader
+  ): TimeStamp;
 }
 
 export namespace TimeStamp {
   export type AsObject = {
-    timestampNanos: string,
-  }
+    timestampNanos: string;
+  };
 }
 
 export class Certification extends jspb.Message {
@@ -895,17 +1197,27 @@ export class Certification extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Certification.AsObject;
-  static toObject(includeInstance: boolean, msg: Certification): Certification.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Certification, writer: jspb.BinaryWriter): void;
+  static toObject(
+    includeInstance: boolean,
+    msg: Certification
+  ): Certification.AsObject;
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: {
+    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
+  };
+  static serializeBinaryToWriter(
+    message: Certification,
+    writer: jspb.BinaryWriter
+  ): void;
   static deserializeBinary(bytes: Uint8Array): Certification;
-  static deserializeBinaryFromReader(message: Certification, reader: jspb.BinaryReader): Certification;
+  static deserializeBinaryFromReader(
+    message: Certification,
+    reader: jspb.BinaryReader
+  ): Certification;
 }
 
 export namespace Certification {
   export type AsObject = {
-    certification: Uint8Array | string,
-  }
+    certification: Uint8Array | string;
+  };
 }
-
