@@ -647,7 +647,14 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   String getPrincipal() {
-    return authApi.getPrincipal() ?? "null";
+    final principal = authApi.getPrincipal();
+    if (principal != null) {
+      return principal;
+    } else {
+      // We're not logged in. Redirect to the login page.
+      this.logout();
+      return "null";
+    }
   }
 
   @override
