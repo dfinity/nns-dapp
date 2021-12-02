@@ -25,9 +25,7 @@ class _NeuronsPageState extends State<NeuronsPage> {
               return TabTitleAndContent(
                 title: "Neurons",
                 subtitle:
-                    '''Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.
-                    
-Your principal id is "${context.icApi.getPrincipal()}"''',
+                    '''Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.''',
                 children: [
                   SmallFormDivider(),
                   ...(context.boxes.neurons.values
