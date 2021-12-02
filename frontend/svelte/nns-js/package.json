@@ -8,6 +8,7 @@
     "test": "jest",
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",
+    "postinstall": "npm run build",
     "update_proto": "bash ./proto/update_proto.sh"
   },
   "devDependencies": {
