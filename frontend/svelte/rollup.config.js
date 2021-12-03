@@ -78,8 +78,10 @@ export default {
       preventAssignment: true,
       "compile_time_const.ROLLUP_WATCH": JSON.stringify(!production),
       "compile_time_const.INTERNET_IDENTITY_URL": JSON.stringify(
-                    process.env.DEPLOY_ENV === "testnet"?"https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/":"https://identity.ic0.app/"
-                ),
+        process.env.DEPLOY_ENV === "testnet"
+          ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
+          : "https://identity.ic0.app/"
+      ),
     }),
 
     // In dev mode, call `npm run start` once

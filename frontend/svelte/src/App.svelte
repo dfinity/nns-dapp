@@ -13,11 +13,11 @@
 
 <svelte:head>
   {#if !compile_time_const.ROLLUP_WATCH}
-  <!-- This is just a default; need to examine the CSP carefully and lock down accordingly. -->
-  <meta
-    http-equiv="Content-Security-Policy"
-    content="default-src 'self'; child-src 'none';"
-  >
+    <!-- This is just a default; need to examine the CSP carefully and lock down accordingly. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; child-src 'none';"
+    />
   {/if}
 </svelte:head>
 

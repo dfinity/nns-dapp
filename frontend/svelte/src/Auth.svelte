@@ -57,9 +57,9 @@
   onMount(initAuth);
 
   // Synchronises login with other tabs - this is shared with other tabs on the same origin.
-  const broadcastChannel = new BroadcastChannel('nns-auth');
+  const broadcastChannel = new BroadcastChannel("nns-auth");
   broadcastChannel.onmessage = function (event) {
-    console.log({broadcastChannel: event});
+    console.log({ broadcastChannel: event });
     if (!event.isTrusted) return;
     if (event.data === "signOut") {
       if (signedIn) {
@@ -72,7 +72,6 @@
       }
     }
   };
-
 </script>
 
 <div class="auth-expandable">
