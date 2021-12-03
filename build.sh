@@ -4,7 +4,7 @@ set -e
 
 if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $DEPLOY_ENV = "local" ]]; then
   echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet' or 'local'"
-	exit 1
+  exit 1
 fi
 
 set -x
@@ -30,8 +30,8 @@ sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' buil
 cd build/web/ || exit
 # Remove the assets/NOTICES file, as it's large in size and not used.
 rm assets/NOTICES
-tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz . || \
-gtar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz .
+tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz . ||
+  gtar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz .
 cd ../../../.. || exit
 ls -sh assets.tar.xz
 sha256sum assets.tar.xz

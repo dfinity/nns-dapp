@@ -8,9 +8,14 @@ use ledger_canister::{
 };
 
 pub async fn send(request: SendArgs) -> Result<BlockHeight, String> {
-    dfn_core::call(LEDGER_CANISTER_ID, "send_pb", protobuf, request.into_proto())
-        .await
-        .map_err(|e| e.1)
+    dfn_core::call(
+        LEDGER_CANISTER_ID,
+        "send_pb",
+        protobuf,
+        request.into_proto(),
+    )
+    .await
+    .map_err(|e| e.1)
 }
 
 pub async fn notify(request: NotifyCanisterArgs) -> Result<CyclesResponse, String> {

@@ -329,7 +329,10 @@ async fn enqueue_create_or_top_up_canister_refund(
                         .enqueue_transaction_to_be_refunded(refund_args)
                 })
             } else {
-                let error_message = format!("Unable to refund, account balance too low. Account: {}", from_account);
+                let error_message = format!(
+                    "Unable to refund, account balance too low. Account: {}",
+                    from_account
+                );
                 STATE.with(|s| {
                     s.accounts_store
                         .borrow_mut()

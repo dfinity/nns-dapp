@@ -1,10 +1,11 @@
-use crate::STATE;
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
+use crate::metrics_encoder::MetricsEncoder;
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionError, MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
+use crate::STATE;
 use candid::CandidType;
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
@@ -22,7 +23,6 @@ use std::cmp::{min, Ordering};
 use std::collections::{HashMap, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
-use crate::metrics_encoder::MetricsEncoder;
 
 type TransactionIndex = u64;
 
@@ -1580,7 +1580,7 @@ pub enum TransferResult {
 
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     STATE.with(|s| {
-        let stats = s.accounts_store.borrow().get_stats(); 
+        let stats = s.accounts_store.borrow().get_stats();
         w.encode_gauge(
             "neurons_created_count",
             stats.neurons_created_count as f64,

@@ -4,6 +4,7 @@
 # docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
 
 FROM ubuntu:20.10
+SHELL ["bash", "-c"]
 
 ARG rust_version=1.54.0
 ENV NODE_VERSION=14.15.4
