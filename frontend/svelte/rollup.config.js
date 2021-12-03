@@ -4,6 +4,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
+import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
 import css from "rollup-plugin-css-only";
 import inject from "@rollup/plugin-inject";
@@ -73,6 +74,10 @@ export default {
     }),
     inject({ Buffer: ["buffer", "Buffer"] }),
     json(),
+    replace({
+      preventAssignment: true,
+      "process.env.ROLLUP_WATCH": JSON.stringify(!production)
+    }),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated
