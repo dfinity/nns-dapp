@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd "$(dirname "$(realpath "$0")/../frontend/ts" || exit >/dev/null # Move to the script's directory.
+pushd "$(dirname "$(realpath "$0")")/../frontend/ts" || exit >/dev/null # Move to the script's directory.
 
 if [ ! -d "node_modules" ]; then
   npm install
