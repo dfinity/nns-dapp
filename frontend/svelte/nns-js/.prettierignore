@@ -1,0 +1,3 @@
+dist
+*.did.js
+**/proto/*
