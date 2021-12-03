@@ -105,10 +105,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                     HttpResponse {
                         status_code: 200,
                         headers: vec![
-                            (
-                                "Content-Type".to_string(),
-                                "text/plain; version=0.0.4".to_string(),
-                            ),
+                            ("Content-Type".to_string(), "text/plain; version=0.0.4".to_string()),
                             ("Content-Length".to_string(), body.len().to_string()),
                         ],
                         body: ByteBuf::from(body),
@@ -122,8 +119,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
             }
         }
         request_path => STATE.with(|s| {
-            let certificate_header =
-                make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
+            let certificate_header = make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
 
             match s.assets.borrow().get(request_path) {
                 Some(asset) => {
@@ -172,9 +168,8 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
     let tree = labeled(LABEL_ASSETS, witness);
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
     serializer.self_describe().unwrap();
-    tree.serialize(&mut serializer).unwrap_or_else(|e| {
-        dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e))
-    });
+    tree.serialize(&mut serializer)
+        .unwrap_or_else(|e| dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e)));
     (
         "IC-Certificate".to_string(),
         format!(
@@ -200,9 +195,7 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
         let path = path.into();
 
         if path == "/index.html" {
-            asset_hashes
-                .0
-                .insert(b"/".to_vec(), hash_bytes(&asset.bytes));
+            asset_hashes.0.insert(b"/".to_vec(), hash_bytes(&asset.bytes));
             assets.insert("/", asset.clone());
         }
 
@@ -228,12 +221,7 @@ pub fn init_assets() {
             continue;
         }
 
-        let name_bytes = entry
-            .path_bytes()
-            .into_owned()
-            .strip_prefix(b".")
-            .unwrap()
-            .to_vec();
+        let name_bytes = entry.path_bytes().into_owned().strip_prefix(b".").unwrap().to_vec();
 
         let name = String::from_utf8(name_bytes.clone()).unwrap_or_else(|e| {
             dfn_core::api::trap_with(&format!(
@@ -256,13 +244,7 @@ pub fn init_assets() {
 impl StableState for Assets {
     fn encode(&self) -> Vec<u8> {
         // Encode all stable assets.
-        let stable_assets: Assets = Assets(
-            self.0
-                .clone()
-                .into_iter()
-                .filter(|(_, asset)| asset.stable)
-                .collect(),
-        );
+        let stable_assets: Assets = Assets(self.0.clone().into_iter().filter(|(_, asset)| asset.stable).collect());
 
         Encode!(&stable_assets).unwrap()
     }

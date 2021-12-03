@@ -33,13 +33,7 @@ impl<W: io::Write> MetricsEncoder<W> {
         writeln!(self.writer, "# TYPE {} {}", name, typ)
     }
 
-    pub fn encode_single_value(
-        &mut self,
-        typ: &str,
-        name: &str,
-        value: f64,
-        help: &str,
-    ) -> io::Result<()> {
+    pub fn encode_single_value(&mut self, typ: &str, name: &str, value: f64, help: &str) -> io::Result<()> {
         self.encode_header(name, help, typ)?;
         writeln!(self.writer, "{} {} {}", name, value, self.now_millis)
     }

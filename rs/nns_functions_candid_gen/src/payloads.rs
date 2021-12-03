@@ -242,8 +242,7 @@ pub struct UpdateNodeOperatorConfigPayload {
 pub struct UpdateNodeRewardsTableProposalPayload {
     /// Maps regions to the node reward rates in that region
     #[prost(btree_map = "string, message", tag = "1")]
-    pub new_entries:
-        ::prost::alloc::collections::BTreeMap<::prost::alloc::string::String, NodeRewardRates>,
+    pub new_entries: ::prost::alloc::collections::BTreeMap<::prost::alloc::string::String, NodeRewardRates>,
 }
 
 #[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
@@ -258,8 +257,7 @@ pub struct NodeRewardRate {
 pub struct NodeRewardRates {
     /// Maps node types to the reward rate for that node type
     #[prost(btree_map = "string, message", tag = "1")]
-    pub rates:
-        ::prost::alloc::collections::BTreeMap<::prost::alloc::string::String, NodeRewardRate>,
+    pub rates: ::prost::alloc::collections::BTreeMap<::prost::alloc::string::String, NodeRewardRate>,
 }
 
 // https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/protobuf/def/registry/dc/v1/dc.proto#L27

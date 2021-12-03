@@ -33,12 +33,9 @@ thread_local! {
 
 impl StableState for State {
     fn encode(&self) -> Vec<u8> {
-        Candid((
-            self.accounts_store.borrow().encode(),
-            self.assets.borrow().encode(),
-        ))
-        .into_bytes()
-        .unwrap()
+        Candid((self.accounts_store.borrow().encode(), self.assets.borrow().encode()))
+            .into_bytes()
+            .unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {

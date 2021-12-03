@@ -110,18 +110,13 @@ fn add_account_adds_principal_and_sets_transaction_types() {
             send,
             Memo(0),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
+            TimeStamp { timestamp_nanos: 100 },
         )
         .unwrap();
 
     let stake_neuron = Send {
         from: account_identifier,
-        to: AccountIdentifier::from_hex(
-            "b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982",
-        )
-        .unwrap(),
+        to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
         amount: ICPTs::from_icpts(2).unwrap(),
         fee: ICPTs::from_e8s(10000),
     };
@@ -130,18 +125,13 @@ fn add_account_adds_principal_and_sets_transaction_types() {
             stake_neuron,
             Memo(1678183231181200159),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
+            TimeStamp { timestamp_nanos: 100 },
         )
         .unwrap();
 
     let topup_neuron = Send {
         from: account_identifier,
-        to: AccountIdentifier::from_hex(
-            "b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982",
-        )
-        .unwrap(),
+        to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
         amount: ICPTs::from_icpts(3).unwrap(),
         fee: ICPTs::from_e8s(10000),
     };
@@ -150,9 +140,7 @@ fn add_account_adds_principal_and_sets_transaction_types() {
             topup_neuron,
             Memo(0),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
+            TimeStamp { timestamp_nanos: 100 },
         )
         .unwrap();
 
@@ -345,9 +333,7 @@ fn hardware_wallet_transactions_tracked_correctly() {
             transfer,
             Memo(0),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
+            TimeStamp { timestamp_nanos: 100 },
         )
         .unwrap();
 
@@ -360,9 +346,7 @@ fn hardware_wallet_transactions_tracked_correctly() {
             transfer,
             Memo(0),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
+            TimeStamp { timestamp_nanos: 100 },
         )
         .unwrap();
 
@@ -387,8 +371,7 @@ fn append_transaction_detects_neuron_transactions() {
 
     let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let neuron_memo = Memo(16656605094239839590);
-    let neuron_account =
-        AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
+    let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
 
     let transfer = Send {
         from: AccountIdentifier::new(neuron_principal, None),
@@ -397,14 +380,7 @@ fn append_transaction_detects_neuron_transactions() {
         fee: ICPTs::from_e8s(10000),
     };
     store
-        .append_transaction(
-            transfer,
-            neuron_memo,
-            block_height,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
-        )
+        .append_transaction(transfer, neuron_memo, block_height, TimeStamp { timestamp_nanos: 100 })
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -422,9 +398,7 @@ fn append_transaction_detects_neuron_transactions() {
             notification,
             Memo(block_height),
             block_height + 1,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
+            TimeStamp { timestamp_nanos: 100 },
         )
         .unwrap();
     assert!(matches!(
@@ -439,14 +413,7 @@ fn append_transaction_detects_neuron_transactions() {
         fee: ICPTs::from_e8s(10000),
     };
     store
-        .append_transaction(
-            topup1,
-            Memo(0),
-            block_height + 2,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
-        )
+        .append_transaction(topup1, Memo(0), block_height + 2, TimeStamp { timestamp_nanos: 100 })
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -460,14 +427,7 @@ fn append_transaction_detects_neuron_transactions() {
         fee: ICPTs::from_e8s(10000),
     };
     store
-        .append_transaction(
-            topup2,
-            Memo(0),
-            block_height + 3,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
-        )
+        .append_transaction(topup2, Memo(0), block_height + 3, TimeStamp { timestamp_nanos: 100 })
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -482,8 +442,7 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
     let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
     let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let neuron_memo = Memo(16656605094239839590);
-    let neuron_account =
-        AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
+    let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
 
     let transfer = Send {
         from: AccountIdentifier::new(neuron_principal, None),
@@ -492,14 +451,7 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
         fee: ICPTs::from_e8s(10000),
     };
     store
-        .append_transaction(
-            transfer,
-            neuron_memo,
-            block_height,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
-        )
+        .append_transaction(transfer, neuron_memo, block_height, TimeStamp { timestamp_nanos: 100 })
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -514,14 +466,7 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
     };
     let previous_transaction_count = store.transactions.len();
     store
-        .append_transaction(
-            topup,
-            Memo(0),
-            block_height + 1,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
-        )
+        .append_transaction(topup, Memo(0), block_height + 1, TimeStamp { timestamp_nanos: 100 })
         .unwrap();
 
     // No new transaction should have been added, but the neuron should be queued for refreshing
@@ -552,8 +497,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
 
     let neuron_principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let neuron_memo = Memo(16656605094239839590);
-    let neuron_account =
-        AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
+    let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
     let other_principal = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
 
     let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
@@ -568,9 +512,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
             stake_neuron_transfer,
             neuron_memo,
             block_height,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
+            TimeStamp { timestamp_nanos: 100 },
         )
         .unwrap();
     assert!(matches!(
@@ -585,14 +527,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
         fee: ICPTs::from_e8s(10000),
     };
     store
-        .append_transaction(
-            topup,
-            Memo(0),
-            block_height + 1,
-            TimeStamp {
-                timestamp_nanos: 100,
-            },
-        )
+        .append_transaction(topup, Memo(0), block_height + 1, TimeStamp { timestamp_nanos: 100 })
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -740,10 +675,7 @@ fn attach_canister_canister_already_attached() {
     );
 
     assert!(matches!(result1, AttachCanisterResponse::Ok));
-    assert!(matches!(
-        result2,
-        AttachCanisterResponse::CanisterAlreadyAttached
-    ));
+    assert!(matches!(result2, AttachCanisterResponse::CanisterAlreadyAttached));
 }
 
 #[test]
@@ -874,13 +806,12 @@ fn prune_transactions() {
     let hw_account = AccountIdentifier::from(hw_principal);
     let unknown_account = AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap());
 
-    let sub_account = if let CreateSubAccountResponse::Ok(response) =
-        store.create_sub_account(principal2, "SUB1".to_string())
-    {
-        response.account_identifier
-    } else {
-        panic!("Unable to create sub account");
-    };
+    let sub_account =
+        if let CreateSubAccountResponse::Ok(response) = store.create_sub_account(principal2, "SUB1".to_string()) {
+            response.account_identifier
+        } else {
+            panic!("Unable to create sub account");
+        };
 
     store.register_hardware_wallet(
         principal1,
@@ -890,9 +821,7 @@ fn prune_transactions() {
         },
     );
 
-    let timestamp = TimeStamp {
-        timestamp_nanos: 100,
-    };
+    let timestamp = TimeStamp { timestamp_nanos: 100 };
     for _ in 0..10 {
         let transfer1 = Burn {
             amount: ICPTs::from_e8s(100_000),
@@ -949,17 +878,9 @@ fn prune_transactions() {
             .unwrap();
     }
 
-    let original_block_heights = store
-        .transactions
-        .iter()
-        .map(|t| t.block_height)
-        .collect_vec();
+    let original_block_heights = store.transactions.iter().map(|t| t.block_height).collect_vec();
     assert_eq!(20, store.prune_transactions(20));
-    let pruned_block_heights = store
-        .transactions
-        .iter()
-        .map(|t| t.block_height)
-        .collect_vec();
+    let pruned_block_heights = store.transactions.iter().map(|t| t.block_height).collect_vec();
 
     assert_eq!(
         original_block_heights[20..].iter().cloned().collect_vec(),
@@ -1094,35 +1015,27 @@ fn setup_test_store() -> AccountsStore {
     let mut store = AccountsStore::default();
     store.add_account(principal1);
     store.add_account(principal2);
-    let timestamp = TimeStamp {
-        timestamp_nanos: 100,
-    };
+    let timestamp = TimeStamp { timestamp_nanos: 100 };
     {
         let transfer = Mint {
             amount: ICPTs::from_e8s(1_000_000_000),
             to: account_identifier1,
         };
-        store
-            .append_transaction(transfer, Memo(0), 0, timestamp)
-            .unwrap();
+        store.append_transaction(transfer, Memo(0), 0, timestamp).unwrap();
     }
     {
         let transfer = Mint {
             amount: ICPTs::from_e8s(1_000_000_000),
             to: account_identifier1,
         };
-        store
-            .append_transaction(transfer, Memo(0), 1, timestamp)
-            .unwrap();
+        store.append_transaction(transfer, Memo(0), 1, timestamp).unwrap();
     }
     {
         let transfer = Burn {
             amount: ICPTs::from_e8s(500_000_000),
             from: account_identifier1,
         };
-        store
-            .append_transaction(transfer, Memo(0), 2, timestamp)
-            .unwrap();
+        store.append_transaction(transfer, Memo(0), 2, timestamp).unwrap();
     }
     {
         let transfer = Send {
@@ -1131,9 +1044,7 @@ fn setup_test_store() -> AccountsStore {
             from: account_identifier1,
             to: account_identifier2,
         };
-        store
-            .append_transaction(transfer, Memo(0), 3, timestamp)
-            .unwrap();
+        store.append_transaction(transfer, Memo(0), 3, timestamp).unwrap();
     }
     store
 }

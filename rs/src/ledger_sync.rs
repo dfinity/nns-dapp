@@ -50,12 +50,8 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
             let blocks_count = blocks.len() as u32;
             for (block_height, block) in blocks.into_iter() {
                 let transaction = block.transaction().into_owned();
-                let result = store.append_transaction(
-                    transaction.transfer,
-                    transaction.memo,
-                    block_height,
-                    block.timestamp(),
-                );
+                let result =
+                    store.append_transaction(transaction.transfer, transaction.memo, block_height, block.timestamp());
 
                 if let Err(err) = result {
                     return Err(err);
@@ -72,20 +68,13 @@ fn get_block_height_synced_up_to() -> Option<BlockHeight> {
     STATE.with(|s| s.accounts_store.borrow().get_block_height_synced_up_to())
 }
 
-async fn get_blocks(
-    from: BlockHeight,
-    tip_of_chain: BlockHeight,
-) -> Result<Vec<(BlockHeight, Block)>, String> {
+async fn get_blocks(from: BlockHeight, tip_of_chain: BlockHeight) -> Result<Vec<(BlockHeight, Block)>, String> {
     let archive_index_entries = ledger::get_archive_index().await?.entries;
 
-    let (canister_id, range) =
-        determine_canister_for_blocks(from, tip_of_chain, archive_index_entries);
+    let (canister_id, range) = determine_canister_for_blocks(from, tip_of_chain, archive_index_entries);
 
     const MAX_BLOCK_PER_ITERATION: u32 = 1000;
-    let count = min(
-        (range.end() - range.start() + 1) as u32,
-        MAX_BLOCK_PER_ITERATION,
-    );
+    let count = min((range.end() - range.start() + 1) as u32, MAX_BLOCK_PER_ITERATION);
 
     let blocks = ledger::get_blocks(canister_id, *range.start(), count).await?;
 
