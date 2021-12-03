@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { AuthClient } from "@dfinity/auth-client";
+  import { AuthTimeout } from "./AuthTimeout";
 
   // Login status
   export let signedIn = false;
@@ -40,6 +41,7 @@
     principal = identity.getPrincipal().toString();
     signedIn = true;
     broadcastChannel.postMessage("signIn");
+    new AuthTimeout(signOut);
   };
 
   // Signs out, erasing all local user data.
@@ -59,7 +61,7 @@
   // Synchronises login with other tabs - this is shared with other tabs on the same origin.
   const broadcastChannel = new BroadcastChannel("nns-auth");
   broadcastChannel.onmessage = function (event) {
-    console.log({ broadcastChannel: event });
+    console.log({ broadcastChannel: event.data });
     if (!event.isTrusted) return;
     if (event.data === "signOut") {
       if (signedIn) {
