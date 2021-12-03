@@ -241,7 +241,7 @@ pub struct UpdateNodeOperatorConfigPayload {
 #[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
 pub struct UpdateNodeRewardsTableProposalPayload {
     /// Maps regions to the node reward rates in that region
-    #[prost(btree_map="string, message", tag="1")]
+    #[prost(btree_map = "string, message", tag = "1")]
     pub new_entries: ::prost::alloc::collections::BTreeMap<::prost::alloc::string::String, NodeRewardRates>,
 }
 
@@ -249,44 +249,44 @@ pub struct UpdateNodeRewardsTableProposalPayload {
 pub struct NodeRewardRate {
     /// The number of 10,000ths of IMF SDR (currency code XDR) to be rewarded per
     /// node per month.
-    #[prost(uint64, tag="1")]
+    #[prost(uint64, tag = "1")]
     pub xdr_permyriad_per_node_per_month: u64,
 }
 
 #[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
 pub struct NodeRewardRates {
     /// Maps node types to the reward rate for that node type
-    #[prost(btree_map="string, message", tag="1")]
+    #[prost(btree_map = "string, message", tag = "1")]
     pub rates: ::prost::alloc::collections::BTreeMap<::prost::alloc::string::String, NodeRewardRate>,
 }
 
 // https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/protobuf/def/registry/dc/v1/dc.proto#L27
 #[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
 pub struct AddOrRemoveDataCentersProposalPayload {
-    #[prost(message, repeated, tag="1")]
+    #[prost(message, repeated, tag = "1")]
     pub data_centers_to_add: ::prost::alloc::vec::Vec<DataCenterRecord>,
     /// The IDs of data centers to remove
-    #[prost(string, repeated, tag="2")]
+    #[prost(string, repeated, tag = "2")]
     pub data_centers_to_remove: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 
 #[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
 pub struct DataCenterRecord {
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub id: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
+    #[prost(string, tag = "2")]
     pub region: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
+    #[prost(string, tag = "3")]
     pub owner: ::prost::alloc::string::String,
-    #[prost(message, optional, tag="4")]
+    #[prost(message, optional, tag = "4")]
     pub gps: ::core::option::Option<Gps>,
 }
 
 #[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
 pub struct Gps {
-    #[prost(float, tag="1")]
+    #[prost(float, tag = "1")]
     pub latitude: f32,
-    #[prost(float, tag="2")]
+    #[prost(float, tag = "2")]
     pub longitude: f32,
 }
 

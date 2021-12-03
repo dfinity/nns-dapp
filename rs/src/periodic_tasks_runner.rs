@@ -11,8 +11,8 @@ use dfn_core::api::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ledger_canister::{
-    AccountBalanceArgs, AccountIdentifier, BlockHeight, CyclesResponse, ICPTs, Memo,
-    NotifyCanisterArgs, SendArgs, Subaccount, TRANSACTION_FEE,
+    AccountBalanceArgs, AccountIdentifier, BlockHeight, CyclesResponse, ICPTs, Memo, NotifyCanisterArgs, SendArgs,
+    Subaccount, TRANSACTION_FEE,
 };
 
 const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
@@ -20,11 +20,8 @@ const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
 pub async fn run_periodic_tasks() {
     ledger_sync::sync_transactions().await;
 
-    let maybe_transaction_to_process = STATE.with(|s| {
-        s.accounts_store
-            .borrow_mut()
-            .try_take_next_transaction_to_process()
-    });
+    let maybe_transaction_to_process =
+        STATE.with(|s| s.accounts_store.borrow_mut().try_take_next_transaction_to_process());
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
@@ -57,12 +54,9 @@ pub async fn run_periodic_tasks() {
 async fn handle_stake_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
         Ok(neuron_id) => STATE.with(|s| {
-            s.accounts_store.borrow_mut().mark_neuron_created(
-                &principal,
-                block_height,
-                memo,
-                neuron_id,
-            )
+            s.accounts_store
+                .borrow_mut()
+                .mark_neuron_created(&principal, block_height, memo, neuron_id)
         }),
         Err(e) => STATE.with(|s| {
             s.accounts_store
@@ -74,11 +68,7 @@ async fn handle_stake_neuron(block_height: BlockHeight, principal: PrincipalId, 
 
 async fn handle_top_up_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
-        Ok(_) => STATE.with(|s| {
-            s.accounts_store
-                .borrow_mut()
-                .mark_neuron_topped_up(block_height)
-        }),
+        Ok(_) => STATE.with(|s| s.accounts_store.borrow_mut().mark_neuron_topped_up(block_height)),
         Err(e) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
@@ -90,11 +80,9 @@ async fn handle_top_up_neuron(block_height: BlockHeight, principal: PrincipalId,
 async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterArgs) {
     match create_canister(args.controller, args.amount).await {
         Ok(CyclesResponse::CanisterCreated(canister_id)) => STATE.with(|s| {
-            s.accounts_store.borrow_mut().attach_newly_created_canister(
-                args.controller,
-                block_height,
-                canister_id,
-            )
+            s.accounts_store
+                .borrow_mut()
+                .attach_newly_created_canister(args.controller, block_height, canister_id)
         }),
         Ok(CyclesResponse::Refunded(error, _)) => {
             STATE.with(|s| {
@@ -142,11 +130,9 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
 
 async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterArgs) {
     match top_up_canister(args.canister_id, args.amount).await {
-        Ok(CyclesResponse::ToppedUp(_)) => STATE.with(|s| {
-            s.accounts_store
-                .borrow_mut()
-                .mark_canister_topped_up(block_height)
-        }),
+        Ok(CyclesResponse::ToppedUp(_)) => {
+            STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height))
+        }
         Ok(CyclesResponse::Refunded(error, _)) => {
             STATE.with(|s| {
                 s.accounts_store
@@ -204,24 +190,20 @@ async fn handle_refund(args: RefundTransactionArgs) {
     match ledger::send(send_request.clone()).await {
         Ok(block_height) => {
             STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_transaction_refund_completed(
-                        args.original_transaction_block_height,
-                        block_height,
-                        args.error_message,
-                    )
+                s.accounts_store.borrow_mut().process_transaction_refund_completed(
+                    args.original_transaction_block_height,
+                    block_height,
+                    args.error_message,
+                )
             });
         }
         Err(error) => {
             STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(
-                        args.original_transaction_block_height,
-                        error,
-                        false,
-                    )
+                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
+                    args.original_transaction_block_height,
+                    error,
+                    false,
+                )
             });
         }
     }
@@ -235,12 +217,8 @@ async fn claim_or_refresh_neuron(principal: PrincipalId, memo: Memo) -> Result<N
 
     match governance::claim_or_refresh_neuron_from_account(request).await {
         Ok(response) => match response.result {
-            Some(claim_or_refresh_neuron_from_account_response::Result::NeuronId(neuron_id)) => {
-                Ok(neuron_id.into())
-            }
-            Some(claim_or_refresh_neuron_from_account_response::Result::Error(e)) => {
-                Err(e.error_message)
-            }
+            Some(claim_or_refresh_neuron_from_account_response::Result::NeuronId(neuron_id)) => Ok(neuron_id.into()),
+            Some(claim_or_refresh_neuron_from_account_response::Result::Error(e)) => Err(e.error_message),
             None => Err("'response.result' was empty".to_string()),
         },
         Err(e) => Err(e),
@@ -307,9 +285,7 @@ async fn enqueue_create_or_top_up_canister_refund(
     error_message: String,
 ) {
     let from_account = AccountIdentifier::new(dfn_core::api::id().get(), Some(subaccount));
-    let balance_request = AccountBalanceArgs {
-        account: from_account,
-    };
+    let balance_request = AccountBalanceArgs { account: from_account };
 
     match ledger::account_balance(balance_request).await {
         Ok(balance) => {
@@ -331,9 +307,11 @@ async fn enqueue_create_or_top_up_canister_refund(
             } else {
                 let error_message = format!("Unable to refund, account balance too low. Account: {}", from_account);
                 STATE.with(|s| {
-                    s.accounts_store
-                        .borrow_mut()
-                        .process_multi_part_transaction_error(block_height, error_message, false)
+                    s.accounts_store.borrow_mut().process_multi_part_transaction_error(
+                        block_height,
+                        error_message,
+                        false,
+                    )
                 });
             }
         }

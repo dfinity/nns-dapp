@@ -1,13 +1,11 @@
 use crate::accounts_store::{
-    AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse,
-    DetachCanisterRequest, DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse,
-    NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse,
-    RenameSubAccountRequest, RenameSubAccountResponse, Stats,
+    AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest,
+    DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse, NamedCanister,
+    RegisterHardwareWalletRequest, RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse,
+    Stats,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
-use crate::multi_part_transactions_processor::{
-    MultiPartTransactionError, MultiPartTransactionStatus,
-};
+use crate::multi_part_transactions_processor::{MultiPartTransactionError, MultiPartTransactionStatus};
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
@@ -21,10 +19,10 @@ mod assets;
 mod canisters;
 mod constants;
 mod ledger_sync;
+mod metrics_encoder;
 mod multi_part_transactions_processor;
 mod periodic_tasks_runner;
 mod state;
-mod metrics_encoder;
 
 #[export_name = "canister_init"]
 fn main() {
@@ -100,11 +98,7 @@ pub fn get_transactions() {
 
 fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| {
-        s.accounts_store
-            .borrow()
-            .get_transactions(principal, request)
-    })
+    STATE.with(|s| s.accounts_store.borrow().get_transactions(principal, request))
 }
 
 /// Creates a new ledger sub account and links it to the user's account.
@@ -136,11 +130,7 @@ pub fn rename_sub_account() {
 
 fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| {
-        s.accounts_store
-            .borrow_mut()
-            .rename_sub_account(principal, request)
-    })
+    STATE.with(|s| s.accounts_store.borrow_mut().rename_sub_account(principal, request))
 }
 
 /// Links a hardware wallet to the user's account.
@@ -153,9 +143,7 @@ pub fn register_hardware_wallet() {
     over(candid_one, register_hardware_wallet_impl);
 }
 
-fn register_hardware_wallet_impl(
-    request: RegisterHardwareWalletRequest,
-) -> RegisterHardwareWalletResponse {
+fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| {
         s.accounts_store
@@ -183,11 +171,7 @@ pub fn attach_canister() {
 
 fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| {
-        s.accounts_store
-            .borrow_mut()
-            .attach_canister(principal, request)
-    })
+    STATE.with(|s| s.accounts_store.borrow_mut().attach_canister(principal, request))
 }
 
 /// Detaches a canister from the user's account.
@@ -198,11 +182,7 @@ pub fn detach_canister() {
 
 fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = dfn_core::api::caller();
-    STATE.with(|s| {
-        s.accounts_store
-            .borrow_mut()
-            .detach_canister(principal, request)
-    })
+    STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
 }
 
 /// Gets the current status of a 'multi-part' action.
@@ -212,12 +192,9 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
 /// these actions.
 #[export_name = "canister_query get_multi_part_transaction_status"]
 pub fn get_multi_part_transaction_status() {
-    over(
-        candid,
-        |(principal, block_height): (PrincipalId, BlockHeight)| {
-            get_multi_part_transaction_status_impl(principal, block_height)
-        },
-    );
+    over(candid, |(principal, block_height): (PrincipalId, BlockHeight)| {
+        get_multi_part_transaction_status_impl(principal, block_height)
+    });
 }
 
 fn get_multi_part_transaction_status_impl(
@@ -269,11 +246,7 @@ pub fn get_multi_part_transaction_errors() {
 }
 
 fn get_multi_part_transaction_errors_impl() -> Vec<MultiPartTransactionError> {
-    STATE.with(|s| {
-        s.accounts_store
-            .borrow()
-            .get_multi_part_transaction_errors()
-    })
+    STATE.with(|s| s.accounts_store.borrow().get_multi_part_transaction_errors())
 }
 
 /// Returns the current conversion rate between ICP and cycles.
@@ -292,11 +265,10 @@ async fn get_icp_to_cycles_conversion_rate_impl() -> u64 {
     {
         const CYCLES_PER_XDR: u64 = 1_000_000_000_000;
 
-        let xdr_permyriad_per_icp =
-            match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
-                None => panic!("ICP/XDR conversion rate is not available."),
-                Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
-            };
+        let xdr_permyriad_per_icp = match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
+            None => panic!("ICP/XDR conversion rate is not available."),
+            Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
+        };
 
         xdr_permyriad_per_icp * (CYCLES_PER_XDR / 10_000)
     }
@@ -347,17 +319,11 @@ pub fn add_stable_asset() {
             }
             "12729155ff56fce7be6bb93ab2666c99fd7ff844e6c4611d144808c942b50748" => {
                 // Canvaskit.js
-                insert_asset(
-                    "/assets/canvaskit/canvaskit.js",
-                    Asset::new_stable(asset_bytes),
-                );
+                insert_asset("/assets/canvaskit/canvaskit.js", Asset::new_stable(asset_bytes));
             }
             "017c0be9aaa6d0359737e1fa762ad304c0e0107927faff5a6c1f415c7f5244ed" => {
                 // roboto.ttf
-                insert_asset(
-                    "/assets/assets/fonts/roboto.ttf",
-                    Asset::new_stable(asset_bytes),
-                );
+                insert_asset("/assets/assets/fonts/roboto.ttf", Asset::new_stable(asset_bytes));
             }
             unknown_hash => {
                 dfn_core::api::trap_with(&format!("Unknown asset with hash {}", unknown_hash));

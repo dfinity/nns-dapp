@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd "$(dirname "$0")/../frontend/ts" > /dev/null # Move to the script's directory.
+pushd "$(dirname "$(realpath "$0")")/../frontend/ts" || exit >/dev/null # Move to the script's directory.
 
 if [ ! -d "node_modules" ]; then
   npm install
@@ -9,5 +9,5 @@ fi
 # This isn't needed by the CLI, but is done to keep the TS compiler happy.
 DEPLOY_ENV=mainnet ../../update_config.sh
 
-npm run ic-hardware-wallet-cli --silent -- $@
-popd > /dev/null
+npm run ic-hardware-wallet-cli --silent -- "${@}"
+popd || exit >/dev/null

@@ -50,12 +50,9 @@ impl MultiPartTransactionsProcessor {
         block_height: BlockHeight,
         transaction_to_be_processed: MultiPartTransactionToBeProcessed,
     ) {
-        self.queue
-            .push_back((block_height, transaction_to_be_processed));
-        self.statuses.insert(
-            block_height,
-            (principal, MultiPartTransactionStatus::Queued),
-        );
+        self.queue.push_back((block_height, transaction_to_be_processed));
+        self.statuses
+            .insert(block_height, (principal, MultiPartTransactionStatus::Queued));
     }
 
     pub fn take_next(&mut self) -> Option<(BlockHeight, MultiPartTransactionToBeProcessed)> {
@@ -64,18 +61,14 @@ impl MultiPartTransactionsProcessor {
 
     pub fn update_status(&mut self, block_height: BlockHeight, status: MultiPartTransactionStatus) {
         match &status {
-            MultiPartTransactionStatus::Error(msg) => {
-                self.append_error(MultiPartTransactionError {
-                    block_height,
-                    error_message: msg.clone(),
-                })
-            }
-            MultiPartTransactionStatus::ErrorWithRefundPending(msg) => {
-                self.append_error(MultiPartTransactionError {
-                    block_height,
-                    error_message: msg.clone(),
-                })
-            }
+            MultiPartTransactionStatus::Error(msg) => self.append_error(MultiPartTransactionError {
+                block_height,
+                error_message: msg.clone(),
+            }),
+            MultiPartTransactionStatus::ErrorWithRefundPending(msg) => self.append_error(MultiPartTransactionError {
+                block_height,
+                error_message: msg.clone(),
+            }),
             _ => {}
         };
 
@@ -84,11 +77,7 @@ impl MultiPartTransactionsProcessor {
         }
     }
 
-    pub fn get_status(
-        &self,
-        principal: PrincipalId,
-        block_height: BlockHeight,
-    ) -> MultiPartTransactionStatus {
+    pub fn get_status(&self, principal: PrincipalId, block_height: BlockHeight) -> MultiPartTransactionStatus {
         self.statuses
             .get(&block_height)
             .filter(|(p, _)| *p == principal)

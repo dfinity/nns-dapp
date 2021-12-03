@@ -3,13 +3,13 @@ use crate::metrics_encoder::MetricsEncoder;
 use crate::state::STATE;
 use crate::StableState;
 use candid::{CandidType, Decode, Encode};
+use dfn_core::api::ic0::time;
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
-use serde_bytes::{ByteBuf};
+use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::io::Read;
-use dfn_core::api::ic0::time;
 
 type HeaderField = (String, String);
 
@@ -37,7 +37,9 @@ impl From<&Assets> for AssetHashes {
     fn from(assets: &Assets) -> Self {
         let mut asset_hashes = Self::default();
         for (path, asset) in assets.0.iter() {
-            asset_hashes.0.insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
+            asset_hashes
+                .0
+                .insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
         }
         asset_hashes
     }
@@ -88,9 +90,8 @@ impl Assets {
     }
 }
 
-
 pub fn http_request(req: HttpRequest) -> HttpResponse {
-    let parts: Vec<&str>   = req.url.split('?').collect();
+    let parts: Vec<&str> = req.url.split('?').collect();
     match parts[0] {
         "/metrics" => {
             let now;
@@ -104,13 +105,10 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                     HttpResponse {
                         status_code: 200,
                         headers: vec![
-                            (
-                                "Content-Type".to_string(),
-                                "text/plain; version=0.0.4".to_string(),
-                            ),
+                            ("Content-Type".to_string(), "text/plain; version=0.0.4".to_string()),
                             ("Content-Length".to_string(), body.len().to_string()),
                         ],
-                        body: ByteBuf::from(body),    
+                        body: ByteBuf::from(body),
                     }
                 }
                 Err(err) => HttpResponse {
@@ -120,46 +118,45 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                 },
             }
         }
-        request_path => {
-                STATE.with(|s| {
-                let certificate_header =
-                    make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
+        request_path => STATE.with(|s| {
+            let certificate_header = make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
 
-                match s.assets.borrow().get(request_path) {
-                    Some(asset) => {
-                        let mut headers = asset.headers.clone();
-                        headers.push(certificate_header);
-                        if let Some(content_type) = content_type_of(request_path) {
-                           headers.push(("Content-Type".to_string(), content_type.to_string()));
-                        }
-
-                        HttpResponse {
-                            status_code: 200,
-                            headers,
-                            body: ByteBuf::from(asset.bytes.clone()),
-                        }
+            match s.assets.borrow().get(request_path) {
+                Some(asset) => {
+                    let mut headers = asset.headers.clone();
+                    headers.push(certificate_header);
+                    if let Some(content_type) = content_type_of(request_path) {
+                        headers.push(("Content-Type".to_string(), content_type.to_string()));
                     }
-                    None => HttpResponse {
-                        status_code: 404,
-                        headers: vec![certificate_header],
-                        body: ByteBuf::from(format!("Asset {} not found.", request_path)),
-                    },
+
+                    HttpResponse {
+                        status_code: 200,
+                        headers,
+                        body: ByteBuf::from(asset.bytes.clone()),
+                    }
                 }
-            })
-        }
+                None => HttpResponse {
+                    status_code: 404,
+                    headers: vec![certificate_header],
+                    body: ByteBuf::from(format!("Asset {} not found.", request_path)),
+                },
+            }
+        }),
     }
 }
 
 fn content_type_of(request_path: &str) -> Option<&'static str> {
-    request_path.split('.').last().map(|suffix|
-        match suffix {
-         "css" => Some("text/css"),
-         "html" => Some("text/html"),
-         "js" => Some("application/javascript"),
-         "json" => Some("application/json"),
-         _    => None,
-        }
-    ).flatten()
+    request_path
+        .split('.')
+        .last()
+        .map(|suffix| match suffix {
+            "css" => Some("text/css"),
+            "html" => Some("text/html"),
+            "js" => Some("application/javascript"),
+            "json" => Some("application/json"),
+            _ => None,
+        })
+        .flatten()
 }
 
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
@@ -171,9 +168,8 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
     let tree = labeled(LABEL_ASSETS, witness);
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
     serializer.self_describe().unwrap();
-    tree.serialize(&mut serializer).unwrap_or_else(|e| {
-        dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e))
-    });
+    tree.serialize(&mut serializer)
+        .unwrap_or_else(|e| dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e)));
     (
         "IC-Certificate".to_string(),
         format!(
@@ -203,7 +199,9 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
             assets.insert("/", asset.clone());
         }
 
-        asset_hashes.0.insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
+        asset_hashes
+            .0
+            .insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
         assets.insert(path, asset);
 
         update_root_hash(&asset_hashes);
@@ -223,12 +221,7 @@ pub fn init_assets() {
             continue;
         }
 
-        let name_bytes = entry
-            .path_bytes()
-            .into_owned()
-            .strip_prefix(b".")
-            .unwrap()
-            .to_vec();
+        let name_bytes = entry.path_bytes().into_owned().strip_prefix(b".").unwrap().to_vec();
 
         let name = String::from_utf8(name_bytes.clone()).unwrap_or_else(|e| {
             dfn_core::api::trap_with(&format!(
@@ -251,13 +244,7 @@ pub fn init_assets() {
 impl StableState for Assets {
     fn encode(&self) -> Vec<u8> {
         // Encode all stable assets.
-        let stable_assets: Assets = Assets(
-            self.0
-                .clone()
-                .into_iter()
-                .filter(|(_, asset)| asset.stable)
-                .collect(),
-        );
+        let stable_assets: Assets = Assets(self.0.clone().into_iter().filter(|(_, asset)| asset.stable).collect());
 
         Encode!(&stable_assets).unwrap()
     }
