@@ -31,7 +31,7 @@ jobs:
         run: cargo fmt
 
       - name: Format shell scripts
-        run: ./util/format-sh
+        run: ./util/fmt-sh
 
       - name: Install ts dependencies
         run: npm ci
