@@ -4,9 +4,11 @@
 export class AuthTimeout {
   timeoutInterval: number = 5 * 60 * 1000;
   timeout: number = 0;
+  logout: Function;
 
   browserHiddenAttribute: string;
 
+  broadcastChannel;
   static VISIBLE = "visible";
   static HIDDEN = "hidden";
 
@@ -43,12 +45,6 @@ export class AuthTimeout {
       // Opera 12.10 and Firefox 18 and later support
       hidden = "hidden";
       visibilityChange = "visibilitychange";
-    } else if (typeof document.msHidden !== "undefined") {
-      hidden = "msHidden";
-      visibilityChange = "msvisibilitychange";
-    } else if (typeof document.webkitHidden !== "undefined") {
-      hidden = "webkitHidden";
-      visibilityChange = "webkitvisibilitychange";
     }
 
     if (
