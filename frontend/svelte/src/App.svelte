@@ -1,11 +1,18 @@
 <script lang="ts">
+  import Auth from "./Auth.svelte";
+
+  // Identity, shared with all tabs:
+  // TODO: Create a single identity object instead
+  let signedIn;
+  let principal;
 </script>
 
 <main>
+  <Auth bind:signedIn bind:principal />
 </main>
 
 <svelte:head>
-  {#if !process.env.ROLLUP_WATCH}
+  {#if !compile_time_const.ROLLUP_WATCH}
   <!-- This is just a default; need to examine the CSP carefully and lock down accordingly. -->
   <meta
     http-equiv="Content-Security-Policy"
@@ -24,6 +31,10 @@
     --text-grey: #aeb7b7;
     --background-grey: #383c3c;
     --button-blue: #005fb7;
+    --font-size-normal: 14px;
+    --font-size-large: 32px;
+    --font-size-xlarge: 40px;
+    --font-family: Circular-Bold, Arial, sans-serif;
   }
 
   :global(body) {
@@ -36,6 +47,7 @@
     width: 100vw;
     height: 100vh;
     background: linear-gradient(var(--background-grey) 80%, black);
+    font-family: var(--font-family);
   }
 
   @media (min-width: 640px) {
