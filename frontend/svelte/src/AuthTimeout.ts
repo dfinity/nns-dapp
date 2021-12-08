@@ -2,7 +2,7 @@
  * Logs out if the user doesn't watch any NNS tabs.
  */
 export class AuthTimeout {
-  timeoutInterval: number = 5 * 60 * 1000;
+  timeoutInterval: number = 5 * 60 * 1000; // milliseconds
   timeout: number = 0;
   logout: Function;
 
@@ -40,9 +40,11 @@ export class AuthTimeout {
    */
   watchVisibility() {
     // Browser compatibility:  Set the name of the hidden property and the change event for visibility
+    // Current support: https://caniuse.com/pagevisibility
+    // MDN on cross browser support: https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
+    // Note: It appears that the canonical attributes are now sufficient.
     var hidden, visibilityChange;
     if (typeof document.hidden !== "undefined") {
-      // Opera 12.10 and Firefox 18 and later support
       hidden = "hidden";
       visibilityChange = "visibilitychange";
     }
