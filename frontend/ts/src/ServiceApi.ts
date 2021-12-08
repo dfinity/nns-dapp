@@ -1,5 +1,4 @@
 import {
-  AnonymousIdentity,
   HttpAgent,
   Identity,
   SignIdentity,
