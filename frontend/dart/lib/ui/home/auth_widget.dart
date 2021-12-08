@@ -11,7 +11,6 @@ class AuthWidget extends StatelessWidget {
         image: DecorationImage(
             image: AssetImage('assets/nns_background.jpeg'), fit: BoxFit.cover),
       ),
-      // color: AppColors.lightBackground,
       child: Stack(
         children: [
           Container(
