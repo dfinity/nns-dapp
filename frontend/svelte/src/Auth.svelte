@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { AuthClient } from "@dfinity/auth-client";
-  import { AuthTimeout } from "./AuthTimeout";
 
   // Login status
   export let signedIn = false;
@@ -41,7 +40,6 @@
     principal = identity.getPrincipal().toString();
     signedIn = true;
     broadcastChannel.postMessage("signIn");
-    new AuthTimeout(signOut);
   };
 
   // Signs out, erasing all local user data.
