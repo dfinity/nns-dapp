@@ -486,7 +486,8 @@ export default class ServiceApi {
     accountIdentifier: AccountIdentifier,
     e8s: E8s
   ): Promise<void> => {
-    // Create an identity who's default ledger account is initialised with 10k ICP on the testnet.
+    // Create an identity who's default ledger account is initialised with 10k ICP on the testnet, then use that
+    // identity to send the current user some ICP to test things with.
     // The identity's principal is jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe
     // The identity's default ledger address is 5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087
     const publicKey = "Uu8wv55BKmk9ZErr6OIt5XR1kpEGXcOSOC1OYzrAwuk=";
