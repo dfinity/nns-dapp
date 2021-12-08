@@ -66,24 +66,3 @@ button:not(:disabled):active {
 button:focus {
   border-color: #666;
 }
-
-@font-face {
-  font-family: "Circular-Black";
-  src: url(assets/fonts/CircularStd-Black.ttf) format("truetype");
-}
-@font-face {
-  font-family: "Circular-Medium";
-  src: url(assets/fonts/CircularStd-Medium.ttf) format("truetype");
-}
-@font-face {
-  font-family: "Circular-Book";
-  src: url(assets/fonts/CircularStd-Book.ttf) format("truetype");
-}
-@font-face {
-  font-family: "Circular-Bold";
-  src: url(assets/fonts/CircularStd-Bold.ttf) format("truetype");
-}
-@font-face {
-  font-family: "Roboto";
-  src: url(assets/fonts/roboto.ttf) format("truetype");
-}
