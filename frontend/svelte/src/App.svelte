@@ -2,7 +2,6 @@
   import Auth from "./Auth.svelte";
 
   // Identity, shared with all tabs:
-  // TODO: Create a single identity object instead
   let signedIn;
   let principal;
 </script>
