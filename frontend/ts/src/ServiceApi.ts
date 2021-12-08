@@ -1,8 +1,4 @@
-import {
-  HttpAgent,
-  Identity,
-  SignIdentity,
-} from "@dfinity/agent";
+import { HttpAgent, Identity, SignIdentity } from "@dfinity/agent";
 import { blobFromUint8Array } from "@dfinity/candid";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { Option } from "./canisters/option";
