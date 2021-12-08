@@ -54,7 +54,6 @@
 
   // Sets login status on first load.
   onMount(initAuth);
-
 </script>
 
 <div class="auth-expandable">

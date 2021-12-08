@@ -6,7 +6,12 @@ class AuthWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.lightBackground,
+      constraints: BoxConstraints.expand(),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage('assets/nns_background.png'), fit: BoxFit.cover),
+      ),
+      // color: AppColors.lightBackground,
       child: Stack(
         children: [
           Container(
@@ -30,16 +35,15 @@ class AuthWidget extends StatelessWidget {
                     Expanded(child: Container()),
                     ElevatedButton(
                         child: Padding(
-                          padding: const EdgeInsets.all(32.0),
+                          padding: const EdgeInsets.all(20.0),
                           child: Text(
-                            "Login",
-                            style: context.textTheme.bodyText2
-                                ?.copyWith(fontSize: 32),
+                            "LOGIN",
+                            style: context.textTheme.headline3,
                           ),
                         ),
                         style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all(AppColors.gray1000)),
+                                MaterialStateProperty.all(AppColors.blue800)),
                         onPressed: () {
                           context.icApi.authenticate(() {
                             context.nav.push(accountsTabPage);
