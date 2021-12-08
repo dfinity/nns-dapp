@@ -39,14 +39,12 @@
     const identity = auth_client.getIdentity();
     principal = identity.getPrincipal().toString();
     signedIn = true;
-    broadcastChannel.postMessage("signIn");
   };
 
   // Signs out, erasing all local user data.
   const signOut = async () => {
     await auth_client.logout();
     signedIn = false;
-    broadcastChannel.postMessage("signOut");
     // Ensure that all data is wiped
     // ... if we have unencrypted data in local storage, delete it here.
     // ... wipe data in ephemeral state, but in the next tick allow repaint to finish first.
@@ -56,22 +54,6 @@
   // Sets login status on first load.
   onMount(initAuth);
 
-  // Synchronises login with other tabs - this is shared with other tabs on the same origin.
-  const broadcastChannel = new BroadcastChannel("nns-auth");
-  broadcastChannel.onmessage = function (event) {
-    console.log({ broadcastChannel: event.data });
-    if (!event.isTrusted) return;
-    if (event.data === "signOut") {
-      if (signedIn) {
-        signOut();
-      }
-    }
-    if (event.data === "signIn") {
-      if (!signedIn) {
-        initAuth();
-      }
-    }
-  };
 </script>
 
 <div class="auth-expandable">
