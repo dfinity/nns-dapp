@@ -4,6 +4,9 @@
   // Identity, shared with all tabs:
   let signedIn;
   let principal;
+
+  // Satisfy the linter
+  let compile_time_const: any = null;
 </script>
 
 <main>

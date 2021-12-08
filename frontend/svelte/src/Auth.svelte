@@ -8,6 +8,7 @@
 
   // Signs in, out, round and all about.
   let auth_client;
+  let compile_time_const: any = null; // Satisfy the linter.
   let identityProvider = compile_time_const.INTERNET_IDENTITY_URL;
 
   // Sets initial login status
