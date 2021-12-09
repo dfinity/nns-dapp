@@ -129,8 +129,9 @@ class NeuronStateCard extends StatelessWidget {
               ),
             );
           }.takeIf((e) =>
+              neuron.isCurrentUserController &&
               neuron.balance.asE8s() >=
-              BigInt.from((2 * E8S_PER_ICP) + TRANSACTION_FEE_E8S)),
+                  BigInt.from((2 * E8S_PER_ICP) + TRANSACTION_FEE_E8S)),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(

@@ -11,7 +11,7 @@
 </main>
 
 <svelte:head>
-  {#if !compile_time_const.ROLLUP_WATCH}
+  {#if !process.env.ROLLUP_WATCH}
     <!-- This is just a default; need to examine the CSP carefully and lock down accordingly. -->
     <meta
       http-equiv="Content-Security-Policy"
