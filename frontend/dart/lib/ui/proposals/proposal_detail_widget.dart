@@ -94,11 +94,10 @@ class _ProposalDetailWidgetState extends State<ProposalDetailWidget> {
                               ProposalStateCard(
                                   proposal: latestProposal,
                                   neurons: updatedNeurons),
-                              if (votedNeurons.isNotEmpty)
-                                MyVotesCard(
-                                  votedNeurons: votedNeurons,
-                                  proposal: latestProposal,
-                                ),
+                              MyVotesCard(
+                                votedNeurons: votedNeurons,
+                                proposal: latestProposal,
+                              ),
                               if (notVotedNeurons.isNotEmpty &&
                                   latestProposal.status == ProposalStatus.Open)
                                 CastVoteWidget(
