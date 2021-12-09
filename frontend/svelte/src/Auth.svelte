@@ -7,14 +7,13 @@
   export let principal = "";
 
   // Signs in, out, round and all about.
-  let auth_client;
-  let compile_time_const: any = null; // Satisfy the linter.
-  let identityProvider = compile_time_const.INTERNET_IDENTITY_URL;
+  let authClient;
+  let identityProvider = process.env.INTERNET_IDENTITY_URL;
 
   // Sets initial login status
   const initAuth = async () => {
-    auth_client = await AuthClient.create();
-    const isAuthenticated = await auth_client.isAuthenticated();
+    authClient = await AuthClient.create();
+    const isAuthenticated = await authClient.isAuthenticated();
 
     if (isAuthenticated) {
       onSignedIn();
@@ -24,7 +23,7 @@
   // Asks the user to authenticate themselves with a TPM or similar.
   const signIn = async () => {
     await new Promise((resolve, reject) => {
-      auth_client.login({
+      authClient.login({
         identityProvider,
         onSuccess: () => {
           resolve(null);
@@ -37,14 +36,14 @@
 
   // Gets a local copy of user data.
   const onSignedIn = async () => {
-    const identity = auth_client.getIdentity();
+    const identity = authClient.getIdentity();
     principal = identity.getPrincipal().toString();
     signedIn = true;
   };
 
   // Signs out, erasing all local user data.
   const signOut = async () => {
-    await auth_client.logout();
+    await authClient.logout();
     signedIn = false;
     // Ensure that all data is wiped
     // ... if we have unencrypted data in local storage, delete it here.
@@ -57,7 +56,7 @@
 </script>
 
 <div class="auth-expandable">
-  {#if !signedIn && auth_client}
+  {#if !signedIn && authClient}
     <div class="auth-overlay">
       <div />
       <h1>The Internet Computer</h1>
