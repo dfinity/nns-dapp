@@ -9,9 +9,8 @@ class AuthWidget extends StatelessWidget {
       constraints: BoxConstraints.expand(),
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: AssetImage('assets/nns_background.png'), fit: BoxFit.cover),
+            image: AssetImage('assets/nns_background.jpeg'), fit: BoxFit.cover),
       ),
-      // color: AppColors.lightBackground,
       child: Stack(
         children: [
           Container(
