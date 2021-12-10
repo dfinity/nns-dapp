@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { AuthClient } from "@dfinity/auth-client";
+  import { AuthSync } from "./AuthSync";
 
   // Login status
   export let signedIn = false;
@@ -10,15 +11,19 @@
   let authClient;
   let identityProvider = process.env.INTERNET_IDENTITY_URL;
 
-  // Sets initial login status
-  const initAuth = async () => {
+  // Check for any change in authentication status and act upon it.
+  const checkAuth = async() => {
+    const wasSignedIn = signedIn;
     authClient = await AuthClient.create();
     const isAuthenticated = await authClient.isAuthenticated();
-
-    if (isAuthenticated) {
-      onSignedIn();
+    console.log(JSON.stringify({checkAuth: {wasSignedIn, isAuthenticated}}));
+    if (wasSignedIn !== isAuthenticated) {
+      if (isAuthenticated) { onSignIn(); } else { signOut(); }
     }
   };
+
+  // Synchronise login status across tabs.
+  const authSync = new AuthSync(checkAuth);
 
   // Asks the user to authenticate themselves with a TPM or similar.
   const signIn = async () => {
@@ -31,22 +36,22 @@
         onError: reject,
       });
     });
-    onSignedIn();
+    onSignIn();
+    authSync.onSignIn();
   };
 
   // Gets a local copy of user data.
-  const onSignedIn = async () => {
+  const onSignIn = async () => {
     const identity = authClient.getIdentity();
     principal = identity.getPrincipal().toString();
     signedIn = true;
-    broadcastChannel.postMessage(SIGN_IN);
   };
 
   // Signs out, erasing all local user data.
   const signOut = async () => {
     await authClient.logout();
     signedIn = false;
-    broadcastChannel.postMessage(SIGN_OUT);
+    authSync.onSignOut();
     // Ensure that all data is wiped
     // ... if we have unencrypted data in local storage, delete it here.
     // ... wipe data in ephemeral state, but in the next tick allow repaint to finish first.
@@ -54,26 +59,7 @@
   };
 
   // Sets login status on first load.
-  onMount(initAuth);
-
-  // Synchronises login with other tabs - this is shared with other tabs on the same origin.
-  const broadcastChannel = new BroadcastChannel("nns-auth");
-  const SIGN_OUT = "signOut";
-  const SIGN_IN = "signIn";
-  broadcastChannel.onmessage = function (event) {
-    console.log({ broadcastChannel: event.data });
-    if (!event.isTrusted) return;
-    if (event.data === SIGN_OUT) {
-      if (signedIn) {
-        signOut();
-      }
-    }
-    if (event.data === SIGN_IN) {
-      if (!signedIn) {
-        initAuth();
-      }
-    }
-  };
+  onMount(checkAuth);
 </script>
 
 <div class="auth-expandable">
