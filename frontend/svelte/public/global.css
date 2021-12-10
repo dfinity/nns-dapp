@@ -66,3 +66,8 @@ button:not(:disabled):active {
 button:focus {
   border-color: #666;
 }
+
+@font-face {
+  font-family: "Circular-Bold";
+  src: url(/assets/assets/fonts/CircularStd-Bold.ttf) format("truetype");
+}
