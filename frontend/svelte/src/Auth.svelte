@@ -12,12 +12,16 @@
   let identityProvider = process.env.INTERNET_IDENTITY_URL;
 
   // Check for any change in authentication status and act upon it.
-  const checkAuth = async() => {
+  const checkAuth = async () => {
     const wasSignedIn = signedIn;
     authClient = await AuthClient.create();
     const isAuthenticated = await authClient.isAuthenticated();
     if (wasSignedIn !== isAuthenticated) {
-      if (isAuthenticated) { onSignIn(); } else { signOut(); }
+      if (isAuthenticated) {
+        onSignIn();
+      } else {
+        signOut();
+      }
     }
   };
 
