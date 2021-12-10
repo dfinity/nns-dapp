@@ -15,8 +15,7 @@ export class AuthSync {
    * @param {Function} callback - invoked whenever login status may have changed in another tab.
    */
   constructor(callback: Function) {
-    //if (typeof BroadcastChannel === "undefined") {
-    if (true) {
+    if (typeof BroadcastChannel === "undefined") {
       // Safari, IE.  (Safari is expected to have BroadcastChannels soon.)
       window.addEventListener('storage', () => {
         let currentStoredState = window.localStorage.getItem(AuthSync.NAME);
