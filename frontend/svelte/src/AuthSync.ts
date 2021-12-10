@@ -17,11 +17,11 @@ export class AuthSync {
   constructor(callback: Function) {
     if (typeof BroadcastChannel === "undefined") {
       // Safari, IE.  (Safari is expected to have BroadcastChannels soon.)
-      window.addEventListener('storage', () => {
+      window.addEventListener("storage", () => {
         let currentStoredState = window.localStorage.getItem(AuthSync.NAME);
         if (currentStoredState !== this.lastStoredState) {
-            this.lastStoredState = currentStoredState;
-            callback();
+          this.lastStoredState = currentStoredState;
+          callback();
         }
       });
       setInterval(callback, AuthSync.INTERVAL);
