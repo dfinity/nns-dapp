@@ -1,9 +1,6 @@
-import {
-  AnonymousIdentity,
-  HttpAgent,
-  Identity,
-  SignIdentity,
-} from "@dfinity/agent";
+import { HttpAgent, Identity, SignIdentity } from "@dfinity/agent";
+import { blobFromUint8Array } from "@dfinity/candid";
+import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { Option } from "./canisters/option";
 import governanceBuilder from "./canisters/governance/builder";
 import GovernanceService, {
@@ -93,6 +90,7 @@ import {
   updateSubnetConfigPayload,
   updateSubnetPayload,
 } from "./canisters/governance/nnsFunctions/samplePayloads";
+import { base64ToUInt8Array } from "./utils";
 
 /**
  * An API for interacting with various canisters.
@@ -483,9 +481,21 @@ export default class ServiceApi {
     accountIdentifier: AccountIdentifier,
     e8s: E8s
   ): Promise<void> => {
+    // Create an identity who's default ledger account is initialised with 10k ICP on the testnet, then use that
+    // identity to send the current user some ICP to test things with.
+    // The identity's principal is jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe
+    // The identity's default ledger address is 5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087
+    const publicKey = "Uu8wv55BKmk9ZErr6OIt5XR1kpEGXcOSOC1OYzrAwuk=";
+    const privateKey =
+      "N3HB8Hh2PrWqhWH2Qqgr1vbU9T3gb1zgdBD8ZOdlQnVS7zC/nkEqaT1kSuvo4i3ldHWSkQZdw5I4LU5jOsDC6Q==";
+    const identity = Ed25519KeyIdentity.fromKeyPair(
+      blobFromUint8Array(base64ToUInt8Array(publicKey)),
+      blobFromUint8Array(base64ToUInt8Array(privateKey))
+    );
+
     const agent = new HttpAgent({
       host: HOST,
-      identity: new AnonymousIdentity(),
+      identity,
     });
     await agent.fetchRootKey();
     const anonLedgerService = ledgerBuilder(agent);

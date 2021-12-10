@@ -4,9 +4,11 @@ import resolve from "@rollup/plugin-node-resolve";
 import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
+import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
 import css from "rollup-plugin-css-only";
 import inject from "@rollup/plugin-inject";
+import json from "@rollup/plugin-json";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -71,6 +73,17 @@ export default {
       inlineSources: !production,
     }),
     inject({ Buffer: ["buffer", "Buffer"] }),
+    json(),
+    replace({
+      preventAssignment: true,
+      "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
+      "process.env.INTERNET_IDENTITY_URL": JSON.stringify(
+        process.env.INTERNET_IDENTITY_URL ||
+          (process.env.DEPLOY_ENV === "testnet"
+            ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
+            : "https://identity.ic0.app/")
+      ),
+    }),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated
