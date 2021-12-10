@@ -194,9 +194,16 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
         let mut assets = s.assets.borrow_mut();
         let path = path.into();
 
-        if path == "/index.html" {
-            asset_hashes.0.insert(b"/".to_vec(), hash_bytes(&asset.bytes));
-            assets.insert("/", asset.clone());
+        let index = "index.html";
+        if path.split('/').last() == Some(index) {
+            // Add the directory, with trailing slash, as an alternative path.
+            // Note: Without the trailing slash the location of "." is the parent, so breaks resource links.
+            let prefix_len = path.len() - index.len();
+            let dirname = &path[..prefix_len];
+            asset_hashes
+                .0
+                .insert(dirname.as_bytes().to_vec(), hash_bytes(&asset.bytes));
+            assets.insert(dirname, asset.clone());
         }
 
         asset_hashes
