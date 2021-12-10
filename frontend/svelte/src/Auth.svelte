@@ -16,7 +16,6 @@
     const wasSignedIn = signedIn;
     authClient = await AuthClient.create();
     const isAuthenticated = await authClient.isAuthenticated();
-    console.log(JSON.stringify({checkAuth: {wasSignedIn, isAuthenticated}}));
     if (wasSignedIn !== isAuthenticated) {
       if (isAuthenticated) { onSignIn(); } else { signOut(); }
     }
