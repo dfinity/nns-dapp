@@ -7,6 +7,11 @@ export class AuthSync {
   static SIGN_IN = "signIn";
   static INTERVAL = 10000;
 
+  /**
+   * Creates a login sync.
+   *
+   * @param {Function} callback - invoked whenever login status may have changed in another tab.
+   */
   constructor(callback: Function) {
     if (typeof BroadcastChannel === "undefined") {
       // Safari, IE.  (Safari is expected to have BroadcastChannels soon.)
@@ -20,11 +25,18 @@ export class AuthSync {
     }
   }
 
+  /**
+   * Communicates to other tabs that we have signed in.
+   */
   onSignIn() {
     if (undefined !== this.broadcastChannel) {
       this.broadcastChannel.postMessage(AuthSync.SIGN_IN);
     }
   }
+
+  /**
+   * Communicates to other tabs that we have signed out.
+   */
   onSignOut() {
     if (undefined !== this.broadcastChannel) {
       this.broadcastChannel.postMessage(AuthSync.SIGN_OUT);
