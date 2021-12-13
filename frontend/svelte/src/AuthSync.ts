@@ -44,9 +44,12 @@ export class AuthSync {
    * @param {string} action - login or logout action.
    */
   #onChange(action) {
-    localStorage.setItem(AuthSync.NAME, JSON.stringify({
-      action,
-      timestamp: Date.now(),
-    }));
+    localStorage.setItem(
+      AuthSync.NAME,
+      JSON.stringify({
+        action,
+        timestamp: Date.now(),
+      })
+    );
   }
 }
