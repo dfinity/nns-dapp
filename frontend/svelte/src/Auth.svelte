@@ -127,6 +127,11 @@
     display: grid;
     grid-template-rows: 75px 40px 40px auto 40px 140px auto;
   }
+  @media (max-width: 1600px) {
+    .auth-overlay {
+        background-size: 1600px auto;
+    }
+  }
   .auth-overlay h1 {
     color: #a19996;
     font-size: var(--font-size-normal);
