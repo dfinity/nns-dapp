@@ -69,8 +69,8 @@
     checkAuth();
     // If logged out by flutter, we still need to broadcast the logout status.
     if (!signedIn) {
-      authSync.onSignOut()
-    };
+      authSync.onSignOut();
+    }
   });
 </script>
 

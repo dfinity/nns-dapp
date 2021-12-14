@@ -9,7 +9,7 @@
 
 <main>
   {#if signedIn}
-  <Loader />
+    <Loader />
   {/if}
   <Auth bind:signedIn bind:principal />
 </main>
