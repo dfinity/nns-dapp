@@ -154,6 +154,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
             "html" => Some("text/html"),
             "js" => Some("application/javascript"),
             "json" => Some("application/json"),
+            "svg" => Some("image/svg+xml"),
             _ => None,
         })
         .flatten()
