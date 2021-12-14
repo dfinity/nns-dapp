@@ -121,6 +121,8 @@
     z-index: 100;
     background-color: black;
     background-image: url("/assets/assets/nns_background.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
     display: grid;
     grid-template-rows: 75px 40px 40px auto 40px 140px auto;
   }
