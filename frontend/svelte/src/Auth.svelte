@@ -69,11 +69,13 @@
   {#if !signedIn && authClient}
     <div class="auth-overlay">
       <div />
-      <h1>The Internet Computer</h1>
-      <h2>Network Nervous System</h2>
-      <div />
-      <button on:click={signIn} class="auth-button">Login</button>
-      <span>Beta</span>
+      <h1>the INTERNET COMPUTER</h1>
+      <h2>NETWORK NERVOUS SYSTEM</h2>
+      <div class="dfinity">
+        <img src="/assets/assets/ic_colour_logo.svg" />
+      </div>
+      <div class="tagline">manage ICP and <span>governance</span> voting</div>
+      <button on:click={signIn} class="auth-button">LOGIN</button>
     </div>
   {/if}
 
@@ -117,18 +119,46 @@
     width: 100vw;
     height: 100vh;
     z-index: 100;
-    background-color: var(--background-grey);
+    background-color: black;
+    background-image: url("/assets/assets/nns_background.jpeg");
     display: grid;
-    grid-template-rows: 75px 70px 40px auto 120px 140px;
+    grid-template-rows: 75px 40px 40px auto 40px 140px auto;
   }
   .auth-overlay h1 {
-    font-size: var(--font-size-xlarge);
+    color: #a19996;
+    font-size: var(--font-size-normal);
+    letter-spacing: 1ex;
   }
   .auth-overlay h2 {
-    font-size: var(--font-size-large);
+    background-image: linear-gradient(
+      to right,
+      #f9a739,
+      #ee3e4b,
+      #502d89,
+      #2b8ae0
+    );
+    font-size: var(--font-size-normal);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5ex;
   }
-  .auth-overlay span {
-    font-weight: bold;
+  .auth-overlay .tagline {
+    background-image: linear-gradient(
+      to right,
+      #a19996,
+      #75715a,
+      #a19996,
+      #a19996
+    );
+    font-size: var(--font-size-normal);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5ex;
+  }
+  .auth-overlay .tagline span {
+    color: #326bbf;
   }
 
   .auth-overlay > * {
@@ -146,10 +176,14 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-    background-color: #52545a;
+    background-color: #141f33;
     border: var(--widget-border);
     border-radius: var(--widget-border-radius-small);
     font-size: 30px;
     color: #aeb7b7;
+    letter-spacing: 0.5ex;
+  }
+  .dfinity img {
+    width: 8em;
   }
 </style>
