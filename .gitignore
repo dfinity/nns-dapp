@@ -136,5 +136,6 @@ canister_ids.json
 target/
 dist/
 node_modules/
+web-assets/
 
 **/*.rs.bk

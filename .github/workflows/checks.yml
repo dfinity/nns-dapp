@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install shfmt
-        run: sudo snap install shfmt
+        run: sudo snap install --classic shfmt
 
       - name: Install Rust
         run: |
