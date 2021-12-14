@@ -8,14 +8,14 @@
          const {action} = JSON.parse(currentStoredState);
          if ((action !== "signIn") && (!loggingOut)) {
              loggingOut = true;
-             window.open('/v2/index.html',"_self");
+             window.location.replace('/v2/index.html');
          } else {
              console.log("Is logged in");
          }
       } catch(e) {
          console.info(e);
          // Login status was not present and well formed.
-         window.open('/v2/index.html',"_self");
+         window.location.replace('/v2/index.html');
       }
     }
     checkLoginStatus();

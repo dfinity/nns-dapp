@@ -49,7 +49,7 @@
   main {
     width: 100vw;
     height: 100vh;
-    font-family: var(--font-family);
+    background-color: white;
     overflow: hidden;
   }
 

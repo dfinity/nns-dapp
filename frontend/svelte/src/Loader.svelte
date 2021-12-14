@@ -5,14 +5,15 @@
 .loader,
 .loader:before,
 .loader:after {
-  background: #ffffff;
+  --color: #ccc;
+  background: var(--color);
   -webkit-animation: load1 1s infinite ease-in-out;
   animation: load1 1s infinite ease-in-out;
   width: 1em;
   height: 4em;
 }
 .loader {
-  color: #ffffff;
+  color: var(--color);
   text-indent: -9999em;
   margin: 88px auto;
   position: relative;

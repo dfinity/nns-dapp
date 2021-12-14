@@ -5,7 +5,7 @@ import '../../nns_dapp.dart';
 class AuthWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    html.window.open('/v2/index.html',"_self");
+    html.window.location.replace('/v2/index.html');
     return Container(
       constraints: BoxConstraints.expand(),
       decoration: BoxDecoration(

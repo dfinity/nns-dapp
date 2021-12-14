@@ -292,7 +292,7 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
     } else {
       if (configuration.logoutOnFailure) {
         await hiveBoxes.deleteAllData();
-        html.window.open('/v2/index.html',"_self");
+        html.window.location.replace('/v2/index.html');
         push(authPage);
       }
     }
