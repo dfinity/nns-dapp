@@ -129,7 +129,7 @@
   }
   @media (max-width: 1600px) {
     .auth-overlay {
-        background-size: 1600px auto;
+      background-size: 1600px auto;
     }
   }
   .auth-overlay h1 {
