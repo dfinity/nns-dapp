@@ -117,8 +117,4 @@ export default class Service implements ServiceInterface {
     );
     return this.responseConverters.toMultiPartTransactionStatus(rawResponse);
   };
-
-  public getIcpToCyclesConversionRate = (): Promise<bigint> => {
-    return this.service.get_icp_to_cycles_conversion_rate();
-  };
 }
