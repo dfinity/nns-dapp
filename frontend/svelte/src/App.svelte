@@ -9,7 +9,9 @@
 <main>
   <Auth bind:signedIn bind:principal />
   {#if signedIn}
-    <div class="initial-load"><span>Getting the NNS dapp ready for you…</span></div>
+    <div class="initial-load">
+      <span>Getting the NNS dapp ready for you…</span>
+    </div>
   {/if}
 </main>
 
