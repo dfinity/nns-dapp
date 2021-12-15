@@ -9,6 +9,7 @@
 <main>
   <Auth bind:signedIn bind:principal />
   {#if signedIn}
+    <!-- This must match the loading placeholder of the flutter app exactly, to make the transition seamless. -->
     <div class="initial-load"><span>Getting the NNS dapp ready for you…</span></div>
   {/if}
 </main>
