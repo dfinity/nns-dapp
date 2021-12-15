@@ -50,7 +50,15 @@
     width: 100vw;
     height: 100vh;
     background-color: white;
+    color: black;
     overflow: hidden;
+  }
+
+  @media (prefers-color-scheme: dark) {
+      main {
+        background-color:  #333;
+        color: white;
+      }
   }
 
   .loader {
