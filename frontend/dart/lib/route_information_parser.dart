@@ -3,7 +3,6 @@ import 'data/data.dart';
 import 'resources_loading_page.dart';
 import 'wallet_router_delegate.dart';
 import 'nns_dapp.dart';
-import 'dart:html' as html;
 
 class WalletRouteParser extends RouteInformationParser<PageConfig> {
   final HiveBoxes hiveBoxes;
@@ -33,7 +32,6 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
       RouteInformation routeInformation) async {
     bool isAuthenticated = context.icApi.isLoggedIn();
     if (!isAuthenticated) {
-      // html.window.location.assign('/v2/');
       return authPage;
     }
 

@@ -13,7 +13,6 @@ import 'ui/neuron_info/neuron_info_widget.dart';
 import 'ui/neurons/detail/neuron_detail_widget.dart';
 import 'ui/proposals/proposal_detail_widget.dart';
 import 'ui/wallet/account_detail_widget.dart';
-import 'dart:html' as html;
 
 abstract class PageConfig {
   final String path;
@@ -292,7 +291,6 @@ class WalletRouterDelegate extends RouterDelegate<PageConfig>
     } else {
       if (configuration.logoutOnFailure) {
         await hiveBoxes.deleteAllData();
-        //html.window.location.assign('/v2/');
         push(authPage);
       }
     }
