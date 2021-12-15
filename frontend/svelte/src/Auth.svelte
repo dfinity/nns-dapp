@@ -87,12 +87,6 @@
       <button on:click={signIn} class="auth-button">LOGIN</button>
     </div>
   {/if}
-
-  <div class="auth-section">
-    {#if signedIn}
-      <button on:click={signOut} class="auth-button">Logout</button>
-    {/if}
-  </div>
 </div>
 
 <style>

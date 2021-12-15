@@ -1,6 +1,5 @@
 <script lang="ts">
   import Auth from "./Auth.svelte";
-  import Loader from "./Loader.svelte";
 
   // Identity, shared with all tabs:
   let signedIn;
@@ -8,9 +7,6 @@
 </script>
 
 <main>
-  {#if signedIn}
-    <Loader />
-  {/if}
   <Auth bind:signedIn bind:principal />
 </main>
 
@@ -49,20 +45,9 @@
   main {
     width: 100vw;
     height: 100vh;
-    background-color: white;
-    color: black;
+    background-color: #333;
+    color: #eee;
     overflow: hidden;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    main {
-      background-color: #333;
-      color: white;
-    }
-  }
-
-  .loader {
-    top: 40%;
   }
 
   @media (min-width: 640px) {
