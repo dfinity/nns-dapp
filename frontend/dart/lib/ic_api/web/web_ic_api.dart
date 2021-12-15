@@ -37,7 +37,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   Future initialize() async {
     authApi = await promiseToFuture(createAuthApi(allowInterop(() {
-      html.window.location.reload();
+      if (!this.isLoggedIn()) {
+        html.window.location.assign("/v2/");
+      }
     })));
     fetchIdentityAndBuildServices();
   }
@@ -660,6 +662,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> logout() async {
     await promiseToFuture(authApi.logout());
+    html.window.location.assign("/v2/");
   }
 
   @override
