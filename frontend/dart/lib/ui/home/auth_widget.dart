@@ -1,4 +1,3 @@
-import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
 import '../../nns_dapp.dart';
 
 class AuthWidget extends StatelessWidget {
