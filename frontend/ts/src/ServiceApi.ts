@@ -49,6 +49,8 @@ import NnsDappService, {
   RenameSubAccountRequest,
   RenameSubAccountResponse,
 } from "./canisters/nnsDapp/model";
+import cyclesMintingServiceBuilder from "./canisters/cyclesMinting/builder";
+import CyclesMintingService from "./canisters/cyclesMinting/model";
 import icManagementBuilder from "./canisters/icManagement/builder";
 import ICManagementService, {
   CanisterDetailsResponse,
@@ -99,6 +101,7 @@ export default class ServiceApi {
   private readonly ledgerService: LedgerService;
   private readonly nnsDappService: NnsDappService;
   private readonly governanceService: GovernanceService;
+  private readonly cyclesMintingService: CyclesMintingService;
   private readonly icManagementService: ICManagementService;
   private readonly identity: SignIdentity;
 
@@ -121,6 +124,7 @@ export default class ServiceApi {
     this.ledgerService = ledgerBuilder(agent);
     this.nnsDappService = nnsDappBuilder(agent);
     this.governanceService = governanceBuilder(agent, identity);
+    this.cyclesMintingService = cyclesMintingServiceBuilder(agent);
     this.icManagementService = icManagementBuilder(agent);
     this.identity = identity;
   }
@@ -469,7 +473,7 @@ export default class ServiceApi {
 
   public getIcpToCyclesConversionRate = (): Promise<bigint> => {
     return executeWithLogging(() =>
-      this.nnsDappService.getIcpToCyclesConversionRate()
+      this.cyclesMintingService.getIcpToCyclesConversionRate()
     );
   };
 
