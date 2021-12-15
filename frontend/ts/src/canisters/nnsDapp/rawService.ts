@@ -148,7 +148,6 @@ export interface _SERVICE {
     >,
   'get_account' : () => Promise<GetAccountResponse>,
   'get_canisters' : () => Promise<Array<CanisterDetails>>,
-  'get_icp_to_cycles_conversion_rate' : () => Promise<bigint>,
   'get_multi_part_transaction_errors' : () => Promise<
       Array<MultiPartTransactionError>
     >,
