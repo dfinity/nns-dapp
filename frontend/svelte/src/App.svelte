@@ -8,6 +8,9 @@
 
 <main>
   <Auth bind:signedIn bind:principal />
+  {#if signedIn}
+    <div class="initial-load"><span>Getting the NNS dapp ready for you…</span></div>
+  {/if}
 </main>
 
 <svelte:head>
@@ -54,5 +57,17 @@
     main {
       max-width: none;
     }
+  }
+  .initial-load {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial;
+    font-size: 14px;
   }
 </style>
