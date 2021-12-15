@@ -55,10 +55,10 @@
   }
 
   @media (prefers-color-scheme: dark) {
-      main {
-        background-color:  #333;
-        color: white;
-      }
+    main {
+      background-color: #333;
+      color: white;
+    }
   }
 
   .loader {
