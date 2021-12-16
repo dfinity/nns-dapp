@@ -1,5 +1,6 @@
 <script lang="ts">
   import Auth from "./Auth.svelte";
+  import ContentPage from "./ContentPage.svelte";
 
   // Identity, shared with all tabs:
   let signedIn;
@@ -9,10 +10,14 @@
 <main>
   <Auth bind:signedIn bind:principal />
   {#if signedIn}
-    <!-- This must match the loading placeholder of the flutter app exactly, to make the transition seamless. -->
-    <div class="initial-load">
-      <span>Getting the NNS dapp ready for you…</span>
-    </div>
+    {#if process.env.REDIRECT_TO_LEGACY}
+      <!-- This must match the loading placeholder of the flutter app exactly, to make the transition seamless. -->
+      <div class="initial-load">
+        <span>Getting the NNS dapp ready for you…</span>
+      </div>
+    {:else}
+      <ContentPage />
+    {/if}
   {/if}
 </main>
 
