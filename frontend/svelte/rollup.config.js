@@ -85,12 +85,12 @@ export default {
       ),
       // When developing with live reload in svelte, redirecting to flutter is
       // not desirable, so when there is no deployment target we don't do it.
+      // More direct control is possible by setting the environment variable
+      // REDIRECT_TO_LEGACY to true or false when building.
       "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-        process.env.REDIRECT_TO_LEGACY !== undefined
-          ? true
-          : process.env.DEPLOY_ENV === undefined
-          ? false
-          : true
+        process.env.REDIRECT_TO_LEGACY === undefined
+          ? process.env.DEPLOY_ENV !== undefined
+          : !process.env.REDIRECT_TO_LEGACY.match(/^(false|no)$/i)
       ),
     }),
 
