@@ -10,7 +10,7 @@ use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
-use dfn_core::{api::trap_with, over, over_async, stable};
+use dfn_core::{api::trap_with, over, stable};
 use ic_base_types::PrincipalId;
 use ledger_canister::{AccountIdentifier, BlockHeight};
 
@@ -247,31 +247,6 @@ pub fn get_multi_part_transaction_errors() {
 
 fn get_multi_part_transaction_errors_impl() -> Vec<MultiPartTransactionError> {
     STATE.with(|s| s.accounts_store.borrow().get_multi_part_transaction_errors())
-}
-
-/// Returns the current conversion rate between ICP and cycles.
-#[export_name = "canister_query get_icp_to_cycles_conversion_rate"]
-pub fn get_icp_to_cycles_conversion_rate() {
-    over_async(candid, |()| get_icp_to_cycles_conversion_rate_impl());
-}
-
-async fn get_icp_to_cycles_conversion_rate_impl() -> u64 {
-    #[cfg(feature = "mock_conversion_rate")]
-    {
-        100_000_000_000_000 // Assume a conversion rate of 100T cycles per 1 ICP.
-    }
-
-    #[cfg(not(feature = "mock_conversion_rate"))]
-    {
-        const CYCLES_PER_XDR: u64 = 1_000_000_000_000;
-
-        let xdr_permyriad_per_icp = match ic_nns_common::registry::get_icp_xdr_conversion_rate_record().await {
-            None => panic!("ICP/XDR conversion rate is not available."),
-            Some((rate_record, _)) => rate_record.xdr_permyriad_per_icp,
-        };
-
-        xdr_permyriad_per_icp * (CYCLES_PER_XDR / 10_000)
-    }
 }
 
 /// Returns stats about the canister.

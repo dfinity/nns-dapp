@@ -146,7 +146,6 @@ export default interface ServiceInterface {
   ) => Promise<DetachCanisterResponse>;
   getAccount: (certified: boolean) => Promise<GetAccountResponse>;
   getCanisters: () => Promise<Array<CanisterDetails>>;
-  getIcpToCyclesConversionRate: () => Promise<bigint>;
   getMultiPartTransactionStatus: (
     principal: Principal,
     blockHeight: BlockHeight
