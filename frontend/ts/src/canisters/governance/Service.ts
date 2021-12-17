@@ -83,10 +83,14 @@ export default class Service implements ServiceInterface {
     };
     const serviceToUse = certified ? this.certifiedService : this.service;
     const rawResponse = await serviceToUse.list_neurons(rawRequest);
-    return this.responseConverters.toArrayOfNeuronInfo(
+    const response =  this.responseConverters.toArrayOfNeuronInfo(
       rawResponse,
       this.myPrincipal
     );
+
+    console.log("Response from list_neurons");
+    console.log(response);
+    return response;
   };
 
   public getNeuronsForHW = async (): Promise<Array<NeuronInfoForHw>> => {
