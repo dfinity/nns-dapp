@@ -88,6 +88,12 @@
   }
 
   .header-bar {
+      --header-bar-height: 76px;
+      background-image: url(/assets/assets/gradient.jpg);
+      background-size: cover;
+      background-repeat: no-repeat;
+/*
+      The image is just a gradient, however the exact parameters are unknown at this stage and even slight changes are very noticeable.
         background-image: linear-gradient(
       80deg,
       #f9a739,
@@ -95,14 +101,16 @@
       #502d89,
       #2b8ae0
     );
-    height: 76px;
+*/
+    height: var(--header-bar-height);
     width: 100%;
   }
   .header-bar h1 {
     text-align: center;
-    line-height: 70px;
-    font-size: 24px;
-    letter-spacing: 2px;
+    line-height: var(--header-bar-height);
+    font-size: calc(18cm / 38); /* TODO: Flutter uses 24/18/12 depending on screen size. */
+    font-weight: 500;
+    letter-spacing: 2.4px;
     margin: 0;
   }
 </style>
