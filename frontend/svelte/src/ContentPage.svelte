@@ -38,7 +38,7 @@
   });
 </script>
 
-
+<div class="content-page">
       <div class="header-bar">
         <h1 class="title">NETWORK NERVOUS SYSTEM</h1>
         <span class="logout" />
@@ -50,11 +50,12 @@
         <button on:click={() => go([votingPageName])}>{votingPageName}</button>
         <button on:click={() => go([canistersPageName])}>{canistersPageName}</button>
       </div>
-      <div class="content">
+      <div class="content-tabs">
         {#if deepLink[0] === accountsPageName}
           <div id="AccountsPage"><AccountsPage /></div>
         {/if}
       </div>
+</div>
 
 
 <style>
@@ -112,5 +113,16 @@
     font-weight: 500;
     letter-spacing: 2.4px;
     margin: 0;
+  }
+  .content-page {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    display: grid;
+    grid-template-rows: 76px 84px auto;
+    overflow: clip;
+  }
+  .content-tabs {
+    background-color: #333;
   }
 </style>
