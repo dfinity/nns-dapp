@@ -60,10 +60,12 @@
 
 <style>
   .nav-bar {
-    height: 70px;
-    border-radius: var(--widget-border-radius);
+    --top-margin: 10px;
+    --side-margin: 20px;
+    height: calc(100% - 2 * var(--top-margin));
+    border-radius: 16px;
     background-color: var(--widget-grey);
-    margin: 10px;
+    margin: var(--top-margin) var(--side-margin) var(--top-margin) var(--side-margin);
     display: flex;
     justify-content: space-around;
     position: relative;
