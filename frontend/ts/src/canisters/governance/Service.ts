@@ -88,8 +88,8 @@ export default class Service implements ServiceInterface {
       this.myPrincipal
     );
 
-    console.log("Response from list_neurons");
-    console.log(response);
+    console.debug("Response from list_neurons:");
+    console.debug(response);
     return response;
   };
 
