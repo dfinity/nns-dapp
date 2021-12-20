@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        device: [ 'desktop', 'mobile' ]
+        device: [ 'desktop' ]
       # Make sure that one failing test does not cancel all other matrix jobs
       fail-fast: false
     env:
@@ -49,11 +49,13 @@ jobs:
           cd "$HOME/flutter"
           tar xf "$flutter_tar"
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
+          rm -rf $(dirname "$flutter_tar")
 
+      - name: check flutter
+        run: |
           flutter --help
 
 
-          rm -rf $(dirname "$flutter_tar")
 
       # This step hangs on Github actions on Darwin for some reason, that
       # is why we run this only on Linux for now
