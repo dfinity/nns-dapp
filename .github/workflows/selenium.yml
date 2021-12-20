@@ -79,7 +79,7 @@ jobs:
 
       - name: Deploy NNS Dapp
         run: |
-          DEPLOY_ENV=local dfx deploy
+          DEPLOY_ENV=local dfx deploy --no-wallet --network local
 
       - name: install selenium webdrivers
         run: npm run install-webdrivers
