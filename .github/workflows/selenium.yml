@@ -45,9 +45,8 @@ jobs:
         run: |
           flutter_tar=$(mktemp -d)/flutter.tar.xz
           curl -L "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.8.1-stable.tar.xz" -o "$flutter_tar"
-          mkdir -p "$HOME/flutter"
-          cd "$HOME/flutter"
-          tar xf "$flutter_tar"
+          cd "$HOME"
+          tar -xvf "$flutter_tar"
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
           rm -rf $(dirname "$flutter_tar")
 
