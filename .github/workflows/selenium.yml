@@ -40,6 +40,21 @@ jobs:
           rustup default "$RUSTC_VERSION"
           rustup target add wasm32-unknown-unknown
 
+        # https://docs.flutter.dev/get-started/install/linux
+      - name: Install flutter
+        run: |
+          flutter_tar=$(mktemp -d)/flutter.tar.xz
+          curl -L "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.8.1-stable.tar.xz" -o "$flutter_tar"
+          mkdir -p "$HOME/flutter"
+          cd "$HOME/flutter"
+          tar xf "$flutter_tar"
+          echo "$HOME/flutter/bin" >> $GITHUB_PATH
+
+          flutter --help
+
+
+          rm -rf $(dirname "$flutter_tar")
+
       # This step hangs on Github actions on Darwin for some reason, that
       # is why we run this only on Linux for now
       - name: Install DFX
