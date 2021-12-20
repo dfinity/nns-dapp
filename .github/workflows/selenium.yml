@@ -34,6 +34,10 @@ jobs:
         with:
           node-version: 14.x
 
+      - name: Install wasm-opt
+        run: |
+          sudo apt install binaryen
+
       - name: Install Rust
         run: |
           rustup update "$RUSTC_VERSION" --no-self-update
@@ -46,18 +50,9 @@ jobs:
           flutter_tar=$(mktemp -d)/flutter.tar.xz
           curl -L "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.8.1-stable.tar.xz" -o "$flutter_tar"
           cd "$HOME"
-          tar -xvf "$flutter_tar"
+          tar -xf "$flutter_tar"
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
           rm -rf $(dirname "$flutter_tar")
-
-      - name: check flutter
-        run: |
-          echo "$PATH"
-          ls "$HOME/flutter/bin"
-          $HOME/flutter/bin/flutter --help
-          flutter --help
-
-
 
       # This step hangs on Github actions on Darwin for some reason, that
       # is why we run this only on Linux for now
