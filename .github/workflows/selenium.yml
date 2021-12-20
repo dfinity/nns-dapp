@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
     env:
       DFX_VERSION: 0.8.3
-      RUSTC_VERSION: 1.51.0
+      RUSTC_VERSION: 1.54.0
 
     steps:
       - uses: actions/checkout@v2
@@ -53,6 +53,9 @@ jobs:
 
       - name: check flutter
         run: |
+          echo "$PATH"
+          ls "$HOME/flutter/bin"
+          $HOME/flutter/bin/flutter --help
           flutter --help
 
 
