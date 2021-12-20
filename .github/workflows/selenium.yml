@@ -1,0 +1,81 @@
+name: Selenium tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        device: [ 'desktop', 'mobile' ]
+      # Make sure that one failing test does not cancel all other matrix jobs
+      fail-fast: false
+    env:
+      DFX_VERSION: 0.8.3
+      RUSTC_VERSION: 1.51.0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-selenium-${{ hashFiles('**/Cargo.lock') }}-1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+
+      - name: Install Rust
+        run: |
+          rustup update "$RUSTC_VERSION" --no-self-update
+          rustup default "$RUSTC_VERSION"
+          rustup target add wasm32-unknown-unknown
+
+      # This step hangs on Github actions on Darwin for some reason, that
+      # is why we run this only on Linux for now
+      - name: Install DFX
+        run: |
+          echo Install DFX Version: "$DFX_VERSION"
+          yes | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+
+      # Helps with debugging
+      - name: Show versions
+        run: |
+          echo dfx --version
+          dfx --version
+          echo node --version
+          node --version
+          echo npm --version
+          npm --version
+          echo rustc --version
+          rustc --version
+          echo cargo --version
+          cargo --version
+
+      - run: npm ci
+      - run: dfx start --background
+
+      - name: Deploy NNS Dapp
+        run: |
+          DEPLOY_ENV=local dfx deploy
+
+      - name: install selenium webdrivers
+        run: npm run install-webdrivers
+
+      - run: dfx stop
+
+      - name: Archive test logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: selenium-test-log-${{ matrix.device }}
+          path: wdio.log
