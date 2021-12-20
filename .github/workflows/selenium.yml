@@ -61,7 +61,6 @@ jobs:
           echo cargo --version
           cargo --version
 
-      - run: npm ci
       - run: dfx start --background
 
       - name: Deploy NNS Dapp
