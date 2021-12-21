@@ -1,3 +1,4 @@
+**/*.wasm
 assets.tar.xz
 out
 
