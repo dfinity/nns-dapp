@@ -27,3 +27,7 @@ frontend/dart/ios/Runner/GeneratedPluginRegistrant.m
 frontend/dart/lib/generated_plugin_registrant.dart
 frontend/dart/pubspec.lock
 frontend/dart/build/web
+frontend/svelte/node_modules/
+frontend/svelte/public/build/
+frontend/svelte/public/assets/
+**/*.wasm

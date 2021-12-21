@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$(realpath "$0")")/.." || exit
+
+WASM_PATH="$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)"
+
+docker build --build-arg DEPLOY_ENV=testnet -t nns-dapp .
+mkdir -p target/wasm32-unknown-unknown/release/
+# shellcheck disable=SC2094 # The source and destination files are not the same, the first is in docker.
+docker run --rm --entrypoint cat nns-dapp "$WASM_PATH" >"$WASM_PATH"
+docker run --rm --entrypoint cat nns-dapp /assets.tar.xz >assets.tar.xz
+DEPLOY_ENV=nobuild dfx deploy --network testnet
+
+set +x
+echo "Deployed to: https://$(jq -jc '.["nns-dapp"].testnet' canister_ids.json).nnsdapp.dfinity.network"
