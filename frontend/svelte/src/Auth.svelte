@@ -78,7 +78,7 @@
   {#if !signedIn && authClient}
     <div class="auth-overlay">
       <div />
-      <h1>the INTERNET COMPUTER</h1>
+      <h1>INTERNET COMPUTER</h1>
       <h2><span class="blue">NETWORK</span> . <span class="pink">NERVOUS</span> . <span class="green">SYSTEM</span></h2>
       <div class="dfinity">
         <img src="/assets/assets/ic_colour_logo.svg" />
