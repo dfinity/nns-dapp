@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:nns_dapp/route_information_parser.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/proposals/governance_tab_widget.dart';
 import '../../nns_dapp.dart';
