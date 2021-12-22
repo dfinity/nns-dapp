@@ -65,8 +65,8 @@
   };
 
   // Sets login status on first load.
-  onMount(() => {
-    checkAuth();
+  onMount(async () => {
+    await checkAuth();
     // If logged out by flutter, we still need to broadcast the logout status.
     if (!signedIn) {
       authSync.onSignOut();
@@ -83,7 +83,7 @@
       <div class="dfinity">
         <img src="/assets/assets/ic_colour_logo.svg" />
       </div>
-      <div class="tagline">manage <span class="yellow">ICP</span> and <span class="blue">governance</span> voting</div>
+      <div class="tagline"><span class="yellow">ICP</span> and <span class="blue">governance</span></div>
       <button on:click={signIn} class="auth-button">LOGIN</button>
     </div>
   {/if}
