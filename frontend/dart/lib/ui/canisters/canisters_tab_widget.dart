@@ -11,12 +11,12 @@ import '../../nns_dapp.dart';
 import '../../wallet_router_delegate.dart';
 import 'select_canister_add_action_widget.dart';
 
-class CansitersPage extends StatefulWidget {
+class CanistersPage extends StatefulWidget {
   @override
-  _CansitersPageState createState() => _CansitersPageState();
+  _CanistersPageState createState() => _CanistersPageState();
 }
 
-class _CansitersPageState extends State<CansitersPage> {
+class _CanistersPageState extends State<CanistersPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage>
             AccountsTabWidget(),
             NeuronsPage(),
             GovernanceTabWidget(),
-            CansitersPage()
+            CanistersPage()
           ],
         ),
       ),
