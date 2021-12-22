@@ -157,10 +157,10 @@
     color: #D81C6F;
   }
   .auth-overlay span.green {
-    color: #7AA21A;
+    color: #859d44;
   }
   .auth-overlay span.yellow {
-    color: #C4B420;
+    color: #B2B081;
   }
 
   .auth-overlay > * {
