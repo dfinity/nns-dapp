@@ -1,5 +1,5 @@
 {
-  "dfx": "0.7.2",
+  "dfx": "0.8.4",
   "canisters": {
     "nns-dapp": {
       "type": "custom",

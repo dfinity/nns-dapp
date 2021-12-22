@@ -371,7 +371,7 @@ class StakeRewardsWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 42.0),
           child: Text(
-              "Choose your how much of your maturity to merge into the neuron's stake ",
+              "Choose how much of your neuron's maturity to merge into its stake ",
               style: context.textTheme.subtitle2),
         ),
         SizedBox(

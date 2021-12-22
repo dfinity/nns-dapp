@@ -3,7 +3,7 @@
 # docker build -t nns-dapp .
 # docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
 
-FROM ubuntu:20.10
+FROM ubuntu:20.10 as builder
 SHELL ["bash", "-c"]
 
 ARG rust_version=1.54.0
@@ -15,7 +15,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     apt -yq update && \
     apt -yqq install --no-install-recommends curl ca-certificates \
         build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake \
-	git
+	git jq
 
 # Install node
 RUN curl --fail -sSf https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
@@ -46,20 +46,20 @@ ENV PATH=/flutter/bin:$PATH
 # Install IC CDK optimizer
 RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
+# Install dfx
+COPY dfx.json dfx.json
+RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+
+# Start the second container
+FROM builder
+SHELL ["bash", "-c"]
+ARG DEPLOY_ENV=mainnet
+RUN echo $DEPLOY_ENV
+
+# Build
 COPY . .
+RUN ./build.sh
 
-ENV DEPLOY_ENV=mainnet
-RUN cd frontend/ts && ./build.sh
-
-RUN cd frontend/dart && flutter build web --web-renderer html --release --no-sound-null-safety --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/
-# Remove random hash from flutter output
-RUN sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' frontend/dart/build/web/index.html
-
-# Bundle into a tight tarball
-RUN cd frontend/dart/build/web/ && tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../../../../assets.tar.xz .
-RUN ls -sh assets.tar.xz; sha256sum assets.tar.xz
-
-RUN cargo build --locked --target wasm32-unknown-unknown --release --package nns-dapp
-RUN cp target/wasm32-unknown-unknown/release/nns-dapp.wasm .
-RUN ic-cdk-optimizer nns-dapp.wasm -o nns-dapp.wasm
+# Copy the wasm to the traditional location.
+RUN cp "$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)" nns-dapp.wasm
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm

@@ -1,0 +1,16 @@
+type IcpXdrConversionRate =
+    record {
+        timestamp_seconds: nat64;
+        xdr_permyriad_per_icp: nat64;
+    };
+
+type IcpXdrConversionRateCertifiedResponse =
+    record {
+        data: IcpXdrConversionRate;
+        hash_tree: blob;
+        certificate: blob;
+    };
+
+service : {
+    get_icp_xdr_conversion_rate: () -> (IcpXdrConversionRateCertifiedResponse) query;
+}
