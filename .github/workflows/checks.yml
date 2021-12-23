@@ -10,7 +10,7 @@ on:
 jobs:
 
   formatting:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       DEPLOY_ENV: mainnet
 
@@ -66,7 +66,7 @@ jobs:
     strategy:
       matrix:
         rust: [ '1.54.0' ]
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-20.04 ]
 
     steps:
       - uses: actions/checkout@v2
@@ -104,7 +104,7 @@ jobs:
 
   flutter-tests:
     needs: formatting
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       DEPLOY_ENV: mainnet
 
@@ -144,7 +144,7 @@ jobs:
 
   svelte-tests:
     needs: formatting
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
@@ -168,7 +168,7 @@ jobs:
   shell-checks:
     needs: formatting
     name: ShellCheck
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Run ShellCheck
