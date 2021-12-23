@@ -2,6 +2,11 @@
 
 set -e
 
+if [[ $DEPLOY_ENV = "nobuild" ]]; then
+  echo "Skipping build as requested"
+  exit 0
+fi
+
 if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $DEPLOY_ENV = "local" ]]; then
   echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet' or 'local'"
   exit 1
@@ -58,6 +63,5 @@ else
 fi
 
 echo Optimising wasm
-wasm-opt target/wasm32-unknown-unknown/release/nns-dapp.wasm --strip-debug -Oz -o target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
-
+ic-cdk-optimizer target/wasm32-unknown-unknown/release/nns-dapp.wasm -o target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
 sha256sum target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
