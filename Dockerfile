@@ -3,7 +3,7 @@
 # docker build -t nns-dapp .
 # docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
 
-FROM ubuntu:20.10 as builder
+FROM ubuntu:20.04 as builder
 SHELL ["bash", "-c"]
 
 ARG rust_version=1.54.0
