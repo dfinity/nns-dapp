@@ -43,7 +43,15 @@ Our CI also performs these steps; you can compare the SHA256 with the output the
 
 Development relies on the presence of a testnet that is setup with the II, governance, ledger, and cycle minting canisters. Fully local development is unfortunately not yet supported and the tools for setting up a testnet are not yet available publicly. It is on the roadmap to make these tools available publicly for developers.
 
-To deploy to the testnet, run the following:
+When deploying the governance, ledger, and cycle minting canisters to the testnet you must first create a file called `test-accounts.json` in the root of the IC repo whose contents is:
+
+    {"init_ledger_accounts":["5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087"]}
+
+Then run the following from the root directory of the IC repo:
+
+    ./testnet/tools/icos_deploy.sh --git-revision <commit_id> nnsdapp --ansible-args "-e @$PWD/test-accounts.json"
+
+To deploy the NNS Dapp canister to the testnet, run the following:
 
     ./deploy.sh testnet
 
