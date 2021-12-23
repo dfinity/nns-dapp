@@ -65,8 +65,8 @@
   };
 
   // Sets login status on first load.
-  onMount(async () => {
-    await checkAuth();
+  onMount(() => {
+    checkAuth();
     // If logged out by flutter, we still need to broadcast the logout status.
     if (!signedIn) {
       authSync.onSignOut();
