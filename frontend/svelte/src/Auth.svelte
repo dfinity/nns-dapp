@@ -9,7 +9,7 @@
 
   // Signs in, out, round and all about.
   let authClient;
-  let identityProvider = process.env.INTERNET_IDENTITY_URL;
+  let identityProvider = process.env.IDENTITY_SERVICE_URL;
 
   // Check for any change in authentication status and act upon it.
   const checkAuth = async () => {
@@ -66,7 +66,7 @@
   };
 
   // Sets login status on first load.
-  onMount(() => {
+  onMount(async () => {
     await checkAuth();
     // If logged out by flutter, we still need to broadcast the logout status.
     if (!signedIn) {
