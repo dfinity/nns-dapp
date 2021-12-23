@@ -79,11 +79,16 @@
     <div class="auth-overlay">
       <div />
       <h1>INTERNET COMPUTER</h1>
-      <h2><span class="blue">NETWORK</span> . <span class="pink">NERVOUS</span> . <span class="green">SYSTEM</span></h2>
+      <h2>
+        <span class="blue">NETWORK</span> . <span class="pink">NERVOUS</span> .
+        <span class="green">SYSTEM</span>
+      </h2>
       <div class="dfinity">
         <img src="/assets/assets/ic_colour_logo.svg" />
       </div>
-      <div class="tagline"><span class="yellow">ICP</span> and <span class="blue">governance</span></div>
+      <div class="tagline">
+        <span class="yellow">ICP</span> and <span class="blue">governance</span>
+      </div>
       <button on:click={signIn} class="auth-button">LOGIN</button>
     </div>
   {/if}
@@ -151,16 +156,16 @@
     color: #a19996;
   }
   .auth-overlay span.blue {
-    color: #2CA8DF;
+    color: #2ca8df;
   }
   .auth-overlay span.pink {
-    color: #D81C6F;
+    color: #d81c6f;
   }
   .auth-overlay span.green {
     color: #859d44;
   }
   .auth-overlay span.yellow {
-    color: #B2B081;
+    color: #b2b081;
   }
 
   .auth-overlay > * {
