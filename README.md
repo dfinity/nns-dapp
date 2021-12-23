@@ -49,7 +49,7 @@ When deploying the governance, ledger, and cycle minting canisters to the testne
 
 Then run the following from the root directory of the IC repo:
 
-    ./testnet/tools/icos_deploy.sh --git-revision <commit_id> nnsdapp --ansible-args '-e @/home/<username>/test-accounts.json'
+    ./testnet/tools/icos_deploy.sh --git-revision <commit_id> nnsdapp --ansible-args "-e @$PWD/test-accounts.json"
 
 To deploy the NNS Dapp canister to the testnet, run the following:
 
