@@ -37,10 +37,7 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   Future initialize() async {
     authApi = await promiseToFuture(createAuthApi(allowInterop(() {
-      if (!this.isLoggedIn()) {
-        // Go to the svelte app, which handles login.
-        html.window.location.assign("/v2/");
-      }
+      html.window.location.reload();
     })));
     fetchIdentityAndBuildServices();
   }
@@ -663,8 +660,6 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> logout() async {
     await promiseToFuture(authApi.logout());
-    // Go to the svelte login page.
-    html.window.location.assign("/v2/");
   }
 
   @override
