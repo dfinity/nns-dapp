@@ -20,135 +20,149 @@ class AuthWidget extends StatelessWidget {
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 500),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'INTERNET COMPUTER',
-                    style: TextStyle(
-                      fontSize: Responsive.isMobile(context) ? 16 : 20,
-                      fontFamily: Fonts.circularBold,
-                      color: AppColors.gray400,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 10,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'NETWORK',
+                        'INTERNET COMPUTER',
                         style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 14 : 18,
-                          fontFamily: Fonts.circularBold,
-                          color: AppColors.blue350,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 8,
-                        ),
-                      ),
-                      Text(
-                        ' .  ',
-                        style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 14 : 18,
+                          fontSize: Responsive.isMobile(context) ? 16 : 20,
                           fontFamily: Fonts.circularBold,
                           color: AppColors.gray400,
-                        ),
-                      ),
-                      Text(
-                        'NERVOUS',
-                        style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 14 : 18,
-                          fontFamily: Fonts.circularBold,
-                          color: AppColors.pink,
                           fontWeight: FontWeight.w600,
-                          letterSpacing: 8,
-                          wordSpacing: 0,
+                          letterSpacing: 10,
                         ),
                       ),
-                      Text(
-                        ' .  ',
-                        style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 14 : 18,
-                          fontFamily: Fonts.circularBold,
-                          color: AppColors.gray400,
-                        ),
-                      ),
-                      Text(
-                        'SYSTEM',
-                        style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 14 : 18,
-                          fontFamily: Fonts.circularBold,
-                          color: AppColors.green400,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 8,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  SvgPicture.asset("assets/ic_colour_logo.svg"),
-                  Expanded(child: Container()),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'ICP',
-                        style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 14 : 18,
-                          fontFamily: Fonts.circularMedium,
-                          color: AppColors.green400,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 5,
-                        ),
-                      ),
-                      Text(
-                        ' and ',
-                        style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 14 : 18,
-                          fontFamily: Fonts.circularMedium,
-                          color: AppColors.gray400,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 5,
-                        ),
-                      ),
-                      Text(
-                        'governance',
-                        style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 14 : 18,
-                          fontFamily: Fonts.circularMedium,
-                          color: AppColors.blue350,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 5,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: ElevatedButton(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                            "LOGIN",
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'NETWORK',
                             style: TextStyle(
-                              fontSize: Responsive.isMobile(context) ? 16 : 20,
+                              fontSize: Responsive.isMobile(context) ? 14 : 18,
                               fontFamily: Fonts.circularBold,
-                              color: AppColors.gray400,
-                              fontWeight: FontWeight.w400,
+                              color: AppColors.blue350,
+                              fontWeight: FontWeight.w700,
                               letterSpacing: 8,
                             ),
                           ),
-                        ),
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                          AppColors.blue950,
-                        )),
-                        onPressed: () {
-                          context.icApi.authenticate(() {
-                            context.nav.push(accountsTabPage);
-                          });
-                        }),
+                          Text(
+                            ' .  ',
+                            style: TextStyle(
+                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontFamily: Fonts.circularBold,
+                              color: AppColors.gray400,
+                            ),
+                          ),
+                          Text(
+                            'NERVOUS',
+                            style: TextStyle(
+                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontFamily: Fonts.circularBold,
+                              color: AppColors.pink,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 8,
+                              wordSpacing: 0,
+                            ),
+                          ),
+                          Text(
+                            ' .  ',
+                            style: TextStyle(
+                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontFamily: Fonts.circularBold,
+                              color: AppColors.gray400,
+                            ),
+                          ),
+                          Text(
+                            'SYSTEM',
+                            style: TextStyle(
+                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontFamily: Fonts.circularBold,
+                              color: AppColors.green400,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 8,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      SvgPicture.asset(
+                        "assets/ic_colour_logo.svg",
+                        width: 100,
+                        height: 100,
+                      ),
+                    ],
                   ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'ICP',
+                            style: TextStyle(
+                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontFamily: Fonts.circularMedium,
+                              color: AppColors.green400,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 5,
+                            ),
+                          ),
+                          Text(
+                            ' and ',
+                            style: TextStyle(
+                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontFamily: Fonts.circularMedium,
+                              color: AppColors.gray400,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 5,
+                            ),
+                          ),
+                          Text(
+                            'governance',
+                            style: TextStyle(
+                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontFamily: Fonts.circularMedium,
+                              color: AppColors.blue350,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 5,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: ElevatedButton(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Text(
+                                "LOGIN",
+                                style: TextStyle(
+                                  fontSize:
+                                      Responsive.isMobile(context) ? 16 : 20,
+                                  fontFamily: Fonts.circularBold,
+                                  color: AppColors.gray400,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 8,
+                                ),
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                              AppColors.blue950,
+                            )),
+                            onPressed: () {
+                              context.icApi.authenticate(() {
+                                context.nav.push(accountsTabPage);
+                              });
+                            }),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
