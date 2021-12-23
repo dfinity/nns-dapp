@@ -27,6 +27,7 @@ class AuthWidget extends StatelessWidget {
                     children: [
                       Text(
                         'INTERNET COMPUTER',
+                        softWrap: false,
                         style: TextStyle(
                           fontSize: Responsive.isMobile(context) ? 14 : 20,
                           fontFamily: Fonts.circularBold,
