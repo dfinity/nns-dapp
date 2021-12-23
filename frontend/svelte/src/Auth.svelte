@@ -40,11 +40,11 @@
       });
     });
     onSignIn();
-    authSync.onSignIn();
   };
 
   // Gets a local copy of user data.
   const onSignIn = async () => {
+    authSync.onSignIn();
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace(`/${window.location.hash}`);
     }

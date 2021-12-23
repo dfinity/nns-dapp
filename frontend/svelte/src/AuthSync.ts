@@ -39,17 +39,30 @@ export class AuthSync {
   }
 
   /**
+   * Gets the currently stored action.
+   */
+  #getStoredAction() {
+    try {
+      return JSON.parse(window.localStorage.getItem(AuthSync.NAME)).action;
+    } catch (_) {
+      return undefined;
+    }
+  }
+
+  /**
    * Communicates to other tabs that the login state has changed.
    *
    * @param {string} action - login or logout action.
    */
   #onChange(action) {
-    localStorage.setItem(
-      AuthSync.NAME,
-      JSON.stringify({
-        action,
-        timestamp: Date.now(),
-      })
-    );
+    if (action !== this.#getStoredAction()) {
+      localStorage.setItem(
+        AuthSync.NAME,
+        JSON.stringify({
+          action,
+          timestamp: Date.now(),
+        })
+      );
+    }
   }
 }
