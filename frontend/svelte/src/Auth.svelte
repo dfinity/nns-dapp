@@ -59,14 +59,15 @@
     signedIn = false;
     authSync.onSignOut();
     // Ensure that all data is wiped
-    // ... if we have unencrypted data in local storage, delete it here.
+    // ... if we have data in local storage, (delegations, account data, ...), delete it here.
+    window.localStorage.clear();
     // ... wipe data in ephemeral state, but in the next tick allow repaint to finish first.
     setTimeout(() => location.reload(), 100);
   };
 
   // Sets login status on first load.
   onMount(() => {
-    checkAuth();
+    await checkAuth();
     // If logged out by flutter, we still need to broadcast the logout status.
     if (!signedIn) {
       authSync.onSignOut();
