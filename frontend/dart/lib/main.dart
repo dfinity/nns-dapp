@@ -51,6 +51,7 @@ class NnsDapp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    precacheImage(AssetImage("assets/nns_background.jpeg"), context);
     return HiveBoxesWidget(
       boxes: hiveBoxes,
       child: ICApiManager(
