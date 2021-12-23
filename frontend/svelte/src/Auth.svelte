@@ -9,7 +9,7 @@
 
   // Signs in, out, round and all about.
   let authClient;
-  let identityProvider = process.env.INTERNET_IDENTITY_URL;
+  let identityProvider = process.env.IDENTITY_SERVICE_URL;
 
   // Check for any change in authentication status and act upon it.
   const checkAuth = async () => {
