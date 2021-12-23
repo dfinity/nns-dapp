@@ -27,11 +27,11 @@ class AuthWidget extends StatelessWidget {
                       Text(
                         'INTERNET COMPUTER',
                         style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 16 : 20,
+                          fontSize: Responsive.isMobile(context) ? 14 : 20,
                           fontFamily: Fonts.circularBold,
                           color: AppColors.gray400,
                           fontWeight: FontWeight.w600,
-                          letterSpacing: 10,
+                          letterSpacing: 8,
                         ),
                       ),
                       SizedBox(height: 20),
@@ -41,17 +41,17 @@ class AuthWidget extends StatelessWidget {
                           Text(
                             'NETWORK',
                             style: TextStyle(
-                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontSize: Responsive.isMobile(context) ? 12 : 18,
                               fontFamily: Fonts.circularBold,
                               color: AppColors.blue350,
                               fontWeight: FontWeight.w700,
-                              letterSpacing: 8,
+                              letterSpacing: 5,
                             ),
                           ),
                           Text(
                             ' .  ',
                             style: TextStyle(
-                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontSize: Responsive.isMobile(context) ? 12 : 18,
                               fontFamily: Fonts.circularBold,
                               color: AppColors.gray400,
                             ),
@@ -59,18 +59,18 @@ class AuthWidget extends StatelessWidget {
                           Text(
                             'NERVOUS',
                             style: TextStyle(
-                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontSize: Responsive.isMobile(context) ? 12 : 18,
                               fontFamily: Fonts.circularBold,
                               color: AppColors.pink,
                               fontWeight: FontWeight.w600,
-                              letterSpacing: 8,
+                              letterSpacing: 5,
                               wordSpacing: 0,
                             ),
                           ),
                           Text(
                             ' .  ',
                             style: TextStyle(
-                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontSize: Responsive.isMobile(context) ? 12 : 18,
                               fontFamily: Fonts.circularBold,
                               color: AppColors.gray400,
                             ),
@@ -78,11 +78,11 @@ class AuthWidget extends StatelessWidget {
                           Text(
                             'SYSTEM',
                             style: TextStyle(
-                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontSize: Responsive.isMobile(context) ? 12 : 18,
                               fontFamily: Fonts.circularBold,
                               color: AppColors.green400,
                               fontWeight: FontWeight.w700,
-                              letterSpacing: 8,
+                              letterSpacing: 5,
                             ),
                           ),
                         ],
@@ -104,7 +104,7 @@ class AuthWidget extends StatelessWidget {
                           Text(
                             'ICP',
                             style: TextStyle(
-                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontSize: Responsive.isMobile(context) ? 12 : 18,
                               fontFamily: Fonts.circularMedium,
                               color: AppColors.green400,
                               fontWeight: FontWeight.w400,
@@ -114,7 +114,7 @@ class AuthWidget extends StatelessWidget {
                           Text(
                             ' and ',
                             style: TextStyle(
-                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontSize: Responsive.isMobile(context) ? 12 : 18,
                               fontFamily: Fonts.circularMedium,
                               color: AppColors.gray400,
                               fontWeight: FontWeight.w400,
@@ -124,7 +124,7 @@ class AuthWidget extends StatelessWidget {
                           Text(
                             'governance',
                             style: TextStyle(
-                              fontSize: Responsive.isMobile(context) ? 14 : 18,
+                              fontSize: Responsive.isMobile(context) ? 12 : 18,
                               fontFamily: Fonts.circularMedium,
                               color: AppColors.blue350,
                               fontWeight: FontWeight.w400,
