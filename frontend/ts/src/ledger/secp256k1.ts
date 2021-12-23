@@ -51,13 +51,16 @@ export class Secp256k1PublicKey implements PublicKey {
       );
     }
 
-    ArrayBuffer
+    ArrayBuffer;
 
     const rawKey = key.slice(Secp256k1PublicKey.DER_PREFIX.length);
 
     const areEqual = (first: Uint8Array, second: Uint8Array) =>
-      first.length === second.length && first.every((value, index) => value === second[index])
-    if (!areEqual(new Uint8Array(this.derEncode(rawKey)), new Uint8Array(key))) {
+      first.length === second.length &&
+      first.every((value, index) => value === second[index]);
+    if (
+      !areEqual(new Uint8Array(this.derEncode(rawKey)), new Uint8Array(key))
+    ) {
       throw new TypeError(
         "secp256k1 DER-encoded public key is invalid. A valid secp256k1 DER-encoded public key " +
           `must have the following prefix: ${Secp256k1PublicKey.DER_PREFIX}`
