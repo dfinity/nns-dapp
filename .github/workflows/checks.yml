@@ -59,6 +59,13 @@ jobs:
           # the pushing fail
           pull_strategy: "NO-PULL"
 
+  clippy:
+    needs: formatting
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Noop
+        run: echo clippy is run by the formatting step
+
 
   cargo-tests:
     needs: formatting
