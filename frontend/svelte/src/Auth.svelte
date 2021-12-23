@@ -45,9 +45,6 @@
 
   // Gets a local copy of user data.
   const onSignIn = async () => {
-    if (process.env.REDIRECT_TO_LEGACY) {
-      window.location.replace(`/${window.location.hash}`);
-    }
     const identity = authClient.getIdentity();
     principal = identity.getPrincipal().toString();
     signedIn = true;
@@ -65,13 +62,7 @@
   };
 
   // Sets login status on first load.
-  onMount(() => {
-    checkAuth();
-    // If logged out by flutter, we still need to broadcast the logout status.
-    if (!signedIn) {
-      authSync.onSignOut();
-    }
-  });
+  onMount(checkAuth);
 </script>
 
 <div class="auth-expandable">
@@ -92,6 +83,12 @@
       <button on:click={signIn} class="auth-button">LOGIN</button>
     </div>
   {/if}
+
+  <div class="auth-section">
+    {#if signedIn}
+      <button on:click={signOut} class="auth-button">Logout</button>
+    {/if}
+  </div>
 </div>
 
 <style>
