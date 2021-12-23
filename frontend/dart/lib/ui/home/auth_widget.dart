@@ -1,101 +1,159 @@
 import 'package:nns_dapp/ui/_components/custom_auto_size.dart';
+import 'package:nns_dapp/ui/_components/responsive.dart';
 
 import '../../nns_dapp.dart';
 
 class AuthWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints.expand(),
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('assets/nns_background.jpeg'), fit: BoxFit.cover),
-      ),
-      child: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 500),
-                child: Column(
-                  children: [
-                    AutoSizeText(
-                      'The Internet Computer',
-                      style: context.textTheme.headline1,
-                      textAlign: TextAlign.center,
+    return Scaffold(
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/nns_background.jpeg'),
+              fit: BoxFit.cover),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 500),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'INTERNET COMPUTER',
+                    style: TextStyle(
+                      fontSize: Responsive.isMobile(context) ? 16 : 20,
+                      fontFamily: Fonts.circularBold,
+                      color: AppColors.gray400,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 10,
                     ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'NETWORK',
-                          style: context.textTheme.headline2!.copyWith(
-                            color: Color(0x2ca8df),
-                          ),
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'NETWORK',
+                        style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 18,
+                          fontFamily: Fonts.circularBold,
+                          color: AppColors.blue350,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 8,
                         ),
-                        Text(' . '),
-                        Text(
-                          'NERVOUS',
-                          style: context.textTheme.headline2!.copyWith(
-                            color: Color(0xd81c6f),
-                          ),
+                      ),
+                      Text(
+                        ' .  ',
+                        style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 18,
+                          fontFamily: Fonts.circularBold,
+                          color: AppColors.gray400,
                         ),
-                        Text(' . '),
-                        Text(
-                          'SYSTEM',
-                          style: context.textTheme.headline2!.copyWith(
-                            color: Color(0x859d44),
-                          ),
+                      ),
+                      Text(
+                        'NERVOUS',
+                        style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 18,
+                          fontFamily: Fonts.circularBold,
+                          color: AppColors.pink,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 8,
+                          wordSpacing: 0,
                         ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    SvgPicture.asset("assets/ic_colour_logo.svg"),
-                    Expanded(child: Container()),
-                    Row(
-                      children: [
-                        Text(
-                          'ICP',
-                          style: TextStyle(
-                            color: Color(0x859d44),
-                          ),
+                      ),
+                      Text(
+                        ' .  ',
+                        style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 18,
+                          fontFamily: Fonts.circularBold,
+                          color: AppColors.gray400,
                         ),
-                        Text(
-                          'and',
+                      ),
+                      Text(
+                        'SYSTEM',
+                        style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 18,
+                          fontFamily: Fonts.circularBold,
+                          color: AppColors.green400,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 8,
                         ),
-                        Text(
-                          'governance',
-                          style: TextStyle(
-                            color: Color(0x2ca8df),
-                          ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  SvgPicture.asset("assets/ic_colour_logo.svg"),
+                  Expanded(child: Container()),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'ICP',
+                        style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 18,
+                          fontFamily: Fonts.circularMedium,
+                          color: AppColors.green400,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 5,
                         ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    ElevatedButton(
+                      ),
+                      Text(
+                        ' and ',
+                        style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 18,
+                          fontFamily: Fonts.circularMedium,
+                          color: AppColors.gray400,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 5,
+                        ),
+                      ),
+                      Text(
+                        'governance',
+                        style: TextStyle(
+                          fontSize: Responsive.isMobile(context) ? 14 : 18,
+                          fontFamily: Fonts.circularMedium,
+                          color: AppColors.blue350,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Text(
                             "LOGIN",
-                            style: context.textTheme.headline3,
+                            style: TextStyle(
+                              fontSize: Responsive.isMobile(context) ? 16 : 20,
+                              fontFamily: Fonts.circularBold,
+                              color: AppColors.gray400,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 8,
+                            ),
                           ),
                         ),
                         style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(AppColors.blue800)),
+                            backgroundColor: MaterialStateProperty.all(
+                          AppColors.blue950,
+                        )),
                         onPressed: () {
                           context.icApi.authenticate(() {
                             context.nav.push(accountsTabPage);
                           });
                         }),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
