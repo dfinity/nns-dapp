@@ -144,7 +144,7 @@ class AuthWidget extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize:
                                       Responsive.isMobile(context) ? 16 : 20,
-                                  fontFamily: Fonts.circularBold,
+                                  fontFamily: Fonts.circularMedium,
                                   color: AppColors.gray400,
                                   fontWeight: FontWeight.w400,
                                   letterSpacing: 8,
