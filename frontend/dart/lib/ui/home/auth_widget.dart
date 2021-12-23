@@ -32,7 +32,7 @@ class AuthWidget extends StatelessWidget {
                           fontFamily: Fonts.circularBold,
                           color: AppColors.gray400,
                           fontWeight: FontWeight.w600,
-                          letterSpacing: 8,
+                          letterSpacing: 6,
                         ),
                       ),
                       SizedBox(height: 20),
