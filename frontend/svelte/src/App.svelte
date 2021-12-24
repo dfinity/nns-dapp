@@ -8,12 +8,6 @@
 
 <main>
   <Auth bind:signedIn bind:principal />
-  {#if signedIn}
-    <!-- This must match the loading placeholder of the flutter app exactly, to make the transition seamless. -->
-    <div class="initial-load">
-      <span>Getting the NNS dapp ready for you…</span>
-    </div>
-  {/if}
 </main>
 
 <svelte:head>
@@ -51,26 +45,13 @@
   main {
     width: 100vw;
     height: 100vh;
-    background-color: #333;
-    color: #eee;
-    overflow: hidden;
+    background: linear-gradient(var(--background-grey) 80%, black);
+    font-family: var(--font-family);
   }
 
   @media (min-width: 640px) {
     main {
       max-width: none;
     }
-  }
-  .initial-load {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial;
-    font-size: 14px;
   }
 </style>

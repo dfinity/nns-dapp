@@ -83,15 +83,6 @@ export default {
             ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
             : "https://identity.ic0.app/")
       ),
-      // When developing with live reload in svelte, redirecting to flutter is
-      // not desirable, so when there is no deployment target we don't do it.
-      "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-        process.env.REDIRECT_TO_LEGACY !== undefined
-          ? true
-          : process.env.DEPLOY_ENV === undefined
-          ? false
-          : true
-      ),
     }),
 
     // In dev mode, call `npm run start` once
