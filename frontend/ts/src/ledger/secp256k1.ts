@@ -1,4 +1,4 @@
-import { DerEncodedPublicKey, PublicKey } from '@dfinity/agent';
+import { DerEncodedPublicKey, PublicKey } from "@dfinity/agent";
 
 function equals(b1: ArrayBuffer, b2: ArrayBuffer): boolean {
   if (b1.byteLength !== b2.byteLength) {
@@ -44,7 +44,7 @@ export class Secp256k1PublicKey implements PublicKey {
     if (publicKey.byteLength !== Secp256k1PublicKey.RAW_KEY_LENGTH) {
       const bl = publicKey.byteLength;
       throw new TypeError(
-        `secp256k1 public key must be ${Secp256k1PublicKey.RAW_KEY_LENGTH} bytes long (is ${bl})`,
+        `secp256k1 public key must be ${Secp256k1PublicKey.RAW_KEY_LENGTH} bytes long (is ${bl})`
       );
     }
 
@@ -57,19 +57,20 @@ export class Secp256k1PublicKey implements PublicKey {
   }
 
   private static derDecode(key: DerEncodedPublicKey): ArrayBuffer {
-    const expectedLength = Secp256k1PublicKey.DER_PREFIX.length + Secp256k1PublicKey.RAW_KEY_LENGTH;
+    const expectedLength =
+      Secp256k1PublicKey.DER_PREFIX.length + Secp256k1PublicKey.RAW_KEY_LENGTH;
     if (key.byteLength !== expectedLength) {
       const bl = key.byteLength;
       throw new TypeError(
-        `secp256k1 DER-encoded public key must be ${expectedLength} bytes long (is ${bl})`,
+        `secp256k1 DER-encoded public key must be ${expectedLength} bytes long (is ${bl})`
       );
     }
 
     const rawKey = key.slice(0, Secp256k1PublicKey.DER_PREFIX.length);
     if (!equals(this.derEncode(rawKey), key)) {
       throw new TypeError(
-        'secp256k1 DER-encoded public key is invalid. A valid secp256k1 DER-encoded public key ' +
-          `must have the following prefix: ${Secp256k1PublicKey.DER_PREFIX}`,
+        "secp256k1 DER-encoded public key is invalid. A valid secp256k1 DER-encoded public key " +
+          `must have the following prefix: ${Secp256k1PublicKey.DER_PREFIX}`
       );
     }
 
