@@ -79,15 +79,26 @@
   {#if !signedIn && authClient}
     <div class="auth-overlay">
       <div />
-      <h1>the INTERNET COMPUTER</h1>
-      <h2>NETWORK NERVOUS SYSTEM</h2>
+      <h1>INTERNET COMPUTER</h1>
+      <h2>
+        <span class="blue">NETWORK</span> . <span class="pink">NERVOUS</span> .
+        <span class="green">SYSTEM</span>
+      </h2>
       <div class="dfinity">
         <img src="/assets/assets/ic_colour_logo.svg" />
       </div>
-      <div class="tagline">manage ICP and <span>governance</span> voting</div>
+      <div class="tagline">
+        <span class="yellow">ICP</span> and <span class="blue">governance</span>
+      </div>
       <button on:click={signIn} class="auth-button">LOGIN</button>
     </div>
   {/if}
+
+  <div class="auth-section">
+    {#if signedIn}
+      <button on:click={signOut} class="auth-button">Logout</button>
+    {/if}
+  </div>
 </div>
 
 <style>
@@ -129,7 +140,7 @@
     background-size: cover;
     background-position: center;
     display: grid;
-    grid-template-rows: 75px 40px 40px auto 40px 140px auto;
+    grid-template-rows: 75px 30px 40px auto 40px 140px auto;
   }
   @media (max-width: 1600px) {
     .auth-overlay {
@@ -142,35 +153,26 @@
     letter-spacing: 1ex;
   }
   .auth-overlay h2 {
-    background-image: linear-gradient(
-      to right,
-      #f9a739,
-      #ee3e4b,
-      #502d89,
-      #2b8ae0
-    );
     font-size: var(--font-size-normal);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
+    color: #777;
     letter-spacing: 0.5ex;
   }
   .auth-overlay .tagline {
-    background-image: linear-gradient(
-      to right,
-      #a19996,
-      #75715a,
-      #a19996,
-      #a19996
-    );
     font-size: var(--font-size-normal);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
     letter-spacing: 0.5ex;
+    color: #a19996;
   }
-  .auth-overlay .tagline span {
-    color: #326bbf;
+  .auth-overlay span.blue {
+    color: #2ca8df;
+  }
+  .auth-overlay span.pink {
+    color: #d81c6f;
+  }
+  .auth-overlay span.green {
+    color: #859d44;
+  }
+  .auth-overlay span.yellow {
+    color: #b2b081;
   }
 
   .auth-overlay > * {
@@ -182,20 +184,20 @@
   .auth-overlay button {
     padding-left: 10px;
     padding-right: 10px;
-    width: 160px;
-    height: 100px;
-    line-height: 80px;
+    width: 140px;
+    height: 55px;
+    line-height: 55px;
     display: block;
     margin-left: auto;
     margin-right: auto;
     background-color: #141f33;
     border: var(--widget-border);
     border-radius: var(--widget-border-radius-small);
-    font-size: 30px;
+    font-size: 20px;
     color: #aeb7b7;
     letter-spacing: 0.5ex;
   }
   .dfinity img {
-    width: 8em;
+    width: 5em;
   }
 </style>
