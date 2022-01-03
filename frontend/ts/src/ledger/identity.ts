@@ -19,7 +19,9 @@ import TransportNodeHidNoEvents from "@ledgerhq/hw-transport-node-hid-noevents";
  * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
  * @param request - body of the HttpAgentRequest
  */
-function _prepareCborForLedger(request: ReadRequest | CallRequest): ArrayBuffer {
+function _prepareCborForLedger(
+  request: ReadRequest | CallRequest
+): ArrayBuffer {
   return Cbor.encode({ content: request });
 }
 
@@ -118,7 +120,8 @@ export class LedgerIdentity extends SignIdentity {
     );
 
     if (
-      principal !== Principal.selfAuthenticating(new Uint8Array(publicKey.toDer())).toText()
+      principal !==
+      Principal.selfAuthenticating(new Uint8Array(publicKey.toDer())).toText()
     ) {
       throw new Error(
         "Principal returned by device does not match public key."
