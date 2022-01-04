@@ -16,8 +16,6 @@ export const initAuthStore = () => {
         init: async () => {
             const authClient: AuthClient = await AuthClient.create();
 
-            console.log('here', authClient, await authClient.isAuthenticated())
-
             set({
                 signedIn: await authClient.isAuthenticated()
             });
