@@ -5,13 +5,8 @@
   import NeuronsPage from "./NeuronsPage.svelte";
   import VotingPage from "./VotingPage.svelte";
   import CanistersPage from "./CanistersPage.svelte";
-  import {authStore} from "./lib/stores/auth.store";
   import PrivateRoute from "./lib/components/PrivateRoute.svelte";
   import Guard from "./lib/components/Guard.svelte";
-
-  // Identity, shared with all tabs:
-  let signedIn;
-  let principal;
 </script>
 
 <Guard>
@@ -21,19 +16,13 @@
       <span>Getting the NNS dapp ready for you…</span>
     </div>
   {:else}
-    <PrivateRoute path="icp" component={ContentPage} />
-    <PrivateRoute path="neurons" component={NeuronsPage} />
-    <PrivateRoute path="voting" component={VotingPage} />
-    <PrivateRoute path="canisters" component={CanistersPage} />
+    <Route path="/" component={Auth} />
+    <PrivateRoute path="/icp" component={ContentPage} />
+    <PrivateRoute path="/neurons" component={NeuronsPage} />
+    <PrivateRoute path="/voting" component={VotingPage} />
+    <PrivateRoute path="/canisters" component={CanistersPage} />
   {/if}
 </Guard>
-
-<main>
-  <Auth bind:signedIn bind:principal />
-  {#if signedIn}
-
-  {/if}
-</main>
 
 <svelte:head>
   {#if !process.env.ROLLUP_WATCH}
