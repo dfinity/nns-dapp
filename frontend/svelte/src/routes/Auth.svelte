@@ -23,7 +23,7 @@
     }
 
     // Redirect to accounts, user has signed in
-    window.location.replace(`/#/icp`);
+    window.location.replace(`/#/accounts`);
   });
 
   onDestroy(unsubscribe);
