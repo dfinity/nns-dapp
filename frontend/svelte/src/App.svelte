@@ -2,7 +2,7 @@
   import Route from "./lib/components/Route.svelte";
   import PrivateRoute from "./lib/components/PrivateRoute.svelte";
   import Guard from "./lib/components/Guard.svelte";
-  import Content from "./routes/Content.svelte";
+  import Icp from "./routes/Icp.svelte";
   import Neurons from "./routes/Neurons.svelte";
   import Voting from "./routes/Voting.svelte";
   import Canisters from "./routes/Canisters.svelte";
@@ -17,7 +17,7 @@
     </div>
   {:else}
     <Route path="/" component={Auth} />
-    <PrivateRoute path="/#/icp" component={Content} />
+    <PrivateRoute path="/#/icp" component={Icp} />
     <PrivateRoute path="/#/neurons" component={Neurons} />
     <PrivateRoute path="/#/voting" component={Voting} />
     <PrivateRoute path="/#/canisters" component={Canisters} />

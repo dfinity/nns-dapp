@@ -1,14 +1,9 @@
-<script context="module">
-  export const NAME = "NEURONS";
-</script>
 <script lang="ts">
+    import Layout from "../lib/components/Layout.svelte";
 </script>
 
-
-<div>Neurons page</div>
-
-<style>
-  :root {
-    background-color: green;
-  }
-</style>
+<Layout>
+    <section>
+        <h1>Neurons page</h1>
+    </section>
+</Layout>

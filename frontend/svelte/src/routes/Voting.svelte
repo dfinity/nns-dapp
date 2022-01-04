@@ -1,14 +1,9 @@
-<script context="module">
-  export const NAME = "VOTING";
-</script>
 <script lang="ts">
+    import Layout from "../lib/components/Layout.svelte";
 </script>
 
-
-<div>Voting page</div>
-
-<style>
-  :root {
-    background-color: blue;
-  }
-</style>
+<Layout>
+    <section>
+        <h1>Voting page</h1>
+    </section>
+</Layout>

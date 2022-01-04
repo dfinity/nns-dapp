@@ -4,6 +4,6 @@
 
 <Layout>
     <section>
-        <h1>Canisters page</h1>
+        <h1>ICP page</h1>
     </section>
 </Layout>

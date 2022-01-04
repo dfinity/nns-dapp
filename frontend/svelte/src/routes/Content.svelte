@@ -1,35 +1,4 @@
-<script lang="ts">
-  import AccountsPage, { NAME as accountsPageName } from "./AccountsPage.svelte";
-  import CanistersPage, { NAME as canistersPageName } from "./CanistersPage.svelte";
-  import NeuronsPage, { NAME as neuronsPageName } from "./NeuronsPage.svelte";
-  import VotingPage, { NAME as votingPageName } from "./VotingPage.svelte";
 
-  // Navigation
-  /* The current deep link path */
-  let deepLink = [];
-  /* Set the window hash from the deep link path  */
-  let setLocationHash = () => window.location.hash = `#/${deepLink.join("/")}`;
-  /* Get the deep link path from the location hash */
-  let getLocationHash = () => deepLink = window.location.hash.slice(2).split("/").filter(x => x!=="");
-  /* Navigate to a path */
-  let go = (path: Array<String>) => {
-    console.log({path});
-    if (path.length === 0) {
-      path = [accountsPageName];
-    }
-    deepLink = path;
-    setLocationHash();
-
-    if ((deepLink[0] !== accountsPageName)) {
-      let newLocation = `/`;
-      if (window.location.path === newLocation) {
-        console.warn("Refusing to redirect to self");
-      } else {
-        window.location.assign(`${newLocation}${window.location.hash}`);
-      }
-    }
-  }
-</script>
 
 <div class="content-page">
       <div class="header-bar">
@@ -38,16 +7,15 @@
       </div>
       <div class="nav-bar">
         <div class="background" />
+        <!--
+
         <button on:click={() => go([accountsPageName])}>{accountsPageName}</button>
         <button on:click={() => go([neuronsPageName])}>{neuronsPageName}</button>
         <button on:click={() => go([votingPageName])}>{votingPageName}</button>
         <button on:click={() => go([canistersPageName])}>{canistersPageName}</button>
+        -->
       </div>
-      <div class="content-tabs">
-        {#if deepLink[0] === accountsPageName}
-          <div id="AccountsPage"><AccountsPage /></div>
-        {/if}
-      </div>
+
 </div>
 
 
