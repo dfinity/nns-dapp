@@ -17,10 +17,10 @@
     </div>
   {:else}
     <Route path="/" component={Auth} />
-    <PrivateRoute path="/icp" component={Content} />
-    <PrivateRoute path="/neurons" component={Neurons} />
-    <PrivateRoute path="/voting" component={Voting} />
-    <PrivateRoute path="/canisters" component={Canisters} />
+    <PrivateRoute path="/#/icp" component={Content} />
+    <PrivateRoute path="/#/neurons" component={Neurons} />
+    <PrivateRoute path="/#/voting" component={Voting} />
+    <PrivateRoute path="/#/canisters" component={Canisters} />
   {/if}
 </Guard>
 
