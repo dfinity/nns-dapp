@@ -21,8 +21,6 @@
     }
 
     const unsubscribe: Unsubscriber = authStore.subscribe(({signedIn: loggedIn}: AuthStore) => {
-        unsubscribe;
-
         signedIn = loggedIn === true;
 
         redirectLogin();
