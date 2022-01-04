@@ -8,3 +8,9 @@
 <Nav></Nav>
 
 <slot/>
+
+<style lang="scss" global>
+  @import "../themes/fonts.scss";
+  @import "../themes/variables.scss";
+  @import "../themes/theme.scss";
+</style>
