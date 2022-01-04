@@ -7,7 +7,7 @@
         {path: '/#/accounts', label: 'ICP'},
         {path: '/#/neurons', label: 'NEURONS'},
         {path: '/#/voting', label: 'VOTING'},
-        {path: '/#/canisters', label: '</a>'}
+        {path: '/#/canisters', label: 'Canisters'}
     ];
 </script>
 
