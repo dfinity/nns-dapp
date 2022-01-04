@@ -1,13 +1,18 @@
 import {writable} from 'svelte/store';
 import {AuthClient} from '@dfinity/auth-client';
+import type {Principal} from '@dfinity/principal';
 
 export interface AuthStore {
     signedIn: boolean | undefined;
+    principal: Principal | undefined;
 }
 
+const identityProvider: string = process.env.INTERNET_IDENTITY_URL;
+
 export const initAuthStore = () => {
-    const { subscribe, set } = writable<AuthStore>({
-        signedIn: undefined
+    const { subscribe, set, update } = writable<AuthStore>({
+        signedIn: undefined,
+        principal: undefined
     });
 
     return {
@@ -17,9 +22,27 @@ export const initAuthStore = () => {
             const authClient: AuthClient = await AuthClient.create();
 
             set({
-                signedIn: await authClient.isAuthenticated()
+                signedIn: await authClient.isAuthenticated(),
+                principal: authClient.getIdentity().getPrincipal()
             });
-        }
+        },
+
+        signIn: () => new Promise<void>(async (resolve, reject) => {
+            const authClient: AuthClient = await AuthClient.create();
+
+            await authClient.login({
+                identityProvider,
+                onSuccess: () => {
+                    update((state: AuthStore) => ({...state,
+                        signedIn: true,
+                        principal: authClient.getIdentity().getPrincipal()
+                    }));
+
+                    resolve();
+                },
+                onError: reject,
+            });
+        })
     }
 }
 

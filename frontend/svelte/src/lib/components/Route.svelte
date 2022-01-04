@@ -6,8 +6,6 @@
     export let component: SvelteComponent;
 
     let currentPath: string = routePath();
-
-    console.log(currentPath)
 </script>
 
 <svelte:window on:hashchange={() => currentPath = routePath()}/>
