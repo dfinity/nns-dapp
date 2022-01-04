@@ -6,7 +6,7 @@
     "import-assets": "rm -fr public/assets/assets && mkdir -p public/assets && cp -R ../dart/assets public/assets",
     "build": "rm -fr public/assets/assets && rollup -c",
     "dev": "npm run import-assets && rollup -c -w",
-    "start": "sirv public --no-clear",
+    "start": "sirv public",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "format": "prettier --write --plugin-search-dir=. ."
   },
@@ -25,6 +25,7 @@
     "rollup-plugin-livereload": "^2.0.0",
     "rollup-plugin-svelte": "^7.0.0",
     "rollup-plugin-terser": "^7.0.0",
+    "sirv-cli": "^2.0.1",
     "svelte": "^3.0.0",
     "svelte-check": "^2.0.0",
     "svelte-preprocess": "^4.0.0",
@@ -38,7 +39,6 @@
     "@dfinity/candid": "^0.10.2",
     "@dfinity/identity": "^0.10.2",
     "@dfinity/nns": "file:./nns-js",
-    "@dfinity/principal": "^0.10.2",
-    "sirv-cli": "^1.0.0"
+    "@dfinity/principal": "^0.10.2"
   }
 }
