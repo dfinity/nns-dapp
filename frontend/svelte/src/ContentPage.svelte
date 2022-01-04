@@ -20,16 +20,16 @@
     }
     deepLink = path;
     setLocationHash();
+    console.log('heer', deepLink, accountsPageName, deepLink[0] !== accountsPageName)
 
-    // Cross link to flutter
-    if (process.env.REDIRECT_TO_LEGACY && (deepLink[0] !== accountsPageName)) {
+    if ((deepLink[0] !== accountsPageName)) {
       let newLocation = `/`;
       if (window.location.path === newLocation) {
         console.warn("Refusing to redirect to self");
       } else {
         window.location.assign(`${newLocation}${window.location.hash}`);
       }
-    }    
+    }
   }
 
   onMount(() => {

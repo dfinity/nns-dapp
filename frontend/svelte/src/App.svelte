@@ -1,6 +1,10 @@
 <script lang="ts">
   import Auth from "./Auth.svelte";
   import ContentPage from "./ContentPage.svelte";
+  import Route from "./lib/components/Route.svelte";
+  import NeuronsPage from "./NeuronsPage.svelte";
+  import VotingPage from "./VotingPage.svelte";
+  import CanistersPage from "./CanistersPage.svelte";
 
   // Identity, shared with all tabs:
   let signedIn;
@@ -16,7 +20,10 @@
         <span>Getting the NNS dapp ready for you…</span>
       </div>
     {:else}
-      <ContentPage />
+      <Route path="icp" component={ContentPage} />
+      <Route path="neurons" component={NeuronsPage} />
+      <Route path="voting" component={VotingPage} />
+      <Route path="canisters" component={CanistersPage} />
     {/if}
   {/if}
 </main>
