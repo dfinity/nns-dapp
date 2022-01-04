@@ -22,8 +22,10 @@
       return;
     }
 
-    // Redirect to accounts, user has signed in
-    window.location.replace(`/#/accounts`);
+    // Redirect to previous url or default accounts page, user has signed in
+    const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
+    const redirectPath: string = `/#/${urlParams.get('redirect') || 'accounts'}`;
+    window.location.replace(redirectPath);
   });
 
   onDestroy(unsubscribe);
