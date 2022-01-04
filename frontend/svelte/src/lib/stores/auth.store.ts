@@ -42,7 +42,18 @@ export const initAuthStore = () => {
                 },
                 onError: reject,
             });
-        })
+        }),
+
+        signOut: async () => {
+            const authClient: AuthClient = await AuthClient.create();
+
+            await authClient.logout();
+
+            update((state: AuthStore) => ({...state,
+                signedIn: false,
+                principal: undefined
+            }));
+        }
     }
 }
 

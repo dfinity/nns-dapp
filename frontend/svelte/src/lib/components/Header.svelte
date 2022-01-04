@@ -1,6 +1,11 @@
+<script>
+    import Logout from "./Logout.svelte";
+</script>
+
 <header>
     <img loading="lazy" role="presentation" alt="" src="/assets/assets/gradient.jpg" />
     <h3>NETWORK NERVOUS SYSTEM</h3>
+    <Logout></Logout>
 </header>
 
 <style lang="scss">
