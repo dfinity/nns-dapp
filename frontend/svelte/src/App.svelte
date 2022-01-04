@@ -1,12 +1,12 @@
 <script lang="ts">
-  import ContentPage from "./ContentPage.svelte";
+  import ContentPage from "./routes/ContentPage.svelte";
   import Route from "./lib/components/Route.svelte";
-  import NeuronsPage from "./NeuronsPage.svelte";
-  import VotingPage from "./VotingPage.svelte";
-  import CanistersPage from "./CanistersPage.svelte";
+  import NeuronsPage from "./routes/NeuronsPage.svelte";
+  import VotingPage from "./routes/VotingPage.svelte";
+  import CanistersPage from "./routes/CanistersPage.svelte";
   import PrivateRoute from "./lib/components/PrivateRoute.svelte";
   import Guard from "./lib/components/Guard.svelte";
-  import AuthPage from "./AuthPage.svelte";
+  import AuthPage from "./routes/AuthPage.svelte";
 </script>
 
 <Guard>
