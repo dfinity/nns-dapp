@@ -40,7 +40,6 @@
     --widget-border: 25px;
     --widget-border-radius: 25px;
     --widget-border-radius-small: 10px;
-    --widget-grey: #282a2d;
     --text-grey: #aeb7b7;
     --background-grey: #383c3c;
     --button-blue: #005fb7;
