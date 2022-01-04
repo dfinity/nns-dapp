@@ -5,26 +5,33 @@
   import NeuronsPage from "./NeuronsPage.svelte";
   import VotingPage from "./VotingPage.svelte";
   import CanistersPage from "./CanistersPage.svelte";
+  import {authStore} from "./lib/stores/auth.store";
+  import PrivateRoute from "./lib/components/PrivateRoute.svelte";
+  import Guard from "./lib/components/Guard.svelte";
 
   // Identity, shared with all tabs:
   let signedIn;
   let principal;
 </script>
 
+<Guard>
+  {#if process.env.REDIRECT_TO_LEGACY}
+    <!-- This must match the loading placeholder of the flutter app exactly, to make the transition seamless. -->
+    <div class="initial-load">
+      <span>Getting the NNS dapp ready for you…</span>
+    </div>
+  {:else}
+    <PrivateRoute path="icp" component={ContentPage} />
+    <PrivateRoute path="neurons" component={NeuronsPage} />
+    <PrivateRoute path="voting" component={VotingPage} />
+    <PrivateRoute path="canisters" component={CanistersPage} />
+  {/if}
+</Guard>
+
 <main>
   <Auth bind:signedIn bind:principal />
   {#if signedIn}
-    {#if process.env.REDIRECT_TO_LEGACY}
-      <!-- This must match the loading placeholder of the flutter app exactly, to make the transition seamless. -->
-      <div class="initial-load">
-        <span>Getting the NNS dapp ready for you…</span>
-      </div>
-    {:else}
-      <Route path="icp" component={ContentPage} />
-      <Route path="neurons" component={NeuronsPage} />
-      <Route path="voting" component={VotingPage} />
-      <Route path="canisters" component={CanistersPage} />
-    {/if}
+
   {/if}
 </main>
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import AccountsPage, { NAME as accountsPageName } from "./AccountsPage.svelte";
   import CanistersPage, { NAME as canistersPageName } from "./CanistersPage.svelte";
   import NeuronsPage, { NAME as neuronsPageName } from "./NeuronsPage.svelte";
@@ -20,7 +19,6 @@
     }
     deepLink = path;
     setLocationHash();
-    console.log('heer', deepLink, accountsPageName, deepLink[0] !== accountsPageName)
 
     if ((deepLink[0] !== accountsPageName)) {
       let newLocation = `/`;
@@ -31,11 +29,6 @@
       }
     }
   }
-
-  onMount(() => {
-    getLocationHash();
-    go(deepLink);
-  });
 </script>
 
 <div class="content-page">
