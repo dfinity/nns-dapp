@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Auth from "./Auth.svelte";
   import ContentPage from "./ContentPage.svelte";
   import Route from "./lib/components/Route.svelte";
   import NeuronsPage from "./NeuronsPage.svelte";
@@ -7,6 +6,7 @@
   import CanistersPage from "./CanistersPage.svelte";
   import PrivateRoute from "./lib/components/PrivateRoute.svelte";
   import Guard from "./lib/components/Guard.svelte";
+  import AuthPage from "./AuthPage.svelte";
 </script>
 
 <Guard>
@@ -16,7 +16,7 @@
       <span>Getting the NNS dapp ready for you…</span>
     </div>
   {:else}
-    <Route path="/" component={Auth} />
+    <Route path="/" component={AuthPage} />
     <PrivateRoute path="/icp" component={ContentPage} />
     <PrivateRoute path="/neurons" component={NeuronsPage} />
     <PrivateRoute path="/voting" component={VotingPage} />
