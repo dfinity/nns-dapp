@@ -2,7 +2,7 @@
   import Route from "./lib/components/Route.svelte";
   import PrivateRoute from "./lib/components/PrivateRoute.svelte";
   import Guard from "./lib/components/Guard.svelte";
-  import Icp from "./routes/Icp.svelte";
+  import Accounts from "./routes/Accounts.svelte";
   import Neurons from "./routes/Neurons.svelte";
   import Voting from "./routes/Voting.svelte";
   import Canisters from "./routes/Canisters.svelte";
@@ -10,18 +10,11 @@
 </script>
 
 <Guard>
-  {#if process.env.REDIRECT_TO_LEGACY}
-    <!-- This must match the loading placeholder of the flutter app exactly, to make the transition seamless. -->
-    <div class="initial-load">
-      <span>Getting the NNS dapp ready for you…</span>
-    </div>
-  {:else}
-    <Route path="/" component={Auth} />
-    <PrivateRoute path="/#/icp" component={Icp} />
-    <PrivateRoute path="/#/neurons" component={Neurons} />
-    <PrivateRoute path="/#/voting" component={Voting} />
-    <PrivateRoute path="/#/canisters" component={Canisters} />
-  {/if}
+  <Route path="/" component={Auth} />
+  <PrivateRoute path="/#/accounts" component={Accounts} />
+  <PrivateRoute path="/#/neurons" component={Neurons} />
+  <PrivateRoute path="/#/voting" component={Voting} />
+  <PrivateRoute path="/#/canisters" component={Canisters} />
 </Guard>
 
 <svelte:head>

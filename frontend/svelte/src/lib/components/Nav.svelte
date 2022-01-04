@@ -4,7 +4,7 @@
     let currentPath: string = routePath();
 
     const routes: {path: string, label: string}[] = [
-        {path: '/#/icp', label: 'ICP'},
+        {path: '/#/accounts', label: 'ICP'},
         {path: '/#/neurons', label: 'NEURONS'},
         {path: '/#/voting', label: 'VOTING'},
         {path: '/#/canisters', label: '</a>'}
