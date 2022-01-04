@@ -1,12 +1,12 @@
 <script lang="ts">
-  import ContentPage from "./routes/ContentPage.svelte";
   import Route from "./lib/components/Route.svelte";
-  import NeuronsPage from "./routes/NeuronsPage.svelte";
-  import VotingPage from "./routes/VotingPage.svelte";
-  import CanistersPage from "./routes/CanistersPage.svelte";
   import PrivateRoute from "./lib/components/PrivateRoute.svelte";
   import Guard from "./lib/components/Guard.svelte";
-  import AuthPage from "./routes/AuthPage.svelte";
+  import Content from "./routes/Content.svelte";
+  import Neurons from "./routes/Neurons.svelte";
+  import Voting from "./routes/Voting.svelte";
+  import Canisters from "./routes/Canisters.svelte";
+  import Auth from "./routes/Auth.svelte";
 </script>
 
 <Guard>
@@ -16,11 +16,11 @@
       <span>Getting the NNS dapp ready for you…</span>
     </div>
   {:else}
-    <Route path="/" component={AuthPage} />
-    <PrivateRoute path="/icp" component={ContentPage} />
-    <PrivateRoute path="/neurons" component={NeuronsPage} />
-    <PrivateRoute path="/voting" component={VotingPage} />
-    <PrivateRoute path="/canisters" component={CanistersPage} />
+    <Route path="/" component={Auth} />
+    <PrivateRoute path="/icp" component={Content} />
+    <PrivateRoute path="/neurons" component={Neurons} />
+    <PrivateRoute path="/voting" component={Voting} />
+    <PrivateRoute path="/canisters" component={Canisters} />
   {/if}
 </Guard>
 
