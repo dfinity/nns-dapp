@@ -3,7 +3,7 @@
   import { routePath } from "../utils/route.utils";
 
   export let path: string;
-  export let component: new (...args: any[]) => SvelteComponent;
+  export let component: typeof SvelteComponent;
 
   let currentPath: string = routePath();
 </script>
