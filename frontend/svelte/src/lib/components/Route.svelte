@@ -1,15 +1,15 @@
 <script lang="ts">
-    import {SvelteComponent} from 'svelte';
-    import {routePath} from '../utils/route.utils';
+  import { SvelteComponent } from "svelte";
+  import { routePath } from "../utils/route.utils";
 
-    export let path: string;
-    export let component: SvelteComponent;
+  export let path: string;
+  export let component: SvelteComponent;
 
-    let currentPath: string = routePath();
+  let currentPath: string = routePath();
 </script>
 
-<svelte:window on:hashchange={() => currentPath = routePath()}/>
+<svelte:window on:hashchange={() => (currentPath = routePath())} />
 
 {#if path === currentPath}
-    <svelte:component this={component}/>
+  <svelte:component this={component} />
 {/if}

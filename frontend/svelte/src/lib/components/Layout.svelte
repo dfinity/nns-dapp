@@ -1,7 +1,7 @@
 <script lang="ts">
-    import Logout from "./Logout.svelte";
+  import Logout from "./Logout.svelte";
 </script>
 
-<Logout></Logout>
+<Logout />
 
-<slot/>
+<slot />

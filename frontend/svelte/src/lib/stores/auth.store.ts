@@ -1,60 +1,63 @@
-import {writable} from 'svelte/store';
-import {AuthClient} from '@dfinity/auth-client';
-import type {Principal} from '@dfinity/principal';
+import { writable } from "svelte/store";
+import { AuthClient } from "@dfinity/auth-client";
+import type { Principal } from "@dfinity/principal";
 
 export interface AuthStore {
-    signedIn: boolean | undefined;
-    principal: Principal | undefined;
+  signedIn: boolean | undefined;
+  principal: Principal | undefined;
 }
 
 const identityProvider: string = process.env.INTERNET_IDENTITY_URL;
 
 export const initAuthStore = () => {
-    const { subscribe, set, update } = writable<AuthStore>({
-        signedIn: undefined,
-        principal: undefined
-    });
+  const { subscribe, set, update } = writable<AuthStore>({
+    signedIn: undefined,
+    principal: undefined,
+  });
 
-    return {
-        subscribe,
+  return {
+    subscribe,
 
-        init: async () => {
-            const authClient: AuthClient = await AuthClient.create();
+    init: async () => {
+      const authClient: AuthClient = await AuthClient.create();
 
-            set({
-                signedIn: await authClient.isAuthenticated(),
-                principal: authClient.getIdentity().getPrincipal()
-            });
-        },
+      set({
+        signedIn: await authClient.isAuthenticated(),
+        principal: authClient.getIdentity().getPrincipal(),
+      });
+    },
 
-        signIn: () => new Promise<void>(async (resolve, reject) => {
-            const authClient: AuthClient = await AuthClient.create();
+    signIn: () =>
+      new Promise<void>(async (resolve, reject) => {
+        const authClient: AuthClient = await AuthClient.create();
 
-            await authClient.login({
-                identityProvider,
-                onSuccess: () => {
-                    update((state: AuthStore) => ({...state,
-                        signedIn: true,
-                        principal: authClient.getIdentity().getPrincipal()
-                    }));
-
-                    resolve();
-                },
-                onError: reject,
-            });
-        }),
-
-        signOut: async () => {
-            const authClient: AuthClient = await AuthClient.create();
-
-            await authClient.logout();
-
-            update((state: AuthStore) => ({...state,
-                signedIn: false,
-                principal: undefined
+        await authClient.login({
+          identityProvider,
+          onSuccess: () => {
+            update((state: AuthStore) => ({
+              ...state,
+              signedIn: true,
+              principal: authClient.getIdentity().getPrincipal(),
             }));
-        }
-    }
-}
+
+            resolve();
+          },
+          onError: reject,
+        });
+      }),
+
+    signOut: async () => {
+      const authClient: AuthClient = await AuthClient.create();
+
+      await authClient.logout();
+
+      update((state: AuthStore) => ({
+        ...state,
+        signedIn: false,
+        principal: undefined,
+      }));
+    },
+  };
+};
 
 export const authStore = initAuthStore();

@@ -1,14 +1,14 @@
 <script lang="ts">
-    import {authStore} from "../stores/auth.store";
+  import { authStore } from "../stores/auth.store";
 </script>
 
-<svelte:window on:storage={async () => await authStore.init()}/>
+<svelte:window on:storage={async () => await authStore.init()} />
 
 {#await authStore.init()}
-    <!-- TODO: display a spinner or other animation while loading the auth? -->
+  <!-- TODO: display a spinner or other animation while loading the auth? -->
 {:then value}
-    <!-- promise was fulfilled -->
-    <slot />
+  <!-- promise was fulfilled -->
+  <slot />
 {:catch error}
-    <!-- TODO: do we display the error? {error.message} -->
+  <!-- TODO: do we display the error? {error.message} -->
 {/await}

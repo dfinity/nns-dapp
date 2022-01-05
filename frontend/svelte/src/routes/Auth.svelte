@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {onDestroy} from 'svelte';
-  import type {Unsubscriber} from 'svelte/types/runtime/store';
-  import {AuthStore, authStore} from '../lib/stores/auth.store';
+  import { onDestroy } from "svelte";
+  import type { Unsubscriber } from "svelte/types/runtime/store";
+  import { AuthStore, authStore } from "../lib/stores/auth.store";
 
   let signedIn: boolean = false;
 
@@ -15,18 +15,24 @@
     }
   };
 
-  const unsubscribe: Unsubscriber = authStore.subscribe(async ({signedIn: loggedIn}: AuthStore) => {
-    signedIn = loggedIn === true;
+  const unsubscribe: Unsubscriber = authStore.subscribe(
+    async ({ signedIn: loggedIn }: AuthStore) => {
+      signedIn = loggedIn === true;
 
-    if (!signedIn) {
-      return;
+      if (!signedIn) {
+        return;
+      }
+
+      // Redirect to previous url or default accounts page, user has signed in
+      const urlParams: URLSearchParams = new URLSearchParams(
+        window.location.search
+      );
+      const redirectPath: string = `/#/${
+        urlParams.get("redirect") || "accounts"
+      }`;
+      window.location.replace(redirectPath);
     }
-
-    // Redirect to previous url or default accounts page, user has signed in
-    const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
-    const redirectPath: string = `/#/${urlParams.get('redirect') || 'accounts'}`;
-    window.location.replace(redirectPath);
-  });
+  );
 
   onDestroy(unsubscribe);
 </script>
