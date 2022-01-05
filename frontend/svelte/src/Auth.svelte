@@ -1,38 +1,72 @@
 <script lang="ts">
-  import {onDestroy} from 'svelte';
-  import type {Unsubscriber} from 'svelte/types/runtime/store';
-  import {AuthStore, authStore} from '../lib/stores/auth.store';
+  import { onMount } from "svelte";
+  import { AuthClient } from "@dfinity/auth-client";
+  import { AuthSync } from "./AuthSync";
 
-  let signedIn: boolean = false;
+  // Login status
+  export let signedIn = false;
+  export let principal = "";
 
-  // Asks the user to authenticate themselves with a TPM or similar.
-  const signIn = async () => {
-    try {
-      await authStore.signIn();
-    } catch (err) {
-      // TODO: we display the errors?
-      console.error(err);
+  // Signs in, out, round and all about.
+  let authClient;
+  let identityProvider = process.env.IDENTITY_SERVICE_URL;
+
+  // Check for any change in authentication status and act upon it.
+  const checkAuth = async () => {
+    const wasSignedIn = signedIn;
+    authClient = await AuthClient.create();
+    const isAuthenticated = await authClient.isAuthenticated();
+    if (wasSignedIn !== isAuthenticated) {
+      if (isAuthenticated) {
+        onSignIn();
+      } else {
+        signOut();
+      }
     }
   };
 
-  const unsubscribe: Unsubscriber = authStore.subscribe(async ({signedIn: loggedIn}: AuthStore) => {
-    signedIn = loggedIn === true;
+  // Synchronise login status across tabs.
+  const authSync = new AuthSync(checkAuth);
 
-    if (!signedIn) {
-      return;
-    }
+  // Asks the user to authenticate themselves with a TPM or similar.
+  const signIn = async () => {
+    await new Promise((resolve, reject) => {
+      authClient.login({
+        identityProvider,
+        onSuccess: () => {
+          resolve(null);
+        },
+        onError: reject,
+      });
+    });
+    onSignIn();
+    authSync.onSignIn();
+  };
 
-    // Redirect to previous url or default accounts page, user has signed in
-    const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
-    const redirectPath: string = `/#/${urlParams.get('redirect') || 'accounts'}`;
-    window.location.replace(redirectPath);
-  });
+  // Gets a local copy of user data.
+  const onSignIn = async () => {
+    const identity = authClient.getIdentity();
+    principal = identity.getPrincipal().toString();
+    signedIn = true;
+  };
 
-  onDestroy(unsubscribe);
+  // Signs out, erasing all local user data.
+  const signOut = async () => {
+    await authClient.logout();
+    signedIn = false;
+    authSync.onSignOut();
+    // Ensure that all data is wiped
+    // ... if we have unencrypted data in local storage, delete it here.
+    // ... wipe data in ephemeral state, but in the next tick allow repaint to finish first.
+    setTimeout(() => location.reload(), 100);
+  };
+
+  // Sets login status on first load.
+  onMount(checkAuth);
 </script>
 
 <div class="auth-expandable">
-  {#if !signedIn}
+  {#if !signedIn && authClient}
     <div class="auth-overlay">
       <div />
       <h1>INTERNET COMPUTER</h1>
@@ -49,6 +83,12 @@
       <button on:click={signIn} class="auth-button">LOGIN</button>
     </div>
   {/if}
+
+  <div class="auth-section">
+    {#if signedIn}
+      <button on:click={signOut} class="auth-button">Logout</button>
+    {/if}
+  </div>
 </div>
 
 <style>

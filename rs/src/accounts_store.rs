@@ -1476,6 +1476,16 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
             stats.sub_accounts_count as f64,
             "Number of sub accounts created.",
         )?;
+        w.encode_gauge(
+            "hardware_wallet_accounts_count",
+            stats.hardware_wallet_accounts_count as f64,
+            "Number of hardware wallet accounts created.",
+        )?;
+        w.encode_gauge(
+            "seconds_since_last_ledger_sync",
+            stats.seconds_since_last_ledger_sync as f64,
+            "Number of seconds since last ledger sync.",
+        )?;
         Ok(())
     })
 }

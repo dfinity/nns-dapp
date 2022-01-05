@@ -77,20 +77,11 @@ export default {
     replace({
       preventAssignment: true,
       "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
-      "process.env.INTERNET_IDENTITY_URL": JSON.stringify(
-        process.env.INTERNET_IDENTITY_URL ||
+      "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
+        process.env.IDENTITY_SERVICE_URL ||
           (process.env.DEPLOY_ENV === "testnet"
             ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
             : "https://identity.ic0.app/")
-      ),
-      // When developing with live reload in svelte, redirecting to flutter is
-      // not desirable, so when there is no deployment target we don't do it.
-      // More direct control is possible by setting the environment variable
-      // REDIRECT_TO_LEGACY to true or false when building.
-      "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-        process.env.REDIRECT_TO_LEGACY === undefined
-          ? process.env.DEPLOY_ENV !== undefined
-          : !process.env.REDIRECT_TO_LEGACY.match(/^(false|no)$/i)
       ),
     }),
 
