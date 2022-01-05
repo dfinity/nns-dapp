@@ -90,9 +90,9 @@ export default {
       // - false after flutter has been replaced, but before all scaffolding has been removed
       // - the flag may then be removed.
       "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-        -1 !== ["true", "1"].indexOf(process.env.REDIRECT_TO_LEGACY)
+        ["true", "1"].includes(process.env.REDIRECT_TO_LEGACY)
           ? true
-          : -1 !== ["false", "0"].indexOf(process.env.REDIRECT_TO_LEGACY)
+          : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
           ? false
           : false // default
       ),
