@@ -1,9 +1,12 @@
 <script lang="ts">
   import Layout from "../lib/components/Layout.svelte";
+  import { onMount } from "svelte";
 
-  if (process.env.REDIRECT_TO_LEGACY) {
-    window.location.replace("/#/canisters");
-  }
+  onMount(() => {
+    if (process.env.REDIRECT_TO_LEGACY) {
+      window.location.replace("/#/canisters");
+    }
+  });
 </script>
 
 <Layout>
