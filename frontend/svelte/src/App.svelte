@@ -33,6 +33,7 @@
     --widget-border: 25px;
     --widget-border-radius: 25px;
     --widget-border-radius-small: 10px;
+    --widget-grey: #282a2d;
     --text-grey: #aeb7b7;
     --background-grey: #383c3c;
     --button-blue: #005fb7;
@@ -51,26 +52,13 @@
   main {
     width: 100vw;
     height: 100vh;
-    background-color: #333;
-    color: #eee;
-    overflow: hidden;
+    background: linear-gradient(var(--background-grey) 80%, black);
+    font-family: var(--font-family);
   }
 
   @media (min-width: 640px) {
     main {
       max-width: none;
     }
-  }
-  .initial-load {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial;
-    font-size: 14px;
   }
 </style>
