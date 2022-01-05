@@ -7,7 +7,7 @@
   import { routeContext, routePath } from "../utils/route.utils";
 
   export let path: string;
-  export let component: SvelteComponent;
+  export let component: new (...args: any[]) => SvelteComponent;
 
   let signedIn: boolean = false;
 
