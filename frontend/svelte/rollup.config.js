@@ -88,9 +88,9 @@ export default {
       // More direct control is possible by setting the environment variable
       // REDIRECT_TO_LEGACY to true or false when building.
       "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-          process.env.REDIRECT_TO_LEGACY === undefined
-              ? process.env.DEPLOY_ENV !== undefined
-              : !process.env.REDIRECT_TO_LEGACY.match(/^(false|no)$/i)
+        process.env.REDIRECT_TO_LEGACY === undefined
+          ? process.env.DEPLOY_ENV !== undefined
+          : !process.env.REDIRECT_TO_LEGACY.match(/^(false|no)$/i)
       ),
     }),
 
