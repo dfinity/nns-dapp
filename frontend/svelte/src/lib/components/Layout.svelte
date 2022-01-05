@@ -1,7 +1,16 @@
 <script lang="ts">
-  import Logout from "./Logout.svelte";
+  import Header from "./Header.svelte";
+  import Nav from "./Nav.svelte";
 </script>
 
-<Logout />
+<Header />
+
+<Nav />
 
 <slot />
+
+<style lang="scss" global>
+  @import "../themes/fonts.scss";
+  @import "../themes/variables.scss";
+  @import "../themes/theme.scss";
+</style>
