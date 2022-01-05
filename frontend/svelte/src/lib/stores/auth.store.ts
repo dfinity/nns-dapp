@@ -7,7 +7,7 @@ export interface AuthStore {
   principal: Principal | undefined;
 }
 
-const identityProvider: string = process.env.INTERNET_IDENTITY_URL;
+const identityProvider: string = process.env.IDENTITY_SERVICE_URL;
 
 export const initAuthStore = () => {
   const { subscribe, set, update } = writable<AuthStore>({
