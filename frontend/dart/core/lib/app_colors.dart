@@ -22,7 +22,6 @@ class AppColors {
   static const Color white = Colors.white;
   static const Color transparent = Colors.transparent;
 
-
   static const Color blue1000 = Color(0xff001529);
   static const Color blue900 = Color(0xff001F3D);
   static const Color blue800 = Color(0xff003566);
@@ -45,6 +44,11 @@ class AppColors {
   static const Color yellow400 = Color(0xffF9B74D);
   static const Color yellow200 = Color(0xffFCD79C);
   static const Color yellow100 = Color(0xffFEEFD7);
+
+  static const Color blue350 = Color(0xff2ca8df);
+  static const Color pink = Color(0xffd81c6f);
+  static const Color green400 = Color(0xff859d44);
+  static const Color blue950 = Color(0xff141F32);
 }
 
 extension MakePaint on Color {
