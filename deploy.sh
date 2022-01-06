@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd "$(dirname "$(realpath "$0")")/.." || exit
+cd "$(dirname "$(realpath "$0")")" || exit
 NETWORK=$1
 
 echo "Deploying to $NETWORK..."
