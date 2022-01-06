@@ -1,5 +1,4 @@
 import { Agent, QueryResponseStatus } from "@dfinity/agent";
-import { blobFromUint8Array, blobToUint8Array } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
 
 export const submitQueryRequest = async (
@@ -8,7 +7,7 @@ export const submitQueryRequest = async (
   methodName: string,
   bytes: Uint8Array
 ): Promise<Uint8Array> => {
-  const arg = blobFromUint8Array(bytes);
+  const arg = bytes.buffer;
 
   const queryResponse = await agent.query(canisterId, {
     methodName,
@@ -27,5 +26,5 @@ export const submitQueryRequest = async (
     );
   }
 
-  return blobToUint8Array(queryResponse.reply.arg);
+  return new Uint8Array(queryResponse.reply.arg);
 };

@@ -4,9 +4,9 @@ import {
   HttpAgentRequest,
   PublicKey,
   ReadRequest,
+  Signature,
   SignIdentity,
 } from "@dfinity/agent";
-import { blobFromUint8Array, BinaryBlob } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
 import LedgerApp, { LedgerError, ResponseSign } from "@zondax/ledger-icp";
 import { Secp256k1PublicKey } from "./secp256k1";
@@ -19,7 +19,9 @@ import TransportNodeHidNoEvents from "@ledgerhq/hw-transport-node-hid-noevents";
  * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
  * @param request - body of the HttpAgentRequest
  */
-function _prepareCborForLedger(request: ReadRequest | CallRequest): BinaryBlob {
+function _prepareCborForLedger(
+  request: ReadRequest | CallRequest
+): ArrayBuffer {
   return Cbor.encode({ content: request });
 }
 
@@ -114,11 +116,12 @@ export class LedgerIdentity extends SignIdentity {
     const principal = (resp as unknown as { principalText: string })
       .principalText;
     const publicKey = Secp256k1PublicKey.fromRaw(
-      blobFromUint8Array(resp.publicKey)
+      new Uint8Array(resp.publicKey)
     );
 
     if (
-      principal !== Principal.selfAuthenticating(publicKey.toDer()).toText()
+      principal !==
+      Principal.selfAuthenticating(new Uint8Array(publicKey.toDer())).toText()
     ) {
       throw new Error(
         "Principal returned by device does not match public key."
@@ -142,8 +145,9 @@ export class LedgerIdentity extends SignIdentity {
     return this._publicKey;
   }
 
-  public async sign(blob: BinaryBlob): Promise<BinaryBlob> {
+  public async sign(challenge: ArrayBuffer): Promise<Signature> {
     return await this._executeWithApp(async (app: LedgerApp) => {
+      const blob = new Uint8Array(challenge);
       const resp: ResponseSign = await app.sign(
         this.derivePath,
         Buffer.from(blob),
@@ -168,7 +172,7 @@ export class LedgerIdentity extends SignIdentity {
         );
       }
 
-      return blobFromUint8Array(new Uint8Array(signatureRS));
+      return signatureRS.buffer as Signature;
     });
   }
 
