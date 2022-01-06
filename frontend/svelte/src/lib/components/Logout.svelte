@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { authStore } from "../stores/auth.store";
-  import { appPath } from "../utils/route.utils";
+  import { authStore } from '../stores/auth.store';
+  import { appPath } from '../utils/route.utils';
 
   const logout = async () => {
     await authStore.signOut();

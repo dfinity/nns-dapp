@@ -1,29 +1,23 @@
-import Service from "./Service";
-import { _SERVICE } from "./rawService";
-import { mock } from "jest-mock-extended";
-import { Agent } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
+import Service from './Service';
+import { _SERVICE } from './rawService';
+import { mock } from 'jest-mock-extended';
+import { Agent } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
 
-describe("getNeurons", () => {
-  test("respects the certified flag", () => {
+describe('getNeurons', () => {
+  test('respects the certified flag', () => {
     const agent = mock<Agent>();
     const uncertified = mock<_SERVICE>();
     const res = {
       neuron_infos: [],
-      full_neurons: [],
+      full_neurons: []
     };
     uncertified.list_neurons.mockReturnValue(Promise.resolve(res));
 
     const certified = mock<_SERVICE>();
     certified.list_neurons.mockReturnValue(Promise.resolve(res));
 
-    const dapp = new Service(
-      agent,
-      mock<Principal>(),
-      uncertified,
-      certified,
-      mock<Principal>()
-    );
+    const dapp = new Service(agent, mock<Principal>(), uncertified, certified, mock<Principal>());
 
     // Call `getNeurons` without certification and verify that the uncertified
     // service has been called.

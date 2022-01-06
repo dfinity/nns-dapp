@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { AuthStore, authStore } from "../lib/stores/auth.store";
-  import { appPath } from "../lib/utils/route.utils";
+  import { onDestroy } from 'svelte';
+  import type { Unsubscriber } from 'svelte/types/runtime/store';
+  import { AuthStore, authStore } from '../lib/stores/auth.store';
+  import { appPath } from '../lib/utils/route.utils';
 
   let signedIn: boolean = false;
 
@@ -25,12 +25,8 @@
       }
 
       // Redirect to previous url or default accounts page, user has signed in
-      const urlParams: URLSearchParams = new URLSearchParams(
-        window.location.search
-      );
-      const redirectPath: string = `${appPath()}/#/${
-        urlParams.get("redirect") || "accounts"
-      }`;
+      const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
+      const redirectPath: string = `${appPath()}/#/${urlParams.get('redirect') || 'accounts'}`;
       window.location.replace(redirectPath);
     }
   );
@@ -92,7 +88,7 @@
     height: 100vh;
     z-index: 100;
     background-color: black;
-    background-image: url("/assets/assets/nns_background.jpeg");
+    background-image: url('/assets/assets/nns_background.jpeg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

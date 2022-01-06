@@ -1,6 +1,6 @@
-import { writable } from "svelte/store";
-import { AuthClient } from "@dfinity/auth-client";
-import type { Principal } from "@dfinity/principal";
+import { writable } from 'svelte/store';
+import { AuthClient } from '@dfinity/auth-client';
+import type { Principal } from '@dfinity/principal';
 
 export interface AuthStore {
   signedIn: boolean | undefined;
@@ -12,7 +12,7 @@ const identityProvider: string = process.env.IDENTITY_SERVICE_URL;
 export const initAuthStore = () => {
   const { subscribe, set, update } = writable<AuthStore>({
     signedIn: undefined,
-    principal: undefined,
+    principal: undefined
   });
 
   return {
@@ -23,7 +23,7 @@ export const initAuthStore = () => {
 
       set({
         signedIn: await authClient.isAuthenticated(),
-        principal: authClient.getIdentity().getPrincipal(),
+        principal: authClient.getIdentity().getPrincipal()
       });
     },
 
@@ -37,12 +37,12 @@ export const initAuthStore = () => {
             update((state: AuthStore) => ({
               ...state,
               signedIn: true,
-              principal: authClient.getIdentity().getPrincipal(),
+              principal: authClient.getIdentity().getPrincipal()
             }));
 
             resolve();
           },
-          onError: reject,
+          onError: reject
         });
       }),
 
@@ -54,9 +54,9 @@ export const initAuthStore = () => {
       update((state: AuthStore) => ({
         ...state,
         signedIn: false,
-        principal: undefined,
+        principal: undefined
       }));
-    },
+    }
   };
 };
 

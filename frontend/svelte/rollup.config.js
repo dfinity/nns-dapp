@@ -1,14 +1,14 @@
-import svelte from "rollup-plugin-svelte";
-import commonjs from "@rollup/plugin-commonjs";
-import resolve from "@rollup/plugin-node-resolve";
-import livereload from "rollup-plugin-livereload";
-import { terser } from "rollup-plugin-terser";
-import sveltePreprocess from "svelte-preprocess";
-import replace from "@rollup/plugin-replace";
-import typescript from "@rollup/plugin-typescript";
-import css from "rollup-plugin-css-only";
-import inject from "@rollup/plugin-inject";
-import json from "@rollup/plugin-json";
+import svelte from 'rollup-plugin-svelte';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import livereload from 'rollup-plugin-livereload';
+import { terser } from 'rollup-plugin-terser';
+import sveltePreprocess from 'svelte-preprocess';
+import replace from '@rollup/plugin-replace';
+import typescript from '@rollup/plugin-typescript';
+import css from 'rollup-plugin-css-only';
+import inject from '@rollup/plugin-inject';
+import json from '@rollup/plugin-json';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -22,40 +22,36 @@ function serve() {
   return {
     writeBundle() {
       if (server) return;
-      server = require("child_process").spawn(
-        "npm",
-        ["run", "start", "--", "--dev"],
-        {
-          stdio: ["ignore", "inherit", "inherit"],
-          shell: true,
-        }
-      );
+      server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
+        stdio: ['ignore', 'inherit', 'inherit'],
+        shell: true
+      });
 
-      process.on("SIGTERM", toExit);
-      process.on("exit", toExit);
-    },
+      process.on('SIGTERM', toExit);
+      process.on('exit', toExit);
+    }
   };
 }
 
 export default {
-  input: "src/main.ts",
+  input: 'src/main.ts',
   output: {
     sourcemap: true,
-    format: "es",
-    name: "app",
-    file: "public/build/bundle.js",
+    format: 'es',
+    name: 'app',
+    file: 'public/build/bundle.js'
   },
   plugins: [
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),
       compilerOptions: {
         // enable run-time checks when not in production
-        dev: !production,
-      },
+        dev: !production
+      }
     }),
     // we'll extract any component CSS out into
     // a separate file - better for performance
-    css({ output: "bundle.css" }),
+    css({ output: 'bundle.css' }),
 
     // If you have external dependencies installed from
     // npm, you'll most likely need these plugins. In
@@ -65,23 +61,23 @@ export default {
     resolve({
       preferBuiltins: false,
       browser: true,
-      dedupe: ["svelte"],
+      dedupe: ['svelte']
     }),
     commonjs(),
     typescript({
       sourceMap: !production,
-      inlineSources: !production,
+      inlineSources: !production
     }),
-    inject({ Buffer: ["buffer", "Buffer"] }),
+    inject({ Buffer: ['buffer', 'Buffer'] }),
     json(),
     replace({
       preventAssignment: true,
-      "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
-      "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
+      'process.env.ROLLUP_WATCH': !!process.env.ROLLUP_WATCH,
+      'process.env.IDENTITY_SERVICE_URL': JSON.stringify(
         process.env.IDENTITY_SERVICE_URL ||
-          (process.env.DEPLOY_ENV === "testnet"
-            ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
-            : "https://identity.ic0.app/")
+          (process.env.DEPLOY_ENV === 'testnet'
+            ? 'https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/'
+            : 'https://identity.ic0.app/')
       ),
       // When developing with live reload in svelte, redirecting to flutter is
       // not desirable.  The default should match production:
@@ -89,13 +85,13 @@ export default {
       // - true while flutter is being replaced by svelte
       // - false after flutter has been replaced, but before all scaffolding has been removed
       // - the flag may then be removed.
-      "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-        ["true", "1"].includes(process.env.REDIRECT_TO_LEGACY)
+      'process.env.REDIRECT_TO_LEGACY': JSON.stringify(
+        ['true', '1'].includes(process.env.REDIRECT_TO_LEGACY)
           ? true
-          : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
+          : ['false', '0'].includes(process.env.REDIRECT_TO_LEGACY)
           ? false
           : false // default
-      ),
+      )
     }),
 
     // In dev mode, call `npm run start` once
@@ -104,13 +100,13 @@ export default {
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
-    !production && livereload("public"),
+    !production && livereload('public'),
 
     // If we're building for production (npm run build
     // instead of npm run dev), minify
-    production && terser(),
+    production && terser()
   ],
   watch: {
-    clearScreen: false,
-  },
+    clearScreen: false
+  }
 };

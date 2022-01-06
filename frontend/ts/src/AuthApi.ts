@@ -1,10 +1,10 @@
-import { AuthClient, AuthClientLoginOptions } from "@dfinity/auth-client";
-import { Identity } from "@dfinity/agent";
-import { DelegationIdentity } from "@dfinity/identity";
-import { LedgerIdentity } from "./ledger/identity";
-import { Option } from "./canisters/option";
-import { executeWithLogging } from "./errorLogger";
-import { IDENTITY_SERVICE_URL } from "./config.json";
+import { AuthClient, AuthClientLoginOptions } from '@dfinity/auth-client';
+import { Identity } from '@dfinity/agent';
+import { DelegationIdentity } from '@dfinity/identity';
+import { LedgerIdentity } from './ledger/identity';
+import { Option } from './canisters/option';
+import { executeWithLogging } from './errorLogger';
+import { IDENTITY_SERVICE_URL } from './config.json';
 
 const ONE_MINUTE_MILLIS = 60 * 1000;
 const SESSION_TIMEOUT_IN_NS = BigInt(1_920_000_000_000); // 32 mins
@@ -64,7 +64,7 @@ export default class AuthApi {
       onSuccess: () => {
         this.handleDelegationExpiry();
         onSuccess();
-      },
+      }
     };
 
     await executeWithLogging(() => this.authClient.login(options));
@@ -83,11 +83,9 @@ export default class AuthApi {
   };
 
   // Return either the identity, or a string with the error.
-  public connectToHardwareWallet = async (): Promise<
-    LedgerIdentity | string
-  > => {
+  public connectToHardwareWallet = async (): Promise<LedgerIdentity | string> => {
     try {
-      console.log("Creating new connection to hardware wallet");
+      console.log('Creating new connection to hardware wallet');
       return await LedgerIdentity.create();
     } catch (err) {
       console.log(`An exception has occurred: ${err}`);
@@ -110,8 +108,7 @@ export default class AuthApi {
         identity
           .getDelegation()
           .delegations.map((d) => d.delegation.expiration)
-          .reduce((current, next) => (next < current ? next : current)) /
-          BigInt(1_000_000)
+          .reduce((current, next) => (next < current ? next : current)) / BigInt(1_000_000)
       );
 
       return expiryDateTimestampMs - Date.now();
@@ -123,8 +120,7 @@ export default class AuthApi {
     const durationUntilSessionExpiresMs = this.getTimeUntilSessionExpiryMs();
 
     if (durationUntilSessionExpiresMs) {
-      const durationUntilLogoutMs =
-        durationUntilSessionExpiresMs - ONE_MINUTE_MILLIS;
+      const durationUntilLogoutMs = durationUntilSessionExpiresMs - ONE_MINUTE_MILLIS;
 
       if (durationUntilLogoutMs <= 0) {
         this.logout();

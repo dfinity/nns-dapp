@@ -1,6 +1,6 @@
-import { Agent } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
-import { polling } from "@dfinity/agent";
+import { Agent } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
+import { polling } from '@dfinity/agent';
 
 export const submitUpdateRequest = async (
   agent: Agent,
@@ -14,19 +14,19 @@ export const submitUpdateRequest = async (
   const submitResponse = await agent.call(canisterId, {
     methodName,
     arg,
-    effectiveCanisterId: canisterId,
+    effectiveCanisterId: canisterId
   });
 
   if (!submitResponse.response.ok) {
     throw new Error(
       [
-        "Call failed:",
+        'Call failed:',
         `  Method: ${methodName}`,
         `  Canister ID: ${canisterId}`,
         `  Request ID: ${submitResponse.requestId}`,
         `  HTTP status code: ${submitResponse.response.status}`,
-        `  HTTP status text: ${submitResponse.response.statusText}`,
-      ].join("\n")
+        `  HTTP status text: ${submitResponse.response.statusText}`
+      ].join('\n')
     );
   }
 

@@ -1,5 +1,5 @@
 declare global {
-  module "@dfinity/principal" {
+  module '@dfinity/principal' {
     interface Principal {
       // By default, when Principals are serialized to JSON they are displayed as bytes, but this isn't very
       // human-readable. By adding this extension we are able to override the JSON serialization to output the

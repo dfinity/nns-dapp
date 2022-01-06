@@ -1,13 +1,13 @@
-import { DerEncodedPublicKey } from "@dfinity/agent";
-import { Option } from "../option";
+import { DerEncodedPublicKey } from '@dfinity/agent';
+import { Option } from '../option';
 import {
   AccountIdentifier,
   CanisterIdString,
   E8s,
   NeuronId,
-  PrincipalString,
-} from "../common/types";
-import { Principal } from "@dfinity/principal";
+  PrincipalString
+} from '../common/types';
+import { Principal } from '@dfinity/principal';
 
 export type Action =
   | { ExecuteNnsFunction: ExecuteNnsFunction }
@@ -28,9 +28,7 @@ export interface AddOrRemoveNodeProvider {
 export interface ApproveGenesisKyc {
   principals: Array<PrincipalString>;
 }
-export type AuthzChangeOp =
-  | { Authorize: { addSelf: boolean } }
-  | { Deauthorize: null };
+export type AuthzChangeOp = { Authorize: { addSelf: boolean } } | { Deauthorize: null };
 export interface Ballot {
   neuronId: bigint;
   vote: Vote;
@@ -205,14 +203,12 @@ export interface Neuron {
   dissolveState: Option<DissolveState>;
   followees: Array<Followees>;
 }
-export type NeuronIdOrSubaccount =
-  | { Subaccount: Array<number> }
-  | { NeuronId: NeuronId };
+export type NeuronIdOrSubaccount = { Subaccount: Array<number> } | { NeuronId: NeuronId };
 export enum NeuronState {
   UNSPECIFIED = 0,
   LOCKED = 1,
   DISSOLVING = 2,
-  DISSOLVED = 3,
+  DISSOLVED = 3
 }
 export interface NeuronInfo {
   neuronId: NeuronId;
@@ -285,7 +281,7 @@ export enum ProposalRewardStatus {
   PROPOSAL_REWARD_STATUS_SETTLED = 3,
 
   // The proposal is not eligible to be taken into account in a reward event.
-  PROPOSAL_REWARD_STATUS_INELIGIBLE = 4,
+  PROPOSAL_REWARD_STATUS_INELIGIBLE = 4
 }
 
 // The proposal status, with respect to decision making and execution.
@@ -307,13 +303,13 @@ export enum ProposalStatus {
   PROPOSAL_STATUS_EXECUTED = 4,
 
   // The proposal was accepted, but execution failed.
-  PROPOSAL_STATUS_FAILED = 5,
+  PROPOSAL_STATUS_FAILED = 5
 }
 
 export enum Vote {
   UNSPECIFIED = 0,
   YES = 1,
-  NO = 2,
+  NO = 2
 }
 export interface RegisterVote {
   vote: Vote;
@@ -322,9 +318,7 @@ export interface RegisterVote {
 export interface RemoveHotKey {
   hotKeyToRemove: Option<PrincipalString>;
 }
-export type RewardMode =
-  | { RewardToNeuron: RewardToNeuron }
-  | { RewardToAccount: RewardToAccount };
+export type RewardMode = { RewardToNeuron: RewardToNeuron } | { RewardToAccount: RewardToAccount };
 export type RewardNodeProviders = { rewards: Array<RewardNodeProvider> };
 export interface RewardToAccount {
   toAccount: Option<AccountIdentifier>;
@@ -341,9 +335,7 @@ export type ClaimNeuronRequest = {
 
 export type ClaimNeuronResponse = { Ok: null } | { Err: GovernanceError };
 export type GetFullNeuronResponse = { Ok: Neuron } | { Err: GovernanceError };
-export type GetNeuronInfoResponse =
-  | { Ok: NeuronInfo }
-  | { Err: GovernanceError };
+export type GetNeuronInfoResponse = { Ok: NeuronInfo } | { Err: GovernanceError };
 export interface RewardNodeProvider {
   nodeProvider: Option<NodeProvider>;
   rewardMode: Option<RewardMode>;
@@ -379,7 +371,7 @@ export enum Topic {
   SubnetManagement = 7,
   NetworkCanisterManagement = 8,
   Kyc = 9,
-  NodeProviderRewards = 10,
+  NodeProviderRewards = 10
 }
 
 export interface AddHotKeyRequest {
@@ -506,40 +498,25 @@ export interface SpawnResponse {
 export type EmptyResponse = { Ok: null } | { Err: GovernanceError };
 
 export default interface ServiceInterface {
-  getNeurons: (
-    certified: boolean,
-    neuronIds?: NeuronId[]
-  ) => Promise<Array<NeuronInfo>>;
+  getNeurons: (certified: boolean, neuronIds?: NeuronId[]) => Promise<Array<NeuronInfo>>;
   getNeuronsForHW: () => Promise<Array<NeuronInfoForHw>>;
   getPendingProposals: () => Promise<Array<ProposalInfo>>;
   getProposalInfo: (proposalId: bigint) => Promise<Option<ProposalInfo>>;
-  listProposals: (
-    request: ListProposalsRequest
-  ) => Promise<ListProposalsResponse>;
+  listProposals: (request: ListProposalsRequest) => Promise<ListProposalsResponse>;
   addHotKey: (request: AddHotKeyRequest) => Promise<EmptyResponse>;
   removeHotKey: (request: RemoveHotKeyRequest) => Promise<EmptyResponse>;
   startDissolving: (request: StartDissolvingRequest) => Promise<EmptyResponse>;
   stopDissolving: (request: StopDissolvingRequest) => Promise<EmptyResponse>;
-  increaseDissolveDelay: (
-    request: IncreaseDissolveDelayRequest
-  ) => Promise<EmptyResponse>;
-  joinCommunityFund: (
-    request: JoinCommunityFundRequest
-  ) => Promise<EmptyResponse>;
+  increaseDissolveDelay: (request: IncreaseDissolveDelayRequest) => Promise<EmptyResponse>;
+  joinCommunityFund: (request: JoinCommunityFundRequest) => Promise<EmptyResponse>;
   follow: (request: FollowRequest) => Promise<EmptyResponse>;
-  mergeMaturity: (
-    request: MergeMaturityRequest
-  ) => Promise<MergeMaturityResponse>;
+  mergeMaturity: (request: MergeMaturityRequest) => Promise<MergeMaturityResponse>;
   registerVote: (request: RegisterVoteRequest) => Promise<EmptyResponse>;
   spawn: (request: SpawnRequest) => Promise<SpawnResponse>;
   split: (request: SplitRequest) => Promise<NeuronId>;
   disburse: (request: DisburseRequest) => Promise<DisburseResponse>;
-  disburseToNeuron: (
-    request: DisburseToNeuronRequest
-  ) => Promise<DisburseToNeuronResponse>;
-  makeMotionProposal: (
-    request: MakeMotionProposalRequest
-  ) => Promise<MakeProposalResponse>;
+  disburseToNeuron: (request: DisburseToNeuronRequest) => Promise<DisburseToNeuronResponse>;
+  makeMotionProposal: (request: MakeMotionProposalRequest) => Promise<MakeProposalResponse>;
   makeNetworkEconomicsProposal: (
     request: MakeNetworkEconomicsProposalRequest
   ) => Promise<MakeProposalResponse>;
@@ -552,10 +529,6 @@ export default interface ServiceInterface {
   makeExecuteNnsFunctionProposal: (
     request: MakeExecuteNnsFunctionProposalRequest
   ) => Promise<MakeProposalResponse>;
-  claimOrRefreshNeuron: (
-    request: ClaimOrRefreshNeuronRequest
-  ) => Promise<Option<NeuronId>>;
-  claimOrRefreshNeuronFromAccount: (
-    request: ClaimOrRefreshNeuronFromAccount
-  ) => Promise<NeuronId>;
+  claimOrRefreshNeuron: (request: ClaimOrRefreshNeuronRequest) => Promise<Option<NeuronId>>;
+  claimOrRefreshNeuronFromAccount: (request: ClaimOrRefreshNeuronFromAccount) => Promise<NeuronId>;
 }

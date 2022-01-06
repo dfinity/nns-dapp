@@ -1,6 +1,6 @@
-import { Principal } from "@dfinity/principal";
-import { Option } from "../option";
-import { _SERVICE, ListNeurons } from "./rawService";
+import { Principal } from '@dfinity/principal';
+import { Option } from '../option';
+import { _SERVICE, ListNeurons } from './rawService';
 import ServiceInterface, {
   AddHotKeyRequest,
   ClaimOrRefreshNeuronFromAccount,
@@ -32,21 +32,21 @@ import ServiceInterface, {
   SpawnResponse,
   SplitRequest,
   StartDissolvingRequest,
-  StopDissolvingRequest,
-} from "./model";
-import RequestConverters from "./RequestConverters";
-import ResponseConverters from "./ResponseConverters";
-import { NeuronId } from "../common/types";
-import { submitUpdateRequest } from "../updateRequestHandler";
-import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
-import { Agent } from "@dfinity/agent";
-import { calculateCrc32 } from "../converter";
-import { ManageNeuron as PbManageNeuron } from "../../proto/governance_pb";
+  StopDissolvingRequest
+} from './model';
+import RequestConverters from './RequestConverters';
+import ResponseConverters from './ResponseConverters';
+import { NeuronId } from '../common/types';
+import { submitUpdateRequest } from '../updateRequestHandler';
+import { ManageNeuronResponse as PbManageNeuronResponse } from '../../proto/governance_pb';
+import { Agent } from '@dfinity/agent';
+import { calculateCrc32 } from '../converter';
+import { ManageNeuron as PbManageNeuron } from '../../proto/governance_pb';
 import {
   ListNeurons as PbListNeurons,
-  ListNeuronsResponse as PbListNeuronsResponse,
-} from "../../proto/governance_pb";
-import { NeuronId as PbNeuronId } from "../../proto/base_types_pb";
+  ListNeuronsResponse as PbListNeuronsResponse
+} from '../../proto/governance_pb';
+import { NeuronId as PbNeuronId } from '../../proto/base_types_pb';
 
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
@@ -79,16 +79,13 @@ export default class Service implements ServiceInterface {
   ): Promise<Array<NeuronInfo>> => {
     const rawRequest: ListNeurons = {
       neuron_ids: neuronIds ?? [],
-      include_neurons_readable_by_caller: neuronIds ? false : true,
+      include_neurons_readable_by_caller: neuronIds ? false : true
     };
     const serviceToUse = certified ? this.certifiedService : this.service;
     const rawResponse = await serviceToUse.list_neurons(rawRequest);
-    const response = this.responseConverters.toArrayOfNeuronInfo(
-      rawResponse,
-      this.myPrincipal
-    );
+    const response = this.responseConverters.toArrayOfNeuronInfo(rawResponse, this.myPrincipal);
 
-    console.debug("Response from list_neurons:");
+    console.debug('Response from list_neurons:');
     console.debug(response);
     return response;
   };
@@ -100,7 +97,7 @@ export default class Service implements ServiceInterface {
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "list_neurons_pb",
+      'list_neurons_pb',
       request.serializeBinary()
     );
 
@@ -109,24 +106,20 @@ export default class Service implements ServiceInterface {
     return neurons.map((neuron) => {
       const id = neuron.getId()?.getId();
       if (!id) {
-        throw "Neuron must have an ID";
+        throw 'Neuron must have an ID';
       }
 
       return {
         id: id,
         amount: neuron.getCachedNeuronStakeE8s(),
         hotKeys: neuron.getHotKeysList().map((principal) => {
-          return Principal.fromUint8Array(
-            principal.getSerializedId_asU8()
-          ).toText();
-        }),
+          return Principal.fromUint8Array(principal.getSerializedId_asU8()).toText();
+        })
       };
     });
   };
 
-  public listProposals = async (
-    request: ListProposalsRequest
-  ): Promise<ListProposalsResponse> => {
+  public listProposals = async (request: ListProposalsRequest): Promise<ListProposalsResponse> => {
     const rawRequest = this.requestConverters.fromListProposalsRequest(request);
     const rawResponse = await this.service.list_proposals(rawRequest);
     return this.responseConverters.toListProposalsResponse(rawResponse);
@@ -137,67 +130,51 @@ export default class Service implements ServiceInterface {
     return rawResponse.map(this.responseConverters.toProposalInfo);
   };
 
-  public getProposalInfo = async (
-    proposalId: bigint
-  ): Promise<Option<ProposalInfo>> => {
+  public getProposalInfo = async (proposalId: bigint): Promise<Option<ProposalInfo>> => {
     const rawResponse = await this.service.get_proposal_info(proposalId);
-    return rawResponse.length
-      ? this.responseConverters.toProposalInfo(rawResponse[0])
-      : null;
+    return rawResponse.length ? this.responseConverters.toProposalInfo(rawResponse[0]) : null;
   };
 
-  public addHotKey = async (
-    request: AddHotKeyRequest
-  ): Promise<EmptyResponse> => {
+  public addHotKey = async (request: AddHotKeyRequest): Promise<EmptyResponse> => {
     const rawRequest = this.requestConverters.fromAddHotKeyRequest(request);
 
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
+      'manage_neuron_pb',
       rawRequest.serializeBinary()
     );
 
     return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
-  public removeHotKey = async (
-    request: RemoveHotKeyRequest
-  ): Promise<EmptyResponse> => {
+  public removeHotKey = async (request: RemoveHotKeyRequest): Promise<EmptyResponse> => {
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
+      'manage_neuron_pb',
       this.requestConverters.fromRemoveHotKeyRequest(request).serializeBinary()
     );
 
     return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
-  public startDissolving = async (
-    request: StartDissolvingRequest
-  ): Promise<EmptyResponse> => {
+  public startDissolving = async (request: StartDissolvingRequest): Promise<EmptyResponse> => {
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
-      this.requestConverters
-        .fromStartDissolvingRequest(request)
-        .serializeBinary()
+      'manage_neuron_pb',
+      this.requestConverters.fromStartDissolvingRequest(request).serializeBinary()
     );
     return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
-  public stopDissolving = async (
-    request: StopDissolvingRequest
-  ): Promise<EmptyResponse> => {
+  public stopDissolving = async (request: StopDissolvingRequest): Promise<EmptyResponse> => {
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
-      this.requestConverters
-        .fromStopDissolvingRequest(request)
-        .serializeBinary()
+      'manage_neuron_pb',
+      this.requestConverters.fromStopDissolvingRequest(request).serializeBinary()
     );
     return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
@@ -208,18 +185,14 @@ export default class Service implements ServiceInterface {
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
-      this.requestConverters
-        .fromIncreaseDissolveDelayRequest(request)
-        .serializeBinary()
+      'manage_neuron_pb',
+      this.requestConverters.fromIncreaseDissolveDelayRequest(request).serializeBinary()
     );
 
     return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
-  public joinCommunityFund = async (
-    request: JoinCommunityFundRequest
-  ): Promise<EmptyResponse> => {
+  public joinCommunityFund = async (request: JoinCommunityFundRequest): Promise<EmptyResponse> => {
     const configure = new PbManageNeuron.Configure();
     configure.setJoinCommunityFund(new PbManageNeuron.JoinCommunityFund());
 
@@ -232,7 +205,7 @@ export default class Service implements ServiceInterface {
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
+      'manage_neuron_pb',
       req.serializeBinary()
     );
 
@@ -243,20 +216,18 @@ export default class Service implements ServiceInterface {
     await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
+      'manage_neuron_pb',
       this.requestConverters.fromFollowRequest(request).serializeBinary()
     );
 
     return { Ok: null };
   };
 
-  public registerVote = async (
-    request: RegisterVoteRequest
-  ): Promise<EmptyResponse> => {
+  public registerVote = async (request: RegisterVoteRequest): Promise<EmptyResponse> => {
     await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
+      'manage_neuron_pb',
       this.requestConverters.fromRegisterVoteRequest(request).serializeBinary()
     );
     return { Ok: null };
@@ -267,7 +238,7 @@ export default class Service implements ServiceInterface {
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
+      'manage_neuron_pb',
       rawRequest.serializeBinary()
     );
 
@@ -281,26 +252,22 @@ export default class Service implements ServiceInterface {
     return this.responseConverters.toSplitResponse(rawResponse);
   };
 
-  public disburse = async (
-    request: DisburseRequest
-  ): Promise<DisburseResponse> => {
+  public disburse = async (request: DisburseRequest): Promise<DisburseResponse> => {
     // Verify the checksum of the given address.
     if (request.toAccountId) {
       if (request.toAccountId.length != 64) {
         throw `Invalid account identifier ${request.toAccountId}. The account identifier must be 64 chars in length.`;
       }
 
-      const toAccountBytes = Buffer.from(request.toAccountId, "hex");
+      const toAccountBytes = Buffer.from(request.toAccountId, 'hex');
       const foundChecksum = toAccountBytes.slice(0, 4);
-      const expectedCheckum = Buffer.from(
-        calculateCrc32(toAccountBytes.slice(4))
-      );
+      const expectedCheckum = Buffer.from(calculateCrc32(toAccountBytes.slice(4)));
       if (!expectedCheckum.equals(foundChecksum)) {
         throw `Account identifier ${
           request.toAccountId
         } has an invalid checksum. Are you sure the account identifier is correct?\n\nExpected checksum: ${expectedCheckum.toString(
-          "hex"
-        )}\nFound checksum: ${foundChecksum.toString("hex")}`;
+          'hex'
+        )}\nFound checksum: ${foundChecksum.toString('hex')}`;
       }
     }
 
@@ -308,7 +275,7 @@ export default class Service implements ServiceInterface {
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
+      'manage_neuron_pb',
       rawRequest.serializeBinary()
     );
 
@@ -319,20 +286,17 @@ export default class Service implements ServiceInterface {
   public disburseToNeuron = async (
     request: DisburseToNeuronRequest
   ): Promise<DisburseToNeuronResponse> => {
-    const rawRequest =
-      this.requestConverters.fromDisburseToNeuronRequest(request);
+    const rawRequest = this.requestConverters.fromDisburseToNeuronRequest(request);
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toDisburseToNeuronResult(rawResponse);
   };
 
-  public mergeMaturity = async (
-    request: MergeMaturityRequest
-  ): Promise<MergeMaturityResponse> => {
+  public mergeMaturity = async (request: MergeMaturityRequest): Promise<MergeMaturityResponse> => {
     const rawRequest = this.requestConverters.fromMergeMaturityRequest(request);
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "manage_neuron_pb",
+      'manage_neuron_pb',
       rawRequest.serializeBinary()
     );
     const response = PbManageNeuronResponse.deserializeBinary(rawResponse);
@@ -350,9 +314,9 @@ export default class Service implements ServiceInterface {
       summary: request.summary,
       action: {
         Motion: {
-          motionText: request.text,
-        },
-      },
+          motionText: request.text
+        }
+      }
     });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
@@ -367,8 +331,8 @@ export default class Service implements ServiceInterface {
       url: request.url,
       summary: request.summary,
       action: {
-        ManageNetworkEconomics: request.networkEconomics,
-      },
+        ManageNetworkEconomics: request.networkEconomics
+      }
     });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
@@ -386,12 +350,12 @@ export default class Service implements ServiceInterface {
         RewardNodeProvider: {
           nodeProvider: {
             id: request.nodeProvider,
-            rewardAccount: null,
+            rewardAccount: null
           },
           rewardMode: request.rewardMode,
-          amountE8s: request.amount,
-        },
-      },
+          amountE8s: request.amount
+        }
+      }
     });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
@@ -407,9 +371,9 @@ export default class Service implements ServiceInterface {
       summary: request.summary,
       action: {
         SetDefaultFollowees: {
-          defaultFollowees: request.followees,
-        },
-      },
+          defaultFollowees: request.followees
+        }
+      }
     });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
@@ -428,9 +392,9 @@ export default class Service implements ServiceInterface {
           nnsFunctionId: request.nnsFunction,
           nnsFunctionName: null,
           payload: {},
-          payloadBytes: request.payload,
-        },
-      },
+          payloadBytes: request.payload
+        }
+      }
     });
     const rawResponse = await this.service.manage_neuron(rawRequest);
     return this.responseConverters.toMakeProposalResponse(rawResponse);
@@ -439,8 +403,7 @@ export default class Service implements ServiceInterface {
   public claimOrRefreshNeuron = async (
     request: ClaimOrRefreshNeuronRequest
   ): Promise<Option<NeuronId>> => {
-    const rawRequest =
-      this.requestConverters.fromClaimOrRefreshNeuronRequest(request);
+    const rawRequest = this.requestConverters.fromClaimOrRefreshNeuronRequest(request);
     const rawResponse = await this.service.manage_neuron(rawRequest);
     // This log will come in handy when debugging user issues
     console.log(rawResponse);
@@ -452,11 +415,11 @@ export default class Service implements ServiceInterface {
   ): Promise<NeuronId> => {
     const response = await this.service.claim_or_refresh_neuron_from_account({
       controller: request.controller ? [request.controller] : [],
-      memo: request.memo,
+      memo: request.memo
     });
 
     const result = response.result;
-    if (result.length && "NeuronId" in result[0]) {
+    if (result.length && 'NeuronId' in result[0]) {
       return result[0].NeuronId.id;
     }
 
@@ -473,8 +436,8 @@ function toResponse(resp: PbManageNeuronResponse): EmptyResponse {
     return {
       Err: {
         errorMessage: error.getErrorMessage(),
-        errorType: error.getErrorType(),
-      },
+        errorType: error.getErrorType()
+      }
     };
   } else {
     return { Ok: null };

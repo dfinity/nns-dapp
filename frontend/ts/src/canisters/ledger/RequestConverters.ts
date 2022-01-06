@@ -1,13 +1,9 @@
-import { Principal } from "@dfinity/principal";
-import { Buffer } from "buffer";
-import {
-  GetBalancesRequest,
-  NotifyCanisterRequest,
-  SendICPTsRequest,
-} from "./model";
-import * as convert from "../converter";
-import { TRANSACTION_FEE, SUB_ACCOUNT_BYTE_LENGTH } from "../constants";
-import { PrincipalId } from "../../proto/base_types_pb";
+import { Principal } from '@dfinity/principal';
+import { Buffer } from 'buffer';
+import { GetBalancesRequest, NotifyCanisterRequest, SendICPTsRequest } from './model';
+import * as convert from '../converter';
+import { TRANSACTION_FEE, SUB_ACCOUNT_BYTE_LENGTH } from '../constants';
+import { PrincipalId } from '../../proto/base_types_pb';
 import {
   AccountBalanceRequest,
   AccountIdentifier,
@@ -17,13 +13,11 @@ import {
   NotifyRequest,
   Payment,
   SendRequest,
-  Subaccount,
-} from "../../proto/ledger_pb";
+  Subaccount
+} from '../../proto/ledger_pb';
 
 export default class RequestConverters {
-  public fromGetBalancesRequest = (
-    request: GetBalancesRequest
-  ): Array<AccountBalanceRequest> => {
+  public fromGetBalancesRequest = (request: GetBalancesRequest): Array<AccountBalanceRequest> => {
     return request.accounts.map((a) => {
       const request = new AccountBalanceRequest();
 
@@ -39,9 +33,7 @@ export default class RequestConverters {
     const accountIdentifier = this.fromAccountIdentifier(request.to);
     result.setTo(accountIdentifier);
 
-    const maxFee = this.toICPTs(
-      request.fee === undefined ? TRANSACTION_FEE : request.fee
-    );
+    const maxFee = this.toICPTs(request.fee === undefined ? TRANSACTION_FEE : request.fee);
     result.setMaxFee(maxFee);
 
     if (request.memo != null) {
@@ -61,21 +53,15 @@ export default class RequestConverters {
     }
 
     if (request.fromSubAccountId != null) {
-      result.setFromSubaccount(
-        this.subAccountIdToSubaccount(request.fromSubAccountId)
-      );
+      result.setFromSubaccount(this.subAccountIdToSubaccount(request.fromSubAccountId));
     }
 
     return result;
   };
 
-  public fromNotifyCanisterRequest = (
-    request: NotifyCanisterRequest
-  ): NotifyRequest => {
+  public fromNotifyCanisterRequest = (request: NotifyCanisterRequest): NotifyRequest => {
     const result = new NotifyRequest();
-    result.setToCanister(
-      this.toPrincipal(Principal.fromText(request.toCanister))
-    );
+    result.setToCanister(this.toPrincipal(Principal.fromText(request.toCanister)));
 
     const blockHeight = new BlockHeight();
     blockHeight.setHeight(request.blockHeight.toString());
@@ -88,15 +74,11 @@ export default class RequestConverters {
     }
 
     if (request.fromSubAccountId != null) {
-      const subaccount = this.subAccountIdToSubaccount(
-        request.fromSubAccountId
-      );
+      const subaccount = this.subAccountIdToSubaccount(request.fromSubAccountId);
       result.setFromSubaccount(subaccount);
     }
 
-    const maxFee = this.toICPTs(
-      request.maxFee === undefined ? TRANSACTION_FEE : request.maxFee
-    );
+    const maxFee = this.toICPTs(request.maxFee === undefined ? TRANSACTION_FEE : request.maxFee);
     result.setMaxFee(maxFee);
 
     return result;
@@ -111,7 +93,7 @@ export default class RequestConverters {
 
   private fromAccountIdentifier = (hexString: string): AccountIdentifier => {
     const accountIdentifier = new AccountIdentifier();
-    accountIdentifier.setHash(Uint8Array.from(Buffer.from(hexString, "hex")));
+    accountIdentifier.setHash(Uint8Array.from(Buffer.from(hexString, 'hex')));
     return accountIdentifier;
   };
 

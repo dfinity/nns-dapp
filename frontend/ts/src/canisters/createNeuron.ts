@@ -1,13 +1,13 @@
-import { Principal } from "@dfinity/principal";
-import { sha256 } from "js-sha256";
-import LedgerService from "./ledger/model";
-import GovernanceService from "./governance/model";
-import NnsDappService from "./nnsDapp/model";
-import GOVERNANCE_CANISTER_ID from "./governance/canisterId";
-import randomBytes from "randombytes";
-import { BlockHeight, E8s, NeuronId } from "./common/types";
-import * as convert from "./converter";
-import { pollUntilComplete } from "./multiPartTransactionPollingHandler";
+import { Principal } from '@dfinity/principal';
+import { sha256 } from 'js-sha256';
+import LedgerService from './ledger/model';
+import GovernanceService from './governance/model';
+import NnsDappService from './nnsDapp/model';
+import GOVERNANCE_CANISTER_ID from './governance/canisterId';
+import randomBytes from 'randombytes';
+import { BlockHeight, E8s, NeuronId } from './common/types';
+import * as convert from './converter';
+import { pollUntilComplete } from './multiPartTransactionPollingHandler';
 
 export type CreateNeuronRequest = {
   stake: E8s;
@@ -21,7 +21,7 @@ export default async function (
   request: CreateNeuronRequest
 ): Promise<NeuronId> {
   if (request.stake < 100000000) {
-    throw "Need a minimum of 1 ICP to stake a neuron";
+    throw 'Need a minimum of 1 ICP to stake a neuron';
   }
 
   const nonceBytes = new Uint8Array(randomBytes(8));
@@ -38,13 +38,13 @@ export default async function (
     memo: nonce,
     amount: request.stake,
     to: accountIdentifier,
-    fromSubAccountId: request.fromSubAccountId,
+    fromSubAccountId: request.fromSubAccountId
   });
 
   // Notify the governance of the transaction so that the neuron is created.
   return await governanceService.claimOrRefreshNeuronFromAccount({
     controller: principal,
-    memo: nonce,
+    memo: nonce
   });
 }
 
@@ -72,25 +72,21 @@ export async function createNeuronWithNnsDapp(
     memo: nonce,
     amount: request.stake,
     to: accountIdentifier,
-    fromSubAccountId: request.fromSubAccountId,
+    fromSubAccountId: request.fromSubAccountId
   });
 
-  const outcome = await pollUntilComplete(
-    nnsDappService,
-    principal,
-    blockHeight
-  );
+  const outcome = await pollUntilComplete(nnsDappService, principal, blockHeight);
 
-  if ("NeuronCreated" in outcome) {
+  if ('NeuronCreated' in outcome) {
     return outcome.NeuronCreated;
   } else {
-    throw new Error("Unable to create neuron");
+    throw new Error('Unable to create neuron');
   }
 }
 
 // 32 bytes
 function buildSubAccount(nonce: Uint8Array, principal: Principal): Uint8Array {
-  const padding = convert.asciiStringToByteArray("neuron-stake");
+  const padding = convert.asciiStringToByteArray('neuron-stake');
   const shaObj = sha256.create();
   shaObj.update([0x0c, ...padding, ...principal.toUint8Array(), ...nonce]);
   return new Uint8Array(shaObj.array());

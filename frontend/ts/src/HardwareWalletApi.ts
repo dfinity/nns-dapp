@@ -1,20 +1,15 @@
-import { LedgerIdentity } from "./ledger/identity";
-import ledgerBuilder from "./canisters/ledger/builder";
-import governanceBuilder from "./canisters/governance/builder";
-import GovernanceService, { EmptyResponse } from "./canisters/governance/model";
-import LedgerService, { SendICPTsRequest } from "./canisters/ledger/model";
-import {
-  AccountIdentifier,
-  BlockHeight,
-  E8s,
-  NeuronId,
-} from "./canisters/common/types";
-import { AnonymousIdentity, HttpAgent } from "@dfinity/agent";
-import { principalToAccountIdentifier } from "./canisters/converter";
-import { HOST } from "./canisters/constants";
-import { FETCH_ROOT_KEY } from "./config.json";
-import createNeuronImpl from "./canisters/createNeuron";
-import { executeWithLogging } from "./errorLogger";
+import { LedgerIdentity } from './ledger/identity';
+import ledgerBuilder from './canisters/ledger/builder';
+import governanceBuilder from './canisters/governance/builder';
+import GovernanceService, { EmptyResponse } from './canisters/governance/model';
+import LedgerService, { SendICPTsRequest } from './canisters/ledger/model';
+import { AccountIdentifier, BlockHeight, E8s, NeuronId } from './canisters/common/types';
+import { AnonymousIdentity, HttpAgent } from '@dfinity/agent';
+import { principalToAccountIdentifier } from './canisters/converter';
+import { HOST } from './canisters/constants';
+import { FETCH_ROOT_KEY } from './config.json';
+import createNeuronImpl from './canisters/createNeuron';
+import { executeWithLogging } from './errorLogger';
 
 export default class HardwareWalletApi {
   private readonly identity: LedgerIdentity;
@@ -27,12 +22,10 @@ export default class HardwareWalletApi {
    */
   private readonly anonymousGovernanceService: GovernanceService;
 
-  public static create = async (
-    ledgerIdentity: LedgerIdentity
-  ): Promise<HardwareWalletApi> => {
+  public static create = async (ledgerIdentity: LedgerIdentity): Promise<HardwareWalletApi> => {
     const anonymousAgent = new HttpAgent({
       host: HOST,
-      identity: new AnonymousIdentity(),
+      identity: new AnonymousIdentity()
     });
 
     if (FETCH_ROOT_KEY) {
@@ -41,7 +34,7 @@ export default class HardwareWalletApi {
 
     const ledgerAgent = new HttpAgent({
       host: HOST,
-      identity: ledgerIdentity,
+      identity: ledgerIdentity
     });
 
     if (FETCH_ROOT_KEY) {
@@ -49,10 +42,7 @@ export default class HardwareWalletApi {
     }
 
     const ledgerService = ledgerBuilder(ledgerAgent);
-    const anonymousGovernanceService = governanceBuilder(
-      anonymousAgent,
-      new AnonymousIdentity()
-    );
+    const anonymousGovernanceService = governanceBuilder(anonymousAgent, new AnonymousIdentity());
 
     const governanceService = governanceBuilder(ledgerAgent, ledgerIdentity);
 
@@ -71,9 +61,7 @@ export default class HardwareWalletApi {
     governanceService: GovernanceService
   ) {
     this.identity = ledgerIdentity;
-    this.accountIdentifier = principalToAccountIdentifier(
-      ledgerIdentity.getPrincipal()
-    );
+    this.accountIdentifier = principalToAccountIdentifier(ledgerIdentity.getPrincipal());
     this.ledgerService = ledgerService;
     this.anonymousGovernanceService = anonymousGovernanceService;
     this.governanceService = governanceService;
@@ -105,7 +93,7 @@ export default class HardwareWalletApi {
       this.ledgerService,
       this.anonymousGovernanceService,
       {
-        stake: amount,
+        stake: amount
       }
     );
 
@@ -113,14 +101,11 @@ export default class HardwareWalletApi {
     return neuronId.toString();
   };
 
-  public addHotKey = async (
-    neuronId: NeuronId,
-    principal: string
-  ): Promise<EmptyResponse> => {
+  public addHotKey = async (neuronId: NeuronId, principal: string): Promise<EmptyResponse> => {
     return await executeWithLogging(() =>
       this.governanceService.addHotKey({
         neuronId: neuronId,
-        principal: principal,
+        principal: principal
       })
     );
   };

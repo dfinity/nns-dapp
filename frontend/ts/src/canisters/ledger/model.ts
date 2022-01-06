@@ -1,10 +1,4 @@
-import {
-  AccountIdentifier,
-  BlockHeight,
-  CanisterIdString,
-  E8s,
-  SubAccount,
-} from "../common/types";
+import { AccountIdentifier, BlockHeight, CanisterIdString, E8s, SubAccount } from '../common/types';
 
 export interface GetBalancesRequest {
   accounts: Array<AccountIdentifier>;

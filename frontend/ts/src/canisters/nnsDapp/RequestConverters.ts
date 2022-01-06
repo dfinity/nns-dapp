@@ -1,34 +1,30 @@
-import { Principal } from "@dfinity/principal";
+import { Principal } from '@dfinity/principal';
 import {
   AttachCanisterRequest,
   DetachCanisterRequest,
   GetTransactionsRequest,
   RegisterHardwareWalletRequest,
-  RenameSubAccountRequest,
-} from "./model";
+  RenameSubAccountRequest
+} from './model';
 import {
   AttachCanisterRequest as RawAttachCanisterRequest,
   DetachCanisterRequest as RawDetachCanisterRequest,
   GetTransactionsRequest as RawGetTransactionsRequest,
   RegisterHardwareWalletRequest as RawRegisterHardwareWalletRequest,
-  RenameSubAccountRequest as RawRenameSubAccountRequest,
-} from "./rawService";
+  RenameSubAccountRequest as RawRenameSubAccountRequest
+} from './rawService';
 
 export default class RequestConverters {
-  public fromAttachCanisterRequest = (
-    request: AttachCanisterRequest
-  ): RawAttachCanisterRequest => {
+  public fromAttachCanisterRequest = (request: AttachCanisterRequest): RawAttachCanisterRequest => {
     return {
       name: request.name,
-      canister_id: Principal.fromText(request.canisterId),
+      canister_id: Principal.fromText(request.canisterId)
     };
   };
 
-  public fromDetachCanisterRequest = (
-    request: DetachCanisterRequest
-  ): RawDetachCanisterRequest => {
+  public fromDetachCanisterRequest = (request: DetachCanisterRequest): RawDetachCanisterRequest => {
     return {
-      canister_id: Principal.fromText(request.canisterId),
+      canister_id: Principal.fromText(request.canisterId)
     };
   };
 
@@ -38,7 +34,7 @@ export default class RequestConverters {
     return {
       account_identifier: request.accountIdentifier,
       offset: request.offset,
-      page_size: request.pageSize,
+      page_size: request.pageSize
     };
   };
 
@@ -47,7 +43,7 @@ export default class RequestConverters {
   ): RawRegisterHardwareWalletRequest => {
     return {
       name: request.name,
-      principal: Principal.fromText(request.principal),
+      principal: Principal.fromText(request.principal)
     };
   };
 
@@ -56,7 +52,7 @@ export default class RequestConverters {
   ): RawRenameSubAccountRequest => {
     return {
       account_identifier: request.accountIdentifier,
-      new_name: request.newName,
+      new_name: request.newName
     };
   };
 }

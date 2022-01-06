@@ -1,15 +1,15 @@
-import { Principal } from "@dfinity/principal";
-import { definite_canister_settings, _SERVICE } from "./rawService";
+import { Principal } from '@dfinity/principal';
+import { definite_canister_settings, _SERVICE } from './rawService';
 import ServiceInterface, {
   CanisterStatus,
   CanisterDetailsResponse,
   UpdateSettingsRequest,
-  UpdateSettingsResponse,
-} from "./model";
-import { CanisterIdString } from "../common/types";
-import * as convert from "../converter";
-import { toHttpError } from "../httpError";
-import { UnsupportedValueError } from "../../utils";
+  UpdateSettingsResponse
+} from './model';
+import { CanisterIdString } from '../common/types';
+import * as convert from '../converter';
+import { toHttpError } from '../httpError';
+import { UnsupportedValueError } from '../../utils';
 
 interface CanisterStatusResponse {
   status: { stopped: null } | { stopping: null } | { running: null };
@@ -32,35 +32,33 @@ export default class Service implements ServiceInterface {
     let rawResponse: CanisterStatusResponse;
     try {
       rawResponse = await this.service.canister_status({
-        canister_id: Principal.fromText(canisterId),
+        canister_id: Principal.fromText(canisterId)
       });
     } catch (e) {
       const httpError = toHttpError(e);
       if (httpError.code === 403) {
-        return { kind: "userNotTheController" };
+        return { kind: 'userNotTheController' };
       } else {
         throw e;
       }
     }
 
     const result: CanisterDetailsResponse = {
-      kind: "success",
+      kind: 'success',
       details: {
         status: this.getCanisterStatus(rawResponse),
         memorySize: rawResponse.memory_size,
         cycles: rawResponse.cycles,
         setting: {
-          controllers: rawResponse.settings.controllers.map((principal) =>
-            principal.toText()
-          ),
+          controllers: rawResponse.settings.controllers.map((principal) => principal.toText()),
           freezingThreshold: rawResponse.settings.freezing_threshold,
           memoryAllocation: rawResponse.settings.memory_allocation,
-          computeAllocation: rawResponse.settings.compute_allocation,
+          computeAllocation: rawResponse.settings.compute_allocation
         },
         moduleHash: rawResponse.module_hash.length
           ? convert.arrayOfNumberToArrayBuffer(rawResponse.module_hash[0])
-          : null,
-      },
+          : null
+      }
     };
 
     return result;
@@ -77,36 +75,28 @@ export default class Service implements ServiceInterface {
           controllers: settings.controllers
             ? [settings.controllers.map((c) => Principal.fromText(c))]
             : [],
-          freezing_threshold: settings.freezingThreshold
-            ? [settings.freezingThreshold]
-            : [],
-          memory_allocation: settings.memoryAllocation
-            ? [settings.memoryAllocation]
-            : [],
-          compute_allocation: settings.computeAllocation
-            ? [settings.computeAllocation]
-            : [],
-        },
+          freezing_threshold: settings.freezingThreshold ? [settings.freezingThreshold] : [],
+          memory_allocation: settings.memoryAllocation ? [settings.memoryAllocation] : [],
+          compute_allocation: settings.computeAllocation ? [settings.computeAllocation] : []
+        }
       });
-      return { kind: "success" };
+      return { kind: 'success' };
     } catch (e) {
       const httpError = toHttpError(e);
       if (httpError.code === 403) {
-        return { kind: "userNotTheController" };
+        return { kind: 'userNotTheController' };
       } else {
         throw e;
       }
     }
   };
 
-  private getCanisterStatus(
-    rawResponse: CanisterStatusResponse
-  ): CanisterStatus {
-    if ("stopped" in rawResponse.status) {
+  private getCanisterStatus(rawResponse: CanisterStatusResponse): CanisterStatus {
+    if ('stopped' in rawResponse.status) {
       return CanisterStatus.Stopped;
-    } else if ("stopping" in rawResponse.status) {
+    } else if ('stopping' in rawResponse.status) {
       return CanisterStatus.Stopping;
-    } else if ("running" in rawResponse.status) {
+    } else if ('running' in rawResponse.status) {
       return CanisterStatus.Running;
     }
     throw new UnsupportedValueError(rawResponse.status);

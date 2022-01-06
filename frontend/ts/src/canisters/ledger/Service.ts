@@ -1,16 +1,16 @@
-import async from "async";
-import { Agent } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
-import { AccountIdentifier, BlockHeight, E8s } from "../common/types";
+import async from 'async';
+import { Agent } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
+import { AccountIdentifier, BlockHeight, E8s } from '../common/types';
 import ServiceInterface, {
   GetBalancesRequest,
   NotifyCanisterRequest,
-  SendICPTsRequest,
-} from "./model";
-import RequestConverters from "./RequestConverters";
-import { BlockHeight as BlockHeightProto, ICPTs } from "../../proto/ledger_pb";
-import { submitQueryRequest } from "../queryRequestHandler";
-import { submitUpdateRequest } from "../updateRequestHandler";
+  SendICPTsRequest
+} from './model';
+import RequestConverters from './RequestConverters';
+import { BlockHeight as BlockHeightProto, ICPTs } from '../../proto/ledger_pb';
+import { submitQueryRequest } from '../queryRequestHandler';
+import { submitUpdateRequest } from '../updateRequestHandler';
 
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
@@ -39,46 +39,37 @@ export default class Service implements ServiceInterface {
       const responseBytes = await callMethod(
         this.agent,
         this.canisterId,
-        "account_balance_pb",
+        'account_balance_pb',
         r.serializeBinary()
       );
 
       const accountIdentifier = request.accounts[i as number];
-      balances[accountIdentifier] = BigInt(
-        ICPTs.deserializeBinary(responseBytes).getE8s()
-      );
+      balances[accountIdentifier] = BigInt(ICPTs.deserializeBinary(responseBytes).getE8s());
     });
 
     return balances;
   };
 
-  public sendICPTs = async (
-    request: SendICPTsRequest
-  ): Promise<BlockHeight> => {
+  public sendICPTs = async (request: SendICPTsRequest): Promise<BlockHeight> => {
     const rawRequest = this.requestConverters.fromSendICPTsRequest(request);
 
     const responseBytes = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "send_pb",
+      'send_pb',
       rawRequest.serializeBinary()
     );
 
-    return BigInt(
-      BlockHeightProto.deserializeBinary(responseBytes).getHeight()
-    );
+    return BigInt(BlockHeightProto.deserializeBinary(responseBytes).getHeight());
   };
 
-  public notify = async (
-    request: NotifyCanisterRequest
-  ): Promise<Uint8Array> => {
-    const rawRequest =
-      this.requestConverters.fromNotifyCanisterRequest(request);
+  public notify = async (request: NotifyCanisterRequest): Promise<Uint8Array> => {
+    const rawRequest = this.requestConverters.fromNotifyCanisterRequest(request);
 
     const rawResponse = await submitUpdateRequest(
       this.agent,
       this.canisterId,
-      "notify_pb",
+      'notify_pb',
       rawRequest.serializeBinary()
     );
 

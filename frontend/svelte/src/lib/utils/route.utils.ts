@@ -3,9 +3,8 @@ export const routePath = (): string => `/${window.location.hash.toLowerCase()}`;
 
 export const appPath = (): string => {
   const { pathname } = window.location;
-  return `${pathname.substring(0, pathname.lastIndexOf("/"))}`;
+  return `${pathname.substring(0, pathname.lastIndexOf('/'))}`;
 };
 
 // e.g. #/accounts => accounts
-export const routeContext = (): string =>
-  routePath().split("/").slice(2)[0].toLowerCase();
+export const routeContext = (): string => routePath().split('/').slice(2)[0].toLowerCase();

@@ -1,5 +1,5 @@
-import { Agent, QueryResponseStatus } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
+import { Agent, QueryResponseStatus } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
 
 export const submitQueryRequest = async (
   agent: Agent,
@@ -11,18 +11,18 @@ export const submitQueryRequest = async (
 
   const queryResponse = await agent.query(canisterId, {
     methodName,
-    arg,
+    arg
   });
 
   if (queryResponse.status == QueryResponseStatus.Rejected) {
     throw new Error(
       [
-        "Call failed:",
+        'Call failed:',
         `  Method: ${methodName}`,
         `  Canister ID: ${canisterId}`,
         `  HTTP status code: ${queryResponse.reject_code}`,
-        `  HTTP status text: ${queryResponse.reject_message}`,
-      ].join("\n")
+        `  HTTP status text: ${queryResponse.reject_message}`
+      ].join('\n')
     );
   }
 

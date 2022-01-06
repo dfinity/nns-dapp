@@ -1,9 +1,6 @@
-import { Principal } from "@dfinity/principal";
-import {
-  accountIdentifierToBytes,
-  arrayBufferToArrayOfNumber,
-} from "../converter";
-import { AccountIdentifier, E8s, NeuronId } from "../common/types";
+import { Principal } from '@dfinity/principal';
+import { accountIdentifierToBytes, arrayBufferToArrayOfNumber } from '../converter';
+import { AccountIdentifier, E8s, NeuronId } from '../common/types';
 import {
   Action,
   AddHotKeyRequest,
@@ -30,9 +27,9 @@ import {
   SpawnRequest,
   SplitRequest,
   StartDissolvingRequest,
-  StopDissolvingRequest,
-} from "./model";
-import { AccountIdentifier as PbAccountIdentifier } from "../../proto/ledger_pb";
+  StopDissolvingRequest
+} from './model';
+import { AccountIdentifier as PbAccountIdentifier } from '../../proto/ledger_pb';
 import {
   AccountIdentifier as RawAccountIdentifier,
   Action as RawAction,
@@ -47,15 +44,15 @@ import {
   NeuronIdOrSubaccount as RawNeuronIdOrSubaccount,
   NodeProvider as RawNodeProvider,
   Operation as RawOperation,
-  RewardMode as RawRewardMode,
-} from "./rawService";
-import { ManageNeuron as PbManageNeuron } from "../../proto/governance_pb";
+  RewardMode as RawRewardMode
+} from './rawService';
+import { ManageNeuron as PbManageNeuron } from '../../proto/governance_pb';
 import {
   NeuronId as PbNeuronId,
   PrincipalId as PbPrincipalId,
-  ProposalId as PbProposalId,
-} from "../../proto/base_types_pb";
-import { UnsupportedValueError } from "../../utils";
+  ProposalId as PbProposalId
+} from '../../proto/base_types_pb';
+import { UnsupportedValueError } from '../../utils';
 export default class RequestConverters {
   private readonly principal: Principal;
   constructor(principal: Principal) {
@@ -65,12 +62,10 @@ export default class RequestConverters {
   public fromManageNeuron = (manageNeuron: ManageNeuron): RawManageNeuron => {
     return {
       id: manageNeuron.id ? [this.fromNeuronId(manageNeuron.id)] : [],
-      command: manageNeuron.command
-        ? [this.fromCommand(manageNeuron.command)]
-        : [],
+      command: manageNeuron.command ? [this.fromCommand(manageNeuron.command)] : [],
       neuron_id_or_subaccount: manageNeuron.neuronIdOrSubaccount
         ? [this.fromNeuronIdOrSubaccount(manageNeuron.neuronIdOrSubaccount)]
-        : [],
+        : []
     };
   };
 
@@ -80,29 +75,23 @@ export default class RequestConverters {
     return [
       arrayBufferToArrayOfNumber(request.publicKey),
       request.nonce,
-      request.dissolveDelayInSecs,
+      request.dissolveDelayInSecs
     ];
   };
 
-  public fromListProposalsRequest = (
-    request: ListProposalsRequest
-  ): ListProposalInfo => {
+  public fromListProposalsRequest = (request: ListProposalsRequest): ListProposalInfo => {
     return {
       include_reward_status: request.includeRewardStatus,
-      before_proposal: request.beforeProposal
-        ? [this.fromProposalId(request.beforeProposal)]
-        : [],
+      before_proposal: request.beforeProposal ? [this.fromProposalId(request.beforeProposal)] : [],
       limit: request.limit,
       exclude_topic: request.excludeTopic,
-      include_status: request.includeStatus,
+      include_status: request.includeStatus
     };
   };
 
   public fromAddHotKeyRequest = (request: AddHotKeyRequest): PbManageNeuron => {
     const hotkeyPrincipal = new PbPrincipalId();
-    hotkeyPrincipal.setSerializedId(
-      Principal.fromText(request.principal).toUint8Array()
-    );
+    hotkeyPrincipal.setSerializedId(Principal.fromText(request.principal).toUint8Array());
 
     const hotkey = new PbManageNeuron.AddHotKey();
     hotkey.setNewHotKey(hotkeyPrincipal);
@@ -123,18 +112,16 @@ export default class RequestConverters {
     request: ClaimOrRefreshNeuronRequest
   ): RawManageNeuron => {
     const rawCommand: RawCommand = {
-      ClaimOrRefresh: { by: [{ NeuronIdOrSubaccount: {} }] },
+      ClaimOrRefresh: { by: [{ NeuronIdOrSubaccount: {} }] }
     };
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }]
     };
   };
 
-  public fromMergeMaturityRequest = (
-    request: MergeMaturityRequest
-  ): PbManageNeuron => {
+  public fromMergeMaturityRequest = (request: MergeMaturityRequest): PbManageNeuron => {
     const mergeMaturity = new PbManageNeuron.MergeMaturity();
     mergeMaturity.setPercentageToMerge(request.percentageToMerge);
     const manageNeuron = new PbManageNeuron();
@@ -145,13 +132,9 @@ export default class RequestConverters {
     return manageNeuron;
   };
 
-  public fromRemoveHotKeyRequest = (
-    request: RemoveHotKeyRequest
-  ): PbManageNeuron => {
+  public fromRemoveHotKeyRequest = (request: RemoveHotKeyRequest): PbManageNeuron => {
     const hotkeyPrincipal = new PbPrincipalId();
-    hotkeyPrincipal.setSerializedId(
-      Principal.fromText(request.principal).toUint8Array()
-    );
+    hotkeyPrincipal.setSerializedId(Principal.fromText(request.principal).toUint8Array());
 
     const command = new PbManageNeuron.RemoveHotKey();
     command.setHotKeyToRemove(hotkeyPrincipal);
@@ -169,9 +152,7 @@ export default class RequestConverters {
     return result;
   };
 
-  public fromStartDissolvingRequest = (
-    request: StartDissolvingRequest
-  ): PbManageNeuron => {
+  public fromStartDissolvingRequest = (request: StartDissolvingRequest): PbManageNeuron => {
     const configure = new PbManageNeuron.Configure();
     configure.setStartDissolving(new PbManageNeuron.StartDissolving());
 
@@ -185,9 +166,7 @@ export default class RequestConverters {
     return result;
   };
 
-  public fromStopDissolvingRequest = (
-    request: StopDissolvingRequest
-  ): PbManageNeuron => {
+  public fromStopDissolvingRequest = (request: StopDissolvingRequest): PbManageNeuron => {
     const configure = new PbManageNeuron.Configure();
     configure.setStopDissolving(new PbManageNeuron.StopDissolving());
 
@@ -205,9 +184,7 @@ export default class RequestConverters {
     request: IncreaseDissolveDelayRequest
   ): PbManageNeuron => {
     const command = new PbManageNeuron.IncreaseDissolveDelay();
-    command.setAdditionalDissolveDelaySeconds(
-      request.additionalDissolveDelaySeconds
-    );
+    command.setAdditionalDissolveDelaySeconds(request.additionalDissolveDelaySeconds);
 
     const configure = new PbManageNeuron.Configure();
     configure.setIncreaseDissolveDelay(command);
@@ -240,9 +217,7 @@ export default class RequestConverters {
     return manageNeuron;
   };
 
-  public fromRegisterVoteRequest = (
-    request: RegisterVoteRequest
-  ): PbManageNeuron => {
+  public fromRegisterVoteRequest = (request: RegisterVoteRequest): PbManageNeuron => {
     const registerVote = new PbManageNeuron.RegisterVote();
     registerVote.setVote(request.vote);
     const proposal = new PbProposalId();
@@ -279,13 +254,13 @@ export default class RequestConverters {
   public fromSplitRequest = (request: SplitRequest): RawManageNeuron => {
     const rawCommand: RawCommand = {
       Split: {
-        amount_e8s: request.amount,
-      },
+        amount_e8s: request.amount
+      }
     };
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }]
     };
   };
 
@@ -294,9 +269,7 @@ export default class RequestConverters {
 
     if (request.toAccountId) {
       const toAccountIdentifier = new PbAccountIdentifier();
-      toAccountIdentifier.setHash(
-        Uint8Array.from(Buffer.from(request.toAccountId, "hex"))
-      );
+      toAccountIdentifier.setHash(Uint8Array.from(Buffer.from(request.toAccountId, 'hex')));
       disburse.setToAccount(toAccountIdentifier);
     }
 
@@ -315,65 +288,59 @@ export default class RequestConverters {
     return manageNeuron;
   };
 
-  public fromDisburseToNeuronRequest = (
-    request: DisburseToNeuronRequest
-  ): RawManageNeuron => {
+  public fromDisburseToNeuronRequest = (request: DisburseToNeuronRequest): RawManageNeuron => {
     const rawCommand: RawCommand = {
       DisburseToNeuron: {
         dissolve_delay_seconds: request.dissolveDelaySeconds,
         kyc_verified: request.kycVerified,
         amount_e8s: request.amount,
         new_controller:
-          request.newController != null
-            ? [Principal.fromText(request.newController)]
-            : [],
-        nonce: request.nonce,
-      },
+          request.newController != null ? [Principal.fromText(request.newController)] : [],
+        nonce: request.nonce
+      }
     };
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }]
     };
   };
 
-  public fromMakeProposalRequest = (
-    request: MakeProposalRequest
-  ): RawManageNeuron => {
+  public fromMakeProposalRequest = (request: MakeProposalRequest): RawManageNeuron => {
     const rawCommand: RawCommand = {
       MakeProposal: {
         url: request.url,
         title: request.title != null ? [request.title] : [],
         summary: request.summary,
-        action: [this.fromAction(request.action)],
-      },
+        action: [this.fromAction(request.action)]
+      }
     };
     return {
       id: [],
       command: [rawCommand],
-      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }],
+      neuron_id_or_subaccount: [{ NeuronId: { id: request.neuronId } }]
     };
   };
 
   private fromFollowees(followees: Array<NeuronId>): RawFollowees {
     return {
-      followees: followees.map(this.fromNeuronId),
+      followees: followees.map(this.fromNeuronId)
     };
   }
 
   private fromNeuronId = (neuronId: NeuronId): RawNeuronId => {
     return {
-      id: neuronId,
+      id: neuronId
     };
   };
 
   private fromNeuronIdOrSubaccount = (
     neuronIdOrSubaccount: NeuronIdOrSubaccount
   ): RawNeuronIdOrSubaccount => {
-    if ("NeuronId" in neuronIdOrSubaccount) {
+    if ('NeuronId' in neuronIdOrSubaccount) {
       return { NeuronId: { id: neuronIdOrSubaccount.NeuronId } };
     }
-    if ("Subaccount" in neuronIdOrSubaccount) {
+    if ('Subaccount' in neuronIdOrSubaccount) {
       return { Subaccount: neuronIdOrSubaccount.Subaccount };
     }
     throw new UnsupportedValueError(neuronIdOrSubaccount);
@@ -381,54 +348,50 @@ export default class RequestConverters {
 
   private fromProposalId = (proposalId: ProposalId): RawNeuronId => {
     return {
-      id: proposalId,
+      id: proposalId
     };
   };
 
   private fromAction = (action: Action): RawAction => {
-    if ("ExecuteNnsFunction" in action) {
+    if ('ExecuteNnsFunction' in action) {
       const executeNnsFunction = action.ExecuteNnsFunction;
       return {
         ExecuteNnsFunction: {
           nns_function: executeNnsFunction.nnsFunctionId,
-          payload: arrayBufferToArrayOfNumber(executeNnsFunction.payloadBytes),
-        },
+          payload: arrayBufferToArrayOfNumber(executeNnsFunction.payloadBytes)
+        }
       };
     }
-    if ("ManageNeuron" in action) {
+    if ('ManageNeuron' in action) {
       const manageNeuron = action.ManageNeuron;
       return {
-        ManageNeuron: this.fromManageNeuron(manageNeuron),
+        ManageNeuron: this.fromManageNeuron(manageNeuron)
       };
     }
-    if ("ApproveGenesisKyc" in action) {
+    if ('ApproveGenesisKyc' in action) {
       const approveGenesisKyc = action.ApproveGenesisKyc;
       return {
         ApproveGenesisKyc: {
-          principals: approveGenesisKyc.principals.map(Principal.fromText),
-        },
+          principals: approveGenesisKyc.principals.map(Principal.fromText)
+        }
       };
     }
-    if ("ManageNetworkEconomics" in action) {
+    if ('ManageNetworkEconomics' in action) {
       const networkEconomics = action.ManageNetworkEconomics;
       return {
         ManageNetworkEconomics: {
           neuron_minimum_stake_e8s: networkEconomics.neuronMinimumStake,
-          max_proposals_to_keep_per_topic:
-            networkEconomics.maxProposalsToKeepPerTopic,
-          neuron_management_fee_per_proposal_e8s:
-            networkEconomics.neuronManagementFeePerProposal,
+          max_proposals_to_keep_per_topic: networkEconomics.maxProposalsToKeepPerTopic,
+          neuron_management_fee_per_proposal_e8s: networkEconomics.neuronManagementFeePerProposal,
           reject_cost_e8s: networkEconomics.rejectCost,
           transaction_fee_e8s: networkEconomics.transactionFee,
-          neuron_spawn_dissolve_delay_seconds:
-            networkEconomics.neuronSpawnDissolveDelaySeconds,
+          neuron_spawn_dissolve_delay_seconds: networkEconomics.neuronSpawnDissolveDelaySeconds,
           minimum_icp_xdr_rate: networkEconomics.minimumIcpXdrRate,
-          maximum_node_provider_rewards_e8s:
-            networkEconomics.maximumNodeProviderRewards,
-        },
+          maximum_node_provider_rewards_e8s: networkEconomics.maximumNodeProviderRewards
+        }
       };
     }
-    if ("RewardNodeProvider" in action) {
+    if ('RewardNodeProvider' in action) {
       const rewardNodeProvider = action.RewardNodeProvider;
       return {
         RewardNodeProvider: {
@@ -439,53 +402,50 @@ export default class RequestConverters {
           reward_mode:
             rewardNodeProvider.rewardMode != null
               ? [this.fromRewardMode(rewardNodeProvider.rewardMode)]
-              : [],
-        },
+              : []
+        }
       };
     }
-    if ("RewardNodeProviders" in action) {
+    if ('RewardNodeProviders' in action) {
       const rewardNodeProviders = action.RewardNodeProviders;
       return {
         RewardNodeProviders: {
           rewards: rewardNodeProviders.rewards.map((r) => ({
-            node_provider: r.nodeProvider
-              ? [this.fromNodeProvider(r.nodeProvider)]
-              : [],
+            node_provider: r.nodeProvider ? [this.fromNodeProvider(r.nodeProvider)] : [],
             amount_e8s: r.amountE8s,
-            reward_mode:
-              r.rewardMode != null ? [this.fromRewardMode(r.rewardMode)] : [],
-          })),
-        },
+            reward_mode: r.rewardMode != null ? [this.fromRewardMode(r.rewardMode)] : []
+          }))
+        }
       };
     }
-    if ("AddOrRemoveNodeProvider" in action) {
+    if ('AddOrRemoveNodeProvider' in action) {
       const addOrRemoveNodeProvider = action.AddOrRemoveNodeProvider;
       return {
         AddOrRemoveNodeProvider: {
           change: addOrRemoveNodeProvider.change
             ? [this.fromChange(addOrRemoveNodeProvider.change)]
-            : [],
-        },
+            : []
+        }
       };
     }
-    if ("Motion" in action) {
+    if ('Motion' in action) {
       const motion = action.Motion;
       return {
         Motion: {
-          motion_text: motion.motionText,
-        },
+          motion_text: motion.motionText
+        }
       };
     }
 
-    if ("SetDefaultFollowees" in action) {
+    if ('SetDefaultFollowees' in action) {
       const setDefaultFollowees = action.SetDefaultFollowees;
       return {
         SetDefaultFollowees: {
           default_followees: setDefaultFollowees.defaultFollowees.map((f) => [
             f.topic as number,
-            this.fromFollowees(f.followees),
-          ]),
-        },
+            this.fromFollowees(f.followees)
+          ])
+        }
       };
     }
 
@@ -494,55 +454,49 @@ export default class RequestConverters {
   };
 
   private fromCommand = (command: Command): RawCommand => {
-    if ("Split" in command) {
+    if ('Split' in command) {
       const split = command.Split;
       return {
         Split: {
-          amount_e8s: split.amount,
-        },
+          amount_e8s: split.amount
+        }
       };
     }
-    if ("Follow" in command) {
+    if ('Follow' in command) {
       const follow = command.Follow;
       return {
         Follow: {
           topic: follow.topic,
-          followees: follow.followees.map(this.fromNeuronId),
-        },
+          followees: follow.followees.map(this.fromNeuronId)
+        }
       };
     }
-    if ("ClaimOrRefresh" in command) {
+    if ('ClaimOrRefresh' in command) {
       const claimOrRefresh = command.ClaimOrRefresh;
       return {
         ClaimOrRefresh: {
-          by: claimOrRefresh.by
-            ? [this.fromClaimOrRefreshBy(claimOrRefresh.by)]
-            : [],
-        },
+          by: claimOrRefresh.by ? [this.fromClaimOrRefreshBy(claimOrRefresh.by)] : []
+        }
       };
     }
-    if ("Configure" in command) {
+    if ('Configure' in command) {
       const configure = command.Configure;
       return {
         Configure: {
-          operation: configure.operation
-            ? [this.fromOperation(configure.operation)]
-            : [],
-        },
+          operation: configure.operation ? [this.fromOperation(configure.operation)] : []
+        }
       };
     }
-    if ("RegisterVote" in command) {
+    if ('RegisterVote' in command) {
       const registerVote = command.RegisterVote;
       return {
         RegisterVote: {
           vote: registerVote.vote,
-          proposal: registerVote.proposal
-            ? [this.fromProposalId(registerVote.proposal)]
-            : [],
-        },
+          proposal: registerVote.proposal ? [this.fromProposalId(registerVote.proposal)] : []
+        }
       };
     }
-    if ("DisburseToNeuron" in command) {
+    if ('DisburseToNeuron' in command) {
       const disburseToNeuron = command.DisburseToNeuron;
       return {
         DisburseToNeuron: {
@@ -552,50 +506,46 @@ export default class RequestConverters {
           new_controller: disburseToNeuron.newController
             ? [Principal.fromText(disburseToNeuron.newController)]
             : [],
-          nonce: disburseToNeuron.nonce,
-        },
+          nonce: disburseToNeuron.nonce
+        }
       };
     }
-    if ("MergeMaturity" in command) {
+    if ('MergeMaturity' in command) {
       const mergeMaturity = command.MergeMaturity;
       return {
         MergeMaturity: {
-          percentage_to_merge: mergeMaturity.percentageToMerge,
-        },
+          percentage_to_merge: mergeMaturity.percentageToMerge
+        }
       };
     }
-    if ("MakeProposal" in command) {
+    if ('MakeProposal' in command) {
       const makeProposal = command.MakeProposal;
       return {
         MakeProposal: {
           url: makeProposal.url,
           title: [],
-          action: makeProposal.action
-            ? [this.fromAction(makeProposal.action)]
-            : [],
-          summary: makeProposal.summary,
-        },
+          action: makeProposal.action ? [this.fromAction(makeProposal.action)] : [],
+          summary: makeProposal.summary
+        }
       };
     }
-    if ("Disburse" in command) {
+    if ('Disburse' in command) {
       const disburse = command.Disburse;
       return {
         Disburse: {
           to_account: disburse.toAccountId
             ? [this.fromAccountIdentifier(disburse.toAccountId)]
             : [],
-          amount: disburse.amount ? [this.fromAmount(disburse.amount)] : [],
-        },
+          amount: disburse.amount ? [this.fromAmount(disburse.amount)] : []
+        }
       };
     }
-    if ("Spawn" in command) {
+    if ('Spawn' in command) {
       const spawn = command.Spawn;
       return {
         Spawn: {
-          new_controller: spawn.newController
-            ? [Principal.fromText(spawn.newController)]
-            : [],
-        },
+          new_controller: spawn.newController ? [Principal.fromText(spawn.newController)] : []
+        }
       };
     }
 
@@ -604,56 +554,52 @@ export default class RequestConverters {
   };
 
   private fromOperation = (operation: Operation): RawOperation => {
-    if ("RemoveHotKey" in operation) {
+    if ('RemoveHotKey' in operation) {
       const removeHotKey = operation.RemoveHotKey;
       return {
         RemoveHotKey: {
           hot_key_to_remove:
             removeHotKey.hotKeyToRemove != null
               ? [Principal.fromText(removeHotKey.hotKeyToRemove)]
-              : [],
-        },
+              : []
+        }
       };
     }
-    if ("AddHotKey" in operation) {
+    if ('AddHotKey' in operation) {
       const addHotKey = operation.AddHotKey;
       return {
         AddHotKey: {
-          new_hot_key: addHotKey.newHotKey
-            ? [Principal.fromText(addHotKey.newHotKey)]
-            : [],
-        },
+          new_hot_key: addHotKey.newHotKey ? [Principal.fromText(addHotKey.newHotKey)] : []
+        }
       };
     }
-    if ("StopDissolving" in operation) {
+    if ('StopDissolving' in operation) {
       return {
-        StopDissolving: {},
+        StopDissolving: {}
       };
     }
-    if ("StartDissolving" in operation) {
+    if ('StartDissolving' in operation) {
       return {
-        StartDissolving: {},
+        StartDissolving: {}
       };
     }
-    if ("IncreaseDissolveDelay" in operation) {
+    if ('IncreaseDissolveDelay' in operation) {
       const increaseDissolveDelay = operation.IncreaseDissolveDelay;
       return {
         IncreaseDissolveDelay: {
-          additional_dissolve_delay_seconds:
-            increaseDissolveDelay.additionalDissolveDelaySeconds,
-        },
+          additional_dissolve_delay_seconds: increaseDissolveDelay.additionalDissolveDelaySeconds
+        }
       };
     }
-    if ("JoinCommunityFund" in operation) {
+    if ('JoinCommunityFund' in operation) {
       return operation;
     }
-    if ("SetDissolveTimestamp" in operation) {
+    if ('SetDissolveTimestamp' in operation) {
       const setDissolveTimestamp = operation.SetDissolveTimestamp;
       return {
         SetDissolveTimestamp: {
-          dissolve_timestamp_seconds:
-            setDissolveTimestamp.dissolveTimestampSeconds,
-        },
+          dissolve_timestamp_seconds: setDissolveTimestamp.dissolveTimestampSeconds
+        }
       };
     }
     // If there's a missing operation above, this line will cause a compiler error.
@@ -661,14 +607,14 @@ export default class RequestConverters {
   };
 
   private fromChange = (change: Change): RawChange => {
-    if ("ToRemove" in change) {
+    if ('ToRemove' in change) {
       return {
-        ToRemove: this.fromNodeProvider(change.ToRemove),
+        ToRemove: this.fromNodeProvider(change.ToRemove)
       };
     }
-    if ("ToAdd" in change) {
+    if ('ToAdd' in change) {
       return {
-        ToAdd: this.fromNodeProvider(change.ToAdd),
+        ToAdd: this.fromNodeProvider(change.ToAdd)
       };
     }
     // If there's a missing change above, this line will cause a compiler error.
@@ -681,45 +627,38 @@ export default class RequestConverters {
       reward_account:
         nodeProvider.rewardAccount != null
           ? [this.fromAccountIdentifier(nodeProvider.rewardAccount)]
-          : [],
+          : []
     };
   };
 
   private fromAmount(amount: E8s): Amount {
     return {
-      e8s: amount,
+      e8s: amount
     };
   }
 
-  private fromAccountIdentifier(
-    accountIdentifier: AccountIdentifier
-  ): RawAccountIdentifier {
+  private fromAccountIdentifier(accountIdentifier: AccountIdentifier): RawAccountIdentifier {
     const bytes = accountIdentifierToBytes(accountIdentifier);
     return {
-      hash: arrayBufferToArrayOfNumber(bytes),
+      hash: arrayBufferToArrayOfNumber(bytes)
     };
   }
 
   private fromRewardMode(rewardMode: RewardMode): RawRewardMode {
-    if ("RewardToNeuron" in rewardMode) {
+    if ('RewardToNeuron' in rewardMode) {
       return {
         RewardToNeuron: {
-          dissolve_delay_seconds:
-            rewardMode.RewardToNeuron.dissolveDelaySeconds,
-        },
+          dissolve_delay_seconds: rewardMode.RewardToNeuron.dissolveDelaySeconds
+        }
       };
-    } else if ("RewardToAccount" in rewardMode) {
+    } else if ('RewardToAccount' in rewardMode) {
       return {
         RewardToAccount: {
           to_account:
             rewardMode.RewardToAccount.toAccount != null
-              ? [
-                  this.fromAccountIdentifier(
-                    rewardMode.RewardToAccount.toAccount
-                  ),
-                ]
-              : [],
-        },
+              ? [this.fromAccountIdentifier(rewardMode.RewardToAccount.toAccount)]
+              : []
+        }
       };
     } else {
       // If there's a missing rewardMode above, this line will cause a compiler error.
@@ -728,22 +667,20 @@ export default class RequestConverters {
   }
 
   private fromClaimOrRefreshBy(by: By): RawBy {
-    if ("NeuronIdOrSubaccount" in by) {
+    if ('NeuronIdOrSubaccount' in by) {
       return {
-        NeuronIdOrSubaccount: {},
+        NeuronIdOrSubaccount: {}
       };
-    } else if ("Memo" in by) {
+    } else if ('Memo' in by) {
       return {
-        Memo: by.Memo,
+        Memo: by.Memo
       };
-    } else if ("MemoAndController" in by) {
+    } else if ('MemoAndController' in by) {
       return {
         MemoAndController: {
           memo: by.MemoAndController.memo,
-          controller: by.MemoAndController.controller
-            ? [by.MemoAndController.controller]
-            : [],
-        },
+          controller: by.MemoAndController.controller ? [by.MemoAndController.controller] : []
+        }
       };
     } else {
       // Ensures all cases are covered at compile-time.

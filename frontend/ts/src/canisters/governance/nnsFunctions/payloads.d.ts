@@ -1,4 +1,4 @@
-import type { IDL } from "@dfinity/candid";
+import type { IDL } from '@dfinity/candid';
 
 export const AddNodeOperatorPayload: IDL.RecordClass;
 export const AddNodesToSubnetPayload: IDL.RecordClass;

@@ -1,5 +1,5 @@
 export type HttpError = {
-  kind: "httpError";
+  kind: 'httpError';
   code: number;
   message: string;
 };
@@ -8,15 +8,15 @@ export function toHttpError(error: Error): HttpError {
   let code = 500;
 
   const statusLine = error.message
-    .split("\n")
+    .split('\n')
     .map((l) => l.trim().toLowerCase())
-    .find((l) => l.startsWith("code:") || l.startsWith("http status code:"));
+    .find((l) => l.startsWith('code:') || l.startsWith('http status code:'));
 
   if (statusLine) {
-    const parts = statusLine.split(":");
+    const parts = statusLine.split(':');
     if (parts && parts.length > 1) {
       let valueText = parts[1].trim();
-      const valueParts = valueText.split(" ");
+      const valueParts = valueText.split(' ');
       if (valueParts && valueParts.length > 1) {
         valueText = valueParts[0].trim();
       }
@@ -28,8 +28,8 @@ export function toHttpError(error: Error): HttpError {
   }
 
   return {
-    kind: "httpError",
+    kind: 'httpError',
     code: code,
-    message: error.message,
+    message: error.message
   };
 }

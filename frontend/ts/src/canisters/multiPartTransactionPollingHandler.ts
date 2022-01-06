@@ -1,6 +1,6 @@
-import NnsDappService, { MultiPartTransactionStatus } from "./nnsDapp/model";
-import { BlockHeight } from "./common/types";
-import { Principal } from "@dfinity/principal";
+import NnsDappService, { MultiPartTransactionStatus } from './nnsDapp/model';
+import { BlockHeight } from './common/types';
+import { Principal } from '@dfinity/principal';
 
 const ONE_MINUTE_MILLIS = 60 * 1000;
 
@@ -15,10 +15,7 @@ export const pollUntilComplete = async (
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
     try {
-      const status = await nnsDappService.getMultiPartTransactionStatus(
-        principal,
-        blockHeight
-      );
+      const status = await nnsDappService.getMultiPartTransactionStatus(principal, blockHeight);
 
       if (!isStillPending(status)) {
         return status;
@@ -29,15 +26,9 @@ export const pollUntilComplete = async (
     }
   }
 
-  throw new Error(
-    "Failed to complete multi part transaction. Request may still be queued"
-  );
+  throw new Error('Failed to complete multi part transaction. Request may still be queued');
 };
 
 const isStillPending = (status: MultiPartTransactionStatus): boolean => {
-  return (
-    "Queued" in status ||
-    "PendingSync" in status ||
-    "ErrorWithRefundPending" in status
-  );
+  return 'Queued' in status || 'PendingSync' in status || 'ErrorWithRefundPending' in status;
 };

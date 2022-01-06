@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Layout from "../lib/components/Layout.svelte";
-  import { onMount } from "svelte";
+  import Layout from '../lib/components/Layout.svelte';
+  import { onMount } from 'svelte';
 
   onMount(() => {
     if (process.env.REDIRECT_TO_LEGACY) {
-      window.location.replace("/#/accounts");
+      window.location.replace('/#/accounts');
     }
   });
 </script>

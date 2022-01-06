@@ -1,5 +1,5 @@
-import { Option } from "../option";
-import { CanisterIdString } from "../common/types";
+import { Option } from '../option';
+import { CanisterIdString } from '../common/types';
 
 export interface CanisterSettings {
   controllers: string[];
@@ -21,19 +21,17 @@ export interface UpdateSettingsRequest {
 export enum CanisterStatus {
   Stopped,
   Stopping,
-  Running,
+  Running
 }
 
-export type CanisterDetailsResponse =
-  | CanisterDetailsSuccess
-  | UserNotTheController;
+export type CanisterDetailsResponse = CanisterDetailsSuccess | UserNotTheController;
 
 export type UserNotTheController = {
-  kind: "userNotTheController";
+  kind: 'userNotTheController';
 };
 
 export type CanisterDetailsSuccess = {
-  kind: "success";
+  kind: 'success';
   details: CanisterDetails;
 };
 
@@ -45,19 +43,13 @@ export interface CanisterDetails {
   moduleHash: Option<ArrayBuffer>;
 }
 
-export type UpdateSettingsResponse =
-  | UpdateSettingSuccess
-  | UserNotTheController;
+export type UpdateSettingsResponse = UpdateSettingSuccess | UserNotTheController;
 
 export type UpdateSettingSuccess = {
-  kind: "success";
+  kind: 'success';
 };
 
 export default interface ServiceInterface {
-  getCanisterDetails: (
-    canisterId: CanisterIdString
-  ) => Promise<CanisterDetailsResponse>;
-  updateSettings: (
-    request: UpdateSettingsRequest
-  ) => Promise<UpdateSettingsResponse>;
+  getCanisterDetails: (canisterId: CanisterIdString) => Promise<CanisterDetailsResponse>;
+  updateSettings: (request: UpdateSettingsRequest) => Promise<UpdateSettingsResponse>;
 }

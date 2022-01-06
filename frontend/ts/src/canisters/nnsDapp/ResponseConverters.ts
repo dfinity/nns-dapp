@@ -1,5 +1,5 @@
-import { UnsupportedValueError } from "../../utils";
-import * as convert from "../converter";
+import { UnsupportedValueError } from '../../utils';
+import * as convert from '../converter';
 import {
   AttachCanisterResult,
   CanisterDetails,
@@ -11,8 +11,8 @@ import {
   MultiPartTransactionStatus,
   RegisterHardwareWalletResponse,
   RenameSubAccountResponse,
-  SubAccountDetails,
-} from "./model";
+  SubAccountDetails
+} from './model';
 import {
   AttachCanisterResponse as RawAttachCanisterResponse,
   CanisterDetails as RawCanisterDetails,
@@ -24,23 +24,21 @@ import {
   MultiPartTransactionStatus as RawMultiPartTransactionStatus,
   RegisterHardwareWalletResponse as RawRegisterHardwareWalletResponse,
   RenameSubAccountResponse as RawRenameSubAccountResponse,
-  SubAccountDetails as RawSubAccountDetails,
-} from "./rawService";
-import TransactionsConverter from "./TransactionsConverter";
+  SubAccountDetails as RawSubAccountDetails
+} from './rawService';
+import TransactionsConverter from './TransactionsConverter';
 
 export default class ResponseConverters {
-  public toAttachCanisterResponse = (
-    response: RawAttachCanisterResponse
-  ): AttachCanisterResult => {
-    if ("Ok" in response) {
+  public toAttachCanisterResponse = (response: RawAttachCanisterResponse): AttachCanisterResult => {
+    if ('Ok' in response) {
       return AttachCanisterResult.Ok;
-    } else if ("CanisterAlreadyAttached" in response) {
+    } else if ('CanisterAlreadyAttached' in response) {
       return AttachCanisterResult.CanisterAlreadyAttached;
-    } else if ("NameAlreadyTaken" in response) {
+    } else if ('NameAlreadyTaken' in response) {
       return AttachCanisterResult.NameAlreadyTaken;
-    } else if ("NameTooLong" in response) {
+    } else if ('NameTooLong' in response) {
       return AttachCanisterResult.NameTooLong;
-    } else if ("CanisterLimitExceeded" in response) {
+    } else if ('CanisterLimitExceeded' in response) {
       return AttachCanisterResult.CanisterLimitExceeded;
     }
     // Check at compile-time that all cases are covered.
@@ -59,10 +57,8 @@ export default class ResponseConverters {
     return response.map(this.toCanisterDetails);
   };
 
-  public toGetAccountResponse = (
-    response: RawGetAccountResponse
-  ): GetAccountResponse => {
-    if ("Ok" in response) {
+  public toGetAccountResponse = (response: RawGetAccountResponse): GetAccountResponse => {
+    if ('Ok' in response) {
       return {
         Ok: {
           principal: response.Ok.principal.toString(),
@@ -70,8 +66,8 @@ export default class ResponseConverters {
           subAccounts: response.Ok.sub_accounts.map(this.toSubAccountDetails),
           hardwareWalletAccounts: response.Ok.hardware_wallet_accounts.map(
             this.toHardwareWalletAccountDetails
-          ),
-        },
+          )
+        }
       };
     }
     return response;
@@ -80,9 +76,9 @@ export default class ResponseConverters {
   public toCreateSubAccountResponse = (
     response: RawCreateSubAccountResponse
   ): CreateSubAccountResponse => {
-    if ("Ok" in response) {
+    if ('Ok' in response) {
       return {
-        Ok: this.toSubAccountDetails(response.Ok),
+        Ok: this.toSubAccountDetails(response.Ok)
       };
     }
     return response;
@@ -93,7 +89,7 @@ export default class ResponseConverters {
   ): GetTransactionsResponse => {
     return {
       total: response.total,
-      transactions: TransactionsConverter.convert(response.transactions),
+      transactions: TransactionsConverter.convert(response.transactions)
     };
   };
 
@@ -115,23 +111,18 @@ export default class ResponseConverters {
     return response;
   };
 
-  private toSubAccountDetails = (
-    subAccount: RawSubAccountDetails
-  ): SubAccountDetails => {
+  private toSubAccountDetails = (subAccount: RawSubAccountDetails): SubAccountDetails => {
     return {
       id: convert.toSubAccountId(subAccount.sub_account),
       accountIdentifier: subAccount.account_identifier,
-      name: subAccount.name,
+      name: subAccount.name
     };
   };
 
-  private toCanisterDetails = (
-    details: RawCanisterDetails
-  ): CanisterDetails => {
+  private toCanisterDetails = (details: RawCanisterDetails): CanisterDetails => {
     return {
-      name:
-        details.name.length > 0 ? details.name : details.canister_id.toString(),
-      canisterId: details.canister_id.toString(),
+      name: details.name.length > 0 ? details.name : details.canister_id.toString(),
+      canisterId: details.canister_id.toString()
     };
   };
 
@@ -141,7 +132,7 @@ export default class ResponseConverters {
     return {
       name: hardwareWalletAccount.name,
       principal: hardwareWalletAccount.principal.toString(),
-      accountIdentifier: hardwareWalletAccount.account_identifier,
+      accountIdentifier: hardwareWalletAccount.account_identifier
     };
   };
 }

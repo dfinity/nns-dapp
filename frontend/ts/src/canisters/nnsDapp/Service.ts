@@ -1,5 +1,5 @@
-import { Principal } from "@dfinity/principal";
-import { AccountIdentifier, BlockHeight } from "../common/types";
+import { Principal } from '@dfinity/principal';
+import { AccountIdentifier, BlockHeight } from '../common/types';
 import ServiceInterface, {
   AttachCanisterRequest,
   AttachCanisterResult,
@@ -14,11 +14,11 @@ import ServiceInterface, {
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
-  RenameSubAccountResponse,
-} from "./model";
-import { _SERVICE } from "./rawService";
-import RequestConverters from "./RequestConverters";
-import ResponseConverters from "./ResponseConverters";
+  RenameSubAccountResponse
+} from './model';
+import { _SERVICE } from './rawService';
+import RequestConverters from './RequestConverters';
+import ResponseConverters from './ResponseConverters';
 
 export default class Service implements ServiceInterface {
   private readonly service: _SERVICE;
@@ -33,11 +33,8 @@ export default class Service implements ServiceInterface {
     this.responseConverters = new ResponseConverters();
   }
 
-  public attachCanister = async (
-    request: AttachCanisterRequest
-  ): Promise<AttachCanisterResult> => {
-    const rawRequest =
-      this.requestConverters.fromAttachCanisterRequest(request);
+  public attachCanister = async (request: AttachCanisterRequest): Promise<AttachCanisterResult> => {
+    const rawRequest = this.requestConverters.fromAttachCanisterRequest(request);
     const rawResponse = await this.service.attach_canister(rawRequest);
     return this.responseConverters.toAttachCanisterResponse(rawResponse);
   };
@@ -45,15 +42,12 @@ export default class Service implements ServiceInterface {
   public detachCanister = async (
     request: DetachCanisterRequest
   ): Promise<DetachCanisterResponse> => {
-    const rawRequest =
-      this.requestConverters.fromDetachCanisterRequest(request);
+    const rawRequest = this.requestConverters.fromDetachCanisterRequest(request);
     const rawResponse = await this.service.detach_canister(rawRequest);
     return this.responseConverters.toDetachCanisterResponse(rawResponse);
   };
 
-  public getCanisters = async (
-    certified = true
-  ): Promise<Array<CanisterDetails>> => {
+  public getCanisters = async (certified = true): Promise<Array<CanisterDetails>> => {
     const serviceToUse = certified ? this.certifiedService : this.service;
     const rawResponse = await serviceToUse.get_canisters();
     return this.responseConverters.toArrayOfCanisterDetail(rawResponse);
@@ -69,9 +63,7 @@ export default class Service implements ServiceInterface {
     return this.service.add_account();
   };
 
-  public createSubAccount = async (
-    name: string
-  ): Promise<CreateSubAccountResponse> => {
+  public createSubAccount = async (name: string): Promise<CreateSubAccountResponse> => {
     const rawResponse = await this.service.create_sub_account(name);
     return this.responseConverters.toCreateSubAccountResponse(rawResponse);
   };
@@ -79,8 +71,7 @@ export default class Service implements ServiceInterface {
   public renameSubAccount = async (
     request: RenameSubAccountRequest
   ): Promise<RenameSubAccountResponse> => {
-    const rawRequest =
-      this.requestConverters.fromRenameSubAccountRequest(request);
+    const rawRequest = this.requestConverters.fromRenameSubAccountRequest(request);
     const rawResponse = await this.service.rename_sub_account(rawRequest);
     return this.responseConverters.toRenameSubAccountResponse(rawResponse);
   };
@@ -88,20 +79,16 @@ export default class Service implements ServiceInterface {
   public registerHardwareWallet = async (
     request: RegisterHardwareWalletRequest
   ): Promise<RegisterHardwareWalletResponse> => {
-    const rawRequest =
-      this.requestConverters.fromRegisterHardwareWalletRequest(request);
+    const rawRequest = this.requestConverters.fromRegisterHardwareWalletRequest(request);
     const rawResponse = await this.service.register_hardware_wallet(rawRequest);
-    return this.responseConverters.toRegisterHardwareWalletResponse(
-      rawResponse
-    );
+    return this.responseConverters.toRegisterHardwareWalletResponse(rawResponse);
   };
 
   public getTransactions = async (
     request: GetTransactionsRequest,
     certified: boolean
   ): Promise<GetTransactionsResponse> => {
-    const rawRequest =
-      this.requestConverters.fromGetTransactionsRequest(request);
+    const rawRequest = this.requestConverters.fromGetTransactionsRequest(request);
     const serviceToUse = certified ? this.certifiedService : this.service;
     const rawResponse = await serviceToUse.get_transactions(rawRequest);
     return this.responseConverters.toGetTransactionsResponse(rawResponse);

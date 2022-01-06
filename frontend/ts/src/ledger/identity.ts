@@ -5,23 +5,21 @@ import {
   PublicKey,
   ReadRequest,
   Signature,
-  SignIdentity,
-} from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
-import LedgerApp, { LedgerError, ResponseSign } from "@zondax/ledger-icp";
-import { Secp256k1PublicKey } from "./secp256k1";
+  SignIdentity
+} from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
+import LedgerApp, { LedgerError, ResponseSign } from '@zondax/ledger-icp';
+import { Secp256k1PublicKey } from './secp256k1';
 
 // @ts-ignore (no types are available)
-import TransportWebHID, { Transport } from "@ledgerhq/hw-transport-webhid";
-import TransportNodeHidNoEvents from "@ledgerhq/hw-transport-node-hid-noevents";
+import TransportWebHID, { Transport } from '@ledgerhq/hw-transport-webhid';
+import TransportNodeHidNoEvents from '@ledgerhq/hw-transport-node-hid-noevents';
 
 /**
  * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
  * @param request - body of the HttpAgentRequest
  */
-function _prepareCborForLedger(
-  request: ReadRequest | CallRequest
-): ArrayBuffer {
+function _prepareCborForLedger(request: ReadRequest | CallRequest): ArrayBuffer {
   return Cbor.encode({ content: request });
 }
 
@@ -37,9 +35,7 @@ export class LedgerIdentity extends SignIdentity {
    * Create a LedgerIdentity using the Web USB transport.
    * @param derivePath The derivation path.
    */
-  public static async create(
-    derivePath = `m/44'/223'/0'/0/0`
-  ): Promise<LedgerIdentity> {
+  public static async create(derivePath = `m/44'/223'/0'/0/0`): Promise<LedgerIdentity> {
     const [app, transport] = await this._connect();
 
     try {
@@ -81,15 +77,15 @@ export class LedgerIdentity extends SignIdentity {
       return [app, transport];
     } catch (err) {
       // @ts-ignore
-      if (err.id && err.id == "NoDeviceFound") {
-        throw "No Ledger device found. Is the wallet connected and unlocked?";
+      if (err.id && err.id == 'NoDeviceFound') {
+        throw 'No Ledger device found. Is the wallet connected and unlocked?';
       } else if (
         // @ts-ignore
         err.message &&
         // @ts-ignore
-        err.message.includes("cannot open device with path")
+        err.message.includes('cannot open device with path')
       ) {
-        throw "Cannot connect to Ledger device. Please close all other wallet applications (e.g. Ledger Live) and try again.";
+        throw 'Cannot connect to Ledger device. Please close all other wallet applications (e.g. Ledger Live) and try again.';
       } else {
         // Unsupported browser. Data on browser compatibility is taken from https://caniuse.com/webhid
         throw `Cannot connect to Ledger Wallet. Either you have other wallet applications open (e.g. Ledger Live), or your browser doesn't support WebHID, which is necessary to communicate with your Ledger hardware wallet.\n\nSupported browsers:\n* Chrome (Desktop) v89+\n* Edge v89+\n* Opera v76+\n\nError: ${err}`;
@@ -104,28 +100,20 @@ export class LedgerIdentity extends SignIdentity {
     const resp = await app.getAddressAndPubKey(derivePath);
     // @ts-ignore
     if (resp.returnCode == 28161) {
-      throw "Please open the Internet Computer app on your wallet and try again.";
+      throw 'Please open the Internet Computer app on your wallet and try again.';
     } else if (resp.returnCode == LedgerError.TransactionRejected) {
-      throw "Ledger Wallet is locked. Unlock it and try again.";
+      throw 'Ledger Wallet is locked. Unlock it and try again.';
       // @ts-ignore
     } else if (resp.returnCode == 65535) {
-      throw "Unable to fetch the public key. Please try again.";
+      throw 'Unable to fetch the public key. Please try again.';
     }
 
     // This type doesn't have the right fields in it, so we have to manually type it.
-    const principal = (resp as unknown as { principalText: string })
-      .principalText;
-    const publicKey = Secp256k1PublicKey.fromRaw(
-      new Uint8Array(resp.publicKey)
-    );
+    const principal = (resp as unknown as { principalText: string }).principalText;
+    const publicKey = Secp256k1PublicKey.fromRaw(new Uint8Array(resp.publicKey));
 
-    if (
-      principal !==
-      Principal.selfAuthenticating(new Uint8Array(publicKey.toDer())).toText()
-    ) {
-      throw new Error(
-        "Principal returned by device does not match public key."
-      );
+    if (principal !== Principal.selfAuthenticating(new Uint8Array(publicKey.toDer())).toText()) {
+      throw new Error('Principal returned by device does not match public key.');
     }
 
     return publicKey;
@@ -167,9 +155,7 @@ export class LedgerIdentity extends SignIdentity {
       }
 
       if (signatureRS?.byteLength !== 64) {
-        throw new Error(
-          `Signature must be 64 bytes long (is ${signatureRS.length})`
-        );
+        throw new Error(`Signature must be 64 bytes long (is ${signatureRS.length})`);
       }
 
       return signatureRS.buffer as Signature;
@@ -191,26 +177,19 @@ export class LedgerIdentity extends SignIdentity {
       body: {
         content: body,
         sender_pubkey: this._publicKey.toDer(),
-        sender_sig: signature,
-      },
+        sender_sig: signature
+      }
     };
   }
 
-  private async _executeWithApp<T>(
-    func: (app: LedgerApp) => Promise<T>
-  ): Promise<T> {
+  private async _executeWithApp<T>(func: (app: LedgerApp) => Promise<T>): Promise<T> {
     const [app, transport] = await LedgerIdentity._connect();
 
     try {
       // Verify that the public key of the device matches the public key of this identity.
-      const devicePublicKey = await LedgerIdentity._fetchPublicKeyFromDevice(
-        app,
-        this.derivePath
-      );
+      const devicePublicKey = await LedgerIdentity._fetchPublicKeyFromDevice(app, this.derivePath);
       if (JSON.stringify(devicePublicKey) !== JSON.stringify(this._publicKey)) {
-        throw new Error(
-          "Found unexpected public key. Are you sure you're using the right wallet?"
-        );
+        throw new Error("Found unexpected public key. Are you sure you're using the right wallet?");
       }
 
       // Run the provided function.

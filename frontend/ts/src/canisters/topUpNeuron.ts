@@ -1,8 +1,8 @@
-import LedgerService from "./ledger/model";
-import NnsDappService from "./nnsDapp/model";
-import { AccountIdentifier, E8s } from "./common/types";
-import { pollUntilComplete } from "./multiPartTransactionPollingHandler";
-import { Principal } from "@dfinity/principal";
+import LedgerService from './ledger/model';
+import NnsDappService from './nnsDapp/model';
+import { AccountIdentifier, E8s } from './common/types';
+import { pollUntilComplete } from './multiPartTransactionPollingHandler';
+import { Principal } from '@dfinity/principal';
 
 export type TopUpNeuronRequest = {
   amount: E8s;
@@ -19,16 +19,12 @@ export default async function (
   const blockHeight = await ledgerService.sendICPTs({
     amount: request.amount,
     to: request.neuronAccountIdentifier,
-    fromSubAccountId: request.fromSubAccountId,
+    fromSubAccountId: request.fromSubAccountId
   });
 
-  const outcome = await pollUntilComplete(
-    nnsDappService,
-    principal,
-    blockHeight
-  );
+  const outcome = await pollUntilComplete(nnsDappService, principal, blockHeight);
 
-  if (!("Complete" in outcome)) {
-    throw new Error("Unable to top up neuron");
+  if (!('Complete' in outcome)) {
+    throw new Error('Unable to top up neuron');
   }
 }

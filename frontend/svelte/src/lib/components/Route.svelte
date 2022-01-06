@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { SvelteComponent } from "svelte";
-  import { routePath } from "../utils/route.utils";
+  import type { SvelteComponent } from 'svelte';
+  import { routePath } from '../utils/route.utils';
 
   export let path: string;
   export let component: typeof SvelteComponent;

@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal";
+import { Principal } from '@dfinity/principal';
 import {
   AccountIdentifier,
   BlockHeight,
@@ -6,9 +6,9 @@ import {
   E8s,
   Memo,
   NeuronId,
-  PrincipalString,
-} from "../common/types";
-import { CanisterId } from "./rawService";
+  PrincipalString
+} from '../common/types';
+import { CanisterId } from './rawService';
 
 export enum TransactionType {
   Burn,
@@ -18,7 +18,7 @@ export enum TransactionType {
   StakeNeuronNotification,
   TopUpNeuron,
   CreateCanister,
-  TopUpCanister,
+  TopUpCanister
 }
 
 export interface AccountDetails {
@@ -38,7 +38,7 @@ export enum AttachCanisterResult {
   CanisterAlreadyAttached,
   NameAlreadyTaken,
   NameTooLong,
-  CanisterLimitExceeded,
+  CanisterLimitExceeded
 }
 
 export interface CanisterDetails {
@@ -57,9 +57,7 @@ export interface DetachCanisterRequest {
 }
 export type DetachCanisterResponse = { Ok: null } | { CanisterNotFound: null };
 
-export type GetAccountResponse =
-  | { Ok: AccountDetails }
-  | { AccountNotFound: null };
+export type GetAccountResponse = { Ok: AccountDetails } | { AccountNotFound: null };
 
 export interface GetTransactionsRequest {
   accountIdentifier: AccountIdentifier;
@@ -137,13 +135,9 @@ export type Transfer =
 
 export default interface ServiceInterface {
   addAccount: () => Promise<AccountIdentifier>;
-  attachCanister: (
-    request: AttachCanisterRequest
-  ) => Promise<AttachCanisterResult>;
+  attachCanister: (request: AttachCanisterRequest) => Promise<AttachCanisterResult>;
   createSubAccount: (name: string) => Promise<CreateSubAccountResponse>;
-  detachCanister: (
-    request: DetachCanisterRequest
-  ) => Promise<DetachCanisterResponse>;
+  detachCanister: (request: DetachCanisterRequest) => Promise<DetachCanisterResponse>;
   getAccount: (certified: boolean) => Promise<GetAccountResponse>;
   getCanisters: () => Promise<Array<CanisterDetails>>;
   getMultiPartTransactionStatus: (
@@ -157,7 +151,5 @@ export default interface ServiceInterface {
   registerHardwareWallet: (
     request: RegisterHardwareWalletRequest
   ) => Promise<RegisterHardwareWalletResponse>;
-  renameSubAccount: (
-    request: RenameSubAccountRequest
-  ) => Promise<RenameSubAccountResponse>;
+  renameSubAccount: (request: RenameSubAccountRequest) => Promise<RenameSubAccountResponse>;
 }

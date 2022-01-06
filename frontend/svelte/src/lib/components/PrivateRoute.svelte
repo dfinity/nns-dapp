@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AuthStore } from "../stores/auth.store";
-  import { authStore } from "../stores/auth.store";
-  import { onDestroy, SvelteComponent } from "svelte";
-  import Route from "./Route.svelte";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { appPath, routeContext, routePath } from "../utils/route.utils";
+  import type { AuthStore } from '../stores/auth.store';
+  import { authStore } from '../stores/auth.store';
+  import { onDestroy, SvelteComponent } from 'svelte';
+  import Route from './Route.svelte';
+  import type { Unsubscriber } from 'svelte/types/runtime/store';
+  import { appPath, routeContext, routePath } from '../utils/route.utils';
 
   export let path: string;
   export let component: typeof SvelteComponent;
@@ -20,13 +20,11 @@
     window.location.replace(`${appPath()}/?redirect=${routeContext()}`);
   };
 
-  const unsubscribe: Unsubscriber = authStore.subscribe(
-    ({ signedIn: loggedIn }: AuthStore) => {
-      signedIn = loggedIn === true;
+  const unsubscribe: Unsubscriber = authStore.subscribe(({ signedIn: loggedIn }: AuthStore) => {
+    signedIn = loggedIn === true;
 
-      redirectLogin();
-    }
-  );
+    redirectLogin();
+  });
 
   onDestroy(unsubscribe);
 </script>

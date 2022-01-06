@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { authStore } from "../stores/auth.store";
+  import { authStore } from '../stores/auth.store';
 </script>
 
 <svelte:window on:storage={async () => await authStore.init()} />
