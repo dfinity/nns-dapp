@@ -38,123 +38,118 @@
   onDestroy(unsubscribe);
 </script>
 
-<div class="auth-expandable">
-  {#if !signedIn}
-    <div class="auth-overlay">
-      <div />
-      <h1>INTERNET COMPUTER</h1>
-      <h2>
-        <span class="blue">NETWORK</span> . <span class="pink">NERVOUS</span> .
-        <span class="green">SYSTEM</span>
-      </h2>
-      <div class="dfinity">
-        <img src="/assets/assets/ic_colour_logo.svg" />
-      </div>
-      <div class="tagline">
-        <span class="yellow">ICP</span> and <span class="blue">governance</span>
-      </div>
-      <button on:click={signIn} class="auth-button">LOGIN</button>
-    </div>
-  {/if}
-</div>
+{#if !signedIn}
+  <main>
+    <img
+      src="/assets/assets/nns_background.jpeg"
+      loading="lazy"
+      role="presentation"
+      alt=""
+      aria-hidden="true"
+      class="background"
+    />
 
-<style>
-  .auth-section {
-    padding: 1em;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    text-align: right;
-    position: fixed;
-    top: 0;
-    right: 0;
-  }
+    <h1>INTERNET COMPUTER</h1>
+    <h2>
+      <span class="blue">NETWORK</span> . <span class="pink">NERVOUS</span> .
+      <span class="green">SYSTEM</span>
+    </h2>
+    <img
+      src="/assets/assets/ic_colour_logo.svg"
+      role="presentation"
+      alt="DFINITY logo"
+      loading="lazy"
+      class="logo"
+    />
+    <p>
+      <span class="green">ICP</span> and <span class="blue">governance</span>
+    </p>
+    <button on:click={signIn}>LOGIN</button>
+  </main>
+{/if}
 
-  .auth-button {
-    background: white;
-    padding: 0 2em;
-    border-radius: 60px;
-    font-size: 1em;
-    line-height: 40px;
-    height: 33px;
-    outline: 0;
-    border: 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
+<style lang="scss">
+  @use "../lib/themes/mixins/img";
 
-  .auth-overlay {
+  main {
     position: absolute;
     top: 0;
+    bottom: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 100;
-    background-color: black;
-    background-image: url("/assets/assets/nns_background.jpeg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+    right: 0;
+
     display: grid;
-    grid-template-rows: 75px 30px 40px auto 40px 140px auto;
-  }
-  @media (max-width: 1600px) {
-    .auth-overlay {
-      background-size: 1600px auto;
+    grid-template-rows: 105px 40px auto 40px 140px auto;
+
+    > * {
+      margin-left: auto;
+      margin-right: auto;
+      color: var(--gray-400);
+      z-index: 1;
     }
   }
-  .auth-overlay h1 {
-    color: #a19996;
-    font-size: var(--font-size-normal);
-    letter-spacing: 1ex;
-  }
-  .auth-overlay h2 {
-    font-size: var(--font-size-normal);
-    color: #777;
-    letter-spacing: 0.5ex;
-  }
-  .auth-overlay .tagline {
-    font-size: var(--font-size-normal);
-    letter-spacing: 0.5ex;
-    color: #a19996;
-  }
-  .auth-overlay span.blue {
-    color: #2ca8df;
-  }
-  .auth-overlay span.pink {
-    color: #d81c6f;
-  }
-  .auth-overlay span.green {
-    color: #859d44;
-  }
-  .auth-overlay span.yellow {
-    color: #b2b081;
+
+  h1 {
+    margin-bottom: 0;
+    letter-spacing: 0.3rem;
+
+    align-self: flex-end;
   }
 
-  .auth-overlay > * {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    color: #e4f0f0;
+  h2 {
+    letter-spacing: 0.4rem;
+
+    display: inline-flex;
+    align-items: center;
+
+    margin: 0 auto;
+    font-size: var(--font-size-small);
   }
-  .auth-overlay button {
-    padding-left: 10px;
-    padding-right: 10px;
+
+  p {
+    font-size: var(--font-size-small);
+    letter-spacing: 0.3rem;
+    margin: var(--padding) auto;
+  }
+
+  .blue {
+    color: var(--blue-350);
+  }
+
+  .pink {
+    color: var(--pink);
+  }
+
+  .green {
+    color: var(--green-400);
+  }
+
+  .logo {
+    width: 7em;
+    margin: var(--padding) auto;
+  }
+
+  .background {
+    @include img.background;
+  }
+
+  button {
+    margin: calc(2 * var(--padding)) auto;
+    padding: var(--padding);
+
     width: 140px;
     height: 55px;
-    line-height: 55px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #141f33;
-    border: var(--widget-border);
-    border-radius: var(--widget-border-radius-small);
-    font-size: 20px;
-    color: #aeb7b7;
-    letter-spacing: 0.5ex;
-  }
-  .dfinity img {
-    width: 5em;
+
+    background: var(--blue-950);
+    border-radius: var(--border-radius);
+
+    font-weight: 700;
+    letter-spacing: 0.4rem;
+
+    transition: background 0.2s;
+
+    &:hover {
+      background: var(--blue-950-tint);
+    }
   }
 </style>
