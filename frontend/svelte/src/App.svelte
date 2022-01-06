@@ -26,3 +26,9 @@
     />
   {/if}
 </svelte:head>
+
+<style lang="scss" global>
+  @import "./lib/themes/fonts.scss";
+  @import "./lib/themes/variables.scss";
+  @import "./lib/themes/theme.scss";
+</style>
