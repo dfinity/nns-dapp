@@ -60,5 +60,12 @@ window["getAccountIdentifier"] = (identity: SignIdentity): string => {
 
 // @ts-ignore
 window["getPublicKey"] = (identity: SignIdentity): string => {
-  return identity.getPublicKey().toDer().toString("hex");
+  return toHexString(identity.getPublicKey().toDer());
 };
+
+function toHexString(bytes: ArrayBuffer): string {
+  return new Uint8Array(bytes).reduce(
+    (str, byte) => str + byte.toString(16).padStart(2, "0"),
+    ""
+  );
+}
