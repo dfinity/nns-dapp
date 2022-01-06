@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal 36273
+
+* Update the flutter login page graphics.
+* Fix docker build scripts.
+* Update the svelte login page but do not switch it live.
+
 ## Proposal 32611
 
 * Fixed an issue where a user's expired session can lead to triggering code related to hardware wallets, even if the user has no hardware wallet accounts.
@@ -31,9 +37,3 @@
 * Fetch accounts, balances, and neurons more securely. Rather than fetching sensitive data (e.g. ledger balances) as query calls, we now fetch the data twice in parallel: once as a query call for UI snappiness, and another as an update call to get a certified response. The certified response overwrites the result of the query.
 * Ledger wallet: Allow disbursing neurons to a different account.
 * Minor UI enhancements.
-
-## Proposal 36273
-
-* Update the flutter login page graphics.
-* Fix docker build scripts.
-* Update the svelte login page but do not switch it live.
