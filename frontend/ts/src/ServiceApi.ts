@@ -1,5 +1,4 @@
 import { HttpAgent, Identity, SignIdentity } from "@dfinity/agent";
-import { blobFromUint8Array } from "@dfinity/candid";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { Option } from "./canisters/option";
 import governanceBuilder from "./canisters/governance/builder";
@@ -493,8 +492,8 @@ export default class ServiceApi {
     const privateKey =
       "N3HB8Hh2PrWqhWH2Qqgr1vbU9T3gb1zgdBD8ZOdlQnVS7zC/nkEqaT1kSuvo4i3ldHWSkQZdw5I4LU5jOsDC6Q==";
     const identity = Ed25519KeyIdentity.fromKeyPair(
-      blobFromUint8Array(base64ToUInt8Array(publicKey)),
-      blobFromUint8Array(base64ToUInt8Array(privateKey))
+      base64ToUInt8Array(publicKey).buffer,
+      base64ToUInt8Array(privateKey).buffer
     );
 
     const agent = new HttpAgent({
