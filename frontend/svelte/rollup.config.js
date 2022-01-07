@@ -47,7 +47,12 @@ export default {
   },
   plugins: [
     svelte({
-      preprocess: sveltePreprocess({ sourceMap: !production }),
+      preprocess: sveltePreprocess({
+        sourceMap: !production,
+        postcss: {
+          plugins: [require("autoprefixer")()],
+        },
+      }),
       compilerOptions: {
         // enable run-time checks when not in production
         dev: !production,
@@ -82,6 +87,19 @@ export default {
           (process.env.DEPLOY_ENV === "testnet"
             ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
             : "https://identity.ic0.app/")
+      ),
+      // When developing with live reload in svelte, redirecting to flutter is
+      // not desirable.  The default should match production:
+      // - false while svelte is inactive
+      // - true while flutter is being replaced by svelte
+      // - false after flutter has been replaced, but before all scaffolding has been removed
+      // - the flag may then be removed.
+      "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
+        ["true", "1"].includes(process.env.REDIRECT_TO_LEGACY)
+          ? true
+          : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
+          ? false
+          : false // default
       ),
     }),
 

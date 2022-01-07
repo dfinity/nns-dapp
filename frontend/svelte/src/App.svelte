@@ -1,14 +1,21 @@
 <script lang="ts">
-  import Auth from "./Auth.svelte";
-
-  // Identity, shared with all tabs:
-  let signedIn;
-  let principal;
+  import Route from "./lib/components/Route.svelte";
+  import PrivateRoute from "./lib/components/PrivateRoute.svelte";
+  import Guard from "./lib/components/Guard.svelte";
+  import Accounts from "./routes/Accounts.svelte";
+  import Neurons from "./routes/Neurons.svelte";
+  import Voting from "./routes/Voting.svelte";
+  import Canisters from "./routes/Canisters.svelte";
+  import Auth from "./routes/Auth.svelte";
 </script>
 
-<main>
-  <Auth bind:signedIn bind:principal />
-</main>
+<Guard>
+  <Route path="/" component={Auth} />
+  <PrivateRoute path="/#/accounts" component={Accounts} />
+  <PrivateRoute path="/#/neurons" component={Neurons} />
+  <PrivateRoute path="/#/voting" component={Voting} />
+  <PrivateRoute path="/#/canisters" component={Canisters} />
+</Guard>
 
 <svelte:head>
   {#if !process.env.ROLLUP_WATCH}
@@ -20,38 +27,8 @@
   {/if}
 </svelte:head>
 
-<style>
-  /* Common parameters used throughout the app */
-  :root {
-    --widget-border: 25px;
-    --widget-border-radius: 25px;
-    --widget-border-radius-small: 10px;
-    --widget-grey: #282a2d;
-    --text-grey: #aeb7b7;
-    --background-grey: #383c3c;
-    --button-blue: #005fb7;
-    --font-size-normal: 14px;
-    --font-size-large: 32px;
-    --font-size-xlarge: 40px;
-    --font-family: Circular-Bold, Arial, sans-serif;
-  }
-
-  :global(body) {
-    margin: 0;
-    padding: 0;
-    background-color: black;
-  }
-
-  main {
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(var(--background-grey) 80%, black);
-    font-family: var(--font-family);
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
+<style lang="scss" global>
+  @import "./lib/themes/fonts.scss";
+  @import "./lib/themes/variables.scss";
+  @import "./lib/themes/theme.scss";
 </style>
