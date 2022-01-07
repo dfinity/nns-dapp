@@ -125,6 +125,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                 Some(asset) => {
                     let mut headers = asset.headers.clone();
                     headers.push(certificate_header);
+                    headers.extend(&security_headers());
                     if let Some(content_type) = content_type_of(request_path) {
                         headers.push(("Content-Type".to_string(), content_type.to_string()));
                     }
@@ -158,6 +159,101 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
             _ => None,
         })
         .flatten()
+}
+
+/// List of recommended security headers as per https://owasp.org/www-project-secure-headers/
+/// These headers enable browser security features (like limit access to platform apis and set
+/// iFrame policies, etc.).
+fn security_headers() -> Vec<HeaderField> {
+    vec![
+        ("X-Frame-Options".to_string(), "DENY".to_string()),
+        ("X-Content-Type-Options".to_string(), "nosniff".to_string()),
+
+        // Content Security Policy
+        //
+        // The sha256 hash matches the inline script in index.html. This inline script is a workaround
+        // for Firefox not supporting SRI (recommended here https://csp.withgoogle.com/docs/faq.html#static-content).
+        // This also prevents use of trusted-types. See https://bugzilla.mozilla.org/show_bug.cgi?id=1409200.
+        //
+        // script-src 'unsafe-eval' is required because agent-js uses a WebAssembly module for the
+        // validation of bls signatures.
+        // There is currently no other way to allow execution of WebAssembly modules with CSP.
+        // See https://github.com/WebAssembly/content-security-policy/blob/main/proposals/CSP.md.
+        //
+        // script-src 'unsafe-inline' https: are only there for backwards compatibility and ignored
+        // by modern browsers.
+        //
+        // style-src 'unsafe-inline' is currently required due to the way styles are handled by the
+        // application. Adding hashes would require a big restructuring of the application and build
+        // infrastructure.
+        (
+            "Content-Security-Policy".to_string(),
+            "default-src 'none';\
+             connect-src 'self';\
+             img-src 'self' data:;\
+             script-src 'sha256-syYd+YuWeLD80uCtKwbaGoGom63a0pZE5KqgtA7W1d8=' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' https:;\
+             base-uri 'none';\
+             frame-ancestors 'none';\
+             form-action 'none';\
+             style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;\
+             style-src-elem 'unsafe-inline' https://fonts.googleapis.com;\
+             font-src https://fonts.gstatic.com;\
+             upgrade-insecure-requests;"
+                .to_string()
+        ),
+        (
+            "Strict-Transport-Security".to_string(),
+            "max-age=31536000 ; includeSubDomains".to_string(),
+        ),
+        // "Referrer-Policy: no-referrer" would be more strict, but breaks local dev deployment
+        // same-origin is still ok from a security perspective
+        ("Referrer-Policy".to_string(), "same-origin".to_string()),
+        (
+            "Permissions-Policy".to_string(),
+            "accelerometer=(),\
+             ambient-light-sensor=(),\
+             autoplay=(),\
+             battery=(),\
+             camera=(),\
+             clipboard-read=(),\
+             clipboard-write=(),\
+             conversion-measurement=(),\
+             cross-origin-isolated=(),\
+             display-capture=(),\
+             document-domain=(),\
+             encrypted-media=(),\
+             execution-while-not-rendered=(),\
+             execution-while-out-of-viewport=(),\
+             focus-without-user-activation=(),\
+             fullscreen=(),\
+             gamepad=(),\
+             geolocation=(),\
+             gyroscope=(),\
+             hid=(),\
+             idle-detection=(),\
+             interest-cohort=(),\
+             keyboard-map=(),\
+             magnetometer=(),\
+             microphone=(),\
+             midi=(),\
+             navigation-override=(),\
+             payment=(),\
+             picture-in-picture=(),\
+             publickey-credentials-get=(self),\
+             screen-wake-lock=(),\
+             serial=(),\
+             speaker-selection=(),\
+             sync-script=(),\
+             sync-xhr=(self),\
+             trust-token-redemption=(),\
+             usb=(),\
+             vertical-scroll=(),\
+             web-share=(),\
+             window-placement=(),\
+             xr-spatial-tracking=()"
+                .to_string(),
+        ),
+    ]
 }
 
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
