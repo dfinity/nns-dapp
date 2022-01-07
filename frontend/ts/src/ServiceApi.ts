@@ -655,12 +655,12 @@ function setupExports(governance: GovernanceService) {
   window["nns"] = {
     governance: {
       // Modifying the method signature to be a bit more ergonomic for the console.
-      addHotKey: function(neuronId: NeuronId, principal: PrincipalString) {
+      addHotKey: function (neuronId: NeuronId, principal: PrincipalString) {
         return governance.addHotKey({
           neuronId: neuronId,
-          principal: principal
-        })
+          principal: principal,
+        });
       },
-    }
-  }
+    },
+  };
 }
