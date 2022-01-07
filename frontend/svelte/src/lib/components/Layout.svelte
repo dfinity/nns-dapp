@@ -1,7 +1,10 @@
 <script lang="ts">
-  import Logout from "./Logout.svelte";
+  import Header from "./Header.svelte";
+  import Nav from "./Nav.svelte";
 </script>
 
-<Logout />
+<Header />
+
+<Nav />
 
 <slot />
