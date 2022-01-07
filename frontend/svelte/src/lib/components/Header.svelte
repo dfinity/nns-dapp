@@ -1,0 +1,53 @@
+<script>
+  import Logout from "./Logout.svelte";
+</script>
+
+<header>
+  <img
+    loading="lazy"
+    role="presentation"
+    alt=""
+    src="/assets/assets/gradient.jpg"
+  />
+  <h4>NETWORK NERVOUS SYSTEM</h4>
+  <Logout />
+</header>
+
+<style lang="scss">
+  @use "../themes/mixins/img";
+
+  header {
+    height: var(--header-height);
+    overflow: hidden;
+
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+
+    justify-content: center;
+    align-items: center;
+  }
+
+  img {
+    @include img.background;
+  }
+
+  h4 {
+    margin: 0;
+
+    color: white;
+    letter-spacing: 1.4px;
+
+    grid-column-start: 2;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    text-align: center;
+
+    z-index: 1;
+  }
+</style>
