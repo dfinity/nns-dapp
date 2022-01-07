@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal 36273
+
+* Update the flutter login page graphics.
+* Fix docker build scripts.
+* Update the svelte login page but do not switch it live.
+
 ## Proposal 32611
 
 * Fixed an issue where a user's expired session can lead to triggering code related to hardware wallets, even if the user has no hardware wallet accounts.
