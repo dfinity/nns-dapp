@@ -126,6 +126,7 @@ export default class ServiceApi {
     this.cyclesMintingService = cyclesMintingServiceBuilder(agent);
     this.icManagementService = icManagementBuilder(agent);
     this.identity = identity;
+    setupExports(this.governanceService);
   }
 
   /* ACCOUNTS */
@@ -642,4 +643,24 @@ async function ledgerService(identity: Identity): Promise<LedgerService> {
   }
 
   return ledgerBuilder(agent);
+}
+
+// Exports methods that can be triggered from the console.
+// Eventually we'll add support to all the commands, but that's better and easier
+// to do once we migrate to using @dfinity/nns.
+//
+// e.g. await nns.governance.addHotKey("<neuron-id>", "<principal>")
+function setupExports(governance: GovernanceService) {
+  // @ts-ignore
+  window["nns"] = {
+    governance: {
+      // Modifying the method signature to be a bit more ergonomic for the console.
+      addHotKey: function (neuronId: NeuronId, principal: PrincipalString) {
+        return governance.addHotKey({
+          neuronId: neuronId,
+          principal: principal,
+        });
+      },
+    },
+  };
 }
