@@ -11,6 +11,8 @@ export const idlFactory = ({ IDL }) => {
     'sub_account' : SubAccount,
     'account_identifier' : AccountIdentifier,
   });
+  const NeuronId = IDL.Nat64;
+  const NamedNeuron = IDL.Record({ 'id' : NeuronId, 'name' : IDL.Text });
   const HardwareWalletAccountDetails = IDL.Record({
     'principal' : IDL.Principal,
     'name' : IDL.Text,
@@ -78,6 +80,7 @@ export const idlFactory = ({ IDL }) => {
   });
 
   return IDL.Service({
+    'followee_suggestions' : IDL.Func([], [IDL.Vec(NamedNeuron)], []),
     'get_account' : IDL.Func([], [GetAccountResponse]),
     'get_canisters' : IDL.Func([], [IDL.Vec(CanisterDetails)]),
     'get_transactions' : IDL.Func(

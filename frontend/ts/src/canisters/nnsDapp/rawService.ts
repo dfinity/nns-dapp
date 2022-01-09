@@ -68,6 +68,7 @@ export type MultiPartTransactionStatus = { 'Queued' : null } |
   { 'NeuronCreated' : NeuronId } |
   { 'PendingSync' : null } |
   { 'ErrorWithRefundPending' : string };
+export interface NamedNeuron { 'id' : NeuronId, 'name' : string }
 export type NeuronId = bigint;
 export interface Receive {
   'fee' : ICPTs,
@@ -139,6 +140,7 @@ export type Transfer = { 'Burn' : { 'amount' : ICPTs } } |
   { 'Receive' : Receive };
 export interface _SERVICE {
   'add_account' : () => Promise<AccountIdentifier>,
+  'add_stable_asset' : (arg_0: Array<number>) => Promise<undefined>,
   'attach_canister' : (arg_0: AttachCanisterRequest) => Promise<
       AttachCanisterResponse
     >,
@@ -146,6 +148,7 @@ export interface _SERVICE {
   'detach_canister' : (arg_0: DetachCanisterRequest) => Promise<
       DetachCanisterResponse
     >,
+  'followee_suggestions' : () => Promise<Array<NamedNeuron>>,
   'get_account' : () => Promise<GetAccountResponse>,
   'get_canisters' : () => Promise<Array<CanisterDetails>>,
   'get_multi_part_transaction_errors' : () => Promise<

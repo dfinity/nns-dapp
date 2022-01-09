@@ -11,6 +11,7 @@ import ServiceInterface, {
   GetTransactionsRequest,
   GetTransactionsResponse,
   MultiPartTransactionStatus,
+  NamedNeuron,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
@@ -117,4 +118,10 @@ export default class Service implements ServiceInterface {
     );
     return this.responseConverters.toMultiPartTransactionStatus(rawResponse);
   };
+
+  public followeeSuggestions = (certified: boolean): Promise<Array<NamedNeuron>> => {
+    return certified
+        ? this.certifiedService.followee_suggestions()
+        : this.service.followee_suggestions();
+  }
 }

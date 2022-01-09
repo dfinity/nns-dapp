@@ -43,6 +43,7 @@ import NnsDappService, {
   DetachCanisterResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
+  NamedNeuron,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
@@ -476,6 +477,12 @@ export default class ServiceApi {
       this.cyclesMintingService.getIcpToCyclesConversionRate()
     );
   };
+
+  public followeeSuggestions = (certified: boolean): Promise<Array<NamedNeuron>> => {
+    return executeWithLogging(() =>
+        this.nnsDappService.followeeSuggestions(certified)
+    );
+  }
 
   /*
    * Gives the caller the specified amount of (fake) ICPs.
