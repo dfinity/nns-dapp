@@ -4,7 +4,8 @@
   import { onDestroy, SvelteComponent } from "svelte";
   import Route from "./Route.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { appPath, routeContext, routePath } from "../utils/route.utils";
+  import { routeContext, routePath } from "../utils/route.utils";
+  import { routeStore } from "../stores/route.store";
 
   export let path: string;
   export let component: typeof SvelteComponent;
@@ -17,7 +18,11 @@
     }
 
     // Redirect to root, user needs to sign in
-    window.location.replace(`${appPath()}/?redirect=${routeContext()}`);
+    routeStore.navigate({
+      path: "/",
+      query: `redirect=${routeContext()}`,
+      action: "replace",
+    });
   };
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
