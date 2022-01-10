@@ -561,6 +561,10 @@ class PlatformICApi extends AbstractPlatformICApi {
         (_) => {print("[${DateTime.now()}] Syncing canisters complete.")});
   }
 
+  Future<dynamic> followeeSuggestions([bool certified = true]) async {
+    return await promiseToFuture(serviceApi!.followeeSuggestions(certified));
+  }
+
   @override
   Future<BigInt> getICPToCyclesExchangeRate() async {
     final response =

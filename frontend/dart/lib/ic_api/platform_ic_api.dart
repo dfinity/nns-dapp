@@ -106,6 +106,8 @@ abstract class AbstractPlatformICApi {
 
   Future<void> getCanisters();
 
+  Future<dynamic> followeeSuggestions([bool certified = true]);
+
   Future<BigInt> getICPToCyclesExchangeRate();
 
   Future<void> getCanister(String canisterId);
