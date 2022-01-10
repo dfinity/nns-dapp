@@ -17,6 +17,17 @@ pub async fn claim_or_refresh_neuron_from_account(
     .map_err(|e| e.1)
 }
 
+pub async fn list_known_neurons() -> Result<ListKnownNeuronsResponse, String> {
+    dfn_core::call(
+        GOVERNANCE_CANISTER_ID,
+        "list_known_neurons",
+        candid,
+        ((),),
+    )
+        .await
+        .map_err(|e| e.1)
+}
+
 /// The arguments to the method `claim_or_refresh_neuron_from_account`.
 #[derive(Clone, PartialEq, CandidType, Deserialize)]
 pub struct ClaimOrRefreshNeuronFromAccount {
@@ -47,4 +58,22 @@ pub mod claim_or_refresh_neuron_from_account_response {
 pub struct GovernanceError {
     pub error_type: i32,
     pub error_message: String,
+}
+
+/// A response to "ListKnownNeurons"
+#[derive(Clone, PartialEq, CandidType, Deserialize)]
+pub struct ListKnownNeuronsResponse {
+    /// List of known neurons.
+    pub known_neurons: Vec<KnownNeuron>,
+}
+#[derive(Clone, PartialEq, CandidType, Deserialize)]
+pub struct KnownNeuron {
+    pub id: Option<::ic_nns_common::pb::v1::NeuronId>,
+    pub known_neuron_data: Option<KnownNeuronData>,
+}
+/// Known neurons have extra information (mainly a name) used to identify them.
+#[derive(Clone, PartialEq, CandidType, Deserialize)]
+pub struct KnownNeuronData {
+    pub name: String,
+    pub description: Option<String>,
 }
