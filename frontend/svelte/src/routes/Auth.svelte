@@ -11,7 +11,7 @@
     try {
       await authStore.signIn();
     } catch (err) {
-      // TODO: we display the errors?
+      // TODO(L2-176): display the errors
       console.error(err);
     }
   };
