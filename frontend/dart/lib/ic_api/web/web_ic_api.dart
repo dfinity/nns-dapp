@@ -7,6 +7,7 @@ import 'package:nns_dapp/data/cycles.dart';
 import 'package:nns_dapp/data/icp.dart';
 import 'package:nns_dapp/data/proposal_reward_status.dart';
 import 'package:nns_dapp/data/topic.dart';
+import 'package:nns_dapp/ui/neurons/following/followee_suggestions.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:universal_html/js.dart';
@@ -385,7 +386,6 @@ class PlatformICApi extends AbstractPlatformICApi {
       final res = await promiseToFuture(serviceApi!.getNeuronsForHw(identity));
       final string = stringify(res);
       final response = (jsonDecode(string) as List<dynamic>)
-          .toList()
           .map((e) => NeuronInfoForHW(
               id: NeuronId.fromString(e['id']),
               amount: ICP.fromE8s((e['amount'] as String).toBigInt),
@@ -561,8 +561,10 @@ class PlatformICApi extends AbstractPlatformICApi {
         (_) => {print("[${DateTime.now()}] Syncing canisters complete.")});
   }
 
-  Future<dynamic> followeeSuggestions([bool certified = true]) async {
-    return await promiseToFuture(serviceApi!.followeeSuggestions(certified));
+  Future<List<FolloweeSuggestion>> followeeSuggestions([bool certified = true]) async {
+    final res = await promiseToFuture(serviceApi!.followeeSuggestions(certified));
+    final response = jsonDecode(stringify(res)) as List<dynamic>;
+    return response.map((e) => FolloweeSuggestion(e["name"], "", e["id"])).toList();
   }
 
   @override
