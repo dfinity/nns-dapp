@@ -29,7 +29,7 @@ export const replaceHistory = (params: { path: string; query?: string }) => {
     return;
   }
 
-  history.replaceState({}, "", `${baseUrl()}${path}`);
+  history.replaceState({}, "", path);
 };
 
 export const pushHistory = (params: { path: string; query?: string }) => {
@@ -40,7 +40,7 @@ export const pushHistory = (params: { path: string; query?: string }) => {
     return;
   }
 
-  history.pushState({}, "", `${baseUrl()}${path}`);
+  history.pushState({}, "", path);
 };
 
 const concatPathQuery = ({ path, query }: { path: string; query?: string }) =>
@@ -57,13 +57,4 @@ const supportsHistory = (): boolean => {
     return false;
   }
   return window.history && "pushState" in window.history;
-};
-
-const baseUrl = (): string => {
-  if (document.getElementsByTagName("base").length === 0) {
-    return "";
-  }
-
-  const path = new URL(document.baseURI).pathname;
-  return path.replace(/\/$/, "");
 };
