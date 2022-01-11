@@ -22,7 +22,7 @@
     // We do not navigate, i.e. push to browser history, because we do not want to stack this redirect in the back navigation
     routeStore.replace({
       path: "/",
-      query: `redirect=${routeContext()}`
+      query: `redirect=${routeContext()}`,
     });
   };
 
