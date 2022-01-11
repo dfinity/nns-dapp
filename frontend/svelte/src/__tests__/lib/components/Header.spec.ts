@@ -14,9 +14,9 @@ describe("Header", () => {
 
   it("should render a logout button", () => {
     const { getByRole } = render(Header);
-    const button = getByRole('button');
+    const button = getByRole("button");
     expect(button).not.toBeUndefined();
     expect(button).toBeVisible();
-    expect(button).toHaveTextContent('Logout');
+    expect(button).toHaveTextContent("Logout");
   });
 });
