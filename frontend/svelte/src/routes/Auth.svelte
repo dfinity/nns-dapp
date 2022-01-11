@@ -32,7 +32,9 @@
       const redirectPath: string = `${routePathname()}/#/${
         urlParams.get("redirect") || "accounts"
       }`;
-      routeStore.navigate({ path: redirectPath });
+
+      // We do not want to push to the browser history but only want to update the url to not have two entries for the same page in the browser stack
+      routeStore.replace({ path: redirectPath });
     }
   );
 
