@@ -2,7 +2,7 @@
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
-  import {baseHref} from '../lib/utils/route.utils';
+  import { baseHref } from "../lib/utils/route.utils";
   import { routeStore } from "../lib/stores/route.store";
 
   let signedIn: boolean = false;
