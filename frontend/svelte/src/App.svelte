@@ -9,14 +9,6 @@
   import Auth from "./routes/Auth.svelte";
 </script>
 
-<Guard>
-  <Route path="/" component={Auth} />
-  <PrivateRoute path="/#/accounts" component={Accounts} />
-  <PrivateRoute path="/#/neurons" component={Neurons} />
-  <PrivateRoute path="/#/voting" component={Voting} />
-  <PrivateRoute path="/#/canisters" component={Canisters} />
-</Guard>
-
 <svelte:head>
   {#if !process.env.ROLLUP_WATCH}
     <!-- This is just a default; need to examine the CSP carefully and lock down accordingly. -->
@@ -26,6 +18,14 @@
     />
   {/if}
 </svelte:head>
+
+<Guard>
+  <Route path="/" component={Auth} />
+  <PrivateRoute path="/#/accounts" component={Accounts} />
+  <PrivateRoute path="/#/neurons" component={Neurons} />
+  <PrivateRoute path="/#/voting" component={Voting} />
+  <PrivateRoute path="/#/canisters" component={Canisters} />
+</Guard>
 
 <style lang="scss" global>
   @import "./lib/themes/fonts.scss";

@@ -6,6 +6,8 @@
     await authStore.signOut();
 
     window.location.replace(`${appPath()}/`);
+
+    window.localStorage.clear();
   };
 </script>
 
