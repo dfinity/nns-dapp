@@ -46,7 +46,7 @@ export const pushHistory = (params: { path: string; query?: string }) => {
 const concatPathQuery = ({ path, query }: { path: string; query?: string }) =>
   `${path}${query ? `?${query}` : ""}`;
 
-const supportHistory = (): boolean => {
+const supportsHistory = (): boolean => {
   const ua: string = window.navigator.userAgent;
   if (
     (ua.indexOf("Android 2.") !== -1 || ua.indexOf("Android 4.0") !== -1) &&
