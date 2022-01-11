@@ -3,12 +3,13 @@
   import { routeStore } from "../stores/route.store";
   import { routePath } from "../utils/route.utils";
 
-  const navigateBack = () => routeStore.navigate({ path: routePath() });
+  // Browser back button has been clicked, we reflect the new browser url to the route
+  const updateRoute = () => routeStore.update({path: routePath()});
 </script>
 
 <svelte:window
   on:storage={async () => await authStore.init()}
-  on:popstate={navigateBack}
+  on:popstate={updateRoute}
 />
 
 {#await authStore.init()}

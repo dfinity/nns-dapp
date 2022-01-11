@@ -21,28 +21,9 @@ export const routeContext = (): string => {
 
 const removeHash = ({ path }: { path: string }) => path.replace("/#", "");
 
-export type HistoryAction = "push" | "replace";
-
-export const updateHistory = ({
-  path,
-  action,
-  query,
-}: {
-  path: string;
-  action: HistoryAction;
-  query?: string;
-}) => {
+export const replaceHistory = ({ path, query }: { path: string, query?: string; }) => {
   const fullPath: string = `${path}${query ? `?${query}` : ""}`;
 
-  if (action === "replace") {
-    replaceHistory({ path: fullPath });
-    return;
-  }
-
-  pushHistory({ path: fullPath });
-};
-
-const replaceHistory = ({ path }: { path: string }) => {
   if (!supportHistory()) {
     window.location.replace(path);
     return;
@@ -51,7 +32,9 @@ const replaceHistory = ({ path }: { path: string }) => {
   history.replaceState({}, "", `${baseUrl()}${path}`);
 };
 
-const pushHistory = ({ path }: { path: string }) => {
+export const pushHistory = ({ path, query }: { path: string, query?: string; }) => {
+  const fullPath: string = `${path}${query ? `?${query}` : ""}`;
+
   if (!supportHistory()) {
     window.location.hash = removeHash({ path });
     return;
