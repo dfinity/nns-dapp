@@ -32,7 +32,7 @@
       const redirectPath: string = `${routePathname()}/#/${
         urlParams.get("redirect") || "accounts"
       }`;
-      routeStore.navigate({ path: redirectPath, action: "replace" });
+      routeStore.navigate({ path: redirectPath });
     }
   );
 
