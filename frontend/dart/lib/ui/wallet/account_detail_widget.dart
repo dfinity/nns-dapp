@@ -106,10 +106,10 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                       children: [
                                         Flexible(
                                           child: SelectableText(
+                                              "Address: " +
                                               account.accountIdentifier,
-                                              style:
-                                                  context.textTheme.bodyText2),
-                                        ),
+                                                style: context
+                                                    .textTheme.bodyText2)),
                                         IconButton(
                                             constraints: BoxConstraints.tight(
                                                 Size.square(20.0)),
@@ -130,6 +130,39 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                             }),
                                       ],
                                     ),
+                                    if (account.hardwareWallet)
+                                      SmallFormDivider(),
+                                    if (account.hardwareWallet)
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Flexible(
+                                            child: SelectableText(
+                                                "Principal: " +
+                                                    account.principal,
+                                                style: context
+                                                    .textTheme.bodyText2),
+                                          ),
+                                          IconButton(
+                                              constraints: BoxConstraints.tight(
+                                                  Size.square(20.0)),
+                                              padding: const EdgeInsets.all(0),
+                                              alignment: Alignment.center,
+                                              iconSize: context.textTheme
+                                                      .bodyText1?.fontSize ??
+                                                  24,
+                                              icon: Icon(
+                                                Icons.copy,
+                                                color: context
+                                                    .textTheme.bodyText1?.color,
+                                              ),
+                                              onPressed: () {
+                                                Clipboard.setData(ClipboardData(
+                                                    text: account.principal));
+                                              }),
+                                        ],
+                                      ),
                                     SmallFormDivider(),
                                     if (account.hardwareWallet)
                                       Row(children: [
