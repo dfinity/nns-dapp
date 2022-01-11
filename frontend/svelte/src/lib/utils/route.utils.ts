@@ -24,7 +24,7 @@ const removeHash = ({ path }: { path: string }) => path.replace("/#", "");
 export const replaceHistory = (params: { path: string; query?: string }) => {
   const path: string = concatPathQuery(params);
 
-  if (!supportHistory()) {
+  if (!supportsHistory()) {
     window.location.replace(path);
     return;
   }
@@ -35,7 +35,7 @@ export const replaceHistory = (params: { path: string; query?: string }) => {
 export const pushHistory = (params: { path: string; query?: string }) => {
   const path: string = concatPathQuery(params);
 
-  if (!supportHistory()) {
+  if (!supportsHistory()) {
     window.location.hash = removeHash({ path });
     return;
   }
