@@ -1,13 +1,10 @@
+/**
+ * The pathname and the hash regardless of the base href
+ */
 export const routePath = (): string => {
-  const hash: string = window.location.hash.toLowerCase();
-  const pathname: string = routePathname();
-  return `${pathname}${hash}`;
-};
-
-export const routePathname = (): string => {
-  const { pathname } = window.location;
   const base: string = baseHref();
-  return pathname.replace(base, "/");
+  const { pathname, hash } = window.location;
+  return `${pathname.replace(base, "/")}${hash.toLowerCase()}`;
 };
 
 // e.g. #/accounts => accounts
@@ -53,13 +50,12 @@ const supportsHistory = (): boolean =>
   "pushState" in window.history &&
   typeof window.history.pushState != "undefined";
 
-
 /**
  * Find base href:
  * // - https://something.com/ -> / (local development)
  * // - https://something.com/v2/ => /v2/ (if the app is deployed on a server that serves from root ("/"), our case)
  */
-const baseHref = (): string => {
-  const {pathname: baseHref} = new URL(document.baseURI);
+export const baseHref = (): string => {
+  const { pathname: baseHref } = new URL(document.baseURI);
   return baseHref;
-}
+};

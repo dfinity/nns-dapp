@@ -1,13 +1,15 @@
 <script lang="ts">
-  import { routePath } from "../utils/route.utils";
+  import { routePath, baseHref } from "../utils/route.utils";
 
   let currentPath: string = routePath();
 
+  const baseUrl: string = baseHref();
+
   const routes: { path: string; label: string }[] = [
-    { path: "/#/accounts", label: "ICP" },
-    { path: "/#/neurons", label: "NEURONS" },
-    { path: "/#/voting", label: "VOTING" },
-    { path: "/#/canisters", label: "CANISTERS" },
+    { path: `${baseUrl}#/accounts`, label: "ICP" },
+    { path: `${baseUrl}#/neurons`, label: "NEURONS" },
+    { path: `${baseUrl}#/voting`, label: "VOTING" },
+    { path: `${baseUrl}#/canisters`, label: "CANISTERS" },
   ];
 </script>
 

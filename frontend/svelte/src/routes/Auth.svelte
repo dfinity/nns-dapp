@@ -2,7 +2,7 @@
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
-  import { routePathname } from "../lib/utils/route.utils";
+  import {baseHref} from '../lib/utils/route.utils';
   import { routeStore } from "../lib/stores/route.store";
 
   let signedIn: boolean = false;
@@ -29,7 +29,7 @@
       const urlParams: URLSearchParams = new URLSearchParams(
         window.location.search
       );
-      const redirectPath: string = `${routePathname()}#/${
+      const redirectPath: string = `${baseHref()}#/${
         urlParams.get("redirect") || "accounts"
       }`;
 
