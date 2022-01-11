@@ -59,5 +59,5 @@ const supportsHistory = (): boolean =>
  */
 export const baseHref = (): string => {
   const { pathname: baseHref } = new URL(document.baseURI);
-  return baseHref.replace(/[^/]*$/, '');
+  return baseHref.replace(/[^/]*$/, "");
 };
