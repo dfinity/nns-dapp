@@ -8,6 +8,7 @@ import {
   GetAccountResponse,
   GetTransactionsResponse,
   HardwareWalletAccountDetails,
+  KnownNeuron,
   MultiPartTransactionStatus,
   RegisterHardwareWalletResponse,
   RenameSubAccountResponse,
@@ -21,6 +22,7 @@ import {
   GetAccountResponse as RawGetAccountResponse,
   GetTransactionsResponse as RawGetTransactionsResponse,
   HardwareWalletAccountDetails as RawHardwareWalletAccountDetails,
+  KnownNeuron as RawKnownNeuron,
   MultiPartTransactionStatus as RawMultiPartTransactionStatus,
   RegisterHardwareWalletResponse as RawRegisterHardwareWalletResponse,
   RenameSubAccountResponse as RawRenameSubAccountResponse,
@@ -113,6 +115,16 @@ export default class ResponseConverters {
     response: RawRenameSubAccountResponse
   ): RenameSubAccountResponse => {
     return response;
+  };
+
+  public toKnownNeuron = (
+      response: RawKnownNeuron
+  ): KnownNeuron => {
+    return {
+      id: response.id,
+      name: response.name,
+      description: response.description[0] ?? ""
+    };
   };
 
   private toSubAccountDetails = (

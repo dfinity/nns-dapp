@@ -164,10 +164,11 @@ type DetachCanisterResponse =
         CanisterNotFound;
     };
 
-type NamedNeuron =
+type KnownNeuron =
     record {
         id: NeuronId;
         name: text;
+        description: opt text;
     };
 
 type MultiPartTransactionStatus =
@@ -236,7 +237,7 @@ service : {
     get_canisters: () -> (vec CanisterDetails) query;
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
-    followee_suggestions: () -> (vec NamedNeuron);
+    followee_suggestions: () -> (vec KnownNeuron);
     get_multi_part_transaction_status: (principal, BlockHeight) -> (MultiPartTransactionStatus) query;
     get_multi_part_transaction_errors: () -> (vec MultiPartTransactionError) query;
     get_stats: () -> (Stats) query;

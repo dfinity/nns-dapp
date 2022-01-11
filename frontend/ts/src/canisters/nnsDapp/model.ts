@@ -85,9 +85,10 @@ export type MultiPartTransactionStatus =
   | { NeuronCreated: NeuronId }
   | { PendingSync: null }
   | { ErrorWithRefundPending: string };
-export interface NamedNeuron {
+export interface KnownNeuron {
   id: NeuronId;
   name: string;
+  description: string;
 }
 export interface Receive {
   fee: E8s;
@@ -148,7 +149,7 @@ export default interface ServiceInterface {
   detachCanister: (
     request: DetachCanisterRequest
   ) => Promise<DetachCanisterResponse>;
-  followeeSuggestions: (certified: boolean) => Promise<Array<NamedNeuron>>
+  followeeSuggestions: (certified: boolean) => Promise<Array<KnownNeuron>>
   getAccount: (certified: boolean) => Promise<GetAccountResponse>;
   getCanisters: () => Promise<Array<CanisterDetails>>;
   getMultiPartTransactionStatus: (

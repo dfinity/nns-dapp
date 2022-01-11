@@ -43,7 +43,7 @@ import NnsDappService, {
   DetachCanisterResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
-  NamedNeuron,
+  KnownNeuron,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
@@ -478,7 +478,7 @@ export default class ServiceApi {
     );
   };
 
-  public followeeSuggestions = (certified: boolean): Promise<Array<NamedNeuron>> => {
+  public followeeSuggestions = (certified: boolean): Promise<Array<KnownNeuron>> => {
     return executeWithLogging(() =>
         this.nnsDappService.followeeSuggestions(certified)
     );

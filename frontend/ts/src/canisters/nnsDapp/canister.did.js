@@ -29,7 +29,11 @@ export const idlFactory = ({ IDL }) => {
     'CanisterNotFound' : IDL.Null,
   });
   const NeuronId = IDL.Nat64;
-  const NamedNeuron = IDL.Record({ 'id' : NeuronId, 'name' : IDL.Text });
+  const KnownNeuron = IDL.Record({
+    'id' : NeuronId,
+    'name' : IDL.Text,
+    'description' : IDL.Opt(IDL.Text),
+  });
   const HardwareWalletAccountDetails = IDL.Record({
     'principal' : IDL.Principal,
     'name' : IDL.Text,
@@ -172,7 +176,7 @@ export const idlFactory = ({ IDL }) => {
         [DetachCanisterResponse],
         [],
       ),
-    'followee_suggestions' : IDL.Func([], [IDL.Vec(NamedNeuron)], []),
+    'followee_suggestions' : IDL.Func([], [IDL.Vec(KnownNeuron)], []),
     'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_canisters' : IDL.Func([], [IDL.Vec(CanisterDetails)], ['query']),
     'get_multi_part_transaction_errors' : IDL.Func(

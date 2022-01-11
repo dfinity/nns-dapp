@@ -54,6 +54,11 @@ export interface HttpResponse {
   'status_code' : number,
 }
 export interface ICPTs { 'e8s' : bigint }
+export interface KnownNeuron {
+  'id' : NeuronId,
+  'name' : string,
+  'description' : [] | [string],
+}
 export type Memo = bigint;
 export interface MultiPartTransactionError {
   'error_message' : string,
@@ -68,7 +73,6 @@ export type MultiPartTransactionStatus = { 'Queued' : null } |
   { 'NeuronCreated' : NeuronId } |
   { 'PendingSync' : null } |
   { 'ErrorWithRefundPending' : string };
-export interface NamedNeuron { 'id' : NeuronId, 'name' : string }
 export type NeuronId = bigint;
 export interface Receive {
   'fee' : ICPTs,
@@ -148,7 +152,7 @@ export interface _SERVICE {
   'detach_canister' : (arg_0: DetachCanisterRequest) => Promise<
       DetachCanisterResponse
     >,
-  'followee_suggestions' : () => Promise<Array<NamedNeuron>>,
+  'followee_suggestions' : () => Promise<Array<KnownNeuron>>,
   'get_account' : () => Promise<GetAccountResponse>,
   'get_canisters' : () => Promise<Array<CanisterDetails>>,
   'get_multi_part_transaction_errors' : () => Promise<

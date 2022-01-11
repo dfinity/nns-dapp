@@ -10,8 +10,8 @@ import ServiceInterface, {
   GetAccountResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
+  KnownNeuron,
   MultiPartTransactionStatus,
-  NamedNeuron,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
@@ -119,9 +119,11 @@ export default class Service implements ServiceInterface {
     return this.responseConverters.toMultiPartTransactionStatus(rawResponse);
   };
 
-  public followeeSuggestions = (certified: boolean): Promise<Array<NamedNeuron>> => {
-    return certified
-        ? this.certifiedService.followee_suggestions()
-        : this.service.followee_suggestions();
+  public followeeSuggestions = async (certified: boolean): Promise<Array<KnownNeuron>> => {
+    const rawResponse = certified
+        ? await this.certifiedService.followee_suggestions()
+        : await this.service.followee_suggestions();
+
+    return rawResponse.map(this.responseConverters.toKnownNeuron);
   }
 }
