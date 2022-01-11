@@ -4,7 +4,10 @@
 
 set -euo pipefail
 
-MYPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+MYPATH="$(
+  cd -- "$(dirname "$0")" >/dev/null 2>&1
+  pwd -P
+)"
 
 echo "Assuming dart codebase path is $MYPATH"
 cd "$MYPATH"
