@@ -53,13 +53,12 @@ const supportsHistory = (): boolean =>
   "pushState" in window.history &&
   typeof window.history.pushState != "undefined";
 
-
 /**
  * Find base href:
  * // - https://something.com/ -> / (local development)
  * // - https://something.com/v2/ => /v2/ (if the app is deployed on a server that serves from root ("/"), our case)
  */
 const baseHref = (): string => {
-  const {pathname: baseHref} = new URL(document.baseURI);
+  const { pathname: baseHref } = new URL(document.baseURI);
   return baseHref;
-}
+};
