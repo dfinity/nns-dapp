@@ -147,7 +147,8 @@
     --letter-spacing: 0.4rem;
 
     margin: calc(2 * var(--padding)) auto;
-    padding: var(--padding) var(--padding) var(--padding) calc(var(--letter-spacing) + var(--padding));
+    padding: var(--padding) var(--padding) var(--padding)
+      calc(var(--letter-spacing) + var(--padding));
 
     width: 140px;
     height: 55px;
