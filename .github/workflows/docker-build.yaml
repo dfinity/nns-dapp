@@ -1,3 +1,5 @@
+# TODO: note about cache size (~2800MB)
+
 name: Docker build
 
 on:
