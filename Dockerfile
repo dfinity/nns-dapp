@@ -46,6 +46,13 @@ ENV PATH=/flutter/bin:$PATH
 # Install IC CDK optimizer
 RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
+COPY Cargo.lock .
+COPY Cargo.toml .
+COPY rs/Cargo.toml rs/Cargo.toml
+COPY rs/nns_functions_candid_gen ./rs/nns_functions_candid_gen
+
+RUN mkdir -p rs/src && touch rs/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/src
+
 # Install dfx
 COPY dfx.json dfx.json
 RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
