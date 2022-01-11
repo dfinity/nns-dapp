@@ -2,7 +2,6 @@
   import { authStore } from "../stores/auth.store";
   import { routeStore } from "../stores/route.store";
   import { routePath } from "../utils/route.utils";
-
 </script>
 
 <svelte:window
