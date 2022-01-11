@@ -1,3 +1,4 @@
+import 'package:nns_dapp/ic_api/web/neuron_sync_service.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
 import '../../../nns_dapp.dart';
@@ -16,34 +17,39 @@ class FolloweeSuggestionWidget extends StatefulWidget {
 }
 
 class _FolloweeSuggestionWidgetState extends State<FolloweeSuggestionWidget> {
-  late List<FolloweeSuggestion> suggestions;
-
   @override
   void initState() {
     super.initState();
-    suggestions =
-        FolloweeSuggestion.followerSuggestions.shuffled().take(3).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: suggestions
-            .filterNot((element) => widget.followees.contains(element.id))
-            .mapToList((e) => FolloweeSuggestionRow(
-                  suggestion: e,
-                  selected: () {
-                    widget.suggestionSelected(e);
-                  },
-                ))
-            .interspace(Divider(
-              color: AppColors.white,
-            ))
-            .toList(),
+      child: FutureBuilder(
+        future: context.icApi.followeeSuggestions(),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<FolloweeSuggestion>> snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: snapshot.data!
+                  .filterNot((element) => widget.followees.contains(element.id))
+                  .mapToList((e) => FolloweeSuggestionRow(
+                        suggestion: e,
+                        selected: () {
+                          widget.suggestionSelected(e);
+                        },
+                      ))
+                  .interspace(Divider(
+                    color: AppColors.white,
+                  ))
+                  .toList(),
+            );
+          }
+          return Text('Loading..');
+        },
       ),
     );
   }
@@ -114,8 +120,15 @@ class FolloweeSuggestion {
 
   FolloweeSuggestion(this.name, this.text, this.id);
 
-  static List<FolloweeSuggestion> followerSuggestions = [
-    FolloweeSuggestion("DFINITY Foundation", "", "27"),
-    FolloweeSuggestion("Internet Computer Association", "", "28"),
-  ];
+  // static List<FolloweeSuggestion> followerSuggestions = [
+  //   FolloweeSuggestion("DFINITY Foundation", "", "27"),
+  //   FolloweeSuggestion("Internet Computer Association", "", "28"),
+  // ];
+
+  // Future List<<FolloweeSuggestion>> getFollowees() async{
+  //   final followees;
+  //   followees =  await promiseToFuture(serviceApi.getAccount();
+  //       return followees;
+  //   }
+
 }

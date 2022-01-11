@@ -1,3 +1,4 @@
+import 'package:nns_dapp/ic_api/web/neuron_sync_service.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
@@ -77,48 +78,57 @@ class TopicFolloweesWidget extends StatelessWidget {
     final buttonStyle = ButtonStyle(
         foregroundColor: MaterialStateProperty.all(AppColors.white),
         minimumSize: MaterialStateProperty.all(Size.square(40)));
-    return Column(
-      children: [
-        ...followees.followees.mapIndexed((i, e) => Container(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextButton(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                              FolloweeSuggestion.followerSuggestions
-                                      .firstWhereOrNull(
-                                          (element) => element.id == e)
-                                      ?.name ??
-                                  e,
-                              style: context.textTheme.bodyText2),
+
+    return FutureBuilder(
+        future: context.icApi.followeeSuggestions(),
+        builder: (context, AsyncSnapshot<List<FolloweeSuggestion>> snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+              children: [
+                ...followees.followees.mapIndexed((i, e) => Container(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextButton(
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                      snapshot.data!
+                                              .firstWhereOrNull(
+                                                  (element) => element.id == e)
+                                              ?.name ??
+                                          e,
+                                      style: context.textTheme.bodyText2),
+                                ),
+                                onPressed: () {
+                                  OverlayBaseWidget.show(
+                                      context, NeuronInfoWidget(e));
+                                },
+                              ),
+                            ),
+                            TextButton(
+                                style: buttonStyle,
+                                onPressed: () async {
+                                  await removeFollower(e, context);
+                                },
+                                child: Text(
+                                  '✕',
+                                  style: TextStyle(
+                                    fontFamily: Fonts.circularBook,
+                                    fontSize: 15,
+                                  ),
+                                ))
+                          ],
                         ),
-                        onPressed: () {
-                          OverlayBaseWidget.show(context, NeuronInfoWidget(e));
-                        },
                       ),
-                    ),
-                    TextButton(
-                        style: buttonStyle,
-                        onPressed: () async {
-                          await removeFollower(e, context);
-                        },
-                        child: Text(
-                          '✕',
-                          style: TextStyle(
-                            fontFamily: Fonts.circularBook,
-                            fontSize: 15,
-                          ),
-                        ))
-                  ],
-                ),
-              ),
-            ))
-      ],
-    );
+                    ))
+              ],
+            );
+          }
+          return Text('Loading..');
+        });
   }
 
   Future addFollowee(String id, BuildContext context) async {

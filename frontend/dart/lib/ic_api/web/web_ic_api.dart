@@ -7,6 +7,7 @@ import 'package:nns_dapp/data/cycles.dart';
 import 'package:nns_dapp/data/icp.dart';
 import 'package:nns_dapp/data/proposal_reward_status.dart';
 import 'package:nns_dapp/data/topic.dart';
+import 'package:nns_dapp/ic_api/web/suggested_followees_cache.dart';
 import 'package:nns_dapp/ui/neurons/following/followee_suggestions.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:universal_html/html.dart' as html;
@@ -29,6 +30,7 @@ class PlatformICApi extends AbstractPlatformICApi {
   AccountsSyncService? accountsSyncService;
   NeuronSyncService? neuronSyncService;
   ProposalSyncService? proposalSyncService;
+  SuggestedFolloweesCache? suggestedFolloweesCache;
 
   dynamic identity;
 
@@ -66,6 +68,9 @@ class PlatformICApi extends AbstractPlatformICApi {
 
     proposalSyncService =
         ProposalSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+
+    suggestedFolloweesCache =
+        SuggestedFolloweesCache(func: this._followeeSuggestions);
 
     await Future.wait([
       neuronSyncService!.sync(),
@@ -561,10 +566,17 @@ class PlatformICApi extends AbstractPlatformICApi {
         (_) => {print("[${DateTime.now()}] Syncing canisters complete.")});
   }
 
-  Future<List<FolloweeSuggestion>> followeeSuggestions([bool certified = true]) async {
-    final res = await promiseToFuture(serviceApi!.followeeSuggestions(certified));
+  Future<List<FolloweeSuggestion>> followeeSuggestions() {
+    return this.suggestedFolloweesCache!.get();
+  }
+
+  Future<List<FolloweeSuggestion>> _followeeSuggestions(
+      [bool certified = true]) async {
+    final res = await promiseToFuture(serviceApi!.followeeSuggestions(false));
     final response = jsonDecode(stringify(res)) as List<dynamic>;
-    return response.map((e) => FolloweeSuggestion(e["name"], "", e["id"])).toList();
+    return response
+        .map((e) => FolloweeSuggestion(e["name"], "", e["id"]))
+        .toList();
   }
 
   @override

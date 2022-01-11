@@ -107,7 +107,7 @@ abstract class AbstractPlatformICApi {
 
   Future<void> getCanisters();
 
-  Future<List<FolloweeSuggestion>> followeeSuggestions([bool certified = true]);
+  Future<List<FolloweeSuggestion>> followeeSuggestions();
 
   Future<BigInt> getICPToCyclesExchangeRate();
 
