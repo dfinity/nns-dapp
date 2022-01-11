@@ -18,7 +18,7 @@
     }
 
     // Redirect to root, user needs to sign in
-    // We replace the url to get the redirect query params after successful sign in, to redirect user to current page
+    // We replace the url to get the redirect query params after successful sign in, to redirect user to the current page
     // We do not navigate, i.e. push to browser history, because we do not want to stack this redirect in the back navigation
     routeStore.replace({
       path: "/",
