@@ -51,11 +51,13 @@ const supportsHistory = (): boolean =>
   typeof window.history.pushState != "undefined";
 
 /**
- * Find base href:
+ * Find base href.
  * // - https://something.com/ -> / (local development)
+ * // - https://something.com/whatever -> / (local development)
  * // - https://something.com/v2/ => /v2/ (if the app is deployed on a server that serves from root ("/"), our case)
+ // - https://something.com/v2/whatever => /v2/ (if the app is deployed on a server that serves from root ("/"), our case)
  */
 export const baseHref = (): string => {
   const { pathname: baseHref } = new URL(document.baseURI);
-  return baseHref;
+  return baseHref.replace(/[^/]*$/, '');
 };
