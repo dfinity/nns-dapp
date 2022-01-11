@@ -10,8 +10,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "jest",
-    "test:watch": "npm run test -- --watchAll",
-    "test:coverage": "jest --coverage"
+    "test:watch": "npm run test -- --watchAll"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
