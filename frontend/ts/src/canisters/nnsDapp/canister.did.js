@@ -176,7 +176,7 @@ export const idlFactory = ({ IDL }) => {
         [DetachCanisterResponse],
         [],
       ),
-    'followee_suggestions' : IDL.Func([], [IDL.Vec(KnownNeuron)], []),
+    'followee_suggestions' : IDL.Func([], [IDL.Vec(KnownNeuron)], ['query']),
     'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_canisters' : IDL.Func([], [IDL.Vec(CanisterDetails)], ['query']),
     'get_multi_part_transaction_errors' : IDL.Func(
