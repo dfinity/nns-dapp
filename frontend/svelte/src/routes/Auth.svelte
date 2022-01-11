@@ -40,12 +40,12 @@
 
 {#if !signedIn}
   <img
-          src="/assets/assets/nns_background.jpeg"
-          loading="lazy"
-          role="presentation"
-          alt=""
-          aria-hidden="true"
-          class="background"
+    src="/assets/assets/nns_background.jpeg"
+    loading="lazy"
+    role="presentation"
+    alt=""
+    aria-hidden="true"
+    class="background"
   />
 
   <main>
