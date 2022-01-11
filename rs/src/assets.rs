@@ -125,7 +125,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
 
             match s.assets.borrow().get(request_path) {
                 Some(asset) => {
-                    headers.extend(&asset.headers);
+                    headers.extend(asset.headers.clone());
                     if let Some(content_type) = content_type_of(request_path) {
                         headers.push(("Content-Type".to_string(), content_type.to_string()));
                     }
