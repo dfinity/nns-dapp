@@ -29,7 +29,7 @@
       const urlParams: URLSearchParams = new URLSearchParams(
         window.location.search
       );
-      const redirectPath: string = `${routePathname()}/#/${
+      const redirectPath: string = `${routePathname()}#/${
         urlParams.get("redirect") || "accounts"
       }`;
 

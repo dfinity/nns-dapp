@@ -1,15 +1,13 @@
 export const routePath = (): string => {
   const hash: string = window.location.hash.toLowerCase();
   const pathname: string = routePathname();
-
-  const split: "/" | "" = pathname === "" ? "/" : "";
-
-  return `${pathname}${split}${hash}`;
+  return `${pathname}${hash}`;
 };
 
 export const routePathname = (): string => {
   const { pathname } = window.location;
-  return pathname.replace(/\/$/, "");
+  const base: string = baseHref();
+  return pathname.replace(base, "/");
 };
 
 // e.g. #/accounts => accounts
@@ -54,3 +52,14 @@ const supportsHistory = (): boolean =>
   window.history &&
   "pushState" in window.history &&
   typeof window.history.pushState != "undefined";
+
+
+/**
+ * Find base href:
+ * // - https://something.com/ -> / (local development)
+ * // - https://something.com/v2/ => /v2/ (if the app is deployed on a server that serves from root ("/"), our case)
+ */
+const baseHref = (): string => {
+  const {pathname: baseHref} = new URL(document.baseURI);
+  return baseHref;
+}
