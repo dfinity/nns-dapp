@@ -21,9 +21,6 @@ set -x
 # Build the Flutter codebase
 ./frontend/dart/build.sh
 
-# Build flutter again -- This works
-./frontend/dart/build.sh
-
 rm -f assets.tar.xz
 rm -fr web-assets
 cp -R frontend/dart/build/web/ web-assets
