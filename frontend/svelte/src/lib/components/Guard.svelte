@@ -4,7 +4,12 @@
   import { routePath } from "../utils/route.utils";
 
   // Browser back button has been clicked, we reflect the new browser url to the route
-  const updateRoute = () => routeStore.update({path: routePath()});
+  const updateRoute = (event) => {
+
+console.log(event.state);
+
+    routeStore.update({path: routePath()})
+  };
 </script>
 
 <svelte:window

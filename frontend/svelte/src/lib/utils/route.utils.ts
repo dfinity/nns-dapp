@@ -21,8 +21,8 @@ export const routeContext = (): string => {
 
 const removeHash = ({ path }: { path: string }) => path.replace("/#", "");
 
-export const replaceHistory = ({ path, query }: { path: string, query?: string; }) => {
-  const fullPath: string = `${path}${query ? `?${query}` : ""}`;
+export const replaceHistory = (params: { path: string; query?: string }) => {
+  const path: string = concatPathQuery(params);
 
   if (!supportHistory()) {
     window.location.replace(path);
@@ -32,8 +32,8 @@ export const replaceHistory = ({ path, query }: { path: string, query?: string; 
   history.replaceState({}, "", `${baseUrl()}${path}`);
 };
 
-export const pushHistory = ({ path, query }: { path: string, query?: string; }) => {
-  const fullPath: string = `${path}${query ? `?${query}` : ""}`;
+export const pushHistory = (params: { path: string; query?: string }) => {
+  const path: string = concatPathQuery(params);
 
   if (!supportHistory()) {
     window.location.hash = removeHash({ path });
@@ -42,6 +42,9 @@ export const pushHistory = ({ path, query }: { path: string, query?: string; }) 
 
   history.pushState({}, "", `${baseUrl()}${path}`);
 };
+
+const concatPathQuery = ({ path, query }: { path: string; query?: string }) =>
+  `${path}${query ? `?${query}` : ""}`;
 
 const supportHistory = (): boolean => {
   const ua: string = window.navigator.userAgent;
