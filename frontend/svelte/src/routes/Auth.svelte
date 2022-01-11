@@ -144,8 +144,10 @@
   }
 
   button {
+    --letter-spacing: 0.4rem;
+
     margin: calc(2 * var(--padding)) auto;
-    padding: var(--padding);
+    padding: var(--padding) var(--padding) var(--padding) calc(var(--letter-spacing) + var(--padding));
 
     width: 140px;
     height: 55px;
@@ -154,7 +156,7 @@
     border-radius: var(--border-radius);
 
     font-weight: 700;
-    letter-spacing: 0.4rem;
+    letter-spacing: var(--letter-spacing);
 
     transition: background 0.2s;
 
