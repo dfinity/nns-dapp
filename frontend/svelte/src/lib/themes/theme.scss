@@ -42,9 +42,14 @@ button {
   user-select: none;
 }
 
-section {
+main {
   background: var(--gray-50-background);
   color: var(--gray-50-background-contrast);
+}
 
+section {
   padding: var(--padding);
+
+  max-width: 768px;
+  margin: 0 auto;
 }

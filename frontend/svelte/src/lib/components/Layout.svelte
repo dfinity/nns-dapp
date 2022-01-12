@@ -7,4 +7,6 @@
 
 <Nav />
 
-<slot />
+<main>
+    <slot />
+</main>
