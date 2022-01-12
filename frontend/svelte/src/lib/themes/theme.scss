@@ -48,8 +48,12 @@ main {
 }
 
 section {
-  padding: var(--padding);
+  padding: calc(2 * var(--padding)) var(--padding);
 
   max-width: 768px;
   margin: 0 auto;
+
+  h1:first-of-type {
+    margin-top: 0;
+  }
 }
