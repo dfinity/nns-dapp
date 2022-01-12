@@ -44,16 +44,20 @@ button {
 
 main {
   background: var(--gray-50-background);
-  color: var(--gray-50-background-contrast);
+  color: var(--gray-200);
 }
 
 section {
-  padding: calc(2 * var(--padding)) var(--padding);
+  padding: calc(2 * var(--padding)) calc(4 * var(--padding));
 
-  max-width: 768px;
+  max-width: 800px;
   margin: 0 auto;
+}
 
-  h1:first-of-type {
-    margin-top: 0;
-  }
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: var(--gray-50)
 }

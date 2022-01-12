@@ -52,5 +52,7 @@
     text-align: center;
 
     z-index: 1;
+
+    line-height: inherit;
   }
 </style>
