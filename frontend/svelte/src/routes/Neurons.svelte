@@ -1,12 +1,22 @@
 <script lang="ts">
   import Layout from "../lib/components/Layout.svelte";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
+  import type { Unsubscriber } from "svelte/types/runtime/store";
+  import { AuthStore, authStore } from "../lib/stores/auth.store";
 
   onMount(() => {
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace("/#/neurons");
     }
   });
+
+  let principalText: string = "";
+
+  const unsubscribe: Unsubscriber = authStore.subscribe(
+    ({ principal }: AuthStore) => (principalText = principal?.toText() ?? "")
+  );
+
+  onDestroy(unsubscribe);
 </script>
 
 <Layout>
@@ -20,7 +30,7 @@
     </p>
 
     <p>
-      Your principal id is "tpv2w-kr3vj-a3mac-wivgj-5mwwr-egoxz-vxdpg-oqul5-3oygd-derik-jqe"
+      Your principal id is "{principalText}"
     </p>
   </section>
 </Layout>
