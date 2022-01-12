@@ -4,7 +4,7 @@ import type { Principal } from "@dfinity/principal";
 
 class MockPrincipal {
   toText() {
-    return "principal_id";
+    return "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe";
   }
 }
 
