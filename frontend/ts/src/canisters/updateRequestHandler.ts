@@ -1,4 +1,5 @@
 import { Agent } from "@dfinity/agent";
+import { blobFromUint8Array, blobToUint8Array } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
 import { polling } from "@dfinity/agent";
 
@@ -9,7 +10,7 @@ export const submitUpdateRequest = async (
   bytes: Uint8Array
 ): Promise<Uint8Array> => {
   const pollStrategy = polling.defaultStrategy();
-  const arg = bytes.buffer;
+  const arg = blobFromUint8Array(bytes);
 
   const submitResponse = await agent.call(canisterId, {
     methodName,
@@ -37,5 +38,5 @@ export const submitUpdateRequest = async (
     pollStrategy
   );
 
-  return new Uint8Array(blob);
+  return blobToUint8Array(blob);
 };
