@@ -1,22 +1,24 @@
 <script lang="ts">
-  import { routePath, baseHref } from "../utils/route.utils";
+  import { baseHref, routeContext } from "../utils/route.utils";
 
-  let currentPath: string = routePath();
+  let currentContext: string = routeContext();
 
   const baseUrl: string = baseHref();
 
-  const routes: { path: string; label: string }[] = [
-    { path: `${baseUrl}#/accounts`, label: "ICP" },
-    { path: `${baseUrl}#/neurons`, label: "NEURONS" },
-    { path: `${baseUrl}#/voting`, label: "VOTING" },
-    { path: `${baseUrl}#/canisters`, label: "CANISTERS" },
+  const routes: { context: string; label: string }[] = [
+    { context: "accounts", label: "ICP" },
+    { context: "neurons", label: "NEURONS" },
+    { context: "voting", label: "VOTING" },
+    { context: "canisters", label: "CANISTERS" },
   ];
 </script>
 
 <nav>
-  {#each routes as { path, label }}
-    <a href={path} class:selected={currentPath === path} aria-label={label}
-      ><span>{label}</span></a
+  {#each routes as { context, label }}
+    <a
+      href={`${baseUrl}#/${context}`}
+      class:selected={currentContext === context}
+      aria-label={label}><span>{label}</span></a
     >
   {/each}
 </nav>

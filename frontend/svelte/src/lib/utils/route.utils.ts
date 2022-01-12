@@ -17,7 +17,7 @@ export const routeContext = (): string => {
 const removeHash = ({ path }: { path: string }) => path.replace("/#", "");
 
 export const replaceHistory = (params: { path: string; query?: string }) => {
-  const path: string = concatPathQuery(params);
+  const path: string = fullPath(params);
 
   if (!supportsHistory()) {
     window.location.replace(path);
@@ -28,7 +28,7 @@ export const replaceHistory = (params: { path: string; query?: string }) => {
 };
 
 export const pushHistory = (params: { path: string; query?: string }) => {
-  const path: string = concatPathQuery(params);
+  const path: string = fullPath(params);
 
   if (!supportsHistory()) {
     window.location.hash = removeHash({ path });
@@ -38,8 +38,9 @@ export const pushHistory = (params: { path: string; query?: string }) => {
   history.pushState({}, "", path);
 };
 
-const concatPathQuery = ({ path, query }: { path: string; query?: string }) =>
-  `${path}${query ? `?${query}` : ""}`;
+// Note: baseHref() always ends with a / and path, fix values we define in the application, begins also with /, therefore we convert // to /
+const fullPath = ({ path, query }: { path: string; query?: string }) =>
+  `${baseHref()}${path}${query ? `?${query}` : ""}`.replace(/\/\//g, "/");
 
 /**
  * Test if the History API is supported by the devices. On old phones it might not be the case.
