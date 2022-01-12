@@ -1,4 +1,4 @@
-import { DerEncodedBlob } from "@dfinity/candid";
+import { DerEncodedPublicKey } from "@dfinity/agent";
 import { Option } from "../option";
 import {
   AccountIdentifier,
@@ -334,7 +334,7 @@ export interface RewardToNeuron {
 }
 
 export type ClaimNeuronRequest = {
-  publicKey: DerEncodedBlob;
+  publicKey: DerEncodedPublicKey;
   nonce: bigint;
   dissolveDelayInSecs: bigint;
 };
