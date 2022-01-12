@@ -41,3 +41,10 @@ button {
   cursor: pointer;
   user-select: none;
 }
+
+section {
+  background: var(--gray-50-background);
+  color: var(--gray-50-background-contrast);
+
+  padding: var(--padding);
+}

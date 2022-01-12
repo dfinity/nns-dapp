@@ -23,7 +23,7 @@
   nav {
     margin: var(--padding) calc(2 * var(--padding));
 
-    height: var(--header-height);
+    height: var(--nav-height);
 
     display: grid;
     grid-template-columns: repeat(4, 25%);
