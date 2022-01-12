@@ -1,6 +1,15 @@
 # Changelog
 
-## Proposal TODO
+## Proposal 39269
+
+* Downgrade agent-js back to 0.9.1, as it was breaking hardware wallets
+* UI enhancements
+
+## Proposal 39120
+
+* Add a console command to assist with account access
+* Replace the svelte routing logic
+* Serve the login page as svelte
 
 ## Proposal 36273
 

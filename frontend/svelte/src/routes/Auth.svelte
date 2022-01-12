@@ -11,7 +11,7 @@
     try {
       await authStore.signIn();
     } catch (err) {
-      // TODO: we display the errors?
+      // TODO(L2-176): display the errors
       console.error(err);
     }
   };
@@ -39,16 +39,16 @@
 </script>
 
 {#if !signedIn}
-  <main>
-    <img
-      src="/assets/assets/nns_background.jpeg"
-      loading="lazy"
-      role="presentation"
-      alt=""
-      aria-hidden="true"
-      class="background"
-    />
+  <img
+    src="/assets/assets/nns_background.jpeg"
+    loading="lazy"
+    role="presentation"
+    alt=""
+    aria-hidden="true"
+    class="background"
+  />
 
+  <main>
     <h1>INTERNET COMPUTER</h1>
     <h2>
       <span class="blue">NETWORK</span> . <span class="pink">NERVOUS</span> .
@@ -79,13 +79,23 @@
     right: 0;
 
     display: grid;
-    grid-template-rows: 105px 40px auto 40px 140px auto;
+    grid-template-rows: 105px 40px auto 40px 170px;
+
+    z-index: 1;
 
     > * {
       margin-left: auto;
       margin-right: auto;
       color: var(--gray-400);
-      z-index: 1;
+    }
+
+    @media screen and (min-height: 1025px) {
+      top: 50%;
+      left: 50%;
+      bottom: auto;
+      right: auto;
+      transform: translate(-50%, -50%);
+      height: 594px;
     }
   }
 
@@ -103,7 +113,7 @@
     align-items: center;
 
     margin: 0 auto;
-    font-size: var(--font-size-small);
+    font-size: var(--font-size-ultra-small);
   }
 
   p {
@@ -134,8 +144,11 @@
   }
 
   button {
+    --letter-spacing: 0.4rem;
+
     margin: calc(2 * var(--padding)) auto;
-    padding: var(--padding);
+    padding: var(--padding) var(--padding) var(--padding)
+      calc(var(--letter-spacing) + var(--padding));
 
     width: 140px;
     height: 55px;
@@ -144,7 +157,7 @@
     border-radius: var(--border-radius);
 
     font-weight: 700;
-    letter-spacing: 0.4rem;
+    letter-spacing: var(--letter-spacing);
 
     transition: background 0.2s;
 
