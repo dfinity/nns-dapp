@@ -8,5 +8,17 @@
 <Nav />
 
 <main>
-    <slot />
+  <slot />
 </main>
+
+<style lang="scss">
+  main {
+    position: absolute;
+    top: calc(var(--header-height) + var(--nav-height) + (2 * var(--padding)));
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    overflow: scroll;
+  }
+</style>

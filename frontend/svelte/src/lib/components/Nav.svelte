@@ -21,6 +21,11 @@
 
 <style lang="scss">
   nav {
+    position: absolute;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+
     margin: var(--padding) calc(2 * var(--padding));
 
     height: var(--nav-height);

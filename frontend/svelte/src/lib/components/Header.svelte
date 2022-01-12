@@ -17,6 +17,11 @@
   @use "../themes/mixins/img";
 
   header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
     height: var(--header-height);
     overflow: hidden;
 
