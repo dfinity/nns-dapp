@@ -53,9 +53,10 @@ jobs:
 
           echo "Manifest:"
           cat "/tmp/.buildx-cache/blobs/sha256/$foo"
+
+          foo="ea362f368469f909a95f9a6e54ebe0121ce0a8e3c30583dd9c5fb35b14544dec"
           rm -rf "/tmp/.buildx-cache/blobs/sha256/$foo"
           rm -rf "/tmp/.buildx-cache/sha256/$foo"
-          rm -rf "/tmp/.buildx-cache/index.json"
 
 
       - name: Build Docker image
