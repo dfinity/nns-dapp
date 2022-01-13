@@ -67,6 +67,7 @@ RUN echo $DEPLOY_ENV
 COPY . .
 RUN ./build.sh
 
+
 ## Copy the wasm to the traditional location.
 #RUN cp "$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)" nns-dapp.wasm
 #RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm
