@@ -1,4 +1,3 @@
-import 'package:nns_dapp/ic_api/web/neuron_sync_service.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
