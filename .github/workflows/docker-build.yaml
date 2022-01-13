@@ -42,6 +42,8 @@ jobs:
           ls -la /tmp/.buildx-cache/ingest
           echo "blobs"
           ls -la /tmp/.buildx-cache/blobs
+          echo "blobs/sha256"
+          ls -la /tmp/.buildx-cache/blobs/sha256
           echo "sha256"
           ls -la /tmp/.buildx-cache/blobs/sha256
 
@@ -70,6 +72,8 @@ jobs:
           ls -la /tmp/.buildx-cache-new/ingest
           echo "blobs"
           ls -la /tmp/.buildx-cache-new/blobs
+          echo "blobs/sha256"
+          ls -la /tmp/.buildx-cache-new/blobs/sha256
           echo "sha256"
           ls -la /tmp/.buildx-cache-new/blobs/sha256
 
