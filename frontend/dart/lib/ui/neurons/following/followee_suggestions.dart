@@ -1,4 +1,3 @@
-import 'package:nns_dapp/ic_api/web/neuron_sync_service.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
 import '../../../nns_dapp.dart';
