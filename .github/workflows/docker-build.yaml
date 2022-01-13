@@ -47,8 +47,8 @@ jobs:
           echo "sha256"
           ls -la /tmp/.buildx-cache/blobs/sha256
 
-          cat /tmp/.buildx-cache/index.json | jq ' .manifests | .[0] | .digest' | cut -c 9-
-          foo=$(cat /tmp/.buildx-cache/index.json | jq ' .manifests | .[0] | .digest' | cut -c 9-)
+          cat /tmp/.buildx-cache/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 9-
+          foo=$(cat /tmp/.buildx-cache/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 9-)
           echo "Digest of manifest is $foo"
 
           echo "Manifest:"
