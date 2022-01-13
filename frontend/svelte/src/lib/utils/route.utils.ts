@@ -39,7 +39,7 @@ export const pushHistory = (params: { path: string; query?: string }) => {
 };
 
 // Note: baseHref() always ends with a / and path, fix values we define in the application, begins also with /, therefore we convert // to /
-const fullPath = ({ path, query }: { path: string; query?: string }) =>
+const fullPath = ({ path, query }: { path: string; query?: string }): string =>
   `${baseHref()}${path}${query ? `?${query}` : ""}`.replace(/\/\//g, "/");
 
 /**
