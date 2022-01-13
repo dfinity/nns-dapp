@@ -9,7 +9,7 @@ export interface AuthStore {
 
 const identityProvider: string = process.env.IDENTITY_SERVICE_URL;
 
-// TODO(L2-178): refactor and comment auth store
+// TODO(L2-178): refactor and document auth store
 
 export const initAuthStore = () => {
   const { subscribe, set, update } = writable<AuthStore>({
