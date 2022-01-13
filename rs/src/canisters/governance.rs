@@ -78,10 +78,10 @@ impl TryFrom<KnownNeuron> for crate::KnownNeuron {
     type Error = String;
 
     fn try_from(value: KnownNeuron) -> Result<Self, Self::Error> {
-        let id = value.id.ok_or("'id' is None".to_string())?.into();
+        let id = value.id.ok_or_else(|| "'id' is None".to_string())?.into();
         let data = value
             .known_neuron_data
-            .ok_or("'known_neuron_data' is None".to_string())?;
+            .ok_or_else(|| "'known_neuron_data' is None".to_string())?;
 
         Ok(crate::KnownNeuron {
             id,
