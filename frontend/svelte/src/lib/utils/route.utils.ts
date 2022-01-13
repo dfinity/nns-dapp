@@ -52,13 +52,10 @@ const supportsHistory = (): boolean =>
   typeof window.history.pushState != "undefined";
 
 /**
- * Find base href.
- * // - https://something.com/ -> / (local development)
- * // - https://something.com/whatever -> / (local development)
- * // - https://something.com/v2/ => /v2/ (if the app is deployed on a server that serves from root ("/"), our case)
- // - https://something.com/v2/whatever => /v2/ (if the app is deployed on a server that serves from root ("/"), our case)
+ * Returns the value of the base href (the root of the svelte app). Always ends with '/'.
  */
 export const baseHref = (): string => {
-  const { pathname: baseHref } = new URL(document.baseURI);
-  return baseHref.replace(/[^/]*$/, "");
+  const base: HTMLBaseElement | undefined = document.querySelector("base");
+  const {origin}: URL = new URL(document.baseURI);
+  return base?.href.replace(origin, '') || '/';
 };

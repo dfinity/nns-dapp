@@ -17,6 +17,8 @@
       content="default-src 'self'; child-src 'none';"
     />
   {/if}
+
+  <base href={process.env.REDIRECT_TO_LEGACY ? '/v2/' : '/'}/>
 </svelte:head>
 
 <Guard>
