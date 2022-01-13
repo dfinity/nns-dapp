@@ -478,11 +478,13 @@ export default class ServiceApi {
     );
   };
 
-  public followeeSuggestions = (certified: boolean): Promise<Array<KnownNeuron>> => {
+  public followeeSuggestions = (
+    certified: boolean
+  ): Promise<Array<KnownNeuron>> => {
     return executeWithLogging(() =>
-        this.nnsDappService.followeeSuggestions(certified)
+      this.nnsDappService.followeeSuggestions(certified)
     );
-  }
+  };
 
   /*
    * Gives the caller the specified amount of (fake) ICPs.
@@ -500,8 +502,8 @@ export default class ServiceApi {
     const privateKey =
       "N3HB8Hh2PrWqhWH2Qqgr1vbU9T3gb1zgdBD8ZOdlQnVS7zC/nkEqaT1kSuvo4i3ldHWSkQZdw5I4LU5jOsDC6Q==";
     const identity = Ed25519KeyIdentity.fromKeyPair(
-      base64ToUInt8Array(publicKey).buffer,
-      base64ToUInt8Array(privateKey).buffer
+      base64ToUInt8Array(publicKey),
+      base64ToUInt8Array(privateKey)
     );
 
     const agent = new HttpAgent({

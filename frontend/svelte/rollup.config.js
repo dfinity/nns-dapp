@@ -99,7 +99,7 @@ export default {
           ? true
           : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
           ? false
-          : false // default
+          : true // default
       ),
     }),
 
