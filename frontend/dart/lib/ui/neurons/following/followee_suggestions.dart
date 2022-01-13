@@ -119,16 +119,4 @@ class FolloweeSuggestion {
   final String id;
 
   FolloweeSuggestion(this.name, this.text, this.id);
-
-  // static List<FolloweeSuggestion> followerSuggestions = [
-  //   FolloweeSuggestion("DFINITY Foundation", "", "27"),
-  //   FolloweeSuggestion("Internet Computer Association", "", "28"),
-  // ];
-
-  // Future List<<FolloweeSuggestion>> getFollowees() async{
-  //   final followees;
-  //   followees =  await promiseToFuture(serviceApi.getAccount();
-  //       return followees;
-  //   }
-
 }
