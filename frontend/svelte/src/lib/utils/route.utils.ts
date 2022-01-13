@@ -1,5 +1,5 @@
 /**
- * The pathname and the hash regardless of the base href
+ * The pathname and the hash without base href
  */
 export const routePath = (): string => {
   const base: string = baseHref();
