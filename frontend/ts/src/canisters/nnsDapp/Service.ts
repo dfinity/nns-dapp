@@ -119,11 +119,13 @@ export default class Service implements ServiceInterface {
     return this.responseConverters.toMultiPartTransactionStatus(rawResponse);
   };
 
-  public followeeSuggestions = async (certified: boolean): Promise<Array<KnownNeuron>> => {
+  public followeeSuggestions = async (
+    certified: boolean
+  ): Promise<Array<KnownNeuron>> => {
     const rawResponse = certified
-        ? await this.certifiedService.followee_suggestions()
-        : await this.service.followee_suggestions();
+      ? await this.certifiedService.followee_suggestions()
+      : await this.service.followee_suggestions();
 
     return rawResponse.map(this.responseConverters.toKnownNeuron);
-  }
+  };
 }

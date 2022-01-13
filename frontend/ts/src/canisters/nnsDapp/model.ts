@@ -149,7 +149,7 @@ export default interface ServiceInterface {
   detachCanister: (
     request: DetachCanisterRequest
   ) => Promise<DetachCanisterResponse>;
-  followeeSuggestions: (certified: boolean) => Promise<Array<KnownNeuron>>
+  followeeSuggestions: (certified: boolean) => Promise<Array<KnownNeuron>>;
   getAccount: (certified: boolean) => Promise<GetAccountResponse>;
   getCanisters: () => Promise<Array<CanisterDetails>>;
   getMultiPartTransactionStatus: (

@@ -117,13 +117,11 @@ export default class ResponseConverters {
     return response;
   };
 
-  public toKnownNeuron = (
-      response: RawKnownNeuron
-  ): KnownNeuron => {
+  public toKnownNeuron = (response: RawKnownNeuron): KnownNeuron => {
     return {
       id: response.id,
       name: response.name,
-      description: response.description[0] ?? ""
+      description: response.description[0] ?? "",
     };
   };
 

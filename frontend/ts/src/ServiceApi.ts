@@ -478,11 +478,13 @@ export default class ServiceApi {
     );
   };
 
-  public followeeSuggestions = (certified: boolean): Promise<Array<KnownNeuron>> => {
+  public followeeSuggestions = (
+    certified: boolean
+  ): Promise<Array<KnownNeuron>> => {
     return executeWithLogging(() =>
-        this.nnsDappService.followeeSuggestions(certified)
+      this.nnsDappService.followeeSuggestions(certified)
     );
-  }
+  };
 
   /*
    * Gives the caller the specified amount of (fake) ICPs.
