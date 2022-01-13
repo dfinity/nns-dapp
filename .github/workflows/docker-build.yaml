@@ -54,10 +54,6 @@ jobs:
           echo "Manifest:"
           cat "/tmp/.buildx-cache/blobs/sha256/$foo"
 
-          foo="ea362f368469f909a95f9a6e54ebe0121ce0a8e3c30583dd9c5fb35b14544dec"
-          rm -rf "/tmp/.buildx-cache/blobs/sha256/$foo"
-          rm -rf "/tmp/.buildx-cache/sha256/$foo"
-
 
       - name: Build Docker image
         uses: docker/build-push-action@v2
@@ -88,6 +84,13 @@ jobs:
           ls -la /tmp/.buildx-cache-new/blobs/sha256
           echo "sha256"
           ls -la /tmp/.buildx-cache-new/blobs/sha256
+
+          cat /tmp/.buildx-cache-new/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 8-
+          foo=$(cat /tmp/.buildx-cache-new/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 8-)
+          echo "Digest of manifest is $foo"
+
+          echo "Manifest:"
+          cat "/tmp/.buildx-cache-new/blobs/sha256/$foo"
 
       # https://github.com/docker/build-push-action/issues/252
       # TODO: check if still necessary

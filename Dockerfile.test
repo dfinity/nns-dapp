@@ -25,3 +25,4 @@ RUN echo $DEPLOY_ENV
 COPY . .
 RUN echo ok this is it
 RUN echo foo >> out.file
+RUN echo foo >> out.file
