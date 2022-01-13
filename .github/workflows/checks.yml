@@ -130,7 +130,7 @@ jobs:
       - name: Run TS tests
         run: npm run test
         working-directory: ./frontend/ts
-      
+
       - name: Flutter setup
         uses: subosito/flutter-action@v1
         with:
@@ -171,6 +171,9 @@ jobs:
 
       - name: Run linter
         run: npm run check
+
+      - name: Test
+        run: npm run test
 
   shell-checks:
     needs: formatting

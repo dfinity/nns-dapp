@@ -678,6 +678,10 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<void> logout() async {
     await promiseToFuture(authApi.logout());
+    // Make certain that the local storage, including the delegation, are erased.
+    html.window.localStorage.clear();
+    // Go to the svelte login page.
+    html.window.location.assign("/v2/");
   }
 
   @override
