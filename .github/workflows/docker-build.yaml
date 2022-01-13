@@ -27,8 +27,11 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-buildx
+          key: ${{ runner.os }}-buildx-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ github.ref }}-
+            ${{ runner.os }}-buildx-main
+            ${{ runner.os }}-buildx-
 
       - name: Build base Docker image
         uses: docker/build-push-action@v2
@@ -69,13 +72,13 @@ jobs:
             mv /tmp/.buildx-cache-new /tmp/.buildx-cache
           fi
 
-      - name: Build nns-dapp Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push:  false # otherwise docker tries to push to dockerhub
-          tags: nns-dapp
-          file: Dockerfile
+      #- name: Build nns-dapp Docker image
+        #uses: docker/build-push-action@v2
+        #with:
+          #context: .
+          #push:  false # otherwise docker tries to push to dockerhub
+          #tags: nns-dapp
+          #file: Dockerfile
 
 
       #- run: docker build -t nns-dapp .
