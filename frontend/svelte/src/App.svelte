@@ -18,7 +18,7 @@
     />
   {/if}
 
-  <base href={process.env.REDIRECT_TO_LEGACY ? '/v2/' : '/'}/>
+  <base href={process.env.REDIRECT_TO_LEGACY ? "/v2/" : "/"} />
 </svelte:head>
 
 <Guard>

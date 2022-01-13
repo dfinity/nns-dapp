@@ -56,6 +56,6 @@ const supportsHistory = (): boolean =>
  */
 export const baseHref = (): string => {
   const base: HTMLBaseElement | undefined = document.querySelector("base");
-  const {origin}: URL = new URL(document.baseURI);
-  return base?.href.replace(origin, '') || '/';
+  const { origin }: URL = new URL(document.baseURI);
+  return base?.href.replace(origin, "") || "/";
 };
