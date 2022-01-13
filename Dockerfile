@@ -44,14 +44,14 @@ RUN tar xJf flutter.tar.xz
 ENV PATH=/flutter/bin:$PATH
 
 # Install IC CDK optimizer
-#RUN cargo install --version 0.3.1 ic-cdk-optimizer
+RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/Cargo.toml rs/Cargo.toml
 COPY rs/nns_functions_candid_gen ./rs/nns_functions_candid_gen
 
-#RUN mkdir -p rs/src && touch rs/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/src
+RUN mkdir -p rs/src && touch rs/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/src
 
 # Install dfx
 COPY dfx.json dfx.json
@@ -65,8 +65,7 @@ RUN echo $DEPLOY_ENV
 
 # Build
 COPY . .
-RUN echo ok this is built
-#RUN ./build.sh
+RUN ./build.sh
 
 ## Copy the wasm to the traditional location.
 #RUN cp "$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)" nns-dapp.wasm

@@ -4,8 +4,6 @@ name: Docker build
 on:
   push:
     branches:
-      - main
-  pull_request:
 
 jobs:
   docker-build:
@@ -27,9 +25,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-${{ github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-${{ github.ref }}-
+            ${{ runner.os }}-buildx-${{ github.ref_name }}-
             ${{ runner.os }}-buildx-main
             ${{ runner.os }}-buildx-
 
