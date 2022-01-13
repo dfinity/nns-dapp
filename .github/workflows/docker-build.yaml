@@ -40,8 +40,10 @@ jobs:
           cat /tmp/.buildx-cache/index.json
           echo "ingest"
           ls -la /tmp/.buildx-cache/ingest
-          echo "blob"
+          echo "blobs"
           ls -la /tmp/.buildx-cache/blobs
+          echo "sha256"
+          ls -la /tmp/.buildx-cache/blobs/sha256
 
       - name: Build Docker image
         uses: docker/build-push-action@v2
@@ -66,8 +68,10 @@ jobs:
           cat /tmp/.buildx-cache-new/index.json
           echo "ingest"
           ls -la /tmp/.buildx-cache-new/ingest
-          echo "blog"
+          echo "blobs"
           ls -la /tmp/.buildx-cache-new/blobs
+          echo "sha256"
+          ls -la /tmp/.buildx-cache-new/blobs/sha256
 
       # https://github.com/docker/build-push-action/issues/252
       # TODO: check if still necessary
