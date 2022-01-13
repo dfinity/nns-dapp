@@ -55,16 +55,18 @@ jobs:
           old=$(cat /tmp/.buildx-cache/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 8-)
           new=$(cat /tmp/.buildx-cache-new/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 8-)
 
+          rm -rf /tmp/.buildx-cache
+
           echo "old cache: $old"
           echo "new cache: $new"
 
           if [ "$old" = "$new" ]
           then
             echo "old is same as new, skipping upload"
-            rm -rf /tmp/.buildx-cache
             rm -rf /tmp/.buildx-cache-new
           else
             echo "old not same, keeping cache"
+            rm -rf /tmp/.buildx-cache
             mv /tmp/.buildx-cache-new /tmp/.buildx-cache
           fi
 
