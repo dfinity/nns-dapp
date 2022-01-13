@@ -18,7 +18,7 @@
     />
   {/if}
 
-  <base href={process.env.BASE_HREF}/>
+  <base href={process.env.BASE_HREF} />
 </svelte:head>
 
 <Guard>
