@@ -168,108 +168,112 @@ class EnterFolloweeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            height: 64,
-            decoration: BoxDecoration(
-                color: AppColors.gray800,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24))),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Container(
-                    width: 24,
-                  ),
-                  Center(
-                      child: Text("Enter New Followee",
-                          style: TextStyle(
-                              fontFamily: Fonts.circularBook,
-                              fontSize: Responsive.isMobile(context) ? 20 : 24,
-                              color: AppColors.white))),
-                  Expanded(child: Container()),
-                  AspectRatio(
-                      aspectRatio: 1,
-                      child: TextButton(
-                        onPressed: () {
-                          OverlayBaseWidget.of(context)?.dismiss();
-                        },
-                        child: Center(
-                          child: Text(
-                            "✕",
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          children: [
+            Container(
+              height: 64,
+              decoration: BoxDecoration(
+                  color: AppColors.gray800,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24))),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 24,
+                    ),
+                    Center(
+                        child: Text("Enter New Followee",
                             style: TextStyle(
                                 fontFamily: Fonts.circularBook,
-                                fontSize: 24,
-                                color: AppColors.white),
+                                fontSize:
+                                    Responsive.isMobile(context) ? 20 : 24,
+                                color: AppColors.white))),
+                    Expanded(child: Container()),
+                    AspectRatio(
+                        aspectRatio: 1,
+                        child: TextButton(
+                          onPressed: () {
+                            OverlayBaseWidget.of(context)?.dismiss();
+                          },
+                          child: Center(
+                            child: Text(
+                              "✕",
+                              style: TextStyle(
+                                  fontFamily: Fonts.circularBook,
+                                  fontSize: 24,
+                                  color: AppColors.white),
+                            ),
+                          ),
+                        )),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("Neuron ID",
+                        style: Responsive.isMobile(context)
+                            ? context.textTheme.headline6
+                            : context.textTheme.headline3),
+                    DebouncedValidatedFormField(addressField),
+                    Center(
+                      child: ValidFieldsSubmitButton(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Follow Neuron",
+                            style: TextStyle(
+                                fontSize:
+                                    Responsive.isMobile(context) ? 14 : 20),
                           ),
                         ),
-                      )),
-                ],
+                        onPressed: () async {
+                          onComplete(addressField.currentValue);
+                          OverlayBaseWidget.of(context)?.dismiss();
+                        },
+                        fields: [addressField],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("Neuron ID",
+            SmallFormDivider(),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Options for Following",
                       style: Responsive.isMobile(context)
                           ? context.textTheme.headline6
-                          : context.textTheme.headline3),
-                  DebouncedValidatedFormField(addressField),
-                  Center(
-                    child: ValidFieldsSubmitButton(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Follow Neuron",
-                          style: TextStyle(
-                              fontSize: Responsive.isMobile(context) ? 14 : 20),
-                        ),
-                      ),
-                      onPressed: () async {
-                        onComplete(addressField.currentValue);
-                        OverlayBaseWidget.of(context)?.dismiss();
-                      },
-                      fields: [addressField],
+                          : context.textTheme.headline3,
+                      textAlign: TextAlign.left,
                     ),
-                  )
-                ],
+                    FolloweeSuggestionWidget(followees.followees,
+                        suggestionSelected: (e) {
+                      onComplete(e.id);
+                      OverlayBaseWidget.of(context)?.dismiss();
+                    })
+                  ],
+                ),
               ),
-            ),
-          ),
-          SmallFormDivider(),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "Options for Following",
-                    style: Responsive.isMobile(context)
-                        ? context.textTheme.headline6
-                        : context.textTheme.headline3,
-                    textAlign: TextAlign.left,
-                  ),
-                  FolloweeSuggestionWidget(followees.followees,
-                      suggestionSelected: (e) {
-                    onComplete(e.id);
-                    OverlayBaseWidget.of(context)?.dismiss();
-                  })
-                ],
-              ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
