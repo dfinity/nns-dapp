@@ -1,0 +1,27 @@
+# Use this with
+#
+# docker build -t nns-dapp .
+# docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
+
+FROM ubuntu:20.04 as builder
+SHELL ["bash", "-c"]
+
+ARG rust_version=1.54.0
+ENV NODE_VERSION=14.15.4
+
+ENV TZ=UTC
+
+RUN echo hello
+RUN echo world > out.file
+
+
+# Start the second container
+FROM builder
+SHELL ["bash", "-c"]
+ARG DEPLOY_ENV=mainnet
+RUN echo $DEPLOY_ENV
+
+# Build
+COPY . .
+RUN echo ok this is it
+RUN echo foo >> out.file
