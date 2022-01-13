@@ -4,9 +4,9 @@ use crate::canisters::governance::{
 };
 use crate::canisters::ledger;
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
-use crate::ledger_sync;
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::STATE;
+use crate::{cached_known_neurons, ledger_sync};
 use dfn_core::api::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
@@ -22,6 +22,7 @@ pub async fn run_periodic_tasks() {
 
     let maybe_transaction_to_process =
         STATE.with(|s| s.accounts_store.borrow_mut().try_take_next_transaction_to_process());
+
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
@@ -49,6 +50,8 @@ pub async fn run_periodic_tasks() {
                 .prune_transactions(PRUNE_TRANSACTIONS_COUNT)
         });
     }
+
+    cached_known_neurons::refresh_if_due().await;
 }
 
 async fn handle_stake_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {

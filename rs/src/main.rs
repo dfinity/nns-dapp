@@ -10,13 +10,14 @@ use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
-use dfn_core::{api::trap_with, over, over_async, stable};
+use dfn_core::{api::trap_with, over, stable};
 use ic_base_types::PrincipalId;
 use ic_nns_common::types::NeuronId;
 use ledger_canister::{AccountIdentifier, BlockHeight};
 
 mod accounts_store;
 mod assets;
+mod cached_known_neurons;
 mod canisters;
 mod constants;
 mod ledger_sync;
@@ -190,29 +191,11 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
 /// selectable followee options.
 #[export_name = "canister_query followee_suggestions"]
 pub fn followee_suggestions() {
-    over_async(candid, |()| followee_suggestions_impl());
+    over(candid, |()| followee_suggestions_impl());
 }
 
-async fn followee_suggestions_impl() -> Vec<KnownNeuron> {
-    let mut neurons = vec![
-        KnownNeuron::new(NeuronId(27), "DFINITY Foundation".to_string(), None),
-        KnownNeuron::new(NeuronId(28), "Internet Computer Association".to_string(), None),
-    ];
-
-    if let Ok(result) = canisters::governance::list_known_neurons().await {
-        neurons.extend(result.known_neurons.into_iter().filter_map(|n| {
-            let neuron_id = n.id?.into();
-            let data = n.known_neuron_data?;
-
-            Some(KnownNeuron {
-                id: neuron_id,
-                name: data.name,
-                description: data.description,
-            })
-        }));
-    }
-
-    neurons
+fn followee_suggestions_impl() -> Vec<KnownNeuron> {
+    cached_known_neurons::get()
 }
 
 /// Gets the current status of a 'multi-part' action.
@@ -343,8 +326,8 @@ pub enum GetAccountResponse {
     AccountNotFound,
 }
 
-#[derive(CandidType)]
-struct KnownNeuron {
+#[derive(CandidType, Clone)]
+pub struct KnownNeuron {
     id: NeuronId,
     name: String,
     description: Option<String>,
@@ -352,10 +335,6 @@ struct KnownNeuron {
 
 impl KnownNeuron {
     pub fn new(id: NeuronId, name: String, description: Option<String>) -> KnownNeuron {
-        KnownNeuron {
-            id,
-            name,
-            description
-        }
+        KnownNeuron { id, name, description }
     }
 }
