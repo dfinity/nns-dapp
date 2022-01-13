@@ -4,7 +4,7 @@ class SuggestedFolloweesCache {
   final GetSuggestedFolloweesFunc func;
   List<FolloweeSuggestion>? suggestedFollowees;
 
-  SuggestedFolloweesCache({required GetSuggestedFolloweesFunc this.func});
+  SuggestedFolloweesCache({required this.func});
 
   Future<List<FolloweeSuggestion>> get() async {
     if (suggestedFollowees == null) {
