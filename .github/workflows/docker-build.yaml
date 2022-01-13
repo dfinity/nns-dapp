@@ -31,38 +31,13 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: ${{ runner.os }}-buildx
 
-
-      - name: Show stuff
-        run: |
-          echo "everything"
-          ls -la /tmp/.buildx-cache
-          echo "index"
-          cat /tmp/.buildx-cache/index.json
-          echo "ingest"
-          ls -la /tmp/.buildx-cache/ingest
-          echo "blobs"
-          ls -la /tmp/.buildx-cache/blobs
-          echo "blobs/sha256"
-          ls -la /tmp/.buildx-cache/blobs/sha256
-          echo "sha256"
-          ls -la /tmp/.buildx-cache/blobs/sha256
-
-          cat /tmp/.buildx-cache/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 8-
-          foo=$(cat /tmp/.buildx-cache/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 8-)
-          echo "Digest of manifest is $foo"
-
-          echo "Manifest:"
-          cat "/tmp/.buildx-cache/blobs/sha256/$foo"
-
-
-
-      - name: Build Docker image
+      - name: Build base Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           push:  false # otherwise docker tries to push to dockerhub
-          tags: nns-dapp
-          file: Dockerfile.test
+          tags: nns-dapp-builder
+          file: Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
           # NOTE: we set "mode=max" to make sure _all_ layers are exported, not
           # only those in the final image. Exporting only the finaly layers
@@ -70,35 +45,36 @@ jobs:
           # used in the build.
           # https://docs.docker.com/engine/reference/commandline/buildx_build/#cache-to
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-      - name: Show stuff
-        run: |
-          echo "everything"
-          ls -la /tmp/.buildx-cache-new
-          echo "index"
-          cat /tmp/.buildx-cache-new/index.json
-          echo "ingest"
-          ls -la /tmp/.buildx-cache-new/ingest
-          echo "blobs"
-          ls -la /tmp/.buildx-cache-new/blobs
-          echo "blobs/sha256"
-          ls -la /tmp/.buildx-cache-new/blobs/sha256
-          echo "sha256"
-          ls -la /tmp/.buildx-cache-new/blobs/sha256
-
-          cat /tmp/.buildx-cache-new/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 8-
-          foo=$(cat /tmp/.buildx-cache-new/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 8-)
-          echo "Digest of manifest is $foo"
-
-          echo "Manifest:"
-          cat "/tmp/.buildx-cache-new/blobs/sha256/$foo"
+          target: builder
 
       # https://github.com/docker/build-push-action/issues/252
       # TODO: check if still necessary
       - name: Move cache
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+          old=$(cat /tmp/.buildx-cache/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 8-)
+          new=$(cat /tmp/.buildx-cache-new/index.json | jq -r ' .manifests | .[0] | .digest' | cut -c 8-)
+
+          echo "old cache: $old"
+          echo "new cache: $new"
+
+          if [ "$old" = "$new" ]
+          then
+            echo "old is same as new, skipping upload"
+            rm -rf /tmp/.buildx-cache
+            rm -rf /tmp/.buildx-cache-new
+          else
+            echo "old not same, keeping cache"
+            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          fi
+
+      - name: Build nns-dapp Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push:  false # otherwise docker tries to push to dockerhub
+          tags: nns-dapp
+          file: Dockerfile
 
 
       #- run: docker build -t nns-dapp .
