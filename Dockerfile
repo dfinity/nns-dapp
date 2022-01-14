@@ -2,8 +2,12 @@
 #
 # docker build -t nns-dapp .
 # docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
-# TODO: note about COPY for builder
 
+
+# This is the "builder", i.e. the base image used later to build the final
+# code.
+# NOTE: When modifying the COPY statements, make sure you modify the list of
+# hashed files (hashFiles) in the docker-build GitHub Action.
 FROM ubuntu:20.04 as builder
 SHELL ["bash", "-c"]
 
@@ -47,11 +51,15 @@ ENV PATH=/flutter/bin:$PATH
 # Install IC CDK optimizer
 RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
+# Pre-build all cargo dependencies. Because cargo doesn't have a build option
+# to build only the dependecies, we pretend that our project is a simple, empty
+# `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
+# everything once the actual source code is COPYed (and e.g. doesn't trip on
+# timestamps being older)
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/Cargo.toml rs/Cargo.toml
 COPY rs/nns_functions_candid_gen ./rs/nns_functions_candid_gen
-
 RUN mkdir -p rs/src && touch rs/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/src
 
 # Install dfx
@@ -67,7 +75,6 @@ RUN echo $DEPLOY_ENV
 # Build
 COPY . .
 RUN ./build.sh
-
 
 # Copy the wasm to the traditional location.
 RUN cp "$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)" nns-dapp.wasm
