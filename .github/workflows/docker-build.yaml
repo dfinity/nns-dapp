@@ -37,17 +37,18 @@ jobs:
 
       - name: test prop
         run: |
-          echo "yes it's happening '$FOO'"
-        if: ${{ steps.docker-cache.cache-hit == 'true' }}
+          echo "yes it's happening '$FOO' '$CACHE_HIT'"
+        if: steps.docker-cache.cache-hit == 'true'
         env:
           FOO: ${{ steps.docker-cache.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
 
       - name: test not prop
         run: |
-          echo "yes it's happening '$FOO'"
-        if: ${{ steps.docker-cache.cache-hit != 'true' }}
+          echo "yes it's happening '$FOO' '$CACHE_HIT'"
+        if: steps.docker-cache.cache-hit != 'true'
         env:
           FOO: ${{ steps.docker-cache.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
+          CACHE_HIT: ${{ steps.docker-cache.cache-hit }}
 
       - name: Build base Docker image
         uses: docker/build-push-action@v2
