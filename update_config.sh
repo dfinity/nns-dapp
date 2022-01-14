@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 pushd "$(dirname "$0")" >/dev/null # Move to the script's directory.
 
@@ -10,11 +10,12 @@ fi
 
 if [[ $DEPLOY_ENV = "testnet" ]]; then
   # testnet config
+  OWN_CANISTER_ID="$(dfx canister --no-wallet --network testnet id nns-dapp)"
   cat >frontend/ts/src/config.json <<EOF
 {
     "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/",
     "HOST": "https://nnsdapp.dfinity.network/",
-    "OWN_CANISTER_ID": "$(dfx canister --no-wallet --network testnet id nns-dapp)",
+    "OWN_CANISTER_ID": "$OWN_CANISTER_ID",
     "FETCH_ROOT_KEY": true
 }
 EOF
@@ -31,14 +32,18 @@ EOF
 
 else
   # local config
+  OWN_CANISTER_ID="$(dfx canister --no-wallet --network local id nns-dapp)"
   cat >frontend/ts/src/config.json <<EOF
 {
     "IDENTITY_SERVICE_URL": "",
     "HOST": "http://localhost:8080",
-    "OWN_CANISTER_ID": "$(dfx canister --no-wallet --network local id nns-dapp)",
+    "OWN_CANISTER_ID": "$OWN_CANISTER_ID",
     "FETCH_ROOT_KEY": true
 }
 EOF
 fi
+
+echo "wrote config from DEPLOY_ENV '$DEPLOY_ENV' :"
+cat frontend/ts/src/config.json
 
 popd >/dev/null
