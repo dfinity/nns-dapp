@@ -119,12 +119,13 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
             }
         }
         request_path => STATE.with(|s| {
+            let mut headers = security_headers();
             let certificate_header = make_asset_certificate_header(&s.asset_hashes.borrow(), request_path);
+            headers.push(certificate_header);
 
             match s.assets.borrow().get(request_path) {
                 Some(asset) => {
-                    let mut headers = asset.headers.clone();
-                    headers.push(certificate_header);
+                    headers.extend(asset.headers.clone());
                     if let Some(content_type) = content_type_of(request_path) {
                         headers.push(("Content-Type".to_string(), content_type.to_string()));
                     }
@@ -137,7 +138,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                 }
                 None => HttpResponse {
                     status_code: 404,
-                    headers: vec![certificate_header],
+                    headers,
                     body: ByteBuf::from(format!("Asset {} not found.", request_path)),
                 },
             }
@@ -146,6 +147,9 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
 }
 
 fn content_type_of(request_path: &str) -> Option<&'static str> {
+    if request_path.ends_with('/') {
+        return Some("text/html");
+    }
     request_path
         .split('.')
         .last()
@@ -158,6 +162,24 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
             _ => None,
         })
         .flatten()
+}
+
+/// List of recommended security headers as per https://owasp.org/www-project-secure-headers/
+/// These headers enable browser security features (like limit access to platform apis and set
+/// iFrame policies, etc.).
+/// TODO https://dfinity.atlassian.net/browse/L2-185: Add CSP and Permissions-Policy
+fn security_headers() -> Vec<HeaderField> {
+    vec![
+        ("X-Frame-Options".to_string(), "DENY".to_string()),
+        ("X-Content-Type-Options".to_string(), "nosniff".to_string()),
+        (
+            "Strict-Transport-Security".to_string(),
+            "max-age=31536000 ; includeSubDomains".to_string(),
+        ),
+        // "Referrer-Policy: no-referrer" would be more strict, but breaks local dev deployment
+        // same-origin is still ok from a security perspective
+        ("Referrer-Policy".to_string(), "same-origin".to_string()),
+    ]
 }
 
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
