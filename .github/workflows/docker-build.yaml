@@ -35,6 +35,18 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ hashFiles( '.dockerignore', 'Dockerfile', 'Cargo.lock', 'Cargo.toml', 'rs/Cargo.toml', 'rs/nns_functions_candid_gen/**', 'dfx.json' ) }}
 
+      - name: test prop
+        run: "echo yes it's happening '$FOO'"
+        if: ${{ steps.docker-cache.cache-hit }}
+        env:
+          FOO: ${{ steps.docker-cache.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
+
+      - name: test not prop
+        run: "echo yes it's happening '$FOO'"
+        if: ${{ ! steps.docker-cache.cache-hit }}
+        env:
+          FOO: ${{ steps.docker-cache.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
+
       - name: Build base Docker image
         uses: docker/build-push-action@v2
         with:
