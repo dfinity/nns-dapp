@@ -8,6 +8,7 @@ import { Principal } from "@dfinity/principal";
 import { LedgerIdentity } from "./src/ledger/identity";
 import { principalToAccountIdentifier } from "./src/canisters/converter";
 import ServiceApi from "./src/ServiceApi";
+import { toHexString } from "./src/utils";
 
 // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
 Principal.prototype.toJSON = function () {
@@ -62,10 +63,3 @@ window["getAccountIdentifier"] = (identity: SignIdentity): string => {
 window["getPublicKey"] = (identity: SignIdentity): string => {
   return toHexString(identity.getPublicKey().toDer());
 };
-
-function toHexString(bytes: ArrayBuffer): string {
-  return new Uint8Array(bytes).reduce(
-    (str, byte) => str + byte.toString(16).padStart(2, "0"),
-    ""
-  );
-}
