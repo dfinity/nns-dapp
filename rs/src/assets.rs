@@ -147,6 +147,9 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
 }
 
 fn content_type_of(request_path: &str) -> Option<&'static str> {
+    if request_path.ends_with('/') {
+        return  Some("text/html");
+    }
     request_path
         .split('.')
         .last()
