@@ -30,6 +30,7 @@ jobs:
       # from scratch nonetheless, never uploading the build output.
       - name: Cache docker layers
         uses: actions/cache@v2
+        id: docker-cache
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ hashFiles( '.dockerignore', 'Dockerfile', 'Cargo.lock', 'Cargo.toml', 'rs/Cargo.toml', 'rs/nns_functions_candid_gen/**', 'dfx.json' ) }}
@@ -48,14 +49,19 @@ jobs:
           # used in the build.
           # https://docs.docker.com/engine/reference/commandline/buildx_build/#cache-to
           # TODO: should we "cache-to" iff !cache-hit?
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          # TODO: try experiemental GitHub Actions support: https://github.com/moby/buildkit#github-actions-cache-experimental
+          # TODO: directly feed image from first build
+          cache-to: ${{ steps.docker-cache.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
           target: builder
 
       # https://github.com/docker/build-push-action/issues/252
       - name: Move cache
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          if [ -d /tmp/.buildx-cache-new ]
+          then
+            rm -rf /tmp/.buildx-cache
+            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          fi
 
       - name: Build nns-dapp Docker image
         uses: docker/build-push-action@v2
