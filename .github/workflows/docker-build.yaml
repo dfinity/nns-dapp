@@ -36,14 +36,16 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ hashFiles( '.dockerignore', 'Dockerfile', 'Cargo.lock', 'Cargo.toml', 'rs/Cargo.toml', 'rs/nns_functions_candid_gen/**', 'dfx.json' ) }}
 
       - name: test prop
-        run: "echo yes it's happening '$FOO'"
-        if: ${{ steps.docker-cache.cache-hit }}
+        run: |
+          echo "yes it's happening '$FOO'"
+        if: ${{ steps.docker-cache.cache-hit == 'true' }}
         env:
           FOO: ${{ steps.docker-cache.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
 
       - name: test not prop
-        run: "echo yes it's happening '$FOO'"
-        if: ${{ ! steps.docker-cache.cache-hit }}
+        run: |
+          echo "yes it's happening '$FOO'"
+        if: ${{ steps.docker-cache.cache-hit != 'true' }}
         env:
           FOO: ${{ steps.docker-cache.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
 
@@ -63,7 +65,7 @@ jobs:
           # TODO: should we "cache-to" iff !cache-hit?
           # TODO: try experiemental GitHub Actions support: https://github.com/moby/buildkit#github-actions-cache-experimental
           # TODO: directly feed image from first build
-          cache-to: ${{ steps.docker-cache.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
+          cache-to: ${{ steps.docker-cache.cache-hit == 'true' && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
           target: builder
 
       # https://github.com/docker/build-push-action/issues/252
