@@ -47,29 +47,25 @@ jobs:
           # would be pointless since we only/mostly care about the layers that are
           # used in the build.
           # https://docs.docker.com/engine/reference/commandline/buildx_build/#cache-to
+          # TODO: should we "cache-to" iff !cache-hit?
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           target: builder
 
       # https://github.com/docker/build-push-action/issues/252
       - name: Move cache
         run: |
-          echo old cache
-          ls /tmp/.buildx-cache
-
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-          echo new cache
-          ls /tmp/.buildx-cache
 
       - name: Build nns-dapp Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
-          push:  false # otherwise docker tries to push to dockerhub
+          push: false # otherwise docker tries to push to dockerhub
           tags: nns-dapp
           load: true # effectively makes the image usable in 'docker run'
           file: Dockerfile
+          cache-from: type=local,src=/tmp/.buildx-cache
 
       - run: mkdir out/
       - run: docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > out/nns-dapp.wasm
