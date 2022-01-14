@@ -44,63 +44,63 @@ jobs:
           CACHE_HIT: ${{ steps.docker-cache.outputs.cache-hit }}
           BLAH: ${{ steps.docker-cache.outputs.cache-hit && 'Oh yes' || 'Oh no...' }}
 
-      #- name: test not prop
-        #run: |
-          #echo "yes it's happening '$FOO' '$CACHE_HIT'"
-        #if: ${{ steps.docker-cache.outputs.cache-hit != 'true' }}
-        #env:
-          #FOO: ${{ steps.docker-cache.outputs.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
-          #CACHE_HIT: ${{ steps.docker-cache.outputs.cache-hit }}
+      - name: test not prop
+        run: |
+          echo "yes it's happening '$FOO' '$CACHE_HIT'"
+        if: ${{ steps.docker-cache.outputs.cache-hit != 'true' }}
+        env:
+          FOO: ${{ steps.docker-cache.outputs.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
+          CACHE_HIT: ${{ steps.docker-cache.outputs.cache-hit }}
 
-      #- name: Build base Docker image
-        #uses: docker/build-push-action@v2
-        #with:
-          #context: .
-          #push:  false # otherwise docker tries to push to dockerhub
-          #tags: nns-dapp-builder
-          #file: Dockerfile
-          #cache-from: type=local,src=/tmp/.buildx-cache
-          ## NOTE: we set "mode=max" to make sure _all_ layers are exported, not
-          ## only those in the final image. Exporting only the finaly layers
-          ## would be pointless since we only/mostly care about the layers that are
-          ## used in the build.
-          ## https://docs.docker.com/engine/reference/commandline/buildx_build/#cache-to
-          ## TODO: should we "cache-to" iff !cache-hit?
-          ## TODO: try experiemental GitHub Actions support: https://github.com/moby/buildkit#github-actions-cache-experimental
-          ## TODO: directly feed image from first build
-          #cache-to: ${{ steps.docker-cache.outputs.cache-hit == 'true' && '' || steps.docker-cache.outputs.cache-hit }}
-          #target: builder
+      - name: Build base Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push:  false # otherwise docker tries to push to dockerhub
+          tags: nns-dapp-builder
+          file: Dockerfile
+          cache-from: type=local,src=/tmp/.buildx-cache
+          # NOTE: we set "mode=max" to make sure _all_ layers are exported, not
+          # only those in the final image. Exporting only the finaly layers
+          # would be pointless since we only/mostly care about the layers that are
+          # used in the build.
+          # https://docs.docker.com/engine/reference/commandline/buildx_build/#cache-to
+          # TODO: should we "cache-to" iff !cache-hit?
+          # TODO: try experiemental GitHub Actions support: https://github.com/moby/buildkit#github-actions-cache-experimental
+          # TODO: directly feed image from first build
+          cache-to: ${{ steps.docker-cache.outputs.cache-hit && 'Oh yes' || 'Oh no...' }}
+          target: builder
 
-      ## https://github.com/docker/build-push-action/issues/252
-      #- name: Move cache
-        #run: |
-          #if [ -d /tmp/.buildx-cache-new ]
-          #then
-            #rm -rf /tmp/.buildx-cache
-            #mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-          #fi
+      # https://github.com/docker/build-push-action/issues/252
+      - name: Move cache
+        run: |
+          if [ -d /tmp/.buildx-cache-new ]
+          then
+            rm -rf /tmp/.buildx-cache
+            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          fi
 
-      #- name: Build nns-dapp Docker image
-        #uses: docker/build-push-action@v2
-        #with:
-          #context: .
-          #push: false # otherwise docker tries to push to dockerhub
-          #tags: nns-dapp
-          #load: true # effectively makes the image usable in 'docker run'
-          #file: Dockerfile
-          #cache-from: type=local,src=/tmp/.buildx-cache
+      - name: Build nns-dapp Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: false # otherwise docker tries to push to dockerhub
+          tags: nns-dapp
+          load: true # effectively makes the image usable in 'docker run'
+          file: Dockerfile
+          cache-from: type=local,src=/tmp/.buildx-cache
 
-      #- run: mkdir out/
-      #- run: docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > out/nns-dapp.wasm
-      #- run: docker run --rm --entrypoint cat nns-dapp /assets.tar.xz > out/assets.tar.xz
-      #- run: sha256sum out/nns-dapp.wasm
-      #- name: 'Upload wasm module'
-        #uses: actions/upload-artifact@v2
-        #with:
-          #name: Backend wasm module
-          #path: out/nns-dapp.wasm
-      #- name: 'Upload frontend assets'
-        #uses: actions/upload-artifact@v2
-        #with:
-          #name: Frontend assets
-          #path: out/assets.tar.xz
+      - run: mkdir out/
+      - run: docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > out/nns-dapp.wasm
+      - run: docker run --rm --entrypoint cat nns-dapp /assets.tar.xz > out/assets.tar.xz
+      - run: sha256sum out/nns-dapp.wasm
+      - name: 'Upload wasm module'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Backend wasm module
+          path: out/nns-dapp.wasm
+      - name: 'Upload frontend assets'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Frontend assets
+          path: out/assets.tar.xz
