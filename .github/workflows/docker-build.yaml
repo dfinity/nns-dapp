@@ -62,25 +62,26 @@ jobs:
           echo new cache
           ls /tmp/.buildx-cache
 
-      - name: Build nns-dapp Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push:  false # otherwise docker tries to push to dockerhub
-          tags: nns-dapp
-          file: Dockerfile
+      #- name: Build nns-dapp Docker image
+        #uses: docker/build-push-action@v2
+        #with:
+          #context: .
+          #push:  false # otherwise docker tries to push to dockerhub
+          #tags: nns-dapp
+          #load: true # effectively makes the image usable in 'docker run'
+          #file: Dockerfile
 
-      - run: mkdir out/
-      - run: docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > out/nns-dapp.wasm
-      - run: docker run --rm --entrypoint cat nns-dapp /assets.tar.xz > out/assets.tar.xz
-      - run: sha256sum out/nns-dapp.wasm
-      - name: 'Upload wasm module'
-        uses: actions/upload-artifact@v2
-        with:
-          name: Backend wasm module
-          path: out/nns-dapp.wasm
-      - name: 'Upload frontend assets'
-        uses: actions/upload-artifact@v2
-        with:
-          name: Frontend assets
-          path: out/assets.tar.xz
+      #- run: mkdir out/
+      #- run: docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > out/nns-dapp.wasm
+      #- run: docker run --rm --entrypoint cat nns-dapp /assets.tar.xz > out/assets.tar.xz
+      #- run: sha256sum out/nns-dapp.wasm
+      #- name: 'Upload wasm module'
+        #uses: actions/upload-artifact@v2
+        #with:
+          #name: Backend wasm module
+          #path: out/nns-dapp.wasm
+      #- name: 'Upload frontend assets'
+        #uses: actions/upload-artifact@v2
+        #with:
+          #name: Frontend assets
+          #path: out/assets.tar.xz
