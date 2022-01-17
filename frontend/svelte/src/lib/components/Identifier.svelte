@@ -8,15 +8,10 @@
 </script>
 
 <p>
-  <small
-    >{identifier}
-    <button
-      on:click={copyToClipboard}
-      aria-label="Copy identifier to clipboard"
-    >
-      <IconCopy />
-    </button></small
-  >
+  <small>{identifier}</small>
+  <button on:click={copyToClipboard} aria-label="Copy identifier to clipboard">
+    <IconCopy />
+  </button>
 </p>
 
 <style lang="scss">
