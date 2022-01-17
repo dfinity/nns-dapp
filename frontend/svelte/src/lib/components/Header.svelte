@@ -17,10 +17,13 @@
   @use "../themes/mixins/img";
 
   header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
     height: var(--header-height);
     overflow: hidden;
-
-    position: relative;
 
     display: grid;
     grid-template-columns: 25% 50% 25%;
@@ -49,5 +52,7 @@
     text-align: center;
 
     z-index: 1;
+
+    line-height: inherit;
   }
 </style>
