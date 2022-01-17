@@ -88,8 +88,6 @@ export default {
             ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
             : "https://identity.ic0.app/")
       ),
-      // Specifies where the svelte app is loaded (typically "/" in local development and "/v2" in production)
-      "process.env.BASE_HREF": JSON.stringify(process.env.BASE_HREF || "/v2/"),
       // When developing with live reload in svelte, redirecting to flutter is
       // not desirable.  The default should match production:
       // - false while svelte is inactive

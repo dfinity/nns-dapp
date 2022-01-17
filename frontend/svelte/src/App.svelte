@@ -17,8 +17,6 @@
       content="default-src 'self'; child-src 'none';"
     />
   {/if}
-
-  <base href={process.env.BASE_HREF} />
 </svelte:head>
 
 <Guard>
