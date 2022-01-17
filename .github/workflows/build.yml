@@ -49,7 +49,6 @@ jobs:
           curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
           mkdir -p ~/flutter
           tar xJf flutter.tar.xz -C "$HOME"
-          echo "$HOME/flutter/bin" >> $GITHUB_PATH
         if: ${{ ! flutter-cache.outputs.cache-hit }}
 
       - run: echo "$HOME/flutter/bin" >> $GITHUB_PATH
