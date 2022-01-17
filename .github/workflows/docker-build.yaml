@@ -28,29 +28,15 @@ jobs:
       # The `hashFiles` should include every single file involved in the
       # "builder" build, otherwise the action will fetch the cache but start
       # from scratch nonetheless, never uploading the build output.
+      # NOTE: If this isn't enough, we could try experiemental GitHub Actions
+      # support:
+      # https://github.com/moby/buildkit#github-actions-cache-experimental
       - name: Cache docker layers
         uses: actions/cache@v2
         id: docker-cache
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ hashFiles( '.dockerignore', 'Dockerfile', 'Cargo.lock', 'Cargo.toml', 'rs/Cargo.toml', 'rs/nns_functions_candid_gen/**', 'dfx.json' ) }}
-
-      - name: test prop
-        run: |
-          echo "yes it's happening '$FOO' '$CACHE_HIT' '$BLAH'"
-        if: steps.docker-cache.outputs.cache-hit
-        env:
-          FOO: ${{ steps.docker-cache.outputs.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
-          CACHE_HIT: ${{ steps.docker-cache.outputs.cache-hit }}
-          BLAH: ${{ steps.docker-cache.outputs.cache-hit && 'Oh yes' || 'Oh no...' }}
-
-      - name: test not prop
-        run: |
-          echo "yes it's happening '$FOO' '$CACHE_HIT'"
-        if: ${{ steps.docker-cache.outputs.cache-hit != 'true' }}
-        env:
-          FOO: ${{ steps.docker-cache.outputs.cache-hit && '' || 'type=local,dest=/tmp/.buildx-cache-new,mode=max' }}
-          CACHE_HIT: ${{ steps.docker-cache.outputs.cache-hit }}
 
       - name: Build base Docker image
         uses: docker/build-push-action@v2
@@ -65,13 +51,19 @@ jobs:
           # would be pointless since we only/mostly care about the layers that are
           # used in the build.
           # https://docs.docker.com/engine/reference/commandline/buildx_build/#cache-to
-          # TODO: should we "cache-to" iff !cache-hit?
-          # TODO: try experiemental GitHub Actions support: https://github.com/moby/buildkit#github-actions-cache-experimental
           # TODO: directly feed image from first build
-          cache-to: ${{ (! steps.docker-cache.outputs.cache-hit) && 'type=local,dest=/tmp/.buildx-cache-new,mode=max' || '' }} # note about order
+          # NOTE: Here we ensure we only export the cache if there was no cache
+          # hit.  Otherwise, we export many GBs (a few minutes) to never
+          # actually use the exported data.
+          # NOTE: the empty string must be at the end, otherwise `''` is
+          # considered falsy and is never used
+          cache-to: ${{ (! steps.docker-cache.outputs.cache-hit) && 'type=local,dest=/tmp/.buildx-cache-new,mode=max' || '' }}
           target: builder
 
       # https://github.com/docker/build-push-action/issues/252
+      # NOTE: /tmp/.buildx-cache is NOT reuploaded if there wasa a perfect
+      # cache-hit (that's how GHA works and it means we don't re-upload 3GB
+      # that we already have)
       - name: Move cache
         run: |
           if [ -d /tmp/.buildx-cache-new ]
