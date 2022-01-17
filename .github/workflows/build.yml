@@ -38,7 +38,6 @@ jobs:
 
       - name: Cache flutter install
         id: flutter-cache
-        run: echo "$HOME/flutter/bin" >> $GITHUB_PATH
         uses: actions/cache@v2
         with:
           path: ~/flutter
@@ -52,6 +51,8 @@ jobs:
           tar xJf flutter.tar.xz -C "$HOME"
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
         if: ${{ ! flutter-cache.outputs.cache-hit }}
+
+      - run: echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
       - name: Install Rust
         run: |
