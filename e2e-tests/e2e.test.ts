@@ -15,19 +15,17 @@ test("Screenshots", async () => {
 
     const { remote } = require('webdriverio');
 
-    ;(async () => {
-        const browser = await remote({
-            capabilities: {
-                browserName: 'chrome'
-            }
-        })
+    const browser = await remote({
+        capabilities: {
+            browserName: 'chrome'
+        }
+    })
 
-        await browser.url('https://webdriver.io')
+    await browser.url('https://webdriver.io')
 
-        const apiLink = await browser.$('=API')
-        await apiLink.click()
+    const apiLink = await browser.$('=API')
+    await apiLink.click()
 
-        await browser.saveScreenshot('./screenshots/test.png')
-        await browser.deleteSession()
-    })()
+    await browser.saveScreenshot('./screenshots/test.png')
+    await browser.deleteSession()
 }, 30_000);
