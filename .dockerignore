@@ -1,7 +1,10 @@
-.dockerignore
+# by default, ignore all hidden files and make some exceptions
+.*
+!.rustfmt.toml
+!.gitignore
+
+
 Dockerfile
-.git
-.github
 backend-tests
 node_modules
 demos
@@ -9,7 +12,6 @@ docs
 dist
 screenshots
 target
-.dfx
 out
 assets.tar.xz
 frontend/ts/node_modules

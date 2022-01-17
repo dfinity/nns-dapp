@@ -3,6 +3,8 @@
 # docker build -t nns-dapp .
 # docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
 
+# This is the "builder", i.e. the base image used later to build the final
+# code.
 FROM ubuntu:20.04 as builder
 SHELL ["bash", "-c"]
 
@@ -15,7 +17,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     apt -yq update && \
     apt -yqq install --no-install-recommends curl ca-certificates \
         build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake \
-	git jq
+        git jq
 
 # Install node
 RUN curl --fail -sSf https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
@@ -46,12 +48,23 @@ ENV PATH=/flutter/bin:$PATH
 # Install IC CDK optimizer
 RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
+# Pre-build all cargo dependencies. Because cargo doesn't have a build option
+# to build only the dependecies, we pretend that our project is a simple, empty
+# `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
+# everything once the actual source code is COPYed (and e.g. doesn't trip on
+# timestamps being older)
+COPY Cargo.lock .
+COPY Cargo.toml .
+COPY rs/Cargo.toml rs/Cargo.toml
+COPY rs/nns_functions_candid_gen ./rs/nns_functions_candid_gen
+RUN mkdir -p rs/src && touch rs/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/src
+
 # Install dfx
 COPY dfx.json dfx.json
 RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
 # Start the second container
-FROM builder
+FROM builder AS build
 SHELL ["bash", "-c"]
 ARG DEPLOY_ENV=mainnet
 RUN echo $DEPLOY_ENV
@@ -63,3 +76,7 @@ RUN ./build.sh
 # Copy the wasm to the traditional location.
 RUN cp "$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)" nns-dapp.wasm
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm
+
+FROM scratch
+COPY --from=build /nns-dapp.wasm /
+COPY --from=build /assets.tar.xz /
