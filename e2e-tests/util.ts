@@ -53,9 +53,6 @@ export async function runInBrowserCommon(
     outputDir: "./",
   });
 
-  // setup test suite
-  await addCustomCommands(browser);
-
   try {
     // run test
     await test(browser, runConfig);
@@ -110,70 +107,6 @@ function parseRunConfiguration(): RunConfiguration {
   return {
     screenConfiguration: parseScreen(),
   };
-}
-
-export async function addCustomCommands(
-  browser: any
-): Promise<void> {
-  await browser.addCommand(
-    "addVirtualWebAuth",
-    command("POST", "/session/:sessionId/webauthn/authenticator", {
-      command: "addVirtualWebAuth",
-      description: "add a virtual authenticator",
-      ref: "https://www.w3.org/TR/webauthn-2/#sctn-automation-add-virtual-authenticator",
-      variables: [],
-      parameters: [
-        {
-          name: "protocol",
-          type: "string",
-          description: "The protocol the Virtual Authenticator speaks",
-          required: true,
-        },
-        {
-          name: "transport",
-          type: "string",
-          description: "The AuthenticatorTransport simulated",
-          required: true,
-        },
-        {
-          name: "hasResidentKey",
-          type: "boolean",
-          description:
-            "If set to true the authenticator will support client-side discoverable credentials",
-          required: true,
-        },
-        {
-          name: "isUserConsenting",
-          type: "boolean",
-          description:
-            "Determines the result of all user consent authorization gestures",
-          required: true,
-        },
-      ],
-    })
-  );
-
-  await browser.addCommand(
-    "removeVirtualWebAuth",
-    command(
-      "DELETE",
-      "/session/:sessionId/webauthn/authenticator/:authenticatorId",
-      {
-        command: "removeVirtualWebAuth",
-        description: "remove a virtual authenticator",
-        ref: "https://www.w3.org/TR/webauthn-2/#sctn-automation-add-virtual-authenticator",
-        variables: [
-          {
-            name: "authenticatorId",
-            type: "string",
-            description: "The id of the authenticator to remove",
-            required: true,
-          },
-        ],
-        parameters: [],
-      }
-    )
-  );
 }
 
 // 'Screenshots' objects are used to make sure all screenshots end up in the

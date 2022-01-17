@@ -10,20 +10,24 @@ import { remote } from "webdriverio";
 
 setupSeleniumServer();
 
+
 test("Screenshots", async () => {
-  await runInBrowser(
-    async (browser: any, runConfig: RunConfiguration) => {
-      const screenshots = new Screenshots(
-        "screenshots/",
-        runConfig.screenConfiguration.screenType
-      );
 
-      await browser.url("http://localhost:8086/v2/index.html");
+    const { remote } = require('webdriverio');
 
-      await waitForFonts(browser);
-      const loginView = new LoginView(browser);
-      await loginView.waitForDisplay();
-      await screenshots.take("login", browser);
-    }
-  );
+    ;(async () => {
+        const browser = await remote({
+            capabilities: {
+                browserName: 'chrome'
+            }
+        })
+
+        await browser.url('https://webdriver.io')
+
+        const apiLink = await browser.$('=API')
+        await apiLink.click()
+
+        await browser.saveScreenshot('./screenshots/test.png')
+        await browser.deleteSession()
+    })()
 }, 30_000);
