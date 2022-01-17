@@ -52,7 +52,7 @@ jobs:
           # actually use the exported data.
           # NOTE: the empty string must be at the end, otherwise `''` is
           # considered falsy and is never used
-          cache-to: ${{ (! steps.docker-cache.outputs.cache-hit) && 'type=gha,scope=cached-stage,mode=max' || '' }}
+          cache-to: type=gha,scope=cached-stage,mode=max
           outputs: type=cacheonly
           target: builder
 
@@ -78,7 +78,6 @@ jobs:
           tags: nns-dapp
           load: true # effectively makes the image usable in 'docker run'
           file: Dockerfile
-          cache-from: type=gha,scope=builder-stage
 
       - run: mkdir out/
       - run: docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > out/nns-dapp.wasm
