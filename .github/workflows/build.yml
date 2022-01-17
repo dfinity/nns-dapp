@@ -1,0 +1,102 @@
+# A Native build
+# XXX: This makes some of 'checks.yml' redundant. This will be fixed as soon as
+# we have end-to-end tests working.
+# https://dfinity.atlassian.net/browse/L2-191
+name: Native build
+
+# We use "push" events so that we have the actual commit. In "pull_request"
+# events we get a merge commit with main instead. The merge commit can be
+# useful to check that the code would pass tests once merged, but here it just
+# creates confusion and doesn't add anything since the branch must be up to
+# date before merge. It's also nice to have CI running on branches without PRs.
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    env:
+      DFX_VERSION: 0.8.3
+      RUSTC_VERSION: 1.54.0
+      FLUTTER_VERSION: 2.2.3
+      IC_CDK_OPTIMIZER_VERSION: 0.3.1
+    steps:
+      - uses: actions/checkout@v2
+
+      # Cache based on the Cargo.lock
+      # The cache key is always an exact match or no match (i.e. no
+      # "restore-keys"-style matching). Because (in case of an exact match)
+      # GitHub actions won't (re-)upload the cache after the build, it means that
+      # our cache won't just grow forever.
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install Flutter
+        run: |
+          cd $(mktemp -d)
+          curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
+          mkdir -p ~/flutter
+          tar xJf flutter.tar.xz -C "$HOME"
+          echo "$HOME/flutter/bin" >> $GITHUB_PATH
+
+      - name: Install Rust
+        run: |
+          # make sure we're installing the right version
+          grep "$RUSTC_VERSION" rust-toolchain.toml
+
+          rustup update "$RUSTC_VERSION" --no-self-update
+          rustup default "$RUSTC_VERSION"
+          rustup target add wasm32-unknown-unknown
+
+      # Cache the ic-cdk-optimizer
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.local/bin/ic-cdk-optimizer
+            target
+          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}
+
+      - name: Install ic-cdk-optimizer
+        run: |
+          install_dir="$HOME/.local/bin/"
+          mkdir -p "$install_dir"
+          if [ ! -x "$install_dir/ic-cdk-optimizer" ]
+          then
+            cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
+            cp $HOME/.cargo/bin/ic-cdk-optimizer "$install_dir"
+            echo "$install_dir" >> $GITHUB_PATH
+          fi
+
+      - name: Install DFX
+        run: |
+          echo Install DFX Version: "$DFX_VERSION"
+          yes | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+
+      # Helps with debugging
+      - name: Versions
+        run: |
+          set -x
+          dfx --version
+          node --version
+          npm --version
+          rustc --version
+          cargo --version
+          ic-cdk-optimizer --version
+
+      # This is a hack and this should go away.
+      # The build (update_config.sh in particular) needs to know the canister
+      # ID before the build.
+      # https://dfinity.atlassian.net/browse/L2-192
+      - name: Prepare canister
+        run: |
+          dfx start --background
+          dfx canister --no-wallet create --all
+          dfx stop
+
+      - name: Build
+        run: DEPLOY_ENV=local ./build.sh
