@@ -67,7 +67,7 @@ COPY dfx.json dfx.json
 RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
 # Start the second container
-FROM builder
+FROM builder AS build
 SHELL ["bash", "-c"]
 ARG DEPLOY_ENV=mainnet
 RUN echo $DEPLOY_ENV
@@ -79,3 +79,7 @@ RUN ./build.sh
 # Copy the wasm to the traditional location.
 RUN cp "$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)" nns-dapp.wasm
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm
+
+FROM scratch
+COPY --from=build nns-dapp.wasm out/nns-dapp.wasm
+COPY --from=build assets.tar.xz out/assets.tar.xz
