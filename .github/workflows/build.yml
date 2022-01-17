@@ -36,6 +36,14 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Cache flutter install
+        id: flutter-cache
+        run: echo "$HOME/flutter/bin" >> $GITHUB_PATH
+        uses: actions/cache@v2
+        with:
+          path: ~/flutter
+          key: ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}
+
       - name: Install Flutter
         run: |
           cd $(mktemp -d)
@@ -43,6 +51,7 @@ jobs:
           mkdir -p ~/flutter
           tar xJf flutter.tar.xz -C "$HOME"
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
+        if: ${{ ! flutter-cache.outputs.cache-hit }}
 
       - name: Install Rust
         run: |
@@ -131,3 +140,10 @@ jobs:
           # do not pull: if this branch is behind, then we might as well let
           # the pushing fail
           pull: "NO-PULL"
+
+      - name: Archive screenshots
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: e2e-screenshots
+          path: screenshots/**/*.png
