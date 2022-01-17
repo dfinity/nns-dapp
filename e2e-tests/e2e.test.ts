@@ -17,7 +17,13 @@ test("Screenshots", async () => {
 
     const browser = await remote({
         capabilities: {
-            browserName: 'chrome'
+            browserName: 'chrome',
+            "goog:chromeOptions": {
+                args: [
+                    "--headless",
+                ]
+            },
+
         }
     })
 
