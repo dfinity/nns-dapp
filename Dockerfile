@@ -3,11 +3,8 @@
 # docker build -t nns-dapp .
 # docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
 
-
 # This is the "builder", i.e. the base image used later to build the final
 # code.
-# NOTE: When modifying the COPY statements, make sure you modify the list of
-# hashed files (hashFiles) in the docker-build GitHub Action.
 FROM ubuntu:20.04 as builder
 SHELL ["bash", "-c"]
 
