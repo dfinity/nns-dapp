@@ -25,6 +25,70 @@ class AccountDetailPage extends StatefulWidget {
 class _AccountDetailPageState extends State<AccountDetailPage> {
   @override
   Widget build(BuildContext context) {
+    final account = context.boxes.accounts[widget.account.identifier];
+    var buttonGroup = [
+      ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(AppColors.gray600)),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "Show Principal And Address On Device",
+              style: TextStyle(
+                  fontSize: Responsive.isMobile(context) ? 14 : 20,
+                  fontFamily: Fonts.circularBook,
+                  color: AppColors.gray50,
+                  fontWeight: FontWeight.w100),
+            ),
+          ),
+          onPressed: () async {
+            try {
+              final ledgerIdentity =
+                  (await context.icApi.connectToHardwareWallet()).unwrap();
+              await ledgerIdentity.showAddressAndPubKeyOnDevice();
+            } catch (err) {
+              // Display the error.
+              js.context.callMethod("alert", ["$err"]);
+            }
+          }),
+      if (Responsive.isMobile(context))
+        SizedBox(height: 8)
+      else
+        SizedBox(width: 8),
+      Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(AppColors.gray600)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  "Show Neurons",
+                  style: TextStyle(
+                      fontSize: Responsive.isMobile(context) ? 14 : 20,
+                      fontFamily: Fonts.circularBook,
+                      color: AppColors.gray50,
+                      fontWeight: FontWeight.w100),
+                ),
+              ),
+              onPressed: () async {
+                final res = await context
+                    .callUpdate(() => context.icApi.fetchNeuronsForHW(account));
+
+                res.when(
+                    ok: (neurons) {
+                      OverlayBaseWidget.show(
+                          context,
+                          WizardOverlay(
+                              rootTitle: "Neurons",
+                              rootWidget: HardwareListNeurons(
+                                neurons: neurons,
+                              )));
+                    },
+                    err: (err) => js.context.callMethod("alert", ["$err"]));
+              })),
+    ];
     return Scaffold(
       appBar: AppBar(
         title: Text("Account"),
@@ -63,8 +127,6 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
             child: StreamBuilder<Object>(
                 stream: context.icApi.hiveBoxes.accounts.changes,
                 builder: (context, snapshot) {
-                  final account =
-                      context.boxes.accounts[widget.account.identifier];
                   return FooterGradientButton(
                       body: SingleChildScrollView(
                         child: ConstrainWidthAndCenter(
@@ -105,9 +167,9 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Flexible(
-                                          child: SelectableText(
-                                              "Address: " +
-                                              account.accountIdentifier,
+                                            child: SelectableText(
+                                                "Address: " +
+                                                    account.accountIdentifier,
                                                 style: context
                                                     .textTheme.bodyText2)),
                                         IconButton(
@@ -164,100 +226,19 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                         ],
                                       ),
                                     SmallFormDivider(),
-                                    if (account.hardwareWallet)
-                                      Row(children: [
-                                        ElevatedButton(
-                                            style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all(
-                                                        AppColors.gray600)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(16.0),
-                                              child: Text(
-                                                "Show Principal And Address On Device",
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        Responsive.isMobile(
-                                                                context)
-                                                            ? 14
-                                                            : 20,
-                                                    fontFamily:
-                                                        Fonts.circularBook,
-                                                    color: AppColors.gray50,
-                                                    fontWeight:
-                                                        FontWeight.w100),
-                                              ),
-                                            ),
-                                            onPressed: () async {
-                                              try {
-                                                final ledgerIdentity =
-                                                    (await context.icApi
-                                                            .connectToHardwareWallet())
-                                                        .unwrap();
-                                                await ledgerIdentity
-                                                    .showAddressAndPubKeyOnDevice();
-                                              } catch (err) {
-                                                // Display the error.
-                                                js.context.callMethod(
-                                                    "alert", ["$err"]);
-                                              }
-                                            }),
-                                        Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 16.0),
-                                            child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .all(AppColors
-                                                                .gray600)),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      16.0),
-                                                  child: Text(
-                                                    "Show Neurons",
-                                                    style: TextStyle(
-                                                        fontSize:
-                                                            Responsive.isMobile(
-                                                                    context)
-                                                                ? 14
-                                                                : 20,
-                                                        fontFamily:
-                                                            Fonts.circularBook,
-                                                        color: AppColors.gray50,
-                                                        fontWeight:
-                                                            FontWeight.w100),
-                                                  ),
-                                                ),
-                                                onPressed: () async {
-                                                  final res = await context
-                                                      .callUpdate(() => context
-                                                          .icApi
-                                                          .fetchNeuronsForHW(
-                                                              account));
-
-                                                  res.when(
-                                                      ok: (neurons) {
-                                                        OverlayBaseWidget.show(
-                                                            context,
-                                                            WizardOverlay(
-                                                                rootTitle:
-                                                                    "Neurons",
-                                                                rootWidget:
-                                                                    HardwareListNeurons(
-                                                                  neurons:
-                                                                      neurons,
-                                                                )));
-                                                      },
-                                                      err: (err) => js.context
-                                                          .callMethod("alert",
-                                                              ["$err"]));
-                                                })),
-                                      ]),
                                   ],
                                 ),
                               ),
+                              if (account.hardwareWallet)
+                                if (Responsive.isMobile(context))
+                                  Column(
+                                      // crossAxisAlignment:
+                                      //     CrossAxisAlignment.end,
+                                      children: buttonGroup)
+                                else
+                                  Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: buttonGroup),
                               if (account.transactions.isEmpty)
                                 Center(
                                   child: Padding(
