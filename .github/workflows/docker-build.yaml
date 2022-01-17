@@ -45,7 +45,7 @@ jobs:
           push:  false # otherwise docker tries to push to dockerhub
           tags: nns-dapp-builder
           file: Dockerfile
-          cache-from: type=gha,scope=builder-stage
+          cache-from: type=gha,scope=cached-stage
           # TODO: directly feed image from first build
           # NOTE: Here we ensure we only export the cache if there was no cache
           # hit.  Otherwise, we export many GBs (a few minutes) to never
