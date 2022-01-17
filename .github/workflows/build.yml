@@ -43,7 +43,7 @@ jobs:
           path: ~/flutter
           key: ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}
 
-      - name: Install Flutter
+      - name: Install Flutter # takes 45s
         run: |
           cd $(mktemp -d)
           curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
