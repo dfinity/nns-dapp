@@ -5,7 +5,6 @@ import type { AuthStore } from "./auth.store";
 
 export interface AccountsStore {
   main: Account | undefined;
-  subAccounts?: Account[];
 }
 
 /**
