@@ -68,5 +68,5 @@ describe("Accounts", () => {
   });
 
   it("should subscribe to store", () =>
-    expect(accountsStore).toHaveBeenCalled());
+    expect(accountsStoreMock).toHaveBeenCalled());
 });
