@@ -7,6 +7,16 @@
   import Voting from "./routes/Voting.svelte";
   import Canisters from "./routes/Canisters.svelte";
   import Auth from "./routes/Auth.svelte";
+  import type { Unsubscriber } from "svelte/types/runtime/store";
+  import { accountsStore } from "./lib/stores/accounts.store";
+  import { onDestroy } from "svelte";
+  import { AuthStore, authStore } from "./lib/stores/auth.store";
+
+  const unsubscribe: Unsubscriber = authStore.subscribe(
+    async (auth: AuthStore) => accountsStore.sync(auth)
+  );
+
+  onDestroy(unsubscribe);
 </script>
 
 <svelte:head>

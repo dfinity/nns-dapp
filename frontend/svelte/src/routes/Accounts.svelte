@@ -1,6 +1,12 @@
 <script lang="ts">
   import Layout from "../lib/components/Layout.svelte";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
+  import type { Unsubscriber } from "svelte/types/runtime/store";
+  import { AccountsStore, accountsStore } from "../lib/stores/accounts.store";
+  import type { Account } from "../lib/types/account";
+  import ICP from "../lib/components/ICP.svelte";
+  import Card from "../lib/components/Card.svelte";
+  import Identifier from "../lib/components/Identifier.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -8,12 +14,53 @@
       window.location.replace("/#/accounts");
     }
   });
+
+  let main: Account;
+
+  const unsubscribe: Unsubscriber = accountsStore.subscribe(
+    async (accounts: AccountsStore) => (main = accounts?.main)
+  );
+
+  onDestroy(unsubscribe);
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
     <section>
-      <h1>Accounts</h1>
+      <div class="title">
+        <h1>Accounts</h1>
+
+        {#if main}
+          <ICP icp={main?.balance} />
+        {/if}
+      </div>
+
+      {#if main}
+        <Card>
+          <p slot="start">Main</p>
+          <ICP slot="end" icp={main?.balance} />
+          <Identifier identifier={main.identifier} />
+        </Card>
+      {/if}
+
+      <!-- TODO(L2-175): display a spinner while loading the accounts -->
     </section>
   </Layout>
 {/if}
+
+<style lang="scss">
+  .title {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    margin-bottom: calc(2 * var(--padding));
+
+    --icp-font-size: var(--font-size-h1);
+
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+</style>
