@@ -78,6 +78,7 @@ jobs:
           tags: nns-dapp
           load: true # effectively makes the image usable in 'docker run'
           file: Dockerfile
+          cache-from: type=gha,scope=cached-stage
 
       - run: mkdir out/
       - run: docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > out/nns-dapp.wasm
