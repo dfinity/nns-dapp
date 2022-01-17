@@ -14,6 +14,7 @@ import { Secp256k1PublicKey } from "./secp256k1";
 // @ts-ignore (no types are available)
 import TransportWebHID, { Transport } from "@ledgerhq/hw-transport-webhid";
 import TransportNodeHidNoEvents from "@ledgerhq/hw-transport-node-hid-noevents";
+import { bufferToArrayBuffer } from "../utils";
 
 /**
  * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
@@ -145,9 +146,8 @@ export class LedgerIdentity extends SignIdentity {
     return this._publicKey;
   }
 
-  public async sign(challenge: ArrayBuffer): Promise<Signature> {
+  public async sign(blob: ArrayBuffer): Promise<Signature> {
     return await this._executeWithApp(async (app: LedgerApp) => {
-      const blob = new Uint8Array(challenge);
       const resp: ResponseSign = await app.sign(
         this.derivePath,
         Buffer.from(blob),
@@ -172,7 +172,7 @@ export class LedgerIdentity extends SignIdentity {
         );
       }
 
-      return signatureRS.buffer as Signature;
+      return bufferToArrayBuffer(signatureRS) as Signature;
     });
   }
 

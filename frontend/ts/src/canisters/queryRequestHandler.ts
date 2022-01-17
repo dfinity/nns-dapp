@@ -1,5 +1,6 @@
 import { Agent, QueryResponseStatus } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
+import { uint8ArraytoArrayBuffer } from "../utils";
 
 export const submitQueryRequest = async (
   agent: Agent,
@@ -7,11 +8,9 @@ export const submitQueryRequest = async (
   methodName: string,
   bytes: Uint8Array
 ): Promise<Uint8Array> => {
-  const arg = bytes.buffer;
-
   const queryResponse = await agent.query(canisterId, {
     methodName,
-    arg,
+    arg: uint8ArraytoArrayBuffer(bytes),
   });
 
   if (queryResponse.status == QueryResponseStatus.Rejected) {
