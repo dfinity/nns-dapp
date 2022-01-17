@@ -5,8 +5,7 @@
   import { AccountsStore, accountsStore } from "../lib/stores/accounts.store";
   import type { Account } from "../lib/types/account";
   import ICP from "../lib/components/ICP.svelte";
-  import Card from "../lib/components/Card.svelte";
-  import Identifier from "../lib/components/Identifier.svelte";
+  import AccountCard from "../lib/components/AccountCard.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -36,11 +35,7 @@
       </div>
 
       {#if main}
-        <Card>
-          <p slot="start">Main</p>
-          <ICP slot="end" icp={main?.balance} />
-          <Identifier identifier={main.identifier} />
-        </Card>
+        <AccountCard account={main} />
       {/if}
 
       <!-- TODO(L2-175): display a spinner while loading the accounts -->
