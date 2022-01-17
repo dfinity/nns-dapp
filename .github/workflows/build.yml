@@ -100,7 +100,7 @@ jobs:
         working-directory: proxy
         run: |
           npm ci
-          npm run start &
+          npm run start > proxy.log &
 
       - name: prepare and run the test suite
         working-directory: e2e-tests
@@ -117,8 +117,15 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
-          name: selenium-test-log-${{ matrix.device }}
+          name: selenium-test-log
           path: wdio.log
+
+      - name: Archive proxy logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: proxy-log
+          path: proxy/proxy.log
 
       - name: Commit screenshots
         uses: EndBug/add-and-commit@v7.4.0
