@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "copy:index": "node ./scripts/copy.index.mjs",
     "import-assets": "rm -fr public/assets/assets && mkdir -p public/assets && cp -R ../dart/assets public/assets",
-    "build": "rm -fr public/assets/assets && rollup -c",
-    "dev": "npm run import-assets && rollup -c -w",
+    "build": "rm -fr public/assets/assets && rollup -c && npm run copy:index",
+    "dev": "npm run import-assets && BASE_HREF=/ npm run copy:index && rollup -c -w",
     "start": "sirv public",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "format": "prettier --write --plugin-search-dir=. .",
