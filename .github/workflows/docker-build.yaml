@@ -31,12 +31,12 @@ jobs:
       # NOTE: If this caching isn't enough, we could try experimental GitHub
       # Actions support:
       # https://github.com/moby/buildkit#github-actions-cache-experimental
-      - name: Cache docker layers
-        uses: actions/cache@v2
-        id: docker-cache
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ hashFiles( '.dockerignore', 'Dockerfile', 'Cargo.lock', 'Cargo.toml', 'rs/Cargo.toml', 'rs/nns_functions_candid_gen/**', 'dfx.json' ) }}-mode-min
+      #- name: Cache docker layers
+        #uses: actions/cache@v2
+        #id: docker-cache
+        #with:
+          #path: /tmp/.buildx-cache
+          #key: ${{ runner.os }}-buildx-${{ hashFiles( '.dockerignore', 'Dockerfile', 'Cargo.lock', 'Cargo.toml', 'rs/Cargo.toml', 'rs/nns_functions_candid_gen/**', 'dfx.json' ) }}-mode-min
 
       - name: Build base Docker image
         uses: docker/build-push-action@v2
@@ -45,27 +45,28 @@ jobs:
           push:  false # otherwise docker tries to push to dockerhub
           tags: nns-dapp-builder
           file: Dockerfile
-          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-from: type=gha,scope=builder-stage
           # TODO: directly feed image from first build
           # NOTE: Here we ensure we only export the cache if there was no cache
           # hit.  Otherwise, we export many GBs (a few minutes) to never
           # actually use the exported data.
           # NOTE: the empty string must be at the end, otherwise `''` is
           # considered falsy and is never used
-          cache-to: ${{ (! steps.docker-cache.outputs.cache-hit) && 'type=local,dest=/tmp/.buildx-cache-new,mode=min' || '' }}
+          cache-to: ${{ (! steps.docker-cache.outputs.cache-hit) && 'type=gha,scope=cached-stage,mode=max' || '' }}
+          outputs: type=cacheonly
           target: builder
 
-      # https://github.com/docker/build-push-action/issues/252
-      # NOTE: /tmp/.buildx-cache is NOT reuploaded if there was a perfect
-      # cache-hit (that's how GHA works and it means we don't re-upload 3GB
-      # that we already have)
-      - name: Move cache
-        run: |
-          if [ -d /tmp/.buildx-cache-new ]
-          then
-            rm -rf /tmp/.buildx-cache
-            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-          fi
+      ## https://github.com/docker/build-push-action/issues/252
+      ## NOTE: /tmp/.buildx-cache is NOT reuploaded if there was a perfect
+      ## cache-hit (that's how GHA works and it means we don't re-upload 3GB
+      ## that we already have)
+      #- name: Move cache
+        #run: |
+          #if [ -d /tmp/.buildx-cache-new ]
+          #then
+            #rm -rf /tmp/.buildx-cache
+            #mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          #fi
 
       # Actual image build. We may be able to shave another few minutes
       # off: https://github.com/docker/build-push-action/issues/539
@@ -77,7 +78,7 @@ jobs:
           tags: nns-dapp
           load: true # effectively makes the image usable in 'docker run'
           file: Dockerfile
-          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-from: type=gha,scope=builder-stage
 
       - run: mkdir out/
       - run: docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > out/nns-dapp.wasm
