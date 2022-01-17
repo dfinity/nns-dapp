@@ -1,6 +1,7 @@
 # Use this with
 #
 # docker build -t nns-dapp .
+# TODO: change this
 # docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
 
 # This is the "builder", i.e. the base image used later to build the final

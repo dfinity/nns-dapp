@@ -10,7 +10,7 @@ wasm_path="target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm"
 
 mkdir -p $(dirname "$wasm_path")
 
-docker build --build-arg DEPLOY_ENV=local -t "$image_name" .
+docker build --target build --build-arg DEPLOY_ENV=local -t "$image_name" .
 docker run --rm --entrypoint cat "$image_name" /"$wasm_path" >"$wasm_path"
 echo "Created $wasm_path"
 docker run --rm --entrypoint cat "$image_name" /assets.tar.xz >assets.tar.xz
