@@ -6,6 +6,8 @@ if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $D
   exit 1
 fi
 
+echo "Building typescript package with DEPLOY_ENV=$DEPLOY_ENV"
+
 npm ci
 
 pushd "$(dirname "$0")"
