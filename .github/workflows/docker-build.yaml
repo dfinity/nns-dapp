@@ -46,11 +46,6 @@ jobs:
           tags: nns-dapp-builder
           file: Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
-          # NOTE: we set "mode=max" to make sure _all_ layers are exported, not
-          # only those in the final image. Exporting only the finaly layers
-          # would be pointless since we only/mostly care about the layers that are
-          # used in the build.
-          # https://docs.docker.com/engine/reference/commandline/buildx_build/#cache-to
           # TODO: directly feed image from first build
           # NOTE: Here we ensure we only export the cache if there was no cache
           # hit.  Otherwise, we export many GBs (a few minutes) to never
