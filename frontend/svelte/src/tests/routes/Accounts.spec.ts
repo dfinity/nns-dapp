@@ -66,4 +66,7 @@ describe("Accounts", () => {
     const { getByText } = render(Accounts);
     getByText(mockMainAccount.identifier);
   });
+
+  it("should subscribe to store", () =>
+    expect(accountsStore).toHaveBeenCalled());
 });
