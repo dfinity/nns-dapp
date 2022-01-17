@@ -6,6 +6,7 @@
     "__sapper__/*",
     "public/*",
     "**/*.spec.ts",
-    "jest.setup.ts"
+    "jest.setup.ts",
+    "**/*.mock.ts"
   ]
 }

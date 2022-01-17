@@ -19,7 +19,7 @@
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
     <section>
-      <h1>ICP page</h1>
+      <h1>Accounts</h1>
     </section>
   </Layout>
 {/if}

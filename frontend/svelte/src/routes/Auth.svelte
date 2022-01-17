@@ -85,6 +85,9 @@
 
     z-index: 1;
 
+    background: transparent;
+    color: inherit;
+
     > * {
       margin-left: auto;
       margin-right: auto;

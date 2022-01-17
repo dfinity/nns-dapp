@@ -1,16 +1,19 @@
 <script lang="ts">
   import Layout from "../lib/components/Layout.svelte";
+  import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
-  import { onDestroy } from "svelte";
 
-  // TODO: To be removed once this page has been implemented
-  const unsubscribe: Unsubscriber = authStore.subscribe(
-    ({ signedIn }: AuthStore) => {
-      if (signedIn && process.env.REDIRECT_TO_LEGACY) {
-        window.location.replace("/#/accounts");
-      }
+  onMount(() => {
+    if (process.env.REDIRECT_TO_LEGACY) {
+      window.location.replace("/#/neurons");
     }
+  });
+
+  let principalText: string = "";
+
+  const unsubscribe: Unsubscriber = authStore.subscribe(
+    ({ principal }: AuthStore) => (principalText = principal?.toText() ?? "")
   );
 
   onDestroy(unsubscribe);
@@ -18,6 +21,16 @@
 
 <Layout>
   <section>
-    <h1>Neurons page</h1>
+    <h1>Neurons</h1>
+
+    <p>
+      Earn rewards by staking your ICP in neurons. Neurons allow you to
+      participate in governance on the Internet Computer by voting on Network
+      Nervous System (NNS) proposals.
+    </p>
+
+    <p>
+      Your principal id is "{principalText}"
+    </p>
   </section>
 </Layout>
