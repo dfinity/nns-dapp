@@ -81,5 +81,5 @@ RUN cp "$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)" nns-dapp.wasm
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm
 
 FROM scratch
-COPY --from=build nns-dapp.wasm out/nns-dapp.wasm
-COPY --from=build assets.tar.xz out/assets.tar.xz
+COPY --from=build /nns-dapp.wasm /
+COPY --from=build /assets.tar.xz /
