@@ -111,12 +111,12 @@ jobs:
           npm ci
           npm run start &
 
-      - name: prepare and run the test suite
-        working-directory: e2e-tests
-        run: |
-          npm install
-          npm run install-webdrivers
-          npm run test
+      #- name: prepare and run the test suite
+        #working-directory: e2e-tests
+        #run: |
+          #npm install
+          #npm run install-webdrivers
+          #npm run test
 
 
       - name: Stop replica
