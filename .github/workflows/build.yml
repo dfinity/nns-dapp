@@ -36,22 +36,13 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Cache flutter install
-        id: flutter-cache
-        uses: actions/cache@v2
-        with:
-          path: ~/flutter
-          key: ${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}
-
       - name: Install Flutter # takes 45s
         run: |
           cd $(mktemp -d)
           curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
           mkdir -p ~/flutter
           tar xJf flutter.tar.xz -C "$HOME"
-        if: ${{ ! steps.flutter-cache.outputs.cache-hit }}
-
-      - run: echo "$HOME/flutter/bin" >> $GITHUB_PATH
+          echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
       - name: Install Rust
         run: |
@@ -111,13 +102,12 @@ jobs:
           npm ci
           npm run start &
 
-      #- name: prepare and run the test suite
-        #working-directory: e2e-tests
-        #run: |
-          #npm install
-          #npm run install-webdrivers
-          #npm run test
-
+      - name: prepare and run the test suite
+        working-directory: e2e-tests
+        run: |
+          npm install
+          npm run install-webdrivers
+          npm run test
 
       - name: Stop replica
         run: |

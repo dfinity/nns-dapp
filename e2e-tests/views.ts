@@ -6,6 +6,6 @@ export class LoginView extends View {
   async waitForDisplay(): Promise<void> {
     await this.browser
       .$("button")
-      .waitForDisplayed({ timeout: 10_000 });
+      .waitForDisplayed({ timeout: 20_000 });
   }
 }
