@@ -64,4 +64,5 @@ fi
 
 echo Optimising wasm
 ic-cdk-optimizer target/wasm32-unknown-unknown/release/nns-dapp.wasm -o target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
+ls -sh target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
 sha256sum target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
