@@ -35,7 +35,7 @@
       </div>
 
       {#if main}
-        <AccountCard account={main} />
+        <AccountCard account={main}>Main</AccountCard>
       {/if}
 
       <!-- TODO(L2-175): display a spinner while loading the accounts -->
