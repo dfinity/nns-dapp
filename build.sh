@@ -14,19 +14,12 @@ fi
 
 set -x
 
-# build typescript code
+# build typescript code. Must happen before the dart build because the dart
+# build requires "ic_agent.js" which is generated from frontend/ts.
 (cd frontend/ts && ./build.sh)
 
-# build the flutter app
-pushd frontend/dart || exit
-if [[ $DEPLOY_ENV = "mainnet" ]]; then
-  flutter build web --web-renderer html --release --no-sound-null-safety --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/
-else
-  # For all networks that are not main net, build with the staging config
-  flutter build web --web-renderer html --release --no-sound-null-safety --pwa-strategy=none --dart-define=DEPLOY_ENV=staging
-fi
-sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' build/web/index.html
-popd || exit
+# Build the Flutter codebase
+./frontend/dart/build.sh
 
 rm -f assets.tar.xz
 rm -fr web-assets
@@ -64,4 +57,5 @@ fi
 
 echo Optimising wasm
 ic-cdk-optimizer target/wasm32-unknown-unknown/release/nns-dapp.wasm -o target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
+ls -sh target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm
 sha256sum target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm

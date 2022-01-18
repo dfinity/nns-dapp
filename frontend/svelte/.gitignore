@@ -1,5 +1,6 @@
 /node_modules/
-/public/build/
-/public/assets/
+/public/
 
 .DS_Store
+
+coverage

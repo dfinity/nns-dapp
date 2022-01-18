@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "copy:index": "node ./scripts/copy.index.mjs",
     "import-assets": "rm -fr public/assets/assets && mkdir -p public/assets && cp -R ../dart/assets public/assets",
-    "build": "rm -fr public/assets/assets && rollup -c",
-    "dev": "npm run import-assets && rollup -c -w",
+    "build": "rm -fr public/assets/assets && rollup -c && npm run copy:index",
+    "dev": "npm run import-assets && BASE_HREF=/ npm run copy:index && rollup -c -w",
     "start": "sirv public",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "format": "prettier --write --plugin-search-dir=. ."
+    "format": "prettier --write --plugin-search-dir=. .",
+    "test": "jest",
+    "test:watch": "npm run test -- --watchAll"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
@@ -17,8 +20,12 @@
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.0.0",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/svelte": "^3.0.3",
     "@tsconfig/svelte": "^2.0.0",
+    "@types/jest": "^27.4.0",
     "autoprefixer": "^10.4.1",
+    "jest": "^27.4.7",
     "postcss": "^8.4.5",
     "postcss-load-config": "^3.1.1",
     "prettier": "^2.5.0",
@@ -32,7 +39,9 @@
     "sirv-cli": "^2.0.1",
     "svelte": "^3.0.0",
     "svelte-check": "^2.0.0",
+    "svelte-jester": "^2.1.5",
     "svelte-preprocess": "^4.0.0",
+    "ts-jest": "^27.1.2",
     "tslib": "^2.0.0",
     "typescript": "^4.0.0"
   },

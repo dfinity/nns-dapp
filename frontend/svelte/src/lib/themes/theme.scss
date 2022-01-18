@@ -41,3 +41,23 @@ button {
   cursor: pointer;
   user-select: none;
 }
+
+main {
+  background: var(--gray-50-background);
+  color: var(--gray-200);
+}
+
+section {
+  padding: calc(2 * var(--padding)) calc(4 * var(--padding));
+
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: var(--gray-50);
+}
