@@ -102,7 +102,11 @@ jobs:
         working-directory: proxy
         run: |
           npm ci
-          npm run start > proxy.log &
+          # TODO: source the params from dfx.json and canister_ids.json
+          npm run start -- \
+            --replica-host http://localhost:8080 \
+            rwlgt-iiaaa-aaaaa-aaaaa-cai:8086 \
+            > proxy.log &
 
       - name: prepare and run the test suite
         working-directory: e2e-tests
