@@ -120,7 +120,7 @@ const mkApp = (replicaHost: string, port: number, canisterId: string) => {
   });
 };
 
-const usage = 'USAGE: proxy --repilca-host http://... [<canister-id>:<port>]';
+const usage = 'USAGE: proxy --replica-host http://... [<canister-id>:<port>]';
 
 const args = process.argv.slice(2);
 
