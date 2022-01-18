@@ -147,11 +147,13 @@ export default class Service implements ServiceInterface {
       : null;
   };
 
-  public listKnownNeurons = async (certified: boolean): Promise<Array<KnownNeuron>> => {
+  public listKnownNeurons = async (
+    certified: boolean
+  ): Promise<Array<KnownNeuron>> => {
     const serviceToUse = certified ? this.certifiedService : this.service;
     const rawResponse = await serviceToUse.list_known_neurons();
     return rawResponse.known_neurons.map(this.responseConverters.toKnownNeuron);
-  }
+  };
 
   public addHotKey = async (
     request: AddHotKeyRequest

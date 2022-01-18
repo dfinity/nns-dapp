@@ -160,7 +160,9 @@ export interface ManageNeuron {
   command: Option<Command>;
   neuronIdOrSubaccount: Option<NeuronIdOrSubaccount>;
 }
-export interface Merge { sourceNeuronId: Option<NeuronId> }
+export interface Merge {
+  sourceNeuronId: Option<NeuronId>;
+}
 export interface MergeMaturity {
   percentageToMerge: number;
 }

@@ -47,10 +47,10 @@ export interface CanisterDetails {
 }
 
 export type CreateSubAccountResponse =
-    | { Ok: SubAccountDetails }
-    | { AccountNotFound: null }
-    | { SubAccountLimitExceeded: null }
-    | { NameTooLong: null };
+  | { Ok: SubAccountDetails }
+  | { AccountNotFound: null }
+  | { SubAccountLimitExceeded: null }
+  | { NameTooLong: null };
 
 export interface DetachCanisterRequest {
   canisterId: CanisterIdString;
@@ -58,8 +58,8 @@ export interface DetachCanisterRequest {
 export type DetachCanisterResponse = { Ok: null } | { CanisterNotFound: null };
 
 export type GetAccountResponse =
-    | { Ok: AccountDetails }
-    | { AccountNotFound: null };
+  | { Ok: AccountDetails }
+  | { AccountNotFound: null };
 
 export interface GetTransactionsRequest {
   accountIdentifier: AccountIdentifier;
@@ -76,15 +76,15 @@ export interface HardwareWalletAccountDetails {
   accountIdentifier: AccountIdentifier;
 }
 export type MultiPartTransactionStatus =
-    | { Queued: null }
-    | { Error: string }
-    | { Refunded: [BlockHeight, string] }
-    | { CanisterCreated: CanisterId }
-    | { Complete: null }
-    | { NotFound: null }
-    | { NeuronCreated: NeuronId }
-    | { PendingSync: null }
-    | { ErrorWithRefundPending: string };
+  | { Queued: null }
+  | { Error: string }
+  | { Refunded: [BlockHeight, string] }
+  | { CanisterCreated: CanisterId }
+  | { Complete: null }
+  | { NotFound: null }
+  | { NeuronCreated: NeuronId }
+  | { PendingSync: null }
+  | { ErrorWithRefundPending: string };
 export interface Receive {
   fee: E8s;
   from: AccountIdentifier;
@@ -95,20 +95,20 @@ export interface RegisterHardwareWalletRequest {
   principal: PrincipalString;
 }
 export type RegisterHardwareWalletResponse =
-    | { Ok: null }
-    | { AccountNotFound: null }
-    | { HardwareWalletAlreadyRegistered: null }
-    | { HardwareWalletLimitExceeded: null }
-    | { NameTooLong: null };
+  | { Ok: null }
+  | { AccountNotFound: null }
+  | { HardwareWalletAlreadyRegistered: null }
+  | { HardwareWalletLimitExceeded: null }
+  | { NameTooLong: null };
 export interface RenameSubAccountRequest {
   newName: string;
   accountIdentifier: AccountIdentifier;
 }
 export type RenameSubAccountResponse =
-    | { Ok: null }
-    | { AccountNotFound: null }
-    | { SubAccountNotFound: null }
-    | { NameTooLong: null };
+  | { Ok: null }
+  | { AccountNotFound: null }
+  | { SubAccountNotFound: null }
+  | { NameTooLong: null };
 
 export interface Send {
   to: AccountIdentifier;
@@ -130,34 +130,34 @@ export interface Transaction {
   transfer: Transfer;
 }
 export type Transfer =
-    | { Burn: { amount: E8s } }
-    | { Mint: { amount: E8s } }
-    | { Send: Send }
-    | { Receive: Receive };
+  | { Burn: { amount: E8s } }
+  | { Mint: { amount: E8s } }
+  | { Send: Send }
+  | { Receive: Receive };
 
 export default interface ServiceInterface {
   addAccount: () => Promise<AccountIdentifier>;
   attachCanister: (
-      request: AttachCanisterRequest
+    request: AttachCanisterRequest
   ) => Promise<AttachCanisterResult>;
   createSubAccount: (name: string) => Promise<CreateSubAccountResponse>;
   detachCanister: (
-      request: DetachCanisterRequest
+    request: DetachCanisterRequest
   ) => Promise<DetachCanisterResponse>;
   getAccount: (certified: boolean) => Promise<GetAccountResponse>;
   getCanisters: () => Promise<Array<CanisterDetails>>;
   getMultiPartTransactionStatus: (
-      principal: Principal,
-      blockHeight: BlockHeight
+    principal: Principal,
+    blockHeight: BlockHeight
   ) => Promise<MultiPartTransactionStatus>;
   getTransactions: (
-      request: GetTransactionsRequest,
-      certified: boolean
+    request: GetTransactionsRequest,
+    certified: boolean
   ) => Promise<GetTransactionsResponse>;
   registerHardwareWallet: (
-      request: RegisterHardwareWalletRequest
+    request: RegisterHardwareWalletRequest
   ) => Promise<RegisterHardwareWalletResponse>;
   renameSubAccount: (
-      request: RenameSubAccountRequest
+    request: RenameSubAccountRequest
   ) => Promise<RenameSubAccountResponse>;
 }

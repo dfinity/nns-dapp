@@ -30,7 +30,7 @@ import TransactionsConverter from "./TransactionsConverter";
 
 export default class ResponseConverters {
   public toAttachCanisterResponse = (
-      response: RawAttachCanisterResponse
+    response: RawAttachCanisterResponse
   ): AttachCanisterResult => {
     if ("Ok" in response) {
       return AttachCanisterResult.Ok;
@@ -48,19 +48,19 @@ export default class ResponseConverters {
   };
 
   public toDetachCanisterResponse = (
-      response: RawDetachCanisterResponse
+    response: RawDetachCanisterResponse
   ): DetachCanisterResponse => {
     return response;
   };
 
   public toArrayOfCanisterDetail = (
-      response: Array<RawCanisterDetails>
+    response: Array<RawCanisterDetails>
   ): Array<CanisterDetails> => {
     return response.map(this.toCanisterDetails);
   };
 
   public toGetAccountResponse = (
-      response: RawGetAccountResponse
+    response: RawGetAccountResponse
   ): GetAccountResponse => {
     if ("Ok" in response) {
       return {
@@ -69,7 +69,7 @@ export default class ResponseConverters {
           accountIdentifier: response.Ok.account_identifier,
           subAccounts: response.Ok.sub_accounts.map(this.toSubAccountDetails),
           hardwareWalletAccounts: response.Ok.hardware_wallet_accounts.map(
-              this.toHardwareWalletAccountDetails
+            this.toHardwareWalletAccountDetails
           ),
         },
       };
@@ -78,7 +78,7 @@ export default class ResponseConverters {
   };
 
   public toCreateSubAccountResponse = (
-      response: RawCreateSubAccountResponse
+    response: RawCreateSubAccountResponse
   ): CreateSubAccountResponse => {
     if ("Ok" in response) {
       return {
@@ -89,7 +89,7 @@ export default class ResponseConverters {
   };
 
   public toGetTransactionsResponse = (
-      response: RawGetTransactionsResponse
+    response: RawGetTransactionsResponse
   ): GetTransactionsResponse => {
     return {
       total: response.total,
@@ -98,25 +98,25 @@ export default class ResponseConverters {
   };
 
   public toMultiPartTransactionStatus = (
-      response: RawMultiPartTransactionStatus
+    response: RawMultiPartTransactionStatus
   ): MultiPartTransactionStatus => {
     return response;
   };
 
   public toRegisterHardwareWalletResponse = (
-      response: RawRegisterHardwareWalletResponse
+    response: RawRegisterHardwareWalletResponse
   ): RegisterHardwareWalletResponse => {
     return response;
   };
 
   public toRenameSubAccountResponse = (
-      response: RawRenameSubAccountResponse
+    response: RawRenameSubAccountResponse
   ): RenameSubAccountResponse => {
     return response;
   };
 
   private toSubAccountDetails = (
-      subAccount: RawSubAccountDetails
+    subAccount: RawSubAccountDetails
   ): SubAccountDetails => {
     return {
       id: convert.toSubAccountId(subAccount.sub_account),
@@ -126,17 +126,17 @@ export default class ResponseConverters {
   };
 
   private toCanisterDetails = (
-      details: RawCanisterDetails
+    details: RawCanisterDetails
   ): CanisterDetails => {
     return {
       name:
-          details.name.length > 0 ? details.name : details.canister_id.toString(),
+        details.name.length > 0 ? details.name : details.canister_id.toString(),
       canisterId: details.canister_id.toString(),
     };
   };
 
   private toHardwareWalletAccountDetails = (
-      hardwareWalletAccount: RawHardwareWalletAccountDetails
+    hardwareWalletAccount: RawHardwareWalletAccountDetails
   ): HardwareWalletAccountDetails => {
     return {
       name: hardwareWalletAccount.name,

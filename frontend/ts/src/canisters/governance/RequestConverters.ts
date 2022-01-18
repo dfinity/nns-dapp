@@ -494,12 +494,16 @@ export default class RequestConverters {
       return {
         RegisterKnownNeuron: {
           id: [{ id: knownNeuron.id }],
-          known_neuron_data: [{
-            name: knownNeuron.name,
-            description: knownNeuron.description.length ? [knownNeuron.description] : []
-          }]
-        }
-      }
+          known_neuron_data: [
+            {
+              name: knownNeuron.name,
+              description: knownNeuron.description.length
+                ? [knownNeuron.description]
+                : [],
+            },
+          ],
+        },
+      };
     }
 
     // If there's a missing action, this line will cause a compiler error.
@@ -608,7 +612,7 @@ export default class RequestConverters {
           new_controller: spawn.newController
             ? [Principal.fromText(spawn.newController)]
             : [],
-          nonce: []
+          nonce: [],
         },
       };
     }
@@ -616,9 +620,11 @@ export default class RequestConverters {
       const merge = command.Merge;
       return {
         Merge: {
-          source_neuron_id: merge.sourceNeuronId ? [{ id: merge.sourceNeuronId }] : []
-        }
-      }
+          source_neuron_id: merge.sourceNeuronId
+            ? [{ id: merge.sourceNeuronId }]
+            : [],
+        },
+      };
     }
 
     // If there's a missing command above, this line will cause a compiler error.

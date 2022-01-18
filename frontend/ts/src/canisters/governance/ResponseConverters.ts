@@ -481,8 +481,8 @@ export default class ResponseConverters {
     if ("RegisterKnownNeuron" in action) {
       const knownNeuron = action.RegisterKnownNeuron;
       return {
-        RegisterKnownNeuron: this.toKnownNeuron(knownNeuron)
-      }
+        RegisterKnownNeuron: this.toKnownNeuron(knownNeuron),
+      };
     }
 
     throw new UnsupportedValueError(action);
@@ -608,9 +608,11 @@ export default class ResponseConverters {
       const merge = command.Merge;
       return {
         Merge: {
-          sourceNeuronId: merge.source_neuron_id.length ? merge.source_neuron_id[0].id : null
-        }
-      }
+          sourceNeuronId: merge.source_neuron_id.length
+            ? merge.source_neuron_id[0].id
+            : null,
+        },
+      };
     }
     throw new UnsupportedValueError(command);
   };
