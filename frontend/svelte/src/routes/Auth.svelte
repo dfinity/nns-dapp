@@ -2,7 +2,7 @@
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
-  import { appPath } from "../lib/utils/route.utils";
+  import { routeStore } from "../lib/stores/route.store";
 
   let signedIn: boolean = false;
 
@@ -28,10 +28,12 @@
       const urlParams: URLSearchParams = new URLSearchParams(
         window.location.search
       );
-      const redirectPath: string = `${appPath()}/#/${
+      const redirectPath: string = `/#/${
         urlParams.get("redirect") || "accounts"
       }`;
-      window.location.replace(redirectPath);
+
+      // We do not want to push to the browser history but only want to update the url to not have two entries for the same page in the browser stack
+      routeStore.replace({ path: redirectPath });
     }
   );
 
@@ -82,6 +84,9 @@
     grid-template-rows: 105px 40px auto 40px 170px;
 
     z-index: 1;
+
+    background: transparent;
+    color: inherit;
 
     > * {
       margin-left: auto;

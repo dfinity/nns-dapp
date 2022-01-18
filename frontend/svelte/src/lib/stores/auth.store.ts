@@ -35,6 +35,7 @@ export const initAuthStore = () => {
 
         await authClient.login({
           identityProvider,
+          maxTimeToLive: BigInt(30 * 60 * 1_000_000_000), // 30 minutes
           onSuccess: () => {
             update((state: AuthStore) => ({
               ...state,

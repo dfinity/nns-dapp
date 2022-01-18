@@ -4,7 +4,8 @@
   import { onDestroy, SvelteComponent } from "svelte";
   import Route from "./Route.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { appPath, routeContext, routePath } from "../utils/route.utils";
+  import { routeContext, routePath } from "../utils/route.utils";
+  import { routeStore } from "../stores/route.store";
 
   export let path: string;
   export let component: typeof SvelteComponent;
@@ -17,7 +18,12 @@
     }
 
     // Redirect to root, user needs to sign in
-    window.location.replace(`${appPath()}/?redirect=${routeContext()}`);
+    // We replace the url to get the redirect query params after successful sign in, to redirect user to the current page
+    // We do not navigate, i.e. push to browser history, because we do not want to stack this redirect in the back navigation
+    routeStore.replace({
+      path: "/",
+      query: `redirect=${routeContext()}`,
+    });
   };
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
