@@ -3,28 +3,40 @@
  */
 
 import { AuthStore, authStore } from "../lib/stores/auth.store";
-import { mockAuthStoreSubscribe } from "./mocks/auth.store.mock";
+import {
+  authStoreMock,
+  mockPrincipal,
+  mutableMockAuthStoreSubscribe,
+} from "./mocks/auth.store.mock";
 import { accountsStore } from "../lib/stores/accounts.store";
 import { expect } from "@jest/globals";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import App from "../App.svelte";
+import type { Principal } from "@dfinity/principal";
 
 describe("App", () => {
-  let authStoreMock, accountsStoreMock;
+  let accountsStoreMock;
 
   beforeEach(() => {
-    authStoreMock = jest
+    jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+      .mockImplementation(mutableMockAuthStoreSubscribe);
 
     accountsStoreMock = jest
       .spyOn(accountsStore, "sync")
       .mockImplementation(async ({ principal }: AuthStore) => {});
   });
 
-  it("should sync accounts store", async () => {
+  it("every change in the auth store should trigger a synchronization of the accounts store.", async () => {
     render(App);
 
-    expect(accountsStoreMock).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(accountsStoreMock).toHaveBeenCalledTimes(1));
+
+    authStoreMock.next({
+      signedIn: true,
+      principal: mockPrincipal as Principal,
+    });
+
+    expect(accountsStoreMock).toHaveBeenCalledTimes(2);
   });
 });
