@@ -131,7 +131,7 @@ jobs:
       - name: Commit screenshots
         uses: EndBug/add-and-commit@v7.4.0
         with:
-          add: screenshots
+          add: e2e-tests/screenshots
           author_name: Screenshot Committer
           author_email: "<nobody@example.com>"
           message: "Update selenium screenshots"
