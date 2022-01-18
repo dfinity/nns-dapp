@@ -29,7 +29,7 @@ describe("Identifier", () => {
     );
   });
 
-  it("should copy of the identifier", () => {
+  it("should copy identifier to clipboard", () => {
     const { getByRole } = render(Identifier, { props });
 
     Object.assign(window.navigator, {
