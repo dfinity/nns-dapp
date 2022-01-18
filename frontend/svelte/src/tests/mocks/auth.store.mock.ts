@@ -27,8 +27,7 @@ export const mockAuthStoreSubscribe = (
  */
 
 export class AuthStoreMock {
-
-  private _store: AuthStore = {signedIn: undefined, principal: undefined};
+  private _store: AuthStore = { signedIn: undefined, principal: undefined };
 
   private _callback: (store: AuthStore) => void;
 
@@ -38,7 +37,7 @@ export class AuthStoreMock {
   }
 
   next(store: AuthStore) {
-    this._store = {...store};
+    this._store = { ...store };
     this.emit();
   }
 
@@ -50,7 +49,7 @@ export class AuthStoreMock {
 export const authStoreMock = new AuthStoreMock();
 
 export const mutableMockAuthStoreSubscribe = (
-    run: Subscriber<AuthStore>
+  run: Subscriber<AuthStore>
 ): (() => void) => {
   authStoreMock.subscribe((store: AuthStore) => run(store));
 

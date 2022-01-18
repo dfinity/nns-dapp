@@ -41,6 +41,8 @@ describe("Identifier", () => {
     const button = getByRole("button");
     fireEvent.click(button);
 
-    expect(window.navigator.clipboard.writeText).toHaveBeenCalledWith(identifier);
+    expect(window.navigator.clipboard.writeText).toHaveBeenCalledWith(
+      identifier
+    );
   });
 });
