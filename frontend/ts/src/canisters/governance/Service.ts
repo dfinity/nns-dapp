@@ -152,7 +152,25 @@ export default class Service implements ServiceInterface {
   ): Promise<Array<KnownNeuron>> => {
     const serviceToUse = certified ? this.certifiedService : this.service;
     const rawResponse = await serviceToUse.list_known_neurons();
-    return rawResponse.known_neurons.map(this.responseConverters.toKnownNeuron);
+    const knownNeurons = rawResponse.known_neurons.map(this.responseConverters.toKnownNeuron);
+
+    if (!knownNeurons.find(n => n.id === BigInt(27))) {
+      knownNeurons.push({
+        id: BigInt(27),
+        name: "DFINITY Foundation",
+        description: ""
+      });
+    }
+
+    if (!knownNeurons.find(n => n.id === BigInt(28))) {
+      knownNeurons.push({
+        id: BigInt(28),
+        name: "Internet Computer Association",
+        description: ""
+      });
+    }
+
+    return knownNeurons.sort((a, b) => Number(a.id - b.id));
   };
 
   public addHotKey = async (
