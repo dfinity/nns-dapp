@@ -32,4 +32,5 @@ frontend/dart/build/web
 frontend/svelte/node_modules/
 frontend/svelte/public/build/
 frontend/svelte/public/assets/
+proxy
 **/*.wasm
