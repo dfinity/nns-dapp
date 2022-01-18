@@ -1,3 +1,5 @@
+import { existsSync, mkdirSync } from "fs";
+
 export const config: WebdriverIO.Config = {
     //
     // ====================
@@ -16,6 +18,27 @@ export const config: WebdriverIO.Config = {
     // If you need to configure how ts-node runs please use the
     // environment variables for ts-node or use wdio config's autoCompileOpts section.
     //
+    before: (capabilities, spec) => {
+
+        browser["screenshot-count"] = 0;
+        browser["screenshots-taken"] = new Set();
+
+        browser.addCommand('screenshot', async (name) => {
+            const countStr: string = browser["screenshots-taken"].size.toFixed().padStart(2, "0");
+            if(browser["screenshots-taken"].has(name)) {
+                throw Error(`A screenshot with this name was already taken: '${name}'`);
+            }
+            browser["screenshots-taken"].add(name);
+
+            const SCREENSHOTS_DIR = "screenshots";
+            if (!existsSync(SCREENSHOTS_DIR)){
+                mkdirSync(SCREENSHOTS_DIR);
+            }
+
+            await browser.saveScreenshot(`${SCREENSHOTS_DIR}/${name}.png`);
+        });
+
+    },
 
     autoCompileOpts: {
         autoCompile: true,
