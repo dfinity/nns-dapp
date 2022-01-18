@@ -2,16 +2,74 @@ import express from "express";
 import morgan from "morgan";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
-// Use value defined in dfx.json (.networks.local.bind)
-const REPLICA_HOST = "http://localhost:8080";
+type CanisterId = string;
 
-// Use value defined in .dfx/local/canister_ids.json (.nns-dapp.local) as
-// canister ID
-const canistersToPorts: any = {
-  "rwlgt-iiaaa-aaaaa-aaaaa-cai": 8086,
-};
+type Port = number;
 
-const mkApp = (port: number, canisterId: string) => {
+interface CLIArguments {
+    replicaHost: string,
+    canistersToPorts: Record<CanisterId, Port>,
+}
+
+// Parse all the arguments, returning an error string if parsing failed.
+const parseArgs = (args: string[]): CLIArguments | string => {
+
+    // Ensure '--replica-host http://...' was specified
+    const replicaArgIndex = args.indexOf("--replica-host");
+    if(replicaArgIndex == -1) {
+        return 'Please specify --replica-host';
+    }
+
+    // Remove the '--replica-host http://...' from the args and store the value
+    const replicaArgs = args.splice(replicaArgIndex, 2);
+    if(replicaArgs.length != 2) {
+        return 'No value for --replica-host';
+    }
+    let [_, replicaHost] = replicaArgs;
+
+
+    // Parse the rest of the args as canister/port mappings
+    const canistersToPorts = parsePortMappings(args);
+
+    if(typeof canistersToPorts === "string") {
+        return canistersToPorts;
+    } else {
+        return { replicaHost, canistersToPorts };
+    }
+}
+
+// Parse the canister ID to port mappings (rwajt-...:8086 rdm6x-...:443 ...)
+const parsePortMappings = (args: string[]): Record<CanisterId, Port> | string => {
+    let canistersToPorts: Record<CanisterId,Port> = {};
+    for (let arg of args) {
+
+        let tokens = arg.split(":");
+
+        if (tokens.length != 2) {
+            return `Could not parse '${arg}'`;
+        }
+
+        let [canisterId, portStr] = tokens;
+
+        let port = parseInt(portStr);
+
+        if(Number.isNaN(port)) {
+            return `Could not parse port '${portStr}' as number`;
+        }
+
+        canistersToPorts[canisterId] = port;
+    }
+
+    return canistersToPorts;
+}
+
+
+// An app that:
+// * logs the requests (green for 2XX, blue for 3XX, yellow for 4XX and red for
+//      5XX)
+// * listens on the specified port and proxies to
+//      '<replicaHost>/?canisterId=<canisterId>'
+const mkApp = (replicaHost: string, port: number, canisterId: string) => {
   const app = express();
 
   // could use morgan's .token() thingy but really not worth it here
@@ -29,7 +87,6 @@ const mkApp = (port: number, canisterId: string) => {
         }
       };
 
-      //console.log(req);
       return `${canisterId} (${port}) \x1b[${color(res.statusCode)}m${
         res.statusCode
       }\x1b[0m ${req.method} ${req.originalUrl} -> ${req.url} `;
@@ -39,13 +96,12 @@ const mkApp = (port: number, canisterId: string) => {
   app.all(
     "*",
     createProxyMiddleware({
-      target: REPLICA_HOST,
+      target: replicaHost,
       pathRewrite: (pathAndParams, req) => {
         let queryParamsString = "?";
 
         let [path, params] = pathAndParams.split("?");
 
-        // TODO: check for existing canisterID param?
         if (params === undefined) {
           queryParamsString = `?canisterId=${canisterId}`;
         } else {
@@ -64,7 +120,31 @@ const mkApp = (port: number, canisterId: string) => {
   });
 };
 
-for (let canisterId in canistersToPorts) {
-  let port = canistersToPorts[canisterId];
-  mkApp(port, canisterId);
+const usage = 'USAGE: proxy --repilca-host http://... [<canister-id>:<port>]';
+
+const args = process.argv.slice(2);
+
+if(args.indexOf("--help") != -1) {
+    console.log(usage);
+    process.exit(0);
+}
+
+const parsed = parseArgs(args);
+
+if(typeof parsed === "string") {
+    console.log(parsed);
+    console.log(usage);
+    process.exit(1);
+}
+
+if (Object.keys(parsed.canistersToPorts).length == 0) {
+    console.log("No canisters to proxy");
+    console.log(usage);
+    process.exit(1)
+}
+
+for (let canisterId in parsed.canistersToPorts) {
+  let port = parsed.canistersToPorts[canisterId];
+  console.log(`Forwarding ${port} to ${parsed.replicaHost}/?canisterId=${canisterId}`);
+  mkApp(parsed.replicaHost, port, canisterId);
 }
