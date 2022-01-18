@@ -13,7 +13,7 @@ export const mockPrincipal = new MockPrincipal();
 export const mockAuthStoreSubscribe = (
   run: Subscriber<AuthStore>
 ): (() => void) => {
-  run({ signedIn: true, principal: mockPrincipal as Principal });
+  run({ principal: mockPrincipal as Principal });
 
   return () => {};
 };
