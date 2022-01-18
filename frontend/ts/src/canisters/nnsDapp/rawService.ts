@@ -11,22 +11,22 @@ export interface AttachCanisterRequest {
   'canister_id' : Principal,
 }
 export type AttachCanisterResponse = { 'Ok' : null } |
-    { 'CanisterAlreadyAttached' : null } |
-    { 'NameAlreadyTaken' : null } |
-    { 'NameTooLong' : null } |
-    { 'CanisterLimitExceeded' : null };
+  { 'CanisterAlreadyAttached' : null } |
+  { 'NameAlreadyTaken' : null } |
+  { 'NameTooLong' : null } |
+  { 'CanisterLimitExceeded' : null };
 export type BlockHeight = bigint;
 export interface CanisterDetails { 'name' : string, 'canister_id' : Principal }
 export type CanisterId = Principal;
 export type CreateSubAccountResponse = { 'Ok' : SubAccountDetails } |
-    { 'AccountNotFound' : null } |
-    { 'NameTooLong' : null } |
-    { 'SubAccountLimitExceeded' : null };
+  { 'AccountNotFound' : null } |
+  { 'NameTooLong' : null } |
+  { 'SubAccountLimitExceeded' : null };
 export interface DetachCanisterRequest { 'canister_id' : Principal }
 export type DetachCanisterResponse = { 'Ok' : null } |
-    { 'CanisterNotFound' : null };
+  { 'CanisterNotFound' : null };
 export type GetAccountResponse = { 'Ok' : AccountDetails } |
-    { 'AccountNotFound' : null };
+  { 'AccountNotFound' : null };
 export interface GetTransactionsRequest {
   'page_size' : number,
   'offset' : number,
@@ -60,14 +60,14 @@ export interface MultiPartTransactionError {
   'block_height' : BlockHeight,
 }
 export type MultiPartTransactionStatus = { 'Queued' : null } |
-    { 'Error' : string } |
-    { 'Refunded' : [BlockHeight, string] } |
-    { 'CanisterCreated' : CanisterId } |
-    { 'Complete' : null } |
-    { 'NotFound' : null } |
-    { 'NeuronCreated' : NeuronId } |
-    { 'PendingSync' : null } |
-    { 'ErrorWithRefundPending' : string };
+  { 'Error' : string } |
+  { 'Refunded' : [BlockHeight, string] } |
+  { 'CanisterCreated' : CanisterId } |
+  { 'Complete' : null } |
+  { 'NotFound' : null } |
+  { 'NeuronCreated' : NeuronId } |
+  { 'PendingSync' : null } |
+  { 'ErrorWithRefundPending' : string };
 export type NeuronId = bigint;
 export interface Receive {
   'fee' : ICPTs,
@@ -79,18 +79,18 @@ export interface RegisterHardwareWalletRequest {
   'name' : string,
 }
 export type RegisterHardwareWalletResponse = { 'Ok' : null } |
-    { 'AccountNotFound' : null } |
-    { 'HardwareWalletAlreadyRegistered' : null } |
-    { 'HardwareWalletLimitExceeded' : null } |
-    { 'NameTooLong' : null };
+  { 'AccountNotFound' : null } |
+  { 'HardwareWalletAlreadyRegistered' : null } |
+  { 'HardwareWalletLimitExceeded' : null } |
+  { 'NameTooLong' : null };
 export interface RenameSubAccountRequest {
   'new_name' : string,
   'account_identifier' : AccountIdentifier,
 }
 export type RenameSubAccountResponse = { 'Ok' : null } |
-    { 'AccountNotFound' : null } |
-    { 'SubAccountNotFound' : null } |
-    { 'NameTooLong' : null };
+  { 'AccountNotFound' : null } |
+  { 'SubAccountNotFound' : null } |
+  { 'NameTooLong' : null };
 export interface Send {
   'to' : AccountIdentifier,
   'fee' : ICPTs,
@@ -126,44 +126,44 @@ export interface Transaction {
   'transfer' : Transfer,
 }
 export type TransactionType = { 'Burn' : null } |
-    { 'Mint' : null } |
-    { 'Send' : null } |
-    { 'StakeNeuronNotification' : null } |
-    { 'TopUpCanister' : CanisterId } |
-    { 'CreateCanister' : null } |
-    { 'TopUpNeuron' : null } |
-    { 'StakeNeuron' : null };
+  { 'Mint' : null } |
+  { 'Send' : null } |
+  { 'StakeNeuronNotification' : null } |
+  { 'TopUpCanister' : CanisterId } |
+  { 'CreateCanister' : null } |
+  { 'TopUpNeuron' : null } |
+  { 'StakeNeuron' : null };
 export type Transfer = { 'Burn' : { 'amount' : ICPTs } } |
-    { 'Mint' : { 'amount' : ICPTs } } |
-    { 'Send' : Send } |
-    { 'Receive' : Receive };
+  { 'Mint' : { 'amount' : ICPTs } } |
+  { 'Send' : Send } |
+  { 'Receive' : Receive };
 export interface _SERVICE {
   'add_account' : () => Promise<AccountIdentifier>,
   'attach_canister' : (arg_0: AttachCanisterRequest) => Promise<
       AttachCanisterResponse
-      >,
+    >,
   'create_sub_account' : (arg_0: string) => Promise<CreateSubAccountResponse>,
   'detach_canister' : (arg_0: DetachCanisterRequest) => Promise<
       DetachCanisterResponse
-      >,
+    >,
   'get_account' : () => Promise<GetAccountResponse>,
   'get_canisters' : () => Promise<Array<CanisterDetails>>,
   'get_multi_part_transaction_errors' : () => Promise<
       Array<MultiPartTransactionError>
-      >,
+    >,
   'get_multi_part_transaction_status' : (
       arg_0: Principal,
       arg_1: BlockHeight,
-  ) => Promise<MultiPartTransactionStatus>,
+    ) => Promise<MultiPartTransactionStatus>,
   'get_stats' : () => Promise<Stats>,
   'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<
       GetTransactionsResponse
-      >,
+    >,
   'http_request' : (arg_0: HttpRequest) => Promise<HttpResponse>,
   'register_hardware_wallet' : (
       arg_0: RegisterHardwareWalletRequest,
-  ) => Promise<RegisterHardwareWalletResponse>,
+    ) => Promise<RegisterHardwareWalletResponse>,
   'rename_sub_account' : (arg_0: RenameSubAccountRequest) => Promise<
       RenameSubAccountResponse
-      >,
+    >,
 }
