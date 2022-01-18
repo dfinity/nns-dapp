@@ -92,6 +92,7 @@ jobs:
       - name: Start replica
         run: |
           dfx start --background
+          dfx canister --no-wallet create --all
 
       - name: Deploy
         run: |
