@@ -5,7 +5,7 @@ cd "$(dirname "$(realpath "$0")")/.."
 # Get the asset
 DOWNLOADS_DIR="$HOME/Downloads"
 echo
-read  -n 1 -p "Please download the 'Backend wasm module.zip' docker build artifact from github to $DOWNLOADS_DIR and press enter...  "
+read -n 1 -p "Please download the 'Backend wasm module.zip' docker build artifact from github to $DOWNLOADS_DIR and press enter...  "
 
 DOWNLOAD_FILENAME="$(ls -t "$DOWNLOADS_DIR" | grep -E '^Backend wasm module( [(][0-9]+[)])*.zip$' | head -n1)"
 DOWNLOAD_PATH="$DOWNLOADS_DIR/$DOWNLOAD_FILENAME"
@@ -14,7 +14,7 @@ WASM_FILENAME="nns-dapp.wasm"
 UNZIP_TMPDIR="$(mktemp -d)"
 cp "$DOWNLOAD_PATH" "$UNZIP_TMPDIR"
 pushd "$UNZIP_TMPDIR"
-	unzip "$DOWNLOAD_FILENAME"
+unzip "$DOWNLOAD_FILENAME"
 popd
 mv "$UNZIP_TMPDIR/$WASM_FILENAME" "$WASM_PATH"
 DEPLOY_ENV=nobuild dfx deploy --no-wallet --network testnet
