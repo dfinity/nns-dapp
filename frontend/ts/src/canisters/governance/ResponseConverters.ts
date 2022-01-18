@@ -18,6 +18,7 @@ import {
   DisburseToNeuronResponse,
   DissolveState,
   Followees,
+  KnownNeuron,
   ListProposalsResponse,
   MakeProposalResponse,
   MergeMaturityResponse,
@@ -43,6 +44,7 @@ import {
   Command as RawCommand,
   DissolveState as RawDissolveState,
   Followees as RawFollowees,
+  KnownNeuron as RawKnownNeuron,
   ListNeuronsResponse as RawListNeuronsResponse,
   ListProposalInfoResponse as RawListProposalInfoResponse,
   ManageNeuronResponse as RawManageNeuronResponse,
@@ -140,6 +142,14 @@ export default class ResponseConverters {
   ): ListProposalsResponse => {
     return {
       proposals: response.proposal_info.map(this.toProposalInfo),
+    };
+  };
+
+  public toKnownNeuron = (response: RawKnownNeuron): KnownNeuron => {
+    return {
+      id: response.id[0]?.id ?? BigInt(0),
+      name: response.known_neuron_data[0]?.name ?? "",
+      description: response.known_neuron_data[0]?.description[0] ?? "",
     };
   };
 
@@ -468,6 +478,12 @@ export default class ResponseConverters {
         },
       };
     }
+    if ("RegisterKnownNeuron" in action) {
+      const knownNeuron = action.RegisterKnownNeuron;
+      return {
+        RegisterKnownNeuron: this.toKnownNeuron(knownNeuron)
+      }
+    }
 
     throw new UnsupportedValueError(action);
   };
@@ -587,6 +603,14 @@ export default class ResponseConverters {
             : null,
         },
       };
+    }
+    if ("Merge" in command) {
+      const merge = command.Merge;
+      return {
+        Merge: {
+          sourceNeuronId: merge.source_neuron_id.length ? merge.source_neuron_id[0].id : null
+        }
+      }
     }
     throw new UnsupportedValueError(command);
   };

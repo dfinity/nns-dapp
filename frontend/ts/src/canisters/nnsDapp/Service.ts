@@ -10,7 +10,6 @@ import ServiceInterface, {
   GetAccountResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
-  KnownNeuron,
   MultiPartTransactionStatus,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
@@ -35,25 +34,25 @@ export default class Service implements ServiceInterface {
   }
 
   public attachCanister = async (
-    request: AttachCanisterRequest
+      request: AttachCanisterRequest
   ): Promise<AttachCanisterResult> => {
     const rawRequest =
-      this.requestConverters.fromAttachCanisterRequest(request);
+        this.requestConverters.fromAttachCanisterRequest(request);
     const rawResponse = await this.service.attach_canister(rawRequest);
     return this.responseConverters.toAttachCanisterResponse(rawResponse);
   };
 
   public detachCanister = async (
-    request: DetachCanisterRequest
+      request: DetachCanisterRequest
   ): Promise<DetachCanisterResponse> => {
     const rawRequest =
-      this.requestConverters.fromDetachCanisterRequest(request);
+        this.requestConverters.fromDetachCanisterRequest(request);
     const rawResponse = await this.service.detach_canister(rawRequest);
     return this.responseConverters.toDetachCanisterResponse(rawResponse);
   };
 
   public getCanisters = async (
-    certified = true
+      certified = true
   ): Promise<Array<CanisterDetails>> => {
     const serviceToUse = certified ? this.certifiedService : this.service;
     const rawResponse = await serviceToUse.get_canisters();
@@ -71,61 +70,51 @@ export default class Service implements ServiceInterface {
   };
 
   public createSubAccount = async (
-    name: string
+      name: string
   ): Promise<CreateSubAccountResponse> => {
     const rawResponse = await this.service.create_sub_account(name);
     return this.responseConverters.toCreateSubAccountResponse(rawResponse);
   };
 
   public renameSubAccount = async (
-    request: RenameSubAccountRequest
+      request: RenameSubAccountRequest
   ): Promise<RenameSubAccountResponse> => {
     const rawRequest =
-      this.requestConverters.fromRenameSubAccountRequest(request);
+        this.requestConverters.fromRenameSubAccountRequest(request);
     const rawResponse = await this.service.rename_sub_account(rawRequest);
     return this.responseConverters.toRenameSubAccountResponse(rawResponse);
   };
 
   public registerHardwareWallet = async (
-    request: RegisterHardwareWalletRequest
+      request: RegisterHardwareWalletRequest
   ): Promise<RegisterHardwareWalletResponse> => {
     const rawRequest =
-      this.requestConverters.fromRegisterHardwareWalletRequest(request);
+        this.requestConverters.fromRegisterHardwareWalletRequest(request);
     const rawResponse = await this.service.register_hardware_wallet(rawRequest);
     return this.responseConverters.toRegisterHardwareWalletResponse(
-      rawResponse
+        rawResponse
     );
   };
 
   public getTransactions = async (
-    request: GetTransactionsRequest,
-    certified: boolean
+      request: GetTransactionsRequest,
+      certified: boolean
   ): Promise<GetTransactionsResponse> => {
     const rawRequest =
-      this.requestConverters.fromGetTransactionsRequest(request);
+        this.requestConverters.fromGetTransactionsRequest(request);
     const serviceToUse = certified ? this.certifiedService : this.service;
     const rawResponse = await serviceToUse.get_transactions(rawRequest);
     return this.responseConverters.toGetTransactionsResponse(rawResponse);
   };
 
   public getMultiPartTransactionStatus = async (
-    principal: Principal,
-    blockHeight: BlockHeight
+      principal: Principal,
+      blockHeight: BlockHeight
   ): Promise<MultiPartTransactionStatus> => {
     const rawResponse = await this.service.get_multi_part_transaction_status(
-      principal,
-      blockHeight
+        principal,
+        blockHeight
     );
     return this.responseConverters.toMultiPartTransactionStatus(rawResponse);
-  };
-
-  public followeeSuggestions = async (
-    certified: boolean
-  ): Promise<Array<KnownNeuron>> => {
-    const rawResponse = certified
-      ? await this.certifiedService.followee_suggestions()
-      : await this.service.followee_suggestions();
-
-    return rawResponse.map(this.responseConverters.toKnownNeuron);
   };
 }

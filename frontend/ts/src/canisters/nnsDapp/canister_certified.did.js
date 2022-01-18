@@ -90,7 +90,7 @@ export const idlFactory = ({ IDL }) => {
     'get_transactions' : IDL.Func(
         [GetTransactionsRequest],
         [GetTransactionsResponse],
-      ),
+    ),
   });
 };
 export const init = ({ IDL }) => { return []; };

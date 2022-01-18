@@ -12,12 +12,10 @@ use candid::CandidType;
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, stable};
 use ic_base_types::PrincipalId;
-use ic_nns_common::types::NeuronId;
 use ledger_canister::{AccountIdentifier, BlockHeight};
 
 mod accounts_store;
 mod assets;
-mod cached_known_neurons;
 mod canisters;
 mod constants;
 mod ledger_sync;
@@ -187,17 +185,6 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
     STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
 }
 
-/// Returns the list of neurons who have been approved by the community to appear as easily
-/// selectable followee options.
-#[export_name = "canister_query followee_suggestions"]
-pub fn followee_suggestions() {
-    over(candid, |()| followee_suggestions_impl());
-}
-
-fn followee_suggestions_impl() -> Vec<KnownNeuron> {
-    cached_known_neurons::get()
-}
-
 /// Gets the current status of a 'multi-part' action.
 ///
 /// Some actions are 'multi-part' and are handled by background processes, eg. staking a neuron or
@@ -324,17 +311,4 @@ pub fn add_stable_asset() {
 pub enum GetAccountResponse {
     Ok(AccountDetails),
     AccountNotFound,
-}
-
-#[derive(CandidType, Clone)]
-pub struct KnownNeuron {
-    id: NeuronId,
-    name: String,
-    description: Option<String>,
-}
-
-impl KnownNeuron {
-    pub fn new(id: NeuronId, name: String, description: Option<String>) -> KnownNeuron {
-        KnownNeuron { id, name, description }
-    }
 }

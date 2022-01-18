@@ -10,6 +10,7 @@ import {
 import { Principal } from "@dfinity/principal";
 
 export type Action =
+  | { RegisterKnownNeuron: KnownNeuron }
   | { ExecuteNnsFunction: ExecuteNnsFunction }
   | { ManageNeuron: ManageNeuron }
   | { ApproveGenesisKyc: ApproveGenesisKyc }
@@ -64,6 +65,7 @@ export type Command =
   | { ClaimOrRefresh: ClaimOrRefresh }
   | { Configure: Configure }
   | { RegisterVote: RegisterVote }
+  | { Merge: Merge }
   | { DisburseToNeuron: DisburseToNeuron }
   | { MergeMaturity: MergeMaturity }
   | { MakeProposal: Proposal }
@@ -109,6 +111,11 @@ export interface GovernanceError {
 export interface IncreaseDissolveDelay {
   additionalDissolveDelaySeconds: number;
 }
+export interface KnownNeuron {
+  id: NeuronId;
+  name: string;
+  description: string;
+}
 export interface SetDissolveTimestamp {
   dissolveTimestampSeconds: bigint;
 }
@@ -153,6 +160,7 @@ export interface ManageNeuron {
   command: Option<Command>;
   neuronIdOrSubaccount: Option<NeuronIdOrSubaccount>;
 }
+export interface Merge { sourceNeuronId: Option<NeuronId> }
 export interface MergeMaturity {
   percentageToMerge: number;
 }
@@ -513,6 +521,7 @@ export default interface ServiceInterface {
   getNeuronsForHW: () => Promise<Array<NeuronInfoForHw>>;
   getPendingProposals: () => Promise<Array<ProposalInfo>>;
   getProposalInfo: (proposalId: bigint) => Promise<Option<ProposalInfo>>;
+  listKnownNeurons: (certified: boolean) => Promise<Array<KnownNeuron>>;
   listProposals: (
     request: ListProposalsRequest
   ) => Promise<ListProposalsResponse>;

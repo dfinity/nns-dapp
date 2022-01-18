@@ -12,6 +12,7 @@ import GovernanceService, {
   FollowRequest,
   IncreaseDissolveDelayRequest,
   JoinCommunityFundRequest,
+  KnownNeuron,
   ListProposalsRequest,
   ListProposalsResponse,
   MergeMaturityRequest,
@@ -43,7 +44,6 @@ import NnsDappService, {
   DetachCanisterResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
-  KnownNeuron,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
@@ -482,7 +482,7 @@ export default class ServiceApi {
     certified: boolean
   ): Promise<Array<KnownNeuron>> => {
     return executeWithLogging(() =>
-      this.nnsDappService.followeeSuggestions(certified)
+      this.governanceService.listKnownNeurons(certified)
     );
   };
 

@@ -28,12 +28,6 @@ export const idlFactory = ({ IDL }) => {
     'Ok' : IDL.Null,
     'CanisterNotFound' : IDL.Null,
   });
-  const NeuronId = IDL.Nat64;
-  const KnownNeuron = IDL.Record({
-    'id' : NeuronId,
-    'name' : IDL.Text,
-    'description' : IDL.Opt(IDL.Text),
-  });
   const HardwareWalletAccountDetails = IDL.Record({
     'principal' : IDL.Principal,
     'name' : IDL.Text,
@@ -59,6 +53,7 @@ export const idlFactory = ({ IDL }) => {
     'block_height' : BlockHeight,
   });
   const CanisterId = IDL.Principal;
+  const NeuronId = IDL.Nat64;
   const MultiPartTransactionStatus = IDL.Variant({
     'Queued' : IDL.Null,
     'Error' : IDL.Text,
@@ -164,48 +159,46 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'add_account' : IDL.Func([], [AccountIdentifier], []),
-    'add_stable_asset' : IDL.Func([IDL.Vec(IDL.Nat8)], [], []),
     'attach_canister' : IDL.Func(
         [AttachCanisterRequest],
         [AttachCanisterResponse],
         [],
-      ),
+    ),
     'create_sub_account' : IDL.Func([IDL.Text], [CreateSubAccountResponse], []),
     'detach_canister' : IDL.Func(
         [DetachCanisterRequest],
         [DetachCanisterResponse],
         [],
-      ),
-    'followee_suggestions' : IDL.Func([], [IDL.Vec(KnownNeuron)], ['query']),
+    ),
     'get_account' : IDL.Func([], [GetAccountResponse], ['query']),
     'get_canisters' : IDL.Func([], [IDL.Vec(CanisterDetails)], ['query']),
     'get_multi_part_transaction_errors' : IDL.Func(
         [],
         [IDL.Vec(MultiPartTransactionError)],
         ['query'],
-      ),
+    ),
     'get_multi_part_transaction_status' : IDL.Func(
         [IDL.Principal, BlockHeight],
         [MultiPartTransactionStatus],
         ['query'],
-      ),
+    ),
     'get_stats' : IDL.Func([], [Stats], ['query']),
     'get_transactions' : IDL.Func(
         [GetTransactionsRequest],
         [GetTransactionsResponse],
         ['query'],
-      ),
+    ),
     'http_request' : IDL.Func([HttpRequest], [HttpResponse], ['query']),
     'register_hardware_wallet' : IDL.Func(
         [RegisterHardwareWalletRequest],
         [RegisterHardwareWalletResponse],
         [],
-      ),
+    ),
     'rename_sub_account' : IDL.Func(
         [RenameSubAccountRequest],
         [RenameSubAccountResponse],
         [],
-      ),
+    ),
   });
 };
 export const init = ({ IDL }) => { return []; };
