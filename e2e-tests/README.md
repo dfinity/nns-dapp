@@ -33,7 +33,7 @@ Install all the dependencies for the proxy, and run the proxy:
 ``` bash
 cd proxy
 npm install
-npm run start
+npm run start --replica-host ...
 ```
 
 Install all the dependencies for the test suite, and run the tests:

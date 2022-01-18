@@ -103,6 +103,7 @@ jobs:
         run: |
           npm ci
           # TODO: source the params from dfx.json and canister_ids.json
+          # https://dfinity.atlassian.net/browse/L2-200
           npm run start -- \
             --replica-host http://localhost:8080 \
             rwlgt-iiaaa-aaaaa-aaaaa-cai:8086 \
