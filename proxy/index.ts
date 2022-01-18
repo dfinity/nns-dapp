@@ -27,7 +27,6 @@ const parseArgs = (args: string[]): CLIArguments | string => {
     }
     let [_, replicaHost] = replicaArgs;
 
-
     // Parse the rest of the args as canister/port mappings
     const canistersToPorts = parsePortMappings(args);
 
@@ -62,7 +61,6 @@ const parsePortMappings = (args: string[]): Record<CanisterId, Port> | string =>
 
     return canistersToPorts;
 }
-
 
 // An app that:
 // * logs the requests (green for 2XX, blue for 3XX, yellow for 4XX and red for
