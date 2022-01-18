@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$(realpath "$0")")/.."
+
+# Get the asset
+DOWNLOADS_DIR="$HOME/Downloads"
+echo
+read  -n 1 -p "Please download the asset to $DOWNLOADS_DIR and press enter...  "
+
+DOWNLOAD_FILENAME="$(ls -t "$DOWNLOADS_DIR" | grep -E '^Backend wasm module( [(][0-9]+[)])*.zip$' | head -n1)"
+DOWNLOAD_PATH="$DOWNLOADS_DIR/$DOWNLOAD_FILENAME"
+WASM_PATH="$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)"
+WASM_FILENAME="nns-dapp.wasm"
+TMPDIR="$(mktemp -d)"
+cp "$DOWNLOAD_PATH" "$TMPDIR"
+pushd "$TMPDIR"
+	unzip "$DOWNLOAD_FILENAME"
+popd
+mv "$TMPDIR/$WASM_FILENAME" "$WASM_PATH"
+DEPLOY_ENV=nobuild dfx deploy --no-wallet --network testnet
+
+set +x
+echo "Deployed to: https://$(jq -jc '.["nns-dapp"].testnet' canister_ids.json).nnsdapp.dfinity.network"
