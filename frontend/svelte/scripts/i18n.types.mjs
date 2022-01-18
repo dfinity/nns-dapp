@@ -2,7 +2,7 @@
 
 import en from "../src/lib/i18n/en.json";
 import prettier from "prettier";
-import {writeFileSync} from "fs";
+import { writeFileSync } from "fs";
 
 /**
  * Generate the TypeScript interfaces from the english translation file.
@@ -31,7 +31,7 @@ const generate = () => {
 
   const output = prettier.format(`${interfaces}${main}`, { parser: "babel" });
 
-  writeFileSync('./src/lib/types/i18n.d.ts', output);
+  writeFileSync("./src/lib/types/i18n.d.ts", output);
 };
 
 generate();

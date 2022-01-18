@@ -54,7 +54,9 @@
   <main>
     <h1>{$i18n.auth.ic}</h1>
     <h2>
-      <span class="blue">{$i18n.auth.network}</span> . <span class="pink">{$i18n.auth.nervous}</span> .
+      <span class="blue">{$i18n.auth.network}</span> .
+      <span class="pink">{$i18n.auth.nervous}</span>
+      .
       <span class="green">{$i18n.auth.system}</span>
     </h2>
     <img
@@ -65,7 +67,8 @@
       class="logo"
     />
     <p>
-      <span class="green">{$i18n.auth.icp}</span> {$i18n.auth.and} <span class="blue">{$i18n.auth.governance}</span>
+      <span class="green">{$i18n.auth.icp}</span>
+      {$i18n.auth.and} <span class="blue">{$i18n.auth.governance}</span>
     </p>
     <button on:click={signIn}>{$i18n.auth.login}</button>
   </main>
