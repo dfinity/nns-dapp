@@ -22,9 +22,8 @@ EOF
 
 elif [[ $DEPLOY_ENV = "mainnet" ]]; then
   # mainnet config
-  if [ -n "${OWN_CANISTER_ID:-}" ]
-  then
-      echo "OWN_CANISTER_ID is set which is incompatible with mainnet: '$OWN_CANISTER_ID'"
+  if [ -n "${OWN_CANISTER_ID:-}" ]; then
+    echo "OWN_CANISTER_ID is set which is incompatible with mainnet: '$OWN_CANISTER_ID'"
   fi
 
   cat >frontend/ts/src/config.json <<EOF
