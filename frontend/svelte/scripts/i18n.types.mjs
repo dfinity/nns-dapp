@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+
+import en from "../src/lib/i18n/en.json";
+import prettier from "prettier";
+import {writeFileSync} from "fs";
+
+/**
+ * Generate the TypeScript interfaces from the english translation file.
+ *
+ * Note: only supports "a one child depth" in the data structure.
+ */
+const generate = () => {
+  const data = Object.keys(en).map((key) => {
+    const properties = Object.keys(en[key]).map((prop) => `${prop}: string;`);
+
+    return {
+      key,
+      name: `I18n${key.charAt(0).toUpperCase()}${key.slice(1)}`,
+      properties,
+    };
+  });
+
+  const lang = `lang: Languages;`;
+
+  const main = `\n\ninterface I18n {${lang}${data
+    .map((i) => `${i.key}: ${i.name};`)
+    .join("")}}`;
+  const interfaces = data
+    .map((i) => `\n\ninterface ${i.name} {${i.properties.join("")}}`)
+    .join("");
+
+  const output = prettier.format(`${interfaces}${main}`, { parser: "babel" });
+
+  writeFileSync('./src/lib/types/i18n.d.ts', output);
+};
+
+generate();

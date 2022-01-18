@@ -3,6 +3,7 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
   import { routeStore } from "../lib/stores/route.store";
+  import { i18n } from "../lib/stores/i18n";
 
   let signedIn: boolean = false;
 
@@ -51,22 +52,22 @@
   />
 
   <main>
-    <h1>INTERNET COMPUTER</h1>
+    <h1>{$i18n.auth.ic}</h1>
     <h2>
-      <span class="blue">NETWORK</span> . <span class="pink">NERVOUS</span> .
-      <span class="green">SYSTEM</span>
+      <span class="blue">{$i18n.auth.network}</span> . <span class="pink">{$i18n.auth.nervous}</span> .
+      <span class="green">{$i18n.auth.system}</span>
     </h2>
     <img
       src="/assets/assets/ic_colour_logo.svg"
       role="presentation"
-      alt="DFINITY logo"
+      alt={$i18n.auth.logo}
       loading="lazy"
       class="logo"
     />
     <p>
-      <span class="green">ICP</span> and <span class="blue">governance</span>
+      <span class="green">{$i18n.auth.icp}</span> {$i18n.auth.and} <span class="blue">{$i18n.auth.governance}</span>
     </p>
-    <button on:click={signIn}>LOGIN</button>
+    <button on:click={signIn}>{$i18n.auth.login}</button>
   </main>
 {/if}
 
