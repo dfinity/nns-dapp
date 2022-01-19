@@ -37,6 +37,7 @@ jobs:
          - DEPLOY_ENV: "testnet"
          - DEPLOY_ENV: "mainnet"
     steps:
+      - uses: actions/checkout@v2
       # Build and upload testnet assets
       - name: Build ${{ matrix.DEPLOY_ENV }} nns-dapp Docker image
         uses: docker/build-push-action@v2
