@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  docker-build:
+  builder:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -28,45 +28,32 @@ jobs:
           outputs: type=cacheonly
           target: builder
 
+  assets:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+       include:
+         - DEPLOY_ENV: "testnet"
+         - DEPLOY_ENV: "mainnet"
+
       # Build and upload testnet assets
-      - name: Build testnet nns-dapp Docker image
+      - name: Build ${{ matrix.DEPLOY_ENV }} nns-dapp Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: Dockerfile
           build-args: |
-            DEPLOY_ENV=testnet
+            DEPLOY_ENV=${{ matrix.DEPLOY_ENV }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
-          outputs: ./testnet-out
-      - name: 'Upload testnet wasm module'
+          outputs: ./${{ matrix.DEPLOY_ENV }}-out
+      - name: 'Upload ${{ matrix.DEPLOY_ENV }} wasm module'
         uses: actions/upload-artifact@v2
         with:
-          name: Testnet backend wasm module
-          path: testnet-out/nns-dapp.wasm
-      - name: 'Upload frontnet frontend assets'
+          name: NNS ${{ matrix.DEPLOY_ENV }} backend wasm module
+          path: ${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm
+      - name: 'Upload ${{ matrix.DEPLOY_ENV }} frontend assets'
         uses: actions/upload-artifact@v2
         with:
-          name: Testnet frontend assets
-          path: testnet-out/assets.tar.xz
-
-      # Build and upload mainnet assets
-      - name: Build production nns-dapp Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: Dockerfile
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: ./out
-      - run: sha256sum out/nns-dapp.wasm
-      - name: 'Upload wasm module'
-        uses: actions/upload-artifact@v2
-        with:
-          name: Backend wasm module
-          path: out/nns-dapp.wasm
-      - name: 'Upload frontend assets'
-        uses: actions/upload-artifact@v2
-        with:
-          name: Frontend assets
-          path: out/assets.tar.xz
+          name: NNS ${{ matrix.DEPLOY_ENV }} frontend assets
+          path: ${{ matrix.DEPLOY_ENV }}-out/assets.tar.xz
