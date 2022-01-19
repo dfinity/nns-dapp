@@ -1,6 +1,5 @@
 <script lang="ts">
   import Filter from "./Filter.svelte";
-  import FilterModal from "../modals/VotingFilterModal.svelte";
   import {
     Proposals,
     Rewards,
@@ -8,21 +7,12 @@
     VotingFilterModalProps,
     VotingFilters,
   } from "../types/voting";
+  import VotingFilterModal from "../modals/VotingFilterModal.svelte";
 
   let modalFilters: VotingFilterModalProps | undefined = undefined;
 
-  const openModal = ({
-    title,
-    filters,
-  }: {
-    title: string;
-    filters: VotingFilters;
-  }) =>
-    (modalFilters = {
-      title,
-      allFilters: filters,
-      activeFilters: filters,
-    });
+  const openModal = (filters: { title: string; filters: VotingFilters }) =>
+    (modalFilters = filters);
 </script>
 
 <Filter
@@ -46,8 +36,8 @@
   >
 </div>
 
-<FilterModal
-  filters={modalFilters}
+<VotingFilterModal
+  props={modalFilters}
   on:close={() => (modalFilters = undefined)}
 />
 

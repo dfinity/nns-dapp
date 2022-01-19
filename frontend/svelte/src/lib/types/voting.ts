@@ -2,8 +2,7 @@ export type VotingFilters = Topics | Rewards | Proposals;
 
 export interface VotingFilterModalProps {
   title: string;
-  allFilters: VotingFilters;
-  activeFilters: VotingFilters;
+  filters: VotingFilters;
 }
 
 export enum Topics {

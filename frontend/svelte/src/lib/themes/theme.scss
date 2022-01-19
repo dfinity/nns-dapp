@@ -40,6 +40,8 @@ button {
 
   cursor: pointer;
   user-select: none;
+
+  padding: 0 calc(var(--padding) / 2);
 }
 
 main {
