@@ -1,25 +1,27 @@
 <script lang="ts">
   import Filter from "./Filter.svelte";
-  import { Topics } from "../constants/topics";
-  import { Rewards } from "../constants/rewards";
-  import { Proposals } from "../constants/proposals";
-  import FilterModal from "../modals/FilterModal.svelte";
+  import FilterModal from "../modals/VotingFilterModal.svelte";
+  import {
+    Proposals,
+    Rewards,
+    Topics,
+    VotingFilterModalProps,
+    VotingFilters,
+  } from "../types/voting";
 
-  let modalFilters:
-    | { title: string; allFilters: string[]; activeFilters: string[] }
-    | undefined = undefined;
+  let modalFilters: VotingFilterModalProps | undefined = undefined;
 
   const openModal = ({
     title,
     filters,
   }: {
     title: string;
-    filters: Topics | Rewards | Proposals;
+    filters: VotingFilters;
   }) =>
     (modalFilters = {
       title,
-      allFilters: Object.values(filters),
-      activeFilters: [],
+      allFilters: filters,
+      activeFilters: filters,
     });
 </script>
 

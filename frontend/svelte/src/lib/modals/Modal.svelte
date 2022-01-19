@@ -20,7 +20,9 @@
         <button on:click|stopPropagation={close}><IconClose /></button>
       </div>
 
-      <slot />
+      <div class="content">
+        <slot />
+      </div>
     </div>
   </div>
 {/if}
@@ -50,8 +52,11 @@
     left: 50%;
     transform: translate(-50%, -50%);
 
-    width: 400px;
-    height: 400px;
+    display: flex;
+    flex-direction: column;
+
+    width: 320px;
+    height: fit-content;
     max-width: calc(100vw - (4 * var(--padding)));
     max-height: calc(100vw - (4 * var(--padding)));
     min-height: 100px;
@@ -84,5 +89,9 @@
       justify-content: center;
       align-items: center;
     }
+  }
+
+  .content {
+    overflow-y: scroll;
   }
 </style>
