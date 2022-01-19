@@ -34,6 +34,8 @@ jobs:
         with:
           context: .
           file: Dockerfile
+          build-args: |
+            DEPLOY_ENV=testnet
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./testnet-out

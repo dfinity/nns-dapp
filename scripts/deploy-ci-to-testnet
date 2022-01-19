@@ -10,7 +10,7 @@ else
   # Prompts the user to download the wasm file.  Note:  This cannot be done with a simple curl.
   DOWNLOADS_DIR="$HOME/Downloads"
   echo
-  echo "Please download a backend wasm module from:  https://github.com/dfinity/nns-dapp/actions/workflows/docker-build.yaml"
+  echo "Please download a testnet backend wasm module from:  https://github.com/dfinity/nns-dapp/actions/workflows/docker-build.yaml"
   read -rn 1 -p "Press enter when done .... "
   echo
   read -rn 1 -p "What is your download dir? (default '$DOWNLOADS_DIR'): " ALT_DOWNLOADS_DIR
@@ -18,7 +18,7 @@ else
 
   # Gets the most recent 'Backend wasm module' download:
   # shellcheck disable=SC2010 # we really do want this, not globbing.
-  DOWNLOAD_FILENAME="$(ls -t "$DOWNLOADS_DIR" | grep -E '^Backend wasm module( [(][0-9]+[)])?.zip$' | head -n1)"
+  DOWNLOAD_FILENAME="$(ls -t "$DOWNLOADS_DIR" | grep -E '^Testnet backend wasm module( [(][0-9]+[)])?.zip$' | head -n1)"
   DOWNLOAD_PATH="$DOWNLOADS_DIR/$DOWNLOAD_FILENAME"
   echo "Sourcing WASM from: $DOWNLOAD_PATH"
 fi
