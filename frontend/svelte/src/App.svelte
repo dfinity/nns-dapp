@@ -4,7 +4,7 @@
   import Guard from "./lib/components/Guard.svelte";
   import Accounts from "./routes/Accounts.svelte";
   import Neurons from "./routes/Neurons.svelte";
-  import Voting from "./routes/Voting.svelte";
+  import Proposals from "./routes/Proposals.svelte";
   import Canisters from "./routes/Canisters.svelte";
   import Auth from "./routes/Auth.svelte";
 </script>
@@ -23,7 +23,7 @@
   <Route path="/" component={Auth} />
   <PrivateRoute path="/#/accounts" component={Accounts} />
   <PrivateRoute path="/#/neurons" component={Neurons} />
-  <PrivateRoute path="/#/voting" component={Voting} />
+  <PrivateRoute path="/#/proposals" component={Proposals} />
   <PrivateRoute path="/#/canisters" component={Canisters} />
 </Guard>
 
