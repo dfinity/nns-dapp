@@ -7,9 +7,14 @@ if test -n "${1:-}"; then
   DOWNLOAD_PATH="$1"
   DOWNLOAD_FILENAME="$(basename "$DOWNLOAD_PATH")"
 else
+  # Prompts the user to download the wasm file.  Note:  This cannot be done with a simple curl.
   DOWNLOADS_DIR="$HOME/Downloads"
   echo
-  read -rn 1 -p "Please download the 'Backend wasm module.zip' docker build artifact from github to $DOWNLOADS_DIR and press enter...  "
+  echo "Please download a backend wasm module from:  https://github.com/dfinity/nns-dapp/actions/workflows/docker-build.yaml"
+  read -rn 1 -p "Press enter when done .... "
+  echo
+  read -rn 1 -p "What is your download dir? (default '$DOWNLOADS_DIR'): " ALT_DOWNLOADS_DIR
+  DOWNLOADS_DIR="${ALT_DOWNLOADS_DIR:-$DOWNLOADS_DIR}"
 
   # Gets the most recent 'Backend wasm module' download:
   # shellcheck disable=SC2010 # we really do want this, not globbing.
