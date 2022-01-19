@@ -27,6 +27,7 @@ pushd "$UNZIP_TMPDIR"
 unzip "$DOWNLOAD_FILENAME"
 popd
 mv "$UNZIP_TMPDIR/$WASM_FILENAME" "$WASM_PATH"
+rm -fr "${UNZIP_TMPDIR:-this-is-not-the-dir-you-are-looking-for}"
 DEPLOY_ENV=nobuild dfx deploy --no-wallet --network testnet
 
 set +x
