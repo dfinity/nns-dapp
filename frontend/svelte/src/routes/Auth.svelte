@@ -83,7 +83,7 @@
     display: grid;
     grid-template-rows: 105px 40px auto 40px 170px;
 
-    z-index: 1;
+    z-index: var(--z-index);
 
     background: transparent;
     color: inherit;

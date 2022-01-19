@@ -51,7 +51,7 @@
 
     text-align: center;
 
-    z-index: 1;
+    z-index: var(--z-index);
 
     line-height: inherit;
   }
