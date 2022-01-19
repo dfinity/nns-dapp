@@ -21,6 +21,7 @@ fi
 WASM_PATH="$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)"
 WASM_FILENAME="nns-dapp.wasm"
 UNZIP_TMPDIR="$(mktemp -d)"
+mkdir -p "$(dirname "$WASM_PATH")"
 cp "$DOWNLOAD_PATH" "$UNZIP_TMPDIR"
 pushd "$UNZIP_TMPDIR"
 unzip "$DOWNLOAD_FILENAME"
