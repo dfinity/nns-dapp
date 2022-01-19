@@ -58,7 +58,7 @@
     width: 320px;
     height: fit-content;
     max-width: calc(100vw - (4 * var(--padding)));
-    max-height: calc(100vw - (4 * var(--padding)));
+    max-height: calc(100vw - (2 * var(--padding)));
     min-height: 100px;
 
     background: white;
