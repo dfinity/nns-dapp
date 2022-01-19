@@ -3,12 +3,21 @@ set -euo pipefail
 cd "$(dirname "$(realpath "$0")")/.."
 
 # Get the asset
-DOWNLOADS_DIR="$HOME/Downloads"
-echo
-read -n 1 -p "Please download the 'Backend wasm module.zip' docker build artifact from github to $DOWNLOADS_DIR and press enter...  "
+if test -n "${1:-}"; then
+	DOWNLOAD_PATH="$1"
+	DOWNLOAD_FILENAME="$(basename "$DOWNLOAD_PATH")"
+else
+	DOWNLOADS_DIR="$HOME/Downloads"
+	echo
+	read -rn 1 -p "Please download the 'Backend wasm module.zip' docker build artifact from github to $DOWNLOADS_DIR and press enter...  "
 
-DOWNLOAD_FILENAME="$(ls -t "$DOWNLOADS_DIR" | grep -E '^Backend wasm module( [(][0-9]+[)])*.zip$' | head -n1)"
-DOWNLOAD_PATH="$DOWNLOADS_DIR/$DOWNLOAD_FILENAME"
+	# Gets the most recent 'Backend wasm module' download:
+	# shellcheck disable=SC2094 # we really do want this, not globbing.
+	DOWNLOAD_FILENAME="$(ls -t "$DOWNLOADS_DIR" | grep -E '^Backend wasm module( [(][0-9]+[)])?.zip$' | head -n1)"
+	DOWNLOAD_PATH="$DOWNLOADS_DIR/$DOWNLOAD_FILENAME"
+	echo "Sourcing WASM from: $DOWNLOAD_PATH"
+fi
+
 WASM_PATH="$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)"
 WASM_FILENAME="nns-dapp.wasm"
 UNZIP_TMPDIR="$(mktemp -d)"
