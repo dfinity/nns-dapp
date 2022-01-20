@@ -98,5 +98,11 @@ jobs:
           dfx canister --no-wallet create --all
           dfx stop
 
+      - name: Build proxy
+        working-directory: proxy
+        run: |
+          npm ci
+          npm run build
+
       - name: Build
         run: DEPLOY_ENV=local ./build.sh
