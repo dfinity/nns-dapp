@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     # Default: Enables a button in the github UI to trigger the workflow manually.
   push:
-    # For testing only - this clause should be deleted befor emerging
+    # Test on every push.  Maybe overkill but the test is cheap.
 jobs:
   rust-audit:
     name: Rust Package Audit
