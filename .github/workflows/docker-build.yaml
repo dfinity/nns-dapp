@@ -35,11 +35,11 @@ jobs:
       matrix:
        include:
          - DEPLOY_ENV: "testnet"
+           OWN_CANISTER_ID: "qhbym-qaaaa-aaaaa-aaafq-cai"
          - DEPLOY_ENV: "mainnet"
+           OWN_CANISTER_ID: ""
     steps:
       - uses: actions/checkout@v2
-      - name: Create canister_ids.json
-        run: cp canister_ids.default.json canister_ids.json
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v1
       # Build and upload testnet assets
@@ -50,6 +50,7 @@ jobs:
           file: Dockerfile
           build-args: |
             DEPLOY_ENV=${{ matrix.DEPLOY_ENV }}
+            OWN_CANISTER_ID=${{ matrix.OWN_CANISTER_ID }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./${{ matrix.DEPLOY_ENV }}-out
