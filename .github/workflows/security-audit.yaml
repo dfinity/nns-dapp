@@ -1,22 +1,24 @@
 name: Security audit
 on:
   schedule:
-    # Run daily
+    # Run daily:
     - cron: '0 0 * * *'
+  pull_request:
+    # Default: Run on every PR.
   workflow_dispatch:
+    # Default: Enables a button in the github UI to trigger the workflow manually.
 jobs:
   rust-audit:
     name: Rust Package Audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions-rs/audit-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v2
+      - name: Cargo Package Audit
+        run: cargo audit
   js-audit:
     name: Javascript Package Audit
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Audit packages
-      run: npm audit
+      - uses: actions/checkout@v2
+      - name: Audit packages
+        run: npm audit
