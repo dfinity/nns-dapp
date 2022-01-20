@@ -67,7 +67,10 @@ RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfini
 FROM builder AS build
 SHELL ["bash", "-c"]
 ARG DEPLOY_ENV=mainnet
-RUN echo $DEPLOY_ENV
+RUN echo "DEPLOY_ENV: '$DEPLOY_ENV'"
+
+ARG OWN_CANISTER_ID
+RUN echo "OWN_CANISTER_ID: '$OWN_CANISTER_ID'"
 
 # Build
 COPY . .

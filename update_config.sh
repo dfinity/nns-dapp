@@ -10,7 +10,7 @@ fi
 
 if [[ $DEPLOY_ENV = "testnet" ]]; then
   # testnet config
-  OWN_CANISTER_ID="$(dfx canister --no-wallet --network testnet id nns-dapp)"
+  OWN_CANISTER_ID="${OWN_CANISTER_ID:-$(dfx canister --no-wallet --network testnet id nns-dapp)}"
   cat >frontend/ts/src/config.json <<EOF
 {
     "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/",
@@ -22,6 +22,10 @@ EOF
 
 elif [[ $DEPLOY_ENV = "mainnet" ]]; then
   # mainnet config
+  if [ -n "${OWN_CANISTER_ID:-}" ]; then
+    echo "OWN_CANISTER_ID is set which is incompatible with mainnet: '$OWN_CANISTER_ID'"
+  fi
+
   cat >frontend/ts/src/config.json <<EOF
 {
     "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
@@ -32,7 +36,7 @@ EOF
 
 else
   # local config
-  OWN_CANISTER_ID="$(dfx canister --no-wallet --network local id nns-dapp)"
+  OWN_CANISTER_ID="${OWN_CANISTER_ID:-$(dfx canister --no-wallet --network local id nns-dapp)}"
   cat >frontend/ts/src/config.json <<EOF
 {
     "IDENTITY_SERVICE_URL": "",
