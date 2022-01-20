@@ -57,6 +57,29 @@ set -x
 #################
 # assets.tar.xz #
 #################
+
+# we need GNU tar (see below) so we check early
+if tar --help | grep GNU >/dev/null
+then
+    echo "found GNU tar as tar"
+    tar="tar"
+elif command -v gtar >/dev/null
+then
+    echo "found GNU tar as gtar"
+    tar="gtar"
+else
+    echo "did not find GNU tar, please install"
+    echo "  brew install gnu-tar"
+    exit 1
+fi
+
+if ! command -v xz >/dev/null
+then
+    echo "did not find xz, please install"
+    echo "  brew install xz"
+    exit 1
+fi
+
 tarball_dir=$(mktemp -d)
 echo "using $tarball_dir for tarball directory"
 cp -R "$TOPLEVEL/frontend/dart/build/web/". "$tarball_dir"/
@@ -70,8 +93,7 @@ cd "$tarball_dir"
 
 # Remove the assets/NOTICES file, as it's large in size and not used.
 rm assets/NOTICES
-tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f "$TOPLEVEL/assets.tar.xz" . ||
-  gtar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f "$TOPLEVEL/assets.tar.xz" .
+"$tar" cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f "$TOPLEVEL/assets.tar.xz" .
 
 cd "$TOPLEVEL"
 rm -rf "$tarball_dir"
