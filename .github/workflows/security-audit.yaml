@@ -5,8 +5,6 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
     # Default: Enables a button in the github UI to trigger the workflow manually.
-  push:
-    # Test on every push.  Maybe overkill but the test is cheap.
 jobs:
   rust-audit:
     name: Rust Package Audit
