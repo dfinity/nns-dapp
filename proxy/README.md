@@ -5,7 +5,7 @@ the actual running replica.
 
 An example is worth a thousand words:
 
-``` bash
+```bash
 $ npm run start -- --replica-host 'http://localhost:8080' rwlgt-iiaaa-aaaaa-aaa:8086 rrkah-fqaaa-aaaaa-aaaaq-cai:8087 doesnt-exist-aaaa-aaaaa-cai:8088
 
 Forwarding 8086 to http://localhost:8080/?canisterId=rwlgt-iiaaa-aaaaa-aaaaa-cai
@@ -21,7 +21,7 @@ Canister doesnt-exist-aaaa-aaaaa-cai is listening on http://localhost:8088
 
 Then, in another terminal:
 
-``` bash
+```bash
 $ curl http://localhost:8086
 <!DOCTYPE html>
 ...
@@ -34,7 +34,7 @@ Could not find a canister id to forward to.
 
 The proxy will have logged the following requests:
 
-``` bash
+```bash
 rwlgt-iiaaa-aaaaa-aaaaa-cai (8086) 200 GET / -> /?canisterId=rwlgt-iiaaa-aaaaa-aaaaa-cai
 rrkah-fqaaa-aaaaa-aaaaq-cai (8087) 200 GET /?foo=bar -> /?foo=bar&canisterId=rrkah-fqaaa-aaaaa-aaaaq-cai
 doesnt-exist-aaaa-aaaaa-cai (8088) 400 GET / -> /?canisterId=doesnt-exist-aaaa-aaaaa-cai
@@ -42,7 +42,7 @@ doesnt-exist-aaaa-aaaaa-cai (8088) 400 GET / -> /?canisterId=doesnt-exist-aaaa-a
 
 ## Usage
 
-``` bash
+```bash
 $ npm run start -- --help
 
 USAGE: proxy --replica-host http://... [<canister-id>:<port>]
@@ -50,12 +50,12 @@ USAGE: proxy --replica-host http://... [<canister-id>:<port>]
 
 ## Build
 
-``` bash
+```bash
 $ npm run build
 ```
 
 or
 
-``` bash
+```bash
 $ npm run start # builds _and_ starts
 ```
