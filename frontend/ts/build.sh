@@ -2,7 +2,7 @@
 # Build the typescript shim. This outputs a single file, ic_agent.js.
 set -euo pipefail
 
-TS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+TS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$TS_DIR/../../"
 
 # Check that the DEPLOY_ENV is set

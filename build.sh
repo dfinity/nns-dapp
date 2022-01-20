@@ -22,7 +22,7 @@
 
 set -euo pipefail
 
-TOPLEVEL="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [[ $DEPLOY_ENV = "nobuild" ]]; then
   echo "Skipping build as requested"
@@ -44,18 +44,15 @@ set -x
 # build requires "ic_agent.js" which is generated from frontend/ts.
 (cd "$TOPLEVEL/frontend/ts" && ./build.sh)
 
-
 #################
 # frontend/dart # (output: frontend/dart/build/web/)
 #################
 (cd "$TOPLEVEL/frontend/dart" && ./build.sh)
 
-
 ###################
 # frontend/svelte # (output: frontend/svelte/public/)
 ###################
 (cd "$TOPLEVEL/frontend/svelte" && npm ci && npm run build)
-
 
 #################
 # assets.tar.xz #
@@ -82,17 +79,16 @@ rm -rf "$tarball_dir"
 ls -sh "$TOPLEVEL/assets.tar.xz"
 sha256sum "$TOPLEVEL/assets.tar.xz"
 
-
 ###############
 # cargo build # (output: target/release/.../nns-dapp.wasm)
 ###############
 echo Compiling rust package
-cargo_args=( --target wasm32-unknown-unknown --release --package nns-dapp)
+cargo_args=(--target wasm32-unknown-unknown --release --package nns-dapp)
 if [[ $DEPLOY_ENV != "mainnet" ]]; then
-    cargo_args+=( --features mock_conversion_rate )
+  cargo_args+=(--features mock_conversion_rate)
 fi
 
-(cd "$TOPLEVEL" &&  cargo build "${cargo_args[@]}")
+(cd "$TOPLEVEL" && cargo build "${cargo_args[@]}")
 
 ####################
 # ic-cdk-optimizer # (output: nns-dapp.wasm)
