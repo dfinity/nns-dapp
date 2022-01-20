@@ -67,7 +67,7 @@ const parsePortMappings = (args: string[]): Record<CanisterId, Port> | string =>
 //      5XX)
 // * listens on the specified port and proxies to
 //      '<replicaHost>/?canisterId=<canisterId>'
-const mkApp = (replicaHost: string, port: number, canisterId: string) => {
+const mkApp = ({replicaHost, port, canisterId} : { replicaHost: string, port: number, canisterId: string}) => {
   const app = express();
 
   // could use morgan's .token() thingy but really not worth it here
@@ -144,5 +144,5 @@ if (Object.keys(parsed.canistersToPorts).length == 0) {
 for (let canisterId in parsed.canistersToPorts) {
   let port = parsed.canistersToPorts[canisterId];
   console.log(`Forwarding ${port} to ${parsed.replicaHost}/?canisterId=${canisterId}`);
-  mkApp(parsed.replicaHost, port, canisterId);
+  mkApp({ replicaHost: parsed.replicaHost, port, canisterId });
 }
