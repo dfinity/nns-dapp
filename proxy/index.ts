@@ -24,7 +24,7 @@ const parseArgs = (args: string[]): CLIArguments | string => {
   if (replicaArgs.length != 2) {
     return "No value for --replica-host";
   }
-  let [_, replicaHost] = replicaArgs;
+  const [_, replicaHost] = replicaArgs;
 
   // Parse the rest of the args as canister/port mappings
   const canistersToPorts = parsePortMappings(args);
@@ -40,17 +40,17 @@ const parseArgs = (args: string[]): CLIArguments | string => {
 const parsePortMappings = (
   args: string[]
 ): Record<CanisterId, Port> | string => {
-  let canistersToPorts: Record<CanisterId, Port> = {};
-  for (let arg of args) {
-    let tokens = arg.split(":");
+  const canistersToPorts: Record<CanisterId, Port> = {};
+  for (const arg of args) {
+    const tokens = arg.split(":");
 
     if (tokens.length != 2) {
       return `Could not parse '${arg}'`;
     }
 
-    let [canisterId, portStr] = tokens;
+    const [canisterId, portStr] = tokens;
 
-    let port = parseInt(portStr);
+    const port = parseInt(portStr);
 
     if (Number.isNaN(port)) {
       return `Could not parse port '${portStr}' as number`;
@@ -67,13 +67,21 @@ const parsePortMappings = (
 //      5XX)
 // * listens on the specified port and proxies to
 //      '<replicaHost>/?canisterId=<canisterId>'
-const mkApp = (replicaHost: string, port: number, canisterId: string) => {
+const mkApp = ({
+  replicaHost,
+  port,
+  canisterId,
+}: {
+  replicaHost: string;
+  port: number;
+  canisterId: string;
+}) => {
   const app = express();
 
   // could use morgan's .token() thingy but really not worth it here
   app.use(
     morgan((_, req, res) => {
-      let color = (rc: number) => {
+      const color = (rc: number) => {
         if (rc >= 200 && rc < 300) {
           return 32; // GREEN
         } else if (rc >= 300 && rc < 400) {
@@ -96,17 +104,17 @@ const mkApp = (replicaHost: string, port: number, canisterId: string) => {
     createProxyMiddleware({
       target: replicaHost,
       pathRewrite: (pathAndParams, req) => {
-        let queryParamsString = "?";
+        let queryParamsString = `?`;
 
-        let [path, params] = pathAndParams.split("?");
+        const [path, params] = pathAndParams.split("?");
 
-        if (params === undefined) {
-          queryParamsString = `?canisterId=${canisterId}`;
-        } else {
-          queryParamsString = `?${params}&canisterId=${canisterId}`;
+        if (params) {
+          queryParamsString += `${params}&`;
         }
 
-        return (path += queryParamsString);
+        queryParamsString += `canisterId=${canisterId}`;
+
+        return path + queryParamsString;
       },
     })
   );
@@ -141,10 +149,10 @@ if (Object.keys(parsed.canistersToPorts).length == 0) {
   process.exit(1);
 }
 
-for (let canisterId in parsed.canistersToPorts) {
-  let port = parsed.canistersToPorts[canisterId];
+for (const canisterId in parsed.canistersToPorts) {
+  const port = parsed.canistersToPorts[canisterId];
   console.log(
     `Forwarding ${port} to ${parsed.replicaHost}/?canisterId=${canisterId}`
   );
-  mkApp(parsed.replicaHost, port, canisterId);
+  mkApp({ replicaHost: parsed.replicaHost, port, canisterId });
 }
