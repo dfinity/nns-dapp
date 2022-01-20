@@ -3,7 +3,7 @@
 set -euo pipefail
 
 TS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT="$TS_DIR/../../"
+TOPLEVEL="$TS_DIR/../../"
 
 # Check that the DEPLOY_ENV is set
 DEPLOY_ENV="${DEPLOY_ENV:-}"
@@ -12,7 +12,7 @@ if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $D
   exit 1
 fi
 
-cd "$ROOT"
+cd "$TOPLEVEL"
 # Create config file with proper configurations.
 ./update_config.sh
 
