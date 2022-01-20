@@ -151,10 +151,16 @@ export default class Service implements ServiceInterface {
     certified: boolean
   ): Promise<Array<KnownNeuron>> => {
     const serviceToUse = certified ? this.certifiedService : this.service;
-    const rawResponse = await serviceToUse.list_known_neurons();
-    const knownNeurons = rawResponse.known_neurons.map(
-      this.responseConverters.toKnownNeuron
-    );
+
+    const knownNeurons: KnownNeuron[] = [];
+    try {
+      const rawResponse = await serviceToUse.list_known_neurons();
+      rawResponse.known_neurons
+        .map(this.responseConverters.toKnownNeuron)
+        .forEach(n => knownNeurons.push(n));
+    } catch (e) {
+      console.log("Unable to get known neurons from Governance canister", e);
+    }
 
     if (!knownNeurons.find((n) => n.id === BigInt(27))) {
       knownNeurons.push({
