@@ -30,8 +30,7 @@ can validate that we really deploy what we claim to deploy.
 We try to achieve some level of reproducibility using a Dockerized build
 environment. The following steps _should_ build the official Wasm image
 
-    docker build -t nns-dapp .
-    docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
+    ./scripts/docker-build
     sha256sum nns-dapp.wasm
 
 The resulting `nns-dapp.wasm` is ready for deployment as
