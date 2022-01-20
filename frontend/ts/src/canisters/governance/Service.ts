@@ -157,7 +157,7 @@ export default class Service implements ServiceInterface {
       const rawResponse = await serviceToUse.list_known_neurons();
       rawResponse.known_neurons
         .map(this.responseConverters.toKnownNeuron)
-        .forEach(n => knownNeurons.push(n));
+        .forEach((n) => knownNeurons.push(n));
     } catch (e) {
       console.log("Unable to get known neurons from Governance canister", e);
     }
