@@ -59,25 +59,22 @@ set -x
 #################
 
 # we need GNU tar (see below) so we check early
-if tar --help | grep GNU >/dev/null
-then
-    echo "found GNU tar as tar"
-    tar="tar"
-elif command -v gtar >/dev/null
-then
-    echo "found GNU tar as gtar"
-    tar="gtar"
+if tar --help | grep GNU >/dev/null; then
+  echo "found GNU tar as tar"
+  tar="tar"
+elif command -v gtar >/dev/null; then
+  echo "found GNU tar as gtar"
+  tar="gtar"
 else
-    echo "did not find GNU tar, please install"
-    echo "  brew install gnu-tar"
-    exit 1
+  echo "did not find GNU tar, please install"
+  echo "  brew install gnu-tar"
+  exit 1
 fi
 
-if ! command -v xz >/dev/null
-then
-    echo "did not find xz, please install"
-    echo "  brew install xz"
-    exit 1
+if ! command -v xz >/dev/null; then
+  echo "did not find xz, please install"
+  echo "  brew install xz"
+  exit 1
 fi
 
 tarball_dir=$(mktemp -d)
