@@ -67,6 +67,13 @@
       <span class="green">ICP</span> and <span class="blue">governance</span>
     </p>
     <button on:click={signIn}>LOGIN</button>
+    <img
+      src="/assets/assets/ic-badge-light.svg"
+      role="presentation"
+      alt="Powered by IC Banner"
+      loading="lazy"
+      class="powered-by-ic-banner"
+    />
   </main>
 {/if}
 
@@ -81,7 +88,7 @@
     right: 0;
 
     display: grid;
-    grid-template-rows: 105px 40px auto 40px 170px;
+    grid-template-rows: 105px 40px auto 40px 130px 40px;
 
     z-index: 1;
 
