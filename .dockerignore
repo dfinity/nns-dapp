@@ -33,5 +33,4 @@ frontend/svelte/node_modules/
 frontend/svelte/public/build/
 frontend/svelte/public/assets/
 proxy
-scripts
 **/*.wasm
