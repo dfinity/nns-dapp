@@ -8,7 +8,7 @@
   const routes: { context: string; label: string }[] = [
     { context: "accounts", label: "ICP" },
     { context: "neurons", label: "NEURONS" },
-    { context: "voting", label: "VOTING" },
+    { context: "proposals", label: "VOTING" },
     { context: "canisters", label: "CANISTERS" },
   ];
 </script>
