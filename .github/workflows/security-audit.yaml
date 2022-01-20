@@ -1,0 +1,22 @@
+name: Security audit
+on:
+  schedule:
+    # Run daily
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  rust-audit:
+    name: Rust Package Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+  js-audit:
+    name: Javascript Package Audit
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Audit packages
+      run: npm audit
