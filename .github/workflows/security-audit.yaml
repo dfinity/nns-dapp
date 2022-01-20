@@ -3,12 +3,8 @@ on:
   schedule:
     # Run daily:
     - cron: '0 0 * * *'
-  pull_request:
-    # Default: Run on every PR.
   workflow_dispatch:
     # Default: Enables a button in the github UI to trigger the workflow manually.
-  push:
-    # Test on every push.  Maybe overkill but the test is cheap.
 jobs:
   rust-audit:
     name: Rust Package Audit
