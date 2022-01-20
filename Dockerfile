@@ -1,7 +1,7 @@
 # Use this with
 #
 # docker build . -t nns-dapp
-# container_id=$(docker create nns-dapp)
+# container_id=$(docker create nns-dapp no-op)
 # docker cp $container_id:nns-dapp.wasm nns-dapp.wasm
 # docker rm --volumes $container_id
 
