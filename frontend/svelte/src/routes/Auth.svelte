@@ -72,7 +72,6 @@
       role="presentation"
       alt="Powered by IC Banner"
       loading="lazy"
-      class="powered-by-ic-banner"
     />
   </main>
 {/if}
