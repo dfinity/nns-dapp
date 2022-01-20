@@ -23,4 +23,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Audit packages
-        run: npm audit
+        run: git ls-files | grep -E 'package-lock.json$' | while read line ; do pushd "$(dirname "$line")" ; printf "\n\n\n\nAuditing %s\n" "$line" ; npm audit ; popd ; done
