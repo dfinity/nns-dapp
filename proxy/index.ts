@@ -96,15 +96,15 @@ const mkApp = ({replicaHost, port, canisterId} : { replicaHost: string, port: nu
     createProxyMiddleware({
       target: replicaHost,
       pathRewrite: (pathAndParams, req) => {
-        let queryParamsString = "?";
+        let queryParamsString = `?`;
 
         let [path, params] = pathAndParams.split("?");
 
-        if (params === undefined) {
-          queryParamsString = `?canisterId=${canisterId}`;
-        } else {
-          queryParamsString = `?${params}&canisterId=${canisterId}`;
+        if (params) {
+          queryParamsString += `${params}&`;
         }
+
+        queryParamsString += `canisterId=${canisterId}`;
 
         return (path += queryParamsString);
       },
