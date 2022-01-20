@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Create canister_ids.json
-        run: cp canister_ids.default canister_ids.json
+        run: cp canister_ids.default.json canister_ids.json
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v1
       # Build and upload testnet assets
