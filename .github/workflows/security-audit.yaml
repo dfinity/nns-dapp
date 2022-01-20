@@ -10,14 +10,14 @@ on:
 jobs:
   rust-audit:
     name: Rust Package Audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Cargo Package Audit
         run: cargo audit
   js-audit:
     name: Javascript Package Audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Audit packages
