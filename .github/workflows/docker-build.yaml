@@ -64,3 +64,6 @@ jobs:
         with:
           name: NNS ${{ matrix.DEPLOY_ENV }} frontend assets
           path: ${{ matrix.DEPLOY_ENV }}-out/assets.tar.xz
+
+  docker-build:
+    needs: builder
