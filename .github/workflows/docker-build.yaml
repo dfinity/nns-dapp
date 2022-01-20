@@ -67,6 +67,7 @@ jobs:
 
   docker-build:
     needs: builder
+    runs-on: ubuntu-20.04
     steps:
        - name: Extract assets for verification
          run: echo TODO
