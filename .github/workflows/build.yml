@@ -98,25 +98,20 @@ jobs:
         run: |
           DEPLOY_ENV=local dfx deploy --no-wallet --network local
 
-      - name: Run proxy
+      - name: Build proxy
         working-directory: proxy
         run: |
           npm ci
-          # TODO: source the params from dfx.json and canister_ids.json
-          # https://dfinity.atlassian.net/browse/L2-200
-          npm run start -- \
-            --replica-host http://localhost:8080 \
-            rwlgt-iiaaa-aaaaa-aaaaa-cai:8086 \
-            > proxy.log &
+          npm run build
 
       - name: prepare and run the test suite
         working-directory: e2e-tests
         run: |
-          npm install
+          npm ci
 
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
-          npm run wdio
+          npm run test > wdio.log
 
       - name: Stop replica
         run: |
@@ -129,12 +124,12 @@ jobs:
           name: selenium-test-log
           path: wdio.log
 
-      - name: Archive proxy logs
+      - name: Archive wdio logs
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
-          name: proxy-log
-          path: proxy/proxy.log
+          name: wdio-logs
+          path: wdio/proxy.log
 
       - name: Commit screenshots
         uses: EndBug/add-and-commit@v7.4.0
