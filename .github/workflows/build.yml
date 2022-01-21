@@ -111,7 +111,7 @@ jobs:
 
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
-          npm run test > wdio.log
+          npm run test | tee -a wdio.log
 
       - name: Stop replica
         run: dfx stop
@@ -121,7 +121,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: wdio-logs
-          path: wdio/proxy.log
+          path: e2e-tests/wdio.log
 
       - name: Commit screenshots
         uses: EndBug/add-and-commit@v7.4.0
