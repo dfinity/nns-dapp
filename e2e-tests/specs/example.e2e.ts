@@ -1,12 +1,9 @@
+describe("landing page", () => {
+  it("loads", async () => {
+    await browser.url("/v2/");
 
-describe('landing page', () => {
-    it('loads', async () => {
+    await browser.$("h1").waitForExist();
 
-        await browser.url('/v2/');
-
-        await browser.$('h1').waitForExist();
-
-        await browser["screenshot"]("landing-page");
-    });
+    await browser["screenshot"]("landing-page");
+  });
 });
-

@@ -3,12 +3,11 @@
 See `e2e.test.ts` for the actual tests. Follow `test` from `package.json` for
 more info.
 
-
 ## Run the tests
 
 First, build the canister:
 
-``` bash
+```bash
 # in the repo root
 ./scripts/docker-build
 ```
@@ -17,7 +16,7 @@ This generates `nns-dapp.wasm`.
 
 Then, deploy the canister:
 
-``` bash
+```bash
 # in a shell, start the replica:
 dfx start
 
@@ -28,7 +27,7 @@ DEPLOY_ENV=nobuild dfx deploy --no-wallet --network local
 
 Install all the dependencies for the test suite, and run the tests:
 
-``` bash
+```bash
 # in proxy/
 npm ci
 npm run build
