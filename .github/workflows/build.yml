@@ -117,13 +117,6 @@ jobs:
         run: |
           dfx stop
 
-      - name: Archive test logs
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: selenium-test-log
-          path: wdio.log
-
       - name: Archive wdio logs
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
@@ -137,7 +130,7 @@ jobs:
           add: e2e-tests/screenshots
           author_name: Screenshot Committer
           author_email: "<nobody@example.com>"
-          message: "Update selenium screenshots"
+          message: "Update screenshots"
           # do not pull: if this branch is behind, then we might as well let
           # the pushing fail
           pull: "NO-PULL"
