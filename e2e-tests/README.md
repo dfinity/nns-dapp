@@ -14,8 +14,7 @@ First, build the canister:
 ./scripts/docker-build
 ```
 
-This generates `target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm` and
-`assets.tar.xz`.
+This generates `nns-dapp.wasm`.
 
 Then, deploy the canister:
 
@@ -32,7 +31,7 @@ Install all the dependencies for the proxy, and run the proxy:
 
 ``` bash
 cd proxy
-npm install
+npm ci
 npm run start --replica-host ...
 ```
 
@@ -40,9 +39,8 @@ Install all the dependencies for the test suite, and run the tests:
 
 ```
 cd e2e-tests
-npm install
-npm run install-webdrivers
-npm run test
+npm ci
+npm run wdio
 ```
 
 Finally, shut down the replica by killing the `dfx start process`.
