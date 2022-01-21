@@ -77,7 +77,10 @@ if ! command -v xz >/dev/null; then
   exit 1
 fi
 
-tarball_dir=$(mktemp -d)
+# We use a local directory, and we don't delete it after the build, so that
+# assets can be inspected.
+tarball_dir="$TOPLEVEL/web-assets"
+mkdir -p "$tarball_dir"
 echo "using $tarball_dir for tarball directory"
 cp -R "$TOPLEVEL/frontend/dart/build/web/". "$tarball_dir"/
 cp -R "$TOPLEVEL/frontend/svelte/public" "$tarball_dir/v2"
@@ -93,7 +96,6 @@ rm assets/NOTICES
 "$tar" cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f "$TOPLEVEL/assets.tar.xz" .
 
 cd "$TOPLEVEL"
-rm -rf "$tarball_dir"
 
 ls -sh "$TOPLEVEL/assets.tar.xz"
 sha256sum "$TOPLEVEL/assets.tar.xz"
