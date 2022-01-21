@@ -41,9 +41,6 @@ docker build \
     -t "$image_name" .
 set +x
 
-echo creating
-set -x
-
 # use no-op as a command, doesn't matter since the container is never run
 container_id=$(docker create "$image_name" no-op)
 
