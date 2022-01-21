@@ -49,13 +49,13 @@
     aria-hidden="true"
     class="background"
   />
-    <img
-      src="/assets/assets/ic-badge-light.svg"
-      role="presentation"
-      alt="Powered by IC Banner"
-      class="bottom-banner"
-      loading="lazy"
-    />
+  <img
+    src="/assets/assets/ic-badge-light.svg"
+    role="presentation"
+    alt="Powered by IC Banner"
+    class="bottom-banner"
+    loading="lazy"
+  />
 
   <main>
     <h1>NETWORK NERVOUS SYSTEM</h1>
@@ -63,12 +63,10 @@
     <p>ICP and governance</p>
     <button on:click={signIn}>Login</button>
   </main>
-
 {/if}
 
 <style lang="scss">
   @use "../lib/themes/mixins/img";
-
 
   main {
     position: absolute;
@@ -114,13 +112,13 @@
     margin: 0 auto;
     font-size: 16px;
 
-    color: #E5BE5A; /* TODO: This colour is used in the design but is not already defined.  Do we want to use a defined colour instead, or add this to the defined colours? */
+    color: #e5be5a; /* TODO: This colour is used in the design but is not already defined.  Do we want to use a defined colour instead, or add this to the defined colours? */
   }
 
   p {
     font-size: 15px;
     font-weight: 20;
-    color: #E1E1E1;
+    color: #e1e1e1;
     margin: auto;
     margin-bottom: 16px;
   }
@@ -135,8 +133,8 @@
     width: 200px;
     height: 54px;
 
-    background: #2942D5;
-    border: solid #2942D5 2px;
+    background: #2942d5;
+    border: solid #2942d5 2px;
     border-radius: 8px;
 
     font-weight: 700;
@@ -146,7 +144,7 @@
     transition: background 0.2s;
 
     &:hover {
-      border: solid #77F 2px; /* TODO: Get exact colour from A.  TODO: Define colour as a var. */
+      border: solid #77f 2px; /* TODO: Get exact colour from A.  TODO: Define colour as a var. */
     }
   }
 
@@ -162,8 +160,7 @@
     }
     p {
       font-size: 18px;
-    margin-bottom: 20px;
+      margin-bottom: 20px;
     }
   }
-
 </style>
