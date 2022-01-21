@@ -11,6 +11,7 @@ more info.
 First, build the canister:
 
 ``` bash
+# in the repo root
 ./scripts/docker-build
 ```
 
@@ -26,21 +27,16 @@ dfx start
 DEPLOY_ENV=nobuild dfx deploy --no-wallet --network local
 ```
 
-
-Install all the dependencies for the proxy, and run the proxy:
-
-``` bash
-cd proxy
-npm ci
-npm run start --replica-host ...
-```
-
 Install all the dependencies for the test suite, and run the tests:
 
-```
-cd e2e-tests
+``` bash
+# in proxy/
 npm ci
-npm run wdio
+npm run build
+
+# in e2e-tests/
+npm ci
+npm run test
 ```
 
-Finally, shut down the replica by killing the `dfx start process`.
+Finally, shut down the replica by killing the `dfx start` process.

@@ -1,6 +1,10 @@
 import { existsSync, mkdirSync } from "fs";
 
+console.log(process.env);
+
 export const config: WebdriverIO.Config = {
+
+    baseUrl: process.env.NNS_DAPP_URL || "http://localhost:8080",
 
     before: (capabilities, spec) => {
         browser["screenshot-count"] = 0;
