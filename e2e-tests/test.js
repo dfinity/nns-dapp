@@ -1,10 +1,16 @@
 #!/usr/bin/env node
-/* TODO: document */
+/* This starts the proxy and the test suite. The proxy configuration is read
+ * from dfx.json and canister_ids.json. The proxy is shutdown after the tests
+ * are run.
+ */
 
 "use strict";
 
 const fs = require("fs");
 
+/*
+ * Read the values from dfx.json and canister_ids.json
+ */
 const CANISTER_IDS_PATH = `${__dirname}/../.dfx/local/canister_ids.json`;
 let canister_id;
 try {
@@ -34,8 +40,13 @@ try {
 
 console.log(`Using replica host: ${replica_host}`);
 
-// Any port would do here, it just needs to be the same the test runner uses,
-// hence we set it as the `NNS_BASE_URL` environment variable.
+/*
+ * Start the proxy
+ *
+ * Any port would do here, it just needs to be the same the test runner uses,
+ * hence we set it as the `NNS_DAPP_URL` environment variable which is read by
+ * wdio.conf.js..
+ */
 const NNS_DAPP_PORT = 8086;
 const NNS_DAPP_URL = `http://localhost:${NNS_DAPP_PORT}`;
 
@@ -55,6 +66,9 @@ proxy.stdout.on("close", (code) => {
   console.log(`proxy returned with ${code}`);
 });
 
+/*
+ * Start the tests
+ */
 const wdio = child_process.spawn("npm", ["run", "wdio"], {
   env: { ...process.env, NNS_DAPP_URL: NNS_DAPP_URL },
 });
