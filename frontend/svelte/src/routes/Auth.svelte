@@ -49,47 +49,37 @@
     aria-hidden="true"
     class="background"
   />
-
-  <main>
-    <h1>INTERNET COMPUTER</h1>
-    <h2>
-      <span class="blue">NETWORK</span> . <span class="pink">NERVOUS</span> .
-      <span class="green">SYSTEM</span>
-    </h2>
-    <img
-      src="/assets/assets/ic_colour_logo.svg"
-      role="presentation"
-      alt="DFINITY logo"
-      loading="lazy"
-      class="logo"
-    />
-    <p>
-      <span class="green">ICP</span> and <span class="blue">governance</span>
-    </p>
-    <button on:click={signIn}>LOGIN</button>
     <img
       src="/assets/assets/ic-badge-light.svg"
       role="presentation"
       alt="Powered by IC Banner"
+      class="bottom-banner"
       loading="lazy"
     />
+
+  <main>
+    <h1>NETWORK NERVOUS SYSTEM</h1>
+    <h2>INTERNET COMPUTER</h2>
+    <p>ICP and governance</p>
+    <button on:click={signIn}>Login</button>
   </main>
+
 {/if}
 
 <style lang="scss">
   @use "../lib/themes/mixins/img";
 
+
   main {
     position: absolute;
-    top: 0;
-    bottom: 0;
+    bottom: 120px; /* Below is the footer */
+    top: 80px; /* For symmetry.  Update: Now we center in the space above the footer.  Might make sense to make a grid in that case rather than abs. */
+    margin: auto;
     left: 0;
     right: 0;
 
     display: grid;
-    grid-template-rows: 105px 40px auto 40px 130px 40px;
-
-    z-index: 1;
+    grid-template-rows: 40px 40px auto 60px;
 
     background: transparent;
     color: inherit;
@@ -97,57 +87,42 @@
     > * {
       margin-left: auto;
       margin-right: auto;
-      color: var(--gray-400);
     }
-
-    @media screen and (min-height: 1025px) {
-      top: 50%;
-      left: 50%;
-      bottom: auto;
-      right: auto;
-      transform: translate(-50%, -50%);
-      height: 594px;
-    }
+  }
+  .bottom-banner {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    margin: auto;
   }
 
   h1 {
     margin-bottom: 0;
-    letter-spacing: 0.3rem;
-
+    letter-spacing: 0.1rem;
     align-self: flex-end;
+    font-size: 21px; /* Presumably needs to be changed to rem */
+    color: white;
   }
 
   h2 {
-    letter-spacing: 0.4rem;
+    letter-spacing: 0.1rem;
 
     display: inline-flex;
     align-items: center;
 
     margin: 0 auto;
-    font-size: var(--font-size-ultra-small);
+    font-size: 16px;
+
+    color: #E5BE5A; /* TODO: This colour is used in the design but is not already defined.  Do we want to use a defined colour instead, or add this to the defined colours? */
   }
 
   p {
-    font-size: var(--font-size-small);
-    letter-spacing: 0.3rem;
-    margin: var(--padding) auto;
-  }
-
-  .blue {
-    color: var(--blue-350);
-  }
-
-  .pink {
-    color: var(--pink);
-  }
-
-  .green {
-    color: var(--green-400);
-  }
-
-  .logo {
-    width: 7em;
-    margin: var(--padding) auto;
+    font-size: 15px;
+    font-weight: 20;
+    color: #E1E1E1;
+    margin: auto;
+    margin-bottom: 16px;
   }
 
   .background {
@@ -157,23 +132,38 @@
   button {
     --letter-spacing: 0.4rem;
 
-    margin: calc(2 * var(--padding)) auto;
-    padding: var(--padding) var(--padding) var(--padding)
-      calc(var(--letter-spacing) + var(--padding));
+    width: 200px;
+    height: 54px;
 
-    width: 140px;
-    height: 55px;
-
-    background: var(--blue-950);
-    border-radius: var(--border-radius);
+    background: #2942D5;
+    border: solid #2942D5 2px;
+    border-radius: 8px;
 
     font-weight: 700;
-    letter-spacing: var(--letter-spacing);
+    color: white;
+    text-indent: 4px; /* The text looks off centre otherwise, although technically it is centred. */
 
     transition: background 0.2s;
 
     &:hover {
-      background: var(--blue-950-tint);
+      border: solid #77F 2px; /* TODO: Get exact colour from A.  TODO: Define colour as a var. */
     }
   }
+
+  @media screen and (min-width: 1025px) {
+    main {
+      max-height: 324px;
+    }
+    h1 {
+      font-size: 35px; /* Presumably needs to be changed to rem */
+    }
+    h2 {
+      font-size: 32px;
+    }
+    p {
+      font-size: 18px;
+    margin-bottom: 20px;
+    }
+  }
+
 </style>
