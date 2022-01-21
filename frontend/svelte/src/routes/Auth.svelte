@@ -150,7 +150,7 @@
 
   @media screen and (min-width: 1025px) {
     main {
-      max-height: 324px;
+      max-height: 424px;
     }
     h1 {
       font-size: 35px; /* Presumably needs to be changed to rem */
