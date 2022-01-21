@@ -143,7 +143,8 @@
 
     transition: background 0.2s;
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       border: solid #77f 2px; /* TODO: Get exact colour from A.  TODO: Define colour as a var. */
     }
   }
