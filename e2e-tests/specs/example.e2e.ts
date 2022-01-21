@@ -1,6 +1,6 @@
 
-describe('Test foo', () => {
-    it('Bar', async () => {
+describe('landing page', () => {
+    it('loads', async () => {
 
         await browser.url('/v2/');
 

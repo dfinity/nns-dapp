@@ -114,8 +114,7 @@ jobs:
           npm run test > wdio.log
 
       - name: Stop replica
-        run: |
-          dfx stop
+        run: dfx stop
 
       - name: Archive wdio logs
         if: ${{ always() }}

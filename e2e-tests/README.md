@@ -6,8 +6,6 @@ more info.
 
 ## Run the tests
 
-(every snippet is run from the root)
-
 First, build the canister:
 
 ``` bash
@@ -24,6 +22,7 @@ Then, deploy the canister:
 dfx start
 
 # in another shell, deploy the canister
+# in the repo root
 DEPLOY_ENV=nobuild dfx deploy --no-wallet --network local
 ```
 
