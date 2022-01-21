@@ -80,6 +80,7 @@ fi
 # We use a local directory, and we don't delete it after the build, so that
 # assets can be inspected.
 tarball_dir="$TOPLEVEL/web-assets"
+rm -rf "$tarball_dir"
 mkdir -p "$tarball_dir"
 echo "using $tarball_dir for tarball directory"
 cp -R "$TOPLEVEL/frontend/dart/build/web/". "$tarball_dir"/
