@@ -11,14 +11,14 @@ export const config: WebdriverIO.Config = {
             if(browser["screenshots-taken"].has(name)) {
                 throw Error(`A screenshot with this name was already taken: '${name}'`);
             }
-            browser["screenshots-taken"].add(`${countStr}-${name}`);
+            browser["screenshots-taken"].add(name);
 
             const SCREENSHOTS_DIR = "screenshots";
             if (!existsSync(SCREENSHOTS_DIR)){
                 mkdirSync(SCREENSHOTS_DIR);
             }
 
-            await browser.saveScreenshot(`${SCREENSHOTS_DIR}/${name}.png`);
+            await browser.saveScreenshot(`${SCREENSHOTS_DIR}/${countStr}-${name}.png`);
         });
     },
 
