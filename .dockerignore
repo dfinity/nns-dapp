@@ -13,7 +13,6 @@ dist
 screenshots
 target
 out
-assets.tar.xz
 web-assets
 frontend/ts/node_modules
 frontend/ts/build
