@@ -43,6 +43,7 @@
   name="hideProposals"
   value={'Hide "Open" proposals where all your neurons have voted or are ineligible to vote'}
   checked={false}
+  class="radio"
 />
 
 <VotingFilterModal
@@ -61,5 +62,9 @@
       display: block;
       width: 100%;
     }
+  }
+
+  :global(.radio) {
+    --text-white-space: pre-wrap;
   }
 </style>
