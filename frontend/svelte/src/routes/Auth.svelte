@@ -49,13 +49,6 @@
     aria-hidden="true"
     class="background"
   />
-  <img
-    src="/assets/assets/ic-badge-light.svg"
-    role="presentation"
-    alt="Powered by IC Banner"
-    class="bottom-banner"
-    loading="lazy"
-  />
 
   <main>
     <h1>NETWORK NERVOUS SYSTEM</h1>
@@ -63,68 +56,85 @@
     <p>ICP and governance</p>
     <button on:click={signIn}>Login</button>
   </main>
+
+  <img
+    src="/assets/assets/ic-badge-light.svg"
+    role="presentation"
+    alt="Powered by IC Banner"
+    class="bottom-banner"
+    loading="lazy"
+  />
 {/if}
 
 <style lang="scss">
   @use "../lib/themes/mixins/img";
 
   main {
-    position: absolute;
-    bottom: 120px; /* Below is the footer */
-    top: 80px; /* For symmetry.  Update: Now we center in the space above the footer.  Might make sense to make a grid in that case rather than abs. */
-    margin: auto;
-    left: 0;
-    right: 0;
+    height: 100%;
+    width: 100%;
+    max-width: 720px;
+
+    margin: 0 auto;
+    padding: 80px 0 120px;
+
+    box-sizing: border-box;
 
     display: grid;
-    grid-template-rows: 40px 40px auto 60px;
+    grid-template-rows: repeat(2, fit-content(100%)) auto 60px;
+
+    justify-content: center;
 
     background: transparent;
     color: inherit;
 
+    z-index: 2;
+
     > * {
-      margin-left: auto;
-      margin-right: auto;
+      z-index: 3;
     }
-  }
-  .bottom-banner {
-    position: absolute;
-    bottom: 20px;
-    left: 0;
-    right: 0;
-    margin: auto;
   }
 
   h1 {
-    margin-bottom: 0;
-    letter-spacing: 0.1rem;
-    align-self: flex-end;
-    font-size: 21px; /* Presumably needs to be changed to rem */
+    font-size: var(--font-size-h4);
+    line-height: 1.5;
+
     color: white;
   }
 
   h2 {
+    margin: var(--padding) auto 0;
+
+    font-size: var(--font-size-h5);
+
+    color: #e5be5a; /** TODO: ask designer */
+  }
+
+  h1,
+  h2 {
+    text-align: center;
     letter-spacing: 0.1rem;
-
-    display: inline-flex;
-    align-items: center;
-
-    margin: 0 auto;
-    font-size: 16px;
-
-    color: #e5be5a; /* TODO: This colour is used in the design but is not already defined.  Do we want to use a defined colour instead, or add this to the defined colours? */
   }
 
   p {
-    font-size: 15px;
-    font-weight: 20;
+    font-size: 1rem;
     color: #e1e1e1;
-    margin: auto;
-    margin-bottom: 16px;
+    margin: 0 auto 16px;
+    align-self: flex-end;
   }
 
   .background {
     @include img.background;
+
+    z-index: 1;
+  }
+
+  .bottom-banner {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    z-index: 1;
   }
 
   button {
@@ -133,9 +143,12 @@
     width: 200px;
     height: 54px;
 
-    background: #2942d5;
-    border: solid #2942d5 2px;
-    border-radius: 8px;
+    --login-button-color: #2942d5; /** TODO: ask designer */
+    --login-button-color-tint: #3e55d9;
+
+    background: var(--login-button-color); /** TODO: ask designer */
+    border: 2px solid var(--login-button-color);
+    border-radius: var(--border-radius);
 
     font-weight: 700;
     color: white;
@@ -143,25 +156,32 @@
 
     transition: background 0.2s;
 
+    justify-self: center;
+
     &:hover,
     &:focus {
-      border: solid #77f 2px; /* TODO: Get exact colour from A.  TODO: Define colour as a var. */
+      background: var(--login-button-color-tint);
     }
   }
 
-  @media screen and (min-width: 1025px) {
+  @media screen and (min-width: 768px) and (min-height: 640px) {
     main {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -46%);
+
       max-height: 424px;
+      padding: 0;
     }
+
     h1 {
-      font-size: 35px; /* Presumably needs to be changed to rem */
+      font-size: var(--font-size-h1);
+      letter-spacing: 0.3rem;
     }
+
     h2 {
-      font-size: 32px;
-    }
-    p {
-      font-size: 18px;
-      margin-bottom: 20px;
+      font-size: var(--font-size-h2);
     }
   }
 </style>
