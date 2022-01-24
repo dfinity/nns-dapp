@@ -39,7 +39,12 @@
   >
 </div>
 
-<Checkbox inputId="hideMyProposals" checked={false} color="dark" text="block" ref="hideMyProposals"
+<Checkbox
+  inputId="hideMyProposals"
+  checked={false}
+  color="dark"
+  text="block"
+  ref="hideMyProposals"
   >Hide "Open" proposals where all your neurons have voted or are ineligible to
   vote</Checkbox
 >

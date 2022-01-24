@@ -2,7 +2,7 @@
   import { fade, scale } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import IconClose from "../icons/IconClose.svelte";
-  import {createEventDispatcher} from 'svelte';
+  import { createEventDispatcher } from "svelte";
 
   export let visible: boolean = false;
 
@@ -12,8 +12,11 @@
 
 {#if visible}
   <div class="modal" transition:fade>
-    <div class="backdrop" on:click={close}></div>
-    <div transition:scale={{ delay: 25, duration: 150, easing: quintOut }} class="wrapper">
+    <div class="backdrop" on:click={close} />
+    <div
+      transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
+      class="wrapper"
+    >
       <div class="toolbar">
         <h2><slot name="title" /></h2>
 
