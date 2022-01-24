@@ -36,6 +36,8 @@
 
     @include interaction.tappable;
 
+    font-size: var(--font-size-small); /* different */
+
     &:hover {
       background: rgba(
         var(--light-background-rgb),

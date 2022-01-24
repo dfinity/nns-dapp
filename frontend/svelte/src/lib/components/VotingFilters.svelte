@@ -39,7 +39,11 @@
   >
 </div>
 
-<Radio name="hideProposals" value="Hide proposals" checked={false} />
+<Radio
+  name="hideProposals"
+  value={'Hide "Open" proposals where all your neurons have voted or are ineligible to vote'}
+  checked={false}
+/>
 
 <VotingFilterModal
   props={modalFilters}
