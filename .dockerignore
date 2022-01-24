@@ -13,7 +13,7 @@ dist
 screenshots
 target
 out
-assets.tar.xz
+web-assets
 frontend/ts/node_modules
 frontend/ts/build
 frontend/dart/.dart_tool
@@ -33,4 +33,5 @@ frontend/svelte/node_modules/
 frontend/svelte/public/build/
 frontend/svelte/public/assets/
 proxy
+e2e-tests
 **/*.wasm

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import express from "express";
 import morgan from "morgan";
 import { createProxyMiddleware } from "http-proxy-middleware";
