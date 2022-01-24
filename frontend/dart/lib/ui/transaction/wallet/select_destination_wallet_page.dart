@@ -197,7 +197,7 @@ class _AccountRow extends StatelessWidget {
           SmallFormDivider(),
           AutoSizeText(
             account.accountIdentifier,
-            style: context.textTheme.bodyText2,
+            style: context.textTheme.bodyText1,
             selectable: false,
           ),
         ],

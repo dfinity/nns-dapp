@@ -91,7 +91,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: Text("Account"),
+        title: Text("Account", style: context.textTheme.headline3),
         backgroundColor: AppColors.background,
         actions: [
           if (widget.account.subAccountId != null)

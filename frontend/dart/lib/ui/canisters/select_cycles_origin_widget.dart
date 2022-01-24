@@ -98,7 +98,7 @@ class _AccountRow extends StatelessWidget {
             SmallFormDivider(),
             Text(
               account.accountIdentifier,
-              style: context.textTheme.bodyText2,
+              style: context.textTheme.bodyText1,
             )
           ],
         ),
