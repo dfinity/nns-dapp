@@ -10,7 +10,7 @@
   let title: string;
   let filters: VotingFilters | undefined;
 
-  // TODO: do we want a store or pass props?
+  // TODO(#L2-206): do we want a store or pass props?
   let activeTopics: VotingFilters[] = [];
 
   $: visible = props !== undefined;

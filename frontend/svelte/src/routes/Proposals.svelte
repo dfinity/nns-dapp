@@ -24,6 +24,8 @@
       </p>
 
       <VotingFilters />
+
+      <!-- TODO(#L2-206): list proposals and use filters -->
     </section>
   </Layout>
 {/if}
