@@ -14,7 +14,7 @@
     }
   });
 
-  let main: Account;
+  let main: Account | undefined;
 
   const unsubscribe: Unsubscriber = accountsStore.subscribe(
     async (accounts: AccountsStore) => (main = accounts?.main)
