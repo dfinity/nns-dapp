@@ -1,5 +1,4 @@
 @use "./interaction";
-@use "./text";
 
 @mixin group {
   display: flex;
@@ -26,8 +25,6 @@
 }
 
 @mixin label {
-  @include text.truncate;
-
   user-select: none;
   cursor: pointer;
 
@@ -42,7 +39,7 @@
 
 @mixin input {
   appearance: none;
-  background-color: var(--select-input-background-color);
+  background: transparent;
   margin: 0 var(--select-input-margin);
 
   width: var(--select-input-size);
@@ -50,7 +47,7 @@
 
   border: var(--select-input-border) solid currentColor;
 
-  border-radius: var(--select-input-border-radius);
+  border-radius: 50%;
 
   transition: background 0.2s, border 0.2s;
 
@@ -60,11 +57,24 @@
 
   &:checked {
     background: var(--blue-600);
-    border: 2px solid var(--select-input-checked-border-color);
+    border: 2px solid var(--blue-600);
   }
 
   &:focus {
     outline: 2px solid var(--blue-600);
     outline-offset: 2px;
+  }
+
+  &:checked:after {
+    left: 4px;
+    top: 0;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    display: block;
+    content: "";
+    position: absolute;
   }
 }

@@ -1,21 +1,21 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  export let name: string;
-  export let value: string;
+  export let inputId: string;
   export let checked: boolean;
+
+  export let color: 'dark' | 'light' = 'light';
+  export let text: 'block' | 'inline' = 'inline';
 
   const dispatch = createEventDispatcher();
   const select = () => dispatch("select");
 </script>
 
-<div class="checkbox" on:click|preventDefault={select}>
-  <label for={name}>{value}</label>
+<div on:click|preventDefault={select} class={`checkbox ${color}`}>
+  <label for={inputId} class={text}><slot /></label>
   <input
     type="checkbox"
-    id={name}
-    {name}
-    {value}
+    id={inputId}
     {checked}
     on:click|stopPropagation={select}
   />
@@ -23,21 +23,31 @@
 
 <style lang="scss">
   @use "../themes/mixins/select";
+  @use "../themes/mixins/text";
 
   .checkbox {
     @include select.group;
 
-    --select-color: var(--gray-600);
-    --select-font-size: inherit;
-    --select-background-hover: var(--light-background);
+    &.light {
+      --select-color: var(--gray-600);
+      --select-font-size: inherit;
+      --select-background-hover: var(--light-background);
+    }
 
-    --select-input-background-color: #fff;
-    --select-input-checked-border-color: var(--blue-200);
-    --select-input-border-radius: 50%;
+    &.dark {
+      --select-color: var(--gray-200);
+      --select-font-size: var(--font-size-small);
+      --select-background-hover: rgba(var(--light-background-rgb), 0.1);
+      --select-border-radius: var(--border-radius);
+    }
   }
 
   label {
     @include select.label;
+
+    &.inline {
+      @include text.truncate;
+    }
   }
 
   input[type="checkbox"] {

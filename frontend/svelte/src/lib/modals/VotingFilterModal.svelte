@@ -34,11 +34,10 @@
   {#if filters}
     {#each Object.keys(filters) as key}
       <Checkbox
-        name={key}
-        value={filters[key]}
+        inputId={key}
         checked={activeTopics.includes(filters[key])}
-        on:select={() => select(filters[key])}
-      />
+        on:select={() => select(filters[key])}>{filters[key]}</Checkbox
+      >
     {/each}
   {/if}
 </Modal>

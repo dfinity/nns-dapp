@@ -8,7 +8,7 @@
     VotingFilters,
   } from "../types/voting";
   import VotingFilterModal from "../modals/VotingFilterModal.svelte";
-  import Radio from "./Radio.svelte";
+  import Checkbox from "./Checkbox.svelte";
 
   let modalFilters: VotingFilterModalProps | undefined = undefined;
 
@@ -39,12 +39,10 @@
   >
 </div>
 
-<Radio
-  name="hideProposals"
-  value={'Hide "Open" proposals where all your neurons have voted or are ineligible to vote'}
-  checked={false}
-  class="radio"
-/>
+<Checkbox inputId="hideProposals" checked={false} color="dark" text="block"
+  >Hide "Open" proposals where all your neurons have voted or are ineligible to
+  vote</Checkbox
+>
 
 <VotingFilterModal
   props={modalFilters}
@@ -62,9 +60,5 @@
       display: block;
       width: 100%;
     }
-  }
-
-  :global(.radio) {
-    --text-white-space: pre-wrap;
   }
 </style>
