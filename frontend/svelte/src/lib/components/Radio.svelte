@@ -22,80 +22,31 @@
 </div>
 
 <style lang="scss">
-  @use "../themes/mixins/interaction";
-  @use "../themes/mixins/text";
+  @use "../themes/mixins/select";
 
   .radio {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include select.group;
 
-    padding: calc(2 * var(--padding));
+    --select-color: var(--gray-200);
+    --select-font-size: var(--font-size-small);
+    --select-background-hover: rgba(var(--light-background-rgb), 0.1);
+    --select-border-radius: var(--border-radius);
 
-    color: var(--gray-200); /* var(--gray-600) */
-
-    @include interaction.tappable;
-
-    font-size: var(--font-size-small); /* different */
-
-    &:hover {
-      background: rgba(
-        var(--light-background-rgb),
-        0.1
-      ); /* var(--light-background) */
-    }
-
-    border-radius: var(--border-radius); /* different */
-
-    --checkbox-size: 20px;
-    --checkbox-border: 2px;
-    --checkbox-margin: calc(var(--padding) / 2);
+    --select-input-background-color: transparent;
+    --select-input-checked-border-color: var(--blue-600);
   }
 
   label {
-    @include text.truncate;
-
-    user-select: none;
-    cursor: pointer;
-
-    width: calc(
-      100% - var(--checkbox-size) - (2 * var(--checkbox-border)) -
-        (2 * var(--checkbox-margin))
-    );
+    @include select.label;
   }
-
-  /** https://moderncss.dev/pure-css-custom-styled-radio-buttons/ **/
 
   input[type="radio"] {
-    appearance: none;
-    background-color: transparent; /* different #fff */
-    margin: 0 var(--checkbox-margin);
-
-    width: var(--checkbox-size);
-    height: var(--checkbox-size);
-
-    border: var(--checkbox-border) solid currentColor;
-
-    transition: background 0.2s, border 0.2s;
-
-    cursor: pointer;
-
-    position: relative;
-  }
-
-  input[type="radio"]:checked {
-    background: var(--blue-600);
-    border: 2px solid var(--blue-600); /* different  var(--blue-200) */
-  }
-
-  input[type="radio"]:focus {
-    outline: 2px solid var(--blue-600);
-    outline-offset: 2px;
+    @include select.input;
   }
 
   input[type="radio"]:checked:after {
     left: 4px;
-    top: 0px;
+    top: 0;
     width: 6px;
     height: 10px;
     border: solid white;

@@ -22,67 +22,25 @@
 </div>
 
 <style lang="scss">
-  @use "../themes/mixins/interaction";
-  @use "../themes/mixins/text";
+  @use "../themes/mixins/select";
 
   .checkbox {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include select.group;
 
-    padding: calc(2 * var(--padding));
+    --select-color: var(--gray-600);
+    --select-font-size: inherit;
+    --select-background-hover: var(--light-background);
 
-    color: var(--gray-600);
-
-    @include interaction.tappable;
-
-    &:hover {
-      background: var(--light-background);
-    }
-
-    --checkbox-size: 20px;
-    --checkbox-border: 2px;
-    --checkbox-margin: calc(var(--padding) / 2);
+    --select-input-background-color: #fff;
+    --select-input-checked-border-color: var(--blue-200);
+    --select-input-border-radius: 50%;
   }
 
   label {
-    @include text.truncate;
-
-    user-select: none;
-    cursor: pointer;
-
-    width: calc(
-      100% - var(--checkbox-size) - (2 * var(--checkbox-border)) -
-        (2 * var(--checkbox-margin))
-    );
+    @include select.label;
   }
-
-  /** https://moderncss.dev/pure-css-custom-styled-radio-buttons/ **/
 
   input[type="checkbox"] {
-    appearance: none;
-    background-color: #fff;
-    margin: 0 var(--checkbox-margin);
-
-    width: var(--checkbox-size);
-    height: var(--checkbox-size);
-
-    border: var(--checkbox-border) solid currentColor;
-
-    border-radius: 50%;
-
-    transition: background 0.2s, border 0.2s;
-
-    cursor: pointer;
-  }
-
-  input[type="checkbox"]:checked {
-    background: var(--blue-600);
-    border: 2px solid var(--blue-200);
-  }
-
-  input[type="checkbox"]:focus {
-    outline: 2px solid var(--blue-600);
-    outline-offset: 2px;
+    @include select.input;
   }
 </style>

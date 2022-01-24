@@ -1,0 +1,70 @@
+@use "./interaction";
+@use "./text";
+
+@mixin group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: calc(2 * var(--padding));
+
+  color: var(--select-color);
+
+  @include interaction.tappable;
+
+  font-size: var(--select-font-size);
+
+  &:hover {
+    background: var(--select-background-hover);
+  }
+
+  border-radius: var(--select-border-radius);
+
+  --select-input-size: 20px;
+  --select-input-border: 2px;
+  --select-input-margin: calc(var(--padding) / 2);
+}
+
+@mixin label {
+  @include text.truncate;
+
+  user-select: none;
+  cursor: pointer;
+
+  width: calc(
+    100% - var(--select-input-size) - (2 * var(--select-input-border)) -
+      (2 * var(--select-input-margin))
+  );
+}
+
+/** https://moderncss.dev/pure-css-custom-styled-radio-buttons/ **/
+/** accent-color not supported yet on Safari 😩 **/
+
+@mixin input {
+  appearance: none;
+  background-color: var(--select-input-background-color);
+  margin: 0 var(--select-input-margin);
+
+  width: var(--select-input-size);
+  height: var(--select-input-size);
+
+  border: var(--select-input-border) solid currentColor;
+
+  border-radius: var(--select-input-border-radius);
+
+  transition: background 0.2s, border 0.2s;
+
+  cursor: pointer;
+
+  position: relative;
+
+  &:checked {
+    background: var(--blue-600);
+    border: 2px solid var(--select-input-checked-border-color);
+  }
+
+  &:focus {
+    outline: 2px solid var(--blue-600);
+    outline-offset: 2px;
+  }
+}
