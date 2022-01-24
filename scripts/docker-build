@@ -1,0 +1,75 @@
+#/usr/bin/env bash
+# vim: ft=bash
+# Build nns-dapp.wasm inside docker. This outputs a single file, nns-dapp.wasm,
+# in the top-level directory.
+
+set -euo pipefail
+
+SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cd "$SCRIPTS_DIR/.."
+
+DEPLOY_ENV=${DEPLOY_ENV:-mainnet}
+
+case "$DEPLOY_ENV" in
+    mainnet)
+        OWN_CANISTER_ID=""
+        ;;
+    "local")
+        OWN_CANISTER_ID=${OWN_CANISTER_ID:-rwlgt-iiaaa-aaaaa-aaaaa-cai}
+        ;;
+    *)
+        echo "don't know how to set OWN_CANISTER_ID for DEPLOY_ENV $DEPLOY_ENV"
+        echo "please set the environment variable OWN_CANISTER_ID"
+        exit 1
+        ;;
+esac
+
+echo "DEPLOY_ENV: $DEPLOY_ENV"
+echo "OWN_CANISTER_ID: $OWN_CANISTER_ID"
+echo "PWD: $PWD"
+
+image_name="nns-dapp-$DEPLOY_ENV"
+
+echo "The following image name will be used: $image_name"
+
+set -x
+docker build \
+    --target scratch \
+    --build-arg DEPLOY_ENV="$DEPLOY_ENV" \
+    --build-arg OWN_CANISTER_ID="$OWN_CANISTER_ID" \
+    -t "$image_name" .
+set +x
+
+# use no-op as a command, doesn't matter since the container is never run
+container_id=$(docker create "$image_name" no-op)
+
+echo "created container with id $container_id"
+
+success=true
+
+copy() {
+    local container_id="$1"
+    local container_path="$2"
+    local local_path="$3"
+
+    if docker cp $container_id:/"$container_path" "$local_path"
+    then
+        echo "$container_path -> $local_path (from container $container_id)"
+        return 0
+    else
+        echo "could not copy $container_path from container $container_id"
+        return 1
+    fi
+}
+
+copy "$container_id" "nns-dapp.wasm" "nns-dapp.wasm" || success=false
+
+if [[ $success = true ]]
+then
+    echo "Removing container $container_id"
+    docker rm --volumes "$container_id"
+else
+    echo "container is left for inspection, once done run:"
+    echo "  docker rm -v $container_id"
+fi

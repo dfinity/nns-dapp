@@ -1,7 +1,9 @@
 # Use this with
 #
-# docker build -t nns-dapp .
-# docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
+# docker build . -t nns-dapp
+# container_id=$(docker create nns-dapp no-op)
+# docker cp $container_id:nns-dapp.wasm nns-dapp.wasm
+# docker rm --volumes $container_id
 
 # This is the "builder", i.e. the base image used later to build the final
 # code.
@@ -67,16 +69,17 @@ RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfini
 FROM builder AS build
 SHELL ["bash", "-c"]
 ARG DEPLOY_ENV=mainnet
-RUN echo $DEPLOY_ENV
+RUN echo "DEPLOY_ENV: '$DEPLOY_ENV'"
+
+ARG OWN_CANISTER_ID
+RUN echo "OWN_CANISTER_ID: '$OWN_CANISTER_ID'"
 
 # Build
 COPY . .
 RUN ./build.sh
 
-# Copy the wasm to the traditional location.
-RUN cp "$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)" nns-dapp.wasm
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm
 
-FROM scratch
+FROM scratch AS scratch
 COPY --from=build /nns-dapp.wasm /
 COPY --from=build /assets.tar.xz /
