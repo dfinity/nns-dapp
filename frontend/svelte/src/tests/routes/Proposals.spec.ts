@@ -15,6 +15,7 @@ describe("Proposals", () => {
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
   });
+
   it("should render a title", () => {
     const { getByText } = render(Proposals);
 

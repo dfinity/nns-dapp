@@ -4,7 +4,6 @@
 
 import { fireEvent, render } from "@testing-library/svelte";
 import Checkbox from "../../../lib/components/Checkbox.svelte";
-import { expect } from "@jest/globals";
 
 describe("Checkbox", () => {
   const props: { inputId: string; checked: boolean } = {
