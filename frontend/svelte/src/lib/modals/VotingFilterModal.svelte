@@ -1,8 +1,8 @@
 <script lang="ts">
   import Modal from "./Modal.svelte";
   import { createEventDispatcher } from "svelte";
-  import Radio from "../components/Radio.svelte";
   import { VotingFilterModalProps, VotingFilters } from "../types/voting";
+  import Checkbox from "../components/Checkbox.svelte";
 
   export let props: VotingFilterModalProps | undefined;
 
@@ -33,7 +33,7 @@
 
   {#if filters}
     {#each Object.keys(filters) as key}
-      <Radio
+      <Checkbox
         name={key}
         value={filters[key]}
         checked={activeTopics.includes(filters[key])}

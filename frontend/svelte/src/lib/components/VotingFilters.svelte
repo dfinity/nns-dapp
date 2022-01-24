@@ -8,11 +8,14 @@
     VotingFilters,
   } from "../types/voting";
   import VotingFilterModal from "../modals/VotingFilterModal.svelte";
+  import Radio from "./Radio.svelte";
 
   let modalFilters: VotingFilterModalProps | undefined = undefined;
 
   const openModal = (filters: { title: string; filters: VotingFilters }) =>
     (modalFilters = filters);
+
+  // TODO(#L2-206): hideProposals and filters store
 </script>
 
 <Filter
@@ -36,6 +39,8 @@
   >
 </div>
 
+<Radio name="hideProposals" value="Hide proposals" checked={false} />
+
 <VotingFilterModal
   props={modalFilters}
   on:close={() => (modalFilters = undefined)}
@@ -50,6 +55,7 @@
 
     @media (max-width: 768px) {
       display: block;
+      width: 100%;
     }
   }
 </style>
