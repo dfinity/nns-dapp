@@ -11,7 +11,7 @@
 
   @include interaction.tappable;
 
-  font-size: var(--select-font-size);
+  font-size: var(--select-font-size, inherit);
 
   &:hover {
     background: var(--select-background-hover);

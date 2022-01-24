@@ -7,11 +7,13 @@
   export let color: 'dark' | 'light' = 'light';
   export let text: 'block' | 'inline' = 'inline';
 
+  export let ref: string | undefined = undefined;
+
   const dispatch = createEventDispatcher();
   const select = () => dispatch("select");
 </script>
 
-<div on:click|preventDefault={select} class={`checkbox ${color}`}>
+<div on:click|preventDefault={select} class={`checkbox ${color}`} {ref}>
   <label for={inputId} class={text}><slot /></label>
   <input
     type="checkbox"
@@ -30,13 +32,11 @@
 
     &.light {
       --select-color: var(--gray-600);
-      --select-font-size: inherit;
       --select-background-hover: var(--light-background);
     }
 
     &.dark {
       --select-color: var(--gray-200);
-      --select-font-size: var(--font-size-small);
       --select-background-hover: rgba(var(--light-background-rgb), 0.1);
       --select-border-radius: var(--border-radius);
     }
