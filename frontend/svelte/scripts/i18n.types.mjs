@@ -29,7 +29,11 @@ const generate = () => {
     .map((i) => `\n\ninterface ${i.name} {${i.properties.join("")}}`)
     .join("");
 
-  const output = prettier.format(`${interfaces}${main}`, { parser: "babel" });
+  const comment = `/**\n* Auto-generated definitions file ("npm run i18n")\n*/`;
+
+  const output = prettier.format(`${comment}${interfaces}${main}`, {
+    parser: "babel",
+  });
 
   writeFileSync("./src/lib/types/i18n.d.ts", output);
 };
