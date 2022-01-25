@@ -7,5 +7,5 @@ import type { Principal } from "@dfinity/principal";
  * The authStore takes care of applying the correct value according the auth state.
  * It adds only a principal in memory if it is an authenticated one.
  */
-export const isSignedIn = (principal: Principal): boolean =>
+export const isSignedIn = (principal: Principal | undefined | null): boolean =>
   principal !== undefined && principal !== null;

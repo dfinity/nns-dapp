@@ -4,8 +4,8 @@ import type { Principal } from "@dfinity/principal";
 
 describe("auth-utils", () => {
   it("should not be signed in", () => {
-    expect(undefined).toBeFalsy();
-    expect(null).toBeFalsy();
+    expect(isSignedIn(undefined)).toBeFalsy();
+    expect(isSignedIn(null)).toBeFalsy();
   });
 
   it("should be signed in", () => {
