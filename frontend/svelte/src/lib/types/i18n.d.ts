@@ -34,6 +34,11 @@ interface I18nNeurons {
   principal_is: string;
 }
 
+interface I18nProposals {
+  title: string;
+  text: string;
+}
+
 interface I18n {
   lang: Languages;
   navigation: I18nNavigation;
@@ -41,4 +46,5 @@ interface I18n {
   auth: I18nAuth;
   accounts: I18nAccounts;
   neurons: I18nNeurons;
+  proposals: I18nProposals;
 }

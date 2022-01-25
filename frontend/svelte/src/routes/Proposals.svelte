@@ -15,14 +15,9 @@
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
     <section>
-      <h1>{$i18n.navigation.voting}</h1>
+      <h1>{$i18n.proposals.title}</h1>
 
-      <p>
-        The Internet Computer network runs under the control of the Network
-        Nervous System, which adopts proposals and automatically executes
-        corresponding actions. Anyone can submit a proposal, which are decided
-        as the result of voting activity by neurons.
-      </p>
+      <p>{$i18n.proposals.text}</p>
 
       <VotingFilters />
 
