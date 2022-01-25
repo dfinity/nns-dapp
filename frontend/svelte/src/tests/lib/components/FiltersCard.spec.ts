@@ -3,7 +3,7 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import Filter from "../../../lib/components/Filter.svelte";
+import Filter from "../../../lib/components/FiltersCard.svelte";
 import { expect } from "@jest/globals";
 
 describe("Filter", () => {

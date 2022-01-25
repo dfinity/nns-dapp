@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Filter from "./Filter.svelte";
+  import FiltersCard from "./FiltersCard.svelte";
   import {
     Proposals,
     Rewards,
@@ -19,26 +19,26 @@
   // TODO(#L2-206): hideProposals and filters store
 </script>
 
-<Filter
+<FiltersCard
   filters={Object.values(Topics)}
   key="topics"
   on:nnsFilter={() => openModal({ key: "topics", filters: Topics })}
-  >{$i18n.voting.topics}</Filter
+  >{$i18n.voting.topics}</FiltersCard
 >
 
 <div class="status">
-  <Filter
+  <FiltersCard
     filters={Object.values(Rewards)}
     key="rewards"
     on:nnsFilter={() => openModal({ key: "rewards", filters: Rewards })}
-    >{$i18n.voting.rewards}</Filter
+    >{$i18n.voting.rewards}</FiltersCard
   >
 
-  <Filter
+  <FiltersCard
     filters={Object.values(Proposals)}
     key="proposals"
     on:nnsFilter={() => openModal({ key: "proposals", filters: Proposals })}
-    >{$i18n.voting.proposals}</Filter
+    >{$i18n.voting.proposals}</FiltersCard
   >
 </div>
 
