@@ -11,7 +11,7 @@ export interface RouteStore {
  * - navigate: update the state value and push the new route to the browser history i.e. update browser url with an entry in the navigation stack
  * - replace: update the state value and replace the route in the browser history i.e. update browser url without modifying the navigation stack
  */
-export const initRouteStore = () => {
+const initRouteStore = () => {
   const { subscribe, update } = writable<RouteStore>({
     path: routePath(),
   });

@@ -21,7 +21,8 @@
     "logo": "DFINITY logo"
   },
   "accounts": {
-    "title": "Accounts"
+    "title": "Accounts",
+    "main": "Main"
   },
   "neurons": {
     "title": "Neurons",

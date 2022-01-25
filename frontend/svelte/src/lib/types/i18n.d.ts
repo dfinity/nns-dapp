@@ -28,6 +28,7 @@ interface I18nAuth {
 
 interface I18nAccounts {
   title: string;
+  main: string;
 }
 
 interface I18nNeurons {
