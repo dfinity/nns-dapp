@@ -5,7 +5,6 @@
     Rewards,
     Topics,
     VotingFilterModalProps,
-    VotingFilters,
   } from "../types/voting";
   import VotingFilterModal from "../modals/VotingFilterModal.svelte";
   import Checkbox from "./Checkbox.svelte";
@@ -13,7 +12,7 @@
   let modalFilters: VotingFilterModalProps | undefined = undefined;
 
   // The voting modal is displayed when filters are set i.e. when filters have to be selected
-  const openModal = (filters: { title: string; filters: VotingFilters }) =>
+  const openModal = (filters: VotingFilterModalProps) =>
     (modalFilters = filters);
 
   // TODO(#L2-206): hideProposals and filters store
