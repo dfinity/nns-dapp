@@ -167,7 +167,8 @@
 
     transition: background 0.2s;
 
-    &:hover {
+    &:hover,
+    &:active {
       background: var(--blue-950-tint);
     }
   }

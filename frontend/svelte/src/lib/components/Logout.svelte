@@ -4,9 +4,10 @@
   const logout = async () => {
     await authStore.signOut();
 
-    // The current active <PrivateRoute/> takes care of the redirection to root path "/"
-
     window.localStorage.clear();
+
+    // We reload the page to make sure all the states are cleared
+    window.location.reload();
   };
 </script>
 
