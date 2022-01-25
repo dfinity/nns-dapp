@@ -3,6 +3,7 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
   import { routeStore } from "../lib/stores/route.store";
+  import { isSignedIn } from "../lib/utils/auth.utils";
 
   let signedIn: boolean = false;
 
@@ -17,8 +18,8 @@
   };
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
-    async ({ signedIn: loggedIn }: AuthStore) => {
-      signedIn = loggedIn === true;
+    async ({ principal }: AuthStore) => {
+      signedIn = isSignedIn(principal);
 
       if (!signedIn) {
         return;
@@ -166,7 +167,8 @@
 
     transition: background 0.2s;
 
-    &:hover {
+    &:hover,
+    &:active {
       background: var(--blue-950-tint);
     }
   }

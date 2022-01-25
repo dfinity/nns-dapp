@@ -6,6 +6,7 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { routeContext, routePath } from "../utils/route.utils";
   import { routeStore } from "../stores/route.store";
+  import { isSignedIn } from "../utils/auth.utils";
 
   export let path: string;
   export let component: typeof SvelteComponent;
@@ -27,8 +28,8 @@
   };
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
-    ({ signedIn: loggedIn }: AuthStore) => {
-      signedIn = loggedIn === true;
+    ({ principal }: AuthStore) => {
+      signedIn = isSignedIn(principal);
 
       redirectLogin();
     }

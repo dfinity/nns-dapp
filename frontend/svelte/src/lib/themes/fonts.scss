@@ -33,11 +33,11 @@ h4,
 h5 {
   font-weight: 700;
   line-height: var(--line-height-title);
-  margin: 0 0 0.2rem;
+  margin: 0 0 calc(var(--padding) / 2);
 }
 
 p {
-  margin: 0 0 1.78rem;
+  margin: 0 0 calc(3 * var(--padding));
 }
 
 input,
