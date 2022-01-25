@@ -2,12 +2,14 @@
  * @jest-environment jsdom
  */
 
-import {Topics, VotingFilterModalProps} from '../../../lib/types/voting';
+import { Topics, VotingFilterModalProps } from "../../../lib/types/voting";
 import { fireEvent, render } from "@testing-library/svelte";
 import VotingFilterModal from "../../../lib/modals/VotingFilterModal.svelte";
 
 describe("VotingFilterModal", () => {
-  const props: {props: VotingFilterModalProps} = { props: { title: "Test", filters: Topics } };
+  const props: { props: VotingFilterModalProps } = {
+    props: { title: "Test", filters: Topics },
+  };
 
   it("should display modal", () => {
     const { container } = render(VotingFilterModal, {
