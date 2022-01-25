@@ -18,7 +18,7 @@
   $: filters = props?.filters;
 
   const dispatch = createEventDispatcher();
-  const close = () => dispatch("close");
+  const close = () => dispatch("nnsClose");
 
   const select = (topic: VotingFilters) =>
     (activeTopics = activeTopics.includes(topic)
@@ -28,7 +28,7 @@
       : [...activeTopics, topic]);
 </script>
 
-<Modal {visible} on:close={close}>
+<Modal {visible} on:nnsClose={close}>
   <span slot="title">{title}</span>
 
   {#if filters}
@@ -36,7 +36,7 @@
       <Checkbox
         inputId={key}
         checked={activeTopics.includes(filters[key])}
-        on:select={() => select(filters[key])}>{filters[key]}</Checkbox
+        on:nnsChange={() => select(filters[key])}>{filters[key]}</Checkbox
       >
     {/each}
   {/if}

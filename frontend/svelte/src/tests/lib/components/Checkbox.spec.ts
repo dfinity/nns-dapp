@@ -61,7 +61,7 @@ describe("Checkbox", () => {
       props,
     });
 
-    component.$on("select", (e) => {
+    component.$on("nnsChange", (e) => {
       done();
     });
 
@@ -74,7 +74,7 @@ describe("Checkbox", () => {
       props,
     });
 
-    component.$on("select", (e) => {
+    component.$on("nnsChange", (e) => {
       done();
     });
 

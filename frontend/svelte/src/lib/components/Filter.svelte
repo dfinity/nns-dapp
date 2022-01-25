@@ -6,8 +6,7 @@
   export let filters: string[];
 
   const dispatch = createEventDispatcher();
-
-  const filter = () => dispatch("filter");
+  const filter = () => dispatch("nnsFilter");
 </script>
 
 <div>

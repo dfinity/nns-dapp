@@ -73,7 +73,7 @@ describe("Modal", () => {
       props,
     });
 
-    component.$on("close", (e) => {
+    component.$on("nnsClose", (e) => {
       done();
     });
 
@@ -87,7 +87,7 @@ describe("Modal", () => {
       props,
     });
 
-    component.$on("close", (e) => {
+    component.$on("nnsClose", (e) => {
       done();
     });
 

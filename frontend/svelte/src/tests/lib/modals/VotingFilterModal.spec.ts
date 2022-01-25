@@ -42,7 +42,7 @@ describe("VotingFilterModal", () => {
       props,
     });
 
-    component.$on("close", (e) => {
+    component.$on("nnsClose", (e) => {
       done();
     });
 

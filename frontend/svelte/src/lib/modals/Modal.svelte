@@ -7,7 +7,7 @@
   export let visible: boolean = false;
 
   const dispatch = createEventDispatcher();
-  const close = () => dispatch("close");
+  const close = () => dispatch("nnsClose");
 </script>
 
 {#if visible}

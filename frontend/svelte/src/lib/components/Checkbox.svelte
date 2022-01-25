@@ -10,11 +10,15 @@
   export let selector: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
-  const select = () => dispatch("select");
+
+  /**
+   * Emit an event when the checkbox or container is clicked. The state should be updated by consumer.
+   */
+  const onClick = () => dispatch("nnsChange");
 </script>
 
 <div
-  on:click|preventDefault={select}
+  on:click|preventDefault={onClick}
   class={`checkbox ${color} ${selector || ""}`}
 >
   <label for={inputId} class={text}><slot /></label>
@@ -22,7 +26,7 @@
     type="checkbox"
     id={inputId}
     {checked}
-    on:click|stopPropagation={select}
+    on:click|stopPropagation={onClick}
   />
 </div>
 

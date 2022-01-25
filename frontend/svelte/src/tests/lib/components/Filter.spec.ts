@@ -37,7 +37,7 @@ describe("Filter", () => {
       props,
     });
 
-    component.$on("filter", (e) => {
+    component.$on("nnsFilter", (e) => {
       done();
     });
 
