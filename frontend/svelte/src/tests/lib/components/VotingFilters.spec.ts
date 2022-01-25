@@ -38,14 +38,14 @@ describe("VotingFilters", () => {
 
     expect(input).not.toBeNull();
     expect(input.getAttribute("type")).toEqual("checkbox");
-    expect(input.getAttribute("id")).toEqual("hide-my-proposals");
+    expect(input.getAttribute("id")).toEqual("hide-unavailable-proposals");
   });
 
   it("should set a ref to the checkbox", () => {
     const { container } = render(VotingFilters);
 
     const div: HTMLDivElement | null = container.querySelector(
-      "div.checkbox.hide-my-proposals"
+      "div.checkbox.hide-unavailable-proposals"
     );
 
     expect(div).not.toBeNull();

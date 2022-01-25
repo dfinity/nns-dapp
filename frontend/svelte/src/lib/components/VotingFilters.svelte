@@ -40,11 +40,11 @@
 </div>
 
 <Checkbox
-  inputId="hide-my-proposals"
+  inputId="hide-unavailable-proposals"
   checked={false}
   color="dark"
   text="block"
-  selector="hide-my-proposals"
+  selector="hide-unavailable-proposals"
   >Hide "Open" proposals where all your neurons have voted or are ineligible to
   vote</Checkbox
 >
@@ -67,7 +67,7 @@
     }
   }
 
-  :global(div.hide-my-proposals) {
+  :global(div.hide-unavailable-proposals) {
     --select-font-size: var(--font-size-small);
   }
 </style>
