@@ -1,5 +1,6 @@
 <script lang="ts">
   import { authStore } from "../stores/auth.store";
+  import { i18n } from "../stores/i18n";
 
   const logout = async () => {
     await authStore.signOut();
@@ -11,7 +12,7 @@
   };
 </script>
 
-<button on:click={logout}>Logout</button>
+<button on:click={logout}>{$i18n.header.logout}</button>
 
 <style lang="scss">
   button {

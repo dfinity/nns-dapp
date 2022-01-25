@@ -6,6 +6,7 @@
   import type { Account } from "../lib/types/account";
   import ICP from "../lib/components/ICP.svelte";
   import AccountCard from "../lib/components/AccountCard.svelte";
+  import { i18n } from "../lib/stores/i18n";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -27,7 +28,7 @@
   <Layout>
     <section>
       <div class="title">
-        <h1>Accounts</h1>
+        <h1>{$i18n.accounts.title}</h1>
 
         {#if main}
           <ICP icp={main?.balance} />
@@ -35,7 +36,7 @@
       </div>
 
       {#if main}
-        <AccountCard account={main}>Main</AccountCard>
+        <AccountCard account={main}>{$i18n.accounts.main}</AccountCard>
       {/if}
 
       <!-- TODO(L2-175): display a spinner while loading the accounts -->

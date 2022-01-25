@@ -1,15 +1,16 @@
 <script lang="ts">
   import { baseHref, routeContext } from "../utils/route.utils";
+  import { i18n } from "../stores/i18n";
 
   let currentContext: string = routeContext();
 
   const baseUrl: string = baseHref();
 
   const routes: { context: string; label: string }[] = [
-    { context: "accounts", label: "ICP" },
-    { context: "neurons", label: "NEURONS" },
-    { context: "proposals", label: "VOTING" },
-    { context: "canisters", label: "CANISTERS" },
+    { context: "accounts", label: "icp" },
+    { context: "neurons", label: "neurons" },
+    { context: "proposals", label: "voting" },
+    { context: "canisters", label: "canisters" },
   ];
 </script>
 
@@ -18,7 +19,7 @@
     <a
       href={`${baseUrl}#/${context}`}
       class:selected={currentContext === context}
-      aria-label={label}><span>{label}</span></a
+      aria-label={label}><span>{$i18n.navigation[label]}</span></a
     >
   {/each}
 </nav>

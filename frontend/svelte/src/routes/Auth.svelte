@@ -4,6 +4,7 @@
   import { AuthStore, authStore } from "../lib/stores/auth.store";
   import { routeStore } from "../lib/stores/route.store";
   import { isSignedIn } from "../lib/utils/auth.utils";
+  import { i18n } from "../lib/stores/i18n";
 
   let signedIn: boolean = false;
 
@@ -52,16 +53,16 @@
   />
 
   <main>
-    <h1>NETWORK NERVOUS SYSTEM</h1>
-    <h2>INTERNET COMPUTER</h2>
-    <p>ICP and governance</p>
-    <button on:click={signIn}>Login</button>
+    <h1>{$i18n.auth.nns}</h1>
+    <h2>{$i18n.auth.ic}</h2>
+    <p>{$i18n.auth.icp_governance}</p>
+    <button on:click={signIn}>{$i18n.auth.login}</button>
   </main>
 
   <img
     src="/assets/assets/ic-badge-light.svg"
     role="presentation"
-    alt="Powered by IC Banner"
+    alt={$i18n.auth.powered_by}
     class="bottom-banner"
     loading="lazy"
   />
