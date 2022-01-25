@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  docker-build:
+  builder:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -28,23 +28,46 @@ jobs:
           outputs: type=cacheonly
           target: builder
 
-      - name: Build nns-dapp Docker image
+  assets:
+    needs: builder
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+       include:
+         - DEPLOY_ENV: "testnet"
+           OWN_CANISTER_ID: "qhbym-qaaaa-aaaaa-aaafq-cai"
+         - DEPLOY_ENV: "mainnet"
+           OWN_CANISTER_ID: ""
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v1
+      # Build and upload testnet assets
+      - name: Build ${{ matrix.DEPLOY_ENV }} nns-dapp Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: Dockerfile
+          build-args: |
+            DEPLOY_ENV=${{ matrix.DEPLOY_ENV }}
+            OWN_CANISTER_ID=${{ matrix.OWN_CANISTER_ID }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
-          outputs: ./out
+          outputs: ./${{ matrix.DEPLOY_ENV }}-out
+      - name: 'Upload ${{ matrix.DEPLOY_ENV }} wasm module'
+        uses: actions/upload-artifact@v2
+        with:
+          name: NNS ${{ matrix.DEPLOY_ENV }} backend wasm module
+          path: ${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm
+      - name: 'Upload ${{ matrix.DEPLOY_ENV }} frontend assets'
+        uses: actions/upload-artifact@v2
+        with:
+          name: NNS ${{ matrix.DEPLOY_ENV }} frontend assets
+          path: ${{ matrix.DEPLOY_ENV }}-out/assets.tar.xz
 
-      - run: sha256sum out/nns-dapp.wasm
-      - name: 'Upload wasm module'
-        uses: actions/upload-artifact@v2
-        with:
-          name: Backend wasm module
-          path: out/nns-dapp.wasm
-      - name: 'Upload frontend assets'
-        uses: actions/upload-artifact@v2
-        with:
-          name: Frontend assets
-          path: out/assets.tar.xz
+  docker-build:
+    needs: assets
+    runs-on: ubuntu-20.04
+    steps:
+       - name: Extract assets for verification
+         run: echo TODO

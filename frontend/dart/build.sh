@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-# Build the flutter app
+# Build the flutter app. This populates ./build/web/, a directory that has the
+# same hierarchy as how the files should be served.
 
 set -euo pipefail
 
