@@ -1,4 +1,4 @@
-export type VotingFilters = Topics | Rewards | Proposals;
+export type VotingFilters = typeof Topics | typeof Rewards | typeof Proposals;
 
 export interface VotingFilterModalProps {
   title: string;
