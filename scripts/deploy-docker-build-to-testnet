@@ -2,7 +2,7 @@
 set -euxo pipefail
 cd "$(dirname "$(realpath "$0")")/.." || exit
 
-./scripts/docker-build
+DEPLOY_ENV=testnet ./scripts/docker-build
 
 DEPLOY_ENV=nobuild dfx deploy --no-wallet --network testnet
 

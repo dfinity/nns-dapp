@@ -11,6 +11,23 @@ cd "$SCRIPTS_DIR/.."
 
 DEPLOY_ENV=${DEPLOY_ENV:-mainnet}
 
+# Here the OWN_CANISTER_ID is set.  The value is taken from the following, in order of priority:
+# - The env var OWN_CANISTER_ID
+# - canister_ids.json
+# - try to deduce the value.
+if test -n "${OWN_CANISTER_ID:-}"
+then echo "Using env var OWN_CANISTER_ID: $OWN_CANISTER_ID"
+fi
+
+if test -z "${OWN_CANISTER_ID:-}" && test -e canister_ids.json
+then OWN_CANISTER_ID="$(jq -r '.["nns-dapp"]["'"$DEPLOY_ENV"'"]' canister_ids.json)"
+     if test -n "${OWN_CANISTER_ID:-}"
+     then echo "Using caniser ID from canister_ids.json: $OWN_CANISTER_ID"
+     fi
+fi
+
+if test -z "${OWN_CANISTER_ID:-}"
+then
 case "$DEPLOY_ENV" in
     mainnet)
         OWN_CANISTER_ID=""
@@ -24,6 +41,7 @@ case "$DEPLOY_ENV" in
         exit 1
         ;;
 esac
+fi
 
 echo "DEPLOY_ENV: $DEPLOY_ENV"
 echo "OWN_CANISTER_ID: $OWN_CANISTER_ID"
