@@ -33,7 +33,6 @@ describe("App", () => {
     await waitFor(() => expect(accountsStoreMock).toHaveBeenCalledTimes(1));
 
     authStoreMock.next({
-      signedIn: true,
       principal: mockPrincipal as Principal,
     });
 

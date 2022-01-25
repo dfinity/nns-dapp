@@ -12,7 +12,7 @@ export const mockPrincipal = Principal.fromText(
 export const mockAuthStoreSubscribe = (
   run: Subscriber<AuthStore>
 ): (() => void) => {
-  run({ signedIn: true, principal: mockPrincipal });
+  run({ principal: mockPrincipal });
 
   return () => {};
 };
@@ -23,7 +23,7 @@ export const mockAuthStoreSubscribe = (
  */
 
 export class AuthStoreMock {
-  private _store: AuthStore = { signedIn: undefined, principal: undefined };
+  private _store: AuthStore = { principal: undefined };
 
   private _callback: (store: AuthStore) => void;
 
