@@ -33,4 +33,5 @@ frontend/svelte/node_modules/
 frontend/svelte/public/build/
 frontend/svelte/public/assets/
 proxy
+e2e-tests
 **/*.wasm
