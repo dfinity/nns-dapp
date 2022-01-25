@@ -89,40 +89,40 @@ describe("Checkbox", () => {
 
     const div: HTMLDivElement | null = container.querySelector("div.checkbox");
 
-    expect(div.classList.contains('light')).toBeTruthy();
+    expect(div.classList.contains("light")).toBeTruthy();
 
     const label: HTMLLabelElement | null = container.querySelector("label");
 
-    expect(label.classList.contains('inline')).toBeTruthy();
+    expect(label.classList.contains("inline")).toBeTruthy();
   });
 
   it("should render a dark container", () => {
     const { container } = render(Checkbox, {
-      props: {...props, color: 'dark'},
+      props: { ...props, color: "dark" },
     });
 
     const div: HTMLDivElement | null = container.querySelector("div.checkbox");
 
-    expect(div.classList.contains('dark')).toBeTruthy();
+    expect(div.classList.contains("dark")).toBeTruthy();
   });
 
   it("should render block label", () => {
     const { container } = render(Checkbox, {
-      props: {...props, text: 'block'},
+      props: { ...props, text: "block" },
     });
 
     const label: HTMLLabelElement | null = container.querySelector("label");
 
-    expect(label.classList.contains('block')).toBeTruthy();
+    expect(label.classList.contains("block")).toBeTruthy();
   });
 
   it("should apply ref to container", () => {
     const { container } = render(Checkbox, {
-      props: {...props, ref: 'test'},
+      props: { ...props, ref: "test" },
     });
 
     const div: HTMLDivElement | null = container.querySelector("div.checkbox");
 
-    expect(div.getAttribute('ref')).toEqual('test');
+    expect(div.getAttribute("ref")).toEqual("test");
   });
 });

@@ -4,7 +4,7 @@
 
 import { render } from "@testing-library/svelte";
 import VotingFilters from "../../../lib/components/VotingFilters.svelte";
-import {Proposals, Rewards, Topics} from '../../../lib/types/voting';
+import { Proposals, Rewards, Topics } from "../../../lib/types/voting";
 
 describe("VotingFilters", () => {
   it("should render topics filters", () => {
@@ -19,7 +19,7 @@ describe("VotingFilters", () => {
     const { getByText } = render(VotingFilters);
 
     Object.values(Rewards).forEach((text: string) =>
-        expect(getByText(text)).toBeInTheDocument()
+      expect(getByText(text)).toBeInTheDocument()
     );
   });
 
@@ -27,7 +27,7 @@ describe("VotingFilters", () => {
     const { getByText } = render(VotingFilters);
 
     Object.values(Proposals).forEach((text: string) =>
-        expect(getByText(text)).toBeInTheDocument()
+      expect(getByText(text)).toBeInTheDocument()
     );
   });
 
@@ -38,7 +38,7 @@ describe("VotingFilters", () => {
 
     expect(input).not.toBeNull();
     expect(input.getAttribute("type")).toEqual("checkbox");
-    expect(input.getAttribute("id")).toEqual('hideMyProposals');
+    expect(input.getAttribute("id")).toEqual("hideMyProposals");
   });
 
   it("should set a ref to the checkbox", () => {
@@ -46,6 +46,6 @@ describe("VotingFilters", () => {
 
     const div: HTMLDivElement | null = container.querySelector("div.checkbox");
 
-    expect(div.getAttribute('ref')).toEqual('hideMyProposals');
+    expect(div.getAttribute("ref")).toEqual("hideMyProposals");
   });
 });

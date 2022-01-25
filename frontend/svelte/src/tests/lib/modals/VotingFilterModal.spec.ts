@@ -3,7 +3,7 @@
  */
 
 import { Topics } from "../../../lib/types/voting";
-import {fireEvent, render} from '@testing-library/svelte';
+import { fireEvent, render } from "@testing-library/svelte";
 import VotingFilterModal from "../../../lib/modals/VotingFilterModal.svelte";
 
 describe("VotingFilterModal", () => {
@@ -22,7 +22,7 @@ describe("VotingFilterModal", () => {
       props,
     });
 
-    expect(getByText('Test')).toBeInTheDocument();
+    expect(getByText("Test")).toBeInTheDocument();
   });
 
   it("should render checkboxed", () => {
@@ -31,7 +31,7 @@ describe("VotingFilterModal", () => {
     });
 
     Object.values(Topics).forEach((text: string) =>
-        expect(getByText(text)).toBeInTheDocument()
+      expect(getByText(text)).toBeInTheDocument()
     );
   });
 

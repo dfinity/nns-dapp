@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {fireEvent, render} from '@testing-library/svelte';
+import { fireEvent, render } from "@testing-library/svelte";
 import Filter from "../../../lib/components/Filter.svelte";
 import { expect } from "@jest/globals";
 
