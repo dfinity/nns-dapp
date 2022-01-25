@@ -4,9 +4,8 @@
     "nns-dapp": {
       "type": "custom",
       "candid": "rs/nns-dapp.did",
-      "wasm": "target/wasm32-unknown-unknown/release/nns-dapp-opt.wasm",
-      "build": "./build.sh",
-      "source": ["assets.tar.xz"]
+      "wasm": "nns-dapp.wasm",
+      "build": "./build.sh"
     }
   },
   "networks": {
