@@ -14,7 +14,7 @@
 <div>
   <h2><slot /></h2>
 
-  <div class="filter" on:click={filter}>
+  <button class="filter" on:click={filter}>
     <div class="options">
       {#each filters as filter}
         <Chip>{$i18n[key]?.[filter] || ""}</Chip>
@@ -24,7 +24,7 @@
     <div class="expand">
       <IconExpandMore />
     </div>
-  </div>
+  </button>
 </div>
 
 <style lang="scss">
@@ -42,12 +42,16 @@
 
     border-radius: var(--border-radius);
 
-    @include interaction.tappable;
-
     &:active,
+    &:focus,
     &:hover {
       background: rgba(var(--light-background-rgb), 0.3);
     }
+  }
+
+  .options {
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .expand {

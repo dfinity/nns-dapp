@@ -60,12 +60,19 @@
     font-weight: 700;
 
     text-decoration: none;
+    outline: none;
 
     &.selected {
       background: var(--blue-500);
       color: var(--blue-500-contrast);
+
+      &:focus,
+      &:hover {
+        background: var(--blue-400);
+      }
     }
 
+    &:not(.selected):focus,
     &:not(.selected):hover {
       background: var(--background-tint);
     }

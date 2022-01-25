@@ -93,6 +93,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
+      &:active,
+      &:focus,
+      &:hover {
+        background: rgba(var(--light-background-rgb), 0.3);
+        border-radius: var(--border-radius);
+      }
     }
   }
 
