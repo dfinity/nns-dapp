@@ -37,7 +37,8 @@
   <FiltersCard
     filters={Object.values(Proposals)}
     key="proposals"
-    on:nnsFilter={() => openModal({ labelKey: "proposals", filters: Proposals })}
+    on:nnsFilter={() =>
+      openModal({ labelKey: "proposals", filters: Proposals })}
     >{$i18n.voting.proposals}</FiltersCard
   >
 </div>
