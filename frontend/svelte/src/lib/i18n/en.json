@@ -11,14 +11,10 @@
   },
   "auth": {
     "ic": "INTERNET COMPUTER",
-    "network": "NETWORK",
-    "nervous": "NERVOUS",
-    "system": "SYSTEM",
-    "icp": "ICP",
-    "and": "and",
-    "governance": "governance",
-    "login": "LOGIN",
-    "logo": "DFINITY logo"
+    "nns": "NETWORK NERVOUS SYSTEM",
+    "icp_governance": "ICP and governance",
+    "login": "Login",
+    "powered_by": "Powered by IC Banner"
   },
   "accounts": {
     "title": "Accounts",

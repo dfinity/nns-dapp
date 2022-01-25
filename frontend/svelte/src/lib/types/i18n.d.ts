@@ -16,14 +16,10 @@ interface I18nHeader {
 
 interface I18nAuth {
   ic: string;
-  network: string;
-  nervous: string;
-  system: string;
-  icp: string;
-  and: string;
-  governance: string;
+  nns: string;
+  icp_governance: string;
   login: string;
-  logo: string;
+  powered_by: string;
 }
 
 interface I18nAccounts {
