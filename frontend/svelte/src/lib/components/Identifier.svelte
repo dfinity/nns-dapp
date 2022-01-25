@@ -10,7 +10,10 @@
 
 <p>
   <small>{identifier}</small>
-  <button on:click={copyToClipboard} aria-label={$i18n.accounts.copy_identifier}>
+  <button
+    on:click={copyToClipboard}
+    aria-label={$i18n.accounts.copy_identifier}
+  >
     <IconCopy />
   </button>
 </p>
