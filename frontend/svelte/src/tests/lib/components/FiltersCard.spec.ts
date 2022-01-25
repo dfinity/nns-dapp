@@ -43,7 +43,7 @@ describe("Filter", () => {
       done();
     });
 
-    const div: HTMLDivElement | null = container.querySelector("div.filter");
+    const div: HTMLDivElement | null = container.querySelector("button.filter");
     fireEvent.click(div);
   });
 });
