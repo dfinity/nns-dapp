@@ -27,7 +27,8 @@
 <div class="status">
   <Filter
     filters={Object.values(Rewards)}
-    on:nnsFilter={() => openModal({ title: "Rewards Status", filters: Rewards })}
+    on:nnsFilter={() =>
+      openModal({ title: "Rewards Status", filters: Rewards })}
     >Reward Status</Filter
   >
 
