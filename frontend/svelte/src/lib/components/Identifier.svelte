@@ -1,5 +1,6 @@
 <script lang="ts">
   import IconCopy from "../icons/IconCopy.svelte";
+  import { i18n } from "../stores/i18n";
 
   export let identifier: string;
 
@@ -9,7 +10,7 @@
 
 <p>
   <small>{identifier}</small>
-  <button on:click={copyToClipboard} aria-label="Copy identifier to clipboard">
+  <button on:click={copyToClipboard} aria-label={$i18n.accounts.copy_identifier}>
     <IconCopy />
   </button>
 </p>

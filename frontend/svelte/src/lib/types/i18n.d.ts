@@ -29,6 +29,7 @@ interface I18nAuth {
 interface I18nAccounts {
   title: string;
   main: string;
+  copy_identifier: string;
 }
 
 interface I18nNeurons {

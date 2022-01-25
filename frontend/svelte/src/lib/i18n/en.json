@@ -22,7 +22,8 @@
   },
   "accounts": {
     "title": "Accounts",
-    "main": "Main"
+    "main": "Main",
+    "copy_identifier": "Copy identifier to clipboard"
   },
   "neurons": {
     "title": "Neurons",
