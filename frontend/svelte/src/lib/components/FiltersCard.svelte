@@ -43,6 +43,11 @@
     border-radius: var(--border-radius);
 
     @include interaction.tappable;
+
+    &:active,
+    &:hover {
+      background: rgba(var(--light-background-rgb), 0.3);
+    }
   }
 
   .expand {
