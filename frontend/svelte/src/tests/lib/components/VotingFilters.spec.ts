@@ -6,28 +6,30 @@ import { render } from "@testing-library/svelte";
 import VotingFilters from "../../../lib/components/VotingFilters.svelte";
 import { Proposals, Rewards, Topics } from "../../../lib/types/voting";
 
+const en = require("../../../lib/i18n/en.json");
+
 describe("VotingFilters", () => {
   it("should render topics filters", () => {
     const { getByText } = render(VotingFilters);
 
-    Object.values(Topics).forEach((text: string) =>
-      expect(getByText(text)).toBeInTheDocument()
+    Object.values(Topics).forEach((key: string) =>
+      expect(getByText(en.topics[key])).toBeInTheDocument()
     );
   });
 
   it("should render rewards filters", () => {
     const { getByText } = render(VotingFilters);
 
-    Object.values(Rewards).forEach((text: string) =>
-      expect(getByText(text)).toBeInTheDocument()
+    Object.values(Rewards).forEach((key: string) =>
+      expect(getByText(en.rewards[key])).toBeInTheDocument()
     );
   });
 
   it("should render proposals filters", () => {
     const { getByText } = render(VotingFilters);
 
-    Object.values(Proposals).forEach((text: string) =>
-      expect(getByText(text)).toBeInTheDocument()
+    Object.values(Proposals).forEach((key: string) =>
+      expect(getByText(en.proposals[key])).toBeInTheDocument()
     );
   });
 

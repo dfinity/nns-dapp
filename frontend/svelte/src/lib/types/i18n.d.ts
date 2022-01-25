@@ -34,9 +34,40 @@ interface I18nNeurons {
   principal_is: string;
 }
 
-interface I18nProposals {
+interface I18nVoting {
   title: string;
   text: string;
+  topics: string;
+  rewards: string;
+  proposals: string;
+  hide_unavailable_proposals: string;
+}
+
+interface I18nTopics {
+  exchange_rate: string;
+  network_economics: string;
+  governance: string;
+  node_admin: string;
+  participant_management: string;
+  subnet_management: string;
+  network_canister_management: string;
+  kyc: string;
+  node_provider_rewards: string;
+}
+
+interface I18nRewards {
+  accept_votes: string;
+  ready_to_settle: string;
+  settled: string;
+  ineligible: string;
+}
+
+interface I18nProposals {
+  open: string;
+  rejected: string;
+  accepted: string;
+  executed: string;
+  failed: string;
 }
 
 interface I18n {
@@ -46,5 +77,8 @@ interface I18n {
   auth: I18nAuth;
   accounts: I18nAccounts;
   neurons: I18nNeurons;
+  voting: I18nVoting;
+  topics: I18nTopics;
+  rewards: I18nRewards;
   proposals: I18nProposals;
 }

@@ -6,9 +6,11 @@ import { Topics, VotingFilterModalProps } from "../../../lib/types/voting";
 import { fireEvent, render } from "@testing-library/svelte";
 import VotingFilterModal from "../../../lib/modals/VotingFilterModal.svelte";
 
+const en = require("../../../lib/i18n/en.json");
+
 describe("VotingFilterModal", () => {
   const props: { props: VotingFilterModalProps } = {
-    props: { title: "Test", filters: Topics },
+    props: { key: "topics", filters: Topics },
   };
 
   it("should display modal", () => {
@@ -24,16 +26,16 @@ describe("VotingFilterModal", () => {
       props,
     });
 
-    expect(getByText("Test")).toBeInTheDocument();
+    expect(getByText(en.voting.topics)).toBeInTheDocument();
   });
 
-  it("should render checkboxed", () => {
+  it("should render checkboxes", () => {
     const { getByText } = render(VotingFilterModal, {
       props,
     });
 
-    Object.values(Topics).forEach((text: string) =>
-      expect(getByText(text)).toBeInTheDocument()
+    Object.values(Topics).forEach((key: string) =>
+      expect(getByText(en.topics[key])).toBeInTheDocument()
     );
   });
 

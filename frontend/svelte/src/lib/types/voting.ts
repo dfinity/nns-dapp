@@ -1,33 +1,33 @@
 export type VotingFilters = typeof Topics | typeof Rewards | typeof Proposals;
 
 export interface VotingFilterModalProps {
-  title: string;
+  key: "topics" | "rewards" | "proposals";
   filters: VotingFilters;
 }
 
 export enum Topics {
-  ExchangeRate = "Exchange Rate",
-  NetworkEconomics = "Network Economics",
-  Governance = "Governance",
-  NodeAdmin = "Node Admin",
-  ParticipantManagement = "Participant Management",
-  SubnetManagement = "Subnet Management",
-  NetworkCanisterManagement = "Network Canister Management",
-  Kyc = "Kyc",
-  NodeProviderRewards = "Node Provider Rewards",
+  ExchangeRate = "exchange_rate",
+  NetworkEconomics = "network_economics",
+  Governance = "governance",
+  NodeAdmin = "node_admin",
+  ParticipantManagement = "participant_management",
+  SubnetManagement = "subnet_management",
+  NetworkCanisterManagement = "network_canister_management",
+  Kyc = "kyc",
+  NodeProviderRewards = "node_provider_rewards",
 }
 
 export enum Rewards {
-  AcceptVotes = "Accepting Votes",
-  ReadyToSettle = "Processing Votes",
-  Settled = "Rewards Disbursed",
-  Ineligible = "Ineligible",
+  AcceptVotes = "accept_votes",
+  ReadyToSettle = "ready_to_settle",
+  Settled = "settled",
+  Ineligible = "ineligible",
 }
 
 export enum Proposals {
-  Open = "Open",
-  Rejected = "Rejected",
-  Accepted = "Adopted",
-  Executed = "Executed",
-  Failed = "Failed",
+  Open = "open",
+  Rejected = "rejected",
+  Accepted = "accepted",
+  Executed = "executed",
+  Failed = "failed",
 }

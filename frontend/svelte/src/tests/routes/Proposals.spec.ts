@@ -18,9 +18,11 @@ describe("Proposals", () => {
   });
 
   it("should render a title", () => {
-    const { getByText } = render(Proposals);
+    const { container } = render(Proposals);
 
-    expect(getByText("Voting")).toBeInTheDocument();
+    const title: HTMLHeadingElement | null = container.querySelector("h1");
+    expect(title).not.toBeNull();
+    expect(title.textContent).toEqual("Voting");
   });
 
   it("should render a description", () => {

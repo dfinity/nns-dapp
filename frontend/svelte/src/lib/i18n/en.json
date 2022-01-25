@@ -26,8 +26,36 @@
     "text": "Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.",
     "principal_is": "Your principal id is"
   },
-  "proposals": {
+  "voting": {
     "title": "Voting",
-    "text": "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposal, which are decided as the result of voting activity by neurons."
+    "text": "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposal, which are decided as the result of voting activity by neurons.",
+    "topics": "Topics",
+    "rewards": "Reward Status",
+    "proposals": "Proposal Status",
+    "hide_unavailable_proposals": "Hide \"Open\" proposals where all your neurons have voted or are ineligible to vote"
+  },
+  "topics": {
+    "exchange_rate": "Exchange Rate",
+    "network_economics": "Network Economics",
+    "governance": "Governance",
+    "node_admin": "Node Admin",
+    "participant_management": "Participant Management",
+    "subnet_management": "Subnet Management",
+    "network_canister_management": "Network Canister Management",
+    "kyc": "Kyc",
+    "node_provider_rewards": "Node Provider Rewards"
+  },
+  "rewards": {
+    "accept_votes": "Accepting Votes",
+    "ready_to_settle": "Processing Votes",
+    "settled": "Rewards Disbursed",
+    "ineligible": "Ineligible"
+  },
+  "proposals": {
+    "open": "Open",
+    "rejected": "Rejected",
+    "accepted": "Adopted",
+    "executed": "Executed",
+    "failed": "Failed"
   }
 }

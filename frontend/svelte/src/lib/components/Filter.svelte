@@ -2,8 +2,10 @@
   import IconExpandMore from "../icons/IconExpandMore.svelte";
   import Chip from "./Chip.svelte";
   import { createEventDispatcher } from "svelte";
+  import { i18n } from "../stores/i18n";
 
   export let filters: string[];
+  export let key: "topics" | "rewards" | "proposals";
 
   const dispatch = createEventDispatcher();
   const filter = () => dispatch("nnsFilter");
@@ -15,7 +17,7 @@
   <div class="filter" on:click={filter}>
     <div class="options">
       {#each filters as filter}
-        <Chip>{filter}</Chip>
+        <Chip>{$i18n[key]?.[filter] || ""}</Chip>
       {/each}
     </div>
 

@@ -7,9 +7,11 @@ import Filter from "../../../lib/components/Filter.svelte";
 import { expect } from "@jest/globals";
 
 describe("Filter", () => {
-  const props: { filters: string[] } = {
-    filters: ["a", "b", "c"],
-  };
+  const props: { filters: string[]; key: "topics" | "rewards" | "proposals" } =
+    {
+      filters: ["a", "b", "c"],
+      key: "topics",
+    };
 
   it("should render a title", () => {
     const { container } = render(Filter, { props });

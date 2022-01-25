@@ -3,18 +3,19 @@
   import { createEventDispatcher } from "svelte";
   import type { VotingFilterModalProps, VotingFilters } from "../types/voting";
   import Checkbox from "../components/Checkbox.svelte";
+  import { i18n } from "../stores/i18n";
 
   export let props: VotingFilterModalProps | undefined;
 
   let visible: boolean;
-  let title: string;
+  let i18nKey: string | undefined;
   let filters: VotingFilters | undefined;
 
   // TODO(#L2-206): do we want a store or pass props?
   let activeTopics: VotingFilters[] = [];
 
   $: visible = props !== undefined;
-  $: title = props?.title || "";
+  $: i18nKey = props?.key;
   $: filters = props?.filters;
 
   const dispatch = createEventDispatcher();
@@ -29,14 +30,15 @@
 </script>
 
 <Modal {visible} on:nnsClose={close}>
-  <span slot="title">{title}</span>
+  <span slot="title">{$i18n.voting?.[i18nKey] || ""}</span>
 
   {#if filters}
-    {#each Object.keys(filters) as key}
+    {#each Object.keys(filters) as key (key)}
       <Checkbox
         inputId={key}
         checked={activeTopics.includes(filters[key])}
-        on:nnsChange={() => select(filters[key])}>{filters[key]}</Checkbox
+        on:nnsChange={() => select(filters[key])}
+        >{$i18n[i18nKey][filters[key]]}</Checkbox
       >
     {/each}
   {/if}

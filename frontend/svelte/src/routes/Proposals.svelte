@@ -15,9 +15,9 @@
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
     <section>
-      <h1>{$i18n.proposals.title}</h1>
+      <h1>{$i18n.voting.title}</h1>
 
-      <p>{$i18n.proposals.text}</p>
+      <p>{$i18n.voting.text}</p>
 
       <VotingFilters />
 

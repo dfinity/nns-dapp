@@ -8,6 +8,7 @@
   } from "../types/voting";
   import VotingFilterModal from "../modals/VotingFilterModal.svelte";
   import Checkbox from "./Checkbox.svelte";
+  import { i18n } from "../stores/i18n";
 
   let modalFilters: VotingFilterModalProps | undefined = undefined;
 
@@ -20,23 +21,24 @@
 
 <Filter
   filters={Object.values(Topics)}
-  on:nnsFilter={() => openModal({ title: "Topics", filters: Topics })}
-  >Topics</Filter
+  key="topics"
+  on:nnsFilter={() => openModal({ key: "topics", filters: Topics })}
+  >{$i18n.voting.topics}</Filter
 >
 
 <div class="status">
   <Filter
     filters={Object.values(Rewards)}
-    on:nnsFilter={() =>
-      openModal({ title: "Rewards Status", filters: Rewards })}
-    >Reward Status</Filter
+    key="rewards"
+    on:nnsFilter={() => openModal({ key: "rewards", filters: Rewards })}
+    >{$i18n.voting.rewards}</Filter
   >
 
   <Filter
     filters={Object.values(Proposals)}
-    on:nnsFilter={() =>
-      openModal({ title: "Proposals Status", filters: Proposals })}
-    >Proposal Status</Filter
+    key="proposals"
+    on:nnsFilter={() => openModal({ key: "proposals", filters: Proposals })}
+    >{$i18n.voting.proposals}</Filter
   >
 </div>
 
@@ -46,8 +48,7 @@
   color="dark"
   text="block"
   selector="hide-unavailable-proposals"
-  >Hide "Open" proposals where all your neurons have voted or are ineligible to
-  vote</Checkbox
+  >{$i18n.voting.hide_unavailable_proposals}</Checkbox
 >
 
 <VotingFilterModal
