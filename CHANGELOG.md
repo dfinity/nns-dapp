@@ -1,5 +1,7 @@
 # Changelog
 
+## Proposal ...
+
 ## Proposal 39269
 
 * Downgrade agent-js back to 0.9.1, as it was breaking hardware wallets
