@@ -38,14 +38,16 @@ describe("VotingFilters", () => {
 
     expect(input).not.toBeNull();
     expect(input.getAttribute("type")).toEqual("checkbox");
-    expect(input.getAttribute("id")).toEqual("hideMyProposals");
+    expect(input.getAttribute("id")).toEqual("hide-my-proposals");
   });
 
   it("should set a ref to the checkbox", () => {
     const { container } = render(VotingFilters);
 
-    const div: HTMLDivElement | null = container.querySelector("div.checkbox");
+    const div: HTMLDivElement | null = container.querySelector(
+      "div.checkbox.hide-my-proposals"
+    );
 
-    expect(div.getAttribute("ref")).toEqual("hideMyProposals");
+    expect(div).not.toBeNull();
   });
 });

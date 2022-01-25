@@ -7,13 +7,16 @@
   export let color: "dark" | "light" = "light";
   export let text: "block" | "inline" = "inline";
 
-  export let ref: string | undefined = undefined;
+  export let selector: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
   const select = () => dispatch("select");
 </script>
 
-<div on:click|preventDefault={select} class={`checkbox ${color}`} {ref}>
+<div
+  on:click|preventDefault={select}
+  class={`checkbox ${color} ${selector || ""}`}
+>
   <label for={inputId} class={text}><slot /></label>
   <input
     type="checkbox"

@@ -118,11 +118,11 @@ describe("Checkbox", () => {
 
   it("should apply ref to container", () => {
     const { container } = render(Checkbox, {
-      props: { ...props, ref: "test" },
+      props: { ...props, selector: "test" },
     });
 
     const div: HTMLDivElement | null = container.querySelector("div.checkbox");
 
-    expect(div.getAttribute("ref")).toEqual("test");
+    expect(div.classList.contains("test")).toBeTruthy();
   });
 });
