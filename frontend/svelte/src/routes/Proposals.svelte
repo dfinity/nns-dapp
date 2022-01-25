@@ -6,7 +6,7 @@
   // TODO: To be removed once this page has been implemented
   onMount(() => {
     if (process.env.REDIRECT_TO_LEGACY) {
-      window.location.replace("/#/voting");
+      window.location.replace("/#/proposals");
     }
   });
 </script>

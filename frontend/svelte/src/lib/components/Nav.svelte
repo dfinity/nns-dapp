@@ -9,7 +9,7 @@
   const routes: { context: string; label: string }[] = [
     { context: "accounts", label: "icp" },
     { context: "neurons", label: "neurons" },
-    { context: "voting", label: "voting" },
+    { context: "proposals", label: "voting" },
     { context: "canisters", label: "canisters" },
   ];
 </script>
