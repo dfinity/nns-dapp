@@ -22,7 +22,7 @@
 <FiltersCard
   filters={Object.values(Topics)}
   key="topics"
-  on:nnsFilter={() => openModal({ key: "topics", filters: Topics })}
+  on:nnsFilter={() => openModal({ labelKey: "topics", filters: Topics })}
   >{$i18n.voting.topics}</FiltersCard
 >
 
@@ -30,14 +30,14 @@
   <FiltersCard
     filters={Object.values(Rewards)}
     key="rewards"
-    on:nnsFilter={() => openModal({ key: "rewards", filters: Rewards })}
+    on:nnsFilter={() => openModal({ labelKey: "rewards", filters: Rewards })}
     >{$i18n.voting.rewards}</FiltersCard
   >
 
   <FiltersCard
     filters={Object.values(Proposals)}
     key="proposals"
-    on:nnsFilter={() => openModal({ key: "proposals", filters: Proposals })}
+    on:nnsFilter={() => openModal({ labelKey: "proposals", filters: Proposals })}
     >{$i18n.voting.proposals}</FiltersCard
   >
 </div>

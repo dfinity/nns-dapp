@@ -8,14 +8,14 @@
   export let props: VotingFilterModalProps | undefined;
 
   let visible: boolean;
-  let i18nKey: string | undefined;
+  let labelKey: string | undefined;
   let filters: VotingFilters | undefined;
 
   // TODO(#L2-206): do we want a store or pass props?
   let activeTopics: VotingFilters[] = [];
 
   $: visible = props !== undefined;
-  $: i18nKey = props?.key;
+  $: labelKey = props?.labelKey;
   $: filters = props?.filters;
 
   const dispatch = createEventDispatcher();
@@ -30,7 +30,7 @@
 </script>
 
 <Modal {visible} on:nnsClose={close}>
-  <span slot="title">{$i18n.voting?.[i18nKey] || ""}</span>
+  <span slot="title">{$i18n.voting?.[labelKey] || ""}</span>
 
   {#if filters}
     {#each Object.keys(filters) as key (key)}
@@ -38,7 +38,7 @@
         inputId={key}
         checked={activeTopics.includes(filters[key])}
         on:nnsChange={() => select(filters[key])}
-        >{$i18n[i18nKey][filters[key]]}</Checkbox
+        >{$i18n[labelKey][filters[key]]}</Checkbox
       >
     {/each}
   {/if}

@@ -1,7 +1,7 @@
 export type VotingFilters = typeof Topics | typeof Rewards | typeof Proposals;
 
 export interface VotingFilterModalProps {
-  key: "topics" | "rewards" | "proposals";
+  labelKey: "topics" | "rewards" | "proposals";
   filters: VotingFilters;
 }
 

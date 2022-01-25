@@ -10,7 +10,7 @@ const en = require("../../../lib/i18n/en.json");
 
 describe("VotingFilterModal", () => {
   const props: { props: VotingFilterModalProps } = {
-    props: { key: "topics", filters: Topics },
+    props: { labelKey: "topics", filters: Topics },
   };
 
   it("should display modal", () => {
