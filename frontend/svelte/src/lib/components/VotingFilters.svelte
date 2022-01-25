@@ -12,7 +12,7 @@
 
   let modalFilters: VotingFilterModalProps | undefined = undefined;
 
-  // Modal is displayed when filters are set i.e. when filters have to be selected
+  // The voting modal is displayed when filters are set i.e. when filters have to be selected
   const openModal = (filters: { title: string; filters: VotingFilters }) =>
     (modalFilters = filters);
 

@@ -20,7 +20,7 @@
       <div class="toolbar">
         <h2><slot name="title" /></h2>
 
-        <button on:click|stopPropagation={close}><IconClose /></button>
+        <button on:click|stopPropagation={close} aria-label="Close"><IconClose /></button>
       </div>
 
       <div class="content">
