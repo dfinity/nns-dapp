@@ -2,6 +2,7 @@
   import { authStore } from "../stores/auth.store";
   import { routeStore } from "../stores/route.store";
   import { routePath } from "../utils/route.utils";
+  import Spinner from "./Spinner.svelte";
 </script>
 
 <!-- storage: on every change in local storage we sync the auth state -->
@@ -12,7 +13,7 @@
 />
 
 {#await authStore.sync()}
-  <!-- TODO(L2-175): display a spinner or other animation while loading the auth -->
+  <Spinner />
 {:then value}
   <slot />
 {:catch error}
