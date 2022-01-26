@@ -51,7 +51,7 @@ class AccountRow extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(account.accountIdentifier,
-                          style: context.textTheme.bodyText2),
+                          style: context.textTheme.bodyText1),
                     ),
                     IconButton(
                         alignment: Alignment.center,

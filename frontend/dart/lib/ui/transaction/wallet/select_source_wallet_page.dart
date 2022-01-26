@@ -108,18 +108,13 @@ class _AccountRow extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
               children: [
-                Text(account.name,
-                    style: Responsive.isDesktop(context) |
-                            Responsive.isTablet(context)
-                        ? context.textTheme.headline3
-                        : context.textTheme.headline4),
+                Text(account.name, style: context.textTheme.headline3),
                 BalanceDisplayWidget(
                   amount: account.balance,
-                  amountSize: Responsive.isDesktop(context) |
-                          Responsive.isTablet(context)
-                      ? 30
-                      : 14,
+                  amountSize: Responsive.isMobile(context) ? 16 : 20,
                   icpLabelSize: 25,
                 ),
               ],

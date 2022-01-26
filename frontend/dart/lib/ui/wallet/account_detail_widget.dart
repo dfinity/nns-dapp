@@ -171,7 +171,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                                 "Address: " +
                                                     account.accountIdentifier,
                                                 style: context
-                                                    .textTheme.bodyText2)),
+                                                    .textTheme.bodyText1)),
                                         IconButton(
                                             constraints: BoxConstraints.tight(
                                                 Size.square(20.0)),
