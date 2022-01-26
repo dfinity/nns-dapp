@@ -4,7 +4,9 @@
 export const routePath = (): string => {
   const base: string = baseHref();
   const { pathname, hash } = window.location;
-  return `${pathname.replace(base, "/")}${hash.replace(/\?.*/,'').toLowerCase()}`;
+  return `${pathname.replace(base, "/")}${hash
+    .replace(/\?.*/, "")
+    .toLowerCase()}`;
 };
 
 // e.g. #/accounts => accounts

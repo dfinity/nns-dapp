@@ -11,5 +11,5 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/jest-setup.ts"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,svelte,js,jsx}"],
   testPathIgnorePatterns: ["nns-js"],
-  testURL: 'https://nns.ic0.app/'
+  testURL: "https://nns.ic0.app/",
 };
