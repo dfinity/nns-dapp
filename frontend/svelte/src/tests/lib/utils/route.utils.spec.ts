@@ -169,8 +169,6 @@ describe("route-utils", () => {
 
     it("should find context for the route", () => testRouteContext());
 
-    // We already ran the test for baseHref / that's why there are already pushHistory
-
     it("should replace location", () =>
       testReplaceHistory({ baseUrl, historyIndex: window.history.length - 1 }));
 
