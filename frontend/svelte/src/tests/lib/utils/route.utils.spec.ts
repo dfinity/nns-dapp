@@ -3,14 +3,32 @@
  */
 
 import {
+  baseHref,
   pushHistory,
   replaceHistory,
   routeContext,
   routePath,
-} from "../../../lib/utils/route.utils";
+} from '../../../lib/utils/route.utils';
 import * as routeUtils from "../../../lib/utils/route.utils";
 
 describe("route-utils", () => {
+
+  describe('base href', () => {
+    it("should return base href according document uri", () => {
+      expect(baseHref()).toEqual("/");
+    });
+
+    it("should return base href according head tag", () => {
+      const base = document.createElement('base');
+      base.href = '/test/';
+      document.head.appendChild(base);
+
+      expect(baseHref()).toEqual("/test/");
+
+      base.parentElement.removeChild(base);
+    });
+  })
+
   const resetTestURL = (baseUrl) =>
     window.history.replaceState({}, "Test Title", baseUrl);
 
