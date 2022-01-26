@@ -44,9 +44,8 @@ describe("route-utils", () => {
     window.history.replaceState({}, undefined, "/accounts");
     expect(routePath()).toEqual("/accounts");
 
-    // TODO: ?
     window.history.replaceState({}, undefined, "/#/accounts?param=test");
-    expect(routePath()).toEqual("/#/accounts?param=test");
+    expect(routePath()).toEqual("/#/accounts");
 
     window.history.replaceState({}, undefined, "/accounts?param=test");
     expect(routePath()).toEqual("/accounts");
@@ -64,9 +63,8 @@ describe("route-utils", () => {
     window.history.replaceState({}, undefined, "/accounts");
     expect(routeContext()).toEqual("accounts");
 
-    // TODO: ?
     window.history.replaceState({}, undefined, "/#/accounts?param=test");
-    expect(routeContext()).toEqual("accounts?param=test");
+    expect(routeContext()).toEqual("accounts");
 
     window.history.replaceState({}, undefined, "/accounts?param=test");
     expect(routeContext()).toEqual("accounts");
