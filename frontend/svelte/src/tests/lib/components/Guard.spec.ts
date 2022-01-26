@@ -21,12 +21,12 @@ describe("Guard", () => {
 
   it("should sync auth on localstorage changes", () => {
     const spy = jest
-        .spyOn(authStore, "sync")
-        .mockImplementation(() => Promise.resolve());
+      .spyOn(authStore, "sync")
+      .mockImplementation(() => Promise.resolve());
 
     render(Guard);
 
-    window.localStorage.setItem('test', 'test');
+    window.localStorage.setItem("test", "test");
 
     expect(spy).toHaveBeenCalled();
   });
