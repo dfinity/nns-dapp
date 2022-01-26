@@ -3,10 +3,11 @@
  */
 
 import {
+  pushHistory,
   replaceHistory,
   routeContext,
   routePath,
-} from "../../../lib/utils/route.utils";
+} from '../../../lib/utils/route.utils';
 
 describe("route-utils", () => {
   const baseHref = "https://nns.ic0.app/";
@@ -61,20 +62,52 @@ describe("route-utils", () => {
   it("should replace location", () => {
     replaceHistory({ path: "/" });
     expect(window.location.href).toEqual(baseHref);
+    expect(window.history.length).toEqual(1);
 
     replaceHistory({ path: "/", query: "redirect=accounts"});
     expect(window.location.href).toEqual(`${baseHref}?redirect=accounts`);
+    expect(window.history.length).toEqual(1);
 
     replaceHistory({ path: "/#/accounts"});
     expect(window.location.href).toEqual(`${baseHref}#/accounts`);
+    expect(window.history.length).toEqual(1);
 
     replaceHistory({ path: "/accounts"});
     expect(window.location.href).toEqual(`${baseHref}accounts`);
+    expect(window.history.length).toEqual(1);
 
     replaceHistory({ path: "/#/accounts?param=test"});
     expect(window.location.href).toEqual(`${baseHref}#/accounts?param=test`);
+    expect(window.history.length).toEqual(1);
 
     replaceHistory({ path: "/accounts?param=test"});
     expect(window.location.href).toEqual(`${baseHref}accounts?param=test`);
+    expect(window.history.length).toEqual(1);
+  });
+
+  it("should push location", () => {
+    pushHistory({ path: "/" });
+    expect(window.location.href).toEqual(baseHref);
+    expect(window.history.length).toEqual(2);
+
+    pushHistory({ path: "/", query: "redirect=accounts"});
+    expect(window.location.href).toEqual(`${baseHref}?redirect=accounts`);
+    expect(window.history.length).toEqual(3);
+
+    pushHistory({ path: "/#/accounts"});
+    expect(window.location.href).toEqual(`${baseHref}#/accounts`);
+    expect(window.history.length).toEqual(4);
+
+    pushHistory({ path: "/accounts"});
+    expect(window.location.href).toEqual(`${baseHref}accounts`);
+    expect(window.history.length).toEqual(5);
+
+    pushHistory({ path: "/#/accounts?param=test"});
+    expect(window.location.href).toEqual(`${baseHref}#/accounts?param=test`);
+    expect(window.history.length).toEqual(6);
+
+    pushHistory({ path: "/accounts?param=test"});
+    expect(window.location.href).toEqual(`${baseHref}accounts?param=test`);
+    expect(window.history.length).toEqual(7);
   });
 });
