@@ -16,7 +16,7 @@
 
 <style lang="scss">
   button {
-    z-index: 1;
+    z-index: var(--z-index);
 
     width: fit-content;
     justify-self: flex-end;
