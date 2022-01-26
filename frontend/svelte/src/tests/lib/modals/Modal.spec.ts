@@ -22,6 +22,21 @@ describe("Modal", () => {
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
+  it("should be an accessible modal", () => {
+    const { container } = render(Modal, {
+      props,
+    });
+
+    const dialog: HTMLElement | null =
+      container.querySelector('[role="dialog"]');
+    expect(dialog).not.toBeNull();
+    expect(dialog.getAttribute("aria-labelledby")).toEqual("modalTitle");
+    expect(dialog.getAttribute("aria-describedby")).toEqual("modalContent");
+
+    expect(container.querySelector("#modalTitle")).not.toBeNull();
+    expect(container.querySelector("#modalContent")).not.toBeNull();
+  });
+
   it("should render a backdrop", () => {
     const { container } = render(Modal, {
       props,
