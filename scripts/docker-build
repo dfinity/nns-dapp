@@ -53,7 +53,7 @@ copy() {
   local container_path="$2"
   local local_path="$3"
 
-  if docker cp $container_id:/"$container_path" "$local_path"; then
+  if docker cp "$container_id:/$container_path" "$local_path"; then
     echo "$container_path -> $local_path (from container $container_id)"
     return 0
   else
