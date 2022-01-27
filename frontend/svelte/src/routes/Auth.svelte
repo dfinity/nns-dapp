@@ -3,6 +3,8 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
   import { routeStore } from "../lib/stores/route.store";
+  import { isSignedIn } from "../lib/utils/auth.utils";
+  import { i18n } from "../lib/stores/i18n";
 
   let signedIn: boolean = false;
 
@@ -17,8 +19,8 @@
   };
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
-    async ({ signedIn: loggedIn }: AuthStore) => {
-      signedIn = loggedIn === true;
+    async ({ principal }: AuthStore) => {
+      signedIn = isSignedIn(principal);
 
       if (!signedIn) {
         return;
@@ -51,123 +53,137 @@
   />
 
   <main>
-    <h1>INTERNET COMPUTER</h1>
-    <h2>
-      <span class="blue">NETWORK</span> . <span class="pink">NERVOUS</span> .
-      <span class="green">SYSTEM</span>
-    </h2>
-    <img
-      src="/assets/assets/ic_colour_logo.svg"
-      role="presentation"
-      alt="DFINITY logo"
-      loading="lazy"
-      class="logo"
-    />
-    <p>
-      <span class="green">ICP</span> and <span class="blue">governance</span>
-    </p>
-    <button on:click={signIn}>LOGIN</button>
+    <h1>{$i18n.auth.nns}</h1>
+    <h2>{$i18n.auth.ic}</h2>
+    <p>{$i18n.auth.icp_governance}</p>
+    <button on:click={signIn}>{$i18n.auth.login}</button>
   </main>
+
+  <img
+    src="/assets/assets/ic-badge-light.svg"
+    role="presentation"
+    alt={$i18n.auth.powered_by}
+    class="bottom-banner"
+    loading="lazy"
+  />
 {/if}
 
 <style lang="scss">
   @use "../lib/themes/mixins/img";
 
   main {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    height: 100%;
+    width: 100%;
+    max-width: 720px;
+
+    margin: 0 auto;
+    padding: 80px 0 120px;
+
+    box-sizing: border-box;
 
     display: grid;
-    grid-template-rows: 105px 40px auto 40px 170px;
+    grid-template-rows: repeat(2, fit-content(100%)) auto 60px;
 
-    z-index: 1;
+    justify-content: center;
 
     background: transparent;
     color: inherit;
 
-    > * {
-      margin-left: auto;
-      margin-right: auto;
-      color: var(--gray-400);
-    }
+    z-index: 2;
 
-    @media screen and (min-height: 1025px) {
-      top: 50%;
-      left: 50%;
-      bottom: auto;
-      right: auto;
-      transform: translate(-50%, -50%);
-      height: 594px;
+    > * {
+      z-index: 3;
     }
   }
 
   h1 {
-    margin-bottom: 0;
-    letter-spacing: 0.3rem;
+    font-size: var(--font-size-h4);
+    line-height: 1.5;
 
-    align-self: flex-end;
+    color: white;
   }
 
   h2 {
-    letter-spacing: 0.4rem;
+    margin: var(--padding) auto 0;
 
-    display: inline-flex;
-    align-items: center;
+    font-size: var(--font-size-h5);
 
-    margin: 0 auto;
-    font-size: var(--font-size-ultra-small);
+    color: #e5be5a; /** TODO: ask designer */
+  }
+
+  h1,
+  h2 {
+    text-align: center;
+    letter-spacing: 0.1rem;
   }
 
   p {
-    font-size: var(--font-size-small);
-    letter-spacing: 0.3rem;
-    margin: var(--padding) auto;
-  }
-
-  .blue {
-    color: var(--blue-350);
-  }
-
-  .pink {
-    color: var(--pink);
-  }
-
-  .green {
-    color: var(--green-400);
-  }
-
-  .logo {
-    width: 7em;
-    margin: var(--padding) auto;
+    font-size: 1rem;
+    color: #e1e1e1;
+    margin: 0 auto 16px;
+    align-self: flex-end;
   }
 
   .background {
     @include img.background;
+
+    z-index: 1;
+  }
+
+  .bottom-banner {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    z-index: 1;
   }
 
   button {
     --letter-spacing: 0.4rem;
 
-    margin: calc(2 * var(--padding)) auto;
-    padding: var(--padding) var(--padding) var(--padding)
-      calc(var(--letter-spacing) + var(--padding));
+    width: 200px;
+    height: 54px;
 
-    width: 140px;
-    height: 55px;
+    --login-button-color: #2942d5; /** TODO: ask designer */
+    --login-button-color-tint: #3e55d9;
 
-    background: var(--blue-950);
+    background: var(--login-button-color); /** TODO: ask designer */
+    border: 2px solid var(--login-button-color);
     border-radius: var(--border-radius);
 
     font-weight: 700;
-    letter-spacing: var(--letter-spacing);
+    color: white;
+    text-indent: 4px; /* The text looks off centre otherwise, although technically it is centred. */
 
     transition: background 0.2s;
 
-    &:hover {
-      background: var(--blue-950-tint);
+    justify-self: center;
+
+    &:hover,
+    &:focus {
+      background: var(--login-button-color-tint);
+    }
+  }
+
+  @media screen and (min-width: 768px) and (min-height: 640px) {
+    main {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -46%);
+
+      max-height: 424px;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: var(--font-size-h1);
+      letter-spacing: 0.3rem;
+    }
+
+    h2 {
+      font-size: var(--font-size-h2);
     }
   }
 </style>

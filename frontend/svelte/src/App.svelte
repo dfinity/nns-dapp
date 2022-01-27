@@ -7,6 +7,23 @@
   import Proposals from "./routes/Proposals.svelte";
   import Canisters from "./routes/Canisters.svelte";
   import Auth from "./routes/Auth.svelte";
+  import type { Unsubscriber } from "svelte/types/runtime/store";
+  import { accountsStore } from "./lib/stores/accounts.store";
+  import { onDestroy } from "svelte";
+  import { AuthStore, authStore } from "./lib/stores/auth.store";
+
+  const unsubscribe: Unsubscriber = authStore.subscribe(
+    async (auth: AuthStore) => {
+      // TODO: We do not need to load and sync the account data if we redirect to the Flutter app. Currently these data are not displayed with this application.
+      if (process.env.REDIRECT_TO_LEGACY) {
+        return;
+      }
+
+      await accountsStore.sync(auth);
+    }
+  );
+
+  onDestroy(unsubscribe);
 </script>
 
 <svelte:head>
