@@ -7,6 +7,7 @@
   import ICP from "../lib/components/ICP.svelte";
   import AccountCard from "../lib/components/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
+  import Spinner from "../lib/components/Spinner.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -37,9 +38,9 @@
 
       {#if main}
         <AccountCard account={main}>{$i18n.accounts.main}</AccountCard>
+      {:else}
+        <Spinner />
       {/if}
-
-      <!-- TODO(L2-175): display a spinner while loading the accounts -->
     </section>
   </Layout>
 {/if}
