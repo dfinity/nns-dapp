@@ -11,21 +11,27 @@
 </script>
 
 {#if visible}
-  <div class="modal" transition:fade>
+  <div
+    class="modal"
+    transition:fade
+    role="dialog"
+    aria-labelledby="modalTitle"
+    aria-describedby="modalContent"
+  >
     <div class="backdrop" on:click={close} />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class="wrapper"
     >
       <div class="toolbar">
-        <h2><slot name="title" /></h2>
+        <h2 id="modalTitle"><slot name="title" /></h2>
 
         <button on:click|stopPropagation={close} aria-label="Close"
           ><IconClose /></button
         >
       </div>
 
-      <div class="content">
+      <div class="content" id="modalContent">
         <slot />
       </div>
     </div>
