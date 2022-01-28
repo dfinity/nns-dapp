@@ -60,7 +60,7 @@
   </main>
 
   <img
-    src="/assets/assets/ic-badge-light.svg"
+    src="/assets/assets/ic-badge-built-on-crypto_label-stripe-for-dark.svg"
     role="presentation"
     alt={$i18n.auth.powered_by}
     class="bottom-banner"
