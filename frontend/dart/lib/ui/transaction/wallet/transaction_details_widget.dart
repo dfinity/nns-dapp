@@ -38,42 +38,21 @@ class TransactionDetailsWidget extends StatelessWidget {
               ),
             ),
             TallFormDivider(),
-            Text("Source",
-                style:
-                    Responsive.isDesktop(context) | Responsive.isTablet(context)
-                        ? context.textTheme.headline3
-                        : context.textTheme.headline4),
+            Text("Source", style: context.textTheme.headline3),
             VerySmallFormDivider(),
-            SelectableText(source.address,
-                style:
-                    Responsive.isDesktop(context) | Responsive.isTablet(context)
-                        ? context.textTheme.bodyText1
-                        : context.textTheme.bodyText2),
+            SelectableText(source.address, style: context.textTheme.bodyText1),
             TallFormDivider(),
-            Text("Destination",
-                style:
-                    Responsive.isDesktop(context) | Responsive.isTablet(context)
-                        ? context.textTheme.headline3
-                        : context.textTheme.headline4),
+            Text("Destination", style: context.textTheme.headline3),
             VerySmallFormDivider(),
-            SelectableText(destination,
-                style:
-                    Responsive.isDesktop(context) | Responsive.isTablet(context)
-                        ? context.textTheme.bodyText1
-                        : context.textTheme.bodyText2),
+            SelectableText(destination, style: context.textTheme.bodyText1),
             TallFormDivider(),
             Text("Transaction Fee (billed to source)",
-                style:
-                    Responsive.isDesktop(context) | Responsive.isTablet(context)
-                        ? context.textTheme.headline3
-                        : context.textTheme.headline4),
+                style: context.textTheme.headline3),
             VerySmallFormDivider(),
             Text(
                 ICP.fromE8s(BigInt.from(TRANSACTION_FEE_E8S)).asString() +
                     " ICP",
-                style: Responsive.isTablet(context)
-                    ? context.textTheme.bodyText1
-                    : context.textTheme.bodyText2),
+                style: context.textTheme.bodyText1),
             VerySmallFormDivider()
           ],
         ),

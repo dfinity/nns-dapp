@@ -105,10 +105,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                             : context.textTheme.headline4),
                     VerySmallFormDivider(),
                     SelectableText(widget.source.address,
-                        style: Responsive.isDesktop(context) |
-                                Responsive.isTablet(context)
-                            ? context.textTheme.bodyText1
-                            : context.textTheme.bodyText2),
+                        style: context.textTheme.bodyText1),
                     TallFormDivider(),
                     Text("Destination",
                         style: Responsive.isDesktop(context) |
@@ -117,10 +114,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                             : context.textTheme.headline4),
                     VerySmallFormDivider(),
                     SelectableText(widget.destinationAccountIdentifier,
-                        style: Responsive.isDesktop(context) |
-                                Responsive.isTablet(context)
-                            ? context.textTheme.bodyText1
-                            : context.textTheme.bodyText2),
+                        style: context.textTheme.bodyText1),
                     TallFormDivider(),
                     Text("Transaction Fee (billed to source)",
                         style: Responsive.isDesktop(context) |
@@ -133,10 +127,7 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                                 .fromE8s(BigInt.from(TRANSACTION_FEE_E8S))
                                 .asString() +
                             " ICP",
-                        style: Responsive.isDesktop(context) |
-                                Responsive.isTablet(context)
-                            ? context.textTheme.bodyText1
-                            : context.textTheme.bodyText2),
+                        style: context.textTheme.bodyText1),
                   ],
                 ),
               ),

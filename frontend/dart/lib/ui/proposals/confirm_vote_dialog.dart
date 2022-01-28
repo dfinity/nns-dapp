@@ -46,7 +46,7 @@ class ConfirmVoteDialog extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     description,
-                    style: context.textTheme.bodyText2,
+                    style: context.textTheme.bodyText1,
                     textAlign: TextAlign.center,
                   ),
                 ),

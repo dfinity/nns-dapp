@@ -42,7 +42,7 @@ class BalanceDisplayWidget extends StatelessWidget {
               style: TextStyle(
                   color: AppColors.gray200,
                   fontFamily: Fonts.circularBook,
-                  fontSize: amountSize.toDouble() * 0.4))
+                  fontSize: amountSize.toDouble() * 0.6))
       ],
     );
   }
