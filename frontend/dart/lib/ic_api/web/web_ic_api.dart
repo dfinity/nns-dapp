@@ -575,7 +575,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     final res = await promiseToFuture(serviceApi!.followeeSuggestions(certified));
     final response = jsonDecode(stringify(res)) as List<dynamic>;
     return response
-        .map((e) => FolloweeSuggestion(e["name"], "", e["id"]))
+        .map((e) => FolloweeSuggestion(e["name"], e["description"], e["id"]))
         .toList();
   }
 

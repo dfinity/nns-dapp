@@ -114,7 +114,7 @@ export interface IncreaseDissolveDelay {
 export interface KnownNeuron {
   id: NeuronId;
   name: string;
-  description: string;
+  description: Option<string>;
 }
 export interface SetDissolveTimestamp {
   dissolveTimestampSeconds: bigint;

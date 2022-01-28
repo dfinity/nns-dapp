@@ -114,8 +114,8 @@ class FolloweeSuggestionRow extends StatelessWidget {
 
 class FolloweeSuggestion {
   final String name;
-  final String text;
+  final String? description;
   final String id;
 
-  FolloweeSuggestion(this.name, this.text, this.id);
+  FolloweeSuggestion(this.name, this.description, this.id);
 }
