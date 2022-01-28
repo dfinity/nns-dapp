@@ -19,6 +19,6 @@
     right: 0;
     bottom: 0;
 
-    overflow: scroll;
+    overflow: auto;
   }
 </style>

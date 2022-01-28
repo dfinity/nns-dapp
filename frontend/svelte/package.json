@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "copy:index": "node ./scripts/copy.index.mjs",
+    "i18n": "node --experimental-json-modules ./scripts/i18n.types.mjs",
     "import-assets": "rm -fr public/assets/assets && mkdir -p public/assets && cp -R ../dart/assets public/assets",
-    "build": "rm -fr public/assets/assets && rollup -c && npm run copy:index",
-    "dev": "npm run import-assets && BASE_HREF=/ npm run copy:index && rollup -c -w",
+    "build": "rm -fr public/assets/assets && npm run i18n && rollup -c && npm run copy:index",
+    "dev": "npm run import-assets && npm run i18n && BASE_HREF=/ npm run copy:index && rollup -c -w",
     "start": "sirv public",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "format": "prettier --write --plugin-search-dir=. .",

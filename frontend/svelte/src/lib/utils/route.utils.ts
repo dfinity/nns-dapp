@@ -1,10 +1,12 @@
 /**
- * The pathname and the hash without base href
+ * The pathname and the hash without base href and without the query string
  */
 export const routePath = (): string => {
   const base: string = baseHref();
   const { pathname, hash } = window.location;
-  return `${pathname.replace(base, "/")}${hash.toLowerCase()}`;
+  return `${pathname.replace(base, "/")}${hash
+    .replace(/\?.*/, "")
+    .toLowerCase()}`;
 };
 
 // e.g. #/accounts => accounts

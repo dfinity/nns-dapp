@@ -15,6 +15,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    timeout-minutes: 60
     env:
       DFX_VERSION: 0.8.3
       RUSTC_VERSION: 1.54.0
@@ -88,15 +89,14 @@ jobs:
           cargo --version
           ic-cdk-optimizer --version
 
-      # This is a hack and this should go away.
-      # The build (update_config.sh in particular) needs to know the canister
-      # ID before the build.
-      # https://dfinity.atlassian.net/browse/L2-192
-      - name: Prepare canister
+      - name: Start replica
         run: |
           dfx start --background
           dfx canister --no-wallet create --all
-          dfx stop
+
+      - name: Deploy
+        run: |
+          DEPLOY_ENV=local dfx deploy --no-wallet --network local
 
       - name: Build proxy
         working-directory: proxy
@@ -104,5 +104,39 @@ jobs:
           npm ci
           npm run build
 
-      - name: Build
-        run: DEPLOY_ENV=local ./build.sh
+      - name: prepare and run the test suite
+        working-directory: e2e-tests
+        run: |
+          npm ci
+
+          # wipe the screenshots, they will be re-committed
+          rm -rf screenshots
+          npm run test | tee -a wdio.log
+
+      - name: Stop replica
+        run: dfx stop
+
+      - name: Archive wdio logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: wdio-logs
+          path: e2e-tests/wdio.log
+
+      - name: Commit screenshots
+        uses: EndBug/add-and-commit@v7.4.0
+        with:
+          add: e2e-tests/screenshots
+          author_name: Screenshot Committer
+          author_email: "<nobody@example.com>"
+          message: "Update screenshots"
+          # do not pull: if this branch is behind, then we might as well let
+          # the pushing fail
+          pull: "NO-PULL"
+
+      - name: Archive screenshots
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: e2e-screenshots
+          path: screenshots/**/*.png

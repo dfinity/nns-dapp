@@ -489,6 +489,24 @@ export default class RequestConverters {
       };
     }
 
+    if ("RegisterKnownNeuron" in action) {
+      const knownNeuron = action.RegisterKnownNeuron;
+      return {
+        RegisterKnownNeuron: {
+          id: [{ id: knownNeuron.id }],
+          known_neuron_data: [
+            {
+              name: knownNeuron.name,
+              description:
+                knownNeuron.description !== null
+                  ? [knownNeuron.description]
+                  : [],
+            },
+          ],
+        },
+      };
+    }
+
     // If there's a missing action, this line will cause a compiler error.
     throw new UnsupportedValueError(action);
   };
@@ -594,6 +612,17 @@ export default class RequestConverters {
         Spawn: {
           new_controller: spawn.newController
             ? [Principal.fromText(spawn.newController)]
+            : [],
+          nonce: [],
+        },
+      };
+    }
+    if ("Merge" in command) {
+      const merge = command.Merge;
+      return {
+        Merge: {
+          source_neuron_id: merge.sourceNeuronId
+            ? [{ id: merge.sourceNeuronId }]
             : [],
         },
       };

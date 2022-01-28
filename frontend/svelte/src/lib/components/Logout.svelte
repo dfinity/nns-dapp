@@ -1,20 +1,22 @@
 <script lang="ts">
   import { authStore } from "../stores/auth.store";
+  import { i18n } from "../stores/i18n";
 
   const logout = async () => {
     await authStore.signOut();
 
-    // The current active <PrivateRoute/> takes care of the redirection to root path "/"
-
     window.localStorage.clear();
+
+    // We reload the page to make sure all the states are cleared
+    window.location.reload();
   };
 </script>
 
-<button on:click={logout}>Logout</button>
+<button on:click={logout}>{$i18n.header.logout}</button>
 
 <style lang="scss">
   button {
-    z-index: 1;
+    z-index: var(--z-index);
 
     width: fit-content;
     justify-self: flex-end;

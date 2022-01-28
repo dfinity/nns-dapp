@@ -1,6 +1,7 @@
 import 'package:nns_dapp/data/icp.dart';
 import 'package:nns_dapp/data/proposal_reward_status.dart';
 import 'package:nns_dapp/data/topic.dart';
+import 'package:nns_dapp/ui/neurons/following/followee_suggestions.dart';
 import 'package:oxidized/oxidized.dart';
 
 import '../nns_dapp.dart';
@@ -105,6 +106,8 @@ abstract class AbstractPlatformICApi {
       {required String name, required String canisterId});
 
   Future<void> getCanisters();
+
+  Future<List<FolloweeSuggestion>> followeeSuggestions();
 
   Future<BigInt> getICPToCyclesExchangeRate();
 
