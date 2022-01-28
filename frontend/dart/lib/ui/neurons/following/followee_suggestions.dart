@@ -16,34 +16,39 @@ class FolloweeSuggestionWidget extends StatefulWidget {
 }
 
 class _FolloweeSuggestionWidgetState extends State<FolloweeSuggestionWidget> {
-  late List<FolloweeSuggestion> suggestions;
-
   @override
   void initState() {
     super.initState();
-    suggestions =
-        FolloweeSuggestion.followerSuggestions.shuffled().take(3).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: suggestions
-            .filterNot((element) => widget.followees.contains(element.id))
-            .mapToList((e) => FolloweeSuggestionRow(
-                  suggestion: e,
-                  selected: () {
-                    widget.suggestionSelected(e);
-                  },
-                ))
-            .interspace(Divider(
-              color: AppColors.white,
-            ))
-            .toList(),
+      child: FutureBuilder(
+        future: context.icApi.followeeSuggestions(),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<FolloweeSuggestion>> snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: snapshot.data!
+                  .filterNot((element) => widget.followees.contains(element.id))
+                  .mapToList((e) => FolloweeSuggestionRow(
+                        suggestion: e,
+                        selected: () {
+                          widget.suggestionSelected(e);
+                        },
+                      ))
+                  .interspace(Divider(
+                    color: AppColors.white,
+                  ))
+                  .toList(),
+            );
+          }
+          return Text('Loading..');
+        },
       ),
     );
   }
@@ -109,13 +114,8 @@ class FolloweeSuggestionRow extends StatelessWidget {
 
 class FolloweeSuggestion {
   final String name;
-  final String text;
+  final String? description;
   final String id;
 
-  FolloweeSuggestion(this.name, this.text, this.id);
-
-  static List<FolloweeSuggestion> followerSuggestions = [
-    FolloweeSuggestion("DFINITY Foundation", "", "27"),
-    FolloweeSuggestion("Internet Computer Association", "", "28"),
-  ];
+  FolloweeSuggestion(this.name, this.description, this.id);
 }

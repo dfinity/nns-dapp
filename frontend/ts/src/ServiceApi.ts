@@ -12,6 +12,7 @@ import GovernanceService, {
   FollowRequest,
   IncreaseDissolveDelayRequest,
   JoinCommunityFundRequest,
+  KnownNeuron,
   ListProposalsRequest,
   ListProposalsResponse,
   MergeMaturityRequest,
@@ -474,6 +475,14 @@ export default class ServiceApi {
   public getIcpToCyclesConversionRate = (): Promise<bigint> => {
     return executeWithLogging(() =>
       this.cyclesMintingService.getIcpToCyclesConversionRate()
+    );
+  };
+
+  public followeeSuggestions = (
+    certified: boolean
+  ): Promise<Array<KnownNeuron>> => {
+    return executeWithLogging(() =>
+      this.governanceService.listKnownNeurons(certified)
     );
   };
 

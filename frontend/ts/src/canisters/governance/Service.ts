@@ -13,6 +13,7 @@ import ServiceInterface, {
   FollowRequest,
   IncreaseDissolveDelayRequest,
   JoinCommunityFundRequest,
+  KnownNeuron,
   ListProposalsRequest,
   ListProposalsResponse,
   MakeExecuteNnsFunctionProposalRequest,
@@ -144,6 +145,41 @@ export default class Service implements ServiceInterface {
     return rawResponse.length
       ? this.responseConverters.toProposalInfo(rawResponse[0])
       : null;
+  };
+
+  public listKnownNeurons = async (
+    certified: boolean
+  ): Promise<Array<KnownNeuron>> => {
+    const serviceToUse = certified ? this.certifiedService : this.service;
+
+    const knownNeurons: KnownNeuron[] = [];
+    try {
+      const rawResponse = await serviceToUse.list_known_neurons();
+      rawResponse.known_neurons
+        .map(this.responseConverters.toKnownNeuron)
+        .filter(this.isValidKnownNeuron)
+        .forEach((n) => knownNeurons.push(n));
+    } catch (e) {
+      console.log("Unable to get known neurons from Governance canister", e);
+    }
+
+    if (!knownNeurons.find((n) => n.id === BigInt(27))) {
+      knownNeurons.push({
+        id: BigInt(27),
+        name: "DFINITY Foundation",
+        description: null,
+      });
+    }
+
+    if (!knownNeurons.find((n) => n.id === BigInt(28))) {
+      knownNeurons.push({
+        id: BigInt(28),
+        name: "Internet Computer Association",
+        description: null,
+      });
+    }
+
+    return knownNeurons.sort((a, b) => Number(a.id - b.id));
   };
 
   public addHotKey = async (
@@ -462,6 +498,10 @@ export default class Service implements ServiceInterface {
 
     throw `Error claiming/refreshing neuron: ${JSON.stringify(result)}`;
   };
+
+  private isValidKnownNeuron(neuron: KnownNeuron): boolean {
+    return neuron.id > BigInt(0) && neuron.name.length > 0;
+  }
 }
 
 /**

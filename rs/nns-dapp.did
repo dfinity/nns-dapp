@@ -34,39 +34,39 @@ type GetAccountResponse =
         AccountNotFound;
     };
 
-type Timestamp = 
+type Timestamp =
     record {
         timestamp_nanos: nat64;
     };
 
-type GetTransactionsRequest = 
+type GetTransactionsRequest =
     record {
         account_identifier: AccountIdentifier;
         offset: nat32;
         page_size: nat8;
     };
 
-type GetTransactionsResponse = 
+type GetTransactionsResponse =
     record {
         transactions: vec Transaction;
         total: nat32;
     };
 
-type Send = 
+type Send =
     record {
         to: AccountIdentifier;
         amount: ICPTs;
         fee: ICPTs;
     };
 
-type Receive = 
+type Receive =
     record {
         from: AccountIdentifier;
         amount: ICPTs;
         fee: ICPTs;
     };
 
-type Transfer = 
+type Transfer =
     variant {
         Burn: record { amount: ICPTs; };
         Mint: record { amount: ICPTs; };
@@ -74,7 +74,7 @@ type Transfer =
         Receive: Receive;
     };
 
-type Transaction = 
+type Transaction =
     record {
         block_height: BlockHeight;
         timestamp: Timestamp;
