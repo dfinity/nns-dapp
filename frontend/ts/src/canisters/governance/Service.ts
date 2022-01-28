@@ -157,6 +157,7 @@ export default class Service implements ServiceInterface {
       const rawResponse = await serviceToUse.list_known_neurons();
       rawResponse.known_neurons
         .map(this.responseConverters.toKnownNeuron)
+        .filter(this.isValidKnownNeuron)
         .forEach((n) => knownNeurons.push(n));
     } catch (e) {
       console.log("Unable to get known neurons from Governance canister", e);
@@ -166,7 +167,7 @@ export default class Service implements ServiceInterface {
       knownNeurons.push({
         id: BigInt(27),
         name: "DFINITY Foundation",
-        description: "",
+        description: null,
       });
     }
 
@@ -174,7 +175,7 @@ export default class Service implements ServiceInterface {
       knownNeurons.push({
         id: BigInt(28),
         name: "Internet Computer Association",
-        description: "",
+        description: null,
       });
     }
 
@@ -497,6 +498,10 @@ export default class Service implements ServiceInterface {
 
     throw `Error claiming/refreshing neuron: ${JSON.stringify(result)}`;
   };
+
+  private isValidKnownNeuron(neuron: KnownNeuron): boolean {
+    return neuron.id > BigInt(0) && neuron.name.length > 0;
+  }
 }
 
 /**
