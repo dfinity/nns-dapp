@@ -1,12 +1,34 @@
-<script>
+<script lang="ts">
   import IconClose from "../icons/IconClose.svelte";
+  import { msg } from "../stores/msg.store";
+  import { fade, fly } from "svelte/transition";
+  import { translate } from "../utils/i18n.utils";
+  import { i18n } from "../stores/i18n";
+
+  let visible: boolean;
+
+  const close = () => msg.set(undefined);
+
+  $: visible = $msg !== undefined;
+  $: ({ labelKey, type: msgType } = $msg || {});
 </script>
 
-<div role="dialog" class="toast error">
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vel turpis tempor, bibendum nunc vel, condimentum ligula.</p>
+{#if visible}
+  <div
+    role="dialog"
+    class="toast"
+    class:error={msgType === "error"}
+    in:fly={{ y: 100, duration: 200 }}
+    out:fade={{ delay: 100 }}
+  >
+    <p>
+      {translate({ labelKey })}
+    </p>
 
-  <button><IconClose /></button>
-</div>
+    <button on:click={close} aria-label={$i18n.core.close}><IconClose /></button
+    >
+  </div>
+{/if}
 
 <style lang="scss">
   @use "../themes/mixins/text";

@@ -2,6 +2,10 @@
  * Auto-generated definitions file ("npm run i18n")
  */
 
+interface I18nCore {
+  close: string;
+}
+
 interface I18nNavigation {
   icp: string;
   neurons: string;
@@ -72,6 +76,7 @@ interface I18nProposals {
 
 interface I18n {
   lang: Languages;
+  core: I18nCore;
   navigation: I18nNavigation;
   header: I18nHeader;
   auth: I18nAuth;
