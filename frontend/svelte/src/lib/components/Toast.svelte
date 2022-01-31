@@ -10,14 +10,14 @@
   const close = () => msg.set(undefined);
 
   $: visible = $msg !== undefined;
-  $: ({ labelKey, type: msgType } = $msg || {});
+  $: ({ labelKey, level } = $msg || {});
 </script>
 
 {#if visible}
   <div
     role="dialog"
     class="toast"
-    class:error={msgType === "error"}
+    class:error={level === "error"}
     in:fly={{ y: 100, duration: 200 }}
     out:fade={{ delay: 100 }}
   >

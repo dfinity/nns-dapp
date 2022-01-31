@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 
 export interface Msg {
   labelKey: string;
-  type: "info" | "error";
+  level: "info" | "error";
 }
 
 export const msg = writable<Msg | undefined>(undefined);
