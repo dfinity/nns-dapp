@@ -64,10 +64,14 @@
   }
 
   p {
-    @include text.clamp(2);
+    @include text.clamp(4);
 
     margin: 0;
     font-size: 1rem;
+
+    @media (min-width: 768px) {
+      @include text.clamp(2);
+    }
   }
 
   button {
