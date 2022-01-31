@@ -10,7 +10,7 @@
   const close = () => msg.set(undefined);
 
   $: visible = $msg !== undefined;
-  $: ({ labelKey, level } = $msg || {});
+  $: ({ labelKey, level } = $msg || { labelKey: "", level: "info" });
 </script>
 
 {#if visible}
