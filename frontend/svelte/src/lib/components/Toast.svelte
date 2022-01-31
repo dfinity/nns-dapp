@@ -12,7 +12,8 @@
 
   const close = () => toastsStore.hide();
 
-  $: ({ labelKey, level, detail } = msg || { labelKey: "", level: "info" } as ToastMsg);
+  $: ({ labelKey, level, detail } =
+    msg || ({ labelKey: "", level: "info" } as ToastMsg));
 </script>
 
 <div
@@ -23,7 +24,7 @@
   out:fade={{ delay: 100 }}
 >
   <p>
-    {translate({ labelKey })}{detail ? ` ${detail}` : ''}
+    {translate({ labelKey })}{detail ? ` ${detail}` : ""}
   </p>
 
   <button on:click={close} aria-label={$i18n.core.close}><IconClose /></button>
