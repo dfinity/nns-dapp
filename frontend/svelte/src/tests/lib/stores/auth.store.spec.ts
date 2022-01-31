@@ -2,7 +2,6 @@ import { AuthClient } from "@dfinity/auth-client";
 import type { Identity } from "@dfinity/agent";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { authStore } from "../../../lib/stores/auth.store";
-import { expect } from "@jest/globals";
 
 class MockAuthClient extends AuthClient {
   constructor() {

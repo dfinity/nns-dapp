@@ -4,7 +4,6 @@
 
 import { fireEvent, render } from "@testing-library/svelte";
 import Filter from "../../../lib/components/FiltersCard.svelte";
-import { expect } from "@jest/globals";
 
 describe("Filter", () => {
   const props: { filters: string[]; key: "topics" | "rewards" | "proposals" } =
