@@ -5,6 +5,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";
+  import Toasts from "../lib/components/Toasts.svelte";
 
   let signedIn: boolean = false;
 
@@ -66,6 +67,8 @@
     class="bottom-banner"
     loading="lazy"
   />
+
+  <Toasts />
 {/if}
 
 <style lang="scss">

@@ -3,6 +3,16 @@
   import { routeStore } from "../stores/route.store";
   import { routePath } from "../utils/route.utils";
   import Spinner from "./Spinner.svelte";
+  import { toastsStore } from "../stores/toasts.store";
+
+  const syncAuthStore = async () => {
+    try {
+      await authStore.sync();
+    } catch (err) {
+      toastsStore.show({ labelKey: "error.auth_sync", level: "error" });
+      console.error(err);
+    }
+  };
 </script>
 
 <!-- storage: on every change in local storage we sync the auth state -->
@@ -12,10 +22,8 @@
   on:popstate={() => routeStore.update({ path: routePath() })}
 />
 
-{#await authStore.sync()}
+{#await syncAuthStore()}
   <Spinner />
 {:then value}
   <slot />
-{:catch error}
-  <!-- TODO(L2-176): display the errors -->
 {/await}

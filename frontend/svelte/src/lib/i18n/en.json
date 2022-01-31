@@ -2,6 +2,9 @@
   "core": {
     "close": "Close"
   },
+  "error": {
+    "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser."
+  },
   "navigation": {
     "icp": "ICP",
     "neurons": "Neurons",

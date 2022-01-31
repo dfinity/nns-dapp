@@ -45,7 +45,7 @@
     position: fixed;
     inset: 0;
 
-    z-index: calc(var(--z-index) + 999);
+    z-index: calc(var(--z-index) + 998);
   }
 
   .backdrop {

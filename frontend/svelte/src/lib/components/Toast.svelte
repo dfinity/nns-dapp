@@ -52,6 +52,8 @@
     padding: var(--padding) calc(var(--padding) * 2);
     box-sizing: border-box;
 
+    z-index: calc(var(--z-index) + 999);
+
     @media (min-width: 880px) {
       max-width: var(--section-max-width);
     }
