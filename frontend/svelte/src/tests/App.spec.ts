@@ -9,7 +9,6 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "./mocks/auth.store.mock";
 import { accountsStore } from "../lib/stores/accounts.store";
-import { expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/svelte";
 import App from "../App.svelte";
 import type { Principal } from "@dfinity/principal";

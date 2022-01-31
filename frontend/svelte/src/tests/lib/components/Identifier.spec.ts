@@ -4,7 +4,6 @@
 
 import { fireEvent, render } from "@testing-library/svelte";
 import Identifier from "../../../lib/components/Identifier.svelte";
-import { expect } from "@jest/globals";
 
 describe("Identifier", () => {
   const identifier: string = "test-identifier";

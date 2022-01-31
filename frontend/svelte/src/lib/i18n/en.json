@@ -1,4 +1,7 @@
 {
+  "core": {
+    "close": "Close"
+  },
   "navigation": {
     "icp": "ICP",
     "neurons": "Neurons",
