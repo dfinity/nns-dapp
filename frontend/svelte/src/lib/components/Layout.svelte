@@ -1,7 +1,7 @@
 <script lang="ts">
   import Header from "./Header.svelte";
   import Nav from "./Nav.svelte";
-  import Toast from "./Toast.svelte";
+  import Toasts from "./Toasts.svelte";
 </script>
 
 <Header />
@@ -12,7 +12,7 @@
   <slot />
 </main>
 
-<Toast />
+<Toasts />
 
 <style lang="scss">
   main {

@@ -3,35 +3,34 @@
    * A toast - snack-bar to display a short info or error message.
    */
   import IconClose from "../icons/IconClose.svelte";
-  import { msg } from "../stores/msg.store";
+  import { toastsStore, ToastMsg } from "../stores/toasts.store";
   import { fade, fly } from "svelte/transition";
   import { translate } from "../utils/i18n.utils";
   import { i18n } from "../stores/i18n";
 
+  export let msg: ToastMsg;
+  export let index: number;
+
   let visible: boolean;
 
-  const close = () => msg.set(undefined);
+  const close = () => toastsStore.hide(index);
 
-  $: visible = $msg !== undefined;
-  $: ({ labelKey, level } = $msg || { labelKey: "", level: "info" });
+  $: ({ labelKey, level } = msg || { labelKey: "", level: "info" });
 </script>
 
-{#if visible}
-  <div
-    role="dialog"
-    class="toast"
-    class:error={level === "error"}
-    in:fly={{ y: 100, duration: 200 }}
-    out:fade={{ delay: 100 }}
-  >
-    <p>
-      {translate({ labelKey })}
-    </p>
+<div
+  role="dialog"
+  class="toast"
+  class:error={level === "error"}
+  in:fly={{ y: 100, duration: 200 }}
+  out:fade={{ delay: 100 }}
+>
+  <p>
+    {translate({ labelKey })}
+  </p>
 
-    <button on:click={close} aria-label={$i18n.core.close}><IconClose /></button
-    >
-  </div>
-{/if}
+  <button on:click={close} aria-label={$i18n.core.close}><IconClose /></button>
+</div>
 
 <style lang="scss">
   @use "../themes/mixins/text";
