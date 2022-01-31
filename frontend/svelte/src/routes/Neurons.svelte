@@ -7,9 +7,9 @@
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
-    if (process.env.REDIRECT_TO_LEGACY) {
-      window.location.replace("/#/neurons");
-    }
+    // if (process.env.REDIRECT_TO_LEGACY) {
+    //   window.location.replace("/#/neurons");
+    // }
   });
 
   let principalText: string = "";
@@ -20,17 +20,14 @@
 
   onDestroy(unsubscribe);
 </script>
-
-{#if !process.env.REDIRECT_TO_LEGACY}
-  <Layout>
-    <section>
-      <h1>{$i18n.neurons.title}</h1>
-
-      <p>{$i18n.neurons.text}</p>
-
-      <p>
-        {$i18n.neurons.principal_is} "{principalText}"
-      </p>
-    </section>
-  </Layout>
-{/if}
+<Layout>
+  <section>
+    <h1>{$i18n.neurons.title}</h1>
+  
+    <p>{$i18n.neurons.text}</p>
+  
+    <p>
+      {$i18n.neurons.principal_is} "{principalText}"
+    </p>
+  </section>
+</Layout>
