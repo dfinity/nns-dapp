@@ -5,6 +5,12 @@ export interface ToastMsg {
   level: "info" | "error";
 }
 
+/**
+ * Toast messages.
+ *
+ * - show: display a message in toast component - messages are stacked
+ * - hide: remove a toast message at position
+ */
 const initToastsStore = () => {
   const { subscribe, update } = writable<ToastMsg[]>([]);
 
