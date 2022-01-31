@@ -12,15 +12,15 @@ describe("Toast", () => {
     index: 0,
   };
 
-  it("should render a text", async () =>  {
+  it("should render a text", async () => {
     const { container } = render(Toast, {
       props,
     });
 
-    const p: HTMLParagraphElement | null = container.querySelector('p');
+    const p: HTMLParagraphElement | null = container.querySelector("p");
 
     expect(p).not.toBeNull();
-    expect(p.textContent).toEqual('Close');
+    expect(p.textContent).toEqual("Close");
   });
 
   it("should render a close button", async () => {
