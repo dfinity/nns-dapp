@@ -14,8 +14,12 @@
   const signIn = async () => {
     try {
       await authStore.signIn();
-    } catch (err: string) {
-      toastsStore.show({ labelKey: "error.sign_in", level: "error", detail: err });
+    } catch (err: any) {
+      toastsStore.show({
+        labelKey: "error.sign_in",
+        level: "error",
+        detail: typeof err === "string" ? (err as string) : undefined,
+      });
       console.error(err);
     }
   };
