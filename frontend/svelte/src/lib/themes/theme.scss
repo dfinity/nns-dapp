@@ -52,7 +52,7 @@ main {
 section {
   padding: calc(2 * var(--padding)) calc(4 * var(--padding));
 
-  max-width: 800px;
+  max-width: var(--section-max-width);
   margin: 0 auto;
 }
 
