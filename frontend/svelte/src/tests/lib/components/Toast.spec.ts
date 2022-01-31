@@ -7,9 +7,8 @@ import { render } from "@testing-library/svelte";
 import type { ToastMsg } from "../../../lib/stores/toasts.store";
 
 describe("Toast", () => {
-  const props: { msg: ToastMsg; index: number } = {
+  const props: { msg: ToastMsg } = {
     msg: { labelKey: "core.close", level: "info" },
-    index: 0,
   };
 
   it("should render a text", async () => {

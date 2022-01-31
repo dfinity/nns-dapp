@@ -8,8 +8,8 @@ export interface ToastMsg {
 /**
  * Toast messages.
  *
- * - show: display a message in toast component - messages are stacked
- * - hide: remove a toast message at position i.e. hide a message
+ * - show: display a message in toast component - messages are stacked but only one is displayed
+ * - hide: remove the toast message at the first position i.e. hide the currently displayed message
  */
 const initToastsStore = () => {
   const { subscribe, update } = writable<ToastMsg[]>([]);
@@ -21,10 +21,8 @@ const initToastsStore = () => {
       update((messages: ToastMsg[]) => [...messages, msg]);
     },
 
-    hide(index: number) {
-      update((messages: ToastMsg[]) =>
-        messages.filter((msg: ToastMsg, i: number) => index !== i)
-      );
+    hide() {
+      update((messages: ToastMsg[]) => messages.slice(1));
     },
   };
 };

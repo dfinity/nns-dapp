@@ -25,7 +25,7 @@ describe("Toasts", () => {
 
     await waitForDialog(container);
 
-    toastsStore.hide(0);
+    toastsStore.hide();
   });
 
   it("should display an informative toast", async () => {
@@ -38,7 +38,7 @@ describe("Toasts", () => {
     const dialog: HTMLDivElement | null = container.querySelector("div.toast");
     expect(!dialog.classList.contains("error")).toBeTruthy();
 
-    toastsStore.hide(0);
+    toastsStore.hide();
   });
 
   it("should display an error toast", async () => {
@@ -51,10 +51,10 @@ describe("Toasts", () => {
     const dialog: HTMLDivElement | null = container.querySelector("div.toast");
     expect(dialog.classList.contains("error")).toBeTruthy();
 
-    toastsStore.hide(0);
+    toastsStore.hide();
   });
 
-  it("should stack multiple toasts", async () => {
+  it("should display multiple toasts once at a time", async () => {
     const { container } = render(Toasts);
 
     toastsStore.show({ labelKey: "test.test", level: "error" });
@@ -62,12 +62,26 @@ describe("Toasts", () => {
     toastsStore.show({ labelKey: "test.test", level: "error" });
 
     await waitFor(() =>
-      expect(container.querySelectorAll("div.toast").length).toEqual(3)
+      expect(container.querySelectorAll("div.toast").length).toEqual(1)
     );
 
-    toastsStore.hide(2);
-    toastsStore.hide(1);
-    toastsStore.hide(0);
+    toastsStore.hide();
+
+    await waitFor(() =>
+      expect(container.querySelectorAll("div.toast").length).toEqual(1)
+    );
+
+    toastsStore.hide();
+
+    await waitFor(() =>
+      expect(container.querySelectorAll("div.toast").length).toEqual(1)
+    );
+
+    toastsStore.hide();
+
+    await waitFor(() =>
+      expect(container.querySelectorAll("div.toast").length).toEqual(0)
+    );
   });
 
   it("should close toast", async () => {

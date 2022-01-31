@@ -9,11 +9,8 @@
   import { i18n } from "../stores/i18n";
 
   export let msg: ToastMsg;
-  export let index: number;
 
-  let visible: boolean;
-
-  const close = () => toastsStore.hide(index);
+  const close = () => toastsStore.hide();
 
   $: ({ labelKey, level } = msg || { labelKey: "", level: "info" });
 </script>
