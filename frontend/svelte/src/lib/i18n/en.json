@@ -3,7 +3,8 @@
     "close": "Close"
   },
   "error": {
-    "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser."
+    "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
+    "sign_in": "The sign-in process was aborted or did not succeed. Reason:"
   },
   "navigation": {
     "icp": "ICP",
