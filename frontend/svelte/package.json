@@ -52,7 +52,7 @@
     "@dfinity/authentication": "^0.10.2",
     "@dfinity/candid": "^0.10.2",
     "@dfinity/identity": "^0.10.2",
-    "@dfinity/nns": "file:./nns-js",
+    "@dfinity/nns": "^0.1.9",
     "@dfinity/principal": "^0.10.2"
   }
 }
