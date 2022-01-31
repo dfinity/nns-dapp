@@ -1,4 +1,7 @@
 <script lang="ts">
+  /**
+   * A toast - snack-bar to display a short info or error message.
+   */
   import IconClose from "../icons/IconClose.svelte";
   import { msg } from "../stores/msg.store";
   import { fade, fly } from "svelte/transition";
