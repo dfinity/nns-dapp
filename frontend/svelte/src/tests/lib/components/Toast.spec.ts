@@ -2,87 +2,35 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import Toast from "../../../lib/components/Toast.svelte";
-import { msg } from "../../../lib/stores/msg.store";
+import { render } from "@testing-library/svelte";
+import type { ToastMsg } from "../../../lib/stores/toasts.store";
 
 describe("Toast", () => {
-  it("should be hidden per default", () => {
-    const { container } = render(Toast);
+  const props: { msg: ToastMsg; index: number } = {
+    msg: { labelKey: "core.close", level: "info" },
+    index: 0,
+  };
 
-    expect(container.querySelector("div.toast")).toBeNull();
-  });
+  it("should render a text", async () =>  {
+    const { container } = render(Toast, {
+      props,
+    });
 
-  const waitForDialog = async (container) =>
-    await waitFor(() =>
-      expect(container.querySelector("div.toast")).not.toBeNull()
-    );
+    const p: HTMLParagraphElement | null = container.querySelector('p');
 
-  it("should display toast", async () => {
-    const { container } = render(Toast);
-
-    msg.set({ labelKey: "test.test", level: "info" });
-
-    await waitForDialog(container);
-  });
-
-  it("should display an informative msg", async () => {
-    const { container } = render(Toast);
-
-    msg.set({ labelKey: "test.test", level: "info" });
-
-    await waitForDialog(container);
-
-    const dialog: HTMLDivElement | null = container.querySelector("div.toast");
-    expect(!dialog.classList.contains("error")).toBeTruthy();
-  });
-
-  it("should display an error msg", async () => {
-    const { container } = render(Toast);
-
-    msg.set({ labelKey: "test.test", level: "error" });
-
-    await waitForDialog(container);
-
-    const dialog: HTMLDivElement | null = container.querySelector("div.toast");
-    expect(dialog.classList.contains("error")).toBeTruthy();
-  });
-
-  it("should render a text", async () => {
-    const { container, getByText } = render(Toast);
-
-    msg.set({ labelKey: "header.title", level: "info" });
-
-    await waitForDialog(container);
-
-    expect(getByText("NETWORK NERVOUS SYSTEM")).toBeInTheDocument();
+    expect(p).not.toBeNull();
+    expect(p.textContent).toEqual('Close');
   });
 
   it("should render a close button", async () => {
-    const { container, getByRole } = render(Toast);
-
-    msg.set({ labelKey: "test.test", level: "info" });
-
-    await waitForDialog(container);
+    const { getByRole } = render(Toast, {
+      props,
+    });
 
     const button = getByRole("button");
 
     expect(button).not.toBeNull();
     expect(button.getAttribute("aria-label")).toEqual("Close");
-  });
-
-  it("should close toast", async () => {
-    const { container } = render(Toast);
-
-    msg.set({ labelKey: "test.test", level: "info" });
-
-    await waitForDialog(container);
-
-    const button: HTMLButtonElement | null = container.querySelector("button");
-    fireEvent.click(button);
-
-    await waitFor(() =>
-      expect(container.querySelector("div.toast")).toBeNull()
-    );
   });
 });
