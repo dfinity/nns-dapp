@@ -1,14 +1,32 @@
-<article>
-  <div>
-    <slot name="start" />
-    <slot name="end" />
-  </div>
+<script lang="ts">
+  export let to: string = undefined;
+</script>
 
-  <slot />
-</article>
+{#if to}
+  <a href={to}>
+    <div>
+      <slot name="start" />
+      <slot name="end" />
+    </div>
+
+    <slot />
+  </a>
+{:else}
+  <article>
+    <div>
+      <slot name="start" />
+      <slot name="end" />
+    </div>
+
+    <slot />
+  </article>
+{/if}
 
 <style lang="scss">
-  article {
+  article, a {
+    display: block;
+    text-decoration: none;
+
     background: var(--background);
     color: var(--gray-50);
 
@@ -17,6 +35,10 @@
     border-radius: var(--border-radius);
 
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
+  }
+
+  a:hover {
+    background: var(--background-hover);
   }
 
   div {
