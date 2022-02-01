@@ -8,10 +8,10 @@
 
   const onSubmit = ({ target }) => {
     const formData: FormData = new FormData(target);
+    console.log(formData.get("icp"));
 
-    for (var [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
+    // TODO: L2-188 - Get ICPs on testnet
+    alert("Not implemented yet");
   };
 
   let validForm: boolean;
