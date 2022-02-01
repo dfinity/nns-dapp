@@ -12,14 +12,10 @@
   };
 </script>
 
-<button on:click={logout}>{$i18n.header.logout}</button>
+<button on:click={logout} class="text">{$i18n.header.logout}</button>
 
 <style lang="scss">
-  @use "../themes/mixins/button";
-
   button {
-    @include button.header;
-
     justify-self: flex-end;
   }
 </style>

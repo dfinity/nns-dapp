@@ -19,7 +19,7 @@
   $: validForm = inputValue === undefined || inputValue <= 0;
 </script>
 
-<button on:click={() => (visible = true)} class="open">Get ICPs</button>
+<button on:click={() => (visible = true)} class="open text">Get ICPs</button>
 
 <Modal {visible} on:nnsClose={() => (visible = false)}>
   <span slot="title">Get ICPs</span>
@@ -34,11 +34,7 @@
 </Modal>
 
 <style lang="scss">
-  @use "../themes/mixins/button";
-
   .open {
-    @include button.header;
-
     justify-self: flex-start;
   }
 
@@ -51,33 +47,5 @@
     flex-direction: column;
 
     padding: calc(2 * var(--padding));
-  }
-
-  .submit {
-    border-radius: var(--border-radius);
-    margin: var(--padding) 0;
-
-    background: var(--gray-50);
-    color: var(--gray-400);
-
-    &:not([disabled]) {
-      &:hover {
-        background: var(--blue-500-tint)
-          radial-gradient(circle, transparent 1%, var(--blue-500-tint) 1%)
-          center/15000%;
-      }
-
-      &:active {
-        background-color: var(--gray-100);
-        background-size: 100%;
-        transition: background 0s;
-      }
-
-      background: var(--blue-500);
-      color: var(--blue-500-contrast);
-
-      background-position: center;
-      transition: background 0.8s;
-    }
   }
 </style>

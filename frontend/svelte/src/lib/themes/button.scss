@@ -1,0 +1,46 @@
+@use "./mixins/button";
+
+button {
+  &.text {
+    z-index: var(--z-index);
+
+    width: fit-content;
+
+    margin: 0 var(--padding);
+
+    color: white;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &.icon-only {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    vertical-align: bottom;
+
+    padding: calc(var(--padding) / 2);
+
+    border-radius: 50%;
+
+    @include button.ripple-effect(--gray-50-background);
+  }
+
+  &[type="submit"] {
+    border-radius: var(--border-radius);
+    margin: var(--padding) 0;
+
+    &[disabled] {
+      background: var(--gray-50);
+      color: var(--gray-400);
+    }
+
+    background: var(--blue-500);
+    color: var(--blue-500-contrast);
+
+    @include button.ripple-effect(--blue-500-tint);
+  }
+}
