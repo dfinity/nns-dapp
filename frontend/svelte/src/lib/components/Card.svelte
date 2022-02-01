@@ -31,8 +31,4 @@
       display: block;
     }
   }
-
-  article :global(p) {
-    margin: 0;
-  }
 </style>

@@ -1,6 +1,7 @@
 {
   "core": {
-    "close": "Close"
+    "close": "Close",
+    "icp": "ICP"
   },
   "navigation": {
     "icp": "ICP",

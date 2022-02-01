@@ -4,6 +4,7 @@
 
 interface I18nCore {
   close: string;
+  icp: string;
 }
 
 interface I18nNavigation {
