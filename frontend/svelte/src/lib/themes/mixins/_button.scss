@@ -1,0 +1,13 @@
+@mixin header {
+  z-index: var(--z-index);
+
+  width: fit-content;
+
+  margin: 0 var(--padding);
+
+  color: white;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

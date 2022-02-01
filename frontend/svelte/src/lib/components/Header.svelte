@@ -1,6 +1,7 @@
 <script>
   import Logout from "./Logout.svelte";
   import { i18n } from "../stores/i18n";
+  import GetICPs from "./GetICPs.svelte";
 </script>
 
 <header>
@@ -10,6 +11,7 @@
     alt=""
     src="/assets/assets/gradient.jpg"
   />
+  <GetICPs></GetICPs>
   <h4>{$i18n.header.title}</h4>
   <Logout />
 </header>

@@ -15,18 +15,11 @@
 <button on:click={logout}>{$i18n.header.logout}</button>
 
 <style lang="scss">
+  @use "../themes/mixins/button";
+
   button {
-    z-index: var(--z-index);
+    @include button.header;
 
-    width: fit-content;
-    justify-self: flex-end;
-
-    margin: 0 var(--padding);
-
-    color: white;
-
-    &:hover {
-      text-decoration: underline;
-    }
+    justify-self: flex-start;
   }
 </style>
