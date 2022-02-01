@@ -62,7 +62,9 @@
 
     &:not([disabled]) {
       &:hover {
-        background: var(--blue-500-tint) radial-gradient(circle, transparent 1%, var(--blue-500-tint) 1%) center/15000%;
+        background: var(--blue-500-tint)
+          radial-gradient(circle, transparent 1%, var(--blue-500-tint) 1%)
+          center/15000%;
       }
 
       &:active {

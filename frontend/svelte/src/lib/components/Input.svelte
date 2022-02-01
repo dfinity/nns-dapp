@@ -5,7 +5,7 @@
   export let inputType: "number" | "text" = "number";
   export let required: boolean = true;
   export let spellcheck: boolean | undefined = undefined;
-  export let step: number | 'any' | undefined = undefined;
+  export let step: number | "any" | undefined = undefined;
 
   export let value: string | number | undefined = undefined;
 
@@ -14,7 +14,7 @@
   const handleInput = ({ target }: { target: HTMLInputElement }) =>
     (value = inputType.match(/^(number)$/) ? +target.value : target.value);
 
-  $: step = step === undefined && inputType === 'number' ? 'any' : step;
+  $: step = step === undefined && inputType === "number" ? "any" : step;
 </script>
 
 <div class="input-block">
