@@ -22,48 +22,48 @@
 </Card>
 
 <style lang="scss">
-    h4, h3 {
-      line-height: 1.3;
-    }
-  
-    p {
-      margin: 0;
-    }
-  
-    .lock {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-  
-    .lock-text {
-      font-size: 1.1rem;
-    }
-  
-    .white {
-      color: var(--background-contrast);
-    }
-  
-    .align-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-  
-    .duration {
-      font-size: 1.1rem;
-    }
-  
-    .amount {
-      margin-bottom: 0;
-    }
-  
-    .stake {
-      font-size: 1.1rem;
-      margin-top: 5px;
-    }
-  
-    .currency {
-      font-size: 0.6rem;
-    }
-  </style>
+  h4, h3 {
+    line-height: 1.3;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .lock {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .lock-text {
+    font-size: 1.1rem;
+  }
+
+  .white {
+    color: var(--background-contrast);
+  }
+
+  .align-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .duration {
+    font-size: 1.1rem;
+  }
+
+  .amount {
+    margin-bottom: 0;
+  }
+
+  .stake {
+    font-size: 1.1rem;
+    margin-top: 5px;
+  }
+
+  .currency {
+    font-size: 0.6rem;
+  }
+</style>
