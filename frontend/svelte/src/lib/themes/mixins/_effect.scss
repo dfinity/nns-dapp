@@ -1,8 +1,7 @@
 @mixin ripple-effect($color) {
-  &:hover {
+  &:focus {
     background: var($color)
-      radial-gradient(circle, transparent 1%, var($color) 1%)
-      center/15000%;
+      radial-gradient(circle, transparent 1%, var($color) 1%) center/15000%;
   }
 
   &:active {
