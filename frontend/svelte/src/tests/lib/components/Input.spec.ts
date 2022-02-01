@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
+import { fireEvent, render } from "@testing-library/svelte";
 import Input from "../../../lib/components/Input.svelte";
 
 describe("Input", () => {
@@ -130,5 +130,37 @@ describe("Input", () => {
     });
 
     testHasAttribute({ container, attribute: "step", expected: false });
+  });
+
+  it("should only accept number as input", () => {
+    const { container } = render(Input, {
+      props,
+    });
+
+    const input: HTMLInputElement | null = container.querySelector("input");
+    fireEvent.change(input, { target: { value: "test" } });
+    expect(input.value).toBe("");
+
+    fireEvent.change(input, { target: { value: "123" } });
+    expect(input.value).toBe("123");
+  });
+
+  it("should accept text as input", () => {
+    const { container } = render(Input, {
+      props: {
+        ...props,
+        inputType: "text",
+      },
+    });
+
+    const input: HTMLInputElement | null = container.querySelector("input");
+    fireEvent.change(input, { target: { value: "test" } });
+    expect(input.value).toBe("test");
+
+    fireEvent.change(input, { target: { value: "123" } });
+    expect(input.value).toBe("123");
+
+    fireEvent.change(input, { target: { value: "test123" } });
+    expect(input.value).toBe("test123");
   });
 });
