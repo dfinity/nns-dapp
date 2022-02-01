@@ -14,6 +14,11 @@
     alert("Not implemented yet");
   };
 
+  const onClose = () => {
+    visible = false;
+    inputValue = undefined;
+  };
+
   let validForm: boolean;
 
   $: validForm = inputValue === undefined || inputValue <= 0;
@@ -21,7 +26,7 @@
 
 <button on:click={() => (visible = true)} class="open text">Get ICPs</button>
 
-<Modal {visible} on:nnsClose={() => (visible = false)}>
+<Modal {visible} on:nnsClose={onClose}>
   <span slot="title">Get ICPs</span>
 
   <form on:submit|preventDefault={onSubmit}>
