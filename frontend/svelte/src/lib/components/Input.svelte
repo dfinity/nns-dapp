@@ -6,7 +6,7 @@
   export let required: boolean = true;
   export let spellcheck: boolean | undefined = undefined;
 
-  export let value: string | number;
+  export let value: string | number | undefined = undefined;
 
   export let placeholderLabelKey: string;
 
