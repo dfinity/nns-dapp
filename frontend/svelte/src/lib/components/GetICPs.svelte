@@ -61,12 +61,21 @@
     color: var(--gray-400);
 
     &:not([disabled]) {
+      &:hover {
+        background: var(--blue-500-tint) radial-gradient(circle, transparent 1%, var(--blue-500-tint) 1%) center/15000%;
+      }
+
+      &:active {
+        background-color: var(--gray-100);
+        background-size: 100%;
+        transition: background 0s;
+      }
+
       background: var(--blue-500);
       color: var(--blue-500-contrast);
 
-      &:active, &:hover, &:focus {
-        background: var(--blue-500-tint);
-      }
+      background-position: center;
+      transition: background 0.8s;
     }
   }
 </style>
