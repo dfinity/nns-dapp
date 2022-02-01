@@ -1,17 +1,31 @@
 <script lang="ts">
   import { translate } from "../utils/i18n.utils";
 
+  export let name: string;
   export let inputType: "number" | "text" = "number";
   export let required: boolean = true;
   export let spellcheck: boolean | undefined = undefined;
 
+  export let value: string | number;
+
   export let placeholderLabelKey: string;
+
+  const handleInput = ({ target }: { target: HTMLInputElement }) =>
+    (value = inputType.match(/^(number)$/) ? +target.value : target.value);
 </script>
 
 <div class="input-block">
-  <input type={inputType} {required} {spellcheck} />
+  <input
+    type={inputType}
+    {required}
+    {spellcheck}
+    {name}
+    on:input={handleInput}
+  />
 
-  <span class="placeholder"> {translate({ labelKey: placeholderLabelKey })} </span>
+  <span class="placeholder">
+    {translate({ labelKey: placeholderLabelKey })}
+  </span>
 </div>
 
 <style lang="scss">
