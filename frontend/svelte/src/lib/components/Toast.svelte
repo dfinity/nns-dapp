@@ -12,8 +12,11 @@
 
   const close = () => toastsStore.hide();
 
-  $: ({ labelKey, level, detail } =
-    msg || ({ labelKey: "", level: "info" } as ToastMsg));
+  $: ({ labelKey, level, detail } = msg || {
+    labelKey: "",
+    level: "info",
+    detail: undefined,
+  });
 </script>
 
 <div
