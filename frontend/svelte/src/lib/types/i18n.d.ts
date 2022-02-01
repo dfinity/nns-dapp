@@ -7,6 +7,10 @@ interface I18nCore {
   icp: string;
 }
 
+interface I18nError {
+  auth_sync: string;
+}
+
 interface I18nNavigation {
   icp: string;
   neurons: string;
@@ -78,6 +82,7 @@ interface I18nProposals {
 interface I18n {
   lang: Languages;
   core: I18nCore;
+  error: I18nError;
   navigation: I18nNavigation;
   header: I18nHeader;
   auth: I18nAuth;

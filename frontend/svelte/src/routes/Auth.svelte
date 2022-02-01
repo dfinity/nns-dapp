@@ -5,6 +5,8 @@
   import { routeStore } from "../lib/stores/route.store";
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";
+  import Toasts from "../lib/components/Toasts.svelte";
+  import { toastsStore } from "../lib/stores/toasts.store";
 
   let signedIn: boolean = false;
 
@@ -12,8 +14,12 @@
   const signIn = async () => {
     try {
       await authStore.signIn();
-    } catch (err) {
-      // TODO(L2-176): display the errors
+    } catch (err: any) {
+      toastsStore.show({
+        labelKey: "error.sign_in",
+        level: "error",
+        detail: typeof err === "string" ? (err as string) : undefined,
+      });
       console.error(err);
     }
   };
@@ -66,6 +72,8 @@
     class="bottom-banner"
     loading="lazy"
   />
+
+  <Toasts />
 {/if}
 
 <style lang="scss">
