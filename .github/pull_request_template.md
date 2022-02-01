@@ -1,11 +1,11 @@
-## Motivation
+# Motivation
 
 <!-- Describe the motivation that lead to the PR -->
 
-## Changes
+# Changes
 
 <!-- List the changes that have been developed -->
 
-## Other information
+# Other information
 
 <!-- Please provide any useful other information e.g. screenshots -->
