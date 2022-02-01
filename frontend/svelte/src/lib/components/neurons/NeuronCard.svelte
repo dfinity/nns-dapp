@@ -22,7 +22,8 @@
 </Card>
 
 <style lang="scss">
-  h4, h3 {
+  h4,
+  h3 {
     line-height: 1.3;
   }
 

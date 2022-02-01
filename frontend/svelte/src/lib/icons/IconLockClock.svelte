@@ -1,7 +1,8 @@
 <script lang="ts">
-  type Size = 'm' | 's';
-  export let size: Size = 'm';
+  type Size = "m" | "s";
+  export let size: Size = "m";
 </script>
+
 <!-- source: https://material.io/icons/ -->
 <!-- <svg
   xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +27,6 @@
     fill="#979799"
   />
 </svg>
-  
 
 <style lang="scss">
   .m {

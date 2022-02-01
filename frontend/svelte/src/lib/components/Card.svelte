@@ -23,7 +23,8 @@
 {/if}
 
 <style lang="scss">
-  article, a {
+  article,
+  a {
     display: block;
     text-decoration: none;
 
