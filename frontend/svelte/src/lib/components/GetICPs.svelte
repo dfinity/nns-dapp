@@ -63,6 +63,10 @@
     &:not([disabled]) {
       background: var(--blue-500);
       color: var(--blue-500-contrast);
+
+      &:active, &:hover, &:focus {
+        background: var(--blue-500-tint);
+      }
     }
   }
 </style>
