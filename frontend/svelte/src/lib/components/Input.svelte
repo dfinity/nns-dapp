@@ -14,7 +14,7 @@
   const handleInput = ({ target }: { target: HTMLInputElement }) =>
     (value = inputType.match(/^(number)$/) ? +target.value : target.value);
 
-  $: step = step === undefined && inputType === "number" ? "any" : step;
+  $: step = inputType === "number" ? step || "any" : undefined;
 </script>
 
 <div class="input-block">

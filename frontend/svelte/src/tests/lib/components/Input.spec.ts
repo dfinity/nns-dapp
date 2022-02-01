@@ -17,13 +17,38 @@ describe("Input", () => {
     expect(input).not.toBeNull();
   });
 
+  const testGetAttribute = ({
+    attribute,
+    expected,
+    container,
+  }: {
+    attribute: string;
+    expected: string;
+    container: HTMLElement;
+  }) => {
+    const input: HTMLInputElement | null = container.querySelector("input");
+    expect(input.getAttribute(attribute)).toEqual(expected);
+  };
+
+  const testHasAttribute = ({
+    attribute,
+    expected,
+    container,
+  }: {
+    attribute: string;
+    expected: boolean;
+    container: HTMLElement;
+  }) => {
+    const input: HTMLInputElement | null = container.querySelector("input");
+    expect(input.hasAttribute(attribute)).toEqual(expected);
+  };
+
   it("should render an input of type number", () => {
     const { container } = render(Input, {
       props,
     });
 
-    const input: HTMLInputElement | null = container.querySelector("input");
-    expect(input.getAttribute("type")).toEqual("number");
+    testGetAttribute({ container, attribute: "type", expected: "number" });
   });
 
   it("should render an input of type text", () => {
@@ -34,8 +59,7 @@ describe("Input", () => {
       },
     });
 
-    const input: HTMLInputElement | null = container.querySelector("input");
-    expect(input.getAttribute("type")).toEqual("text");
+    testGetAttribute({ container, attribute: "type", expected: "text" });
   });
 
   it("should render a required input", () => {
@@ -43,8 +67,7 @@ describe("Input", () => {
       props,
     });
 
-    const input: HTMLInputElement | null = container.querySelector("input");
-    expect(input.hasAttribute("required")).toBeTruthy();
+    testHasAttribute({ container, attribute: "required", expected: true });
   });
 
   it("should render a required input", () => {
@@ -52,7 +75,52 @@ describe("Input", () => {
       props: { ...props, required: false },
     });
 
-    const input: HTMLInputElement | null = container.querySelector("input");
-    expect(input.hasAttribute("required")).toBeFalsy();
+    testHasAttribute({ container, attribute: "required", expected: false });
+  });
+
+  it("should render an input without spellcheck", () => {
+    const { container } = render(Input, {
+      props,
+    });
+
+    testHasAttribute({ container, attribute: "spellcheck", expected: false });
+  });
+
+  it("should render an input with spellcheck", () => {
+    const { container } = render(Input, {
+      props: { ...props, spellcheck: true },
+    });
+
+    testHasAttribute({ container, attribute: "spellcheck", expected: true });
+  });
+
+  it("should render an input with step any", () => {
+    const { container } = render(Input, {
+      props,
+    });
+
+    testGetAttribute({ container, attribute: "step", expected: "any" });
+  });
+
+  it("should render an input with a particular step attribute", () => {
+    const { container } = render(Input, {
+      props: {
+        ...props,
+        step: 2,
+      },
+    });
+
+    testGetAttribute({ container, attribute: "step", expected: "2" });
+  });
+
+  it("should render an input with no step", () => {
+    const { container } = render(Input, {
+      props: {
+        ...props,
+        inputType: "text",
+      },
+    });
+
+    testHasAttribute({ container, attribute: "step", expected: false });
   });
 });
