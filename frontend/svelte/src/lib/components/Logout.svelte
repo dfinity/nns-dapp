@@ -20,6 +20,6 @@
   button {
     @include button.header;
 
-    justify-self: flex-start;
+    justify-self: flex-end;
   }
 </style>
