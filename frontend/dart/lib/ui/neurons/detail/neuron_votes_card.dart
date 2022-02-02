@@ -1,5 +1,4 @@
 import 'package:nns_dapp/ui/_components/form_utils.dart';
-import 'package:nns_dapp/ui/_components/responsive.dart';
 import '../../../nns_dapp.dart';
 import 'proposal_summary_widget.dart';
 
