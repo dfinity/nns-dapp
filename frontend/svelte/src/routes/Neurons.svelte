@@ -14,7 +14,6 @@
   });
 
   let principalText: string = "";
-  console.log(process.env.REDIRECT_TO_LEGACY);
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
     ({ principal }: AuthStore) => (principalText = principal?.toText() ?? "")

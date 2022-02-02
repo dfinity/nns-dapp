@@ -44,4 +44,11 @@ describe("Neurons", () => {
       getByText(mockPrincipal.toText(), { exact: false })
     ).toBeInTheDocument();
   });
+
+  it("should render a NeuronCard", () => {
+    const { container } = render(Neurons);
+
+    const anchor = container.querySelector("a");
+    expect(anchor).not.toBeUndefined();
+  });
 });
