@@ -2,7 +2,7 @@
   import Layout from "../lib/components/Layout.svelte";
   import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
-import Footer from "../lib/components/Footer.svelte";
+  import Footer from "../lib/components/Footer.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -18,12 +18,12 @@ import Footer from "../lib/components/Footer.svelte";
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
     <section>
-      <h1>{$i18n.navigation.canisters}</h1>
+      <h1>{$i18n.canisters.title}</h1>
 
       <Footer>
         <button
           on:click={createOrLink}
-        >Create or Link</button>
+        >{$i18n.canisters.create_or_link}</button>
       </Footer>
     </section>
   </Layout>

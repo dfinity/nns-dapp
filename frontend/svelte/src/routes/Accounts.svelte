@@ -49,10 +49,10 @@
         <Footer>
           <button
             on:click={createNewTransaction}
-          >New Transaction</button>
+          >{$i18n.accounts.new_transaction}</button>
           <button
             on:click={addAccount}
-          >Add Account</button>
+          >{$i18n.accounts.add_account}</button>
         </Footer>
       {:else}
         <Spinner />

@@ -34,12 +34,15 @@ interface I18nAccounts {
   title: string;
   main: string;
   copy_identifier: string;
+  new_transaction: string;
+  add_account: string;
 }
 
 interface I18nNeurons {
   title: string;
   text: string;
   principal_is: string;
+  stack_neurons: string;
 }
 
 interface I18nVoting {
@@ -49,6 +52,11 @@ interface I18nVoting {
   rewards: string;
   proposals: string;
   hide_unavailable_proposals: string;
+}
+
+interface I18nCanisters {
+  title: string;
+  create_or_link: string;
 }
 
 interface I18nTopics {
@@ -88,6 +96,7 @@ interface I18n {
   accounts: I18nAccounts;
   neurons: I18nNeurons;
   voting: I18nVoting;
+  canisters: I18nCanisters;
   topics: I18nTopics;
   rewards: I18nRewards;
   proposals: I18nProposals;

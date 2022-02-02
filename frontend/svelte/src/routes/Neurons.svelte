@@ -4,7 +4,7 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
   import { i18n } from "../lib/stores/i18n";
-import Footer from "../lib/components/Footer.svelte";
+  import Footer from "../lib/components/Footer.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -39,7 +39,7 @@ import Footer from "../lib/components/Footer.svelte";
       <Footer>
         <button
           on:click={stackNeurons}
-        >Stack Neurons</button>
+        >{$i18n.neurons.stack_neurons}</button>
       </Footer>
     </section>
   </Layout>
