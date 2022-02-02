@@ -1,9 +1,9 @@
-use std::collections::BTreeMap;
 use candid::CandidType;
 use ic_base_types::{CanisterId, NodeId, PrincipalId, SubnetId};
 use ic_registry_subnet_type::SubnetType;
 use prost::Message;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 // https://github.com/dfinity-lab/dfinity/blob/bd842628a462dfa30604a2e2352fe50e9066d637/rs/registry/canister/src/mutations/do_add_nodes_to_subnet.rs#L42
 #[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
