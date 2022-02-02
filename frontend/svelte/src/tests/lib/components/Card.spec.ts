@@ -22,7 +22,7 @@ describe("Card", () => {
 
   it("should render an anchor tag when link", () => {
     const { container } = render(Card, {
-      props: { to: "/link" }
+      props: { to: "/link" },
     });
 
     const anchor = container.querySelector("a");

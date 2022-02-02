@@ -26,13 +26,13 @@
   <Layout>
     <section>
       <h1>{$i18n.neurons.title}</h1>
-    
+
       <p>{$i18n.neurons.text}</p>
-    
+
       <p>
         {$i18n.neurons.principal_is} "{principalText}"
       </p>
-      
+
       <NeuronCard />
     </section>
   </Layout>
