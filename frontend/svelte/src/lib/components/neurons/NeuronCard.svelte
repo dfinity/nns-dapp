@@ -3,17 +3,18 @@
   import Card from "../Card.svelte";
 </script>
 
+<!-- TODO https://dfinity.atlassian.net/browse/L2-218 -->
 <Card to="/#/neurons/one">
-  <div slot="start">
+  <div slot="start" class="lock">
     <h4>14225061177570733325</h4>
     <p class="lock">
-      <span class="lock-text white">Locked</span>
+      <span class="white">Locked</span>
       <IconLockClock size="s" />
     </p>
   </div>
 
-  <div slot="end" class="align-right">
-    <h3 class="amount">2.00</h3>
+  <div slot="end" class="currency">
+    <h3>2.00</h3>
     <span class="currency">ICP</span>
     <p class="stake">Stake</p>
   </div>
@@ -25,46 +26,39 @@
   h4,
   h3 {
     line-height: 1.3;
+    margin-bottom: 0;
   }
 
-  p {
-    margin: 0;
-  }
-
-  .lock {
+  .lock p {
     display: flex;
     align-items: center;
     gap: 0.3rem;
-  }
 
-  .lock-text {
-    font-size: 1.1rem;
+    & span {
+      font-size: 1.1rem;
+    }
   }
 
   .white {
     color: var(--background-contrast);
   }
 
-  .align-right {
+  .currency {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+
+    & span {
+      font-size: 0.6rem;
+    }
+
+    & p {
+      font-size: 1.1rem;
+      margin-top: 5px;
+    }
   }
 
   .duration {
     font-size: 1.1rem;
-  }
-
-  .amount {
-    margin-bottom: 0;
-  }
-
-  .stake {
-    font-size: 1.1rem;
-    margin-top: 5px;
-  }
-
-  .currency {
-    font-size: 0.6rem;
   }
 </style>

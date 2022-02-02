@@ -14,6 +14,7 @@
   });
 
   let principalText: string = "";
+  console.log(process.env.REDIRECT_TO_LEGACY);
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
     ({ principal }: AuthStore) => (principalText = principal?.toText() ?? "")
@@ -22,16 +23,18 @@
   onDestroy(unsubscribe);
 </script>
 
-<Layout>
-  <section>
-    <h1>{$i18n.neurons.title}</h1>
-
-    <p>{$i18n.neurons.text}</p>
-
-    <p>
-      {$i18n.neurons.principal_is} "{principalText}"
-    </p>
-
-    <NeuronCard />
-  </section>
-</Layout>
+{#if !process.env.REDIRECT_TO_LEGACY}
+  <Layout>
+    <section>
+      <h1>{$i18n.neurons.title}</h1>
+    
+      <p>{$i18n.neurons.text}</p>
+    
+      <p>
+        {$i18n.neurons.principal_is} "{principalText}"
+      </p>
+      
+      <NeuronCard />
+    </section>
+  </Layout>
+{/if}
