@@ -22,9 +22,7 @@ class NeuronVotesCard extends StatelessWidget {
                 children: [
                   Text(
                     "Voting History",
-                    style: Responsive.isMobile(context)
-                        ? context.textTheme.headline6
-                        : context.textTheme.headline3,
+                    style: context.textTheme.headline3,
                   ),
                   SmallFormDivider(),
                   if (neuron.recentBallots.isEmpty)
