@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-
 import '../../nns_dapp.dart';
 import 'responsive.dart';
 
