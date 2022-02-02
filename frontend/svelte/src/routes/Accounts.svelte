@@ -8,6 +8,7 @@
   import AccountCard from "../lib/components/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import Spinner from "../lib/components/Spinner.svelte";
+  import Footer from "../lib/components/Footer.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -22,8 +23,15 @@
     async (accounts: AccountsStore) => (main = accounts?.main)
   );
 
+  // TODO: TBD add Story Number Here
+  const createNewTransaction = () => alert('New Transaction');
+  // TODO: TBD add Story Number Here
+  const addAccount = () => alert('Add Account');
+
   onDestroy(unsubscribe);
 </script>
+
+
 
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
@@ -38,6 +46,14 @@
 
       {#if main}
         <AccountCard account={main}>{$i18n.accounts.main}</AccountCard>
+        <Footer>
+          <button
+            on:click={createNewTransaction}
+          >New Transaction</button>
+          <button
+            on:click={addAccount}
+          >Add Account</button>
+        </Footer>
       {:else}
         <Spinner />
       {/if}

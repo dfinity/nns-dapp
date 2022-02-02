@@ -4,6 +4,7 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
   import { i18n } from "../lib/stores/i18n";
+import Footer from "../lib/components/Footer.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -19,6 +20,9 @@
   );
 
   onDestroy(unsubscribe);
+
+  // TODO: TBD add Story Number Here
+  const stackNeurons = () => alert('Stack Neurons');
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -31,6 +35,12 @@
       <p>
         {$i18n.neurons.principal_is} "{principalText}"
       </p>
+
+      <Footer>
+        <button
+          on:click={stackNeurons}
+        >Stack Neurons</button>
+      </Footer>
     </section>
   </Layout>
 {/if}
