@@ -1,6 +1,10 @@
 # Changelog
 
-## Proposal ...
+## Proposal 42027
+* Add custom followees
+* Update styling
+* Add principal to hardware wallet accounts page
+* Security and technical improvements
 
 ## Proposal 39269
 
