@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use candid::CandidType;
 use ic_base_types::{CanisterId, NodeId, PrincipalId, SubnetId};
 use ic_registry_subnet_type::SubnetType;
@@ -225,6 +226,7 @@ pub struct SetAuthorizedSubnetworkListArgs {
     pub subnets: Vec<SubnetId>,
 }
 
+// https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L79
 #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, Message)]
 pub struct UpdateNodeOperatorConfigPayload {
     /// The principal id of the node operator. This principal is the entity that
@@ -235,6 +237,15 @@ pub struct UpdateNodeOperatorConfigPayload {
     /// The remaining number of nodes that could be added by this Node Operator.
     #[prost(message, optional, tag = "2")]
     pub node_allowance: Option<u64>,
+
+    /// The ID of the data center where this Node Operator hosts nodes.
+    #[prost(message, optional, tag = "3")]
+    pub dc_id: Option<String>,
+
+    /// A map from node type to the number of nodes for which the associated
+    /// Node Provider should be rewarded.
+    #[prost(btree_map = "string, uint32", tag = "4")]
+    pub rewardable_nodes: BTreeMap<String, u32>,
 }
 
 // https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/protobuf/def/registry/node_rewards/v2/node_rewards.proto#L24
