@@ -11,9 +11,17 @@
   import { proposalsStore } from "../lib/stores/proposals.store";
   import InfiniteScroll from "../lib/components/InfiniteScroll.svelte";
   import ProposalCard from "../lib/components/ProposalCard.svelte";
+  import Spinner from "../lib/components/Spinner.svelte";
+
+  let loading: boolean = false;
 
   const findProposals = async () => {
+    loading = true;
+
+    // TODO: catch error
     await listProposals({ beforeProposal: lastProposalId() });
+
+    loading = false;
   };
 
   // TODO: To be removed once this page has been implemented
@@ -45,6 +53,19 @@
           <ProposalCard {proposalInfo} />
         {/each}
       </InfiniteScroll>
+
+      {#if loading}
+        <div class="spinner">
+          <Spinner />
+        </div>
+      {/if}
     </section>
   </Layout>
 {/if}
+
+<style lang="scss">
+  .spinner {
+    position: relative;
+    display: flex;
+  }
+</style>
