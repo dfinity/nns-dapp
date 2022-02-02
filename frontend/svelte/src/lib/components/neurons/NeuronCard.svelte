@@ -7,39 +7,44 @@
   };
 </script>
 
-<!-- TODO https://dfinity.atlassian.net/browse/L2-218 -->
-<Card role="link" on:click={goToDetail}>
+<!-- TODO L2-218 -->
+<Card role="link" on:click={goToDetail} ariaLabel="go to neuron details">
   <div slot="start" class="lock">
+    <!-- TODO data from props: L2-218 -->
     <h4>14225061177570733325</h4>
-    <p class="lock">
-      <span class="white">Locked</span>
+    <h5 class="white">
+      Locked
       <IconLockClock size="s" />
-    </p>
+    </h5>
   </div>
 
   <div slot="end" class="currency">
+    <!-- TODO use ICP component and data from props: L2-218 -->
     <h3>2.00</h3>
-    <span class="currency">ICP</span>
-    <p class="stake">Stake</p>
+    <span>ICP</span>
+    <h5>Stake</h5>
   </div>
 
+  <!-- TODO helper and data from props: L2-218 -->
   <p class="duration">3 Years, 64 Days Dissolve Delay</p>
 </Card>
 
 <style lang="scss">
   h4,
   h3 {
-    line-height: 1.3;
+    line-height: var(--line-height-standard);
+  }
+
+  h3 {
     margin-bottom: 0;
   }
 
-  .lock p {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-
-    & span {
-      font-size: 1.1rem;
+  .lock {
+    margin-bottom: 0;
+    h5 {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
   }
 
@@ -52,17 +57,13 @@
     flex-direction: column;
     align-items: flex-end;
 
+    // TODO to be removed by: L2-218
     & span {
-      font-size: 0.6rem;
-    }
-
-    & p {
-      font-size: 1.1rem;
-      margin-top: 5px;
+      font-size: var(--font-size-ultra-small);
     }
   }
 
   .duration {
-    font-size: 1.1rem;
+    font-size: var(--font-size-h5);
   }
 </style>

@@ -23,7 +23,7 @@ describe("Neurons", () => {
     const { container, getByText } = render(Neurons);
 
     const title = container.querySelector("h1");
-    expect(title).not.toBeUndefined();
+    expect(title).not.toBeNull();
     expect(title).toBeVisible();
     expect(title).toHaveTextContent("Neurons");
 
@@ -49,6 +49,6 @@ describe("Neurons", () => {
     const { container } = render(Neurons);
 
     const anchor = container.querySelector("a");
-    expect(anchor).not.toBeUndefined();
+    expect(anchor).not.toBeNull();
   });
 });

@@ -1,10 +1,14 @@
 <script lang="ts">
-  export let role: string = undefined;
+  // check testing for firing events
+  export let role: string | undefined = undefined;
+  export let ariaLabel: string | undefined = undefined;
 
-  const clickableRoles = ["button", "link"];
+  let clickable: boolean = false;
+
+  $: clickable = ["button", "link"].includes(role);
 </script>
 
-<article {role} on:click class={clickableRoles.includes(role) && "clickable"}>
+<article {role} on:click class:clickable aria-label={ariaLabel}>
   <div>
     <slot name="start" />
     <slot name="end" />
@@ -14,6 +18,8 @@
 </article>
 
 <style lang="scss">
+  @use "../themes/mixins/interaction";
+
   article {
     display: block;
     text-decoration: none;
@@ -28,9 +34,13 @@
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
   }
 
-  .clickable:hover {
-    background: var(--background-hover);
-    cursor: pointer;
+  .clickable {
+    @include interaction.tappable;
+
+    &:focus,
+    &:hover {
+      background: var(--background-hover);
+    }
   }
 
   div {
