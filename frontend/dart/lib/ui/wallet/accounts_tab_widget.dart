@@ -76,22 +76,19 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
                             children: [
                               Text(
                                 "Accounts",
                                 textAlign: TextAlign.left,
-                                style: Responsive.isDesktop(context) |
-                                        Responsive.isTablet(context)
-                                    ? context.textTheme.headline1
-                                    : context.textTheme.headline3,
+                                style: context.textTheme.headline1,
                               ),
                               BalanceDisplayWidget(
                                 amount: wallets.fold(ICP.zero,
                                     (curr, next) => curr + next.balance),
-                                amountSize: Responsive.isDesktop(context) |
-                                        Responsive.isTablet(context)
-                                    ? 40
-                                    : 24,
+                                amountSize:
+                                    Responsive.isMobile(context) ? 24 : 32,
                                 icpLabelSize: 25,
                               ),
                             ],

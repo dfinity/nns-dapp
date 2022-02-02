@@ -53,46 +53,28 @@ class _IncreaseDissolveDelayWidgetState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Neuron ID',
-                          style: Responsive.isMobile(context)
-                              ? context.textTheme.headline4
-                              : context.textTheme.headline3),
+                      Text('Neuron ID', style: context.textTheme.headline3),
                       VerySmallFormDivider(),
                       SelectableText(
                         widget.neuron.identifier,
-                        style: Responsive.isMobile(context)
-                            ? context.textTheme.bodyText2!
-                                .copyWith(fontSize: 16)
-                            : context.textTheme.bodyText1!
-                                .copyWith(fontSize: 24),
+                        style: context.textTheme.bodyText1,
                       ),
                       TallFormDivider(),
-                      Text('Balance',
-                          style: Responsive.isMobile(context)
-                              ? context.textTheme.headline4
-                              : context.textTheme.headline3),
+                      Text('Balance', style: context.textTheme.headline3),
                       VerySmallFormDivider(),
                       RichText(
                           text: TextSpan(
                               text: widget.neuron.stake.asString(),
-                              style: Responsive.isMobile(context)
-                                  ? context.textTheme.bodyText2
-                                  : context.textTheme.bodyText1!
-                                      .copyWith(fontSize: 24),
+                              style: context.textTheme.bodyText1,
                               children: [
                             TextSpan(
                               text: " ICP Stake",
-                              style: Responsive.isMobile(context)
-                                  ? context.textTheme.bodyText2
-                                  : context.textTheme.bodyText1!
-                                      .copyWith(fontSize: 20),
+                              style: context.textTheme.bodyText1,
                             )
                           ])),
                       TallFormDivider(),
                       Text("Current Dissolve Delay",
-                          style: Responsive.isMobile(context)
-                              ? context.textTheme.headline4
-                              : context.textTheme.headline3),
+                          style: context.textTheme.headline3),
                       VerySmallFormDivider(),
                       RichText(
                           text: TextSpan(
@@ -100,10 +82,7 @@ class _IncreaseDissolveDelayWidgetState
                             .toInt()
                             .seconds
                             .yearsDayHourMinuteSecondFormatted(),
-                        style: Responsive.isMobile(context)
-                            ? context.textTheme.bodyText2
-                            : context.textTheme.bodyText1!
-                                .copyWith(fontSize: 24),
+                        style: context.textTheme.bodyText1,
                       )),
                     ],
                   ),
@@ -261,9 +240,7 @@ class DissolveDelayWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 42.0),
           child: Text(
             "Dissolve Delay",
-            style: Responsive.isMobile(context)
-                ? context.textTheme.headline6
-                : context.textTheme.headline3,
+            style: context.textTheme.headline3,
           ),
         ),
         SizedBox(

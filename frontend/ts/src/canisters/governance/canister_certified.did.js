@@ -73,7 +73,18 @@ export const idlFactory = ({ IDL }) => {
     'total' : IDL.Nat64,
     'timestamp_seconds' : IDL.Nat64,
   });
-  const Spawn = IDL.Record({ 'new_controller' : IDL.Opt(IDL.Principal) });
+  const KnownNeuronData = IDL.Record({
+    'name' : IDL.Text,
+    'description' : IDL.Opt(IDL.Text),
+  });
+  const KnownNeuron = IDL.Record({
+    'id' : IDL.Opt(NeuronId),
+    'known_neuron_data' : IDL.Opt(KnownNeuronData),
+  });
+  const Spawn = IDL.Record({
+    'new_controller' : IDL.Opt(IDL.Principal),
+    'nonce' : IDL.Opt(IDL.Nat64),
+  });
   const Split = IDL.Record({ 'amount_e8s' : IDL.Nat64 });
   const Follow = IDL.Record({
     'topic' : IDL.Int32,
@@ -113,6 +124,7 @@ export const idlFactory = ({ IDL }) => {
     'vote' : IDL.Int32,
     'proposal' : IDL.Opt(NeuronId),
   });
+  const Merge = IDL.Record({ 'source_neuron_id' : IDL.Opt(NeuronId) });
   const DisburseToNeuron = IDL.Record({
     'dissolve_delay_seconds' : IDL.Nat64,
     'kyc_verified' : IDL.Bool,
@@ -133,6 +145,7 @@ export const idlFactory = ({ IDL }) => {
     'ClaimOrRefresh' : ClaimOrRefresh,
     'Configure' : Configure,
     'RegisterVote' : RegisterVote,
+    'Merge' : Merge,
     'DisburseToNeuron' : DisburseToNeuron,
     'MakeProposal' : Proposal,
     'MergeMaturity' : MergeMaturity,
@@ -180,6 +193,7 @@ export const idlFactory = ({ IDL }) => {
   const AddOrRemoveNodeProvider = IDL.Record({ 'change' : IDL.Opt(Change) });
   const Motion = IDL.Record({ 'motion_text' : IDL.Text });
   const Action = IDL.Variant({
+    'RegisterKnownNeuron' : KnownNeuron,
     'ManageNeuron' : ManageNeuron,
     'ExecuteNnsFunction' : ExecuteNnsFunction,
     'RewardNodeProvider' : RewardNodeProvider,
@@ -198,6 +212,9 @@ export const idlFactory = ({ IDL }) => {
         'summary' : IDL.Text,
       })
   );
+  const WaitForQuietState = IDL.Record({
+    'current_deadline_timestamp_seconds' : IDL.Nat64,
+  });
   const ProposalData = IDL.Record({
     'id' : IDL.Opt(NeuronId),
     'failure_reason' : IDL.Opt(GovernanceError),
@@ -210,11 +227,14 @@ export const idlFactory = ({ IDL }) => {
     'decided_timestamp_seconds' : IDL.Nat64,
     'proposal' : IDL.Opt(Proposal),
     'proposer' : IDL.Opt(NeuronId),
+    'wait_for_quiet_state' : IDL.Opt(WaitForQuietState),
     'executed_timestamp_seconds' : IDL.Nat64,
   });
   const Command_2 = IDL.Variant({
     'Spawn' : Spawn,
     'Split' : Split,
+    'Configure' : Configure,
+    'Merge' : Merge,
     'DisburseToNeuron' : DisburseToNeuron,
     'ClaimOrRefreshNeuron' : ClaimOrRefresh,
     'MergeMaturity' : MergeMaturity,
@@ -249,6 +269,7 @@ export const idlFactory = ({ IDL }) => {
     'followees' : IDL.Vec(IDL.Tuple(IDL.Int32, Followees)),
     'neuron_fees_e8s' : IDL.Nat64,
     'transfer' : IDL.Opt(NeuronStakeTransfer),
+    'known_neuron_data' : IDL.Opt(KnownNeuronData),
   });
   const Governance = IDL.Record({
     'default_followees' : IDL.Vec(IDL.Tuple(IDL.Int32, Followees)),
@@ -273,6 +294,10 @@ export const idlFactory = ({ IDL }) => {
     'result' : IDL.Opt(Result_1),
   });
   const Result_2 = IDL.Variant({ 'Ok' : Neuron, 'Err' : GovernanceError });
+  const Result_3 = IDL.Variant({
+    'Ok' : RewardNodeProviders,
+    'Err' : GovernanceError,
+  });
   const NeuronInfo = IDL.Record({
     'dissolve_delay_seconds' : IDL.Nat64,
     'recent_ballots' : IDL.Vec(BallotInfo),
@@ -281,10 +306,11 @@ export const idlFactory = ({ IDL }) => {
     'stake_e8s' : IDL.Nat64,
     'joined_community_fund_timestamp_seconds' : IDL.Opt(IDL.Nat64),
     'retrieved_at_timestamp_seconds' : IDL.Nat64,
+    'known_neuron_data' : IDL.Opt(KnownNeuronData),
     'voting_power' : IDL.Nat64,
     'age_seconds' : IDL.Nat64,
   });
-  const Result_3 = IDL.Variant({ 'Ok' : NeuronInfo, 'Err' : GovernanceError });
+  const Result_4 = IDL.Variant({ 'Ok' : NeuronInfo, 'Err' : GovernanceError });
   const ProposalInfo = IDL.Record({
     'id' : IDL.Opt(NeuronId),
     'status' : IDL.Int32,
@@ -293,6 +319,7 @@ export const idlFactory = ({ IDL }) => {
     'ballots' : IDL.Vec(IDL.Tuple(IDL.Nat64, Ballot)),
     'proposal_timestamp_seconds' : IDL.Nat64,
     'reward_event_round' : IDL.Nat64,
+    'deadline_timestamp_seconds' : IDL.Opt(IDL.Nat64),
     'failed_timestamp_seconds' : IDL.Nat64,
     'reject_cost_e8s' : IDL.Nat64,
     'latest_tally' : IDL.Opt(Tally),
@@ -301,6 +328,9 @@ export const idlFactory = ({ IDL }) => {
     'proposal' : IDL.Opt(Proposal),
     'proposer' : IDL.Opt(NeuronId),
     'executed_timestamp_seconds' : IDL.Nat64,
+  });
+  const ListKnownNeuronsResponse = IDL.Record({
+    'known_neurons' : IDL.Vec(KnownNeuron),
   });
   const ListNeurons = IDL.Record({
     'neuron_ids' : IDL.Vec(IDL.Nat64),
@@ -340,6 +370,7 @@ export const idlFactory = ({ IDL }) => {
     'ClaimOrRefresh' : ClaimOrRefreshResponse,
     'Configure' : IDL.Record({}),
     'RegisterVote' : IDL.Record({}),
+    'Merge' : IDL.Record({}),
     'DisburseToNeuron' : SpawnResponse,
     'MakeProposal' : MakeProposalResponse,
     'MergeMaturity' : MergeMaturityResponse,
@@ -360,32 +391,39 @@ export const idlFactory = ({ IDL }) => {
         [ClaimOrRefreshNeuronFromAccountResponse],
         [],
     ),
-    'get_full_neuron' : IDL.Func([IDL.Nat64], [Result_2]),
+    'get_full_neuron' : IDL.Func([IDL.Nat64], [Result_2], []),
     'get_full_neuron_by_id_or_subaccount' : IDL.Func(
         [NeuronIdOrSubaccount],
         [Result_2],
+        [],
     ),
-    'get_neuron_ids' : IDL.Func([], [IDL.Vec(IDL.Nat64)]),
-    'get_neuron_info' : IDL.Func([IDL.Nat64], [Result_3]),
+    'get_monthly_node_provider_rewards' : IDL.Func([], [Result_3], []),
+    'get_neuron_ids' : IDL.Func([], [IDL.Vec(IDL.Nat64)], []),
+    'get_neuron_info' : IDL.Func([IDL.Nat64], [Result_4], []),
     'get_neuron_info_by_id_or_subaccount' : IDL.Func(
         [NeuronIdOrSubaccount],
-        [Result_3],
+        [Result_4],
+        [],
     ),
-    'get_pending_proposals' : IDL.Func([], [IDL.Vec(ProposalInfo)]),
+    'get_pending_proposals' : IDL.Func([], [IDL.Vec(ProposalInfo)], []),
     'get_proposal_info' : IDL.Func(
         [IDL.Nat64],
         [IDL.Opt(ProposalInfo)],
+        [],
     ),
-    'list_neurons' : IDL.Func([ListNeurons], [ListNeuronsResponse]),
+    'list_known_neurons' : IDL.Func([], [ListKnownNeuronsResponse], []),
+    'list_neurons' : IDL.Func([ListNeurons], [ListNeuronsResponse], []),
     'list_proposals' : IDL.Func(
         [ListProposalInfo],
         [ListProposalInfoResponse],
+        [],
     ),
     'manage_neuron' : IDL.Func([ManageNeuron], [ManageNeuronResponse], []),
     'transfer_gtc_neuron' : IDL.Func([NeuronId, NeuronId], [Result], []),
     'update_node_provider' : IDL.Func(
         [UpdateNodeProvider],
         [Result],
+        [],
     ),
   });
 };
@@ -460,7 +498,18 @@ export const init = ({ IDL }) => {
     'total' : IDL.Nat64,
     'timestamp_seconds' : IDL.Nat64,
   });
-  const Spawn = IDL.Record({ 'new_controller' : IDL.Opt(IDL.Principal) });
+  const KnownNeuronData = IDL.Record({
+    'name' : IDL.Text,
+    'description' : IDL.Opt(IDL.Text),
+  });
+  const KnownNeuron = IDL.Record({
+    'id' : IDL.Opt(NeuronId),
+    'known_neuron_data' : IDL.Opt(KnownNeuronData),
+  });
+  const Spawn = IDL.Record({
+    'new_controller' : IDL.Opt(IDL.Principal),
+    'nonce' : IDL.Opt(IDL.Nat64),
+  });
   const Split = IDL.Record({ 'amount_e8s' : IDL.Nat64 });
   const Follow = IDL.Record({
     'topic' : IDL.Int32,
@@ -500,6 +549,7 @@ export const init = ({ IDL }) => {
     'vote' : IDL.Int32,
     'proposal' : IDL.Opt(NeuronId),
   });
+  const Merge = IDL.Record({ 'source_neuron_id' : IDL.Opt(NeuronId) });
   const DisburseToNeuron = IDL.Record({
     'dissolve_delay_seconds' : IDL.Nat64,
     'kyc_verified' : IDL.Bool,
@@ -520,6 +570,7 @@ export const init = ({ IDL }) => {
     'ClaimOrRefresh' : ClaimOrRefresh,
     'Configure' : Configure,
     'RegisterVote' : RegisterVote,
+    'Merge' : Merge,
     'DisburseToNeuron' : DisburseToNeuron,
     'MakeProposal' : Proposal,
     'MergeMaturity' : MergeMaturity,
@@ -567,6 +618,7 @@ export const init = ({ IDL }) => {
   const AddOrRemoveNodeProvider = IDL.Record({ 'change' : IDL.Opt(Change) });
   const Motion = IDL.Record({ 'motion_text' : IDL.Text });
   const Action = IDL.Variant({
+    'RegisterKnownNeuron' : KnownNeuron,
     'ManageNeuron' : ManageNeuron,
     'ExecuteNnsFunction' : ExecuteNnsFunction,
     'RewardNodeProvider' : RewardNodeProvider,
@@ -585,6 +637,9 @@ export const init = ({ IDL }) => {
         'summary' : IDL.Text,
       })
   );
+  const WaitForQuietState = IDL.Record({
+    'current_deadline_timestamp_seconds' : IDL.Nat64,
+  });
   const ProposalData = IDL.Record({
     'id' : IDL.Opt(NeuronId),
     'failure_reason' : IDL.Opt(GovernanceError),
@@ -597,11 +652,14 @@ export const init = ({ IDL }) => {
     'decided_timestamp_seconds' : IDL.Nat64,
     'proposal' : IDL.Opt(Proposal),
     'proposer' : IDL.Opt(NeuronId),
+    'wait_for_quiet_state' : IDL.Opt(WaitForQuietState),
     'executed_timestamp_seconds' : IDL.Nat64,
   });
   const Command_2 = IDL.Variant({
     'Spawn' : Spawn,
     'Split' : Split,
+    'Configure' : Configure,
+    'Merge' : Merge,
     'DisburseToNeuron' : DisburseToNeuron,
     'ClaimOrRefreshNeuron' : ClaimOrRefresh,
     'MergeMaturity' : MergeMaturity,
@@ -636,6 +694,7 @@ export const init = ({ IDL }) => {
     'followees' : IDL.Vec(IDL.Tuple(IDL.Int32, Followees)),
     'neuron_fees_e8s' : IDL.Nat64,
     'transfer' : IDL.Opt(NeuronStakeTransfer),
+    'known_neuron_data' : IDL.Opt(KnownNeuronData),
   });
   const Governance = IDL.Record({
     'default_followees' : IDL.Vec(IDL.Tuple(IDL.Int32, Followees)),

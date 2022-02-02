@@ -48,7 +48,7 @@ TextTheme nnsDappTextTheme(bool isMobile) {
         color: AppColors.gray100,
         fontWeight: FontWeight.normal),
     bodyText2: TextStyle(
-        fontSize: isMobile ? 10 : 14,
+        fontSize: isMobile ? 12 : 14,
         fontFamily: Fonts.circularBook,
         color: AppColors.gray200,
         fontWeight: FontWeight.normal),

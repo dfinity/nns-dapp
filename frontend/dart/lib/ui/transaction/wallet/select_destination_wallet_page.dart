@@ -172,35 +172,31 @@ class _AccountRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPressed,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                account.name,
-                style:
-                    Responsive.isDesktop(context) | Responsive.isTablet(context)
-                        ? context.textTheme.headline3
-                        : context.textTheme.headline4,
-              ),
-              BalanceDisplayWidget(
-                amount: account.balance,
-                amountSize:
-                    Responsive.isDesktop(context) | Responsive.isTablet(context)
-                        ? 30
-                        : 14,
-                icpLabelSize: 20,
-              ),
-            ],
-          ),
-          SmallFormDivider(),
-          AutoSizeText(
-            account.accountIdentifier,
-            style: context.textTheme.bodyText2,
-            selectable: false,
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(account.name, style: context.textTheme.headline3),
+                BalanceDisplayWidget(
+                  amount: account.balance,
+                  amountSize: Responsive.isMobile(context) ? 16 : 20,
+                  icpLabelSize: 20,
+                ),
+              ],
+            ),
+            SmallFormDivider(),
+            AutoSizeText(
+              account.accountIdentifier,
+              style: context.textTheme.bodyText1,
+              selectable: false,
+            ),
+          ],
+        ),
       ),
     );
   }

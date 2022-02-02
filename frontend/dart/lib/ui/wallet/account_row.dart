@@ -34,16 +34,14 @@ class AccountRow extends StatelessWidget {
                     Expanded(
                       child: Text(
                         account.name,
-                        style: Responsive.isMobile(context)
-                            ? context.textTheme.headline6
-                            : context.textTheme.headline3,
+                        style: context.textTheme.headline3,
                       ),
                     ),
                     Expanded(
                       child: BalanceDisplayWidget(
                         amount: account.balance,
-                        amountSize: Responsive.isMobile(context) ? 16 : 24,
-                        icpLabelSize: 25,
+                        amountSize: Responsive.isMobile(context) ? 16 : 20,
+                        icpLabelSize: 20,
                       ),
                     )
                   ],
@@ -53,7 +51,7 @@ class AccountRow extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(account.accountIdentifier,
-                          style: context.textTheme.bodyText2),
+                          style: context.textTheme.bodyText1),
                     ),
                     IconButton(
                         alignment: Alignment.center,

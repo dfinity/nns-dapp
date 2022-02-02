@@ -1,5 +1,6 @@
 <script>
   import Logout from "./Logout.svelte";
+  import { i18n } from "../stores/i18n";
 </script>
 
 <header>
@@ -9,7 +10,7 @@
     alt=""
     src="/assets/assets/gradient.jpg"
   />
-  <h4>NETWORK NERVOUS SYSTEM</h4>
+  <h4>{$i18n.header.title}</h4>
   <Logout />
 </header>
 
@@ -51,7 +52,7 @@
 
     text-align: center;
 
-    z-index: 1;
+    z-index: var(--z-index);
 
     line-height: inherit;
   }

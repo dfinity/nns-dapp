@@ -3,29 +3,45 @@ import { AuthClient } from "@dfinity/auth-client";
 import type { Principal } from "@dfinity/principal";
 
 export interface AuthStore {
-  signedIn: boolean | undefined;
-  principal: Principal | undefined;
+  principal: Principal | undefined | null;
 }
 
 const identityProvider: string = process.env.IDENTITY_SERVICE_URL;
 
-// TODO(L2-178): refactor and comment auth store
-
-export const initAuthStore = () => {
+/**
+ * A store to handle authentication and the principal of the user.
+ *
+ * - sync: query auth-client to get the status of the authentication
+ * a. if authenticated only, set principal in the global state
+ * b. if not authenticated, set null in store
+ *
+ * the sync function is performed when the app boots and on any change in the local storage (see <Guard/>)
+ *
+ * note: auth-client is initialized with an anonymous principal. By querying "isAuthenticated", the library checks for a valid chain and also that the principal is not anonymous.
+ *
+ * - signIn: log in method flow. started with a user interaction ("click on a button")
+ *
+ * - signOut: call auth-client log out and set null in the store. started with a user interaction ("click on a button")
+ *
+ * note: clearing the local storage does not happen in the state management but afterwards in its caller function (see <Logout/>)
+ *
+ */
+const initAuthStore = () => {
   const { subscribe, set, update } = writable<AuthStore>({
-    signedIn: undefined,
     principal: undefined,
   });
 
   return {
     subscribe,
 
-    init: async () => {
+    sync: async () => {
       const authClient: AuthClient = await AuthClient.create();
+      const isAuthenticated: boolean = await authClient.isAuthenticated();
 
       set({
-        signedIn: await authClient.isAuthenticated(),
-        principal: authClient.getIdentity().getPrincipal(),
+        principal: isAuthenticated
+          ? authClient.getIdentity().getPrincipal()
+          : null,
       });
     },
 
@@ -39,7 +55,6 @@ export const initAuthStore = () => {
           onSuccess: () => {
             update((state: AuthStore) => ({
               ...state,
-              signedIn: true,
               principal: authClient.getIdentity().getPrincipal(),
             }));
 
@@ -56,8 +71,7 @@ export const initAuthStore = () => {
 
       update((state: AuthStore) => ({
         ...state,
-        signedIn: false,
-        principal: undefined,
+        principal: null,
       }));
     },
   };

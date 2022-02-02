@@ -136,6 +136,9 @@ class ServiceApi {
   @JS("detachCanister")
   external Promise<double> detachCanister(DetachCanisterRequest request);
 
+  @JS("followeeSuggestions")
+  external Promise<dynamic> followeeSuggestions(bool certified);
+
   @JS("principalToAccountIdentifier")
   external String principalToAccountIdentifier(String principal);
 }

@@ -59,15 +59,15 @@ class TransactionRow extends StatelessWidget {
               ),
               VerySmallFormDivider(),
               Text(dateFormatter.format(transaction.date),
-                  style: context.textTheme.bodyText2),
+                  style: context.textTheme.bodyText1),
               VerySmallFormDivider(),
               if (isReceive)
                 SelectableText("Source: ${transaction.from}",
-                    style: context.textTheme.bodyText2),
+                    style: context.textTheme.bodyText1),
               if (isSend)
                 SelectableText(
                   "To: ${transaction.to}",
-                  style: context.textTheme.bodyText2,
+                  style: context.textTheme.bodyText1,
                 ),
               SizedBox(
                 width: 20,

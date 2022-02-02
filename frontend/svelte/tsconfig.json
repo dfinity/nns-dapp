@@ -1,5 +1,10 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "module": "es2020",
+    "lib": ["es2020", "webworker", "DOM", "DOM.Iterable"],
+    "resolveJsonModule": true
+  },
   "include": ["src/**/*"],
   "exclude": [
     "node_modules/*",

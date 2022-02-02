@@ -5,12 +5,23 @@
   --padding: 10px;
   --border-radius: 10px;
 
+  --z-index: 1;
+
+  --section-max-width: 800px;
+
   --background: #272929;
   --background-rgb: 39, 41, 41;
   --background-contrast: #ffffff;
   --background-contrast-rgb: 255, 255, 255;
   --background-shade: #222424;
   --background-tint: #3d3e3e;
+
+  --light-background: #ebebeb;
+  --light-background-rgb: 235, 235, 235;
+  --light-background-contrast: #000000;
+  --light-background-contrast-rgb: 0, 0, 0;
+  --light-background-shade: #cfcfcf;
+  --light-background-tint: #ededed;
 
   --gray-100-background: #2e3333;
   --gray-100-background-rgb: 46, 51, 51;

@@ -1,6 +1,7 @@
 <script lang="ts">
   import Header from "./Header.svelte";
   import Nav from "./Nav.svelte";
+  import Toasts from "./Toasts.svelte";
 </script>
 
 <Header />
@@ -11,6 +12,8 @@
   <slot />
 </main>
 
+<Toasts />
+
 <style lang="scss">
   main {
     position: absolute;
@@ -19,6 +22,6 @@
     right: 0;
     bottom: 0;
 
-    overflow: scroll;
+    overflow: auto;
   }
 </style>
