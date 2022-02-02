@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {afterUpdate, createEventDispatcher, onDestroy} from 'svelte';
+  import { afterUpdate, createEventDispatcher, onDestroy } from "svelte";
 
   export let options: IntersectionObserverInit = {
     rootMargin: "300px",

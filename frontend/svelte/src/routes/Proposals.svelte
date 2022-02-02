@@ -3,9 +3,14 @@
   import { onMount } from "svelte";
   import VotingFilters from "../lib/components/VotingFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import {emptyProposals, lastProposalId, listProposals} from '../lib/utils/proposals.utils';
+  import {
+    emptyProposals,
+    lastProposalId,
+    listProposals,
+  } from "../lib/utils/proposals.utils";
   import { proposalsStore } from "../lib/stores/proposals.store";
   import InfiniteScroll from "../lib/components/InfiniteScroll.svelte";
+  import ProposalCard from "../lib/components/ProposalCard.svelte";
 
   const findProposals = async () => {
     await listProposals({ beforeProposal: lastProposalId() });
@@ -36,8 +41,8 @@
       <VotingFilters />
 
       <InfiniteScroll on:nnsIntersect={findProposals}>
-        {#each $proposalsStore as { id }}
-          <p>Proposal: {id}</p>
+        {#each $proposalsStore as proposalInfo}
+          <ProposalCard {proposalInfo} />
         {/each}
       </InfiniteScroll>
     </section>
