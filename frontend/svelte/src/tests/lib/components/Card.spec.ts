@@ -14,30 +14,30 @@ describe("Card", () => {
   });
 
   it("should article with role and aria-label", () => {
-    const role = 'button';
-    const ariaLabel = 'go away';
+    const role = "button";
+    const ariaLabel = "go away";
     const { container } = render(Card, {
-      props: { role, ariaLabel }
+      props: { role, ariaLabel },
     });
 
     const article = container.querySelector("article");
     expect(article).not.toBeNull();
-    expect(article.getAttribute('role')).toBe(role);
-    expect(article.getAttribute('aria-label')).toBe(ariaLabel);
+    expect(article.getAttribute("role")).toBe(role);
+    expect(article.getAttribute("aria-label")).toBe(ariaLabel);
   });
 
   it("should forward the click event", (done) => {
     const handleClick = () => {
       done();
-    }
+    };
     const { container, component } = render(Card);
 
     component.$on("click", (e) => {
       done();
     });
-  
+
     const article = container.querySelector("article");
     expect(article).not.toBeNull();
     fireEvent.click(article);
-  })
+  });
 });
