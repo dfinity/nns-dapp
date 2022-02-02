@@ -3,12 +3,22 @@
   import { onMount } from "svelte";
   import VotingFilters from "../lib/components/VotingFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
+  import { lastProposalId, listProposals } from "../lib/utils/proposals.utils";
+  import { proposalsStore } from "../lib/stores/proposals.store";
+  import InfiniteScroll from "../lib/components/InfiniteScroll.svelte";
+
+  const findProposals = async () => {
+    await listProposals({ beforeProposal: lastProposalId() });
+  };
 
   // TODO: To be removed once this page has been implemented
-  onMount(() => {
+  onMount(async () => {
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace("/#/proposals");
     }
+
+    // TODO: no find here if store no empty
+    await findProposals();
   });
 </script>
 
@@ -21,7 +31,11 @@
 
       <VotingFilters />
 
-      <!-- TODO(#L2-206): list proposals and use filters -->
+      <InfiniteScroll on:nnsIntersect={findProposals}>
+        {#each $proposalsStore as { id }}
+          <p>Proposal: {id}</p>
+        {/each}
+      </InfiniteScroll>
     </section>
   </Layout>
 {/if}
