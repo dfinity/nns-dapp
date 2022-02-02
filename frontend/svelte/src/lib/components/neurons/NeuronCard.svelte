@@ -1,10 +1,14 @@
 <script lang="ts">
   import IconLockClock from "../../icons/IconLockClock.svelte";
   import Card from "../Card.svelte";
+
+  const goToDetail = () => {
+    // Go to the detail page of Neuron
+  };
 </script>
 
 <!-- TODO https://dfinity.atlassian.net/browse/L2-218 -->
-<Card to="/#/neurons/one">
+<Card role="link" on:click={goToDetail}>
   <div slot="start" class="lock">
     <h4>14225061177570733325</h4>
     <p class="lock">

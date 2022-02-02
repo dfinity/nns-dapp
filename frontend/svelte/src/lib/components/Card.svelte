@@ -1,30 +1,20 @@
 <script lang="ts">
-  export let to: string = undefined;
+  export let role: string = undefined;
+
+  const clickableRoles = ["button", "link"];
 </script>
 
-{#if to}
-  <a href={to}>
-    <div>
-      <slot name="start" />
-      <slot name="end" />
-    </div>
+<article {role} on:click class={clickableRoles.includes(role) && "clickable"}>
+  <div>
+    <slot name="start" />
+    <slot name="end" />
+  </div>
 
-    <slot />
-  </a>
-{:else}
-  <article>
-    <div>
-      <slot name="start" />
-      <slot name="end" />
-    </div>
-
-    <slot />
-  </article>
-{/if}
+  <slot />
+</article>
 
 <style lang="scss">
-  article,
-  a {
+  article {
     display: block;
     text-decoration: none;
 
@@ -38,8 +28,9 @@
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
   }
 
-  a:hover {
+  .clickable:hover {
     background: var(--background-hover);
+    cursor: pointer;
   }
 
   div {
