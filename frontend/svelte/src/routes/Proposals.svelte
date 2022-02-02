@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import VotingFilters from "../lib/components/VotingFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import { lastProposalId, listProposals } from "../lib/utils/proposals.utils";
+  import {emptyProposals, lastProposalId, listProposals} from '../lib/utils/proposals.utils';
   import { proposalsStore } from "../lib/stores/proposals.store";
   import InfiniteScroll from "../lib/components/InfiniteScroll.svelte";
 
@@ -17,7 +17,11 @@
       window.location.replace("/#/proposals");
     }
 
-    // TODO: no find here if store no empty
+    // Load proposals on mount only if none were fetched before
+    if (!emptyProposals()) {
+      return;
+    }
+
     await findProposals();
   });
 </script>

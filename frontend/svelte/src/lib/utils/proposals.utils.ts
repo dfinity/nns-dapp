@@ -3,6 +3,11 @@ import { GovernanceCanister, ProposalId, ProposalInfo } from "@dfinity/nns";
 import type { ListProposalsResponse } from "@dfinity/nns";
 import { proposalsStore } from "../stores/proposals.store";
 
+export const emptyProposals = (): boolean => {
+    const {length}: ProposalInfo[] = get(proposalsStore);
+    return length <= 0;
+}
+
 export const lastProposalId = (): ProposalId | undefined => {
   const proposals: ProposalInfo[] = get(proposalsStore);
   const { length, [length - 1]: last } = proposals;
