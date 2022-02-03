@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import VotingFilters from "../lib/components/VotingFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
+  import Footer from "../lib/components/Footer.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -22,6 +23,7 @@
       <VotingFilters />
 
       <!-- TODO(#L2-206): list proposals and use filters -->
+      <Footer />
     </section>
   </Layout>
 {/if}

@@ -23,15 +23,13 @@
     async (accounts: AccountsStore) => (main = accounts?.main)
   );
 
-  // TODO: TBD add Story Number Here
-  const createNewTransaction = () => alert('New Transaction');
-  // TODO: TBD add Story Number Here
-  const addAccount = () => alert('Add Account');
+  // TODO: TBD
+  const createNewTransaction = () => alert("New Transaction");
+  // TODO: TBD
+  const addAccount = () => alert("Add Account");
 
   onDestroy(unsubscribe);
 </script>
-
-
 
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
@@ -47,12 +45,10 @@
       {#if main}
         <AccountCard account={main}>{$i18n.accounts.main}</AccountCard>
         <Footer>
-          <button
-            on:click={createNewTransaction}
-          >{$i18n.accounts.new_transaction}</button>
-          <button
-            on:click={addAccount}
-          >{$i18n.accounts.add_account}</button>
+          <button on:click={createNewTransaction}
+            >{$i18n.accounts.new_transaction}</button
+          >
+          <button on:click={addAccount}>{$i18n.accounts.add_account}</button>
         </Footer>
       {:else}
         <Spinner />

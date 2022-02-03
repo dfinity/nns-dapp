@@ -11,8 +11,8 @@
     }
   });
 
-  // TODO: TBD add Story Number Here
-  const createOrLink = () => alert('Create or Link');
+  // TODO: TBD
+  const createOrLink = () => alert("Create or Link");
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -21,9 +21,8 @@
       <h1>{$i18n.canisters.title}</h1>
 
       <Footer>
-        <button
-          on:click={createOrLink}
-        >{$i18n.canisters.create_or_link}</button>
+        <button on:click={createOrLink}>{$i18n.canisters.create_or_link}</button
+        >
       </Footer>
     </section>
   </Layout>

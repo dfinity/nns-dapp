@@ -21,8 +21,8 @@
 
   onDestroy(unsubscribe);
 
-  // TODO: TBD add Story Number Here
-  const stackNeurons = () => alert('Stack Neurons');
+  // TODO: TBD
+  const stackNeurons = () => alert("Stack Neurons");
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -37,9 +37,7 @@
       </p>
 
       <Footer>
-        <button
-          on:click={stackNeurons}
-        >{$i18n.neurons.stack_neurons}</button>
+        <button on:click={stackNeurons}>{$i18n.neurons.stack_neurons}</button>
       </Footer>
     </section>
   </Layout>

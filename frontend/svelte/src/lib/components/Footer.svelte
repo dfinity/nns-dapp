@@ -1,14 +1,11 @@
 <script>
-  import Logout from "./Logout.svelte";
-  import { i18n } from "../stores/i18n";
-
-  console.log('$$slots', $$slots);
 </script>
 
 <footer>
-  <slot></slot>
+  <slot />
 </footer>
-<div class="place-holder"></div>
+
+<div class="place-holder" />
 
 <style lang="scss">
   @use "../themes/mixins/img";
@@ -30,7 +27,11 @@
     align-items: end;
 
     background: var(--background);
-    background: linear-gradient(0deg, rgba(11,12,12,1) 10%, rgba(11,12,12,0) 100%);
+    background: linear-gradient(
+      0deg,
+      rgba(11, 12, 12, 1) 10%,
+      rgba(11, 12, 12, 0) 100%
+    );
 
     // don't block parent scroll
     pointer-events: none;
@@ -46,13 +47,12 @@
     color: white;
     // </tmp_styles>
 
-    margin: 25px 10px;
+    margin: 25px 5px;
     width: 186px;
 
     @media (min-width: 768px) {
-      margin: 30px 40px;
+      margin: 30px 20px;
       width: 436px;
     }
   }
-
 </style>
