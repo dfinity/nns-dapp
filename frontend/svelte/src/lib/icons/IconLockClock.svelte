@@ -1,28 +1,6 @@
-<script lang="ts">
-  import type { Size } from "../types/shared";
-
-  export let size: Size = "m";
-
-  // icon has different height and width on 'l', therefore we keep different dicts.
-  const widths = {
-    s: 18,
-    m: 24,
-    l: 32,
-  };
-
-  const heights = {
-    s: 18,
-    m: 24,
-    l: 33,
-  };
-
-  $: width = widths[size];
-  $: height = heights[size];
-</script>
-
 <svg
-  {width}
-  {height}
+  width="18"
+  height="18"
   viewBox="0 0 32 33"
   fill="currentColor"
   xmlns="http://www.w3.org/2000/svg"

@@ -1,6 +1,5 @@
 <script lang="ts">
-  // check testing for firing events
-  export let role: string | undefined = undefined;
+  export let role: "link" | "button" | undefined = undefined;
   export let ariaLabel: string | undefined = undefined;
 
   let clickable: boolean = false;
@@ -21,7 +20,6 @@
   @use "../themes/mixins/interaction";
 
   article {
-    display: block;
     text-decoration: none;
 
     background: var(--background);

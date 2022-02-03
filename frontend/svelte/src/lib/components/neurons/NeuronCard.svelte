@@ -3,7 +3,7 @@
   import Card from "../Card.svelte";
 
   const goToDetail = () => {
-    // Go to the detail page of Neuron
+    // TODO L2-218: Go to the detail page of Neuron
   };
 </script>
 
