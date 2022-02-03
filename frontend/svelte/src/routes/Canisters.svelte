@@ -2,7 +2,6 @@
   import Layout from "../lib/components/Layout.svelte";
   import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
-  import Footer from "../lib/components/Footer.svelte";
   import SectionWithFooter from "../lib/components/SectionWithFooter.svelte";
 
   // TODO: To be removed once this page has been implemented
