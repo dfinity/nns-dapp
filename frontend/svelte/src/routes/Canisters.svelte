@@ -11,7 +11,7 @@
     }
   });
 
-  // TODO: TBD
+  // TODO: TBD https://dfinity.atlassian.net/browse/L2-227
   const createOrLink = () => alert("Create or Link");
 </script>
 

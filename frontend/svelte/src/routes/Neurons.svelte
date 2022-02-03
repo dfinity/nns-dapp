@@ -21,8 +21,8 @@
 
   onDestroy(unsubscribe);
 
-  // TODO: TBD
-  const stackNeurons = () => alert("Stack Neurons");
+  // TODO: TBD https://dfinity.atlassian.net/browse/L2-226
+  const stakeNeurons = () => alert("Stake Neurons");
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -37,7 +37,7 @@
       </p>
 
       <svelte:fragment slot="toolbar">
-        <button on:click={stackNeurons}>{$i18n.neurons.stake_neurons}</button>
+        <button on:click={stakeNeurons}>{$i18n.neurons.stake_neurons}</button>
       </svelte:fragment>
     </SectionWithToolbar>
   </Layout>

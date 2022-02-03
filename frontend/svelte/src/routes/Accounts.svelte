@@ -23,9 +23,9 @@
     async (accounts: AccountsStore) => (main = accounts?.main)
   );
 
-  // TODO: TBD
+  // TODO: TBD https://dfinity.atlassian.net/browse/L2-225
   const createNewTransaction = () => alert("New Transaction");
-  // TODO: TBD
+  // TODO: TBD https://dfinity.atlassian.net/browse/L2-224
   const addAccount = () => alert("Add Account");
 
   onDestroy(unsubscribe);
