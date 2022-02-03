@@ -49,6 +49,13 @@ main {
   color: var(--gray-200);
 }
 
+section {
+  padding: calc(2 * var(--padding)) calc(4 * var(--padding));
+
+  max-width: var(--section-max-width);
+  margin: 0 auto;
+}
+
 h1,
 h2,
 h3,
