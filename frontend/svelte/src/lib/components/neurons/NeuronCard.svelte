@@ -14,7 +14,7 @@
     <h4>14225061177570733325</h4>
     <h5 class="white">
       Locked
-      <IconLockClock size="s" />
+      <IconLockClock />
     </h5>
   </div>
 
