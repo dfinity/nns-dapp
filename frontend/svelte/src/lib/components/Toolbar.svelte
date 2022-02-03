@@ -26,10 +26,13 @@
 
       margin: 25px 5px;
       width: 186px;
+      font-size: var(--font-size-h5);
 
       @media (min-width: 768px) {
         margin: 30px 20px;
         width: 436px;
+
+        font-size: var(--font-size-h4);
       }
       // </tmp_styles>
     }
