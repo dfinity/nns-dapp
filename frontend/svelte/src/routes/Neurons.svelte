@@ -37,7 +37,7 @@
       </p>
 
       <svelte:fragment slot="toolbar">
-        <button on:click={stackNeurons}>{$i18n.neurons.stack_neurons}</button>
+        <button on:click={stackNeurons}>{$i18n.neurons.stake_neurons}</button>
       </svelte:fragment>
     </SectionWithToolbar>
   </Layout>

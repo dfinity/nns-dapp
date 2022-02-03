@@ -42,7 +42,7 @@ interface I18nNeurons {
   title: string;
   text: string;
   principal_is: string;
-  stack_neurons: string;
+  stake_neurons: string;
 }
 
 interface I18nVoting {
