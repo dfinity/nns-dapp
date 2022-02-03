@@ -11,9 +11,7 @@ class TopicCardName extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       followees.topic.name,
-      style: Responsive.isMobile(context)
-          ? context.textTheme.headline6
-          : context.textTheme.headline3,
+      style: context.textTheme.headline3,
       textAlign: TextAlign.left,
     );
   }

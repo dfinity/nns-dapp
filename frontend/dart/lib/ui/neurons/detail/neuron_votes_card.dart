@@ -1,5 +1,4 @@
 import 'package:nns_dapp/ui/_components/form_utils.dart';
-import 'package:nns_dapp/ui/_components/responsive.dart';
 import '../../../nns_dapp.dart';
 import 'proposal_summary_widget.dart';
 
@@ -22,9 +21,7 @@ class NeuronVotesCard extends StatelessWidget {
                 children: [
                   Text(
                     "Voting History",
-                    style: Responsive.isMobile(context)
-                        ? context.textTheme.headline6
-                        : context.textTheme.headline3,
+                    style: context.textTheme.headline3,
                   ),
                   SmallFormDivider(),
                   if (neuron.recentBallots.isEmpty)
