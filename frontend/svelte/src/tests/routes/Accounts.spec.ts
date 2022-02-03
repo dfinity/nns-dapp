@@ -38,7 +38,7 @@ describe("Accounts", () => {
   it("should render title and account icp", () => {
     const { container } = render(Accounts);
 
-    const titleRow = container.querySelector("section > div");
+    const titleRow = container.querySelector("section  .title");
 
     expect(titleRow.textContent).toEqual(
       `Accounts ${formatICP(mockMainAccount.balance.toE8s())} ICP`
