@@ -3,16 +3,27 @@
   import { quintOut } from "svelte/easing";
   import IconClose from "../icons/IconClose.svelte";
   import { createEventDispatcher } from "svelte";
+  import IconBack from "../icons/IconBack.svelte";
+  import { i18n } from "../stores/i18n";
 
   export let visible: boolean = false;
+  export let theme: "dark" | "light" = "light";
+  // There is no way to know to know whether a parent is listening to the "nnsBack" event
+  // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
+  export let showBackButton: boolean = false;
+
+  let dark: boolean;
+  $: dark = theme === "dark";
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
+  const back = () => dispatch("nnsBack");
 </script>
 
 {#if visible}
   <div
     class="modal"
+    class:dark
     transition:fade
     role="dialog"
     aria-labelledby="modalTitle"
@@ -24,9 +35,15 @@
       class="wrapper"
     >
       <div class="toolbar">
-        <h2 id="modalTitle"><slot name="title" /></h2>
-
-        <button on:click|stopPropagation={close} aria-label="Close"
+        {#if showBackButton}
+          <button
+            class="back"
+            on:click|stopPropagation={back}
+            aria-label={$i18n.modals.back}><IconBack /></button
+          >
+        {/if}
+        <h3 id="modalTitle"><slot name="title" /></h3>
+        <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
           ><IconClose /></button
         >
       </div>
@@ -46,6 +63,28 @@
     inset: 0;
 
     z-index: calc(var(--z-index) + 998);
+
+    &.dark {
+      color: var(--background-contrast);
+
+      .wrapper {
+        background: none;
+      }
+
+      .toolbar {
+        background: var(--gray-50-background);
+        box-shadow: 0 2px 8px var(--background);
+
+        h3,
+        button {
+          color: var(--background-contrast);
+        }
+      }
+
+      .content {
+        background: var(--gray-50-background);
+      }
+    }
   }
 
   .backdrop {
@@ -85,20 +124,23 @@
     background: var(--gray-100);
     color: var(--gray-800);
 
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: var(--icon-width) 1fr var(--icon-width);
 
-    h2 {
+    h3 {
       color: inherit;
       font-weight: 400;
       margin-bottom: 0;
       line-height: 1.5;
+      text-align: center;
+      grid-column-start: 2;
     }
 
     button {
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 0;
 
       &:active,
       &:focus,
