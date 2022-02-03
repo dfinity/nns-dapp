@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Footer from "../lib/components/Footer.svelte";
+  import SectionWithFooter from "../lib/components/SectionWithFooter.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -17,13 +18,13 @@
 
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
-    <section>
+    <SectionWithFooter>
       <h1>{$i18n.canisters.title}</h1>
 
-      <Footer>
+      <svelte:fragment slot="footer">
         <button on:click={createOrLink}>{$i18n.canisters.create_or_link}</button
         >
-      </Footer>
-    </section>
+      </svelte:fragment>
+    </SectionWithFooter>
   </Layout>
 {/if}

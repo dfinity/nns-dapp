@@ -4,7 +4,7 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
   import { i18n } from "../lib/stores/i18n";
-  import Footer from "../lib/components/Footer.svelte";
+  import SectionWithFooter from "../lib/components/SectionWithFooter.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -27,7 +27,7 @@
 
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
-    <section>
+    <SectionWithFooter>
       <h1>{$i18n.neurons.title}</h1>
 
       <p>{$i18n.neurons.text}</p>
@@ -36,9 +36,9 @@
         {$i18n.neurons.principal_is} "{principalText}"
       </p>
 
-      <Footer>
+      <svelte:fragment slot="footer">
         <button on:click={stackNeurons}>{$i18n.neurons.stack_neurons}</button>
-      </Footer>
-    </section>
+      </svelte:fragment>
+    </SectionWithFooter>
   </Layout>
 {/if}

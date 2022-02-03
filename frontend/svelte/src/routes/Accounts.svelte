@@ -8,7 +8,7 @@
   import AccountCard from "../lib/components/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import Spinner from "../lib/components/Spinner.svelte";
-  import Footer from "../lib/components/Footer.svelte";
+  import SectionWithFooter from "../lib/components/SectionWithFooter.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -33,7 +33,7 @@
 
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
-    <section>
+    <SectionWithFooter>
       <div class="title">
         <h1>{$i18n.accounts.title}</h1>
 
@@ -44,16 +44,19 @@
 
       {#if main}
         <AccountCard account={main}>{$i18n.accounts.main}</AccountCard>
-        <Footer>
+      {:else}
+        <Spinner />
+      {/if}
+
+      <svelte:fragment slot="footer">
+        {#if main}
           <button on:click={createNewTransaction}
             >{$i18n.accounts.new_transaction}</button
           >
           <button on:click={addAccount}>{$i18n.accounts.add_account}</button>
-        </Footer>
-      {:else}
-        <Spinner />
-      {/if}
-    </section>
+        {/if}
+      </svelte:fragment>
+    </SectionWithFooter>
   </Layout>
 {/if}
 
