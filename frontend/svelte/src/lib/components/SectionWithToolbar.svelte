@@ -20,7 +20,7 @@
     right: 0;
 
     // wrapper for scrollable content
-    & > .wrapper {
+    .wrapper {
       position: absolute;
       top: 0;
       bottom: 0;
@@ -28,7 +28,7 @@
       right: 0;
       overflow: auto;
 
-      & > .content {
+      .content {
         padding: calc(2 * var(--padding)) calc(4 * var(--padding));
         // because of bottom gradient
         padding-bottom: var(--section-toolbar-height);
