@@ -59,7 +59,7 @@
     z-index: calc(var(--z-index) + 999);
 
     @media (min-width: 880px) {
-      max-width: var(--section-max-width);
+      max-width: var(--section-content-max-width);
     }
 
     &.error {
