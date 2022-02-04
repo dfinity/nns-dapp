@@ -4,7 +4,7 @@
   export let inputId: string;
   export let checked: boolean;
 
-  export let color: "dark" | "light" = "light";
+  export let theme: "dark" | "light" = "light";
   export let text: "block" | "inline" = "inline";
 
   export let selector: string | undefined = undefined;
@@ -19,7 +19,7 @@
 
 <div
   on:click|preventDefault={onClick}
-  class={`checkbox ${color} ${selector || ""}`}
+  class={`checkbox ${theme} ${selector || ""}`}
 >
   <label for={inputId} class={text}><slot /></label>
   <input
