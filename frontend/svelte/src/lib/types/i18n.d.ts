@@ -80,6 +80,10 @@ interface I18nProposals {
   failed: string;
 }
 
+interface I18nModals {
+  back: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -93,4 +97,5 @@ interface I18n {
   topics: I18nTopics;
   rewards: I18nRewards;
   proposals: I18nProposals;
+  modals: I18nModals;
 }

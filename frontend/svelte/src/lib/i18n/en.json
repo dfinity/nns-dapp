@@ -65,5 +65,8 @@
     "accepted": "Adopted",
     "executed": "Executed",
     "failed": "Failed"
+  },
+  "modals": {
+    "back": "Back"
   }
 }
