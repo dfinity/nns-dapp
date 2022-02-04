@@ -98,7 +98,7 @@ describe("Checkbox", () => {
 
   it("should render a dark container", () => {
     const { container } = render(Checkbox, {
-      props: { ...props, color: "dark" },
+      props: { ...props, theme: "dark" },
     });
 
     const div: HTMLDivElement | null = container.querySelector("div.checkbox");
