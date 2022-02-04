@@ -13,6 +13,7 @@
   <button
     on:click={copyToClipboard}
     aria-label={$i18n.accounts.copy_identifier}
+    class="icon-only"
   >
     <IconCopy />
   </button>
@@ -25,24 +26,5 @@
 
   p {
     margin: 0;
-  }
-
-  button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    vertical-align: bottom;
-
-    padding: calc(var(--padding) / 2);
-
-    border-radius: 50%;
-
-    transition: background 0.2s;
-
-    &:hover,
-    &:active {
-      background: var(--gray-50-background);
-    }
   }
 </style>

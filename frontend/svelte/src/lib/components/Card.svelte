@@ -1,4 +1,13 @@
-<article>
+<script lang="ts">
+  export let role: "link" | "button" | undefined = undefined;
+  export let ariaLabel: string | undefined = undefined;
+
+  let clickable: boolean = false;
+
+  $: clickable = ["button", "link"].includes(role);
+</script>
+
+<article {role} on:click class:clickable aria-label={ariaLabel}>
   <div>
     <slot name="start" />
     <slot name="end" />
@@ -8,7 +17,11 @@
 </article>
 
 <style lang="scss">
+  @use "../themes/mixins/interaction";
+
   article {
+    text-decoration: none;
+
     background: var(--background);
     color: var(--gray-50);
 
@@ -17,6 +30,15 @@
     border-radius: var(--border-radius);
 
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
+  }
+
+  .clickable {
+    @include interaction.tappable;
+
+    &:focus,
+    &:hover {
+      background: var(--background-hover);
+    }
   }
 
   div {
@@ -30,9 +52,5 @@
     @media (max-width: 768px) {
       display: block;
     }
-  }
-
-  article :global(p) {
-    margin: 0;
   }
 </style>

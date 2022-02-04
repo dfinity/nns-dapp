@@ -22,6 +22,14 @@ describe("Modal", () => {
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
+  it("should display a dark modal", () => {
+    const { container } = render(Modal, {
+      props: { visible: true, theme: "dark" },
+    });
+
+    expect(container.querySelector("div.modal.dark")).not.toBeNull();
+  });
+
   it("should be an accessible modal", () => {
     const { container } = render(Modal, {
       props,
@@ -68,7 +76,7 @@ describe("Modal", () => {
       container.querySelector("div.toolbar");
 
     expect(toolbar).not.toBeNull();
-    expect(toolbar.querySelector("h2")).not.toBeNull();
+    expect(toolbar.querySelector("h3")).not.toBeNull();
     expect(toolbar.querySelector("button")).not.toBeNull();
   });
 
@@ -106,7 +114,24 @@ describe("Modal", () => {
       done();
     });
 
-    const button: HTMLButtonElement | null = container.querySelector("button");
+    const button: HTMLButtonElement | null = container.querySelector(
+      'button[aria-label="Close"]'
+    );
+    fireEvent.click(button);
+  });
+
+  it("should trigger back event on click on back button", (done) => {
+    const { container, component } = render(Modal, {
+      props: { visible: true, showBackButton: true },
+    });
+
+    component.$on("nnsBack", (e) => {
+      done();
+    });
+
+    const button: HTMLButtonElement | null = container.querySelector(
+      'button[aria-label="Back"]'
+    );
     fireEvent.click(button);
   });
 });
