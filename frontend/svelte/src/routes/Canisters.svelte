@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Layout from "../lib/components/Layout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/Toolbar.svelte";

@@ -1,14 +1,14 @@
 <script lang="ts">
-  import Layout from "../lib/components/Layout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AccountsStore, accountsStore } from "../lib/stores/accounts.store";
   import type { Account } from "../lib/types/account";
-  import ICP from "../lib/components/ICP.svelte";
-  import AccountCard from "../lib/components/AccountCard.svelte";
+  import ICP from "../lib/components/ic/ICP.svelte";
+  import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import Spinner from "../lib/components/Spinner.svelte";
   import Toolbar from "../lib/components/Toolbar.svelte";
+  import Spinner from "../lib/components/ui/Spinner.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {

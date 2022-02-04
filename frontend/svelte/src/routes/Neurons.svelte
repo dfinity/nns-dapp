@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Layout from "../lib/components/Layout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
