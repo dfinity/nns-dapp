@@ -10,31 +10,35 @@
     // enable scrolling
     pointer-events: none;
 
+    margin: 0 auto calc(2 * var(--padding));
+
     display: flex;
     justify-content: center;
     align-items: end;
 
+    @media (min-width: 300px) {
+      min-width: 280px;
+      width: 70%;
+    }
+
+    @media (min-width: 768px) {
+      margin-bottom: calc(3 * var(--padding));
+      // same as section
+      padding: 0 calc(3 * var(--padding));
+    }
+
     // buttons
-    & > :global(button) {
+    :global(button) {
       pointer-events: all;
 
-      // TODO: remove <tmp_styles>
-      background: var(--blue-400);
-      padding: 10px;
-      border-radius: 10px;
-      color: white;
-
-      margin: 25px 5px;
-      width: 186px;
-      font-size: var(--font-size-h5);
+      flex: 1 1;
+      margin: 0 calc(0.5 * var(--padding));
+      max-width: 60%;
 
       @media (min-width: 768px) {
-        margin: 30px 20px;
-        width: 436px;
-
-        font-size: var(--font-size-h4);
+        margin: 0 calc(2 * var(--padding));
+        max-width: 406px;
       }
-      // </tmp_styles>
     }
   }
 </style>
