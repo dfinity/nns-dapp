@@ -9,6 +9,7 @@ interface I18nCore {
 
 interface I18nError {
   auth_sync: string;
+  sign_in: string;
 }
 
 interface I18nNavigation {

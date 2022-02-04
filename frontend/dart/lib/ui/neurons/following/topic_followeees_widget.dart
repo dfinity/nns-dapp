@@ -220,10 +220,7 @@ class EnterFolloweeWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text("Neuron ID",
-                        style: Responsive.isMobile(context)
-                            ? context.textTheme.headline6
-                            : context.textTheme.headline3),
+                    Text("Neuron ID", style: context.textTheme.headline3),
                     DebouncedValidatedFormField(addressField),
                     Center(
                       child: ValidFieldsSubmitButton(
@@ -257,9 +254,7 @@ class EnterFolloweeWidget extends StatelessWidget {
                   children: [
                     Text(
                       "Options for Following",
-                      style: Responsive.isMobile(context)
-                          ? context.textTheme.headline6
-                          : context.textTheme.headline3,
+                      style: context.textTheme.headline3,
                       textAlign: TextAlign.left,
                     ),
                     FolloweeSuggestionWidget(followees.followees,
@@ -270,7 +265,8 @@ class EnterFolloweeWidget extends StatelessWidget {
                   ],
                 ),
               ),
-            )
+            ),
+            SmallFormDivider(),
           ],
         ),
       ),
