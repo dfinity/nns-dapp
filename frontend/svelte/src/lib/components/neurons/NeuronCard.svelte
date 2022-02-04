@@ -1,6 +1,6 @@
 <script lang="ts">
   import IconLockClock from "../../icons/IconLockClock.svelte";
-  import Card from "../Card.svelte";
+  import Card from "../ui/Card.svelte";
 
   const goToDetail = () => {
     // TODO L2-218: Go to the detail page of Neuron
