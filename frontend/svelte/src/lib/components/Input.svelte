@@ -12,7 +12,7 @@
   export let placeholderLabelKey: string;
 
   const handleInput = ({ currentTarget }: InputEventHandler) =>
-    (value = inputType.match(/^(number)$/)
+    (value = ["number"].includes(inputType)
       ? +currentTarget.value
       : currentTarget.value);
 
