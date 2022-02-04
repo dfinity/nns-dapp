@@ -7,7 +7,7 @@
   import ICP from "../lib/components/ic/ICP.svelte";
   import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import Toolbar from "../lib/components/Toolbar.svelte";
+  import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
 
   // TODO: To be removed once this page has been implemented

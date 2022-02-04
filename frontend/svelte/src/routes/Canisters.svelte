@@ -2,7 +2,7 @@
   import Layout from "../lib/components/common/Layout.svelte";
   import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
-  import Toolbar from "../lib/components/Toolbar.svelte";
+  import Toolbar from "../lib/components/ui/Toolbar.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
