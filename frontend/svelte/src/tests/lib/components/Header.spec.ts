@@ -19,4 +19,9 @@ describe("Header", () => {
     expect(button).toBeVisible();
     expect(button).toHaveTextContent("Logout");
   });
+
+  it("should not render a get icps feature", () => {
+    const { container } = render(Header);
+    expect(container.querySelectorAll("button").length).toEqual(1);
+  });
 });

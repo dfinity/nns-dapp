@@ -48,4 +48,5 @@
   @import "./lib/themes/fonts.scss";
   @import "./lib/themes/variables.scss";
   @import "./lib/themes/theme.scss";
+  @import "./lib/themes/button.scss";
 </style>

@@ -88,6 +88,7 @@ export default {
             ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
             : "https://identity.ic0.app/")
       ),
+      "process.env.DEPLOY_ENV": JSON.stringify(process.env.DEPLOY_ENV),
       // When developing with live reload in svelte, redirecting to flutter is
       // not desirable.  The default should match production:
       // - false while svelte is inactive
