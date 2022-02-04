@@ -111,5 +111,6 @@
 
   .content {
     overflow-y: scroll;
+    color: var(--gray-800);
   }
 </style>
