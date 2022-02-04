@@ -1,5 +1,7 @@
 # Changelog
 
+## Proposal XXX
+
 ## Proposal 42027
 * Add custom followees
 * Update styling
