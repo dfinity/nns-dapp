@@ -5,7 +5,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";
-  import Toasts from "../lib/components/Toasts.svelte";
+  import Toasts from "../lib/components/ui/Toasts.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
 
   let signedIn: boolean = false;
