@@ -34,7 +34,7 @@ image_name="nns-dapp-$DEPLOY_ENV"
 echo "The following image name will be used: $image_name"
 
 OUTDIR=out
-assets=(assets.tar.xz  nns-dapp.wasm build-inputs.txt)
+assets=(assets.tar.xz  nns-dapp.wasm)
 rm -fr "${OUTDIR:-not-the-file-you-were-looking-for}"
 
 set -x
