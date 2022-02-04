@@ -7,6 +7,8 @@
   let inputValue: number | undefined = undefined;
 
   const onSubmit = ({ target }) => {
+    // TODO: L2-188 - check if form is valid i.e. !invalidForm
+
     const formData: FormData = new FormData(target);
     console.log(formData.get("icp"));
 
