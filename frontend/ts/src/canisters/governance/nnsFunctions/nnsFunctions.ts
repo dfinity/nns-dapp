@@ -8,7 +8,9 @@ import {
   BlessReplicaVersionPayload,
   CreateSubnetPayload,
   RecoverSubnetPayload,
+  RemoveNodeOperatorsPayload,
   RemoveNodesFromSubnetPayload,
+  RerouteCanisterRangePayload,
   SetAuthorizedSubnetworkListArgs,
   SetFirewallConfigPayload,
   StopOrStartNnsCanisterProposalPayload,
@@ -153,6 +155,16 @@ export const convertNnsFunctionPayload = (
       case 22:
         return IDL.decode(
           [UpdateUnassignedNodesConfigPayload],
+          buffer
+        )[0] as JsonObject;
+      case 23:
+        return IDL.decode(
+          [RemoveNodeOperatorsPayload],
+          buffer
+        )[0] as JsonObject;
+      case 24:
+        return IDL.decode(
+          [RerouteCanisterRangePayload],
           buffer
         )[0] as JsonObject;
       default:
