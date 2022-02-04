@@ -1,3 +1,6 @@
+// You can see the full list of functions here -
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/f53a211304c4f1a5934f96461143397b1758d33f/rs/nns/governance/src/governance.rs#L411
+
 mod payloads;
 
 use candid::candid_method;
@@ -134,6 +137,20 @@ fn add_or_remove_data_centers(_: AddOrRemoveDataCentersProposalPayload) {
 #[allow(dead_code)]
 #[candid_method(update)]
 fn update_unassigned_nodes_config(_: UpdateUnassignedNodesConfigPayload) {
+    unimplemented!();
+}
+
+// 23 - RemoveNodeOperators
+#[allow(dead_code)]
+#[candid_method(update)]
+fn remove_node_operators(_: RemoveNodeOperatorsPayload) {
+    unimplemented!();
+}
+
+// 24 - RerouteCanisterRange
+#[allow(dead_code)]
+#[candid_method(update)]
+fn reroute_canister_range(_: RerouteCanisterRangePayload) {
     unimplemented!();
 }
 

@@ -68,7 +68,15 @@ type RecoverSubnetPayload = record {
   state_hash : vec nat8;
   time_ns : nat64;
 };
+type RemoveNodeOperatorsPayload = record {
+  node_operators_to_remove : vec vec nat8;
+};
 type RemoveNodesFromSubnetPayload = record { node_ids : vec principal };
+type RerouteCanisterRangePayload = record {
+  range_end_inclusive : principal;
+  range_start_inclusive : principal;
+  destination_subnet : principal;
+};
 type SetAuthorizedSubnetworkListArgs = record {
   who : opt principal;
   subnets : vec principal;
@@ -92,6 +100,8 @@ type UpdateIcpXdrConversionRatePayload = record {
 type UpdateNodeOperatorConfigPayload = record {
   node_operator_id : opt principal;
   node_allowance : opt nat64;
+  rewardable_nodes : vec record { text; nat32 };
+  dc_id : opt text;
 };
 type UpdateNodeRewardsTableProposalPayload = record {
   new_entries : vec record { text; NodeRewardRates };
@@ -142,8 +152,10 @@ service : {
   clear_provisional_whitelist : () -> ();
   create_subnet : (CreateSubnetPayload) -> ();
   recover_subnet : (RecoverSubnetPayload) -> ();
+  remove_node_operators : (RemoveNodeOperatorsPayload) -> ();
   remove_nodes : (RemoveNodesFromSubnetPayload) -> ();
   remove_nodes_from_subnet : (RemoveNodesFromSubnetPayload) -> ();
+  reroute_canister_range : (RerouteCanisterRangePayload) -> ();
   set_authorized_subnetwork_list : (SetAuthorizedSubnetworkListArgs) -> ();
   set_firewall_config : (SetFirewallConfigPayload) -> ();
   stop_or_start_nns_canister : (StopOrStartNnsCanisterProposalPayload) -> ();

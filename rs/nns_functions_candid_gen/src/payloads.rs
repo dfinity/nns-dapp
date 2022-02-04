@@ -3,6 +3,7 @@ use ic_base_types::{CanisterId, NodeId, PrincipalId, SubnetId};
 use ic_registry_subnet_type::SubnetType;
 use prost::Message;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 // https://github.com/dfinity-lab/dfinity/blob/bd842628a462dfa30604a2e2352fe50e9066d637/rs/registry/canister/src/mutations/do_add_nodes_to_subnet.rs#L42
 #[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
@@ -225,6 +226,7 @@ pub struct SetAuthorizedSubnetworkListArgs {
     pub subnets: Vec<SubnetId>,
 }
 
+// https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L79
 #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, Message)]
 pub struct UpdateNodeOperatorConfigPayload {
     /// The principal id of the node operator. This principal is the entity that
@@ -235,6 +237,15 @@ pub struct UpdateNodeOperatorConfigPayload {
     /// The remaining number of nodes that could be added by this Node Operator.
     #[prost(message, optional, tag = "2")]
     pub node_allowance: Option<u64>,
+
+    /// The ID of the data center where this Node Operator hosts nodes.
+    #[prost(message, optional, tag = "3")]
+    pub dc_id: Option<String>,
+
+    /// A map from node type to the number of nodes for which the associated
+    /// Node Provider should be rewarded.
+    #[prost(btree_map = "string, uint32", tag = "4")]
+    pub rewardable_nodes: BTreeMap<String, u32>,
 }
 
 // https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/protobuf/def/registry/node_rewards/v2/node_rewards.proto#L24
@@ -295,4 +306,26 @@ pub struct Gps {
 pub struct UpdateUnassignedNodesConfigPayload {
     pub ssh_readonly_access: Option<Vec<String>>,
     pub replica_version: Option<String>,
+}
+
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/9527797958c2e02c8d975190e10c72efbb164646/rs/protobuf/def/registry/node_operator/v1/node_operator.proto#L32
+//// The payload of a request to remove Node Operator records from the Registry
+#[derive(candid::CandidType, serde::Serialize, candid::Deserialize, Clone, PartialEq, ::prost::Message)]
+pub struct RemoveNodeOperatorsPayload {
+    #[prost(bytes = "vec", repeated, tag = "1")]
+    pub node_operators_to_remove: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
+}
+
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/9527797958c2e02c8d975190e10c72efbb164646/rs/registry/canister/src/mutations/reroute_canister_range.rs#L46
+/// The argument for the `reroute_canister_range` update call.
+#[derive(Debug, CandidType, Serialize, Deserialize)]
+pub struct RerouteCanisterRangePayload {
+    /// The first canister id in the range that needs to be mapped to the new
+    /// destination.
+    pub range_start_inclusive: PrincipalId,
+    /// The last canister id in the range that needs to be mapped to the new
+    /// destination.
+    pub range_end_inclusive: PrincipalId,
+    /// The new destination for the canister id range.
+    pub destination_subnet: PrincipalId,
 }
