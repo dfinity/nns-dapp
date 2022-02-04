@@ -68,6 +68,10 @@ export const getNnsFunctionName = (nnsFunction: number): string => {
       return "Add or remove data centers";
     case 22:
       return "Update unassigned nodes config";
+    case 23:
+      return "Remove node operators";
+    case 24:
+      return "Reroute canister range";
     default:
       return "--Unknown--";
   }
