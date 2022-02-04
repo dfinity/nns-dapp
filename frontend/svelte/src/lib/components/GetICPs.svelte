@@ -19,9 +19,9 @@
     inputValue = undefined;
   };
 
-  let validForm: boolean;
+  let invalidForm: boolean;
 
-  $: validForm = inputValue === undefined || inputValue <= 0;
+  $: invalidForm = inputValue === undefined || inputValue <= 0;
 </script>
 
 <button on:click={() => (visible = true)} class="open text">Get ICPs</button>
@@ -34,7 +34,7 @@
 
     <Input placeholderLabelKey="core.icp" name="icp" bind:value={inputValue} />
 
-    <button type="submit" class="submit" disabled={validForm}>Get</button>
+    <button type="submit" class="submit" disabled={invalidForm}>Get</button>
   </form>
 </Modal>
 
