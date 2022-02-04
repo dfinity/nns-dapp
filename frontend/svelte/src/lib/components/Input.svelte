@@ -12,9 +12,8 @@
   export let placeholderLabelKey: string;
 
   const handleInput = ({ currentTarget }: InputEventHandler) =>
-    (value = ["number"].includes(inputType)
-      ? +currentTarget.value
-      : currentTarget.value);
+    (value =
+      inputType === "number" ? +currentTarget.value : currentTarget.value);
 
   $: step = inputType === "number" ? step || "any" : undefined;
 </script>
