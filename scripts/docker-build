@@ -33,41 +33,27 @@ image_name="nns-dapp-$DEPLOY_ENV"
 
 echo "The following image name will be used: $image_name"
 
+# All the files in the final docker stage will be copied to this directory:
+OUTDIR=out
+rm -rf "${OUTDIR:-not-the-file-you-were-looking-for}"
+# These files will be copied out of OUTDIR into the repository root.
+# In normal production builds, only these files will be generated,
+# but a small code change can easily produce much more.  We ensure that
+# even in such circumstances only expected files end up in ./.
+assets=(assets.tar.xz nns-dapp.wasm)
+
 set -x
-docker build \
+DOCKER_BUILDKIT=1 docker build \
   --target scratch \
   --build-arg DEPLOY_ENV="$DEPLOY_ENV" \
   --build-arg OWN_CANISTER_ID="$OWN_CANISTER_ID" \
-  -t "$image_name" .
+  -t "$image_name" \
+  -o "$OUTDIR" .
 set +x
 
-# use no-op as a command, doesn't matter since the container is never run
-container_id=$(docker create "$image_name" no-op)
+for file in "${assets[@]}"; do
+  cp "$OUTDIR/$file" "$file"
+  sha256sum "$file"
+done
 
-echo "created container with id $container_id"
-
-success=true
-
-copy() {
-  local container_id="$1"
-  local container_path="$2"
-  local local_path="$3"
-
-  if docker cp "$container_id:/$container_path" "$local_path"; then
-    echo "$container_path -> $local_path (from container $container_id)"
-    return 0
-  else
-    echo "could not copy $container_path from container $container_id"
-    return 1
-  fi
-}
-
-copy "$container_id" "nns-dapp.wasm" "nns-dapp.wasm" || success=false
-
-if [[ $success = true ]]; then
-  echo "Removing container $container_id"
-  docker rm --volumes "$container_id"
-else
-  echo "container is left for inspection, once done run:"
-  echo "  docker rm -v $container_id"
-fi
+echo FIN
