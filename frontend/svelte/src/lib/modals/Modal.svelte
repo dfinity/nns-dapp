@@ -10,6 +10,7 @@
   export let theme: "dark" | "light" = "light";
   // There is no way to know to know whether a parent is listening to the "nnsBack" event
   // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
+  // Please do not use `showBackButton` without listening on `nnsBack`
   export let showBackButton: boolean = false;
 
   let dark: boolean;
