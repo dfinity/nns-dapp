@@ -310,10 +310,9 @@ pub struct UpdateUnassignedNodesConfigPayload {
 
 // https://gitlab.com/dfinity-lab/public/ic/-/blob/9527797958c2e02c8d975190e10c72efbb164646/rs/protobuf/def/registry/node_operator/v1/node_operator.proto#L32
 //// The payload of a request to remove Node Operator records from the Registry
-#[derive(candid::CandidType, serde::Serialize, candid::Deserialize)]
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(candid::CandidType, serde::Serialize, candid::Deserialize, Clone, PartialEq, ::prost::Message)]
 pub struct RemoveNodeOperatorsPayload {
-    #[prost(bytes="vec", repeated, tag="1")]
+    #[prost(bytes = "vec", repeated, tag = "1")]
     pub node_operators_to_remove: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
 }
 
