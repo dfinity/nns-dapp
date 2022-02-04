@@ -52,10 +52,12 @@
     <svelte:fragment slot="footer">
       {#if main}
         <Toolbar>
-          <button on:click={createNewTransaction}
+          <button class="primary" on:click={createNewTransaction}
             >{$i18n.accounts.new_transaction}</button
           >
-          <button on:click={addAccount}>{$i18n.accounts.add_account}</button>
+          <button class="primary" on:click={addAccount}
+            >{$i18n.accounts.add_account}</button
+          >
         </Toolbar>
       {/if}
     </svelte:fragment>

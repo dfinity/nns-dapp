@@ -23,7 +23,8 @@
 
     <svelte:fragment slot="footer">
       <Toolbar>
-        <button on:click={createOrLink}>{$i18n.canisters.create_or_link}</button
+        <button class="primary" on:click={createOrLink}
+          >{$i18n.canisters.create_or_link}</button
         >
       </Toolbar>
     </svelte:fragment>
