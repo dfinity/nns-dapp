@@ -46,7 +46,7 @@
 <Checkbox
   inputId="hide-unavailable-proposals"
   checked={false}
-  color="dark"
+  theme="dark"
   text="block"
   selector="hide-unavailable-proposals"
   >{$i18n.voting.hide_unavailable_proposals}</Checkbox

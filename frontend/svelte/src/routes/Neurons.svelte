@@ -5,6 +5,7 @@
   import { AuthStore, authStore } from "../lib/stores/auth.store";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/Toolbar.svelte";
+  import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -35,6 +36,8 @@
       <p>
         {$i18n.neurons.principal_is} "{principalText}"
       </p>
+
+      <NeuronCard />
     </section>
     <svelte:fragment slot="footer">
       <Toolbar>

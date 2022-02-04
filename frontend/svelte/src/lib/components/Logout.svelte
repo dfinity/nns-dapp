@@ -12,21 +12,10 @@
   };
 </script>
 
-<button on:click={logout}>{$i18n.header.logout}</button>
+<button on:click={logout} class="text">{$i18n.header.logout}</button>
 
 <style lang="scss">
   button {
-    z-index: var(--z-index);
-
-    width: fit-content;
     justify-self: flex-end;
-
-    margin: 0 var(--padding);
-
-    color: white;
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 </style>

@@ -30,7 +30,7 @@ describe("Accounts", () => {
     const { container } = render(Accounts);
 
     const title = container.querySelector("h1");
-    expect(title).not.toBeUndefined();
+    expect(title).not.toBeNull();
     expect(title).toBeVisible();
     expect(title).toHaveTextContent("Accounts");
   });
@@ -49,7 +49,7 @@ describe("Accounts", () => {
     const { container } = render(Accounts);
 
     const article = container.querySelector("article");
-    expect(article).not.toBeUndefined();
+    expect(article).not.toBeNull();
   });
 
   it("should render account icp in card too", () => {

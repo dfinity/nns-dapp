@@ -4,10 +4,12 @@
 
 interface I18nCore {
   close: string;
+  icp: string;
 }
 
 interface I18nError {
   auth_sync: string;
+  sign_in: string;
 }
 
 interface I18nNavigation {
@@ -86,6 +88,10 @@ interface I18nProposals {
   failed: string;
 }
 
+interface I18nModals {
+  back: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -100,4 +106,5 @@ interface I18n {
   topics: I18nTopics;
   rewards: I18nRewards;
   proposals: I18nProposals;
+  modals: I18nModals;
 }

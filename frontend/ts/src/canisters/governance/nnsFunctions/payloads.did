@@ -92,6 +92,8 @@ type UpdateIcpXdrConversionRatePayload = record {
 type UpdateNodeOperatorConfigPayload = record {
   node_operator_id : opt principal;
   node_allowance : opt nat64;
+  rewardable_nodes : vec record { text; nat32 };
+  dc_id : opt text;
 };
 type UpdateNodeRewardsTableProposalPayload = record {
   new_entries : vec record { text; NodeRewardRates };

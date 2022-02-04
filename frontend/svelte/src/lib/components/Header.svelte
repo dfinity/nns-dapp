@@ -1,6 +1,9 @@
-<script>
+<script lang="ts">
   import Logout from "./Logout.svelte";
   import { i18n } from "../stores/i18n";
+  import GetICPs from "./GetICPs.svelte";
+
+  const deployEnv: string = process.env.DEPLOY_ENV;
 </script>
 
 <header>
@@ -10,6 +13,11 @@
     alt=""
     src="/assets/assets/gradient.jpg"
   />
+
+  {#if deployEnv === "testnet"}
+    <GetICPs />
+  {/if}
+
   <h4>{$i18n.header.title}</h4>
   <Logout />
 </header>
