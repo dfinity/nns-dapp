@@ -8,7 +8,9 @@ import {
   BlessReplicaVersionPayload,
   CreateSubnetPayload,
   RecoverSubnetPayload,
+  RemoveNodeOperatorsPayload,
   RemoveNodesFromSubnetPayload,
+  RerouteCanisterRangePayload,
   SetAuthorizedSubnetworkListArgs,
   SetFirewallConfigPayload,
   StopOrStartNnsCanisterProposalPayload,
@@ -66,6 +68,10 @@ export const getNnsFunctionName = (nnsFunction: number): string => {
       return "Add or remove data centers";
     case 22:
       return "Update unassigned nodes config";
+    case 23:
+      return "Remove node operators";
+    case 24:
+      return "Reroute canister range";
     default:
       return "--Unknown--";
   }
@@ -153,6 +159,16 @@ export const convertNnsFunctionPayload = (
       case 22:
         return IDL.decode(
           [UpdateUnassignedNodesConfigPayload],
+          buffer
+        )[0] as JsonObject;
+      case 23:
+        return IDL.decode(
+          [RemoveNodeOperatorsPayload],
+          buffer
+        )[0] as JsonObject;
+      case 24:
+        return IDL.decode(
+          [RerouteCanisterRangePayload],
           buffer
         )[0] as JsonObject;
       default:
