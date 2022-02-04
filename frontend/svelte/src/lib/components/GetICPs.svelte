@@ -1,4 +1,7 @@
 <script lang="ts">
+  /**
+   * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
+   */
   import Modal from "../modals/Modal.svelte";
   import Input from "./Input.svelte";
 
