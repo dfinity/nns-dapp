@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Route from "./lib/components/Route.svelte";
-  import PrivateRoute from "./lib/components/PrivateRoute.svelte";
-  import Guard from "./lib/components/Guard.svelte";
+  import Route from "./lib/components/common/Route.svelte";
+  import PrivateRoute from "./lib/components/common/PrivateRoute.svelte";
+  import Guard from "./lib/components/common/Guard.svelte";
   import Accounts from "./routes/Accounts.svelte";
   import Neurons from "./routes/Neurons.svelte";
   import Proposals from "./routes/Proposals.svelte";

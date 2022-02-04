@@ -2,7 +2,7 @@
   import Modal from "./Modal.svelte";
   import { createEventDispatcher } from "svelte";
   import type { VotingFilterModalProps, VotingFilters } from "../types/voting";
-  import Checkbox from "../components/Checkbox.svelte";
+  import Checkbox from "../components/ui/Checkbox.svelte";
   import { i18n } from "../stores/i18n";
 
   export let props: VotingFilterModalProps | undefined;
