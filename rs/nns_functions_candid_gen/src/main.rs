@@ -1,3 +1,6 @@
+// You can see the full list of functions here -
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/f53a211304c4f1a5934f96461143397b1758d33f/rs/nns/governance/src/governance.rs#L411
+
 mod payloads;
 
 use candid::candid_method;
