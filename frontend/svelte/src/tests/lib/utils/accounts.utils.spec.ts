@@ -1,5 +1,5 @@
-import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import type { ICP } from "@dfinity/nns";
+import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { loadAccounts } from "../../../lib/utils/accounts.utils";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 

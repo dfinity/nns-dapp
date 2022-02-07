@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
-import type { Account } from "../../../../lib/types/account";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import { render } from "@testing-library/svelte";
 import AccountCard from "../../../../lib/components/accounts/AccountCard.svelte";
+import type { Account } from "../../../../lib/types/account";
 import { formatICP } from "../../../../lib/utils/icp.utils";
+import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 
 describe("AccountCard", () => {
   const props: { account: Account } = { account: mockMainAccount };

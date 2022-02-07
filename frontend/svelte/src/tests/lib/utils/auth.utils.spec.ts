@@ -1,6 +1,6 @@
+import type { Principal } from "@dfinity/principal";
 import { isSignedIn } from "../../../lib/utils/auth.utils";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
-import type { Principal } from "@dfinity/principal";
 
 describe("auth-utils", () => {
   it("should not be signed in", () => {

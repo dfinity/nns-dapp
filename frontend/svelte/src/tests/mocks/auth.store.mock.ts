@@ -1,6 +1,6 @@
+import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
 import type { AuthStore } from "../../lib/stores/auth.store";
-import { Principal } from "@dfinity/principal";
 
 export const mockPrincipal = Principal.fromText(
   "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"

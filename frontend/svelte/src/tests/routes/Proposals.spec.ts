@@ -4,9 +4,8 @@
 
 import { render } from "@testing-library/svelte";
 import { authStore } from "../../lib/stores/auth.store";
-import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import Proposals from "../../routes/Proposals.svelte";
-import { Topics } from "../../lib/types/voting";
+import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 
 describe("Proposals", () => {
   let authStoreMock;
