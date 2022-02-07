@@ -3,6 +3,7 @@
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
   import Badge from "../ui/Badge.svelte";
   import { ProposalStatus } from "@dfinity/nns";
+  import { i18n } from "../../stores/i18n";
 
   export let proposalInfo!: ProposalInfo;
 
@@ -16,5 +17,5 @@
 
 <Card>
   <p slot="start">{proposal.title}</p>
-  <Badge slot="end">{status}</Badge>
+  <Badge slot="end">{$i18n.proposals[ProposalStatus[status]]}</Badge>
 </Card>
