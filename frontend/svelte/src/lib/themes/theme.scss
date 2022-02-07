@@ -50,7 +50,7 @@ main {
 }
 
 section {
-  padding: calc(2 * var(--padding)) calc(4 * var(--padding))
+  padding: calc(2 * var(--padding)) calc(2.5 * var(--padding))
     var(--footer-height);
   max-width: var(--section-max-width);
   margin: 0 auto;
