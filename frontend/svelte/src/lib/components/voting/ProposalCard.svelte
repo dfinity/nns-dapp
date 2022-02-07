@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Card from "./ui/Card.svelte";
+  import Card from "../ui/Card.svelte";
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
-  import Badge from "./ui/Badge.svelte";
+  import Badge from "../ui/Badge.svelte";
   import { ProposalStatus } from "@dfinity/nns";
 
   export let proposalInfo!: ProposalInfo;

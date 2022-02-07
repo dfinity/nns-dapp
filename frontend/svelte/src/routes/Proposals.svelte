@@ -10,7 +10,7 @@
   } from "../lib/utils/proposals.utils";
   import { proposalsStore } from "../lib/stores/proposals.store";
   import InfiniteScroll from "../lib/components/ui/InfiniteScroll.svelte";
-  import ProposalCard from "../lib/components/ProposalCard.svelte";
+  import ProposalCard from "../lib/components/voting/ProposalCard.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
 
   let loading: boolean = false;
