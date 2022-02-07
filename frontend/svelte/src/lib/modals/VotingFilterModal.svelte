@@ -4,6 +4,7 @@
   import type { VotingFilterModalProps, VotingFilters } from "../types/voting";
   import Checkbox from "../components/ui/Checkbox.svelte";
   import { i18n } from "../stores/i18n";
+  import { enumValues } from "../utils/enum.utils";
 
   export let props: VotingFilterModalProps | undefined;
 
@@ -33,7 +34,7 @@
   <span slot="title">{$i18n.voting?.[labelKey] || ""}</span>
 
   {#if filters}
-    {#each Object.keys(filters) as key (key)}
+    {#each enumValues(filters) as key (key)}
       <Checkbox
         inputId={key}
         checked={activeTopics.includes(filters[key])}

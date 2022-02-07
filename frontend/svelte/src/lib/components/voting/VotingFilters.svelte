@@ -1,14 +1,11 @@
 <script lang="ts">
   import FiltersCard from "../ui/FiltersCard.svelte";
-  import {
-    Proposals,
-    Rewards,
-    Topics,
-    VotingFilterModalProps,
-  } from "../../types/voting";
+  import { VotingFilterModalProps } from "../../types/voting";
   import VotingFilterModal from "../../modals/VotingFilterModal.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import { i18n } from "../../stores/i18n";
+  import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
+  import { enumKeys } from "../../utils/enum.utils";
 
   let modalFilters: VotingFilterModalProps | undefined = undefined;
 
@@ -19,26 +16,33 @@
   // TODO(#L2-206): hideProposals and filters store
 </script>
 
+<!-- TODO: should we use unspecified and manageneuron -->
+
 <FiltersCard
-  filters={Object.values(Topics)}
+  filters={enumKeys(Topic)}
   key="topics"
-  on:nnsFilter={() => openModal({ labelKey: "topics", filters: Topics })}
+  on:nnsFilter={() => openModal({ labelKey: "topics", filters: Topic })}
   >{$i18n.voting.topics}</FiltersCard
 >
 
 <div class="status">
+  <!-- TODO: Do we want unknown? -->
+
   <FiltersCard
-    filters={Object.values(Rewards)}
+    filters={enumKeys(ProposalRewardStatus)}
     key="rewards"
-    on:nnsFilter={() => openModal({ labelKey: "rewards", filters: Rewards })}
+    on:nnsFilter={() =>
+      openModal({ labelKey: "rewards", filters: ProposalRewardStatus })}
     >{$i18n.voting.rewards}</FiltersCard
   >
 
+  <!-- TODO: Do we want unknown? -->
+
   <FiltersCard
-    filters={Object.values(Proposals)}
+    filters={enumKeys(ProposalStatus)}
     key="proposals"
     on:nnsFilter={() =>
-      openModal({ labelKey: "proposals", filters: Proposals })}
+      openModal({ labelKey: "proposals", filters: ProposalStatus })}
     >{$i18n.voting.proposals}</FiltersCard
   >
 </div>
