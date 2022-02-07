@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
-import { Topics, VotingFilterModalProps } from "../../../lib/types/voting";
 import { fireEvent, render } from "@testing-library/svelte";
 import VotingFilterModal from "../../../lib/modals/VotingFilterModal.svelte";
+import { Topics, VotingFilterModalProps } from "../../../lib/types/voting";
 
 const en = require("../../../lib/i18n/en.json");
 

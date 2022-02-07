@@ -1,6 +1,6 @@
-import { writable } from "svelte/store";
 import { AuthClient } from "@dfinity/auth-client";
 import type { Principal } from "@dfinity/principal";
+import { writable } from "svelte/store";
 
 export interface AuthStore {
   principal: Principal | undefined | null;
