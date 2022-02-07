@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$(realpath "$0")")/.."
 FILE=public/build/bundle.css
 mv "$FILE" "$FILE.unsorted"
 LC_ALL=C sort <"$FILE.unsorted" >"$FILE"

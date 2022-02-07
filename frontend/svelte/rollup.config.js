@@ -61,6 +61,8 @@ export default {
     }),
     // we'll extract any component CSS out into
     // a separate file - better for performance
+    // The CSS is compiled as one minified line per svelte component.
+    // Svelte scopes the CSS for every component, so ordering of components should not matter.
     cssbundle(),
 
     // If you have external dependencies installed from
