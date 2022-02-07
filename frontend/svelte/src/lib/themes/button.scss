@@ -39,33 +39,13 @@ button {
       color: var(--gray-600);
     }
 
-    background: var(--blue-600);
-    color: var(--blue-600-contrast);
+    background: var(--blue-500);
+    color: var(--blue-500-contrast);
 
     font-size: var(--font-size-small);
     @media (min-width: 768px) {
       font-size: var(--font-size-h3);
     }
-
-    @include effect.ripple-effect(--blue-500-tint);
-
-    &:focus {
-      background: var(--blue-600);
-      @include effect.ripple-effect(--blue-600-tint);
-    }
-  }
-
-  &[type="submit"] {
-    border-radius: var(--border-radius);
-    margin: var(--padding) 0;
-
-    &[disabled] {
-      background: var(--gray-50);
-      color: var(--gray-400);
-    }
-
-    background: var(--blue-500);
-    color: var(--blue-500-contrast);
 
     @include effect.ripple-effect(--blue-500-tint);
 
