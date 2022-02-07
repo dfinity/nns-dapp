@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
-import type { ProposalsFilterModalProps } from "../../../lib/types/proposals";
+import { Topic } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import ProposalsFilterModal from "../../../lib/modals/ProposalsFilterModal.svelte";
-import { Topic } from "@dfinity/nns";
+import type { ProposalsFilterModalProps } from "../../../lib/types/proposals";
 import { enumKeys } from "../../../lib/utils/enum.utils";
 
 const en = require("../../../lib/i18n/en.json");

@@ -1,7 +1,7 @@
-import { AuthClient } from "@dfinity/auth-client";
 import type { Identity } from "@dfinity/agent";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { AuthClient } from "@dfinity/auth-client";
 import { authStore } from "../../../lib/stores/auth.store";
+import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 class MockAuthClient extends AuthClient {
   constructor() {

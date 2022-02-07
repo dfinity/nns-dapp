@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import ProposalsFilters from "../../../../lib/components/proposals/ProposalsFilters.svelte";
-import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
 import { enumKeys } from "../../../../lib/utils/enum.utils";
 
 const en = require("../../../../lib/i18n/en.json");

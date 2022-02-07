@@ -1,7 +1,7 @@
+import { ICP } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 import type { AccountsStore } from "../../lib/stores/accounts.store";
 import type { Account } from "../../lib/types/account";
-import { ICP } from "@dfinity/nns";
 
 export const mockMainAccount: Account = {
   identifier:

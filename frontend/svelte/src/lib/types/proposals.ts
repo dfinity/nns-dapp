@@ -1,4 +1,4 @@
-import type { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
+import type { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 
 export type ProposalsFilters =
   | typeof Topic

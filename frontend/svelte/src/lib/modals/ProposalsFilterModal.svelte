@@ -1,7 +1,10 @@
 <script lang="ts">
   import Modal from "./Modal.svelte";
   import { createEventDispatcher } from "svelte";
-  import type { ProposalsFilterModalProps, ProposalsFilters } from "../types/proposals";
+  import type {
+    ProposalsFilterModalProps,
+    ProposalsFilters,
+  } from "../types/proposals";
   import Checkbox from "../components/ui/Checkbox.svelte";
   import { i18n } from "../stores/i18n";
   import { enumValues } from "../utils/enum.utils";

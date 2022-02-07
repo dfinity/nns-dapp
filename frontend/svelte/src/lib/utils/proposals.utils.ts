@@ -1,6 +1,6 @@
-import { get } from "svelte/store";
-import { GovernanceCanister, ProposalId, ProposalInfo } from "@dfinity/nns";
 import type { ListProposalsResponse } from "@dfinity/nns";
+import { GovernanceCanister, ProposalId, ProposalInfo } from "@dfinity/nns";
+import { get } from "svelte/store";
 import { proposalsStore } from "../stores/proposals.store";
 
 export const emptyProposals = (): boolean => {

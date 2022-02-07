@@ -3,8 +3,8 @@
  */
 
 import { render } from "@testing-library/svelte";
-import Neurons from "../../routes/Neurons.svelte";
 import { authStore } from "../../lib/stores/auth.store";
+import Neurons from "../../routes/Neurons.svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
