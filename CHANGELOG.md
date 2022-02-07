@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal 42027
+* Add custom followees
+* Update styling
+* Add principal to hardware wallet accounts page
+* Security and technical improvements
+
 ## Proposal 39269
 
 * Downgrade agent-js back to 0.9.1, as it was breaking hardware wallets

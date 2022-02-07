@@ -3,8 +3,8 @@
  */
 
 import { render } from "@testing-library/svelte";
-import Neurons from "../../routes/Neurons.svelte";
 import { authStore } from "../../lib/stores/auth.store";
+import Neurons from "../../routes/Neurons.svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
@@ -23,7 +23,7 @@ describe("Neurons", () => {
     const { container, getByText } = render(Neurons);
 
     const title = container.querySelector("h1");
-    expect(title).not.toBeUndefined();
+    expect(title).not.toBeNull();
     expect(title).toBeVisible();
     expect(title).toHaveTextContent("Neurons");
 
@@ -43,5 +43,12 @@ describe("Neurons", () => {
     expect(
       getByText(mockPrincipal.toText(), { exact: false })
     ).toBeInTheDocument();
+  });
+
+  it("should render a NeuronCard", () => {
+    const { container } = render(Neurons);
+
+    const anchor = container.querySelector("a");
+    expect(anchor).not.toBeNull();
   });
 });

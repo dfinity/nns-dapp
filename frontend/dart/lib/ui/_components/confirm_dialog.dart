@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import '../../nns_dapp.dart';
 import 'responsive.dart';
 
@@ -28,9 +29,8 @@ class ConfirmDialog extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: SelectableText(
                     title,
-                    style: Responsive.isMobile(context)
-                        ? context.textTheme.headline6
-                        : context.textTheme.headline3,
+                    style: context.textTheme.headline3,
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 Padding(
@@ -69,7 +69,7 @@ class ConfirmDialog extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              "Yes, I'm sure",
+                              "I'm sure",
                               style: TextStyle(
                                   fontSize:
                                       Responsive.isMobile(context) ? 12 : 15),

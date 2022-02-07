@@ -27,9 +27,7 @@ class NeuronRow extends StatelessWidget {
                 children: [
                   SelectableText(
                     neuron.identifier,
-                    style: Responsive.isMobile(context)
-                        ? context.textTheme.headline4
-                        : context.textTheme.headline3,
+                    style: context.textTheme.headline3,
                   ),
                   if (neuron.isCommunityFundNeuron)
                     Text("[community fund]",

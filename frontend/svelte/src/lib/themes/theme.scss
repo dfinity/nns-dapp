@@ -50,8 +50,8 @@ main {
 }
 
 section {
-  padding: calc(2 * var(--padding)) calc(4 * var(--padding));
-
+  padding: calc(2 * var(--padding)) calc(4 * var(--padding))
+    var(--footer-height);
   max-width: var(--section-max-width);
   margin: 0 auto;
 }
@@ -62,4 +62,22 @@ h3,
 h4,
 h5 {
   color: var(--gray-50);
+}
+
+p {
+  margin: 0;
+}
+
+/** Input */
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }

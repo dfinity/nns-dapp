@@ -20,10 +20,7 @@ class NeuronProposalsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text("Proposals",
-                      style: Responsive.isMobile(context)
-                          ? context.textTheme.headline6
-                          : context.textTheme.headline3),
+                  child: Text("Proposals", style: context.textTheme.headline3),
                 ),
               ],
             ),
