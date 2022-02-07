@@ -4,19 +4,21 @@ describe("landing page", () => {
 
     await browser.$("h1").waitForExist();
 
+    // Wait for all images to be "complete", i.e. loaded
     browser.waitUntil(
       function () {
         return this.execute(function () {
-          let imgs = document.getElementsByTagName("img");
-          if (imgs.length > 0) {
-            return (
-              Array.prototype.every.call(imgs, (img) => {
-                return img.complete;
-              }) && document.readyState === "complete"
-            );
-          } else {
+          const imgs: HTMLCollectionOf<HTMLImageElement> =
+            document.getElementsByTagName("img");
+          if (imgs.length <= 0) {
             return true;
           }
+
+          return (
+            Array.prototype.every.call(imgs, (img) => {
+              return img.complete;
+            }) && document.readyState === "complete"
+          );
         });
       },
       { timeoutMsg: `image wasn't loaded` }
