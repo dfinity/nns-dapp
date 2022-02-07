@@ -58,10 +58,10 @@ class NeuronRow extends StatelessWidget {
               ),
             ),
             Flexible(
-              flex: 1,
+              flex: 2,
               child: LabelledBalanceDisplayWidget(
                   amount: neuron.stake,
-                  amountSize: Responsive.isMobile(context) ? 16 : 24,
+                  amountSize: Responsive.isMobile(context) ? 16 : 20,
                   icpLabelSize: 25,
                   text: Text(
                     "Stake",
