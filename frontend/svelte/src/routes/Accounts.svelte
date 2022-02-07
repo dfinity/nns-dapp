@@ -7,6 +7,7 @@
   import ICP from "../lib/components/ic/ICP.svelte";
   import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
+  import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
 
   // TODO: To be removed once this page has been implemented
@@ -21,6 +22,11 @@
   const unsubscribe: Unsubscriber = accountsStore.subscribe(
     async (accounts: AccountsStore) => (main = accounts?.main)
   );
+
+  // TODO: TBD https://dfinity.atlassian.net/browse/L2-225
+  const createNewTransaction = () => alert("New Transaction");
+  // TODO: TBD https://dfinity.atlassian.net/browse/L2-224
+  const addAccount = () => alert("Add Account");
 
   onDestroy(unsubscribe);
 </script>
@@ -42,6 +48,19 @@
         <Spinner />
       {/if}
     </section>
+
+    <svelte:fragment slot="footer">
+      {#if main}
+        <Toolbar>
+          <button class="primary" on:click={createNewTransaction}
+            >{$i18n.accounts.new_transaction}</button
+          >
+          <button class="primary" on:click={addAccount}
+            >{$i18n.accounts.add_account}</button
+          >
+        </Toolbar>
+      {/if}
+    </svelte:fragment>
   </Layout>
 {/if}
 
