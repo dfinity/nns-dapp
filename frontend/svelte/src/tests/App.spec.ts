@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
+import type { Principal } from "@dfinity/principal";
+import { render, waitFor } from "@testing-library/svelte";
+import App from "../App.svelte";
+import { accountsStore } from "../lib/stores/accounts.store";
 import { AuthStore, authStore } from "../lib/stores/auth.store";
 import {
   authStoreMock,
   mockPrincipal,
   mutableMockAuthStoreSubscribe,
 } from "./mocks/auth.store.mock";
-import { accountsStore } from "../lib/stores/accounts.store";
-import { render, waitFor } from "@testing-library/svelte";
-import App from "../App.svelte";
-import type { Principal } from "@dfinity/principal";
 
 describe("App", () => {
   let accountsStoreMock;
