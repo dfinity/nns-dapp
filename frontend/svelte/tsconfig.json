@@ -12,6 +12,7 @@
     "public/*",
     "**/*.spec.ts",
     "jest.setup.ts",
-    "**/*.mock.ts"
+    "**/*.mock.ts",
+    "**/*Test.svelte"
   ]
 }
