@@ -15,7 +15,7 @@
     threshold: 0,
   };
 
-  let container!: HTMLDivElement;
+  let container: HTMLDivElement;
 
   const dispatch = createEventDispatcher();
 
