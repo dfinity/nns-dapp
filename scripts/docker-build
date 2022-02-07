@@ -60,7 +60,7 @@ untracked_inputs() {
   comm -1 -3 <(git ls-files | sort) <(sort out/build-inputs.txt)
 }
 if untracked_inputs | grep -q .; then
-  echo WARNING: BUILD IS NOT REPEATABLE
+  echo WARNING: BUILD MAY NOT BE REPRODUCIBLE
   echo The following files were included in the build but are not tracked by git:
   untracked_inputs | sed 's/^/    /g'
   echo Please remove or commit these files.
