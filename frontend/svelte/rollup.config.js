@@ -1,11 +1,10 @@
 import commonjs from "@rollup/plugin-commonjs";
-import cssbundle from "rollup-plugin-css-bundle";
 import inject from "@rollup/plugin-inject";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
-import css from "rollup-plugin-css-only";
+import cssbundle from "rollup-plugin-css-bundle";
 import livereload from "rollup-plugin-livereload";
 import svelte from "rollup-plugin-svelte";
 import { terser } from "rollup-plugin-terser";
