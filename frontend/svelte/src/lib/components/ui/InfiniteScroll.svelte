@@ -19,7 +19,10 @@
 
   const dispatch = createEventDispatcher();
 
-  const onIntersection = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+  const onIntersection = (
+    entries: IntersectionObserverEntry[],
+    observer: IntersectionObserver
+  ) => {
     const intersecting: IntersectionObserverEntry | undefined = entries.find(
       ({ isIntersecting }: IntersectionObserverEntry) => isIntersecting
     );
