@@ -1,12 +1,21 @@
 <script lang="ts">
   import { afterUpdate, createEventDispatcher, onDestroy } from "svelte";
 
+  /**
+   * The Infinite Scroll component calls an action to be performed when the user scrolls a specified distance from the bottom or top of the page.
+   *
+   * Usage: To be wrapped around loops `<InfiniteScroll>{#each ...}</InfiniteScroll>`
+   *
+   * The component observe the last HTML element of the list using the IntersectionObserver.
+   * It sets the reference after each re-render of the list. Pay attention to not trigger unnecessary updates.
+   */
+
   export let options: IntersectionObserverInit = {
     rootMargin: "300px",
     threshold: 0,
   };
 
-  let container!: HTMLDivElement;
+  let container: HTMLDivElement;
 
   const dispatch = createEventDispatcher();
 
