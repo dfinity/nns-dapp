@@ -39,7 +39,7 @@
 
     <Input placeholderLabelKey="core.icp" name="icp" bind:value={inputValue} />
 
-    <button type="submit" class="submit" disabled={invalidForm}>Get</button>
+    <button type="submit" class="primary" disabled={invalidForm}>Get</button>
   </form>
 </Modal>
 
