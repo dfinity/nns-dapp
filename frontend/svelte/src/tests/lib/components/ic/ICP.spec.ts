@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import type { ICP as ICPModel } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { formatICP } from "../../../../lib/utils/icp.utils";
 import ICP from "../../../../lib/components/ic/ICP.svelte";
+import { formatICP } from "../../../../lib/utils/icp.utils";
+import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 
 describe("ICP", () => {
   const props: { icp: ICPModel } = { icp: mockMainAccount.balance };

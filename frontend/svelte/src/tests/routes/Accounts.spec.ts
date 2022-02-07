@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
+import { render } from "@testing-library/svelte";
+import { accountsStore } from "../../lib/stores/accounts.store";
 import { authStore } from "../../lib/stores/auth.store";
-import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
+import { formatICP } from "../../lib/utils/icp.utils";
+import Accounts from "../../routes/Accounts.svelte";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
 } from "../mocks/accounts.store.mock";
-import { accountsStore } from "../../lib/stores/accounts.store";
-import { render } from "@testing-library/svelte";
-import Accounts from "../../routes/Accounts.svelte";
-import { formatICP } from "../../lib/utils/icp.utils";
+import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 
 describe("Accounts", () => {
   let authStoreMock, accountsStoreMock;
