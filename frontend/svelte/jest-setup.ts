@@ -9,17 +9,20 @@ global.TextDecoder = TextDecoder;
 // @ts-ignore
 global.IntersectionObserver = class IntersectionObserver {
   constructor(
-    private callback: (entries: IntersectionObserverEntry[]) => void,
+    private callback: (entries: IntersectionObserverEntry[], observer) => void,
     private options?: IntersectionObserverInit
   ) {}
 
   observe(element: HTMLElement) {
-    this.callback([
-      {
-        isIntersecting: true,
-        target: element,
-      } as unknown as IntersectionObserverEntry,
-    ]);
+    this.callback(
+      [
+        {
+          isIntersecting: true,
+          target: element,
+        } as unknown as IntersectionObserverEntry,
+      ],
+      this
+    );
   }
 
   disconnect() {
