@@ -6,6 +6,6 @@
 
 <!-- List the changes that have been developed -->
 
-# Other information
+# Tests
 
-<!-- Please provide any useful other information e.g. screenshots -->
+<!-- Please provide any information or screenshots about the tests that have been done -->
