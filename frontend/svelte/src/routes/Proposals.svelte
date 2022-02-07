@@ -1,7 +1,7 @@
 <script lang="ts">
   import Layout from "../lib/components/common/Layout.svelte";
   import { onMount } from "svelte";
-  import VotingFilters from "../lib/components/voting/VotingFilters.svelte";
+  import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
   import {
     emptyProposals,
@@ -10,7 +10,7 @@
   } from "../lib/utils/proposals.utils";
   import { proposalsStore } from "../lib/stores/proposals.store";
   import InfiniteScroll from "../lib/components/ui/InfiniteScroll.svelte";
-  import ProposalCard from "../lib/components/voting/ProposalCard.svelte";
+  import ProposalCard from "../lib/components/proposals/ProposalCard.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
 
   let loading: boolean = false;
@@ -46,7 +46,7 @@
 
       <p>{$i18n.voting.text}</p>
 
-      <VotingFilters />
+      <ProposalsFilters />
 
       <InfiniteScroll on:nnsIntersect={findProposals}>
         {#each $proposalsStore as proposalInfo}

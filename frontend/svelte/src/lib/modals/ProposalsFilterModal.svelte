@@ -1,19 +1,19 @@
 <script lang="ts">
   import Modal from "./Modal.svelte";
   import { createEventDispatcher } from "svelte";
-  import type { VotingFilterModalProps, VotingFilters } from "../types/voting";
+  import type { ProposalsFilterModalProps, ProposalsFilters } from "../types/proposals";
   import Checkbox from "../components/ui/Checkbox.svelte";
   import { i18n } from "../stores/i18n";
   import { enumValues } from "../utils/enum.utils";
 
-  export let props: VotingFilterModalProps | undefined;
+  export let props: ProposalsFilterModalProps | undefined;
 
   let visible: boolean;
   let labelKey: string | undefined;
-  let filters: VotingFilters | undefined;
+  let filters: ProposalsFilters | undefined;
 
   // TODO(#L2-206): do we want a store or pass props?
-  let activeTopics: VotingFilters[] = [];
+  let activeTopics: ProposalsFilters[] = [];
 
   $: visible = props !== undefined;
   $: labelKey = props?.labelKey;
@@ -22,10 +22,10 @@
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
 
-  const select = (topic: VotingFilters) =>
+  const select = (topic: ProposalsFilters) =>
     (activeTopics = activeTopics.includes(topic)
       ? activeTopics.filter(
-          (activeTopic: VotingFilters) => activeTopic !== topic
+          (activeTopic: ProposalsFilters) => activeTopic !== topic
         )
       : [...activeTopics, topic]);
 </script>

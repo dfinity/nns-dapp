@@ -1,16 +1,16 @@
 <script lang="ts">
   import FiltersCard from "../ui/FiltersCard.svelte";
-  import { VotingFilterModalProps } from "../../types/voting";
-  import VotingFilterModal from "../../modals/VotingFilterModal.svelte";
+  import { ProposalsFilterModalProps } from "../../types/proposals";
+  import ProposalsFilterModal from "../../modals/ProposalsFilterModal.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import { i18n } from "../../stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
   import { enumKeys } from "../../utils/enum.utils";
 
-  let modalFilters: VotingFilterModalProps | undefined = undefined;
+  let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
   // The voting modal is displayed when filters are set i.e. when filters have to be selected
-  const openModal = (filters: VotingFilterModalProps) =>
+  const openModal = (filters: ProposalsFilterModalProps) =>
     (modalFilters = filters);
 
   // TODO(#L2-206): hideProposals and filters store
@@ -56,7 +56,7 @@
   >{$i18n.voting.hide_unavailable_proposals}</Checkbox
 >
 
-<VotingFilterModal
+<ProposalsFilterModal
   props={modalFilters}
   on:nnsClose={() => (modalFilters = undefined)}
 />

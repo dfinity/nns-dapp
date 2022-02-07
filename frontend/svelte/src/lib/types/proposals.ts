@@ -1,11 +1,11 @@
 import type { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
 
-export type VotingFilters =
+export type ProposalsFilters =
   | typeof Topic
   | typeof ProposalRewardStatus
   | typeof ProposalStatus;
 
-export interface VotingFilterModalProps {
+export interface ProposalsFilterModalProps {
   labelKey: "topics" | "rewards" | "proposals";
-  filters: VotingFilters;
+  filters: ProposalsFilters;
 }

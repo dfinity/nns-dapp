@@ -3,38 +3,39 @@
  */
 
 import { render } from "@testing-library/svelte";
-import VotingFilters from "../../../../lib/components/voting/VotingFilters.svelte";
-import { Proposals, Rewards, Topics } from "../../../../lib/types/voting";
+import ProposalsFilters from "../../../../lib/components/proposals/ProposalsFilters.svelte";
+import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
+import { enumKeys } from "../../../../lib/utils/enum.utils";
 
 const en = require("../../../../lib/i18n/en.json");
 
-describe("VotingFilters", () => {
+describe("ProposalsFilters", () => {
   it("should render topics filters", () => {
-    const { getByText } = render(VotingFilters);
+    const { getByText } = render(ProposalsFilters);
 
-    Object.values(Topics).forEach((key: string) =>
+    enumKeys(Topic).forEach((key: string) =>
       expect(getByText(en.topics[key])).toBeInTheDocument()
     );
   });
 
   it("should render rewards filters", () => {
-    const { getByText } = render(VotingFilters);
+    const { getByText } = render(ProposalsFilters);
 
-    Object.values(Rewards).forEach((key: string) =>
+    enumKeys(ProposalRewardStatus).forEach((key: string) =>
       expect(getByText(en.rewards[key])).toBeInTheDocument()
     );
   });
 
   it("should render proposals filters", () => {
-    const { getByText } = render(VotingFilters);
+    const { getByText } = render(ProposalsFilters);
 
-    Object.values(Proposals).forEach((key: string) =>
+    enumKeys(ProposalStatus).forEach((key: string) =>
       expect(getByText(en.proposals[key])).toBeInTheDocument()
     );
   });
 
   it("should render a checkbox", () => {
-    const { container } = render(VotingFilters);
+    const { container } = render(ProposalsFilters);
 
     const input: HTMLInputElement | null = container.querySelector("input");
 
@@ -44,7 +45,7 @@ describe("VotingFilters", () => {
   });
 
   it("should set a ref to the checkbox", () => {
-    const { container } = render(VotingFilters);
+    const { container } = render(ProposalsFilters);
 
     const div: HTMLDivElement | null = container.querySelector(
       "div.checkbox.hide-unavailable-proposals"
