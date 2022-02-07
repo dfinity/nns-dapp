@@ -42,7 +42,7 @@
   afterUpdate(() => {
     // The DOM has been updated. We reset the observer to the current last HTML element of the infinite list.
 
-    // We disconnect previous observer first. We want to avoid to obsevere multiple elements.
+    // We disconnect previous observer first. We do want to observe multiple elements.
     observer.disconnect();
 
     if (!container.lastElementChild) {
