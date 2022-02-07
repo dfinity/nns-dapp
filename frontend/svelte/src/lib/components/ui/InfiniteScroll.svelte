@@ -37,7 +37,7 @@
     dispatch("nnsIntersect");
   };
 
-  let observer: IntersectionObserver = new IntersectionObserver(
+  const observer: IntersectionObserver = new IntersectionObserver(
     onIntersection,
     options
   );
