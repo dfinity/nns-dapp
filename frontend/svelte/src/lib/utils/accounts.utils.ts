@@ -1,5 +1,5 @@
-import type { Principal } from "@dfinity/principal";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { AccountsStore } from "../stores/accounts.store";
 
 export const loadAccounts = async ({
