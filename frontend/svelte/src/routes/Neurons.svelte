@@ -4,6 +4,7 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AuthStore, authStore } from "../lib/stores/auth.store";
   import { i18n } from "../lib/stores/i18n";
+  import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
 
   // TODO: To be removed once this page has been implemented
@@ -20,6 +21,9 @@
   );
 
   onDestroy(unsubscribe);
+
+  // TODO: TBD https://dfinity.atlassian.net/browse/L2-226
+  const stakeNeurons = () => alert("Stake Neurons");
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -35,5 +39,12 @@
 
       <NeuronCard />
     </section>
+    <svelte:fragment slot="footer">
+      <Toolbar>
+        <button class="primary" on:click={stakeNeurons}
+          >{$i18n.neurons.stake_neurons}</button
+        >
+      </Toolbar>
+    </svelte:fragment>
   </Layout>
 {/if}
