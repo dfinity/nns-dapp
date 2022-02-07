@@ -1,14 +1,14 @@
 <script lang="ts">
-    import InfiniteScroll from "../../../../lib/components/ui/InfiniteScroll.svelte";
+  import InfiniteScroll from "../../../../lib/components/ui/InfiniteScroll.svelte";
 
-    export let elements: number[];
-    export let spy: () => void;
+  export let elements: number[];
+  export let spy: () => void;
 
-    const intersect = () => spy();
+  const intersect = () => spy();
 </script>
 
 <InfiniteScroll on:nnsIntersect={intersect}>
-    {#each elements as element, i}
-        <div>Test {i}</div>
-    {/each}
+  {#each elements as element, i}
+    <div>Test {i}</div>
+  {/each}
 </InfiniteScroll>
