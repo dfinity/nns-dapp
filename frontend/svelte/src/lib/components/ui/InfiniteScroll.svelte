@@ -19,7 +19,7 @@
 
   const dispatch = createEventDispatcher();
 
-  const onIntersection = (entries: IntersectionObserverEntry[]) => {
+  const onIntersection = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
     const intersecting: IntersectionObserverEntry | undefined = entries.find(
       ({ isIntersecting }: IntersectionObserverEntry) => isIntersecting
     );
@@ -27,6 +27,9 @@
     if (intersecting === undefined) {
       return;
     }
+
+    // We can disconnect the observer. We have detected an intersection and consumer is going to fetch new elements.
+    observer.disconnect();
 
     dispatch("nnsIntersect");
   };
@@ -38,6 +41,8 @@
 
   afterUpdate(() => {
     // The DOM has been updated. We reset the observer to the current last HTML element of the infinite list.
+
+    // We disconnect previous observer first. We want to avoid to obsevere multiple elements.
     observer.disconnect();
 
     if (!container.lastElementChild) {
