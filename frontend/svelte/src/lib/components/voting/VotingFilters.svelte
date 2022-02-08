@@ -58,15 +58,18 @@
 />
 
 <style lang="scss">
-  .status {
-    display: grid;
-    width: calc(100% - var(--padding));
-    grid-template-columns: repeat(2, 50%);
-    grid-column-gap: var(--padding);
+  @use "../../themes/mixins/media.scss";
 
-    @media (max-width: 768px) {
-      display: block;
-      width: 100%;
+  .status {
+    border: 1px solid red;
+    display: block;
+    width: 100%;
+
+    @include media.min-width(medium) {
+      display: grid;
+      width: calc(100% - var(--padding));
+      grid-template-columns: repeat(2, 50%);
+      grid-column-gap: var(--padding);
     }
   }
 

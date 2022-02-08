@@ -78,6 +78,7 @@
 
 <style lang="scss">
   @use "../lib/themes/mixins/img";
+  @use "../lib/themes/mixins/media";
 
   main {
     height: 100%;
@@ -174,7 +175,7 @@
     }
   }
 
-  @media screen and (min-width: 768px) and (min-height: 640px) {
+  @media screen and (min-width: media.$breakpoint-medium) and (min-height: 640px) {
     main {
       position: absolute;
       top: 50%;

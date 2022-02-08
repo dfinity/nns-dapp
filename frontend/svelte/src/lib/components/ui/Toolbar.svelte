@@ -3,6 +3,8 @@
 </div>
 
 <style lang="scss">
+  @use "../../themes/mixins/media.scss";
+
   .toolbar {
     position: absolute;
     inset: 0;
@@ -16,12 +18,12 @@
     justify-content: center;
     align-items: end;
 
-    @media (min-width: 300px) {
+    @include media.min-width(xsmall) {
       min-width: 280px;
       width: 70%;
     }
 
-    @media (min-width: 768px) {
+    @include media.min-width(medium) {
       margin-bottom: calc(3 * var(--padding));
     }
 
@@ -33,7 +35,7 @@
       margin: 0 calc(0.5 * var(--padding));
       max-width: 60%;
 
-      @media (min-width: 768px) {
+      @include media.min-width(medium) {
         margin: 0 calc(2 * var(--padding));
         max-width: 406px;
       }

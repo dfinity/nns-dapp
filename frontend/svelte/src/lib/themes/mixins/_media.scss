@@ -1,51 +1,27 @@
-$layout-breakpoint-xs: 320px;
-$layout-breakpoint-s: 576px;
-$layout-breakpoint-m: 768px;
-$layout-breakpoint-l: 880px;
+$breakpoint-xsmall: 320px;
+$breakpoint-small: 576px;
+$breakpoint-medium: 768px;
+$breakpoint-large: 880px;
 
 @mixin min-width($breakpoint) {
   @if ($breakpoint == xsmall) {
-    @media (min-width: $layout-breakpoint-xs) {
+    @media (min-width: $breakpoint-xsmall) {
       @content;
     }
   }
   @if ($breakpoint == small) {
-    @media (min-width: $layout-breakpoint-s) {
+    @media (min-width: $breakpoint-small) {
       @content;
     }
   }
   @if ($breakpoint == medium) {
-    @media (min-width: $layout-breakpoint-m) {
+    @media (min-width: $breakpoint-medium) {
       @content;
     }
   }
   @if ($breakpoint == large) {
-    @media (min-width: $layout-breakpoint-l) {
+    @media (min-width: $breakpoint-large) {
       @content;
     }
-  }
-}
-
-@mixin media-min-xs {
-  @media (min-width: $layout-breakpoint-xs) {
-    @content;
-  }
-}
-
-@mixin media-min-s {
-  @media (min-width: $layout-breakpoint-s) {
-    @content;
-  }
-}
-
-@mixin media-min-m {
-  @media (min-width: $layout-breakpoint-m) {
-    @content;
-  }
-}
-
-@mixin media-min-l {
-  @media (min-width: $layout-breakpoint-l) {
-    @content;
   }
 }
