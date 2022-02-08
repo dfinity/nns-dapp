@@ -20,6 +20,11 @@ export const lastProposalId = (): ProposalId | undefined => {
 
 // TODO: certified?
 export const listProposals = async () => {
+  if (!emptyProposals()) {
+    // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied.
+    proposalsStore.setProposals([]);
+  }
+
   const proposals: ProposalInfo[] = await queryProposals({
     beforeProposal: undefined,
   });
