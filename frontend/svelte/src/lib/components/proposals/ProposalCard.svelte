@@ -17,7 +17,7 @@
   $: color =
     status === ProposalStatus.PROPOSAL_STATUS_OPEN
       ? "warning"
-      : ProposalStatus.PROPOSAL_STATUS_EXECUTED
+      : status === ProposalStatus.PROPOSAL_STATUS_EXECUTED
       ? "success"
       : undefined;
 </script>
