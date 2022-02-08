@@ -8,7 +8,7 @@
   import Checkbox from "../components/ui/Checkbox.svelte";
   import { i18n } from "../stores/i18n";
   import { enumValues } from "../utils/enum.utils";
-  import { proposalsStore } from "../stores/proposals.store";
+  import { proposalsFiltersStore } from "../stores/proposals.store";
   import {
     ProposalRewardStatus,
     ProposalStatus,
@@ -40,13 +40,13 @@
   const updateProposalStoreFilters = () => {
     switch (category) {
       case "topics":
-        proposalsStore.filterTopics(selectedFilters as Topic[]);
+        proposalsFiltersStore.filterTopics(selectedFilters as Topic[]);
         return;
       case "rewards":
-        proposalsStore.filterRewards(selectedFilters as ProposalRewardStatus[]);
+        proposalsFiltersStore.filterRewards(selectedFilters as ProposalRewardStatus[]);
         return;
       case "status":
-        proposalsStore.filterStatus(selectedFilters as ProposalStatus[]);
+        proposalsFiltersStore.filterStatus(selectedFilters as ProposalStatus[]);
         return;
     }
   };

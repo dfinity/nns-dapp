@@ -5,23 +5,34 @@
   import { i18n } from "../lib/stores/i18n";
   import {
     emptyProposals,
-    lastProposalId,
+    lastProposalId, listNextProposals,
     listProposals,
-  } from "../lib/utils/proposals.utils";
-  import { proposalsStore } from "../lib/stores/proposals.store";
+  } from '../lib/utils/proposals.utils';
+  import {
+    proposalsFiltersStore,
+    proposalsStore,
+  } from "../lib/stores/proposals.store";
   import InfiniteScroll from "../lib/components/ui/InfiniteScroll.svelte";
   import ProposalCard from "../lib/components/proposals/ProposalCard.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import type { ProposalInfo } from "@dfinity/nns";
   import type { Unsubscriber } from "svelte/types/runtime/store";
 
   let loading: boolean = false;
+
+  const findNextProposals = async () => {
+    loading = true;
+
+    // TODO: catch error
+    await listNextProposals({ beforeProposal: lastProposalId() });
+
+    loading = false;
+  };
 
   const findProposals = async () => {
     loading = true;
 
     // TODO: catch error
-    await listProposals({ beforeProposal: lastProposalId() });
+    await listProposals();
 
     loading = false;
   };
@@ -40,10 +51,8 @@
     await findProposals();
   });
 
-  let proposals: ProposalInfo[];
-
-  const unsubscribe: Unsubscriber = proposalsStore.subscribe(
-    ({ proposals: proposalsInfo }: ProposalInfo) => (proposals = proposalsInfo)
+  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
+    async () => await findProposals()
   );
 
   onDestroy(unsubscribe);
@@ -58,8 +67,8 @@
 
       <ProposalsFilters />
 
-      <InfiniteScroll on:nnsIntersect={findProposals}>
-        {#each proposals as proposalInfo}
+      <InfiniteScroll on:nnsIntersect={findNextProposals}>
+        {#each $proposalsStore as proposalInfo}
           <ProposalCard {proposalInfo} />
         {/each}
       </InfiniteScroll>

@@ -5,7 +5,7 @@
   import Checkbox from "../ui/Checkbox.svelte";
   import { i18n } from "../../stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
-  import { proposalsStore } from "../../stores/proposals.store";
+  import {proposalsFiltersStore} from '../../stores/proposals.store';
   import { enumsKeys } from "../../utils/enum.utils";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
@@ -14,19 +14,23 @@
   const openModal = (filters: ProposalsFilterModalProps) =>
     (modalFilters = filters);
 
-  $: ({ filters } = $proposalsStore);
+  let topics: Topic[];
+  let rewards: ProposalRewardStatus[];
+  let status: ProposalStatus[];
+
+  $: ({ topics, rewards, status } = $proposalsFiltersStore);
 </script>
 
 <!-- TODO: should we use unspecified and manageneuron -->
 
 <FiltersCard
-  filters={enumsKeys({ obj: Topic, values: filters.topics })}
+  filters={enumsKeys({ obj: Topic, values: topics })}
   labelKey="topics"
   on:nnsFilter={() =>
     openModal({
       category: "topics",
       filters: Topic,
-      selectedFilters: filters.topics,
+      selectedFilters: topics,
     })}>{$i18n.voting.topics}</FiltersCard
 >
 
@@ -34,26 +38,26 @@
   <!-- TODO: Do we want unknown? -->
 
   <FiltersCard
-    filters={enumsKeys({ obj: ProposalRewardStatus, values: filters.rewards })}
+    filters={enumsKeys({ obj: ProposalRewardStatus, values: rewards })}
     labelKey="rewards"
     on:nnsFilter={() =>
       openModal({
         category: "rewards",
         filters: ProposalRewardStatus,
-        selectedFilters: filters.rewards,
+        selectedFilters: rewards,
       })}>{$i18n.voting.rewards}</FiltersCard
   >
 
   <!-- TODO: Do we want unknown? -->
 
   <FiltersCard
-    filters={enumsKeys({ obj: ProposalStatus, values: filters.status })}
+    filters={enumsKeys({ obj: ProposalStatus, values: status })}
     labelKey="status"
     on:nnsFilter={() =>
       openModal({
         category: "status",
         filters: ProposalStatus,
-        selectedFilters: filters.status,
+        selectedFilters: status,
       })}>{$i18n.voting.proposals}</FiltersCard
   >
 </div>
