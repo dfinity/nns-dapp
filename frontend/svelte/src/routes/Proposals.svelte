@@ -5,9 +5,10 @@
   import { i18n } from "../lib/stores/i18n";
   import {
     emptyProposals,
-    lastProposalId, listNextProposals,
+    lastProposalId,
+    listNextProposals,
     listProposals,
-  } from '../lib/utils/proposals.utils';
+  } from "../lib/utils/proposals.utils";
   import {
     proposalsFiltersStore,
     proposalsStore,
@@ -16,6 +17,7 @@
   import ProposalCard from "../lib/components/proposals/ProposalCard.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
+  import { debounce } from "../lib/utils/utils";
 
   let loading: boolean = false;
 
@@ -37,6 +39,13 @@
     loading = false;
   };
 
+  let debounceFindProposals: () => void | undefined;
+
+  // We do not want to fetch the proposals twice when the component is mounting because the filter subscriber will emit a first value
+  const initDebounceFindProposals = () => {
+    debounceFindProposals = debounce(async () => await findProposals(), 750);
+  };
+
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
     if (process.env.REDIRECT_TO_LEGACY) {
@@ -45,14 +54,17 @@
 
     // Load proposals on mount only if none were fetched before
     if (!emptyProposals()) {
+      initDebounceFindProposals();
       return;
     }
 
     await findProposals();
+
+    initDebounceFindProposals();
   });
 
-  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
-    async () => await findProposals()
+  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() =>
+    debounceFindProposals?.()
   );
 
   onDestroy(unsubscribe);
