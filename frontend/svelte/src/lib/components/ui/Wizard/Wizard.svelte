@@ -4,7 +4,7 @@
   export let selectedTabIndex = 0;
 
   $: {
-    selectedTabStore.set(selectedTabIndex);
+    selectedTabStore.update(() => selectedTabIndex);
   }
 </script>
 

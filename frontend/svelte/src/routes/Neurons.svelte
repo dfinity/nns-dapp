@@ -6,9 +6,6 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
-  import Modal from "../lib/modals/Modal.svelte";
-  import Wizard from "../lib/components/ui/Wizard/Wizard.svelte";
-  import WizardPanel from "../lib/components/ui/Wizard/WizardPanel.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -18,7 +15,6 @@
   });
 
   let principalText: string = "";
-  let selectedTabIndex = 0;
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
     ({ principal }: AuthStore) => (principalText = principal?.toText() ?? "")
@@ -28,10 +24,6 @@
 
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-226
   const stakeNeurons = () => alert("Stake Neurons");
-
-  const goBack = () => {
-    selectedTabIndex += 1;
-  };
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -46,17 +38,6 @@
       </p>
 
       <NeuronCard />
-
-      <Modal visible showBackButton on:nnsBack={goBack}>
-        <Wizard {selectedTabIndex}>
-          <WizardPanel index={0}>
-            <div>First</div>
-          </WizardPanel>
-          <WizardPanel index={1}>
-            <div>Second</div>
-          </WizardPanel>
-        </Wizard>
-      </Modal>
     </section>
     <svelte:fragment slot="footer">
       <Toolbar>
