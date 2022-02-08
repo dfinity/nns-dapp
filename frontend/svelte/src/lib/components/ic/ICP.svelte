@@ -13,10 +13,13 @@
 {/if}
 
 <style lang="scss">
+  @use "../../themes/mixins/media.scss";
+
   div {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    display: inline-grid;
+    grid-template-columns: repeat(2, auto);
+    grid-gap: 5px;
+    align-items: baseline;
 
     span:first-of-type {
       font-weight: 700;
@@ -24,12 +27,12 @@
       color: var(--gray-50);
     }
 
-    @media (max-width: 768px) {
-      align-items: baseline;
-      display: inline-grid;
-      grid-template-columns: repeat(2, auto);
-      grid-gap: 5px;
+    @include media.min-width(medium) {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
       justify-content: flex-end;
+      grid-gap: 0;
     }
   }
 </style>

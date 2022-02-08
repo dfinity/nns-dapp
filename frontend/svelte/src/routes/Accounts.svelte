@@ -65,18 +65,20 @@
 {/if}
 
 <style lang="scss">
+  @use "../lib/themes/mixins/media.scss";
+
   .title {
-    display: inline-flex;
-    justify-content: space-between;
-    align-items: center;
+    display: block;
     width: 100%;
 
     margin-bottom: calc(2 * var(--padding));
 
     --icp-font-size: var(--font-size-h1);
 
-    @media (max-width: 768px) {
-      display: block;
+    @include media.min-width(medium) {
+      display: inline-flex;
+      justify-content: space-between;
+      align-items: center;
     }
   }
 </style>
