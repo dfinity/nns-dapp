@@ -6,6 +6,9 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
+  import Modal from "../lib/modals/Modal.svelte";
+  import Wizard from "../lib/components/ui/Wizard/Wizard.svelte";
+  import WizardStep from "../lib/components/ui/Wizard/WizardStep.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -24,6 +27,17 @@
 
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-226
   const stakeNeurons = () => alert("Stake Neurons");
+
+  let visible = true;
+  const close = () => {
+    visible = false;
+  };
+  let selectedStepIndex = 0;
+  const goBack = () => {
+    console.log("going back");
+
+    selectedStepIndex += 1;
+  };
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -38,6 +52,20 @@
       </p>
 
       <NeuronCard />
+
+      <Modal {visible} showBackButton on:nnsBack={goBack} on:nnsClose={close}>
+        <Wizard {selectedStepIndex}>
+          <WizardStep index={0}>
+            <div>First</div>
+          </WizardStep>
+          <WizardStep index={1}>
+            <div>Second</div>
+          </WizardStep>
+          <WizardStep index={2}>
+            <div>Third</div>
+          </WizardStep>
+        </Wizard>
+      </Modal>
     </section>
     <svelte:fragment slot="footer">
       <Toolbar>
