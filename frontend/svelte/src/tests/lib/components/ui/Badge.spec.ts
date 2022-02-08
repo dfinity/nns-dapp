@@ -13,7 +13,7 @@ describe("Badge", () => {
     expect(container.querySelector("div")).not.toBeNull();
   });
 
-  it("should render a badge container", () => {
+  it("should render the slot of the badge", () => {
     const { getByText } = render(BadgeTest);
 
     expect(getByText("Test_badge")).toBeInTheDocument();
