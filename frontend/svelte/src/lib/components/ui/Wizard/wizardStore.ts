@@ -1,3 +1,3 @@
 import { writable } from "svelte/store";
 
-export const selectedTabStore = writable(0);
+export const selectedStepStore = writable(0);

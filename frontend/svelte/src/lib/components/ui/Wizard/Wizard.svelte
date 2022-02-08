@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { selectedTabStore } from "./wizardStore";
+  import { selectedStepStore } from "./wizardStore";
 
-  export let selectedTabIndex = 0;
+  export let selectedStepIndex = 0;
 
   $: {
-    selectedTabStore.update(() => selectedTabIndex);
+    selectedStepStore.set(selectedStepIndex);
   }
 </script>
 
