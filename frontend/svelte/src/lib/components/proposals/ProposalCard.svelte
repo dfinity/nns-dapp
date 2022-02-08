@@ -1,21 +1,28 @@
 <script lang="ts">
   import Card from "../ui/Card.svelte";
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
-  import Badge from "../ui/Badge.svelte";
   import { ProposalStatus } from "@dfinity/nns";
+  import Badge from "../ui/Badge.svelte";
   import { i18n } from "../../stores/i18n";
 
   export let proposalInfo!: ProposalInfo;
 
-  let proposal!: Proposal;
-  let status!: ProposalStatus;
+  let proposal: Proposal;
+  let status: ProposalStatus;
+
+  let color: "warning" | "success" | undefined;
 
   $: ({ proposal, status } = proposalInfo);
 
-  // TODO: integrate ProposalStatus
+  $: color =
+    status === ProposalStatus.PROPOSAL_STATUS_OPEN
+      ? "warning"
+      : ProposalStatus.PROPOSAL_STATUS_EXECUTED
+      ? "success"
+      : undefined;
 </script>
 
 <Card>
   <p slot="start">{proposal.title}</p>
-  <Badge slot="end">{$i18n.proposals[ProposalStatus[status]]}</Badge>
+  <Badge slot="end" {color}>{$i18n.proposals[ProposalStatus[status]]}</Badge>
 </Card>
