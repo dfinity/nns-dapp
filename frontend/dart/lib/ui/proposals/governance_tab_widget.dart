@@ -46,9 +46,6 @@ final validStatuses = [
 
 final defaultStatuses = [
   ProposalStatus.Open,
-  ProposalStatus.Rejected,
-  ProposalStatus.Accepted,
-  ProposalStatus.Executed,
 ];
 
 final validRewardStatuses = [
