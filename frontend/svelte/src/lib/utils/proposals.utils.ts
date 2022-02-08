@@ -20,9 +20,11 @@ export const lastProposalId = (): ProposalId | undefined => {
 
 // TODO: certified?
 export const listProposals = async () => {
-    const proposals: ProposalInfo[] = await queryProposals({beforeProposal: undefined});
+  const proposals: ProposalInfo[] = await queryProposals({
+    beforeProposal: undefined,
+  });
 
-    proposalsStore.setProposals(proposals);
+  proposalsStore.setProposals(proposals);
 };
 
 export const listNextProposals = async ({
@@ -30,9 +32,15 @@ export const listNextProposals = async ({
 }: {
   beforeProposal: ProposalId | undefined;
 }) => {
-    const proposals: ProposalInfo[] = await queryProposals({beforeProposal});
+  const proposals: ProposalInfo[] = await queryProposals({ beforeProposal });
 
-    proposalsStore.pushProposals(proposals);
+  if (!proposals.length) {
+    // There is no more proposals to fetch for the current filters.
+    // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
+    return;
+  }
+
+  proposalsStore.pushProposals(proposals);
 };
 
 const queryProposals = async ({

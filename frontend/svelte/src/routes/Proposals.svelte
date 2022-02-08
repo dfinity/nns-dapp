@@ -24,6 +24,8 @@
   const findNextProposals = async () => {
     loading = true;
 
+    console.log('yolo')
+
     // TODO: catch error
     await listNextProposals({ beforeProposal: lastProposalId() });
 
