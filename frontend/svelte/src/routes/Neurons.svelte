@@ -48,7 +48,7 @@
       <NeuronCard />
 
       <Modal visible showBackButton on:nnsBack={goBack}>
-        <Wizard selectedTabIndex={selectedTabIndex}>
+        <Wizard {selectedTabIndex}>
           <WizardTab index={0}>
             <div>First</div>
           </WizardTab>

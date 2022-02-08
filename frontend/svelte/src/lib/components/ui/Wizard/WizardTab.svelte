@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fly } from 'svelte/transition';
+  import { fly } from "svelte/transition";
   import { selectedTabStore } from "./wizardStore";
 
   export let index: number;
@@ -11,7 +11,7 @@
 </script>
 
 {#if currentIndex === index}
-  <div in:fly="{{ x: 200, duration: 200 }}">
+  <div in:fly={{ x: 200, duration: 200 }}>
     <slot />
   </div>
 {/if}
