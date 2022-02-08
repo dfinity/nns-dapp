@@ -27,17 +27,6 @@
 
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-226
   const stakeNeurons = () => alert("Stake Neurons");
-
-  let visible = true;
-  const close = () => {
-    visible = false;
-  };
-  let selectedStepIndex = 0;
-  const goBack = () => {
-    console.log("going back");
-
-    selectedStepIndex += 1;
-  };
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -52,20 +41,6 @@
       </p>
 
       <NeuronCard />
-
-      <Modal {visible} showBackButton on:nnsBack={goBack} on:nnsClose={close}>
-        <Wizard {selectedStepIndex}>
-          <WizardStep index={0}>
-            <div>First</div>
-          </WizardStep>
-          <WizardStep index={1}>
-            <div>Second</div>
-          </WizardStep>
-          <WizardStep index={2}>
-            <div>Third</div>
-          </WizardStep>
-        </Wizard>
-      </Modal>
     </section>
     <svelte:fragment slot="footer">
       <Toolbar>
