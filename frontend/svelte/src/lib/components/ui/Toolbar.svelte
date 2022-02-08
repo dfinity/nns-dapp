@@ -23,8 +23,6 @@
 
     @media (min-width: 768px) {
       margin-bottom: calc(3 * var(--padding));
-      // same as section
-      padding: 0 calc(3 * var(--padding));
     }
 
     // buttons
