@@ -1,9 +1,9 @@
 <script lang="ts">
-    export let color: 'warning' | 'success' | undefined = undefined;
+  export let color: "warning" | "success" | undefined = undefined;
 </script>
 
 <div class={color}>
-    <slot />
+  <slot />
 </div>
 
 <style lang="scss">
