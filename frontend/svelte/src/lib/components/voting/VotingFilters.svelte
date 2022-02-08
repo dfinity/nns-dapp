@@ -61,7 +61,6 @@
   @use "../../themes/mixins/media.scss";
 
   .status {
-    border: 1px solid red;
     display: block;
     width: 100%;
 
