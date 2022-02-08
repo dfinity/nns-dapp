@@ -8,7 +8,7 @@
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
   import Modal from "../lib/modals/Modal.svelte";
   import Wizard from "../lib/components/ui/Wizard/Wizard.svelte";
-  import WizardTab from "../lib/components/ui/Wizard/WizardTab.svelte";
+  import WizardPanel from "../lib/components/ui/Wizard/WizardPanel.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -49,12 +49,12 @@
 
       <Modal visible showBackButton on:nnsBack={goBack}>
         <Wizard {selectedTabIndex}>
-          <WizardTab index={0}>
+          <WizardPanel index={0}>
             <div>First</div>
-          </WizardTab>
-          <WizardTab index={1}>
+          </WizardPanel>
+          <WizardPanel index={1}>
             <div>Second</div>
-          </WizardTab>
+          </WizardPanel>
         </Wizard>
       </Modal>
     </section>
