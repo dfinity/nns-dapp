@@ -5,7 +5,8 @@
   import Checkbox from "../ui/Checkbox.svelte";
   import { i18n } from "../../stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
-  import { enumKeys } from "../../utils/enum.utils";
+  import { proposalsStore } from "../../stores/proposals.store";
+  import { enumsKeys } from "../../utils/enum.utils";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -13,37 +14,47 @@
   const openModal = (filters: ProposalsFilterModalProps) =>
     (modalFilters = filters);
 
-  // TODO(#L2-206): hideProposals and filters store
+  $: ({ filters } = $proposalsStore);
 </script>
 
 <!-- TODO: should we use unspecified and manageneuron -->
 
 <FiltersCard
-  filters={enumKeys(Topic)}
-  key="topics"
-  on:nnsFilter={() => openModal({ labelKey: "topics", filters: Topic })}
-  >{$i18n.voting.topics}</FiltersCard
+  filters={enumsKeys({ obj: Topic, values: filters.topics })}
+  labelKey="topics"
+  on:nnsFilter={() =>
+    openModal({
+      category: "topics",
+      filters: Topic,
+      selectedFilters: filters.topics,
+    })}>{$i18n.voting.topics}</FiltersCard
 >
 
 <div class="status">
   <!-- TODO: Do we want unknown? -->
 
   <FiltersCard
-    filters={enumKeys(ProposalRewardStatus)}
-    key="rewards"
+    filters={enumsKeys({ obj: ProposalRewardStatus, values: filters.rewards })}
+    labelKey="rewards"
     on:nnsFilter={() =>
-      openModal({ labelKey: "rewards", filters: ProposalRewardStatus })}
-    >{$i18n.voting.rewards}</FiltersCard
+      openModal({
+        category: "rewards",
+        filters: ProposalRewardStatus,
+        selectedFilters: filters.rewards,
+      })}>{$i18n.voting.rewards}</FiltersCard
   >
 
   <!-- TODO: Do we want unknown? -->
 
   <FiltersCard
-    filters={enumKeys(ProposalStatus)}
-    key="proposals"
+    filters={enumsKeys({ obj: ProposalStatus, values: filters.status })}
+    labelKey="status"
     on:nnsFilter={() =>
-      openModal({ labelKey: "proposals", filters: ProposalStatus })}
-    >{$i18n.voting.proposals}</FiltersCard
+      openModal({
+        category: "status",
+        filters: ProposalStatus,
+        selectedFilters: filters.status,
+      })}>{$i18n.voting.proposals}</FiltersCard
   >
 </div>
 

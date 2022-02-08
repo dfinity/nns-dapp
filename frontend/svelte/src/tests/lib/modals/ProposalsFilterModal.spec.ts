@@ -12,7 +12,11 @@ const en = require("../../../lib/i18n/en.json");
 
 describe("ProposalsFilterModal", () => {
   const props: { props: ProposalsFilterModalProps } = {
-    props: { labelKey: "topics", filters: Topic },
+    props: {
+      category: "topics",
+      filters: Topic,
+      selectedFilters: enumKeys(Topic).map((key: string) => Topic[key]),
+    },
   };
 
   it("should display modal", () => {

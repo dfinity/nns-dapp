@@ -6,6 +6,7 @@ export type ProposalsFilters =
   | typeof ProposalStatus;
 
 export interface ProposalsFilterModalProps {
-  labelKey: "topics" | "rewards" | "proposals";
+  category: "topics" | "rewards" | "status";
   filters: ProposalsFilters;
+  selectedFilters: ProposalsFilters[];
 }

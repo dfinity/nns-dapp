@@ -24,5 +24,5 @@
 
 <Card>
   <p slot="start">{proposal.title}</p>
-  <Badge slot="end" {color}>{$i18n.proposals[ProposalStatus[status]]}</Badge>
+  <Badge slot="end" {color}>{$i18n.status[ProposalStatus[status]]}</Badge>
 </Card>

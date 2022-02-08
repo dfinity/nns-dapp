@@ -8,41 +8,66 @@
   import Checkbox from "../components/ui/Checkbox.svelte";
   import { i18n } from "../stores/i18n";
   import { enumValues } from "../utils/enum.utils";
+  import { proposalsStore } from "../stores/proposals.store";
+  import {
+    ProposalRewardStatus,
+    ProposalStatus,
+    Topic,
+  } from "../../../../../../nns-js";
 
   export let props: ProposalsFilterModalProps | undefined;
 
   let visible: boolean;
-  let labelKey: string | undefined;
+  let category: string | undefined;
   let filters: ProposalsFilters | undefined;
-
-  // TODO(#L2-206): do we want a store or pass props?
-  let activeTopics: ProposalsFilters[] = [];
+  let selectedFilters: ProposalsFilters[];
 
   $: visible = props !== undefined;
-  $: labelKey = props?.labelKey;
+  $: category = props?.category;
   $: filters = props?.filters;
+  $: selectedFilters = props?.selectedFilters || [];
 
   const dispatch = createEventDispatcher();
-  const close = () => dispatch("nnsClose");
+  const close = () => dispatch("nnsClose", { selectedFilters });
 
-  const select = (topic: ProposalsFilters) =>
-    (activeTopics = activeTopics.includes(topic)
-      ? activeTopics.filter(
-          (activeTopic: ProposalsFilters) => activeTopic !== topic
+  const filterSelected = (filter: ProposalsFilters) =>
+    (selectedFilters = selectedFilters.includes(filter)
+      ? selectedFilters.filter(
+          (activeTopic: ProposalsFilters) => activeTopic !== filter
         )
-      : [...activeTopics, topic]);
+      : [...selectedFilters, filter]);
+
+  const updateProposalStoreFilters = () => {
+    switch (category) {
+      case "topics":
+        proposalsStore.filterTopics(selectedFilters as Topic[]);
+        return;
+      case "rewards":
+        proposalsStore.filterRewards(selectedFilters as ProposalRewardStatus[]);
+        return;
+      case "status":
+        proposalsStore.filterStatus(selectedFilters as ProposalStatus[]);
+        return;
+    }
+  };
+
+  const select = (filter: ProposalsFilters) => {
+    filterSelected(filter);
+
+    updateProposalStoreFilters();
+  };
 </script>
 
 <Modal {visible} on:nnsClose={close}>
-  <span slot="title">{$i18n.voting?.[labelKey] || ""}</span>
+  <span slot="title">{$i18n.voting?.[category] || ""}</span>
 
   {#if filters}
     {#each enumValues(filters) as key (key)}
       <Checkbox
         inputId={key}
-        checked={activeTopics.includes(filters[key])}
-        on:nnsChange={() => select(filters[key])}
-        >{$i18n[labelKey][filters[key]]}</Checkbox
+        checked={selectedFilters.includes(key)}
+        on:nnsChange={() => select(key)}
+        >{$i18n[category][filters[key]]}</Checkbox
       >
     {/each}
   {/if}

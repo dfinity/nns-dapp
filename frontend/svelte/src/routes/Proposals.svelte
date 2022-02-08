@@ -1,6 +1,6 @@
 <script lang="ts">
   import Layout from "../lib/components/common/Layout.svelte";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
   import {
@@ -12,6 +12,8 @@
   import InfiniteScroll from "../lib/components/ui/InfiniteScroll.svelte";
   import ProposalCard from "../lib/components/proposals/ProposalCard.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
+  import type { ProposalInfo } from "@dfinity/nns";
+  import type { Unsubscriber } from "svelte/types/runtime/store";
 
   let loading: boolean = false;
 
@@ -24,8 +26,8 @@
     loading = false;
   };
 
-  // TODO: To be removed once this page has been implemented
   onMount(async () => {
+    // TODO: To be removed once this page has been implemented
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace("/#/proposals");
     }
@@ -37,6 +39,14 @@
 
     await findProposals();
   });
+
+  let proposals: ProposalInfo[];
+
+  const unsubscribe: Unsubscriber = proposalsStore.subscribe(
+    ({ proposals: proposalsInfo }: ProposalInfo) => (proposals = proposalsInfo)
+  );
+
+  onDestroy(unsubscribe);
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -49,7 +59,7 @@
       <ProposalsFilters />
 
       <InfiniteScroll on:nnsIntersect={findProposals}>
-        {#each $proposalsStore as proposalInfo}
+        {#each proposals as proposalInfo}
           <ProposalCard {proposalInfo} />
         {/each}
       </InfiniteScroll>

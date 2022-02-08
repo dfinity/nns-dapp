@@ -83,7 +83,7 @@ interface I18nRewards {
   PROPOSAL_REWARD_STATUS_INELIGIBLE: string;
 }
 
-interface I18nProposals {
+interface I18nStatus {
   PROPOSAL_STATUS_UNKNOWN: string;
   PROPOSAL_STATUS_OPEN: string;
   PROPOSAL_STATUS_REJECTED: string;
@@ -109,6 +109,6 @@ interface I18n {
   canisters: I18nCanisters;
   topics: I18nTopics;
   rewards: I18nRewards;
-  proposals: I18nProposals;
+  status: I18nStatus;
   modals: I18nModals;
 }

@@ -69,7 +69,7 @@
     "PROPOSAL_REWARD_STATUS_SETTLED": "Rewards Disbursed",
     "PROPOSAL_REWARD_STATUS_INELIGIBLE": "Ineligible"
   },
-  "proposals": {
+  "status": {
     "PROPOSAL_STATUS_UNKNOWN": "Unknown",
     "PROPOSAL_STATUS_OPEN": "Open",
     "PROPOSAL_STATUS_REJECTED": "Rejected",
