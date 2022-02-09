@@ -7,8 +7,8 @@
 
   export let proposalInfo: ProposalInfo;
 
-  let proposal: Proposal;
-  let status: ProposalStatus;
+  let proposal: Proposal | undefined;
+  let status: ProposalStatus | undefined;
 
   let color: "warning" | "success" | undefined;
 
@@ -26,6 +26,6 @@
 <!-- TODO(L2-206): implement missing css styles - design -->
 
 <Card>
-  <p slot="start">{proposal.title}</p>
-  <Badge slot="end" {color}>{$i18n.status[ProposalStatus[status]]}</Badge>
+  <p slot="start">{proposal?.title}</p>
+  <Badge slot="end" {color}>{status ? $i18n.status[ProposalStatus[status]] : ''}</Badge>
 </Card>
