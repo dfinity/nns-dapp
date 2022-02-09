@@ -10,15 +10,15 @@ import type { Subscriber } from "svelte/store";
 export const mockProposals: ProposalInfo[] = [
   {
     id: "test1",
-  proposal: {
-    title: "Proposal1"
-  },
+    proposal: {
+      title: "Proposal1",
+    },
     status: ProposalStatus.PROPOSAL_STATUS_OPEN,
   },
   {
     id: "test2",
     proposal: {
-      title: "Proposal2"
+      title: "Proposal2",
     },
     status: ProposalStatus.PROPOSAL_STATUS_EXECUTED,
   },
