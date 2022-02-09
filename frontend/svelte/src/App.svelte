@@ -11,6 +11,8 @@
   import { accountsStore } from "./lib/stores/accounts.store";
   import { onDestroy } from "svelte";
   import { AuthStore, authStore } from "./lib/stores/auth.store";
+  import Wallet from "./routes/Wallet.svelte";
+  import ProposalDetail from "./routes/ProposalDetail.svelte";
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -42,6 +44,10 @@
   <PrivateRoute path="/#/neurons" component={Neurons} />
   <PrivateRoute path="/#/proposals" component={Proposals} />
   <PrivateRoute path="/#/canisters" component={Canisters} />
+  <!-- TODO: TBD -->
+  <PrivateRoute path="/#/wallet" component={Wallet} />
+  <!-- TODO: TBD -->
+  <PrivateRoute path="/#/proposal" component={ProposalDetail} />
 </Guard>
 
 <style lang="scss" global>
