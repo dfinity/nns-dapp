@@ -1,5 +1,4 @@
-import { GovernanceCanister } from "@dfinity/nns";
-import type { ProposalInfo } from "../../../../../../../nns-js/src";
+import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import {
   emptyProposals,
