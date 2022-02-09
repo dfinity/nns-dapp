@@ -89,6 +89,7 @@ import { principalToAccountIdentifier } from "./canisters/converter";
 import { Principal } from "@dfinity/principal";
 import {
   addNodeToSubnetPayload,
+  addOrRemoveDataCentersPayload,
   updateSubnetConfigPayload,
   updateSubnetPayload,
 } from "./canisters/governance/nnsFunctions/samplePayloads";
@@ -614,6 +615,21 @@ export default class ServiceApi {
             "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
           nnsFunction: 11,
           payload: updateSubnetPayload,
+        });
+      console.log(manageNeuronResponse);
+    }
+
+    {
+      console.log("make an 'Add or remove data center' proposal");
+      const manageNeuronResponse =
+        await this.governanceService.makeExecuteNnsFunctionProposal({
+          neuronId,
+          title: "Initialize datacenter records",
+          url: "",
+          summary:
+            "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
+          nnsFunction: 23,
+          payload: addOrRemoveDataCentersPayload,
         });
       console.log(manageNeuronResponse);
     }
