@@ -18,7 +18,11 @@ export const lastProposalId = (): ProposalId | undefined => {
   return last?.id;
 };
 
-export const listProposals = async ({clearBeforeQuery = false}: {clearBeforeQuery: boolean}) => {
+export const listProposals = async ({
+  clearBeforeQuery = false,
+}: {
+  clearBeforeQuery: boolean;
+}) => {
   if (clearBeforeQuery) {
     proposalsStore.setProposals([]);
   }
@@ -55,7 +59,6 @@ const queryProposals = async ({
 
   const { rewards, status }: ProposalsFiltersStore = get(proposalsFiltersStore);
 
-  // TODO(L2-206): shall we do certified queries?
   // TODO(L2-206): implement excludeTopic
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
@@ -65,8 +68,7 @@ const queryProposals = async ({
       excludeTopic: [],
       includeRewardStatus: rewards,
       includeStatus: status,
-    },
-    certified: false,
+    }
   });
 
   return proposals;
