@@ -6,7 +6,7 @@ export interface AuthStore {
   principal: Principal | undefined | null;
 }
 
-const identityProvider: string = process.env.IDENTITY_SERVICE_URL;
+const identityProvider: string = process.env.SERVICE_URL;
 
 /**
  * A store to handle authentication and the principal of the user.

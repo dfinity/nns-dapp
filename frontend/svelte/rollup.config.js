@@ -84,8 +84,8 @@ export default {
     replace({
       preventAssignment: true,
       "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
-      "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
-        process.env.IDENTITY_SERVICE_URL ||
+      "process.env.SERVICE_URL": JSON.stringify(
+        process.env.SERVICE_URL ||
           (process.env.DEPLOY_ENV === "testnet"
             ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
             : "https://identity.ic0.app/")
