@@ -6,12 +6,12 @@ export const enumKeys = <T>(obj: T): string[] => {
   return Object.values(obj).filter((o: T) => typeof o === "string");
 };
 
-export const enumsKeys = <T extends Record<string, any>>({
+export const enumsKeys = <T>({
   obj,
   values,
 }: {
   obj: T;
   values: T[];
 }): string[] => {
-  return values.map((value: T) => obj[value as unknown as keyof T]);
+  return values.map((value: T) => obj[value as unknown as string]);
 };
