@@ -30,7 +30,8 @@
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose", { selectedFilters });
 
-  const filterSelected = (filter: ProposalsFilters) =>
+  // Update list of selected filters with filter - i.e. toggle the checked or not checked of the filter that has been clicked
+  const applyFilterChange = (filter: ProposalsFilters) =>
     (selectedFilters = selectedFilters.includes(filter)
       ? selectedFilters.filter(
           (activeTopic: ProposalsFilters) => activeTopic !== filter
@@ -51,8 +52,8 @@
     }
   };
 
-  const select = (filter: ProposalsFilters) => {
-    filterSelected(filter);
+  const onChange = (filter: ProposalsFilters) => {
+    applyFilterChange(filter);
 
     updateProposalStoreFilters();
   };
@@ -66,7 +67,7 @@
       <Checkbox
         inputId={key}
         checked={selectedFilters.includes(key)}
-        on:nnsChange={() => select(key)}
+        on:nnsChange={() => onChange(key)}
         >{$i18n[category][filters[key]]}</Checkbox
       >
     {/each}

@@ -18,10 +18,8 @@ export const lastProposalId = (): ProposalId | undefined => {
   return last?.id;
 };
 
-// TODO: certified?
-export const listProposals = async () => {
-  if (!emptyProposals()) {
-    // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied.
+export const listProposals = async ({clearBeforeQuery = false}: {clearBeforeQuery: boolean}) => {
+  if (clearBeforeQuery) {
     proposalsStore.setProposals([]);
   }
 
@@ -57,7 +55,8 @@ const queryProposals = async ({
 
   const { rewards, status }: ProposalsFiltersStore = get(proposalsFiltersStore);
 
-  // TODO: excludeTopic
+  // TODO(L2-206): shall we do certified queries?
+  // TODO(L2-206): implement excludeTopic
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {

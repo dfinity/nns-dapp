@@ -22,6 +22,9 @@
       : undefined;
 </script>
 
+<!-- TODO(L2-206): display all proposal information as in production -->
+<!-- TODO(L2-206): implement missing css styles - design -->
+
 <Card>
   <p slot="start">{proposal.title}</p>
   <Badge slot="end" {color}>{$i18n.status[ProposalStatus[status]]}</Badge>

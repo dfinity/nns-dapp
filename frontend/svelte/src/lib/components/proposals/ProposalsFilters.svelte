@@ -5,7 +5,7 @@
   import Checkbox from "../ui/Checkbox.svelte";
   import { i18n } from "../../stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
-  import {proposalsFiltersStore} from '../../stores/proposals.store';
+  import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { enumsKeys } from "../../utils/enum.utils";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
@@ -21,8 +21,6 @@
   $: ({ topics, rewards, status } = $proposalsFiltersStore);
 </script>
 
-<!-- TODO: should we use unspecified and manageneuron -->
-
 <FiltersCard
   filters={enumsKeys({ obj: Topic, values: topics })}
   labelKey="topics"
@@ -35,8 +33,6 @@
 >
 
 <div class="status">
-  <!-- TODO: Do we want unknown? -->
-
   <FiltersCard
     filters={enumsKeys({ obj: ProposalRewardStatus, values: rewards })}
     labelKey="rewards"
@@ -47,8 +43,6 @@
         selectedFilters: rewards,
       })}>{$i18n.voting.rewards}</FiltersCard
   >
-
-  <!-- TODO: Do we want unknown? -->
 
   <FiltersCard
     filters={enumsKeys({ obj: ProposalStatus, values: status })}
