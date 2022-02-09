@@ -1,6 +1,6 @@
 <script lang="ts">
   import FiltersCard from "../ui/FiltersCard.svelte";
-  import type {ProposalsFilterModalProps} from '../../types/proposals';
+  import type { ProposalsFilterModalProps } from "../../types/proposals";
   import ProposalsFilterModal from "../../modals/ProposalsFilterModal.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import { i18n } from "../../stores/i18n";
@@ -14,6 +14,13 @@
   const openModal = (filters: ProposalsFilterModalProps) =>
     (modalFilters = filters);
 
+  // TODO(L2-206): Happy to get help here to type the enum.
+  // If set to "T" TypeScript throw following error: Type 'typeof Topic' is not assignable to type 'Topic'
+  const allTopics: Topic = Topic as unknown as Topic;
+  const allRewards: ProposalRewardStatus =
+    ProposalRewardStatus as unknown as ProposalRewardStatus;
+  const allStatus: ProposalStatus = ProposalStatus as unknown as ProposalStatus;
+
   let topics: Topic[];
   let rewards: ProposalRewardStatus[];
   let status: ProposalStatus[];
@@ -22,7 +29,7 @@
 </script>
 
 <FiltersCard
-  filters={enumsKeys<Topic>({ obj: Topic, values: topics })}
+  filters={enumsKeys({ obj: allTopics, values: topics })}
   labelKey="topics"
   on:nnsFilter={() =>
     openModal({
@@ -34,7 +41,7 @@
 
 <div class="status">
   <FiltersCard
-    filters={enumsKeys<ProposalRewardStatus>({ obj: ProposalRewardStatus, values: rewards })}
+    filters={enumsKeys({ obj: allRewards, values: rewards })}
     labelKey="rewards"
     on:nnsFilter={() =>
       openModal({
@@ -45,7 +52,7 @@
   >
 
   <FiltersCard
-    filters={enumsKeys<ProposalStatus>({ obj: ProposalStatus, values: status })}
+    filters={enumsKeys({ obj: allStatus, values: status })}
     labelKey="status"
     on:nnsFilter={() =>
       openModal({
