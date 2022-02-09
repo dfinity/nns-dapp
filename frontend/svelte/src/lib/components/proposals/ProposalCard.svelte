@@ -5,7 +5,7 @@
   import Badge from "../ui/Badge.svelte";
   import { i18n } from "../../stores/i18n";
 
-  export let proposalInfo!: ProposalInfo;
+  export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal;
   let status: ProposalStatus;
