@@ -60,6 +60,7 @@ const queryProposals = async ({
   const { rewards, status }: ProposalsFiltersStore = get(proposalsFiltersStore);
 
   // TODO(L2-206): implement excludeTopic
+  // TODO(L2-2069: implement 'Hide "Open" proposals where all your neurons have voted or are ineligible to vote'
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {
