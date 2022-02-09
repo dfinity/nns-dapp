@@ -12,16 +12,9 @@ import {
   listProposals,
 } from "../../../lib/utils/proposals.utils";
 
-const mockProposals: ProposalInfo[] = [
-  {
-    id: "test1",
-  },
-  { id: "test2" },
-] as unknown as ProposalInfo[];
-
 // @ts-ignore
 class MockGovernanceCanister extends GovernanceCanister {
-  constructor() {
+  constructor(private proposals: ProposalInfo[]) {
     super();
   }
 
@@ -37,14 +30,21 @@ class MockGovernanceCanister extends GovernanceCanister {
     certified?: boolean;
   }): Promise<ListProposalsResponse> => {
     return {
-      proposals: mockProposals,
+      proposals: this.proposals,
     };
   };
 }
 
 describe("proposals-utils", () => {
+  const mockProposals: ProposalInfo[] = [
+    {
+      id: "test1",
+    },
+    { id: "test2" },
+  ] as unknown as ProposalInfo[];
+
   const mockGovernanceCanister: MockGovernanceCanister =
-    new MockGovernanceCanister();
+    new MockGovernanceCanister(mockProposals);
 
   let spyListProposals;
 
@@ -108,5 +108,39 @@ describe("proposals-utils", () => {
     await listProposals({ clearBeforeQuery: false });
     expect(spy).toHaveBeenCalledTimes(1);
     spy.mockClear();
+  });
+
+  it("should push new proposals to the list", async () => {
+    const spy = jest.spyOn(proposalsStore, "pushProposals");
+    await listNextProposals({
+      beforeProposal: mockProposals[mockProposals.length - 1].id,
+    });
+    expect(spy).toHaveBeenCalledTimes(1);
+    spy.mockClear();
+  });
+
+  it("should not push empty proposals to the list", async () => {
+    const mockEmptyGovernanceCanister: MockGovernanceCanister =
+      new MockGovernanceCanister([]);
+
+    jest
+      .spyOn(GovernanceCanister, "create")
+      .mockImplementation(
+        (): GovernanceCanister => mockEmptyGovernanceCanister
+      );
+
+    const spyListProposals = jest.spyOn(
+      mockEmptyGovernanceCanister,
+      "listProposals"
+    );
+
+    const spy = jest.spyOn(proposalsStore, "pushProposals");
+    await listNextProposals({
+      beforeProposal: mockProposals[mockProposals.length - 1].id,
+    });
+    expect(spy).toHaveBeenCalledTimes(0);
+    spy.mockClear();
+
+    spyListProposals.mockClear();
   });
 });
