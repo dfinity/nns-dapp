@@ -59,16 +59,16 @@ const queryProposals = async ({
 
   // TODO: excludeTopic
 
-  const { proposals }: ListProposalsResponse = await governance.listProposals(
-    {
+  const { proposals }: ListProposalsResponse = await governance.listProposals({
+    request: {
       limit: LIST_PAGINATION_LIMIT,
       beforeProposal,
       excludeTopic: [],
       includeRewardStatus: rewards,
       includeStatus: status,
     },
-    false
-  );
+    certified: false,
+  });
 
   return proposals;
 };
