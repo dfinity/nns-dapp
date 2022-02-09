@@ -2,26 +2,20 @@
  * @jest-environment jsdom
  */
 
-import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
+import { GovernanceCanister } from "@dfinity/nns";
+import {render, waitFor} from '@testing-library/svelte';
 import { authStore } from "../../lib/stores/auth.store";
 import { proposalsStore } from "../../lib/stores/proposals.store";
 import Proposals from "../../routes/Proposals.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import {
   MockGovernanceCanister,
+  mockProposals,
   mockProposalsStoreSubscribe,
 } from "../mocks/proposals.store.mock";
 
 describe("Proposals", () => {
   let authStoreMock, proposalsStoreMock;
-
-  const mockProposals: ProposalInfo[] = [
-    {
-      id: "test1",
-    },
-    { id: "test2" },
-  ] as unknown as ProposalInfo[];
 
   const mockGovernanceCanister: MockGovernanceCanister =
     new MockGovernanceCanister(mockProposals);
@@ -70,5 +64,17 @@ describe("Proposals", () => {
         exact: false,
       })
     ).toBeInTheDocument();
+  });
+
+  it("should not render a spinner", async () => {
+    const { container, component } = render(Proposals);
+    expect(container.querySelector("div.spinner")).toBeNull();
+  });
+
+  it("should render proposals", () => {
+    const { getByText } = render(Proposals);
+
+    expect(getByText(mockProposals[0].proposal.title)).toBeInTheDocument();
+    expect(getByText(mockProposals[1].proposal.title)).toBeInTheDocument();
   });
 });

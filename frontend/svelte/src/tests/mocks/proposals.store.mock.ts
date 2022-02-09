@@ -7,15 +7,19 @@ import {
 } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 
-const mockProposals: ProposalInfo[] = [
+export const mockProposals: ProposalInfo[] = [
   {
     id: "test1",
-    title: "Proposal1",
+  proposal: {
+    title: "Proposal1"
+  },
     status: ProposalStatus.PROPOSAL_STATUS_OPEN,
   },
   {
     id: "test2",
-    title: "Proposal2",
+    proposal: {
+      title: "Proposal2"
+    },
     status: ProposalStatus.PROPOSAL_STATUS_EXECUTED,
   },
 ] as unknown as ProposalInfo[];
