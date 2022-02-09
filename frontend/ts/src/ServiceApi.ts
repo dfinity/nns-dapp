@@ -527,111 +527,112 @@ export default class ServiceApi {
       {
         console.log("make a 'Motion' proposal");
         const manageNeuronResponse =
-            await this.governanceService.makeMotionProposal({
-              title: "Test proposal title - Lower all prices!",
-              neuronId,
-              url: "http://free-stuff-for-all.com",
-              text: "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
-              summary: "Change the world with the IC - lower all prices!",
-            });
+          await this.governanceService.makeMotionProposal({
+            title: "Test proposal title - Lower all prices!",
+            neuronId,
+            url: "http://free-stuff-for-all.com",
+            text: "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
+            summary: "Change the world with the IC - lower all prices!",
+          });
         console.log(manageNeuronResponse);
       }
 
       {
         console.log("make a 'NetworkEconomics' proposal");
         const manageNeuronResponse =
-            await this.governanceService.makeNetworkEconomicsProposal({
-              neuronId,
-              title: "Increase minimum neuron stake",
-              url: "https://www.lipsum.com/",
-              summary: "Increase minimum neuron stake",
-              networkEconomics: {
-                neuronMinimumStake: BigInt(100_000_000),
-                maxProposalsToKeepPerTopic: 1000,
-                neuronManagementFeePerProposal: BigInt(10_000),
-                rejectCost: BigInt(10_000_000),
-                transactionFee: BigInt(1000),
-                neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
-                minimumIcpXdrRate: BigInt(1),
-                maximumNodeProviderRewards: BigInt(10_000_000_000),
-              },
-            });
+          await this.governanceService.makeNetworkEconomicsProposal({
+            neuronId,
+            title: "Increase minimum neuron stake",
+            url: "https://www.lipsum.com/",
+            summary: "Increase minimum neuron stake",
+            networkEconomics: {
+              neuronMinimumStake: BigInt(100_000_000),
+              maxProposalsToKeepPerTopic: 1000,
+              neuronManagementFeePerProposal: BigInt(10_000),
+              rejectCost: BigInt(10_000_000),
+              transactionFee: BigInt(1000),
+              neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
+              minimumIcpXdrRate: BigInt(1),
+              maximumNodeProviderRewards: BigInt(10_000_000_000),
+            },
+          });
         console.log(manageNeuronResponse);
       }
 
       {
         console.log("make a 'RewardNodeProvider' proposal");
         const manageNeuronResponse =
-            await this.governanceService.makeRewardNodeProviderProposal({
-              neuronId,
-              url: "https://www.lipsum.com/",
-              title: "Reward for Node Provider 'ABC'",
-              summary: "Reward for Node Provider 'ABC'",
-              amount: BigInt(10_000_000),
-              nodeProvider: this.identity.getPrincipal().toString(),
-              rewardMode: {
-                RewardToNeuron: {dissolveDelaySeconds: BigInt(1000)},
-              },
-            });
+          await this.governanceService.makeRewardNodeProviderProposal({
+            neuronId,
+            url: "https://www.lipsum.com/",
+            title: "Reward for Node Provider 'ABC'",
+            summary: "Reward for Node Provider 'ABC'",
+            amount: BigInt(10_000_000),
+            nodeProvider: this.identity.getPrincipal().toString(),
+            rewardMode: {
+              RewardToNeuron: { dissolveDelaySeconds: BigInt(1000) },
+            },
+          });
         console.log(manageNeuronResponse);
       }
 
       {
         console.log("make an 'Add node to subnet' proposal");
         const manageNeuronResponse =
-            await this.governanceService.makeExecuteNnsFunctionProposal({
-              neuronId,
-              title: "Add node(s) to subnet 10",
-              url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
-              summary: "Add node(s) to subnet 10",
-              nnsFunction: 2,
-              payload: addNodeToSubnetPayload,
-            });
+          await this.governanceService.makeExecuteNnsFunctionProposal({
+            neuronId,
+            title: "Add node(s) to subnet 10",
+            url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
+            summary: "Add node(s) to subnet 10",
+            nnsFunction: 2,
+            payload: addNodeToSubnetPayload,
+          });
         console.log(manageNeuronResponse);
       }
 
       {
         console.log("make an 'Update subnet config' proposal");
         const manageNeuronResponse =
-            await this.governanceService.makeExecuteNnsFunctionProposal({
-              neuronId,
-              title: "Update configuration of subnet: tdb26-",
-              url: "",
-              summary:
-                  "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
-              nnsFunction: 7,
-              payload: updateSubnetConfigPayload,
-            });
+          await this.governanceService.makeExecuteNnsFunctionProposal({
+            neuronId,
+            title: "Update configuration of subnet: tdb26-",
+            url: "",
+            summary:
+              "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
+            nnsFunction: 7,
+            payload: updateSubnetConfigPayload,
+          });
         console.log(manageNeuronResponse);
       }
 
       {
         console.log("make an 'Update subnet' proposal");
         const manageNeuronResponse =
-            await this.governanceService.makeExecuteNnsFunctionProposal({
-              neuronId,
-              title: "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
-              url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
-              summary:
-                  "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
-              nnsFunction: 11,
-              payload: updateSubnetPayload,
-            });
+          await this.governanceService.makeExecuteNnsFunctionProposal({
+            neuronId,
+            title:
+              "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+            url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
+            summary:
+              "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+            nnsFunction: 11,
+            payload: updateSubnetPayload,
+          });
         console.log(manageNeuronResponse);
       }
 
       {
         console.log("make an 'Add or remove data center' proposal");
         const manageNeuronResponse =
-            await this.governanceService.makeExecuteNnsFunctionProposal({
-              neuronId,
-              title: "Initialize datacenter records",
-              url: "",
-              summary:
-                  "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
-              nnsFunction: 21,
-              payload: addOrRemoveDataCentersPayload,
-            });
+          await this.governanceService.makeExecuteNnsFunctionProposal({
+            neuronId,
+            title: "Initialize datacenter records",
+            url: "",
+            summary:
+              "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
+            nnsFunction: 21,
+            payload: addOrRemoveDataCentersPayload,
+          });
         console.log(manageNeuronResponse);
       }
     } catch (e) {
