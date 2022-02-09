@@ -4,13 +4,8 @@
 
   let wizard: Wizard | undefined;
 
-  export function next() {
-    wizard.next();
-  }
-
-  export function back() {
-    wizard.back();
-  }
+  export const next = () => wizard?.next();
+  export const back = () => wizard?.back();
 </script>
 
 <Wizard bind:this={wizard}>
