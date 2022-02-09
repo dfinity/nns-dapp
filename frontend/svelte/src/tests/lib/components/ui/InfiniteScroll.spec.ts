@@ -4,39 +4,15 @@
 
 import { render } from "@testing-library/svelte";
 import InfiniteScroll from "../../../../lib/components/ui/InfiniteScroll.svelte";
+import {IntersectionObserverActive, IntersectionObserverPassive} from '../../../mocks/infinitescroll.mock';
 import InfiniteScrollTest from "./InfiniteScrollTest.svelte";
 
 describe("InfiniteScroll", () => {
   // @ts-ignore
-  global.IntersectionObserver = class IntersectionObserver {
-    constructor(
-      private callback: (
-        entries: IntersectionObserverEntry[],
-        observer
-      ) => void,
-      private options?: IntersectionObserverInit
-    ) {}
+  beforeAll(() => (global.IntersectionObserver = IntersectionObserverActive));
 
-    observe(element: HTMLElement) {
-      this.callback(
-        [
-          {
-            isIntersecting: true,
-            target: element,
-          } as unknown as IntersectionObserverEntry,
-        ],
-        this
-      );
-    }
-
-    disconnect() {
-      return null;
-    }
-
-    unobserve() {
-      return null;
-    }
-  };
+  // @ts-ignore
+  afterAll(() => (global.IntersectionObserver = IntersectionObserverPassive));
 
   it("should render a container", () => {
     const { container } = render(InfiniteScroll);
