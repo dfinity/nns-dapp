@@ -2,18 +2,42 @@
  * @jest-environment jsdom
  */
 
+import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import { authStore } from "../../lib/stores/auth.store";
+import { proposalsStore } from "../../lib/stores/proposals.store";
 import Proposals from "../../routes/Proposals.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
+import {
+  MockGovernanceCanister,
+  mockProposalsStoreSubscribe,
+} from "../mocks/proposals.store.mock";
 
 describe("Proposals", () => {
-  let authStoreMock;
+  let authStoreMock, proposalsStoreMock;
+
+  const mockProposals: ProposalInfo[] = [
+    {
+      id: "test1",
+    },
+    { id: "test2" },
+  ] as unknown as ProposalInfo[];
+
+  const mockGovernanceCanister: MockGovernanceCanister =
+    new MockGovernanceCanister(mockProposals);
 
   beforeEach(() => {
     authStoreMock = jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+
+    proposalsStoreMock = jest
+      .spyOn(proposalsStore, "subscribe")
+      .mockImplementation(mockProposalsStoreSubscribe);
+
+    jest
+      .spyOn(GovernanceCanister, "create")
+      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
   });
 
   it("should render a title", () => {

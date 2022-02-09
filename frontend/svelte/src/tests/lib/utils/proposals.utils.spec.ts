@@ -1,8 +1,4 @@
-import {
-  GovernanceCanister,
-  ListProposalsRequest,
-  ListProposalsResponse,
-} from "@dfinity/nns";
+import { GovernanceCanister } from "@dfinity/nns";
 import type { ProposalInfo } from "../../../../../../../nns-js/src";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import {
@@ -11,29 +7,7 @@ import {
   listNextProposals,
   listProposals,
 } from "../../../lib/utils/proposals.utils";
-
-// @ts-ignore
-class MockGovernanceCanister extends GovernanceCanister {
-  constructor(private proposals: ProposalInfo[]) {
-    super();
-  }
-
-  create() {
-    return this;
-  }
-
-  public listProposals = async ({
-    request,
-    certified = true,
-  }: {
-    request: ListProposalsRequest;
-    certified?: boolean;
-  }): Promise<ListProposalsResponse> => {
-    return {
-      proposals: this.proposals,
-    };
-  };
-}
+import { MockGovernanceCanister } from "../../mocks/proposals.store.mock";
 
 describe("proposals-utils", () => {
   const mockProposals: ProposalInfo[] = [
