@@ -13,17 +13,7 @@ global.IntersectionObserver = class IntersectionObserver {
     private options?: IntersectionObserverInit
   ) {}
 
-  observe(element: HTMLElement) {
-    this.callback(
-      [
-        {
-          isIntersecting: true,
-          target: element,
-        } as unknown as IntersectionObserverEntry,
-      ],
-      this
-    );
-  }
+  observe(element: HTMLElement) {}
 
   disconnect() {
     return null;
