@@ -1,4 +1,4 @@
-<script lang="ts">
+  <script lang="ts">
   import Card from "../ui/Card.svelte";
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
   import { ProposalStatus } from "@dfinity/nns";
