@@ -28,4 +28,14 @@ describe("ProposalCard", () => {
 
     expect(getByText(en.status.PROPOSAL_STATUS_OPEN)).toBeInTheDocument();
   });
+
+  it("should render a specific color for the status", () => {
+    const { container } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[1],
+      },
+    });
+
+    expect(container.querySelector('div.success')).not.toBeNull();
+  });
 });
