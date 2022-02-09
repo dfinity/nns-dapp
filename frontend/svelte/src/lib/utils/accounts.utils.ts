@@ -10,9 +10,9 @@ export const loadAccounts = async ({
   const ledger: LedgerCanister = LedgerCanister.create();
 
   const accountIdentifier: AccountIdentifier =
-    AccountIdentifier.fromPrincipal(principal);
+    AccountIdentifier.fromPrincipal({principal});
 
-  const balance: ICP = await ledger.accountBalance(accountIdentifier, false);
+  const balance: ICP = await ledger.accountBalance({accountIdentifier, certified: false});
 
   return {
     main: {
