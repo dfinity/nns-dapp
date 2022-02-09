@@ -9,18 +9,18 @@
   import { i18n } from "../stores/i18n";
   import { enumValues } from "../utils/enum.utils";
   import { proposalsFiltersStore } from "../stores/proposals.store";
-  import {
+  import type {
     ProposalRewardStatus,
     ProposalStatus,
     Topic,
-  } from "../../../../../../nns-js";
+  } from "@dfinity/nns";
 
   export let props: ProposalsFilterModalProps | undefined;
 
   let visible: boolean;
   let category: string | undefined;
   let filters: ProposalsFilters | undefined;
-  let selectedFilters: ProposalsFilters[];
+  let selectedFilters: (Topic | ProposalRewardStatus | ProposalStatus)[];
 
   $: visible = props !== undefined;
   $: category = props?.category;
@@ -31,30 +31,37 @@
   const close = () => dispatch("nnsClose", { selectedFilters });
 
   // Update list of selected filters with filter - i.e. toggle the checked or not checked of the filter that has been clicked
-  const applyFilterChange = (filter: ProposalsFilters) =>
+  const applyFilterChange = (
+    filter: Topic | ProposalRewardStatus | ProposalStatus
+  ) =>
     (selectedFilters = selectedFilters.includes(filter)
       ? selectedFilters.filter(
-          (activeTopic: ProposalsFilters) => activeTopic !== filter
+          (activeTopic: Topic | ProposalRewardStatus | ProposalStatus) =>
+            activeTopic !== filter
         )
       : [...selectedFilters, filter]);
 
   const updateProposalStoreFilters = () => {
     switch (category) {
       case "topics":
-        proposalsFiltersStore.filterTopics(selectedFilters as Topic[]);
+        proposalsFiltersStore.filterTopics(
+          selectedFilters as unknown as Topic[]
+        );
         return;
       case "rewards":
         proposalsFiltersStore.filterRewards(
-          selectedFilters as ProposalRewardStatus[]
+          selectedFilters as unknown as ProposalRewardStatus[]
         );
         return;
       case "status":
-        proposalsFiltersStore.filterStatus(selectedFilters as ProposalStatus[]);
+        proposalsFiltersStore.filterStatus(
+          selectedFilters as unknown as ProposalStatus[]
+        );
         return;
     }
   };
 
-  const onChange = (filter: ProposalsFilters) => {
+  const onChange = (filter: Topic | ProposalRewardStatus | ProposalStatus) => {
     applyFilterChange(filter);
 
     updateProposalStoreFilters();
@@ -67,7 +74,7 @@
   {#if filters}
     {#each enumValues(filters) as key (key)}
       <Checkbox
-        inputId={key}
+        inputId={`${key}`}
         checked={selectedFilters.includes(key)}
         on:nnsChange={() => onChange(key)}
         >{$i18n[category][filters[key]]}</Checkbox

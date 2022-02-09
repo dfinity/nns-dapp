@@ -1,6 +1,6 @@
 <script lang="ts">
   import FiltersCard from "../ui/FiltersCard.svelte";
-  import { ProposalsFilterModalProps } from "../../types/proposals";
+  import type {ProposalsFilterModalProps} from '../../types/proposals';
   import ProposalsFilterModal from "../../modals/ProposalsFilterModal.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import { i18n } from "../../stores/i18n";
@@ -22,7 +22,7 @@
 </script>
 
 <FiltersCard
-  filters={enumsKeys({ obj: Topic, values: topics })}
+  filters={enumsKeys<Topic>({ obj: Topic, values: topics })}
   labelKey="topics"
   on:nnsFilter={() =>
     openModal({
@@ -34,7 +34,7 @@
 
 <div class="status">
   <FiltersCard
-    filters={enumsKeys({ obj: ProposalRewardStatus, values: rewards })}
+    filters={enumsKeys<ProposalRewardStatus>({ obj: ProposalRewardStatus, values: rewards })}
     labelKey="rewards"
     on:nnsFilter={() =>
       openModal({
@@ -45,7 +45,7 @@
   >
 
   <FiltersCard
-    filters={enumsKeys({ obj: ProposalStatus, values: status })}
+    filters={enumsKeys<ProposalStatus>({ obj: ProposalStatus, values: status })}
     labelKey="status"
     on:nnsFilter={() =>
       openModal({

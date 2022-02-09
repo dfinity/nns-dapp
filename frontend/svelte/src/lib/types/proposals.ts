@@ -8,5 +8,5 @@ export type ProposalsFilters =
 export interface ProposalsFilterModalProps {
   category: "topics" | "rewards" | "status";
   filters: ProposalsFilters;
-  selectedFilters: ProposalsFilters[];
+  selectedFilters: (Topic | ProposalRewardStatus | ProposalStatus)[];
 }
