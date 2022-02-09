@@ -55,6 +55,7 @@ const queryProposals = async ({
 }: {
   beforeProposal: ProposalId | undefined;
 }): Promise<ProposalInfo[]> => {
+  // TODO(L2-206): use createAgent
   const governance: GovernanceCanister = GovernanceCanister.create();
 
   const { rewards, status }: ProposalsFiltersStore = get(proposalsFiltersStore);
