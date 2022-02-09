@@ -21,7 +21,7 @@
 
   onDestroy(unsubscribe);
 
-  $: absolutOffset = container ? container.clientWidth : DEFAULT_OFFSET;
+  $: absolutOffset = container?.clientWidth || DEFAULT_OFFSET;
   $: isCurrentIndex = index === currentIndex;
 </script>
 
