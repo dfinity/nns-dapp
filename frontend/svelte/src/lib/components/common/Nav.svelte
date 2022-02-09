@@ -25,6 +25,8 @@
 </nav>
 
 <style lang="scss">
+  @use "../../themes/mixins/media.scss";
+
   nav {
     position: absolute;
     top: var(--header-height);
@@ -57,6 +59,7 @@
 
     color: var(--gray-400);
 
+    font-size: var(--font-size-ultra-small);
     font-weight: 700;
 
     text-decoration: none;
@@ -77,8 +80,8 @@
       background: var(--background-tint);
     }
 
-    @media (max-width: 576px) {
-      font-size: var(--font-size-ultra-small);
+    @include media.min-width(small) {
+      font-size: var(--font-size-h4);
     }
   }
 
