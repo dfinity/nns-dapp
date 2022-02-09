@@ -2,4 +2,5 @@ import { HttpAgent } from "@dfinity/agent";
 
 const host = process.env.SERVICE_URL;
 
-export const agent = new HttpAgent({ host });
+// To avoid being executed in tests that only import it
+export const createAgent = () => new HttpAgent({ host });
