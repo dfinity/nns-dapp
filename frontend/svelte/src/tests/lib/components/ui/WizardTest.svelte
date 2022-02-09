@@ -2,10 +2,18 @@
   import Wizard from "../../../../lib/components/ui/Wizard/Wizard.svelte";
   import WizardStep from "../../../../lib/components/ui/Wizard/WizardStep.svelte";
 
-  export let selectedStepIndex: number;
+  let wizard: Wizard | undefined;
+
+  export function next() {
+    wizard.next();
+  }
+
+  export function back() {
+    wizard.back();
+  }
 </script>
 
-<Wizard {selectedStepIndex}>
+<Wizard bind:this={wizard}>
   <WizardStep index={0}>
     <div>First</div>
   </WizardStep>
