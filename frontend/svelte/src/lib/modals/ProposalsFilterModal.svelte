@@ -44,7 +44,9 @@
         proposalsFiltersStore.filterTopics(selectedFilters as Topic[]);
         return;
       case "rewards":
-        proposalsFiltersStore.filterRewards(selectedFilters as ProposalRewardStatus[]);
+        proposalsFiltersStore.filterRewards(
+          selectedFilters as ProposalRewardStatus[]
+        );
         return;
       case "status":
         proposalsFiltersStore.filterStatus(selectedFilters as ProposalStatus[]);

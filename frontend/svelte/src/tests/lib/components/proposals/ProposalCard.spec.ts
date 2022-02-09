@@ -36,6 +36,6 @@ describe("ProposalCard", () => {
       },
     });
 
-    expect(container.querySelector('div.success')).not.toBeNull();
+    expect(container.querySelector("div.success")).not.toBeNull();
   });
 });

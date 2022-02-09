@@ -6,11 +6,13 @@ import { fireEvent, render } from "@testing-library/svelte";
 import Filter from "../../../../lib/components/ui/FiltersCard.svelte";
 
 describe("Filter", () => {
-  const props: { filters: string[]; labelKey: "topics" | "rewards" | "proposals" } =
-    {
-      filters: ["a", "b", "c"],
-      labelKey: "topics",
-    };
+  const props: {
+    filters: string[];
+    labelKey: "topics" | "rewards" | "proposals";
+  } = {
+    filters: ["a", "b", "c"],
+    labelKey: "topics",
+  };
 
   it("should render a title", () => {
     const { container } = render(Filter, { props });

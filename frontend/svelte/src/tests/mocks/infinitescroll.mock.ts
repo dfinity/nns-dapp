@@ -1,46 +1,43 @@
 export class IntersectionObserverPassive {
-    constructor(
-        private callback: (entries: IntersectionObserverEntry[], observer) => void,
-        private options?: IntersectionObserverInit
-    ) {}
+  constructor(
+    private callback: (entries: IntersectionObserverEntry[], observer) => void,
+    private options?: IntersectionObserverInit
+  ) {}
 
-    observe(element: HTMLElement) {}
+  observe(element: HTMLElement) {}
 
-    disconnect() {
-        return null;
-    }
+  disconnect() {
+    return null;
+  }
 
-    unobserve() {
-        return null;
-    }
-};
+  unobserve() {
+    return null;
+  }
+}
 
 export class IntersectionObserverActive {
-    constructor(
-        private callback: (
-            entries: IntersectionObserverEntry[],
-            observer
-        ) => void,
-        private options?: IntersectionObserverInit
-    ) {}
+  constructor(
+    private callback: (entries: IntersectionObserverEntry[], observer) => void,
+    private options?: IntersectionObserverInit
+  ) {}
 
-    observe(element: HTMLElement) {
-        this.callback(
-            [
-                {
-                    isIntersecting: true,
-                    target: element,
-                } as unknown as IntersectionObserverEntry,
-            ],
-            this
-        );
-    }
+  observe(element: HTMLElement) {
+    this.callback(
+      [
+        {
+          isIntersecting: true,
+          target: element,
+        } as unknown as IntersectionObserverEntry,
+      ],
+      this
+    );
+  }
 
-    disconnect() {
-        return null;
-    }
+  disconnect() {
+    return null;
+  }
 
-    unobserve() {
-        return null;
-    }
-};
+  unobserve() {
+    return null;
+  }
+}
