@@ -12,10 +12,14 @@ export const loadAccounts = async ({
     agent: createAgent(),
   });
 
-  const accountIdentifier: AccountIdentifier =
-    AccountIdentifier.fromPrincipal(principal);
+  const accountIdentifier: AccountIdentifier = AccountIdentifier.fromPrincipal({
+    principal,
+  });
 
-  const balance: ICP = await ledger.accountBalance(accountIdentifier, false);
+  const balance: ICP = await ledger.accountBalance({
+    accountIdentifier,
+    certified: false,
+  });
 
   return {
     main: {

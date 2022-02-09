@@ -14,10 +14,13 @@ class MockLedgerCanister extends LedgerCanister {
     return this;
   }
 
-  accountBalance = async (
-    accountIdentifier: AccountIdentifier,
-    certified = true
-  ): Promise<ICP> => Promise.resolve(null);
+  accountBalance = async ({
+    accountIdentifier,
+    certified = true,
+  }: {
+    accountIdentifier: AccountIdentifier;
+    certified?: boolean;
+  }): Promise<ICP> => Promise.resolve(null);
 }
 
 describe("accounts-utils", () => {
