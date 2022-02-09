@@ -21,7 +21,7 @@ export const lastProposalId = (): ProposalId | undefined => {
 export const listProposals = async ({
   clearBeforeQuery = false,
 }: {
-  clearBeforeQuery: boolean;
+  clearBeforeQuery?: boolean;
 }) => {
   if (clearBeforeQuery) {
     proposalsStore.setProposals([]);
@@ -69,7 +69,7 @@ const queryProposals = async ({
       excludeTopic: [],
       includeRewardStatus: rewards,
       includeStatus: status,
-    }
+    },
   });
 
   return proposals;
