@@ -25,7 +25,10 @@
 </script>
 
 {#if isCurrentIndex}
-  <div bind:this={container} in:fly={{ x: slideOffset, duration: ANIMATION_DURATION }}>
+  <div
+    bind:this={container}
+    in:fly={{ x: slideOffset, duration: ANIMATION_DURATION }}
+  >
     <slot />
   </div>
 {/if}
