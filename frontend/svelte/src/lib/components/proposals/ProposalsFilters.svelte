@@ -18,11 +18,17 @@
   let rewards: ProposalRewardStatus[];
   let status: ProposalStatus[];
 
+  // TODO: Open to better suggestion
+  // TypeScript error without cast: Type 'typeof ProposalStatus' is not assignable to type 'ProposalStatus'.
+  const allTopics: Topic = Topic as unknown as Topic;
+  const allRewards: ProposalRewardStatus = ProposalRewardStatus as unknown as ProposalRewardStatus;
+  const allStatus: ProposalStatus = ProposalStatus as unknown as ProposalStatus;
+
   $: ({ topics, rewards, status } = $proposalsFiltersStore);
 </script>
 
 <FiltersCard
-  filters={enumsKeys<Topic>({ obj: Topic, values: topics })}
+  filters={enumsKeys<Topic>({ obj: allTopics, values: topics })}
   labelKey="topics"
   on:nnsFilter={() =>
     openModal({
@@ -34,7 +40,7 @@
 
 <div class="status">
   <FiltersCard
-    filters={enumsKeys<ProposalRewardStatus>({ obj: ProposalRewardStatus, values: rewards })}
+    filters={enumsKeys<ProposalRewardStatus>({ obj: allRewards, values: rewards })}
     labelKey="rewards"
     on:nnsFilter={() =>
       openModal({
@@ -45,7 +51,7 @@
   >
 
   <FiltersCard
-    filters={enumsKeys<ProposalStatus>({ obj: ProposalStatus, values: status })}
+    filters={enumsKeys<ProposalStatus>({ obj: allStatus, values: status })}
     labelKey="status"
     on:nnsFilter={() =>
       openModal({
