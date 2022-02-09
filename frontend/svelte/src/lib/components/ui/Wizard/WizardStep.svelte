@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy } from "svelte";
+  import type { Unsubscriber } from "svelte/store";
 
   import { fly } from "svelte/transition";
   import { selectedStepStore } from "./wizardStore";
@@ -13,7 +14,7 @@
   let absolutOffset = 200;
   let slideOffset: number | undefined;
 
-  const unsubscribe = selectedStepStore.subscribe((index) => {
+  const unsubscribe: Unsubscriber = selectedStepStore.subscribe((index) => {
     slideOffset = index > currentIndex ? absolutOffset : -absolutOffset;
     currentIndex = index;
   });

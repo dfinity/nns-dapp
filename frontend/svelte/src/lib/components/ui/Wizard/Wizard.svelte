@@ -3,10 +3,12 @@
 
   import { selectedStepStore } from "./wizardStore";
 
-  export let selectedStepIndex = 0;
+  export function next() {
+    selectedStepStore.update((index) => index + 1);
+  }
 
-  $: {
-    selectedStepStore.set(selectedStepIndex);
+  export function back() {
+    selectedStepStore.update((index) => (index > 0 ? index - 1 : index));
   }
 
   onDestroy(() => {
