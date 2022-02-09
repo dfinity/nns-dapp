@@ -1,10 +1,11 @@
-import {
+import type {
   ProposalInfo,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
 } from "@dfinity/nns";
 import { writable } from "svelte/store";
+import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
 
 export interface ProposalsFiltersStore {
   topics: Topic[];
@@ -52,29 +53,9 @@ const initProposalsStore = () => {
  *
  */
 const initProposalsFiltersStore = () => {
-  const { subscribe, update } = writable<ProposalsFiltersStore>({
-    topics: [
-      Topic.NetworkEconomics,
-      Topic.Governance,
-      Topic.NodeAdmin,
-      Topic.ParticipantManagement,
-      Topic.SubnetManagement,
-      Topic.NetworkCanisterManagement,
-      Topic.NodeProviderRewards,
-    ],
-    rewards: [
-      ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-      ProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
-      ProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
-      ProposalRewardStatus.PROPOSAL_REWARD_STATUS_INELIGIBLE,
-    ],
-    status: [
-      ProposalStatus.PROPOSAL_STATUS_OPEN,
-      ProposalStatus.PROPOSAL_STATUS_REJECTED,
-      ProposalStatus.PROPOSAL_STATUS_ACCEPTED,
-      ProposalStatus.PROPOSAL_STATUS_EXECUTED,
-    ],
-  });
+  const { subscribe, update } = writable<ProposalsFiltersStore>(
+    DEFAULT_PROPOSALS_FILTERS
+  );
 
   return {
     subscribe,
