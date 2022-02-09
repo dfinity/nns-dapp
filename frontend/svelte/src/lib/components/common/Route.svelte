@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SvelteComponent } from "svelte";
-  import { routePath } from "../../utils/route.utils";
+  import { pathToRegExp, routePath } from "../../utils/route.utils";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { RouteStore, routeStore } from "../../stores/route.store";
   import { onDestroy } from "svelte";
@@ -17,6 +17,6 @@
   onDestroy(unsubscribe);
 </script>
 
-{#if path === currentPath}
+{#if pathToRegExp(path).test(currentPath)}
   <svelte:component this={component} />
 {/if}

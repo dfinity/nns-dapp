@@ -9,7 +9,7 @@
   import Auth from "./routes/Auth.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { accountsStore } from "./lib/stores/accounts.store";
-  import { onDestroy } from "svelte";
+  import { onDestroy, SvelteComponent } from "svelte";
   import { AuthStore, authStore } from "./lib/stores/auth.store";
   import Wallet from "./routes/Wallet.svelte";
   import ProposalDetail from "./routes/ProposalDetail.svelte";
@@ -24,6 +24,18 @@
       await accountsStore.sync(auth);
     }
   );
+
+  // Prepared in const to avoid svelte processing the path (eg "/[a-zA-Z0-9]{64}")
+  const privateRoutes: { path: string; component: typeof SvelteComponent }[] = [
+    { path: "/#/accounts", component: Accounts },
+    { path: "/#/neurons", component: Neurons },
+    { path: "/#/proposals", component: Proposals },
+    { path: "/#/canisters", component: Canisters },
+    // TODO: TBD
+    { path: "/#/wallet/[a-zA-Z0-9]{64}", component: Wallet },
+    // TODO: TBD
+    { path: "/#/proposal/[0-9]+", component: ProposalDetail },
+  ];
 
   onDestroy(unsubscribe);
 </script>
@@ -40,14 +52,9 @@
 
 <Guard>
   <Route path="/" component={Auth} />
-  <PrivateRoute path="/#/accounts" component={Accounts} />
-  <PrivateRoute path="/#/neurons" component={Neurons} />
-  <PrivateRoute path="/#/proposals" component={Proposals} />
-  <PrivateRoute path="/#/canisters" component={Canisters} />
-  <!-- TODO: TBD -->
-  <PrivateRoute path="/#/wallet" component={Wallet} />
-  <!-- TODO: TBD -->
-  <PrivateRoute path="/#/proposal" component={ProposalDetail} />
+  {#each privateRoutes as route}
+    <PrivateRoute path={route.path} component={route.component} />
+  {/each}
 </Guard>
 
 <style lang="scss" global>

@@ -1,3 +1,5 @@
+import { memoize } from "./optimization.utils";
+
 /**
  * The pathname and the hash without base href and without the query string
  */
@@ -8,6 +10,10 @@ export const routePath = (): string => {
     .replace(/\?.*/, "")
     .toLowerCase()}`;
 };
+
+export const pathToRegExp: (path: string) => RegExp = memoize(
+  (path) => new RegExp(`^${path}$`)
+);
 
 // e.g. #/accounts => accounts
 export const routeContext = (): string => {

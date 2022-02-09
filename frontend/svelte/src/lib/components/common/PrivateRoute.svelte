@@ -4,7 +4,11 @@
   import { onDestroy, SvelteComponent } from "svelte";
   import Route from "./Route.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { routeContext, routePath } from "../../utils/route.utils";
+  import {
+    pathToRegExp,
+    routeContext,
+    routePath,
+  } from "../../utils/route.utils";
   import { routeStore } from "../../stores/route.store";
   import { isSignedIn } from "../../utils/auth.utils";
 
@@ -14,7 +18,7 @@
   let signedIn: boolean = false;
 
   const redirectLogin = () => {
-    if (signedIn || routePath() !== path) {
+    if (signedIn || pathToRegExp(path).test(routePath()) === false) {
       return;
     }
 
