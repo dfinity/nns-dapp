@@ -32,7 +32,7 @@
     { path: "/#/proposals", component: Proposals },
     { path: "/#/canisters", component: Canisters },
     // TODO: TBD
-    { path: "/#/wallet/[a-zA-Z0-9]{64}", component: Wallet },
+    { path: "/#/wallet/[a-zA-Z0-9]+", component: Wallet },
     // TODO: TBD
     { path: "/#/proposal/[0-9]+", component: ProposalDetail },
   ];
