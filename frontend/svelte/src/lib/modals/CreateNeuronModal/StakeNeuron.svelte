@@ -36,9 +36,11 @@
         placeholderLabelKey="neurons.amount"
         name="amount"
         bind:value={amount}
+        fullWidth
+        theme="dark"
       />
       <small>{`(${$i18n.neurons.may_take_while})`}</small>
-      <button class="primary" type="submit" disabled
+      <button class="primary full-width" type="submit" disabled={!amount}
         >{$i18n.neurons.create}</button
       >
     </form>
@@ -63,6 +65,8 @@
     flex-direction: column;
     align-items: center;
 
+    width: 100%;
+
     .title {
       color: var(--gray-400);
       font-size: var(--font-size-h3);
@@ -77,6 +81,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    width: 90%;
 
     small {
       margin-top: 2rem;
