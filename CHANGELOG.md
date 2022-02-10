@@ -1,5 +1,7 @@
 # Changelog
 
+## Proposal ....
+
 ## Proposal 43521
 * Proposal types RemoveNodeOperatorsPayload and RerouteCanisterRangePayload are now displayed in the UI.
 * Proposal type UpdateNodeOperatorConfigPayload has additional fields: `rewardable_nodes` and `dc_id`
