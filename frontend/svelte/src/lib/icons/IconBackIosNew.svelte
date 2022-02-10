@@ -1,4 +1,4 @@
-<!-- source: https://material.io/icons/ -->
+<!-- source: https://fonts.google.com/icons?selected=Material+Icons&icon.query=arrow+back+ios+new -->
 <svg
   xmlns="http://www.w3.org/2000/svg"
   height="24px"
