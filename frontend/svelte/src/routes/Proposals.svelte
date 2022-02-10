@@ -3,11 +3,12 @@
   import { onMount } from "svelte";
   import VotingFilters from "../lib/components/voting/VotingFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
+  import { AppPath } from "./routes";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
     if (process.env.REDIRECT_TO_LEGACY) {
-      window.location.replace("/#/proposals");
+      window.location.replace(AppPath.Proposals);
     }
   });
 </script>

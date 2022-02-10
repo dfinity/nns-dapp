@@ -9,10 +9,11 @@
   import Auth from "./routes/Auth.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { accountsStore } from "./lib/stores/accounts.store";
-  import { onDestroy, SvelteComponent } from "svelte";
+  import { onDestroy } from "svelte";
   import { AuthStore, authStore } from "./lib/stores/auth.store";
   import Wallet from "./routes/Wallet.svelte";
-  import ProposalDetail from "./routes/ProposalDetail.svelte";
+  import ProposalDetails from "./routes/ProposalDetails.svelte";
+  import { AppPath } from "./routes/routes";
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -24,18 +25,6 @@
       await accountsStore.sync(auth);
     }
   );
-
-  // Prepared in const to avoid svelte processing the path (eg "/[a-zA-Z0-9]{64}")
-  const privateRoutes: { path: string; component: typeof SvelteComponent }[] = [
-    { path: "/#/accounts", component: Accounts },
-    { path: "/#/neurons", component: Neurons },
-    { path: "/#/proposals", component: Proposals },
-    { path: "/#/canisters", component: Canisters },
-    // TODO: TBD
-    { path: "/#/wallet/[a-zA-Z0-9]+", component: Wallet },
-    // TODO: TBD
-    { path: "/#/proposal/[0-9]+", component: ProposalDetail },
-  ];
 
   onDestroy(unsubscribe);
 </script>
@@ -51,10 +40,13 @@
 </svelte:head>
 
 <Guard>
-  <Route path="/" component={Auth} />
-  {#each privateRoutes as route}
-    <PrivateRoute path={route.path} component={route.component} />
-  {/each}
+  <Route path={AppPath.Authentication} component={Auth} />
+  <PrivateRoute path={AppPath.Accounts} component={Accounts} />
+  <PrivateRoute path={AppPath.Neurons} component={Neurons} />
+  <PrivateRoute path={AppPath.Proposals} component={Proposals} />
+  <PrivateRoute path={AppPath.Canisters} component={Canisters} />
+  <PrivateRoute path={AppPath.Wallet} component={Wallet} />
+  <PrivateRoute path={AppPath.ProposalDetails} component={ProposalDetails} />
 </Guard>
 
 <style lang="scss" global>
