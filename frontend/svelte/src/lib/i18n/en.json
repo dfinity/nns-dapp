@@ -73,6 +73,12 @@
     "executed": "Executed",
     "failed": "Failed"
   },
+  "wallet": {
+    "title": "Account"
+  },
+  "proposal_details": {
+    "title": "Proposal"
+  },
   "modals": {
     "back": "Back"
   }

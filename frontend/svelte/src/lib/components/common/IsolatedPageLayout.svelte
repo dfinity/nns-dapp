@@ -10,7 +10,7 @@
 </script>
 
 <header>
-  <Tooltip id="back" text="Back">
+  <Tooltip id="back" text={$i18n.modals.back}>
     <button
       class="back"
       on:click|stopPropagation={() => dispatch("nnsBack")}
