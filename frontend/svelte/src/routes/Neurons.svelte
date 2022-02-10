@@ -23,7 +23,7 @@
 
   onDestroy(unsubscribe);
 
-  let showStakeNeuronModal: boolean = true;
+  let showStakeNeuronModal: boolean = false;
   const stakeNeurons = () => {
     showStakeNeuronModal = true;
   };

@@ -47,6 +47,7 @@ interface I18nNeurons {
   stake_neurons: string;
   select_source: string;
   my_accounts: string;
+  stake_neuron: string;
   source: string;
   transaction_fee: string;
   current_balance: string;

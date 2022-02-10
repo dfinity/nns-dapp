@@ -12,7 +12,7 @@
   }
 
   export function subscribe(callback) {
-    selectedStepStore.subscribe(callback);
+    return selectedStepStore.subscribe(callback);
   }
 
   onDestroy(() => {

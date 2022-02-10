@@ -8,16 +8,18 @@
   import { onDestroy, onMount } from "svelte";
   import SelectAccount from "./SelectAccount.svelte";
   import StakeNeuron from "./StakeNeuron.svelte";
+  import type { Unsubscriber } from "svelte/store";
 
   export let visible: boolean;
 
   let main: Account | undefined;
-  const unsubscribe = accountsStore.subscribe((accountStore) => {
+  const unsubscribeAccounts = accountsStore.subscribe((accountStore) => {
     main = accountStore?.main;
   });
 
   let wizard: Wizard | undefined;
-  let currentIndex: number | undefined;
+  let unsubscribeWizard: Unsubscriber | undefined;
+  let currentIndex: number = 0;
   const chooseAccount = () => {
     wizard?.next();
   };
@@ -26,10 +28,30 @@
   };
 
   onMount(() => {
-    wizard?.subscribe((value) => (currentIndex = value));
+    unsubscribeWizard = wizard?.subscribe((value) => {
+      currentIndex = value;
+    });
   });
 
-  onDestroy(unsubscribe);
+  $: {
+    if (!unsubscribeWizard && wizard) {
+      unsubscribeWizard = wizard.subscribe((value) => {
+        currentIndex = value;
+      });
+    }
+  }
+
+  onDestroy(() => {
+    unsubscribeWizard?.();
+    unsubscribeAccounts?.();
+  });
+
+  let titleKey: string = "select_source";
+  const titleMapper = {
+    "0": "select_source",
+    "1": "stake_neuron",
+  };
+  $: titleKey = titleMapper[currentIndex];
 </script>
 
 <Modal
@@ -40,7 +62,7 @@
   showBackButton={currentIndex === 1}
   on:nnsBack={goBack}
 >
-  <span slot="title">{$i18n.neurons.select_source}</span>
+  <span slot="title">{$i18n.neurons?.[titleKey]}</span>
   <main>
     <Wizard bind:this={wizard}>
       <WizardStep index={0}>
