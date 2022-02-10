@@ -32,11 +32,11 @@
 <style lang="scss">
   header {
     display: grid;
-    grid-template-columns: var(--isolated-page-header-height) 1fr var(
-        --isolated-page-header-height
+    grid-template-columns: var(--headless-layout-header-height) 1fr var(
+        --headless-layout-header-height
       );
     align-items: center;
-    height: var(--isolated-page-header-height);
+    height: var(--headless-layout-header-height);
 
     // to make the shadow visible
     position: relative;
@@ -66,7 +66,7 @@
 
   main {
     position: absolute;
-    inset: calc(var(--isolated-page-header-height)) 0 0;
+    inset: calc(var(--headless-layout-header-height)) 0 0;
     padding-top: 50px;
 
     overflow: auto;

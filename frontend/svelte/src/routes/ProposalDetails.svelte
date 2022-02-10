@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import IsolatedPageLayout from "../lib/components/common/IsolatedPageLayout.svelte";
+  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "./routes";
 
@@ -32,13 +32,13 @@
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
-  <IsolatedPageLayout on:nnsBack={goBack}>
+  <HeadlessLayout on:nnsBack={goBack}>
     <svelte:fragment slot="header">Proposal</svelte:fragment>
 
     <section>TBD</section>
 
     <svelte:fragment slot="footer" />
-  </IsolatedPageLayout>
+  </HeadlessLayout>
 {/if}
 
 <style lang="scss">

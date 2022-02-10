@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
-  import IsolatedPageLayout from "../lib/components/common/IsolatedPageLayout.svelte";
+  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { AppPath } from "./routes";
   import { routeStore } from "../lib/stores/route.store";
 
@@ -36,8 +36,8 @@
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
-  <IsolatedPageLayout on:nnsBack={goBack}>
-    <svelte:fragment slot="header">Account</svelte:fragment>
+  <HeadlessLayout on:nnsBack={goBack}>
+    <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 
     <section>TBD</section>
 
@@ -48,7 +48,7 @@
         >
       </Toolbar>
     </svelte:fragment>
-  </IsolatedPageLayout>
+  </HeadlessLayout>
 {/if}
 
 <style lang="scss">
