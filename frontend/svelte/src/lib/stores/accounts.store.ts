@@ -21,6 +21,7 @@ export const initAccountsStore = () => {
   return {
     subscribe,
 
+    // TODO(L2-206): refactor pattern - extract "sync" logic to same module as "loadAccounts" and set the store value from there. Follow new proposals pattern.
     sync: async ({ principal }: AuthStore) => {
       if (!principal) {
         set(undefined);

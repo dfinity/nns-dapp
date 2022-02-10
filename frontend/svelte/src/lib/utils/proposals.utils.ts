@@ -8,6 +8,8 @@ import {
   proposalsStore,
 } from "../stores/proposals.store";
 
+// TODO(L2-206): refactor / rename to "helpers"
+
 export const emptyProposals = (): boolean => {
   const { length }: ProposalInfo[] = get(proposalsStore);
   return length <= 0;
