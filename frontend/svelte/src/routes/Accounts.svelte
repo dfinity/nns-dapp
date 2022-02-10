@@ -1,13 +1,14 @@
 <script lang="ts">
-  import Layout from "../lib/components/Layout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AccountsStore, accountsStore } from "../lib/stores/accounts.store";
   import type { Account } from "../lib/types/account";
-  import ICP from "../lib/components/ICP.svelte";
-  import AccountCard from "../lib/components/AccountCard.svelte";
+  import ICP from "../lib/components/ic/ICP.svelte";
+  import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import Spinner from "../lib/components/Spinner.svelte";
+  import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import Spinner from "../lib/components/ui/Spinner.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -21,6 +22,11 @@
   const unsubscribe: Unsubscriber = accountsStore.subscribe(
     async (accounts: AccountsStore) => (main = accounts?.main)
   );
+
+  // TODO: TBD https://dfinity.atlassian.net/browse/L2-225
+  const createNewTransaction = () => alert("New Transaction");
+  // TODO: TBD https://dfinity.atlassian.net/browse/L2-224
+  const addAccount = () => alert("Add Account");
 
   onDestroy(unsubscribe);
 </script>
@@ -42,22 +48,37 @@
         <Spinner />
       {/if}
     </section>
+
+    <svelte:fragment slot="footer">
+      {#if main}
+        <Toolbar>
+          <button class="primary" on:click={createNewTransaction}
+            >{$i18n.accounts.new_transaction}</button
+          >
+          <button class="primary" on:click={addAccount}
+            >{$i18n.accounts.add_account}</button
+          >
+        </Toolbar>
+      {/if}
+    </svelte:fragment>
   </Layout>
 {/if}
 
 <style lang="scss">
+  @use "../lib/themes/mixins/media.scss";
+
   .title {
-    display: inline-flex;
-    justify-content: space-between;
-    align-items: center;
+    display: block;
     width: 100%;
 
     margin-bottom: calc(2 * var(--padding));
 
     --icp-font-size: var(--font-size-h1);
 
-    @media (max-width: 768px) {
-      display: block;
+    @include media.min-width(medium) {
+      display: inline-flex;
+      justify-content: space-between;
+      align-items: center;
     }
   }
 </style>

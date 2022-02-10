@@ -56,10 +56,13 @@ class ProposalSyncService {
       const whitelistedNnsFunctions = [
         1,
         2,
+        // 3 - skipped due to large payload
+        // 4 - skipped due to large payload
         5,
         6,
         7,
         8,
+        // 9 - skipped due to large payload
         10,
         11,
         12,
@@ -68,7 +71,13 @@ class ProposalSyncService {
         15,
         16,
         17,
-        18
+        18,
+        // 19 - skipped because there is no payload
+        20,
+        21,
+        22,
+        23,
+        24
       ];
       return whitelistedNnsFunctions.contains(nnsFunctionNumber);
     }

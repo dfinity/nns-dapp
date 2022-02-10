@@ -1,0 +1,58 @@
+@use "mixins/effect";
+@use "mixins/media";
+
+button {
+  &.text {
+    z-index: var(--z-index);
+
+    width: fit-content;
+
+    margin: 0 var(--padding);
+
+    color: white;
+
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+  }
+
+  &.icon-only {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    vertical-align: bottom;
+
+    padding: calc(var(--padding) / 2);
+
+    border-radius: 50%;
+
+    @include effect.ripple-effect(--gray-50-background);
+  }
+
+  &.primary {
+    border-radius: var(--border-radius);
+    padding: var(--padding);
+
+    &[disabled] {
+      background: var(--gray-400);
+      color: var(--gray-600);
+    }
+
+    background: var(--blue-500);
+    color: var(--blue-500-contrast);
+
+    font-size: var(--font-size-small);
+    @include media.min-width(medium) {
+      font-size: var(--font-size-h3);
+    }
+
+    @include effect.ripple-effect(--blue-500-tint);
+
+    &:focus {
+      background: var(--blue-600);
+      @include effect.ripple-effect(--blue-600-tint);
+    }
+  }
+}

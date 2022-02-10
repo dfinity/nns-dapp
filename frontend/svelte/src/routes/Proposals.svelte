@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Layout from "../lib/components/Layout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import { onMount } from "svelte";
-  import VotingFilters from "../lib/components/VotingFilters.svelte";
+  import VotingFilters from "../lib/components/voting/VotingFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
 
   // TODO: To be removed once this page has been implemented
