@@ -52,7 +52,7 @@ class NeuronSyncService {
       neuron = hiveBoxes.neurons[neuronId]!;
       _updateNeuron(neuron, neuronId, e);
     }
-    if (neuron.cachedNeuronStake.asE8s() > BigInt.from(TRANSACTION_FEE_E8S)) {
+    if (neuron.cachedNeuronStake.asE8s() + neuron.maturityICPEquivalent.asE8s() > BigInt.from(TRANSACTION_FEE_E8S)) {
       hiveBoxes.neurons[neuronId] = neuron;
       return neuron;
     } else {
