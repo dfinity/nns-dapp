@@ -1,6 +1,8 @@
 # Changelog
 
-## Proposal ....
+## Proposal 44009
+* Added entries to the whitelist of proposal types where the payload is small and useful enough to display.
+* Small improvements to the UI.
 
 ## Proposal 43521
 * Proposal types RemoveNodeOperatorsPayload and RerouteCanisterRangePayload are now displayed in the UI.
