@@ -8,6 +8,7 @@
 
   export let visible: boolean = false;
   export let theme: "dark" | "light" = "light";
+  export let size: "small" | "medium" | "large" = "small";
   // There is no way to know to know whether a parent is listening to the "nnsBack" event
   // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
   // Please do not use `showBackButton` without listening on `nnsBack`
@@ -15,6 +16,10 @@
 
   let dark: boolean;
   $: dark = theme === "dark";
+  let medium: boolean;
+  $: medium = size === "medium";
+  let large: boolean;
+  $: large = size === "large";
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
@@ -34,6 +39,8 @@
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class="wrapper"
+      class:medium
+      class:large
     >
       <div class="toolbar">
         {#if showBackButton}
@@ -117,6 +124,14 @@
     border-radius: calc(2 * var(--border-radius));
 
     overflow: hidden;
+
+    &.medium {
+      width: 520px;
+    }
+
+    &.large {
+      width: 720px;
+    }
   }
 
   .toolbar {
@@ -127,6 +142,8 @@
 
     display: grid;
     grid-template-columns: var(--icon-width) 1fr var(--icon-width);
+
+    z-index: 1;
 
     h3 {
       color: inherit;

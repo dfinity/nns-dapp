@@ -3,6 +3,7 @@
   import { i18n } from "../../stores/i18n";
 
   export let identifier: string;
+  export let showCopyIcon: boolean = true;
 
   const copyToClipboard = async () =>
     await navigator.clipboard.writeText(identifier);
@@ -10,13 +11,15 @@
 
 <p>
   <small>{identifier}</small>
-  <button
-    on:click={copyToClipboard}
-    aria-label={$i18n.accounts.copy_identifier}
-    class="icon-only"
-  >
-    <IconCopy />
-  </button>
+  {#if showCopyIcon}
+    <button
+      on:click={copyToClipboard}
+      aria-label={$i18n.accounts.copy_identifier}
+      class="icon-only"
+    >
+      <IconCopy />
+    </button>
+  {/if}
 </p>
 
 <style lang="scss">
