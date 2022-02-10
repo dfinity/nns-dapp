@@ -8,7 +8,7 @@ import {
   proposalsStore,
 } from "../stores/proposals.store";
 
-// TODO(L2-206): refactor / rename to "helpers"
+// TODO(L2-206): refactor / rename to "providers" or "services"
 
 export const emptyProposals = (): boolean => {
   const { length }: ProposalInfo[] = get(proposalsStore);
