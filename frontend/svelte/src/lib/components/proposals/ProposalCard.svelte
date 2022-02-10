@@ -14,12 +14,16 @@
 
   $: ({ proposal, status } = proposalInfo);
 
-  $: color =
-    status === ProposalStatus.PROPOSAL_STATUS_OPEN
-      ? "warning"
-      : status === ProposalStatus.PROPOSAL_STATUS_EXECUTED
-      ? "success"
-      : undefined;
+  const colors: Record<string, "warning" | "success" | undefined> = {
+    [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: "success",
+    [ProposalStatus.PROPOSAL_STATUS_OPEN]: "warning",
+    [ProposalStatus.PROPOSAL_STATUS_UNKNOWN]: undefined,
+    [ProposalStatus.PROPOSAL_STATUS_REJECTED]: undefined,
+    [ProposalStatus.PROPOSAL_STATUS_ACCEPTED]: undefined,
+    [ProposalStatus.PROPOSAL_STATUS_FAILED]: undefined,
+  };
+
+  $: color = colors[status];
 </script>
 
 <!-- TODO(L2-206): display all proposal information as in production -->
