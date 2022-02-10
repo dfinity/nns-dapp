@@ -6,13 +6,12 @@
   import Footer from "./Footer.svelte";
 
   const dispatch = createEventDispatcher();
-  const back = () => dispatch("back");
 </script>
 
 <header>
   <button
     class="back"
-    on:click|stopPropagation={back}
+    on:click|stopPropagation={() => dispatch("nnsBack")}
     aria-label={$i18n.modals.back}><IconBackIosNew /></button
   >
   <h2><slot name="header" /></h2>

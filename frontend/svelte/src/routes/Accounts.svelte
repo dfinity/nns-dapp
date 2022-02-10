@@ -9,11 +9,12 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
+  import { AppPath } from "./routes";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
     if (process.env.REDIRECT_TO_LEGACY) {
-      window.location.replace("/#/accounts");
+      window.location.replace(AppPath.Accounts);
     }
   });
 
