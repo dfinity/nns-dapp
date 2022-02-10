@@ -6,6 +6,9 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
+  import Modal from "../lib/modals/Modal.svelte";
+  import Wizard from "../lib/components/ui/Wizard/Wizard.svelte";
+  import WizardStep from "../lib/components/ui/Wizard/WizardStep.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {

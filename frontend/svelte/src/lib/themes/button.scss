@@ -1,4 +1,5 @@
 @use "mixins/effect";
+@use "mixins/media";
 
 button {
   &.text {
@@ -43,7 +44,7 @@ button {
     color: var(--blue-500-contrast);
 
     font-size: var(--font-size-small);
-    @media (min-width: 768px) {
+    @include media.min-width(medium) {
       font-size: var(--font-size-h3);
     }
 

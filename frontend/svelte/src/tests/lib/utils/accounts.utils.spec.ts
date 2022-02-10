@@ -1,6 +1,7 @@
 import type { ICP } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { loadAccounts } from "../../../lib/utils/accounts.utils";
+import * as agent from "../../../lib/utils/agent.utils";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 // @ts-ignore
@@ -13,13 +14,21 @@ class MockLedgerCanister extends LedgerCanister {
     return this;
   }
 
-  accountBalance = async (
-    accountIdentifier: AccountIdentifier,
-    certified = true
-  ): Promise<ICP> => Promise.resolve(null);
+  accountBalance = async ({
+    accountIdentifier,
+    certified = true,
+  }: {
+    accountIdentifier: AccountIdentifier;
+    certified?: boolean;
+  }): Promise<ICP> => Promise.resolve(null);
 }
 
 describe("accounts-utils", () => {
+  beforeAll(() => {
+    // Needed to prevent importing Http from @dfinity/agent
+    const mockCreateAgent = () => undefined;
+    jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
+  });
   const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
 
   it("should call ledger to get the account balance", async () => {
