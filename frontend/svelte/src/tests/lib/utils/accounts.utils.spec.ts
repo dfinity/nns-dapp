@@ -1,4 +1,3 @@
-import type { HttpAgent } from "@dfinity/agent";
 import type { ICP } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { loadAccounts } from "../../../lib/utils/accounts.utils";
@@ -27,8 +26,7 @@ class MockLedgerCanister extends LedgerCanister {
 describe("accounts-utils", () => {
   beforeAll(() => {
     // Needed to prevent importing Http from @dfinity/agent
-    const mockCreateAgent = () =>
-      new Promise<HttpAgent>((resolve) => resolve(undefined));
+    const mockCreateAgent = () => Promise.resolve(undefined);
     jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
   });
   const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();

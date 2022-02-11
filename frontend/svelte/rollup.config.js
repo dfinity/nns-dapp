@@ -84,6 +84,9 @@ export default {
     replace({
       preventAssignment: true,
       "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
+      "process.env.FETCH_ROOT_KEY": JSON.stringify(
+        process.env.DEPLOY_ENV ? true : false
+      ),
       "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
         process.env.IDENTITY_SERVICE_URL ||
           (process.env.DEPLOY_ENV === "testnet"
@@ -102,7 +105,9 @@ export default {
           ? true
           : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
           ? false
-          : true // default
+          : process.env.DEPLOY_ENV === "testnet"
+          ? false
+          : true
       ),
     }),
 
