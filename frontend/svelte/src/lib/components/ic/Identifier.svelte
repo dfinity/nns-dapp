@@ -13,7 +13,7 @@
   <small>{identifier}</small>
   {#if showCopyIcon}
     <button
-      on:click={copyToClipboard}
+      on:click|stopPropagation={copyToClipboard}
       aria-label={$i18n.accounts.copy_identifier}
       class="icon-only"
     >

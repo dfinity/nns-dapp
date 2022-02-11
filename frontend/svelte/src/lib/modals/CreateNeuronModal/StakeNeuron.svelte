@@ -39,7 +39,7 @@
         fullWidth
         theme="dark"
       />
-      <small>{`(${$i18n.neurons.may_take_while})`}</small>
+      <small>{$i18n.neurons.may_take_while}</small>
       <!-- TODO: L2-252 -->
       <button class="primary full-width" type="submit" disabled={!amount}
         >{$i18n.neurons.create}</button

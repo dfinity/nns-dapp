@@ -42,7 +42,7 @@
     "source": "Source",
     "transaction_fee": "Transaction Fee",
     "current_balance": "Current Balance",
-    "may_take_while": "This may take up to 1 minute",
+    "may_take_while": "(This may take up to 1 minute)",
     "amount": "Amount",
     "max": "Max",
     "create": "Create"
