@@ -3,7 +3,7 @@
   import { quintOut } from "svelte/easing";
   import IconClose from "../icons/IconClose.svelte";
   import { createEventDispatcher } from "svelte";
-  import IconBack from "../icons/IconBack.svelte";
+  import IconBackIosNew from "../icons/IconBackIosNew.svelte";
   import { i18n } from "../stores/i18n";
 
   export let visible: boolean = false;
@@ -40,7 +40,7 @@
           <button
             class="back"
             on:click|stopPropagation={back}
-            aria-label={$i18n.modals.back}><IconBack /></button
+            aria-label={$i18n.modals.back}><IconBackIosNew /></button
           >
         {/if}
         <h3 id="modalTitle"><slot name="title" /></h3>
