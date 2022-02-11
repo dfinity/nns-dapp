@@ -12,15 +12,17 @@
 
   export let visible: boolean;
 
-  let main: Account | undefined;
+  // TODO: Get all the accounts and be able to select one.
+  let selectedAccount: Account | undefined;
   const unsubscribeAccounts = accountsStore.subscribe((accountStore) => {
-    main = accountStore?.main;
+    selectedAccount = accountStore?.main;
   });
 
   let wizard: Wizard | undefined;
   let unsubscribeWizard: Unsubscriber | undefined;
   let currentIndex: number = 0;
   const chooseAccount = () => {
+    // TODO: Apply account selection
     wizard?.next();
   };
   const goBack = () => {
@@ -47,7 +49,7 @@
   });
 
   let titleKey: string = "select_source";
-  const titleMapper = {
+  const titleMapper: Record<string, string> = {
     "0": "select_source",
     "1": "stake_neuron",
   };
@@ -66,11 +68,14 @@
   <main>
     <Wizard bind:this={wizard}>
       <WizardStep index={0}>
-        <SelectAccount {main} on:nnsSelectAccount={chooseAccount} />
+        <SelectAccount
+          main={selectedAccount}
+          on:nnsSelectAccount={chooseAccount}
+        />
       </WizardStep>
       <WizardStep index={1}>
-        {#if main}
-          <StakeNeuron account={main} />
+        {#if selectedAccount}
+          <StakeNeuron account={selectedAccount} />
         {/if}
       </WizardStep>
     </Wizard>

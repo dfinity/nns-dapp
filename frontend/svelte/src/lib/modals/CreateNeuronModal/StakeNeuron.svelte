@@ -10,7 +10,7 @@
   let amount: number;
 
   const createNeuron = () => {
-    console.log("creating", amount);
+    // TODO: L2-226 Create neuron functionality
   };
 </script>
 
@@ -53,7 +53,7 @@
     color: var(--background-contrast);
     display: flex;
     flex-direction: column;
-    gap: 1.4rem;
+    gap: calc(2 * var(--padding));
     padding: 0;
   }
 
@@ -66,7 +66,7 @@
     flex-direction: column;
     align-items: center;
 
-    width: 100%;
+    padding: 0 calc(2 * var(--padding));
 
     .title {
       color: var(--gray-400);
@@ -83,14 +83,14 @@
     flex-direction: column;
     align-items: center;
 
-    width: 90%;
+    width: 100%;
 
     small {
-      margin-top: 2rem;
+      margin-top: calc(2 * var(--padding));
     }
 
     button {
-      margin-top: 1rem;
+      margin-top: var(--padding);
     }
   }
 </style>

@@ -24,13 +24,9 @@
   onDestroy(unsubscribe);
 
   let showStakeNeuronModal: boolean = false;
-  const stakeNeurons = () => {
-    showStakeNeuronModal = true;
-  };
+  const stakeNeurons = () => (showStakeNeuronModal = true);
 
-  const closeModal = () => {
-    showStakeNeuronModal = false;
-  };
+  const closeModal = () => (showStakeNeuronModal = false);
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}

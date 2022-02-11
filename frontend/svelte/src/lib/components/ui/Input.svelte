@@ -19,12 +19,9 @@
       inputType === "number" ? +currentTarget.value : currentTarget.value);
 
   $: step = inputType === "number" ? step || "any" : undefined;
-
-  let dark: boolean;
-  $: dark = theme === "dark";
 </script>
 
-<div class="input-block" class:fullWidth class:dark>
+<div class={`input-block ${theme}`} class:fullWidth>
   <input
     type={inputType}
     {required}

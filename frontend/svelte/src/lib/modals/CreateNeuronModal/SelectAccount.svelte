@@ -14,11 +14,8 @@
 
 <h4>{$i18n.neurons.my_accounts}</h4>
 {#if main}
-  <AccountCard
-    role="button"
-    showCopyIcon={false}
-    on:click={chooseAccount}
-    account={main}>{$i18n.accounts.main}</AccountCard
+  <AccountCard role="button" on:click={chooseAccount} account={main}
+    >{$i18n.accounts.main}</AccountCard
   >
 {:else}
   <Spinner />

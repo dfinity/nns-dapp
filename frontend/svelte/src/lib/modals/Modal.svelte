@@ -14,13 +14,6 @@
   // Please do not use `showBackButton` without listening on `nnsBack`
   export let showBackButton: boolean = false;
 
-  let dark: boolean;
-  $: dark = theme === "dark";
-  let medium: boolean;
-  $: medium = size === "medium";
-  let large: boolean;
-  $: large = size === "large";
-
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
   const back = () => dispatch("nnsBack");
@@ -28,8 +21,7 @@
 
 {#if visible}
   <div
-    class="modal"
-    class:dark
+    class={`modal ${theme}`}
     transition:fade
     role="dialog"
     aria-labelledby="modalTitle"
@@ -38,9 +30,7 @@
     <div class="backdrop" on:click={close} />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
-      class="wrapper"
-      class:medium
-      class:large
+      class={`wrapper ${size}`}
     >
       <div class="toolbar">
         {#if showBackButton}
@@ -143,7 +133,7 @@
     display: grid;
     grid-template-columns: var(--icon-width) 1fr var(--icon-width);
 
-    z-index: 1;
+    z-index: var(--z-index);
 
     h3 {
       color: inherit;
