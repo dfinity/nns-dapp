@@ -21,7 +21,7 @@
     display: inline-block;
 
     left: 50%;
-    bottom: 6px;
+    bottom: calc(var(--padding) / 2);
     transform: translate(-50%, 100%);
 
     opacity: 0;

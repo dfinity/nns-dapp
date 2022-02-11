@@ -67,7 +67,7 @@
   main {
     position: absolute;
     inset: calc(var(--headless-layout-header-height)) 0 0;
-    padding-top: 50px;
+    padding-top: calc(5 * var(--padding));
 
     overflow: auto;
 
