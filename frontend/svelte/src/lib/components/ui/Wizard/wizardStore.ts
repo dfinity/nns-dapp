@@ -11,8 +11,8 @@ const initStore = () => {
     back() {
       update((index) => (index > 0 ? index - 1 : index));
     },
-    set(index) {
-      set(index);
+    reset() {
+      set(0);
     },
   };
 };

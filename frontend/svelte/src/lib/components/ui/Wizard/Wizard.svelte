@@ -5,7 +5,7 @@
 
   onDestroy(() => {
     // Clean up, all instances of Wizard use the same store.
-    wizardStore.set(0);
+    wizardStore.reset();
   });
 </script>
 
