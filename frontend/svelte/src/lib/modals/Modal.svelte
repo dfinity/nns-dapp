@@ -103,7 +103,7 @@
     display: flex;
     flex-direction: column;
 
-    width: var(--small-width);
+    width: var(--modal-small-width);
     height: fit-content;
     max-width: calc(100vw - (4 * var(--padding)));
     max-height: calc(100vw - (2 * var(--padding)));
@@ -116,7 +116,7 @@
     overflow: hidden;
 
     &.medium {
-      width: var(--medium-width);
+      width: var(--modal-medium-width);
     }
   }
 

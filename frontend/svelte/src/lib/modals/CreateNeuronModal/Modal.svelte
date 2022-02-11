@@ -9,6 +9,7 @@
   import SelectAccount from "./SelectAccount.svelte";
   import StakeNeuron from "./StakeNeuron.svelte";
   import type { Unsubscriber } from "svelte/store";
+  import { wizardStore } from "../../components/ui/Wizard/wizardStore";
 
   export let visible: boolean;
 
@@ -18,30 +19,21 @@
     selectedAccount = accountStore?.main;
   });
 
-  let wizard: Wizard | undefined;
   let unsubscribeWizard: Unsubscriber | undefined;
   let currentIndex: number = 0;
   const chooseAccount = () => {
     // TODO: Apply account selection
-    wizard?.next();
+    wizardStore.next();
   };
   const goBack = () => {
-    wizard?.back();
+    wizardStore.back();
   };
 
   onMount(() => {
-    unsubscribeWizard = wizard?.subscribe((value) => {
+    unsubscribeWizard = wizardStore.subscribe((value) => {
       currentIndex = value;
     });
   });
-
-  $: {
-    if (!unsubscribeWizard && wizard) {
-      unsubscribeWizard = wizard.subscribe((value) => {
-        currentIndex = value;
-      });
-    }
-  }
 
   onDestroy(() => {
     unsubscribeWizard?.();
@@ -67,7 +59,7 @@
 >
   <span slot="title">{$i18n.neurons?.[titleKey]}</span>
   <main>
-    <Wizard bind:this={wizard}>
+    <Wizard>
       <WizardStep index={0}>
         <SelectAccount
           main={selectedAccount}
