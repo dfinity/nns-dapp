@@ -18,7 +18,9 @@ describe("Identifier", () => {
   });
 
   it("should render an accessible button", () => {
-    const { getByRole } = render(Identifier, { props });
+    const { getByRole } = render(Identifier, {
+      props: { identifier, showCopy: true },
+    });
 
     const button = getByRole("button");
 
@@ -29,7 +31,9 @@ describe("Identifier", () => {
   });
 
   it("should copy identifier to clipboard", () => {
-    const { getByRole } = render(Identifier, { props });
+    const { getByRole } = render(Identifier, {
+      props: { identifier, showCopy: true },
+    });
 
     Object.assign(window.navigator, {
       clipboard: {
