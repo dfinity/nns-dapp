@@ -28,8 +28,6 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
-
   .filter {
     display: flex;
     justify-content: space-between;
