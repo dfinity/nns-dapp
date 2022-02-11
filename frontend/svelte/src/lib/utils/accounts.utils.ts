@@ -9,7 +9,7 @@ export const loadAccounts = async ({
   principal: Principal;
 }): Promise<AccountsStore> => {
   const ledger: LedgerCanister = LedgerCanister.create({
-    agent: createAgent(),
+    agent: await createAgent(),
   });
 
   const accountIdentifier: AccountIdentifier = AccountIdentifier.fromPrincipal({
