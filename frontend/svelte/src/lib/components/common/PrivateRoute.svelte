@@ -15,7 +15,7 @@
   let signedIn: boolean = false;
 
   const redirectLogin = () => {
-    if (signedIn || comparePathWithRoutePath(path, routePath()) === false) {
+    if (signedIn || !comparePathWithRoutePath(path, routePath())) {
       return;
     }
 
