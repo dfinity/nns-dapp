@@ -1,12 +1,9 @@
 import { E8S_PER_ICP } from "../constants/icp.constants";
 
-export const formatICP = (
-  value: bigint,
-  { min, max }: { min?: number; max?: number } = { min: 8, max: 8 }
-): string =>
+export const formatICP = (value: bigint): string =>
   new Intl.NumberFormat("fr-FR", {
-    minimumFractionDigits: min,
-    maximumFractionDigits: max,
+    minimumFractionDigits: 8,
+    maximumFractionDigits: 8,
   })
     .format(Number(value) / E8S_PER_ICP)
     .replace(",", ".");

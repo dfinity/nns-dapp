@@ -56,6 +56,7 @@
   $: titleKey = titleMapper[currentIndex];
 </script>
 
+<!-- Only the second step (index 1) is allowed to go back -->
 <Modal
   {visible}
   on:nnsClose

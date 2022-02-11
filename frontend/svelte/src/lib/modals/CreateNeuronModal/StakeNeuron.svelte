@@ -22,14 +22,14 @@
   <div>
     <h5>{$i18n.neurons.transaction_fee}</h5>
     <small>
-      <span>{`${formatICP(transactionIcp.toE8s(), { max: 4 })}`}</span>
+      <span>{`${formatICP(transactionIcp.toE8s())}`}</span>
       <span>ICP</span>
     </small>
   </div>
   <div class="form">
     <p class="title">{$i18n.neurons.current_balance}</p>
     <h4 class="balance">
-      {`${formatICP(account.balance.toE8s(), { max: 4, min: 4 })}`}
+      {`${formatICP(account.balance.toE8s())}`}
     </h4>
     <form on:submit={createNeuron}>
       <Input
