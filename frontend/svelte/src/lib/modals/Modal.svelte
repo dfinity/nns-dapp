@@ -8,7 +8,7 @@
 
   export let visible: boolean = false;
   export let theme: "dark" | "light" = "light";
-  export let size: "small" | "medium" | "large" = "small";
+  export let size: "small" | "medium" = "small";
   // There is no way to know to know whether a parent is listening to the "nnsBack" event
   // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
   // Please do not use `showBackButton` without listening on `nnsBack`
@@ -103,7 +103,7 @@
     display: flex;
     flex-direction: column;
 
-    width: 320px;
+    width: var(--small-width);
     height: fit-content;
     max-width: calc(100vw - (4 * var(--padding)));
     max-height: calc(100vw - (2 * var(--padding)));
@@ -116,11 +116,7 @@
     overflow: hidden;
 
     &.medium {
-      width: 520px;
-    }
-
-    &.large {
-      width: 720px;
+      width: var(--medium-width);
     }
   }
 

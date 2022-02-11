@@ -11,6 +11,7 @@
 
   export let placeholderLabelKey: string;
 
+  // TODO: Review LM and DDB
   export let fullWidth: boolean = false;
   export let theme: "dark" | "light" = "light";
 

@@ -11,6 +11,14 @@
   --section-max-width: 800px;
   --footer-height: 20vh;
 
+  --small-width: 300px;
+  --medium-width: 300px;
+
+  @media (min-width: 768px) {
+    --small-width: 500px;
+    --medium-width: 600px;
+  }
+
   --background: #272929;
   --background-rgb: 39, 41, 41;
   --background-contrast: #ffffff;
