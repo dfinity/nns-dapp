@@ -22,7 +22,7 @@ describe("Wizard", () => {
     expect(queryByText("Second")).toBeNull();
 
     wizardStore.next();
-    // query was not waiting for store to update
+    // sometimes next line is faster than rerendering
     await tick();
 
     expect(queryByText("First")).toBeNull();
@@ -36,7 +36,16 @@ describe("Wizard", () => {
   });
 
   it("should reset the store when unmounted", async () => {
-    const { unmount } = render(WizardTest);
+    const { queryByText, unmount } = render(WizardTest);
+    let currentIndex: number;
+    wizardStore.subscribe((value) => (currentIndex = value));
+
+    wizardStore.next();
+    wizardStore.next();
+    await tick();
+
+    expect(queryByText("Third")).not.toBeNull();
+    expect(currentIndex).toEqual(2);
 
     const spy = jest.spyOn(wizardStore, "reset");
     expect(spy).not.toHaveBeenCalled();
@@ -44,5 +53,6 @@ describe("Wizard", () => {
     unmount();
 
     expect(spy).toHaveBeenCalled();
+    expect(currentIndex).toEqual(0);
   });
 });

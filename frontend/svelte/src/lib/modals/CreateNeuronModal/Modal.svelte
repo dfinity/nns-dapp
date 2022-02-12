@@ -15,12 +15,16 @@
 
   // TODO: Get all the accounts and be able to select one.
   let selectedAccount: Account | undefined;
-  const unsubscribeAccounts = accountsStore.subscribe((accountStore) => {
-    selectedAccount = accountStore?.main;
-  });
+  const unsubscribeAccounts: Unsubscriber = accountsStore.subscribe(
+    (accountStore) => {
+      selectedAccount = accountStore?.main;
+    }
+  );
 
-  let unsubscribeWizard: Unsubscriber | undefined;
   let currentIndex: number = 0;
+  let unsubscribeWizard: Unsubscriber = wizardStore.subscribe((value) => {
+    currentIndex = value;
+  });
   const chooseAccount = () => {
     // TODO: Apply account selection
     wizardStore.next();
@@ -29,15 +33,9 @@
     wizardStore.back();
   };
 
-  onMount(() => {
-    unsubscribeWizard = wizardStore.subscribe((value) => {
-      currentIndex = value;
-    });
-  });
-
   onDestroy(() => {
-    unsubscribeWizard?.();
-    unsubscribeAccounts?.();
+    unsubscribeWizard();
+    unsubscribeAccounts();
   });
 
   let titleKey: string = "select_source";
