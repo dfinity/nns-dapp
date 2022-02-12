@@ -22,9 +22,9 @@
   );
 
   let currentIndex: number = 0;
-  let unsubscribeWizard: Unsubscriber = wizardStore.subscribe((value) => {
-    currentIndex = value;
-  });
+  let unsubscribeWizard: Unsubscriber = wizardStore.subscribe(
+    (value) => (currentIndex = value)
+  );
   const chooseAccount = () => {
     // TODO: Apply account selection
     wizardStore.next();
