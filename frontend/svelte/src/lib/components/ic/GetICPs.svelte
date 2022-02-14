@@ -4,7 +4,7 @@
    */
   import Modal from "../../modals/Modal.svelte";
   import Input from "../ui/Input.svelte";
-  import { getIPCs } from "../../services/icp.services";
+  import { getIPCs } from "../../services/dev.services";
   import Spinner from "../ui/Spinner.svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import { errorToString } from "../../utils/error.utils";
