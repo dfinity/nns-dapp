@@ -6,7 +6,8 @@
   import Input from "../ui/Input.svelte";
   import { getIPCs } from "../../services/icp.services";
   import Spinner from "../ui/Spinner.svelte";
-  import {toastsStore} from '../../stores/toasts.store';
+  import { toastsStore } from "../../stores/toasts.store";
+  import { errorToString } from "../../utils/error.utils";
 
   let visible: boolean = false;
   let transferring: boolean = false;
@@ -17,7 +18,7 @@
     if (invalidForm) {
       toastsStore.show({
         labelKey: "Invalid ICPs input.",
-        level: "error"
+        level: "error",
       });
       return;
     }
@@ -29,17 +30,18 @@
 
     try {
       await getIPCs(icps);
+
+      reset();
     } catch (err: any) {
+      console.error(err);
       toastsStore.show({
         labelKey: "ICPs could not be transferred.",
         level: "error",
-        detail: typeof err === "string" ? (err as string) : undefined,
+        detail: errorToString(err),
       });
     }
 
     transferring = false;
-
-    reset();
   };
 
   const onClose = () => reset();
@@ -47,7 +49,7 @@
   const reset = () => {
     visible = false;
     inputValue = undefined;
-  }
+  };
 
   let invalidForm: boolean;
 
@@ -62,7 +64,12 @@
   <form on:submit|preventDefault={onSubmit}>
     <span class="how-much">How much?</span>
 
-    <Input placeholderLabelKey="core.icp" name="icp" bind:value={inputValue} disabled={transferring} />
+    <Input
+      placeholderLabelKey="core.icp"
+      name="icp"
+      bind:value={inputValue}
+      disabled={transferring}
+    />
 
     <button
       type="submit"
