@@ -36,6 +36,8 @@
 </div>
 
 <style lang="scss">
+  @use "../../themes/mixins/media.scss";
+
   .input-block {
     position: relative;
 
@@ -56,10 +58,15 @@
     padding: var(--padding) calc(2 * var(--padding));
     box-sizing: border-box;
 
-    border-radius: calc(2 * var(--border-radius));
+    border-radius: calc(4 * var(--border-radius));
 
     border: 1px solid currentColor;
     outline: none;
+
+    @include media.min-width(medium) {
+      padding: calc(2 * var(--padding));
+      font-size: var(--font-size-h3);
+    }
   }
 
   .placeholder {
@@ -83,6 +90,10 @@
     background: #ffffff;
 
     padding: 0 calc(var(--padding) / 2);
+
+    @include media.min-width(medium) {
+      transform: scale(0.8) translate(0, calc(-50% - 43px));
+    }
   }
 
   input:focus {
