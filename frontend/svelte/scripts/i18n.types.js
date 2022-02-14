@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { writeFileSync } from "fs";
-import prettier from "prettier";
-import en from "../src/lib/i18n/en.json";
+const { writeFileSync } = require("fs");
+const prettier = require("prettier");
+const en = require("../src/lib/i18n/en.json");
 
 /**
  * Generate the TypeScript interfaces from the english translation file.
