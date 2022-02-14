@@ -10,6 +10,7 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import { AppPath } from "./routes";
+  import { routeStore } from "../lib/stores/route.store";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -29,6 +30,9 @@
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-224
   const addAccount = () => alert("Add Account");
 
+  const cardClick = (identifier: string) =>
+    routeStore.navigate({ path: `${AppPath.Wallet}/${identifier}` });
+
   onDestroy(unsubscribe);
 </script>
 
@@ -44,7 +48,11 @@
       </div>
 
       {#if main}
-        <AccountCard showCopy account={main}>{$i18n.accounts.main}</AccountCard>
+        <AccountCard
+          on:click={() => cardClick(main?.identifier)}
+          showCopy
+          account={main}>{$i18n.accounts.main}</AccountCard
+        >
       {:else}
         <Spinner />
       {/if}
