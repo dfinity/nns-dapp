@@ -7,6 +7,8 @@
   import { AppPath } from "../../../routes/routes";
 
   export let account: Account;
+  export let showCopy: boolean = false;
+  export let role: "button" | undefined = undefined;
 
   $: ({ identifier, balance } = account);
 
@@ -14,8 +16,8 @@
     routeStore.navigate({ path: `${AppPath.Wallet}/${identifier}` });
 </script>
 
-<Card on:click={cardClick}>
+<Card on:click {role}>
   <p slot="start"><slot /></p>
   <ICP slot="end" icp={balance} />
-  <Identifier {identifier} />
+  <Identifier {identifier} {showCopy} />
 </Card>

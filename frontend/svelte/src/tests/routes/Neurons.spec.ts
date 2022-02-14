@@ -2,13 +2,15 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
+import { fireEvent, render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { authStore } from "../../lib/stores/auth.store";
 import Neurons from "../../routes/Neurons.svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "../mocks/auth.store.mock";
+const en = require("../../lib/i18n/en.json");
 
 describe("Neurons", () => {
   let authStoreMock;
@@ -50,5 +52,19 @@ describe("Neurons", () => {
 
     const anchor = container.querySelector("a");
     expect(anchor).not.toBeNull();
+  });
+
+  it("should open the CreateNeuronModal on click to Stake Neurons", async () => {
+    const { container, queryByText } = render(Neurons);
+
+    const toolbarButton = container.querySelector('[role="toolbar"] button');
+    expect(toolbarButton).not.toBeNull();
+    expect(queryByText(en.neurons.select_source)).toBeNull();
+
+    fireEvent.click(toolbarButton);
+
+    // Wait for the modal to appear
+    await tick();
+    expect(queryByText(en.neurons.select_source)).not.toBeNull();
   });
 });

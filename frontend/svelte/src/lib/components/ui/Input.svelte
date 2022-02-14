@@ -11,6 +11,10 @@
 
   export let placeholderLabelKey: string;
 
+  // TODO: Review LM and DDB
+  export let fullWidth: boolean = false;
+  export let theme: "dark" | "light" = "light";
+
   const handleInput = ({ currentTarget }: InputEventHandler) =>
     (value =
       inputType === "number" ? +currentTarget.value : currentTarget.value);
@@ -18,7 +22,7 @@
   $: step = inputType === "number" ? step || "any" : undefined;
 </script>
 
-<div class="input-block">
+<div class={`input-block ${theme}`} class:fullWidth>
   <input
     type={inputType}
     {required}
@@ -38,6 +42,29 @@
     position: relative;
 
     margin: calc(2 * var(--padding)) 0;
+
+    &.fullWidth {
+      width: 100%;
+    }
+
+    &.dark {
+      color: var(--background-contrast);
+      background: none;
+
+      input {
+        background-color: var(--gray-50-background);
+        border: 1px solid var(--black);
+
+        &:valid + span.placeholder,
+        &:focus + span.placeholder {
+          background-color: var(--gray-50-background);
+        }
+      }
+
+      .placeholder {
+        color: var(--gray-400);
+      }
+    }
   }
 
   input {
