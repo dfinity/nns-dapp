@@ -17,9 +17,12 @@ export const pathValidation = (path: AppPath): string =>
     [AppPath.ProposalDetails]: "/#/proposal/[0-9]+",
   }[path] || path);
 
-export const comparePathWithRoutePath: (
-  path: AppPath,
-  routePath: string
-) => boolean = memoize((path: AppPath, routePath: string) =>
+export const comparePathWithRoutePath: ({
+  path,
+  routePath,
+}: {
+  path: AppPath;
+  routePath: string;
+}) => boolean = memoize((path: AppPath, routePath: string) =>
   new RegExp(`^${pathValidation(path)}$`).test(routePath)
 );

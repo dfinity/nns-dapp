@@ -18,6 +18,6 @@
   onDestroy(unsubscribe);
 </script>
 
-{#if comparePathWithRoutePath(path, currentPath)}
+{#if comparePathWithRoutePath({ path, routePath: currentPath })}
   <svelte:component this={component} />
 {/if}

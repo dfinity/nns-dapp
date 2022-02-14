@@ -4,28 +4,56 @@ describe("routes", () => {
   describe("comparePathWithRoutePath()", () => {
     it("should compare static paths", () => {
       expect(
-        comparePathWithRoutePath(AppPath.Authentication, "/")
+        comparePathWithRoutePath({
+          path: AppPath.Authentication,
+          routePath: "/",
+        })
       ).toBeTruthy();
       expect(
-        comparePathWithRoutePath(AppPath.Accounts, "/#/accounts")
+        comparePathWithRoutePath({
+          path: AppPath.Accounts,
+          routePath: "/#/accounts",
+        })
       ).toBeTruthy();
-      expect(comparePathWithRoutePath(AppPath.Authentication, "")).toBeFalsy();
       expect(
-        comparePathWithRoutePath(AppPath.Accounts, "/#/neurons")
+        comparePathWithRoutePath({
+          path: AppPath.Authentication,
+          routePath: "",
+        })
+      ).toBeFalsy();
+      expect(
+        comparePathWithRoutePath({
+          path: AppPath.Accounts,
+          routePath: "/#/neurons",
+        })
       ).toBeFalsy();
     });
 
     it("should compare dynamic paths", () => {
       expect(
-        comparePathWithRoutePath(AppPath.Wallet, "/#/wallet/0")
+        comparePathWithRoutePath({
+          path: AppPath.Wallet,
+          routePath: "/#/wallet/0",
+        })
       ).toBeTruthy();
       expect(
-        comparePathWithRoutePath(AppPath.Wallet, "/#/wallet/a0")
+        comparePathWithRoutePath({
+          path: AppPath.Wallet,
+          routePath: "/#/wallet/a0",
+        })
       ).toBeTruthy();
       expect(
-        comparePathWithRoutePath(AppPath.Wallet, "/#/wallet/")
+        comparePathWithRoutePath({
+          path: AppPath.Wallet,
+          routePath: "/#/wallet/",
+        })
       ).toBeFalsy();
-      expect(comparePathWithRoutePath(AppPath.Wallet, "/#/wallet")).toBeFalsy();
+      expect(
+        comparePathWithRoutePath({
+          path: AppPath.Wallet,
+          routePath: "/#/wallet",
+        })
+      ).toBeFalsy();
     });
   });
 });
