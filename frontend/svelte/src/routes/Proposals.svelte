@@ -3,6 +3,7 @@
   import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
+  import { AppPath } from "./routes";
   import {
     emptyProposals,
     lastProposalId,
@@ -52,7 +53,7 @@
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
     if (process.env.REDIRECT_TO_LEGACY) {
-      window.location.replace("/#/proposals");
+      window.location.replace(AppPath.Proposals);
     }
 
     // Load proposals on mount only if none were fetched before
