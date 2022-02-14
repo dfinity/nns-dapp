@@ -25,8 +25,6 @@ class _HomePageState extends State<HomePage>
   late PageController _pageController;
   final int currentTab = 0;
 
-  var currentPage = 0;
-
   @override
   void initState() {
     super.initState();
