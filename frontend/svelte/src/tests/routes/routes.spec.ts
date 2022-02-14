@@ -1,28 +1,28 @@
-import { AppPath, comparePathWithRoutePath } from "../../routes/routes";
+import { AppPath, isRoutePath } from "../../routes/routes";
 
 describe("routes", () => {
-  describe("comparePathWithRoutePath()", () => {
+  describe("isRoutePath()", () => {
     it("should compare static paths", () => {
       expect(
-        comparePathWithRoutePath({
+        isRoutePath({
           path: AppPath.Authentication,
           routePath: "/",
         })
       ).toBeTruthy();
       expect(
-        comparePathWithRoutePath({
+        isRoutePath({
           path: AppPath.Accounts,
           routePath: "/#/accounts",
         })
       ).toBeTruthy();
       expect(
-        comparePathWithRoutePath({
+        isRoutePath({
           path: AppPath.Authentication,
           routePath: "",
         })
       ).toBeFalsy();
       expect(
-        comparePathWithRoutePath({
+        isRoutePath({
           path: AppPath.Accounts,
           routePath: "/#/neurons",
         })
@@ -31,25 +31,25 @@ describe("routes", () => {
 
     it("should compare dynamic paths", () => {
       expect(
-        comparePathWithRoutePath({
+        isRoutePath({
           path: AppPath.Wallet,
           routePath: "/#/wallet/0",
         })
       ).toBeTruthy();
       expect(
-        comparePathWithRoutePath({
+        isRoutePath({
           path: AppPath.Wallet,
           routePath: "/#/wallet/a0",
         })
       ).toBeTruthy();
       expect(
-        comparePathWithRoutePath({
+        isRoutePath({
           path: AppPath.Wallet,
           routePath: "/#/wallet/",
         })
       ).toBeFalsy();
       expect(
-        comparePathWithRoutePath({
+        isRoutePath({
           path: AppPath.Wallet,
           routePath: "/#/wallet",
         })

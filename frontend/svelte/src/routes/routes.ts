@@ -17,7 +17,7 @@ export const pathValidation = (path: AppPath): string =>
     [AppPath.ProposalDetails]: `${AppPath.ProposalDetails}/[0-9]+`,
   }[path] || path);
 
-export const comparePathWithRoutePath: ({
+export const isRoutePath: ({
   path,
   routePath,
 }: {

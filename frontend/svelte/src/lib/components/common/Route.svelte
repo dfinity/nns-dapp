@@ -4,7 +4,7 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { RouteStore, routeStore } from "../../stores/route.store";
   import { onDestroy } from "svelte";
-  import { AppPath, comparePathWithRoutePath } from "../../../routes/routes";
+  import { AppPath, isRoutePath } from "../../../routes/routes";
 
   export let path: AppPath;
   export let component: typeof SvelteComponent;
@@ -18,6 +18,6 @@
   onDestroy(unsubscribe);
 </script>
 
-{#if comparePathWithRoutePath({ path, routePath: currentPath })}
+{#if isRoutePath({ path, routePath: currentPath })}
   <svelte:component this={component} />
 {/if}
