@@ -24,7 +24,7 @@
     }
 
     const formData: FormData = new FormData(target);
-    const icps: number = formData.get("icp") as number;
+    const icps: number = formData.get("icp") as unknown as number;
 
     transferring = true;
 
