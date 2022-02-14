@@ -1,14 +1,9 @@
 <script lang="ts">
   import Wizard from "../../../../lib/components/ui/Wizard/Wizard.svelte";
   import WizardStep from "../../../../lib/components/ui/Wizard/WizardStep.svelte";
-
-  let wizard: Wizard | undefined;
-
-  export const next = () => wizard?.next();
-  export const back = () => wizard?.back();
 </script>
 
-<Wizard bind:this={wizard}>
+<Wizard>
   <WizardStep index={0}>
     <div>First</div>
   </WizardStep>

@@ -45,6 +45,16 @@ interface I18nNeurons {
   text: string;
   principal_is: string;
   stake_neurons: string;
+  select_source: string;
+  my_accounts: string;
+  stake_neuron: string;
+  source: string;
+  transaction_fee: string;
+  current_balance: string;
+  may_take_while: string;
+  amount: string;
+  max: string;
+  create: string;
 }
 
 interface I18nVoting {
