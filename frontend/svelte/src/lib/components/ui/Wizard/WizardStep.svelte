@@ -3,7 +3,7 @@
   import type { Unsubscriber } from "svelte/store";
 
   import { fly } from "svelte/transition";
-  import { selectedStepStore } from "./wizardStore";
+  import { wizardStore } from "./wizardStore";
 
   export let index: number;
   const DEFAULT_OFFSET = 200;
@@ -14,7 +14,7 @@
   let absolutOffset = 200;
   let slideOffset: number | undefined;
 
-  const unsubscribe: Unsubscriber = selectedStepStore.subscribe((index) => {
+  const unsubscribe: Unsubscriber = wizardStore.subscribe((index) => {
     slideOffset = index > currentIndex ? absolutOffset : -absolutOffset;
     currentIndex = index;
   });

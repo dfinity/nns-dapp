@@ -43,7 +43,7 @@
       </div>
 
       {#if main}
-        <AccountCard account={main}>{$i18n.accounts.main}</AccountCard>
+        <AccountCard showCopy account={main}>{$i18n.accounts.main}</AccountCard>
       {:else}
         <Spinner />
       {/if}
