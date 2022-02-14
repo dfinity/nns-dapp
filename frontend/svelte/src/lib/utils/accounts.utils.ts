@@ -3,6 +3,8 @@ import type { Principal } from "@dfinity/principal";
 import type { AccountsStore } from "../stores/accounts.store";
 import { createAgent } from "./agent.utils";
 
+// TODO(L2-206): refactor / rename to "providers" or "services"
+
 export const loadAccounts = async ({
   principal,
 }: {

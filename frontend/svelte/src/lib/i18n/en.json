@@ -50,28 +50,32 @@
     "create_or_link": "Create or Link"
   },
   "topics": {
-    "exchange_rate": "Exchange Rate",
-    "network_economics": "Network Economics",
-    "governance": "Governance",
-    "node_admin": "Node Admin",
-    "participant_management": "Participant Management",
-    "subnet_management": "Subnet Management",
-    "network_canister_management": "Network Canister Management",
-    "kyc": "Kyc",
-    "node_provider_rewards": "Node Provider Rewards"
+    "Unspecified": "Unspecified",
+    "ManageNeuron": "Manage neuron",
+    "ExchangeRate": "Exchange Rate",
+    "NetworkEconomics": "Network Economics",
+    "Governance": "Governance",
+    "NodeAdmin": "Node Admin",
+    "ParticipantManagement": "Participant Management",
+    "SubnetManagement": "Subnet Management",
+    "NetworkCanisterManagement": "Network Canister Management",
+    "Kyc": "Kyc",
+    "NodeProviderRewards": "Node Provider Rewards"
   },
   "rewards": {
-    "accept_votes": "Accepting Votes",
-    "ready_to_settle": "Processing Votes",
-    "settled": "Rewards Disbursed",
-    "ineligible": "Ineligible"
+    "PROPOSAL_REWARD_STATUS_UNKNOWN": "Unknown",
+    "PROPOSAL_REWARD_STATUS_ACCEPT_VOTES": "Accepting Votes",
+    "PROPOSAL_REWARD_STATUS_READY_TO_SETTLE": "Processing Votes",
+    "PROPOSAL_REWARD_STATUS_SETTLED": "Rewards Disbursed",
+    "PROPOSAL_REWARD_STATUS_INELIGIBLE": "Ineligible"
   },
-  "proposals": {
-    "open": "Open",
-    "rejected": "Rejected",
-    "accepted": "Adopted",
-    "executed": "Executed",
-    "failed": "Failed"
+  "status": {
+    "PROPOSAL_STATUS_UNKNOWN": "Unknown",
+    "PROPOSAL_STATUS_OPEN": "Open",
+    "PROPOSAL_STATUS_REJECTED": "Rejected",
+    "PROPOSAL_STATUS_ACCEPTED": "Adopted",
+    "PROPOSAL_STATUS_EXECUTED": "Executed",
+    "PROPOSAL_STATUS_FAILED": "Failed"
   },
   "modals": {
     "back": "Back"
