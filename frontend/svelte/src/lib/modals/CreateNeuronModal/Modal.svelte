@@ -22,7 +22,7 @@
   );
 
   let currentIndex: number = 0;
-  let unsubscribeWizard: Unsubscriber = wizardStore.subscribe(
+  const unsubscribeWizard: Unsubscriber = wizardStore.subscribe(
     (value) => (currentIndex = value)
   );
   const chooseAccount = () => {
@@ -38,11 +38,11 @@
     unsubscribeAccounts();
   });
 
-  let titleKey: string = "select_source";
   const titleMapper: Record<string, string> = {
     "0": "select_source",
     "1": "stake_neuron",
   };
+  let titleKey: string = titleMapper[0];
   $: titleKey = titleMapper[currentIndex];
 </script>
 

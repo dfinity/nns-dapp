@@ -6,7 +6,7 @@
   import { formatICP } from "../../utils/icp.utils";
 
   export let account: Account;
-  const transactionIcp = ICP.fromString("0.0001") as ICP;
+  const transactionIcp: ICP = ICP.fromString("0.0001") as ICP;
   let amount: number;
 
   const createNeuron = () => {
