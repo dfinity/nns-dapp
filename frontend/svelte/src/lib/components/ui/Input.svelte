@@ -31,6 +31,8 @@
   <span class="placeholder">
     {translate({ labelKey: placeholderLabelKey })}
   </span>
+
+  <slot name="button" />
 </div>
 
 <style lang="scss">
@@ -38,6 +40,14 @@
     position: relative;
 
     margin: calc(2 * var(--padding)) 0;
+
+    display: flex;
+    align-items: center;
+
+    :global(button) {
+      position: absolute;
+      right: calc(2 * var(--padding));
+    }
   }
 
   input {
