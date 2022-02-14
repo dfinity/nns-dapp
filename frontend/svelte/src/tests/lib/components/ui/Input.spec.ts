@@ -173,4 +173,20 @@ describe("Input", () => {
     fireEvent.change(input, { target: { value: "test123" } });
     expect(input.value).toBe("test123");
   });
+
+  it("should not be disabled per default", () => {
+    const { container } = render(Input, {
+      props: { ...props },
+    });
+
+    testHasAttribute({ container, attribute: "disabled", expected: false });
+  });
+
+  it("should render a disabled input", () => {
+    const { container } = render(Input, {
+      props: { ...props, disabled: true },
+    });
+
+    testHasAttribute({ container, attribute: "disabled", expected: true });
+  });
 });
