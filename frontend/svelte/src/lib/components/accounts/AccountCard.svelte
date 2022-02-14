@@ -16,7 +16,7 @@
     routeStore.navigate({ path: `${AppPath.Wallet}/${identifier}` });
 </script>
 
-<Card on:click {role}>
+<Card on:click={cardClick} {role}>
   <p slot="start"><slot /></p>
   <ICP slot="end" icp={balance} />
   <Identifier {identifier} {showCopy} />
