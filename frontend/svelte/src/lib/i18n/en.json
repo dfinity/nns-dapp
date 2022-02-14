@@ -1,7 +1,8 @@
 {
   "core": {
     "close": "Close",
-    "icp": "ICP"
+    "icp": "ICP",
+    "create": "Create"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -29,7 +30,13 @@
     "main": "Main",
     "copy_identifier": "Copy identifier to clipboard",
     "new_transaction": "New Transaction",
-    "add_account": "Add Account"
+    "add_account": "Add Account",
+    "new_linked_title": "New Linked-Account",
+    "new_linked_subtitle": "Create a new linked account",
+    "attach_hardware_title": "Attach Hardware Wallet",
+    "attach_hardware_subtitle": "Link a hardware wallet to this account",
+    "new_linked_account_title": "New Linked Account",
+    "new_linked_account_placeholder": "Account Name"
   },
   "neurons": {
     "title": "Neurons",

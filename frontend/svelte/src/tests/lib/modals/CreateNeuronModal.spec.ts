@@ -3,7 +3,7 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import CreateNeuronModal from "../../../lib/modals/CreateNeuronModal/Modal.svelte";
+import CreateNeuronModal from "../../../lib/modals/CreateNeuronModal/CreateNeuronModal.svelte";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { mockAccountsStoreSubscribe } from "../../mocks/accounts.store.mock";
 
