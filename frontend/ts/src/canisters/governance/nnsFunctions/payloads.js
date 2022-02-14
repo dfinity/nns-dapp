@@ -79,7 +79,7 @@ export const RecoverSubnetPayload = IDL.Record({
   time_ns: IDL.Nat64,
 });
 export const RemoveNodeOperatorsPayload = IDL.Record({
-  node_operators_to_remove: IDL.Vec(IDL.Vec(IDL.Nat8)),
+  node_operators_to_remove: IDL.Vec(IDL.Principal),
 });
 export const RemoveNodesFromSubnetPayload = IDL.Record({
   node_ids: IDL.Vec(IDL.Principal),

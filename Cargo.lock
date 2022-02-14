@@ -1753,8 +1753,6 @@ dependencies = [
  "candid_derive",
  "ic-base-types",
  "ic-registry-subnet-type",
- "prost",
- "prost-build",
  "serde",
 ]
 

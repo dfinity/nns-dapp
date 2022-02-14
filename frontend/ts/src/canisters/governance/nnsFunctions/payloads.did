@@ -69,7 +69,7 @@ type RecoverSubnetPayload = record {
   time_ns : nat64;
 };
 type RemoveNodeOperatorsPayload = record {
-  node_operators_to_remove : vec vec nat8;
+  node_operators_to_remove : vec principal;
 };
 type RemoveNodesFromSubnetPayload = record { node_ids : vec principal };
 type RerouteCanisterRangePayload = record {
