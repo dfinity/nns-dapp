@@ -23,5 +23,5 @@ npx tsc
 echo "Bundling..."
 # Unfortunately dart relies on ic_agent.js at build time so we have to actually
 # modify the codebase
-npx browserify ./build/index.js --standalone IcAgent | npx uglifyjs > ../dart/assets/ic_agent.js
+npx browserify ./build/index.js --standalone IcAgent | npx uglifyjs >../dart/assets/ic_agent.js
 echo "Done."
