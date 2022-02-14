@@ -33,9 +33,7 @@ export const acquireICPTs = async ({
     base64ToUInt8Array(privateKey)
   );
 
-  // TODO: host
-
-  const agent = new HttpAgent({
+  const agent: HttpAgent = new HttpAgent({
     host: "https://nnsdapp.dfinity.network/",
     identity,
   });
