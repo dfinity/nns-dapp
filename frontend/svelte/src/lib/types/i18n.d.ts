@@ -102,6 +102,14 @@ interface I18nStatus {
   PROPOSAL_STATUS_FAILED: string;
 }
 
+interface I18nWallet {
+  title: string;
+}
+
+interface I18nProposal_details {
+  title: string;
+}
+
 interface I18nModals {
   back: string;
 }
@@ -119,6 +127,9 @@ interface I18n {
   canisters: I18nCanisters;
   topics: I18nTopics;
   rewards: I18nRewards;
+  proposals: I18nProposals;
+  wallet: I18nWallet;
+  proposal_details: I18nProposal_details;
   status: I18nStatus;
   modals: I18nModals;
 }
