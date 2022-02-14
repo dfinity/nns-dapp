@@ -66,7 +66,7 @@ export default {
         // Here we sort the CSS content to ensure reproducibility, see
         // https://github.com/thgh/rollup-plugin-css-only/issues/42.
         if (!fs.existsSync("public/build")) {
-          fs.mkdirSync("public/build");
+          fs.mkdirSync("public/build", { recursive: true });
         }
         fs.writeFileSync(
           "public/build/bundle.css",
