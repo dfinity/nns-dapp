@@ -1,14 +1,15 @@
-import svelte from "rollup-plugin-svelte";
 import commonjs from "@rollup/plugin-commonjs";
-import resolve from "@rollup/plugin-node-resolve";
-import livereload from "rollup-plugin-livereload";
-import { terser } from "rollup-plugin-terser";
-import sveltePreprocess from "svelte-preprocess";
-import replace from "@rollup/plugin-replace";
-import typescript from "@rollup/plugin-typescript";
-import css from "rollup-plugin-css-only";
 import inject from "@rollup/plugin-inject";
 import json from "@rollup/plugin-json";
+import resolve from "@rollup/plugin-node-resolve";
+import replace from "@rollup/plugin-replace";
+import typescript from "@rollup/plugin-typescript";
+import * as fs from "fs";
+import css from "rollup-plugin-css-only";
+import livereload from "rollup-plugin-livereload";
+import svelte from "rollup-plugin-svelte";
+import { terser } from "rollup-plugin-terser";
+import sveltePreprocess from "svelte-preprocess";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -60,7 +61,22 @@ export default {
     }),
     // we'll extract any component CSS out into
     // a separate file - better for performance
-    css({ output: "bundle.css" }),
+    css({
+      output: (styles, stylesNodes) => {
+        // Here we sort the CSS content to ensure reproducibility, see
+        // https://github.com/thgh/rollup-plugin-css-only/issues/42.
+        if (!fs.existsSync("public/build")) {
+          fs.mkdirSync("public/build", { recursive: true });
+        }
+        fs.writeFileSync(
+          "public/build/bundle.css",
+          // stylesNodes is a map from filename (e.g.
+          // 'src/lib/components/ui/FiltersCard.css') to css content (e.g.
+          // '.filter.svelte-1f2mdt{display:flex;justify-content:space-between;...').
+          Object.values(stylesNodes).sort().join("")
+        );
+      },
+    }),
 
     // If you have external dependencies installed from
     // npm, you'll most likely need these plugins. In

@@ -296,10 +296,6 @@ pub fn add_stable_asset() {
                 // Canvaskit.js
                 insert_asset("/assets/canvaskit/canvaskit.js", Asset::new_stable(asset_bytes));
             }
-            "017c0be9aaa6d0359737e1fa762ad304c0e0107927faff5a6c1f415c7f5244ed" => {
-                // roboto.ttf
-                insert_asset("/assets/assets/fonts/roboto.ttf", Asset::new_stable(asset_bytes));
-            }
             unknown_hash => {
                 dfn_core::api::trap_with(&format!("Unknown asset with hash {}", unknown_hash));
             }

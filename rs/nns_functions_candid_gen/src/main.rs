@@ -140,6 +140,20 @@ fn update_unassigned_nodes_config(_: UpdateUnassignedNodesConfigPayload) {
     unimplemented!();
 }
 
+// 23 - RemoveNodeOperators
+#[allow(dead_code)]
+#[candid_method(update)]
+fn remove_node_operators(_: RemoveNodeOperatorsPayload) {
+    unimplemented!();
+}
+
+// 24 - RerouteCanisterRange
+#[allow(dead_code)]
+#[candid_method(update)]
+fn reroute_canister_range(_: RerouteCanisterRangePayload) {
+    unimplemented!();
+}
+
 fn main() {
     candid::export_service!();
     std::print!("{}", __export_service());

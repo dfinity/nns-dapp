@@ -307,3 +307,25 @@ pub struct UpdateUnassignedNodesConfigPayload {
     pub ssh_readonly_access: Option<Vec<String>>,
     pub replica_version: Option<String>,
 }
+
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/9527797958c2e02c8d975190e10c72efbb164646/rs/protobuf/def/registry/node_operator/v1/node_operator.proto#L32
+//// The payload of a request to remove Node Operator records from the Registry
+#[derive(candid::CandidType, serde::Serialize, candid::Deserialize, Clone, PartialEq, ::prost::Message)]
+pub struct RemoveNodeOperatorsPayload {
+    #[prost(bytes = "vec", repeated, tag = "1")]
+    pub node_operators_to_remove: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
+}
+
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/9527797958c2e02c8d975190e10c72efbb164646/rs/registry/canister/src/mutations/reroute_canister_range.rs#L46
+/// The argument for the `reroute_canister_range` update call.
+#[derive(Debug, CandidType, Serialize, Deserialize)]
+pub struct RerouteCanisterRangePayload {
+    /// The first canister id in the range that needs to be mapped to the new
+    /// destination.
+    pub range_start_inclusive: PrincipalId,
+    /// The last canister id in the range that needs to be mapped to the new
+    /// destination.
+    pub range_end_inclusive: PrincipalId,
+    /// The new destination for the canister id range.
+    pub destination_subnet: PrincipalId,
+}

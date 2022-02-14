@@ -27,12 +27,25 @@
   "accounts": {
     "title": "Accounts",
     "main": "Main",
-    "copy_identifier": "Copy identifier to clipboard"
+    "copy_identifier": "Copy identifier to clipboard",
+    "new_transaction": "New Transaction",
+    "add_account": "Add Account"
   },
   "neurons": {
     "title": "Neurons",
     "text": "Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.",
-    "principal_is": "Your principal id is"
+    "principal_is": "Your principal id is",
+    "stake_neurons": "Stake Neurons",
+    "select_source": "Select Source Account",
+    "my_accounts": "My Accounts",
+    "stake_neuron": "Stake Neuron",
+    "source": "Source",
+    "transaction_fee": "Transaction Fee",
+    "current_balance": "Current Balance",
+    "may_take_while": "(This may take up to 1 minute)",
+    "amount": "Amount",
+    "max": "Max",
+    "create": "Create"
   },
   "voting": {
     "title": "Voting",
@@ -42,29 +55,43 @@
     "proposals": "Proposal Status",
     "hide_unavailable_proposals": "Hide \"Open\" proposals where all your neurons have voted or are ineligible to vote"
   },
+  "canisters": {
+    "title": "Canisters",
+    "create_or_link": "Create or Link"
+  },
   "topics": {
-    "exchange_rate": "Exchange Rate",
-    "network_economics": "Network Economics",
-    "governance": "Governance",
-    "node_admin": "Node Admin",
-    "participant_management": "Participant Management",
-    "subnet_management": "Subnet Management",
-    "network_canister_management": "Network Canister Management",
-    "kyc": "Kyc",
-    "node_provider_rewards": "Node Provider Rewards"
+    "Unspecified": "Unspecified",
+    "ManageNeuron": "Manage neuron",
+    "ExchangeRate": "Exchange Rate",
+    "NetworkEconomics": "Network Economics",
+    "Governance": "Governance",
+    "NodeAdmin": "Node Admin",
+    "ParticipantManagement": "Participant Management",
+    "SubnetManagement": "Subnet Management",
+    "NetworkCanisterManagement": "Network Canister Management",
+    "Kyc": "Kyc",
+    "NodeProviderRewards": "Node Provider Rewards"
   },
   "rewards": {
-    "accept_votes": "Accepting Votes",
-    "ready_to_settle": "Processing Votes",
-    "settled": "Rewards Disbursed",
-    "ineligible": "Ineligible"
+    "PROPOSAL_REWARD_STATUS_UNKNOWN": "Unknown",
+    "PROPOSAL_REWARD_STATUS_ACCEPT_VOTES": "Accepting Votes",
+    "PROPOSAL_REWARD_STATUS_READY_TO_SETTLE": "Processing Votes",
+    "PROPOSAL_REWARD_STATUS_SETTLED": "Rewards Disbursed",
+    "PROPOSAL_REWARD_STATUS_INELIGIBLE": "Ineligible"
   },
-  "proposals": {
-    "open": "Open",
-    "rejected": "Rejected",
-    "accepted": "Adopted",
-    "executed": "Executed",
-    "failed": "Failed"
+  "status": {
+    "PROPOSAL_STATUS_UNKNOWN": "Unknown",
+    "PROPOSAL_STATUS_OPEN": "Open",
+    "PROPOSAL_STATUS_REJECTED": "Rejected",
+    "PROPOSAL_STATUS_ACCEPTED": "Adopted",
+    "PROPOSAL_STATUS_EXECUTED": "Executed",
+    "PROPOSAL_STATUS_FAILED": "Failed"
+  },
+  "wallet": {
+    "title": "Account"
+  },
+  "proposal_details": {
+    "title": "Proposal"
   },
   "modals": {
     "back": "Back"

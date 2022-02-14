@@ -78,8 +78,16 @@ export const RecoverSubnetPayload = IDL.Record({
   state_hash: IDL.Vec(IDL.Nat8),
   time_ns: IDL.Nat64,
 });
+export const RemoveNodeOperatorsPayload = IDL.Record({
+  node_operators_to_remove: IDL.Vec(IDL.Vec(IDL.Nat8)),
+});
 export const RemoveNodesFromSubnetPayload = IDL.Record({
   node_ids: IDL.Vec(IDL.Principal),
+});
+export const RerouteCanisterRangePayload = IDL.Record({
+  range_end_inclusive: IDL.Principal,
+  range_start_inclusive: IDL.Principal,
+  destination_subnet: IDL.Principal,
 });
 export const SetAuthorizedSubnetworkListArgs = IDL.Record({
   who: IDL.Opt(IDL.Principal),

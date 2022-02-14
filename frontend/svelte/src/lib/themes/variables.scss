@@ -1,3 +1,4 @@
+@use "./mixins/media";
 :root {
   --header-height: 76px;
   --nav-height: 64px;
@@ -8,7 +9,18 @@
 
   --z-index: 1;
 
+  --headless-layout-header-height: 56px;
+
   --section-max-width: 800px;
+  --footer-height: 20vh;
+
+  --modal-small-width: 300px;
+  --modal-medium-width: 300px;
+
+  @include media.min-width(medium) {
+    --modal-small-width: 500px;
+    --modal-medium-width: 600px;
+  }
 
   --background: #272929;
   --background-rgb: 39, 41, 41;

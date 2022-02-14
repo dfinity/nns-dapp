@@ -1,12 +1,11 @@
-import { writable } from "svelte/store";
 import { AuthClient } from "@dfinity/auth-client";
 import type { Principal } from "@dfinity/principal";
+import { writable } from "svelte/store";
+import { serviceURL } from "../constants/utils.constants";
 
 export interface AuthStore {
   principal: Principal | undefined | null;
 }
-
-const identityProvider: string = process.env.IDENTITY_SERVICE_URL;
 
 /**
  * A store to handle authentication and the principal of the user.
@@ -50,7 +49,7 @@ const initAuthStore = () => {
         const authClient: AuthClient = await AuthClient.create();
 
         await authClient.login({
-          identityProvider,
+          identityProvider: serviceURL,
           maxTimeToLive: BigInt(30 * 60 * 1_000_000_000), // 30 minutes
           onSuccess: () => {
             update((state: AuthStore) => ({
