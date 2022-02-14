@@ -116,6 +116,7 @@ type UpdateSubnetPayload = record {
   pfn_evaluation_period_ms : opt nat32;
   subnet_id : principal;
   max_ingress_bytes_per_message : opt nat64;
+  max_ingress_messages_per_block : opt nat64;
   dkg_dealings_per_block : opt nat64;
   max_block_payload_size : opt nat64;
   max_instructions_per_install_code : opt nat64;

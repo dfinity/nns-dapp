@@ -133,6 +133,7 @@ export const UpdateSubnetPayload = IDL.Record({
   pfn_evaluation_period_ms: IDL.Opt(IDL.Nat32),
   subnet_id: IDL.Principal,
   max_ingress_bytes_per_message: IDL.Opt(IDL.Nat64),
+  max_ingress_messages_per_block: IDL.Opt(IDL.Nat64),
   dkg_dealings_per_block: IDL.Opt(IDL.Nat64),
   max_block_payload_size: IDL.Opt(IDL.Nat64),
   max_instructions_per_install_code: IDL.Opt(IDL.Nat64),

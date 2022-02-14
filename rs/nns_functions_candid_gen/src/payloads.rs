@@ -98,6 +98,7 @@ pub struct UpdateSubnetPayload {
 
     pub ingress_bytes_per_block_soft_cap: Option<u64>,
     pub max_ingress_bytes_per_message: Option<u64>,
+    pub max_ingress_messages_per_block: Option<u64>,
     pub max_block_payload_size: Option<u64>,
     pub unit_delay_millis: Option<u64>,
     pub initial_notary_delay_millis: Option<u64>,
