@@ -10,19 +10,22 @@ describe("Identifier", () => {
   const props: { identifier: string } = { identifier };
 
   it("should render an identifier", () => {
-    const { container } = render(Identifier, { props });
+    const { container, queryByRole } = render(Identifier, { props });
 
     const small = container.querySelector("small");
     expect(small).not.toBeNull();
     expect(small.textContent).toEqual(identifier);
+
+    const button = queryByRole("button");
+    expect(button).toBeNull();
   });
 
   it("should render an accessible button", () => {
-    const { getByRole } = render(Identifier, {
+    const { queryByRole } = render(Identifier, {
       props: { identifier, showCopy: true },
     });
 
-    const button = getByRole("button");
+    const button = queryByRole("button");
 
     expect(button).not.toBeNull();
     expect(button.getAttribute("aria-label")).toEqual(
