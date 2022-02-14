@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "./routes";
@@ -12,22 +12,10 @@
     }
   });
 
-  let previousPath: string = null;
-
-  const unsubscribe = routeStore.subscribe(
-    (state) => (previousPath = state.previousPath)
-  );
-
-  onDestroy(unsubscribe);
-
   const goBack = () => {
-    if (previousPath === AppPath.Proposals) {
-      routeStore.back();
-    } else {
-      routeStore.navigate({
-        path: AppPath.Proposals,
-      });
-    }
+    routeStore.navigate({
+      path: AppPath.Proposals,
+    });
   };
 </script>
 

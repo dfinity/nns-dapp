@@ -3,7 +3,6 @@ import { pushHistory, replaceHistory, routePath } from "../utils/route.utils";
 
 export interface RouteStore {
   path: string;
-  previousPath: string;
 }
 
 /**
@@ -14,7 +13,6 @@ export interface RouteStore {
  */
 const initRouteStore = () => {
   const { subscribe, update } = writable<RouteStore>({
-    previousPath: document.referrer,
     path: routePath(),
   });
 
@@ -22,38 +20,16 @@ const initRouteStore = () => {
     subscribe,
 
     update: ({ path }: { path: string }) =>
-      update((state: RouteStore) => ({
-        ...state,
-        previousPath: state.path,
-        path,
-      })),
+      update((state: RouteStore) => ({ ...state, path })),
 
     navigate: ({ path, query }: { path: string; query?: string }) => {
-      update((state: RouteStore) => ({
-        ...state,
-        previousPath: state.path,
-        path,
-      }));
+      update((state: RouteStore) => ({ ...state, path }));
 
       pushHistory({ path, query });
     },
 
-    back: () => {
-      update((state: RouteStore) => ({
-        ...state,
-        previousPath: state.path,
-        path: state.previousPath,
-      }));
-
-      history.back();
-    },
-
     replace: ({ path, query }: { path: string; query?: string }) => {
-      update((state: RouteStore) => ({
-        ...state,
-        previousPath: state.path,
-        path,
-      }));
+      update((state: RouteStore) => ({ ...state, path }));
 
       replaceHistory({ path, query });
     },

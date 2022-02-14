@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
@@ -13,22 +13,10 @@
     }
   });
 
-  let previousPath: string = null;
-
-  const unsubscribe = routeStore.subscribe(
-    (state) => (previousPath = state.previousPath)
-  );
-
-  onDestroy(unsubscribe);
-
   const goBack = () => {
-    if (previousPath === AppPath.Accounts) {
-      routeStore.back();
-    } else {
-      routeStore.navigate({
-        path: AppPath.Accounts,
-      });
-    }
+    routeStore.navigate({
+      path: AppPath.Accounts,
+    });
   };
 
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-225
