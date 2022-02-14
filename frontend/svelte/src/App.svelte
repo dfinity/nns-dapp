@@ -13,7 +13,7 @@
   import { AuthStore, authStore } from "./lib/stores/auth.store";
   import Wallet from "./routes/Wallet.svelte";
   import ProposalDetails from "./routes/ProposalDetails.svelte";
-  import { AppPath, isRoutePath } from "./routes/routes";
+  import { AppPath, urlToAppPath } from "./routes/routes";
   import { routeStore } from "./lib/stores/route.store";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
@@ -28,11 +28,7 @@
   );
 
   const unsubscribeRoute = routeStore.subscribe((route) => {
-    // redirects to /#/accounts in case of unknown url
-    const currentKnownPath = Object.values(AppPath).find((path) =>
-      isRoutePath({ path, routePath: route.path })
-    );
-    if (!currentKnownPath) {
+    if (urlToAppPath(route.path) === null) {
       routeStore.replace({ path: AppPath.Accounts });
     }
   });

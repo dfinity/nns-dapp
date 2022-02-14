@@ -17,6 +17,11 @@ const pathValidation = (path: AppPath): string =>
     [AppPath.ProposalDetails]: `${AppPath.ProposalDetails}/[0-9]+`,
   }[path] || path);
 
+export const urlToAppPath = (url: string): AppPath =>
+  Object.values(AppPath).find((path) =>
+    isRoutePath({ path, routePath: url })
+  ) || null;
+
 export const isRoutePath: ({
   path,
   routePath,
