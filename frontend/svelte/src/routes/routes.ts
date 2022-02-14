@@ -10,7 +10,7 @@ export enum AppPath {
   ProposalDetails = "/#/proposal",
 }
 
-export const pathValidation = (path: AppPath): string =>
+const pathValidation = (path: AppPath): string =>
   ({
     // exceptions only
     [AppPath.Wallet]: `${AppPath.Wallet}/[a-zA-Z0-9]+`,
