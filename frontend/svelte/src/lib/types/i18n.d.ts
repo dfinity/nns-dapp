@@ -127,9 +127,8 @@ interface I18n {
   canisters: I18nCanisters;
   topics: I18nTopics;
   rewards: I18nRewards;
-  proposals: I18nProposals;
+  status: I18nStatus;
   wallet: I18nWallet;
   proposal_details: I18nProposal_details;
-  status: I18nStatus;
   modals: I18nModals;
 }
