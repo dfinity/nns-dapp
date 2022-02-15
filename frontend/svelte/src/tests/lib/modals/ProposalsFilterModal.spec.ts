@@ -2,19 +2,25 @@
  * @jest-environment jsdom
  */
 
+import { Topic } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
-import VotingFilterModal from "../../../lib/modals/VotingFilterModal.svelte";
-import { Topics, VotingFilterModalProps } from "../../../lib/types/voting";
+import ProposalsFilterModal from "../../../lib/modals/ProposalsFilterModal.svelte";
+import type { ProposalsFilterModalProps } from "../../../lib/types/proposals";
+import { enumKeys } from "../../../lib/utils/enum.utils";
 
 const en = require("../../../lib/i18n/en.json");
 
-describe("VotingFilterModal", () => {
-  const props: { props: VotingFilterModalProps } = {
-    props: { labelKey: "topics", filters: Topics },
+describe("ProposalsFilterModal", () => {
+  const props: { props: ProposalsFilterModalProps } = {
+    props: {
+      category: "topics",
+      filters: Topic,
+      selectedFilters: enumKeys(Topic).map((key: string) => Topic[key]),
+    },
   };
 
   it("should display modal", () => {
-    const { container } = render(VotingFilterModal, {
+    const { container } = render(ProposalsFilterModal, {
       props,
     });
 
@@ -22,7 +28,7 @@ describe("VotingFilterModal", () => {
   });
 
   it("should render title", () => {
-    const { getByText } = render(VotingFilterModal, {
+    const { getByText } = render(ProposalsFilterModal, {
       props,
     });
 
@@ -30,17 +36,17 @@ describe("VotingFilterModal", () => {
   });
 
   it("should render checkboxes", () => {
-    const { getByText } = render(VotingFilterModal, {
+    const { getByText } = render(ProposalsFilterModal, {
       props,
     });
 
-    Object.values(Topics).forEach((key: string) =>
+    enumKeys(Topic).forEach((key: string) =>
       expect(getByText(en.topics[key])).toBeInTheDocument()
     );
   });
 
   it("should forward close modal event", (done) => {
-    const { container, component } = render(VotingFilterModal, {
+    const { container, component } = render(ProposalsFilterModal, {
       props,
     });
 

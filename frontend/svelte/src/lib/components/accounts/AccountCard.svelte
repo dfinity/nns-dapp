@@ -5,12 +5,14 @@
   import Identifier from "../ic/Identifier.svelte";
 
   export let account: Account;
+  export let showCopy: boolean = false;
+  export let role: "button" | undefined = undefined;
 
   $: ({ identifier, balance } = account);
 </script>
 
-<Card>
+<Card on:click {role}>
   <p slot="start"><slot /></p>
   <ICP slot="end" icp={balance} />
-  <Identifier {identifier} />
+  <Identifier {identifier} {showCopy} />
 </Card>
