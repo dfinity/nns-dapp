@@ -1022,9 +1022,11 @@ impl AccountsStore {
         if let Some(latest_transaction) = self.transactions.back() {
             let max_block_height = latest_transaction.block_height;
             if block_height <= max_block_height {
-                return self.transactions.binary_search_by_key(&block_height, |t| t.block_height)
+                return self
+                    .transactions
+                    .binary_search_by_key(&block_height, |t| t.block_height)
                     .ok()
-                    .map(|i| i as u64)
+                    .map(|i| i as u64);
             }
         }
         None

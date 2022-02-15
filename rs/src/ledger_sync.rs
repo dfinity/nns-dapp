@@ -20,7 +20,6 @@ pub async fn sync_transactions() -> Option<Result<u32, String>> {
     } else {
         None
     }
-
 }
 
 async fn sync_transactions_within_lock() -> Result<u32, String> {
