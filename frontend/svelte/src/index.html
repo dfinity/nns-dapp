@@ -6,27 +6,6 @@
 
     <title>Network Nervous System</title>
 
-    <!-- CONTENT_SECURITY_POLICY_BEGIN -->
-    <!-- -->
-    <!-- script-src 'unsafe-eval' is required because: -->
-    <!-- 1. agent-js uses a WebAssembly module for the validation of bls signatures. -->
-    <!--    source: II https://github.com/dfinity/internet-identity/blob/c5709518ce3daaf7fdd9c7994120b66bd613f01b/src/internet_identity/src/main.rs#L824 -->
-    <!-- 2. nns-js auto-generated proto js code (base_types_pb.js and ledger_pb.js) require 'unsafe-eval' as well -->
-    <!-- -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'none';
-       connect-src 'self' https://ic0.app/;
-       img-src 'self';
-       script-src 'unsafe-eval' 'strict-dynamic' 'nonce-bundle-369ac6c9-8078-4625-82f7-f37a9ca8fb16';
-       base-uri 'self';
-       form-action 'none';
-       style-src 'self';
-       font-src 'self';
-       upgrade-insecure-requests;"
-    />
-    <!-- CONTENT_SECURITY_POLICY_END -->
-
     <link rel="icon" href="/assets/assets/favicon.png" type="image/png" />
 
     <link rel="stylesheet" href="./build/bundle.css" />
@@ -38,6 +17,7 @@
     ></script>
 
     <!-- BASE_HREF -->
+    <!-- CONTENT_SECURITY_POLICY -->
   </head>
 
   <body></body>

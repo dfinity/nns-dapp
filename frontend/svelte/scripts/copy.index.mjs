@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { readFileSync, writeFileSync } from "fs";
+import { envConfig } from "../env.config.mjs";
 
 /**
  * Rollup takes care of the JS and CSS bundles. Here we copy the index.html from the source to the output folder.
@@ -12,10 +13,7 @@ const copyIndex = () => {
   const content = buffer.toString("utf-8");
 
   let updatedContent = updateBaseHref(content);
-
-  // Only in development mode, we remove the CSP rule
-  updatedContent =
-    process.env.DEV === "true" ? removeCSP(updatedContent) : updatedContent;
+  updatedContent = updateCSP(updatedContent);
 
   writeFileSync("./public/index.html", updatedContent);
 };
@@ -30,13 +28,42 @@ const updateBaseHref = (content) =>
   );
 
 /**
- * Only in development mode, remove the CSP rule.
+ * Inject "Content Security Policy" (CSP) into index.html for production build
+ *
+ * Note about the rules:
+ *
+ * script-src 'unsafe-eval' is required because:
+ * 1. agent-js uses a WebAssembly module for the validation of bls signatures.
+ *    source: II https://github.com/dfinity/internet-identity/blob/c5709518ce3daaf7fdd9c7994120b66bd613f01b/src/internet_identity/src/main.rs#L824
+ * 2. nns-js auto-generated proto js code (base_types_pb.js and ledger_pb.js) require 'unsafe-eval' as well
  */
-const removeCSP = (content) => {
-  return content.replace(
-    /<!-- CONTENT_SECURITY_POLICY_BEGIN -->((.|\r\n|\n)*)<!-- CONTENT_SECURITY_POLICY_END -->/gi,
-    ""
-  );
+const updateCSP = (content) => {
+  // In development mode, no CSP rule
+  if (!envConfig.PRODUCTION) {
+    return content.replace("<!-- CONTENT_SECURITY_POLICY -->", "");
+  }
+
+  const csp = `<meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none';
+       connect-src 'self' ${cspConnectSrc()};
+       img-src 'self';
+       script-src 'unsafe-eval' 'strict-dynamic' 'nonce-bundle-369ac6c9-8078-4625-82f7-f37a9ca8fb16';
+       base-uri 'self';
+       form-action 'none';
+       style-src 'self';
+       font-src 'self';
+       upgrade-insecure-requests;"
+    />`;
+
+  return content.replace("<!-- CONTENT_SECURITY_POLICY -->", csp);
+};
+
+const cspConnectSrc = () => {
+  const { IDENTITY_SERVICE_URL, OWN_CANISTER_ID, HOST } = envConfig;
+
+  const src = [IDENTITY_SERVICE_URL, OWN_CANISTER_ID, HOST];
+  return src.join("").trim();
 };
 
 copyIndex();

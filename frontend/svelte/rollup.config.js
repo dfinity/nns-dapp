@@ -10,8 +10,9 @@ import livereload from "rollup-plugin-livereload";
 import svelte from "rollup-plugin-svelte";
 import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
+import { envConfig } from "./env.config.mjs";
 
-const production = !process.env.ROLLUP_WATCH;
+const { PRODUCTION: production } = envConfig;
 
 function serve() {
   let server;
@@ -99,24 +100,11 @@ export default {
       preventAssignment: true,
       "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
       "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
-        process.env.IDENTITY_SERVICE_URL ||
-          (process.env.DEPLOY_ENV === "testnet"
-            ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
-            : "https://identity.ic0.app/")
+        envConfig.IDENTITY_SERVICE_URL
       ),
-      "process.env.DEPLOY_ENV": JSON.stringify(process.env.DEPLOY_ENV),
-      // When developing with live reload in svelte, redirecting to flutter is
-      // not desirable.  The default should match production:
-      // - false while svelte is inactive
-      // - true while flutter is being replaced by svelte
-      // - false after flutter has been replaced, but before all scaffolding has been removed
-      // - the flag may then be removed.
+      "process.env.DEPLOY_ENV": JSON.stringify(envConfig.DEPLOY_ENV),
       "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-        ["true", "1"].includes(process.env.REDIRECT_TO_LEGACY)
-          ? true
-          : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
-          ? false
-          : true // default
+        envConfig.REDIRECT_TO_LEGACY
       ),
     }),
 
