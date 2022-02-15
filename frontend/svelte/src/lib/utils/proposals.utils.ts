@@ -77,3 +77,12 @@ const queryProposals = async ({
 
   return proposals;
 };
+
+export const getProposalInfo = async ({
+  proposalId,
+}: {
+  proposalId: ProposalId;
+}): Promise<ProposalInfo> => {
+  const governance: GovernanceCanister = GovernanceCanister.create();
+  return await governance.getProposalInfo({ proposalId });
+};
