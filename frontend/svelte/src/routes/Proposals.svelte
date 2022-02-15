@@ -3,7 +3,6 @@
   import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import { AppPath } from "./routes";
   import {
     emptyProposals,
     lastProposalId,
@@ -19,6 +18,7 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
+  import { AppPath } from "../lib/constants/routes.constants";
 
   let loading: boolean = false;
 
