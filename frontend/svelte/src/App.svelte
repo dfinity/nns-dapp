@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Route from "./lib/components/Route.svelte";
-  import PrivateRoute from "./lib/components/PrivateRoute.svelte";
-  import Guard from "./lib/components/Guard.svelte";
+  import Route from "./lib/components/common/Route.svelte";
+  import PrivateRoute from "./lib/components/common/PrivateRoute.svelte";
+  import Guard from "./lib/components/common/Guard.svelte";
   import Accounts from "./routes/Accounts.svelte";
   import Neurons from "./routes/Neurons.svelte";
   import Proposals from "./routes/Proposals.svelte";
@@ -11,6 +11,9 @@
   import { accountsStore } from "./lib/stores/accounts.store";
   import { onDestroy } from "svelte";
   import { AuthStore, authStore } from "./lib/stores/auth.store";
+  import Wallet from "./routes/Wallet.svelte";
+  import ProposalDetails from "./routes/ProposalDetails.svelte";
+  import { AppPath } from "./routes/routes";
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -37,15 +40,18 @@
 </svelte:head>
 
 <Guard>
-  <Route path="/" component={Auth} />
-  <PrivateRoute path="/#/accounts" component={Accounts} />
-  <PrivateRoute path="/#/neurons" component={Neurons} />
-  <PrivateRoute path="/#/proposals" component={Proposals} />
-  <PrivateRoute path="/#/canisters" component={Canisters} />
+  <Route path={AppPath.Authentication} component={Auth} />
+  <PrivateRoute path={AppPath.Accounts} component={Accounts} />
+  <PrivateRoute path={AppPath.Neurons} component={Neurons} />
+  <PrivateRoute path={AppPath.Proposals} component={Proposals} />
+  <PrivateRoute path={AppPath.Canisters} component={Canisters} />
+  <PrivateRoute path={AppPath.Wallet} component={Wallet} />
+  <PrivateRoute path={AppPath.ProposalDetails} component={ProposalDetails} />
 </Guard>
 
 <style lang="scss" global>
   @import "./lib/themes/fonts.scss";
   @import "./lib/themes/variables.scss";
   @import "./lib/themes/theme.scss";
+  @import "./lib/themes/button.scss";
 </style>

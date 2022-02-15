@@ -3,16 +3,25 @@
   import { quintOut } from "svelte/easing";
   import IconClose from "../icons/IconClose.svelte";
   import { createEventDispatcher } from "svelte";
+  import IconBackIosNew from "../icons/IconBackIosNew.svelte";
+  import { i18n } from "../stores/i18n";
 
   export let visible: boolean = false;
+  export let theme: "dark" | "light" = "light";
+  export let size: "small" | "medium" = "small";
+  // There is no way to know to know whether a parent is listening to the "nnsBack" event
+  // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
+  // Please do not use `showBackButton` without listening on `nnsBack`
+  export let showBackButton: boolean = false;
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
+  const back = () => dispatch("nnsBack");
 </script>
 
 {#if visible}
   <div
-    class="modal"
+    class={`modal ${theme}`}
     transition:fade
     role="dialog"
     aria-labelledby="modalTitle"
@@ -21,12 +30,18 @@
     <div class="backdrop" on:click={close} />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
-      class="wrapper"
+      class={`wrapper ${size}`}
     >
       <div class="toolbar">
-        <h2 id="modalTitle"><slot name="title" /></h2>
-
-        <button on:click|stopPropagation={close} aria-label="Close"
+        {#if showBackButton}
+          <button
+            class="back"
+            on:click|stopPropagation={back}
+            aria-label={$i18n.modals.back}><IconBackIosNew /></button
+          >
+        {/if}
+        <h3 id="modalTitle"><slot name="title" /></h3>
+        <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
           ><IconClose /></button
         >
       </div>
@@ -45,7 +60,29 @@
     position: fixed;
     inset: 0;
 
-    z-index: calc(var(--z-index) + 999);
+    z-index: calc(var(--z-index) + 998);
+
+    &.dark {
+      color: var(--background-contrast);
+
+      .wrapper {
+        background: none;
+      }
+
+      .toolbar {
+        background: var(--gray-50-background);
+        box-shadow: 0 2px 8px var(--background);
+
+        h3,
+        button {
+          color: var(--background-contrast);
+        }
+      }
+
+      .content {
+        background: var(--gray-50-background);
+      }
+    }
   }
 
   .backdrop {
@@ -66,7 +103,7 @@
     display: flex;
     flex-direction: column;
 
-    width: 320px;
+    width: var(--modal-small-width);
     height: fit-content;
     max-width: calc(100vw - (4 * var(--padding)));
     max-height: calc(100vw - (2 * var(--padding)));
@@ -77,6 +114,10 @@
     border-radius: calc(2 * var(--border-radius));
 
     overflow: hidden;
+
+    &.medium {
+      width: var(--modal-medium-width);
+    }
   }
 
   .toolbar {
@@ -85,20 +126,25 @@
     background: var(--gray-100);
     color: var(--gray-800);
 
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: var(--icon-width) 1fr var(--icon-width);
 
-    h2 {
+    z-index: var(--z-index);
+
+    h3 {
       color: inherit;
       font-weight: 400;
       margin-bottom: 0;
       line-height: 1.5;
+      text-align: center;
+      grid-column-start: 2;
     }
 
     button {
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 0;
 
       &:active,
       &:focus,
@@ -111,5 +157,6 @@
 
   .content {
     overflow-y: scroll;
+    color: var(--gray-800);
   }
 </style>

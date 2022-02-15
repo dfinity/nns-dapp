@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "copy:index": "node ./scripts/copy.index.mjs",
-    "i18n": "node --experimental-json-modules ./scripts/i18n.types.mjs",
+    "i18n": "node scripts/i18n.types.js",
     "import-assets": "rm -fr public/assets/assets && mkdir -p public/assets && cp -R ../dart/assets public/assets",
     "build": "rm -fr public/assets/assets && npm run i18n && rollup -c && npm run copy:index",
     "dev": "npm run import-assets && npm run i18n && BASE_HREF=/ npm run copy:index && rollup -c -w",
@@ -30,6 +30,7 @@
     "postcss": "^8.4.5",
     "postcss-load-config": "^3.1.1",
     "prettier": "^2.5.0",
+    "prettier-plugin-organize-imports": "^2.3.4",
     "prettier-plugin-svelte": "^2.5.0",
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^3.1.0",
@@ -52,7 +53,7 @@
     "@dfinity/authentication": "^0.10.2",
     "@dfinity/candid": "^0.10.2",
     "@dfinity/identity": "^0.10.2",
-    "@dfinity/nns": "^0.1.9",
+    "@dfinity/nns": "^0.2.0",
     "@dfinity/principal": "^0.10.2"
   }
 }

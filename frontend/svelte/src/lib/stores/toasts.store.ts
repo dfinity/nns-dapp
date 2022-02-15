@@ -3,6 +3,7 @@ import { writable } from "svelte/store";
 export interface ToastMsg {
   labelKey: string;
   level: "info" | "error";
+  detail?: string;
 }
 
 /**

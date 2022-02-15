@@ -1,5 +1,6 @@
 **/*.wasm
 assets.tar.xz
+build-inputs.txt
 out
 
 # Miscellaneous

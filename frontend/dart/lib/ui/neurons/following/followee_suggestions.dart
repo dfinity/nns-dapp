@@ -67,6 +67,7 @@ class FolloweeSuggestionRow extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(12),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
             child: Column(
