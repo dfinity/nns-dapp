@@ -1,8 +1,12 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { AppPath } from "../lib/constants/routes.constants";
   import { routeStore } from "../lib/stores/route.store";
+  import { getProposalInfo } from "../lib/utils/proposals.utils";
+  import { routeContext } from "../lib/utils/route.utils";
+
+  let proposalId: bigint;
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -11,6 +15,23 @@
       window.location.replace(`/${window.location.hash}`);
     }
   });
+
+  const unsubscribe = routeStore.subscribe(async () => {
+    const proposalParam = parseInt(routeContext().split("/").pop(), 10);
+    if (!proposalParam) {
+      routeStore.replace({ path: AppPath.Proposals });
+      return;
+    }
+
+    proposalId = BigInt(proposalParam);
+
+    // TODO: reuse from store
+    // fetch for testing
+    const proposal = await getProposalInfo({ proposalId });
+    console.log("proposal", proposal);
+  });
+
+  onDestroy(unsubscribe);
 
   const goBack = () => {
     routeStore.navigate({
