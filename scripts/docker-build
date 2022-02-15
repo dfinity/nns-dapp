@@ -56,7 +56,7 @@ set +x
 
 for file in "${assets[@]}"; do
   cp "$OUTDIR/$file" "$file"
-  sha256sum "$file"
+  shasum -a 256 "$file"
 done
 
 untracked_inputs() {
