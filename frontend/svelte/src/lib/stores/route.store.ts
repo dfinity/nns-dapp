@@ -17,7 +17,7 @@ export interface RouteStore {
 const initRouteStore = () => {
   const { subscribe, update } = writable<RouteStore>({
     path: routePath(),
-    isKnownPath: isAppPath(routePath()) !== null,
+    isKnownPath: isAppPath(routePath()),
   });
 
   return {
@@ -27,14 +27,14 @@ const initRouteStore = () => {
       update((state: RouteStore) => ({
         ...state,
         path,
-        isKnownPath: isAppPath(path) !== null,
+        isKnownPath: isAppPath(path),
       })),
 
     navigate: ({ path, query }: { path: string; query?: string }) => {
       update((state: RouteStore) => ({
         ...state,
         path,
-        isKnownPath: isAppPath(path) !== null,
+        isKnownPath: isAppPath(path),
       }));
 
       pushHistory({ path, query });
@@ -44,7 +44,7 @@ const initRouteStore = () => {
       update((state: RouteStore) => ({
         ...state,
         path,
-        isKnownPath: isAppPath(path) !== null,
+        isKnownPath: isAppPath(path),
       }));
 
       replaceHistory({ path, query });
