@@ -107,7 +107,7 @@ type UpdateNodeRewardsTableProposalPayload = record {
   new_entries : vec record { text; NodeRewardRates };
 };
 type UpdateSubnetPayload = record {
-  // Entries are from: https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/registry/canister/canister/registry.did
+  // Entries are from: https://gitlab.com/dfinity-lab/public/ic/-/blob/bd95c0f9a9c8e04c7124e98f3d12c8dd9cae1681/rs/registry/canister/canister/registry.did
   // ecdsa_config <-- Not here for some reason.
   // ingress_bytes_per_block_soft_cap : opt nat64; <-- Was here but shouldn't be; it is in "Create" but not "Update".
   advert_best_effort_percentage : opt nat32;

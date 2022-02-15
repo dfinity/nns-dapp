@@ -124,7 +124,7 @@ export const UpdateNodeRewardsTableProposalPayload = IDL.Record({
   new_entries: IDL.Vec(IDL.Tuple(IDL.Text, NodeRewardRates)),
 });
 export const UpdateSubnetPayload = IDL.Record({
-  // Entries are from: https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/registry/canister/canister/registry.did
+  // Entries are from: https://gitlab.com/dfinity-lab/public/ic/-/blob/bd95c0f9a9c8e04c7124e98f3d12c8dd9cae1681/rs/registry/canister/canister/registry.did
   // ecdsa_config <-- omitted for some reason.
   advert_best_effort_percentage: IDL.Opt(IDL.Nat32),
   dkg_dealings_per_block: IDL.Opt(IDL.Nat64),

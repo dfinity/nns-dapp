@@ -91,10 +91,9 @@ pub struct BlessReplicaVersionPayload {
     pub release_package_sha256_hex: String,
 }
 
-// https://gitlab.com/dfinity-lab/core/ic/-/blob/0ebe354b26d904326536d8725c8a5056f0ebb0d8/rs/registry/canister/src/mutations/do_update_subnet.rs#L51
 #[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct UpdateSubnetPayload {
-    // Entries are from: https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/registry/canister/canister/registry.did
+    // Entries are from: https://gitlab.com/dfinity-lab/public/ic/-/blob/bd95c0f9a9c8e04c7124e98f3d12c8dd9cae1681/rs/registry/canister/canister/registry.did
     // ecdsa_config <-- Omitted for some reason.
     // pub ingress_bytes_per_block_soft_cap: Option<u64>, <-- Not upstream.
     pub advert_best_effort_percentage: Option<u32>,
