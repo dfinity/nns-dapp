@@ -8,20 +8,19 @@ $breakpoint-large: 880px;
     @media (min-width: $breakpoint-xsmall) {
       @content;
     }
-  }
-  @if ($breakpoint == small) {
+  } @else if ($breakpoint == small) {
     @media (min-width: $breakpoint-small) {
       @content;
     }
-  }
-  @if ($breakpoint == medium) {
+  } @else if ($breakpoint == medium) {
     @media (min-width: $breakpoint-medium) {
       @content;
     }
-  }
-  @if ($breakpoint == large) {
+  } @else if ($breakpoint == large) {
     @media (min-width: $breakpoint-large) {
       @content;
     }
+  } @else {
+    @error "UNKNOWN MEDIA BREAKPOINT #{$breakpoint}";
   }
 }

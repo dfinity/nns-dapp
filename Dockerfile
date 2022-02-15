@@ -74,12 +74,19 @@ RUN echo "DEPLOY_ENV: '$DEPLOY_ENV'"
 ARG OWN_CANISTER_ID
 RUN echo "OWN_CANISTER_ID: '$OWN_CANISTER_ID'"
 
+ARG REDIRECT_TO_LEGACY
+RUN echo "REDIRECT_TO_LEGACY: '$REDIRECT_TO_LEGACY'"
+
 # Build
-COPY . .
+# ... put only git-tracked files in the build directory
+COPY . /build
+WORKDIR /build
+RUN find . -type f | sed 's/^..//g' > ../build-inputs.txt
 RUN ./build.sh
 
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm
 
 FROM scratch AS scratch
-COPY --from=build /nns-dapp.wasm /
-COPY --from=build /assets.tar.xz /
+COPY --from=build /build/nns-dapp.wasm /
+COPY --from=build /build/assets.tar.xz /
+COPY --from=build /build-inputs.txt /

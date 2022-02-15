@@ -4,6 +4,7 @@
 
 import { fireEvent, render } from "@testing-library/svelte";
 import Input from "../../../../lib/components/ui/Input.svelte";
+import InputTest from "./InputTest.svelte";
 
 describe("Input", () => {
   const props = { name: "name", placeholderLabelKey: "test.placeholder" };
@@ -15,6 +16,16 @@ describe("Input", () => {
 
     const input: HTMLInputElement | null = container.querySelector("input");
     expect(input).not.toBeNull();
+  });
+
+  it("should render a dark input", () => {
+    const { container } = render(Input, {
+      props: { ...props, theme: "dark" },
+    });
+
+    const inputContainer: HTMLDivElement | null =
+      container.querySelector(".input-block.dark");
+    expect(inputContainer).not.toBeNull();
   });
 
   it("should render a placeholder", () => {
@@ -162,5 +173,17 @@ describe("Input", () => {
 
     fireEvent.change(input, { target: { value: "test123" } });
     expect(input.value).toBe("test123");
+  });
+
+  it("should render the button slot", () => {
+    const { getByText, container } = render(InputTest, {
+      props: {
+        props: {
+          ...props,
+          inputType: "text",
+        },
+      },
+    });
+    expect(getByText("Test Button")).toBeInTheDocument();
   });
 });
