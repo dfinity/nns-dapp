@@ -48,6 +48,21 @@ describe("route-utils", () => {
 
     window.history.replaceState({}, undefined, "/accounts?param=test");
     expect(routePath()).toEqual("/accounts");
+
+    window.history.replaceState({}, undefined, "/?redirect=proposal/123");
+    expect(routePath()).toEqual("/");
+
+    window.history.replaceState({}, undefined, "/proposal/123");
+    expect(routePath()).toEqual("/proposal/123");
+
+    window.history.replaceState({}, undefined, "/#/proposal/123");
+    expect(routePath()).toEqual("/#/proposal/123");
+
+    window.history.replaceState({}, undefined, "/#/proposal/123?param=test");
+    expect(routePath()).toEqual("/#/proposal/123");
+
+    window.history.replaceState({}, undefined, "/proposal/123?param=test");
+    expect(routePath()).toEqual("/proposal/123");
   };
 
   const testRouteContext = () => {
@@ -68,8 +83,20 @@ describe("route-utils", () => {
     window.history.replaceState({}, undefined, "/accounts?param=test");
     expect(routeContext()).toEqual("accounts");
 
-    window.history.replaceState({}, undefined, "/wallet/123?param=test");
-    expect(routeContext()).toEqual("wallet/123");
+    window.history.replaceState({}, undefined, "/?redirect=proposal/123");
+    expect(routeContext()).toEqual("");
+
+    window.history.replaceState({}, undefined, "/#/proposal/123");
+    expect(routeContext()).toEqual("proposal/123");
+
+    window.history.replaceState({}, undefined, "/proposal/123");
+    expect(routeContext()).toEqual("proposal/123");
+
+    window.history.replaceState({}, undefined, "/#/proposal/123?param=test");
+    expect(routeContext()).toEqual("proposal/123");
+
+    window.history.replaceState({}, undefined, "/proposal/123?param=test");
+    expect(routeContext()).toEqual("proposal/123");
   };
 
   const testReplaceHistory = ({
@@ -101,6 +128,34 @@ describe("route-utils", () => {
 
     replaceHistory({ path: "/accounts?param=test" });
     expect(window.location.href).toEqual(`${baseUrl}accounts?param=test`);
+    expect(window.history.length).toEqual(historyIndex + 1);
+
+    replaceHistory({ path: "/accounts?param=test" });
+    expect(window.location.href).toEqual(`${baseUrl}accounts?param=test`);
+    expect(window.history.length).toEqual(historyIndex + 1);
+
+    replaceHistory({ path: "/proposal/123?param=test" });
+    expect(window.location.href).toEqual(`${baseUrl}proposal/123?param=test`);
+    expect(window.history.length).toEqual(historyIndex + 1);
+
+    replaceHistory({ path: "/", query: "redirect=proposal/123" });
+    expect(window.location.href).toEqual(`${baseUrl}?redirect=proposal/123`);
+    expect(window.history.length).toEqual(historyIndex + 1);
+
+    replaceHistory({ path: "/#/proposal/123" });
+    expect(window.location.href).toEqual(`${baseUrl}#/proposal/123`);
+    expect(window.history.length).toEqual(historyIndex + 1);
+
+    replaceHistory({ path: "/proposal/123" });
+    expect(window.location.href).toEqual(`${baseUrl}proposal/123`);
+    expect(window.history.length).toEqual(historyIndex + 1);
+
+    replaceHistory({ path: "/#/proposal/123?param=test" });
+    expect(window.location.href).toEqual(`${baseUrl}#/proposal/123?param=test`);
+    expect(window.history.length).toEqual(historyIndex + 1);
+
+    replaceHistory({ path: "/proposal/123?param=test" });
+    expect(window.location.href).toEqual(`${baseUrl}proposal/123?param=test`);
     expect(window.history.length).toEqual(historyIndex + 1);
   };
 
@@ -134,6 +189,30 @@ describe("route-utils", () => {
     pushHistory({ path: "/accounts?param=test" });
     expect(window.location.href).toEqual(`${baseUrl}accounts?param=test`);
     expect(window.history.length).toEqual(historyIndex + 7);
+
+    pushHistory({ path: "/proposal/123?param=test" });
+    expect(window.location.href).toEqual(`${baseUrl}proposal/123?param=test`);
+    expect(window.history.length).toEqual(historyIndex + 8);
+
+    pushHistory({ path: "/", query: "redirect=proposal/123" });
+    expect(window.location.href).toEqual(`${baseUrl}?redirect=proposal/123`);
+    expect(window.history.length).toEqual(historyIndex + 9);
+
+    pushHistory({ path: "/#/proposal/123" });
+    expect(window.location.href).toEqual(`${baseUrl}#/proposal/123`);
+    expect(window.history.length).toEqual(historyIndex + 10);
+
+    pushHistory({ path: "/proposal/123" });
+    expect(window.location.href).toEqual(`${baseUrl}proposal/123`);
+    expect(window.history.length).toEqual(historyIndex + 11);
+
+    pushHistory({ path: "/#/proposal/123?param=test" });
+    expect(window.location.href).toEqual(`${baseUrl}#/proposal/123?param=test`);
+    expect(window.history.length).toEqual(historyIndex + 12);
+
+    pushHistory({ path: "/proposal/123?param=test" });
+    expect(window.location.href).toEqual(`${baseUrl}proposal/123?param=test`);
+    expect(window.history.length).toEqual(historyIndex + 13);
   };
 
   describe("base href is /", () => {
