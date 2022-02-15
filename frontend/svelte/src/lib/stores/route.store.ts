@@ -1,8 +1,11 @@
 import { writable } from "svelte/store";
+import type { AppPath } from "../constants/routes.constants";
+import { isAppPath } from "../utils/app-path.utils";
 import { pushHistory, replaceHistory, routePath } from "../utils/route.utils";
 
 export interface RouteStore {
-  path: string;
+  path: AppPath | string;
+  isKnownPath: boolean;
 }
 
 /**
@@ -14,22 +17,35 @@ export interface RouteStore {
 const initRouteStore = () => {
   const { subscribe, update } = writable<RouteStore>({
     path: routePath(),
+    isKnownPath: isAppPath(routePath()) !== null,
   });
 
   return {
     subscribe,
 
     update: ({ path }: { path: string }) =>
-      update((state: RouteStore) => ({ ...state, path })),
+      update((state: RouteStore) => ({
+        ...state,
+        path,
+        isKnownPath: isAppPath(path) !== null,
+      })),
 
     navigate: ({ path, query }: { path: string; query?: string }) => {
-      update((state: RouteStore) => ({ ...state, path }));
+      update((state: RouteStore) => ({
+        ...state,
+        path,
+        isKnownPath: isAppPath(path) !== null,
+      }));
 
       pushHistory({ path, query });
     },
 
     replace: ({ path, query }: { path: string; query?: string }) => {
-      update((state: RouteStore) => ({ ...state, path }));
+      update((state: RouteStore) => ({
+        ...state,
+        path,
+        isKnownPath: isAppPath(path) !== null,
+      }));
 
       replaceHistory({ path, query });
     },

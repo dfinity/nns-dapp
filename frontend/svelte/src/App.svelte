@@ -13,8 +13,8 @@
   import { AuthStore, authStore } from "./lib/stores/auth.store";
   import Wallet from "./routes/Wallet.svelte";
   import ProposalDetails from "./routes/ProposalDetails.svelte";
-  import { AppPath, urlToAppPath } from "./routes/routes";
   import { routeStore } from "./lib/stores/route.store";
+  import { AppPath } from "./lib/constants/routes.constants";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -27,10 +27,11 @@
     }
   );
 
-  const unsubscribeRoute = routeStore.subscribe((route) => {
-    if (urlToAppPath(route.path) === null) {
-      routeStore.replace({ path: AppPath.Accounts });
+  const unsubscribeRoute = routeStore.subscribe(({ isKnownPath }) => {
+    if (isKnownPath) {
+      return;
     }
+    routeStore.replace({ path: AppPath.Accounts });
   });
 
   onDestroy(() => {

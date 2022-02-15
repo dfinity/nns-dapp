@@ -1,17 +1,18 @@
-import { AppPath, isRoutePath, urlToAppPath } from "../../routes/routes";
+import { AppPath } from "../../../lib/constants/routes.constants";
+import { isAppPath, isRoutePath } from "../../../lib/utils/app-path.utils";
 
 describe("routes", () => {
-  describe("urlToAppPath()", () => {
+  describe("isAppPath()", () => {
     it("should translate valid urls", () => {
-      expect(urlToAppPath("/")).toBe(AppPath.Authentication);
-      expect(urlToAppPath(AppPath.Accounts)).toBe(AppPath.Accounts);
-      expect(urlToAppPath(`${AppPath.Wallet}/123`)).toBe(AppPath.Wallet);
+      expect(isAppPath("/")).toBeTruthy();
+      expect(isAppPath(AppPath.Accounts)).toBeTruthy();
+      expect(isAppPath(`${AppPath.Wallet}/123`)).toBeTruthy();
     });
 
     it("should return null for invalid urls", () => {
-      expect(urlToAppPath("/some-invalid-url")).toBeNull();
-      expect(urlToAppPath("//")).toBeNull();
-      expect(urlToAppPath(`${AppPath.Wallet}/`)).toBeNull();
+      expect(isAppPath("/some-invalid-url")).toBeFalsy();
+      expect(isAppPath("//")).toBeFalsy();
+      expect(isAppPath(`${AppPath.Wallet}/`)).toBeFalsy();
     });
   });
 
