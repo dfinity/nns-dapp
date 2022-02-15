@@ -44,16 +44,16 @@ const updateCSP = (content) => {
   }
 
   const csp = `<meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'none';
-       connect-src 'self' ${cspConnectSrc()};
-       img-src 'self';
-       script-src 'unsafe-eval' 'strict-dynamic' 'nonce-bundle-369ac6c9-8078-4625-82f7-f37a9ca8fb16';
-       base-uri 'self';
-       form-action 'none';
-       style-src 'self';
-       font-src 'self';
-       upgrade-insecure-requests;"
+        http-equiv="Content-Security-Policy"
+        content="default-src 'none';
+        connect-src 'self' ${cspConnectSrc()};
+        img-src 'self';
+        script-src 'unsafe-eval' 'strict-dynamic' 'nonce-bundle-369ac6c9-8078-4625-82f7-f37a9ca8fb16';
+        base-uri 'self';
+        form-action 'none';
+        style-src 'self';
+        font-src 'self';
+        upgrade-insecure-requests;"
     />`;
 
   return content.replace("<!-- CONTENT_SECURITY_POLICY -->", csp);
