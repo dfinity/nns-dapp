@@ -17,7 +17,7 @@ use ledger_canister::Operation::{self, Burn, Mint, Transfer};
 use ledger_canister::{AccountIdentifier, BlockHeight, Memo, Subaccount, TimeStamp, Tokens};
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
-use std::cmp::{min, Ordering};
+use std::cmp::min;
 use std::collections::{HashMap, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
@@ -1019,44 +1019,12 @@ impl AccountsStore {
     }
 
     fn get_transaction_index(&self, block_height: BlockHeight) -> Option<TransactionIndex> {
-        // The binary search methods are taken from here (they will be in stable rust shortly) -
-        // https://github.com/vojtechkral/rust/blob/c7a787a3276cadad7ee51577f65158b4888c058c/library/alloc/src/collections/vec_deque.rs#L2515
-        fn binary_search_by_key<T, B, F>(vec_deque: &VecDeque<T>, b: &B, mut f: F) -> Result<usize, usize>
-        where
-            F: FnMut(&T) -> B,
-            B: Ord,
-        {
-            binary_search_by(vec_deque, |k| f(k).cmp(b))
-        }
-
-        fn binary_search_by<T, F>(vec_deque: &VecDeque<T>, mut f: F) -> Result<usize, usize>
-        where
-            F: FnMut(&T) -> Ordering,
-        {
-            let (front, back) = vec_deque.as_slices();
-
-            let search_back = matches!(
-                back.first().map(|elem| f(elem)),
-                Some(Ordering::Less) | Some(Ordering::Equal)
-            );
-            if search_back {
-                back.binary_search_by(f)
-                    .map(|idx| idx + front.len())
-                    .map_err(|idx| idx + front.len())
-            } else {
-                front.binary_search_by(f)
-            }
-        }
-
         if let Some(latest_transaction) = self.transactions.back() {
             let max_block_height = latest_transaction.block_height;
             if block_height <= max_block_height {
-                // binary_search_by_key is not yet in stable rust (https://github.com/rust-lang/rust/issues/78021)
-                // TODO uncomment the line below once binary_search_by_key is in stable rust
-                // self.transactions.binary_search_by_key(&block_height, |t| t.block_height).ok().map(|i| i as u64)
-                return binary_search_by_key(&self.transactions, &block_height, |t| t.block_height)
+                return self.transactions.binary_search_by_key(&block_height, |t| t.block_height)
                     .ok()
-                    .map(|i| i as u64);
+                    .map(|i| i as u64)
             }
         }
         None

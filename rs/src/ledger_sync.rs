@@ -15,11 +15,12 @@ lazy_static! {
 
 pub async fn sync_transactions() -> Option<Result<u32, String>> {
     // Ensure this process only runs once at a time
-    if LOCK.try_lock().is_err() {
-        return None;
+    if LOCK.try_lock().is_ok() {
+        Some(sync_transactions_within_lock().await)
+    } else {
+        None
     }
 
-    Some(sync_transactions_within_lock().await)
 }
 
 async fn sync_transactions_within_lock() -> Result<u32, String> {
