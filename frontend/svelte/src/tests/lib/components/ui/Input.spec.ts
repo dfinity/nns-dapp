@@ -4,6 +4,7 @@
 
 import { fireEvent, render } from "@testing-library/svelte";
 import Input from "../../../../lib/components/ui/Input.svelte";
+import InputTest from "./InputTest.svelte";
 
 describe("Input", () => {
   const props = { name: "name", placeholderLabelKey: "test.placeholder" };
@@ -172,6 +173,18 @@ describe("Input", () => {
 
     fireEvent.change(input, { target: { value: "test123" } });
     expect(input.value).toBe("test123");
+  });
+
+  it("should render the button slot", () => {
+    const { getByText, container } = render(InputTest, {
+      props: {
+        props: {
+          ...props,
+          inputType: "text",
+        },
+      },
+    });
+    expect(getByText("Test Button")).toBeInTheDocument();
   });
 
   it("should not be disabled per default", () => {

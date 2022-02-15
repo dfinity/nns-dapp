@@ -77,10 +77,6 @@ flutter:
       fonts:
         - asset: assets/fonts/CircularStd-Black.ttf
 
-    - family: Roboto
-      fonts:
-        - asset: assets/fonts/roboto.ttf
-
 
   # For information on the generic Dart part of this file, see the
   # following page: https://dart.dev/tools/pub/pubspec

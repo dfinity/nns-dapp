@@ -87,6 +87,12 @@
     "PROPOSAL_STATUS_EXECUTED": "Executed",
     "PROPOSAL_STATUS_FAILED": "Failed"
   },
+  "wallet": {
+    "title": "Account"
+  },
+  "proposal_details": {
+    "title": "Proposal"
+  },
   "modals": {
     "back": "Back"
   }
