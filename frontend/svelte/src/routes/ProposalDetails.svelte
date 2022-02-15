@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import { AppPath } from "../lib/constants/routes.constants";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath } from "./routes";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {

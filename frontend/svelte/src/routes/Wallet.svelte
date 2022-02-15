@@ -3,8 +3,8 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
-  import { AppPath } from "./routes";
   import { routeStore } from "../lib/stores/route.store";
+  import { AppPath } from "../lib/constants/routes.constants";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {

@@ -4,7 +4,8 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { RouteStore, routeStore } from "../../stores/route.store";
   import { onDestroy } from "svelte";
-  import { AppPath, isRoutePath } from "../../../routes/routes";
+  import type { AppPath } from "../../constants/routes.constants";
+  import { isRoutePath } from "../../utils/app-path.utils";
 
   export let path: AppPath;
   export let component: typeof SvelteComponent;
@@ -12,7 +13,7 @@
   let currentPath: string = routePath();
 
   const unsubscribe: Unsubscriber = routeStore.subscribe(
-    ({ path: routePath }: RouteStore) => (currentPath = routePath)
+    ({ path }: RouteStore) => (currentPath = path)
   );
 
   onDestroy(unsubscribe);
