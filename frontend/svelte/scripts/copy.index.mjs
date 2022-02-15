@@ -11,7 +11,11 @@ const copyIndex = () => {
   const buffer = readFileSync("./src/index.html");
   const content = buffer.toString("utf-8");
 
-  const updatedContent = updateBaseHref(content);
+  let updatedContent = updateBaseHref(content);
+
+  // Only in development mode, we remove the CSP rule
+  updatedContent =
+    process.env.DEV === "true" ? removeCSP(updatedContent) : updatedContent;
 
   writeFileSync("./public/index.html", updatedContent);
 };
@@ -24,5 +28,15 @@ const updateBaseHref = (content) =>
     "<!-- BASE_HREF -->",
     `<base href="${process.env.BASE_HREF || "/v2/"}" />`
   );
+
+/**
+ * Only in development mode, remove the CSP rule.
+ */
+const removeCSP = (content) => {
+  return content.replace(
+    /<!-- CONTENT_SECURITY_POLICY_BEGIN -->((.|\r\n|\n)*)<!-- CONTENT_SECURITY_POLICY_END -->/gi,
+    ""
+  );
+};
 
 copyIndex();
