@@ -8,9 +8,8 @@ edition = "2018"
 [dependencies]
 candid = "0.7.4"
 candid_derive = "0.4.5"
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
-ic-registry-subnet-type = { git = "https://github.com/dfinity/ic", rev = "89446f5a04f053040b4863eab5458446d925ed0e" }
-prost = "0.7.0"
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
+ic-registry-subnet-type = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
 serde = "1.0.119"
 
 [build-dependencies]

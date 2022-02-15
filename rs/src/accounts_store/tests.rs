@@ -99,7 +99,7 @@ fn add_account_adds_principal_and_sets_transaction_types() {
 
     store.accounts.insert(account_identifier.to_vec(), account);
 
-    let send = Send {
+    let transfer = Transfer {
         from: account_identifier,
         to: AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap()),
         amount: ICPTs::from_icpts(1).unwrap(),
@@ -107,14 +107,14 @@ fn add_account_adds_principal_and_sets_transaction_types() {
     };
     store
         .append_transaction(
-            send,
+            transfer,
             Memo(0),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
             TimeStamp { timestamp_nanos: 100 },
         )
         .unwrap();
 
-    let stake_neuron = Send {
+    let stake_neuron = Transfer {
         from: account_identifier,
         to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
         amount: ICPTs::from_icpts(2).unwrap(),
@@ -129,7 +129,7 @@ fn add_account_adds_principal_and_sets_transaction_types() {
         )
         .unwrap();
 
-    let topup_neuron = Send {
+    let topup_neuron = Transfer {
         from: account_identifier,
         to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
         amount: ICPTs::from_icpts(3).unwrap(),
@@ -179,7 +179,7 @@ fn add_account_adds_principal_and_sets_transaction_types() {
     let expected_transaction_types = vec![
         TransactionType::TopUpNeuron,
         TransactionType::StakeNeuron,
-        TransactionType::Send,
+        TransactionType::Transfer,
     ];
     for i in 0..expected_transaction_types.len() {
         assert_eq!(expected_transaction_types[i], transaction_types[i]);
@@ -373,7 +373,7 @@ fn append_transaction_detects_neuron_transactions() {
     let neuron_memo = Memo(16656605094239839590);
     let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
 
-    let transfer = Send {
+    let transfer = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
         amount: ICPTs::from_icpts(1).unwrap(),
@@ -387,7 +387,7 @@ fn append_transaction_detects_neuron_transactions() {
         TransactionType::StakeNeuron
     ));
 
-    let notification = Send {
+    let notification = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
         amount: ICPTs::from_icpts(0).unwrap(),
@@ -406,7 +406,7 @@ fn append_transaction_detects_neuron_transactions() {
         TransactionType::StakeNeuronNotification
     ));
 
-    let topup1 = Send {
+    let topup1 = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
         amount: ICPTs::from_icpts(2).unwrap(),
@@ -420,7 +420,7 @@ fn append_transaction_detects_neuron_transactions() {
         TransactionType::TopUpNeuron
     ));
 
-    let topup2 = Send {
+    let topup2 = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
         amount: ICPTs::from_icpts(3).unwrap(),
@@ -444,7 +444,7 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
     let neuron_memo = Memo(16656605094239839590);
     let neuron_account = AccountsStore::generate_stake_neuron_address(&neuron_principal, neuron_memo);
 
-    let transfer = Send {
+    let transfer = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
         amount: ICPTs::from_icpts(1).unwrap(),
@@ -458,7 +458,7 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
         TransactionType::StakeNeuron
     ));
 
-    let topup = Send {
+    let topup = Transfer {
         from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap(), None),
         to: neuron_account,
         amount: ICPTs::from_icpts(2).unwrap(),
@@ -501,7 +501,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
     let other_principal = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
 
     let block_height = store.get_block_height_synced_up_to().unwrap_or(0) + 1;
-    let stake_neuron_transfer = Send {
+    let stake_neuron_transfer = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
         amount: ICPTs::from_icpts(1).unwrap(),
@@ -520,7 +520,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
         TransactionType::StakeNeuron
     ));
 
-    let topup = Send {
+    let topup = Transfer {
         from: AccountIdentifier::new(other_principal, None),
         to: neuron_account,
         amount: ICPTs::from_icpts(2).unwrap(),
@@ -836,7 +836,7 @@ fn prune_transactions() {
             )
             .unwrap();
 
-        let transfer2 = Send {
+        let transfer2 = Transfer {
             amount: ICPTs::from_e8s(10_000),
             from: default_account,
             to: sub_account,
@@ -1038,7 +1038,7 @@ fn setup_test_store() -> AccountsStore {
         store.append_transaction(transfer, Memo(0), 2, timestamp).unwrap();
     }
     {
-        let transfer = Send {
+        let transfer = Transfer {
             amount: ICPTs::from_e8s(300_000_000),
             fee: ICPTs::from_e8s(1_000),
             from: account_identifier1,

@@ -51,7 +51,7 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
             for (block_height, block) in blocks.into_iter() {
                 let transaction = block.transaction().into_owned();
                 let result =
-                    store.append_transaction(transaction.transfer, transaction.memo, block_height, block.timestamp());
+                    store.append_transaction(transaction.operation, transaction.memo, block_height, block.timestamp());
 
                 if let Err(err) = result {
                     return Err(err);
