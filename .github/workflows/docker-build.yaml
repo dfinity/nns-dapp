@@ -67,6 +67,13 @@ jobs:
         with:
           name: NNS ${{ matrix.DEPLOY_ENV }} frontend assets
           path: ${{ matrix.DEPLOY_ENV }}-out/assets.tar.xz
+      - name: "Verify that the WASm module is small enough to deploy"
+        run: |
+         wasm_size="$(wc -c < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")"
+         max_size=3670016
+         echo "WASM size:          $wasm_size"
+         echo "Max supported size: $max_size"
+         (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
 
   docker-build:
     needs: assets

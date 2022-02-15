@@ -3,7 +3,8 @@
 !.rustfmt.toml
 !.gitignore
 
-
+build-inputs.txt
+assets.tar.xz
 Dockerfile
 backend-tests
 node_modules
