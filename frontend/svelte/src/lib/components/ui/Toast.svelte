@@ -35,6 +35,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/text";
+  @use "../../themes/mixins/media.scss";
 
   .toast {
     display: flex;
@@ -58,7 +59,7 @@
 
     z-index: calc(var(--z-index) + 999);
 
-    @media (min-width: 880px) {
+    @include media.min-width(large) {
       max-width: var(--section-max-width);
     }
 
@@ -74,7 +75,7 @@
     margin: 0;
     font-size: 1rem;
 
-    @media (min-width: 768px) {
+    @include media.min-width(medium) {
       @include text.clamp(2);
     }
   }

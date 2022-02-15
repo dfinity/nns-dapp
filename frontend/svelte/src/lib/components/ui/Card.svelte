@@ -18,6 +18,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
+  @use "../../themes/mixins/media.scss";
 
   article {
     text-decoration: none;
@@ -42,15 +43,15 @@
   }
 
   div {
-    display: inline-flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    display: block;
     width: 100%;
 
     margin: 0 0 var(--padding);
 
-    @media (max-width: 768px) {
-      display: block;
+    @include media.min-width(medium) {
+      display: inline-flex;
+      justify-content: space-between;
+      align-items: flex-start;
     }
   }
 </style>

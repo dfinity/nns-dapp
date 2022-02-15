@@ -45,6 +45,16 @@ interface I18nNeurons {
   text: string;
   principal_is: string;
   stake_neurons: string;
+  select_source: string;
+  my_accounts: string;
+  stake_neuron: string;
+  source: string;
+  transaction_fee: string;
+  current_balance: string;
+  may_take_while: string;
+  amount: string;
+  max: string;
+  create: string;
 }
 
 interface I18nVoting {
@@ -62,30 +72,42 @@ interface I18nCanisters {
 }
 
 interface I18nTopics {
-  exchange_rate: string;
-  network_economics: string;
-  governance: string;
-  node_admin: string;
-  participant_management: string;
-  subnet_management: string;
-  network_canister_management: string;
-  kyc: string;
-  node_provider_rewards: string;
+  Unspecified: string;
+  ManageNeuron: string;
+  ExchangeRate: string;
+  NetworkEconomics: string;
+  Governance: string;
+  NodeAdmin: string;
+  ParticipantManagement: string;
+  SubnetManagement: string;
+  NetworkCanisterManagement: string;
+  Kyc: string;
+  NodeProviderRewards: string;
 }
 
 interface I18nRewards {
-  accept_votes: string;
-  ready_to_settle: string;
-  settled: string;
-  ineligible: string;
+  PROPOSAL_REWARD_STATUS_UNKNOWN: string;
+  PROPOSAL_REWARD_STATUS_ACCEPT_VOTES: string;
+  PROPOSAL_REWARD_STATUS_READY_TO_SETTLE: string;
+  PROPOSAL_REWARD_STATUS_SETTLED: string;
+  PROPOSAL_REWARD_STATUS_INELIGIBLE: string;
 }
 
-interface I18nProposals {
-  open: string;
-  rejected: string;
-  accepted: string;
-  executed: string;
-  failed: string;
+interface I18nStatus {
+  PROPOSAL_STATUS_UNKNOWN: string;
+  PROPOSAL_STATUS_OPEN: string;
+  PROPOSAL_STATUS_REJECTED: string;
+  PROPOSAL_STATUS_ACCEPTED: string;
+  PROPOSAL_STATUS_EXECUTED: string;
+  PROPOSAL_STATUS_FAILED: string;
+}
+
+interface I18nWallet {
+  title: string;
+}
+
+interface I18nProposal_details {
+  title: string;
 }
 
 interface I18nModals {
@@ -105,6 +127,8 @@ interface I18n {
   canisters: I18nCanisters;
   topics: I18nTopics;
   rewards: I18nRewards;
-  proposals: I18nProposals;
+  status: I18nStatus;
+  wallet: I18nWallet;
+  proposal_details: I18nProposal_details;
   modals: I18nModals;
 }
