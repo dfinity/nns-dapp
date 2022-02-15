@@ -27,12 +27,14 @@
     }
   );
 
-  const unsubscribeRoute = routeStore.subscribe(({ isKnownPath }) => {
-    if (isKnownPath) {
-      return;
+  const unsubscribeRoute: Unsubscriber = routeStore.subscribe(
+    ({ isKnownPath }) => {
+      if (isKnownPath) {
+        return;
+      }
+      routeStore.replace({ path: AppPath.Accounts });
     }
-    routeStore.replace({ path: AppPath.Accounts });
-  });
+  );
 
   onDestroy(() => {
     unsubscribeAuth();
