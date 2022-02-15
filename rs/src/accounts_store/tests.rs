@@ -1,5 +1,5 @@
 use super::*;
-use ledger_canister::ICPTs;
+use ledger_canister::Tokens;
 use std::str::FromStr;
 
 const TEST_ACCOUNT_1: &str = "h4a5i-5vcfo-5rusv-fmb6m-vrkia-mjnkc-jpoow-h5mam-nthnm-ldqlr-bqe";
@@ -102,8 +102,8 @@ fn add_account_adds_principal_and_sets_transaction_types() {
     let transfer = Transfer {
         from: account_identifier,
         to: AccountIdentifier::from(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap()),
-        amount: ICPTs::from_icpts(1).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(1).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     store
         .append_transaction(
@@ -117,8 +117,8 @@ fn add_account_adds_principal_and_sets_transaction_types() {
     let stake_neuron = Transfer {
         from: account_identifier,
         to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
-        amount: ICPTs::from_icpts(2).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(2).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     store
         .append_transaction(
@@ -132,8 +132,8 @@ fn add_account_adds_principal_and_sets_transaction_types() {
     let topup_neuron = Transfer {
         from: account_identifier,
         to: AccountIdentifier::from_hex("b562a2afa304d08f7aaa42194459ff4c0e8ddb1596045a7b3b3396d97852f982").unwrap(),
-        amount: ICPTs::from_icpts(3).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(3).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     store
         .append_transaction(
@@ -325,7 +325,7 @@ fn hardware_wallet_transactions_tracked_correctly() {
     );
 
     let transfer = Mint {
-        amount: ICPTs::from_icpts(1).unwrap(),
+        amount: Tokens::from_tokens(1).unwrap(),
         to: hw_account_identifier,
     };
     store
@@ -338,7 +338,7 @@ fn hardware_wallet_transactions_tracked_correctly() {
         .unwrap();
 
     let transfer = Mint {
-        amount: ICPTs::from_icpts(2).unwrap(),
+        amount: Tokens::from_tokens(2).unwrap(),
         to: hw_account_identifier,
     };
     store
@@ -376,8 +376,8 @@ fn append_transaction_detects_neuron_transactions() {
     let transfer = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
-        amount: ICPTs::from_icpts(1).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(1).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     store
         .append_transaction(transfer, neuron_memo, block_height, TimeStamp { timestamp_nanos: 100 })
@@ -390,8 +390,8 @@ fn append_transaction_detects_neuron_transactions() {
     let notification = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
-        amount: ICPTs::from_icpts(0).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(0).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     store
         .append_transaction(
@@ -409,8 +409,8 @@ fn append_transaction_detects_neuron_transactions() {
     let topup1 = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
-        amount: ICPTs::from_icpts(2).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(2).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     store
         .append_transaction(topup1, Memo(0), block_height + 2, TimeStamp { timestamp_nanos: 100 })
@@ -423,8 +423,8 @@ fn append_transaction_detects_neuron_transactions() {
     let topup2 = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
-        amount: ICPTs::from_icpts(3).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(3).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     store
         .append_transaction(topup2, Memo(0), block_height + 3, TimeStamp { timestamp_nanos: 100 })
@@ -447,8 +447,8 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
     let transfer = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
-        amount: ICPTs::from_icpts(1).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(1).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     store
         .append_transaction(transfer, neuron_memo, block_height, TimeStamp { timestamp_nanos: 100 })
@@ -461,8 +461,8 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
     let topup = Transfer {
         from: AccountIdentifier::new(PrincipalId::from_str(TEST_ACCOUNT_4).unwrap(), None),
         to: neuron_account,
-        amount: ICPTs::from_icpts(2).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(2).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     let previous_transaction_count = store.transactions.len();
     store
@@ -504,8 +504,8 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
     let stake_neuron_transfer = Transfer {
         from: AccountIdentifier::new(neuron_principal, None),
         to: neuron_account,
-        amount: ICPTs::from_icpts(1).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(1).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     store
         .append_transaction(
@@ -523,8 +523,8 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
     let topup = Transfer {
         from: AccountIdentifier::new(other_principal, None),
         to: neuron_account,
-        amount: ICPTs::from_icpts(2).unwrap(),
-        fee: ICPTs::from_e8s(10000),
+        amount: Tokens::from_tokens(2).unwrap(),
+        fee: Tokens::from_e8s(10000),
     };
     store
         .append_transaction(topup, Memo(0), block_height + 1, TimeStamp { timestamp_nanos: 100 })
@@ -824,7 +824,7 @@ fn prune_transactions() {
     let timestamp = TimeStamp { timestamp_nanos: 100 };
     for _ in 0..10 {
         let transfer1 = Burn {
-            amount: ICPTs::from_e8s(100_000),
+            amount: Tokens::from_e8s(100_000),
             from: default_account,
         };
         store
@@ -837,10 +837,10 @@ fn prune_transactions() {
             .unwrap();
 
         let transfer2 = Transfer {
-            amount: ICPTs::from_e8s(10_000),
+            amount: Tokens::from_e8s(10_000),
             from: default_account,
             to: sub_account,
-            fee: ICPTs::from_e8s(1_000),
+            fee: Tokens::from_e8s(1_000),
         };
         store
             .append_transaction(
@@ -852,7 +852,7 @@ fn prune_transactions() {
             .unwrap();
 
         let transfer3 = Mint {
-            amount: ICPTs::from_e8s(1_000_000_000),
+            amount: Tokens::from_e8s(1_000_000_000),
             to: hw_account,
         };
         store
@@ -865,7 +865,7 @@ fn prune_transactions() {
             .unwrap();
 
         let transfer4 = Mint {
-            amount: ICPTs::from_e8s(1_000_000_000),
+            amount: Tokens::from_e8s(1_000_000_000),
             to: unknown_account,
         };
         store
@@ -1018,29 +1018,29 @@ fn setup_test_store() -> AccountsStore {
     let timestamp = TimeStamp { timestamp_nanos: 100 };
     {
         let transfer = Mint {
-            amount: ICPTs::from_e8s(1_000_000_000),
+            amount: Tokens::from_e8s(1_000_000_000),
             to: account_identifier1,
         };
         store.append_transaction(transfer, Memo(0), 0, timestamp).unwrap();
     }
     {
         let transfer = Mint {
-            amount: ICPTs::from_e8s(1_000_000_000),
+            amount: Tokens::from_e8s(1_000_000_000),
             to: account_identifier1,
         };
         store.append_transaction(transfer, Memo(0), 1, timestamp).unwrap();
     }
     {
         let transfer = Burn {
-            amount: ICPTs::from_e8s(500_000_000),
+            amount: Tokens::from_e8s(500_000_000),
             from: account_identifier1,
         };
         store.append_transaction(transfer, Memo(0), 2, timestamp).unwrap();
     }
     {
         let transfer = Transfer {
-            amount: ICPTs::from_e8s(300_000_000),
-            fee: ICPTs::from_e8s(1_000),
+            amount: Tokens::from_e8s(300_000_000),
+            fee: Tokens::from_e8s(1_000),
             from: account_identifier1,
             to: account_identifier2,
         };
