@@ -5,7 +5,7 @@ import { AccountsStore, accountsStore } from "../stores/accounts.store";
 import { AuthStore, authStore } from "../stores/auth.store";
 import { acquireICPTs } from "../utils/dev.utils";
 
-export const getIPCs = async (icps: number) => {
+export const getICPs = async (icps: number) => {
   const { main }: AccountsStore = get(accountsStore);
 
   const result: BlockHeight | TransferError = await acquireICPTs({
