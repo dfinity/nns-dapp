@@ -67,6 +67,9 @@ describe("route-utils", () => {
 
     window.history.replaceState({}, undefined, "/accounts?param=test");
     expect(routeContext()).toEqual("accounts");
+
+    window.history.replaceState({}, undefined, "/wallet/123?param=test");
+    expect(routeContext()).toEqual("wallet/123");
   };
 
   const testReplaceHistory = ({
