@@ -70,6 +70,7 @@ const cspConnectSrc = () => {
     HOST,
     GOVERNANCE_CANISTER_URL,
     LEDGER_CANISTER_URL,
+    MAINNET,
   } = envConfig;
 
   const src = [
@@ -78,6 +79,7 @@ const cspConnectSrc = () => {
     HOST,
     GOVERNANCE_CANISTER_URL,
     LEDGER_CANISTER_URL,
+    MAINNET,
   ];
 
   return src

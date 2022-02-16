@@ -8,9 +8,12 @@
  */
 
 const domainTestnet = "nnsdapp.dfinity.network";
-const domainProd = "ic0.app";
+const domainMainnet = "ic0.app";
 const domain =
-  process.env.DEPLOY_ENV === "testnet" ? domainTestnet : domainProd;
+  process.env.DEPLOY_ENV === "testnet" ? domainTestnet : domainMainnet;
+
+// agent-js connects per default to mainnet with the anonymous identity
+const MAINNET = `https://${domainMainnet}`
 
 const IDENTITY_SERVICE_URL =
   process.env.IDENTITY_SERVICE_URL ||
@@ -44,10 +47,11 @@ const REDIRECT_TO_LEGACY = ["true", "1"].includes(
 
 export const envConfig = {
   PRODUCTION: !process.env.ROLLUP_WATCH,
-  IDENTITY_SERVICE_URL,
-  OWN_CANISTER_ID: process.env.OWN_CANISTER_ID,
-  HOST,
   DEPLOY_ENV: process.env.DEPLOY_ENV,
+  MAINNET,
+  HOST,
+  OWN_CANISTER_ID: process.env.OWN_CANISTER_ID,
+  IDENTITY_SERVICE_URL,
   REDIRECT_TO_LEGACY,
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
