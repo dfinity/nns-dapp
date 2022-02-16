@@ -60,9 +60,22 @@ const updateCSP = (content) => {
 };
 
 const cspConnectSrc = () => {
-  const { IDENTITY_SERVICE_URL, OWN_CANISTER_ID, HOST } = envConfig;
+  const {
+    IDENTITY_SERVICE_URL,
+    OWN_CANISTER_ID,
+    HOST,
+    GOVERNANCE_CANISTER_URL,
+    LEDGER_CANISTER_URL,
+  } = envConfig;
 
-  const src = [IDENTITY_SERVICE_URL, OWN_CANISTER_ID, HOST];
+  const src = [
+    IDENTITY_SERVICE_URL,
+    OWN_CANISTER_ID,
+    HOST,
+    GOVERNANCE_CANISTER_URL,
+    LEDGER_CANISTER_URL,
+  ];
+
   return src
     .filter((url) => url !== undefined)
     .join(" ")

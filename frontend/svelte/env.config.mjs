@@ -7,17 +7,28 @@
  * It is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html
  */
 
+const domainTestnet = "nnsdapp.dfinity.network";
+const domainProd = "ic0.app";
+const domain =
+  process.env.DEPLOY_ENV === "testnet" ? domainTestnet : domainProd;
+
 const IDENTITY_SERVICE_URL =
   process.env.IDENTITY_SERVICE_URL ||
   (process.env.DEPLOY_ENV === "testnet"
-    ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
+    ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
     : "https://identity.ic0.app/");
 
 const HOST =
   process.env.HOST ||
   (process.env.DEPLOY_ENV === "testnet"
-    ? "https://nnsdapp.dfinity.network/"
+    ? `https://${domainTestnet}/`
     : "");
+
+const GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";
+const LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+
+const GOVERNANCE_CANISTER_URL = `https://${GOVERNANCE_CANISTER_ID}${domain}/`;
+const LEDGER_CANISTER_URL = `https://${LEDGER_CANISTER_ID}${domain}/`;
 
 // When developing with live reload in svelte, redirecting to flutter is
 // not desirable.  The default should match production:
@@ -40,4 +51,8 @@ export const envConfig = {
   HOST,
   DEPLOY_ENV: process.env.DEPLOY_ENV,
   REDIRECT_TO_LEGACY,
+  GOVERNANCE_CANISTER_ID,
+  LEDGER_CANISTER_ID,
+  GOVERNANCE_CANISTER_URL,
+  LEDGER_CANISTER_URL
 };
