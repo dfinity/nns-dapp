@@ -1,27 +1,8 @@
-import type { ICP } from "@dfinity/nns";
-import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
+import { LedgerCanister } from "@dfinity/nns";
 import { syncAccounts } from "../../../lib/services/accounts.services";
 import * as agent from "../../../lib/utils/agent.utils";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
-
-// @ts-ignore
-class MockLedgerCanister extends LedgerCanister {
-  constructor() {
-    super();
-  }
-
-  create() {
-    return this;
-  }
-
-  accountBalance = async ({
-    accountIdentifier,
-    certified = true,
-  }: {
-    accountIdentifier: AccountIdentifier;
-    certified?: boolean;
-  }): Promise<ICP> => Promise.resolve(null);
-}
+import { MockLedgerCanister } from "../../mocks/ledger.canister.mock";
 
 describe("accounts-services", () => {
   beforeAll(() => {

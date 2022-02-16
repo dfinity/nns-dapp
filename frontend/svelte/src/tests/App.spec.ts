@@ -2,39 +2,48 @@
  * @jest-environment jsdom
  */
 
+import { LedgerCanister } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import App from "../App.svelte";
-import { accountsStore } from "../lib/stores/accounts.store";
-import { AuthStore, authStore } from "../lib/stores/auth.store";
+import { authStore } from "../lib/stores/auth.store";
+import * as agent from "../lib/utils/agent.utils";
 import {
   authStoreMock,
   mockPrincipal,
   mutableMockAuthStoreSubscribe,
 } from "./mocks/auth.store.mock";
+import { MockLedgerCanister } from "./mocks/ledger.canister.mock";
 
 describe("App", () => {
-  let accountsStoreMock;
+  let spyLedger;
+  const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
 
   beforeEach(() => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mutableMockAuthStoreSubscribe);
 
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "sync")
-      .mockImplementation(async ({ principal }: AuthStore) => {});
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation((): LedgerCanister => mockLedgerCanister);
+
+    spyLedger = jest.spyOn(mockLedgerCanister, "accountBalance");
+
+    // TODO(L2-206): mock http agent globally
+    const mockCreateAgent = () => undefined;
+    jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
   });
 
-  it("every change in the auth store should trigger a synchronization of the accounts store.", async () => {
+  it("should synchronize the accounts after sign in", async () => {
     render(App);
 
-    await waitFor(() => expect(accountsStoreMock).toHaveBeenCalledTimes(1));
+    expect(spyLedger).toHaveBeenCalledTimes(0);
 
     authStoreMock.next({
       principal: mockPrincipal as Principal,
     });
 
-    expect(accountsStoreMock).toHaveBeenCalledTimes(2);
+    expect(spyLedger).toHaveBeenCalledTimes(1);
   });
 });
