@@ -2,9 +2,9 @@
  * As long as we use the Flutter app, we need to handle the configuration with miscellaneous environment variables.
  * In addition, some of these variables have default fallback values according their environment - e.g. testnet or mainnet.
  *
- * That's why we group here the logic and default values to expose a single object - envConfig - that contains the effect configuration.
+ * That's why we group here the logic and default values to expose a single object - envConfig - that contains the effective configuration.
  *
- * It is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html
+ * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
 const domainTestnet = "nnsdapp.dfinity.network";
