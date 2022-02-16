@@ -78,11 +78,23 @@ const queryProposals = async ({
   return proposals;
 };
 
+/**
+ * Return single proposal from proposalsStore or fetch it (in case of page reload or direct navigation to proposal-detail page)
+ */
 export const getProposalInfo = async ({
   proposalId,
 }: {
   proposalId: ProposalId;
 }): Promise<ProposalInfo> => {
+  const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
+  return proposal || queryProposalInfo({ proposalId });
+};
+
+const queryProposalInfo = async ({
+  proposalId,
+}: {
+  proposalId: ProposalId;
+}): Promise<ProposalInfo> => {
   const governance: GovernanceCanister = GovernanceCanister.create();
-  return await governance.getProposalInfo({ proposalId });
+  return governance.getProposalInfo({ proposalId });
 };

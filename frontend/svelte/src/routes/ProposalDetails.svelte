@@ -1,12 +1,15 @@
 <script lang="ts">
+  import type { ProposalInfo } from "@dfinity/nns";
   import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { AppPath } from "../lib/constants/routes.constants";
   import { routeStore } from "../lib/stores/route.store";
+  import { toastsStore } from "../lib/stores/toasts.store";
   import { getProposalInfo } from "../lib/utils/proposals.utils";
   import { routeContext } from "../lib/utils/route.utils";
+  import { stringifyJson } from "../lib/utils/utils";
 
-  let proposalId: bigint;
+  let proposal: ProposalInfo;
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -23,12 +26,24 @@
       return;
     }
 
-    proposalId = BigInt(proposalParam);
+    try {
+      proposal = await getProposalInfo({
+        proposalId: BigInt(proposalParam),
+      });
 
-    // TODO: reuse from store
-    // fetch for testing
-    const proposal = await getProposalInfo({ proposalId });
-    console.log("proposal", proposal);
+      if (!proposal) {
+        throw new Error("Proposal not found");
+      }
+    } catch (error) {
+      toastsStore.show({
+        labelKey: "error.proposal_not_found",
+        level: "error",
+        detail: `Proposal "${proposalParam} was not found`,
+      });
+      console.error(error);
+
+      routeStore.replace({ path: AppPath.Proposals });
+    }
   });
 
   onDestroy(unsubscribe);
@@ -44,7 +59,9 @@
   <HeadlessLayout on:nnsBack={goBack}>
     <svelte:fragment slot="header">Proposal</svelte:fragment>
 
-    <section>TBD</section>
+    <section>
+      <pre>{stringifyJson(proposal)}</pre>
+    </section>
 
     <svelte:fragment slot="footer" />
   </HeadlessLayout>
