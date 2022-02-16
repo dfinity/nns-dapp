@@ -11,8 +11,6 @@
 
   export let placeholderLabelKey: string;
 
-  // TODO: Review LM and DDB
-  export let fullWidth: boolean = false;
   export let theme: "dark" | "light" = "light";
 
   const handleInput = ({ currentTarget }: InputEventHandler) =>
@@ -22,7 +20,7 @@
   $: step = inputType === "number" ? step || "any" : undefined;
 </script>
 
-<div class={`input-block ${theme}`} class:fullWidth>
+<div class={`input-block ${theme}`}>
   <input
     type={inputType}
     {required}
@@ -50,13 +48,11 @@
     display: flex;
     align-items: center;
 
+    width: var(--input-width);
+
     :global(button) {
       position: absolute;
       right: calc(2 * var(--padding));
-    }
-
-    &.fullWidth {
-      width: 100%;
     }
 
     &.dark {
