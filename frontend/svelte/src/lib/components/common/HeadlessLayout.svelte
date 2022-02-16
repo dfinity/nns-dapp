@@ -2,7 +2,6 @@
   import { createEventDispatcher } from "svelte";
   import IconBackIosNew from "../../icons/IconBackIosNew.svelte";
   import { i18n } from "../../stores/i18n";
-  import Toasts from "../ui/Toasts.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import Footer from "./Footer.svelte";
 
@@ -26,8 +25,6 @@
 <Footer>
   <slot name="footer" />
 </Footer>
-
-<Toasts />
 
 <style lang="scss">
   header {

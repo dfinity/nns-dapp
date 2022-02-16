@@ -42,18 +42,13 @@
         level: "error",
         detail: `id: "${proposalParam}"`,
       });
-      // hide in 1sec
-      setTimeout(() => {
-        toastsStore.hide();
-      }, 2000);
 
       // to not refetch on navigation
       unsubscribe();
 
-      // go back to proposal list in 2sec
       setTimeout(() => {
         routeStore.replace({ path: AppPath.Proposals });
-      }, 2300);
+      }, 1500);
     }
   });
 

@@ -2,7 +2,6 @@
   import Footer from "./Footer.svelte";
   import Header from "./Header.svelte";
   import Nav from "./Nav.svelte";
-  import Toasts from "../ui/Toasts.svelte";
 </script>
 
 <Header />
@@ -16,8 +15,6 @@
 <Footer>
   <slot name="footer" />
 </Footer>
-
-<Toasts />
 
 <style lang="scss">
   main {

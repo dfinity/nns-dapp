@@ -15,6 +15,7 @@
   import ProposalDetails from "./routes/ProposalDetails.svelte";
   import { routeStore } from "./lib/stores/route.store";
   import { AppPath } from "./lib/constants/routes.constants";
+  import Toasts from "./lib/components/ui/Toasts.svelte";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -61,6 +62,8 @@
   <PrivateRoute path={AppPath.Wallet} component={Wallet} />
   <PrivateRoute path={AppPath.ProposalDetails} component={ProposalDetails} />
 </Guard>
+
+<Toasts />
 
 <style lang="scss" global>
   @import "./lib/themes/fonts.scss";
