@@ -18,7 +18,7 @@
     listNextProposals,
     listProposals,
   } from "../lib/services/proposals.services";
-  import { ProposalInfo } from "@dfinity/nns";
+  import type { ProposalInfo } from "@dfinity/nns";
 
   let loading: boolean = false;
 
