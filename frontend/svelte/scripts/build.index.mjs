@@ -8,7 +8,7 @@ import { envConfig } from "../env.config.mjs";
  * At the same time, we also update the <base /> reference (see comment below).
  * By pre-rendering this information, we make it static and guarantee it will be set when the app - the JS code - accesses it at runtime.
  */
-const copyIndex = () => {
+const buildIndex = () => {
   const buffer = readFileSync("./src/index.html");
   const content = buffer.toString("utf-8");
 
@@ -66,4 +66,4 @@ const cspConnectSrc = () => {
   return src.join("").trim();
 };
 
-copyIndex();
+buildIndex();
