@@ -10,6 +10,7 @@ interface I18nCore {
 interface I18nError {
   auth_sync: string;
   sign_in: string;
+  proposal_not_found: string;
 }
 
 interface I18nNavigation {
