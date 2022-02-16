@@ -6,7 +6,7 @@ import {
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { MockGovernanceCanister } from "../../mocks/proposals.store.mock";
 
-describe("proposals-utils", () => {
+describe("proposals-services", () => {
   const mockProposals: ProposalInfo[] = [
     {
       id: "test1",
