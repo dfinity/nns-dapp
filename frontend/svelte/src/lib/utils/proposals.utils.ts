@@ -1,100 +1,11 @@
-import type { ListProposalsResponse } from "@dfinity/nns";
-import { GovernanceCanister, ProposalId, ProposalInfo } from "@dfinity/nns";
-import { get } from "svelte/store";
-import { LIST_PAGINATION_LIMIT } from "../constants/constants";
-import {
-  ProposalsFiltersStore,
-  proposalsFiltersStore,
-  proposalsStore,
-} from "../stores/proposals.store";
+import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 
-// TODO(L2-206): refactor / rename to "providers" or "services"
+export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
+  length <= 0;
 
-export const emptyProposals = (): boolean => {
-  const { length }: ProposalInfo[] = get(proposalsStore);
-  return length <= 0;
-};
-
-export const lastProposalId = (): ProposalId | undefined => {
-  const { length, [length - 1]: last } = get(proposalsStore);
+export const lastProposalId = (
+  proposalInfos: ProposalInfo[]
+): ProposalId | undefined => {
+  const { length, [length - 1]: last } = proposalInfos;
   return last?.id;
-};
-
-export const listProposals = async ({
-  clearBeforeQuery = false,
-}: {
-  clearBeforeQuery?: boolean;
-}) => {
-  if (clearBeforeQuery) {
-    proposalsStore.setProposals([]);
-  }
-
-  const proposals: ProposalInfo[] = await queryProposals({
-    beforeProposal: undefined,
-  });
-
-  proposalsStore.setProposals(proposals);
-};
-
-export const listNextProposals = async ({
-  beforeProposal,
-}: {
-  beforeProposal: ProposalId | undefined;
-}) => {
-  const proposals: ProposalInfo[] = await queryProposals({ beforeProposal });
-
-  if (!proposals.length) {
-    // There is no more proposals to fetch for the current filters.
-    // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
-    return;
-  }
-
-  proposalsStore.pushProposals(proposals);
-};
-
-const queryProposals = async ({
-  beforeProposal,
-}: {
-  beforeProposal: ProposalId | undefined;
-}): Promise<ProposalInfo[]> => {
-  // TODO(L2-206): use createAgent
-  const governance: GovernanceCanister = GovernanceCanister.create();
-
-  const { rewards, status }: ProposalsFiltersStore = get(proposalsFiltersStore);
-
-  // TODO(L2-206): implement excludeTopic
-  // TODO(L2-2069: implement 'Hide "Open" proposals where all your neurons have voted or are ineligible to vote'
-
-  const { proposals }: ListProposalsResponse = await governance.listProposals({
-    request: {
-      limit: LIST_PAGINATION_LIMIT,
-      beforeProposal,
-      excludeTopic: [],
-      includeRewardStatus: rewards,
-      includeStatus: status,
-    },
-  });
-
-  return proposals;
-};
-
-/**
- * Return single proposal from proposalsStore or fetch it (in case of page reload or direct navigation to proposal-detail page)
- */
-export const getProposalInfo = async ({
-  proposalId,
-}: {
-  proposalId: ProposalId;
-}): Promise<ProposalInfo> => {
-  const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
-  return proposal || queryProposalInfo({ proposalId });
-};
-
-const queryProposalInfo = async ({
-  proposalId,
-}: {
-  proposalId: ProposalId;
-}): Promise<ProposalInfo> => {
-  const governance: GovernanceCanister = GovernanceCanister.create();
-  return governance.getProposalInfo({ proposalId });
 };

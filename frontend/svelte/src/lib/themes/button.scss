@@ -39,6 +39,9 @@ button {
   &.input-button {
     border-radius: var(--border-radius);
 
+    position: relative;
+    min-height: 60px;
+
     &[disabled] {
       background: var(--gray-400);
       color: var(--gray-600);

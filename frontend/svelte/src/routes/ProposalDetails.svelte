@@ -3,9 +3,9 @@
   import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { AppPath } from "../lib/constants/routes.constants";
+  import { getProposalInfo } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { getProposalInfo } from "../lib/utils/proposals.utils";
   import { routeContext } from "../lib/utils/route.utils";
   import { stringifyJson } from "../lib/utils/utils";
 
