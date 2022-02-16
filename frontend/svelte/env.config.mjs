@@ -13,7 +13,7 @@ const domain =
   process.env.DEPLOY_ENV === "testnet" ? domainTestnet : domainMainnet;
 
 // agent-js connects per default to mainnet with the anonymous identity
-const MAINNET = `https://${domainMainnet}`
+const MAINNET = `https://${domainMainnet}`;
 
 const IDENTITY_SERVICE_URL =
   process.env.IDENTITY_SERVICE_URL ||
