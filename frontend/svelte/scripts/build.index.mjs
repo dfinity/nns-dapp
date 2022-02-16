@@ -32,10 +32,14 @@ const updateBaseHref = (content) =>
  *
  * Note about the rules:
  *
- * script-src 'unsafe-eval' is required because:
+ * - script-src 'unsafe-eval' is required because:
  * 1. agent-js uses a WebAssembly module for the validation of bls signatures.
  *    source: II https://github.com/dfinity/internet-identity/blob/c5709518ce3daaf7fdd9c7994120b66bd613f01b/src/internet_identity/src/main.rs#L824
  * 2. nns-js auto-generated proto js code (base_types_pb.js and ledger_pb.js) require 'unsafe-eval' as well
+ *
+ * - style-src 'unsafe-inline' is required because:
+ * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
+ *    source: https://github.com/sveltejs/svelte/issues/6662
  */
 const updateCSP = (content) => {
   // In development mode, no CSP rule
@@ -51,7 +55,7 @@ const updateCSP = (content) => {
         script-src 'unsafe-eval' 'strict-dynamic' 'nonce-bundle-369ac6c9-8078-4625-82f7-f37a9ca8fb16';
         base-uri 'self';
         form-action 'none';
-        style-src 'self';
+        style-src 'self' 'unsafe-inline';
         font-src 'self';
         upgrade-insecure-requests;"
     />`;
