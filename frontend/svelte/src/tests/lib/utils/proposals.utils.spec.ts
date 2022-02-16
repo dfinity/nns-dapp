@@ -1,10 +1,8 @@
-import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
-import { proposalsStore } from "../../../lib/stores/proposals.store";
+import type { ProposalInfo } from "@dfinity/nns";
 import {
   emptyProposals,
   lastProposalId,
 } from "../../../lib/utils/proposals.utils";
-import { MockGovernanceCanister } from "../../mocks/proposals.store.mock";
 
 describe("proposals-utils", () => {
   const mockProposals: ProposalInfo[] = [
@@ -14,42 +12,17 @@ describe("proposals-utils", () => {
     { id: "test2" },
   ] as unknown as ProposalInfo[];
 
-  const mockGovernanceCanister: MockGovernanceCanister =
-    new MockGovernanceCanister(mockProposals);
-
-  let spyListProposals;
-
-  beforeEach(() => {
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
-
-    spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
-  });
-
-  afterEach(() => spyListProposals.mockClear());
-
   it("should detect an empty list of proposals", () =>
-    expect(emptyProposals()).toBeTruthy());
+    expect(emptyProposals([])).toBeTruthy());
 
-  it("should detect an not empty list of proposals", () => {
-    proposalsStore.setProposals(mockProposals);
-
-    expect(emptyProposals()).toBeFalsy();
-
-    proposalsStore.setProposals([]);
-  });
+  it("should detect an not empty list of proposals", () =>
+    expect(emptyProposals(mockProposals)).toBeFalsy());
 
   it("should find no last proposal id", () =>
-    expect(lastProposalId()).toBeUndefined());
+    expect(lastProposalId([])).toBeUndefined());
 
-  it("should find a last proposal id", () => {
-    proposalsStore.setProposals(mockProposals);
-
-    expect(lastProposalId()).toEqual(
+  it("should find a last proposal id", () =>
+    expect(lastProposalId(mockProposals)).toEqual(
       mockProposals[mockProposals.length - 1].id
-    );
-
-    proposalsStore.setProposals([]);
-  });
+    ));
 });
