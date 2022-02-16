@@ -36,7 +36,6 @@
         placeholderLabelKey="neurons.amount"
         name="amount"
         bind:value={amount}
-        fullWidth
         theme="dark"
       />
       <small>{$i18n.neurons.may_take_while}</small>
@@ -84,6 +83,7 @@
     align-items: center;
 
     width: 100%;
+    --input-width: 100%;
 
     small {
       margin-top: calc(2 * var(--padding));
