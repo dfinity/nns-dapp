@@ -20,9 +20,7 @@ const IDENTITY_SERVICE_URL =
 
 const HOST =
   process.env.HOST ||
-  (process.env.DEPLOY_ENV === "testnet"
-    ? `https://${domainTestnet}/`
-    : "");
+  (process.env.DEPLOY_ENV === "testnet" ? `https://${domainTestnet}/` : "");
 
 const GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";
 const LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
@@ -54,5 +52,5 @@ export const envConfig = {
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
   GOVERNANCE_CANISTER_URL,
-  LEDGER_CANISTER_URL
+  LEDGER_CANISTER_URL,
 };
