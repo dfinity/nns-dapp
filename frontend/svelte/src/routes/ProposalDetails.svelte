@@ -35,14 +35,25 @@
         throw new Error("Proposal not found");
       }
     } catch (error) {
+      console.error(error);
+
       toastsStore.show({
         labelKey: "error.proposal_not_found",
         level: "error",
-        detail: `Proposal "${proposalParam} was not found`,
+        detail: `id: "${proposalParam}"`,
       });
-      console.error(error);
+      // hide in 1sec
+      setTimeout(() => {
+        toastsStore.hide();
+      }, 2000);
 
-      routeStore.replace({ path: AppPath.Proposals });
+      // to not refetch on navigation
+      unsubscribe();
+
+      // go back to proposal list in 2sec
+      setTimeout(() => {
+        routeStore.replace({ path: AppPath.Proposals });
+      }, 2300);
     }
   });
 

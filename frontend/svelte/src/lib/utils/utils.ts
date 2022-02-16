@@ -19,7 +19,8 @@ export const debounce = (func: Function, timeout?: number) => {
 export const stringifyJson = (value: object): string => {
   return JSON.stringify(
     value,
-    (key, value) => (typeof value === "bigint" ? value.toString() : value),
+    (key, value) =>
+      typeof value === "bigint" ? `${value.toString()}n` : value,
     2
   );
 };
