@@ -1,6 +1,6 @@
 import type { ICP } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
-import { loadAccounts } from "../../../lib/utils/accounts.utils";
+import { loadAccounts } from "../../../lib/services/accounts.service";
 import * as agent from "../../../lib/utils/agent.utils";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 

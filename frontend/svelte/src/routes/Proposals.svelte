@@ -3,12 +3,7 @@
   import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import {
-    emptyProposals,
-    lastProposalId,
-    listNextProposals,
-    listProposals,
-  } from "../lib/utils/proposals.utils";
+  import { emptyProposals, lastProposalId } from "../lib/utils/proposals.utils";
   import {
     proposalsFiltersStore,
     proposalsStore,
@@ -19,6 +14,10 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
   import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    listNextProposals,
+    listProposals,
+  } from "../lib/services/proposals.service";
 
   let loading: boolean = false;
 

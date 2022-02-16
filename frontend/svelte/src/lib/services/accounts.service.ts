@@ -1,9 +1,7 @@
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { AccountsStore } from "../stores/accounts.store";
-import { createAgent } from "./agent.utils";
-
-// TODO(L2-206): refactor / rename to "providers" or "services"
+import { createAgent } from "../utils/agent.utils";
 
 export const loadAccounts = async ({
   principal,

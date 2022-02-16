@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
+import { loadAccounts } from "../services/accounts.service";
 import type { Account } from "../types/account";
-import { loadAccounts } from "../utils/accounts.utils";
 import type { AuthStore } from "./auth.store";
 
 export interface AccountsStore {

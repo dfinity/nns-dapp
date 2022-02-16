@@ -1,10 +1,12 @@
 import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
+import {
+  listNextProposals,
+  listProposals,
+} from "../../../lib/services/proposals.service";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import {
   emptyProposals,
   lastProposalId,
-  listNextProposals,
-  listProposals,
 } from "../../../lib/utils/proposals.utils";
 import { MockGovernanceCanister } from "../../mocks/proposals.store.mock";
 
