@@ -1,22 +1,43 @@
+/**
+ * As long as we use the Flutter app, we need to handle the configuration with miscellaneous environment variables.
+ * In addition, some of these variables have default fallback values according their environment - e.g. testnet or mainnet.
+ *
+ * That's why we group here the logic and default values to expose a single object - envConfig - that contains the effect configuration.
+ *
+ * It is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html
+ */
+
+const IDENTITY_SERVICE_URL =
+  process.env.IDENTITY_SERVICE_URL ||
+  (process.env.DEPLOY_ENV === "testnet"
+    ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
+    : "https://identity.ic0.app/");
+
+const HOST =
+  process.env.HOST ||
+  (process.env.DEPLOY_ENV === "testnet"
+    ? "https://nnsdapp.dfinity.network/"
+    : "");
+
+// When developing with live reload in svelte, redirecting to flutter is
+// not desirable.  The default should match production:
+// - false while svelte is inactive
+// - true while flutter is being replaced by svelte
+// - false after flutter has been replaced, but before all scaffolding has been removed
+// - the flag may then be removed.
+const REDIRECT_TO_LEGACY = ["true", "1"].includes(
+  process.env.REDIRECT_TO_LEGACY
+)
+  ? true
+  : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
+  ? false
+  : true; // default
+
 export const envConfig = {
   PRODUCTION: !process.env.ROLLUP_WATCH,
-  IDENTITY_SERVICE_URL:
-    process.env.IDENTITY_SERVICE_URL ||
-    (process.env.DEPLOY_ENV === "testnet"
-      ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
-      : "https://identity.ic0.app/"),
+  IDENTITY_SERVICE_URL,
   OWN_CANISTER_ID: process.env.OWN_CANISTER_ID,
-  HOST: process.env.HOST || "",
+  HOST,
   DEPLOY_ENV: process.env.DEPLOY_ENV,
-  // When developing with live reload in svelte, redirecting to flutter is
-  // not desirable.  The default should match production:
-  // - false while svelte is inactive
-  // - true while flutter is being replaced by svelte
-  // - false after flutter has been replaced, but before all scaffolding has been removed
-  // - the flag may then be removed.
-  REDIRECT_TO_LEGACY: ["true", "1"].includes(process.env.REDIRECT_TO_LEGACY)
-    ? true
-    : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
-    ? false
-    : true, // default
+  REDIRECT_TO_LEGACY,
 };
