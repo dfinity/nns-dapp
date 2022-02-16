@@ -13,7 +13,7 @@ import sveltePreprocess from "svelte-preprocess";
 import { envConfig } from "./env.config.mjs";
 
 const { ENVIRONMENT } = envConfig;
-const prodBuild = ENVIRONMENT !== 'local';
+const prodBuild = ENVIRONMENT !== "local";
 
 function serve() {
   let server;
