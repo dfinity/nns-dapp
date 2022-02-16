@@ -13,7 +13,7 @@ export const syncAccounts = async ({
   principal,
 }: {
   principal: Principal;
-}): Promise<AccountsStore> => {
+}): Promise<void> => {
   if (!principal) {
     accountsStore.set(undefined);
     return;
