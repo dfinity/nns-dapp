@@ -7,7 +7,8 @@
   import { routeContext, routePath } from "../../utils/route.utils";
   import { routeStore } from "../../stores/route.store";
   import { isSignedIn } from "../../utils/auth.utils";
-  import { AppPath, isRoutePath } from "../../../routes/routes";
+  import { isRoutePath } from "../../utils/app-path.utils";
+  import type { AppPath } from "../../constants/routes.constants";
 
   export let path: AppPath;
   export let component: typeof SvelteComponent;

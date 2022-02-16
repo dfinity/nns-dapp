@@ -67,7 +67,7 @@
   </main>
 
   <img
-    src="/assets/assets/ic-badge-built-on-crypto_label-stripe-for-dark.svg"
+    src="/assets/assets/ic-badge-powered-by_label-stripe-white-text.svg"
     role="presentation"
     alt={$i18n.auth.powered_by}
     class="bottom-banner"
