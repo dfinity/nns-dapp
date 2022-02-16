@@ -4,22 +4,49 @@
    */
   import Modal from "../../modals/Modal.svelte";
   import Input from "../ui/Input.svelte";
+  import { getICPs } from "../../services/dev.services";
+  import Spinner from "../ui/Spinner.svelte";
+  import { toastsStore } from "../../stores/toasts.store";
+  import { errorToString } from "../../utils/error.utils";
 
-  let visible: boolean;
+  let visible: boolean = false;
+  let transferring: boolean = false;
 
   let inputValue: number | undefined = undefined;
 
-  const onSubmit = ({ target }) => {
-    // TODO: L2-188 - check if form is valid i.e. !invalidForm
+  const onSubmit = async ({ target }) => {
+    if (invalidForm) {
+      toastsStore.show({
+        labelKey: "Invalid ICPs input.",
+        level: "error",
+      });
+      return;
+    }
 
     const formData: FormData = new FormData(target);
-    console.log(formData.get("icp"));
+    const icps: number = formData.get("icp") as unknown as number;
 
-    // TODO: L2-188 - Get ICPs on testnet
-    alert("Not implemented yet");
+    transferring = true;
+
+    try {
+      await getICPs(icps);
+
+      reset();
+    } catch (err: any) {
+      console.error(err);
+      toastsStore.show({
+        labelKey: "ICPs could not be transferred.",
+        level: "error",
+        detail: errorToString(err),
+      });
+    }
+
+    transferring = false;
   };
 
-  const onClose = () => {
+  const onClose = () => reset();
+
+  const reset = () => {
     visible = false;
     inputValue = undefined;
   };
@@ -37,9 +64,24 @@
   <form on:submit|preventDefault={onSubmit}>
     <span class="how-much">How much?</span>
 
-    <Input placeholderLabelKey="core.icp" name="icp" bind:value={inputValue} />
+    <Input
+      placeholderLabelKey="core.icp"
+      name="icp"
+      bind:value={inputValue}
+      disabled={transferring}
+    />
 
-    <button type="submit" class="primary" disabled={invalidForm}>Get</button>
+    <button
+      type="submit"
+      class="primary"
+      disabled={invalidForm || transferring}
+    >
+      {#if transferring}
+        <Spinner />
+      {:else}
+        Get
+      {/if}
+    </button>
   </form>
 </Modal>
 
@@ -57,5 +99,9 @@
     flex-direction: column;
 
     padding: calc(2 * var(--padding));
+
+    button {
+      margin-top: calc(var(--padding) / 2);
+    }
   }
 </style>

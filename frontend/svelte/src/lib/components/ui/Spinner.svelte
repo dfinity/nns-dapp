@@ -10,15 +10,16 @@
   @use "sass:math";
 
   svg {
-    width: 30px;
-    height: 30px;
+    --spinner-size: 30px;
+
+    width: var(--spinner-size);
+    height: var(--spinner-size);
 
     animation: spinner-linear-rotate 2000ms linear infinite;
 
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: calc(50% - (var(--spinner-size) / 2));
+    left: calc(50% - (var(--spinner-size) / 2));
 
     // same as <circle r=""/> attribute
     --radius: 45px;
@@ -42,7 +43,7 @@
     animation-iteration-count: infinite;
 
     fill: transparent;
-    stroke: var(--gray-400);
+    stroke: currentColor;
 
     transition: stroke-dashoffset 225ms linear;
   }
