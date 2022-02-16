@@ -12,7 +12,8 @@ import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
 import { envConfig } from "./env.config.mjs";
 
-const { PRODUCTION: production } = envConfig;
+const { ENVIRONMENT } = envConfig;
+const prodBuild = ENVIRONMENT !== 'local';
 
 function serve() {
   let server;
@@ -42,7 +43,7 @@ function serve() {
 export default {
   input: "src/main.ts",
   output: {
-    sourcemap: !production,
+    sourcemap: !prodBuild,
     format: "es",
     name: "app",
     file: "public/build/bundle.js",
@@ -50,14 +51,14 @@ export default {
   plugins: [
     svelte({
       preprocess: sveltePreprocess({
-        sourceMap: !production,
+        sourceMap: !prodBuild,
         postcss: {
           plugins: [require("autoprefixer")()],
         },
       }),
       compilerOptions: {
         // enable run-time checks when not in production
-        dev: !production,
+        dev: !prodBuild,
       },
     }),
     // we'll extract any component CSS out into
@@ -91,8 +92,8 @@ export default {
     }),
     commonjs(),
     typescript({
-      sourceMap: !production,
-      inlineSources: !production,
+      sourceMap: !prodBuild,
+      inlineSources: !prodBuild,
     }),
     inject({ Buffer: ["buffer", "Buffer"] }),
     json(),
@@ -110,15 +111,15 @@ export default {
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated
-    !production && serve(),
+    !prodBuild && serve(),
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
-    !production && livereload("public"),
+    !prodBuild && livereload("public"),
 
     // If we're building for production (npm run build
     // instead of npm run dev), minify
-    production && terser(),
+    prodBuild && terser(),
   ],
   watch: {
     clearScreen: false,

@@ -7,10 +7,17 @@
  * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
+const ENVIRONMENT = process.env.ROLLUP_WATCH
+  ? "local"
+  : process.env.DEPLOY_ENV === "testnet"
+  ? "testnet"
+  : "mainnet";
+
+const development = ["local", "testnet"].includes(ENVIRONMENT);
+
 const domainTestnet = "nnsdapp.dfinity.network";
 const domainMainnet = "ic0.app";
-const domain =
-  process.env.DEPLOY_ENV === "testnet" ? domainTestnet : domainMainnet;
+const domain = development ? domainTestnet : domainMainnet;
 
 // agent-js connects per default to mainnet with the anonymous identity
 const MAINNET = `https://${domainMainnet}`;
@@ -46,8 +53,9 @@ const REDIRECT_TO_LEGACY = ["true", "1"].includes(
   : true; // default
 
 export const envConfig = {
-  PRODUCTION: !process.env.ROLLUP_WATCH,
+  ENVIRONMENT,
   DEPLOY_ENV: process.env.DEPLOY_ENV,
+  FETCH_ROOT_KEY: development,
   REDIRECT_TO_LEGACY,
   MAINNET,
   HOST,
