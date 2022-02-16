@@ -63,7 +63,7 @@ const cspConnectSrc = () => {
   const { IDENTITY_SERVICE_URL, OWN_CANISTER_ID, HOST } = envConfig;
 
   const src = [IDENTITY_SERVICE_URL, OWN_CANISTER_ID, HOST];
-  return src.join("").trim();
+  return src.filter(url => url !== undefined).join(" ").trim();
 };
 
 buildIndex();
