@@ -3,13 +3,7 @@
   import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import { AppPath } from "./routes";
-  import {
-    emptyProposals,
-    lastProposalId,
-    listNextProposals,
-    listProposals,
-  } from "../lib/utils/proposals.utils";
+  import { emptyProposals, lastProposalId } from "../lib/utils/proposals.utils";
   import {
     proposalsFiltersStore,
     proposalsStore,
@@ -19,6 +13,12 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
+  import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    listNextProposals,
+    listProposals,
+  } from "../lib/services/proposals.services";
+  import type { ProposalInfo } from "@dfinity/nns";
 
   let loading: boolean = false;
 
@@ -27,7 +27,7 @@
 
     // TODO(L2-206): catch and display errors
 
-    await listNextProposals({ beforeProposal: lastProposalId() });
+    await listNextProposals({ beforeProposal: lastProposalId(proposals) });
 
     loading = false;
   };
@@ -38,7 +38,7 @@
     // TODO(L2-206): catch and display errors
 
     // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
-    await listProposals({ clearBeforeQuery: !emptyProposals() });
+    await listProposals({ clearBeforeQuery: !emptyProposals(proposals) });
 
     loading = false;
   };
@@ -57,7 +57,7 @@
     }
 
     // Load proposals on mount only if none were fetched before
-    if (!emptyProposals()) {
+    if (!emptyProposals(proposals)) {
       initDebounceFindProposals();
       return;
     }
@@ -72,6 +72,9 @@
   );
 
   onDestroy(unsubscribe);
+
+  let proposals: ProposalInfo[];
+  $: proposals = $proposalsStore;
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}

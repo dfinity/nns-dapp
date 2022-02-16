@@ -8,25 +8,38 @@
   import Canisters from "./routes/Canisters.svelte";
   import Auth from "./routes/Auth.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { accountsStore } from "./lib/stores/accounts.store";
   import { onDestroy } from "svelte";
   import { AuthStore, authStore } from "./lib/stores/auth.store";
   import Wallet from "./routes/Wallet.svelte";
   import ProposalDetails from "./routes/ProposalDetails.svelte";
-  import { AppPath } from "./routes/routes";
+  import { routeStore } from "./lib/stores/route.store";
+  import { AppPath } from "./lib/constants/routes.constants";
+  import { syncAccounts } from "./lib/services/accounts.services";
 
-  const unsubscribe: Unsubscriber = authStore.subscribe(
+  const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
       // TODO: We do not need to load and sync the account data if we redirect to the Flutter app. Currently these data are not displayed with this application.
       if (process.env.REDIRECT_TO_LEGACY) {
         return;
       }
 
-      await accountsStore.sync(auth);
+      await syncAccounts(auth);
     }
   );
 
-  onDestroy(unsubscribe);
+  const unsubscribeRoute: Unsubscriber = routeStore.subscribe(
+    ({ isKnownPath }) => {
+      if (isKnownPath) {
+        return;
+      }
+      routeStore.replace({ path: AppPath.Accounts });
+    }
+  );
+
+  onDestroy(() => {
+    unsubscribeAuth();
+    unsubscribeRoute();
+  });
 </script>
 
 <svelte:head>

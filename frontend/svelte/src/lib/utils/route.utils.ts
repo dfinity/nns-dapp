@@ -10,10 +10,14 @@ export const routePath = (): string => {
 };
 
 // e.g. #/accounts => accounts
+// e.g. #/wallet/123 => wallet/123
 export const routeContext = (): string => {
   const path: string = routePath();
 
-  return removeHash({ path }).split("/")[1].toLowerCase();
+  // remove leading "/" and query params
+  return removeHash({ path })
+    .replace(/(^\/|\?.*)/g, "")
+    .toLowerCase();
 };
 
 const removeHash = ({ path }: { path: string }) => path.replace("/#", "");

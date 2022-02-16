@@ -1,29 +1,10 @@
-import type { ICP } from "@dfinity/nns";
-import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
-import { loadAccounts } from "../../../lib/utils/accounts.utils";
+import { LedgerCanister } from "@dfinity/nns";
+import { syncAccounts } from "../../../lib/services/accounts.services";
 import * as agent from "../../../lib/utils/agent.utils";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { MockLedgerCanister } from "../../mocks/ledger.canister.mock";
 
-// @ts-ignore
-class MockLedgerCanister extends LedgerCanister {
-  constructor() {
-    super();
-  }
-
-  create() {
-    return this;
-  }
-
-  accountBalance = async ({
-    accountIdentifier,
-    certified = true,
-  }: {
-    accountIdentifier: AccountIdentifier;
-    certified?: boolean;
-  }): Promise<ICP> => Promise.resolve(null);
-}
-
-describe("accounts-utils", () => {
+describe("accounts-services", () => {
   beforeAll(() => {
     // Needed to prevent importing Http from @dfinity/agent
     const mockCreateAgent = () => undefined;
@@ -38,7 +19,7 @@ describe("accounts-utils", () => {
 
     const spy = jest.spyOn(mockLedgerCanister, "accountBalance");
 
-    await loadAccounts({ principal: mockPrincipal });
+    await syncAccounts({ principal: mockPrincipal });
 
     expect(spy).toHaveReturnedTimes(1);
   });
