@@ -2,7 +2,7 @@ import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
 import {
   listNextProposals,
   listProposals,
-} from "../../../lib/services/proposals.service";
+} from "../../../lib/services/proposals.services";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import {
   emptyProposals,

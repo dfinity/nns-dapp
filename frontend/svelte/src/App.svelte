@@ -14,7 +14,7 @@
   import ProposalDetails from "./routes/ProposalDetails.svelte";
   import { routeStore } from "./lib/stores/route.store";
   import { AppPath } from "./lib/constants/routes.constants";
-  import { syncAccounts } from "./lib/services/accounts.service";
+  import { syncAccounts } from "./lib/services/accounts.services";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {

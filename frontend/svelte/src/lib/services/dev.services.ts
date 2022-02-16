@@ -4,7 +4,7 @@ import { E8S_PER_ICP } from "../constants/icp.constants";
 import { AccountsStore, accountsStore } from "../stores/accounts.store";
 import { AuthStore, authStore } from "../stores/auth.store";
 import { acquireICPTs } from "../utils/dev.utils";
-import { syncAccounts } from "./accounts.service";
+import { syncAccounts } from "./accounts.services";
 
 export const getICPs = async (icps: number) => {
   const { main }: AccountsStore = get(accountsStore);

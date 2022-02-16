@@ -17,7 +17,7 @@
   import {
     listNextProposals,
     listProposals,
-  } from "../lib/services/proposals.service";
+  } from "../lib/services/proposals.services";
 
   let loading: boolean = false;
 
