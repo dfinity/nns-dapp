@@ -1,5 +1,4 @@
 use dfn_candid::candid;
-use ic_nns_common::pb::v1::ProposalId;
 use ic_nns_constants::GOVERNANCE_CANISTER_ID;
 use ic_nns_governance::pb::v1::{
     ClaimOrRefreshNeuronFromAccount, ClaimOrRefreshNeuronFromAccountResponse, ProposalInfo,
@@ -23,7 +22,7 @@ pub async fn get_proposal_info(proposal_id: u64) -> Result<Option<ProposalInfo>,
         GOVERNANCE_CANISTER_ID,
         "get_proposal_info",
         candid,
-        (ProposalId { id: proposal_id },),
+        (proposal_id,),
     )
     .await
     .map_err(|e| e.1)

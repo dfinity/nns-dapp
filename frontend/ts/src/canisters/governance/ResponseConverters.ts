@@ -65,7 +65,7 @@ import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/gove
 import { getNnsFunctionName } from "./nnsFunctions/nnsFunctions";
 
 export default class ResponseConverters {
-  public toProposalInfo = (proposalInfo: RawProposalInfo): ProposalInfo => {
+  public toProposalInfo = (proposalInfo: RawProposalInfo, deserializePayloadAsJson: boolean): ProposalInfo => {
     return {
       id: proposalInfo.id.length ? this.toNeuronId(proposalInfo.id[0]) : null,
       ballots: proposalInfo.ballots.map((b) => this.toBallot(b[0], b[1])),
@@ -75,7 +75,7 @@ export default class ResponseConverters {
       failedTimestampSeconds: proposalInfo.failed_timestamp_seconds,
       decidedTimestampSeconds: proposalInfo.decided_timestamp_seconds,
       proposal: proposalInfo.proposal.length
-        ? this.toProposal(proposalInfo.proposal[0])
+        ? this.toProposal(proposalInfo.proposal[0], deserializePayloadAsJson)
         : null,
       proposer: proposalInfo.proposer.length
         ? this.toNeuronId(proposalInfo.proposer[0])
@@ -138,7 +138,7 @@ export default class ResponseConverters {
     response: RawListProposalInfoResponse
   ): ListProposalsResponse => {
     return {
-      proposals: response.proposal_info.map(this.toProposalInfo),
+      proposals: response.proposal_info.map(p => this.toProposalInfo(p, false)),
     };
   };
 
@@ -341,31 +341,33 @@ export default class ResponseConverters {
     };
   };
 
-  private toProposal = (proposal: RawProposal): Proposal => {
+  private toProposal = (proposal: RawProposal, includePayload: boolean): Proposal => {
     return {
       title: proposal.title.length ? proposal.title[0] : null,
       url: proposal.url,
-      action: proposal.action.length ? this.toAction(proposal.action[0]) : null,
+      action: proposal.action.length ? this.toAction(proposal.action[0], includePayload) : null,
       summary: proposal.summary,
     };
   };
 
-  private toAction = (action: RawAction): Action => {
+  private toAction = (action: RawAction, deserializePayloadAsJson: boolean): Action => {
     if ("ExecuteNnsFunction" in action) {
       const executeNnsFunction = action.ExecuteNnsFunction;
       const payloadBytes = arrayOfNumberToArrayBuffer(
-        executeNnsFunction.payload
+          executeNnsFunction.payload
       );
+
+      let payload: Record<string, unknown> = {};
+      if (deserializePayloadAsJson) {
+        const payloadString = new TextDecoder().decode(payloadBytes);
+        payload = JSON.parse(payloadString);
+      }
 
       return {
         ExecuteNnsFunction: {
           nnsFunctionId: executeNnsFunction.nns_function,
           nnsFunctionName: getNnsFunctionName(executeNnsFunction.nns_function),
-          payload: JSON.parse(
-            new TextDecoder().decode(
-              new Uint8Array(action.ExecuteNnsFunction.payload)
-            )
-          ),
+          payload,
           payloadBytes,
         },
       };
@@ -580,7 +582,7 @@ export default class ResponseConverters {
           title: makeProposal.title.length ? makeProposal.title[0] : null,
           url: makeProposal.url,
           action: makeProposal.action.length
-            ? this.toAction(makeProposal.action[0])
+            ? this.toAction(makeProposal.action[0], false)
             : null,
           summary: makeProposal.summary,
         },

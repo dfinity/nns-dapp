@@ -135,7 +135,7 @@ export default class Service implements ServiceInterface {
 
   public getPendingProposals = async (): Promise<Array<ProposalInfo>> => {
     const rawResponse = await this.service.get_pending_proposals();
-    return rawResponse.map(this.responseConverters.toProposalInfo);
+    return rawResponse.map(p => this.responseConverters.toProposalInfo(p, false));
   };
 
   public listKnownNeurons = async (
