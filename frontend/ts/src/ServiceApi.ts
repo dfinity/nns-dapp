@@ -264,7 +264,7 @@ export default class ServiceApi {
     proposalId: bigint
   ): Promise<Option<ProposalInfo>> => {
     return executeWithLogging(() =>
-      this.governanceService.getProposalInfo(proposalId)
+      this.nnsDappService.getProposal(proposalId)
     );
   };
 

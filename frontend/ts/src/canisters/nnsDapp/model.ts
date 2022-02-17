@@ -9,6 +9,7 @@ import {
   PrincipalString,
 } from "../common/types";
 import { CanisterId } from "./rawService";
+import { ProposalInfo } from "../governance/model";
 
 export enum TransactionType {
   Burn,
@@ -150,6 +151,7 @@ export default interface ServiceInterface {
     principal: Principal,
     blockHeight: BlockHeight
   ) => Promise<MultiPartTransactionStatus>;
+  getProposal: (proposalId: bigint) => Promise<ProposalInfo>;
   getTransactions: (
     request: GetTransactionsRequest,
     certified: boolean

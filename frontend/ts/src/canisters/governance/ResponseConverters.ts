@@ -62,10 +62,7 @@ import {
 import { UnsupportedValueError } from "../../utils";
 import { Option } from "../option";
 import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
-import {
-  convertNnsFunctionPayload,
-  getNnsFunctionName,
-} from "./nnsFunctions/nnsFunctions";
+import { getNnsFunctionName } from "./nnsFunctions/nnsFunctions";
 
 export default class ResponseConverters {
   public toProposalInfo = (proposalInfo: RawProposalInfo): ProposalInfo => {
@@ -359,18 +356,16 @@ export default class ResponseConverters {
       const payloadBytes = arrayOfNumberToArrayBuffer(
         executeNnsFunction.payload
       );
-      const payload = payloadBytes.byteLength
-        ? convertNnsFunctionPayload(
-            executeNnsFunction.nns_function,
-            payloadBytes
-          )
-        : null;
 
       return {
         ExecuteNnsFunction: {
           nnsFunctionId: executeNnsFunction.nns_function,
           nnsFunctionName: getNnsFunctionName(executeNnsFunction.nns_function),
-          payload,
+          payload: JSON.parse(
+            new TextDecoder().decode(
+              new Uint8Array(action.ExecuteNnsFunction.payload)
+            )
+          ),
           payloadBytes,
         },
       };

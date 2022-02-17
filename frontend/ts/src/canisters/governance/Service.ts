@@ -138,15 +138,6 @@ export default class Service implements ServiceInterface {
     return rawResponse.map(this.responseConverters.toProposalInfo);
   };
 
-  public getProposalInfo = async (
-    proposalId: bigint
-  ): Promise<Option<ProposalInfo>> => {
-    const rawResponse = await this.service.get_proposal_info(proposalId);
-    return rawResponse.length
-      ? this.responseConverters.toProposalInfo(rawResponse[0])
-      : null;
-  };
-
   public listKnownNeurons = async (
     certified: boolean
   ): Promise<Array<KnownNeuron>> => {

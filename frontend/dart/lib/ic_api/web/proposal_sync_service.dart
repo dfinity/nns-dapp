@@ -47,43 +47,6 @@ class ProposalSyncService {
     hiveBoxes.proposals.notifyChange();
   }
 
-  bool shouldGetFullProposal(Proposal proposal) {
-    // Only get the full info for ExecuteNnsFunction proposals whose payloads we are able to deserialize.
-    if (proposal.action.containsKey('ExecuteNnsFunction')) {
-      final nnsFunctionNumber =
-          proposal.action['ExecuteNnsFunction']['nnsFunctionId'];
-
-      const whitelistedNnsFunctions = [
-        1,
-        2,
-        // 3 - skipped due to large payload
-        // 4 - skipped due to large payload
-        5,
-        6,
-        7,
-        8,
-        // 9 - skipped due to large payload
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        // 19 - skipped because there is no payload
-        20,
-        21,
-        22,
-        23,
-        24
-      ];
-      return whitelistedNnsFunctions.contains(nnsFunctionNumber);
-    }
-    return false;
-  }
-
   Future<Proposal> getFullProposal(BigInt proposalId) async {
     final res =
         await promiseToFuture(serviceApi.getProposalInfo(proposalId.toJS));

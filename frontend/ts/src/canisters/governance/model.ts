@@ -93,7 +93,7 @@ export type DissolveState =
 export interface ExecuteNnsFunction {
   nnsFunctionId: number;
   nnsFunctionName: Option<string>;
-  payload: Option<Record<string, unknown>>;
+  payload: Record<string, unknown>;
   payloadBytes: ArrayBuffer;
 }
 export interface Follow {
@@ -522,7 +522,6 @@ export default interface ServiceInterface {
   ) => Promise<Array<NeuronInfo>>;
   getNeuronsForHW: () => Promise<Array<NeuronInfoForHw>>;
   getPendingProposals: () => Promise<Array<ProposalInfo>>;
-  getProposalInfo: (proposalId: bigint) => Promise<Option<ProposalInfo>>;
   listKnownNeurons: (certified: boolean) => Promise<Array<KnownNeuron>>;
   listProposals: (
     request: ListProposalsRequest

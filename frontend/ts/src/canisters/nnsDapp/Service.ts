@@ -19,18 +19,22 @@ import ServiceInterface, {
 import { _SERVICE } from "./rawService";
 import RequestConverters from "./RequestConverters";
 import ResponseConverters from "./ResponseConverters";
+import GovernanceResponseConverters from "../governance/ResponseConverters";
+import { ProposalInfo } from "../governance/model";
 
 export default class Service implements ServiceInterface {
   private readonly service: _SERVICE;
   private readonly certifiedService: _SERVICE;
   private requestConverters: RequestConverters;
   private responseConverters: ResponseConverters;
+  private governanceResponseConverters: GovernanceResponseConverters;
 
   public constructor(service: _SERVICE, serviceCertified: _SERVICE) {
     this.service = service;
     this.certifiedService = serviceCertified;
     this.requestConverters = new RequestConverters();
     this.responseConverters = new ResponseConverters();
+    this.governanceResponseConverters = new GovernanceResponseConverters();
   }
 
   public attachCanister = async (
@@ -116,5 +120,14 @@ export default class Service implements ServiceInterface {
       blockHeight
     );
     return this.responseConverters.toMultiPartTransactionStatus(rawResponse);
+  };
+
+  public getProposal = async (proposalId: bigint): Promise<ProposalInfo> => {
+    const rawResponse = await this.service.get_proposal(proposalId);
+    if ("Ok" in rawResponse) {
+      return this.governanceResponseConverters.toProposalInfo(rawResponse.Ok);
+    } else {
+      throw new Error("Unable to get proposal. Error: " + rawResponse.Err);
+    }
   };
 }
