@@ -51,14 +51,13 @@ ENV PATH=/flutter/bin:$PATH
 RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
-# to build only the dependecies, we pretend that our project is a simple, empty
+# to build only the dependencies, we pretend that our project is a simple, empty
 # `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
 # everything once the actual source code is COPYed (and e.g. doesn't trip on
 # timestamps being older)
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/Cargo.toml rs/Cargo.toml
-COPY rs/nns_functions_candid_gen ./rs/nns_functions_candid_gen
 RUN mkdir -p rs/src && touch rs/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/src
 
 # Install dfx
