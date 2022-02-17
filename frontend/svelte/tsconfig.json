@@ -11,6 +11,7 @@
     "__sapper__/*",
     "public/*",
     "jest.setup.ts",
-    "**/*Test.svelte"
+    "**/*Test.svelte",
+    ".eslintrc.js"
   ]
 }

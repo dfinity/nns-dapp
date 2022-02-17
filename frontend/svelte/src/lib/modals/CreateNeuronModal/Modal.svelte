@@ -1,17 +1,26 @@
 <script lang="ts">
-  import Wizard from "../../components/ui/Wizard/Wizard.svelte";
-  import WizardStep from "../../components/ui/Wizard/WizardStep.svelte";
+  // TODO: Rename file
   import Modal from "../Modal.svelte";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { accountsStore } from "../../stores/accounts.store";
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy } from "svelte";
   import SelectAccount from "./SelectAccount.svelte";
   import StakeNeuron from "./StakeNeuron.svelte";
   import type { Unsubscriber } from "svelte/store";
-  import { wizardStore } from "../../components/ui/Wizard/wizardStore";
+  import {
+    initWizardStore,
+    State as WizardState,
+  } from "../../stores/wizard.store";
+  import Transition from "../../components/ui/Transition.svelte";
 
   export let visible: boolean;
+
+  const wizardStore = initWizardStore();
+  enum Steps {
+    SelectAccount,
+    StakeNeuron,
+  }
 
   // TODO: Get all the accounts and be able to select one.
   let selectedAccount: Account | undefined;
@@ -21,10 +30,13 @@
     }
   );
 
-  let currentIndex: number = 0;
-  const unsubscribeWizard: Unsubscriber = wizardStore.subscribe(
-    (value) => (currentIndex = value)
-  );
+  let wizardState: WizardState;
+  // No need to unsubscribe, when the component is unmounted, this store instance also disappears
+  wizardStore.subscribe((value) => (wizardState = value));
+  let currentStep: number = 0;
+  $: currentStep = wizardState.currentIndex;
+  let diffIndex: number = 0;
+  $: diffIndex = wizardState.currentIndex - wizardState.previousIndex;
   const chooseAccount = () => {
     // TODO: Apply account selection
     wizardStore.next();
@@ -33,43 +45,39 @@
     wizardStore.back();
   };
 
-  onDestroy(() => {
-    unsubscribeWizard();
-    unsubscribeAccounts();
-  });
+  onDestroy(unsubscribeAccounts);
 
   const titleMapper: Record<string, string> = {
     "0": "select_source",
     "1": "stake_neuron",
   };
   let titleKey: string = titleMapper[0];
-  $: titleKey = titleMapper[currentIndex];
+  $: titleKey = titleMapper[currentStep];
 </script>
 
-<!-- Only the second step (index 1) is allowed to go back -->
 <Modal
   {visible}
   on:nnsClose
   theme="dark"
   size="medium"
-  showBackButton={currentIndex === 1}
+  showBackButton={currentStep === Steps.StakeNeuron}
   on:nnsBack={goBack}
 >
   <span slot="title">{$i18n.neurons?.[titleKey]}</span>
   <main>
-    <Wizard>
-      <WizardStep index={0}>
+    {#if currentStep === Steps.SelectAccount}
+      <Transition diff={diffIndex}>
         <SelectAccount
           main={selectedAccount}
           on:nnsSelectAccount={chooseAccount}
         />
-      </WizardStep>
-      <WizardStep index={1}>
-        {#if selectedAccount}
-          <StakeNeuron account={selectedAccount} />
-        {/if}
-      </WizardStep>
-    </Wizard>
+      </Transition>
+    {/if}
+    {#if currentStep === Steps.StakeNeuron && selectedAccount}
+      <Transition diff={diffIndex}>
+        <StakeNeuron account={selectedAccount} />
+      </Transition>
+    {/if}
   </main>
 </Modal>
 
