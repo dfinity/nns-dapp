@@ -136,7 +136,6 @@ proxy/build/
 proxy/node_modules
 canister_ids.json
 e2e-tests/node_modules
-e2e-tests/screenshots
 
 .dfx/
 target/
