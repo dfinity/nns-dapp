@@ -206,7 +206,7 @@ mod def {
 
     impl From<AddNnsCanisterProposalPayload> for AddNnsCanisterProposalPayloadTrimmed {
         fn from(payload: AddNnsCanisterProposalPayload) -> Self {
-            let wasm_module_hash = format!("{:x?}", calculate_hash(&payload.wasm_module));
+            let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
 
             AddNnsCanisterProposalPayloadTrimmed {
                 name: payload.name,
@@ -260,7 +260,7 @@ mod def {
 
     impl From<ChangeNnsCanisterProposalPayload> for ChangeNnsCanisterProposalPayloadTrimmed {
         fn from(payload: ChangeNnsCanisterProposalPayload) -> Self {
-            let wasm_module_hash = format!("{:x?}", calculate_hash(&payload.wasm_module));
+            let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
 
             ChangeNnsCanisterProposalPayloadTrimmed {
                 stop_before_installing: payload.stop_before_installing,
@@ -378,7 +378,7 @@ mod def {
 
     impl From<UpgradeRootProposalPayload> for UpgradeRootProposalPayloadTrimmed {
         fn from(payload: UpgradeRootProposalPayload) -> Self {
-            let wasm_module_hash = format!("{:x?}", calculate_hash(&payload.wasm_module));
+            let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
 
             UpgradeRootProposalPayloadTrimmed {
                 module_arg: payload.module_arg,
@@ -456,7 +456,7 @@ mod def {
         Start,
     }
 
-    // NNS function 18 - RemoveNodesFromSubnet
+    // NNS function 18 - RemoveNodes
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/6dd50382a8dcdb451eed1469c3fc4be194151275/rs/registry/canister/src/mutations/do_remove_nodes.rs#L168
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct RemoveNodesPayload {
@@ -565,9 +565,22 @@ mod def {
         }
     }
 
+    fn calculate_hash_string(bytes: &[u8]) -> String {
+        let mut hash_string = String::with_capacity(64);
+        for byte in calculate_hash(bytes) {
+            hash_string.push_str(&format!("{:02x}", byte));
+        }
+        hash_string
+    }
+
     fn calculate_hash(bytes: &[u8]) -> [u8; 32] {
         let mut wasm_sha = Sha256::new();
         wasm_sha.write(bytes);
         wasm_sha.finish()
     }
 }
+
+#[cfg(test)]
+mod payloads;
+#[cfg(test)]
+mod tests;
