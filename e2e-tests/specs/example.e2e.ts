@@ -21,10 +21,18 @@ describe("landing page", () => {
           );
         });
       },
-      { timeoutMsg: `image wasn't loaded` }
+      { timeoutMsg: "image wasn't loaded" }
     );
 
     await browser["screenshot"]("landing-page");
+
+    await browser.$("button").waitForExist();
+  });
+
+  it("register and back to dashboard", async () => {
+    await browser.url("/v2/");
+
+    await browser.$("h1").waitForExist();
 
     // Click Login Button
     await browser.$("button").click();
@@ -32,10 +40,12 @@ describe("landing page", () => {
     // REGISTRATION
   
     // Internet Identity
-    // TODO: Deploy II canisters to localhost and proxy them
+    // TODO: Deploy II canisters to localhost and proxy them.
+    // How do we do this when they are in another repo? Do we have a repository of docker images?
     // TODO: Create docker image of NNS Dapp with IDENTITY_SERVICE_URL pointing to II proxy
     // https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/#authorize
-    await browser.switchWindow('https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/#authorize');
+    const iiURL = "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/#authorize"
+    await browser.switchWindow(iiURL);
     // Wait for redirect to finish
     await browser.pause(10_000);
     const registerButton = await browser.$("#registerButton");
@@ -47,7 +57,7 @@ describe("landing page", () => {
     await registerAlias.waitForExist();
     await registerAlias.setValue("My Device");
 
-    await browser.$('button[type="submit"]').click();
+    await browser.$("button[type=\"submit\"]").click();
 
     // Captcha Page
     const captchaInput = await browser.$("#captchaInput");
@@ -82,18 +92,22 @@ describe("landing page", () => {
     await proceedButton.waitForExist();
     await proceedButton.click();
 
-    await browser.switchWindow('Network Nervous System');
+    await browser.switchWindow("Network Nervous System");
     
     await browser.$("h1").waitForExist();
     const title = await browser.$("h1");
 
+    
     await browser.waitUntil(
       async () => {
-          return (await title.getText()) === "Accounts";
+        return (await title.getText()) === "Accounts";
       },
       { timeout: 20_000 }
     );
+    
+    await browser["screenshot"]("home-page");
     // TODO: Deploy Ledger and Governance canisters and proxy them
+    // How do we do this when they are in another repo? Do we have a repository of docker images?
     // TODO: Create docker image of NNS Dapp with IDENTITY_SERVICE_URL pointing to these proxies
   });
 });
