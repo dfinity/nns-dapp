@@ -567,7 +567,7 @@ mod def {
 
     fn calculate_hash(bytes: &[u8]) -> [u8; 32] {
         let mut wasm_sha = Sha256::new();
-        wasm_sha.write(&bytes);
+        wasm_sha.write(bytes);
         wasm_sha.finish()
     }
 }
