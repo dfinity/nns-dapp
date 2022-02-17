@@ -11,7 +11,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ["./tsconfig.json"],
     extraFileExtensions: [".svelte"],
-    types: ["jest"]
+    types: ["jest"],
   },
   env: {
     es6: true,
@@ -23,7 +23,7 @@ module.exports = {
       processor: "svelte3/svelte3",
     },
     {
-      files: ['*.spec.ts'],
+      files: ["*.spec.ts"],
       env: {
         jest: true,
       },
@@ -34,5 +34,5 @@ module.exports = {
   },
   plugins: ["svelte3", "@typescript-eslint"],
   ignorePatterns: ["node_modules", ".eslintrc.js"],
-  rules: {}
+  rules: {},
 };
