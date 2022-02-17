@@ -25,5 +25,13 @@ describe("landing page", () => {
     );
 
     await browser["screenshot"]("landing-page");
+
+    await browser.$("button").click();
+        
+    await browser.$("[id=loginButton]").waitForExist({ timeout: 10_000 });
+    
+    browser.pause(10_000);
+
+    // 'https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/#authorize'
   });
 });
