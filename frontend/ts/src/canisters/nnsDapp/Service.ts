@@ -125,7 +125,10 @@ export default class Service implements ServiceInterface {
   public getProposal = async (proposalId: bigint): Promise<ProposalInfo> => {
     const rawResponse = await this.service.get_proposal(proposalId);
     if ("Ok" in rawResponse) {
-      return this.governanceResponseConverters.toProposalInfo(rawResponse.Ok, true);
+      return this.governanceResponseConverters.toProposalInfo(
+        rawResponse.Ok,
+        true
+      );
     } else {
       throw new Error("Unable to get proposal. Error: " + rawResponse.Err);
     }

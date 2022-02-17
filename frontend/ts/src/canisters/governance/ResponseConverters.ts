@@ -65,7 +65,10 @@ import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/gove
 import { getNnsFunctionName } from "./nnsFunctions/nnsFunctions";
 
 export default class ResponseConverters {
-  public toProposalInfo = (proposalInfo: RawProposalInfo, deserializePayloadAsJson: boolean): ProposalInfo => {
+  public toProposalInfo = (
+    proposalInfo: RawProposalInfo,
+    deserializePayloadAsJson: boolean
+  ): ProposalInfo => {
     return {
       id: proposalInfo.id.length ? this.toNeuronId(proposalInfo.id[0]) : null,
       ballots: proposalInfo.ballots.map((b) => this.toBallot(b[0], b[1])),
@@ -138,7 +141,9 @@ export default class ResponseConverters {
     response: RawListProposalInfoResponse
   ): ListProposalsResponse => {
     return {
-      proposals: response.proposal_info.map(p => this.toProposalInfo(p, false)),
+      proposals: response.proposal_info.map((p) =>
+        this.toProposalInfo(p, false)
+      ),
     };
   };
 
@@ -341,26 +346,39 @@ export default class ResponseConverters {
     };
   };
 
-  private toProposal = (proposal: RawProposal, includePayload: boolean): Proposal => {
+  private toProposal = (
+    proposal: RawProposal,
+    includePayload: boolean
+  ): Proposal => {
     return {
       title: proposal.title.length ? proposal.title[0] : null,
       url: proposal.url,
-      action: proposal.action.length ? this.toAction(proposal.action[0], includePayload) : null,
+      action: proposal.action.length
+        ? this.toAction(proposal.action[0], includePayload)
+        : null,
       summary: proposal.summary,
     };
   };
 
-  private toAction = (action: RawAction, deserializePayloadAsJson: boolean): Action => {
+  private toAction = (
+    action: RawAction,
+    deserializePayloadAsJson: boolean
+  ): Action => {
     if ("ExecuteNnsFunction" in action) {
       const executeNnsFunction = action.ExecuteNnsFunction;
       const payloadBytes = arrayOfNumberToArrayBuffer(
-          executeNnsFunction.payload
+        executeNnsFunction.payload
       );
 
       let payload: Record<string, unknown> = {};
       if (deserializePayloadAsJson) {
-        const payloadString = new TextDecoder().decode(payloadBytes);
-        payload = JSON.parse(payloadString);
+        try {
+          const payloadString = new TextDecoder().decode(payloadBytes);
+          payload = JSON.parse(payloadString);
+        } catch (e) {
+          console.log("Unable to parse payload: " + e);
+          payload = { error: "Unable to parse payload" };
+        }
       }
 
       return {

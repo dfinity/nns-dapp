@@ -18,12 +18,7 @@ pub async fn claim_or_refresh_neuron_from_account(
 }
 
 pub async fn get_proposal_info(proposal_id: u64) -> Result<Option<ProposalInfo>, String> {
-    dfn_core::call(
-        GOVERNANCE_CANISTER_ID,
-        "get_proposal_info",
-        candid,
-        (proposal_id,),
-    )
-    .await
-    .map_err(|e| e.1)
+    dfn_core::call(GOVERNANCE_CANISTER_ID, "get_proposal_info", candid, (proposal_id,))
+        .await
+        .map_err(|e| e.1)
 }
