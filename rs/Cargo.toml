@@ -18,19 +18,19 @@ lzma-rs = "0.2.0"
 tar = "0.4.37"
 hex = "0.4.3"
 
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
-dfn_json = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
-dfn_macro = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
+dfn_json = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
+dfn_macro = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
 ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
-ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
-ledger-canister = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "defec3353c6caa2cfd04945ff2ecd53f754f8f5e" }
+ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
+ledger-canister = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "42a4bc4b7917a44c58c9cf907d84b9fd8e908ed9" }
 
 [dev-dependencies]
 maplit = "1.0.2"
