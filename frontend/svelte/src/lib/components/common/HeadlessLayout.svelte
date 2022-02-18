@@ -63,9 +63,8 @@
 
   main {
     position: absolute;
-    inset: calc(var(--headless-layout-header-height)) 0 0;
-    padding-top: calc(5 * var(--padding));
 
+    inset: calc(var(--headless-layout-header-height)) 0 0;
     overflow: auto;
 
     background-color: var(--gray-50-background);

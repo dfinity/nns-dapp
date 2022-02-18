@@ -16,6 +16,7 @@
   import {
     proposalFirstActionKey,
     proposalActionFields,
+    formatProposalSummary,
   } from "../lib/utils/proposals.utils";
   import { routeContext } from "../lib/utils/route.utils";
 
@@ -93,7 +94,7 @@
       {#if proposalInfo}
         <!-- ProposalStateCard -->
         <Card>
-          <p slot="start">{proposal?.title}</p>
+          <h2 slot="start" class="headline">{proposal?.title}</h2>
           <Badge slot="end" {color}
             >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
           >
@@ -105,30 +106,39 @@
               {@html formatProposalSummary(proposal?.summary)}
             </p>
           </CardBlock>
-          <a class="TODO_color-blue" href={proposal.url}>{proposal.url}</a>
-          <!-- TODO: show neuron modal https://dfinity.atlassian.net/browse/L2-282 -->
-          <a
-            class="TODO_color-blue"
-            href="TODO: show NeuronInfoWidget(proposal.proposer)"
-            >Proposer: {proposalInfo.proposer}</a
-          >
-          <p>
-            <!-- TODO: util? -->
-            Topic: {$i18n.topics[Topic[proposalInfo.topic]]?.replace(
-              "Topic.",
-              ""
-            )}
-          </p>
-          <p>Id: {proposalInfo.id}</p>
+
+          <div class="meta">
+            <a class="TODO_color-blue" href={proposal.url}>{"proposal.url"}</a>
+
+            <!-- TODO: show neuron modal https://dfinity.atlassian.net/browse/L2-282 -->
+            <a
+              class="TODO_color-blue"
+              href="TODO: show NeuronInfoWidget(proposal.proposer)"
+              >Proposer: {proposalInfo.proposer}</a
+            >
+            <p>
+              <!-- TODO: util? -->
+              Topic: {$i18n.topics[Topic[proposalInfo.topic]]?.replace(
+                "Topic.",
+                ""
+              )}
+            </p>
+            <p>Id: {proposalInfo.id}</p>
+          </div>
 
           <CardBlock>
-            <h3 slot="title">{proposalFirstActionKey(proposal)}</h3>
+            <h3 class="block-title" slot="title">
+              {proposalFirstActionKey(proposal)}
+            </h3>
             <div>
-              <!-- TODO: parse or replace? -->
-              {#each proposalActionFields(proposal) as [key, value]}
-                <h4>{key}</h4>
-                <p>{value}</p>
-              {/each}
+              <ul>
+                {#each proposalActionFields(proposal) as [key, value]}
+                  <li>
+                    <h4>{key}</h4>
+                    <p>{value}</p>
+                  </li>
+                {/each}
+              </ul>
             </div>
           </CardBlock>
         </Card>
@@ -195,7 +205,98 @@
 {/if}
 
 <style lang="scss">
+  @use "../lib/themes/mixins/media";
+
+  .headline {
+    font-size: var(--font-size-h5);
+    line-height: var(--line-height-standard);
+    overflow-wrap: break-word;
+
+    @include media.min-width(medium) {
+      margin-top: calc(0.5 * var(--padding));
+      font-size: var(--font-size-h3);
+    }
+  }
+
+  .block-title {
+    font-size: var(--font-size-h5);
+
+    @include media.min-width(medium) {
+      font-size: var(--font-size-h3);
+    }
+  }
+
   .summary {
+    font-size: var(--font-size-small);
+    color: var(--gray-100);
     white-space: break-spaces;
+
+    @include media.min-width(medium) {
+      font-size: var(--font-size-small);
+    }
+
+    :global(a) {
+      font-size: var(--font-size-small);
+      color: var(--blue-400);
+      line-height: var(--line-height-standard);
+      text-decoration: none;
+    }
+  }
+
+  .meta {
+    margin: calc(3 * var(--padding)) 0;
+
+    a,
+    p {
+      margin: 0 0 calc(0.5 * var(--padding));
+      display: block;
+
+      font-size: var(--font-size-h5);
+      line-height: var(--line-height-standard);
+      text-decoration: none;
+      color: var(--gray-100);
+
+      @include media.min-width(medium) {
+        font-size: var(--font-size-h4);
+      }
+    }
+    a {
+      margin: -2px -5px;
+      padding: 2px 5px;
+      width: fit-content;
+      border-radius: calc(0.5 * var(--border-radius));
+
+      &:hover {
+        background: var(--background-tint);
+      }
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      margin-bottom: var(--padding);
+
+      h4 {
+        font-size: var(--font-size-ultra-small);
+        color: var(--background-contrast);
+        line-height: 1;
+
+        @include media.min-width(medium) {
+          font-size: var(--font-size-small);
+        }
+      }
+      p {
+        font-size: var(--font-size-ultra-small);
+        color: var(--gray-100);
+
+        @include media.min-width(medium) {
+          font-size: var(--font-size-small);
+        }
+      }
+    }
   }
 </style>
