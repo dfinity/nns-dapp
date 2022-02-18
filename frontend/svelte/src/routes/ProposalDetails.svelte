@@ -100,8 +100,10 @@
 
           <CardBlock>
             <!-- TODO: implement expandable -- https://dfinity.atlassian.net/browse/L2-270 -->
-            <h3 slot="title">Proposal Summary</h3>
-            <p class="summary">{proposal?.summary}</p>
+            <h3 class="block-title" slot="title">Proposal Summary</h3>
+            <p class="summary">
+              {@html formatProposalSummary(proposal?.summary)}
+            </p>
           </CardBlock>
           <a class="TODO_color-blue" href={proposal.url}>{proposal.url}</a>
           <!-- TODO: show neuron modal https://dfinity.atlassian.net/browse/L2-282 -->

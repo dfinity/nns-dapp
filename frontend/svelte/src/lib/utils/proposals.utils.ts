@@ -35,3 +35,12 @@ export const proposalActionFields = (
       key === "payload" ? formatPayload(value) : `${value}`,
     ]);
 };
+
+export const formatProposalSummary = (summary: string): string => {
+  if (!summary) return "";
+  // extend urls
+  return summary.replace(
+    /(https?:\/\/[\S]+)/g,
+    '<a target="_blank" href="$1">$1</a>'
+  );
+};
