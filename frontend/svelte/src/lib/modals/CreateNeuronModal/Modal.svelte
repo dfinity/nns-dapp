@@ -30,13 +30,10 @@
     }
   );
 
-  let wizardState: WizardState;
-  // No need to unsubscribe, when the component is unmounted, this store instance also disappears
-  wizardStore.subscribe((value) => (wizardState = value));
   let currentStep: number = 0;
-  $: currentStep = wizardState.currentIndex;
+  $: currentStep = $wizardStore.currentIndex;
   let diffIndex: number = 0;
-  $: diffIndex = wizardState.currentIndex - wizardState.previousIndex;
+  $: diffIndex = $wizardStore.currentIndex - $wizardStore.previousIndex;
   const chooseAccount = () => {
     // TODO: Apply account selection
     wizardStore.next();
