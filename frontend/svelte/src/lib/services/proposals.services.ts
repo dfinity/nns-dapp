@@ -82,6 +82,7 @@ export const getProposalInfo = async ({
   return proposal || queryProposalInfo({ proposalId });
 };
 
+// TODO: switch to NDAPP canister -- https://dfinity.atlassian.net/browse/L2-267
 const queryProposalInfo = async ({
   proposalId,
 }: {

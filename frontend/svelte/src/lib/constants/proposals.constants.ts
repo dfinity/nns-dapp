@@ -23,3 +23,15 @@ export const DEFAULT_PROPOSALS_FILTERS = {
     ProposalStatus.PROPOSAL_STATUS_EXECUTED,
   ],
 };
+
+export const PROPOSAL_COLOR: Record<
+  ProposalStatus,
+  "warning" | "success" | undefined
+> = {
+  [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: "success",
+  [ProposalStatus.PROPOSAL_STATUS_OPEN]: "warning",
+  [ProposalStatus.PROPOSAL_STATUS_UNKNOWN]: undefined,
+  [ProposalStatus.PROPOSAL_STATUS_REJECTED]: undefined,
+  [ProposalStatus.PROPOSAL_STATUS_ACCEPTED]: undefined,
+  [ProposalStatus.PROPOSAL_STATUS_FAILED]: undefined,
+};

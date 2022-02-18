@@ -6,6 +6,7 @@
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
+  import { PROPOSAL_COLOR } from "../../constants/proposals.constants";
 
   export let proposalInfo: ProposalInfo;
 
@@ -16,22 +17,13 @@
 
   $: ({ proposal, status } = proposalInfo);
 
-  const colors: Record<string, "warning" | "success" | undefined> = {
-    [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: "success",
-    [ProposalStatus.PROPOSAL_STATUS_OPEN]: "warning",
-    [ProposalStatus.PROPOSAL_STATUS_UNKNOWN]: undefined,
-    [ProposalStatus.PROPOSAL_STATUS_REJECTED]: undefined,
-    [ProposalStatus.PROPOSAL_STATUS_ACCEPTED]: undefined,
-    [ProposalStatus.PROPOSAL_STATUS_FAILED]: undefined,
-  };
-
   const showProposal = () => {
     routeStore.navigate({
       path: `${AppPath.ProposalDetails}/${proposalInfo.id}`,
     });
   };
 
-  $: color = colors[status];
+  $: color = PROPOSAL_COLOR[status];
 </script>
 
 <!-- TODO(L2-206): display all proposal information as in production -->

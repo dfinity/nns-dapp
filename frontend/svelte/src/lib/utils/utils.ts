@@ -13,14 +13,18 @@ export const debounce = (func: Function, timeout?: number) => {
 };
 
 /**
- * FOR DEBUG PURPUSES ONLY!
  * Transform bigint to string to avoid serialization error.
  */
-export const stringifyJson = (value: object): string => {
+export const stringifyJson = ({
+  value,
+  indentation = 2,
+}: {
+  value: object;
+  indentation?: number;
+}): string => {
   return JSON.stringify(
     value,
-    (key, value) =>
-      typeof value === "bigint" ? `${value.toString()}n` : value,
-    2
+    (key, value) => (typeof value === "bigint" ? value.toString() : value),
+    indentation
   );
 };
