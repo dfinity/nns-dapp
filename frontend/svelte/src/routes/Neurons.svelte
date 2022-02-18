@@ -55,3 +55,9 @@
     />
   </Layout>
 {/if}
+
+<style lang="scss">
+  p {
+    margin-bottom: calc(2 * var(--padding));
+  }
+</style>

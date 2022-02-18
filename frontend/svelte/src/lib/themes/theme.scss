@@ -68,6 +68,11 @@ p {
   margin: 0;
 }
 
+ul {
+  padding-inline-start: calc(2 * var(--padding));
+  margin: 0;
+}
+
 /** Input */
 
 /* Chrome, Safari, Edge, Opera */
