@@ -25,8 +25,6 @@ describe("landing page", () => {
     );
 
     await browser["screenshot"]("landing-page");
-
-    await browser.$("button").waitForExist();
   });
 
   it("register and back to dashboard", async () => {
@@ -46,8 +44,6 @@ describe("landing page", () => {
     // https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/#authorize
     const iiURL = "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/#authorize"
     await browser.switchWindow(iiURL);
-    // Wait for redirect to finish
-    await browser.pause(10_000);
     const registerButton = await browser.$("#registerButton");
     await registerButton.waitForExist({ timeout: 10_000 });
     await registerButton.click();
