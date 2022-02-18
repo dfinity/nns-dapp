@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 
 export type State = {
   currentIndex: number;
@@ -10,6 +10,10 @@ const initialState: State = {
   previousIndex: 0,
 };
 
+function enumSize<EnumType>(enm: EnumType): number {
+  return Object.values(enm).filter(isNaN).length;
+}
+
 /**
  * A store that contains the index of the step being rendered
  * - subscribe: subscribe to the value
@@ -17,23 +21,32 @@ const initialState: State = {
  * - back: move to the previous step
  * - reset: reset to the initial state
  */
-export const initWizardStore = () => {
-  const { subscribe, update, set } = writable<State>(initialState);
+export const initWizardStore = <EnumType>(steps: EnumType) => {
+  const store = writable<State>(initialState);
+  const { subscribe, update, set } = store;
 
   return {
     subscribe,
     next() {
-      update(({ currentIndex }) => ({
-        currentIndex: currentIndex + 1,
-        previousIndex: currentIndex,
-      }));
+      update(({ currentIndex, previousIndex }) =>
+        currentIndex < enumSize(steps) - 1
+          ? {
+              currentIndex: currentIndex + 1,
+              previousIndex: currentIndex,
+            }
+          : { currentIndex, previousIndex }
+      );
     },
     back() {
       update(({ currentIndex, previousIndex }) =>
-        currentIndex - 1 >= 0
+        currentIndex > 0
           ? { currentIndex: currentIndex - 1, previousIndex: currentIndex }
           : { currentIndex, previousIndex }
       );
+    },
+    diff() {
+      let state: State = get(store);
+      return state.currentIndex - state.previousIndex;
     },
     reset() {
       set(initialState);
