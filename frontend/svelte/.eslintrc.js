@@ -2,6 +2,7 @@ module.exports = {
   root: true,
   parser: "@typescript-eslint/parser",
   extends: [
+    // TODO: Team meeting to decide rules
     // "plugin:@typescript-eslint/recommended",
     // "plugin:@typescript-eslint/recommended-requiring-type-checking",
   ],
