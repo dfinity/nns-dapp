@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage>
 
   late PageController _pageController;
   final int currentTab = 0;
+  int indicator_index = 0;
 
   @override
   void initState() {
@@ -189,10 +190,27 @@ class _HomePageState extends State<HomePage>
                           child: TabBar(
                             onTap: (index) {
                               _pageController.jumpToPage(index);
+                              setState(() {
+                                indicator_index = index;
+                              });
                             },
                             indicator: BoxDecoration(
-                                color: Colors.transparent, //Color(0xff0081FF),
-                                borderRadius: BorderRadius.circular(8)),
+                                color: Color(0xff0081FF),
+                                borderRadius: indicator_index == 0
+                                    ? BorderRadius.only(
+                                        topLeft: Radius.circular(8),
+                                        bottomLeft: Radius.circular(8),
+                                        topRight: Radius.circular(0),
+                                        bottomRight: Radius.circular(0))
+                                    : indicator_index == 3
+                                        ? BorderRadius.only(
+                                            topLeft: Radius.circular(0),
+                                            bottomLeft: Radius.circular(0),
+                                            topRight: Radius.circular(8),
+                                            bottomRight: Radius.circular(8))
+                                        : BorderRadius.all(
+                                            Radius.zero,
+                                          )),
                             indicatorSize: TabBarIndicatorSize.tab,
                             labelPadding: EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 10),
