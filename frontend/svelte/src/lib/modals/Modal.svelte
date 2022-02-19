@@ -3,18 +3,16 @@
   import { quintOut } from "svelte/easing";
   import IconClose from "../icons/IconClose.svelte";
   import { createEventDispatcher } from "svelte";
-  import IconBack from "../icons/IconBack.svelte";
+  import IconBackIosNew from "../icons/IconBackIosNew.svelte";
   import { i18n } from "../stores/i18n";
 
   export let visible: boolean = false;
   export let theme: "dark" | "light" = "light";
+  export let size: "small" | "medium" = "small";
   // There is no way to know to know whether a parent is listening to the "nnsBack" event
   // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
   // Please do not use `showBackButton` without listening on `nnsBack`
   export let showBackButton: boolean = false;
-
-  let dark: boolean;
-  $: dark = theme === "dark";
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
@@ -23,8 +21,7 @@
 
 {#if visible}
   <div
-    class="modal"
-    class:dark
+    class={`modal ${theme}`}
     transition:fade
     role="dialog"
     aria-labelledby="modalTitle"
@@ -33,14 +30,14 @@
     <div class="backdrop" on:click={close} />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
-      class="wrapper"
+      class={`wrapper ${size}`}
     >
       <div class="toolbar">
         {#if showBackButton}
           <button
             class="back"
             on:click|stopPropagation={back}
-            aria-label={$i18n.modals.back}><IconBack /></button
+            aria-label={$i18n.modals.back}><IconBackIosNew /></button
           >
         {/if}
         <h3 id="modalTitle"><slot name="title" /></h3>
@@ -106,7 +103,7 @@
     display: flex;
     flex-direction: column;
 
-    width: 320px;
+    width: var(--modal-small-width);
     height: fit-content;
     max-width: calc(100vw - (4 * var(--padding)));
     max-height: calc(100vw - (2 * var(--padding)));
@@ -117,6 +114,10 @@
     border-radius: calc(2 * var(--border-radius));
 
     overflow: hidden;
+
+    &.medium {
+      width: var(--modal-medium-width);
+    }
   }
 
   .toolbar {
@@ -127,6 +128,8 @@
 
     display: grid;
     grid-template-columns: var(--icon-width) 1fr var(--icon-width);
+
+    z-index: var(--z-index);
 
     h3 {
       color: inherit;

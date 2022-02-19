@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "copy:index": "node ./scripts/copy.index.mjs",
-    "i18n": "node --experimental-json-modules ./scripts/i18n.types.mjs",
+    "i18n": "node scripts/i18n.types.js",
     "import-assets": "rm -fr public/assets/assets && mkdir -p public/assets && cp -R ../dart/assets public/assets",
-    "build": "rm -fr public/assets/assets && npm run i18n && rollup -c && npm run copy:index && ./scripts/sort-css",
+    "build": "rm -fr public/assets/assets && npm run i18n && rollup -c && npm run copy:index",
     "dev": "npm run import-assets && npm run i18n && BASE_HREF=/ npm run copy:index && rollup -c -w",
     "start": "sirv public",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "check": "svelte-check --tsconfig ./tsconfig.json && npm run lint",
+    "lint": "eslint './src/**/*.{js,ts,svelte}'",
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "jest",
     "test:watch": "npm run test -- --watchAll"
@@ -25,7 +26,11 @@
     "@testing-library/svelte": "^3.0.3",
     "@tsconfig/svelte": "^2.0.0",
     "@types/jest": "^27.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
     "autoprefixer": "^10.4.1",
+    "eslint": "^8.9.0",
+    "eslint-plugin-svelte3": "^3.4.0",
     "jest": "^27.4.7",
     "postcss": "^8.4.5",
     "postcss-load-config": "^3.1.1",
@@ -33,7 +38,6 @@
     "prettier-plugin-organize-imports": "^2.3.4",
     "prettier-plugin-svelte": "^2.5.0",
     "rollup": "^2.3.4",
-    "rollup-plugin-css-bundle": "^1.0.4",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-livereload": "^2.0.0",
     "rollup-plugin-svelte": "^7.0.0",
@@ -49,12 +53,8 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
-    "@dfinity/agent": "^0.10.2",
-    "@dfinity/auth-client": "^0.10.2",
-    "@dfinity/authentication": "^0.10.2",
-    "@dfinity/candid": "^0.10.2",
-    "@dfinity/identity": "^0.10.2",
-    "@dfinity/nns": "^0.2.0",
-    "@dfinity/principal": "^0.10.2"
+    "@dfinity/auth-client": "^0.10.3",
+    "@dfinity/identity": "^0.10.3",
+    "@dfinity/nns": "^0.2.1"
   }
 }

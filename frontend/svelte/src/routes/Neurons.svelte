@@ -6,6 +6,7 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
+  import CreateNeuronModal from "../lib/modals/CreateNeuronModal/Modal.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -22,8 +23,10 @@
 
   onDestroy(unsubscribe);
 
-  // TODO: TBD https://dfinity.atlassian.net/browse/L2-226
-  const stakeNeurons = () => alert("Stake Neurons");
+  let showStakeNeuronModal: boolean = false;
+  const stakeNeurons = () => (showStakeNeuronModal = true);
+
+  const closeModal = () => (showStakeNeuronModal = false);
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -46,5 +49,9 @@
         >
       </Toolbar>
     </svelte:fragment>
+    <CreateNeuronModal
+      on:nnsClose={closeModal}
+      visible={showStakeNeuronModal}
+    />
   </Layout>
 {/if}

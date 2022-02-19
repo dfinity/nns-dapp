@@ -7,6 +7,7 @@
   import { i18n } from "../lib/stores/i18n";
   import Toasts from "../lib/components/ui/Toasts.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
+  import { errorToString } from "../lib/utils/error.utils";
 
   let signedIn: boolean = false;
 
@@ -18,7 +19,7 @@
       toastsStore.show({
         labelKey: "error.sign_in",
         level: "error",
-        detail: typeof err === "string" ? (err as string) : undefined,
+        detail: errorToString(err),
       });
       console.error(err);
     }
@@ -66,7 +67,7 @@
   </main>
 
   <img
-    src="/assets/assets/ic-badge-built-on-crypto_label-stripe-for-dark.svg"
+    src="/assets/assets/ic-badge-powered-by_label-stripe-white-text.svg"
     role="presentation"
     alt={$i18n.auth.powered_by}
     class="bottom-banner"

@@ -7,14 +7,16 @@
   import { routeContext, routePath } from "../../utils/route.utils";
   import { routeStore } from "../../stores/route.store";
   import { isSignedIn } from "../../utils/auth.utils";
+  import { isRoutePath } from "../../utils/app-path.utils";
+  import type { AppPath } from "../../constants/routes.constants";
 
-  export let path: string;
+  export let path: AppPath;
   export let component: typeof SvelteComponent;
 
   let signedIn: boolean = false;
 
   const redirectLogin = () => {
-    if (signedIn || routePath() !== path) {
+    if (signedIn || !isRoutePath({ path, routePath: routePath() })) {
       return;
     }
 
