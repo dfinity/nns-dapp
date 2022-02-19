@@ -1,21 +1,17 @@
-import { memoize } from "../lib/utils/optimization.utils";
+import { AppPath } from "../constants/routes.constants";
+import { memoize } from "./optimization.utils";
 
-export enum AppPath {
-  Authentication = "/",
-  Accounts = "/#/accounts",
-  Neurons = "/#/neurons",
-  Proposals = "/#/proposals",
-  Canisters = "/#/canisters",
-  Wallet = "/#/wallet",
-  ProposalDetails = "/#/proposal",
-}
-
-export const pathValidation = (path: AppPath): string =>
+const pathValidation = (path: AppPath): string =>
   ({
     // exceptions only
     [AppPath.Wallet]: `${AppPath.Wallet}/[a-zA-Z0-9]+`,
     [AppPath.ProposalDetails]: `${AppPath.ProposalDetails}/[0-9]+`,
   }[path] || path);
+
+export const isAppPath = (routePath: string): routePath is AppPath =>
+  Boolean(
+    Object.values(AppPath).find((path) => isRoutePath({ path, routePath }))
+  );
 
 export const isRoutePath: ({
   path,

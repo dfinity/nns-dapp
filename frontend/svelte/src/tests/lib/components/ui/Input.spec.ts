@@ -186,4 +186,20 @@ describe("Input", () => {
     });
     expect(getByText("Test Button")).toBeInTheDocument();
   });
+
+  it("should not be disabled per default", () => {
+    const { container } = render(Input, {
+      props: { ...props },
+    });
+
+    testHasAttribute({ container, attribute: "disabled", expected: false });
+  });
+
+  it("should render a disabled input", () => {
+    const { container } = render(Input, {
+      props: { ...props, disabled: true },
+    });
+
+    testHasAttribute({ container, attribute: "disabled", expected: true });
+  });
 });

@@ -91,46 +91,39 @@ pub struct BlessReplicaVersionPayload {
     pub release_package_sha256_hex: String,
 }
 
-// https://gitlab.com/dfinity-lab/core/ic/-/blob/0ebe354b26d904326536d8725c8a5056f0ebb0d8/rs/registry/canister/src/mutations/do_update_subnet.rs#L51
 #[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct UpdateSubnetPayload {
-    pub subnet_id: SubnetId,
-
-    pub ingress_bytes_per_block_soft_cap: Option<u64>,
-    pub max_ingress_bytes_per_message: Option<u64>,
-    pub max_block_payload_size: Option<u64>,
-    pub unit_delay_millis: Option<u64>,
-    pub initial_notary_delay_millis: Option<u64>,
-    pub dkg_interval_length: Option<u64>,
+    // Entries are from: https://gitlab.com/dfinity-lab/public/ic/-/blob/bd95c0f9a9c8e04c7124e98f3d12c8dd9cae1681/rs/registry/canister/canister/registry.did
+    // ecdsa_config <-- Omitted for some reason.
+    // pub ingress_bytes_per_block_soft_cap: Option<u64>, <-- Not upstream.
+    pub advert_best_effort_percentage: Option<u32>,
     pub dkg_dealings_per_block: Option<u64>,
-
+    pub dkg_interval_length: Option<u64>,
+    pub features: Option<SubnetFeatures>,
+    pub initial_notary_delay_millis: Option<u64>,
+    pub is_halted: Option<bool>,
     pub max_artifact_streams_per_peer: Option<u32>,
+    pub max_block_payload_size: Option<u64>,
+    pub max_chunk_size: Option<u32>,
     pub max_chunk_wait_ms: Option<u32>,
     pub max_duplicity: Option<u32>,
-    pub max_chunk_size: Option<u32>,
-    pub receive_check_cache_size: Option<u32>,
-    pub pfn_evaluation_period_ms: Option<u32>,
-    pub registry_poll_period_ms: Option<u32>,
-    pub retransmission_request_ms: Option<u32>,
-    pub advert_best_effort_percentage: Option<u32>,
-
-    pub set_gossip_config_to_default: bool,
-
-    pub start_as_nns: Option<bool>,
-
-    pub subnet_type: Option<SubnetType>,
-
-    pub is_halted: Option<bool>,
-
+    pub max_ingress_bytes_per_message: Option<u64>,
+    pub max_ingress_messages_per_block: Option<u64>,
+    pub max_instructions_per_install_code: Option<u64>,
     pub max_instructions_per_message: Option<u64>,
     pub max_instructions_per_round: Option<u64>,
-    pub max_instructions_per_install_code: Option<u64>,
-    pub features: Option<SubnetFeatures>,
-
     pub max_number_of_canisters: Option<u64>,
-
-    pub ssh_readonly_access: Option<Vec<String>>,
+    pub pfn_evaluation_period_ms: Option<u32>,
+    pub receive_check_cache_size: Option<u32>,
+    pub registry_poll_period_ms: Option<u32>,
+    pub retransmission_request_ms: Option<u32>,
+    pub set_gossip_config_to_default: bool,
     pub ssh_backup_access: Option<Vec<String>>,
+    pub ssh_readonly_access: Option<Vec<String>>,
+    pub start_as_nns: Option<bool>,
+    pub subnet_id: SubnetId,
+    pub subnet_type: Option<SubnetType>,
+    pub unit_delay_millis: Option<u64>,
 }
 
 // https://github.com/dfinity-lab/dfinity/blob/bd842628a462dfa30604a2e2352fe50e9066d637/rs/registry/canister/src/mutations/do_recover_subnet.rs#L141
