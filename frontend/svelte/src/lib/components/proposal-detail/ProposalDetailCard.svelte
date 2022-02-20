@@ -10,6 +10,7 @@
     proposalActionFields,
     formatProposalSummary,
   } from "../../../lib/utils/proposals.utils";
+  import { removeHTMLTags } from "../../utils/security-utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -17,9 +18,10 @@
   // TODO: get rid of "as any"
   $: actionKey = proposalFirstActionKey(proposal as any);
   $: actionFields = proposalActionFields(proposal as any);
-  $: status = proposalInfo.status;
+  $: summary = formatProposalSummary(removeHTMLTags(proposal?.summary));
   // TODO: i18n
   $: topic = `Topic: ${$i18n.topics[Topic[proposalInfo.topic]]}`;
+  $: status = proposalInfo.status;
   $: color = PROPOSAL_COLOR[status];
 
   // TODO: show neuron modal https://dfinity.atlassian.net/browse/L2-282
@@ -38,8 +40,7 @@
     <!-- TODO: implement expandable -- https://dfinity.atlassian.net/browse/L2-270 -->
     <h3 class="block-title" slot="title">Proposal Summary</h3>
     <p class="summary">
-      <!-- TODO: add sanitizer -->
-      {@html formatProposalSummary(proposal?.summary)}
+      {@html summary}
     </p>
   </CardBlock>
 
