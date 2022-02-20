@@ -19,7 +19,7 @@
 
   const showProposal = () => {
     routeStore.navigate({
-      path: `${AppPath.ProposalDetails}/${proposalInfo.id}`,
+      path: `${AppPath.ProposalDetail}/${proposalInfo.id}`,
     });
   };
 
