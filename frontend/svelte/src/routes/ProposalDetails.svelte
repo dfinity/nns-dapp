@@ -23,11 +23,15 @@
   let proposalInfo: ProposalInfo;
   let proposal: Proposal;
   let status: ProposalStatus;
+  let latestTallyYes: bigint;
+  let latestTallyNo: bigint;
 
   // TODO: refactor
   $: if (proposalInfo) {
     proposal = proposalInfo.proposal;
     status = proposalInfo.status;
+    latestTallyYes = proposalInfo.latestTally.yes;
+    latestTallyNo = proposalInfo.latestTally.no;
   }
   $: color = PROPOSAL_COLOR[status];
 
@@ -145,18 +149,44 @@
 
         <!-- TODO: Adop/Reject card content -- https://dfinity.atlassian.net/browse/L2-269 -->
         <Card>
-          <CardBlock>
+          <div class="latest-tally">
             <h3>
-              Adopt <span>{`${formatICP(proposalInfo.latestTally.yes)}`}</span>
+              Adopt <span
+                >{`${formatICP({
+                  value: latestTallyYes,
+                  minFraction: 2,
+                  maxFraction: 2,
+                })}`}</span
+              >
             </h3>
-
+            <div
+              class="progressbar"
+              role="progressbar"
+              aria-valuenow={latestTallyYes}
+              aria-valuemin="0"
+              aria-valuemax={latestTallyYes + latestTallyNo}
+            >
+              <div
+                class="progressbar-value"
+                style="width: {(Number(latestTallyYes) /
+                  Number(latestTallyYes + latestTallyNo)) *
+                  100}%"
+              />
+            </div>
             <h3>
-              Reject <span>{`${formatICP(proposalInfo.latestTally.no)}`}</span>
+              Reject <span
+                >{`${formatICP({
+                  value: latestTallyNo,
+                  minFraction: 2,
+                  maxFraction: 2,
+                })}`}</span
+              >
             </h3>
+          </div>
 
-            <!-- TODO: Add to the same block - if (votedNeurons.isNotEmpty) -->
-            <h2>My Votes</h2>
-            <!-- final vote = e.voteForProposal(proposal);
+          <!-- TODO: Add to the same block - if (votedNeurons.isNotEmpty) -->
+          <h2>My Votes</h2>
+          <!-- final vote = e.voteForProposal(proposal);
               final image = (vote == Vote.YES)
               ? "assets/thumbs_up.svg"
               : "assets/thumbs_down.svg";
@@ -164,7 +194,6 @@
               ? Color(0xff80ACF8)
               : Color(0xffED1E78);
               return Row( -->
-          </CardBlock>
 
           <!-- TODO: implement MyVotesCard https://dfinity.atlassian.net/browse/L2-283 -->
           <CardBlock>MyVotesCard</CardBlock>
@@ -206,6 +235,53 @@
 
 <style lang="scss">
   @use "../lib/themes/mixins/media";
+
+  .latest-tally {
+    display: grid;
+
+    grid-template-columns: 110px 1fr 110px;
+    align-items: center;
+    height: var(--headless-layout-header-height);
+
+    @include media.min-width(medium) {
+      grid-template-columns: 130px 1fr 130px;
+    }
+
+    h3 {
+      font-size: var(--font-size-h4);
+      line-height: var(--line-height-standard);
+      text-align: center;
+
+      @include media.min-width(medium) {
+        font-size: var(--font-size-h3);
+      }
+
+      span {
+        display: block;
+        text-align: center;
+        font-size: var(--font-size-small);
+
+        @include media.min-width(medium) {
+          font-size: var(--font-size-h5);
+        }
+      }
+    }
+
+    .progressbar {
+      position: relative;
+      height: 10px;
+      background: var(--pink);
+
+      .progressbar-value {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+
+        background: var(--blue-200-shade);
+      }
+    }
+  }
 
   .headline {
     font-size: var(--font-size-h5);
