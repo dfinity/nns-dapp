@@ -11,7 +11,7 @@
   import { onDestroy } from "svelte";
   import { AuthStore, authStore } from "./lib/stores/auth.store";
   import Wallet from "./routes/Wallet.svelte";
-  import ProposalDetails from "./routes/ProposalDetail.svelte";
+  import ProposalDetail from "./routes/ProposalDetail.svelte";
   import { routeStore } from "./lib/stores/route.store";
   import { AppPath } from "./lib/constants/routes.constants";
   import Toasts from "./lib/components/ui/Toasts.svelte";
@@ -60,7 +60,7 @@
   <PrivateRoute path={AppPath.Proposals} component={Proposals} />
   <PrivateRoute path={AppPath.Canisters} component={Canisters} />
   <PrivateRoute path={AppPath.Wallet} component={Wallet} />
-  <PrivateRoute path={AppPath.ProposalDetails} component={ProposalDetails} />
+  <PrivateRoute path={AppPath.ProposalDetail} component={ProposalDetail} />
 </Guard>
 
 <Toasts />
