@@ -30,6 +30,8 @@
   $: if (proposalInfo) {
     proposal = proposalInfo.proposal;
     status = proposalInfo.status;
+    proposal.url =
+      "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md";
     latestTallyYes = proposalInfo.latestTally.yes;
     latestTallyNo = proposalInfo.latestTally.no;
   }
@@ -112,7 +114,11 @@
           </CardBlock>
 
           <div class="meta">
-            <a class="TODO_color-blue" href={proposal.url}>{"proposal.url"}</a>
+            {#if proposal?.url}
+              <a class="proposal-url" target="_blank" href={proposal.url}
+                >{proposal.url}</a
+              >
+            {/if}
 
             <!-- TODO: show neuron modal https://dfinity.atlassian.net/browse/L2-282 -->
             <a
@@ -337,13 +343,17 @@
       }
     }
     a {
-      margin: -2px -5px;
-      padding: 2px 5px;
+      margin: 0 -5px;
+      padding: 5px;
       width: fit-content;
       border-radius: calc(0.5 * var(--border-radius));
 
       &:hover {
         background: var(--background-tint);
+      }
+
+      &.proposal-url {
+        color: var(--blue-400);
       }
     }
   }
