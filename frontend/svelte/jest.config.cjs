@@ -8,7 +8,7 @@ module.exports = {
     "^.+\\.js$": "ts-jest",
   },
   moduleFileExtensions: ["js", "ts", "svelte"],
-  setupFilesAfterEnv: ["<rootDir>/jest-setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/jest-setup.ts", "<rootDir>/jest-spy.ts"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,svelte,js,jsx}"],
   testPathIgnorePatterns: ["nns-js"],
   testURL: "https://nns.ic0.app/",

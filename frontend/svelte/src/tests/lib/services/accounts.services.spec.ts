@@ -1,7 +1,7 @@
 import { LedgerCanister } from "@dfinity/nns";
 import { syncAccounts } from "../../../lib/services/accounts.services";
 import * as agent from "../../../lib/utils/agent.utils";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 import { MockLedgerCanister } from "../../mocks/ledger.canister.mock";
 
 describe("accounts-services", () => {
@@ -19,7 +19,7 @@ describe("accounts-services", () => {
 
     const spy = jest.spyOn(mockLedgerCanister, "accountBalance");
 
-    await syncAccounts({ principal: mockPrincipal });
+    await syncAccounts({ identity: mockIdentity });
 
     expect(spy).toHaveReturnedTimes(1);
   });

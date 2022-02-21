@@ -107,6 +107,8 @@ export default {
       "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
         envConfig.REDIRECT_TO_LEGACY
       ),
+      "process.env.FETCH_ROOT_KEY": JSON.stringify(envConfig.FETCH_ROOT_KEY),
+      "process.env.HOST": JSON.stringify(envConfig.HOST),
     }),
 
     // In dev mode, call `npm run start` once
