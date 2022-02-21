@@ -373,11 +373,18 @@ export default class ServiceApi {
   };
 
   public mergeMaturity = (
+    identity: Identity,
     request: MergeMaturityRequest
   ): Promise<MergeMaturityResponse> => {
-    return executeWithLogging(() =>
-      this.governanceService.mergeMaturity(request)
-    );
+    return executeWithLogging(async () => {
+      if (identity instanceof LedgerIdentity) {
+        // If this is a hardware wallet, ensure the user is using the correct
+        // version of the Ledger app.
+        await verifyHardwareWalletV2(identity);
+      }
+
+      return (await governanceService(identity)).mergeMaturity(request);
+    });
   };
 
   public createNeuron = async (
@@ -694,4 +701,16 @@ function setupExports(governance: GovernanceService) {
       },
     },
   };
+}
+
+/**
+ * Verifies that the ledger wallet has a version of the 'Internet Computer' app that's >= 2.0
+ *
+ * @param identity The identity of the Ledger device.
+ */
+async function verifyHardwareWalletV2(identity: LedgerIdentity): Promise<void> {
+  const version = await identity.getVersion();
+  if (version.major < 2) {
+    throw `You are using an out of date 'Internet Computer' Ledger app (version ${version.major}.${version.minor}.${version.patch}). Please upgrade to version >= 2.0.2.`;
+  }
 }

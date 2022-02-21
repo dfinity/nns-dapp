@@ -225,11 +225,21 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> mergeMaturity(
-      {required BigInt neuronId, required int percentageToMerge}) async {
-    await promiseToFuture(serviceApi!.mergeMaturity(MergeMaturityRequest(
-        neuronId: neuronId.toJS, percentageToMerge: percentageToMerge)));
-    await fetchNeuron(neuronId: neuronId);
+  Future<Result<Unit, Exception>> mergeMaturity(
+      {required Neuron neuron, required int percentageToMerge}) async {
+    try {
+      final identity = (await getIdentityByNeuron(neuron)).unwrap();
+
+      await promiseToFuture(serviceApi!.mergeMaturity(
+          identity,
+          MergeMaturityRequest(
+              neuronId: neuron.id.toBigInt.toJS,
+              percentageToMerge: percentageToMerge)));
+      await fetchNeuron(neuronId: neuron.id.toBigInt);
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
   }
 
   @override
@@ -572,7 +582,8 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   Future<List<FolloweeSuggestion>> _followeeSuggestions(
       [bool certified = true]) async {
-    final res = await promiseToFuture(serviceApi!.followeeSuggestions(certified));
+    final res =
+        await promiseToFuture(serviceApi!.followeeSuggestions(certified));
     final response = jsonDecode(stringify(res)) as List<dynamic>;
     return response
         .map((e) => FolloweeSuggestion(e["name"], e["description"], e["id"]))

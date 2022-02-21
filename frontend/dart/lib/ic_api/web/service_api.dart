@@ -107,7 +107,7 @@ class ServiceApi {
   external Promise<dynamic> disburseToNeuron(dynamic request);
 
   @JS("mergeMaturity")
-  external Promise<dynamic> mergeMaturity(dynamic request);
+  external Promise<dynamic> mergeMaturity(dynamic identity, dynamic request);
 
   @JS("makeMotionProposal")
   external Promise<dynamic> makeMotionProposal(dynamic request);
