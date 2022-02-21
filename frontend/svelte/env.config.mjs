@@ -47,7 +47,8 @@ const REDIRECT_TO_LEGACY = ["true", "1"].includes(
   process.env.REDIRECT_TO_LEGACY
 )
   ? true
-  : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY) || ENVIRONMENT === 'local'
+  : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY) ||
+    ENVIRONMENT === "local"
   ? false
   : true; // default
 
