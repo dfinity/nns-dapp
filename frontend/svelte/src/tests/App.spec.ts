@@ -4,6 +4,7 @@
 
 import { LedgerCanister } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import App from "../App.svelte";
 import { authStore } from "../lib/stores/auth.store";
 import {
@@ -37,6 +38,8 @@ describe("App", () => {
     authStoreMock.next({
       identity: mockIdentity,
     });
+
+    await tick();
 
     expect(spyLedger).toHaveBeenCalledTimes(1);
   });
