@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage>
 
   late PageController _pageController;
   final int currentTab = 0;
-  int indicator_index = 0;
+  int indicatorIndex = 0;
 
   @override
   void initState() {
@@ -191,18 +191,18 @@ class _HomePageState extends State<HomePage>
                             onTap: (index) {
                               _pageController.jumpToPage(index);
                               setState(() {
-                                indicator_index = index;
+                                indicatorIndex = index;
                               });
                             },
                             indicator: BoxDecoration(
                                 color: Color(0xff0081FF),
-                                borderRadius: indicator_index == 0
+                                borderRadius: indicatorIndex == 0
                                     ? BorderRadius.only(
                                         topLeft: Radius.circular(8),
                                         bottomLeft: Radius.circular(8),
                                         topRight: Radius.circular(0),
                                         bottomRight: Radius.circular(0))
-                                    : indicator_index == 3
+                                    : indicatorIndex == 3
                                         ? BorderRadius.only(
                                             topLeft: Radius.circular(0),
                                             bottomLeft: Radius.circular(0),
