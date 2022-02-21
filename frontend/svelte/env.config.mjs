@@ -24,13 +24,12 @@ const MAINNET = `https://${domainMainnet}`;
 
 const IDENTITY_SERVICE_URL =
   process.env.IDENTITY_SERVICE_URL ||
-  (process.env.DEPLOY_ENV === "testnet"
+  (development
     ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
     : "https://identity.ic0.app/");
 
 const HOST =
-  process.env.HOST ||
-  (process.env.DEPLOY_ENV === "testnet" ? `https://${domainTestnet}/` : "");
+  process.env.HOST || (development ? `https://${domainTestnet}/` : "");
 
 const GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";
 const LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
@@ -48,13 +47,13 @@ const REDIRECT_TO_LEGACY = ["true", "1"].includes(
   process.env.REDIRECT_TO_LEGACY
 )
   ? true
-  : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
+  : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY) || ENVIRONMENT === 'local'
   ? false
   : true; // default
 
 export const envConfig = {
   ENVIRONMENT,
-  DEPLOY_ENV: process.env.DEPLOY_ENV,
+  DEPLOY_ENV: process.env.DEPLOY_ENV || (development ? "testnet" : "mainnet"),
   FETCH_ROOT_KEY: development,
   REDIRECT_TO_LEGACY,
   MAINNET,
