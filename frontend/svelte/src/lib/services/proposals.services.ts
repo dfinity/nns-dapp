@@ -11,6 +11,7 @@ import {
   ProposalsFiltersStore,
   proposalsStore,
 } from "../stores/proposals.store";
+import { excludeTopics } from "../utils/proposals.utils";
 
 export const listProposals = async ({
   clearBeforeQuery = false,
@@ -52,7 +53,9 @@ const queryProposals = async ({
   // TODO(L2-206): use createAgent
   const governance: GovernanceCanister = GovernanceCanister.create();
 
-  const { rewards, status }: ProposalsFiltersStore = get(proposalsFiltersStore);
+  const { rewards, status, topics }: ProposalsFiltersStore = get(
+    proposalsFiltersStore
+  );
 
   // TODO(L2-206): implement excludeTopic
   // TODO(L2-2069: implement 'Hide "Open" proposals where all your neurons have voted or are ineligible to vote'
@@ -61,7 +64,7 @@ const queryProposals = async ({
     request: {
       limit: LIST_PAGINATION_LIMIT,
       beforeProposal,
-      excludeTopic: [],
+      excludeTopic: excludeTopics(topics),
       includeRewardStatus: rewards,
       includeStatus: status,
     },
