@@ -19,6 +19,7 @@
     listProposals,
   } from "../lib/services/proposals.services";
   import type { ProposalInfo } from "@dfinity/nns";
+  import { authStore } from "../lib/stores/auth.store";
 
   let loading: boolean = false;
 
@@ -27,7 +28,10 @@
 
     // TODO(L2-206): catch and display errors
 
-    await listNextProposals({ beforeProposal: lastProposalId(proposals) });
+    await listNextProposals({
+      beforeProposal: lastProposalId(proposals),
+      identity: $authStore.identity,
+    });
 
     loading = false;
   };
@@ -38,7 +42,10 @@
     // TODO(L2-206): catch and display errors
 
     // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
-    await listProposals({ clearBeforeQuery: !emptyProposals(proposals) });
+    await listProposals({
+      clearBeforeQuery: !emptyProposals(proposals),
+      identity: $authStore.identity,
+    });
 
     loading = false;
   };
