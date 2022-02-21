@@ -19,8 +19,9 @@
   $: actionKey = proposalFirstActionKey(proposal as any);
   $: actionFields = proposalActionFields(proposal as any);
   $: summary = formatProposalSummary(removeHTMLTags(proposal?.summary));
-  // TODO: i18n
-  $: topic = `Topic: ${$i18n.topics[Topic[proposalInfo.topic]]}`;
+  $: topic = `${$i18n.proposal_detail.topic_prefix} ${
+    $i18n.topics[Topic[proposalInfo.topic]]
+  }`;
   $: status = proposalInfo.status;
   $: color = PROPOSAL_COLOR[status];
 
@@ -57,8 +58,7 @@
     <p>
       {topic}
     </p>
-    <!-- TODO: i18n -->
-    <p>Id: {proposalInfo.id}</p>
+    <p>{$i18n.proposal_detail.id_prefix} {proposalInfo.id}</p>
   </div>
 
   <CardBlock>

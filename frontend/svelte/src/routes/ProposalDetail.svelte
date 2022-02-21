@@ -12,6 +12,7 @@
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
   import CastVoteCard from "../lib/components/proposal-detail/CastVoteCard.svelte";
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
+  import { i18n } from "../lib/stores/i18n";
 
   let proposalInfo: ProposalInfo;
 
@@ -30,12 +31,11 @@
       return;
     }
 
-    // TODO: move to service?
     try {
-      // TODO: as unknown?
+      // TODO: as ProposalInfo?
       proposalInfo = (await getProposalInfo({
         proposalId: BigInt(proposalParam),
-      })) as unknown as ProposalInfo;
+      })) as ProposalInfo;
 
       if (!proposalInfo) {
         throw new Error("Proposal not found");
@@ -70,8 +70,9 @@
 
 {#if !process.env.REDIRECT_TO_LEGACY}
   <HeadlessLayout on:nnsBack={goBack}>
-    <!-- TODO: i18n -->
-    <svelte:fragment slot="header">Proposal</svelte:fragment>
+    <svelte:fragment slot="header"
+      >{$i18n.proposal_detail.title}</svelte:fragment
+    >
 
     <section>
       {#if proposalInfo}

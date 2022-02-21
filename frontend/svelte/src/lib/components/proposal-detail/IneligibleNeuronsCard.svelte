@@ -8,7 +8,7 @@
 <!-- TODO: https://dfinity.atlassian.net/browse/L2-284 -->
 <!-- if (ineligibleNeurons.isNotEmpty && latestProposal.status == ProposalStatus.Open) IneligibleNeuronsWidget(ineligibleNeurons: ineligibleNeurons) -->
 <Card>
-  <h3>Ineligible Neurons</h3>
+  <h3>Ineligible Neurons (TBD)</h3>
   <p>
     The following neurons had a dissolve delay of less than 6 months at the time
     the proposal was submitted, or were created after the proposal was

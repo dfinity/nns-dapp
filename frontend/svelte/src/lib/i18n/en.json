@@ -91,8 +91,12 @@
   "wallet": {
     "title": "Account"
   },
-  "proposal_details": {
-    "title": "Proposal"
+  "proposal_detail": {
+    "title": "Proposal",
+    "topic_prefix": "Topic:",
+    "id_prefix": "Id:",
+    "adopt": "Adopt",
+    "reject": "Reject"
   },
   "modals": {
     "back": "Back"

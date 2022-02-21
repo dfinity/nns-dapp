@@ -2,6 +2,7 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import Card from "../ui/Card.svelte";
   import { formatICP } from "../../../lib/utils/icp.utils";
+  import { i18n } from "../../stores/i18n";
 
   export let proposalInfo: ProposalInfo;
 
@@ -12,9 +13,8 @@
 <!-- TODO: Adop/Reject card content -- https://dfinity.atlassian.net/browse/L2-269 -->
 <Card>
   <div class="latest-tally">
-    <!-- TODO: i18n -->
     <h3>
-      Adopt <span
+      {$i18n.proposal_detail.adopt}<span
         >{`${formatICP({
           value: latestTallyYes,
           minFraction: 2,
@@ -37,7 +37,7 @@
       />
     </div>
     <h3>
-      Reject <span
+      {$i18n.proposal_detail.reject}<span
         >{`${formatICP({
           value: latestTallyNo,
           minFraction: 2,
@@ -47,7 +47,7 @@
     </h3>
   </div>
 
-  <h2>My Votes</h2>
+  <h2>My Votes (TBD)</h2>
   <!-- TODO: implement MyVotesBlock https://dfinity.atlassian.net/browse/L2-283 -->
   MyVotesCard
 </Card>

@@ -9,7 +9,7 @@
 <!-- if (notVotedNeurons.isNotEmpty && latestProposal.status == ProposalStatus.Open) -->
 <!-- CastVoteWidget(proposal: latestProposal, neurons: notVotedNeurons) -->
 <Card>
-  <h3 slot="start">Cast Vote</h3>
+  <h3 slot="start">Cast Vote (TBD)</h3>
   neurons voting power
   <!-- ...widget.neurons.map((n)  -->
   <!-- 'You are about to cast $numVotes votes against this proposal, are you sure you want to proceed? ' -->
