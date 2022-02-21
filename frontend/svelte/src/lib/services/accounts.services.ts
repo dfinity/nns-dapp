@@ -1,6 +1,6 @@
 import type { Identity } from "@dfinity/agent";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
-import { internetIdentityServiceURL } from "../constants/utils.constants";
+import { identityServiceURL } from "../constants/identity.constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { createAgent } from "../utils/agent.utils";
@@ -30,7 +30,7 @@ const loadAccounts = async ({
   identity: Identity;
 }): Promise<AccountsStore> => {
   const ledger: LedgerCanister = LedgerCanister.create({
-    agent: await createAgent({ identity, host: internetIdentityServiceURL }),
+    agent: await createAgent({ identity, host: identityServiceURL }),
   });
 
   const accountIdentifier: AccountIdentifier = AccountIdentifier.fromPrincipal({

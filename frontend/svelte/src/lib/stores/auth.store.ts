@@ -1,7 +1,7 @@
 import type { Identity } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 import { writable } from "svelte/store";
-import { internetIdentityServiceURL } from "../constants/utils.constants";
+import { identityServiceURL } from "../constants/identity.constants";
 
 export interface AuthStore {
   identity: Identity | undefined | null;
@@ -47,7 +47,7 @@ const initAuthStore = () => {
         const authClient: AuthClient = await AuthClient.create();
 
         await authClient.login({
-          identityProvider: internetIdentityServiceURL,
+          identityProvider: identityServiceURL,
           maxTimeToLive: BigInt(30 * 60 * 1_000_000_000), // 30 minutes
           onSuccess: () => {
             update((state: AuthStore) => ({
