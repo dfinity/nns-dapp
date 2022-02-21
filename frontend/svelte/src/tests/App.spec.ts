@@ -3,13 +3,12 @@
  */
 
 import { LedgerCanister } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 import App from "../App.svelte";
 import { authStore } from "../lib/stores/auth.store";
 import {
   authStoreMock,
-  mockPrincipal,
+  mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "./mocks/auth.store.mock";
 import { MockLedgerCanister } from "./mocks/ledger.canister.mock";
@@ -36,7 +35,7 @@ describe("App", () => {
     expect(spyLedger).toHaveBeenCalledTimes(0);
 
     authStoreMock.next({
-      principal: mockPrincipal as Principal,
+      identity: mockIdentity,
     });
 
     expect(spyLedger).toHaveBeenCalledTimes(1);

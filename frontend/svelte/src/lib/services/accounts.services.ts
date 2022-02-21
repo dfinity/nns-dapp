@@ -1,5 +1,5 @@
+import type { Identity } from "@dfinity/agent";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { createAgent } from "../utils/agent.utils";
@@ -10,30 +10,30 @@ import { createAgent } from "../utils/agent.utils";
  * b. If a `principal` is provided, e.g. after sign-in, then the information are loaded using the ledger and the nns dapp canister itself
  */
 export const syncAccounts = async ({
-  principal,
+  identity,
 }: {
-  principal: Principal;
+  identity: Identity | undefined | null;
 }): Promise<void> => {
-  if (!principal) {
+  if (!identity) {
     accountsStore.set(undefined);
     return;
   }
 
-  const accounts: AccountsStore = await loadAccounts({ principal });
+  const accounts: AccountsStore = await loadAccounts({ identity });
   accountsStore.set(accounts);
 };
 
 const loadAccounts = async ({
-  principal,
+  identity,
 }: {
-  principal: Principal;
+  identity: Identity;
 }): Promise<AccountsStore> => {
   const ledger: LedgerCanister = LedgerCanister.create({
     agent: createAgent(),
   });
 
   const accountIdentifier: AccountIdentifier = AccountIdentifier.fromPrincipal({
-    principal,
+    principal: identity.getPrincipal(),
   });
 
   const balance: ICP = await ledger.accountBalance({

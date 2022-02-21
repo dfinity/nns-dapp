@@ -1,7 +1,7 @@
 import type { Identity } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 import { authStore } from "../../../lib/stores/auth.store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 
 class MockAuthClient extends AuthClient {
   constructor() {
@@ -17,7 +17,7 @@ class MockAuthClient extends AuthClient {
   }
 
   getIdentity(): Identity {
-    return { getPrincipal: () => mockPrincipal } as unknown as Identity;
+    return mockIdentity;
   }
 
   async login({ onSuccess }: { onSuccess?: () => void }) {
