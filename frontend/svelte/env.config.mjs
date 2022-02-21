@@ -50,7 +50,7 @@ const REDIRECT_TO_LEGACY = ["true", "1"].includes(
   : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY) ||
     ENVIRONMENT === "local"
   ? false
-  : true; // default
+  : false; // default
 
 export const envConfig = {
   ENVIRONMENT,
