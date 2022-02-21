@@ -9,7 +9,6 @@ import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "../mocks/auth.store.mock";
-const en = require("../../lib/i18n/en.json");
 
 describe("Canisters", () => {
   let authStoreMock;

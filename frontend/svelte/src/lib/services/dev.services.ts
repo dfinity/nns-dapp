@@ -19,6 +19,6 @@ export const getICPs = async (icps: number) => {
     throw new Error(JSON.stringify(result));
   }
 
-  const { principal }: AuthStore = get(authStore);
-  await syncAccounts({ principal });
+  const { identity }: AuthStore = get(authStore);
+  await syncAccounts({ identity });
 };
