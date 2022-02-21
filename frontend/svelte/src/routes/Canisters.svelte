@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import { authStore } from "../lib/stores/auth.store";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -19,6 +20,15 @@
   <Layout>
     <section>
       <h1>{$i18n.canisters.title}</h1>
+      <p>{$i18n.canisters.text}</p>
+      <ul>
+        <li>{$i18n.canisters.step1}</li>
+        <li>{$i18n.canisters.step2}</li>
+        <li>{$i18n.canisters.step3}</li>
+      </ul>
+      <p>
+        {$i18n.canisters.principal_is} "{$authStore.principal?.toText()}"
+      </p>
     </section>
 
     <svelte:fragment slot="footer">
@@ -30,3 +40,11 @@
     </svelte:fragment>
   </Layout>
 {/if}
+
+<style lang="scss">
+  p,
+  ul,
+  li {
+    margin-bottom: calc(2 * var(--padding));
+  }
+</style>
