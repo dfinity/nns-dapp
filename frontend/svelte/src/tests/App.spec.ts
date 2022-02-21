@@ -7,7 +7,6 @@ import type { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 import App from "../App.svelte";
 import { authStore } from "../lib/stores/auth.store";
-import * as agent from "../lib/utils/agent.utils";
 import {
   authStoreMock,
   mockPrincipal,
@@ -29,10 +28,6 @@ describe("App", () => {
       .mockImplementation((): LedgerCanister => mockLedgerCanister);
 
     spyLedger = jest.spyOn(mockLedgerCanister, "accountBalance");
-
-    // TODO(L2-206): mock http agent globally
-    const mockCreateAgent = () => undefined;
-    jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
   });
 
   it("should synchronize the accounts after sign in", async () => {
