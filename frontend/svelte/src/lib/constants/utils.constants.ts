@@ -1,1 +1,1 @@
-export const serviceURL: string = process.env.IDENTITY_SERVICE_URL;
+export const internetIdentityServiceURL: string = process.env.IDENTITY_SERVICE_URL;
