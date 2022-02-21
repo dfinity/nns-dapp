@@ -1,4 +1,4 @@
-// TODO: Synchronize with `rs/nns-dapp.did`. Check how nns-dapp.update.sh works in nns-js repo.
+// TODO: Synchronize with `rs/nns-dapp.did`. Check how nns-dapp.update.sh works.
 type AccountIdentifier = text;
 type BlockHeight = nat64;
 type CanisterId = principal;
