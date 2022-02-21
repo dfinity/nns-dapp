@@ -8,9 +8,8 @@
   import SelectAccount from "./SelectAccount.svelte";
   import StakeNeuron from "./StakeNeuron.svelte";
   import type { Unsubscriber } from "svelte/store";
-  import { initWizardStore } from "../../stores/wizard.store";
   import Transition from "../../components/ui/Transition.svelte";
-  import { StepsState } from "../../stores/StepsState";
+  import { StepsState } from "../../services/stepsState.services";
 
   export let visible: boolean;
 
@@ -18,7 +17,6 @@
     SelectAccount,
     StakeNeuron,
   }
-  const wizardStore = initWizardStore(Steps);
   let stateStep = new StepsState(Steps);
 
   // TODO: Get all the accounts and be able to select one.
@@ -30,13 +28,10 @@
   );
 
   const chooseAccount = () => {
-    // TODO: Apply account selection
-    wizardStore.next();
-    // stateStep = stateStep.next();
+    stateStep = stateStep.next();
   };
   const goBack = () => {
-    wizardStore.back();
-    // stateStep = stateStep.back();
+    stateStep = stateStep.back();
   };
 
   onDestroy(unsubscribeAccounts);
@@ -46,7 +41,7 @@
     "1": "stake_neuron",
   };
   let titleKey: string = titleMapper[0];
-  $: titleKey = titleMapper[stateStep.currentIndex];
+  $: titleKey = titleMapper[stateStep.currentStep];
 </script>
 
 <Modal
@@ -54,21 +49,21 @@
   on:nnsClose
   theme="dark"
   size="medium"
-  showBackButton={$wizardStore.currentIndex === Steps.StakeNeuron}
+  showBackButton={stateStep.currentStep === Steps.StakeNeuron}
   on:nnsBack={goBack}
 >
   <span slot="title">{$i18n.neurons?.[titleKey]}</span>
   <main>
-    {#if $wizardStore.currentIndex === Steps.SelectAccount}
-      <Transition diff={wizardStore.diff()}>
+    {#if stateStep.currentStep === Steps.SelectAccount}
+      <Transition diff={stateStep.diff}>
         <SelectAccount
           main={selectedAccount}
           on:nnsSelectAccount={chooseAccount}
         />
       </Transition>
     {/if}
-    {#if $wizardStore.currentIndex === Steps.StakeNeuron && selectedAccount}
-      <Transition diff={wizardStore.diff()}>
+    {#if stateStep.currentStep === Steps.StakeNeuron && selectedAccount}
+      <Transition diff={stateStep.diff}>
         <StakeNeuron account={selectedAccount} />
       </Transition>
     {/if}
