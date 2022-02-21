@@ -128,7 +128,9 @@
 
     display: grid;
     --toolbar-icon-width: calc((var(--padding) / 2) + var(--icon-width));
-    grid-template-columns: var(--toolbar-icon-width) 1fr var(--toolbar-icon-width);
+    grid-template-columns: var(--toolbar-icon-width) 1fr var(
+        --toolbar-icon-width
+      );
 
     z-index: var(--z-index);
 
