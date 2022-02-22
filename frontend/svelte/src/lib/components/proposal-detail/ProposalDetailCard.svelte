@@ -10,7 +10,7 @@
     proposalActionFields,
     formatProposalSummary,
   } from "../../../lib/utils/proposals.utils";
-  import { removeHTMLTags } from "../../utils/security-utils";
+  import { removeHTMLTags } from "../../utils/security.utils";
 
   export let proposalInfo: ProposalInfo;
 

@@ -1,6 +1,6 @@
 let decoder: HTMLDivElement;
 /**
- * Simple string sanitizer (does NOT escape but removes HTML tags)
+ * Simple but fast string sanitizer (does NOT escape but removes HTML tags)
  * https://github.com/vuejs/vue/blob/dev/src/compiler/parser/entity-decoder.js
  */
 export const removeHTMLTags = (text: string): string => {
