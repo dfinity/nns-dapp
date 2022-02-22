@@ -184,8 +184,7 @@ fn security_headers() -> Vec<HeaderField> {
         ),
         // "Referrer-Policy: no-referrer" would be more strict, but breaks local dev deployment
         // same-origin is still ok from a security perspective
-        // TODO: redo same origin referrer policy - just for test
-        // ("Referrer-Policy".to_string(), "same-origin".to_string()),
+        ("Referrer-Policy".to_string(), "same-origin".to_string()),
     ]
 }
 
