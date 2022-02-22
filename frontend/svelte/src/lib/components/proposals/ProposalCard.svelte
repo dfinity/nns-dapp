@@ -40,17 +40,14 @@
 <!-- TODO(L2-206): display all proposal information as in production -->
 <!-- TODO(L2-206): implement missing css styles - design -->
 
-<div class:hide>
-  <Card>
-    <p slot="start">{proposal?.title}</p>
-    <Badge slot="end" {color}
-      >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
-    >
-  </Card>
+<!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
+<div>
+  {#if !hide}
+    <Card>
+      <p slot="start">{proposal?.title}</p>
+      <Badge slot="end" {color}
+        >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
+      >
+    </Card>
+  {/if}
 </div>
-
-<style lang="scss">
-  .hide {
-    --card-display: none;
-  }
-</style>
