@@ -92,10 +92,11 @@
   .headline {
     font-size: var(--font-size-h5);
     line-height: var(--line-height-standard);
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
 
     @include media.min-width(medium) {
       margin-top: calc(0.5 * var(--padding));
+      padding-right: var(--padding);
       font-size: var(--font-size-h3);
     }
   }
