@@ -1,6 +1,4 @@
-function enumSize<EnumType>(enm: EnumType): number {
-  return Object.values(enm).filter(isNaN).length;
-}
+import { enumSize } from "../utils/enum.utils";
 
 export class StepsState<EnumType> {
   public currentStep = 0;

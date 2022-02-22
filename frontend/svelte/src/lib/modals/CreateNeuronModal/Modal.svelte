@@ -17,7 +17,7 @@
     SelectAccount,
     StakeNeuron,
   }
-  let stateStep = new StepsState(Steps);
+  let stateStep: StepsState<typeof Steps> = new StepsState(Steps);
 
   // TODO: Get all the accounts and be able to select one.
   let selectedAccount: Account | undefined;
@@ -36,12 +36,17 @@
 
   onDestroy(unsubscribeAccounts);
 
+  let currentStep: number;
+  let diff: number;
+  $: currentStep = stateStep.currentStep;
+  $: diff = stateStep.diff;
+
   const titleMapper: Record<string, string> = {
     "0": "select_source",
     "1": "stake_neuron",
   };
   let titleKey: string = titleMapper[0];
-  $: titleKey = titleMapper[stateStep.currentStep];
+  $: titleKey = titleMapper[currentStep];
 </script>
 
 <Modal
@@ -49,21 +54,21 @@
   on:nnsClose
   theme="dark"
   size="medium"
-  showBackButton={stateStep.currentStep === Steps.StakeNeuron}
+  showBackButton={currentStep === Steps.StakeNeuron}
   on:nnsBack={goBack}
 >
   <span slot="title">{$i18n.neurons?.[titleKey]}</span>
   <main>
-    {#if stateStep.currentStep === Steps.SelectAccount}
-      <Transition diff={stateStep.diff}>
+    {#if currentStep === Steps.SelectAccount}
+      <Transition {diff}>
         <SelectAccount
           main={selectedAccount}
           on:nnsSelectAccount={chooseAccount}
         />
       </Transition>
     {/if}
-    {#if stateStep.currentStep === Steps.StakeNeuron && selectedAccount}
-      <Transition diff={stateStep.diff}>
+    {#if currentStep === Steps.StakeNeuron && selectedAccount}
+      <Transition {diff}>
         <StakeNeuron account={selectedAccount} />
       </Transition>
     {/if}
