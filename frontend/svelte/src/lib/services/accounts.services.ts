@@ -68,6 +68,7 @@ export const createSubAccount = async (name: string): Promise<void> => {
   let tries: number = 0;
   let newSubAccount: SubAccountDetails | undefined;
   let error: Error | undefined;
+  // TODO: Remove and understand L2-301
   while (tries < MAX_TRIES && newSubAccount === undefined) {
     tries += 1;
     try {

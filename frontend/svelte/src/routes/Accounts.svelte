@@ -36,7 +36,6 @@
 
   let showAddAccountModal: boolean = false;
   const openAddAccountModal = () => (showAddAccountModal = true);
-
   const closeModal = () => (showAddAccountModal = false);
 </script>
 
