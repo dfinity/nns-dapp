@@ -5,6 +5,8 @@
   import Tooltip from "../ui/Tooltip.svelte";
   import Footer from "./Footer.svelte";
 
+  export let showFooter = true;
+
   const dispatch = createEventDispatcher();
 </script>
 
@@ -22,9 +24,11 @@
   <slot />
 </main>
 
-<Footer>
-  <slot name="footer" />
-</Footer>
+{#if showFooter}
+  <Footer>
+    <slot name="footer" />
+  </Footer>
+{/if}
 
 <style lang="scss">
   header {
