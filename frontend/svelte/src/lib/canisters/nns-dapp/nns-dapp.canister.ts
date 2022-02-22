@@ -17,6 +17,7 @@ export class NNSDappCanister {
     this.certifiedService = certifiedService;
   }
 
+  // TODO: Improve arguments https://dfinity.atlassian.net/browse/L2-299
   public static create(options: NNSDappCanisterOptions) {
     const agent = options.agent;
     const canisterId = options.canisterId;

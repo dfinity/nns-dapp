@@ -1,11 +1,11 @@
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
+import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import type { NNSDappService } from "../../../lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
   CreateSubAccountResponse,
   SubAccountDetails,
 } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nnsDappCanister";
 import { createAgent } from "../../../lib/utils/agent.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 
