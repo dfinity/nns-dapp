@@ -18,7 +18,8 @@
   let principalText: string = "";
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
-    ({ principal }: AuthStore) => (principalText = principal?.toText() ?? "")
+    ({ identity }: AuthStore) =>
+      (principalText = identity?.getPrincipal().toText() ?? "")
   );
 
   onDestroy(unsubscribe);
