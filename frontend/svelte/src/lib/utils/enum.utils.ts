@@ -15,3 +15,7 @@ export const enumsKeys = <T>({
 }): string[] => {
   return values.map((value: T) => obj[value as unknown as string]);
 };
+
+export const enumSize = <EnumType>(enm: EnumType): number => {
+  return Object.values(enm).filter(isNaN).length;
+};
