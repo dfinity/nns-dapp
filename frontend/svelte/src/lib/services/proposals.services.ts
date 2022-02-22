@@ -11,6 +11,7 @@ import {
   ProposalsFiltersStore,
   proposalsStore,
 } from "../stores/proposals.store";
+import { routeContext } from "../utils/route.utils";
 
 export const listProposals = async ({
   clearBeforeQuery = false,
@@ -90,4 +91,19 @@ const queryProposalInfo = async ({
 }): Promise<ProposalInfo> => {
   const governance: GovernanceCanister = GovernanceCanister.create();
   return governance.getProposalInfo({ proposalId });
+
+/**
+ * Parse proposalId from current route.
+ *
+ * @example
+ * "/proposal/123" => 123n
+ */
+export const proposalIdFromRoute = (): ProposalId | undefined => {
+  const routePart = routeContext().split("/").pop();
+  const id = parseInt(routePart, 10);
+
+  // ignore not integer ids
+  if (isFinite(id) && `${id}` === routePart) {
+    return BigInt(id);
+  }
 };

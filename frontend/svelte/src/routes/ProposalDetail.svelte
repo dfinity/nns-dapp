@@ -2,10 +2,12 @@
   import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import { getProposalInfo } from "../lib/services/proposals.services";
+  import {
+    getProposalInfo,
+    proposalIdFromRoute,
+  } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { routeContext } from "../lib/utils/route.utils";
   import { AppPath } from "../lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard.svelte";
@@ -24,35 +26,32 @@
   });
 
   const unsubscribe = routeStore.subscribe(async () => {
-    // TODO: fix /0
-    const proposalParam = parseInt(routeContext().split("/").pop(), 10);
-    if (!proposalParam) {
+    const proposalId = proposalIdFromRoute();
+    if (proposalId === undefined) {
+      unsubscribe();
       routeStore.replace({ path: AppPath.Proposals });
       return;
     }
 
     try {
-      // TODO: as ProposalInfo?
-      proposalInfo = (await getProposalInfo({
-        proposalId: BigInt(proposalParam),
-      })) as ProposalInfo;
+      proposalInfo = await getProposalInfo({
+        proposalId: BigInt(proposalId),
+      });
 
       if (!proposalInfo) {
         throw new Error("Proposal not found");
       }
     } catch (error) {
-      console.error(error);
+      unsubscribe();
 
+      console.error(error);
       toastsStore.show({
         labelKey: "error.proposal_not_found",
         level: "error",
-        detail: `id: "${proposalParam}"`,
+        detail: `id: "${proposalId}"`,
       });
 
-      // to not refetch on navigation
-      unsubscribe();
-
-      // TODO: add a comment here
+      // Wait a bit before redirection so the user recognizes on which page the error occures
       setTimeout(() => {
         routeStore.replace({ path: AppPath.Proposals });
       }, 1500);
