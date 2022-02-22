@@ -26,7 +26,8 @@
   let status: ProposalStatus[];
   let excludeVotedProposals: boolean;
 
-  $: ({ topics, rewards, status, excludeVotedProposals } = $proposalsFiltersStore);
+  $: ({ topics, rewards, status, excludeVotedProposals } =
+    $proposalsFiltersStore);
 </script>
 
 <FiltersCard
