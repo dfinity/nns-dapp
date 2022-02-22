@@ -1,4 +1,12 @@
 module.exports = {
+  preset: "ts-jest",
+  globals: {
+    "ts-jest": {
+      tsconfig: {
+        allowJs: true,
+      },
+    },
+  },
   transform: {
     "^.+\\.svelte$": [
       "svelte-jester",
