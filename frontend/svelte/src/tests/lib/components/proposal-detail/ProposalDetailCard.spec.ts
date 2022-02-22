@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { Topic } from "@dfinity/nns";
 import { render, RenderResult } from "@testing-library/svelte";
 import ProposalDetailCard from "../../../../lib/components/proposal-detail/ProposalDetailCard.svelte";
 import {
@@ -56,13 +57,13 @@ describe("ProposalDetailCard", () => {
   });
 
   it("should render topic", () => {
-    const { getByText } = renderResult;
+    const { getByText, container } = renderResult;
     expect(
-      getByText(new RegExp(`${en.topics[mockProposalInfo.topic]}$`))
+      getByText(new RegExp(`${en.topics[Topic[mockProposalInfo.topic]]}$`))
     ).toBeInTheDocument();
   });
 
-  it.only("should render id", () => {
+  it("should render id", () => {
     const { getByText } = renderResult;
     expect(
       getByText(new RegExp(`${mockProposalInfo.id.toString()}$`))
