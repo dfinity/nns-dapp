@@ -12,10 +12,8 @@
   let creating: boolean = false;
   const createNewAccount = async () => {
     try {
-      console.log("before da create");
       creating = true;
       await createSubAccount(newAccountName);
-      console.log("after da create");
       dispatcher("nnsClose");
     } catch (error) {
       // TODO: Manage errors
