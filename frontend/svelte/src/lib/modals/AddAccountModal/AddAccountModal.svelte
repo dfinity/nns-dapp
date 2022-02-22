@@ -48,6 +48,7 @@
 </Modal>
 
 <style lang="scss">
+  // TODO: Manage modal height in L2-302
   article {
     height: 500px;
     padding: 0;
