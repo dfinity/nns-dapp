@@ -71,13 +71,14 @@ export const createSubAccount = async (name: string): Promise<void> => {
   // TODO: Remove and understand L2-301
   while (tries < MAX_TRIES && newSubAccount === undefined) {
     tries += 1;
+    error = undefined;
     try {
       newSubAccount = await nnsDapp.createSubAccount({
         subAccountName: name,
       });
     } catch (currentError) {
       error = currentError;
-      if (currentError.kind !== AccountNotFoundError.kind) {
+      if (!(currentError instanceof AccountNotFoundError)) {
         break;
       }
       await nnsDapp.addAccount();
