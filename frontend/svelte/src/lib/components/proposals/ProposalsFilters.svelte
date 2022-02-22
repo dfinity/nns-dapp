@@ -24,8 +24,9 @@
   let topics: Topic[];
   let rewards: ProposalRewardStatus[];
   let status: ProposalStatus[];
+  let excludeVotedProposals: boolean;
 
-  $: ({ topics, rewards, status } = $proposalsFiltersStore);
+  $: ({ topics, rewards, status, excludeVotedProposals } = $proposalsFiltersStore);
 </script>
 
 <FiltersCard
@@ -65,7 +66,8 @@
 
 <Checkbox
   inputId="hide-unavailable-proposals"
-  checked={false}
+  checked={excludeVotedProposals}
+  on:nnsChange={() => proposalsFiltersStore.toggleExcludeVotedProposals()}
   theme="dark"
   text="block"
   selector="hide-unavailable-proposals"

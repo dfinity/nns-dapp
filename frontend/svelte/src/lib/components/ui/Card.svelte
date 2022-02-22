@@ -31,6 +31,8 @@
     border-radius: var(--border-radius);
 
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
+
+    display: var(--card-display, block);
   }
 
   .clickable {
