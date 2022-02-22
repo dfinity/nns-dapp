@@ -3,6 +3,8 @@
   import { i18n } from "../../stores/i18n";
   import { accountsStore } from "../../stores/accounts.store";
   import { createEventDispatcher } from "svelte";
+  import { createSubAccount } from "../../services/accounts.services";
+  import Spinner from "../../components/ui/Spinner.svelte";
 
   let newAccountName: string = "";
 
@@ -10,8 +12,10 @@
   let creating: boolean = false;
   const createNewAccount = async () => {
     try {
+      console.log("before da create");
       creating = true;
-      await accountsStore.createSubAccount(newAccountName);
+      await createSubAccount(newAccountName);
+      console.log("after da create");
       dispatcher("nnsClose");
     } catch (error) {
       // TODO: Manage errors
@@ -32,15 +36,20 @@
         placeholderLabelKey="accounts.new_linked_account_placeholder"
         name="newAccount"
         bind:value={newAccountName}
-        fullWidth
         theme="dark"
       />
     </div>
     <button
       class="primary full-width"
       type="submit"
-      disabled={!newAccountName || creating}>{$i18n.core.create}</button
+      disabled={!newAccountName || creating}
     >
+      {#if creating}
+        <Spinner />
+      {:else}
+        {$i18n.core.create}
+      {/if}
+    </button>
   </form>
 </section>
 
@@ -60,6 +69,8 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: center;
+
+    --input-width: 100%;
 
     div {
       padding: 0 calc(2 * var(--padding));

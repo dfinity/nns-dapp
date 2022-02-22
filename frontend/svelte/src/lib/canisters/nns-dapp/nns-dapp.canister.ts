@@ -1,6 +1,11 @@
 import { Actor } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/nns";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
+import {
+  AccountNotFoundError,
+  NameTooLongError,
+  SubAccountLimitExceededError,
+} from "./nns-dapp.errors";
 import { idlFactory, NNSDappService } from "./nns-dapp.idl";
 import type {
   CreateSubAccountResponse,
@@ -55,8 +60,6 @@ export class NNSDappCanister {
   /**
    * Creates a subaccount with the name and returns the Subaccount details
    *
-   * TODO: Does this belong here in the "LedgerCanister"
-   * TODO: Error messages
    * TODO: Why is calling to `add_account` needed?
    */
   public createSubAccount = async ({
@@ -74,17 +77,19 @@ export class NNSDappCanister {
     );
 
     if (AccountNotFound === null) {
-      throw new Error("Error creating subAccount");
+      throw new AccountNotFoundError("Error creating subAccount");
     }
 
     if (NameTooLong === null) {
       // Which is the character?
-      throw new Error(`Error, name ${subAccountName} is too long`);
+      throw new NameTooLongError(`Error, name ${subAccountName} is too long`);
     }
 
     if (SubAccountLimitExceeded === null) {
       // Which is the limit of subaccounts?
-      throw new Error(`Error, name ${subAccountName} is too long`);
+      throw new SubAccountLimitExceededError(
+        `Error, subAccount limit exceeded`
+      );
     }
 
     if (Ok) {
