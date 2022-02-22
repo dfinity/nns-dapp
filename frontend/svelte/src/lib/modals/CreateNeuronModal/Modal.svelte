@@ -17,7 +17,7 @@
     SelectAccount,
     StakeNeuron,
   }
-  let stateStep: StepsState<typeof Steps> = new StepsState(Steps);
+  let stateStep = new StepsState<typeof Steps>(Steps);
 
   // TODO: Get all the accounts and be able to select one.
   let selectedAccount: Account | undefined;
