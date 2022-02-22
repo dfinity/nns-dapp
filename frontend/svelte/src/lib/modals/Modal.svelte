@@ -6,7 +6,7 @@
   import IconBackIosNew from "../icons/IconBackIosNew.svelte";
   import { i18n } from "../stores/i18n";
 
-  export let visible: boolean = false;
+  export let visible: boolean = true;
   export let theme: "dark" | "light" = "light";
   export let size: "small" | "medium" = "small";
   // There is no way to know to know whether a parent is listening to the "nnsBack" event

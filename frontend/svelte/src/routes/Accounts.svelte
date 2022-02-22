@@ -74,7 +74,7 @@
       {/if}
     </svelte:fragment>
     {#if showAddAccountModal}
-      <AddAcountModal visible={showAddAccountModal} on:nnsClose={closeModal} />
+      <AddAcountModal on:nnsClose={closeModal} />
     {/if}
   </Layout>
 {/if}

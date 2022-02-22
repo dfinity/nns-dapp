@@ -1,15 +1,11 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
   import Transition from "../../components/ui/Transition.svelte";
   import { StepsState } from "../../services/stepsState.services";
   import { i18n } from "../../stores/i18n";
-  import SelectAccount from "../CreateNeuronModal/SelectAccount.svelte";
   import Modal from "../Modal.svelte";
   import AddNewAccount from "./AddNewAccount.svelte";
   import SelectTypeAccount from "./SelectTypeAccount.svelte";
 
-  export let visible: boolean;
   enum Steps {
     SelectAccount,
     AddNewAccount,
@@ -31,7 +27,6 @@
 </script>
 
 <Modal
-  {visible}
   theme="dark"
   size="medium"
   on:nnsClose
@@ -39,7 +34,7 @@
   on:nnsBack={goBack}
 >
   <span slot="title">{$i18n.accounts.add_account}</span>
-  <section>
+  <article>
     {#if currentStep === Steps.SelectAccount}
       <Transition {diff}>
         <SelectTypeAccount on:nnsSelect={handleSelectType} />
@@ -50,11 +45,11 @@
         <AddNewAccount on:nnsClose />
       </Transition>
     {/if}
-  </section>
+  </article>
 </Modal>
 
 <style lang="scss">
-  section {
+  article {
     height: 500px;
     padding: 0;
     margin: 0;

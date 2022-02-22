@@ -51,10 +51,7 @@
       </Toolbar>
     </svelte:fragment>
     {#if showStakeNeuronModal}
-      <CreateNeuronModal
-        on:nnsClose={closeModal}
-        visible={showStakeNeuronModal}
-      />
+      <CreateNeuronModal on:nnsClose={closeModal} />
     {/if}
   </Layout>
 {/if}
