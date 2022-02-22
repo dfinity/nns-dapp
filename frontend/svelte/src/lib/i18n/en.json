@@ -95,6 +95,7 @@
     "title": "Proposal",
     "topic_prefix": "Topic:",
     "id_prefix": "Id:",
+    "proposer_prefix": "Proposer:",
     "adopt": "Adopt",
     "reject": "Reject"
   },

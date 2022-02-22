@@ -111,6 +111,7 @@ interface I18nProposal_detail {
   title: string;
   topic_prefix: string;
   id_prefix: string;
+  proposer_prefix: string;
   adopt: string;
   reject: string;
 }
