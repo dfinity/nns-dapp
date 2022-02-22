@@ -13,6 +13,15 @@ export const lastProposalId = (
 export const proposalFirstActionKey = (proposal: Proposal) =>
   Object.keys(proposal?.action)[0];
 
+/** Mock the flutter dapp json renderer  */
+const formatProposalActionPayload = (payload: object) => {
+  if (!payload) return "";
+  const fields = Object.entries(payload)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(", ");
+  return `{${fields}}`;
+};
+
 export const proposalActionFields = (
   proposal: Proposal
 ): [string, string][] => {
@@ -21,21 +30,15 @@ export const proposalActionFields = (
     return [];
   }
 
-  /** Mock the flutter dapp json renderer  */
-  const formatPayload = (payload: object) => {
-    const fields = Object.entries(payload)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join(", ");
-    return `{${fields}}`;
-  };
   return Object.entries(proposal.action[key])
     .filter(([key]) => key !== "payloadBytes")
     .map(([key, value]: [string, object]) => [
       key,
-      key === "payload" ? formatPayload(value) : `${value}`,
+      key === "payload" ? formatProposalActionPayload(value) : `${value}`,
     ]);
 };
 
+// TODO: replace w/ markdown renderer -- eg https://nns.ic0.app/#/proposal/43574
 export const formatProposalSummary = (summary: string): string => {
   if (!summary) return "";
   // extend urls
