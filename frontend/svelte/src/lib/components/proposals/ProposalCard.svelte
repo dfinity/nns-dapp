@@ -26,12 +26,14 @@
   $: color = colors[status];
 </script>
 
-<!-- TODO(L2-206): display all proposal information as in production -->
-<!-- TODO(L2-206): implement missing css styles - design -->
-
 <Card>
   <p slot="start">{proposal?.title}</p>
   <Badge slot="end" {color}
     >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
   >
+
+  <div>
+    <p><small>Proposer: {proposalInfo?.proposer || ''}</small></p>
+    <p><small>Id: {proposalInfo?.id || ''}</small></p>
+  </div>
 </Card>
