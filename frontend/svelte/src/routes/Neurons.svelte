@@ -18,7 +18,8 @@
   let principalText: string = "";
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
-    ({ principal }: AuthStore) => (principalText = principal?.toText() ?? "")
+    ({ identity }: AuthStore) =>
+      (principalText = identity?.getPrincipal().toText() ?? "")
   );
 
   onDestroy(unsubscribe);
@@ -49,9 +50,17 @@
         >
       </Toolbar>
     </svelte:fragment>
-    <CreateNeuronModal
-      on:nnsClose={closeModal}
-      visible={showStakeNeuronModal}
-    />
+    {#if showStakeNeuronModal}
+      <CreateNeuronModal
+        on:nnsClose={closeModal}
+        visible={showStakeNeuronModal}
+      />
+    {/if}
   </Layout>
 {/if}
+
+<style lang="scss">
+  p {
+    margin-bottom: calc(2 * var(--padding));
+  }
+</style>

@@ -26,8 +26,8 @@
   };
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
-    async ({ principal }: AuthStore) => {
-      signedIn = isSignedIn(principal);
+    async ({ identity }: AuthStore) => {
+      signedIn = isSignedIn(identity);
 
       if (!signedIn) {
         return;

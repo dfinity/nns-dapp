@@ -9,6 +9,7 @@ import {
   proposalIdFromRoute,
 } from "../../../lib/services/proposals.services";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../mocks/proposals.store.mock";
 
 describe("proposals-services", () => {
@@ -35,7 +36,7 @@ describe("proposals-services", () => {
   afterEach(() => spyListProposals.mockClear());
 
   it("should call the canister to list proposals", async () => {
-    await listProposals({});
+    await listProposals({ identity: mockIdentity });
 
     expect(spyListProposals).toHaveReturnedTimes(1);
   });
@@ -43,6 +44,7 @@ describe("proposals-services", () => {
   it("should call the canister to list the next proposals", async () => {
     await listNextProposals({
       beforeProposal: mockProposals[mockProposals.length - 1].id,
+      identity: mockIdentity,
     });
 
     expect(spyListProposals).toHaveReturnedTimes(1);
@@ -50,14 +52,14 @@ describe("proposals-services", () => {
 
   it("should clear the list proposals before query", async () => {
     const spy = jest.spyOn(proposalsStore, "setProposals");
-    await listProposals({ clearBeforeQuery: true });
+    await listProposals({ clearBeforeQuery: true, identity: mockIdentity });
     expect(spy).toHaveBeenCalledTimes(2);
     spy.mockClear();
   });
 
   it("should not clear the list proposals before query", async () => {
     const spy = jest.spyOn(proposalsStore, "setProposals");
-    await listProposals({ clearBeforeQuery: false });
+    await listProposals({ clearBeforeQuery: false, identity: mockIdentity });
     expect(spy).toHaveBeenCalledTimes(1);
     spy.mockClear();
   });
@@ -66,6 +68,7 @@ describe("proposals-services", () => {
     const spy = jest.spyOn(proposalsStore, "pushProposals");
     await listNextProposals({
       beforeProposal: mockProposals[mockProposals.length - 1].id,
+      identity: mockIdentity,
     });
     expect(spy).toHaveBeenCalledTimes(1);
     spy.mockClear();
@@ -89,6 +92,7 @@ describe("proposals-services", () => {
     const spy = jest.spyOn(proposalsStore, "pushProposals");
     await listNextProposals({
       beforeProposal: mockProposals[mockProposals.length - 1].id,
+      identity: mockIdentity,
     });
     expect(spy).toHaveBeenCalledTimes(0);
     spy.mockClear();
