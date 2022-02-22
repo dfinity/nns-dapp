@@ -2,6 +2,7 @@ import { Topic } from "@dfinity/nns";
 import {
   enumKeys,
   enumsExclude,
+  enumSize,
   enumsKeys,
   enumValues,
 } from "../../../lib/utils/enum.utils";
@@ -30,6 +31,10 @@ describe("enum-utils", () => {
         values: [TestEnum.B, TestEnum.C],
       })
     ).toEqual(["B", "C"]);
+  });
+
+  it("should return the number of keys of enums", () => {
+    expect(enumSize<typeof TestEnum>(TestEnum)).toEqual(4);
   });
 
   it("should filter all topics", () =>
