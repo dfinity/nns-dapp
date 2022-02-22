@@ -18,4 +18,22 @@ describe("icp-utils", () => {
       `2${"\u202F"}000${"\u202F"}000.00000000`
     );
   });
+
+  it("should support minFraction and maxFraction", () => {
+    expect(
+      formatICP({ value: BigInt(0), minFraction: 0, maxFraction: 0 })
+    ).toEqual("0");
+    expect(
+      formatICP({ value: BigInt(61100000), minFraction: 0, maxFraction: 0 })
+    ).toEqual("1");
+    expect(
+      formatICP({ value: BigInt(61100000), minFraction: 0, maxFraction: 2 })
+    ).toEqual("0.61");
+    expect(
+      formatICP({ value: BigInt(61100000), minFraction: 0, maxFraction: 8 })
+    ).toEqual("0.611");
+    expect(
+      formatICP({ value: BigInt(61100000), minFraction: 4, maxFraction: 8 })
+    ).toEqual("0.6110");
+  });
 });
