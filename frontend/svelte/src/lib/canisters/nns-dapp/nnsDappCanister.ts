@@ -1,11 +1,11 @@
 import { Actor } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/nns";
-import { idlFactory as certifiedIdlFactory } from "./nns_dapp.certified.idl";
-import { idlFactory, NNSDappService } from "./nns_dapp.idl";
+import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
+import { idlFactory, NNSDappService } from "./nns-dapp.idl";
 import type {
   CreateSubAccountResponse,
   SubAccountDetails,
-} from "./nns_dappTypes";
+} from "./nns-dapp.types";
 import type { NNSDappCanisterOptions } from "./types";
 
 export class NNSDappCanister {

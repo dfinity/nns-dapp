@@ -4,9 +4,6 @@ import "@testing-library/jest-dom";
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 
-// Global Mocks
-// Needed for HttpAgent
-global.fetch = jest.fn();
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
