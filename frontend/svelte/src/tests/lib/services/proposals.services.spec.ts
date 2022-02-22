@@ -1,7 +1,12 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
 import {
   listNextProposals,
   listProposals,
+  proposalIdFromRoute,
 } from "../../../lib/services/proposals.services";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { MockGovernanceCanister } from "../../mocks/proposals.store.mock";
@@ -89,5 +94,24 @@ describe("proposals-services", () => {
     spy.mockClear();
 
     spyListProposals.mockClear();
+  });
+
+  it("should get proposalId from the valid route", async () => {
+    window.history.replaceState({}, undefined, "/#/proposal/123");
+    expect(proposalIdFromRoute()).toBe(BigInt(123));
+
+    window.history.replaceState({}, undefined, "/#/proposal/0");
+    expect(proposalIdFromRoute()).toBe(BigInt(0));
+  });
+
+  it("should not get proposalId from invalid route", async () => {
+    window.history.replaceState({}, undefined, "/#/proposal/");
+    expect(proposalIdFromRoute()).toBeUndefined();
+
+    window.history.replaceState({}, undefined, "/#/proposal/1.5");
+    expect(proposalIdFromRoute()).toBeUndefined();
+
+    window.history.replaceState({}, undefined, "/#/proposal/123n");
+    expect(proposalIdFromRoute()).toBeUndefined();
   });
 });
