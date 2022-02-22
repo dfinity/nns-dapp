@@ -1,4 +1,9 @@
-import { enumKeys, enumsKeys, enumValues } from "../../../lib/utils/enum.utils";
+import {
+  enumKeys,
+  enumSize,
+  enumsKeys,
+  enumValues,
+} from "../../../lib/utils/enum.utils";
 
 describe("enum-utils", () => {
   enum TestEnum {
@@ -24,5 +29,9 @@ describe("enum-utils", () => {
         values: [TestEnum.B, TestEnum.C],
       })
     ).toEqual(["B", "C"]);
+  });
+
+  it("should return the number of keys of enums", () => {
+    expect(enumSize<typeof TestEnum>(TestEnum)).toEqual(4);
   });
 });
