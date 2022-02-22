@@ -1,3 +1,4 @@
+import { Ballot, Vote } from "@dfinity/nns";
 import {
   emptyProposals,
   hideProposal,
@@ -48,5 +49,91 @@ describe("proposals-utils", () => {
         excludeVotedProposals: true,
       })
     ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[0],
+          ballots: [
+            {
+              vote: Vote.UNSPECIFIED,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: false,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[1],
+          ballots: [
+            {
+              vote: Vote.UNSPECIFIED,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: false,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[0],
+          ballots: [
+            {
+              vote: Vote.UNSPECIFIED,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: true,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[1],
+          ballots: [
+            {
+              vote: Vote.UNSPECIFIED,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: true,
+      })
+    ).toBeFalsy();
+  });
+
+  it("should hide proposal", () => {
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[0],
+          ballots: [
+            {
+              vote: Vote.YES,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: true,
+      })
+    ).toBeTruthy();
+
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[0],
+          ballots: [
+            {
+              vote: Vote.NO,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: true,
+      })
+    ).toBeTruthy();
   });
 });

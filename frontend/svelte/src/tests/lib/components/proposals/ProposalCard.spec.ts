@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
-import {render, waitFor} from '@testing-library/svelte';
+import { Ballot, Vote } from "@dfinity/nns";
+import { render, waitFor } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
+import { proposalsFiltersStore } from "../../../../lib/stores/proposals.store";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
-import {proposalsFiltersStore} from '../../../../lib/stores/proposals.store';
-import {Vote} from '@dfinity/nns';
 
 const en = require("../../../../lib/i18n/en.json");
 
@@ -46,15 +46,17 @@ describe("ProposalCard", () => {
       props: {
         proposalInfo: {
           ...mockProposals[0],
-          ballots: [Vote.YES]
+          ballots: [
+            {
+              vote: Vote.YES,
+            } as Ballot,
+          ],
         },
       },
     });
 
     proposalsFiltersStore.toggleExcludeVotedProposals();
 
-    await waitFor(() =>
-        expect(container.querySelector("article")).toBeNull()
-    );
+    await waitFor(() => expect(container.querySelector("article")).toBeNull());
   });
 });
