@@ -6,14 +6,17 @@
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
-  import { PROPOSAL_COLOR } from "../../constants/proposals.constants";
+  import {
+    ProposalColor,
+    PROPOSAL_COLOR,
+  } from "../../constants/proposals.constants";
 
   export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal | undefined;
   let status: ProposalStatus | undefined;
 
-  let color: "warning" | "success" | undefined;
+  let color: ProposalColor;
 
   $: ({ proposal, status } = proposalInfo);
 

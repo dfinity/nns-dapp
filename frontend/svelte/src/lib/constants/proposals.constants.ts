@@ -24,10 +24,8 @@ export const DEFAULT_PROPOSALS_FILTERS = {
   ],
 };
 
-export const PROPOSAL_COLOR: Record<
-  ProposalStatus,
-  "warning" | "success" | undefined
-> = {
+export type ProposalColor = "warning" | "success" | undefined;
+export const PROPOSAL_COLOR: Record<ProposalStatus, ProposalColor> = {
   [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: "success",
   [ProposalStatus.PROPOSAL_STATUS_OPEN]: "warning",
   [ProposalStatus.PROPOSAL_STATUS_UNKNOWN]: undefined,
