@@ -20,11 +20,6 @@ class NeuronRewardsCard extends StatelessWidget {
     var buttonGroup = [
       ElevatedButton(
           onPressed: () {
-            if (!neuron.isCurrentUserController) {
-              js.context.callMethod("alert",
-                  ["Merge Maturity is not yet supported by hardware wallets."]);
-              return;
-            }
             OverlayBaseWidget.show(
                 context,
                 NeuronMergeMaturity(
@@ -201,14 +196,16 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
   }
 
   Future performUpdate(BuildContext context) async {
-    try {
-      await context.callUpdate(() => context.icApi.mergeMaturity(
-          neuronId: widget.neuron.id.toBigInt,
-          percentageToMerge: sliderValue.currentValue));
+    final res = await context.callUpdate(() => context.icApi.mergeMaturity(
+        neuron: widget.neuron, percentageToMerge: sliderValue.currentValue));
+
+    res.when(ok: (unit) {
+      // Merge maturity succeeded.
       widget.onCompleteAction(context);
-    } catch (err) {
+    }, err: (err) {
+      // Merge maturity failed. Display the error.
       js.context.callMethod("alert", ["$err"]);
-    }
+    });
   }
 
   @override
