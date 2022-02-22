@@ -11,6 +11,9 @@ export const lastProposalId = (
   return last?.id;
 };
 
+/**
+ * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal is OPEN and has at least one UNSPECIFIED ballots' vote.
+ */
 export const hideProposal = ({
   proposalInfo,
   excludeVotedProposals,
@@ -22,7 +25,7 @@ export const hideProposal = ({
 
   return (
     excludeVotedProposals &&
-    (status !== ProposalStatus.PROPOSAL_STATUS_OPEN ||
-      ballots.find(({ vote }) => vote === Vote.UNSPECIFIED) !== undefined)
+    status === ProposalStatus.PROPOSAL_STATUS_OPEN &&
+    ballots.find(({ vote }) => vote !== Vote.UNSPECIFIED) !== undefined
   );
 };
