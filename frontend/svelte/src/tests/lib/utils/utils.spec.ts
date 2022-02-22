@@ -1,4 +1,4 @@
-import { debounce } from "../../../lib/utils/utils";
+import { debounce, stringifyJson } from "../../../lib/utils/utils";
 
 describe("utils", () => {
   const callback = jest.fn();
@@ -39,5 +39,27 @@ describe("utils", () => {
 
     expect(callback).toBeCalled();
     expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  describe("stringifyJson", () => {
+    const SAMPLE = { a: 0, b: [1, 2], c: "c" };
+
+    it("should stringify standard JSON", () => {
+      expect(stringifyJson({ value: SAMPLE })).toBe(
+        JSON.stringify(SAMPLE, null, 2)
+      );
+    });
+
+    it("should stringify JSON with bigint", () => {
+      expect(stringifyJson({ value: { a: BigInt(123) } })).toBe(
+        JSON.stringify({ a: "123" }, null, 2)
+      );
+    });
+
+    it("should support the indentation", () => {
+      expect(stringifyJson({ value: SAMPLE, indentation: 0 })).toBe(
+        JSON.stringify(SAMPLE)
+      );
+    });
   });
 });
