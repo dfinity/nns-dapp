@@ -8,20 +8,20 @@
   };
 </script>
 
-<section>
+<div class="wrapper">
   <div class="card-item" role="button" on:click={selectNewAccount}>
     <h4>{$i18n.accounts.new_linked_title}</h4>
-    <p>{$i18n.accounts.new_linked_subtitle}</p>
+    <span>{$i18n.accounts.new_linked_subtitle}</span>
   </div>
   <!-- TODO: Select New Hardware Wallet -->
   <div class="card-item" role="button" on:click={selectNewAccount}>
     <h4>{$i18n.accounts.attach_hardware_title}</h4>
-    <p>{$i18n.accounts.attach_hardware_subtitle}</p>
+    <span>{$i18n.accounts.attach_hardware_subtitle}</span>
   </div>
-</section>
+</div>
 
 <style lang="scss">
-  section {
+  .wrapper {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -31,7 +31,7 @@
     box-sizing: border-box;
     height: 100%;
 
-    padding: calc(10 * var(--padding)) calc(5 * var(--padding));
+    padding: 0 calc(5 * var(--padding));
   }
 
   .card-item {
@@ -49,8 +49,8 @@
       margin-bottom: var(--padding);
     }
 
-    p {
-      font-size: var(--font-size-small);
+    span {
+      color: var(--gray-200);
     }
   }
 </style>

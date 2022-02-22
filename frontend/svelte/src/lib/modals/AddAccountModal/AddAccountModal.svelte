@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/store";
+  import Transition from "../../components/ui/Transition.svelte";
   import { StepsState } from "../../services/stepsState.services";
   import { i18n } from "../../stores/i18n";
   import SelectAccount from "../CreateNeuronModal/SelectAccount.svelte";
@@ -24,6 +25,9 @@
     // TODO: Handle select "Attach Hardware Wallet"
     stepState = stepState.next();
   };
+  const goBack = () => {
+    stepState = stepState.back();
+  };
 </script>
 
 <Modal
@@ -32,20 +36,27 @@
   size="medium"
   on:nnsClose
   showBackButton={currentStep > 0}
+  on:nnsBack={goBack}
 >
   <span slot="title">{$i18n.accounts.add_account}</span>
-  <main>
+  <section>
     {#if currentStep === Steps.SelectAccount}
-      <SelectTypeAccount on:nnsSelect={handleSelectType} />
+      <Transition {diff}>
+        <SelectTypeAccount on:nnsSelect={handleSelectType} />
+      </Transition>
     {/if}
     {#if currentStep === Steps.AddNewAccount}
-      <AddNewAccount on:nnsClose />
+      <Transition {diff}>
+        <AddNewAccount on:nnsClose />
+      </Transition>
     {/if}
-  </main>
+  </section>
 </Modal>
 
 <style lang="scss">
-  main {
+  section {
     height: 500px;
+    padding: 0;
+    margin: 0;
   }
 </style>
