@@ -10,26 +10,20 @@ const en = require("../../../lib/i18n/en.json");
 
 describe("AddAccountModal", () => {
   it("should display modal", () => {
-    const { container } = render(AddAccountModal, {
-      props: { visible: true },
-    });
+    const { container } = render(AddAccountModal);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
   it("should display two button cards", () => {
-    const { container } = render(AddAccountModal, {
-      props: { visible: true },
-    });
+    const { container } = render(AddAccountModal);
 
     const buttons = container.querySelectorAll('div[role="button"]');
     expect(buttons.length).toEqual(2);
   });
 
   it("should be able to select new account ", async () => {
-    const { queryByText } = render(AddAccountModal, {
-      props: { visible: true },
-    });
+    const { queryByText } = render(AddAccountModal);
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
@@ -40,9 +34,7 @@ describe("AddAccountModal", () => {
   });
 
   it("should have disabled Create neuron button", async () => {
-    const { container, queryByText } = render(AddAccountModal, {
-      props: { visible: true },
-    });
+    const { container, queryByText } = render(AddAccountModal);
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
@@ -55,9 +47,7 @@ describe("AddAccountModal", () => {
   });
 
   it("should have enabled Create neuron button when entering amount", async () => {
-    const { container, queryByText } = render(AddAccountModal, {
-      props: { visible: true },
-    });
+    const { container, queryByText } = render(AddAccountModal);
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();

@@ -13,9 +13,8 @@
   let stepState = new StepsState<typeof Steps>(Steps);
 
   let currentStep: Steps;
-  $: currentStep = stepState.currentStep;
   let diff: number;
-  $: diff = stepState.diff;
+  $: ({ currentStep, diff } = stepState);
 
   const handleSelectType = () => {
     // TODO: Handle select "Attach Hardware Wallet"

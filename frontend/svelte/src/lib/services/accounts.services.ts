@@ -2,9 +2,7 @@ import type { Identity } from "@dfinity/agent";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { NNSDappCanister } from "../canisters/nns-dapp/nns-dapp.canister";
-import { AccountNotFoundError } from "../canisters/nns-dapp/nns-dapp.errors";
-import type { SubAccountDetails } from "../canisters/nns-dapp/nns-dapp.types";
-import { OWN_CANISTER_ID } from "../constants/canisterIds.constants";
+import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
 import { identityServiceURL } from "../constants/identity.constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
@@ -64,30 +62,30 @@ export const createSubAccount = async (name: string): Promise<void> => {
     canisterId: OWN_CANISTER_ID,
   });
 
-  const MAX_TRIES = 2;
-  let tries: number = 0;
-  let newSubAccount: SubAccountDetails | undefined;
-  let error: Error | undefined;
+  // const MAX_TRIES = 2;
+  // let tries: number = 0;
+  // let newSubAccount: SubAccountDetails | undefined;
+  // let error: Error | undefined;
   // TODO: Remove and understand L2-301
-  while (tries < MAX_TRIES && newSubAccount === undefined) {
-    tries += 1;
-    error = undefined;
-    try {
-      newSubAccount = await nnsDapp.createSubAccount({
-        subAccountName: name,
-      });
-    } catch (currentError) {
-      error = currentError;
-      if (!(currentError instanceof AccountNotFoundError)) {
-        break;
-      }
-      await nnsDapp.addAccount();
-    }
-  }
+  // while (tries < MAX_TRIES && newSubAccount === undefined) {
+  //   tries += 1;
+  //   error = undefined;
+  //   try {
+  //     newSubAccount = await nnsDapp.createSubAccount({
+  //       subAccountName: name,
+  //     });
+  //   } catch (currentError) {
+  //     error = currentError;
+  //     if (!(currentError instanceof AccountNotFoundError)) {
+  //       break;
+  //     }
+  //     await nnsDapp.addAccount();
+  //   }
+  // }
 
-  if (error) {
-    throw error;
-  }
+  // if (error) {
+  //   throw error;
+  // }
 
-  accountsStore.addSubAccount(newSubAccount);
+  // accountsStore.addSubAccount(newSubAccount);
 };

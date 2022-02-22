@@ -31,12 +31,14 @@ const IDENTITY_SERVICE_URL =
 const HOST =
   process.env.HOST || (development ? `https://${domainTestnet}/` : "");
 
-// Testnet Canister Ids
+// Canister Ids for testnet and mainnet
 const GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";
 const LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+// Testnet canister id
 // TODO: Move to index.html L2-265
 const OWN_CANISTER_ID =
-  process.env.OWN_CANISTER_ID ?? "qhbym-qaaaa-aaaaa-aaafq-cai";
+  process.env.OWN_CANISTER_ID ||
+  (development ? "qhbym-qaaaa-aaaaa-aaafq-cai" : "");
 
 const GOVERNANCE_CANISTER_URL = `https://${GOVERNANCE_CANISTER_ID}${domain}/`;
 const LEDGER_CANISTER_URL = `https://${LEDGER_CANISTER_ID}${domain}/`;
