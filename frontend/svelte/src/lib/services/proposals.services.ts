@@ -4,6 +4,7 @@ import {
   ListProposalsResponse,
   ProposalId,
   ProposalInfo,
+  Topic,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { LIST_PAGINATION_LIMIT } from "../constants/constants";
@@ -13,7 +14,7 @@ import {
   proposalsStore,
 } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";
-import { excludeTopics } from "../utils/proposals.utils";
+import { enumsExclude } from "../utils/enum.utils";
 
 export const listProposals = async ({
   clearBeforeQuery = false,
@@ -81,7 +82,10 @@ const queryProposals = async ({
     request: {
       limit: LIST_PAGINATION_LIMIT,
       beforeProposal,
-      excludeTopic: excludeTopics(topics),
+      excludeTopic: enumsExclude<Topic>({
+        obj: Topic as unknown as Topic,
+        values: topics,
+      }),
       includeRewardStatus: rewards,
       includeStatus: status,
     },
