@@ -1,5 +1,5 @@
 <script lang="ts">
-  // TODO: collapsible
+  // TODO: collapsible -- https://dfinity.atlassian.net/browse/L2-270
   export let collapsible: boolean = false;
   export let initiallyExpanded = true;
 </script>
@@ -29,15 +29,6 @@
 
     // TODO: move to variables
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
-  }
-
-  .clickable {
-    @include interaction.tappable;
-
-    &:focus,
-    &:hover {
-      background: var(--background-hover);
-    }
   }
 
   .title {

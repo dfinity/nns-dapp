@@ -1,9 +1,12 @@
 <script lang="ts">
-  import { ProposalInfo, ProposalStatus, Topic } from "@dfinity/nns";
+  import { Proposal, ProposalInfo, ProposalStatus, Topic } from "@dfinity/nns";
   import Badge from "../ui/Badge.svelte";
   import Card from "../ui/Card.svelte";
   import CardBlock from "../ui/CardBlock.svelte";
-  import { PROPOSAL_COLOR } from "../../../lib/constants/proposals.constants";
+  import {
+    ProposalColor,
+    PROPOSAL_COLOR,
+  } from "../../../lib/constants/proposals.constants";
   import { i18n } from "../../../lib/stores/i18n";
   import {
     proposalFirstActionKey,
@@ -14,15 +17,19 @@
 
   export let proposalInfo: ProposalInfo;
 
-  $: proposal = proposalInfo.proposal;
-  // TODO: get rid of "as any"
-  $: actionKey = proposalFirstActionKey(proposal as any);
-  $: actionFields = proposalActionFields(proposal as any);
+  let proposal: Proposal;
+  let actionKey: string;
+  let actionFields: [string, string][];
+  let summary: string;
+  let topic: string;
+  let status: ProposalStatus;
+  let color: ProposalColor;
+
+  $: ({ proposal, status } = proposalInfo);
+  $: actionKey = proposalFirstActionKey(proposal);
+  $: actionFields = proposalActionFields(proposal);
   $: summary = formatProposalSummary(removeHTMLTags(proposal?.summary));
-  $: topic = `${$i18n.proposal_detail.topic_prefix} ${
-    $i18n.topics[Topic[proposalInfo.topic]]
-  }`;
-  $: status = proposalInfo.status;
+  $: topic = $i18n.topics[Topic[proposalInfo?.topic]];
   $: color = PROPOSAL_COLOR[status];
 
   // TODO: show neuron modal https://dfinity.atlassian.net/browse/L2-282
@@ -53,9 +60,10 @@
     {/if}
 
     <a on:click|preventDefault|stopPropagation={showProposerNeuron} href="/"
-      >Proposer: {proposalInfo.proposer}</a
+      >{$i18n.proposal_detail.proposer_prefix} {proposalInfo.proposer}</a
     >
     <p>
+      {$i18n.proposal_detail.topic_prefix}
       {topic}
     </p>
     <p>{$i18n.proposal_detail.id_prefix} {proposalInfo.id}</p>
@@ -135,8 +143,8 @@
       }
     }
     a {
-      margin: 0 -5px;
-      padding: 5px;
+      margin: 0 calc(-0.5 * var(--padding));
+      padding: calc(0.5 * var(--padding));
       width: fit-content;
       border-radius: calc(0.5 * var(--border-radius));
 
