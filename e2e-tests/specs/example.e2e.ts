@@ -2,6 +2,8 @@ describe("landing page", () => {
   it("loads", async () => {
     await browser.url("/v2/");
 
+    await browser["screenshot"]("landing-page-before");
+
     await browser.$("h1").waitForExist();
 
     // Wait for all images to be "complete", i.e. loaded
@@ -27,7 +29,8 @@ describe("landing page", () => {
     await browser["screenshot"]("landing-page");
   });
 
-  it("register and back to dashboard", async () => {
+  // DO NOT RUN ON CI PIPELINE
+  xit("register and back to dashboard", async () => {
     await browser.url("/v2/");
 
     await browser.$("h1").waitForExist();
