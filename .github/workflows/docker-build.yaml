@@ -72,10 +72,14 @@ jobs:
          : Set up git
          git config user.name "GitHub Actions Bot"
          git config user.email "<>"
-         : Make a note of the WASM shasum, overwriting it if it already exists.
-         git notes --ref="${{ matrix.DEPLOY_ENV }}/wasm-sha" add -m "$(sha256sum < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")" -f
-         : Push the note, overwriting it if it already exists.
-         git push origin "refs/notes/${{ matrix.DEPLOY_ENV }}/wasm-sha" -f
+         : Make a note of the WASM shasum.
+         NOTE="refs/notes/${{ matrix.DEPLOY_ENV }}/wasm-sha"
+         SHA="$(sha256sum < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")"
+         git fetch origin "+${NOTE}:${NOTE}"
+         if git notes --ref="${{ matrix.DEPLOY_ENV }}/wasm-sha" add -m "$SHA"
+         then git push origin "${NOTE}:${NOTE}"
+         else echo SHA already set
+         fi
       - name: "Verify that the WASM module is small enough to deploy"
         run: |
          wasm_size="$(wc -c < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")"
