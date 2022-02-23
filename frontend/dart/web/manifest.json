@@ -1,6 +1,6 @@
 {
-  "name": "Network Nervous System",
-  "short_name": "NNS App",
+  "name": "Network Nervous System frontend dapp",
+  "short_name": "NNS",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#383c3c",
