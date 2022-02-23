@@ -69,6 +69,9 @@ jobs:
           path: ${{ matrix.DEPLOY_ENV }}-out/assets.tar.xz
       - name: "Link the build sha to this commit"
         run: |
+         : Set up git
+         git config user.name "GitHub Actions Bot"
+         git config user.email "<>"
          : Make a note of the WASM shasum, overwriting it if it already exists.
          git notes --ref="${{ matrix.DEPLOY_ENV }}/wasm-sha" add -m "$(sha256sum < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")" -f
          : Push the note, overwriting it if it already exists.
