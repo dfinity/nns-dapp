@@ -61,7 +61,7 @@
         category: "status",
         filters: ProposalStatus,
         selectedFilters: status,
-      })}>{$i18n.voting.proposals}</FiltersCard
+      })}>{$i18n.voting.status}</FiltersCard
   >
 </div>
 
