@@ -1,20 +1,23 @@
 <script lang="ts">
   import Card from "../ui/Card.svelte";
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
-  import { ProposalStatus, Vote } from "@dfinity/nns";
+  import { ProposalStatus } from "@dfinity/nns";
   import Badge from "../ui/Badge.svelte";
   import { i18n } from "../../stores/i18n";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
+  import type { NeuronId, ProposalId } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal | undefined;
   let status: ProposalStatus | undefined;
+  let proposer: NeuronId | undefined;
+  let id: ProposalId | undefined;
 
   let color: "warning" | "success" | undefined;
 
-  $: ({ proposal, status } = proposalInfo);
+  $: ({ proposal, status, proposer, id } = proposalInfo);
 
   const colors: Record<string, "warning" | "success" | undefined> = {
     [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: "success",
@@ -41,15 +44,24 @@
 <div>
   {#if !hide}
     <Card>
-      <p slot="start">{proposal?.title}</p>
+      <p slot="start" class="title">{proposal?.title}</p>
       <Badge slot="end" {color}
         >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
       >
 
       <div>
-        <p><small>Proposer: {proposalInfo?.proposer || ''}</small></p>
-        <p><small>Id: {proposalInfo?.id || ''}</small></p>
+        <p><small>Proposer: {proposer || ""}</small></p>
+        <p><small>Id: {id || ""}</small></p>
       </div>
     </Card>
   {/if}
 </div>
+
+<style lang="scss">
+  @use "../../themes/mixins/text";
+
+  .title {
+    @include text.clamp(3);
+    margin: 0 var(--padding) 0 0;
+  }
+</style>
