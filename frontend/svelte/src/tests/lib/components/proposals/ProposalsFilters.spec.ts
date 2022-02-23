@@ -6,42 +6,57 @@ import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import ProposalsFilters from "../../../../lib/components/proposals/ProposalsFilters.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
-import { enumsKeys } from "../../../../lib/utils/enum.utils";
+import { enumSize } from "../../../../lib/utils/enum.utils";
 
 const en = require("../../../../lib/i18n/en.json");
 
 describe("ProposalsFilters", () => {
-  it("should render topics filters", () => {
-    const { getByText } = render(ProposalsFilters);
+  const shouldRenderFilter = ({
+    container,
+    activeFilters,
+    totalFilters,
+  }: {
+    container: HTMLElement;
+    activeFilters: number;
+    totalFilters: number;
+  }) => {
+    const buttonText = `${en.voting.status} (${activeFilters}/${totalFilters})`;
 
-    enumsKeys<Topic>({
-      obj: Topic as unknown as Topic,
-      values: DEFAULT_PROPOSALS_FILTERS.topics,
-    }).forEach((key: string) =>
-      expect(getByText(en.topics[key])).toBeInTheDocument()
+    const button = Array.from(container.querySelectorAll("button")).filter(
+      (btn) => (btn.textContent = buttonText)
     );
+
+    expect(button).not.toBeNull();
+  };
+
+  it("should render topics filters", () => {
+    const { container } = render(ProposalsFilters);
+
+    shouldRenderFilter({
+      container,
+      activeFilters: DEFAULT_PROPOSALS_FILTERS.topics.length,
+      totalFilters: enumSize(Topic),
+    });
   });
 
   it("should render rewards filters", () => {
-    const { getByText } = render(ProposalsFilters);
+    const { container } = render(ProposalsFilters);
 
-    enumsKeys<ProposalRewardStatus>({
-      obj: ProposalRewardStatus as unknown as ProposalRewardStatus,
-      values: DEFAULT_PROPOSALS_FILTERS.rewards,
-    }).forEach((key: string) =>
-      expect(getByText(en.rewards[key])).toBeInTheDocument()
-    );
+    shouldRenderFilter({
+      container,
+      activeFilters: DEFAULT_PROPOSALS_FILTERS.rewards.length,
+      totalFilters: enumSize(ProposalRewardStatus),
+    });
   });
 
   it("should render proposals filters", () => {
-    const { getByText } = render(ProposalsFilters);
+    const { container } = render(ProposalsFilters);
 
-    enumsKeys<ProposalStatus>({
-      obj: ProposalStatus as unknown as ProposalStatus,
-      values: DEFAULT_PROPOSALS_FILTERS.status,
-    }).forEach((key: string) =>
-      expect(getByText(en.status[key])).toBeInTheDocument()
-    );
+    shouldRenderFilter({
+      container,
+      activeFilters: DEFAULT_PROPOSALS_FILTERS.status.length,
+      totalFilters: enumSize(ProposalStatus),
+    });
   });
 
   it("should render a checkbox", () => {
