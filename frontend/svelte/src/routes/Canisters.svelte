@@ -26,9 +26,8 @@
         <li>{$i18n.canisters.step3}</li>
       </ul>
       <p>
-        {$i18n.canisters.principal_is} "{$authStore.identity
-          ?.getPrincipal()
-          .toText()}"
+        {$i18n.canisters.principal_is}
+        {$authStore.identity?.getPrincipal().toText()}
       </p>
     </section>
 
