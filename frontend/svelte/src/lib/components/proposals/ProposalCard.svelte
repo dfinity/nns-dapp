@@ -48,7 +48,7 @@
 <div>
   {#if !hide}
     <Card>
-      <p slot="start" class="title" {title}>{title || ''}</p>
+      <p slot="start" class="title" {title}>{title || ""}</p>
       <Badge slot="end" {color}
         >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
       >
