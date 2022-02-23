@@ -1,12 +1,14 @@
 describe("landing page", () => {
   it("loads", async () => {
-    await browser.url("/");
+    await browser.url("/v2/");
 
     await browser["screenshot"]("landing-page-before");
 
+    await browser.pause(30_000);
+    await browser["screenshot"]("landing-page-before-2");
+
     await browser.$("h1").waitForExist({ timeout: 30_000 });
 
-    await browser["screenshot"]("landing-page-before-2");
 
     // Wait for all images to be "complete", i.e. loaded
     browser.waitUntil(
