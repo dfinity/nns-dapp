@@ -44,10 +44,7 @@
   $: {
     totalBalance = addICPs(
       accounts?.main.balance || zeroICPs(),
-      accounts?.subAccounts.reduce(
-        (acc, subAccount) => addICPs(acc, subAccount.balance),
-        zeroICPs()
-      ) || zeroICPs()
+      ...(accounts?.subAccounts || []).map(({ balance }) => balance)
     );
   }
 </script>

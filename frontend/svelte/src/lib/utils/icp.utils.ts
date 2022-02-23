@@ -9,5 +9,5 @@ export const formatICP = (value: bigint): string =>
     .format(Number(value) / E8S_PER_ICP)
     .replace(",", ".");
 
-export const addICPs = (icp1: ICP, icp2: ICP): ICP =>
-  ICP.fromE8s(icp1.toE8s() + icp2.toE8s());
+export const addICPs = (...icps: ICP[]): ICP =>
+  ICP.fromE8s(icps.reduce<bigint>((acc, icp) => acc + icp.toE8s(), BigInt(0)));
