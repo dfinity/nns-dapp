@@ -88,7 +88,7 @@
     &:global(> div.checkbox) {
       width: fit-content;
       padding: var(--padding) calc(0.75 * var(--padding));
-      margin: calc(2 * var(--padding)) 0 0;
+      margin: var(--padding) 0 0;
     }
 
     &:global(> div.checkbox label) {
