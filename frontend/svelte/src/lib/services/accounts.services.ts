@@ -2,11 +2,19 @@ import type { Identity } from "@dfinity/agent";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { NNSDappCanister } from "../canisters/nns-dapp/nns-dapp.canister";
-import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
+import type {
+  AccountDetails,
+  SubAccountDetails,
+} from "../canisters/nns-dapp/nns-dapp.types";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID,
+} from "../constants/canister-ids.constants";
 import { identityServiceURL } from "../constants/identity.constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { AuthStore, authStore } from "../stores/auth.store";
+import type { Account } from "../types/account";
 import { createAgent } from "../utils/agent.utils";
 
 /**
@@ -33,25 +41,46 @@ const loadAccounts = async ({
 }: {
   identity: Identity;
 }): Promise<AccountsStore> => {
+  const agent = await createAgent({ identity, host: identityServiceURL });
+  // ACCOUNTS
+  const nnsDapp: NNSDappCanister = NNSDappCanister.create({
+    agent,
+    canisterId: OWN_CANISTER_ID,
+  });
+  // Ensure account exists in NNSDapp Canister
+  await nnsDapp.addAccount();
+
+  const mainAccount: AccountDetails = await nnsDapp.getAccount();
+
+  // ACCOUNT BALANCES
   const ledger: LedgerCanister = LedgerCanister.create({
-    agent: await createAgent({ identity, host: identityServiceURL }),
+    agent,
+    canisterId: LEDGER_CANISTER_ID,
   });
 
-  const accountIdentifier: AccountIdentifier = AccountIdentifier.fromPrincipal({
-    principal: identity.getPrincipal(),
-  });
+  const getAccountBalance = async (
+    account: AccountDetails | SubAccountDetails
+  ): Promise<Account> => {
+    const balance: ICP = await ledger.accountBalance({
+      accountIdentifier: AccountIdentifier.fromHex(account.account_identifier),
+      certified: false,
+    });
+    return {
+      identifier: mainAccount.account_identifier,
+      balance,
+      // Account does not have "name" property. Typescript needed a check like this.
+      name: "name" in account ? account.name : undefined,
+    };
+  };
 
-  const balance: ICP = await ledger.accountBalance({
-    accountIdentifier,
-    certified: false,
-  });
+  const [main, ...subAccounts] = await Promise.all([
+    getAccountBalance(mainAccount),
+    ...mainAccount.sub_accounts.map(getAccountBalance),
+  ]);
 
   return {
-    main: {
-      identifier: accountIdentifier.toHex(),
-      balance,
-    },
-    subAccounts: [],
+    main,
+    subAccounts,
   };
 };
 
@@ -62,31 +91,9 @@ export const createSubAccount = async (name: string): Promise<void> => {
     canisterId: OWN_CANISTER_ID,
   });
 
-  // const MAX_TRIES = 2;
-  // let tries: number = 0;
-  // let newSubAccount: SubAccountDetails | undefined;
-  // let error: Error | undefined;
-  // TODO: Remove and understand L2-301
-  // while (tries < MAX_TRIES && newSubAccount === undefined) {
-  //   tries += 1;
-  //   error = undefined;
-  //   try {
-  //     newSubAccount = await nnsDapp.createSubAccount({
-  //       subAccountName: name,
-  //     });
-  //   } catch (currentError) {
-  //     error = currentError;
-  //     if (!(currentError instanceof AccountNotFoundError)) {
-  //       break;
-  //     }
-  //     await nnsDapp.addAccount();
-  //   }
-  // }
+  await nnsDapp.createSubAccount({
+    subAccountName: name,
+  });
 
-  // if (error) {
-  //   throw error;
-  // }
-
-  // TODO: Call sync accounts in L2-301
-  // accountsStore.addSubAccount(newSubAccount);
+  await syncAccounts({ identity });
 };
