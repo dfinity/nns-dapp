@@ -5,7 +5,7 @@
 import { fireEvent, render } from "@testing-library/svelte";
 import Filter from "../../../../lib/components/ui/FiltersCard.svelte";
 
-describe("Filter", () => {
+describe("FiltersCard", () => {
   const props: {
     filters: string[];
     labelKey: "topics" | "rewards" | "proposals";
