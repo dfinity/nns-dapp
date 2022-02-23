@@ -91,5 +91,23 @@ describe("proposals-store", () => {
         status: filter,
       });
     });
+
+    it("should toggle excluded vote proposals back and forth", () => {
+      proposalsFiltersStore.toggleExcludeVotedProposals();
+
+      let filters = get(proposalsFiltersStore);
+      expect(filters).toEqual({
+        ...DEFAULT_PROPOSALS_FILTERS,
+        excludeVotedProposals: true,
+      });
+
+      proposalsFiltersStore.toggleExcludeVotedProposals();
+
+      filters = get(proposalsFiltersStore);
+      expect(filters).toEqual({
+        ...DEFAULT_PROPOSALS_FILTERS,
+        excludeVotedProposals: false,
+      });
+    });
   });
 });

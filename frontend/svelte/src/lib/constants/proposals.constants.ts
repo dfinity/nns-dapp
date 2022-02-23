@@ -22,4 +22,5 @@ export const DEFAULT_PROPOSALS_FILTERS = {
     ProposalStatus.PROPOSAL_STATUS_ACCEPTED,
     ProposalStatus.PROPOSAL_STATUS_EXECUTED,
   ],
+  excludeVotedProposals: false,
 };
