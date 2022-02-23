@@ -19,7 +19,6 @@
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
     <section>
-      <h1>{$i18n.canisters.title}</h1>
       <p>{$i18n.canisters.text}</p>
       <ul>
         <li>{$i18n.canisters.step1}</li>
@@ -42,11 +41,3 @@
     </svelte:fragment>
   </Layout>
 {/if}
-
-<style lang="scss">
-  p,
-  ul,
-  li {
-    margin-bottom: calc(2 * var(--padding));
-  }
-</style>

@@ -33,8 +33,6 @@
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
     <section>
-      <h1>{$i18n.neurons.title}</h1>
-
       <p>{$i18n.neurons.text}</p>
 
       <p>
@@ -57,7 +55,7 @@
 {/if}
 
 <style lang="scss">
-  p {
-    margin-bottom: calc(2 * var(--padding));
+  p:last-of-type {
+    margin-bottom: calc(3 * var(--padding));
   }
 </style>
