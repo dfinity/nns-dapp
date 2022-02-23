@@ -128,5 +128,7 @@
   .spinner {
     position: relative;
     display: flex;
+
+    padding: calc(2 * var(--padding)) 0;
   }
 </style>
