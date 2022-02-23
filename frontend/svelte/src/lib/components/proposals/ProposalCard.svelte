@@ -16,10 +16,12 @@
   let status: ProposalStatus | undefined;
   let proposer: bigint | undefined;
   let id: bigint | undefined;
+  let title: string | undefined;
 
   let color: "warning" | "success" | undefined;
 
   $: ({ proposal, status, proposer, id } = proposalInfo);
+  $: ({ title } = proposal);
 
   const colors: Record<string, "warning" | "success" | undefined> = {
     [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: "success",
@@ -46,7 +48,7 @@
 <div>
   {#if !hide}
     <Card>
-      <p slot="start" class="title">{proposal?.title}</p>
+      <p slot="start" class="title" {title}>{title || ''}</p>
       <Badge slot="end" {color}
         >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
       >
