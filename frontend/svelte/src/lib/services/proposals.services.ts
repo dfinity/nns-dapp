@@ -15,6 +15,7 @@ import {
 } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";
 import { enumsExclude } from "../utils/enum.utils";
+import {i18n} from '../stores/i18n';
 
 export const listProposals = async ({
   clearBeforeQuery = false,
@@ -64,7 +65,7 @@ const queryProposals = async ({
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo[]> => {
   if (!identity) {
-    throw new Error('error.missing_identity');
+    throw new Error(get(i18n).error.missing_identity);
   }
 
   const governance: GovernanceCanister = GovernanceCanister.create({
