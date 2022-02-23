@@ -8,6 +8,7 @@ import {
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { LIST_PAGINATION_LIMIT } from "../constants/constants";
+import { i18n } from "../stores/i18n";
 import {
   proposalsFiltersStore,
   ProposalsFiltersStore,
@@ -64,9 +65,8 @@ const queryProposals = async ({
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo[]> => {
-  // If no identity is provided, we do not fetch any proposals. We have an identical pattern in accounts.
   if (!identity) {
-    return [];
+    throw new Error(get(i18n).error.missing_identity);
   }
 
   const governance: GovernanceCanister = GovernanceCanister.create({
@@ -77,7 +77,9 @@ const queryProposals = async ({
     proposalsFiltersStore
   );
 
-  // TODO(L2-2069: implement 'Hide "Open" proposals where all your neurons have voted or are ineligible to vote'
+  // TODO(L2-206): In Flutter, proposals are sorted on the client side -> this needs to be deferred on backend side if we still want this feature
+  // sortedByDescending((element) => element.proposalTimestamp);
+  // Governance canister listProposals -> https://github.com/dfinity/ic/blob/5c05a2fe2a7f8863c3772c050ece7e20907c8252/rs/sns/governance/src/governance.rs#L1226
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {

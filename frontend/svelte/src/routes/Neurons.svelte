@@ -6,7 +6,7 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
-  import CreateNeuronModal from "../lib/modals/CreateNeuronModal/Modal.svelte";
+  import CreateNeuronModal from "../lib/modals/CreateNeuronModal/CreateNeuronModal.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -51,10 +51,7 @@
       </Toolbar>
     </svelte:fragment>
     {#if showStakeNeuronModal}
-      <CreateNeuronModal
-        on:nnsClose={closeModal}
-        visible={showStakeNeuronModal}
-      />
+      <CreateNeuronModal on:nnsClose={closeModal} />
     {/if}
   </Layout>
 {/if}

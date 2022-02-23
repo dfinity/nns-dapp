@@ -1,20 +1,15 @@
-import type { ProposalInfo } from "@dfinity/nns";
+import { Ballot, Vote } from "@dfinity/nns";
 import {
   emptyProposals,
+  hideProposal,
   lastProposalId,
   proposalActionFields,
   proposalFirstActionKey,
 } from "../../../lib/utils/proposals.utils";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
+import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-utils", () => {
-  const mockProposals: ProposalInfo[] = [
-    {
-      id: "test1",
-    },
-    { id: "test2" },
-  ] as unknown as ProposalInfo[];
-
   it("should detect an empty list of proposals", () =>
     expect(emptyProposals([])).toBeTruthy());
 
@@ -28,6 +23,122 @@ describe("proposals-utils", () => {
     expect(proposalFirstActionKey(mockProposalInfo.proposal)).toEqual(
       "ExecuteNnsFunction"
     ));
+
+  it("should display proposal", () => {
+    expect(
+      hideProposal({
+        proposalInfo: mockProposals[0],
+        excludeVotedProposals: false,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: mockProposals[1],
+        excludeVotedProposals: false,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: mockProposals[0],
+        excludeVotedProposals: true,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: mockProposals[1],
+        excludeVotedProposals: true,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[0],
+          ballots: [
+            {
+              vote: Vote.UNSPECIFIED,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: false,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[1],
+          ballots: [
+            {
+              vote: Vote.UNSPECIFIED,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: false,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[0],
+          ballots: [
+            {
+              vote: Vote.UNSPECIFIED,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: true,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[1],
+          ballots: [
+            {
+              vote: Vote.UNSPECIFIED,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: true,
+      })
+    ).toBeFalsy();
+  });
+
+  it("should hide proposal", () => {
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[0],
+          ballots: [
+            {
+              vote: Vote.YES,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: true,
+      })
+    ).toBeTruthy();
+
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[0],
+          ballots: [
+            {
+              vote: Vote.NO,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: true,
+      })
+    ).toBeTruthy();
+  });
 
   describe("proposalActionFields", () => {
     it("should filter action fields", () => {

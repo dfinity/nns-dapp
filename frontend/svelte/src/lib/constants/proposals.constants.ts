@@ -16,12 +16,8 @@ export const DEFAULT_PROPOSALS_FILTERS = {
     ProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
     ProposalRewardStatus.PROPOSAL_REWARD_STATUS_INELIGIBLE,
   ],
-  status: [
-    ProposalStatus.PROPOSAL_STATUS_OPEN,
-    ProposalStatus.PROPOSAL_STATUS_REJECTED,
-    ProposalStatus.PROPOSAL_STATUS_ACCEPTED,
-    ProposalStatus.PROPOSAL_STATUS_EXECUTED,
-  ],
+  status: [ProposalStatus.PROPOSAL_STATUS_OPEN],
+  excludeVotedProposals: false,
 };
 
 export type ProposalColor = "warning" | "success" | undefined;
