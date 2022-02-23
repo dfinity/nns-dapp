@@ -51,10 +51,8 @@
         >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
       >
 
-      <div>
-        <p><small>Proposer: {proposer || ""}</small></p>
-        <p><small>Id: {id || ""}</small></p>
-      </div>
+      <p><small>Proposer: {proposer || ""}</small></p>
+      <p><small>Id: {id || ""}</small></p>
     </Card>
   {/if}
 </div>
