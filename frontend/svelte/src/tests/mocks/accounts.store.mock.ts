@@ -12,7 +12,7 @@ export const mockMainAccount: Account = {
 export const mockAccountsStoreSubscribe = (
   run: Subscriber<AccountsStore>
 ): (() => void) => {
-  run({ main: mockMainAccount });
+  run({ main: mockMainAccount, subAccounts: [] });
 
   return () => {};
 };
