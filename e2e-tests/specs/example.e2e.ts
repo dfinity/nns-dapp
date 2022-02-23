@@ -1,6 +1,6 @@
 describe("landing page", () => {
   it("loads", async () => {
-    await browser.url("/v2/");
+    await browser.url("/");
 
     await browser["screenshot"]("landing-page-before");
 
