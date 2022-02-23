@@ -85,20 +85,19 @@
       margin: var(--padding) var(--padding) 0 0;
     }
 
-    &:global(> div.checkbox) {
+    > :global(div.checkbox) {
       width: fit-content;
       padding: var(--padding) calc(0.75 * var(--padding));
       margin: var(--padding) 0 0;
     }
 
-    &:global(> div.checkbox label) {
+    > :global(div.checkbox label) {
       width: 100%;
     }
 
-    &:global(> div.checkbox input) {
+    > :global(div.checkbox input) {
       margin-right: var(--padding);
     }
-
   }
 
   :global(div.hide-unavailable-proposals) {

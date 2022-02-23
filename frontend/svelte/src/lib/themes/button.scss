@@ -35,7 +35,8 @@ button {
     @include effect.ripple-effect(--gray-50-background);
   }
 
-  &.primary, &.dark,
+  &.primary,
+  &.dark,
   &.input-button {
     border-radius: var(--border-radius);
 
@@ -117,7 +118,8 @@ button {
       color: var(--gray-500-contrast);
     }
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       background: var(--gray-500);
     }
   }
