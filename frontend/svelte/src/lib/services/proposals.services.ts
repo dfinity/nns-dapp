@@ -63,9 +63,8 @@ const queryProposals = async ({
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo[]> => {
-  // If no identity is provided, we do not fetch any proposals. We have an identical pattern in accounts.
   if (!identity) {
-    return [];
+    throw new Error('error.missing_identity');
   }
 
   const governance: GovernanceCanister = GovernanceCanister.create({
