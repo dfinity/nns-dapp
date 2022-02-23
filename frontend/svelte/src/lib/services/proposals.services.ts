@@ -8,6 +8,7 @@ import {
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { LIST_PAGINATION_LIMIT } from "../constants/constants";
+import { i18n } from "../stores/i18n";
 import {
   proposalsFiltersStore,
   ProposalsFiltersStore,
@@ -63,9 +64,8 @@ const queryProposals = async ({
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo[]> => {
-  // If no identity is provided, we do not fetch any proposals. We have an identical pattern in accounts.
   if (!identity) {
-    return [];
+    throw new Error(get(i18n).error.missing_identity);
   }
 
   const governance: GovernanceCanister = GovernanceCanister.create({
