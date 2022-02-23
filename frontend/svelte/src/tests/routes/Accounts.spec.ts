@@ -41,7 +41,7 @@ describe("Accounts", () => {
     const titleRow = container.querySelector("section > div");
 
     expect(titleRow.textContent).toEqual(
-      `Accounts ${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
+      `Accounts ${formatICP(mockMainAccount.balance.toE8s())} ICP`
     );
   });
 
@@ -58,7 +58,7 @@ describe("Accounts", () => {
     const cardTitleRow = container.querySelector("article > div > div");
 
     expect(cardTitleRow.textContent).toEqual(
-      `${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
+      `${formatICP(mockMainAccount.balance.toE8s())} ICP`
     );
   });
 

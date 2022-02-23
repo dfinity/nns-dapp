@@ -7,7 +7,7 @@
 
 {#if icp}
   <div>
-    <span>{`${formatICP({ value: icp.toE8s() })}`}</span>
+    <span>{`${formatICP(icp.toE8s())}`}</span>
     <span>ICP</span>
   </div>
 {/if}
