@@ -21,4 +21,4 @@ To build the wasm module yourself and verify its hash, run the following command
 git pull  # to ensure you have the latest changes.
 git checkout `$COMMIT`
 ./scripts/docker-build
-sha256sum nns-dapp.wasm
+shasum -a 256 nns-dapp.wasm
