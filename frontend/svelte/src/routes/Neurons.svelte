@@ -38,7 +38,8 @@
       <p>{$i18n.neurons.text}</p>
 
       <p>
-        {$i18n.neurons.principal_is} "{principalText}"
+        {$i18n.neurons.principal_is}
+        {principalText}
       </p>
 
       <NeuronCard />
