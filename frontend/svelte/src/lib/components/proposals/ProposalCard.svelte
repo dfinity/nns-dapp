@@ -7,7 +7,7 @@
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
 
-  // TODO: nns-js in v0.2.2 does not expose types yet
+  // TODO: nns-js in v0.2.2 does not expose types yet - solved in https://github.com/dfinity/nns-js/pull/43
   // import type { NeuronId, ProposalId } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
