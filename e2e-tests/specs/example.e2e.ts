@@ -2,12 +2,17 @@ describe("landing page", () => {
   it("loads", async () => {
     await browser.url("/v2/");
 
-    await browser["screenshot"]("landing-page-before");
+    // await browser["screenshot"]("landing-page-before");
 
     await browser.pause(30_000);
-    await browser["screenshot"]("landing-page-before-2");
+    // await browser["screenshot"]("landing-page-before-2");
+    // const logs1 = await browser.getLogs("client");
+    // console.log(logs1);
+    const logs2= await browser.getLogs("browser");
+    console.log(logs2);
 
     await browser.$("h1").waitForExist({ timeout: 30_000 });
+  
 
 
     // Wait for all images to be "complete", i.e. loaded
