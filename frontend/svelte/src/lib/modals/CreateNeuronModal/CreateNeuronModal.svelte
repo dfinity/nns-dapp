@@ -11,8 +11,6 @@
   import Transition from "../../components/ui/Transition.svelte";
   import { StepsState } from "../../services/stepsState.services";
 
-  export let visible: boolean;
-
   enum Steps {
     SelectAccount,
     StakeNeuron,
@@ -50,7 +48,6 @@
 </script>
 
 <Modal
-  {visible}
   on:nnsClose
   theme="dark"
   size="medium"

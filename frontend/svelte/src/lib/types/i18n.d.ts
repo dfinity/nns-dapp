@@ -5,6 +5,7 @@
 interface I18nCore {
   close: string;
   icp: string;
+  create: string;
 }
 
 interface I18nError {
@@ -38,6 +39,12 @@ interface I18nAccounts {
   copy_identifier: string;
   new_transaction: string;
   add_account: string;
+  new_linked_title: string;
+  new_linked_subtitle: string;
+  attach_hardware_title: string;
+  attach_hardware_subtitle: string;
+  new_linked_account_title: string;
+  new_linked_account_placeholder: string;
 }
 
 interface I18nNeurons {
