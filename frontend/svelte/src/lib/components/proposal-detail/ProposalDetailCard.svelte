@@ -17,13 +17,13 @@
 
   export let proposalInfo: ProposalInfo;
 
-  let proposal: Proposal;
-  let actionKey: string;
-  let actionFields: [string, string][];
-  let summary: string;
-  let topic: string;
-  let status: ProposalStatus;
-  let color: ProposalColor;
+  let proposal: Proposal | undefined;
+  let actionKey: string | undefined;
+  let actionFields: [string, string][] | undefined;
+  let summary: string | undefined;
+  let topic: string | undefined;
+  let status: ProposalStatus | undefined;
+  let color: ProposalColor | undefined;
 
   $: ({ proposal, status } = proposalInfo);
   $: actionKey = proposalFirstActionKey(proposal);

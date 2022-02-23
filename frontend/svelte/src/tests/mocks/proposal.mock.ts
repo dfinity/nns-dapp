@@ -1,5 +1,6 @@
 import type { ProposalInfo } from "@dfinity/nns";
 
+// Not a valid `ProposalInfo` object. Only related to the test fields are included
 export const mockProposalInfo: ProposalInfo = {
   id: BigInt(10000),
   proposal: {

@@ -130,7 +130,5 @@ export const proposalIdFromRoute = (): ProposalId | undefined => {
   const id = parseInt(routePart, 10);
 
   // ignore not integer ids
-  if (isFinite(id) && `${id}` === routePart) {
-    return BigInt(id);
-  }
+  return isFinite(id) && `${id}` === routePart ? BigInt(id) : undefined;
 };

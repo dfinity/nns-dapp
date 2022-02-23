@@ -23,8 +23,7 @@
   let proposer: bigint | undefined;
   let id: bigint | undefined;
   let title: string | undefined;
-
-  let color: ProposalColor;
+  let color: ProposalColor | undefined;
 
   $: ({ proposal, status, proposer, id } = proposalInfo);
   $: ({ title } = proposal);
@@ -32,7 +31,7 @@
 
   const showProposal = () => {
     routeStore.navigate({
-      path: `${AppPath.ProposalDetail}/${proposalInfo.id}`,
+      path: `${AppPath.ProposalDetail}/${id}`,
     });
   };
 
@@ -61,7 +60,7 @@
   {/if}
 </div>
 
-<Card on:click={showProposal}>
+<Card role="link" on:click={showProposal}>
   <p slot="start">{proposal?.title}</p>
   <Badge slot="end" {color}
     >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge

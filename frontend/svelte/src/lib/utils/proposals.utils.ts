@@ -1,4 +1,4 @@
-import type {
+import {
   Proposal,
   ProposalId,
   ProposalInfo,
@@ -16,11 +16,12 @@ export const lastProposalId = (
   return last?.id;
 };
 
-export const proposalFirstActionKey = (proposal: Proposal) =>
-  Object.keys(proposal?.action)[0];
+export const proposalFirstActionKey = (
+  proposal: Proposal
+): string | undefined => Object.keys(proposal?.action)[0];
 
 /** Mock the flutter dapp json renderer  */
-const formatProposalActionPayload = (payload: object) => {
+const formatProposalActionPayload = (payload: object): string => {
   if (!payload) return "";
   const fields = Object.entries(payload)
     .map(([key, value]) => `${key}: ${value}`)

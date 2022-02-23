@@ -36,9 +36,6 @@
     justify-content: center;
     align-items: center;
     margin: 0 0 var(--padding);
-
-    @include media.min-width(medium) {
-    }
   }
 
   .content {
