@@ -31,6 +31,30 @@ describe("ProposalCard", () => {
     expect(getByText(en.status.PROPOSAL_STATUS_OPEN)).toBeInTheDocument();
   });
 
+  it("should render a proposer", () => {
+    const { getByText } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[0],
+      },
+    });
+
+    expect(
+      getByText(`${mockProposals[0].proposer}`, { exact: false })
+    ).toBeInTheDocument();
+  });
+
+  it("should render a proposal id", () => {
+    const { getByText } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[0],
+      },
+    });
+
+    expect(
+      getByText(`${mockProposals[0].id}`, { exact: false })
+    ).toBeInTheDocument();
+  });
+
   it("should render a specific color for the status", () => {
     const { container } = render(ProposalCard, {
       props: {

@@ -104,4 +104,8 @@
   :global(div.hide-unavailable-proposals) {
     --select-font-size: var(--font-size-small);
   }
+
+  :global(section > div.checkbox) {
+    margin: 0 0 var(--padding);
+  }
 </style>
