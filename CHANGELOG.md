@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal 45369
+* Upgrade agent-js to 0.10.3 (to resolve some issues with proposal rendering)
+* Add "Powered by IC" badge to the login page
+* Update the "Follow all" description as now this setting causes the neuron to follow for all proposals except governance proposals
+* More Svelte changes (WIP)
+
 ## Proposal 44009
 * Added entries to the whitelist of proposal types where the payload is small and useful enough to display.
 * Small improvements to the UI.
