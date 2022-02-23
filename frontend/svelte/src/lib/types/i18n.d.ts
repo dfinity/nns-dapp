@@ -11,6 +11,8 @@ interface I18nCore {
 interface I18nError {
   auth_sync: string;
   sign_in: string;
+  list_proposals: string;
+  missing_identity: string;
 }
 
 interface I18nNavigation {
