@@ -77,7 +77,7 @@
   .filters {
     display: flex;
     flex-wrap: wrap;
-    padding: var(--padding) 0;
+    padding: calc(2 * var(--padding)) 0 var(--padding);
 
     --select-flex-direction: row-reverse;
 
