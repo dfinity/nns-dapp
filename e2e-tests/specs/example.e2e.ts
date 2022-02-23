@@ -4,7 +4,9 @@ describe("landing page", () => {
 
     await browser["screenshot"]("landing-page-before");
 
-    await browser.$("h1").waitForExist();
+    await browser.$("h1").waitForExist({ timeout: 30_000 });
+
+    await browser["screenshot"]("landing-page-before-2");
 
     // Wait for all images to be "complete", i.e. loaded
     browser.waitUntil(
