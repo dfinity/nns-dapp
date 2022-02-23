@@ -87,5 +87,6 @@ export const createSubAccount = async (name: string): Promise<void> => {
   //   throw error;
   // }
 
+  // TODO: Call sync accounts in L2-301
   // accountsStore.addSubAccount(newSubAccount);
 };

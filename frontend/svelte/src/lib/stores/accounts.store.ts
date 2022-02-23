@@ -19,6 +19,7 @@ export const initAccountsStore = () => {
   return {
     subscribe,
     set,
+    // TODO: Remove in L2-301
     addSubAccount(newAccount) {
       update((state) => ({
         ...state,
