@@ -25,7 +25,7 @@
 
 <div class="filters">
   <FiltersButton
-    allFilters={enumSize(Topic)}
+    totalFilters={enumSize(Topic)}
     activeFilters={topics.length}
     on:nnsFilter={() =>
       openModal({
@@ -36,7 +36,7 @@
   >
 
   <FiltersButton
-    allFilters={enumSize(ProposalRewardStatus)}
+    totalFilters={enumSize(ProposalRewardStatus)}
     activeFilters={rewards.length}
     on:nnsFilter={() =>
       openModal({
@@ -47,7 +47,7 @@
   >
 
   <FiltersButton
-    allFilters={enumSize(ProposalStatus)}
+    totalFilters={enumSize(ProposalStatus)}
     activeFilters={status.length}
     on:nnsFilter={() =>
       openModal({

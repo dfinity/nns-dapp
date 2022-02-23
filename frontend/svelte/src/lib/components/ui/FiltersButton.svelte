@@ -5,7 +5,7 @@
   /**
    * How many filters are available and how many are currently active?
    */
-  export let allFilters: number;
+  export let totalFilters: number;
   export let activeFilters: number;
   const dispatch = createEventDispatcher();
   const filter = () => dispatch("nnsFilter");
@@ -13,7 +13,7 @@
 
 <button on:click={filter} class="dark small"
   ><IconFilter /><slot />
-  <small>{`(${activeFilters}/${allFilters})`}</small></button
+  <small>{`(${activeFilters}/${totalFilters})`}</small></button
 >
 
 <style lang="scss">

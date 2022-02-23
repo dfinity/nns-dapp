@@ -8,7 +8,7 @@ import FiltersButton from "../../../../lib/components/ui/FiltersButton.svelte";
 describe("FiltersButton", () => {
   it("should render a button", () => {
     const { container } = render(FiltersButton, {
-      allFilters: 1,
+      totalFilters: 1,
       activeFilters: 1,
     });
 
@@ -17,7 +17,7 @@ describe("FiltersButton", () => {
 
   it("should render an icon", () => {
     const { container } = render(FiltersButton, {
-      allFilters: 1,
+      totalFilters: 1,
       activeFilters: 1,
     });
 
@@ -26,7 +26,7 @@ describe("FiltersButton", () => {
 
   it("should render a text for the number of filters", () => {
     const { container } = render(FiltersButton, {
-      allFilters: 7,
+      totalFilters: 7,
       activeFilters: 3,
     });
 
