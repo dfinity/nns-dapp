@@ -17,4 +17,14 @@ describe("accounts-services", () => {
 
     expect(spy).toHaveReturnedTimes(1);
   });
+
+  // TODO: Reset when fixed L2-301
+  // it("should call nnsDappCanister to create subaccount", async () => {
+  //   const nnsDappMock = mock<NNSDappCanister>();
+  //   jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+
+  //   await createSubAccount("test subaccount");
+
+  //   expect(nnsDappMock.createSubAccount).toHaveBeenCalled();
+  // });
 });

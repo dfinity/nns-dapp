@@ -3,7 +3,7 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import CreateNeuronModal from "../../../lib/modals/CreateNeuronModal/Modal.svelte";
+import CreateNeuronModal from "../../../lib/modals/CreateNeuronModal/CreateNeuronModal.svelte";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { mockAccountsStoreSubscribe } from "../../mocks/accounts.store.mock";
 
@@ -17,25 +17,19 @@ describe("CreateNeuronModal", () => {
   });
 
   it("should display modal", () => {
-    const { container } = render(CreateNeuronModal, {
-      props: { visible: true },
-    });
+    const { container } = render(CreateNeuronModal);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
   it("should display accounts as cards", () => {
-    const { container } = render(CreateNeuronModal, {
-      props: { visible: true },
-    });
+    const { container } = render(CreateNeuronModal);
 
     expect(container.querySelector('article[role="button"]')).not.toBeNull();
   });
 
   it("should be able to select an account and move to the next view", async () => {
-    const { container, queryByText } = render(CreateNeuronModal, {
-      props: { visible: true },
-    });
+    const { container, queryByText } = render(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -46,9 +40,7 @@ describe("CreateNeuronModal", () => {
   });
 
   it("should have disabled Create neuron button", async () => {
-    const { container, queryByText } = render(CreateNeuronModal, {
-      props: { visible: true },
-    });
+    const { container, queryByText } = render(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -63,9 +55,7 @@ describe("CreateNeuronModal", () => {
   });
 
   it("should have enabled Create neuron button when entering amount", async () => {
-    const { container, queryByText } = render(CreateNeuronModal, {
-      props: { visible: true },
-    });
+    const { container, queryByText } = render(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
