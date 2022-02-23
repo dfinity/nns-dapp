@@ -54,7 +54,7 @@
         category: "status",
         filters: ProposalStatus,
         selectedFilters: status,
-      })}>{$i18n.voting.proposals}</FiltersButton
+      })}>{$i18n.voting.status}</FiltersButton
   >
 
   <Checkbox
