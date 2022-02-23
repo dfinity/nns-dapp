@@ -8,6 +8,7 @@ import {
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { LIST_PAGINATION_LIMIT } from "../constants/constants";
+import { i18n } from "../stores/i18n";
 import {
   proposalsFiltersStore,
   ProposalsFiltersStore,
@@ -15,7 +16,6 @@ import {
 } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";
 import { enumsExclude } from "../utils/enum.utils";
-import {i18n} from '../stores/i18n';
 
 export const listProposals = async ({
   clearBeforeQuery = false,
