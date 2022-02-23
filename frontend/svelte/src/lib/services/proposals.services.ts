@@ -76,8 +76,6 @@ const queryProposals = async ({
     proposalsFiltersStore
   );
 
-  // TODO(L2-2069: implement 'Hide "Open" proposals where all your neurons have voted or are ineligible to vote'
-
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {
       limit: LIST_PAGINATION_LIMIT,
