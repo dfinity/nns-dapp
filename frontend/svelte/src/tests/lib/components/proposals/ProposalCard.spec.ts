@@ -38,7 +38,9 @@ describe("ProposalCard", () => {
       },
     });
 
-    expect(getByText(`${mockProposals[0].proposer}`, { exact: false })).toBeInTheDocument();
+    expect(
+      getByText(`${mockProposals[0].proposer}`, { exact: false })
+    ).toBeInTheDocument();
   });
 
   it("should render a proposal id", () => {
@@ -48,7 +50,9 @@ describe("ProposalCard", () => {
       },
     });
 
-    expect(getByText(`${mockProposals[0].id}`, { exact: false })).toBeInTheDocument();
+    expect(
+      getByText(`${mockProposals[0].id}`, { exact: false })
+    ).toBeInTheDocument();
   });
 
   it("should render a specific color for the status", () => {
