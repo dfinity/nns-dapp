@@ -4,6 +4,7 @@ import {
   ListProposalsResponse,
   ProposalId,
   ProposalInfo,
+  Topic,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { LIST_PAGINATION_LIMIT } from "../constants/constants";
@@ -13,6 +14,7 @@ import {
   proposalsStore,
 } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";
+import { enumsExclude } from "../utils/enum.utils";
 
 export const listProposals = async ({
   clearBeforeQuery = false,
@@ -70,16 +72,20 @@ const queryProposals = async ({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  const { rewards, status }: ProposalsFiltersStore = get(proposalsFiltersStore);
+  const { rewards, status, topics }: ProposalsFiltersStore = get(
+    proposalsFiltersStore
+  );
 
-  // TODO(L2-206): implement excludeTopic
   // TODO(L2-2069: implement 'Hide "Open" proposals where all your neurons have voted or are ineligible to vote'
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {
       limit: LIST_PAGINATION_LIMIT,
       beforeProposal,
-      excludeTopic: [],
+      excludeTopic: enumsExclude<Topic>({
+        obj: Topic as unknown as Topic,
+        values: topics,
+      }),
       includeRewardStatus: rewards,
       includeStatus: status,
     },

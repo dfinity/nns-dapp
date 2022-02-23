@@ -127,7 +127,10 @@
     color: var(--gray-800);
 
     display: grid;
-    grid-template-columns: var(--icon-width) 1fr var(--icon-width);
+    --toolbar-icon-width: calc((var(--padding) / 2) + var(--icon-width));
+    grid-template-columns: var(--toolbar-icon-width) 1fr var(
+        --toolbar-icon-width
+      );
 
     z-index: var(--z-index);
 
