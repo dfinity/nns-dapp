@@ -58,6 +58,7 @@ flutter:
   assets:
     - assets/
     - assets/fonts/
+    - assets/favicons/
     - assets/ic_agent.js
 
   fonts:
