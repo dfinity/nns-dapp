@@ -76,7 +76,9 @@ const queryProposals = async ({
     proposalsFiltersStore
   );
 
-  // TODO(L2-2069: implement 'Hide "Open" proposals where all your neurons have voted or are ineligible to vote'
+  // TODO(L2-206): In Flutter, proposals are sorted on the client side -> this needs to be deferred on backend side if we still want this feature
+  // sortedByDescending((element) => element.proposalTimestamp);
+  // Governance canister listProposals -> https://github.com/dfinity/ic/blob/5c05a2fe2a7f8863c3772c050ece7e20907c8252/rs/sns/governance/src/governance.rs#L1226
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {
