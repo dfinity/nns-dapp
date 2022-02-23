@@ -56,17 +56,17 @@
         selectedFilters: status,
       })}>{$i18n.voting.proposals}</FiltersButton
   >
-</div>
 
-<Checkbox
-  inputId="hide-unavailable-proposals"
-  checked={excludeVotedProposals}
-  on:nnsChange={() => proposalsFiltersStore.toggleExcludeVotedProposals()}
-  theme="dark"
-  text="block"
-  selector="hide-unavailable-proposals"
-  >{$i18n.voting.hide_unavailable_proposals}</Checkbox
->
+  <Checkbox
+    inputId="hide-unavailable-proposals"
+    checked={excludeVotedProposals}
+    on:nnsChange={() => proposalsFiltersStore.toggleExcludeVotedProposals()}
+    theme="dark"
+    text="block"
+    selector="hide-unavailable-proposals"
+    >{$i18n.voting.hide_unavailable_proposals}</Checkbox
+  >
+</div>
 
 <ProposalsFilterModal
   props={modalFilters}
@@ -79,9 +79,26 @@
     flex-wrap: wrap;
     padding: var(--padding) 0;
 
+    --select-flex-direction: row-reverse;
+
     :global(button) {
       margin: var(--padding) var(--padding) 0 0;
     }
+
+    &:global(> div.checkbox) {
+      width: fit-content;
+      padding: var(--padding) calc(0.75 * var(--padding));
+      margin: calc(2 * var(--padding)) 0 0;
+    }
+
+    &:global(> div.checkbox label) {
+      width: 100%;
+    }
+
+    &:global(> div.checkbox input) {
+      margin-right: var(--padding);
+    }
+
   }
 
   :global(div.hide-unavailable-proposals) {
