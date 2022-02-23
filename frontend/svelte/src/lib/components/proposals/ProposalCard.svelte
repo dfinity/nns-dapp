@@ -6,14 +6,16 @@
   import { i18n } from "../../stores/i18n";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
-  import type { NeuronId, ProposalId } from "@dfinity/nns";
+
+  // TODO: nns-js in v0.2.2 does not expose types yet
+  // import type { NeuronId, ProposalId } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal | undefined;
   let status: ProposalStatus | undefined;
-  let proposer: NeuronId | undefined;
-  let id: ProposalId | undefined;
+  let proposer: bigint | undefined;
+  let id: bigint | undefined;
 
   let color: "warning" | "success" | undefined;
 
