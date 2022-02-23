@@ -67,7 +67,13 @@ jobs:
         with:
           name: NNS ${{ matrix.DEPLOY_ENV }} frontend assets
           path: ${{ matrix.DEPLOY_ENV }}-out/assets.tar.xz
-      - name: "Verify that the WASm module is small enough to deploy"
+      - name: "Link the build sha to this commit"
+        run: |
+         : Make a note of the WASM shasum, overwriting it if it already exists.
+         git notes --ref="${{ matrix.DEPLOY_ENV }}/wasm-sha" add -m "$(sha256sum < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")" -f
+         : Push the note, overwriting it if it already exists.
+         git push origin "refs/notes/${{ matrix.DEPLOY_ENV }}/wasm-sha" -f
+      - name: "Verify that the WASM module is small enough to deploy"
         run: |
          wasm_size="$(wc -c < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")"
          max_size=3670016
