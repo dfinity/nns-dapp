@@ -28,6 +28,7 @@ describe("landing page", () => {
   });
 
   // DO NOT RUN ON CI PIPELINE
+  // TODO: Enable for CI Pipeline
   xit("register and back to dashboard", async () => {
     await browser.url("/v2/");
 
