@@ -12,7 +12,7 @@
 </script>
 
 <Card on:click {role}>
-  <p slot="start"><slot /></p>
+  <h4 slot="start"><slot /></h4>
   <ICP slot="end" icp={balance} />
   <Identifier {identifier} {showCopy} />
 </Card>
