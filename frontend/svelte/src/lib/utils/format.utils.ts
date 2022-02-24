@@ -6,7 +6,6 @@ export const formatNumber = (
   options?: { minFraction: number; maxFraction: number }
 ): string => {
   const { minFraction = 2, maxFraction = 2 } = options || {};
-  console.log(minFraction, maxFraction);
 
   return new Intl.NumberFormat("fr-FR", {
     minimumFractionDigits: minFraction,
