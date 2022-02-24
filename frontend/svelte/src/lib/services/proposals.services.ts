@@ -16,7 +16,6 @@ import {
 } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";
 import { enumsExclude } from "../utils/enum.utils";
-import { routeContext } from "../utils/route.utils";
 
 export const listProposals = async ({
   clearBeforeQuery = false,
@@ -82,6 +81,7 @@ const queryProposals = async ({
   // Governance canister listProposals -> https://github.com/dfinity/ic/blob/5c05a2fe2a7f8863c3772c050ece7e20907c8252/rs/sns/governance/src/governance.rs#L1226
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
+    certified: false,
     request: {
       limit: LIST_PAGINATION_LIMIT,
       beforeProposal,
@@ -116,19 +116,12 @@ const queryProposalInfo = async ({
   proposalId: ProposalId;
 }): Promise<ProposalInfo> => {
   const governance: GovernanceCanister = GovernanceCanister.create();
-  return governance.getProposalInfo({ proposalId });
+  return governance.getProposalInfo({ proposalId, certified: false });
 };
 
-/**
- * Parse proposalId from current route.
- *
- * @example
- * "/proposal/123" => 123n
- */
-export const proposalIdFromRoute = (): ProposalId | undefined => {
-  const routePart = routeContext().split("/").pop();
-  const id = parseInt(routePart, 10);
-
+export const getProposalId = (path: string): ProposalId | undefined => {
+  const pathDetail = path.split("/").pop();
+  const id = parseInt(pathDetail, 10);
   // ignore not integer ids
-  return isFinite(id) && `${id}` === routePart ? BigInt(id) : undefined;
+  return isFinite(id) && `${id}` === pathDetail ? BigInt(id) : undefined;
 };

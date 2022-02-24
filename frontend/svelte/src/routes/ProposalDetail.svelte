@@ -3,8 +3,8 @@
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
+    getProposalId,
     getProposalInfo,
-    proposalIdFromRoute,
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
   import { toastsStore } from "../lib/stores/toasts.store";
@@ -25,8 +25,8 @@
     }
   });
 
-  const unsubscribe = routeStore.subscribe(async () => {
-    const proposalId = proposalIdFromRoute();
+  const unsubscribe = routeStore.subscribe(async ({ path }) => {
+    const proposalId = getProposalId(path);
     if (proposalId === undefined) {
       unsubscribe();
       routeStore.replace({ path: AppPath.Proposals });
@@ -35,7 +35,7 @@
 
     try {
       proposalInfo = await getProposalInfo({
-        proposalId: BigInt(proposalId),
+        proposalId,
       });
 
       if (!proposalInfo) {

@@ -1,12 +1,8 @@
-/**
- * @jest-environment jsdom
- */
-
 import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
 import {
+  getProposalId,
   listNextProposals,
   listProposals,
-  proposalIdFromRoute,
 } from "../../../lib/services/proposals.services";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -100,22 +96,14 @@ describe("proposals-services", () => {
     spyListProposals.mockClear();
   });
 
-  it("should get proposalId from the valid route", async () => {
-    window.history.replaceState({}, undefined, "/#/proposal/123");
-    expect(proposalIdFromRoute()).toBe(BigInt(123));
-
-    window.history.replaceState({}, undefined, "/#/proposal/0");
-    expect(proposalIdFromRoute()).toBe(BigInt(0));
+  it("should get proposalId from valid path", async () => {
+    expect(getProposalId("/#/proposal/123")).toBe(BigInt(123));
+    expect(getProposalId("/#/proposal/0")).toBe(BigInt(0));
   });
 
-  it("should not get proposalId from invalid route", async () => {
-    window.history.replaceState({}, undefined, "/#/proposal/");
-    expect(proposalIdFromRoute()).toBeUndefined();
-
-    window.history.replaceState({}, undefined, "/#/proposal/1.5");
-    expect(proposalIdFromRoute()).toBeUndefined();
-
-    window.history.replaceState({}, undefined, "/#/proposal/123n");
-    expect(proposalIdFromRoute()).toBeUndefined();
+  it("should not get proposalId from invalid path", async () => {
+    expect(getProposalId("/#/proposal/")).toBeUndefined();
+    expect(getProposalId("/#/proposal/1.5")).toBeUndefined();
+    expect(getProposalId("/#/proposal/123n")).toBeUndefined();
   });
 });
