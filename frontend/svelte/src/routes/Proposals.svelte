@@ -103,8 +103,6 @@
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
     <section>
-      <h1>{$i18n.voting.title}</h1>
-
       <p>{$i18n.voting.text}</p>
 
       <ProposalsFilters />
