@@ -20,12 +20,7 @@ describe("Canisters", () => {
   });
 
   it("should render content", () => {
-    const { container, getByText } = render(Canisters);
-
-    const title = container.querySelector("h1");
-    expect(title).not.toBeNull();
-    expect(title).toBeVisible();
-    expect(title).toHaveTextContent("Canisters");
+    const { getByText } = render(Canisters);
 
     expect(
       getByText(

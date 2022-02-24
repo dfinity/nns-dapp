@@ -22,12 +22,7 @@ describe("Neurons", () => {
   });
 
   it("should render content", () => {
-    const { container, getByText } = render(Neurons);
-
-    const title = container.querySelector("h1");
-    expect(title).not.toBeNull();
-    expect(title).toBeVisible();
-    expect(title).toHaveTextContent("Neurons");
+    const { getByText } = render(Neurons);
 
     expect(
       getByText("Earn rewards by staking your ICP in neurons.", {
