@@ -23,7 +23,7 @@ describe("ProposalsFilters", () => {
     const buttonText = `${en.voting.status} (${activeFilters}/${totalFilters})`;
 
     const button = Array.from(container.querySelectorAll("button")).filter(
-      (btn) => (btn.textContent = buttonText)
+      (btn) => (btn.textContent === buttonText)
     );
 
     expect(button).not.toBeNull();
