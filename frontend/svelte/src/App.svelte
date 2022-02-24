@@ -23,7 +23,9 @@
         return;
       }
 
-      await syncAccounts(auth);
+      if (auth.identity) {
+        await syncAccounts(auth);
+      }
     }
   );
 

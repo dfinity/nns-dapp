@@ -25,13 +25,8 @@ import { createAgent } from "../utils/agent.utils";
 export const syncAccounts = async ({
   identity,
 }: {
-  identity: Identity | undefined | null;
+  identity: Identity;
 }): Promise<void> => {
-  if (!identity) {
-    accountsStore.set(undefined);
-    return;
-  }
-
   const accounts: AccountsStore = await loadAccounts({ identity });
   accountsStore.set(accounts);
 };

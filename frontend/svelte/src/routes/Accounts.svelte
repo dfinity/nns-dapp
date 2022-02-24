@@ -40,10 +40,10 @@
   const closeModal = () => (showAddAccountModal = false);
 
   let totalBalance: ICP;
-  const zeroICPs = () => ICP.fromE8s(BigInt(0));
+  const zeroICPs = ICP.fromE8s(BigInt(0));
   $: {
     totalBalance = addICPs(
-      accounts?.main.balance || zeroICPs(),
+      accounts?.main?.balance || zeroICPs,
       ...(accounts?.subAccounts || []).map(({ balance }) => balance)
     );
   }
@@ -60,7 +60,7 @@
         {/if}
       </div>
 
-      {#if accounts}
+      {#if accounts?.main}
         <AccountCard
           role="link"
           on:click={() => cardClick(accounts?.main?.identifier)}
