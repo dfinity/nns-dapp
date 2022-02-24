@@ -1,49 +1,40 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
   import Card from "../ui/Card.svelte";
-  import { formatICP } from "../../../lib/utils/icp.utils";
   import { i18n } from "../../stores/i18n";
+  import { E8S_PER_ICP } from "../../constants/icp.constants";
+  import { formatNumber } from "../../utils/format.utils";
 
   export let proposalInfo: ProposalInfo;
 
-  $: latestTallyYes = proposalInfo.latestTally.yes;
-  $: latestTallyNo = proposalInfo.latestTally.no;
+  if (!proposalInfo) throw new Error("no proposalInfo provided");
+
+  const { yes, no } = proposalInfo.latestTally;
+  const yesValue = Number(yes) / E8S_PER_ICP;
+  const noValue = Number(no) / E8S_PER_ICP;
+  const summ = yesValue + noValue;
 </script>
 
 <!-- TODO: Adop/Reject card content -- https://dfinity.atlassian.net/browse/L2-269 -->
 <Card>
   <div class="latest-tally">
     <h3>
-      {$i18n.proposal_detail.adopt}<span
-        >{`${formatICP({
-          value: latestTallyYes,
-          minFraction: 2,
-          maxFraction: 2,
-        })}`}</span
-      >
+      {$i18n.proposal_detail.adopt}<span>{formatNumber(yesValue)}</span>
     </h3>
     <div
       class="progressbar"
       role="progressbar"
-      aria-valuenow={Number(latestTallyYes)}
+      aria-valuenow={yesValue}
       aria-valuemin={0}
-      aria-valuemax={Number(latestTallyYes + latestTallyNo)}
+      aria-valuemax={summ}
     >
       <div
         class="progressbar-value"
-        style="width: {(Number(latestTallyYes) /
-          Number(latestTallyYes + latestTallyNo)) *
-          100}%"
+        style="width: {(yesValue / summ) * 100}%"
       />
     </div>
     <h3>
-      {$i18n.proposal_detail.reject}<span
-        >{`${formatICP({
-          value: latestTallyNo,
-          minFraction: 2,
-          maxFraction: 2,
-        })}`}</span
-      >
+      {$i18n.proposal_detail.reject}<span>{formatNumber(noValue)}</span>
     </h3>
   </div>
 
