@@ -39,6 +39,7 @@
   }
 
   .content {
+    // TODO: change the height source/behaviour -- https://dfinity.atlassian.net/browse/L2-270
     min-height: 30px;
     max-height: 300px;
     overflow-y: auto;

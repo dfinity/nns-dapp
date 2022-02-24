@@ -46,7 +46,7 @@
 
   <CardBlock>
     <!-- TODO: implement expandable -- https://dfinity.atlassian.net/browse/L2-270 -->
-    <h3 class="block-title" slot="title">Proposal Summary</h3>
+    <h3 class="block-title" slot="title">{$i18n.proposal_detail.summary}</h3>
     <p class="summary">
       {@html summary}
     </p>
@@ -59,7 +59,7 @@
       >
     {/if}
 
-    <a on:click|preventDefault|stopPropagation={showProposerNeuron} href="/"
+    <a on:click|preventDefault|stopPropagation={showProposerNeuron} href="#_"
       >{$i18n.proposal_detail.proposer_prefix} {proposalInfo.proposer}</a
     >
     <p>
@@ -88,11 +88,12 @@
 
 <style lang="scss">
   @use "../../themes/mixins/media";
+  @use "../../themes/mixins/text";
 
   .headline {
     font-size: var(--font-size-h5);
     line-height: var(--line-height-standard);
-    overflow-wrap: anywhere;
+    @include text.clamp(3);
 
     @include media.min-width(medium) {
       margin-top: calc(0.5 * var(--padding));

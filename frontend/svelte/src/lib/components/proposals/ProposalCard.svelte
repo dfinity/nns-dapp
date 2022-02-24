@@ -48,7 +48,7 @@
 <!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
 <div>
   {#if !hide}
-    <Card>
+    <Card role="link" on:click={showProposal}>
       <p slot="start" class="title" {title}>{title || ""}</p>
       <Badge slot="end" {color}
         >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge

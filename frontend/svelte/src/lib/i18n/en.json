@@ -107,6 +107,7 @@
   },
   "proposal_detail": {
     "title": "Proposal",
+    "summary": "Proposal Summary",
     "topic_prefix": "Topic:",
     "id_prefix": "Id:",
     "proposer_prefix": "Proposer:",
