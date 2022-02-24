@@ -1,4 +1,4 @@
-<!-- source: https://material.io/icons/ -->
+<!-- source: https://fonts.google.com/icons?selected=Material+Icons+Outlined:filter_alt -->
 <svg
   xmlns="http://www.w3.org/2000/svg"
   enable-background="new 0 0 24 24"
