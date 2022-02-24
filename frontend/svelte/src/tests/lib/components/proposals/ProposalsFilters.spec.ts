@@ -15,18 +15,20 @@ describe("ProposalsFilters", () => {
     container,
     activeFilters,
     totalFilters,
+    text,
   }: {
     container: HTMLElement;
     activeFilters: number;
     totalFilters: number;
+    text: string;
   }) => {
-    const buttonText = `${en.voting.status} (${activeFilters}/${totalFilters})`;
+    const buttonText = `${text} (${activeFilters}/${totalFilters})`;
 
-    const button = Array.from(container.querySelectorAll("button")).filter(
-      (btn) => (btn.textContent === buttonText)
+    const buttons = Array.from(container.querySelectorAll("button")).filter(
+      (btn) => btn.textContent === buttonText
     );
 
-    expect(button).not.toBeNull();
+    expect(buttons?.length).toEqual(1);
   };
 
   it("should render topics filters", () => {
@@ -36,6 +38,7 @@ describe("ProposalsFilters", () => {
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.topics.length,
       totalFilters: enumSize(Topic),
+      text: en.voting.topics,
     });
   });
 
@@ -46,6 +49,7 @@ describe("ProposalsFilters", () => {
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.rewards.length,
       totalFilters: enumSize(ProposalRewardStatus),
+      text: en.voting.rewards,
     });
   });
 
@@ -56,6 +60,7 @@ describe("ProposalsFilters", () => {
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.status.length,
       totalFilters: enumSize(ProposalStatus),
+      text: en.voting.status,
     });
   });
 
