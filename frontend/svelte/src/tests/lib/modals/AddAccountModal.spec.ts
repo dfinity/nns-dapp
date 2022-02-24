@@ -1,13 +1,21 @@
 /**
  * @jest-environment jsdom
  */
-
+// prettier-ignore
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import AddAccountModal from "../../../lib/modals/AddAccountModal/AddAccountModal.svelte";
-import * as accountsServices from "../../../lib/services/accounts.services";
+import { createSubAccount } from "../../../lib/services/accounts.services";
 
 const en = require("../../../lib/i18n/en.json");
+
+// This is the way to mock when we import in a destructured manner
+// and we want to mock the imported function
+jest.mock("../../../lib/services/accounts.services", () => {
+  return {
+    createSubAccount: jest.fn().mockResolvedValue(undefined),
+  };
+});
 
 describe("AddAccountModal", () => {
   it("should display modal", () => {
@@ -65,13 +73,10 @@ describe("AddAccountModal", () => {
     expect(createButton.getAttribute("disabled")).toBeNull();
   });
 
-  // TODO: Cannot mock `createSubAccount` function from account.services.ts
-  // Is it because it's importing it in another component?
-  xit("should have enabled Add Account button when entering name", async () => {
-    const createSubAccountMock = jest.fn().mockResolvedValue(undefined);
-    jest
-      .spyOn(accountsServices, "createSubAccount")
-      .mockImplementation(createSubAccountMock);
+  it("should have enabled Add Account button when entering name", async () => {
+    // jest
+    //   .spyOn(accountsServices, "createSubAccount")
+    //   .mockImplementation(createSubAccountMock);
     const { container, queryByText } = render(AddAccountModal);
 
     const accountCard = queryByText(en.accounts.new_linked_title);
@@ -88,6 +93,6 @@ describe("AddAccountModal", () => {
 
     await fireEvent.click(createButton);
 
-    expect(createSubAccountMock).toBeCalled();
+    expect(createSubAccount).toBeCalled();
   });
 });
