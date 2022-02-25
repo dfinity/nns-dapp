@@ -15,16 +15,14 @@ export const debounce = (func: Function, timeout?: number) => {
 /**
  * Transform bigint to string to avoid serialization error.
  */
-export const stringifyJson = ({
+export const stringifyJson = (
   value,
-  indentation = 2,
-}: {
-  value: object;
-  indentation?: number;
-}): string => {
-  return JSON.stringify(
+  options?: {
+    indentation?: number;
+  }
+): string =>
+  JSON.stringify(
     value,
     (key, value) => (typeof value === "bigint" ? value.toString() : value),
-    indentation
+    options?.indentation ?? 0
   );
-};

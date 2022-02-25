@@ -45,20 +45,18 @@ describe("utils", () => {
     const SAMPLE = { a: 0, b: [1, 2], c: "c" };
 
     it("should stringify standard JSON", () => {
-      expect(stringifyJson({ value: SAMPLE })).toBe(
-        JSON.stringify(SAMPLE, null, 2)
-      );
+      expect(stringifyJson(SAMPLE)).toBe(JSON.stringify(SAMPLE));
     });
 
     it("should stringify JSON with bigint", () => {
-      expect(stringifyJson({ value: { a: BigInt(123) } })).toBe(
-        JSON.stringify({ a: "123" }, null, 2)
+      expect(stringifyJson({ a: BigInt(123) })).toBe(
+        JSON.stringify({ a: "123" })
       );
     });
 
     it("should support the indentation", () => {
-      expect(stringifyJson({ value: SAMPLE, indentation: 0 })).toBe(
-        JSON.stringify(SAMPLE)
+      expect(stringifyJson(SAMPLE, { indentation: 2 })).toBe(
+        JSON.stringify(SAMPLE, null, 2)
       );
     });
   });
