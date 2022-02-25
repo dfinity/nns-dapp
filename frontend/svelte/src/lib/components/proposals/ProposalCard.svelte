@@ -60,13 +60,6 @@
   {/if}
 </div>
 
-<Card role="link" on:click={showProposal}>
-  <p slot="start">{proposal?.title}</p>
-  <Badge slot="end" {color}
-    >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
-  >
-</Card>
-
 <style lang="scss">
   @use "../../themes/mixins/text";
 

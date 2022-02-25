@@ -148,13 +148,5 @@ describe("proposals-utils", () => {
         "nnsFunctionId,nnsFunctionName,payload"
       );
     });
-
-    it("should mock payload formatting", () => {
-      const fields = proposalActionFields(mockProposalInfo.proposal);
-      const payload = fields.find(([key]) => key === "payload")[1];
-      expect(payload).toEqual(
-        '{data_source: {"icp":["Binance"],"sdr":"fixer.io"}, timestamp_seconds: 200}'
-      );
-    });
   });
 });
