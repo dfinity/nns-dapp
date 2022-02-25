@@ -1,5 +1,7 @@
 # Changelog
 
+## Placeholder
+
 ## Proposal 45369
 * Upgrade agent-js to 0.10.3 (to resolve some issues with proposal rendering)
 * Add "Powered by IC" badge to the login page
