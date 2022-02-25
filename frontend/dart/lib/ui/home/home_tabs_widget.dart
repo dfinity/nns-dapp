@@ -161,11 +161,7 @@ class _HomePageState extends State<HomePage>
                         child: TabBar(
                           physics: const NeverScrollableScrollPhysics(),
                           controller: _tabController,
-                          indicator: BoxDecoration(
-                              color: Color(0xff0081FF),
-                              borderRadius: BorderRadius.all(
-                                Radius.zero,
-                              )),
+                          indicator: BoxDecoration(color: Color(0xff0081FF)),
                           indicatorSize: TabBarIndicatorSize.tab,
                           labelPadding:
                               EdgeInsets.symmetric(vertical: 8, horizontal: 10),
