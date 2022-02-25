@@ -5,6 +5,7 @@ import {
   ProposalStatus,
   Vote,
 } from "@dfinity/nns";
+import { stringifyJson } from "./utils";
 
 export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
   length <= 0;
@@ -20,15 +21,6 @@ export const proposalFirstActionKey = (
   proposal: Proposal
 ): string | undefined => Object.keys(proposal?.action)[0];
 
-/** Mock the flutter dapp json renderer  */
-const formatProposalActionPayload = (payload: object): string => {
-  if (!payload) return "";
-  const fields = Object.entries(payload)
-    .map(([key, value]) => `${key}: ${value}`)
-    .join(", ");
-  return `{${fields}}`;
-};
-
 export const proposalActionFields = (
   proposal: Proposal
 ): [string, string][] => {
@@ -41,7 +33,7 @@ export const proposalActionFields = (
     .filter(([key]) => key !== "payloadBytes")
     .map(([key, value]: [string, object]) => [
       key,
-      key === "payload" ? formatProposalActionPayload(value) : `${value}`,
+      key === "payload" ? stringifyJson(value) : `${value}`,
     ]);
 };
 
