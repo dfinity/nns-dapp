@@ -33,7 +33,7 @@
   $: summary = formatProposalSummary(removeHTMLTags(proposal?.summary));
   $: topic = $i18n.topics[Topic[proposalInfo?.topic]];
   $: color = PROPOSAL_COLOR[status];
-  $: ({title, url} = proposal);
+  $: ({ title, url } = proposal);
 
   // TODO: show neuron modal https://dfinity.atlassian.net/browse/L2-282
   const showProposerNeuron = () => {
@@ -57,9 +57,7 @@
 
   <div class="meta">
     {#if url}
-      <a class="proposal-url" target="_blank" href={url}
-        >{url}</a
-      >
+      <a class="proposal-url" target="_blank" href={url}>{url}</a>
     {/if}
 
     <a on:click|preventDefault|stopPropagation={showProposerNeuron} href="#_"
