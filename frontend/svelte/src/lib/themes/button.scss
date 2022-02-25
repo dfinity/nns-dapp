@@ -36,12 +36,22 @@ button {
   }
 
   &.primary,
+  &.dark,
   &.input-button {
     border-radius: var(--border-radius);
 
     position: relative;
     min-height: 60px;
 
+    &.small {
+      min-height: inherit;
+      font-size: inherit;
+      padding: calc(var(--padding) / 2) var(--padding);
+    }
+  }
+
+  &.primary,
+  &.input-button {
     &[disabled] {
       background: var(--gray-400);
       color: var(--gray-600);
@@ -62,8 +72,13 @@ button {
     padding: var(--padding);
 
     font-size: var(--font-size-small);
+
     @include media.min-width(medium) {
       font-size: var(--font-size-h3);
+    }
+
+    &:hover {
+      background: var(--blue-400);
     }
   }
 
@@ -84,6 +99,28 @@ button {
     box-shadow: 1px 2px 2px 0 rgba(var(--background-rgb), 0.75);
     &:hover {
       box-shadow: 2px 3px 3px 0 rgba(var(--background-rgb), 0.65);
+    }
+  }
+
+  &.dark {
+    background: var(--gray-600);
+    color: var(--gray-50);
+
+    &[disabled] {
+      background: rgba(var(--gray-600-rgb), 0.8);
+      color: var(--gray-800);
+    }
+
+    @include effect.ripple-effect(--gray-600-tint);
+
+    &:focus {
+      @include effect.ripple-effect(--gray-500-tint);
+      color: var(--gray-500-contrast);
+    }
+
+    &:hover,
+    &:focus {
+      background: var(--gray-500);
     }
   }
 }

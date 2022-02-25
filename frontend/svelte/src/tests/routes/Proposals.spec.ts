@@ -34,14 +34,6 @@ describe("Proposals", () => {
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
   });
 
-  it("should render a title", () => {
-    const { container } = render(Proposals);
-
-    const title: HTMLHeadingElement | null = container.querySelector("h1");
-    expect(title).not.toBeNull();
-    expect(title.textContent).toEqual("Voting");
-  });
-
   it("should render a description", () => {
     const { getByText } = render(Proposals);
 
