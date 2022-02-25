@@ -181,6 +181,7 @@
       p {
         font-size: var(--font-size-ultra-small);
         color: var(--gray-100);
+        overflow-wrap: break-word;
 
         @include media.min-width(medium) {
           font-size: var(--font-size-small);
