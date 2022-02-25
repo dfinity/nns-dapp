@@ -1,7 +1,6 @@
 /**
  * @jest-environment jsdom
  */
-// prettier-ignore
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import AddAccountModal from "../../../lib/modals/AddAccountModal/AddAccountModal.svelte";

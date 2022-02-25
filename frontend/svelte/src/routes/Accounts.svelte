@@ -12,7 +12,7 @@
   import { AppPath } from "../lib/constants/routes.constants";
   import AddAcountModal from "../lib/modals/AddAccountModal/AddAccountModal.svelte";
   import { ICP } from "@dfinity/nns";
-  import { addICPs } from "../lib/utils/icp.utils";
+  import { sumICPs } from "../lib/utils/icp.utils";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -42,7 +42,7 @@
   let totalBalance: ICP;
   const zeroICPs = ICP.fromE8s(BigInt(0));
   $: {
-    totalBalance = addICPs(
+    totalBalance = sumICPs(
       accounts?.main?.balance || zeroICPs,
       ...(accounts?.subAccounts || []).map(({ balance }) => balance)
     );
