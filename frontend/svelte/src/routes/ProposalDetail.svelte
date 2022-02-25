@@ -15,6 +15,7 @@
   import CastVoteCard from "../lib/components/proposal-detail/CastVoteCard.svelte";
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { i18n } from "../lib/stores/i18n";
+  import { authStore } from "../lib/stores/auth.store";
 
   let proposalInfo: ProposalInfo;
 
@@ -36,6 +37,7 @@
     try {
       proposalInfo = await getProposalInfo({
         proposalId,
+        identity: $authStore.identity,
       });
 
       if (!proposalInfo) {

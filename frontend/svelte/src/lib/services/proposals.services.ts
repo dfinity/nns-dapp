@@ -102,20 +102,30 @@ const queryProposals = async ({
  */
 export const getProposalInfo = async ({
   proposalId,
+  identity,
 }: {
   proposalId: ProposalId;
-}): Promise<ProposalInfo> => {
+  identity: Identity | null | undefined;
+}): Promise<ProposalInfo | undefined> => {
   const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
-  return proposal || queryProposalInfo({ proposalId });
+  return proposal || queryProposalInfo({ proposalId, identity });
 };
 
-// TODO: switch to NDAPP canister -- https://dfinity.atlassian.net/browse/L2-267
 const queryProposalInfo = async ({
   proposalId,
+  identity,
 }: {
   proposalId: ProposalId;
-}): Promise<ProposalInfo> => {
-  const governance: GovernanceCanister = GovernanceCanister.create();
+  identity: Identity | null | undefined;
+}): Promise<ProposalInfo | undefined> => {
+  if (!identity) {
+    throw new Error(get(i18n).error.missing_identity);
+  }
+
+  const governance: GovernanceCanister = GovernanceCanister.create({
+    agent: await createAgent({ identity, host: process.env.HOST }),
+  });
+
   return governance.getProposalInfo({ proposalId, certified: false });
 };
 
