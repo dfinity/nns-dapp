@@ -9,17 +9,15 @@ use crate::STATE;
 use candid::CandidType;
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_crypto_sha256::Sha256;
+use ic_crypto_sha::Sha256;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::GOVERNANCE_CANISTER_ID;
 use itertools::Itertools;
-use ledger_canister::{
-    AccountIdentifier, BlockHeight, ICPTs, Memo, Subaccount, TimeStamp,
-    Transfer::{self, Burn, Mint, Send},
-};
+use ledger_canister::Operation::{self, Burn, Mint, Transfer};
+use ledger_canister::{AccountIdentifier, BlockHeight, Memo, Subaccount, TimeStamp, Tokens};
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
-use std::cmp::{min, Ordering};
+use std::cmp::min;
 use std::collections::{HashMap, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
@@ -85,7 +83,7 @@ struct Transaction {
     block_height: BlockHeight,
     timestamp: TimeStamp,
     memo: Memo,
-    transfer: Transfer,
+    transfer: Operation,
     transaction_type: Option<TransactionType>,
 }
 
@@ -98,7 +96,7 @@ pub enum TransactionToBeProcessed {
 #[derive(Copy, Clone, CandidType, Deserialize)]
 pub struct CreateCanisterArgs {
     pub controller: PrincipalId,
-    pub amount: ICPTs,
+    pub amount: Tokens,
     pub refund_address: AccountIdentifier,
 }
 
@@ -106,7 +104,7 @@ pub struct CreateCanisterArgs {
 pub struct TopUpCanisterArgs {
     pub principal: PrincipalId,
     pub canister_id: CanisterId,
-    pub amount: ICPTs,
+    pub amount: Tokens,
     pub refund_address: AccountIdentifier,
 }
 
@@ -114,7 +112,7 @@ pub struct TopUpCanisterArgs {
 pub struct RefundTransactionArgs {
     pub recipient_principal: PrincipalId,
     pub from_sub_account: Subaccount,
-    pub amount: ICPTs,
+    pub amount: Tokens,
     pub original_transaction_block_height: BlockHeight,
     pub refund_address: AccountIdentifier,
     pub error_message: String,
@@ -124,7 +122,7 @@ pub struct RefundTransactionArgs {
 enum TransactionType {
     Burn,
     Mint,
-    Send,
+    Transfer,
     StakeNeuron,
     StakeNeuronNotification,
     TopUpNeuron,
@@ -291,16 +289,16 @@ impl AccountsStore {
                     let transaction_type = match transaction.transfer {
                         Burn { from: _, amount: _ } => TransactionType::Burn,
                         Mint { to: _, amount: _ } => TransactionType::Mint,
-                        Send {
+                        Transfer {
                             from,
                             to,
                             amount,
                             fee: _,
                         } => {
                             if self.accounts.get(&to.to_vec()).is_some() {
-                                // If the recipient is a known account then the transaction must be a basic Send,
+                                // If the recipient is a known account then the transaction must be a basic Transfer,
                                 // since for all the 'special' transaction types the recipient is not a user account
-                                TransactionType::Send
+                                TransactionType::Transfer
                             } else {
                                 let memo = transaction.memo;
                                 let transaction_type =
@@ -447,7 +445,7 @@ impl AccountsStore {
 
     pub fn append_transaction(
         &mut self,
-        transfer: Transfer,
+        transfer: Operation,
         memo: Memo,
         block_height: BlockHeight,
         timestamp: TimeStamp,
@@ -479,7 +477,7 @@ impl AccountsStore {
                     transaction_type = Some(TransactionType::Mint);
                 }
             }
-            Send {
+            Transfer {
                 from,
                 to,
                 amount,
@@ -488,7 +486,7 @@ impl AccountsStore {
                 if self.try_add_transaction_to_account(to, transaction_index) {
                     self.try_add_transaction_to_account(from, transaction_index);
                     should_store_transaction = true;
-                    transaction_type = Some(TransactionType::Send);
+                    transaction_type = Some(TransactionType::Transfer);
                 } else if self.try_add_transaction_to_account(from, transaction_index) {
                     should_store_transaction = true;
                     if let Some(principal) = self.try_get_principal(&from) {
@@ -595,9 +593,9 @@ impl AccountsStore {
                     transfer: match transaction.transfer {
                         Burn { amount, from: _ } => TransferResult::Burn { amount },
                         Mint { amount, to: _ } => TransferResult::Mint { amount },
-                        Send { from, to, amount, fee } => {
+                        Transfer { from, to, amount, fee } => {
                             if from == request.account_identifier {
-                                TransferResult::Send { to, amount, fee }
+                                TransferResult::Transfer { to, amount, fee }
                             } else {
                                 TransferResult::Receive { from, amount, fee }
                             }
@@ -811,7 +809,7 @@ impl AccountsStore {
                 match transaction.transfer {
                     Burn { from, amount: _ } => self.prune_transactions_from_account(from, min_transaction_index),
                     Mint { to, amount: _ } => self.prune_transactions_from_account(to, min_transaction_index),
-                    Send {
+                    Transfer {
                         from,
                         to,
                         amount: _,
@@ -1021,42 +1019,12 @@ impl AccountsStore {
     }
 
     fn get_transaction_index(&self, block_height: BlockHeight) -> Option<TransactionIndex> {
-        // The binary search methods are taken from here (they will be in stable rust shortly) -
-        // https://github.com/vojtechkral/rust/blob/c7a787a3276cadad7ee51577f65158b4888c058c/library/alloc/src/collections/vec_deque.rs#L2515
-        fn binary_search_by_key<T, B, F>(vec_deque: &VecDeque<T>, b: &B, mut f: F) -> Result<usize, usize>
-        where
-            F: FnMut(&T) -> B,
-            B: Ord,
-        {
-            binary_search_by(vec_deque, |k| f(k).cmp(b))
-        }
-
-        fn binary_search_by<T, F>(vec_deque: &VecDeque<T>, mut f: F) -> Result<usize, usize>
-        where
-            F: FnMut(&T) -> Ordering,
-        {
-            let (front, back) = vec_deque.as_slices();
-
-            let search_back = matches!(
-                back.first().map(|elem| f(elem)),
-                Some(Ordering::Less) | Some(Ordering::Equal)
-            );
-            if search_back {
-                back.binary_search_by(f)
-                    .map(|idx| idx + front.len())
-                    .map_err(|idx| idx + front.len())
-            } else {
-                front.binary_search_by(f)
-            }
-        }
-
         if let Some(latest_transaction) = self.transactions.back() {
             let max_block_height = latest_transaction.block_height;
             if block_height <= max_block_height {
-                // binary_search_by_key is not yet in stable rust (https://github.com/rust-lang/rust/issues/78021)
-                // TODO uncomment the line below once binary_search_by_key is in stable rust
-                // self.transactions.binary_search_by_key(&block_height, |t| t.block_height).ok().map(|i| i as u64)
-                return binary_search_by_key(&self.transactions, &block_height, |t| t.block_height)
+                return self
+                    .transactions
+                    .binary_search_by_key(&block_height, |t| t.block_height)
                     .ok()
                     .map(|i| i as u64);
             }
@@ -1068,13 +1036,13 @@ impl AccountsStore {
         &self,
         from: AccountIdentifier,
         to: AccountIdentifier,
-        amount: ICPTs,
+        amount: Tokens,
         memo: Memo,
         principal: &PrincipalId,
         canister_ids: &[CanisterId],
     ) -> TransactionType {
         if from == to {
-            TransactionType::Send
+            TransactionType::Transfer
         } else if self.neuron_accounts.contains_key(&to) {
             if self.is_stake_neuron_notification(memo, &from, &to, amount) {
                 TransactionType::StakeNeuronNotification
@@ -1089,10 +1057,10 @@ impl AccountsStore {
             } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
                 TransactionType::StakeNeuron
             } else {
-                TransactionType::Send
+                TransactionType::Transfer
             }
         } else {
-            TransactionType::Send
+            TransactionType::Transfer
         }
     }
 
@@ -1136,7 +1104,7 @@ impl AccountsStore {
         memo: Memo,
         from: &AccountIdentifier,
         to: &AccountIdentifier,
-        amount: ICPTs,
+        amount: Tokens,
     ) -> bool {
         if memo.0 > 0 && amount.get_e8s() == 0 {
             self.get_transaction_index(memo.0)
@@ -1146,7 +1114,7 @@ impl AccountsStore {
                     t.transaction_type.is_some() && matches!(t.transaction_type.unwrap(), TransactionType::StakeNeuron)
                 })
                 .map_or(false, |t| {
-                    if let Send {
+                    if let Transfer {
                         from: original_transaction_from,
                         to: original_transaction_to,
                         amount: _,
@@ -1187,7 +1155,7 @@ impl AccountsStore {
         from: AccountIdentifier,
         to: AccountIdentifier,
         memo: Memo,
-        amount: ICPTs,
+        amount: Tokens,
         block_height: BlockHeight,
     ) {
         match transaction_type {
@@ -1275,7 +1243,7 @@ impl StableState for AccountsStore {
         ): (
             HashMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
-            VecDeque<Transaction>,
+            VecDeque<TransactionPrevious>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
             MultiPartTransactionsProcessor,
@@ -1293,7 +1261,7 @@ impl StableState for AccountsStore {
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
-            transactions,
+            transactions: transactions.into_iter().map_into().collect(),
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
@@ -1302,6 +1270,84 @@ impl StableState for AccountsStore {
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         })
+    }
+}
+
+#[derive(CandidType, Deserialize)]
+struct TransactionPrevious {
+    transaction_index: TransactionIndex,
+    block_height: BlockHeight,
+    timestamp: TimeStamp,
+    memo: Memo,
+    transfer: TransferPrevious,
+    transaction_type: Option<TransactionTypePrevious>,
+}
+
+#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
+enum TransactionTypePrevious {
+    Burn,
+    Mint,
+    Send,
+    StakeNeuron,
+    StakeNeuronNotification,
+    TopUpNeuron,
+    CreateCanister,
+    TopUpCanister(CanisterId),
+}
+
+#[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
+pub enum TransferPrevious {
+    Burn {
+        from: AccountIdentifier,
+        amount: Tokens,
+    },
+    Mint {
+        to: AccountIdentifier,
+        amount: Tokens,
+    },
+    Send {
+        from: AccountIdentifier,
+        to: AccountIdentifier,
+        amount: Tokens,
+        fee: Tokens,
+    },
+}
+
+impl From<TransferPrevious> for Operation {
+    fn from(t: TransferPrevious) -> Self {
+        match t {
+            TransferPrevious::Burn { from, amount } => Burn { from, amount },
+            TransferPrevious::Mint { to, amount } => Mint { to, amount },
+            TransferPrevious::Send { from, to, amount, fee } => Transfer { from, to, amount, fee },
+        }
+    }
+}
+
+impl From<TransactionTypePrevious> for TransactionType {
+    fn from(t: TransactionTypePrevious) -> Self {
+        match t {
+            TransactionTypePrevious::Burn => TransactionType::Burn,
+            TransactionTypePrevious::Mint => TransactionType::Mint,
+            TransactionTypePrevious::Send => TransactionType::Transfer,
+            TransactionTypePrevious::StakeNeuron => TransactionType::StakeNeuron,
+            TransactionTypePrevious::StakeNeuronNotification => TransactionType::StakeNeuronNotification,
+            TransactionTypePrevious::TopUpNeuron => TransactionType::TopUpNeuron,
+            TransactionTypePrevious::CreateCanister => TransactionType::CreateCanister,
+            TransactionTypePrevious::TopUpCanister(c) => TransactionType::TopUpCanister(c),
+        }
+    }
+}
+
+impl From<TransactionPrevious> for Transaction {
+    fn from(t: TransactionPrevious) -> Self {
+        Transaction {
+            transaction_index: t.transaction_index,
+            block_height: t.block_height,
+            timestamp: t.timestamp,
+            memo: t.memo,
+            transfer: t.transfer.into(),
+            transaction_type: t.transaction_type.map(|tt| tt.into()),
+        }
     }
 }
 
@@ -1364,7 +1410,7 @@ impl Transaction {
         block_height: BlockHeight,
         timestamp: TimeStamp,
         memo: Memo,
-        transfer: Transfer,
+        transfer: Operation,
         transaction_type: Option<TransactionType>,
     ) -> Transaction {
         Transaction {
@@ -1431,20 +1477,20 @@ pub struct TransactionResult {
 #[derive(CandidType)]
 pub enum TransferResult {
     Burn {
-        amount: ICPTs,
+        amount: Tokens,
     },
     Mint {
-        amount: ICPTs,
+        amount: Tokens,
     },
-    Send {
+    Transfer {
         to: AccountIdentifier,
-        amount: ICPTs,
-        fee: ICPTs,
+        amount: Tokens,
+        fee: Tokens,
     },
     Receive {
         from: AccountIdentifier,
-        amount: ICPTs,
-        fee: ICPTs,
+        amount: Tokens,
+        fee: Tokens,
     },
 }
 
