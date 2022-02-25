@@ -1,4 +1,11 @@
-import { enumKeys, enumsKeys, enumValues } from "../../../lib/utils/enum.utils";
+import { Topic } from "@dfinity/nns";
+import {
+  enumKeys,
+  enumsExclude,
+  enumSize,
+  enumsKeys,
+  enumValues,
+} from "../../../lib/utils/enum.utils";
 
 describe("enum-utils", () => {
   enum TestEnum {
@@ -24,5 +31,43 @@ describe("enum-utils", () => {
         values: [TestEnum.B, TestEnum.C],
       })
     ).toEqual(["B", "C"]);
+  });
+
+  it("should return the number of keys of enums", () => {
+    expect(enumSize<typeof TestEnum>(TestEnum)).toEqual(4);
+  });
+
+  it("should filter all topics", () =>
+    expect(
+      enumsExclude({ obj: Topic as unknown as Topic, values: [] })
+    ).toEqual(enumValues(Topic)));
+
+  it("should exclude no topics", () => {
+    const all: Topic[] = enumKeys(Topic).map((key: string) => Topic[key]);
+
+    expect(
+      enumsExclude({ obj: Topic as unknown as Topic, values: all })
+    ).toEqual([]);
+  });
+
+  it("should exclude selected topics", () => {
+    const results: Topic[] = [
+      Topic.Unspecified,
+      Topic.ManageNeuron,
+      Topic.ExchangeRate,
+      Topic.NetworkEconomics,
+      Topic.Governance,
+      Topic.NodeAdmin,
+      Topic.ParticipantManagement,
+      Topic.NetworkCanisterManagement,
+      Topic.NodeProviderRewards,
+    ];
+
+    expect(
+      enumsExclude({
+        obj: Topic as unknown as Topic,
+        values: [Topic.SubnetManagement, Topic.Kyc],
+      })
+    ).toEqual(results);
   });
 });

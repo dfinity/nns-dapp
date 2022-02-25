@@ -6,7 +6,7 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
-  import CreateNeuronModal from "../lib/modals/CreateNeuronModal/Modal.svelte";
+  import CreateNeuronModal from "../lib/modals/CreateNeuronModal/CreateNeuronModal.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -18,7 +18,8 @@
   let principalText: string = "";
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
-    ({ principal }: AuthStore) => (principalText = principal?.toText() ?? "")
+    ({ identity }: AuthStore) =>
+      (principalText = identity?.getPrincipal().toText() ?? "")
   );
 
   onDestroy(unsubscribe);
@@ -32,12 +33,11 @@
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
     <section>
-      <h1>{$i18n.neurons.title}</h1>
-
       <p>{$i18n.neurons.text}</p>
 
       <p>
-        {$i18n.neurons.principal_is} "{principalText}"
+        {$i18n.neurons.principal_is}
+        {principalText}
       </p>
 
       <NeuronCard />
@@ -49,15 +49,14 @@
         >
       </Toolbar>
     </svelte:fragment>
-    <CreateNeuronModal
-      on:nnsClose={closeModal}
-      visible={showStakeNeuronModal}
-    />
+    {#if showStakeNeuronModal}
+      <CreateNeuronModal on:nnsClose={closeModal} />
+    {/if}
   </Layout>
 {/if}
 
 <style lang="scss">
-  p {
-    margin-bottom: calc(2 * var(--padding));
+  p:last-of-type {
+    margin-bottom: calc(3 * var(--padding));
   }
 </style>

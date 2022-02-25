@@ -19,15 +19,28 @@
     listProposals,
   } from "../lib/services/proposals.services";
   import type { ProposalInfo } from "@dfinity/nns";
+  import { authStore } from "../lib/stores/auth.store";
+  import { toastsStore } from "../lib/stores/toasts.store";
+  import { errorToString } from "../lib/utils/error.utils";
 
   let loading: boolean = false;
 
   const findNextProposals = async () => {
     loading = true;
 
-    // TODO(L2-206): catch and display errors
-
-    await listNextProposals({ beforeProposal: lastProposalId(proposals) });
+    try {
+      await listNextProposals({
+        beforeProposal: lastProposalId(proposals),
+        identity: $authStore.identity,
+      });
+    } catch (err: any) {
+      toastsStore.show({
+        labelKey: "error.list_proposals",
+        level: "error",
+        detail: errorToString(err),
+      });
+      console.error(err);
+    }
 
     loading = false;
   };
@@ -35,10 +48,20 @@
   const findProposals = async () => {
     loading = true;
 
-    // TODO(L2-206): catch and display errors
-
-    // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
-    await listProposals({ clearBeforeQuery: !emptyProposals(proposals) });
+    try {
+      // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
+      await listProposals({
+        clearBeforeQuery: !emptyProposals(proposals),
+        identity: $authStore.identity,
+      });
+    } catch (err: any) {
+      toastsStore.show({
+        labelKey: "error.list_proposals",
+        level: "error",
+        detail: errorToString(err),
+      });
+      console.error(err);
+    }
 
     loading = false;
   };
@@ -80,8 +103,6 @@
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
     <section>
-      <h1>{$i18n.voting.title}</h1>
-
       <p>{$i18n.voting.text}</p>
 
       <ProposalsFilters />
@@ -105,5 +126,7 @@
   .spinner {
     position: relative;
     display: flex;
+
+    padding: calc(2 * var(--padding)) 0;
   }
 </style>

@@ -11,6 +11,7 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
+  import AddAcountModal from "../lib/modals/AddAccountModal/AddAccountModal.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -27,13 +28,15 @@
 
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-225
   const createNewTransaction = () => alert("New Transaction");
-  // TODO: TBD https://dfinity.atlassian.net/browse/L2-224
-  const addAccount = () => alert("Add Account");
 
   const cardClick = (identifier: string) =>
     routeStore.navigate({ path: `${AppPath.Wallet}/${identifier}` });
 
   onDestroy(unsubscribe);
+
+  let showAddAccountModal: boolean = false;
+  const openAddAccountModal = () => (showAddAccountModal = true);
+  const closeModal = () => (showAddAccountModal = false);
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -64,12 +67,15 @@
           <button class="primary" on:click={createNewTransaction}
             >{$i18n.accounts.new_transaction}</button
           >
-          <button class="primary" on:click={addAccount}
+          <button class="primary" on:click={openAddAccountModal}
             >{$i18n.accounts.add_account}</button
           >
         </Toolbar>
       {/if}
     </svelte:fragment>
+    {#if showAddAccountModal}
+      <AddAcountModal on:nnsClose={closeModal} />
+    {/if}
   </Layout>
 {/if}
 

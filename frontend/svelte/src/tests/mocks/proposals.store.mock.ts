@@ -14,6 +14,8 @@ export const mockProposals: ProposalInfo[] = [
       title: "Proposal1",
     },
     status: ProposalStatus.PROPOSAL_STATUS_OPEN,
+    ballots: [],
+    proposer: BigInt(123456789),
   },
   {
     id: "test2",
@@ -21,6 +23,8 @@ export const mockProposals: ProposalInfo[] = [
       title: "Proposal2",
     },
     status: ProposalStatus.PROPOSAL_STATUS_EXECUTED,
+    ballots: [],
+    proposer: BigInt(987654321),
   },
 ] as unknown as ProposalInfo[];
 

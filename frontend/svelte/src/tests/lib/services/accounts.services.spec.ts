@@ -1,15 +1,9 @@
 import { LedgerCanister } from "@dfinity/nns";
 import { syncAccounts } from "../../../lib/services/accounts.services";
-import * as agent from "../../../lib/utils/agent.utils";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 import { MockLedgerCanister } from "../../mocks/ledger.canister.mock";
 
 describe("accounts-services", () => {
-  beforeAll(() => {
-    // Needed to prevent importing Http from @dfinity/agent
-    const mockCreateAgent = () => undefined;
-    jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
-  });
   const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
 
   it("should call ledger to get the account balance", async () => {
@@ -19,8 +13,18 @@ describe("accounts-services", () => {
 
     const spy = jest.spyOn(mockLedgerCanister, "accountBalance");
 
-    await syncAccounts({ principal: mockPrincipal });
+    await syncAccounts({ identity: mockIdentity });
 
     expect(spy).toHaveReturnedTimes(1);
   });
+
+  // TODO: Reset when fixed L2-301
+  // it("should call nnsDappCanister to create subaccount", async () => {
+  //   const nnsDappMock = mock<NNSDappCanister>();
+  //   jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+
+  //   await createSubAccount("test subaccount");
+
+  //   expect(nnsDappMock.createSubAccount).toHaveBeenCalled();
+  // });
 });

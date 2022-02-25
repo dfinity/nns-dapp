@@ -4,6 +4,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: var(--select-flex-direction);
 
   padding: calc(2 * var(--padding));
 
@@ -47,7 +48,7 @@
 
   border: var(--select-input-border) solid currentColor;
 
-  border-radius: 50%;
+  border-radius: 2px;
 
   transition: background 0.2s, border 0.2s;
 

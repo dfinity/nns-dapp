@@ -3,14 +3,13 @@
  */
 
 import { LedgerCanister } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import App from "../App.svelte";
 import { authStore } from "../lib/stores/auth.store";
-import * as agent from "../lib/utils/agent.utils";
 import {
   authStoreMock,
-  mockPrincipal,
+  mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "./mocks/auth.store.mock";
 import { MockLedgerCanister } from "./mocks/ledger.canister.mock";
@@ -29,10 +28,6 @@ describe("App", () => {
       .mockImplementation((): LedgerCanister => mockLedgerCanister);
 
     spyLedger = jest.spyOn(mockLedgerCanister, "accountBalance");
-
-    // TODO(L2-206): mock http agent globally
-    const mockCreateAgent = () => undefined;
-    jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
   });
 
   it("should synchronize the accounts after sign in", async () => {
@@ -41,8 +36,10 @@ describe("App", () => {
     expect(spyLedger).toHaveBeenCalledTimes(0);
 
     authStoreMock.next({
-      principal: mockPrincipal as Principal,
+      identity: mockIdentity,
     });
+
+    await tick();
 
     expect(spyLedger).toHaveBeenCalledTimes(1);
   });

@@ -9,7 +9,6 @@ import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "../mocks/auth.store.mock";
-const en = require("../../lib/i18n/en.json");
 
 describe("Canisters", () => {
   let authStoreMock;
@@ -21,12 +20,7 @@ describe("Canisters", () => {
   });
 
   it("should render content", () => {
-    const { container, getByText } = render(Canisters);
-
-    const title = container.querySelector("h1");
-    expect(title).not.toBeNull();
-    expect(title).toBeVisible();
-    expect(title).toHaveTextContent("Canisters");
+    const { getByText } = render(Canisters);
 
     expect(
       getByText(

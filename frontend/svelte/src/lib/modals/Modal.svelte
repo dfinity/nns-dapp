@@ -6,7 +6,7 @@
   import IconBackIosNew from "../icons/IconBackIosNew.svelte";
   import { i18n } from "../stores/i18n";
 
-  export let visible: boolean = false;
+  export let visible: boolean = true;
   export let theme: "dark" | "light" = "light";
   export let size: "small" | "medium" = "small";
   // There is no way to know to know whether a parent is listening to the "nnsBack" event
@@ -127,7 +127,10 @@
     color: var(--gray-800);
 
     display: grid;
-    grid-template-columns: var(--icon-width) 1fr var(--icon-width);
+    --toolbar-icon-width: calc((var(--padding) / 2) + var(--icon-width));
+    grid-template-columns: var(--toolbar-icon-width) 1fr var(
+        --toolbar-icon-width
+      );
 
     z-index: var(--z-index);
 

@@ -24,16 +24,21 @@ const MAINNET = `https://${domainMainnet}`;
 
 const IDENTITY_SERVICE_URL =
   process.env.IDENTITY_SERVICE_URL ||
-  (process.env.DEPLOY_ENV === "testnet"
+  (development
     ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
     : "https://identity.ic0.app/");
 
 const HOST =
-  process.env.HOST ||
-  (process.env.DEPLOY_ENV === "testnet" ? `https://${domainTestnet}/` : "");
+  process.env.HOST || (development ? `https://${domainTestnet}/` : "");
 
+// Canister Ids for testnet and mainnet
 const GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";
 const LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+// Testnet canister id
+// TODO: Move to index.html L2-265
+const OWN_CANISTER_ID =
+  process.env.OWN_CANISTER_ID ||
+  (development ? "qhbym-qaaaa-aaaaa-aaafq-cai" : "qoctq-giaaa-aaaaa-aaaea-cai");
 
 const GOVERNANCE_CANISTER_URL = `https://${GOVERNANCE_CANISTER_ID}${domain}/`;
 const LEDGER_CANISTER_URL = `https://${LEDGER_CANISTER_ID}${domain}/`;
@@ -48,18 +53,19 @@ const REDIRECT_TO_LEGACY = ["true", "1"].includes(
   process.env.REDIRECT_TO_LEGACY
 )
   ? true
-  : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
+  : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY) ||
+    ENVIRONMENT === "local"
   ? false
   : true; // default
 
 export const envConfig = {
   ENVIRONMENT,
-  DEPLOY_ENV: process.env.DEPLOY_ENV,
+  DEPLOY_ENV: process.env.DEPLOY_ENV || (development ? "testnet" : "mainnet"),
   FETCH_ROOT_KEY: development,
   REDIRECT_TO_LEGACY,
   MAINNET,
   HOST,
-  OWN_CANISTER_ID: process.env.OWN_CANISTER_ID,
+  OWN_CANISTER_ID,
   IDENTITY_SERVICE_URL,
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
