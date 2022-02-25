@@ -24,6 +24,8 @@
   let topic: string | undefined;
   let status: ProposalStatus | undefined;
   let color: ProposalColor | undefined;
+  let title: string | undefined;
+  let url: string | undefined;
 
   $: ({ proposal, status } = proposalInfo);
   $: actionKey = proposalFirstActionKey(proposal);
@@ -31,6 +33,7 @@
   $: summary = formatProposalSummary(removeHTMLTags(proposal?.summary));
   $: topic = $i18n.topics[Topic[proposalInfo?.topic]];
   $: color = PROPOSAL_COLOR[status];
+  $: ({title, url} = proposal);
 
   // TODO: show neuron modal https://dfinity.atlassian.net/browse/L2-282
   const showProposerNeuron = () => {
@@ -39,7 +42,7 @@
 </script>
 
 <Card>
-  <h2 slot="start" class="headline">{proposal?.title}</h2>
+  <h2 slot="start" class="headline" {title}>{title}</h2>
   <Badge slot="end" {color}
     >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
   >
@@ -53,9 +56,9 @@
   </CardBlock>
 
   <div class="meta">
-    {#if proposal?.url}
-      <a class="proposal-url" target="_blank" href={proposal.url}
-        >{proposal.url}</a
+    {#if url}
+      <a class="proposal-url" target="_blank" href={url}
+        >{url}</a
       >
     {/if}
 
