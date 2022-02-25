@@ -4,10 +4,17 @@
 
 import { fireEvent, render } from "@testing-library/svelte";
 import CreateNeuronModal from "../../../lib/modals/neurons/CreateNeuronModal.svelte";
+import { stakeNeuron } from "../../../lib/services/neurons.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { mockAccountsStoreSubscribe } from "../../mocks/accounts.store.mock";
 
 const en = require("../../../lib/i18n/en.json");
+
+jest.mock("../../../lib/services/neurons.services", () => {
+  return {
+    stakeNeuron: jest.fn().mockResolvedValue(undefined),
+  };
+});
 
 describe("CreateNeuronModal", () => {
   beforeEach(() => {
@@ -72,5 +79,25 @@ describe("CreateNeuronModal", () => {
     const createButton = container.querySelector('button[type="submit"]');
     expect(createButton).not.toBeNull();
     expect(createButton.getAttribute("disabled")).toBeNull();
+  });
+
+  it("should be able to create a new neuron", async () => {
+    const { container } = render(CreateNeuronModal);
+
+    const accountCard = container.querySelector('article[role="button"]');
+    expect(accountCard).not.toBeNull();
+
+    await fireEvent.click(accountCard);
+
+    const input = container.querySelector('input[name="amount"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    await fireEvent.input(input, { target: { value: 22 } });
+
+    const createButton = container.querySelector('button[type="submit"]');
+
+    await fireEvent.click(createButton);
+
+    expect(stakeNeuron).toBeCalled();
   });
 });

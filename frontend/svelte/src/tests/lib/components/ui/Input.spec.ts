@@ -2,7 +2,9 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render } from "@testing-library/svelte";
+import { act, fireEvent, render } from "@testing-library/svelte";
+import html from "svelte-htm";
+import { writable } from "svelte/store";
 import Input from "../../../../lib/components/ui/Input.svelte";
 import InputTest from "./InputTest.svelte";
 
@@ -201,5 +203,23 @@ describe("Input", () => {
     });
 
     testHasAttribute({ container, attribute: "disabled", expected: true });
+  });
+
+  it("value can be set from props", async () => {
+    const textStore = writable();
+    // Testing the `bind` directive
+    // https://github.com/svelte-society/recipes-mvp/blob/master/testing.md#testing-the-bind-directive
+    const { container } = render(
+      html`<input
+        bind:value=${textStore}
+        name="name"
+        placeholderLabelKey="test.placeholder"
+      />`
+    );
+
+    const inputValue: string = "test value";
+    await act(() => textStore.set(inputValue));
+    const input: HTMLInputElement = container.querySelector("input");
+    expect(input).toHaveValue(inputValue);
   });
 });
