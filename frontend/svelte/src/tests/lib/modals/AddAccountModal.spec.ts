@@ -72,10 +72,7 @@ describe("AddAccountModal", () => {
     expect(createButton.getAttribute("disabled")).toBeNull();
   });
 
-  it("should have enabled Add Account button when entering name", async () => {
-    // jest
-    //   .spyOn(accountsServices, "createSubAccount")
-    //   .mockImplementation(createSubAccountMock);
+  it("should create a subaccount", async () => {
     const { container, queryByText } = render(AddAccountModal);
 
     const accountCard = queryByText(en.accounts.new_linked_title);
