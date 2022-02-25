@@ -81,7 +81,6 @@ const queryProposals = async ({
   // Governance canister listProposals -> https://github.com/dfinity/ic/blob/5c05a2fe2a7f8863c3772c050ece7e20907c8252/rs/sns/governance/src/governance.rs#L1226
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
-    certified: false,
     request: {
       limit: LIST_PAGINATION_LIMIT,
       beforeProposal,
@@ -126,7 +125,7 @@ const queryProposalInfo = async ({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.getProposalInfo({ proposalId, certified: false });
+  return governance.getProposalInfo({ proposalId });
 };
 
 export const getProposalId = (path: string): ProposalId | undefined => {
