@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/proposals/governance_tab_widget.dart';
 import '../../nns_dapp.dart';
@@ -52,6 +53,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    timeDilation = 0.05;
     final screenSize = context.mediaQuery.size;
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
