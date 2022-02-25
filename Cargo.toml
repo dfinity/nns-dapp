@@ -8,3 +8,6 @@ members = [
 lto = false
 opt-level = "z"
 codegen-units = 1
+
+[profile.release.package.ic-nns-governance]
+opt-level = 3
