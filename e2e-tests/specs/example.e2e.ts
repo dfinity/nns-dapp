@@ -1,6 +1,18 @@
+/**
+ * Waits for a page to load.  Normally this is simple, but
+ * we have a service worker that can load completely before
+ * the actual page loads.
+ */
+function waitForLoad(browser) {
+      return browser.waitUntil(() => browser.execute(() => (document.readyState === 'complete') && (null === document.title.match(/Content Validation Bootstrap/i))), {timeout: 60_000});
+}
+
+
 describe("landing page", () => {
   it("loads", async () => {
     await browser.url("/v2/");
+
+    await waitForLoad(browser);
 
     await browser.$("h1").waitForExist();
 
