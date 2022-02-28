@@ -13,6 +13,9 @@ interface I18nError {
   sign_in: string;
   list_proposals: string;
   missing_identity: string;
+  create_subaccount: string;
+  create_subaccount_too_long: string;
+  create_subaccount_limit_exceeded: string;
 }
 
 interface I18nNavigation {
@@ -73,6 +76,7 @@ interface I18nVoting {
   rewards: string;
   status: string;
   hide_unavailable_proposals: string;
+  nothing_found: string;
 }
 
 interface I18nCanisters {
