@@ -45,7 +45,7 @@ export const hasMatchingProposals = ({
   }
 
   if (!excludeVotedProposals) {
-    return false;
+    return true;
   }
 
   return (
