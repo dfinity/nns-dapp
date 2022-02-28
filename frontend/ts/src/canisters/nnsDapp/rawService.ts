@@ -127,7 +127,7 @@ export interface Transaction {
 }
 export type TransactionType = { 'Burn' : null } |
   { 'Mint' : null } |
-  { 'Send' : null } |
+  { 'Transfer' : null } |
   { 'StakeNeuronNotification' : null } |
   { 'TopUpCanister' : CanisterId } |
   { 'CreateCanister' : null } |
