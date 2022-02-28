@@ -6,10 +6,8 @@ import '../../../nns_dapp.dart';
 class NeuronRow extends StatelessWidget {
   final Neuron neuron;
   final bool showsWarning;
-  final Function? onTap;
 
-  const NeuronRow(
-      {Key? key, required this.neuron, this.onTap, this.showsWarning = false})
+  const NeuronRow({Key? key, required this.neuron, this.showsWarning = false})
       : super(key: key);
 
   @override

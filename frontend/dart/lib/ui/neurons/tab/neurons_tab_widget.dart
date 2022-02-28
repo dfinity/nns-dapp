@@ -3,6 +3,7 @@ import 'package:nns_dapp/ui/_components/footer_gradient_button.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/page_button.dart';
 import 'package:nns_dapp/ui/_components/tab_title_and_content.dart';
+import 'package:nns_dapp/ui/transaction/wallet/merge_neuron_accounts_page.dart';
 import 'package:nns_dapp/ui/transaction/wallet/select_source_wallet_page.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
 import '../../../nns_dapp.dart';
@@ -44,10 +45,6 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                                     child: NeuronRow(
                                       neuron: e,
                                       showsWarning: true,
-                                      onTap: () {
-                                        context.nav.push(
-                                            neuronPageDef.createPageConfig(e));
-                                      },
                                     ),
                                   ),
                                 ),
@@ -60,17 +57,41 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
       ),
       footer: Align(
         alignment: Alignment.bottomCenter,
-        child: PageButton(
-          title: "Stake Neuron",
-          onPress: () {
-            OverlayBaseWidget.show(
-              context,
-              WizardOverlay(
-                rootTitle: "Select Source Account",
-                rootWidget: SelectSourceWallet(isStakeNeuron: true),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: PageButton(
+                  title: "Stake Neuron",
+                  onPress: () {
+                    OverlayBaseWidget.show(
+                      context,
+                      WizardOverlay(
+                        rootTitle: "Select Source Account",
+                        rootWidget: SelectSourceWallet(isStakeNeuron: true),
+                      ),
+                    );
+                  },
+                ),
               ),
-            );
-          },
+              Flexible(
+                child: PageButton(
+                  title: "Merge Neurons",
+                  onPress: () {
+                    OverlayBaseWidget.show(
+                      context,
+                      WizardOverlay(
+                        rootTitle: "Select Two neurons to merge",
+                        rootWidget: MergeNeuronSourceAccount(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
