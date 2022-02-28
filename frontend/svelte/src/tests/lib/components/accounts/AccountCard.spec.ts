@@ -32,4 +32,14 @@ describe("AccountCard", () => {
       `${formatICP(mockMainAccount.balance.toE8s())}`
     );
   });
+
+  it("should add the role passed", () => {
+    const { container } = render(AccountCard, {
+      props: { ...props, role: "link" },
+    });
+
+    const article = container.querySelector("article");
+
+    expect(article.getAttribute("role")).toEqual("link");
+  });
 });

@@ -32,9 +32,10 @@ export interface DetachCanisterRequest {
   canister_id: Principal;
 }
 export type DetachCanisterResponse = { Ok: null } | { CanisterNotFound: null };
-export type GetAccountResponse =
-  | { Ok: AccountDetails }
-  | { AccountNotFound: null };
+export type GetAccountResponse = {
+  Ok?: AccountDetails;
+  AccountNotFound?: null;
+};
 export interface GetTransactionsRequest {
   page_size: number;
   offset: number;
