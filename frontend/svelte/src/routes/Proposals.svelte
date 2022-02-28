@@ -24,6 +24,7 @@
   import { errorToString } from "../lib/utils/error.utils";
 
   let loading: boolean = false;
+  let initialized: boolean = false;
 
   const findNextProposals = async () => {
     loading = true;
@@ -88,6 +89,8 @@
     await findProposals();
 
     initDebounceFindProposals();
+
+    initialized = true;
   });
 
   const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() =>
@@ -98,6 +101,9 @@
 
   let proposals: ProposalInfo[];
   $: proposals = $proposalsStore;
+
+  let nothingFound: boolean;
+  $: nothingFound = $proposalsStore.length === 0 && initialized && !loading;
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -112,6 +118,10 @@
           <ProposalCard {proposalInfo} />
         {/each}
       </InfiniteScroll>
+
+      {#if nothingFound}
+        <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+      {/if}
 
       {#if loading}
         <div class="spinner">
@@ -128,5 +138,10 @@
     display: flex;
 
     padding: calc(2 * var(--padding)) 0;
+  }
+
+  .no-proposals {
+    text-align: center;
+    margin: calc(var(--padding) * 2) 0;
   }
 </style>

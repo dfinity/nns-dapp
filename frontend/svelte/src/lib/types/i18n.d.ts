@@ -76,6 +76,7 @@ interface I18nVoting {
   rewards: string;
   status: string;
   hide_unavailable_proposals: string;
+  nothing_found: string;
 }
 
 interface I18nCanisters {
