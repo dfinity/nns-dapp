@@ -49,6 +49,8 @@
       <div class="content" id="modalContent">
         <slot />
       </div>
+
+      <slot name="footer" />
     </div>
   </div>
 {/if}
@@ -159,7 +161,12 @@
   }
 
   .content {
+    display: flex;
+    flex-direction: column;
+
+    max-height: calc(100vh - 156px);
     overflow-y: scroll;
+
     color: var(--gray-800);
   }
 </style>

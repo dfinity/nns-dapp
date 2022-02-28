@@ -61,10 +61,13 @@
     }
   };
 
-  const onChange = (filter: Topic | ProposalRewardStatus | ProposalStatus) => {
+  const onChange = (filter: Topic | ProposalRewardStatus | ProposalStatus) =>
     applyFilterChange(filter);
 
+  const filter = () => {
     updateProposalStoreFilters();
+
+    close();
   };
 </script>
 
@@ -81,4 +84,14 @@
       >
     {/each}
   {/if}
+
+  <svelte:fragment slot="footer">
+    <button class="primary" type="button" on:click={filter}> Filter </button>
+  </svelte:fragment>
 </Modal>
+
+<style lang="scss">
+  button {
+    margin: var(--padding);
+  }
+</style>
