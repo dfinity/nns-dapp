@@ -6,13 +6,13 @@
 
   export let account: Account;
   export let showCopy: boolean = false;
-  export let role: "button" | undefined = undefined;
+  export let role: "button" | "link" | undefined = undefined;
 
   $: ({ identifier, balance } = account);
 </script>
 
 <Card on:click {role}>
-  <p slot="start"><slot /></p>
+  <h4 slot="start"><slot /></h4>
   <ICP slot="end" icp={balance} />
   <Identifier {identifier} {showCopy} />
 </Card>
