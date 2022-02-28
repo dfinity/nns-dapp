@@ -1,6 +1,6 @@
 <script lang="ts">
   import Layout from "../lib/components/common/Layout.svelte";
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount, SvelteComponent } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AccountsStore, accountsStore } from "../lib/stores/accounts.store";
   import ICPComponent from "../lib/components/ic/ICP.svelte";
@@ -15,7 +15,10 @@
   import { sumICPs } from "../lib/utils/icp.utils";
 
   // TODO: To be removed once this page has been implemented
-  onMount(() => {
+  let Test: typeof SvelteComponent;
+  onMount(async () => {
+    Test = (await import("./Test.svelte")).default;
+
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace(AppPath.Accounts);
     }
@@ -51,6 +54,7 @@
 
 {#if !process.env.REDIRECT_TO_LEGACY}
   <Layout>
+    <svelte:component this={Test} a="# hello \n - *world!*" />
     <section>
       <div class="title">
         <h1>{$i18n.accounts.title}</h1>

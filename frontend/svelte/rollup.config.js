@@ -46,7 +46,7 @@ export default {
     sourcemap: !prodBuild,
     format: "es",
     name: "app",
-    file: "public/build/bundle.js",
+    dir: "public/build/",
   },
   plugins: [
     svelte({
