@@ -29,3 +29,29 @@ export const hideProposal = ({
     ballots.find(({ vote }) => vote !== Vote.UNSPECIFIED) !== undefined
   );
 };
+
+/**
+ * Do we have any proposals that match the filters to render or should we display the user that nothing was found?
+ */
+export const hasMatchingProposals = ({
+  proposals,
+  excludeVotedProposals,
+}: {
+  proposals: ProposalInfo[];
+  excludeVotedProposals: boolean;
+}): boolean => {
+  if (!proposals.length) {
+    return false;
+  }
+
+  if (!excludeVotedProposals) {
+    return false;
+  }
+
+  return (
+    proposals.find(
+      (proposalInfo: ProposalInfo) =>
+        !hideProposal({ proposalInfo, excludeVotedProposals })
+    ) !== undefined
+  );
+};

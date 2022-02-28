@@ -3,7 +3,11 @@
   import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import { emptyProposals, lastProposalId } from "../lib/utils/proposals.utils";
+  import {
+    emptyProposals,
+    hasMatchingProposals,
+    lastProposalId,
+  } from "../lib/utils/proposals.utils";
   import {
     proposalsFiltersStore,
     proposalsStore,
@@ -103,7 +107,13 @@
   $: proposals = $proposalsStore;
 
   let nothingFound: boolean;
-  $: nothingFound = $proposalsStore.length === 0 && initialized && !loading;
+  $: nothingFound =
+    initialized &&
+    !loading &&
+    !hasMatchingProposals({
+      proposals: $proposalsStore,
+      excludeVotedProposals: $proposalsFiltersStore.excludeVotedProposals,
+    });
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
