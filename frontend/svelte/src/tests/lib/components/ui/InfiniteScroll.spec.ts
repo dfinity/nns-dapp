@@ -4,7 +4,10 @@
 
 import { render } from "@testing-library/svelte";
 import InfiniteScroll from "../../../../lib/components/ui/InfiniteScroll.svelte";
-import { LIST_PAGINATION_LIMIT } from "../../../../lib/constants/constants";
+import {
+  INFINITE_SCROLL_OFFSET,
+  LIST_PAGINATION_LIMIT,
+} from "../../../../lib/constants/constants";
 import {
   IntersectionObserverActive,
   IntersectionObserverPassive,
@@ -40,6 +43,23 @@ describe("InfiniteScroll", () => {
     render(InfiniteScrollTest, {
       props: {
         elements: new Array(LIST_PAGINATION_LIMIT + 1),
+        spy: spyIntersect,
+      },
+    });
+
+    expect(spyIntersect).not.toHaveBeenCalled();
+  });
+
+  it("should not trigger an intersect event if more elements than offset but less than page", () => {
+    const spyIntersect = jest.fn();
+
+    render(InfiniteScrollTest, {
+      props: {
+        elements: new Array(
+          LIST_PAGINATION_LIMIT -
+            Math.round(LIST_PAGINATION_LIMIT * INFINITE_SCROLL_OFFSET) +
+            1
+        ),
         spy: spyIntersect,
       },
     });
