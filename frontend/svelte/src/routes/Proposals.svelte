@@ -35,7 +35,7 @@
 
     try {
       await listNextProposals({
-        beforeProposal: lastProposalId(proposals),
+        beforeProposal: lastProposalId($proposalsStore),
         identity: $authStore.identity,
       });
     } catch (err: any) {
@@ -56,7 +56,7 @@
     try {
       // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
       await listProposals({
-        clearBeforeQuery: !emptyProposals(proposals),
+        clearBeforeQuery: !emptyProposals($proposalsStore),
         identity: $authStore.identity,
       });
     } catch (err: any) {
@@ -84,11 +84,7 @@
       window.location.replace(AppPath.Proposals);
     }
 
-    // Load proposals on mount only if none were fetched before
-    if (!emptyProposals(proposals)) {
-      initDebounceFindProposals();
-      return;
-    }
+    proposalsFiltersStore.reset();
 
     await findProposals();
 
@@ -102,9 +98,6 @@
   );
 
   onDestroy(unsubscribe);
-
-  let proposals: ProposalInfo[];
-  $: proposals = $proposalsStore;
 
   let nothingFound: boolean;
   $: nothingFound =

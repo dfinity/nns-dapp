@@ -62,12 +62,14 @@
 
       {#if accounts?.main}
         <AccountCard
+          role="link"
           on:click={() => cardClick(accounts?.main?.identifier)}
           showCopy
           account={accounts?.main}>{$i18n.accounts.main}</AccountCard
         >
         {#each accounts.subAccounts as subAccount}
           <AccountCard
+            role="link"
             on:click={() => cardClick(subAccount.identifier)}
             showCopy
             account={subAccount}>{subAccount.name}</AccountCard

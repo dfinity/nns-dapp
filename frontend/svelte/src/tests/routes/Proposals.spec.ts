@@ -74,9 +74,10 @@ describe("Proposals", () => {
       ).toBeInTheDocument();
     });
 
-    it("should not render a spinner", async () => {
-      const { container, component } = render(Proposals);
-      expect(container.querySelector("div.spinner")).toBeNull();
+    it("should render a spinner while searching proposals", () => {
+      const { container } = render(Proposals);
+
+      expect(container.querySelector("div.spinner")).not.toBeNull();
     });
 
     it("should render proposals", () => {

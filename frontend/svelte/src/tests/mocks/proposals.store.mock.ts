@@ -37,7 +37,7 @@ export const mockProposalsStoreSubscribe = (
 };
 
 export const mockEmptyProposalsStoreSubscribe = (
-    run: Subscriber<ProposalInfo[]>
+  run: Subscriber<ProposalInfo[]>
 ): (() => void) => {
   run([]);
 
