@@ -21,13 +21,12 @@
       await createSubAccount(newAccountName);
       dispatcher("nnsClose");
     } catch (err) {
-      let labelKey = "create_subaccount";
-      if (err instanceof NameTooLongError) {
-        labelKey = "create_subaccount_too_long";
-      }
-      if (err instanceof SubAccountLimitExceededError) {
-        labelKey = "create_subaccount_limit_exceeded";
-      }
+      const labelKey =
+        err instanceof NameTooLongError
+          ? "create_subaccount_too_long"
+          : err instanceof SubAccountLimitExceededError
+          ? "create_subaccount_limit_exceeded"
+          : "create_subaccount";
       toastsStore.show({
         labelKey,
         level: "error",
