@@ -9,7 +9,6 @@ export interface AccountsStore {
 /**
  * A store that contains the account information.
  */
-
 export const initAccountsStore = () => {
   const { subscribe, set, update } = writable<AccountsStore>({
     main: undefined,
@@ -19,13 +18,6 @@ export const initAccountsStore = () => {
   return {
     subscribe,
     set,
-    // TODO: Remove in L2-301
-    addSubAccount(newAccount) {
-      update((state) => ({
-        ...state,
-        subAccounts: [newAccount, ...(state?.subAccounts || [])],
-      }));
-    },
   };
 };
 
