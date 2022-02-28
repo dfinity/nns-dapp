@@ -86,7 +86,9 @@
   {/if}
 
   <svelte:fragment slot="footer">
-    <button class="primary" type="button" on:click={filter}> Filter </button>
+    <button class="primary" type="button" on:click={filter}>
+      {$i18n.core.filter}
+    </button>
   </svelte:fragment>
 </Modal>
 

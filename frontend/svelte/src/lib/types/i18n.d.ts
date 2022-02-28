@@ -6,6 +6,7 @@ interface I18nCore {
   close: string;
   icp: string;
   create: string;
+  filter: string;
 }
 
 interface I18nError {
