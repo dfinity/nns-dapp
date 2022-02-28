@@ -3,8 +3,7 @@
   import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { AccountsStore, accountsStore } from "../lib/stores/accounts.store";
-  import type { Account } from "../lib/types/account";
-  import ICP from "../lib/components/ic/ICP.svelte";
+  import ICPComponent from "../lib/components/ic/ICP.svelte";
   import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
@@ -12,6 +11,8 @@
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
   import AddAcountModal from "../lib/modals/AddAccountModal/AddAccountModal.svelte";
+  import { ICP } from "@dfinity/nns";
+  import { sumICPs } from "../lib/utils/icp.utils";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -20,10 +21,10 @@
     }
   });
 
-  let main: Account | undefined;
+  let accounts: AccountsStore | undefined;
 
   const unsubscribe: Unsubscriber = accountsStore.subscribe(
-    async (accounts: AccountsStore) => (main = accounts?.main)
+    async (storeData: AccountsStore) => (accounts = storeData)
   );
 
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-225
@@ -37,6 +38,15 @@
   let showAddAccountModal: boolean = false;
   const openAddAccountModal = () => (showAddAccountModal = true);
   const closeModal = () => (showAddAccountModal = false);
+
+  let totalBalance: ICP;
+  const zeroICPs = ICP.fromE8s(BigInt(0));
+  $: {
+    totalBalance = sumICPs(
+      accounts?.main?.balance || zeroICPs,
+      ...(accounts?.subAccounts || []).map(({ balance }) => balance)
+    );
+  }
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -45,24 +55,31 @@
       <div class="title">
         <h1>{$i18n.accounts.title}</h1>
 
-        {#if main}
-          <ICP icp={main?.balance} />
+        {#if accounts?.main}
+          <ICPComponent icp={totalBalance} />
         {/if}
       </div>
 
-      {#if main}
+      {#if accounts?.main}
         <AccountCard
-          on:click={() => cardClick(main?.identifier)}
+          on:click={() => cardClick(accounts?.main?.identifier)}
           showCopy
-          account={main}>{$i18n.accounts.main}</AccountCard
+          account={accounts?.main}>{$i18n.accounts.main}</AccountCard
         >
+        {#each accounts.subAccounts as subAccount}
+          <AccountCard
+            on:click={() => cardClick(subAccount.identifier)}
+            showCopy
+            account={subAccount}>{subAccount.name}</AccountCard
+          >
+        {/each}
       {:else}
         <Spinner />
       {/if}
     </section>
 
     <svelte:fragment slot="footer">
-      {#if main}
+      {#if accounts}
         <Toolbar>
           <button class="primary" on:click={createNewTransaction}
             >{$i18n.accounts.new_transaction}</button
