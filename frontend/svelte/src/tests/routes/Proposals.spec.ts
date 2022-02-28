@@ -25,10 +25,6 @@ describe("Proposals", () => {
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
 
-    proposalsStoreMock = jest
-      .spyOn(proposalsStore, "subscribe")
-      .mockImplementation(mockProposalsStoreSubscribe);
-
     jest
       .spyOn(GovernanceCanister, "create")
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
@@ -58,12 +54,17 @@ describe("Proposals", () => {
     ).toBeInTheDocument();
   });
 
-  it("should not render a spinner", async () => {
-    const { container, component } = render(Proposals);
-    expect(container.querySelector("div.spinner")).toBeNull();
+  it("should render a spinner while searching proposals", () => {
+    const { container } = render(Proposals);
+
+    expect(container.querySelector("div.spinner")).not.toBeNull();
   });
 
   it("should render proposals", () => {
+    proposalsStoreMock = jest
+      .spyOn(proposalsStore, "subscribe")
+      .mockImplementation(mockProposalsStoreSubscribe);
+
     const { getByText } = render(Proposals);
 
     expect(getByText(mockProposals[0].proposal.title)).toBeInTheDocument();
