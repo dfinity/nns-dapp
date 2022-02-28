@@ -595,7 +595,7 @@ impl AccountsStore {
                         Mint { amount, to: _ } => TransferResult::Mint { amount },
                         Transfer { from, to, amount, fee } => {
                             if from == request.account_identifier {
-                                TransferResult::Transfer { to, amount, fee }
+                                TransferResult::Send { to, amount, fee }
                             } else {
                                 TransferResult::Receive { from, amount, fee }
                             }
@@ -1482,7 +1482,7 @@ pub enum TransferResult {
     Mint {
         amount: Tokens,
     },
-    Transfer {
+    Send {
         to: AccountIdentifier,
         amount: Tokens,
         fee: Tokens,
