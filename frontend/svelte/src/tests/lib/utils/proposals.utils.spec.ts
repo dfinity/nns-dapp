@@ -1,6 +1,7 @@
 import { Ballot, Vote } from "@dfinity/nns";
 import {
   emptyProposals,
+  hasMatchingProposals,
   hideProposal,
   lastProposalId,
 } from "../../../lib/utils/proposals.utils";
@@ -135,5 +136,130 @@ describe("proposals-utils", () => {
         excludeVotedProposals: true,
       })
     ).toBeTruthy();
+  });
+
+  it("should have matching proposals", () => {
+    expect(
+      hasMatchingProposals({
+        proposals: mockProposals,
+        excludeVotedProposals: false,
+      })
+    ).toBeTruthy();
+
+    expect(
+      hasMatchingProposals({
+        proposals: mockProposals,
+        excludeVotedProposals: true,
+      })
+    ).toBeTruthy();
+
+    expect(
+      hasMatchingProposals({
+        proposals: [
+          ...mockProposals,
+          {
+            ...mockProposals[0],
+            ballots: [
+              {
+                vote: Vote.UNSPECIFIED,
+              } as Ballot,
+            ],
+          },
+        ],
+        excludeVotedProposals: false,
+      })
+    ).toBeTruthy();
+
+    expect(
+      hasMatchingProposals({
+        proposals: [
+          ...mockProposals,
+          {
+            ...mockProposals[1],
+            ballots: [
+              {
+                vote: Vote.UNSPECIFIED,
+              } as Ballot,
+            ],
+          },
+        ],
+        excludeVotedProposals: false,
+      })
+    ).toBeTruthy();
+
+    expect(
+      hasMatchingProposals({
+        proposals: [
+          ...mockProposals,
+          {
+            ...mockProposals[0],
+            ballots: [
+              {
+                vote: Vote.UNSPECIFIED,
+              } as Ballot,
+            ],
+          },
+        ],
+        excludeVotedProposals: true,
+      })
+    ).toBeTruthy();
+
+    expect(
+      hasMatchingProposals({
+        proposals: [
+          ...mockProposals,
+          {
+            ...mockProposals[1],
+            ballots: [
+              {
+                vote: Vote.UNSPECIFIED,
+              } as Ballot,
+            ],
+          },
+        ],
+        excludeVotedProposals: true,
+      })
+    ).toBeTruthy();
+  });
+
+  it("should not have matching proposals", () => {
+    expect(
+      hasMatchingProposals({
+        proposals: [],
+        excludeVotedProposals: false,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hasMatchingProposals({
+        proposals: [
+          {
+            ...mockProposals[0],
+            ballots: [
+              {
+                vote: Vote.YES,
+              } as Ballot,
+            ],
+          },
+        ],
+        excludeVotedProposals: true,
+      })
+    ).toBeFalsy();
+
+    expect(
+      hasMatchingProposals({
+        proposals: [
+          {
+            ...mockProposals[0],
+            ballots: [
+              {
+                vote: Vote.NO,
+              } as Ballot,
+            ],
+          },
+        ],
+        excludeVotedProposals: true,
+      })
+    ).toBeFalsy();
   });
 });
