@@ -65,7 +65,8 @@
     "topics": "Topics",
     "rewards": "Reward Status",
     "status": "Proposal Status",
-    "hide_unavailable_proposals": "Hide \"Open\" proposals where all your neurons have voted or are ineligible to vote"
+    "hide_unavailable_proposals": "Hide \"Open\" proposals where all your neurons have voted or are ineligible to vote",
+    "nothing_found": "No proposals found for the filters."
   },
   "canisters": {
     "title": "Canisters",
