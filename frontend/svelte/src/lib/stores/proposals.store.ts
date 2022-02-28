@@ -55,7 +55,7 @@ const initProposalsStore = () => {
  *
  */
 const initProposalsFiltersStore = () => {
-  const { subscribe, update } = writable<ProposalsFiltersStore>(
+  const { subscribe, update, set } = writable<ProposalsFiltersStore>(
     DEFAULT_PROPOSALS_FILTERS
   );
 
@@ -88,6 +88,10 @@ const initProposalsFiltersStore = () => {
         ...filters,
         excludeVotedProposals: !filters.excludeVotedProposals,
       }));
+    },
+
+    reset() {
+      set(DEFAULT_PROPOSALS_FILTERS);
     },
   };
 };

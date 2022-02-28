@@ -41,6 +41,9 @@ class _HomePageState extends State<HomePage>
           pageName = canistersTabPage;
         }
         context.nav.push(pageName);
+        setState(() {
+          timeDilation = 0.6;
+        });
       }
     });
   }
@@ -53,7 +56,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    timeDilation = 0.05;
     final screenSize = context.mediaQuery.size;
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
@@ -159,6 +161,9 @@ class _HomePageState extends State<HomePage>
                       child: Container(
                         decoration: BoxDecoration(color: Color(0xff282A2D)),
                         child: TabBar(
+                          onTap: (value) {
+                            timeDilation = 0.05;
+                          },
                           physics: const NeverScrollableScrollPhysics(),
                           controller: _tabController,
                           indicator: BoxDecoration(color: Color(0xff0081FF)),

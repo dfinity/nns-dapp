@@ -3,7 +3,11 @@
   import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import { emptyProposals, lastProposalId } from "../lib/utils/proposals.utils";
+  import {
+    emptyProposals,
+    hasMatchingProposals,
+    lastProposalId,
+  } from "../lib/utils/proposals.utils";
   import {
     proposalsFiltersStore,
     proposalsStore,
@@ -24,13 +28,14 @@
   import { errorToString } from "../lib/utils/error.utils";
 
   let loading: boolean = false;
+  let initialized: boolean = false;
 
   const findNextProposals = async () => {
     loading = true;
 
     try {
       await listNextProposals({
-        beforeProposal: lastProposalId(proposals),
+        beforeProposal: lastProposalId($proposalsStore),
         identity: $authStore.identity,
       });
     } catch (err: any) {
@@ -51,7 +56,7 @@
     try {
       // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
       await listProposals({
-        clearBeforeQuery: !emptyProposals(proposals),
+        clearBeforeQuery: !emptyProposals($proposalsStore),
         identity: $authStore.identity,
       });
     } catch (err: any) {
@@ -79,15 +84,13 @@
       window.location.replace(AppPath.Proposals);
     }
 
-    // Load proposals on mount only if none were fetched before
-    if (!emptyProposals(proposals)) {
-      initDebounceFindProposals();
-      return;
-    }
+    proposalsFiltersStore.reset();
 
     await findProposals();
 
     initDebounceFindProposals();
+
+    initialized = true;
   });
 
   const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() =>
@@ -96,8 +99,14 @@
 
   onDestroy(unsubscribe);
 
-  let proposals: ProposalInfo[];
-  $: proposals = $proposalsStore;
+  let nothingFound: boolean;
+  $: nothingFound =
+    initialized &&
+    !loading &&
+    !hasMatchingProposals({
+      proposals: $proposalsStore,
+      excludeVotedProposals: $proposalsFiltersStore.excludeVotedProposals,
+    });
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -112,6 +121,10 @@
           <ProposalCard {proposalInfo} />
         {/each}
       </InfiniteScroll>
+
+      {#if nothingFound}
+        <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+      {/if}
 
       {#if loading}
         <div class="spinner">
@@ -128,5 +141,10 @@
     display: flex;
 
     padding: calc(2 * var(--padding)) 0;
+  }
+
+  .no-proposals {
+    text-align: center;
+    margin: calc(var(--padding) * 2) 0;
   }
 </style>

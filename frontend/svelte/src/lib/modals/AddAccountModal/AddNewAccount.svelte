@@ -1,10 +1,15 @@
 <script lang="ts">
   import Input from "../../components/ui/Input.svelte";
   import { i18n } from "../../stores/i18n";
-  import { accountsStore } from "../../stores/accounts.store";
   import { createEventDispatcher } from "svelte";
   import { createSubAccount } from "../../services/accounts.services";
   import Spinner from "../../components/ui/Spinner.svelte";
+  import {
+    NameTooLongError,
+    SubAccountLimitExceededError,
+  } from "../../canisters/nns-dapp/nns-dapp.errors";
+  import { toastsStore } from "../../stores/toasts.store";
+  import { errorToString } from "../../utils/error.utils";
 
   let newAccountName: string = "";
 
@@ -15,10 +20,19 @@
       creating = true;
       await createSubAccount(newAccountName);
       dispatcher("nnsClose");
-    } catch (error) {
-      // TODO: Manage errors
-      console.error("Error creating subAccount");
-      console.error(error);
+    } catch (err) {
+      const labelKey =
+        err instanceof NameTooLongError
+          ? "create_subaccount_too_long"
+          : err instanceof SubAccountLimitExceededError
+          ? "create_subaccount_limit_exceeded"
+          : "create_subaccount";
+      toastsStore.show({
+        labelKey,
+        level: "error",
+        detail: errorToString(err),
+      });
+      console.error(err);
     } finally {
       creating = false;
     }
