@@ -58,7 +58,7 @@ const loadAccounts = async ({
   ): Promise<Account> => {
     const balance: ICP = await ledger.accountBalance({
       accountIdentifier: AccountIdentifier.fromHex(account.account_identifier),
-      certified: false,
+      certified: true,
     });
     return {
       identifier: mainAccount.account_identifier,

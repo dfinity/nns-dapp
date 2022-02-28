@@ -6,7 +6,7 @@
 
   export let account: Account;
   export let showCopy: boolean = false;
-  export let role: "button" | "link" | undefined = undefined;
+  export let role: "button" | undefined = undefined;
 
   $: ({ identifier, balance } = account);
 </script>
