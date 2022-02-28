@@ -10,6 +10,7 @@ import Accounts from "../../routes/Accounts.svelte";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
+  mockSubAccount,
 } from "../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 
@@ -20,13 +21,12 @@ describe("Accounts", () => {
     authStoreMock = jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
-
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe);
   });
 
   it("should render title", () => {
+    accountsStoreMock = jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe());
     const { container } = render(Accounts);
 
     const title = container.querySelector("h1");
@@ -36,6 +36,9 @@ describe("Accounts", () => {
   });
 
   it("should render title and account icp", () => {
+    accountsStoreMock = jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe());
     const { container } = render(Accounts);
 
     const titleRow = container.querySelector("section > div");
@@ -46,6 +49,9 @@ describe("Accounts", () => {
   });
 
   it("should render a main card", () => {
+    accountsStoreMock = jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe());
     const { container } = render(Accounts);
 
     const article = container.querySelector("article");
@@ -53,6 +59,9 @@ describe("Accounts", () => {
   });
 
   it("should render account icp in card too", () => {
+    accountsStoreMock = jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe());
     const { container } = render(Accounts);
 
     const cardTitleRow = container.querySelector("article > div > div");
@@ -63,10 +72,44 @@ describe("Accounts", () => {
   });
 
   it("should render account identifier", () => {
+    accountsStoreMock = jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe());
     const { getByText } = render(Accounts);
     getByText(mockMainAccount.identifier);
   });
 
-  it("should subscribe to store", () =>
-    expect(accountsStoreMock).toHaveBeenCalled());
+  it("should render subaccount cards", () => {
+    accountsStoreMock = jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+    const { container } = render(Accounts);
+
+    const articles = container.querySelectorAll("article");
+
+    expect(articles).not.toBeNull();
+    expect(articles.length).toBe(2);
+  });
+
+  it("should render total accounts icp", () => {
+    accountsStoreMock = jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+    const { container } = render(Accounts);
+
+    const titleRow = container.querySelector("section > div");
+
+    const totalBalance =
+      mockMainAccount.balance.toE8s() + mockSubAccount.balance.toE8s();
+    expect(titleRow.textContent).toEqual(
+      `Accounts ${formatICP(totalBalance)} ICP`
+    );
+  });
+
+  it("should subscribe to store", () => {
+    accountsStoreMock = jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe());
+    expect(accountsStoreMock).toHaveBeenCalled();
+  });
 });

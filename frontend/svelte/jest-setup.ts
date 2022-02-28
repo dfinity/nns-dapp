@@ -12,3 +12,4 @@ global.IntersectionObserver = IntersectionObserverPassive;
 // Environment Variables Setup
 process.env.IDENTITY_SERVICE_URL = "http://localhost:8000/";
 process.env.OWN_CANISTER_ID = "qhbym-qaaaa-aaaaa-aaafq-cai";
+process.env.LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";

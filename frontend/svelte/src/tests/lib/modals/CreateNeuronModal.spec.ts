@@ -13,7 +13,7 @@ describe("CreateNeuronModal", () => {
   beforeEach(() => {
     jest
       .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe);
+      .mockImplementation(mockAccountsStoreSubscribe());
   });
 
   it("should display modal", () => {

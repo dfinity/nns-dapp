@@ -8,7 +8,10 @@
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
     "sign_in": "The sign-in process was aborted or did not succeed.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
-    "missing_identity": "The operation cannot be executed without any identity."
+    "missing_identity": "The operation cannot be executed without any identity.",
+    "create_subaccount": "Sorry, there was an expected error when creating your subaccount, please try again",
+    "create_subaccount_too_long": "The name of the subaccount is too long. Please, choose a shorter name.",
+    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of subaccounts in this account."
   },
   "navigation": {
     "icp": "ICP",
