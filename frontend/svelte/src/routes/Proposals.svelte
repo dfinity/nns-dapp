@@ -79,6 +79,8 @@
       window.location.replace(AppPath.Proposals);
     }
 
+    proposalsFiltersStore.reset();
+
     await findProposals();
 
     initDebounceFindProposals();
