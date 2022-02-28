@@ -43,6 +43,8 @@ const loadAccounts = async ({
     canisterId: OWN_CANISTER_ID,
   });
   // Ensure account exists in NNSDapp Canister
+  // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L271
+  // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L232
   await nnsDapp.addAccount();
 
   const mainAccount: AccountDetails = await nnsDapp.getAccount();
