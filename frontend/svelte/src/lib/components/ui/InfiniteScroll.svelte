@@ -1,12 +1,16 @@
 <script lang="ts">
   import { afterUpdate, createEventDispatcher, onDestroy } from "svelte";
+  import {
+    INFINITE_SCROLL_OFFSET,
+    LIST_PAGINATION_LIMIT,
+  } from "../../constants/constants";
 
   /**
    * The Infinite Scroll component calls an action to be performed when the user scrolls a specified distance from the bottom or top of the page.
    *
    * Usage: To be wrapped around loops `<InfiniteScroll>{#each ...}</InfiniteScroll>`
    *
-   * The component observe the last HTML element of the list using the IntersectionObserver.
+   * The component observe the elements of the list using the IntersectionObserver.
    * It sets the reference after each re-render of the list. Pay attention to not trigger unnecessary updates.
    */
 
@@ -48,11 +52,50 @@
     // We disconnect previous observer first. We do want to observe multiple elements.
     observer.disconnect();
 
-    if (!container.lastElementChild) {
+    if (!container.children.length) {
       return;
     }
 
-    observer.observe(container.lastElementChild);
+    const pageIndex: number =
+      container.children.length / LIST_PAGINATION_LIMIT - 1;
+
+    // If the pageIndex is not an integer the all page was not fetched - e.g. 50 elements instead of 100 - therefore there is no more elements to fetch
+    if (!Number.isInteger(pageIndex)) {
+      return;
+    }
+
+    /**
+     * The infinite scroll observe an element that finds place after x % of last page.
+     *
+     * For example given following list of elements:
+     * [0-100]
+     * [101-200]
+     *
+     * If ratio is set to `0.2`, the observer observes 20% of the last page aka element at position 120.
+     *
+     * [0-100]
+     * [101-200]
+     * [201-300]
+     *
+     * Infinite scroll observe element 220.
+     *
+     * [0-100]
+     * [101-200]
+     * [201-300]
+     * [301-345]
+     *
+     * Infinite scroll does not observe because all data are fetched.
+     */
+    const element: Element | undefined = Array.from(container.children)[
+      pageIndex * LIST_PAGINATION_LIMIT +
+        Math.round(LIST_PAGINATION_LIMIT * INFINITE_SCROLL_OFFSET)
+    ];
+
+    if (!element) {
+      return;
+    }
+
+    observer.observe(element);
   });
 
   onDestroy(() => observer.disconnect());
