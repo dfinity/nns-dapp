@@ -48,6 +48,7 @@ export default {
     name: "app",
     dir: "public/build/",
   },
+  inlineDynamicImports: false,
   plugins: [
     svelte({
       preprocess: sveltePreprocess({

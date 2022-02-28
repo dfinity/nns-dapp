@@ -17,7 +17,9 @@
   // TODO: To be removed once this page has been implemented
   let Test: typeof SvelteComponent;
   onMount(async () => {
-    Test = (await import("./Test.svelte")).default;
+    if (typeof jest === "undefined") {
+      Test = (await import("./Test.svelte")).default;
+    }
 
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace(AppPath.Accounts);
