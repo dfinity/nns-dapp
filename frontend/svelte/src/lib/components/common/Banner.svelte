@@ -9,7 +9,7 @@
   );
 
   const testnet: boolean = process.env.DEPLOY_ENV === "testnet";
-  const localEnv: boolean = JSON.parse(process.env.ROLLUP_WATCH);
+  const localEnv: boolean = JSON.parse(process.env.ROLLUP_WATCH || "false");
   const banner: boolean = testnet && !localEnv;
 
   let rootStyle: string | undefined;
