@@ -37,7 +37,7 @@
           <button
             class="back"
             on:click|stopPropagation={back}
-            aria-label={$i18n.modals.back}><IconBackIosNew /></button
+            aria-label={$i18n.core.back}><IconBackIosNew /></button
           >
         {/if}
         <h3 id="modalTitle"><slot name="title" /></h3>
@@ -83,6 +83,7 @@
 
       .content {
         background: var(--gray-50-background);
+        color: var(--gray-200);
       }
     }
   }

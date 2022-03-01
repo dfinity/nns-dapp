@@ -7,18 +7,18 @@
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
   import type { NeuronId, ProposalId } from "@dfinity/nns";
+  import ProposerModal from "../../modals/ProposerModal.svelte";
 
   export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal | undefined;
   let status: ProposalStatus | undefined;
-  let proposer: NeuronId | undefined;
   let id: ProposalId | undefined;
   let title: string | undefined;
 
   let color: "warning" | "success" | undefined;
 
-  $: ({ proposal, status, proposer, id } = proposalInfo);
+  $: ({ proposal, status, id } = proposalInfo);
   $: ({ title } = proposal);
 
   const colors: Record<string, "warning" | "success" | undefined> = {
@@ -51,8 +51,8 @@
         >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
       >
 
-      <p><small>Proposer: {proposer || ""}</small></p>
-      <p><small>Id: {id || ""}</small></p>
+      <p class="info"><ProposerModal {proposalInfo} /></p>
+      <p class="info"><small>Id: {id || ""}</small></p>
     </Card>
   {/if}
 </div>
@@ -63,5 +63,9 @@
   .title {
     @include text.clamp(3);
     margin: 0 var(--padding) 0 0;
+  }
+
+  .info {
+    margin: 0;
   }
 </style>

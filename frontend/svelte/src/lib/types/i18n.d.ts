@@ -7,6 +7,7 @@ interface I18nCore {
   icp: string;
   create: string;
   filter: string;
+  back: string;
 }
 
 interface I18nError {
@@ -129,8 +130,8 @@ interface I18nProposal_details {
   title: string;
 }
 
-interface I18nModals {
-  back: string;
+interface I18nNeuron {
+  title: string;
 }
 
 interface I18n {
@@ -149,5 +150,5 @@ interface I18n {
   status: I18nStatus;
   wallet: I18nWallet;
   proposal_details: I18nProposal_details;
-  modals: I18nModals;
+  neuron: I18nNeuron;
 }

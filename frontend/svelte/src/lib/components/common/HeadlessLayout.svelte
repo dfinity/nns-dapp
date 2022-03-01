@@ -13,11 +13,11 @@
 <Banner headless={true} />
 
 <header>
-  <Tooltip id="back" text={$i18n.modals.back}>
+  <Tooltip id="back" text={$i18n.core.back}>
     <button
       class="back"
       on:click|stopPropagation={() => dispatch("nnsBack")}
-      aria-label={$i18n.modals.back}><IconBackIosNew /></button
+      aria-label={$i18n.core.back}><IconBackIosNew /></button
     >
   </Tooltip>
   <h2><slot name="header" /></h2>
