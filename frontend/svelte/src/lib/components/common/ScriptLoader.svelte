@@ -7,14 +7,22 @@
   let script: HTMLScriptElement;
 
   onMount(async () => {
-    script.addEventListener("load", () => {
-      dispatch("nnsLoad");
-    });
+    script.addEventListener(
+      "load",
+      () => {
+        dispatch("nnsLoad");
+      },
+      { once: true }
+    );
 
-    script.addEventListener("error", (event) => {
-      console.error("script load error", event);
-      dispatch("nnsError");
-    });
+    script.addEventListener(
+      "error",
+      (event) => {
+        console.error("script load error", event);
+        dispatch("nnsError");
+      },
+      { once: true }
+    );
   });
 
   /**
