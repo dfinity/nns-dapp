@@ -2,7 +2,12 @@
 // - calls that require multiple canisters.
 // - calls that require additional systems such as hardware wallets.
 
-import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
+import {
+  GovernanceCanister,
+  ICP,
+  LedgerCanister,
+  NeuronInfo,
+} from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   GOVERNANCE_CANISTER_ID,
@@ -39,7 +44,7 @@ export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
   });
 };
 
-export const getNeurons = async () => {
+export const getNeurons = async (): Promise<NeuronInfo[]> => {
   // TODO: Implement to be used and test L2-313
   const { identity }: AuthStore = get(authStore);
   const agent = await createAgent({ identity, host: process.env.HOST });
@@ -47,7 +52,7 @@ export const getNeurons = async () => {
     agent,
     canisterId: GOVERNANCE_CANISTER_ID,
   });
-  const neurons = await governanceCanister.getNeurons({
+  return governanceCanister.getNeurons({
     certified: true,
     principal: identity.getPrincipal(),
   });
