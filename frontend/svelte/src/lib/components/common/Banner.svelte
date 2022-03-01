@@ -51,11 +51,11 @@
     left: 0;
     right: 0;
 
-    margin: 0;
-
     &.headless {
       position: relative;
     }
+
+    z-index: var(--z-index);
 
     height: var(--header-offset);
 
@@ -77,9 +77,13 @@
     font-weight: 400;
     @include text.clamp(2);
 
+    margin: 0;
+
     grid-column-start: 2;
 
     text-align: center;
+
+    line-height: inherit;
   }
 
   button {
