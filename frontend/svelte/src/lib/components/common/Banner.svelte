@@ -14,17 +14,13 @@
   const localEnv: boolean = JSON.parse(process.env.ROLLUP_WATCH || "false");
   const banner: boolean = testnet && !localEnv;
 
-  let rootStyle: string | undefined;
-
-  $: rootStyle = visible
-    ? `
+  const rootStyle: string | undefined = `
     <style>
       :root {
         --header-offset: 50px;
       }
     </style>
-  `
-    : undefined;
+  `;
 
   const close = () => {
     visible = false;
@@ -34,7 +30,7 @@
 </script>
 
 <svelte:head>
-  {#if banner && rootStyle}
+  {#if banner && visible}
     {@html rootStyle}
   {/if}
 </svelte:head>
