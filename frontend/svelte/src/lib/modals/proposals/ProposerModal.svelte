@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from "../Modal.svelte";
   import type { ProposalInfo } from "@dfinity/nns";
-  import { NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import Card from "../../components/ui/Card.svelte";
 
