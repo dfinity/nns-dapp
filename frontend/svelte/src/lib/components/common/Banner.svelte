@@ -8,7 +8,7 @@
     localStorage.getItem("nnsdapp-testnet-banner-display") || "true"
   );
 
-  const testnet: boolean = process.env.DEPLOY_ENV === 'testnet';
+  const testnet: boolean = process.env.DEPLOY_ENV === "testnet";
   const localEnv: boolean = JSON.parse(process.env.ROLLUP_WATCH);
   const banner: boolean = testnet && !localEnv;
 
