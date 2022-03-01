@@ -24,10 +24,11 @@
 
 <style lang="scss">
   @use "../../themes/mixins/img";
+  @use "../../themes/mixins/text";
 
   header {
     position: absolute;
-    top: 0;
+    top: var(--header-offset, 0);
     left: 0;
     right: 0;
 
@@ -53,10 +54,7 @@
 
     grid-column-start: 2;
 
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    @include text.clamp(2);
 
     text-align: center;
 

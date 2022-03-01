@@ -8,6 +8,7 @@
   import Toasts from "../lib/components/ui/Toasts.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { errorToString } from "../lib/utils/error.utils";
+  import Banner from "../lib/components/common/Banner.svelte";
 
   let signedIn: boolean = false;
 
@@ -58,6 +59,8 @@
     aria-hidden="true"
     class="background"
   />
+
+  <Banner />
 
   <main>
     <h1>{$i18n.auth.nns}</h1>

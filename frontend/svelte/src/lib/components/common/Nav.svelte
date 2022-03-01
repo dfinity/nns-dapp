@@ -29,7 +29,7 @@
 
   nav {
     position: absolute;
-    top: var(--header-height);
+    top: calc(var(--header-offset, 0px) + var(--header-height));
     left: 0;
     right: 0;
 

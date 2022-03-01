@@ -4,11 +4,14 @@
   import { i18n } from "../../stores/i18n";
   import Tooltip from "../ui/Tooltip.svelte";
   import Footer from "./Footer.svelte";
+  import Banner from "./Banner.svelte";
 
   export let showFooter = true;
 
   const dispatch = createEventDispatcher();
 </script>
+
+<Banner headless={true} />
 
 <header>
   <Tooltip id="back" text={$i18n.modals.back}>
