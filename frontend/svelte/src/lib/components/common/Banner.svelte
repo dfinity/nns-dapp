@@ -14,7 +14,7 @@
   const localEnv: boolean = JSON.parse(process.env.ROLLUP_WATCH || "false");
   const banner: boolean = testnet && !localEnv;
 
-  const rootStyle: string | undefined = `
+  const rootStyle: string = `
     <style>
       :root {
         --header-offset: 50px;
