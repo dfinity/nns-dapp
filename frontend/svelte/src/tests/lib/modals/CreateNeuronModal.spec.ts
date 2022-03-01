@@ -2,7 +2,9 @@
  * @jest-environment jsdom
  */
 
+import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 import CreateNeuronModal from "../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import { stakeNeuron } from "../../../lib/services/neurons.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
@@ -16,11 +18,23 @@ jest.mock("../../../lib/services/neurons.services", () => {
   };
 });
 
+jest.mock("../../../lib/services/accounts.services", () => {
+  return {
+    syncAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("CreateNeuronModal", () => {
   beforeEach(() => {
     jest
       .spyOn(accountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe());
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mock<LedgerCanister>());
+    jest
+      .spyOn(GovernanceCanister, "create")
+      .mockImplementation(() => mock<GovernanceCanister>());
   });
 
   it("should display modal", () => {

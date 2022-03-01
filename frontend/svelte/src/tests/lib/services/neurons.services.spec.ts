@@ -1,7 +1,18 @@
 import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
+import { readable } from "svelte/store";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import { stakeNeuron } from "../../../lib/services/neurons.services";
+
+jest.mock("../../../lib/stores/auth.store", () => {
+  return {
+    authStore: readable({
+      identity: {
+        getPrincipal: jest.fn(),
+      },
+    }),
+  };
+});
 
 describe("neurons-services", () => {
   it("stakeNeuron creates a new neuron", async () => {
@@ -34,6 +45,6 @@ describe("neurons-services", () => {
         stake: ICP.fromString("0.1") as ICP,
       });
 
-    expect(call).toThrow(Error);
+    expect(call).rejects.toThrow(Error);
   });
 });
