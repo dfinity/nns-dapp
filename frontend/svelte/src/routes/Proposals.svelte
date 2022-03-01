@@ -22,7 +22,6 @@
     listNextProposals,
     listProposals,
   } from "../lib/services/proposals.services";
-  import type { ProposalInfo } from "@dfinity/nns";
   import { authStore } from "../lib/stores/auth.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { errorToString } from "../lib/utils/error.utils";
@@ -75,7 +74,7 @@
 
   // We do not want to fetch the proposals twice when the component is mounting because the filter subscriber will emit a first value
   const initDebounceFindProposals = () => {
-    debounceFindProposals = debounce(async () => await findProposals(), 750);
+    debounceFindProposals = debounce(async () => await findProposals(), 250);
   };
 
   onMount(async () => {
