@@ -2,10 +2,11 @@
   import { createEventDispatcher } from "svelte";
   import IconBackIosNew from "../../icons/IconBackIosNew.svelte";
   import { i18n } from "../../stores/i18n";
-  import Toasts from "../ui/Toasts.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import Footer from "./Footer.svelte";
   import Banner from "./Banner.svelte";
+
+  export let showFooter = true;
 
   const dispatch = createEventDispatcher();
 </script>
@@ -26,11 +27,11 @@
   <slot />
 </main>
 
-<Footer>
-  <slot name="footer" />
-</Footer>
-
-<Toasts />
+{#if showFooter}
+  <Footer>
+    <slot name="footer" />
+  </Footer>
+{/if}
 
 <style lang="scss">
   header {
@@ -69,9 +70,8 @@
 
   main {
     position: absolute;
-    inset: calc(var(--headless-layout-header-height)) 0 0;
-    padding-top: calc(5 * var(--padding));
 
+    inset: calc(var(--headless-layout-header-height)) 0 0;
     overflow: auto;
 
     background-color: var(--gray-50-background);
