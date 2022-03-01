@@ -5,9 +5,12 @@
   import Toasts from "../ui/Toasts.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import Footer from "./Footer.svelte";
+  import Banner from "./Banner.svelte";
 
   const dispatch = createEventDispatcher();
 </script>
+
+<Banner headless={true} />
 
 <header>
   <Tooltip id="back" text={$i18n.modals.back}>
