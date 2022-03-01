@@ -35,7 +35,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/text";
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   .toast {
     display: flex;

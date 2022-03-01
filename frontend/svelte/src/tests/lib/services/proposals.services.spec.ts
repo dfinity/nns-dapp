@@ -1,5 +1,7 @@
 import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
 import {
+  getProposalId,
+  getProposalInfo,
   listNextProposals,
   listProposals,
 } from "../../../lib/services/proposals.services";
@@ -9,16 +11,15 @@ import { MockGovernanceCanister } from "../../mocks/proposals.store.mock";
 
 describe("proposals-services", () => {
   const mockProposals: ProposalInfo[] = [
-    {
-      id: "test1",
-    },
-    { id: "test2" },
+    { id: BigInt(100) },
+    { id: BigInt(200) },
   ] as unknown as ProposalInfo[];
 
   const mockGovernanceCanister: MockGovernanceCanister =
     new MockGovernanceCanister(mockProposals);
 
   let spyListProposals;
+  let spyProposalInfo;
 
   beforeEach(() => {
     jest
@@ -26,6 +27,7 @@ describe("proposals-services", () => {
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
 
     spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
+    spyProposalInfo = jest.spyOn(mockGovernanceCanister, "getProposalInfo");
   });
 
   afterEach(() => spyListProposals.mockClear());
@@ -93,5 +95,43 @@ describe("proposals-services", () => {
     spy.mockClear();
 
     spyListProposals.mockClear();
+  });
+
+  it("should get proposalId from valid path", async () => {
+    expect(getProposalId("/#/proposal/123")).toBe(BigInt(123));
+    expect(getProposalId("/#/proposal/0")).toBe(BigInt(0));
+  });
+
+  it("should not get proposalId from invalid path", async () => {
+    expect(getProposalId("/#/proposal/")).toBeUndefined();
+    expect(getProposalId("/#/proposal/1.5")).toBeUndefined();
+    expect(getProposalId("/#/proposal/123n")).toBeUndefined();
+  });
+
+  it("should get proposalInfo from proposals store if presented", async () => {
+    const proposal = await getProposalInfo({
+      proposalId: BigInt(100),
+      identity: mockIdentity,
+    });
+    expect(proposal?.id).toBe(BigInt(100));
+    expect(spyListProposals).not.toBeCalled();
+    expect(spyProposalInfo).not.toBeCalled();
+  });
+
+  it("should call the canister to get proposalInfo", async () => {
+    const proposal = await getProposalInfo({
+      proposalId: BigInt(404),
+      identity: mockIdentity,
+    });
+    expect(proposal?.id).toBe(BigInt(404));
+    expect(spyProposalInfo).toBeCalledTimes(1);
+  });
+
+  it("should not call listProposals if not in the store", async () => {
+    await getProposalInfo({
+      proposalId: BigInt(404),
+      identity: mockIdentity,
+    });
+    expect(spyListProposals).not.toBeCalled();
   });
 });

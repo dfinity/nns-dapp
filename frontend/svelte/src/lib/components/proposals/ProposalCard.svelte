@@ -4,6 +4,12 @@
   import { ProposalStatus } from "@dfinity/nns";
   import Badge from "../ui/Badge.svelte";
   import { i18n } from "../../stores/i18n";
+  import { routeStore } from "../../stores/route.store";
+  import { AppPath } from "../../constants/routes.constants";
+  import {
+    ProposalColor,
+    PROPOSAL_COLOR,
+  } from "../../constants/proposals.constants";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
   import type { NeuronId, ProposalId } from "@dfinity/nns";
@@ -15,22 +21,17 @@
   let proposer: NeuronId | undefined;
   let id: ProposalId | undefined;
   let title: string | undefined;
-
-  let color: "warning" | "success" | undefined;
+  let color: ProposalColor | undefined;
 
   $: ({ proposal, status, proposer, id } = proposalInfo);
   $: ({ title } = proposal);
+  $: color = PROPOSAL_COLOR[status];
 
-  const colors: Record<string, "warning" | "success" | undefined> = {
-    [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: "success",
-    [ProposalStatus.PROPOSAL_STATUS_OPEN]: "warning",
-    [ProposalStatus.PROPOSAL_STATUS_UNKNOWN]: undefined,
-    [ProposalStatus.PROPOSAL_STATUS_REJECTED]: undefined,
-    [ProposalStatus.PROPOSAL_STATUS_ACCEPTED]: undefined,
-    [ProposalStatus.PROPOSAL_STATUS_FAILED]: undefined,
+  const showProposal = () => {
+    routeStore.navigate({
+      path: `${AppPath.ProposalDetail}/${id}`,
+    });
   };
-
-  $: color = colors[status];
 
   // HACK: the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
   // That's why we hide these proposals on the client side only.
@@ -45,7 +46,7 @@
 <!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
 <div>
   {#if !hide}
-    <Card>
+    <Card role="link" on:click={showProposal}>
       <p slot="start" class="title" {title}>{title || ""}</p>
       <Badge slot="end" {color}
         >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge

@@ -10,7 +10,7 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
-  import AddAcountModal from "../lib/modals/AddAccountModal/AddAccountModal.svelte";
+  import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
   import { ICP } from "@dfinity/nns";
   import { sumICPs } from "../lib/utils/icp.utils";
   import Markdown from "../lib/components/ui/Markdown.svelte";
