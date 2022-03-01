@@ -67,7 +67,21 @@ jobs:
         with:
           name: NNS ${{ matrix.DEPLOY_ENV }} frontend assets
           path: ${{ matrix.DEPLOY_ENV }}-out/assets.tar.xz
-      - name: "Verify that the WASm module is small enough to deploy"
+      - name: "Link the build sha to this commit"
+        run: |
+         : Set up git
+         git config user.name "GitHub Actions Bot"
+         git config user.email "<>"
+         : Make a note of the WASM shasum.
+         NOTE="refs/notes/${{ matrix.DEPLOY_ENV }}/wasm-sha"
+         SHA="$(sha256sum < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")"
+         echo "$NOTE: $SHA"
+         git fetch origin "+${NOTE}:${NOTE}"
+         if git notes --ref="$NOTE" add -m "$SHA"
+         then git push origin "${NOTE}:${NOTE}"
+         else echo SHA already set
+         fi
+      - name: "Verify that the WASM module is small enough to deploy"
         run: |
          wasm_size="$(wc -c < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")"
          max_size=3670016
