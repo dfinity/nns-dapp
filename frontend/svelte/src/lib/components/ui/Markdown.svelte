@@ -16,7 +16,7 @@
 </script>
 
 <ScriptLoader
-  url="/assets/assets/marked.min.js"
+  url="/assets/assets/libs/marked.min.js"
   on:nnsLoad={onLoad}
   on:nnsError={onError}
 />
