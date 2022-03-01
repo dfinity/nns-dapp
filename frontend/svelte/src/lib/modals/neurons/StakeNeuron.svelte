@@ -26,6 +26,9 @@
       await stakeNeuron({
         stake: ICP.fromE8s(BigInt(amount * E8S_PER_ICP)),
       });
+      // We don't wait for `syncAccounts` to finish to give a better UX to the user.
+      // `syncAccounts` might be slow since it loads all accounts and balances.
+      // in the neurons page there are no balances nor accounts
       syncAccounts({ identity: $authStore.identity });
       dispatcher("nnsClose");
     } catch (err) {
