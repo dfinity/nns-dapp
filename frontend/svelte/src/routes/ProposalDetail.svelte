@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
@@ -9,7 +9,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { AppPath } from "../lib/constants/routes.constants";
-  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
+  import type { ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
   import CastVoteCard from "../lib/components/proposal-detail/CastVoteCard.svelte";
@@ -19,11 +19,17 @@
 
   let proposalInfo: ProposalInfo;
 
-  const init = async () => {
-    const proposalId: ProposalId | undefined = getProposalId($routeStore.path);
+  // TODO: To be removed once this page has been implemented
+  onMount(() => {
+    if (process.env.REDIRECT_TO_LEGACY) {
+      window.location.replace(`/${window.location.hash}`);
+    }
+  });
 
-    // No id is provided to the route, we forward back the user to the main app - e.g. /#/proposal/123 -> 123 is missing
+  const unsubscribe = routeStore.subscribe(async ({ path }) => {
+    const proposalId = getProposalId(path);
     if (proposalId === undefined) {
+      unsubscribe();
       routeStore.replace({ path: AppPath.Proposals });
       return;
     }
@@ -38,6 +44,8 @@
         throw new Error("Proposal not found");
       }
     } catch (error) {
+      unsubscribe();
+
       console.error(error);
       toastsStore.show({
         labelKey: "error.proposal_not_found",
@@ -45,21 +53,14 @@
         detail: `id: "${proposalId}"`,
       });
 
-      // Wait a bit before redirection so the user recognizes on which page the error occurs
+      // Wait a bit before redirection so the user recognizes on which page the error occures
       setTimeout(() => {
         routeStore.replace({ path: AppPath.Proposals });
       }, 1500);
     }
-  };
-
-  // TODO: To be removed once this page has been implemented
-  onMount(async () => {
-    if (process.env.REDIRECT_TO_LEGACY) {
-      window.location.replace(`/${window.location.hash}`);
-    }
-
-    await init();
   });
+
+  onDestroy(unsubscribe);
 
   const goBack = () => {
     routeStore.navigate({
@@ -71,7 +72,7 @@
 {#if !process.env.REDIRECT_TO_LEGACY}
   <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header"
-      >{$i18n.proposal_detail.title}</svelte:fragment
+    >{$i18n.proposal_detail.title}</svelte:fragment
     >
 
     <section>
