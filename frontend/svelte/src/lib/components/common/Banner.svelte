@@ -4,8 +4,10 @@
 
   export let headless: boolean = false;
 
+  const localstorageKey: string = "nnsdapp-testnet-banner-display";
+
   let visible: boolean = JSON.parse(
-    localStorage.getItem("nnsdapp-testnet-banner-display") || "true"
+    localStorage.getItem(localstorageKey) || "true"
   );
 
   const testnet: boolean = process.env.DEPLOY_ENV === "testnet";
@@ -27,7 +29,7 @@
   const close = () => {
     visible = false;
 
-    localStorage.setItem("nnsdapp-testnet-banner-display", "false");
+    localStorage.setItem(localstorageKey, "false");
   };
 </script>
 
