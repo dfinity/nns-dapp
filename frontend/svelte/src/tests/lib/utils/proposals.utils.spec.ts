@@ -4,7 +4,10 @@ import {
   hasMatchingProposals,
   hideProposal,
   lastProposalId,
+  proposalActionFields,
+  proposalFirstActionKey,
 } from "../../../lib/utils/proposals.utils";
+import { mockProposalInfo } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-utils", () => {
@@ -17,9 +20,9 @@ describe("proposals-utils", () => {
   it("should find no last proposal id", () =>
     expect(lastProposalId([])).toBeUndefined());
 
-  it("should find a last proposal id", () =>
-    expect(lastProposalId(mockProposals)).toEqual(
-      mockProposals[mockProposals.length - 1].id
+  it("should find fist action key", () =>
+    expect(proposalFirstActionKey(mockProposalInfo.proposal)).toEqual(
+      "ExecuteNnsFunction"
     ));
 
   it("should display proposal", () => {
@@ -261,5 +264,15 @@ describe("proposals-utils", () => {
         excludeVotedProposals: true,
       })
     ).toBeFalsy();
+  });
+
+  describe("proposalActionFields", () => {
+    it("should filter action fields", () => {
+      const fields = proposalActionFields(mockProposalInfo.proposal);
+
+      expect(fields.map(([key]) => key).join()).toEqual(
+        "nnsFunctionId,nnsFunctionName,payload"
+      );
+    });
   });
 });

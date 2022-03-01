@@ -12,6 +12,7 @@ interface I18nCore {
 interface I18nError {
   auth_sync: string;
   sign_in: string;
+  proposal_not_found: string;
   list_proposals: string;
   missing_identity: string;
   create_subaccount: string;
@@ -125,8 +126,14 @@ interface I18nWallet {
   title: string;
 }
 
-interface I18nProposal_details {
+interface I18nProposal_detail {
   title: string;
+  summary: string;
+  topic_prefix: string;
+  id_prefix: string;
+  proposer_prefix: string;
+  adopt: string;
+  reject: string;
 }
 
 interface I18nModals {
@@ -148,6 +155,6 @@ interface I18n {
   rewards: I18nRewards;
   status: I18nStatus;
   wallet: I18nWallet;
-  proposal_details: I18nProposal_details;
+  proposal_detail: I18nProposal_detail;
   modals: I18nModals;
 }

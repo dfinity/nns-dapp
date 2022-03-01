@@ -8,6 +8,7 @@
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
     "sign_in": "The sign-in process was aborted or did not succeed.",
+    "proposal_not_found": "An error occurred while loading the proposal.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "missing_identity": "The operation cannot be executed without any identity.",
     "create_subaccount": "Sorry, there was an expected error when creating your subaccount, please try again",
@@ -109,8 +110,14 @@
   "wallet": {
     "title": "Account"
   },
-  "proposal_details": {
-    "title": "Proposal"
+  "proposal_detail": {
+    "title": "Proposal",
+    "summary": "Proposal Summary",
+    "topic_prefix": "Topic:",
+    "id_prefix": "Id:",
+    "proposer_prefix": "Proposer:",
+    "adopt": "Adopt",
+    "reject": "Reject"
   },
   "modals": {
     "back": "Back"
