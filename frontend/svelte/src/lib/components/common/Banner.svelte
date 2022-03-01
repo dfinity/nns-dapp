@@ -1,26 +1,44 @@
 <script lang="ts">
+  import { i18n } from "../../stores/i18n";
+  import IconClose from "../../icons/IconClose.svelte";
+
   export let headless: boolean = false;
+  let visible: boolean = JSON.parse(
+    localStorage.getItem("nnsdapp-testnet-banner-display") || "true"
+  );
 
   const deployEnv: string = process.env.DEPLOY_ENV;
 
-  const rootStyle: string = `
+  let rootStyle: string | undefined;
+
+  $: rootStyle = visible
+    ? `
     <style>
       :root {
         --header-offset: 50px;
       }
     </style>
-  `;
+  `
+    : undefined;
+
+  const close = () => {
+    visible = false;
+
+    localStorage.setItem("nnsdapp-testnet-banner-display", "false");
+  };
 </script>
 
 <svelte:head>
-  {#if deployEnv === "testnet"}
+  {#if deployEnv === "testnet" && rootStyle}
     {@html rootStyle}
   {/if}
 </svelte:head>
 
-{#if deployEnv === "testnet"}
+{#if deployEnv === "testnet" && visible}
   <div class:headless>
     <h4>For <strong>test</strong> purpose only.</h4>
+    <button on:click={close} aria-label={$i18n.core.close}><IconClose /></button
+    >
   </div>
 {/if}
 
@@ -32,6 +50,8 @@
     top: 0;
     left: 0;
     right: 0;
+
+    margin: 0;
 
     &.headless {
       position: relative;
@@ -60,5 +80,11 @@
     grid-column-start: 2;
 
     text-align: center;
+  }
+
+  button {
+    display: flex;
+    justify-self: flex-end;
+    margin: 0 var(--padding);
   }
 </style>
