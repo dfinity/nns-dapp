@@ -60,9 +60,10 @@
       <a class="proposal-url" target="_blank" href={url}>{url}</a>
     {/if}
 
-    <a on:click|preventDefault|stopPropagation={showProposerNeuron} href="#_"
-      >{$i18n.proposal_detail.proposer_prefix} {proposalInfo.proposer}</a
-    >
+    <button class="text" on:click|stopPropagation={showProposerNeuron}>
+      {$i18n.proposal_detail.proposer_prefix}
+      {proposalInfo.proposer}
+    </button>
     <p>
       {$i18n.proposal_detail.topic_prefix}
       {topic}
@@ -132,8 +133,10 @@
     margin: calc(3 * var(--padding)) 0;
 
     a,
-    p {
+    p,
+    button {
       margin: 0 0 calc(0.5 * var(--padding));
+      padding: 0;
       display: block;
 
       font-size: var(--font-size-h5);
