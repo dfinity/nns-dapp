@@ -3,7 +3,7 @@
  */
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import AddAccountModal from "../../../lib/modals/AddAccountModal/AddAccountModal.svelte";
+import AddAccountModal from "../../../lib/modals/accounts/AddAccountModal.svelte";
 import { createSubAccount } from "../../../lib/services/accounts.services";
 
 const en = require("../../../lib/i18n/en.json");
