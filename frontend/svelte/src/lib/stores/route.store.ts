@@ -5,6 +5,7 @@ import { pushHistory, replaceHistory, routePath } from "../utils/route.utils";
 
 export interface RouteStore {
   path: AppPath | string;
+  previousPath?: AppPath | string;
   isKnownPath: boolean;
 }
 
@@ -27,6 +28,7 @@ const initRouteStore = () => {
       update((state: RouteStore) => ({
         ...state,
         path,
+        previousPath: state.path,
         isKnownPath: isAppPath(path),
       })),
 
@@ -34,6 +36,7 @@ const initRouteStore = () => {
       update((state: RouteStore) => ({
         ...state,
         path,
+        previousPath: state.path,
         isKnownPath: isAppPath(path),
       }));
 
@@ -44,6 +47,7 @@ const initRouteStore = () => {
       update((state: RouteStore) => ({
         ...state,
         path,
+        previousPath: state.path,
         isKnownPath: isAppPath(path),
       }));
 

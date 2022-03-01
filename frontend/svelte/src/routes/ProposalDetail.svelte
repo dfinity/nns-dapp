@@ -9,7 +9,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { AppPath } from "../lib/constants/routes.constants";
-  import type { ProposalInfo } from "@dfinity/nns";
+  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
   import CastVoteCard from "../lib/components/proposal-detail/CastVoteCard.svelte";
@@ -19,17 +19,11 @@
 
   let proposalInfo: ProposalInfo;
 
-  // TODO: To be removed once this page has been implemented
-  onMount(() => {
-    if (process.env.REDIRECT_TO_LEGACY) {
-      window.location.replace(`/${window.location.hash}`);
-    }
-  });
+  const init = async () => {
+    const proposalId: ProposalId | undefined = getProposalId($routeStore.path);
 
-  const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    const proposalId = getProposalId(path);
+    // No id is provided to the route, we forward back the user to the main app - e.g. /#/proposal/123 -> 123 is missing
     if (proposalId === undefined) {
-      unsubscribe();
       routeStore.replace({ path: AppPath.Proposals });
       return;
     }
@@ -44,8 +38,6 @@
         throw new Error("Proposal not found");
       }
     } catch (error) {
-      unsubscribe();
-
       console.error(error);
       toastsStore.show({
         labelKey: "error.proposal_not_found",
@@ -53,14 +45,21 @@
         detail: `id: "${proposalId}"`,
       });
 
-      // Wait a bit before redirection so the user recognizes on which page the error occures
+      // Wait a bit before redirection so the user recognizes on which page the error occurs
       setTimeout(() => {
         routeStore.replace({ path: AppPath.Proposals });
       }, 1500);
     }
-  });
+  };
 
-  onDestroy(unsubscribe);
+  // TODO: To be removed once this page has been implemented
+  onMount(async () => {
+    if (process.env.REDIRECT_TO_LEGACY) {
+      window.location.replace(`/${window.location.hash}`);
+    }
+
+    await init();
+  });
 
   const goBack = () => {
     routeStore.navigate({
