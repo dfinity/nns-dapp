@@ -63,6 +63,8 @@
   onDestroy(unsubscribe);
 
   const goBack = () => {
+    unsubscribe();
+
     routeStore.navigate({
       path: AppPath.Proposals,
     });
