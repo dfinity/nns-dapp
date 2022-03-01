@@ -3,11 +3,14 @@
   import IconClose from "../../icons/IconClose.svelte";
 
   export let headless: boolean = false;
+
   let visible: boolean = JSON.parse(
     localStorage.getItem("nnsdapp-testnet-banner-display") || "true"
   );
 
-  const deployEnv: string = process.env.DEPLOY_ENV;
+  const testnet: boolean = process.env.DEPLOY_ENV === 'testnet';
+  const localEnv: boolean = JSON.parse(process.env.ROLLUP_WATCH);
+  const banner: boolean = testnet && !localEnv;
 
   let rootStyle: string | undefined;
 
@@ -29,12 +32,12 @@
 </script>
 
 <svelte:head>
-  {#if deployEnv === "testnet" && rootStyle}
+  {#if banner && rootStyle}
     {@html rootStyle}
   {/if}
 </svelte:head>
 
-{#if deployEnv === "testnet" && visible}
+{#if banner && visible}
   <div class:headless>
     <h4>For <strong>test</strong> purpose only.</h4>
     <button on:click={close} aria-label={$i18n.core.close}><IconClose /></button
