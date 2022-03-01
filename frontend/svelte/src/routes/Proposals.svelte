@@ -87,7 +87,7 @@
 
     const isReferrerProposalDetail: boolean = isRoutePath({
       path: AppPath.ProposalDetail,
-      routePath: $routeStore.previousPath,
+      routePath: $routeStore.referrerPath,
     });
 
     // If the previous page is the proposal detail page and if we have proposals in store, we don't reset and query the proposals after mount.
