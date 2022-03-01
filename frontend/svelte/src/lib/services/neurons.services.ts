@@ -15,7 +15,7 @@ import { createAgent } from "../utils/agent.utils";
 /**
  * Uses governance and ledger canisters to create a neuron.
  *
- * TODO: Create neurons from subaccount
+ * TODO: L2-322 Create neurons from subaccount
  */
 export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
   if (stake.toE8s() < E8S_PER_ICP) {

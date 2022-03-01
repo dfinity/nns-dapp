@@ -7,7 +7,9 @@
     E8S_PER_ICP,
     TRANSACTION_FEE_E8S,
   } from "../../constants/icp.constants";
+  import { syncAccounts } from "../../services/accounts.services";
   import { stakeNeuron } from "../../services/neurons.services";
+  import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { formatICP } from "../../utils/icp.utils";
@@ -24,7 +26,7 @@
       await stakeNeuron({
         stake: ICP.fromE8s(BigInt(amount * E8S_PER_ICP)),
       });
-      // TODO: L2-313 sync accounts after creating neuron to update balance.
+      syncAccounts({ identity: $authStore.identity });
       dispatcher("nnsClose");
     } catch (err) {
       // TODO: Manage errors
