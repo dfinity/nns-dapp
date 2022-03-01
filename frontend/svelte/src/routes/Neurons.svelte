@@ -7,13 +7,17 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
   import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { getNeurons } from "../lib/services/neurons.services";
+  import Spinner from "../lib/components/ui/Spinner.svelte";
 
+  let neurons: NeuronInfo[] | undefined;
   // TODO: To be removed once this page has been implemented
-  onMount(() => {
+  onMount(async () => {
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace("/#/neurons");
     }
-    // TODO: Fetch and render neurons L2-313
+    neurons = await getNeurons();
   });
 
   let principalText: string = "";
@@ -29,6 +33,11 @@
   const stakeNeurons = () => (showStakeNeuronModal = true);
 
   const closeModal = () => (showStakeNeuronModal = false);
+
+  const goToNeuronDetails = () => {
+    // TODO
+    console.log("go to details");
+  };
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -41,7 +50,18 @@
         {principalText}
       </p>
 
-      <NeuronCard />
+      {#if neurons}
+        {#each neurons as neuron}
+          <NeuronCard
+            role="link"
+            ariaLabel={$i18n.neurons.aria_label_neuron_card}
+            on:click={goToNeuronDetails}
+            {neuron}
+          />
+        {/each}
+      {:else}
+        <Spinner />
+      {/if}
     </section>
     <svelte:fragment slot="footer">
       <Toolbar>

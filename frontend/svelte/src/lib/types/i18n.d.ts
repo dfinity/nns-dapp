@@ -71,6 +71,14 @@ interface I18nNeurons {
   amount: string;
   max: string;
   create: string;
+  status_locked: string;
+  status_unspecified: string;
+  status_dissolved: string;
+  status_dissolving: string;
+  community_fund: string;
+  hotkey_control: string;
+  stake: string;
+  aria_label_neuron_card: string;
 }
 
 interface I18nVoting {
@@ -142,6 +150,17 @@ interface I18nNeuron {
   title: string;
 }
 
+interface I18nTime {
+  year: string;
+  year_plural: string;
+  day: string;
+  day_plural: string;
+  hour: string;
+  hour_plural: string;
+  minute: string;
+  minute_plural: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -159,4 +178,5 @@ interface I18n {
   wallet: I18nWallet;
   proposal_detail: I18nProposal_detail;
   neuron: I18nNeuron;
+  time: I18nTime;
 }

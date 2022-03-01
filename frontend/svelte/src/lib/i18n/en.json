@@ -61,7 +61,15 @@
     "may_take_while": "(This may take up to 1 minute)",
     "amount": "Amount",
     "max": "Max",
-    "create": "Create"
+    "create": "Create",
+    "status_locked": "Locked",
+    "status_unspecified": "",
+    "status_dissolved": "Unlocked",
+    "status_dissolving": "Dissolving",
+    "community_fund": "[community fund]",
+    "hotkey_control": "[hotkey control]",
+    "stake": "Stake",
+    "aria_label_neuron_card": "Go to neuron details"
   },
   "voting": {
     "title": "Voting",
@@ -123,5 +131,15 @@
   },
   "neuron": {
     "title": "Neuron"
+  },
+  "time": {
+    "year": "year",
+    "year_plural": "years",
+    "day": "day",
+    "day_plural": "days",
+    "hour": "hour",
+    "hour_plural": "hours",
+    "minute": "minute",
+    "minute_plural": "minutes"
   }
 }
