@@ -7,7 +7,7 @@
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
   import type { NeuronId, ProposalId } from "@dfinity/nns";
-  import ProposerModal from "../../modals/ProposerModal.svelte";
+  import ProposerModal from "../../modals/proposals/ProposerModal.svelte";
 
   export let proposalInfo: ProposalInfo;
 
