@@ -42,8 +42,8 @@ const updateBaseHref = (content) =>
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
 const updateCSP = (content) => {
-  // In development mode, no CSP rule
-  if (!envConfig.PRODUCTION) {
+  // In local development mode, no CSP rule
+  if (envConfig.ENVIRONMENT === 'local') {
     return content.replace("<!-- CONTENT_SECURITY_POLICY -->", "");
   }
 
