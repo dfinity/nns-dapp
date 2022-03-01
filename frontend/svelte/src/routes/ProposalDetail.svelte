@@ -74,7 +74,7 @@
 {#if !process.env.REDIRECT_TO_LEGACY}
   <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header"
-    >{$i18n.proposal_detail.title}</svelte:fragment
+      >{$i18n.proposal_detail.title}</svelte:fragment
     >
 
     <section>
