@@ -43,7 +43,7 @@ const updateBaseHref = (content) =>
  */
 const updateCSP = (content) => {
   // In local development mode, no CSP rule
-  if (envConfig.ENVIRONMENT === 'local') {
+  if (envConfig.ENVIRONMENT === "local") {
     return content.replace("<!-- CONTENT_SECURITY_POLICY -->", "");
   }
 
