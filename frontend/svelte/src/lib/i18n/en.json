@@ -3,7 +3,8 @@
     "close": "Close",
     "icp": "ICP",
     "create": "Create",
-    "filter": "Filter"
+    "filter": "Filter",
+    "back": "Back"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -119,7 +120,7 @@
     "adopt": "Adopt",
     "reject": "Reject"
   },
-  "modals": {
-    "back": "Back"
+  "neuron": {
+    "title": "Neuron"
   }
 }
