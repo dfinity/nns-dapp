@@ -29,7 +29,7 @@
       syncAccounts({ identity: $authStore.identity });
       dispatcher("nnsClose");
     } catch (err) {
-      // TODO: Manage errors
+      // TODO: L2-329 Manage errors
       console.error(err);
     } finally {
       creating = false;
