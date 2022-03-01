@@ -13,6 +13,7 @@
   import AddAcountModal from "../lib/modals/AddAccountModal/AddAccountModal.svelte";
   import { ICP } from "@dfinity/nns";
   import { sumICPs } from "../lib/utils/icp.utils";
+  import Markdown from "../lib/components/ui/Markdown.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -54,6 +55,8 @@
     <section>
       <div class="title">
         <h1>{$i18n.accounts.title}</h1>
+
+        <Markdown text="# Hello [World](https://nns.ic0.app/)!" />
 
         {#if accounts?.main}
           <ICPComponent icp={totalBalance} />
