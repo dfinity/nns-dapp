@@ -56,8 +56,6 @@
       <div class="title">
         <h1>{$i18n.accounts.title}</h1>
 
-        <Markdown text="# Hello [World](https://nns.ic0.app/)!" />
-
         {#if accounts?.main}
           <ICPComponent icp={totalBalance} />
         {/if}
@@ -81,6 +79,7 @@
       {:else}
         <Spinner />
       {/if}
+      <Markdown text="# Hello [World](https://nns.ic0.app/)!" />
     </section>
 
     <svelte:fragment slot="footer">
