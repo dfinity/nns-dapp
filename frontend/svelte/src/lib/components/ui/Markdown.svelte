@@ -16,7 +16,7 @@
 </script>
 
 <ScriptLoader
-  url="https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+  url="/assets/assets/marked.min.js"
   on:nnsLoad={onLoad}
   on:nnsError={onError}
 />

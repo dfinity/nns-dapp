@@ -57,8 +57,6 @@
   "dependencies": {
     "@dfinity/auth-client": "^0.10.3",
     "@dfinity/identity": "^0.10.3",
-    "@dfinity/nns": "^0.2.1",
-    "@types/marked": "^4.0.2",
-    "marked": "^4.0.12"
+    "@dfinity/nns": "^0.2.1"
   }
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from "svelte";
+  import { tick, onMount, createEventDispatcher } from "svelte";
 
   export let url: string | undefined;
 
@@ -22,8 +22,8 @@
    * To test ScriptLoader user component the test should mock the outcome of script loading.
    */
   if (typeof jest !== "undefined") {
-    // doesn't work w/o the timeout because of child first initialization.
-    setTimeout(() => dispatch("nnsLoad"));
+    // doesn't work w/o the waiting because of child first initialization.
+    tick().then(() => dispatch("nnsLoad"));
   }
 </script>
 
