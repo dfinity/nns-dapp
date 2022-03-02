@@ -207,10 +207,8 @@ describe("Input", () => {
   it("should bind value", async () => {
     const { container } = render(InputValueTest, {
       props: {
-        props: {
-          ...props,
-          inputType: "text",
-        },
+        ...props,
+        inputType: "text",
       },
     });
 
