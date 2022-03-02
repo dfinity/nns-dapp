@@ -8,7 +8,7 @@
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
   import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
   import type { NeuronId } from "@dfinity/nns";
-  import { getNeurons } from "../lib/services/neurons.services";
+  import { listNeurons } from "../lib/services/neurons.services";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { errorToString } from "../lib/utils/error.utils";
@@ -24,7 +24,7 @@
     }
     try {
       isLoading = true;
-      await getNeurons();
+      await listNeurons();
     } catch (err) {
       toastsStore.show({
         labelKey: "errors.get_neurons",

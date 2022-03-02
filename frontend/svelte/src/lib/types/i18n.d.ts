@@ -151,10 +151,6 @@ interface I18nNeuron_detail {
   title: string;
 }
 
-interface I18nNeuron {
-  title: string;
-}
-
 interface I18nTime {
   year: string;
   year_plural: string;
@@ -183,6 +179,5 @@ interface I18n {
   wallet: I18nWallet;
   proposal_detail: I18nProposal_detail;
   neuron_detail: I18nNeuron_detail;
-  neuron: I18nNeuron;
   time: I18nTime;
 }

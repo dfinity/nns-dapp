@@ -133,9 +133,6 @@
   "neuron_detail": {
     "title": "Neuron"
   },
-  "neuron": {
-    "title": "Neuron"
-  },
   "time": {
     "year": "year",
     "year_plural": "years",

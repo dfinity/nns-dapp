@@ -41,11 +41,11 @@ export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
   });
 
   // TODO: Remove after L2-332
-  await getNeurons();
+  await listNeurons();
 };
 
 // Gets neurons and adds them to the store
-export const getNeurons = async (): Promise<void> => {
+export const listNeurons = async (): Promise<void> => {
   const { identity }: AuthStore = get(authStore);
   const agent = await createAgent({ identity, host: process.env.HOST });
   const governanceCanister: GovernanceCanister = GovernanceCanister.create({

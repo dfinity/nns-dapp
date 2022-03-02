@@ -1,12 +1,9 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { NeuronState, ICP } from "@dfinity/nns";
-  import type { SvelteComponent } from "svelte";
-  import IconHistoryToggleOff from "../../icons/IconHistoryToggleOff.svelte";
-  import IconLockClock from "../../icons/IconLockClock.svelte";
-  import IconLockOpen from "../../icons/IconLockOpen.svelte";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
+  import { getStateInfo, StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
 
@@ -15,46 +12,19 @@
   export let role: undefined | "link" | "button" = undefined;
   export let ariaLabel: string | undefined = undefined;
 
-  type StateInfo = {
-    textKey: string;
-    Icon?: typeof SvelteComponent;
-    colorVar: "--background-contrast" | "--yellow-500" | "--gray-200";
-  };
-  type StateMapper = {
-    [key: number]: StateInfo;
-  };
-  const stateTextMapper: StateMapper = {
-    [NeuronState.LOCKED]: {
-      textKey: "locked",
-      Icon: IconLockClock,
-      colorVar: "--background-contrast",
-    },
-    [NeuronState.UNSPECIFIED]: {
-      textKey: "unspecified",
-      colorVar: "--background-contrast",
-    },
-    [NeuronState.DISSOLVED]: {
-      textKey: "dissolved",
-      Icon: IconLockOpen,
-      colorVar: "--gray-200",
-    },
-    [NeuronState.DISSOLVING]: {
-      textKey: "dissolving",
-      Icon: IconHistoryToggleOff,
-      colorVar: "--yellow-500",
-    },
-  };
-  const stateInfo: StateInfo = stateTextMapper[neuron.state];
-
-  const isCommunityFund = !!neuron.joinedCommunityFundTimestampSeconds;
-  const isHotKeyControl = !neuron.fullNeuron.isCurrentUserController;
-
-  const neuronICP = ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake);
+  let stateInfo: StateInfo = getStateInfo(neuron.state);
+  $: stateInfo = getStateInfo(neuron.state);
+  let isCommunityFund: boolean = !!neuron.joinedCommunityFundTimestampSeconds;
+  $: isCommunityFund = !!neuron.joinedCommunityFundTimestampSeconds;
+  let isHotKeyControl: boolean = !neuron.fullNeuron.isCurrentUserController;
+  $: isHotKeyControl = !neuron.fullNeuron.isCurrentUserController;
+  let neuronICP: ICP = ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake);
+  $: neuronICP = ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake);
 </script>
 
 <Card {role} on:click {ariaLabel}>
   <div slot="start" class="lock">
-    <h4 class:hasNeuronControl={isCommunityFund || isHotKeyControl}>
+    <h4 class:has-neuron-control={isCommunityFund || isHotKeyControl}>
       {neuron.neuronId}
     </h4>
     {#if isCommunityFund}
@@ -92,7 +62,7 @@
     line-height: var(--line-height-standard);
   }
 
-  h4.hasNeuronControl {
+  h4.has-neuron-control {
     margin-bottom: 0;
   }
 

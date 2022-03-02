@@ -3,7 +3,7 @@ import { mock } from "jest-mock-extended";
 import { readable } from "svelte/store";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
-  getNeurons,
+  listNeurons,
   stakeNeuron,
 } from "../../../lib/services/neurons.services";
 
@@ -55,10 +55,10 @@ describe("neurons-services", () => {
     expect(call).rejects.toThrow(Error);
   });
 
-  it("getNeurons fetches neurons", async () => {
+  it("listNeurons fetches neurons", async () => {
     expect(mockGovernanceCanister.getNeurons).not.toBeCalled();
 
-    await getNeurons();
+    await listNeurons();
 
     expect(mockGovernanceCanister.getNeurons).toBeCalled();
   });
