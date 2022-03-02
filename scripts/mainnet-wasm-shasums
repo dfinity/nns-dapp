@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-set -eu
-git fetch origin refs/notes/*:refs/notes/* > /dev/null
-: Columns: WASM_SHA256 GIT_COMMIT
-git notes --ref=mainnet/wasm-sha
