@@ -42,6 +42,7 @@ const OWN_CANISTER_ID =
 
 const GOVERNANCE_CANISTER_URL = `https://${GOVERNANCE_CANISTER_ID}${domain}/`;
 const LEDGER_CANISTER_URL = `https://${LEDGER_CANISTER_ID}${domain}/`;
+const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}${domain}/`;
 
 // When developing with live reload in svelte, redirecting to flutter is
 // not desirable.  The default should match production:
@@ -66,6 +67,7 @@ export const envConfig = {
   MAINNET,
   HOST,
   OWN_CANISTER_ID,
+  OWN_CANISTER_URL,
   IDENTITY_SERVICE_URL,
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
