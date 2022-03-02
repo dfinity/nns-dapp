@@ -225,6 +225,24 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+    Future<Result<Unit, Exception>> merge(
+        {required Neuron neuron1, required Neuron neuron2}) async {
+      try {
+        final identity = (await getIdentityByNeuron(neuron1)).unwrap();
+
+        await promiseToFuture(serviceApi!.merge(
+            identity,
+            MergeRequest(
+                neuronId: neuron1.id.toBigInt.toJS,
+                sourceNeuronId: neuron2.id.toBigInt.toJS)));
+        await fetchNeuron(neuronId: neuron1.id.toBigInt);
+        return Result.ok(unit);
+      } catch (err) {
+        return Result.err(Exception(err));
+      }
+    }
+
+  @override
   Future<Result<Unit, Exception>> mergeMaturity(
       {required Neuron neuron, required int percentageToMerge}) async {
     try {

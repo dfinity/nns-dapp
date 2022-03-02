@@ -20,6 +20,7 @@ import {
   MakeProposalRequest,
   ManageNeuron,
   MergeMaturityRequest,
+  MergeRequest,
   NeuronIdOrSubaccount,
   NodeProvider,
   Operation,
@@ -142,6 +143,21 @@ export default class RequestConverters {
     neuronId.setId(request.neuronId.toString());
     manageNeuron.setNeuronId(neuronId);
     manageNeuron.setMergeMaturity(mergeMaturity);
+    return manageNeuron;
+  };
+
+  public fromMergeRequest = (
+      request: MergeRequest
+  ): PbManageNeuron => {
+    const merge = new PbManageNeuron.Merge();
+    const sourceNeuronId = new PbNeuronId();
+    sourceNeuronId.setId(request.neuronId.toString());
+    merge.setSourceNeuronId(sourceNeuronId);
+    const manageNeuron = new PbManageNeuron();
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    manageNeuron.setNeuronId(neuronId);
+    manageNeuron.setMerge(merge);
     return manageNeuron;
   };
 
