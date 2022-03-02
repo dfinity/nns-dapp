@@ -1243,7 +1243,7 @@ impl StableState for AccountsStore {
         ): (
             HashMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
-            VecDeque<TransactionPrevious>,
+            VecDeque<Transaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
             MultiPartTransactionsProcessor,
@@ -1261,7 +1261,7 @@ impl StableState for AccountsStore {
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
-            transactions: transactions.into_iter().map_into().collect(),
+            transactions,
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
@@ -1270,84 +1270,6 @@ impl StableState for AccountsStore {
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         })
-    }
-}
-
-#[derive(CandidType, Deserialize)]
-struct TransactionPrevious {
-    transaction_index: TransactionIndex,
-    block_height: BlockHeight,
-    timestamp: TimeStamp,
-    memo: Memo,
-    transfer: TransferPrevious,
-    transaction_type: Option<TransactionTypePrevious>,
-}
-
-#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-enum TransactionTypePrevious {
-    Burn,
-    Mint,
-    Send,
-    StakeNeuron,
-    StakeNeuronNotification,
-    TopUpNeuron,
-    CreateCanister,
-    TopUpCanister(CanisterId),
-}
-
-#[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
-pub enum TransferPrevious {
-    Burn {
-        from: AccountIdentifier,
-        amount: Tokens,
-    },
-    Mint {
-        to: AccountIdentifier,
-        amount: Tokens,
-    },
-    Send {
-        from: AccountIdentifier,
-        to: AccountIdentifier,
-        amount: Tokens,
-        fee: Tokens,
-    },
-}
-
-impl From<TransferPrevious> for Operation {
-    fn from(t: TransferPrevious) -> Self {
-        match t {
-            TransferPrevious::Burn { from, amount } => Burn { from, amount },
-            TransferPrevious::Mint { to, amount } => Mint { to, amount },
-            TransferPrevious::Send { from, to, amount, fee } => Transfer { from, to, amount, fee },
-        }
-    }
-}
-
-impl From<TransactionTypePrevious> for TransactionType {
-    fn from(t: TransactionTypePrevious) -> Self {
-        match t {
-            TransactionTypePrevious::Burn => TransactionType::Burn,
-            TransactionTypePrevious::Mint => TransactionType::Mint,
-            TransactionTypePrevious::Send => TransactionType::Transfer,
-            TransactionTypePrevious::StakeNeuron => TransactionType::StakeNeuron,
-            TransactionTypePrevious::StakeNeuronNotification => TransactionType::StakeNeuronNotification,
-            TransactionTypePrevious::TopUpNeuron => TransactionType::TopUpNeuron,
-            TransactionTypePrevious::CreateCanister => TransactionType::CreateCanister,
-            TransactionTypePrevious::TopUpCanister(c) => TransactionType::TopUpCanister(c),
-        }
-    }
-}
-
-impl From<TransactionPrevious> for Transaction {
-    fn from(t: TransactionPrevious) -> Self {
-        Transaction {
-            transaction_index: t.transaction_index,
-            block_height: t.block_height,
-            timestamp: t.timestamp,
-            memo: t.memo,
-            transfer: t.transfer.into(),
-            transaction_type: t.transaction_type.map(|tt| tt.into()),
-        }
     }
 }
 
