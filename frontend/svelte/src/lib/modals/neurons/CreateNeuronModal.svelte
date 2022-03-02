@@ -13,9 +13,9 @@
   import SetDissolveDelay from "./SetDissolveDelay.svelte";
 
   enum Steps {
-    SetDissolveDelay,
     SelectAccount,
     StakeNeuron,
+    SetDissolveDelay,
   }
   let stateStep = new StepsState<typeof Steps>(Steps);
 
@@ -32,6 +32,9 @@
   };
   const goBack = () => {
     stateStep = stateStep.back();
+  };
+  const goToDissolveDelay = () => {
+    stateStep = stateStep.next();
   };
 
   onDestroy(unsubscribeAccounts);
@@ -70,7 +73,10 @@
     {/if}
     {#if currentStep === Steps.StakeNeuron && selectedAccount}
       <Transition {diff}>
-        <StakeNeuron account={selectedAccount} on:nnsClose />
+        <StakeNeuron
+          account={selectedAccount}
+          on:nnsNeuronCreated={goToDissolveDelay}
+        />
       </Transition>
     {/if}
     {#if currentStep === Steps.SetDissolveDelay}

@@ -1,5 +1,6 @@
 <script lang="ts">
   import Card from "../../components/ui/Card.svelte";
+  import { i18n } from "../../stores/i18n";
   let EIGHT_YEARS = 60 * 60 * 24 * 365 * 8 + 60 * 60 * 24 * 2; // Extra two days for two leap years
   let delayInSeconds: number = 0;
 
@@ -14,21 +15,21 @@
 
 <section>
   <div>
-    <h5>Neuron ID</h5>
+    <h5>{$i18n.neurons.neuron_id}</h5>
     <p>12312312312331223</p>
   </div>
   <div>
-    <h5>Balance</h5>
+    <h5>{$i18n.neurons.neuron_balance}</h5>
     <p>1.10 ICP Stake</p>
   </div>
   <div>
-    <h5>Current Dissolve Delay</h5>
+    <h5>{$i18n.neurons.current_dissolve_delay}</h5>
     <p>0</p>
   </div>
   <Card>
     <div slot="start">
-      <h5>Dissolve Delay</h5>
-      <p>Voting power is given when neurons are locked for at least 6 months</p>
+      <h5>{$i18n.neurons.dissolve_delay_title}</h5>
+      <p>{$i18n.neurons.dissolve_delay_description}</p>
     </div>
     <div class="select-delay-container">
       <input
@@ -41,15 +42,20 @@
       <div class="details">
         <div>
           <h5>1.26</h5>
-          <p>Voting Power</p>
+          <p>{$i18n.neurons.voting_power}</p>
         </div>
         <div>
+          <!-- TODO: use seconds to duration, pending PR to be merged -->
           <h5>1 year, 59 days</h5>
-          <p>Dissolve Delay</p>
+          <p>{$i18n.neurons.dissolve_delay_title}</p>
         </div>
       </div>
     </div>
   </Card>
+  <div class="buttons">
+    <button class="full-width">Skip</button>
+    <button class="primary full-width">Update Delay</button>
+  </div>
 </section>
 
 <style lang="scss">
@@ -121,5 +127,9 @@
 
   input[type="range"]::-webkit-slider-runnable-track {
     cursor: pointer;
+  }
+
+  .buttons {
+    display: flex;
   }
 </style>

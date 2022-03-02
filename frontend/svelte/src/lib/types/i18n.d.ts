@@ -63,6 +63,7 @@ interface I18nNeurons {
   principal_is: string;
   stake_neurons: string;
   select_source: string;
+  set_dissolve_delay: string;
   my_accounts: string;
   stake_neuron: string;
   source: string;
@@ -80,6 +81,12 @@ interface I18nNeurons {
   hotkey_control: string;
   stake: string;
   aria_label_neuron_card: string;
+  neuron_id: string;
+  neuron_balance: string;
+  current_dissolve_delay: string;
+  dissolve_delay_title: string;
+  dissolve_delay_description: string;
+  votin_power: string;
 }
 
 interface I18nVoting {
