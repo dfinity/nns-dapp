@@ -2,12 +2,7 @@
 // - calls that require multiple canisters.
 // - calls that require additional systems such as hardware wallets.
 
-import {
-  GovernanceCanister,
-  ICP,
-  LedgerCanister,
-  NeuronInfo,
-} from "@dfinity/nns";
+import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   GOVERNANCE_CANISTER_ID,
@@ -15,10 +10,11 @@ import {
 } from "../constants/canister-ids.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { AuthStore, authStore } from "../stores/auth.store";
+import { neuronsStore } from "../stores/neurons.store";
 import { createAgent } from "../utils/agent.utils";
 
 /**
- * Uses governance and ledger canisters to create a neuron.
+ * Uses governance and ledger canisters to create a neuron and adds it to the store
  *
  * TODO: L2-322 Create neurons from subaccount
  */
@@ -37,23 +33,28 @@ export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
     canisterId: LEDGER_CANISTER_ID,
   });
 
+  // TODO: L2-332 Get neuron information and add to store
   await governanceCanister.stakeNeuron({
     stake,
     principal: identity.getPrincipal(),
     ledgerCanister,
   });
+
+  // TODO: Remove after L2-332
+  await getNeurons();
 };
 
-export const getNeurons = async (): Promise<NeuronInfo[]> => {
-  // TODO: Implement to be used and test L2-313
+// Gets neurons and adds them to the store
+export const getNeurons = async (): Promise<void> => {
   const { identity }: AuthStore = get(authStore);
   const agent = await createAgent({ identity, host: process.env.HOST });
   const governanceCanister: GovernanceCanister = GovernanceCanister.create({
     agent,
     canisterId: GOVERNANCE_CANISTER_ID,
   });
-  return governanceCanister.getNeurons({
+  const neurons = await governanceCanister.getNeurons({
     certified: true,
     principal: identity.getPrincipal(),
   });
+  neuronsStore.setNeurons(neurons);
 };

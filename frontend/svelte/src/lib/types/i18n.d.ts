@@ -20,6 +20,7 @@ interface I18nError {
   create_subaccount: string;
   create_subaccount_too_long: string;
   create_subaccount_limit_exceeded: string;
+  get_neurons: string;
 }
 
 interface I18nNavigation {
@@ -146,6 +147,10 @@ interface I18nProposal_detail {
   reject: string;
 }
 
+interface I18nNeuron_detail {
+  title: string;
+}
+
 interface I18nNeuron {
   title: string;
 }
@@ -177,6 +182,7 @@ interface I18n {
   status: I18nStatus;
   wallet: I18nWallet;
   proposal_detail: I18nProposal_detail;
+  neuron_detail: I18nNeuron_detail;
   neuron: I18nNeuron;
   time: I18nTime;
 }

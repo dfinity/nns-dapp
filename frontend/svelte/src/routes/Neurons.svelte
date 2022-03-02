@@ -7,17 +7,33 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
   import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import { getNeurons } from "../lib/services/neurons.services";
   import Spinner from "../lib/components/ui/Spinner.svelte";
+  import { toastsStore } from "../lib/stores/toasts.store";
+  import { errorToString } from "../lib/utils/error.utils";
+  import { neuronsStore } from "../lib/stores/neurons.store";
+  import { routeStore } from "../lib/stores/route.store";
+  import { AppPath } from "../lib/constants/routes.constants";
 
-  let neurons: NeuronInfo[] | undefined;
+  let isLoading: boolean = false;
   // TODO: To be removed once this page has been implemented
   onMount(async () => {
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace("/#/neurons");
     }
-    neurons = await getNeurons();
+    try {
+      isLoading = true;
+      await getNeurons();
+    } catch (err) {
+      toastsStore.show({
+        labelKey: "errors.get_neurons",
+        level: "error",
+        detail: errorToString(err),
+      });
+    } finally {
+      isLoading = false;
+    }
   });
 
   let principalText: string = "";
@@ -34,9 +50,10 @@
 
   const closeModal = () => (showStakeNeuronModal = false);
 
-  const goToNeuronDetails = () => {
-    // TODO
-    console.log("go to details");
+  const goToNeuronDetails = (id: NeuronId) => () => {
+    routeStore.navigate({
+      path: `${AppPath.NeuronDetail}/${id}`,
+    });
   };
 </script>
 
@@ -50,17 +67,17 @@
         {principalText}
       </p>
 
-      {#if neurons}
-        {#each neurons as neuron}
+      {#if isLoading}
+        <Spinner />
+      {:else}
+        {#each $neuronsStore as neuron}
           <NeuronCard
             role="link"
             ariaLabel={$i18n.neurons.aria_label_neuron_card}
-            on:click={goToNeuronDetails}
+            on:click={goToNeuronDetails(neuron.neuronId)}
             {neuron}
           />
         {/each}
-      {:else}
-        <Spinner />
       {/if}
     </section>
     <svelte:fragment slot="footer">
