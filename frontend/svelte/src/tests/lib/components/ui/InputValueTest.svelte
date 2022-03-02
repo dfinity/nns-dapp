@@ -1,7 +1,9 @@
 <script lang="ts">
   import Input from "../../../../lib/components/ui/Input.svelte";
 
-  export let props = {};
+  export let inputType: "text";
+  export let name: string;
+  export let placeholderLabelKey: string;
 
   let amount: string;
 
@@ -13,4 +15,4 @@
 
 <span on:click={changeValue} id="test" />
 
-<Input bind:value={amount} {...props} />
+<Input bind:value={amount} {inputType} {name} {placeholderLabelKey} />
