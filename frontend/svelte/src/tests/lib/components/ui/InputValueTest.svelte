@@ -8,4 +8,4 @@
 
 <span id="test">{amount}</span>
 
-<Input bind:value={amount} {...props}></Input>
+<Input bind:value={amount} {...props} />
