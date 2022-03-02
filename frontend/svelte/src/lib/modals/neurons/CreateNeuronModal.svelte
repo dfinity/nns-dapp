@@ -10,8 +10,10 @@
   import type { Unsubscriber } from "svelte/store";
   import Transition from "../../components/ui/Transition.svelte";
   import { StepsState } from "../../services/stepsState.services";
+  import SetDissolveDelay from "./SetDissolveDelay.svelte";
 
   enum Steps {
+    SetDissolveDelay,
     SelectAccount,
     StakeNeuron,
   }
@@ -42,6 +44,7 @@
   const titleMapper: Record<string, string> = {
     "0": "select_source",
     "1": "stake_neuron",
+    "2": "set_dissolve_delay",
   };
   let titleKey: string = titleMapper[0];
   $: titleKey = titleMapper[currentStep];
@@ -54,7 +57,8 @@
   showBackButton={currentStep === Steps.StakeNeuron}
   on:nnsBack={goBack}
 >
-  <span slot="title">{$i18n.neurons?.[titleKey]}</span>
+  <span class:hello-world={false} slot="title">{$i18n.neurons?.[titleKey]}</span
+  >
   <main>
     {#if currentStep === Steps.SelectAccount}
       <Transition {diff}>
@@ -67,6 +71,11 @@
     {#if currentStep === Steps.StakeNeuron && selectedAccount}
       <Transition {diff}>
         <StakeNeuron account={selectedAccount} on:nnsClose />
+      </Transition>
+    {/if}
+    {#if currentStep === Steps.SetDissolveDelay}
+      <Transition {diff}>
+        <SetDissolveDelay />
       </Transition>
     {/if}
   </main>
