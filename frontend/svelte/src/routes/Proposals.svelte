@@ -82,7 +82,7 @@
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
     if (process.env.REDIRECT_TO_LEGACY) {
-      window.location.replace(AppPath.Proposals);
+//      window.location.replace(AppPath.Proposals);
     }
 
     const isReferrerProposalDetail: boolean = isRoutePath({
@@ -122,7 +122,7 @@
     });
 </script>
 
-{#if !process.env.REDIRECT_TO_LEGACY}
+{#if true}
   <Layout>
     <section>
       <p>{$i18n.voting.text}</p>

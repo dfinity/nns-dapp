@@ -2,9 +2,11 @@ import 'package:core/core.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/proposals/governance_tab_widget.dart';
+import 'package:universal_html/html.dart' as html;
 import '../../nns_dapp.dart';
 
 const DEPLOY_ENV = String.fromEnvironment('DEPLOY_ENV');
+const REDIRECT_TO_LEGACY = String.fromEnvironment('REDIRECT_TO_LEGACY');
 
 class HomePage extends StatefulWidget {
   final int initialTabIndex;
@@ -37,6 +39,9 @@ class _HomePageState extends State<HomePage>
           pageName = neuronTabsPage;
         } else if (_tabController.index == 2) {
           pageName = proposalsTabPage;
+          if (REDIRECT_TO_LEGACY == "sometimes") {
+              html.window.location.assign("/v2/#/proposals");
+          }
         } else if (_tabController.index == 3) {
           pageName = canistersTabPage;
         }

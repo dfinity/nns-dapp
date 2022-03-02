@@ -9,6 +9,8 @@ import 'package:nns_dapp/ui/_components/tab_title_and_content.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
 import '../../nns_dapp.dart';
 
+const REDIRECT_TO_LEGACY = String.fromEnvironment('REDIRECT_TO_LEGACY');
+
 class GovernanceTabWidget extends StatefulWidget {
   @override
   _GovernanceTabWidgetState createState() => _GovernanceTabWidgetState();
@@ -103,6 +105,9 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (REDIRECT_TO_LEGACY == "sometimes") {
+      return Text('Redirecting...');
+    } else {
     return FooterGradientButton(
       footer: Container(),
       body: ConstrainWidthAndCenter(
@@ -262,6 +267,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
         ),
       ),
     );
+    }
   }
 }
 
