@@ -2,11 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { act, fireEvent, render } from "@testing-library/svelte";
-import html from "svelte-htm";
-import { writable } from "svelte/store";
+import { fireEvent, render } from "@testing-library/svelte";
 import Input from "../../../../lib/components/ui/Input.svelte";
 import InputTest from "./InputTest.svelte";
+import InputValueTest from "./InputValueTest.svelte";
 
 describe("Input", () => {
   const props = { name: "name", placeholderLabelKey: "test.placeholder" };
@@ -205,21 +204,24 @@ describe("Input", () => {
     testHasAttribute({ container, attribute: "disabled", expected: true });
   });
 
-  it("value can be set from props", async () => {
-    const textStore = writable();
-    // Testing the `bind` directive
-    // https://github.com/svelte-society/recipes-mvp/blob/master/testing.md#testing-the-bind-directive
-    const { container } = render(
-      html`<input
-        bind:value=${textStore}
-        name="name"
-        placeholderLabelKey="test.placeholder"
-      />`
-    );
+  it("should bind value", async () => {
+    const { container } = render(InputValueTest, {
+      props: {
+        props: {
+          ...props,
+          inputType: "text",
+        },
+      },
+    });
 
-    const inputValue: string = "test value";
-    await act(() => textStore.set(inputValue));
-    const input: HTMLInputElement = container.querySelector("input");
-    expect(input).toHaveValue(inputValue);
+    const testInput = "test me";
+
+    const input: HTMLInputElement | null = container.querySelector("input");
+    await fireEvent.input(input, { target: { value: testInput } });
+    expect(input.value).toBe(testInput);
+
+    const testBind: HTMLSpanElement | null = container.querySelector("#test");
+    expect(testBind).not.toBeNull();
+    expect(testBind.innerHTML).toEqual(testInput);
   });
 });
