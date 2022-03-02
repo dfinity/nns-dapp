@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import { accountsStore } from "../../lib/stores/accounts.store";
 import { authStore } from "../../lib/stores/auth.store";
 import { formatICP } from "../../lib/utils/icp.utils";
@@ -111,16 +111,5 @@ describe("Accounts", () => {
       .spyOn(accountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe());
     expect(accountsStoreMock).toHaveBeenCalled();
-  });
-
-  it("should render markdown", async () => {
-    const { getByText } = render(Accounts);
-    globalThis.marked = {
-      parse: jest.fn(() => "<div>markdown-mock</div>"),
-    };
-
-    await waitFor(() => expect(globalThis.marked.parse).toBeCalled());
-
-    expect(getByText("markdown-mock")).toBeInTheDocument();
   });
 });

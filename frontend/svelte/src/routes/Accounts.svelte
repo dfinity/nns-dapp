@@ -79,7 +79,6 @@
       {:else}
         <Spinner />
       {/if}
-      <Markdown text="# Hello [World](https://nns.ic0.app/)!" />
     </section>
 
     <svelte:fragment slot="footer">
