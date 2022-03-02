@@ -35,7 +35,7 @@ class _ConfigureFollowersPageState extends State<ConfigureFollowersPage> {
           // NeuronManagement proposals are not public so we hide this topic
           // (unless the neuron already has followees on this topic)
           final followees = refreshed.followees
-              .where((e) => e.topic != Topic.NeuronManagement || e.followees.isNotEmpty);
+              .where((e) => (e.topic != Topic.NeuronManagement) || e.followees.isNotEmpty);
           rowKeys = followees.map((element) => GlobalKey()).toList();
           return Column(
             children: [
