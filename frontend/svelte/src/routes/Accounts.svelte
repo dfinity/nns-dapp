@@ -13,7 +13,6 @@
   import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
   import { ICP } from "@dfinity/nns";
   import { sumICPs } from "../lib/utils/icp.utils";
-  import Markdown from "../lib/components/ui/Markdown.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
