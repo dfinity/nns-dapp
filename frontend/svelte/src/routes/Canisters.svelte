@@ -59,7 +59,7 @@
         {$authStore.identity?.getPrincipal().toText()}
       </p>
 
-      <!-- TODO(L2-335): infinite scroll and cards -->
+      <!-- TODO(L2-335): display cards -->
       {#each $canistersStore as canister}
         <p>{canister.name ?? canister.canister_id}</p>
       {/each}
