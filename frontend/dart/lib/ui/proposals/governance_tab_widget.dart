@@ -7,6 +7,7 @@ import 'package:nns_dapp/ui/_components/multi_select_list.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/_components/tab_title_and_content.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
+import 'package:universal_html/html.dart' as html;
 import '../../nns_dapp.dart';
 
 const REDIRECT_TO_LEGACY = String.fromEnvironment('REDIRECT_TO_LEGACY');
@@ -106,6 +107,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
   @override
   Widget build(BuildContext context) {
     if (!["true", "1"].contains(REDIRECT_TO_LEGACY)) {
+      html.window.location.assign("/v2/#/proposals");
       return Text('Redirecting...');
     }
     return FooterGradientButton(

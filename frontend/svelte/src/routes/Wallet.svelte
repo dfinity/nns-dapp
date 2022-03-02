@@ -9,7 +9,7 @@
   // TODO: To be removed once this page has been implemented
   const showThisRoute = process.env.REDIRECT_TO_LEGACY !== false;
   onMount(() => {
-    if (showThisRoute) {
+    if (!showThisRoute) {
       window.location.replace(`/${window.location.hash}`);
     }
   });
