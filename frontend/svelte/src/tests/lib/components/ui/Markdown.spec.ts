@@ -23,7 +23,7 @@ describe("Markdown", () => {
     expect(container.querySelector("p")).toHaveTextContent("demo");
   });
 
-  it("should render html content w/o delay when library was already loaded", async () => {
+  it("should render html content w/o delay when library was already loaded", () => {
     const { container } = render(Markdown, {
       props: { text: HTML_TEXT },
     });

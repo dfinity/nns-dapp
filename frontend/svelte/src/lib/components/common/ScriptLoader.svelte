@@ -7,20 +7,20 @@
   const dispatch = createEventDispatcher();
   let script: HTMLScriptElement;
 
-  const onErro = (event) => {
-    console.error("script load error", event);
+  const onError = (errorEvent: ErrorEvent) => {
+    console.error("script load error", errorEvent);
     dispatch("nnsError");
   };
   const onLoad = () => dispatch("nnsLoad");
 
   onMount(() => {
     script.addEventListener("load", onLoad, { once: true });
-    script.addEventListener("error", onErro, { once: true });
+    script.addEventListener("error", onError, { once: true });
   });
 
   onDestroy(() => {
     script.removeEventListener("load", onLoad);
-    script.removeEventListener("error", onErro);
+    script.removeEventListener("error", onError);
   });
 
   /**

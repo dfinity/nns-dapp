@@ -25,13 +25,9 @@
     on:nnsLoad={onLoad}
     on:nnsError={onError}
   />
-{/if}
-
-{#if !loading}
-  {#if parse}
-    {@html parse(removeHTMLTags(text))}
-  {:else}
-    <!-- fallback text content -->
-    {text}
-  {/if}
+{:else if parse}
+  {@html parse(removeHTMLTags(text))}
+{:else}
+  <!-- fallback text content -->
+  {text}
 {/if}
