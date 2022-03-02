@@ -10,7 +10,7 @@ Wasm sha256 hash: `$WASM_HASH` (`$LINK_TO_GITHUB_ACTION`)
 ## Commit log:
 
 ```
-git log --format="%C(auto) %h %s" ${COMMIT_FROM_LAST_UPGRADE}..${COMMIT}
+bash -xc "git log --format='%C(auto) %h %s' $(git tags/rev-parse prod)..$(git rev-parse tags/release-candidate)"
  ADD THE OUTPUT OF THE ABOVE COMMAND HERE
 ```
 
@@ -20,6 +20,5 @@ To build the wasm module yourself and verify its hash, run the following command
 
 git pull  # to ensure you have the latest changes.
 git checkout `$COMMIT`
-docker build -t nns-dapp .
-docker run --rm --entrypoint cat nns-dapp /nns-dapp.wasm > nns-dapp.wasm
+./scripts/docker-build
 sha256sum nns-dapp.wasm
