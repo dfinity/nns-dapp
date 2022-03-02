@@ -9,6 +9,7 @@ import {
 import { idlFactory, NNSDappService } from "./nns-dapp.idl";
 import type {
   AccountDetails,
+  CanisterDetails,
   CreateSubAccountResponse,
   SubAccountDetails,
 } from "./nns-dapp.types";
@@ -116,4 +117,20 @@ export class NNSDappCanister {
     // We should never reach here. Some of the previous properties should be present.
     throw new Error("Error creating subaccount");
   };
+
+  public getCanisters = async ({
+    certified,
+  }: {
+    certified: boolean;
+  }): Promise<CanisterDetails[]> => {
+    return this.serviceCaller(certified).get_canisters();
+  };
+
+  private serviceCaller(certified = true): NNSDappService {
+    if (certified) {
+      return this.certifiedService;
+    }
+
+    return this.service;
+  }
 }

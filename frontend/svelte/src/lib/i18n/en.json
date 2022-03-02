@@ -11,6 +11,7 @@
     "sign_in": "The sign-in process was aborted or did not succeed.",
     "proposal_not_found": "An error occurred while loading the proposal.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
+    "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
     "create_subaccount": "Sorry, there was an expected error when creating your subaccount, please try again",
     "create_subaccount_too_long": "The name of the subaccount is too long. Please, choose a shorter name.",

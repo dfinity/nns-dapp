@@ -15,6 +15,7 @@ interface I18nError {
   sign_in: string;
   proposal_not_found: string;
   list_proposals: string;
+  list_canisters: string;
   missing_identity: string;
   create_subaccount: string;
   create_subaccount_too_long: string;

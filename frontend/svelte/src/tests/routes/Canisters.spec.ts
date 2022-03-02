@@ -3,20 +3,28 @@
  */
 
 import { render } from "@testing-library/svelte";
+import { NNSDappCanister } from "../../lib/canisters/nns-dapp/nns-dapp.canister";
 import { authStore } from "../../lib/stores/auth.store";
 import Canisters from "../../routes/Canisters.svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "../mocks/auth.store.mock";
+import { MockNNSDappCanister } from "../mocks/canisters.store.mock";
 
 describe("Canisters", () => {
   let authStoreMock;
+
+  const mockNNSDappCanister: MockNNSDappCanister = new MockNNSDappCanister();
 
   beforeEach(() => {
     authStoreMock = jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+
+    jest
+      .spyOn(NNSDappCanister, "create")
+      .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
   });
 
   it("should render content", () => {
