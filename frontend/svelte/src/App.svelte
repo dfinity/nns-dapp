@@ -34,6 +34,7 @@
       if (isKnownPath) {
         return;
       }
+      // if the path is unsupported (to mock the flutter dapp) the user will be redirected to the first page (/accounts/) page (unknown path will not be saved in session History)
       routeStore.replace({ path: AppPath.Accounts });
     }
   );
