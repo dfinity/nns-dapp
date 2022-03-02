@@ -82,7 +82,7 @@
   const showThisRoute = process.env.REDIRECT_TO_LEGACY !== true;
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
-    if (showThisRoute) {
+    if (!showThisRoute) {
       window.location.replace(AppPath.Proposals);
     }
 
