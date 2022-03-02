@@ -5,7 +5,7 @@ const pathValidation = (path: AppPath): string =>
   ({
     // exceptions only
     [AppPath.Wallet]: `${AppPath.Wallet}/[a-zA-Z0-9]+`,
-    [AppPath.ProposalDetails]: `${AppPath.ProposalDetails}/[0-9]+`,
+    [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
   }[path] || path);
 
 export const isAppPath = (routePath: string): routePath is AppPath =>
@@ -18,7 +18,7 @@ export const isRoutePath: ({
   routePath,
 }: {
   path: AppPath;
-  routePath: string;
+  routePath: string | undefined;
 }) => boolean = memoize(({ path, routePath }) =>
   new RegExp(`^${pathValidation(path)}$`).test(routePath)
 );

@@ -6,13 +6,14 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
-  import CreateNeuronModal from "../lib/modals/CreateNeuronModal/CreateNeuronModal.svelte";
+  import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace("/#/neurons");
     }
+    // TODO: Fetch and render neurons L2-313
   });
 
   let principalText: string = "";
