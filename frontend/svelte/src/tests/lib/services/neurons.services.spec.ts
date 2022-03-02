@@ -2,7 +2,10 @@ import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { readable } from "svelte/store";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
-import { stakeNeuron } from "../../../lib/services/neurons.services";
+import {
+  getNeurons,
+  stakeNeuron,
+} from "../../../lib/services/neurons.services";
 
 jest.mock("../../../lib/stores/auth.store", () => {
   return {
@@ -15,12 +18,21 @@ jest.mock("../../../lib/stores/auth.store", () => {
 });
 
 describe("neurons-services", () => {
-  it("stakeNeuron creates a new neuron", async () => {
-    const mockGovernanceCanister = mock<GovernanceCanister>();
+  const mockGovernanceCanister = mock<GovernanceCanister>();
+  beforeEach(() => {
+    mockGovernanceCanister.getNeurons.mockImplementation(
+      jest.fn().mockResolvedValue([])
+    );
     mockGovernanceCanister.stakeNeuron.mockImplementation(jest.fn());
     jest
       .spyOn(GovernanceCanister, "create")
       .mockImplementation(() => mockGovernanceCanister);
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+  it("stakeNeuron creates a new neuron", async () => {
     jest.spyOn(LedgerCanister, "create").mockImplementation(() => undefined);
 
     await stakeNeuron({
@@ -33,11 +45,6 @@ describe("neurons-services", () => {
   it(`stakeNeuron should raise an error if amount less than ${
     E8S_PER_ICP / E8S_PER_ICP
   } ICP`, async () => {
-    const mockGovernanceCanister = mock<GovernanceCanister>();
-    mockGovernanceCanister.stakeNeuron.mockImplementation(jest.fn());
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation(() => mockGovernanceCanister);
     jest.spyOn(LedgerCanister, "create").mockImplementation(() => undefined);
 
     const call = () =>
@@ -46,5 +53,13 @@ describe("neurons-services", () => {
       });
 
     expect(call).rejects.toThrow(Error);
+  });
+
+  it("getNeurons fetches neurons", async () => {
+    expect(mockGovernanceCanister.getNeurons).not.toBeCalled();
+
+    await getNeurons();
+
+    expect(mockGovernanceCanister.getNeurons).toBeCalled();
   });
 });
