@@ -14,7 +14,6 @@ export const getICPs = async (icps: number) => {
     e8s: BigInt(icps * E8S_PER_ICP),
     accountIdentifier: main.identifier,
   });
-  console.log(result);
 
   if (!(typeof result === "bigint")) {
     console.error(result);
