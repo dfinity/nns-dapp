@@ -12,13 +12,13 @@
   export let role: undefined | "link" | "button" = undefined;
   export let ariaLabel: string | undefined = undefined;
 
-  let stateInfo: StateInfo = getStateInfo(neuron.state);
+  let stateInfo: StateInfo;
   $: stateInfo = getStateInfo(neuron.state);
-  let isCommunityFund: boolean = !!neuron.joinedCommunityFundTimestampSeconds;
+  let isCommunityFund: boolean;
   $: isCommunityFund = !!neuron.joinedCommunityFundTimestampSeconds;
-  let isHotKeyControl: boolean = !neuron.fullNeuron.isCurrentUserController;
+  let isHotKeyControl: boolean;
   $: isHotKeyControl = !neuron.fullNeuron.isCurrentUserController;
-  let neuronICP: ICP = ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake);
+  let neuronICP: ICP;
   $: neuronICP = ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake);
 </script>
 
