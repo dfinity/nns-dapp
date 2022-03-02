@@ -3,5 +3,5 @@
 set -eu
 git fetch origin refs/notes/*:refs/notes/* > /dev/null || true
 # DEPLOY_ENV - typical values are 'testnet' and 'mainnet'
-NOTES_REF=refs/notes/${DEPLOY_ENV:-testnet}/wasm-sha
+NOTES_REF=refs/notes/${DEPLOY_ENV:-testnet}/sha
 git grep "${@}" -- "$NOTES_REF"

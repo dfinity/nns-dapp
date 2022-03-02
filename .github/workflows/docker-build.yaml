@@ -73,9 +73,9 @@ jobs:
          git config user.name "GitHub Actions Bot"
          git config user.email "<>"
          : Make a note of the WASM shasum.
-         NOTES_REF="refs/notes/${{ matrix.DEPLOY_ENV }}/wasm-sha"
-         SHA="$(sha256sum < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")"
-         echo "$NOTES_REF: $SHA"
+         NOTES_REF="refs/notes/${{ matrix.DEPLOY_ENV }}/sha"
+         SHA="$(sha256sum "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")"
+         printf "%s\n" "$NOTES_REF:" "$SHA"
          git fetch origin "+${NOTES_REF}:${NOTES_REF}"
          if git notes --ref="$NOTES_REF" add -m "$SHA"
          then git push origin "${NOTES_REF}:${NOTES_REF}"
