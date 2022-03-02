@@ -20,8 +20,9 @@
   let proposalInfo: ProposalInfo;
 
   // TODO: To be removed once this page has been implemented
+  const showThisRoute = process.env.REDIRECT_TO_LEGACY !== true;
   onMount(() => {
-    if (process.env.REDIRECT_TO_LEGACY) {
+    if (!showThisRoute) {
       window.location.replace(`/${window.location.hash}`);
     }
   });
@@ -71,7 +72,7 @@
   };
 </script>
 
-{#if !process.env.REDIRECT_TO_LEGACY}
+{#if showThisRoute}
   <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header"
       >{$i18n.proposal_detail.title}</svelte:fragment

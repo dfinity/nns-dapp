@@ -105,9 +105,9 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (REDIRECT_TO_LEGACY == "sometimes") {
+    if (!["true", "1"].contains(REDIRECT_TO_LEGACY)) {
       return Text('Redirecting...');
-    } else {
+    }
     return FooterGradientButton(
       footer: Container(),
       body: ConstrainWidthAndCenter(
@@ -267,7 +267,6 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
         ),
       ),
     );
-    }
   }
 }
 

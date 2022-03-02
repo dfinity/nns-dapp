@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage>
           pageName = neuronTabsPage;
         } else if (_tabController.index == 2) {
           pageName = proposalsTabPage;
-          if (REDIRECT_TO_LEGACY == "sometimes") {
+          if (REDIRECT_TO_LEGACY != "true") {
               html.window.location.assign("/v2/#/proposals");
           }
         } else if (_tabController.index == 3) {

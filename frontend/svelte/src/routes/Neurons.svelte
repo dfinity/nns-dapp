@@ -9,8 +9,9 @@
   import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
 
   // TODO: To be removed once this page has been implemented
+  const showThisRoute = process.env.REDIRECT_TO_LEGACY === false;
   onMount(() => {
-    if (process.env.REDIRECT_TO_LEGACY) {
+    if (!showThisRoute) {
       window.location.replace("/#/neurons");
     }
     // TODO: Fetch and render neurons L2-313
@@ -31,7 +32,7 @@
   const closeModal = () => (showStakeNeuronModal = false);
 </script>
 
-{#if !process.env.REDIRECT_TO_LEGACY}
+{#if showThisRoute}
   <Layout>
     <section>
       <p>{$i18n.neurons.text}</p>

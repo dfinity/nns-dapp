@@ -7,8 +7,9 @@
   import { AppPath } from "../lib/constants/routes.constants";
 
   // TODO: To be removed once this page has been implemented
+  const showThisRoute = process.env.REDIRECT_TO_LEGACY !== false;
   onMount(() => {
-    if (process.env.REDIRECT_TO_LEGACY) {
+    if (showThisRoute) {
       window.location.replace(`/${window.location.hash}`);
     }
   });
@@ -23,7 +24,7 @@
   const createNewTransaction = () => alert("New Transaction");
 </script>
 
-{#if !process.env.REDIRECT_TO_LEGACY}
+{#if showThisRoute}
   <HeadlessLayout on:nnsBack={goBack}>
     <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 

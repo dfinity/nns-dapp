@@ -79,10 +79,11 @@
     debounceFindProposals = debounce(async () => await findProposals(), 250);
   };
 
+  const showThisRoute = process.env.REDIRECT_TO_LEGACY !== true;
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
-    if (process.env.REDIRECT_TO_LEGACY) {
-//      window.location.replace(AppPath.Proposals);
+    if (showThisRoute) {
+      window.location.replace(AppPath.Proposals);
     }
 
     const isReferrerProposalDetail: boolean = isRoutePath({
@@ -122,7 +123,7 @@
     });
 </script>
 
-{#if true}
+{#if showThisRoute}
   <Layout>
     <section>
       <p>{$i18n.voting.text}</p>
