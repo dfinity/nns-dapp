@@ -214,14 +214,11 @@ describe("Input", () => {
       },
     });
 
-    const testInput = "test me";
+    const testInput = "new value";
+    const testBind: HTMLSpanElement | null = container.querySelector("#test");
+    await fireEvent.click(testBind);
 
     const input: HTMLInputElement | null = container.querySelector("input");
-    await fireEvent.input(input, { target: { value: testInput } });
     expect(input.value).toBe(testInput);
-
-    const testBind: HTMLSpanElement | null = container.querySelector("#test");
-    expect(testBind).not.toBeNull();
-    expect(testBind.innerHTML).toEqual(testInput);
   });
 });

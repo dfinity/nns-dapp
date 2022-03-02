@@ -3,9 +3,14 @@
 
   export let props = {};
 
-  let amount: number;
+  let amount: string;
+
+  // We want to test that we can change value programtically
+  const changeValue = () => {
+    amount = "new value";
+  };
 </script>
 
-<span id="test">{amount}</span>
+<span on:click={changeValue} id="test" />
 
 <Input bind:value={amount} {...props} />
