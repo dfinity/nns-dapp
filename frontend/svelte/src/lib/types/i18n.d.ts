@@ -20,6 +20,7 @@ interface I18nError {
   create_subaccount: string;
   create_subaccount_too_long: string;
   create_subaccount_limit_exceeded: string;
+  get_neurons: string;
 }
 
 interface I18nNavigation {
@@ -71,6 +72,14 @@ interface I18nNeurons {
   amount: string;
   max: string;
   create: string;
+  status_locked: string;
+  status_unspecified: string;
+  status_dissolved: string;
+  status_dissolving: string;
+  community_fund: string;
+  hotkey_control: string;
+  stake: string;
+  aria_label_neuron_card: string;
 }
 
 interface I18nVoting {
@@ -138,8 +147,19 @@ interface I18nProposal_detail {
   reject: string;
 }
 
-interface I18nNeuron {
+interface I18nNeuron_detail {
   title: string;
+}
+
+interface I18nTime {
+  year: string;
+  year_plural: string;
+  day: string;
+  day_plural: string;
+  hour: string;
+  hour_plural: string;
+  minute: string;
+  minute_plural: string;
 }
 
 interface I18n {
@@ -158,5 +178,6 @@ interface I18n {
   status: I18nStatus;
   wallet: I18nWallet;
   proposal_detail: I18nProposal_detail;
-  neuron: I18nNeuron;
+  neuron_detail: I18nNeuron_detail;
+  time: I18nTime;
 }

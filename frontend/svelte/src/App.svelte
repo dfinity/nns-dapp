@@ -16,6 +16,7 @@
   import { AppPath } from "./lib/constants/routes.constants";
   import Toasts from "./lib/components/ui/Toasts.svelte";
   import { syncAccounts } from "./lib/services/accounts.services";
+  import NeuronDetail from "./routes/NeuronDetail.svelte";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -53,6 +54,7 @@
   <PrivateRoute path={AppPath.Canisters} component={Canisters} />
   <PrivateRoute path={AppPath.Wallet} component={Wallet} />
   <PrivateRoute path={AppPath.ProposalDetail} component={ProposalDetail} />
+  <PrivateRoute path={AppPath.NeuronDetail} component={NeuronDetail} />
 </Guard>
 
 <Toasts />

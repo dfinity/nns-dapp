@@ -6,6 +6,7 @@ const pathValidation = (path: AppPath): string =>
     // exceptions only
     [AppPath.Wallet]: `${AppPath.Wallet}/[a-zA-Z0-9]+`,
     [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
+    [AppPath.NeuronDetail]: `${AppPath.NeuronDetail}/[0-9]+`,
   }[path] || path);
 
 export const isAppPath = (routePath: string): routePath is AppPath =>
