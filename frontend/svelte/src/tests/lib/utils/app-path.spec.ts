@@ -69,6 +69,12 @@ describe("routes", () => {
           routePath: "/#/wallet",
         })
       ).toBeFalsy();
+      expect(
+        isRoutePath({
+          path: AppPath.Wallet,
+          routePath: undefined,
+        })
+      ).toBeFalsy();
     });
   });
 });
