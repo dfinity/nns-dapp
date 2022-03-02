@@ -18,7 +18,7 @@ export const isRoutePath: ({
   routePath,
 }: {
   path: AppPath;
-  routePath: string;
+  routePath: string | undefined;
 }) => boolean = memoize(({ path, routePath }) =>
   new RegExp(`^${pathValidation(path)}$`).test(routePath)
 );

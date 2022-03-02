@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ProposalsFilterModalProps } from "../../types/proposals";
-  import ProposalsFilterModal from "../../modals/ProposalsFilterModal.svelte";
+  import ProposalsFilterModal from "../../modals/proposals/ProposalsFilterModal.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import { i18n } from "../../stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";

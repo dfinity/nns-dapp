@@ -1,16 +1,48 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
+  import { createEventDispatcher } from "svelte";
   import Input from "../../components/ui/Input.svelte";
+  import Spinner from "../../components/ui/Spinner.svelte";
+  import {
+    E8S_PER_ICP,
+    TRANSACTION_FEE_E8S,
+  } from "../../constants/icp.constants";
+  import { syncAccounts } from "../../services/accounts.services";
+  import { stakeNeuron } from "../../services/neurons.services";
+  import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { formatICP } from "../../utils/icp.utils";
 
   export let account: Account;
-  const transactionIcp: ICP = ICP.fromString("0.0001") as ICP;
+  const transactionIcp: ICP = ICP.fromE8s(BigInt(TRANSACTION_FEE_E8S)) as ICP;
   let amount: number;
+  let creating: boolean = false;
+  const dispatcher = createEventDispatcher();
 
-  const createNeuron = () => {
-    // TODO: L2-226 Create neuron functionality
+  const createNeuron = async () => {
+    creating = true;
+    try {
+      await stakeNeuron({
+        stake: ICP.fromE8s(BigInt(amount * E8S_PER_ICP)),
+      });
+      // We don't wait for `syncAccounts` to finish to give a better UX to the user.
+      // `syncAccounts` might be slow since it loads all accounts and balances.
+      // in the neurons page there are no balances nor accounts
+      syncAccounts({ identity: $authStore.identity });
+      // TODO: L2-330 Move to update delay modal
+      dispatcher("nnsClose");
+    } catch (err) {
+      // TODO: L2-329 Manage errors
+      console.error(err);
+    } finally {
+      creating = false;
+    }
+  };
+
+  const stakeMaximum = () => {
+    amount =
+      (Number(account.balance.toE8s()) - TRANSACTION_FEE_E8S) / E8S_PER_ICP;
   };
 </script>
 
@@ -31,18 +63,33 @@
     <h4 class="balance">
       {`${formatICP(account.balance.toE8s())}`}
     </h4>
-    <form on:submit={createNeuron}>
+    <form on:submit|preventDefault={createNeuron}>
       <Input
         placeholderLabelKey="neurons.amount"
         name="amount"
         bind:value={amount}
         theme="dark"
-      />
+      >
+        <button
+          type="button"
+          on:click|preventDefault={stakeMaximum}
+          class="primary small"
+          slot="button">{$i18n.neurons.max}</button
+        >
+      </Input>
       <small>{$i18n.neurons.may_take_while}</small>
       <!-- TODO: L2-252 -->
-      <button class="primary full-width" type="submit" disabled={!amount}
-        >{$i18n.neurons.create}</button
+      <button
+        class="primary full-width"
+        type="submit"
+        disabled={!amount || creating}
       >
+        {#if creating}
+          <Spinner />
+        {:else}
+          {$i18n.neurons.create}
+        {/if}
+      </button>
     </form>
   </div>
 </section>
@@ -89,7 +136,7 @@
       margin-top: calc(2 * var(--padding));
     }
 
-    button {
+    button[type="submit"] {
       margin-top: var(--padding);
     }
   }

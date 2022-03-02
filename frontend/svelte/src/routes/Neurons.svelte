@@ -13,6 +13,7 @@
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace("/#/neurons");
     }
+    // TODO: Fetch and render neurons L2-313
   });
 
   let principalText: string = "";

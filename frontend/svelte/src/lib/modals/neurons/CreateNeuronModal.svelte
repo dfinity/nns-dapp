@@ -66,7 +66,7 @@
     {/if}
     {#if currentStep === Steps.StakeNeuron && selectedAccount}
       <Transition {diff}>
-        <StakeNeuron account={selectedAccount} />
+        <StakeNeuron account={selectedAccount} on:nnsClose />
       </Transition>
     {/if}
   </main>

@@ -1,14 +1,14 @@
 <script lang="ts">
-  import Modal from "./Modal.svelte";
+  import Modal from "../Modal.svelte";
   import { createEventDispatcher } from "svelte";
   import type {
     ProposalsFilterModalProps,
     ProposalsFilters,
-  } from "../types/proposals";
-  import Checkbox from "../components/ui/Checkbox.svelte";
-  import { i18n } from "../stores/i18n";
-  import { enumValues } from "../utils/enum.utils";
-  import { proposalsFiltersStore } from "../stores/proposals.store";
+  } from "../../types/proposals";
+  import Checkbox from "../../components/ui/Checkbox.svelte";
+  import { i18n } from "../../stores/i18n";
+  import { enumValues } from "../../utils/enum.utils";
+  import { proposalsFiltersStore } from "../../stores/proposals.store";
   import type {
     ProposalRewardStatus,
     ProposalStatus,
