@@ -4,12 +4,41 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import { authStore } from "../lib/stores/auth.store";
+  import { toastsStore } from "../lib/stores/toasts.store";
+  import { errorToString } from "../lib/utils/error.utils";
+  import { listCanisters } from "../lib/services/canisters.services";
+  import { canistersStore } from "../lib/stores/canisters.store";
+  import Spinner from "../lib/components/ui/Spinner.svelte";
+
+  let loading: boolean = false;
+
+  const loadCanisters = async () => {
+    loading = true;
+
+    try {
+      await listCanisters({
+        clearBeforeQuery: true,
+        identity: $authStore.identity,
+      });
+    } catch (err: any) {
+      toastsStore.show({
+        labelKey: "error.list_canisters",
+        level: "error",
+        detail: errorToString(err),
+      });
+      console.error(err);
+    }
+
+    loading = false;
+  };
 
   // TODO: To be removed once this page has been implemented
-  onMount(() => {
+  onMount(async () => {
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace("/#/canisters");
     }
+
+    await loadCanisters();
   });
 
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-227
@@ -29,6 +58,19 @@
         {$i18n.canisters.principal_is}
         {$authStore.identity?.getPrincipal().toText()}
       </p>
+
+      <!-- TODO(L2-335): infinite scroll and cards -->
+      {#each $canistersStore as canister}
+        <p>{canister.name ?? canister.canister_id}</p>
+      {/each}
+
+      <!-- TODO(L2-335): message if no canisters -->
+
+      {#if loading}
+        <div class="spinner">
+          <Spinner />
+        </div>
+      {/if}
     </section>
 
     <svelte:fragment slot="footer">
