@@ -9,7 +9,6 @@
   export let proposal: Proposal | undefined;
 
   let summary: string | undefined;
-  $: console.log("summary", summary);
   $: summary = formatProposalSummary(removeHTMLTags(proposal?.summary));
 </script>
 
