@@ -1,36 +1,37 @@
 <script lang="ts">
-  import { tick, onMount, createEventDispatcher } from "svelte";
+  import { tick, onMount, createEventDispatcher, onDestroy } from "svelte";
+  import { isNode } from "../../utils/dev.utils";
 
   export let url: string | undefined;
 
   const dispatch = createEventDispatcher();
   let script: HTMLScriptElement;
 
-  onMount(async () => {
-    script.addEventListener(
-      "load",
-      () => {
-        dispatch("nnsLoad");
-      },
-      { once: true }
-    );
+  const onErro = (event) => {
+    console.error("script load error", event);
+    dispatch("nnsError");
+  };
+  const onLoad = () => dispatch("nnsLoad");
 
-    script.addEventListener(
-      "error",
-      (event) => {
-        console.error("script load error", event);
-        dispatch("nnsError");
-      },
-      { once: true }
-    );
+  onMount(() => {
+    script.addEventListener("load", onLoad, { once: true });
+    script.addEventListener("error", onErro, { once: true });
+  });
+
+  onDestroy(() => {
+    script.removeEventListener("load", onLoad);
+    script.removeEventListener("error", onErro);
   });
 
   /**
    * There is no script loading in unit-test environment.
-   * To test ScriptLoader user component the test should mock the outcome of script loading.
+   * To test a component that uses ScriptLoader the test could mock the globalThis.marked.parse function
+   *
+   * @example
+   * globalThis.marked = {parse: jest.fn(() => "<div>some parse result</div>")};
    */
-  if (typeof jest !== "undefined") {
-    // doesn't work w/o the waiting because of child first initialization.
+  if (isNode()) {
+    // doesn't work w/o delay because of child first initialization
     tick().then(() => dispatch("nnsLoad"));
   }
 </script>
