@@ -66,7 +66,7 @@ const updateCSP = (content) => {
 const cspConnectSrc = () => {
   const {
     IDENTITY_SERVICE_URL,
-    OWN_CANISTER_ID,
+    OWN_CANISTER_URL,
     HOST,
     GOVERNANCE_CANISTER_URL,
     LEDGER_CANISTER_URL,
@@ -75,7 +75,7 @@ const cspConnectSrc = () => {
 
   const src = [
     IDENTITY_SERVICE_URL,
-    OWN_CANISTER_ID,
+    OWN_CANISTER_URL,
     HOST,
     GOVERNANCE_CANISTER_URL,
     LEDGER_CANISTER_URL,
