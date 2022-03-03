@@ -54,6 +54,7 @@
     "principal_is": "Your principal id is",
     "stake_neurons": "Stake Neurons",
     "select_source": "Select Source Account",
+    "set_dissolve_delay": "Set Dissolve Delay",
     "my_accounts": "My Accounts",
     "stake_neuron": "Stake Neuron",
     "source": "Source",
@@ -70,7 +71,16 @@
     "community_fund": "[community fund]",
     "hotkey_control": "[hotkey control]",
     "stake": "Stake",
-    "aria_label_neuron_card": "Go to neuron details"
+    "aria_label_neuron_card": "Go to neuron details",
+    "neuron_id": "Neuron ID",
+    "neuron_balance": "Balance",
+    "current_dissolve_delay": "Current Dissolve Delay",
+    "dissolve_delay_title": "Dissolve Delay",
+    "no_delay": "0",
+    "dissolve_delay_description": "Voting power is given when neurons are locked for at least 6 months",
+    "voting_power": "Voting Power",
+    "skip": "Skip",
+    "update_delay": "Update Delay"
   },
   "voting": {
     "title": "Voting",

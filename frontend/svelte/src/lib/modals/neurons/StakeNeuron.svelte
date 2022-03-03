@@ -30,8 +30,7 @@
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts
       syncAccounts({ identity: $authStore.identity });
-      // TODO: L2-330 Move to update delay modal
-      dispatcher("nnsClose");
+      dispatcher("nnsNeuronCreated");
     } catch (err) {
       // TODO: L2-329 Manage errors
       console.error(err);
