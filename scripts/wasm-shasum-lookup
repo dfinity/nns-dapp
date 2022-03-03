@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Does a reverse lookup from wasm sha sum to commits.
 set -eu
-git fetch origin refs/notes/*:refs/notes/* > /dev/null || true
+git fetch origin refs/notes/*:refs/notes/* >/dev/null || true
 # DEPLOY_ENV - typical values are 'testnet' and 'mainnet'
 NOTES_REF=refs/notes/${DEPLOY_ENV:-testnet}/sha
 git grep "${@}" -- "$NOTES_REF"

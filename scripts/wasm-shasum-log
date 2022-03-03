@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -eu
-git fetch origin refs/notes/*:refs/notes/* > /dev/null
+git fetch origin refs/notes/*:refs/notes/* >/dev/null
 # DEPLOY_ENV - typical values are 'testnet' and 'mainnet'
 NOTES_REF=refs/notes/${DEPLOY_ENV:-testnet}/sha
 git log --pretty=format:"%H %N" --show-notes="$NOTES_REF" "${@}"
