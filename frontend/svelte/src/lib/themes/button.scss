@@ -37,6 +37,7 @@ button {
 
   &.primary,
   &.dark,
+  &.danger,
   &.input-button {
     border-radius: var(--border-radius);
 
@@ -121,6 +122,28 @@ button {
     &:hover,
     &:focus {
       background: var(--gray-500);
+    }
+  }
+
+  &.danger {
+    background: var(--pink);
+    color: var(--pink-contrast);
+
+    &[disabled] {
+      background: rgba(var(--gray-600-rgb), 0.8);
+      color: var(--gray-800);
+    }
+
+    @include effect.ripple-effect(--pink-tint);
+
+    &:focus {
+      @include effect.ripple-effect(--pink-tint);
+      color: var(--pink-contrast);
+    }
+
+    &:hover,
+    &:focus {
+      background: var(--pink-tint);
     }
   }
 }
