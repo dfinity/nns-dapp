@@ -1,9 +1,14 @@
 <script lang="ts">
-  import type { ProposalInfo } from "@dfinity/nns";
+  import type { ProposalInfo, NeuronInfo, NeuronId } from "@dfinity/nns";
+  import { votedNeurons, Vote } from "@dfinity/nns";
   import Card from "../ui/Card.svelte";
   import { i18n } from "../../stores/i18n";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { formatNumber } from "../../utils/format.utils";
+  import { neuronsStore } from "../../stores/neurons.store";
+  import IconThumbDown from "../../icons/IconThumbDown.svelte";
+  import IconThumbUp from "../../icons/IconThumbUp.svelte";
+  import CardBlock from "../ui/CardBlock.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -13,6 +18,29 @@
   const yesValue = Number(yes) / E8S_PER_ICP;
   const noValue = Number(no) / E8S_PER_ICP;
   const summ = yesValue + noValue;
+
+  type CompactNeuronInfo = {
+    id: NeuronId;
+    votingPower: bigint;
+    vote: Vote;
+  };
+  const voteIconMapper = {
+    [Vote.NO]: IconThumbDown,
+    [Vote.YES]: IconThumbUp,
+  };
+  let neuronsVotedForProposal: CompactNeuronInfo[];
+  neuronsStore.subscribe((neurons) => {
+    neuronsVotedForProposal = votedNeurons({
+      neurons: neurons,
+      proposal: proposalInfo,
+    }).map(({ neuronId, recentBallots, votingPower }) => ({
+      id: neuronId,
+      votingPower: Number(votingPower) / E8S_PER_ICP,
+      vote: recentBallots.find(
+        ({ proposalId }) => proposalId === proposalInfo.id
+      )?.vote,
+    }));
+  });
 </script>
 
 <!-- TODO: Adop/Reject card content -- https://dfinity.atlassian.net/browse/L2-269 -->
@@ -38,9 +66,22 @@
     </h3>
   </div>
 
-  <h2>My Votes (TBD)</h2>
-  <!-- TODO: implement MyVotesBlock https://dfinity.atlassian.net/browse/L2-283 -->
-  MyVotesCard
+  {#if neuronsVotedForProposal.length}
+    <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
+    <ul>
+      {#each neuronsVotedForProposal as neuron}
+        <li>
+          <p>{neuron.id}</p>
+          <p class="vote-details">
+            <span>{neuron.votingPower}</span>
+            {#if voteIconMapper[neuron.vote]}
+              <svelte:component this={voteIconMapper[neuron.vote]} />
+            {/if}
+          </p>
+        </li>
+      {/each}
+    </ul>
+  {/if}
 </Card>
 
 <style lang="scss">
@@ -90,6 +131,26 @@
 
         background: var(--blue-200-shade);
       }
+    }
+  }
+
+  .my-votes {
+    padding-top: var(--padding);
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+
+    .vote-details {
+      display: flex;
+      align-items: center;
+      gap: var(--padding);
     }
   }
 </style>
