@@ -1,5 +1,7 @@
 # Changelog
 
+## Placeholder
+
 ## Proposal 47476
 * Update dependencies and Rust version.
 * Enable merge maturity for hardware wallets.
