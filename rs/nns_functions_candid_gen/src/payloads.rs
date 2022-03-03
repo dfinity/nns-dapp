@@ -212,7 +212,7 @@ pub struct SetAuthorizedSubnetworkListArgs {
     pub subnets: Vec<SubnetId>,
 }
 
-// https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L79
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/7061a8357f5a2d196d19654bc540f7aab56418b6/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L89
 #[derive(CandidType, Deserialize, Clone, PartialEq, Eq)]
 pub struct UpdateNodeOperatorConfigPayload {
     /// The principal id of the node operator. This principal is the entity that
@@ -228,6 +228,9 @@ pub struct UpdateNodeOperatorConfigPayload {
     /// A map from node type to the number of nodes for which the associated
     /// Node Provider should be rewarded.
     pub rewardable_nodes: BTreeMap<String, u32>,
+
+    /// The principal id of this node's provider.
+    pub node_provider_id: Option<PrincipalId>,
 }
 
 // https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/protobuf/def/registry/node_rewards/v2/node_rewards.proto#L24
