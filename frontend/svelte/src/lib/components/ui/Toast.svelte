@@ -11,7 +11,7 @@
   export let msg: ToastMsg;
 
   const close = () => toastsStore.hide();
-  let text: string;
+  let text: string | undefined;
 
   $: ({ labelKey, level, detail } = msg || {
     labelKey: "",
