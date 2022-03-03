@@ -32,13 +32,11 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                 children: [
                   SmallFormDivider(),
                   ...(context.boxes.neurons.values
-                          ?.sortedByDescending((element) =>
-                              element.createdTimestampSeconds.toBigInt)
+                          ?.sortedByDescending((element) => element.createdTimestampSeconds.toBigInt)
                           .mapToList((e) => Card(
                                 child: TextButton(
                                   onPressed: () {
-                                    context.nav.push(
-                                        neuronPageDef.createPageConfig(e));
+                                    context.nav.push(neuronPageDef.createPageConfig(e));
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(16.0),
@@ -84,7 +82,11 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                       context,
                       WizardOverlay(
                         rootTitle: "Select Two neurons to merge",
-                        rootWidget: MergeNeuronSourceAccount(),
+                        rootWidget: MergeNeuronSourceAccount(
+                          onCompleteAction: (context) {
+                            OverlayBaseWidget.of(context)?.dismiss();
+                          },
+                        ),
                       ),
                     );
                   },

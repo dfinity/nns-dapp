@@ -87,15 +87,20 @@ class NeuronRow extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                  "${neuron.dissolveDelay.yearsDayHourMinuteSecondFormatted()}",
-                  style: context.textTheme.subtitle2),
-              Text(" Dissolve Delay", style: context.textTheme.subtitle2)
+              Expanded(
+                child: Text(
+                    "${neuron.dissolveDelay.yearsDayHourMinuteSecondFormatted()}",
+                    style: context.textTheme.subtitle2),
+              ),
+              Expanded(
+                  flex: 2,
+                  child: Text(" Dissolve Delay",
+                      style: context.textTheme.subtitle2))
             ],
           ),
           SizedBox(
             height: 5,
-          )
+          ),
         ]
       ],
     );

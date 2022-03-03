@@ -5,12 +5,15 @@ import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
 import 'package:nns_dapp/ui/neurons/tab/neuron_row.dart';
 import 'package:nns_dapp/ui/transaction/wallet/merge_neuron_destination_page.dart';
+import 'package:universal_html/js.dart' as js;
 
 import '../../../nns_dapp.dart';
 import '../wizard_overlay.dart';
 
 class MergeNeuronSourceAccount extends StatefulWidget {
-  MergeNeuronSourceAccount();
+  MergeNeuronSourceAccount({required this.onCompleteAction});
+
+  final Function(BuildContext context) onCompleteAction;
 
   @override
   _MergeNeuronSourceAccountState createState() => _MergeNeuronSourceAccountState();
@@ -171,7 +174,7 @@ class _MergeNeuronSourceAccountState extends State<MergeNeuronSourceAccount> {
                       title: "Confirm you want to merge these neurons",
                       description: "This will merge the selected neurons . This process is irreversible",
                       onConfirm: () async {
-                        //  await performUpdate(context);
+                        await performUpdate(context);
                       },
                     ),
                   );
@@ -182,5 +185,36 @@ class _MergeNeuronSourceAccountState extends State<MergeNeuronSourceAccount> {
         ],
       ),
     );
+  }
+
+  Future performUpdate(BuildContext context) async {
+    final neuronAccounts = context.boxes.neurons.values;
+    final neuronsSelected = [];
+    neuronsSelected.length = 2;
+    print('Number of neurons is : ${context.boxes.neurons.length}');
+    print('selectedAccounts[1]  : ${selectedAccounts[1]}');
+    print('selectedAccounts[2] : ${selectedAccounts[2]}');
+    for (int i = 0; i < context.boxes.neurons.length; i++) {
+      print('neurons $i is : ${neuronAccounts.elementAt(i).id}');
+    }
+    for (int i = 0; i < context.boxes.neurons.length; i++) {
+      if (selectedAccounts[1] == neuronAccounts.elementAt(i).id) {
+        neuronsSelected[0] = neuronAccounts.elementAt(i);
+        print(' neuronAccounts.elementAt(i) :${neuronAccounts.elementAt(i).id}');
+      } else if (selectedAccounts[2] == neuronAccounts.elementAt(i).id) {
+        neuronsSelected[1] = neuronAccounts.elementAt(i);
+        print(' neuronAccounts.elementAt(i).id :${neuronAccounts.elementAt(i).id}');
+      }
+    }
+    final res =
+        await context.callUpdate(() => context.icApi.merge(neuron1: neuronsSelected[0], neuron2: neuronsSelected[1]));
+
+    res.when(ok: (unit) {
+      // neuron Merge succeeded.
+      widget.onCompleteAction(context);
+    }, err: (err) {
+      // neruon merge failed. Display the error.
+      js.context.callMethod("alert", ["$err"]);
+    });
   }
 }
