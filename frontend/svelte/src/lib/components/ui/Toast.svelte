@@ -18,7 +18,7 @@
     level: "info",
     detail: undefined,
   });
-  $: text = `${translate({ labelKey })}${detail || ""}`;
+  $: text = `${translate({ labelKey })}${detail ? ` ${detail}` : ""}`;
 </script>
 
 <div
