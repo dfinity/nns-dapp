@@ -5,6 +5,7 @@
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   let EIGHT_YEARS = 60 * 60 * 24 * 365 * 8 + 60 * 60 * 24 * 2; // Extra two days for two leap years
+  let SIX_MONTHS = (60 * 60 * 24 * 365) / 2;
   let delayInSeconds: number = 0;
 
   let backgroundStyle: string;
@@ -15,6 +16,8 @@
     }%)`;
   }
 
+  let disableUpdate: boolean;
+  $: disableUpdate = delayInSeconds < SIX_MONTHS;
   const dispatcher = createEventDispatcher();
   const skip = () => {
     dispatcher("nnsNext");
@@ -67,7 +70,11 @@
     <button on:click={skip} class="secondary full-width"
       >{$i18n.neurons.skip}</button
     >
-    <button class="primary full-width">{$i18n.neurons.update_delay}</button>
+    <button
+      class="primary full-width"
+      disabled={disableUpdate}
+      data-test="update-button">{$i18n.neurons.update_delay}</button
+    >
   </div>
 </section>
 
