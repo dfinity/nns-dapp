@@ -169,11 +169,33 @@ jobs:
       - name: Compile typescript
         run: npm run build
 
-      - name: Run linter
-        run: npm run check
+      # Temporarily disabled:
+      #- name: Run linter
+      #  run: npm run check
 
       - name: Test
         run: npm run test
+
+  # Temporarily added:
+  svelte-lint:
+    needs: formatting
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./frontend/svelte
+    env:
+      DEPLOY_ENV: mainnet
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run check
 
   shell-checks:
     needs: formatting
