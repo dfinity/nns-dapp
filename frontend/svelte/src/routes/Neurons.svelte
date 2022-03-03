@@ -6,12 +6,33 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
-  import CreateNeuronModal from "../lib/modals/CreateNeuronModal/CreateNeuronModal.svelte";
+  import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
+  import type { NeuronId } from "@dfinity/nns";
+  import { listNeurons } from "../lib/services/neurons.services";
+  import Spinner from "../lib/components/ui/Spinner.svelte";
+  import { toastsStore } from "../lib/stores/toasts.store";
+  import { errorToString } from "../lib/utils/error.utils";
+  import { neuronsStore } from "../lib/stores/neurons.store";
+  import { routeStore } from "../lib/stores/route.store";
+  import { AppPath } from "../lib/constants/routes.constants";
 
+  let isLoading: boolean = false;
   // TODO: To be removed once this page has been implemented
-  onMount(() => {
+  onMount(async () => {
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace("/#/neurons");
+    }
+    try {
+      isLoading = true;
+      await listNeurons();
+    } catch (err) {
+      toastsStore.show({
+        labelKey: "errors.get_neurons",
+        level: "error",
+        detail: errorToString(err),
+      });
+    } finally {
+      isLoading = false;
     }
   });
 
@@ -28,6 +49,12 @@
   const stakeNeurons = () => (showStakeNeuronModal = true);
 
   const closeModal = () => (showStakeNeuronModal = false);
+
+  const goToNeuronDetails = (id: NeuronId) => () => {
+    routeStore.navigate({
+      path: `${AppPath.NeuronDetail}/${id}`,
+    });
+  };
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -40,7 +67,18 @@
         {principalText}
       </p>
 
-      <NeuronCard />
+      {#if isLoading}
+        <Spinner />
+      {:else}
+        {#each $neuronsStore as neuron}
+          <NeuronCard
+            role="link"
+            ariaLabel={$i18n.neurons.aria_label_neuron_card}
+            on:click={goToNeuronDetails(neuron.neuronId)}
+            {neuron}
+          />
+        {/each}
+      {/if}
     </section>
     <svelte:fragment slot="footer">
       <Toolbar>

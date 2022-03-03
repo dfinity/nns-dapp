@@ -2,16 +2,21 @@
   "core": {
     "close": "Close",
     "icp": "ICP",
-    "create": "Create"
+    "create": "Create",
+    "filter": "Filter",
+    "back": "Back"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
     "sign_in": "The sign-in process was aborted or did not succeed.",
+    "proposal_not_found": "An error occurred while loading the proposal.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
+    "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
     "create_subaccount": "Sorry, there was an expected error when creating your subaccount, please try again",
     "create_subaccount_too_long": "The name of the subaccount is too long. Please, choose a shorter name.",
-    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of subaccounts in this account."
+    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of subaccounts in this account.",
+    "get_neurons": "There was an unexpected issue while searching for the neurons."
   },
   "navigation": {
     "icp": "ICP",
@@ -49,6 +54,7 @@
     "principal_is": "Your principal id is",
     "stake_neurons": "Stake Neurons",
     "select_source": "Select Source Account",
+    "set_dissolve_delay": "Set Dissolve Delay",
     "my_accounts": "My Accounts",
     "stake_neuron": "Stake Neuron",
     "source": "Source",
@@ -57,7 +63,24 @@
     "may_take_while": "(This may take up to 1 minute)",
     "amount": "Amount",
     "max": "Max",
-    "create": "Create"
+    "create": "Create",
+    "status_locked": "Locked",
+    "status_unspecified": "",
+    "status_dissolved": "Unlocked",
+    "status_dissolving": "Dissolving",
+    "community_fund": "[community fund]",
+    "hotkey_control": "[hotkey control]",
+    "stake": "Stake",
+    "aria_label_neuron_card": "Go to neuron details",
+    "neuron_id": "Neuron ID",
+    "neuron_balance": "Balance",
+    "current_dissolve_delay": "Current Dissolve Delay",
+    "dissolve_delay_title": "Dissolve Delay",
+    "no_delay": "0",
+    "dissolve_delay_description": "Voting power is given when neurons are locked for at least 6 months",
+    "voting_power": "Voting Power",
+    "skip": "Skip",
+    "update_delay": "Update Delay"
   },
   "voting": {
     "title": "Voting",
@@ -108,10 +131,26 @@
   "wallet": {
     "title": "Account"
   },
-  "proposal_details": {
-    "title": "Proposal"
+  "proposal_detail": {
+    "title": "Proposal",
+    "summary": "Proposal Summary",
+    "topic_prefix": "Topic:",
+    "id_prefix": "Id:",
+    "proposer_prefix": "Proposer:",
+    "adopt": "Adopt",
+    "reject": "Reject"
   },
-  "modals": {
-    "back": "Back"
+  "neuron_detail": {
+    "title": "Neuron"
+  },
+  "time": {
+    "year": "year",
+    "year_plural": "years",
+    "day": "day",
+    "day_plural": "days",
+    "hour": "hour",
+    "hour_plural": "hours",
+    "minute": "minute",
+    "minute_plural": "minutes"
   }
 }

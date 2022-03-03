@@ -22,10 +22,11 @@
     listNextProposals,
     listProposals,
   } from "../lib/services/proposals.services";
-  import type { ProposalInfo } from "@dfinity/nns";
   import { authStore } from "../lib/stores/auth.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { errorToString } from "../lib/utils/error.utils";
+  import { routeStore } from "../lib/stores/route.store";
+  import { isRoutePath } from "../lib/utils/app-path.utils";
 
   let loading: boolean = false;
   let initialized: boolean = false;
@@ -75,13 +76,25 @@
 
   // We do not want to fetch the proposals twice when the component is mounting because the filter subscriber will emit a first value
   const initDebounceFindProposals = () => {
-    debounceFindProposals = debounce(async () => await findProposals(), 750);
+    debounceFindProposals = debounce(async () => await findProposals(), 250);
   };
 
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace(AppPath.Proposals);
+    }
+
+    const isReferrerProposalDetail: boolean = isRoutePath({
+      path: AppPath.ProposalDetail,
+      routePath: $routeStore.referrerPath,
+    });
+
+    // If the previous page is the proposal detail page and if we have proposals in store, we don't reset and query the proposals after mount.
+    // We do this to smoothness the back and forth navigation between this page and the detail page.
+    if (!emptyProposals($proposalsStore) && isReferrerProposalDetail) {
+      initDebounceFindProposals();
+      return;
     }
 
     proposalsFiltersStore.reset();

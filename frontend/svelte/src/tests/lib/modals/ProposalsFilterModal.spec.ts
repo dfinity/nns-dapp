@@ -3,8 +3,12 @@
  */
 
 import { Topic } from "@dfinity/nns";
-import { fireEvent, render } from "@testing-library/svelte";
-import ProposalsFilterModal from "../../../lib/modals/ProposalsFilterModal.svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
+import { get } from "svelte/store";
+import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
+import ProposalsFilterModal from "../../../lib/modals/proposals/ProposalsFilterModal.svelte";
+import { proposalsFiltersStore } from "../../../lib/stores/proposals.store";
 import type { ProposalsFilterModalProps } from "../../../lib/types/proposals";
 import { enumKeys } from "../../../lib/utils/enum.utils";
 
@@ -15,7 +19,7 @@ describe("ProposalsFilterModal", () => {
     props: {
       category: "topics",
       filters: Topic,
-      selectedFilters: enumKeys(Topic).map((key: string) => Topic[key]),
+      selectedFilters: DEFAULT_PROPOSALS_FILTERS.topics,
     },
   };
 
@@ -54,7 +58,37 @@ describe("ProposalsFilterModal", () => {
       done();
     });
 
-    const button: HTMLButtonElement | null = container.querySelector("button");
+    const button: HTMLButtonElement | null = container.querySelector(
+      "button:first-of-type"
+    );
     fireEvent.click(button);
+  });
+
+  it("should filter filters", async () => {
+    const { container, component } = render(ProposalsFilterModal, {
+      props,
+    });
+
+    const firstInput = container.querySelector(
+      "div.content div.checkbox:first-of-type input"
+    ) as HTMLInputElement;
+    fireEvent.click(firstInput);
+    await waitFor(() => expect(firstInput.checked).toBeTruthy());
+
+    const secondInput = container.querySelector(
+      "div.content div.checkbox:nth-child(2) input"
+    ) as HTMLInputElement;
+    fireEvent.click(secondInput);
+    await waitFor(() => expect(secondInput.checked).toBeTruthy());
+
+    const button: HTMLButtonElement | null = container.querySelector(
+      "div.wrapper > button"
+    );
+    fireEvent.click(button);
+
+    await tick();
+
+    const selectedTopics = get(proposalsFiltersStore).topics;
+    expect(selectedTopics).toEqual([...DEFAULT_PROPOSALS_FILTERS.topics, 0, 1]);
   });
 });

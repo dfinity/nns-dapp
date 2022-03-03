@@ -113,6 +113,9 @@ export default {
       "process.env.LEDGER_CANISTER_ID": JSON.stringify(
         envConfig.LEDGER_CANISTER_ID
       ),
+      "process.env.GOVERNANCE_CANISTER_ID": JSON.stringify(
+        envConfig.GOVERNANCE_CANISTER_ID
+      ),
     }),
 
     // In dev mode, call `npm run start` once

@@ -1,14 +1,14 @@
 <script lang="ts">
-  import Modal from "./Modal.svelte";
+  import Modal from "../Modal.svelte";
   import { createEventDispatcher } from "svelte";
   import type {
     ProposalsFilterModalProps,
     ProposalsFilters,
-  } from "../types/proposals";
-  import Checkbox from "../components/ui/Checkbox.svelte";
-  import { i18n } from "../stores/i18n";
-  import { enumValues } from "../utils/enum.utils";
-  import { proposalsFiltersStore } from "../stores/proposals.store";
+  } from "../../types/proposals";
+  import Checkbox from "../../components/ui/Checkbox.svelte";
+  import { i18n } from "../../stores/i18n";
+  import { enumValues } from "../../utils/enum.utils";
+  import { proposalsFiltersStore } from "../../stores/proposals.store";
   import type {
     ProposalRewardStatus,
     ProposalStatus,
@@ -61,10 +61,13 @@
     }
   };
 
-  const onChange = (filter: Topic | ProposalRewardStatus | ProposalStatus) => {
+  const onChange = (filter: Topic | ProposalRewardStatus | ProposalStatus) =>
     applyFilterChange(filter);
 
+  const filter = () => {
     updateProposalStoreFilters();
+
+    close();
   };
 </script>
 
@@ -81,4 +84,16 @@
       >
     {/each}
   {/if}
+
+  <svelte:fragment slot="footer">
+    <button class="primary" type="button" on:click={filter}>
+      {$i18n.core.filter}
+    </button>
+  </svelte:fragment>
 </Modal>
+
+<style lang="scss">
+  button {
+    margin: var(--padding);
+  }
+</style>

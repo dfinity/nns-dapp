@@ -1,4 +1,5 @@
 import type { BlockHeight, TransferError } from "@dfinity/nns";
+import { InsufficientFunds } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { AccountsStore, accountsStore } from "../stores/accounts.store";
@@ -16,6 +17,13 @@ export const getICPs = async (icps: number) => {
 
   if (!(typeof result === "bigint")) {
     console.error(result);
+    if (result instanceof InsufficientFunds) {
+      throw new Error(
+        `Insuficient funds in source account: ${
+          Number(result.balance.toE8s()) / E8S_PER_ICP
+        }`
+      );
+    }
     throw new Error(JSON.stringify(result));
   }
 

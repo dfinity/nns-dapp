@@ -4,16 +4,18 @@
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { accountsStore } from "../../stores/accounts.store";
-  import { onDestroy } from "svelte";
+  import { createEventDispatcher, onDestroy } from "svelte";
   import SelectAccount from "./SelectAccount.svelte";
   import StakeNeuron from "./StakeNeuron.svelte";
   import type { Unsubscriber } from "svelte/store";
   import Transition from "../../components/ui/Transition.svelte";
   import { StepsState } from "../../services/stepsState.services";
+  import SetDissolveDelay from "./SetDissolveDelay.svelte";
 
   enum Steps {
     SelectAccount,
     StakeNeuron,
+    SetDissolveDelay,
   }
   let stateStep = new StepsState<typeof Steps>(Steps);
 
@@ -31,6 +33,9 @@
   const goBack = () => {
     stateStep = stateStep.back();
   };
+  const goToDissolveDelay = () => {
+    stateStep = stateStep.next();
+  };
 
   onDestroy(unsubscribeAccounts);
 
@@ -42,9 +47,15 @@
   const titleMapper: Record<string, string> = {
     "0": "select_source",
     "1": "stake_neuron",
+    "2": "set_dissolve_delay",
   };
   let titleKey: string = titleMapper[0];
   $: titleKey = titleMapper[currentStep];
+
+  const dispatcher = createEventDispatcher();
+  const close = () => {
+    dispatcher("nnsClose");
+  };
 </script>
 
 <Modal
@@ -66,7 +77,16 @@
     {/if}
     {#if currentStep === Steps.StakeNeuron && selectedAccount}
       <Transition {diff}>
-        <StakeNeuron account={selectedAccount} />
+        <StakeNeuron
+          account={selectedAccount}
+          on:nnsNeuronCreated={goToDissolveDelay}
+        />
+      </Transition>
+    {/if}
+    {#if currentStep === Steps.SetDissolveDelay}
+      <Transition {diff}>
+        <!-- TODO: Edit Followees https://dfinity.atlassian.net/browse/L2-337 -->
+        <SetDissolveDelay on:nnsNext={close} />
       </Transition>
     {/if}
   </main>

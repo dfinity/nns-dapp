@@ -11,10 +11,12 @@
   import { onDestroy } from "svelte";
   import { AuthStore, authStore } from "./lib/stores/auth.store";
   import Wallet from "./routes/Wallet.svelte";
-  import ProposalDetails from "./routes/ProposalDetails.svelte";
+  import ProposalDetail from "./routes/ProposalDetail.svelte";
   import { routeStore } from "./lib/stores/route.store";
   import { AppPath } from "./lib/constants/routes.constants";
+  import Toasts from "./lib/components/ui/Toasts.svelte";
   import { syncAccounts } from "./lib/services/accounts.services";
+  import NeuronDetail from "./routes/NeuronDetail.svelte";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -33,6 +35,7 @@
       if (isKnownPath) {
         return;
       }
+      // if the path is unsupported (to mock the flutter dapp) the user will be redirected to the first page (/accounts/) page (unknown path will not be saved in session History)
       routeStore.replace({ path: AppPath.Accounts });
     }
   );
@@ -50,8 +53,11 @@
   <PrivateRoute path={AppPath.Proposals} component={Proposals} />
   <PrivateRoute path={AppPath.Canisters} component={Canisters} />
   <PrivateRoute path={AppPath.Wallet} component={Wallet} />
-  <PrivateRoute path={AppPath.ProposalDetails} component={ProposalDetails} />
+  <PrivateRoute path={AppPath.ProposalDetail} component={ProposalDetail} />
+  <PrivateRoute path={AppPath.NeuronDetail} component={NeuronDetail} />
 </Guard>
+
+<Toasts />
 
 <style lang="scss" global>
   @import "./lib/themes/fonts.scss";

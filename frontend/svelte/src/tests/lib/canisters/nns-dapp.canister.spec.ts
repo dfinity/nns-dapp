@@ -18,153 +18,138 @@ import {
   mockSubAccountDetails,
 } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockCanisters } from "../../mocks/canisters.mock";
 
-describe("NNSDapp.addAccount", () => {
-  it("returns account identifier when success", async () => {
+describe("NNSDapp", () => {
+  const createNnsDapp = async (service: NNSDappService) => {
     const defaultAgent = await createAgent({ identity: mockIdentity });
-    const response: string =
-      "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
-    const service = mock<NNSDappService>();
-    service.add_account.mockResolvedValue(response);
-
     const canisterId = Principal.fromText("aaaaa-aa");
-    const nnsDapp = NNSDappCanister.create({
+
+    return NNSDappCanister.create({
       agent: defaultAgent,
       certifiedServiceOverride: service,
       canisterId,
     });
+  };
 
-    const res = await nnsDapp.addAccount();
+  describe("NNSDapp.addAccount", () => {
+    it("returns account identifier when success", async () => {
+      const response: string =
+        "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
+      const service = mock<NNSDappService>();
+      service.add_account.mockResolvedValue(response);
 
-    expect(res).toEqual(AccountIdentifier.fromHex(response));
-  });
-});
+      const nnsDapp = await createNnsDapp(service);
 
-describe("NNSDapp.getAccount", () => {
-  it("returns account details when success", async () => {
-    const defaultAgent = await createAgent({ identity: mockIdentity });
-    const response: GetAccountResponse = {
-      Ok: mockAccountDetails,
-    };
-    const service = mock<NNSDappService>();
-    service.get_account.mockResolvedValue(response);
+      const res = await nnsDapp.addAccount();
 
-    const canisterId = Principal.fromText("aaaaa-aa");
-    const nnsDapp = NNSDappCanister.create({
-      agent: defaultAgent,
-      certifiedServiceOverride: service,
-      canisterId,
+      expect(res).toEqual(AccountIdentifier.fromHex(response));
     });
-
-    const res = await nnsDapp.getAccount();
-
-    expect(res).toEqual(mockAccountDetails);
   });
 
-  it("throws error if account not found", async () => {
-    const defaultAgent = await createAgent({ identity: mockIdentity });
-    const response: GetAccountResponse = {
-      AccountNotFound: null,
-    };
-    const service = mock<NNSDappService>();
-    service.get_account.mockResolvedValue(response);
+  describe("NNSDapp.getAccount", () => {
+    it("returns account details when success", async () => {
+      const response: GetAccountResponse = {
+        Ok: mockAccountDetails,
+      };
+      const service = mock<NNSDappService>();
+      service.get_account.mockResolvedValue(response);
 
-    const canisterId = Principal.fromText("aaaaa-aa");
-    const nnsDapp = NNSDappCanister.create({
-      certifiedServiceOverride: service,
-      canisterId,
-      agent: defaultAgent,
+      const nnsDapp = await createNnsDapp(service);
+
+      const res = await nnsDapp.getAccount();
+
+      expect(res).toEqual(mockAccountDetails);
     });
 
-    const call = async () => nnsDapp.getAccount();
+    it("throws error if account not found", async () => {
+      const response: GetAccountResponse = {
+        AccountNotFound: null,
+      };
+      const service = mock<NNSDappService>();
+      service.get_account.mockResolvedValue(response);
 
-    expect(call).rejects.toThrow(AccountNotFoundError);
-  });
-});
+      const nnsDapp = await createNnsDapp(service);
 
-describe("NNSDapp.createSubAccount", () => {
-  it("returns subaccount details when success", async () => {
-    const defaultAgent = await createAgent({ identity: mockIdentity });
-    const response: CreateSubAccountResponse = {
-      Ok: mockSubAccountDetails,
-    };
-    const service = mock<NNSDappService>();
-    service.create_sub_account.mockResolvedValue(response);
+      const call = async () => nnsDapp.getAccount();
 
-    const canisterId = Principal.fromText("aaaaa-aa");
-    const nnsDapp = NNSDappCanister.create({
-      agent: defaultAgent,
-      certifiedServiceOverride: service,
-      canisterId,
+      await expect(call).rejects.toThrow(AccountNotFoundError);
     });
-
-    const res = await nnsDapp.createSubAccount({
-      subAccountName: mockSubAccountDetails.name,
-    });
-
-    expect(res).toEqual(mockSubAccountDetails);
   });
 
-  it("throws error if name too long", async () => {
-    const defaultAgent = await createAgent({ identity: mockIdentity });
-    const response: CreateSubAccountResponse = {
-      NameTooLong: null,
-    };
-    const service = mock<NNSDappService>();
-    service.create_sub_account.mockResolvedValue(response);
+  describe("NNSDapp.createSubAccount", () => {
+    it("returns subaccount details when success", async () => {
+      const response: CreateSubAccountResponse = {
+        Ok: mockSubAccountDetails,
+      };
+      const service = mock<NNSDappService>();
+      service.create_sub_account.mockResolvedValue(response);
 
-    const canisterId = Principal.fromText("aaaaa-aa");
-    const nnsDapp = NNSDappCanister.create({
-      certifiedServiceOverride: service,
-      canisterId,
-      agent: defaultAgent,
+      const nnsDapp = await createNnsDapp(service);
+
+      const res = await nnsDapp.createSubAccount({
+        subAccountName: mockSubAccountDetails.name,
+      });
+
+      expect(res).toEqual(mockSubAccountDetails);
     });
 
-    const call = async () =>
-      nnsDapp.createSubAccount({ subAccountName: "testSubaccount" });
+    it("throws error if name too long", async () => {
+      const response: CreateSubAccountResponse = {
+        NameTooLong: null,
+      };
+      const service = mock<NNSDappService>();
+      service.create_sub_account.mockResolvedValue(response);
 
-    expect(call).rejects.toThrow(NameTooLongError);
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () =>
+        nnsDapp.createSubAccount({ subAccountName: "testSubaccount" });
+
+      await expect(call).rejects.toThrow(NameTooLongError);
+    });
+
+    it("throws error if subaccount limit reached", async () => {
+      const response: CreateSubAccountResponse = {
+        SubAccountLimitExceeded: null,
+      };
+      const service = mock<NNSDappService>();
+      service.create_sub_account.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () =>
+        nnsDapp.createSubAccount({ subAccountName: "testSubaccount" });
+
+      await expect(call).rejects.toThrow(SubAccountLimitExceededError);
+    });
+
+    it("throws error if account not found", async () => {
+      const response: CreateSubAccountResponse = {
+        AccountNotFound: null,
+      };
+      const service = mock<NNSDappService>();
+      service.create_sub_account.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () =>
+        nnsDapp.createSubAccount({ subAccountName: "testSubaccount" });
+
+      await expect(call).rejects.toThrow(AccountNotFoundError);
+    });
   });
 
-  it("throws error if subaccount limit reached", async () => {
-    const defaultAgent = await createAgent({ identity: mockIdentity });
-    const response: CreateSubAccountResponse = {
-      SubAccountLimitExceeded: null,
-    };
-    const service = mock<NNSDappService>();
-    service.create_sub_account.mockResolvedValue(response);
+  describe("NNSDapp.getCanisters", () => {
+    it("shoudl return canisters", async () => {
+      const service = mock<NNSDappService>();
+      service.get_canisters.mockResolvedValue(mockCanisters);
 
-    const canisterId = Principal.fromText("aaaaa-aa");
-    const nnsDapp = NNSDappCanister.create({
-      agent: defaultAgent,
-      certifiedServiceOverride: service,
-      canisterId,
+      const nnsDapp = await createNnsDapp(service);
+
+      const res = await nnsDapp.getCanisters({ certified: true });
+
+      expect(res).toEqual(mockCanisters);
     });
-
-    const call = async () =>
-      nnsDapp.createSubAccount({ subAccountName: "testSubaccount" });
-
-    expect(call).rejects.toThrow(SubAccountLimitExceededError);
-  });
-
-  it("throws error if account not found", async () => {
-    const defaultAgent = await createAgent({ identity: mockIdentity });
-    const response: CreateSubAccountResponse = {
-      AccountNotFound: null,
-    };
-    const service = mock<NNSDappService>();
-    service.create_sub_account.mockResolvedValue(response);
-
-    const canisterId = Principal.fromText("aaaaa-aa");
-    const nnsDapp = NNSDappCanister.create({
-      agent: defaultAgent,
-      certifiedServiceOverride: service,
-      canisterId,
-    });
-
-    const call = async () =>
-      nnsDapp.createSubAccount({ subAccountName: "testSubaccount" });
-
-    expect(call).rejects.toThrow(AccountNotFoundError);
   });
 });

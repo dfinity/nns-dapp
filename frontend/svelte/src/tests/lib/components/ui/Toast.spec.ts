@@ -43,4 +43,14 @@ describe("Toast", () => {
     expect(p).not.toBeNull();
     expect(p.textContent).toContain("more details");
   });
+
+  it("should render title", async () => {
+    const { container } = render(Toast, {
+      props,
+    });
+
+    const elementWithTitle: HTMLParagraphElement | null =
+      container.querySelector('[title="Close more details"]');
+    expect(elementWithTitle).not.toBeNull();
+  });
 });
