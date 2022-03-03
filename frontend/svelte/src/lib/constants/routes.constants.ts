@@ -6,4 +6,5 @@ export enum AppPath {
   Canisters = "/#/canisters",
   Wallet = "/#/wallet",
   ProposalDetail = "/#/proposal",
+  NeuronDetail = "/#/neuron",
 }
