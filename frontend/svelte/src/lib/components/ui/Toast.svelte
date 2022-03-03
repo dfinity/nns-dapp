@@ -11,12 +11,14 @@
   export let msg: ToastMsg;
 
   const close = () => toastsStore.hide();
+  let text: string;
 
   $: ({ labelKey, level, detail } = msg || {
     labelKey: "",
     level: "info",
     detail: undefined,
   });
+  $: text = `${translate({ labelKey })}${detail || ""}`;
 </script>
 
 <div
@@ -26,8 +28,8 @@
   in:fly={{ y: 100, duration: 200 }}
   out:fade={{ delay: 100 }}
 >
-  <p>
-    {translate({ labelKey })}{detail ? ` ${detail}` : ""}
+  <p title={text}>
+    {text}
   </p>
 
   <button on:click={close} aria-label={$i18n.core.close}><IconClose /></button>
