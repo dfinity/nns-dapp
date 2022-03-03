@@ -1,10 +1,11 @@
 import { get } from "svelte/store";
+import {
+  SECONDS_IN_DAY,
+  SECONDS_IN_HOUR,
+  SECONDS_IN_MINUTE,
+  SECONDS_IN_YEAR,
+} from "../constants/constants";
 import { i18n } from "../stores/i18n";
-
-const ONE_MINUTE_SECONDS = 60;
-const ONE_HOUR_SECONDS = 60 * 60;
-const ONE_DAY_SECONDS = 24 * 60 * 60;
-const ONE_YEAR_SECONDS = ((4 * 365 + 1) * ONE_DAY_SECONDS) / 4;
 
 type LabelKey = "year" | "day" | "hour" | "minute";
 type LabelInfo = {
@@ -18,11 +19,11 @@ const createLabel = (labelKey: LabelKey, amount: bigint): LabelInfo => ({
 
 export const secondsToDuration = (seconds: bigint): string => {
   const i18nObj = get(i18n);
-  const years = seconds / BigInt(ONE_YEAR_SECONDS);
-  const days = (seconds % BigInt(ONE_YEAR_SECONDS)) / BigInt(ONE_DAY_SECONDS);
-  const hours = (seconds % BigInt(ONE_DAY_SECONDS)) / BigInt(ONE_HOUR_SECONDS);
+  const years = seconds / BigInt(SECONDS_IN_YEAR);
+  const days = (seconds % BigInt(SECONDS_IN_YEAR)) / BigInt(SECONDS_IN_DAY);
+  const hours = (seconds % BigInt(SECONDS_IN_DAY)) / BigInt(SECONDS_IN_HOUR);
   const minutes =
-    (seconds % BigInt(ONE_HOUR_SECONDS)) / BigInt(ONE_MINUTE_SECONDS);
+    (seconds % BigInt(SECONDS_IN_HOUR)) / BigInt(SECONDS_IN_MINUTE);
   const periods = [
     createLabel("year", years),
     createLabel("day", days),

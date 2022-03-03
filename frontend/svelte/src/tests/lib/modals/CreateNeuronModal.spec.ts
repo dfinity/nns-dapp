@@ -5,6 +5,7 @@
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
+import { tick } from "svelte";
 import CreateNeuronModal from "../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import { stakeNeuron } from "../../../lib/services/neurons.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
@@ -113,5 +114,113 @@ describe("CreateNeuronModal", () => {
     await fireEvent.click(createButton);
 
     expect(stakeNeuron).toBeCalled();
+  });
+
+  it("should move to update dissolve delay after creating a neuron", async () => {
+    const { container, queryByText } = render(CreateNeuronModal);
+
+    const accountCard = container.querySelector('article[role="button"]');
+    expect(accountCard).not.toBeNull();
+
+    await fireEvent.click(accountCard);
+
+    const input = container.querySelector('input[name="amount"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    await fireEvent.input(input, { target: { value: 22 } });
+
+    const createButton = container.querySelector('button[type="submit"]');
+
+    await fireEvent.click(createButton);
+
+    // create neuron tick
+    await tick();
+    expect(queryByText(en.neurons.set_dissolve_delay)).not.toBeNull();
+  });
+
+  it("should have the update delay button disabled", async () => {
+    const { container, queryByText } = render(CreateNeuronModal);
+
+    const accountCard = container.querySelector('article[role="button"]');
+    expect(accountCard).not.toBeNull();
+
+    await fireEvent.click(accountCard);
+
+    const input = container.querySelector('input[name="amount"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    await fireEvent.input(input, { target: { value: 22 } });
+
+    const createButton = container.querySelector('button[type="submit"]');
+
+    await fireEvent.click(createButton);
+
+    // create neuron tick
+    await tick();
+
+    const updateDelayButton = container.querySelector(
+      '[data-test="update-button"]'
+    );
+    expect(updateDelayButton.getAttribute("disabled")).not.toBeNull();
+  });
+
+  it("should have disabled button for dissolve less than six months", async () => {
+    const { container } = render(CreateNeuronModal);
+
+    const accountCard = container.querySelector('article[role="button"]');
+    expect(accountCard).not.toBeNull();
+
+    await fireEvent.click(accountCard);
+
+    const input = container.querySelector('input[name="amount"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    await fireEvent.input(input, { target: { value: 22 } });
+
+    const createButton = container.querySelector('button[type="submit"]');
+
+    await fireEvent.click(createButton);
+
+    // create neuron tick
+    await tick();
+
+    const inputRange = container.querySelector('input[type="range"]');
+    const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
+    await fireEvent.input(inputRange, { target: { value: FIVE_MONTHS } });
+
+    const updateDelayButton = container.querySelector(
+      '[data-test="update-button"]'
+    );
+    expect(updateDelayButton.getAttribute("disabled")).not.toBeNull();
+  });
+
+  it("should be able to change dissolve delay value and enable button", async () => {
+    const { container } = render(CreateNeuronModal);
+
+    const accountCard = container.querySelector('article[role="button"]');
+    expect(accountCard).not.toBeNull();
+
+    await fireEvent.click(accountCard);
+
+    const input = container.querySelector('input[name="amount"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    await fireEvent.input(input, { target: { value: 22 } });
+
+    const createButton = container.querySelector('button[type="submit"]');
+
+    await fireEvent.click(createButton);
+
+    // create neuron tick
+    await tick();
+
+    const inputRange = container.querySelector('input[type="range"]');
+    const ONE_YEAR = 60 * 60 * 24 * 365;
+    await fireEvent.input(inputRange, { target: { value: ONE_YEAR } });
+
+    const updateDelayButton = container.querySelector(
+      '[data-test="update-button"]'
+    );
+    expect(updateDelayButton.getAttribute("disabled")).toBeNull();
   });
 });
