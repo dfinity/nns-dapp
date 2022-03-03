@@ -10,7 +10,7 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { AppPath } from "../lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
-  import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard.svelte";
+  import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
   import CastVoteCard from "../lib/components/proposal-detail/CastVoteCard.svelte";
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
