@@ -79,7 +79,7 @@
     debounceFindProposals = debounce(async () => await findProposals(), 250);
   };
 
-  const showThisRoute = process.env.REDIRECT_TO_LEGACY !== true;
+  const showThisRoute = process.env.REDIRECT_TO_LEGACY !== "always";
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
     if (!showThisRoute) {

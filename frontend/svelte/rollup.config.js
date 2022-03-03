@@ -104,9 +104,7 @@ export default {
         envConfig.IDENTITY_SERVICE_URL
       ),
       "process.env.DEPLOY_ENV": JSON.stringify(envConfig.DEPLOY_ENV),
-      "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-        envConfig.REDIRECT_TO_LEGACY
-      ),
+      "process.env.REDIRECT_TO_LEGACY": JSON.stringify(envConfig.REDIRECT_TO_LEGACY),
       "process.env.FETCH_ROOT_KEY": JSON.stringify(envConfig.FETCH_ROOT_KEY),
       "process.env.HOST": JSON.stringify(envConfig.HOST),
       "process.env.OWN_CANISTER_ID": JSON.stringify(envConfig.OWN_CANISTER_ID),

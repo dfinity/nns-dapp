@@ -21,7 +21,7 @@
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
       // TODO: We do not need to load and sync the account data if we redirect to the Flutter app. Currently these data are not displayed with this application.
-      if (process.env.REDIRECT_TO_LEGACY === true || !auth.identity) {
+      if (process.env.REDIRECT_TO_LEGACY === "always" || !auth.identity) {
         return;
       }
 

@@ -53,14 +53,14 @@ const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}${domain}/`;
 const REDIRECT_TO_LEGACY = ["true", "1"].includes(
   process.env.REDIRECT_TO_LEGACY
 )
-  ? true
+  ? "always"
   : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY) ||
     ENVIRONMENT === "local" // Note: This is also deployed to testnets.
-  ? false
+  ? "never"
   : ["sometimes", "undefined"].includes(process.env.REDIRECT_TO_LEGACY) ||
     ENVIRONMENT === "local" // Note: This is also deployed to testnets.
-  ? undefined
-  : true; // default
+  ? "sometimes"
+  : "always"; // default
 
 export const envConfig = {
   ENVIRONMENT,
