@@ -65,8 +65,7 @@
   showBackButton={currentStep === Steps.StakeNeuron}
   on:nnsBack={goBack}
 >
-  <span class:hello-world={false} slot="title">{$i18n.neurons?.[titleKey]}</span
-  >
+  <span slot="title">{$i18n.neurons?.[titleKey]}</span>
   <main>
     {#if currentStep === Steps.SelectAccount}
       <Transition {diff}>

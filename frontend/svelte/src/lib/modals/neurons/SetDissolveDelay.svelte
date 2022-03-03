@@ -2,10 +2,11 @@
   import { createEventDispatcher } from "svelte";
 
   import Card from "../../components/ui/Card.svelte";
+  import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "../../constants/constants";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
-  let EIGHT_YEARS = 60 * 60 * 24 * 365 * 8 + 60 * 60 * 24 * 2; // Extra two days for two leap years
-  let SIX_MONTHS = (60 * 60 * 24 * 365) / 2;
+  let EIGHT_YEARS = SECONDS_IN_YEAR * 8;
+  let SIX_MONTHS = (SECONDS_IN_DAY * 365) / 2;
   let delayInSeconds: number = 0;
 
   let backgroundStyle: string;
@@ -105,8 +106,7 @@
   }
 
   input[type="range"] {
-    -webkit-appearance: none;
-    -moz-apperance: none;
+    appearance: none;
     border-radius: 6px;
     height: 6px;
     width: 100%;
@@ -126,7 +126,7 @@
     border-radius: 50%;
     background: var(--background-contrast);
     cursor: pointer;
-    -webkit-appearance: none;
+    appearance: none;
   }
 
   input[type="range"]::-moz-range-thumb {
