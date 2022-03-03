@@ -50,14 +50,15 @@ const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}${domain}/`;
 // - true while flutter is being replaced by svelte
 // - false after flutter has been replaced, but before all scaffolding has been removed
 // - the flag may then be removed.
-const REDIRECT_TO_LEGACY =
-    ["true", "1"].includes(process.env.REDIRECT_TO_LEGACY)
+const REDIRECT_TO_LEGACY = ["true", "1"].includes(
+  process.env.REDIRECT_TO_LEGACY
+)
   ? true
   : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY) ||
-    ENVIRONMENT === "local"  // Note: This is also deployed to testnets.
+    ENVIRONMENT === "local" // Note: This is also deployed to testnets.
   ? false
   : ["sometimes", "undefined"].includes(process.env.REDIRECT_TO_LEGACY) ||
-    ENVIRONMENT === "local"  // Note: This is also deployed to testnets.
+    ENVIRONMENT === "local" // Note: This is also deployed to testnets.
   ? undefined
   : true; // default
 
