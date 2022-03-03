@@ -16,14 +16,19 @@
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import { authStore } from "../lib/stores/auth.store";
+  import { neuronsStore } from "../lib/stores/neurons.store";
+  import { listNeurons } from "../lib/services/neurons.services";
 
-  let proposalInfo: ProposalInfo;
+  let proposalInfo: ProposalInfo | undefined;
 
-  // TODO: To be removed once this page has been implemented
-  onMount(() => {
+  onMount(async () => {
+    // TODO: To be removed once this page has been implemented
     if (process.env.REDIRECT_TO_LEGACY) {
       window.location.replace(`/${window.location.hash}`);
+      return;
     }
+
+    await listNeurons();
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
@@ -81,7 +86,7 @@
       {#if proposalInfo}
         <ProposalDetailCard {proposalInfo} />
         <VotesCard {proposalInfo} />
-        <CastVoteCard {proposalInfo} />
+        <CastVoteCard {proposalInfo} neurons={$neuronsStore} />
         <IneligibleNeuronsCard {proposalInfo} />
       {:else}
         <Spinner />
