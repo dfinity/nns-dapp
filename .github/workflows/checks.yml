@@ -210,3 +210,10 @@ jobs:
       uses: ludeeus/action-shellcheck@master
       env:
         SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
+
+  checks-pass:
+    needs: ["formatting", "clippy", "cargo-tests (1.58.1, ubuntu-20.04)", "flutter-tests", "svelte-tests", "ShellCheck"]
+    runs-on: ubuntu-20.04
+    steps:
+       - name: Checks workflow passes
+         run: echo OK
