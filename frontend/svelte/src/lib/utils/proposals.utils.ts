@@ -5,6 +5,8 @@ import {
   ProposalStatus,
   Vote,
 } from "@dfinity/nns";
+import { E8S_PER_ICP } from "../constants/icp.constants";
+import { formatNumber } from "./format.utils";
 import { stringifyJson } from "./utils";
 
 export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
@@ -46,6 +48,9 @@ export const formatProposalSummary = (summary: string): string => {
     '<a target="_blank" href="$1">$1</a>'
   );
 };
+
+export const formatVotingPower = (value: bigint): string =>
+  formatNumber(value / BigInt(E8S_PER_ICP));
 
 /**
  * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal is OPEN and has at least one UNSPECIFIED ballots' vote.
