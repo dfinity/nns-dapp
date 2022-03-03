@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
   import Card from "../../components/ui/Card.svelte";
   import { i18n } from "../../stores/i18n";
+  import { secondsToDuration } from "../../utils/date.utils";
   let EIGHT_YEARS = 60 * 60 * 24 * 365 * 8 + 60 * 60 * 24 * 2; // Extra two days for two leap years
   let delayInSeconds: number = 0;
 
@@ -11,6 +14,11 @@
       1 - firstHalf
     }%)`;
   }
+
+  const dispatcher = createEventDispatcher();
+  const skip = () => {
+    dispatcher("nnsNext");
+  };
 </script>
 
 <section>
@@ -45,16 +53,21 @@
           <p>{$i18n.neurons.voting_power}</p>
         </div>
         <div>
-          <!-- TODO: use seconds to duration, pending PR to be merged -->
-          <h5>1 year, 59 days</h5>
+          {#if delayInSeconds > 0}
+            <h5>{secondsToDuration(BigInt(delayInSeconds))}</h5>
+          {:else}
+            <h5>{$i18n.neurons.no_delay}</h5>
+          {/if}
           <p>{$i18n.neurons.dissolve_delay_title}</p>
         </div>
       </div>
     </div>
   </Card>
   <div class="buttons">
-    <button class="full-width">Skip</button>
-    <button class="primary full-width">Update Delay</button>
+    <button on:click={skip} class="secondary full-width"
+      >{$i18n.neurons.skip}</button
+    >
+    <button class="primary full-width">{$i18n.neurons.update_delay}</button>
   </div>
 </section>
 
@@ -131,5 +144,6 @@
 
   .buttons {
     display: flex;
+    gap: var(--padding);
   }
 </style>

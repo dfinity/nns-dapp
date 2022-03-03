@@ -4,7 +4,7 @@
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { accountsStore } from "../../stores/accounts.store";
-  import { onDestroy } from "svelte";
+  import { createEventDispatcher, onDestroy } from "svelte";
   import SelectAccount from "./SelectAccount.svelte";
   import StakeNeuron from "./StakeNeuron.svelte";
   import type { Unsubscriber } from "svelte/store";
@@ -51,6 +51,11 @@
   };
   let titleKey: string = titleMapper[0];
   $: titleKey = titleMapper[currentStep];
+
+  const dispatcher = createEventDispatcher();
+  const close = () => {
+    dispatcher("nnsClose");
+  };
 </script>
 
 <Modal
@@ -81,7 +86,8 @@
     {/if}
     {#if currentStep === Steps.SetDissolveDelay}
       <Transition {diff}>
-        <SetDissolveDelay />
+        <!-- TODO: Edit Followees https://dfinity.atlassian.net/browse/L2-337 -->
+        <SetDissolveDelay on:nnsNext={close} />
       </Transition>
     {/if}
   </main>

@@ -86,7 +86,7 @@ interface I18nNeurons {
   current_dissolve_delay: string;
   dissolve_delay_title: string;
   dissolve_delay_description: string;
-  votin_power: string;
+  voting_power: string;
 }
 
 interface I18nVoting {
