@@ -8,7 +8,7 @@
  */
 
 const ENVIRONMENT = process.env.ROLLUP_WATCH
-  ? "local"
+  ? "local" // Note: This is also deployed to testnets.
   : process.env.DEPLOY_ENV === "testnet"
   ? "testnet"
   : "mainnet";
