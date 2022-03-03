@@ -85,8 +85,11 @@ interface I18nNeurons {
   neuron_balance: string;
   current_dissolve_delay: string;
   dissolve_delay_title: string;
+  no_delay: string;
   dissolve_delay_description: string;
   voting_power: string;
+  skip: string;
+  update_delay: string;
 }
 
 interface I18nVoting {
