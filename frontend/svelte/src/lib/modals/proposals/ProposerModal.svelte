@@ -18,7 +18,7 @@
 >
 
 <Modal {visible} on:nnsClose={() => (visible = false)} theme="dark">
-  <span slot="title">{$i18n.neuron.title}</span>
+  <span slot="title">{$i18n.neuron_detail.title}</span>
 
   <!-- TODO: Both neuron details card and fetching neuron itself are implemented in L2-313 -->
   <!-- Above task needs to be solved first before being able to implement following TODOs -->

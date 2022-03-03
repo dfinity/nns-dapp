@@ -58,3 +58,8 @@ const assertTestnet = () => {
 const base64ToUInt8Array = (base64String: string): Uint8Array => {
   return Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0));
 };
+
+export const isNode = (): boolean =>
+  typeof process !== "undefined" &&
+  process.versions != null &&
+  process.versions.node != null;

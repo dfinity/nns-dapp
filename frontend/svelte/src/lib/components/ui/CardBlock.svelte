@@ -1,13 +1,11 @@
 <script lang="ts">
   // TODO: collapsible -- https://dfinity.atlassian.net/browse/L2-270
-  export let collapsible: boolean = false;
-  export let initiallyExpanded = true;
+  // export let collapsible: boolean = false;
+  // export let initiallyExpanded = true;
 </script>
 
 <article>
-  <div class="title">
-    <slot name="title" />
-  </div>
+  <h3><slot name="title" /></h3>
   <div class="content">
     <slot />
   </div>
@@ -31,11 +29,17 @@
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
   }
 
-  .title {
+  h3 {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 0 var(--padding);
+
+    font-size: var(--font-size-h5);
+
+    @include media.min-width(medium) {
+      font-size: var(--font-size-h3);
+    }
   }
 
   .content {

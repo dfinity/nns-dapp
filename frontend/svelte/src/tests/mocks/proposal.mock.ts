@@ -17,7 +17,7 @@ export const mockProposalInfo: ProposalInfo = {
         payloadBytes: new ArrayBuffer(0),
       },
     },
-    summary: "summary",
+    summary: "summary-content",
   },
   proposer: BigInt(123),
   latestTally: {
