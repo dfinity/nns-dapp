@@ -10,7 +10,7 @@ export const routePath = (): string => {
 };
 
 // e.g. #/accounts => accounts
-// e.g. #/wallet/123 => wallet/123
+// e.g. #/wallet/123?a=b => wallet/123
 export const routeContext = (): string => {
   const path: string = routePath();
 

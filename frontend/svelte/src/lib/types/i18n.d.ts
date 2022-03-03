@@ -6,13 +6,21 @@ interface I18nCore {
   close: string;
   icp: string;
   create: string;
+  filter: string;
+  back: string;
 }
 
 interface I18nError {
   auth_sync: string;
   sign_in: string;
+  proposal_not_found: string;
   list_proposals: string;
+  list_canisters: string;
   missing_identity: string;
+  create_subaccount: string;
+  create_subaccount_too_long: string;
+  create_subaccount_limit_exceeded: string;
+  get_neurons: string;
 }
 
 interface I18nNavigation {
@@ -55,6 +63,7 @@ interface I18nNeurons {
   principal_is: string;
   stake_neurons: string;
   select_source: string;
+  set_dissolve_delay: string;
   my_accounts: string;
   stake_neuron: string;
   source: string;
@@ -64,6 +73,23 @@ interface I18nNeurons {
   amount: string;
   max: string;
   create: string;
+  status_locked: string;
+  status_unspecified: string;
+  status_dissolved: string;
+  status_dissolving: string;
+  community_fund: string;
+  hotkey_control: string;
+  stake: string;
+  aria_label_neuron_card: string;
+  neuron_id: string;
+  neuron_balance: string;
+  current_dissolve_delay: string;
+  dissolve_delay_title: string;
+  no_delay: string;
+  dissolve_delay_description: string;
+  voting_power: string;
+  skip: string;
+  update_delay: string;
 }
 
 interface I18nVoting {
@@ -73,6 +99,7 @@ interface I18nVoting {
   rewards: string;
   status: string;
   hide_unavailable_proposals: string;
+  nothing_found: string;
 }
 
 interface I18nCanisters {
@@ -120,12 +147,29 @@ interface I18nWallet {
   title: string;
 }
 
-interface I18nProposal_details {
+interface I18nProposal_detail {
+  title: string;
+  summary: string;
+  topic_prefix: string;
+  id_prefix: string;
+  proposer_prefix: string;
+  adopt: string;
+  reject: string;
+}
+
+interface I18nNeuron_detail {
   title: string;
 }
 
-interface I18nModals {
-  back: string;
+interface I18nTime {
+  year: string;
+  year_plural: string;
+  day: string;
+  day_plural: string;
+  hour: string;
+  hour_plural: string;
+  minute: string;
+  minute_plural: string;
 }
 
 interface I18n {
@@ -143,6 +187,7 @@ interface I18n {
   rewards: I18nRewards;
   status: I18nStatus;
   wallet: I18nWallet;
-  proposal_details: I18nProposal_details;
-  modals: I18nModals;
+  proposal_detail: I18nProposal_detail;
+  neuron_detail: I18nNeuron_detail;
+  time: I18nTime;
 }

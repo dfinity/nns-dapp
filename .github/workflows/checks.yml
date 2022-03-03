@@ -169,11 +169,36 @@ jobs:
       - name: Compile typescript
         run: npm run build
 
-      - name: Run linter
-        run: npm run check
+      # Temporarily disabled:
+      #- name: Run linter
+      #  run: npm run check
 
       - name: Test
         run: npm run test
+
+  # Temporarily added:
+  svelte-lint:
+    needs: formatting
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./frontend/svelte
+    env:
+      DEPLOY_ENV: mainnet
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile typescript
+        run: npm run build
+
+      - name: Run linter
+        run: npm run check
 
   shell-checks:
     needs: formatting
@@ -185,3 +210,10 @@ jobs:
       uses: ludeeus/action-shellcheck@master
       env:
         SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
+
+  checks-pass:
+    needs: ["formatting", "clippy", "cargo-tests", "flutter-tests", "svelte-tests", "shell-checks"]
+    runs-on: ubuntu-20.04
+    steps:
+       - name: Checks workflow passes
+         run: echo OK

@@ -29,6 +29,7 @@
     {name}
     {step}
     {disabled}
+    {value}
     on:input={handleInput}
   />
 

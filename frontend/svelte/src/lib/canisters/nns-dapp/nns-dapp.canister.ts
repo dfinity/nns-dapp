@@ -8,6 +8,8 @@ import {
 } from "./nns-dapp.errors";
 import { idlFactory, NNSDappService } from "./nns-dapp.idl";
 import type {
+  AccountDetails,
+  CanisterDetails,
   CreateSubAccountResponse,
   SubAccountDetails,
 } from "./nns-dapp.types";
@@ -45,16 +47,32 @@ export class NNSDappCanister {
   }
 
   /**
-   * Used to be able to create subAccounts
-   *
-   * TODO: Understand why we need this?
-   * TODO: Remove if not needed?
+   * Add account to NNSDapp Canister if it doesn't exist.
    *
    * @returns Promise<void>
    */
   public addAccount = async (): Promise<AccountIdentifier> => {
     const identifierText = await this.certifiedService.add_account();
     return AccountIdentifier.fromHex(identifierText);
+  };
+
+  /**
+   * Get Account Details
+   *
+   * @returns Promise<void>
+   */
+  public getAccount = async (): Promise<AccountDetails> => {
+    const { AccountNotFound, Ok } = await this.certifiedService.get_account();
+    if (AccountNotFound === null) {
+      throw new AccountNotFoundError("Error creating subAccount");
+    }
+
+    if (Ok) {
+      return Ok;
+    }
+
+    // We should never reach here. Some of the previous properties should be present.
+    throw new Error("Error getting account details");
   };
 
   /**
@@ -99,4 +117,20 @@ export class NNSDappCanister {
     // We should never reach here. Some of the previous properties should be present.
     throw new Error("Error creating subaccount");
   };
+
+  public getCanisters = async ({
+    certified,
+  }: {
+    certified: boolean;
+  }): Promise<CanisterDetails[]> => {
+    return this.serviceCaller(certified).get_canisters();
+  };
+
+  private serviceCaller(certified = true): NNSDappService {
+    if (certified) {
+      return this.certifiedService;
+    }
+
+    return this.service;
+  }
 }

@@ -36,6 +36,14 @@ export const mockProposalsStoreSubscribe = (
   return () => {};
 };
 
+export const mockEmptyProposalsStoreSubscribe = (
+  run: Subscriber<ProposalInfo[]>
+): (() => void) => {
+  run([]);
+
+  return () => {};
+};
+
 // @ts-ignore
 export class MockGovernanceCanister extends GovernanceCanister {
   constructor(private proposals: ProposalInfo[]) {
@@ -56,5 +64,13 @@ export class MockGovernanceCanister extends GovernanceCanister {
     return {
       proposals: this.proposals,
     };
+  };
+
+  public getProposalInfo = async ({
+    proposalId,
+  }: {
+    proposalId: any;
+  }): Promise<ProposalInfo | undefined> => {
+    return { id: BigInt(404) } as unknown as ProposalInfo;
   };
 }

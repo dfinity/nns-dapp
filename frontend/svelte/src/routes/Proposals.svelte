@@ -3,7 +3,11 @@
   import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import { emptyProposals, lastProposalId } from "../lib/utils/proposals.utils";
+  import {
+    emptyProposals,
+    hasMatchingProposals,
+    lastProposalId,
+  } from "../lib/utils/proposals.utils";
   import {
     proposalsFiltersStore,
     proposalsStore,
@@ -18,19 +22,21 @@
     listNextProposals,
     listProposals,
   } from "../lib/services/proposals.services";
-  import type { ProposalInfo } from "@dfinity/nns";
   import { authStore } from "../lib/stores/auth.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { errorToString } from "../lib/utils/error.utils";
+  import { routeStore } from "../lib/stores/route.store";
+  import { isRoutePath } from "../lib/utils/app-path.utils";
 
   let loading: boolean = false;
+  let initialized: boolean = false;
 
   const findNextProposals = async () => {
     loading = true;
 
     try {
       await listNextProposals({
-        beforeProposal: lastProposalId(proposals),
+        beforeProposal: lastProposalId($proposalsStore),
         identity: $authStore.identity,
       });
     } catch (err: any) {
@@ -51,7 +57,7 @@
     try {
       // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
       await listProposals({
-        clearBeforeQuery: !emptyProposals(proposals),
+        clearBeforeQuery: !emptyProposals($proposalsStore),
         identity: $authStore.identity,
       });
     } catch (err: any) {
@@ -70,7 +76,7 @@
 
   // We do not want to fetch the proposals twice when the component is mounting because the filter subscriber will emit a first value
   const initDebounceFindProposals = () => {
-    debounceFindProposals = debounce(async () => await findProposals(), 750);
+    debounceFindProposals = debounce(async () => await findProposals(), 250);
   };
 
   onMount(async () => {
@@ -79,15 +85,25 @@
       window.location.replace(AppPath.Proposals);
     }
 
-    // Load proposals on mount only if none were fetched before
-    if (!emptyProposals(proposals)) {
+    const isReferrerProposalDetail: boolean = isRoutePath({
+      path: AppPath.ProposalDetail,
+      routePath: $routeStore.referrerPath,
+    });
+
+    // If the previous page is the proposal detail page and if we have proposals in store, we don't reset and query the proposals after mount.
+    // We do this to smoothness the back and forth navigation between this page and the detail page.
+    if (!emptyProposals($proposalsStore) && isReferrerProposalDetail) {
       initDebounceFindProposals();
       return;
     }
 
+    proposalsFiltersStore.reset();
+
     await findProposals();
 
     initDebounceFindProposals();
+
+    initialized = true;
   });
 
   const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() =>
@@ -96,8 +112,14 @@
 
   onDestroy(unsubscribe);
 
-  let proposals: ProposalInfo[];
-  $: proposals = $proposalsStore;
+  let nothingFound: boolean;
+  $: nothingFound =
+    initialized &&
+    !loading &&
+    !hasMatchingProposals({
+      proposals: $proposalsStore,
+      excludeVotedProposals: $proposalsFiltersStore.excludeVotedProposals,
+    });
 </script>
 
 {#if !process.env.REDIRECT_TO_LEGACY}
@@ -112,6 +134,10 @@
           <ProposalCard {proposalInfo} />
         {/each}
       </InfiniteScroll>
+
+      {#if nothingFound}
+        <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+      {/if}
 
       {#if loading}
         <div class="spinner">
@@ -128,5 +154,10 @@
     display: flex;
 
     padding: calc(2 * var(--padding)) 0;
+  }
+
+  .no-proposals {
+    text-align: center;
+    margin: calc(var(--padding) * 2) 0;
   }
 </style>

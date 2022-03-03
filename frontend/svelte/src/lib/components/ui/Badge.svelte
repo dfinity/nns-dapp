@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let color: "warning" | "success" | undefined = undefined;
+  import type { ProposalColor } from "../../constants/proposals.constants";
+
+  export let color: ProposalColor = undefined;
 </script>
 
 <div class={color}>

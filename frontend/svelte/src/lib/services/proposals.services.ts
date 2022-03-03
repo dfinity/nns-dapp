@@ -95,3 +95,42 @@ const queryProposals = async ({
 
   return proposals;
 };
+
+/**
+ * Return single proposal from proposalsStore or fetch it (in case of page reload or direct navigation to proposal-detail page)
+ */
+export const getProposalInfo = async ({
+  proposalId,
+  identity,
+}: {
+  proposalId: ProposalId;
+  identity: Identity | null | undefined;
+}): Promise<ProposalInfo | undefined> => {
+  const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
+  return proposal || queryProposalInfo({ proposalId, identity });
+};
+
+const queryProposalInfo = async ({
+  proposalId,
+  identity,
+}: {
+  proposalId: ProposalId;
+  identity: Identity | null | undefined;
+}): Promise<ProposalInfo | undefined> => {
+  if (!identity) {
+    throw new Error(get(i18n).error.missing_identity);
+  }
+
+  const governance: GovernanceCanister = GovernanceCanister.create({
+    agent: await createAgent({ identity, host: process.env.HOST }),
+  });
+
+  return governance.getProposalInfo({ proposalId });
+};
+
+export const getProposalId = (path: string): ProposalId | undefined => {
+  const pathDetail = path.split("/").pop();
+  const id = parseInt(pathDetail, 10);
+  // ignore not integer ids
+  return isFinite(id) && `${id}` === pathDetail ? BigInt(id) : undefined;
+};

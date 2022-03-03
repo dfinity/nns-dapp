@@ -3,7 +3,7 @@
  */
 
 import { Ballot, Vote } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
 import { proposalsFiltersStore } from "../../../../lib/stores/proposals.store";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
@@ -82,5 +82,21 @@ describe("ProposalCard", () => {
     proposalsFiltersStore.toggleExcludeVotedProposals();
 
     await waitFor(() => expect(container.querySelector("article")).toBeNull());
+  });
+
+  it("should open neuron modal", async () => {
+    const { container } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[1],
+      },
+    });
+
+    const button = container.querySelector("button.text");
+    expect(button).not.toBeNull();
+    await fireEvent.click(button);
+
+    await waitFor(() =>
+      expect(container.querySelector("div.modal")).not.toBeNull()
+    );
   });
 });

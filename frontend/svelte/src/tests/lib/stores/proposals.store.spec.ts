@@ -53,6 +53,16 @@ describe("proposals-store", () => {
       expect(filters).toEqual(DEFAULT_PROPOSALS_FILTERS);
     });
 
+    it("should reset filters", () => {
+      const filter = [Topic.NetworkEconomics, Topic.SubnetManagement];
+      proposalsFiltersStore.filterTopics(filter);
+
+      proposalsFiltersStore.reset();
+
+      const filters = get(proposalsFiltersStore);
+      expect(filters).toEqual(DEFAULT_PROPOSALS_FILTERS);
+    });
+
     it("should update topic filters", () => {
       const filter = [Topic.NetworkEconomics, Topic.SubnetManagement];
       proposalsFiltersStore.filterTopics(filter);

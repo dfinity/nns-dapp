@@ -1,0 +1,51 @@
+<script lang="ts">
+  import { Proposal, ProposalInfo, ProposalStatus, Topic } from "@dfinity/nns";
+  import Badge from "../../ui/Badge.svelte";
+  import Card from "../../ui/Card.svelte";
+  import {
+    ProposalColor,
+    PROPOSAL_COLOR,
+  } from "../../../../lib/constants/proposals.constants";
+  import { i18n } from "../../../../lib/stores/i18n";
+  import ProposalSummary from "./ProposalSummary.svelte";
+  import ProposalMeta from "./ProposalMeta.svelte";
+  import ProposalActions from "./ProposalActions.svelte";
+
+  export let proposalInfo: ProposalInfo;
+
+  let proposal: Proposal | undefined;
+  let title: string | undefined;
+  let status: ProposalStatus | undefined;
+  let color: ProposalColor | undefined;
+
+  $: ({ proposal, status } = proposalInfo);
+  $: ({ title } = proposal);
+  $: color = PROPOSAL_COLOR[status];
+</script>
+
+<Card>
+  <h2 slot="start" {title}>{title}</h2>
+  <Badge slot="end" {color}
+    >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
+  >
+  <ProposalSummary {proposal} />
+  <ProposalMeta {proposalInfo} />
+  <ProposalActions {proposal} />
+</Card>
+
+<style lang="scss">
+  @use "../../../themes/mixins/media";
+  @use "../../../themes/mixins/text";
+
+  h2 {
+    font-size: var(--font-size-h5);
+    line-height: var(--line-height-standard);
+    @include text.clamp(3);
+
+    @include media.min-width(medium) {
+      margin-top: calc(0.5 * var(--padding));
+      padding-right: var(--padding);
+      font-size: var(--font-size-h3);
+    }
+  }
+</style>

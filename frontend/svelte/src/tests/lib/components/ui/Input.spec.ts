@@ -5,6 +5,7 @@
 import { fireEvent, render } from "@testing-library/svelte";
 import Input from "../../../../lib/components/ui/Input.svelte";
 import InputTest from "./InputTest.svelte";
+import InputValueTest from "./InputValueTest.svelte";
 
 describe("Input", () => {
   const props = { name: "name", placeholderLabelKey: "test.placeholder" };
@@ -201,5 +202,21 @@ describe("Input", () => {
     });
 
     testHasAttribute({ container, attribute: "disabled", expected: true });
+  });
+
+  it("should bind value", async () => {
+    const { container } = render(InputValueTest, {
+      props: {
+        ...props,
+        inputType: "text",
+      },
+    });
+
+    const testInput = "new value";
+    const testBind: HTMLSpanElement | null = container.querySelector("#test");
+    await fireEvent.click(testBind);
+
+    const input: HTMLInputElement | null = container.querySelector("input");
+    expect(input.value).toBe(testInput);
   });
 });

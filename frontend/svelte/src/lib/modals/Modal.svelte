@@ -37,7 +37,7 @@
           <button
             class="back"
             on:click|stopPropagation={back}
-            aria-label={$i18n.modals.back}><IconBackIosNew /></button
+            aria-label={$i18n.core.back}><IconBackIosNew /></button
           >
         {/if}
         <h3 id="modalTitle"><slot name="title" /></h3>
@@ -49,6 +49,8 @@
       <div class="content" id="modalContent">
         <slot />
       </div>
+
+      <slot name="footer" />
     </div>
   </div>
 {/if}
@@ -81,6 +83,7 @@
 
       .content {
         background: var(--gray-50-background);
+        color: var(--gray-200);
       }
     }
   }
@@ -159,7 +162,12 @@
   }
 
   .content {
+    display: flex;
+    flex-direction: column;
+
+    max-height: calc(100vh - 156px);
     overflow-y: scroll;
+
     color: var(--gray-800);
   }
 </style>
