@@ -18,10 +18,9 @@ describe("ICP", () => {
 
     const value = container.querySelector("span:first-of-type");
 
-    value &&
-      expect(value.textContent).toEqual(
-        `${formatICP(mockMainAccount.balance.toE8s())}`
-      );
+    expect(value?.textContent).toEqual(
+      `${formatICP(mockMainAccount.balance.toE8s())}`
+    );
   });
 
   it("should render an ICP text", () => {

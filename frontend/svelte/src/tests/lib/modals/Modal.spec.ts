@@ -45,11 +45,9 @@ describe("Modal", () => {
 
     const dialog: HTMLElement | null =
       container.querySelector('[role="dialog"]');
-    expect(dialog).not.toBeNull();
-    dialog &&
-      expect(dialog.getAttribute("aria-labelledby")).toEqual("modalTitle");
-    dialog &&
-      expect(dialog.getAttribute("aria-describedby")).toEqual("modalContent");
+
+    expect(dialog?.getAttribute("aria-labelledby")).toEqual("modalTitle");
+    expect(dialog?.getAttribute("aria-describedby")).toEqual("modalContent");
 
     expect(container.querySelector("#modalTitle")).not.toBeNull();
     expect(container.querySelector("#modalContent")).not.toBeNull();
@@ -85,9 +83,8 @@ describe("Modal", () => {
     const toolbar: HTMLDivElement | null =
       container.querySelector("div.toolbar");
 
-    expect(toolbar).not.toBeNull();
-    toolbar && expect(toolbar.querySelector("h3")).not.toBeNull();
-    toolbar && expect(toolbar.querySelector("button")).not.toBeNull();
+    expect(toolbar?.querySelector("h3")).not.toBeNull();
+    expect(toolbar?.querySelector("button")).not.toBeNull();
   });
 
   it("should render a content", () => {

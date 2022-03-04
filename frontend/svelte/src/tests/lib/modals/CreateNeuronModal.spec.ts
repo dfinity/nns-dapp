@@ -72,9 +72,7 @@ describe("CreateNeuronModal", () => {
     expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
 
     const createButton = container.querySelector('button[type="submit"]');
-    expect(createButton).not.toBeNull();
-    createButton &&
-      expect(createButton.getAttribute("disabled")).not.toBeNull();
+    expect(createButton?.getAttribute("disabled")).not.toBeNull();
   });
 
   it("should have enabled Create neuron button when entering amount", async () => {
@@ -93,8 +91,7 @@ describe("CreateNeuronModal", () => {
     input && (await fireEvent.input(input, { target: { value: 22 } }));
 
     const createButton = container.querySelector('button[type="submit"]');
-    expect(createButton).not.toBeNull();
-    createButton && expect(createButton.getAttribute("disabled")).toBeNull();
+    expect(createButton?.getAttribute("disabled")).toBeNull();
   });
 
   it("should be able to create a new neuron", async () => {
@@ -162,8 +159,7 @@ describe("CreateNeuronModal", () => {
     const updateDelayButton = container.querySelector(
       '[data-test="update-button"]'
     );
-    updateDelayButton &&
-      expect(updateDelayButton.getAttribute("disabled")).not.toBeNull();
+    expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
 
   it("should have disabled button for dissolve less than six months", async () => {
@@ -194,8 +190,8 @@ describe("CreateNeuronModal", () => {
     const updateDelayButton = container.querySelector(
       '[data-test="update-button"]'
     );
-    updateDelayButton &&
-      expect(updateDelayButton.getAttribute("disabled")).not.toBeNull();
+
+    expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
 
   it("should be able to change dissolve delay value and enable button", async () => {
@@ -226,7 +222,6 @@ describe("CreateNeuronModal", () => {
     const updateDelayButton = container.querySelector(
       '[data-test="update-button"]'
     );
-    updateDelayButton &&
-      expect(updateDelayButton.getAttribute("disabled")).toBeNull();
+    expect(updateDelayButton?.getAttribute("disabled")).toBeNull();
   });
 });

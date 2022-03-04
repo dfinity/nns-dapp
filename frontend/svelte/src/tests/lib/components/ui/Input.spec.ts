@@ -47,7 +47,7 @@ describe("Input", () => {
     container: HTMLElement;
   }) => {
     const input: HTMLInputElement | null = container.querySelector("input");
-    input && expect(input.getAttribute(attribute)).toEqual(expected);
+    expect(input?.getAttribute(attribute)).toEqual(expected);
   };
 
   const testHasAttribute = ({
@@ -60,7 +60,7 @@ describe("Input", () => {
     container: HTMLElement;
   }) => {
     const input: HTMLInputElement | null = container.querySelector("input");
-    input && expect(input.hasAttribute(attribute)).toEqual(expected);
+    expect(input?.hasAttribute(attribute)).toEqual(expected);
   };
 
   it("should render an input of type number", () => {
@@ -223,6 +223,6 @@ describe("Input", () => {
     testBind && (await fireEvent.click(testBind));
 
     const input: HTMLInputElement | null = container.querySelector("input");
-    input && expect(input.value).toBe(testInput);
+    expect(input?.value).toBe(testInput);
   });
 });

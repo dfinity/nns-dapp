@@ -13,8 +13,8 @@ describe("Identifier", () => {
     const { container, queryByRole } = render(Identifier, { props });
 
     const small = container.querySelector("small");
-    expect(small).not.toBeNull();
-    small && expect(small.textContent).toEqual(identifier);
+
+    expect(small?.textContent).toEqual(identifier);
 
     const button = queryByRole("button");
     expect(button).toBeNull();
@@ -27,11 +27,9 @@ describe("Identifier", () => {
 
     const button = queryByRole("button");
 
-    expect(button).not.toBeNull();
-    button &&
-      expect(button.getAttribute("aria-label")).toEqual(
-        "Copy identifier to clipboard"
-      );
+    expect(button?.getAttribute("aria-label")).toEqual(
+      "Copy identifier to clipboard"
+    );
   });
 
   it("should copy identifier to clipboard", () => {

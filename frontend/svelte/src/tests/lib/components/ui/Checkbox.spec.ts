@@ -26,8 +26,7 @@ describe("Checkbox", () => {
 
     const label: HTMLLabelElement | null = container.querySelector("label");
 
-    expect(label).not.toBeNull();
-    label && expect(label.getAttribute("for")).toEqual(props.inputId);
+    expect(label?.getAttribute("for")).toEqual(props.inputId);
   });
 
   it("should render an input", () => {
@@ -37,9 +36,8 @@ describe("Checkbox", () => {
 
     const input: HTMLInputElement | null = container.querySelector("input");
 
-    expect(input).not.toBeNull();
-    input && expect(input.getAttribute("type")).toEqual("checkbox");
-    input && expect(input.getAttribute("id")).toEqual(props.inputId);
+    expect(input?.getAttribute("type")).toEqual("checkbox");
+    expect(input?.getAttribute("id")).toEqual(props.inputId);
   });
 
   it("should react to checked", () => {
@@ -68,6 +66,7 @@ describe("Checkbox", () => {
     });
 
     const div: HTMLDivElement | null = container.querySelector("div.checkbox");
+    expect(div).not.toBeNull();
     div && fireEvent.click(div);
   });
 
@@ -81,6 +80,7 @@ describe("Checkbox", () => {
     });
 
     const input: HTMLInputElement | null = container.querySelector("input");
+    expect(input).not.toBeNull();
     input && fireEvent.click(input);
   });
 
@@ -91,11 +91,11 @@ describe("Checkbox", () => {
 
     const div: HTMLDivElement | null = container.querySelector("div.checkbox");
 
-    div && expect(div.classList.contains("light")).toBeTruthy();
+    expect(div?.classList.contains("light")).toBeTruthy();
 
     const label: HTMLLabelElement | null = container.querySelector("label");
 
-    label && expect(label.classList.contains("inline")).toBeTruthy();
+    expect(label?.classList.contains("inline")).toBeTruthy();
   });
 
   it("should render a dark container", () => {
@@ -105,7 +105,7 @@ describe("Checkbox", () => {
 
     const div: HTMLDivElement | null = container.querySelector("div.checkbox");
 
-    div && expect(div.classList.contains("dark")).toBeTruthy();
+    expect(div?.classList.contains("dark")).toBeTruthy();
   });
 
   it("should render block label", () => {
@@ -115,7 +115,7 @@ describe("Checkbox", () => {
 
     const label: HTMLLabelElement | null = container.querySelector("label");
 
-    label && expect(label.classList.contains("block")).toBeTruthy();
+    expect(label?.classList.contains("block")).toBeTruthy();
   });
 
   it("should apply ref to container", () => {
@@ -125,6 +125,6 @@ describe("Checkbox", () => {
 
     const div: HTMLDivElement | null = container.querySelector("div.checkbox");
 
-    div && expect(div.classList.contains("test")).toBeTruthy();
+    expect(div?.classList.contains("test")).toBeTruthy();
   });
 });

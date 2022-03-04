@@ -18,8 +18,7 @@ describe("Toast", () => {
 
     const p: HTMLParagraphElement | null = container.querySelector("p");
 
-    expect(p).not.toBeNull();
-    p && expect(p.textContent).toContain("Close");
+    expect(p?.textContent).toContain("Close");
   });
 
   it("should render a close button", async () => {
@@ -29,8 +28,7 @@ describe("Toast", () => {
 
     const button = getByRole("button");
 
-    expect(button).not.toBeNull();
-    expect(button.getAttribute("aria-label")).toEqual("Close");
+    expect(button?.getAttribute("aria-label")).toEqual("Close");
   });
 
   it("should render details", async () => {
@@ -40,8 +38,7 @@ describe("Toast", () => {
 
     const p: HTMLParagraphElement | null = container.querySelector("p");
 
-    expect(p).not.toBeNull();
-    p && expect(p.textContent).toContain("more details");
+    expect(p?.textContent).toContain("more details");
   });
 
   it("should render title", async () => {

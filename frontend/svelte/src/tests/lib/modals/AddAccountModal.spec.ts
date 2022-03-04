@@ -54,9 +54,7 @@ describe("AddAccountModal", () => {
       (await fireEvent.click(accountCard.parentElement));
 
     const createButton = container.querySelector('button[type="submit"]');
-    expect(createButton).not.toBeNull();
-    createButton &&
-      expect(createButton.getAttribute("disabled")).not.toBeNull();
+    expect(createButton?.getAttribute("disabled")).not.toBeNull();
   });
 
   it("should have enabled Add Account button when entering name", async () => {
@@ -75,8 +73,7 @@ describe("AddAccountModal", () => {
     input && (await fireEvent.input(input, { target: { value: "test name" } }));
 
     const createButton = container.querySelector('button[type="submit"]');
-    expect(createButton).not.toBeNull();
-    createButton && expect(createButton.getAttribute("disabled")).toBeNull();
+    expect(createButton?.getAttribute("disabled")).toBeNull();
   });
 
   it("should create a subaccount", async () => {

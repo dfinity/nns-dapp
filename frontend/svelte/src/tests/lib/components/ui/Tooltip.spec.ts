@@ -12,7 +12,7 @@ describe("Tooltip", () => {
     const element: HTMLParagraphElement | null = container.querySelector("p");
 
     expect(element).toBeInTheDocument();
-    element && expect(element.innerHTML).toBe("content");
+    expect(element?.innerHTML).toBe("content");
   });
 
   it("should render aria-describedby and relevant id", () => {

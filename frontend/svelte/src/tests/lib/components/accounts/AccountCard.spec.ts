@@ -28,10 +28,9 @@ describe("AccountCard", () => {
 
     const balance = container.querySelector("article > div span:first-of-type");
 
-    balance &&
-      expect(balance.textContent).toEqual(
-        `${formatICP(mockMainAccount.balance.toE8s())}`
-      );
+    expect(balance?.textContent).toEqual(
+      `${formatICP(mockMainAccount.balance.toE8s())}`
+    );
   });
 
   it("should add the role passed", () => {
@@ -41,6 +40,6 @@ describe("AccountCard", () => {
 
     const article = container.querySelector("article");
 
-    article && expect(article.getAttribute("role")).toEqual("link");
+    expect(article?.getAttribute("role")).toEqual("link");
   });
 });
