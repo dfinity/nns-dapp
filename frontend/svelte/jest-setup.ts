@@ -5,6 +5,7 @@ import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 
 global.TextEncoder = TextEncoder;
+// @ts-ignore
 global.TextDecoder = TextDecoder;
 // @ts-ignore
 global.IntersectionObserver = IntersectionObserverPassive;
