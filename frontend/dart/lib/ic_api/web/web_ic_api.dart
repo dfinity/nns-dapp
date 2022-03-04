@@ -228,10 +228,15 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<Result<Unit, Exception>> merge(
       {required Neuron neuron1, required Neuron neuron2}) async {
     try {
-      final identity = (await getIdentityByNeuron(neuron1)).unwrap();
+      final identity1 = (await getIdentityByNeuron(neuron1)).unwrap();
+      final identity2 = (await getIdentityByNeuron(neuron2)).unwrap();
+
+      if (identity1.getPrincipal().toString() != identity2.getPrincipal().toString()) {
+        return Result.err(Exception("The neurons being merged must both have the same controller"));
+      }
 
       await promiseToFuture(serviceApi!.merge(
-          identity,
+          identity1,
           MergeRequest(
               neuronId: neuron1.id.toBigInt.toJS,
               sourceNeuronId: neuron2.id.toBigInt.toJS)));
