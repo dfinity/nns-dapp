@@ -15,10 +15,10 @@ import {
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 
 describe("Accounts", () => {
-  let authStoreMock, accountsStoreMock;
+  let accountsStoreMock;
 
   beforeEach(() => {
-    authStoreMock = jest
+    jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
   });
@@ -43,9 +43,10 @@ describe("Accounts", () => {
 
     const titleRow = container.querySelector("section > div");
 
-    expect(titleRow.textContent).toEqual(
-      `Accounts ${formatICP(mockMainAccount.balance.toE8s())} ICP`
-    );
+    titleRow &&
+      expect(titleRow.textContent).toEqual(
+        `Accounts ${formatICP(mockMainAccount.balance.toE8s())} ICP`
+      );
   });
 
   it("should render a main card", () => {
@@ -66,9 +67,10 @@ describe("Accounts", () => {
 
     const cardTitleRow = container.querySelector("article > div > div");
 
-    expect(cardTitleRow.textContent).toEqual(
-      `${formatICP(mockMainAccount.balance.toE8s())} ICP`
-    );
+    cardTitleRow &&
+      expect(cardTitleRow.textContent).toEqual(
+        `${formatICP(mockMainAccount.balance.toE8s())} ICP`
+      );
   });
 
   it("should render account identifier", () => {
@@ -101,9 +103,10 @@ describe("Accounts", () => {
 
     const totalBalance =
       mockMainAccount.balance.toE8s() + mockSubAccount.balance.toE8s();
-    expect(titleRow.textContent).toEqual(
-      `Accounts ${formatICP(totalBalance)} ICP`
-    );
+    titleRow &&
+      expect(titleRow.textContent).toEqual(
+        `Accounts ${formatICP(totalBalance)} ICP`
+      );
   });
 
   it("should subscribe to store", () => {

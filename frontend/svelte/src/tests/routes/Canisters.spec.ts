@@ -3,6 +3,7 @@
  */
 
 import { render } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../lib/canisters/nns-dapp/nns-dapp.canister";
 import { authStore } from "../../lib/stores/auth.store";
 import Canisters from "../../routes/Canisters.svelte";
@@ -10,12 +11,11 @@ import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "../mocks/auth.store.mock";
-import { MockNNSDappCanister } from "../mocks/canisters.store.mock";
 
 describe("Canisters", () => {
   let authStoreMock;
 
-  const mockNNSDappCanister: MockNNSDappCanister = new MockNNSDappCanister();
+  const mockNNSDappCanister: NNSDappCanister = mock<NNSDappCanister>();
 
   beforeEach(() => {
     authStoreMock = jest
