@@ -1,6 +1,12 @@
 # Changelog
 
-## Placeholder
+## Proposal 47824
+* Update changelog for the last release
+* Remove upgrade code needed for the last release only
+* Show new `node_provider_id` field in `UpdateNodeOperatorConfigPayload` proposals.
+* Svelte UI development
+* Fix tests
+* Update js library dependencies
 
 ## Proposal 47476
 * Update dependencies and Rust version.
