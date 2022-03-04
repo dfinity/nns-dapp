@@ -2,6 +2,10 @@
 @use "mixins/media";
 
 button {
+  &[disabled] {
+    pointer-events: none;
+  }
+
   &.text {
     z-index: var(--z-index);
 
@@ -147,9 +151,15 @@ button {
     background: var(--pink);
     color: var(--pink-contrast);
 
+    font-size: var(--font-size-small);
+
+    @include media.min-width(medium) {
+      font-size: var(--font-size-h3);
+    }
+
     &[disabled] {
-      background: rgba(var(--gray-600-rgb), 0.8);
-      color: var(--gray-800);
+      background: var(--gray-400);
+      color: var(--gray-600);
     }
 
     @include effect.ripple-effect(--pink-tint);
