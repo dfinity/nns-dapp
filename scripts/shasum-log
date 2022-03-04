@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Prints the history of shasums in the current branch.
 set -eu
 # Fetch if possible:
 git fetch origin refs/notes/*:refs/notes/* 2>/dev/null || true
