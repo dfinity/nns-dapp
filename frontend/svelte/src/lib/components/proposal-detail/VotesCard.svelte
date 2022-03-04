@@ -21,7 +21,7 @@
 
   type CompactNeuronInfo = {
     id: NeuronId;
-    votingPower: bigint;
+    votingPower: number;
     vote: Vote;
   };
   const voteIconMapper = {
