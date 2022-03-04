@@ -6,9 +6,6 @@
 
   export let theme: "dark" | "light" = "light";
   export let text: "block" | "inline" = "inline";
-  // true:  [x] label
-  // false: label [x]
-  export let inputFirst: boolean = false;
 
   export let selector: string | undefined = undefined;
 
@@ -23,7 +20,6 @@
 <div
   on:click|preventDefault={onClick}
   class={`checkbox ${theme} ${selector || ""}`}
-  class:inputFirst
 >
   <label for={inputId} class={text}><slot /></label>
   <input
@@ -50,12 +46,6 @@
       --select-color: var(--gray-200);
       --select-background-hover: rgba(var(--light-background-rgb), 0.1);
       --select-border-radius: var(--border-radius);
-    }
-
-    &.inputFirst {
-      label {
-        order: 1;
-      }
     }
   }
 
