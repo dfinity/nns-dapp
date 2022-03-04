@@ -10,7 +10,7 @@ Wasm sha256 hash: `$WASM_HASH` (`$LINK_TO_GITHUB_ACTION`)
 ## Commit log:
 
 ```
-bash -xc "git log --format='%C(auto) %h %s' $(git tags/rev-parse prod)..$(git rev-parse tags/release-candidate)"
+bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse tags/prod)..$(git rev-parse tags/release-candidate)"
  ADD THE OUTPUT OF THE ABOVE COMMAND HERE
 ```
 
