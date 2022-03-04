@@ -8,7 +8,8 @@
   import { neuronsStore } from "../../stores/neurons.store";
   import IconThumbDown from "../../icons/IconThumbDown.svelte";
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
-  import CardBlock from "../ui/CardBlock.svelte";
+  import { onMount } from "svelte";
+  import { listNeurons } from "../../services/neurons.services";
 
   export let proposalInfo: ProposalInfo;
 
@@ -18,6 +19,8 @@
   const yesValue = Number(yes) / E8S_PER_ICP;
   const noValue = Number(no) / E8S_PER_ICP;
   const summ = yesValue + noValue;
+
+  onMount(listNeurons);
 
   type CompactNeuronInfo = {
     id: NeuronId;
@@ -29,18 +32,20 @@
     [Vote.YES]: IconThumbUp,
   };
   let neuronsVotedForProposal: CompactNeuronInfo[];
-  neuronsStore.subscribe((neurons) => {
+
+  $: {
     neuronsVotedForProposal = votedNeurons({
-      neurons: neurons,
+      neurons: $neuronsStore,
       proposal: proposalInfo,
     }).map(({ neuronId, recentBallots, votingPower }) => ({
       id: neuronId,
+      // TODO: replace w/ formatVotingPower()
       votingPower: Number(votingPower) / E8S_PER_ICP,
       vote: recentBallots.find(
         ({ proposalId }) => proposalId === proposalInfo.id
       )?.vote,
     }));
-  });
+  }
 </script>
 
 <!-- TODO: Adop/Reject card content -- https://dfinity.atlassian.net/browse/L2-269 -->
