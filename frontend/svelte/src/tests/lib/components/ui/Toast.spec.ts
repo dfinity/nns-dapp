@@ -19,7 +19,7 @@ describe("Toast", () => {
     const p: HTMLParagraphElement | null = container.querySelector("p");
 
     expect(p).not.toBeNull();
-    expect(p.textContent).toContain("Close");
+    p && expect(p.textContent).toContain("Close");
   });
 
   it("should render a close button", async () => {
@@ -41,7 +41,7 @@ describe("Toast", () => {
     const p: HTMLParagraphElement | null = container.querySelector("p");
 
     expect(p).not.toBeNull();
-    expect(p.textContent).toContain("more details");
+    p && expect(p.textContent).toContain("more details");
   });
 
   it("should render title", async () => {

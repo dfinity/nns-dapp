@@ -32,6 +32,6 @@ describe("FiltersButton", () => {
 
     const small = container.querySelector("small");
     expect(small).not.toBeNull();
-    expect(small.textContent).toEqual("(3/7)");
+    small && expect(small.textContent).toEqual("(3/7)");
   });
 });

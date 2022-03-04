@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { NeuronState } from "@dfinity/nns";
+import { Neuron, NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import NeuronCard from "../../../../lib/components/neurons/NeuronCard.svelte";
 import { formatICP } from "../../../../lib/utils/icp.utils";
@@ -32,7 +32,7 @@ describe("NeuronCard", () => {
 
     const articleElement = container.querySelector("article");
 
-    await fireEvent.click(articleElement);
+    articleElement && (await fireEvent.click(articleElement));
 
     expect(spyClick).toBeCalled();
   });
@@ -50,8 +50,11 @@ describe("NeuronCard", () => {
 
     const articleElement = container.querySelector("article");
 
-    expect(articleElement.getAttribute("role")).toBe(role);
-    expect(articleElement.getAttribute("aria-label")).toBe(ariaLabel);
+    expect(articleElement).not.toBeNull();
+    if (articleElement) {
+      expect(articleElement.getAttribute("role")).toBe(role);
+      expect(articleElement.getAttribute("aria-label")).toBe(ariaLabel);
+    }
   });
 
   it("renders the neuron stake and identifier", async () => {
@@ -61,7 +64,9 @@ describe("NeuronCard", () => {
       },
     });
 
-    const stakeText = formatICP(neuronMock.fullNeuron.cachedNeuronStake);
+    const stakeText = formatICP(
+      (neuronMock.fullNeuron as Neuron).cachedNeuronStake
+    );
     expect(getByText(stakeText)).toBeInTheDocument();
     expect(getByText(neuronMock.neuronId.toString())).toBeInTheDocument();
   });

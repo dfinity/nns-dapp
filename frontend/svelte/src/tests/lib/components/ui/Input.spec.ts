@@ -47,7 +47,7 @@ describe("Input", () => {
     container: HTMLElement;
   }) => {
     const input: HTMLInputElement | null = container.querySelector("input");
-    expect(input.getAttribute(attribute)).toEqual(expected);
+    input && expect(input.getAttribute(attribute)).toEqual(expected);
   };
 
   const testHasAttribute = ({
@@ -60,7 +60,7 @@ describe("Input", () => {
     container: HTMLElement;
   }) => {
     const input: HTMLInputElement | null = container.querySelector("input");
-    expect(input.hasAttribute(attribute)).toEqual(expected);
+    input && expect(input.hasAttribute(attribute)).toEqual(expected);
   };
 
   it("should render an input of type number", () => {
@@ -150,11 +150,14 @@ describe("Input", () => {
     });
 
     const input: HTMLInputElement | null = container.querySelector("input");
-    fireEvent.change(input, { target: { value: "test" } });
-    expect(input.value).toBe("");
+    expect(input).not.toBeNull();
+    if (input) {
+      fireEvent.change(input, { target: { value: "test" } });
+      expect(input.value).toBe("");
 
-    fireEvent.change(input, { target: { value: "123" } });
-    expect(input.value).toBe("123");
+      fireEvent.change(input, { target: { value: "123" } });
+      expect(input.value).toBe("123");
+    }
   });
 
   it("should accept text as input", () => {
@@ -166,18 +169,21 @@ describe("Input", () => {
     });
 
     const input: HTMLInputElement | null = container.querySelector("input");
-    fireEvent.change(input, { target: { value: "test" } });
-    expect(input.value).toBe("test");
+    expect(input).not.toBeNull();
+    if (input) {
+      fireEvent.change(input, { target: { value: "test" } });
+      expect(input.value).toBe("test");
 
-    fireEvent.change(input, { target: { value: "123" } });
-    expect(input.value).toBe("123");
+      fireEvent.change(input, { target: { value: "123" } });
+      expect(input.value).toBe("123");
 
-    fireEvent.change(input, { target: { value: "test123" } });
-    expect(input.value).toBe("test123");
+      fireEvent.change(input, { target: { value: "test123" } });
+      expect(input.value).toBe("test123");
+    }
   });
 
   it("should render the button slot", () => {
-    const { getByText, container } = render(InputTest, {
+    const { getByText } = render(InputTest, {
       props: {
         props: {
           ...props,
@@ -214,9 +220,9 @@ describe("Input", () => {
 
     const testInput = "new value";
     const testBind: HTMLSpanElement | null = container.querySelector("#test");
-    await fireEvent.click(testBind);
+    testBind && (await fireEvent.click(testBind));
 
     const input: HTMLInputElement | null = container.querySelector("input");
-    expect(input.value).toBe(testInput);
+    input && expect(input.value).toBe(testInput);
   });
 });

@@ -22,8 +22,10 @@ describe("Card", () => {
 
     const article = container.querySelector("article");
     expect(article).not.toBeNull();
-    expect(article.getAttribute("role")).toBe(role);
-    expect(article.getAttribute("aria-label")).toBe(ariaLabel);
+    if (article) {
+      expect(article.getAttribute("role")).toBe(role);
+      expect(article.getAttribute("aria-label")).toBe(ariaLabel);
+    }
   });
 
   it("should forward the click event", (done) => {
@@ -38,6 +40,6 @@ describe("Card", () => {
 
     const article = container.querySelector("article");
     expect(article).not.toBeNull();
-    fireEvent.click(article);
+    article && fireEvent.click(article);
   });
 });

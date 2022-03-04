@@ -36,7 +36,7 @@ describe("Toasts", () => {
     await waitForDialog(container);
 
     const dialog: HTMLDivElement | null = container.querySelector("div.toast");
-    expect(!dialog.classList.contains("error")).toBeTruthy();
+    dialog && expect(!dialog.classList.contains("error")).toBeTruthy();
 
     toastsStore.hide();
   });
@@ -49,7 +49,7 @@ describe("Toasts", () => {
     await waitForDialog(container);
 
     const dialog: HTMLDivElement | null = container.querySelector("div.toast");
-    expect(dialog.classList.contains("error")).toBeTruthy();
+    dialog && expect(dialog.classList.contains("error")).toBeTruthy();
 
     toastsStore.hide();
   });
@@ -94,7 +94,7 @@ describe("Toasts", () => {
     const button: HTMLButtonElement | null = container.querySelector(
       'button[aria-label="Close"]'
     );
-    fireEvent.click(button);
+    button && fireEvent.click(button);
 
     await waitFor(() =>
       expect(container.querySelector("div.toast")).toBeNull()
