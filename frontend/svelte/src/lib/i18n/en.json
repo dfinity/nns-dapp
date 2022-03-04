@@ -138,7 +138,8 @@
     "id_prefix": "Id:",
     "proposer_prefix": "Proposer:",
     "adopt": "Adopt",
-    "reject": "Reject"
+    "reject": "Reject",
+    "my_votes": "My Votes"
   },
   "neuron_detail": {
     "title": "Neuron"

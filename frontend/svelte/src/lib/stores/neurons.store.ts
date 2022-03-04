@@ -1,6 +1,8 @@
 import type { NeuronInfo } from "@dfinity/nns";
 import { writable } from "svelte/store";
 
+export type NeuronsStore = NeuronInfo[];
+
 /**
  * A store that contains the neurons
  *
@@ -8,7 +10,7 @@ import { writable } from "svelte/store";
  * - pushNeurons: append neurons to the current list of neurons. Notably useful when staking a new neuron.
  */
 const initNeuronsStore = () => {
-  const { subscribe, update, set } = writable<NeuronInfo[]>([]);
+  const { subscribe, update, set } = writable<NeuronsStore>([]);
 
   return {
     subscribe,
