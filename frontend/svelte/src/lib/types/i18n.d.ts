@@ -155,6 +155,7 @@ interface I18nProposal_detail {
   proposer_prefix: string;
   adopt: string;
   reject: string;
+  my_votes: string;
 }
 
 interface I18nNeuron_detail {
