@@ -70,7 +70,7 @@
     <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
     <ul>
       {#each neuronsVotedForProposal as neuron}
-        <li>
+        <li data-test="neuron-data">
           <p>{neuron.id}</p>
           <p class="vote-details">
             <span>{neuron.votingPower}</span>
