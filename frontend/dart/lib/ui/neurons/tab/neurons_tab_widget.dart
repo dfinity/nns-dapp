@@ -77,19 +77,21 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
               Flexible(
                 child: PageButton(
                   title: "Merge Neurons",
-                  onPress: () {
-                    OverlayBaseWidget.show(
-                      context,
-                      WizardOverlay(
-                        rootTitle: "Select Two neurons to merge",
-                        rootWidget: MergeNeuronSourceAccount(
-                          onCompleteAction: (context) {
-                            OverlayBaseWidget.of(context)?.dismiss();
-                          },
-                        ),
-                      ),
-                    );
-                  },
+                  onPress: context.boxes.neurons.values.length >= 2
+                      ? () {
+                          OverlayBaseWidget.show(
+                            context,
+                            WizardOverlay(
+                              rootTitle: "Select Two neurons to merge",
+                              rootWidget: MergeNeuronSourceAccount(
+                                onCompleteAction: (context) {
+                                  OverlayBaseWidget.of(context)?.dismiss();
+                                },
+                              ),
+                            ),
+                          );
+                        }
+                      : null,
                 ),
               ),
             ],

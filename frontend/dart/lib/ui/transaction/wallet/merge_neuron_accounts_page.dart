@@ -1,14 +1,9 @@
 import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
-import 'package:nns_dapp/ui/_components/constants.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
-import 'package:nns_dapp/ui/_components/valid_fields_submit_button.dart';
 import 'package:nns_dapp/ui/neurons/tab/neuron_row.dart';
-import 'package:nns_dapp/ui/transaction/wallet/merge_neuron_destination_page.dart';
 import 'package:universal_html/js.dart' as js;
-
 import '../../../nns_dapp.dart';
-import '../wizard_overlay.dart';
 
 class MergeNeuronSourceAccount extends StatefulWidget {
   MergeNeuronSourceAccount({required this.onCompleteAction});
@@ -25,8 +20,8 @@ class _MergeNeuronSourceAccountState extends State<MergeNeuronSourceAccount> {
   int currentSelectedCards = 0;
   bool isCardSelected = false;
 
-  final selectedAccounts = [];
-  final selectedAccountsColor = []; //[Colors.transparent, Colors.transparent];
+  final selectedAccounts = [].toList(growable: true);
+  final selectedAccountsColor = [];
 
   get index => null;
   @override
@@ -35,7 +30,6 @@ class _MergeNeuronSourceAccountState extends State<MergeNeuronSourceAccount> {
         ?.sortedByDescending((element) => element.createdTimestampSeconds.toBigInt))?.toList(growable: true);
     if (allAccounts != null && selectedAccountsColor.length != allAccounts.length) {
       selectedAccountsColor.length = allAccounts.length;
-      selectedAccounts.length = 1;
       for (int i = 0; i < selectedAccountsColor.length; i++) selectedAccountsColor[i] = Colors.transparent;
     }
 
@@ -83,61 +77,24 @@ class _MergeNeuronSourceAccountState extends State<MergeNeuronSourceAccount> {
                                       } else {
                                         selectedAccountsColor[index] = Colors.grey.shade800;
                                         currentSelectedCards += 1;
-                                        selectedAccounts.add(allAccounts[index]
-                                            .id); //TODO: am i passing neuron id or whole neuron to back end ?
+                                        selectedAccounts.add(allAccounts[index].id);
                                       }
-                                      print("Number of selected cards is : $currentSelectedCards");
-                                      //  print('selectedAccounts values after adding elements are :');
-                                      for (int i = 0; i < selectedAccounts.length; i++) print(selectedAccounts[i]);
+                                      print("Accounts id of selected neurons are :");
+                                      for (int i = 0; i < selectedAccounts.length; i++)
+                                        print('selectedAccounts[$i] : ${selectedAccounts[i]}');
                                     } else {
                                       if (currentSelectedCards == maxSelectedCards) {
                                         if (selectedAccountsColor[index] == Colors.grey.shade800) {
                                           selectedAccountsColor[index] = Colors.transparent;
                                           currentSelectedCards -= 1;
                                           selectedAccounts.remove(allAccounts[index].id);
-
-                                          // print('selectedAccounts values after removing elements are :');
-                                          for (int i = 0; i < selectedAccounts.length; i++) print(selectedAccounts[i]);
+                                          print("Account id of the remaining selected neuron is :");
+                                          for (int i = 0; i < selectedAccounts.length; i++)
+                                            print('${selectedAccounts[i]}');
                                         }
                                       }
                                     }
-                                    // if (currentSelectedCards < maxSelectedCards) {
-                                    //   if (selectedAccountsColor[index] == Colors.grey.shade800) {
-                                    //     selectedAccountsColor[index] = Colors.transparent;
-                                    //     currentSelectedCards -= 1;
-                                    //   } else {
-                                    //     selectedAccountsColor[index] = Colors.grey.shade800;
-                                    //     currentSelectedCards += 1;
-                                    //   }
-                                    //   print("Number of selected cards is : $currentSelectedCards");
-                                    // } else {
-                                    //   if (currentSelectedCards == maxSelectedCards) {
-                                    //     if (selectedAccountsColor[index] == Colors.grey.shade800) {
-                                    //       selectedAccountsColor[index] = Colors.transparent;
-                                    //       currentSelectedCards -= 1;
-                                    //     }
-                                    //   }
-                                    // }
                                   });
-
-                                  // setState(() {
-                                  //   isCardSelected = !isCardSelected;
-                                  // });
-
-                                  // if (currentSelectedCards < maxSelectedCards) {
-                                  //   setState(() {
-                                  //     currentSelectedCards += 1;
-                                  //   });
-                                  // }
-                                  // final address = e.identifier;
-                                  // print("Neuron address is : $address");
-                                  // final source =
-                                  //     context.boxes.neurons[address]!;
-                                  // print('Neuron source is : $source');
-                                  // WizardOverlay.of(context).pushPage(
-                                  //     "Select Destination",
-                                  //     SelectDestinationNeuronAccountPage(
-                                  //         source: source));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10.0, bottom: 60.0),
@@ -189,21 +146,15 @@ class _MergeNeuronSourceAccountState extends State<MergeNeuronSourceAccount> {
 
   Future performUpdate(BuildContext context) async {
     final neuronAccounts = context.boxes.neurons.values;
-    final neuronsSelected = [];
-    neuronsSelected.length = 2;
-    print('Number of neurons is : ${context.boxes.neurons.length}');
-    print('selectedAccounts[1]  : ${selectedAccounts[1]}');
-    print('selectedAccounts[2] : ${selectedAccounts[2]}');
+    List<Neuron> neuronsSelected = List.filled(2, Neuron.empty());
+
     for (int i = 0; i < context.boxes.neurons.length; i++) {
-      print('neurons $i is : ${neuronAccounts.elementAt(i).id}');
-    }
-    for (int i = 0; i < context.boxes.neurons.length; i++) {
-      if (selectedAccounts[1] == neuronAccounts.elementAt(i).id) {
+      if (selectedAccounts[0] == neuronAccounts.elementAt(i).id) {
         neuronsSelected[0] = neuronAccounts.elementAt(i);
-        print(' neuronAccounts.elementAt(i) :${neuronAccounts.elementAt(i).id}');
-      } else if (selectedAccounts[2] == neuronAccounts.elementAt(i).id) {
+        print(' neuronsSelected[0] id :${neuronsSelected.elementAt(0).id}');
+      } else if (selectedAccounts[1] == neuronAccounts.elementAt(i).id) {
         neuronsSelected[1] = neuronAccounts.elementAt(i);
-        print(' neuronAccounts.elementAt(i).id :${neuronAccounts.elementAt(i).id}');
+        print(' neuronsSelected[1] id :${neuronsSelected.elementAt(1).id}');
       }
     }
     final res =
