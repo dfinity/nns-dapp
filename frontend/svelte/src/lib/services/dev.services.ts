@@ -10,6 +10,10 @@ import { syncAccounts } from "./accounts.services";
 export const getICPs = async (icps: number) => {
   const { main }: AccountsStore = get(accountsStore);
 
+  if (!main) {
+    return;
+  }
+
   const result: BlockHeight | TransferError = await acquireICPTs({
     e8s: BigInt(icps * E8S_PER_ICP),
     accountIdentifier: main.identifier,
@@ -28,5 +32,8 @@ export const getICPs = async (icps: number) => {
   }
 
   const { identity }: AuthStore = get(authStore);
-  await syncAccounts({ identity });
+
+  if (identity) {
+    await syncAccounts({ identity });
+  }
 };
