@@ -106,7 +106,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (!["true", "1"].contains(REDIRECT_TO_LEGACY)) {
+    if (!["true", "1", "prod"].contains(REDIRECT_TO_LEGACY)) {
       html.window.location.assign("/v2/#/proposals");
       return Text('Redirecting...');
     }
