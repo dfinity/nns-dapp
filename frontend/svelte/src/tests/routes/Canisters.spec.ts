@@ -16,6 +16,7 @@ describe("Canisters", () => {
   let authStoreMock;
 
   const mockNNSDappCanister: NNSDappCanister = mock<NNSDappCanister>();
+  mockNNSDappCanister.getCanisters = jest.fn().mockResolvedValue([]);
 
   beforeEach(() => {
     authStoreMock = jest
