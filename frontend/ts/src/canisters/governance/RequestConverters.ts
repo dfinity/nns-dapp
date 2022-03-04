@@ -151,7 +151,7 @@ export default class RequestConverters {
   ): PbManageNeuron => {
     const merge = new PbManageNeuron.Merge();
     const sourceNeuronId = new PbNeuronId();
-    sourceNeuronId.setId(request.neuronId.toString());
+    sourceNeuronId.setId(request.sourceNeuronId.toString());
     merge.setSourceNeuronId(sourceNeuronId);
     const manageNeuron = new PbManageNeuron();
     const neuronId = new PbNeuronId();

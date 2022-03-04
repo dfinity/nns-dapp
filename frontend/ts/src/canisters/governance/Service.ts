@@ -381,13 +381,15 @@ export default class Service implements ServiceInterface {
       request: MergeRequest
   ): Promise<EmptyResponse> => {
     const rawRequest = this.requestConverters.fromMergeRequest(request);
-    await submitUpdateRequest(
+    const rawResponse = await submitUpdateRequest(
         this.agent,
         this.canisterId,
         "manage_neuron_pb",
         rawRequest.serializeBinary()
     );
-    return { Ok: null };
+    const response = PbManageNeuronResponse.deserializeBinary(rawResponse);
+
+    return this.responseConverters.toEmptyManageNeuronResponse(response);
   };
 
   public makeMotionProposal = async (

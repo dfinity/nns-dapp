@@ -236,6 +236,7 @@ class PlatformICApi extends AbstractPlatformICApi {
               neuronId: neuron1.id.toBigInt.toJS,
               sourceNeuronId: neuron2.id.toBigInt.toJS)));
       await fetchNeuron(neuronId: neuron1.id.toBigInt);
+      neuronSyncService!.removeNeuron(neuron2.id.toString());
       return Result.ok(unit);
     } catch (err) {
       return Result.err(Exception(err));
