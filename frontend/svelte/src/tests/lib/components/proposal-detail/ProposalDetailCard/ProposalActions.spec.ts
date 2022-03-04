@@ -36,9 +36,7 @@ describe("ProposalActions", () => {
     for (const [key, value] of fields) {
       const element = getByText(key);
       expect(element).toBeInTheDocument();
-      if (element.nextElementSibling !== null) {
-        expect(element.nextElementSibling.textContent).toBe(value);
-      }
+      expect(element.nextElementSibling?.textContent).toBe(value);
     }
   });
 });

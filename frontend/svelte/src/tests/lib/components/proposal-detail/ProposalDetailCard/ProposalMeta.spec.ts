@@ -25,11 +25,9 @@ describe("ProposalMeta", () => {
         proposalInfo: mockProposalInfo,
       },
     });
-    if (mockProposalInfo.proposer !== undefined) {
-      expect(
-        getByText(new RegExp(`${mockProposalInfo.proposer.toString()}$`))
-      ).toBeInTheDocument();
-    }
+    expect(
+      getByText(new RegExp(`${mockProposalInfo.proposer?.toString()}$`))
+    ).toBeInTheDocument();
   });
 
   it("should render topic", () => {
@@ -49,10 +47,8 @@ describe("ProposalMeta", () => {
         proposalInfo: mockProposalInfo,
       },
     });
-    if (mockProposalInfo.id !== undefined) {
-      expect(
-        getByText(new RegExp(`${mockProposalInfo.id.toString()}$`))
-      ).toBeInTheDocument();
-    }
+    expect(
+      getByText(new RegExp(`${mockProposalInfo.id?.toString()}$`))
+    ).toBeInTheDocument();
   });
 });

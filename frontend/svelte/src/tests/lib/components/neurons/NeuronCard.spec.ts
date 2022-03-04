@@ -50,11 +50,8 @@ describe("NeuronCard", () => {
 
     const articleElement = container.querySelector("article");
 
-    expect(articleElement).not.toBeNull();
-    if (articleElement) {
-      expect(articleElement.getAttribute("role")).toBe(role);
-      expect(articleElement.getAttribute("aria-label")).toBe(ariaLabel);
-    }
+    expect(articleElement?.getAttribute("role")).toBe(role);
+    expect(articleElement?.getAttribute("aria-label")).toBe(ariaLabel);
   });
 
   it("renders the neuron stake and identifier", async () => {
