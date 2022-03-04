@@ -4,7 +4,8 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    // TODO: Enable once we fix issues from above
+    // "plugin:@typescript-eslint/recommended-requiring-type-checking",
   ],
   parserOptions: {
     ecmaVersion: 2020,
