@@ -235,13 +235,41 @@ class PlatformICApi extends AbstractPlatformICApi {
         return Result.err(Exception("The neurons being merged must both have the same controller"));
       }
 
+      // To ensure any built up age bonus is always preserved, if one neuron is
+      // dissolving and the other is not, then we merge the dissolving neuron
+      // into the other. In all other cases we merge the smaller neuron into the
+      // larger one.
+
+      final neuron1Dissolving = neuron1.state == NeuronState.DISSOLVING;
+      final neuron2Dissolving = neuron2.state == NeuronState.DISSOLVING;
+
+      Neuron targetNeuron;
+      Neuron sourceNeuron;
+      if (neuron1Dissolving != neuron2Dissolving) {
+        if (neuron1Dissolving) {
+          targetNeuron = neuron2;
+          sourceNeuron = neuron1;
+        } else {
+          targetNeuron = neuron1;
+          sourceNeuron = neuron2;
+        }
+      } else {
+        if (neuron1.cachedNeuronStake.asE8s() >= neuron2.cachedNeuronStake.asE8s()) {
+          targetNeuron = neuron1;
+          sourceNeuron = neuron2;
+        } else {
+          targetNeuron = neuron2;
+          sourceNeuron = neuron1;
+        }
+      }
+
       await promiseToFuture(serviceApi!.merge(
           identity1,
           MergeRequest(
-              neuronId: neuron1.id.toBigInt.toJS,
-              sourceNeuronId: neuron2.id.toBigInt.toJS)));
-      await fetchNeuron(neuronId: neuron1.id.toBigInt);
-      neuronSyncService!.removeNeuron(neuron2.id.toString());
+              neuronId: targetNeuron.id.toBigInt.toJS,
+              sourceNeuronId: sourceNeuron.id.toBigInt.toJS)));
+      await fetchNeuron(neuronId: targetNeuron.id.toBigInt);
+      neuronSyncService!.removeNeuron(sourceNeuron.id.toString());
       return Result.ok(unit);
     } catch (err) {
       return Result.err(Exception(err));
