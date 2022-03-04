@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ProposalInfo, NeuronInfo, NeuronId } from "@dfinity/nns";
+  import type { ProposalInfo, NeuronId } from "@dfinity/nns";
   import { votedNeurons, Vote } from "@dfinity/nns";
   import Card from "../ui/Card.svelte";
   import { i18n } from "../../stores/i18n";
@@ -8,8 +8,6 @@
   import { neuronsStore } from "../../stores/neurons.store";
   import IconThumbDown from "../../icons/IconThumbDown.svelte";
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
-  import { onMount } from "svelte";
-  import { listNeurons } from "../../services/neurons.services";
 
   export let proposalInfo: ProposalInfo;
 
@@ -19,8 +17,6 @@
   const yesValue = Number(yes) / E8S_PER_ICP;
   const noValue = Number(no) / E8S_PER_ICP;
   const summ = yesValue + noValue;
-
-  onMount(listNeurons);
 
   type CompactNeuronInfo = {
     id: NeuronId;
