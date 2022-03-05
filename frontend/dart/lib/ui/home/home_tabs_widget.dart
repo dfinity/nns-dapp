@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage>
         } else if (_tabController.index == 2) {
           pageName = proposalsTabPage;
           if (!["true", "1", "prod"].contains(REDIRECT_TO_LEGACY)) {
-              html.window.location.assign("/v2/#/proposals");
+              html.window.location.replace("/v2/#/proposals");
           }
         } else if (_tabController.index == 3) {
           pageName = canistersTabPage;
