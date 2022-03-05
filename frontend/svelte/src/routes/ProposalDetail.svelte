@@ -20,7 +20,9 @@
   let proposalInfo: ProposalInfo;
 
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["never", "staging"].includes(process.env.REDIRECT_TO_LEGACY);
+  const showThisRoute = ["never", "staging"].includes(
+    process.env.REDIRECT_TO_LEGACY
+  );
   onMount(() => {
     if (!showThisRoute) {
       window.location.replace(`/${window.location.hash}`);
