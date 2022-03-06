@@ -32,19 +32,21 @@
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class={`wrapper ${size}`}
     >
-      <div class="toolbar">
-        {#if showBackButton}
-          <button
-            class="back"
-            on:click|stopPropagation={back}
-            aria-label={$i18n.core.back}><IconBackIosNew /></button
+      {#if $$slots.title}
+        <div class="toolbar">
+          {#if showBackButton}
+            <button
+              class="back"
+              on:click|stopPropagation={back}
+              aria-label={$i18n.core.back}><IconBackIosNew /></button
+            >
+          {/if}
+          <h3 id="modalTitle"><slot name="title" /></h3>
+          <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
+            ><IconClose /></button
           >
-        {/if}
-        <h3 id="modalTitle"><slot name="title" /></h3>
-        <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
-          ><IconClose /></button
-        >
-      </div>
+        </div>
+      {/if}
 
       <div class="content" id="modalContent">
         <slot />
