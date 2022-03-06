@@ -31,10 +31,19 @@ export const proposalActionFields = (
 
   return Object.entries(proposal.action[key])
     .filter(([key]) => key !== "payloadBytes")
-    .map(([key, value]: [string, object]) => [
-      key,
-      key === "payload" ? stringifyJson(value) : `${value}`,
-    ]);
+    .map(([key, value]: [string, object]) => {
+      let asText = stringifyJson(value, { indentation: 2 });
+      if (asText?.length) {
+        // remove redundant wrappers
+        // "text" -> text
+        asText = asText.replace(/^"(.*)"$/g, "$1");
+        // "123" -> 123 (bigint is a string because of poor JSON.stringify support. See stringifyJson)
+        asText = asText.replace(/"([\d]+)"/g, "$1");
+        // \" -> "
+        asText = asText.replace(/\\"/g, '"');
+      }
+      return [key, asText];
+    });
 };
 
 // TODO: replace w/ markdown renderer -- eg https://nns.ic0.app/#/proposal/43574
