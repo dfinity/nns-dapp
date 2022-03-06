@@ -1,6 +1,19 @@
 <script lang="ts">
-  import { NeuronInfo, ProposalInfo, ProposalStatus } from "@dfinity/nns";
+  import {
+    NeuronInfo,
+    ProposalInfo,
+    ProposalStatus,
+    notVotedNeurons as filterNotVotedNeurons,
+    Vote,
+  } from "@dfinity/nns";
+  import VoteConfirmationModal from "../../modals/proposals/VoteConfirmationModal.svelte";
+  import { listNeurons } from "../../services/neurons.services";
+  import { castVote } from "../../services/proposals.services";
+  import { authStore } from "../../stores/auth.store";
+  import { i18n } from "../../stores/i18n";
+  import { toastsStore } from "../../stores/toasts.store";
   import { formatVotingPower } from "../../utils/proposals.utils";
+  import { stringifyJson, uniqObjects } from "../../utils/utils";
   import Card from "../ui/Card.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
 
@@ -9,14 +22,22 @@
 
   let visible: boolean = false;
   let notVotedNeurons: NeuronInfo[] | undefined;
-  // TODO: convert to Set?
   let selectedNeuronIds: Set<bigint> | undefined;
-  let votingPowerSelected: bigint | undefined;
-  // TODO: use util filter
-  $: notVotedNeurons = neurons; /*notVotedNeurons({
-    neurons,
-    proposal: proposalInfo,
-  });*/
+  let selectedVotingPower: bigint | undefined;
+  let showConfirmationModal: boolean = false;
+  let selectedVoteType: Vote | undefined;
+
+  $: if (neurons) {
+    try {
+      notVotedNeurons = filterNotVotedNeurons({
+        neurons,
+        proposal: proposalInfo,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   $: visible =
     notVotedNeurons?.length &&
     proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
@@ -25,22 +46,13 @@
     selectedNeuronIds = new Set(
       notVotedNeurons.map(({ neuronId }) => neuronId)
     );
-  // TODO: check selection?
-  $: votingPowerSelected = notVotedNeurons
+  $: selectedVotingPower = notVotedNeurons
     ? notVotedNeurons
         .filter(({ neuronId }) => selectedNeuronIds.has(neuronId))
         .reduce((sum, { votingPower }) => sum + votingPower, 0n)
     : 0n;
 
-  $: console.log("selectedNeuronIds", selectedNeuronIds);
-
-  const adopt = () => {
-    console.log("adopt");
-  };
-  const reject = () => {
-    console.log("reject");
-  };
-  const toggleNeuron = (neuronId: bigint) => {
+  const toggleNeuronSelection = (neuronId: bigint) => {
     if (selectedNeuronIds.has(neuronId)) {
       selectedNeuronIds.delete(neuronId);
     } else {
@@ -48,16 +60,57 @@
     }
     selectedNeuronIds = selectedNeuronIds;
   };
+  const showAdoptConfirmation = () => {
+    selectedVoteType = Vote.YES;
+    showConfirmationModal = true;
+  };
+  const showRejectConfirmation = () => {
+    selectedVoteType = Vote.NO;
+    showConfirmationModal = true;
+  };
+  const cancelConfirmation = () => (showConfirmationModal = false);
+  const makeVote = async () => {
+    try {
+      // TODO: show spinner
+      const errors = await castVote({
+        neuronIds: Array.from(selectedNeuronIds),
+        vote: selectedVoteType,
+        proposalId: proposalInfo.id,
+        identity: $authStore.identity,
+      });
+      await listNeurons();
+      // TODO: hide spinner
+
+      // show one error message per UNIQ erroneous response
+      const errorDetails = uniqObjects(errors.filter(Boolean))
+        .map((error) => stringifyJson(error.errorMessage, { indentation: 2 }))
+        .join("\n");
+      if (errorDetails) {
+        console.error("vote:", errorDetails);
+        toastsStore.show({
+          labelKey: "error.register_vote",
+          level: "error",
+          detail: `\n${errorDetails}`,
+        });
+      }
+    } catch (error) {
+      console.error("vote unknown:", error);
+      toastsStore.show({
+        labelKey: "error.register_vote_unknown",
+        level: "error",
+        detail: stringifyJson(error, { indentation: 2 }),
+      });
+    }
+  };
 </script>
 
-<!-- 'You are about to cast $numVotes votes against this proposal, are you sure you want to proceed? ' -->
 {#if visible}
   <Card>
-    <h3 slot="start">Cast Vote</h3>
+    <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
 
     <p class="headline">
-      <span>neurons</span>
-      <span>voting power</span>
+      <span>{$i18n.proposal_detail__vote.neurons}</span>
+      <span>{$i18n.proposal_detail__vote.voting_power}</span>
     </p>
 
     <ul>
@@ -66,11 +119,10 @@
           <Checkbox
             inputId={`${neuronId}`}
             checked={selectedNeuronIds.has(neuronId)}
-            on:nnsChange={() => toggleNeuron(neuronId)}
+            on:nnsChange={() => toggleNeuronSelection(neuronId)}
             theme="dark"
             text="block"
-            selector="hide-unavailable-proposals"
-            inputFirst
+            selector="neuron-checkbox"
           >
             <span class="neuron-id">{`${neuronId}`}</span>
             <span class="neuron-voting-power"
@@ -82,23 +134,31 @@
     </ul>
 
     <p class="total">
-      <span>total</span>
-      {formatVotingPower(votingPowerSelected)}
+      <span>{$i18n.proposal_detail__vote.total}</span>
+      {formatVotingPower(selectedVotingPower)}
     </p>
 
-    <div role="toolbar" class="buttons">
+    <div role="toolbar">
       <button
-        disabled={!votingPowerSelected}
-        on:click={adopt}
-        class="primary full-width">Adopt</button
+        disabled={!selectedVotingPower}
+        on:click={showAdoptConfirmation}
+        class="primary full-width">{$i18n.proposal_detail__vote.adopt}</button
       >
       <button
-        disabled={!votingPowerSelected}
-        on:click={reject}
-        class="danger full-width">Reject</button
+        disabled={!selectedVotingPower}
+        on:click={showRejectConfirmation}
+        class="danger full-width">{$i18n.proposal_detail__vote.reject}</button
       >
     </div>
   </Card>
+  {#if showConfirmationModal}
+    <VoteConfirmationModal
+      on:nnsClose={cancelConfirmation}
+      on:nnsConfirm={makeVote}
+      voteType={selectedVoteType}
+      votingPower={selectedVotingPower}
+    />
+  {/if}
 {/if}
 
 <style lang="scss">
@@ -117,10 +177,10 @@
 
     // hide voting-power-headline because of the layout
     :last-child {
-      visibility: hidden;
+      display: none;
 
       @include media.min-width(small) {
-        visibility: visible;
+        display: initial;
       }
     }
   }
@@ -130,14 +190,12 @@
     padding: 0;
 
     // checkbox restyling
-    :global(.checkbox.dark) {
+    :global(.neuron-checkbox) {
       padding: var(--padding);
     }
-
     :global(input[type="checkbox"]) {
       margin-left: 0;
     }
-
     :global(label) {
       margin-left: calc(0.5 * var(--padding));
 
@@ -197,7 +255,7 @@
     }
   }
 
-  .buttons {
+  [role="toolbar"] {
     margin-top: var(--padding);
 
     display: flex;
