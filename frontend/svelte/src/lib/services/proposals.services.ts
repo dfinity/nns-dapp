@@ -134,3 +134,38 @@ export const getProposalId = (path: string): ProposalId | undefined => {
   // ignore not integer ids
   return isFinite(id) && `${id}` === pathDetail ? BigInt(id) : undefined;
 };
+
+/**
+ * Makes multiple registerVote calls (1 per neuronId).
+ * @returns List of errors (order is preserved)
+ */
+export const castVote = async ({
+  neuronIds,
+  proposalId,
+  vote,
+  identity,
+}: {
+  neuronIds: bigint[];
+  proposalId: ProposalId;
+  vote: Vote;
+  identity: Identity | null | undefined;
+}): Promise<Array<GovernanceError | undefined>> => {
+  if (!identity) {
+    throw new Error(get(i18n).error.missing_identity);
+  }
+
+  const governance: GovernanceCanister = GovernanceCanister.create({
+    agent: await createAgent({ identity, host: process.env.HOST }),
+  });
+  return Promise.all(
+    neuronIds.map((neuronId) =>
+      (
+        governance.registerVote({
+          neuronId,
+          vote,
+          proposalId,
+        }) as Promise<EmptyResponse>
+      ).then((res) => ("Err" in res ? res.Err : undefined))
+    )
+  );
+};
