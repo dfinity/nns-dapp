@@ -37,16 +37,6 @@ export const proposalActionFields = (
     ]);
 };
 
-// TODO: replace w/ markdown renderer -- eg https://nns.ic0.app/#/proposal/43574
-export const formatProposalSummary = (summary: string): string => {
-  if (!summary) return "";
-  // extend urls
-  return summary.replace(
-    /(https?:\/\/[\S]+)/g,
-    '<a target="_blank" href="$1">$1</a>'
-  );
-};
-
 /**
  * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal is OPEN and has at least one UNSPECIFIED ballots' vote.
  */
