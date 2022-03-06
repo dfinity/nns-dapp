@@ -40,3 +40,25 @@ export const translate = ({
 
   return key as string;
 };
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+const escapeRegExp = (regExpText: string): string =>
+  regExpText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+
+/**
+ * @example
+ * ("Why $1?", {$1: "World", Why: "Hallo", "?": "!"}) => "Hello World!"
+ */
+export const replacePlaceholders = (
+  text: string,
+  substitutions: { [from: string]: string }
+): string => {
+  if (!text) return text;
+
+  let result = text;
+  for (const [key, value] of Object.entries(substitutions)) {
+    result = result.replace(new RegExp(escapeRegExp(key), "g"), value);
+  }
+
+  return result;
+};
