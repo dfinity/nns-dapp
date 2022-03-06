@@ -8,6 +8,8 @@ interface I18nCore {
   create: string;
   filter: string;
   back: string;
+  confirm_yes: string;
+  confirm_no: string;
 }
 
 interface I18nError {
