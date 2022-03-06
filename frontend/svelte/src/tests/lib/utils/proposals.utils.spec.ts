@@ -271,8 +271,15 @@ describe("proposals-utils", () => {
       const fields = proposalActionFields(mockProposalInfo.proposal);
 
       expect(fields.map(([key]) => key).join()).toEqual(
-        "nnsFunctionId,nnsFunctionName,payload"
+        "nnsFunctionId,nodeProvider,nnsFunctionName,payload"
       );
+    });
+
+    it("should stringify all objects", () => {
+      const fields = proposalActionFields(mockProposalInfo.proposal);
+      const asText = fields.map((fields) => fields.join()).join();
+
+      expect(/\[object Object\]/.test(asText)).toBeFalsy();
     });
   });
 });
