@@ -80,7 +80,7 @@
   };
 
   const showThisRoute = ["never", "staging"].includes(
-    process.env.REDIRECT_TO_LEGACY || ""
+    process.env.REDIRECT_TO_LEGACY as string
   );
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
