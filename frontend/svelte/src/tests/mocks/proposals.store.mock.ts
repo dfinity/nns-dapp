@@ -4,6 +4,7 @@ import {
   ListProposalsRequest,
   ListProposalsResponse,
   ProposalStatus,
+  Vote,
 } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 
@@ -72,5 +73,19 @@ export class MockGovernanceCanister extends GovernanceCanister {
     proposalId: any;
   }): Promise<ProposalInfo | undefined> => {
     return { id: BigInt(404) } as unknown as ProposalInfo;
+  };
+
+  public registerVote = async ({
+    neuronId,
+    vote,
+    proposalId,
+  }: {
+    neuronId: bigint;
+    vote: Vote;
+    proposalId: bigint;
+  }) => {
+    return vote === Vote.YES
+      ? { Ok: null }
+      : { Err: { errorMessage: "error", errorType: 0 } };
   };
 }
