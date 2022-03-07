@@ -24,6 +24,7 @@ export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
   }
   const { identity }: AuthStore = get(authStore);
   if (!identity) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
     throw new Error("No identity found staking a neuron");
   }
   const agent = await createAgent({ identity, host: process.env.HOST });
@@ -51,6 +52,7 @@ export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
 export const listNeurons = async (): Promise<void> => {
   const { identity }: AuthStore = get(authStore);
   if (!identity) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
     throw new Error("No identity found listing neurons");
   }
   const agent = await createAgent({ identity, host: process.env.HOST });

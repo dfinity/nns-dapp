@@ -11,6 +11,7 @@ export const getICPs = async (icps: number) => {
   const { main }: AccountsStore = get(accountsStore);
 
   if (!main) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
     throw new Error("No account found to get ICPs");
   }
 
@@ -36,6 +37,7 @@ export const getICPs = async (icps: number) => {
   if (identity) {
     await syncAccounts({ identity });
   } else {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
     throw new Error("No identity found to sync accounts after getting ICPs");
   }
 };
