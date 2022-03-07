@@ -79,9 +79,12 @@
     debounceFindProposals = debounce(async () => await findProposals(), 250);
   };
 
+  const showThisRoute = ["never", "staging"].includes(
+    process.env.REDIRECT_TO_LEGACY
+  );
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
-    if (process.env.REDIRECT_TO_LEGACY) {
+    if (!showThisRoute) {
       window.location.replace(AppPath.Proposals);
     }
 
@@ -122,7 +125,7 @@
     });
 </script>
 
-{#if !process.env.REDIRECT_TO_LEGACY}
+{#if showThisRoute}
   <Layout>
     <section>
       <p>{$i18n.voting.text}</p>

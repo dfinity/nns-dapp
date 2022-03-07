@@ -36,7 +36,9 @@ describe("AddAccountModal", () => {
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard.parentElement);
+    accountCard &&
+      accountCard.parentElement &&
+      (await fireEvent.click(accountCard.parentElement));
 
     expect(queryByText(en.accounts.new_linked_account_title)).not.toBeNull();
   });
@@ -47,11 +49,12 @@ describe("AddAccountModal", () => {
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard.parentElement);
+    accountCard &&
+      accountCard.parentElement &&
+      (await fireEvent.click(accountCard.parentElement));
 
     const createButton = container.querySelector('button[type="submit"]');
-    expect(createButton).not.toBeNull();
-    expect(createButton.getAttribute("disabled")).not.toBeNull();
+    expect(createButton?.getAttribute("disabled")).not.toBeNull();
   });
 
   it("should have enabled Add Account button when entering name", async () => {
@@ -60,16 +63,17 @@ describe("AddAccountModal", () => {
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard.parentElement);
+    accountCard &&
+      accountCard.parentElement &&
+      (await fireEvent.click(accountCard.parentElement));
 
     const input = container.querySelector('input[name="newAccount"]');
     // Svelte generates code for listening to the `input` event
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(input, { target: { value: "test name" } });
+    input && (await fireEvent.input(input, { target: { value: "test name" } }));
 
     const createButton = container.querySelector('button[type="submit"]');
-    expect(createButton).not.toBeNull();
-    expect(createButton.getAttribute("disabled")).toBeNull();
+    expect(createButton?.getAttribute("disabled")).toBeNull();
   });
 
   it("should create a subaccount", async () => {
@@ -78,16 +82,18 @@ describe("AddAccountModal", () => {
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard.parentElement);
+    accountCard &&
+      accountCard.parentElement &&
+      (await fireEvent.click(accountCard.parentElement));
 
     const input = container.querySelector('input[name="newAccount"]');
     // Svelte generates code for listening to the `input` event
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(input, { target: { value: "test name" } });
+    input && (await fireEvent.input(input, { target: { value: "test name" } }));
 
     const createButton = container.querySelector('button[type="submit"]');
 
-    await fireEvent.click(createButton);
+    createButton && (await fireEvent.click(createButton));
 
     expect(createSubAccount).toBeCalled();
   });

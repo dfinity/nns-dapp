@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { Ballot, Vote } from "@dfinity/nns";
+import { Ballot, Proposal, ProposalInfo, Vote } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
 import { proposalsFiltersStore } from "../../../../lib/stores/proposals.store";
@@ -18,7 +18,10 @@ describe("ProposalCard", () => {
       },
     });
 
-    expect(getByText(mockProposals[0].proposal.title)).toBeInTheDocument();
+    const firstProposal = mockProposals[0] as ProposalInfo;
+    expect(
+      getByText((firstProposal.proposal as Proposal).title as string)
+    ).toBeInTheDocument();
   });
 
   it("should render a proposal status", () => {
@@ -93,7 +96,7 @@ describe("ProposalCard", () => {
 
     const button = container.querySelector("button.text");
     expect(button).not.toBeNull();
-    await fireEvent.click(button);
+    button && (await fireEvent.click(button));
 
     await waitFor(() =>
       expect(container.querySelector("div.modal")).not.toBeNull()

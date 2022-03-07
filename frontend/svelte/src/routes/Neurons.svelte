@@ -18,8 +18,9 @@
 
   let isLoading: boolean = false;
   // TODO: To be removed once this page has been implemented
+  const showThisRoute = process.env.REDIRECT_TO_LEGACY === "never";
   onMount(async () => {
-    if (process.env.REDIRECT_TO_LEGACY) {
+    if (!showThisRoute) {
       window.location.replace("/#/neurons");
     }
     try {
@@ -57,7 +58,7 @@
   };
 </script>
 
-{#if !process.env.REDIRECT_TO_LEGACY}
+{#if showThisRoute}
   <Layout>
     <section>
       <p>{$i18n.neurons.text}</p>

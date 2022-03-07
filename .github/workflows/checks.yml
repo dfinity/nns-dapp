@@ -158,6 +158,7 @@ jobs:
         working-directory: ./frontend/svelte
     env:
       DEPLOY_ENV: mainnet
+      REDIRECT_TO_LEGACY: never
 
     steps:
       - name: Checkout

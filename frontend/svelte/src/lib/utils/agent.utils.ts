@@ -7,9 +7,14 @@ export const createAgent = async ({
   identity: Identity;
   host?: string;
 }): Promise<HttpAgent> => {
-  const agent: HttpAgent = new HttpAgent({ identity, ...(host && { host }) });
+  const agent: HttpAgent = new HttpAgent({
+    identity,
+    ...(host !== undefined && { host }),
+  });
 
-  if (process.env.FETCH_ROOT_KEY) {
+  // process.env.FETCH_ROOT_KEY is changed to `true`, but we hande nullish/empty cases explicitly
+  // @ts-ignore
+  if (process.env.FETCH_ROOT_KEY === true) {
     // Fetch root key for certificate validation during development or on testnet
     await agent.fetchRootKey();
   }
