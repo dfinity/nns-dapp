@@ -70,8 +70,10 @@
   };
   const cancelConfirmation = () => (showConfirmationModal = false);
   const makeVote = async () => {
+    showConfirmationModal = false;
+    busyStore.start("vote");
+
     try {
-      // TODO: show spinner
       const errors = await castVote({
         neuronIds: Array.from(selectedNeuronIds),
         vote: selectedVoteType,
@@ -79,7 +81,6 @@
         identity: $authStore.identity,
       });
       await listNeurons();
-      // TODO: hide spinner
 
       // show one error message per UNIQ erroneous response
       const errorDetails = uniqObjects(errors.filter(Boolean))
@@ -101,6 +102,8 @@
         detail: stringifyJson(error, { indentation: 2 }),
       });
     }
+
+    busyStore.stop("vote");
   };
 </script>
 
