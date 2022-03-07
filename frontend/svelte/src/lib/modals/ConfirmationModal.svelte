@@ -10,11 +10,15 @@
   <article>
     <slot />
     <div role="toolbar">
-      <button on:click={() => dispatch("nnsClose")} class="secondary full-width"
-        >{$i18n.core.confirm_no}</button
+      <button
+        data-test="confirm-no"
+        on:click={() => dispatch("nnsClose")}
+        class="secondary full-width">{$i18n.core.confirm_no}</button
       >
-      <button class="primary full-width" on:click={() => dispatch("nnsConfirm")}
-        >{$i18n.core.confirm_yes}</button
+      <button
+        data-test="confirm-yes"
+        class="primary full-width"
+        on:click={() => dispatch("nnsConfirm")}>{$i18n.core.confirm_yes}</button
       >
     </div>
   </article>
