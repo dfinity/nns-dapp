@@ -1,13 +1,20 @@
 <script lang="ts">
   export let role: "link" | "button" | undefined = undefined;
   export let ariaLabel: string | undefined = undefined;
+  export let dataTest: string | undefined = undefined;
 
   let clickable: boolean = false;
 
-  $: clickable = role ? ["button", "link"].includes(role) : false;
+  $: clickable = role !== undefined ? ["button", "link"].includes(role) : false;
 </script>
 
-<article {role} on:click class:clickable aria-label={ariaLabel}>
+<article
+  {role}
+  on:click
+  class:clickable
+  aria-label={ariaLabel}
+  data-test={dataTest}
+>
   <div>
     <slot name="start" />
     <slot name="end" />

@@ -15,14 +15,24 @@
   let stateInfo: StateInfo;
   $: stateInfo = getStateInfo(neuron.state);
   let isCommunityFund: boolean;
-  $: isCommunityFund = !!neuron.joinedCommunityFundTimestampSeconds;
-  let isHotKeyControl: boolean;
-  $: isHotKeyControl = !neuron.fullNeuron?.isCurrentUserController;
+  $: isCommunityFund = neuron.joinedCommunityFundTimestampSeconds !== undefined;
   let neuronICP: ICP;
   $: neuronICP = ICP.fromE8s(neuron.fullNeuron?.cachedNeuronStake || BigInt(0));
+  $: isHotKeyControl =
+    neuron.fullNeuron?.isCurrentUserController === undefined
+      ? true
+      : !neuron.fullNeuron?.isCurrentUserController;
+  let dissolvingTime: bigint | undefined;
+  $: dissolvingTime =
+    neuron.state === NeuronState.DISSOLVING &&
+    neuron.fullNeuron !== undefined &&
+    neuron.fullNeuron.dissolveState !== undefined &&
+    "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
+      ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
+      : undefined;
 </script>
 
-<Card {role} on:click {ariaLabel}>
+<Card {role} on:click {ariaLabel} dataTest="neuron-card">
   <div slot="start" class="lock">
     <h4 class:has-neuron-control={isCommunityFund || isHotKeyControl}>
       {neuron.neuronId}
@@ -40,15 +50,15 @@
   </div>
 
   <div slot="end" class="currency">
-    <ICPComponent icp={neuronICP} />
-    <h5>{$i18n.neurons.stake}</h5>
+    {#if neuronICP}
+      <ICPComponent icp={neuronICP} />
+      <h5>{$i18n.neurons.stake}</h5>
+    {/if}
   </div>
 
-  {#if neuron.state === NeuronState.DISSOLVING && neuron.fullNeuron?.dissolveState && "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState}
+  {#if dissolvingTime !== undefined}
     <p class="duration">
-      {secondsToDuration(
-        neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
-      )}
+      {secondsToDuration(dissolvingTime)}
     </p>
   {/if}
 
