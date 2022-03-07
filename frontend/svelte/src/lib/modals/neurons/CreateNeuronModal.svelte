@@ -67,7 +67,7 @@
 >
   <span slot="title">{$i18n.neurons?.[titleKey]}</span>
   <main>
-    {#if (currentStep === Steps.SelectAccount) && (selectedAccount !== undefined)}
+    {#if currentStep === Steps.SelectAccount && selectedAccount !== undefined}
       <Transition {diff}>
         <SelectAccount
           main={selectedAccount}
