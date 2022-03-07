@@ -45,7 +45,7 @@ jobs:
          - BUILD_NAME: "mainnet"
            DEPLOY_ENV: "mainnet"
            OWN_CANISTER_ID: ""
-           REDIRECT_TO_LEGACY: "true"
+           REDIRECT_TO_LEGACY: "prod"
     steps:
       - uses: actions/checkout@v2
       - name: Set up docker buildx
