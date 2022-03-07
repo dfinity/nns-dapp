@@ -50,14 +50,16 @@
 <section>
   <div>
     <h5>{$i18n.neurons.neuron_id}</h5>
-    <p>12312312312331223</p>
+    <p>{neuronId}</p>
   </div>
   <div>
     <h5>{$i18n.neurons.neuron_balance}</h5>
+    <!-- TODO: Get Neuron info https://dfinity.atlassian.net/browse/L2-330 -->
     <p>1.10 ICP Stake</p>
   </div>
   <div>
     <h5>{$i18n.neurons.current_dissolve_delay}</h5>
+    <!-- TODO: Get Neuron info https://dfinity.atlassian.net/browse/L2-330 -->
     <p>0</p>
   </div>
   <Card>
@@ -75,6 +77,7 @@
       />
       <div class="details">
         <div>
+          <!-- TODO: Voting Power Calculation https://dfinity.atlassian.net/browse/L2-330 -->
           <h5>1.26</h5>
           <p>{$i18n.neurons.voting_power}</p>
         </div>
