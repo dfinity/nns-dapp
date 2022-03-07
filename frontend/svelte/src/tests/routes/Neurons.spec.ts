@@ -3,13 +3,13 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
+import * as en from "../../lib/i18n/en.json";
 import { authStore } from "../../lib/stores/auth.store";
 import Neurons from "../../routes/Neurons.svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "../mocks/auth.store.mock";
-import * as en from "../../lib/i18n/en.json";
 
 describe("Neurons", () => {
   let authStoreMock: jest.MockedFunction<any>;
