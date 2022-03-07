@@ -9,7 +9,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { AppPath } from "../lib/constants/routes.constants";
-  import type { ProposalInfo } from "@dfinity/nns";
+  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
   import CastVoteCard from "../lib/components/proposal-detail/CastVoteCard.svelte";
@@ -30,22 +30,24 @@
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    const proposalId = getProposalId(path);
-    if (proposalId === undefined) {
+    const proposalIdMaybe = getProposalId(path);
+    if (proposalIdMaybe === undefined) {
       unsubscribe();
       routeStore.replace({ path: AppPath.Proposals });
       return;
     }
+    const proposalId: ProposalId = proposalIdMaybe;
 
     try {
-      proposalInfo = await getProposalInfo({
+      const proposalInfoMaybe = await getProposalInfo({
         proposalId,
         identity: $authStore.identity,
       });
 
-      if (!proposalInfo) {
+      if (!proposalInfoMaybe) {
         throw new Error("Proposal not found");
       }
+      proposalInfo = proposalInfoMaybe;
     } catch (error) {
       unsubscribe();
 
