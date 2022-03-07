@@ -128,8 +128,8 @@ class _MergeNeuronSourceAccountState extends State<MergeNeuronSourceAccount> {
                   OverlayBaseWidget.show(
                     context,
                     ConfirmDialog(
-                      title: "Confirm you want to merge these neurons",
-                      description: "This will merge the selected neurons . This process is irreversible",
+                      title: "Confirm Merge Neurons",
+                      description: "Are you sure you want to merge these neurons? This process is irreversible",
                       onConfirm: () async {
                         await performUpdate(context);
                       },
