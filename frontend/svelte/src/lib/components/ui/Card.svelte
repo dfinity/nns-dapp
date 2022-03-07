@@ -4,7 +4,7 @@
 
   let clickable: boolean = false;
 
-  $: clickable = ["button", "link"].includes(role);
+  $: clickable = (["button", "link"] as (string | undefined)[]).includes(role);
 </script>
 
 <article {role} on:click class:clickable aria-label={ariaLabel}>

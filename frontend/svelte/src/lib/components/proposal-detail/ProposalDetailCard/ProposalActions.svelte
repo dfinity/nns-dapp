@@ -9,9 +9,9 @@
   export let proposal: Proposal | undefined;
 
   let actionKey: string | undefined;
-  let actionFields: [string, string][] | undefined;
-  $: actionKey = proposalFirstActionKey(proposal);
-  $: actionFields = proposalActionFields(proposal);
+  let actionFields: [string, string][] = [];
+  $: actionKey = proposal !== undefined? proposalFirstActionKey(proposal) : undefined;
+  $: actionFields = (proposal !== undefined) && proposalActionFields(proposal) || [];
 </script>
 
 <CardBlock>

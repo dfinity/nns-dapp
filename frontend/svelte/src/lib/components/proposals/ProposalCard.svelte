@@ -18,13 +18,13 @@
   export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal | undefined;
-  let status: ProposalStatus | undefined;
+  let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
   let id: ProposalId | undefined;
   let title: string | undefined;
   let color: ProposalColor | undefined;
 
   $: ({ proposal, status, id } = proposalInfo);
-  $: ({ title } = proposal);
+  $: (title  = proposal?.title);
   $: color = PROPOSAL_COLOR[status];
 
   const showProposal = () => {

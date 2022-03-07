@@ -17,9 +17,9 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = !!neuron.joinedCommunityFundTimestampSeconds;
   let isHotKeyControl: boolean;
-  $: isHotKeyControl = !neuron.fullNeuron.isCurrentUserController;
+  $: isHotKeyControl = !neuron.fullNeuron?.isCurrentUserController;
   let neuronICP: ICP;
-  $: neuronICP = ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake);
+  $: neuronICP = ICP.fromE8s(neuron.fullNeuron?.cachedNeuronStake || BigInt(0));
 </script>
 
 <Card {role} on:click {ariaLabel}>
@@ -44,7 +44,7 @@
     <h5>{$i18n.neurons.stake}</h5>
   </div>
 
-  {#if neuron.state === NeuronState.DISSOLVING && "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState}
+  {#if neuron.state === NeuronState.DISSOLVING && neuron.fullNeuron?.dissolveState && "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState }
     <p class="duration">
       {secondsToDuration(
         neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds

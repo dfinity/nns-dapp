@@ -24,7 +24,7 @@ import { createAgent } from "../utils/agent.utils";
  */
 export const syncAccounts = async ({
   identity,
-}: HasIdentity): Promise<void> => {
+}): Promise<void> => {
   const accounts: AccountsStore = await loadAccounts({ identity });
   accountsStore.set(accounts);
 };
@@ -34,6 +34,10 @@ const loadAccounts = async ({
 }: {
   identity: Identity | undefined | null;
 }): Promise<AccountsStore> => {
+  if (!identity) {
+    // Return a falsy result to the promise.
+    throw new Error("No identity");
+  }
   const agent = await createAgent({ identity, host: identityServiceURL });
   // ACCOUNTS
   const nnsDapp: NNSDappCanister = NNSDappCanister.create({

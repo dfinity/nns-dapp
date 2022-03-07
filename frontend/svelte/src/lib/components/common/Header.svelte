@@ -3,7 +3,7 @@
   import { i18n } from "../../stores/i18n";
   import GetICPs from "../ic/GetICPs.svelte";
 
-  const deployEnv: string = process.env.DEPLOY_ENV;
+  const deployEnv: string = process.env.DEPLOY_ENV || "undefined";
 </script>
 
 <header>
