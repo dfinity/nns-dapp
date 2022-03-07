@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Proposal, ProposalInfo, ProposalStatus, Topic } from "@dfinity/nns";
+  import { Proposal, ProposalInfo, ProposalStatus } from "@dfinity/nns";
   import Badge from "../../ui/Badge.svelte";
   import Card from "../../ui/Card.svelte";
   import {
@@ -11,7 +11,7 @@
   import ProposalMeta from "./ProposalMeta.svelte";
   import ProposalActions from "./ProposalActions.svelte";
 
-  export let proposalInfo: ProposalInfo;
+  export let proposalInfo: ProposalInfo | undefined;
 
   let proposal: Proposal | undefined;
   let title: string | undefined;
