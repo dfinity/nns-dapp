@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { i18n } from "../lib/stores/i18n";
 
