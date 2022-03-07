@@ -61,7 +61,7 @@
         {/if}
       </div>
 
-      {#if accounts?.main}
+      {#if accounts?.main?.identifier}
         <AccountCard
           role="link"
           on:click={() => cardClick(accounts?.main?.identifier || "")}
