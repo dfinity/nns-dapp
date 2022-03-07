@@ -1,5 +1,6 @@
-import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
+import { GovernanceCanister, ProposalInfo, Vote } from "@dfinity/nns";
 import {
+  castVote,
   getProposalId,
   getProposalInfo,
   listNextProposals,
@@ -20,6 +21,7 @@ describe("proposals-services", () => {
 
   let spyListProposals;
   let spyProposalInfo;
+  let spyRegisterVote;
 
   beforeEach(() => {
     jest
@@ -28,6 +30,7 @@ describe("proposals-services", () => {
 
     spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
     spyProposalInfo = jest.spyOn(mockGovernanceCanister, "getProposalInfo");
+    spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
   });
 
   afterEach(() => spyListProposals.mockClear());
@@ -133,5 +136,45 @@ describe("proposals-services", () => {
       identity: mockIdentity,
     });
     expect(spyListProposals).not.toBeCalled();
+  });
+
+  describe("castVote", () => {
+    const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
+    const identity = mockIdentity;
+    const proposalId = BigInt(0);
+
+    it("should call the canister to cast vote neuronIds count", async () => {
+      await castVote({
+        neuronIds,
+        proposalId,
+        vote: Vote.YES,
+        identity,
+      });
+      expect(spyRegisterVote).toHaveReturnedTimes(3);
+    });
+
+    it("should return list of undefined on successful update", async () => {
+      const results = await castVote({
+        neuronIds,
+        proposalId,
+        vote: Vote.YES,
+        identity,
+      });
+      expect(results).toEqual([undefined, undefined, undefined]);
+    });
+
+    it("should return list of unwrapped errors on update fail", async () => {
+      const results = await castVote({
+        neuronIds,
+        proposalId,
+        vote: Vote.NO,
+        identity,
+      });
+      expect(results).toEqual([
+        { errorMessage: "error", errorType: 0 },
+        { errorMessage: "error", errorType: 0 },
+        { errorMessage: "error", errorType: 0 },
+      ]);
+    });
   });
 });
