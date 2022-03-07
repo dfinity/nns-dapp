@@ -10,6 +10,7 @@
   import { listNeurons } from "../../services/neurons.services";
   import { castVote } from "../../services/proposals.services";
   import { authStore } from "../../stores/auth.store";
+  import { busyStore } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
   import { formatVotingPower } from "../../utils/proposals.utils";
