@@ -71,6 +71,7 @@
 >
   <span slot="title">{$i18n.neurons?.[titleKey]}</span>
   <main>
+    <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
     {#if currentStep === Steps.SelectAccount && selectedAccount}
       <Transition {diff}>
         <SelectAccount
@@ -79,6 +80,7 @@
         />
       </Transition>
     {/if}
+    <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
     {#if currentStep === Steps.StakeNeuron && selectedAccount}
       <Transition {diff}>
         <StakeNeuron
@@ -87,6 +89,7 @@
         />
       </Transition>
     {/if}
+    <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
     {#if currentStep === Steps.SetDissolveDelay && newNeuronId}
       <Transition {diff}>
         <!-- TODO: Edit Followees https://dfinity.atlassian.net/browse/L2-337 -->

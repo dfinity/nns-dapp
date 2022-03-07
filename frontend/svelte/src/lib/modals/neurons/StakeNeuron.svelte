@@ -69,6 +69,7 @@
         name="amount"
         bind:value={amount}
         theme="dark"
+        inputType="number"
       >
         <button
           type="button"

@@ -39,7 +39,7 @@
       });
       dispatcher("nnsNext");
     } catch (error) {
-      // TODO: Manage errors
+      // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-329
       console.error(error);
     } finally {
       loading = false;
