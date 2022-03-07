@@ -13,7 +13,7 @@
 
   if (!proposalInfo) throw new Error("no proposalInfo provided");
 
-  const { yes, no } = proposalInfo.latestTally;
+  const { yes, no } = proposalInfo.latestTally || {};
   const yesValue = Number(yes) / E8S_PER_ICP;
   const noValue = Number(no) / E8S_PER_ICP;
   const summ = yesValue + noValue;
@@ -40,7 +40,9 @@
       vote: recentBallots.find(
         ({ proposalId }) => proposalId === proposalInfo.id
       )?.vote,
-    }));
+    }))
+    // Exclude the cases where the vote was not found.
+    .filter(compactNeuronInfoMaybe => compactNeuronInfoMaybe.vote !== undefined) as CompactNeuronInfo[];
   }
 </script>
 
