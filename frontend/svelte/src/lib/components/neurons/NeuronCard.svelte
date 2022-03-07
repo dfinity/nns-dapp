@@ -12,6 +12,7 @@
   export let role: undefined | "link" | "button" = undefined;
   export let ariaLabel: string | undefined = undefined;
 
+  // TODO: https://dfinity.atlassian.net/browse/L2-366
   let stateInfo: StateInfo;
   $: stateInfo = getStateInfo(neuron.state);
   let isCommunityFund: boolean;
