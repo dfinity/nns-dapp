@@ -40,7 +40,7 @@ describe("Modal", () => {
 
   it("should be an accessible modal", () => {
     const { container } = render(Modal, {
-      props,
+      props: { ...props, showBackButton: true },
     });
 
     const dialog: HTMLElement | null =
@@ -77,7 +77,7 @@ describe("Modal", () => {
 
   it("should render a toolbar", () => {
     const { container } = render(Modal, {
-      props,
+      props: { ...props, showBackButton: true },
     });
 
     const toolbar: HTMLDivElement | null =
@@ -115,7 +115,7 @@ describe("Modal", () => {
 
   it("should trigger close modal on click on close button", (done) => {
     const { container, component } = render(Modal, {
-      props,
+      props: { ...props, showBackButton: true },
     });
 
     component.$on("nnsClose", (e) => {

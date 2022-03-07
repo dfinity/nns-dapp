@@ -14,6 +14,9 @@
   // Please do not use `showBackButton` without listening on `nnsBack`
   export let showBackButton: boolean = false;
 
+  let showToolbar: boolean;
+  $: showToolbar = $$slots.title || showBackButton;
+
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
   const back = () => dispatch("nnsBack");
@@ -24,7 +27,7 @@
     class={`modal ${theme}`}
     transition:fade
     role="dialog"
-    aria-labelledby="modalTitle"
+    aria-labelledby={showToolbar ? "modalTitle" : undefined}
     aria-describedby="modalContent"
   >
     <div class="backdrop" on:click={close} />
@@ -32,7 +35,7 @@
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class={`wrapper ${size}`}
     >
-      {#if $$slots.title}
+      {#if showToolbar}
         <div class="toolbar">
           {#if showBackButton}
             <button
