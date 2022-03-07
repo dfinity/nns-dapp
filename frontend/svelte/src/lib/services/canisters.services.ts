@@ -32,6 +32,7 @@ const queryCanisters = async ({
   identity: Identity | null | undefined;
 }): Promise<CanisterDetails[]> => {
   if (!identity) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
     throw new Error(get(i18n).error.missing_identity);
   }
 

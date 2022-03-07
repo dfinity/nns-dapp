@@ -8,10 +8,12 @@
 
   let visible: boolean = JSON.parse(
     localStorage.getItem(localstorageKey) || "true"
-  );
+  ) as boolean;
 
   const testnet: boolean = process.env.DEPLOY_ENV === "testnet";
-  const localEnv: boolean = JSON.parse(process.env.ROLLUP_WATCH || "false");
+  const localEnv: boolean = JSON.parse(
+    process.env.ROLLUP_WATCH || "false"
+  ) as boolean;
   const banner: boolean = testnet && !localEnv;
 
   const rootStyle: string = `

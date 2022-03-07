@@ -3,7 +3,6 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import { tick } from "svelte";
 import { authStore } from "../../lib/stores/auth.store";
 import Neurons from "../../routes/Neurons.svelte";
 import {
@@ -56,10 +55,8 @@ describe("Neurons", () => {
     expect(toolbarButton).not.toBeNull();
     expect(queryByText(en.neurons.select_source)).toBeNull();
 
-    fireEvent.click(toolbarButton);
+    toolbarButton && (await fireEvent.click(toolbarButton));
 
-    // Wait for the modal to appear
-    await tick();
     expect(queryByText(en.neurons.select_source)).not.toBeNull();
   });
 });
