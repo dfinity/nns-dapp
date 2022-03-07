@@ -33,7 +33,9 @@ describe("neurons-services", () => {
     jest.resetAllMocks();
   });
   it("stakeNeuron creates a new neuron", async () => {
-    jest.spyOn(LedgerCanister, "create").mockImplementation(() => undefined);
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mock<LedgerCanister>());
 
     await stakeNeuron({
       stake: ICP.fromString("2") as ICP,
@@ -45,7 +47,9 @@ describe("neurons-services", () => {
   it(`stakeNeuron should raise an error if amount less than ${
     E8S_PER_ICP / E8S_PER_ICP
   } ICP`, async () => {
-    jest.spyOn(LedgerCanister, "create").mockImplementation(() => undefined);
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mock<LedgerCanister>());
 
     const call = () =>
       stakeNeuron({

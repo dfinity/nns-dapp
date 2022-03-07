@@ -45,9 +45,9 @@ describe("Modal", () => {
 
     const dialog: HTMLElement | null =
       container.querySelector('[role="dialog"]');
-    expect(dialog).not.toBeNull();
-    expect(dialog.getAttribute("aria-labelledby")).toEqual("modalTitle");
-    expect(dialog.getAttribute("aria-describedby")).toEqual("modalContent");
+
+    expect(dialog?.getAttribute("aria-labelledby")).toEqual("modalTitle");
+    expect(dialog?.getAttribute("aria-describedby")).toEqual("modalContent");
 
     expect(container.querySelector("#modalTitle")).not.toBeNull();
     expect(container.querySelector("#modalContent")).not.toBeNull();
@@ -83,9 +83,8 @@ describe("Modal", () => {
     const toolbar: HTMLDivElement | null =
       container.querySelector("div.toolbar");
 
-    expect(toolbar).not.toBeNull();
-    expect(toolbar.querySelector("h3")).not.toBeNull();
-    expect(toolbar.querySelector("button")).not.toBeNull();
+    expect(toolbar?.querySelector("h3")).not.toBeNull();
+    expect(toolbar?.querySelector("button")).not.toBeNull();
   });
 
   it("should render a content", () => {
@@ -104,13 +103,13 @@ describe("Modal", () => {
       props,
     });
 
-    component.$on("nnsClose", (e) => {
+    component.$on("nnsClose", () => {
       done();
     });
 
     const backdrop: HTMLDivElement | null =
       container.querySelector("div.backdrop");
-    fireEvent.click(backdrop);
+    backdrop && fireEvent.click(backdrop);
   });
 
   it("should trigger close modal on click on close button", (done) => {
@@ -125,7 +124,7 @@ describe("Modal", () => {
     const button: HTMLButtonElement | null = container.querySelector(
       'button[aria-label="Close"]'
     );
-    fireEvent.click(button);
+    button && fireEvent.click(button);
   });
 
   it("should trigger back event on click on back button", (done) => {
@@ -140,6 +139,6 @@ describe("Modal", () => {
     const button: HTMLButtonElement | null = container.querySelector(
       'button[aria-label="Back"]'
     );
-    fireEvent.click(button);
+    button && fireEvent.click(button);
   });
 });

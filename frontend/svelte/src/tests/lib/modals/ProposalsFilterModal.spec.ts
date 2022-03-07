@@ -4,7 +4,6 @@
 
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import { get } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import ProposalsFilterModal from "../../../lib/modals/proposals/ProposalsFilterModal.svelte";
@@ -54,18 +53,19 @@ describe("ProposalsFilterModal", () => {
       props,
     });
 
-    component.$on("nnsClose", (e) => {
+    component.$on("nnsClose", () => {
       done();
     });
 
     const button: HTMLButtonElement | null = container.querySelector(
       "button:first-of-type"
     );
-    fireEvent.click(button);
+
+    button && fireEvent.click(button);
   });
 
   it("should filter filters", async () => {
-    const { container, component } = render(ProposalsFilterModal, {
+    const { container } = render(ProposalsFilterModal, {
       props,
     });
 
@@ -84,9 +84,7 @@ describe("ProposalsFilterModal", () => {
     const button: HTMLButtonElement | null = container.querySelector(
       "div.wrapper > button"
     );
-    fireEvent.click(button);
-
-    await tick();
+    button && (await fireEvent.click(button));
 
     const selectedTopics = get(proposalsFiltersStore).topics;
     expect(selectedTopics).toEqual([...DEFAULT_PROPOSALS_FILTERS.topics, 0, 1]);

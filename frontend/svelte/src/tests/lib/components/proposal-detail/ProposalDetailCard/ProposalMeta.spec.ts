@@ -26,7 +26,7 @@ describe("ProposalMeta", () => {
       },
     });
     expect(
-      getByText(new RegExp(`${mockProposalInfo.proposer.toString()}$`))
+      getByText(new RegExp(`${mockProposalInfo.proposer?.toString()}$`))
     ).toBeInTheDocument();
   });
 
@@ -48,7 +48,7 @@ describe("ProposalMeta", () => {
       },
     });
     expect(
-      getByText(new RegExp(`${mockProposalInfo.id.toString()}$`))
+      getByText(new RegExp(`${mockProposalInfo.id?.toString()}$`))
     ).toBeInTheDocument();
   });
 });

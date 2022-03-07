@@ -28,7 +28,7 @@ describe("AccountCard", () => {
 
     const balance = container.querySelector("article > div span:first-of-type");
 
-    expect(balance.textContent).toEqual(
+    expect(balance?.textContent).toEqual(
       `${formatICP(mockMainAccount.balance.toE8s())}`
     );
   });
@@ -40,6 +40,6 @@ describe("AccountCard", () => {
 
     const article = container.querySelector("article");
 
-    expect(article.getAttribute("role")).toEqual("link");
+    expect(article?.getAttribute("role")).toEqual("link");
   });
 });

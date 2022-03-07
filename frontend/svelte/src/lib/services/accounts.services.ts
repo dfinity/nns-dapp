@@ -83,6 +83,10 @@ const loadAccounts = async ({
 
 export const createSubAccount = async (name: string): Promise<void> => {
   const { identity }: AuthStore = get(authStore);
+  if (!identity) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
+    throw new Error("No identity found to create subaccount");
+  }
   const nnsDapp: NNSDappCanister = NNSDappCanister.create({
     agent: await createAgent({ identity, host: identityServiceURL }),
     canisterId: OWN_CANISTER_ID,
