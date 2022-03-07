@@ -33,8 +33,9 @@
   };
 
   // TODO: To be removed once this page has been implemented
+  const showThisRoute = process.env.REDIRECT_TO_LEGACY === "never";
   onMount(async () => {
-    if (process.env.REDIRECT_TO_LEGACY) {
+    if (!showThisRoute) {
       window.location.replace("/#/canisters");
     }
 
@@ -45,7 +46,7 @@
   const createOrLink = () => alert("Create or Link");
 </script>
 
-{#if !process.env.REDIRECT_TO_LEGACY}
+{#if showThisRoute}
   <Layout>
     <section>
       <p>{$i18n.canisters.text}</p>

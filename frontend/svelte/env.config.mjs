@@ -8,7 +8,7 @@
  */
 
 const ENVIRONMENT = process.env.ROLLUP_WATCH
-  ? "local"
+  ? "local" // Note: This is also deployed to testnets.
   : process.env.DEPLOY_ENV === "testnet"
   ? "testnet"
   : "mainnet";
@@ -50,14 +50,16 @@ const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}${domain}/`;
 // - true while flutter is being replaced by svelte
 // - false after flutter has been replaced, but before all scaffolding has been removed
 // - the flag may then be removed.
-const REDIRECT_TO_LEGACY = ["true", "1"].includes(
+const REDIRECT_TO_LEGACY = ["true", "1", "prod"].includes(
   process.env.REDIRECT_TO_LEGACY
 )
-  ? true
-  : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY) ||
+  ? "prod" // Redirect to flutter as much as in prod.
+  : ["false", "0", "never"].includes(process.env.REDIRECT_TO_LEGACY) ||
     ENVIRONMENT === "local"
-  ? false
-  : true; // default
+  ? "never" // Never redirect, use svelte only.
+  : ["staging"].includes(process.env.REDIRECT_TO_LEGACY)
+  ? "staging" // Redirect to flutter as in prod minus the next set of routes to convert.
+  : "prod"; // default
 
 export const envConfig = {
   ENVIRONMENT,

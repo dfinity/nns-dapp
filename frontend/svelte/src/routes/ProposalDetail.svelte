@@ -21,9 +21,12 @@
 
   let proposalInfo: ProposalInfo | undefined;
 
+  // TODO: To be removed once this page has been implemented
+  const showThisRoute = ["never", "staging"].includes(
+    process.env.REDIRECT_TO_LEGACY
+  );
   onMount(async () => {
-    // TODO: To be removed once this page has been implemented
-    if (process.env.REDIRECT_TO_LEGACY) {
+    if (!showThisRoute) {
       window.location.replace(`/${window.location.hash}`);
       return;
     }
@@ -31,39 +34,41 @@
     await listNeurons();
   });
 
-  const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    const proposalId = getProposalId(path);
-    if (proposalId === undefined) {
-      unsubscribe();
-      routeStore.replace({ path: AppPath.Proposals });
-      return;
-    }
+  const unsubscribe = showThisRoute
+    ? routeStore.subscribe(async ({ path }) => {
+        const proposalId = getProposalId(path);
+        if (proposalId === undefined) {
+          unsubscribe();
+          routeStore.replace({ path: AppPath.Proposals });
+          return;
+        }
 
-    try {
-      proposalInfo = await getProposalInfo({
-        proposalId,
-        identity: $authStore.identity,
-      });
+        try {
+          proposalInfo = await getProposalInfo({
+            proposalId,
+            identity: $authStore.identity,
+          });
 
-      if (!proposalInfo) {
-        throw new Error("Proposal not found");
-      }
-    } catch (error) {
-      unsubscribe();
+          if (!proposalInfo) {
+            throw new Error("Proposal not found");
+          }
+        } catch (error) {
+          unsubscribe();
 
-      console.error(error);
-      toastsStore.show({
-        labelKey: "error.proposal_not_found",
-        level: "error",
-        detail: `id: "${proposalId}"`,
-      });
+          console.error(error);
+          toastsStore.show({
+            labelKey: "error.proposal_not_found",
+            level: "error",
+            detail: `id: "${proposalId}"`,
+          });
 
-      // Wait a bit before redirection so the user recognizes on which page the error occures
-      setTimeout(() => {
-        routeStore.replace({ path: AppPath.Proposals });
-      }, 1500);
-    }
-  });
+          // Wait a bit before redirection so the user recognizes on which page the error occures
+          setTimeout(() => {
+            routeStore.replace({ path: AppPath.Proposals });
+          }, 1500);
+        }
+      })
+    : () => {};
 
   onDestroy(unsubscribe);
 
@@ -76,7 +81,7 @@
   };
 </script>
 
-{#if !process.env.REDIRECT_TO_LEGACY}
+{#if showThisRoute}
   <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header"
       >{$i18n.proposal_detail.title}</svelte:fragment
