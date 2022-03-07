@@ -9,10 +9,10 @@ import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "../mocks/auth.store.mock";
-const en = require("../../lib/i18n/en.json");
+import * as en from "../../lib/i18n/en.json";
 
 describe("Neurons", () => {
-  let authStoreMock;
+  let authStoreMock: jest.MockedFunction<any>;
 
   beforeEach(() => {
     authStoreMock = jest

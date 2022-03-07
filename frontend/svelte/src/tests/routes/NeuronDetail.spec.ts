@@ -8,7 +8,7 @@ import NeuronDetail from "../../routes/NeuronDetail.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 
 describe("Canisters", () => {
-  let authStoreMock;
+  let authStoreMock: jest.MockedFunction<any>;
 
   beforeEach(() => {
     authStoreMock = jest
