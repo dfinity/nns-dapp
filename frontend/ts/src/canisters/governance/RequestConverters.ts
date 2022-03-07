@@ -146,9 +146,7 @@ export default class RequestConverters {
     return manageNeuron;
   };
 
-  public fromMergeRequest = (
-      request: MergeRequest
-  ): PbManageNeuron => {
+  public fromMergeRequest = (request: MergeRequest): PbManageNeuron => {
     const merge = new PbManageNeuron.Merge();
     const sourceNeuronId = new PbNeuronId();
     sourceNeuronId.setId(request.sourceNeuronId.toString());
