@@ -80,6 +80,7 @@ interface I18nNeurons {
   community_fund: string;
   hotkey_control: string;
   stake: string;
+  staked: string;
   aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;

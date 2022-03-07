@@ -7,6 +7,7 @@
   import { NeuronInfo } from "@dfinity/nns";
   import { getNeuron } from "../../services/neurons.services";
   import Spinner from "../../components/ui/Spinner.svelte";
+  import NeuronCard from "../../components/neurons/NeuronCard.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -39,9 +40,11 @@
   <!-- Above task needs to be solved first before being able to implement following TODOs -->
 
   {#if neuron !== undefined}
-    <Card><h4>TODO: Neuron details {neuron.neuronId}</h4></Card>
+    <div class="content">
+      <NeuronCard {neuron} />
 
-    <Card><h4>TODO: Voting history</h4></Card>
+      <Card><h4>TODO: Voting history</h4></Card>
+    </div>
   {:else}
     <Spinner />
   {/if}
@@ -51,5 +54,9 @@
   button {
     padding: 0;
     margin: 0;
+  }
+
+  .content {
+    padding: calc(2 * var(--padding));
   }
 </style>

@@ -71,6 +71,7 @@
     "community_fund": "[community fund]",
     "hotkey_control": "[hotkey control]",
     "stake": "Stake",
+    "staked": "Staked",
     "aria_label_neuron_card": "Go to neuron details",
     "neuron_id": "Neuron ID",
     "neuron_balance": "Balance",
