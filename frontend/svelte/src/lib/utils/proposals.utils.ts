@@ -50,7 +50,7 @@ export const formatProposalSummary = (summary: string): string => {
 };
 
 export const formatVotingPower = (value: bigint): string =>
-  formatNumber(value / BigInt(E8S_PER_ICP));
+  formatNumber(Number(value) / E8S_PER_ICP);
 
 /**
  * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal is OPEN and has at least one UNSPECIFIED ballots' vote.
