@@ -33,16 +33,19 @@
     neuronsVotedForProposal = votedNeurons({
       neurons: $neuronsStore,
       proposal: proposalInfo,
-    }).map(({ neuronId, recentBallots, votingPower }) => ({
-      id: neuronId,
-      // TODO: replace w/ formatVotingPower()
-      votingPower: Number(votingPower) / E8S_PER_ICP,
-      vote: recentBallots.find(
-        ({ proposalId }) => proposalId === proposalInfo.id
-      )?.vote,
-    }))
-    // Exclude the cases where the vote was not found.
-    .filter(compactNeuronInfoMaybe => compactNeuronInfoMaybe.vote !== undefined) as CompactNeuronInfo[];
+    })
+      .map(({ neuronId, recentBallots, votingPower }) => ({
+        id: neuronId,
+        // TODO: replace w/ formatVotingPower()
+        votingPower: Number(votingPower) / E8S_PER_ICP,
+        vote: recentBallots.find(
+          ({ proposalId }) => proposalId === proposalInfo.id
+        )?.vote,
+      }))
+      // Exclude the cases where the vote was not found.
+      .filter(
+        (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
+      ) as CompactNeuronInfo[];
   }
 </script>
 
