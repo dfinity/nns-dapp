@@ -18,8 +18,9 @@
   let status: ProposalStatus;
   let color: ProposalColor;
 
-  $: ({ proposal, status = ProposalStatus.PROPOSAL_STATUS_UNKNOWN } = proposalInfo);
-  $: (title = proposal?.title);
+  $: ({ proposal, status = ProposalStatus.PROPOSAL_STATUS_UNKNOWN } =
+    proposalInfo);
+  $: title = proposal?.title;
   $: color = PROPOSAL_COLOR[status];
 </script>
 
