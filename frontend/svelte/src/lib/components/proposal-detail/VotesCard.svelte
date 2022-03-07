@@ -13,7 +13,7 @@
 
   if (!proposalInfo) throw new Error("no proposalInfo provided");
 
-  const { yes, no } = proposalInfo.latestTally;
+  const { yes, no } = proposalInfo.latestTally || {};
   const yesValue = Number(yes) / E8S_PER_ICP;
   const noValue = Number(no) / E8S_PER_ICP;
   const summ = yesValue + noValue;
@@ -33,14 +33,19 @@
     neuronsVotedForProposal = votedNeurons({
       neurons: $neuronsStore,
       proposal: proposalInfo,
-    }).map(({ neuronId, recentBallots, votingPower }) => ({
-      id: neuronId,
-      // TODO: replace w/ formatVotingPower()
-      votingPower: Number(votingPower) / E8S_PER_ICP,
-      vote: recentBallots.find(
-        ({ proposalId }) => proposalId === proposalInfo.id
-      )?.vote,
-    }));
+    })
+      .map(({ neuronId, recentBallots, votingPower }) => ({
+        id: neuronId,
+        // TODO: replace w/ formatVotingPower()
+        votingPower: Number(votingPower) / E8S_PER_ICP,
+        vote: recentBallots.find(
+          ({ proposalId }) => proposalId === proposalInfo.id
+        )?.vote,
+      }))
+      // Exclude the cases where the vote was not found.
+      .filter(
+        (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
+      ) as CompactNeuronInfo[];
   }
 </script>
 

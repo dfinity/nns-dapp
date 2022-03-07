@@ -15,11 +15,12 @@
 
   let proposal: Proposal | undefined;
   let title: string | undefined;
-  let status: ProposalStatus | undefined;
-  let color: ProposalColor | undefined;
+  let status: ProposalStatus;
+  let color: ProposalColor;
 
-  $: ({ proposal, status } = proposalInfo);
-  $: ({ title } = proposal);
+  $: ({ proposal, status = ProposalStatus.PROPOSAL_STATUS_UNKNOWN } =
+    proposalInfo);
+  $: title = proposal?.title;
   $: color = PROPOSAL_COLOR[status];
 </script>
 
