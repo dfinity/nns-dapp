@@ -19,17 +19,18 @@ export const lastProposalId = (
 
 export const proposalFirstActionKey = (
   proposal: Proposal
-): string | undefined => Object.keys(proposal?.action)[0];
+): string | undefined => Object.keys(proposal.action || {})[0];
 
 export const proposalActionFields = (
   proposal: Proposal
 ): [string, string][] => {
   const key = proposalFirstActionKey(proposal);
-  if (!key) {
+  if (key === undefined) {
     return [];
   }
 
-  return Object.entries(proposal.action[key])
+  // TODO: https://dfinity.atlassian.net/browse/L2-348
+  return Object.entries(proposal.action?.[key])
     .filter(([key]) => key !== "payloadBytes")
     .map(([key, value]: [string, object]) => [
       key,
@@ -66,7 +67,7 @@ export const hasMatchingProposals = ({
   proposals: ProposalInfo[];
   excludeVotedProposals: boolean;
 }): boolean => {
-  if (!proposals.length) {
+  if (proposals.length === 0) {
     return false;
   }
 

@@ -21,23 +21,19 @@ describe("Card", () => {
     });
 
     const article = container.querySelector("article");
-    expect(article).not.toBeNull();
-    expect(article.getAttribute("role")).toBe(role);
-    expect(article.getAttribute("aria-label")).toBe(ariaLabel);
+    expect(article?.getAttribute("role")).toBe(role);
+    expect(article?.getAttribute("aria-label")).toBe(ariaLabel);
   });
 
   it("should forward the click event", (done) => {
-    const handleClick = () => {
-      done();
-    };
     const { container, component } = render(Card);
 
-    component.$on("click", (e) => {
+    component.$on("click", () => {
       done();
     });
 
     const article = container.querySelector("article");
     expect(article).not.toBeNull();
-    fireEvent.click(article);
+    article && fireEvent.click(article);
   });
 });

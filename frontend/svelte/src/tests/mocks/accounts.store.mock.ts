@@ -35,9 +35,9 @@ export const mockSubAccountDetails: SubAccountDetails = {
 };
 
 export const mockAccountsStoreSubscribe =
-  (subAccounts = []) =>
+  (subAccounts: Account[] = []) =>
   (run: Subscriber<AccountsStore>): (() => void) => {
     run({ main: mockMainAccount, subAccounts });
 
-    return () => {};
+    return () => undefined;
   };

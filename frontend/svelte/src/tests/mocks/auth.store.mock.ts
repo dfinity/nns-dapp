@@ -19,7 +19,7 @@ export const mockAuthStoreSubscribe = (
 ): (() => void) => {
   run({ identity: mockIdentity });
 
-  return () => {};
+  return () => undefined;
 };
 
 /**
