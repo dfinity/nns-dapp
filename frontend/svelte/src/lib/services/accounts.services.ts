@@ -22,9 +22,7 @@ import { createAgent } from "../utils/agent.utils";
  * a. If no `principal` is provided to sync the account, for example on app init or after a sign-out, the data is set to undefined
  * b. If a `principal` is provided, e.g. after sign-in, then the information are loaded using the ledger and the nns dapp canister itself
  */
-export const syncAccounts = async ({
-  identity,
-}): Promise<void> => {
+export const syncAccounts = async ({ identity }): Promise<void> => {
   const accounts: AccountsStore = await loadAccounts({ identity });
   accountsStore.set(accounts);
 };
