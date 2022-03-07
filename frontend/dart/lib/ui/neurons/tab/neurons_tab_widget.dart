@@ -17,17 +17,17 @@ class NeuronsPage extends StatefulWidget {
 class _NeuronsPageState extends State<NeuronsPage> {
   @override
   Widget build(BuildContext context) {
-    return FooterGradientButton(
-      footerHeight: null,
-      body: ConstrainWidthAndCenter(
-        child: StreamBuilder<void>(
-            stream: context.boxes.neurons.changes,
-            builder: (context, snapshot) {
-              return TabTitleAndContent(
+    return StreamBuilder<void>(
+        stream: context.boxes.neurons.changes,
+        builder: (context, snapshot) {
+          return FooterGradientButton(
+            footerHeight: null,
+            body: ConstrainWidthAndCenter(
+              child: TabTitleAndContent(
                 title: "Neurons",
                 subtitle:
                     '''Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.
-                    
+                      
 Your principal id is "${context.icApi.getPrincipal()}"''',
                 children: [
                   SmallFormDivider(),
@@ -50,54 +50,51 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                       []),
                   SizedBox(height: 150)
                 ],
-              );
-            }),
-      ),
-      footer: Align(
-        alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: PageButton(
-                  title: "Stake Neuron",
-                  onPress: () {
-                    OverlayBaseWidget.show(
-                      context,
-                      WizardOverlay(
-                        rootTitle: "Select Source Account",
-                        rootWidget: SelectSourceWallet(isStakeNeuron: true),
-                      ),
-                    );
-                  },
-                ),
               ),
-              Flexible(
-                child: PageButton(
-                  title: "Merge Neurons",
-                  onPress: context.boxes.neurons.values.length >= 2
-                      ? () {
+            ),
+            footer: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: PageButton(
+                        title: "Stake Neuron",
+                        onPress: () {
                           OverlayBaseWidget.show(
                             context,
                             WizardOverlay(
-                              rootTitle: "Select Two neurons to merge",
-                              rootWidget: MergeNeuronSourceAccount(
-                                onCompleteAction: (context) {
-                                  OverlayBaseWidget.of(context)?.dismiss();
-                                },
-                              ),
+                              rootTitle: "Select Source Account",
+                              rootWidget: SelectSourceWallet(isStakeNeuron: true),
                             ),
                           );
-                        }
-                      : null,
+                        },
+                      ),
+                    ),
+                    Flexible(
+                      child: PageButton(
+                          title: "Merge Neurons",
+                          onPress: () {
+                            OverlayBaseWidget.show(
+                              context,
+                              WizardOverlay(
+                                rootTitle: "Select Two neurons to merge",
+                                rootWidget: MergeNeuronSourceAccount(
+                                  onCompleteAction: (context) {
+                                    OverlayBaseWidget.of(context)?.dismiss();
+                                  },
+                                ),
+                              ),
+                            );
+                          }.takeIf((e) => context.boxes.neurons.values.length >= 2)),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
+        });
   }
 }

@@ -79,18 +79,12 @@ class _MergeNeuronSourceAccountState extends State<MergeNeuronSourceAccount> {
                                         currentSelectedCards += 1;
                                         selectedAccounts.add(allAccounts[index].id);
                                       }
-                                      print("Accounts id of selected neurons are :");
-                                      for (int i = 0; i < selectedAccounts.length; i++)
-                                        print('selectedAccounts[$i] : ${selectedAccounts[i]}');
                                     } else {
                                       if (currentSelectedCards == maxSelectedCards) {
                                         if (selectedAccountsColor[index] == Colors.grey.shade800) {
                                           selectedAccountsColor[index] = Colors.transparent;
                                           currentSelectedCards -= 1;
                                           selectedAccounts.remove(allAccounts[index].id);
-                                          print("Account id of the remaining selected neuron is :");
-                                          for (int i = 0; i < selectedAccounts.length; i++)
-                                            print('${selectedAccounts[i]}');
                                         }
                                       }
                                     }
@@ -151,10 +145,8 @@ class _MergeNeuronSourceAccountState extends State<MergeNeuronSourceAccount> {
     for (int i = 0; i < context.boxes.neurons.length; i++) {
       if (selectedAccounts[0] == neuronAccounts.elementAt(i).id) {
         neuronsSelected[0] = neuronAccounts.elementAt(i);
-        print(' neuronsSelected[0] id :${neuronsSelected.elementAt(0).id}');
       } else if (selectedAccounts[1] == neuronAccounts.elementAt(i).id) {
         neuronsSelected[1] = neuronAccounts.elementAt(i);
-        print(' neuronsSelected[1] id :${neuronsSelected.elementAt(1).id}');
       }
     }
     final res =
