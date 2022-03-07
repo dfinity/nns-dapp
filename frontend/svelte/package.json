@@ -14,7 +14,8 @@
     "lint": "eslint './src/**/*.{js,ts,svelte}'",
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "jest",
-    "test:watch": "npm run test -- --watchAll"
+    "test:watch": "npm run test -- --watchAll",
+    "update:nns": "npm i @dfinity/nns@nightly"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
@@ -57,6 +58,6 @@
   "dependencies": {
     "@dfinity/auth-client": "^0.10.3",
     "@dfinity/identity": "^0.10.3",
-    "@dfinity/nns": "^0.2.2-nightly-2022-03-03"
+    "@dfinity/nns": "nightly"
   }
 }
