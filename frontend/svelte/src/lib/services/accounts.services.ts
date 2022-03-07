@@ -83,16 +83,17 @@ const loadAccounts = async ({
 
 export const createSubAccount = async (name: string): Promise<void> => {
   const { identity }: AuthStore = get(authStore);
-  if (identity) {
-    const nnsDapp: NNSDappCanister = NNSDappCanister.create({
-      agent: await createAgent({ identity, host: identityServiceURL }),
-      canisterId: OWN_CANISTER_ID,
-    });
-
-    await nnsDapp.createSubAccount({
-      subAccountName: name,
-    });
-
-    await syncAccounts({ identity });
+  if (!identity) {
+    throw new Error("No identity found to create subaccount");
   }
+  const nnsDapp: NNSDappCanister = NNSDappCanister.create({
+    agent: await createAgent({ identity, host: identityServiceURL }),
+    canisterId: OWN_CANISTER_ID,
+  });
+
+  await nnsDapp.createSubAccount({
+    subAccountName: name,
+  });
+
+  await syncAccounts({ identity });
 };

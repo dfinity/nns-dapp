@@ -11,7 +11,7 @@ export const getICPs = async (icps: number) => {
   const { main }: AccountsStore = get(accountsStore);
 
   if (!main) {
-    return;
+    throw new Error("No account found to get ICPs");
   }
 
   const result: BlockHeight | TransferError = await acquireICPTs({
@@ -35,5 +35,7 @@ export const getICPs = async (icps: number) => {
 
   if (identity) {
     await syncAccounts({ identity });
+  } else {
+    throw new Error("No identity found to sync accounts after getting ICPs");
   }
 };

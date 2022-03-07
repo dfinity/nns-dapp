@@ -23,42 +23,44 @@ export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
     throw new Error("Need a minimum of 1 ICP to stake a neuron");
   }
   const { identity }: AuthStore = get(authStore);
-  if (identity) {
-    const agent = await createAgent({ identity, host: process.env.HOST });
-    const governanceCanister: GovernanceCanister = GovernanceCanister.create({
-      agent,
-      canisterId: GOVERNANCE_CANISTER_ID,
-    });
-    const ledgerCanister: LedgerCanister = LedgerCanister.create({
-      agent,
-      canisterId: LEDGER_CANISTER_ID,
-    });
-
-    // TODO: L2-332 Get neuron information and add to store
-    await governanceCanister.stakeNeuron({
-      stake,
-      principal: identity.getPrincipal(),
-      ledgerCanister,
-    });
-
-    // TODO: Remove after L2-332
-    await listNeurons();
+  if (!identity) {
+    throw new Error("No identity found staking a neuron");
   }
+  const agent = await createAgent({ identity, host: process.env.HOST });
+  const governanceCanister: GovernanceCanister = GovernanceCanister.create({
+    agent,
+    canisterId: GOVERNANCE_CANISTER_ID,
+  });
+  const ledgerCanister: LedgerCanister = LedgerCanister.create({
+    agent,
+    canisterId: LEDGER_CANISTER_ID,
+  });
+
+  // TODO: L2-332 Get neuron information and add to store
+  await governanceCanister.stakeNeuron({
+    stake,
+    principal: identity.getPrincipal(),
+    ledgerCanister,
+  });
+
+  // TODO: Remove after L2-332
+  await listNeurons();
 };
 
 // Gets neurons and adds them to the store
 export const listNeurons = async (): Promise<void> => {
   const { identity }: AuthStore = get(authStore);
-  if (identity) {
-    const agent = await createAgent({ identity, host: process.env.HOST });
-    const governanceCanister: GovernanceCanister = GovernanceCanister.create({
-      agent,
-      canisterId: GOVERNANCE_CANISTER_ID,
-    });
-    const neurons = await governanceCanister.getNeurons({
-      certified: true,
-      principal: identity.getPrincipal(),
-    });
-    neuronsStore.setNeurons(neurons);
+  if (!identity) {
+    throw new Error("No identity found listing neurons");
   }
+  const agent = await createAgent({ identity, host: process.env.HOST });
+  const governanceCanister: GovernanceCanister = GovernanceCanister.create({
+    agent,
+    canisterId: GOVERNANCE_CANISTER_ID,
+  });
+  const neurons = await governanceCanister.getNeurons({
+    certified: true,
+    principal: identity.getPrincipal(),
+  });
+  neuronsStore.setNeurons(neurons);
 };
