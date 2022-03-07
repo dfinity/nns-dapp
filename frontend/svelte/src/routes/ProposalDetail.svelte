@@ -16,7 +16,6 @@
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import { authStore } from "../lib/stores/auth.store";
-  import { neuronsStore } from "../lib/stores/neurons.store";
   import { listNeurons } from "../lib/services/neurons.services";
 
   let proposalInfo: ProposalInfo | undefined;
@@ -91,7 +90,7 @@
       {#if proposalInfo}
         <ProposalDetailCard {proposalInfo} />
         <VotesCard {proposalInfo} />
-        <CastVoteCard {proposalInfo} neurons={$neuronsStore} />
+        <CastVoteCard {proposalInfo} />
         <IneligibleNeuronsCard {proposalInfo} />
       {:else}
         <Spinner />

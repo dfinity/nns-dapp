@@ -12,6 +12,7 @@
   import { authStore } from "../../stores/auth.store";
   import { busyStore } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
+  import { neuronsStore } from "../../stores/neurons.store";
   import { toastsStore } from "../../stores/toasts.store";
   import { formatVotingPower } from "../../utils/proposals.utils";
   import { stringifyJson, uniqObjects } from "../../utils/utils";
@@ -19,7 +20,6 @@
   import Checkbox from "../ui/Checkbox.svelte";
 
   export let proposalInfo: ProposalInfo;
-  export let neurons: NeuronInfo[] | undefined;
 
   let visible: boolean = false;
   let notVotedNeurons: NeuronInfo[] | undefined;
@@ -28,10 +28,10 @@
   let showConfirmationModal: boolean = false;
   let selectedVoteType: Vote | undefined;
 
-  $: if (neurons) {
+  $: {
     try {
       notVotedNeurons = filterNotVotedNeurons({
-        neurons,
+        neurons: $neuronsStore,
         proposal: proposalInfo,
       });
     } catch (err) {

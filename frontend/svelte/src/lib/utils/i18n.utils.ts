@@ -47,7 +47,7 @@ const escapeRegExp = (regExpText: string): string =>
 
 /**
  * @example
- * ("Why $1?", {$1: "World", Why: "Hallo", "?": "!"}) => "Hello World!"
+ * ("Why $1?", {$1: "World", Why: "Hello", "?": "!"}) => "Hello World!"
  */
 export const replacePlaceholders = (
   text: string,
