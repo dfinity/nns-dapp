@@ -374,11 +374,11 @@ export default class ServiceApi {
   };
 
   public merge = (
-      identity: Identity,
-      request: MergeRequest
+    identity: Identity,
+    request: MergeRequest
   ): Promise<EmptyResponse> => {
     return executeWithLogging(async () =>
-        (await governanceService(identity)).merge(request)
+      (await governanceService(identity)).merge(request)
     );
   };
 

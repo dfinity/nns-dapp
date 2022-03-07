@@ -258,7 +258,7 @@ export default class ResponseConverters {
   };
 
   public toEmptyManageNeuronResponse = (
-      response: PbManageNeuronResponse
+    response: PbManageNeuronResponse
   ): EmptyResponse => {
     const error = response.getError();
     if (error) {
