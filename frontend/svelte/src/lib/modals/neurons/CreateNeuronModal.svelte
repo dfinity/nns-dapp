@@ -67,15 +67,13 @@
 >
   <span slot="title">{$i18n.neurons?.[titleKey]}</span>
   <main>
-    {#if currentStep === Steps.SelectAccount}
-      {#if selectedAccount !== undefined}
+    {#if (currentStep === Steps.SelectAccount) && (selectedAccount !== undefined)}
       <Transition {diff}>
         <SelectAccount
           main={selectedAccount}
           on:nnsSelectAccount={chooseAccount}
         />
       </Transition>
-      {/if}
     {/if}
     {#if currentStep === Steps.StakeNeuron && selectedAccount}
       <Transition {diff}>
