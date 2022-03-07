@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
+  import type { Identity } from "@dfinity/agent";
   import { createEventDispatcher } from "svelte";
   import Input from "../../components/ui/Input.svelte";
   import Spinner from "../../components/ui/Spinner.svelte";
@@ -23,14 +24,14 @@
   const createNeuron = async () => {
     creating = true;
     try {
-      await stakeNeuron({
+      const neuronId = await stakeNeuron({
         stake: ICP.fromE8s(BigInt(amount * E8S_PER_ICP)),
       });
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts
-      syncAccounts({ identity: $authStore.identity });
-      dispatcher("nnsNeuronCreated");
+      syncAccounts({ identity: $authStore.identity as Identity });
+      dispatcher("nnsNeuronCreated", { neuronId });
     } catch (err) {
       // TODO: L2-329 Manage errors
       console.error(err);
@@ -81,7 +82,7 @@
       <button
         class="primary full-width"
         type="submit"
-        disabled={!amount || creating}
+        disabled={amount === undefined || amount <= 0 || creating}
       >
         {#if creating}
           <Spinner />

@@ -1,13 +1,19 @@
 <script lang="ts">
+  import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-
   import Card from "../../components/ui/Card.svelte";
+  import Spinner from "../../components/ui/Spinner.svelte";
   import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "../../constants/constants";
+  import { updateDelay } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
+
+  export let neuronId: NeuronId;
+
   let EIGHT_YEARS = SECONDS_IN_YEAR * 8;
   let SIX_MONTHS = (SECONDS_IN_DAY * 365) / 2;
   let delayInSeconds: number = 0;
+  let loading: boolean = false;
 
   let backgroundStyle: string;
   $: {
@@ -22,6 +28,22 @@
   const dispatcher = createEventDispatcher();
   const skip = () => {
     dispatcher("nnsNext");
+  };
+
+  const updateNeuron = async () => {
+    loading = true;
+    try {
+      await updateDelay({
+        neuronId,
+        dissolveDelayInSeconds: delayInSeconds,
+      });
+      dispatcher("nnsNext");
+    } catch (error) {
+      // TODO: Manage errors
+      console.error(error);
+    } finally {
+      loading = false;
+    }
   };
 </script>
 
@@ -68,14 +90,21 @@
     </div>
   </Card>
   <div class="buttons">
-    <button on:click={skip} class="secondary full-width"
+    <button on:click={skip} class="secondary full-width" disabled={loading}
       >{$i18n.neurons.skip}</button
     >
     <button
       class="primary full-width"
-      disabled={disableUpdate}
-      data-test="update-button">{$i18n.neurons.update_delay}</button
+      disabled={disableUpdate || loading}
+      on:click={updateNeuron}
+      data-test="update-button"
     >
+      {#if loading}
+        <Spinner />
+      {:else}
+        {$i18n.neurons.update_delay}
+      {/if}
+    </button>
   </div>
 </section>
 
