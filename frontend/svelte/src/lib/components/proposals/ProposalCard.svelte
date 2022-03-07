@@ -24,7 +24,7 @@
   let color: ProposalColor | undefined;
 
   $: ({ proposal, status, id } = proposalInfo);
-  $: (title  = proposal?.title);
+  $: title = proposal?.title;
   $: color = PROPOSAL_COLOR[status];
 
   const showProposal = () => {

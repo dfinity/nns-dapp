@@ -10,8 +10,10 @@
 
   let actionKey: string | undefined;
   let actionFields: [string, string][] = [];
-  $: actionKey = proposal !== undefined? proposalFirstActionKey(proposal) : undefined;
-  $: actionFields = (proposal !== undefined) && proposalActionFields(proposal) || [];
+  $: actionKey =
+    proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
+  $: actionFields =
+    (proposal !== undefined && proposalActionFields(proposal)) || [];
 </script>
 
 <CardBlock>

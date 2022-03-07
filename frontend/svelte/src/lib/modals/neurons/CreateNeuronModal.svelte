@@ -69,12 +69,12 @@
   <main>
     {#if currentStep === Steps.SelectAccount}
       {#if selectedAccount !== undefined}
-      <Transition {diff}>
-        <SelectAccount
-          main={selectedAccount}
-          on:nnsSelectAccount={chooseAccount}
-        />
-      </Transition>
+        <Transition {diff}>
+          <SelectAccount
+            main={selectedAccount}
+            on:nnsSelectAccount={chooseAccount}
+          />
+        </Transition>
       {/if}
     {/if}
     {#if currentStep === Steps.StakeNeuron && selectedAccount}

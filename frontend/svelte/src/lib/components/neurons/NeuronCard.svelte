@@ -44,7 +44,7 @@
     <h5>{$i18n.neurons.stake}</h5>
   </div>
 
-  {#if neuron.state === NeuronState.DISSOLVING && neuron.fullNeuron?.dissolveState && "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState }
+  {#if neuron.state === NeuronState.DISSOLVING && neuron.fullNeuron?.dissolveState && "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState}
     <p class="duration">
       {secondsToDuration(
         neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
