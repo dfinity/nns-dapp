@@ -82,7 +82,7 @@ jobs:
          NOTES_REF="refs/notes/${{ matrix.BUILD_NAME }}/sha"
          SHA="$(sha256sum "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")"
          printf "%s\n" "commit: $(git rev-parse HEAD)" "ref: $NOTES_REF" "sha: $SHA"
-         git fetch origin "+${NOTES_REF}:${NOTES_REF}"
+         git fetch origin "+${NOTES_REF}:${NOTES_REF}" -f
          if git notes --ref="$NOTES_REF" add -m "$SHA"
          then git push origin "${NOTES_REF}:${NOTES_REF}"
          else echo SHA already set
