@@ -14,6 +14,9 @@
   // Please do not use `showBackButton` without listening on `nnsBack`
   export let showBackButton: boolean = false;
 
+  let showToolbar: boolean;
+  $: showToolbar = $$slots.title || showBackButton;
+
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
   const back = () => dispatch("nnsBack");
@@ -24,7 +27,7 @@
     class={`modal ${theme}`}
     transition:fade
     role="dialog"
-    aria-labelledby="modalTitle"
+    aria-labelledby={showToolbar ? "modalTitle" : undefined}
     aria-describedby="modalContent"
   >
     <div class="backdrop" on:click|stopPropagation={close} />
@@ -32,19 +35,21 @@
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class={`wrapper ${size}`}
     >
-      <div class="toolbar">
-        {#if showBackButton}
-          <button
-            class="back"
-            on:click|stopPropagation={back}
-            aria-label={$i18n.core.back}><IconBackIosNew /></button
+      {#if showToolbar}
+        <div class="toolbar">
+          {#if showBackButton}
+            <button
+              class="back"
+              on:click|stopPropagation={back}
+              aria-label={$i18n.core.back}><IconBackIosNew /></button
+            >
+          {/if}
+          <h3 id="modalTitle"><slot name="title" /></h3>
+          <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
+            ><IconClose /></button
           >
-        {/if}
-        <h3 id="modalTitle"><slot name="title" /></h3>
-        <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
-          ><IconClose /></button
-        >
-      </div>
+        </div>
+      {/if}
 
       <div class="content" id="modalContent">
         <slot />
