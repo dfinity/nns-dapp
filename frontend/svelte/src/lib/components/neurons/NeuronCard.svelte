@@ -40,17 +40,18 @@
       <svelte:component this={stateInfo.Icon} />
     </p>
 
-  {#if neuron.state === NeuronState.DISSOLVING && neuron.fullNeuron?.dissolveState && "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState}
-    <p class="duration">
-      {secondsToDuration(
-        neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
-      )} - {$i18n.neurons.staked}
-    </p>
-  {/if}
+    {#if neuron.state === NeuronState.DISSOLVING && neuron.fullNeuron?.dissolveState && "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState}
+      <p class="duration">
+        {secondsToDuration(
+          neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
+        )} - {$i18n.neurons.staked}
+      </p>
+    {/if}
 
     {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
       <p class="duration">
-        {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons.staked}
+        {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons
+          .staked}
       </p>
     {/if}
   </div>

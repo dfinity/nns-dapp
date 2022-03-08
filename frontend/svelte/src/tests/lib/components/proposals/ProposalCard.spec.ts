@@ -14,10 +14,8 @@ import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svel
 import { authStore } from "../../../../lib/stores/auth.store";
 import { proposalsFiltersStore } from "../../../../lib/stores/proposals.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import {
-  MockGovernanceCanister,
-  mockProposals,
-} from "../../../mocks/proposals.store.mock";
+import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
+import { mockProposals } from "../../../mocks/proposals.store.mock";
 
 const en = require("../../../../lib/i18n/en.json");
 
