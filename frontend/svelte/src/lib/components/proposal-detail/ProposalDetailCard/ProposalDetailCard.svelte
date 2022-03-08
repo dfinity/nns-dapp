@@ -11,24 +11,21 @@
   import ProposalMeta from "./ProposalMeta.svelte";
   import ProposalActions from "./ProposalActions.svelte";
 
-  export let proposalInfo: ProposalInfo | undefined;
+  export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal | undefined;
   let title: string | undefined;
-  let status: ProposalStatus;
+  let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
   let color: ProposalColor;
 
-  $: ({ proposal, status = ProposalStatus.PROPOSAL_STATUS_UNKNOWN } =
-    proposalInfo);
+  $: ({ proposal, status } = proposalInfo);
   $: title = proposal?.title;
   $: color = PROPOSAL_COLOR[status];
 </script>
 
 <Card>
   <h2 slot="start" {title}>{title}</h2>
-  <Badge slot="end" {color}
-    >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
-  >
+  <Badge slot="end" {color}>{$i18n.status[ProposalStatus[status]]}</Badge>
   <ProposalSummary {proposal} />
   <ProposalMeta {proposalInfo} />
   <ProposalActions {proposal} />

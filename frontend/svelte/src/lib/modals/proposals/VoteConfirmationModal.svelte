@@ -14,7 +14,7 @@
 <ConfirmationModal on:nnsClose on:nnsConfirm>
   <div>
     {#if voteType === Vote.YES}
-      <svelte:component this={IconThumbUp} />
+      <IconThumbUp />
       <h4>{$i18n.proposal_detail__vote.confirm_adopt_headline}</h4>
       <p>
         {replacePlaceholders($i18n.proposal_detail__vote.confirm_adopt_text, {
@@ -22,7 +22,7 @@
         })}
       </p>
     {:else}
-      <svelte:component this={IconThumbDown} />
+      <IconThumbDown />
       <h4>{$i18n.proposal_detail__vote.confirm_reject_headline}</h4>
       <p>
         {replacePlaceholders($i18n.proposal_detail__vote.confirm_reject_text, {

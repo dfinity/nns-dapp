@@ -120,6 +120,7 @@ const queryProposal = async ({
   proposalId: ProposalId;
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo | undefined> => {
+  // TODO: https://dfinity.atlassian.net/browse/L2-346
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
@@ -163,6 +164,7 @@ export const castVote = async ({
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
+  // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
   return Promise.all(
     neuronIds.map((neuronId) =>
       (

@@ -14,7 +14,7 @@
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
   import { formatVotingPower } from "../../utils/proposals.utils";
-  import { stringifyJson, uniqObjects } from "../../utils/utils";
+  import { stringifyJson, uniqueObjects } from "../../utils/utils";
   import Card from "../ui/Card.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
 
@@ -79,7 +79,7 @@
       await listNeurons();
 
       // show one error message per UNIQ erroneous response
-      const errorDetails = uniqObjects(errors.filter(Boolean))
+      const errorDetails = uniqueObjects(errors.filter(Boolean))
         .map((error) => stringifyJson(error?.errorMessage, { indentation: 2 }))
         .join("\n");
       if (errorDetails.length > 0) {
