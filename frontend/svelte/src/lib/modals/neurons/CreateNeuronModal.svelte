@@ -36,8 +36,10 @@
   const goBack = () => {
     stateStep = stateStep.back();
   };
-  const goToDissolveDelay = (event: CustomEvent<{ neuronId: NeuronId }>) => {
-    newNeuronId = event.detail.neuronId;
+  const goToDissolveDelay = ({
+    detail,
+  }: CustomEvent<{ neuronId: NeuronId }>) => {
+    newNeuronId = detail.neuronId;
     stateStep = stateStep.next();
   };
 
