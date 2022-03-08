@@ -227,6 +227,6 @@ describe("CreateNeuronModal", () => {
     );
 
     updateDelayButton && (await fireEvent.click(updateDelayButton));
-    expect(updateDelay).toBeCalled();
+    waitFor(() => expect(updateDelay).toBeCalled());
   });
 });
