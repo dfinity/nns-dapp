@@ -3,7 +3,7 @@
  */
 
 import { GovernanceCanister } from "@dfinity/nns";
-import {render, waitFor} from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import ProposerModal from "../../../lib/modals/proposals/ProposerModal.svelte";
 import { authStore } from "../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
@@ -54,7 +54,7 @@ describe("ProposerModal", () => {
     });
 
     await waitFor(() =>
-        expect(container.querySelector("article")).not.toBeNull()
+      expect(container.querySelector("article")).not.toBeNull()
     );
   });
 });
