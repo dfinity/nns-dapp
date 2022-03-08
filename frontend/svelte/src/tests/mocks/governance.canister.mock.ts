@@ -1,5 +1,4 @@
 import {
-  EmptyResponse,
   GovernanceCanister,
   ICP,
   LedgerCanister,
@@ -7,7 +6,6 @@ import {
   ListProposalsResponse,
   NeuronId,
   NeuronInfo,
-  ProposalId,
   ProposalInfo,
   StakeNeuronError,
   Vote,
@@ -79,11 +77,13 @@ export class MockGovernanceCanister extends GovernanceCanister {
     vote,
     proposalId,
   }: {
-    neuronId: NeuronId;
+    neuronId: bigint;
     vote: Vote;
-    proposalId: ProposalId;
-  }): Promise<EmptyResponse> => {
-    return { Ok: null };
+    proposalId: bigint;
+  }) => {
+    return vote === Vote.YES
+      ? { Ok: null }
+      : { Err: { errorMessage: "error", errorType: 0 } };
   };
 
   public stakeNeuron = async ({

@@ -1,4 +1,8 @@
-import { debounce, stringifyJson } from "../../../lib/utils/utils";
+import {
+  debounce,
+  stringifyJson,
+  uniqueObjects,
+} from "../../../lib/utils/utils";
 
 describe("utils", () => {
   const callback = jest.fn();
@@ -59,5 +63,36 @@ describe("utils", () => {
         JSON.stringify(SAMPLE, null, 2)
       );
     });
+  });
+
+  describe("uniqueObjects", () => {
+    it("should return only unique object", () => {
+      expect(
+        uniqueObjects([
+          { a: 1, b: 2 },
+          { a: 1, b: 2 },
+        ])
+      ).toEqual([{ a: 1, b: 2 }]);
+    });
+    expect(
+      uniqueObjects([
+        { a: 1, b: 2 },
+        { a: 1, B: 2 },
+      ])
+    ).toEqual([
+      { a: 1, b: 2 },
+      { a: 1, B: 2 },
+    ]);
+    expect(
+      uniqueObjects([
+        { a: 1, b: { c: "d" } },
+        { a: 1, B: { c: "d" } },
+      ])
+    ).toEqual([
+      { a: 1, b: { c: "d" } },
+      { a: 1, B: { c: "d" } },
+    ]);
+    expect(uniqueObjects([1, 2, 3, 1, 2, 3])).toEqual([1, 2, 3]);
+    expect(uniqueObjects([])).toEqual([]);
   });
 });

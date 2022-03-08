@@ -26,3 +26,19 @@ export const stringifyJson = (
     (key, value) => (typeof value === "bigint" ? value.toString() : value),
     options?.indentation ?? 0
   );
+
+/**
+ * Returns only uniq elements of the list (uses JSON.stringify for comparation)
+ */
+export const uniqueObjects = <T>(list: T[]): T[] => {
+  const uniqHashes = new Set<string>();
+  const result: T[] = [];
+  for (const item of list) {
+    const hash = stringifyJson(item);
+    if (!uniqHashes.has(hash)) {
+      uniqHashes.add(hash);
+      result.push(item);
+    }
+  }
+  return result;
+};
