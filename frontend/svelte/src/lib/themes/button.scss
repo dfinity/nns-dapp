@@ -64,8 +64,8 @@ button {
     @include effect.ripple-effect(--blue-500-tint);
 
     &:focus {
-      background: var(--blue-600);
-      @include effect.ripple-effect(--blue-600-tint);
+      background: var(--blue-400);
+      @include effect.ripple-effect(--blue-400-tint);
     }
   }
 
