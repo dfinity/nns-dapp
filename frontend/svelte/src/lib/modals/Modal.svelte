@@ -29,6 +29,7 @@
     role="dialog"
     aria-labelledby={showToolbar ? "modalTitle" : undefined}
     aria-describedby="modalContent"
+    on:click|stopPropagation
   >
     <div class="backdrop" on:click|stopPropagation={close} />
     <div
@@ -68,6 +69,8 @@
     inset: 0;
 
     z-index: calc(var(--z-index) + 998);
+
+    @include interaction.initial;
 
     &.dark {
       color: var(--background-contrast);
@@ -115,7 +118,10 @@
     height: fit-content;
     max-width: calc(100vw - (4 * var(--padding)));
     max-height: calc(100vw - (2 * var(--padding)));
-    min-height: 100px;
+
+    --modal-min-height: 100px;
+    --modal-toolbar-height: 35px;
+    min-height: var(--modal-min-height);
 
     background: white;
 
@@ -142,6 +148,8 @@
 
     z-index: var(--z-index);
 
+    height: var(--modal-toolbar-height);
+
     h3 {
       color: inherit;
       font-weight: 400;
@@ -167,9 +175,12 @@
   }
 
   .content {
+    position: relative;
+
     display: flex;
     flex-direction: column;
 
+    min-height: calc(var(--modal-min-height) - var(--modal-toolbar-height));
     max-height: calc(100vh - 156px);
     overflow-y: scroll;
 
