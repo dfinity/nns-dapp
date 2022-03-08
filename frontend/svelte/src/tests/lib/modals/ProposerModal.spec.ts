@@ -15,7 +15,7 @@ const en = require("../../../lib/i18n/en.json");
 
 describe("ProposerModal", () => {
   const props = {
-    proposer: mockProposalInfo.proposer
+    proposer: mockProposalInfo.proposer,
   };
 
   const mockGovernanceCanister: MockGovernanceCanister =
