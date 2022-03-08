@@ -28,7 +28,7 @@
     }
   );
 
-  let newNeuronId: NeuronId;
+  let newNeuronId: NeuronId | undefined;
 
   const chooseAccount = () => {
     stateStep = stateStep.next();
