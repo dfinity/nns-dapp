@@ -4,7 +4,6 @@
 
 import { GovernanceCanister } from "@dfinity/nns";
 import {render, waitFor} from "@testing-library/svelte";
-import { tick } from "svelte";
 import ProposerModal from "../../../lib/modals/proposals/ProposerModal.svelte";
 import { authStore } from "../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
