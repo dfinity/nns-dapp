@@ -1,10 +1,13 @@
 import type { Identity } from "@dfinity/agent";
 import {
+  EmptyResponse,
   GovernanceCanister,
+  GovernanceError,
   ListProposalsResponse,
   ProposalId,
   ProposalInfo,
   Topic,
+  Vote,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { LIST_PAGINATION_LIMIT } from "../constants/constants";

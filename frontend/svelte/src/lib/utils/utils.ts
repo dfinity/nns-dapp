@@ -30,7 +30,7 @@ export const stringifyJson = (
 /**
  * Returns only uniq elements of the list (uses JSON.stringify for comparation)
  */
-export const uniqObjects = <T extends Object>(list: T[]): T[] => {
+export const uniqObjects = <T>(list: T[]): T[] => {
   const uniqHashes = new Set<string>();
   return list.filter((item) => {
     const hash = stringifyJson(item);

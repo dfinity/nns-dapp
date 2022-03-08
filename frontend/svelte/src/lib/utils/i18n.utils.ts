@@ -53,8 +53,6 @@ export const replacePlaceholders = (
   text: string,
   substitutions: { [from: string]: string }
 ): string => {
-  if (!text) return text;
-
   let result = text;
   for (const [key, value] of Object.entries(substitutions)) {
     result = result.replace(new RegExp(escapeRegExp(key), "g"), value);

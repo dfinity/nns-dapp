@@ -7,8 +7,8 @@
   import { formatVotingPower } from "../../utils/proposals.utils";
   import ConfirmationModal from "../ConfirmationModal.svelte";
 
-  export let voteType: Vote | undefined;
-  export let votingPower: bigint | undefined;
+  export let voteType: Vote;
+  export let votingPower: bigint;
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm>

@@ -12,7 +12,6 @@
   import { authStore } from "../../stores/auth.store";
   import { busyStore } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
-  import { neuronsStore } from "../../stores/neurons.store";
   import { toastsStore } from "../../stores/toasts.store";
   import { formatVotingPower } from "../../utils/proposals.utils";
   import { stringifyJson, uniqObjects } from "../../utils/utils";
@@ -20,38 +19,33 @@
   import Checkbox from "../ui/Checkbox.svelte";
 
   export let proposalInfo: ProposalInfo;
+  export let neurons: NeuronInfo[];
 
   let visible: boolean = false;
-  let notVotedNeurons: NeuronInfo[] | undefined;
-  let selectedNeuronIds: Set<bigint> | undefined;
-  let selectedVotingPower: bigint | undefined;
+  let notVotedNeurons: NeuronInfo[] = [];
+  let isInitialized = false;
+  let selectedNeuronIds: Set<bigint> = new Set();
+  let selectedVotingPower: bigint = 0n;
   let showConfirmationModal: boolean = false;
-  let selectedVoteType: Vote | undefined;
+  let selectedVoteType: Vote = Vote.YES;
 
-  $: {
-    try {
-      notVotedNeurons = filterNotVotedNeurons({
-        neurons: $neuronsStore,
-        proposal: proposalInfo,
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
+  $: notVotedNeurons = filterNotVotedNeurons({
+    neurons,
+    proposal: proposalInfo,
+  });
   $: visible =
-    notVotedNeurons?.length &&
+    notVotedNeurons.length > 0 &&
     proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
-  // select all neurons by default
-  $: if (!selectedNeuronIds && notVotedNeurons?.length)
+  $: if (!isInitialized && notVotedNeurons.length > 0) {
+    isInitialized = true;
+    // select all neurons by default
     selectedNeuronIds = new Set(
       notVotedNeurons.map(({ neuronId }) => neuronId)
     );
+  }
   $: selectedVotingPower = notVotedNeurons
-    ? notVotedNeurons
-        .filter(({ neuronId }) => selectedNeuronIds.has(neuronId))
-        .reduce((sum, { votingPower }) => sum + votingPower, 0n)
-    : 0n;
+    .filter(({ neuronId }) => selectedNeuronIds.has(neuronId))
+    .reduce((sum, { votingPower }) => sum + votingPower, 0n);
 
   // TODO: split into filter component https://dfinity.atlassian.net/browse/L2-367
   const toggleNeuronSelection = (neuronId: bigint) => {
@@ -79,16 +73,16 @@
       const errors = await castVote({
         neuronIds: Array.from(selectedNeuronIds),
         vote: selectedVoteType,
-        proposalId: proposalInfo.id,
+        proposalId: proposalInfo.id as bigint,
         identity: $authStore.identity,
       });
       await listNeurons();
 
       // show one error message per UNIQ erroneous response
       const errorDetails = uniqObjects(errors.filter(Boolean))
-        .map((error) => stringifyJson(error.errorMessage, { indentation: 2 }))
+        .map((error) => stringifyJson(error?.errorMessage, { indentation: 2 }))
         .join("\n");
-      if (errorDetails) {
+      if (errorDetails.length > 0) {
         console.error("vote:", errorDetails);
         toastsStore.show({
           labelKey: "error.register_vote",
@@ -145,12 +139,12 @@
 
     <div role="toolbar">
       <button
-        disabled={!selectedVotingPower}
+        disabled={selectedVotingPower === 0n}
         on:click={showAdoptConfirmation}
         class="primary full-width">{$i18n.proposal_detail__vote.adopt}</button
       >
       <button
-        disabled={!selectedVotingPower}
+        disabled={selectedVotingPower === 0n}
         on:click={showRejectConfirmation}
         class="danger full-width">{$i18n.proposal_detail__vote.reject}</button
       >
