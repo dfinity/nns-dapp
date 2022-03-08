@@ -104,6 +104,7 @@ export const updateDelay = async ({
   await listNeurons();
 };
 
+// TODO: Apply pattern to other canister instantiation L2-371
 const governanceCanister = async (): Promise<{
   canister: GovernanceCanister;
   identity: Identity;
