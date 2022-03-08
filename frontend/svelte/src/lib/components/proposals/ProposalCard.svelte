@@ -12,7 +12,7 @@
   } from "../../constants/proposals.constants";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
-  import type { NeuronId, ProposalId } from "@dfinity/nns";
+  import type { ProposalId } from "@dfinity/nns";
   import Proposer from "./Proposer.svelte";
 
   export let proposalInfo: ProposalInfo;

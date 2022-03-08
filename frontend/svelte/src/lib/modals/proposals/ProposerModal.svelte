@@ -8,6 +8,7 @@
   import { getNeuron } from "../../services/neurons.services";
   import Spinner from "../../components/ui/Spinner.svelte";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
+  import { toastsStore } from "../../stores/toasts.store";
 
   export let proposalInfo: ProposalInfo;
   export let visible: boolean = false;
@@ -21,8 +22,15 @@
       return;
     }
 
-    // TODO: catch error
-    neuron = await getNeuron(proposer);
+    try {
+      neuron = await getNeuron(proposer);
+    } catch (err) {
+      visible = false;
+      neuron = undefined;
+
+      toastsStore.show({ labelKey: "error.get_neuron", level: "error" });
+      console.error(err);
+    }
   };
 
   $: ({ proposer } = proposalInfo);

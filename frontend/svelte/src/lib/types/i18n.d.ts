@@ -21,6 +21,7 @@ interface I18nError {
   create_subaccount_too_long: string;
   create_subaccount_limit_exceeded: string;
   get_neurons: string;
+  get_neuron: string;
 }
 
 interface I18nNavigation {
