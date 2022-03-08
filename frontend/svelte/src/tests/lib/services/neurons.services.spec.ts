@@ -20,7 +20,7 @@ jest.mock("../../../lib/stores/auth.store", () => {
 describe("neurons-services", () => {
   const mockGovernanceCanister = mock<GovernanceCanister>();
   beforeEach(() => {
-    mockGovernanceCanister.getNeurons.mockImplementation(
+    mockGovernanceCanister.listNeurons.mockImplementation(
       jest.fn().mockResolvedValue([])
     );
     mockGovernanceCanister.stakeNeuron.mockImplementation(jest.fn());
@@ -60,10 +60,10 @@ describe("neurons-services", () => {
   });
 
   it("listNeurons fetches neurons", async () => {
-    expect(mockGovernanceCanister.getNeurons).not.toBeCalled();
+    expect(mockGovernanceCanister.listNeurons).not.toBeCalled();
 
     await listNeurons();
 
-    expect(mockGovernanceCanister.getNeurons).toBeCalled();
+    expect(mockGovernanceCanister.listNeurons).toBeCalled();
   });
 });

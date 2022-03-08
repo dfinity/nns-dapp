@@ -7,10 +7,10 @@ import {
   GovernanceCanister,
   ICP,
   LedgerCanister,
+  NeuronId,
   NeuronInfo,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
-import type { NeuronId } from "../canisters/nns-dapp/nns-dapp.types";
 import {
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
@@ -52,7 +52,7 @@ export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
 export const listNeurons = async (): Promise<void> => {
   const { canister, identity } = await governanceCanister();
 
-  const neurons = await canister.getNeurons({
+  const neurons = await canister.listNeurons({
     certified: true,
     principal: identity.getPrincipal(),
   });
