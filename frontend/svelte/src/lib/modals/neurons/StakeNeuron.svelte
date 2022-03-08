@@ -1,6 +1,5 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
-  import type { Identity } from "@dfinity/agent";
   import { createEventDispatcher } from "svelte";
   import Input from "../../components/ui/Input.svelte";
   import Spinner from "../../components/ui/Spinner.svelte";
@@ -30,7 +29,10 @@
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts
-      syncAccounts({ identity: $authStore.identity as Identity });
+      // TODO: L2-329 Manage edge cases
+      if ($authStore.identity) {
+        syncAccounts({ identity: $authStore.identity });
+      }
       dispatcher("nnsNeuronCreated", { neuronId });
     } catch (err) {
       // TODO: L2-329 Manage errors
