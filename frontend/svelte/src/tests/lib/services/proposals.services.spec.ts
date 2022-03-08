@@ -1,7 +1,7 @@
 import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
 import {
-  getProposalId,
   getProposal,
+  getProposalId,
   listNextProposals,
   listProposals,
 } from "../../../lib/services/proposals.services";
