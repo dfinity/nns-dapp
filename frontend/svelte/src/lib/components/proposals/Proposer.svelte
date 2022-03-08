@@ -6,17 +6,21 @@
 
   export let proposalInfo: ProposalInfo;
 
-  let visible: boolean = false;
+  let modalOpen = false;
 
   let proposer: NeuronId | undefined;
   $: ({ proposer } = proposalInfo);
 </script>
 
-<button class="text" on:click|stopPropagation={() => (visible = true)}
-  ><small>{$i18n.neuron_detail.proposer}: {proposer || ""}</small></button
->
+{#if proposer !== undefined}
+  <button class="text" on:click|stopPropagation={() => (modalOpen = true)}
+    ><small>{$i18n.neuron_detail.proposer}: {proposer}</small></button
+  >
 
-<ProposerModal bind:visible {proposalInfo} />
+  {#if modalOpen}
+    <ProposerModal {proposer} on:nnsClose={() => (modalOpen = false)} />
+  {/if}
+{/if}
 
 <style lang="scss">
   button {

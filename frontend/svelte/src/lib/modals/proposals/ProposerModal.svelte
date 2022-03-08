@@ -9,35 +9,24 @@
   import Spinner from "../../components/ui/Spinner.svelte";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
   import { toastsStore } from "../../stores/toasts.store";
+  import { onMount } from "svelte";
 
-  export let proposalInfo: ProposalInfo;
-  export let visible: boolean = false;
-
-  let proposer: NeuronId | undefined;
+  export let proposer: NeuronId;
   let neuron: NeuronInfo | undefined;
 
-  const initNeuron = async () => {
-    if (!visible || !proposer) {
-      neuron = undefined;
-      return;
-    }
-
+  onMount(async () => {
     try {
       neuron = await getNeuron(proposer);
     } catch (err) {
-      visible = false;
       neuron = undefined;
 
       toastsStore.show({ labelKey: "error.get_neuron", level: "error" });
       console.error(err);
     }
-  };
-
-  $: ({ proposer } = proposalInfo);
-  $: visible, proposer, (async () => initNeuron())();
+  });
 </script>
 
-<Modal {visible} on:nnsClose={() => (visible = false)} theme="dark">
+<Modal on:nnsClose theme="dark">
   <span slot="title">{$i18n.neuron_detail.title}</span>
 
   {#if neuron !== undefined}
