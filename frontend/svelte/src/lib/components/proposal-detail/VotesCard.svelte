@@ -11,8 +11,6 @@
 
   export let proposalInfo: ProposalInfo;
 
-  if (!proposalInfo) throw new Error("no proposalInfo provided");
-
   const { yes, no } = proposalInfo.latestTally || {};
   const yesValue = Number(yes) / E8S_PER_ICP;
   const noValue = Number(no) / E8S_PER_ICP;
