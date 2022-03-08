@@ -5,6 +5,7 @@ import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
   listNeurons,
   stakeNeuron,
+  updateDelay,
 } from "../../../lib/services/neurons.services";
 
 jest.mock("../../../lib/stores/auth.store", () => {
@@ -32,6 +33,7 @@ describe("neurons-services", () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
+
   it("stakeNeuron creates a new neuron", async () => {
     jest
       .spyOn(LedgerCanister, "create")
@@ -65,5 +67,39 @@ describe("neurons-services", () => {
     await listNeurons();
 
     expect(mockGovernanceCanister.listNeurons).toBeCalled();
+  });
+
+  it("updateDelay updates neuron", async () => {
+    mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
+      jest.fn().mockResolvedValue({ Ok: null })
+    );
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mock<LedgerCanister>());
+
+    await updateDelay({
+      neuronId: BigInt(10),
+      dissolveDelayInSeconds: 12000,
+    });
+
+    expect(mockGovernanceCanister.increaseDissolveDelay).toBeCalled();
+  });
+
+  it("updateDelay throws error when updating neuron fails", async () => {
+    const error = new Error();
+    mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
+      jest.fn().mockResolvedValue({ Err: error })
+    );
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mock<LedgerCanister>());
+
+    const call = () =>
+      updateDelay({
+        neuronId: BigInt(10),
+        dissolveDelayInSeconds: 12000,
+      });
+
+    expect(call).rejects.toThrow(error);
   });
 });
