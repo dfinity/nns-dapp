@@ -3,14 +3,14 @@
  */
 
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
-import { tick } from "svelte";
 import CreateNeuronModal from "../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import { stakeNeuron } from "../../../lib/services/neurons.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { mockAccountsStoreSubscribe } from "../../mocks/accounts.store.mock";
 
+/* eslint-disable-next-line */
 const en = require("../../../lib/i18n/en.json");
 
 jest.mock("../../../lib/services/neurons.services", () => {
@@ -56,7 +56,7 @@ describe("CreateNeuronModal", () => {
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard);
+    accountCard && (await fireEvent.click(accountCard));
 
     expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
   });
@@ -67,13 +67,12 @@ describe("CreateNeuronModal", () => {
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard);
+    accountCard && (await fireEvent.click(accountCard));
 
     expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
 
     const createButton = container.querySelector('button[type="submit"]');
-    expect(createButton).not.toBeNull();
-    expect(createButton.getAttribute("disabled")).not.toBeNull();
+    expect(createButton?.getAttribute("disabled")).not.toBeNull();
   });
 
   it("should have enabled Create neuron button when entering amount", async () => {
@@ -82,18 +81,17 @@ describe("CreateNeuronModal", () => {
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard);
+    accountCard && (await fireEvent.click(accountCard));
 
     expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
 
     const input = container.querySelector('input[name="amount"]');
     // Svelte generates code for listening to the `input` event
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(input, { target: { value: 22 } });
+    input && (await fireEvent.input(input, { target: { value: 22 } }));
 
     const createButton = container.querySelector('button[type="submit"]');
-    expect(createButton).not.toBeNull();
-    expect(createButton.getAttribute("disabled")).toBeNull();
+    expect(createButton?.getAttribute("disabled")).toBeNull();
   });
 
   it("should be able to create a new neuron", async () => {
@@ -102,16 +100,16 @@ describe("CreateNeuronModal", () => {
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard);
+    accountCard && (await fireEvent.click(accountCard));
 
     const input = container.querySelector('input[name="amount"]');
     // Svelte generates code for listening to the `input` event
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(input, { target: { value: 22 } });
+    input && (await fireEvent.input(input, { target: { value: 22 } }));
 
     const createButton = container.querySelector('button[type="submit"]');
 
-    await fireEvent.click(createButton);
+    createButton && (await fireEvent.click(createButton));
 
     expect(stakeNeuron).toBeCalled();
   });
@@ -122,46 +120,44 @@ describe("CreateNeuronModal", () => {
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard);
+    accountCard && (await fireEvent.click(accountCard));
 
     const input = container.querySelector('input[name="amount"]');
     // Svelte generates code for listening to the `input` event
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(input, { target: { value: 22 } });
+    input && (await fireEvent.input(input, { target: { value: 22 } }));
 
     const createButton = container.querySelector('button[type="submit"]');
 
-    await fireEvent.click(createButton);
+    createButton && (await fireEvent.click(createButton));
 
-    // create neuron tick
-    await tick();
-    expect(queryByText(en.neurons.set_dissolve_delay)).not.toBeNull();
+    waitFor(() =>
+      expect(queryByText(en.neurons.set_dissolve_delay)).not.toBeNull()
+    );
   });
 
   it("should have the update delay button disabled", async () => {
-    const { container, queryByText } = render(CreateNeuronModal);
+    const { container } = render(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard);
+    accountCard && (await fireEvent.click(accountCard));
 
     const input = container.querySelector('input[name="amount"]');
     // Svelte generates code for listening to the `input` event
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(input, { target: { value: 22 } });
+    input && (await fireEvent.input(input, { target: { value: 22 } }));
 
     const createButton = container.querySelector('button[type="submit"]');
 
-    await fireEvent.click(createButton);
-
-    // create neuron tick
-    await tick();
+    createButton && (await fireEvent.click(createButton));
 
     const updateDelayButton = container.querySelector(
       '[data-test="update-button"]'
     );
-    expect(updateDelayButton.getAttribute("disabled")).not.toBeNull();
+    waitFor(() => expect(updateDelayButton).not.toBeNull());
+    expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
 
   it("should have disabled button for dissolve less than six months", async () => {
@@ -170,28 +166,29 @@ describe("CreateNeuronModal", () => {
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard);
+    accountCard && (await fireEvent.click(accountCard));
 
     const input = container.querySelector('input[name="amount"]');
     // Svelte generates code for listening to the `input` event
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(input, { target: { value: 22 } });
+    input && (await fireEvent.input(input, { target: { value: 22 } }));
 
     const createButton = container.querySelector('button[type="submit"]');
 
-    await fireEvent.click(createButton);
-
-    // create neuron tick
-    await tick();
+    createButton && (await fireEvent.click(createButton));
 
     const inputRange = container.querySelector('input[type="range"]');
+    waitFor(() => expect(inputRange).not.toBeNull());
+
     const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
-    await fireEvent.input(inputRange, { target: { value: FIVE_MONTHS } });
+    inputRange &&
+      (await fireEvent.input(inputRange, { target: { value: FIVE_MONTHS } }));
 
     const updateDelayButton = container.querySelector(
       '[data-test="update-button"]'
     );
-    expect(updateDelayButton.getAttribute("disabled")).not.toBeNull();
+
+    expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
 
   it("should be able to change dissolve delay value and enable button", async () => {
@@ -200,27 +197,29 @@ describe("CreateNeuronModal", () => {
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
 
-    await fireEvent.click(accountCard);
+    accountCard && (await fireEvent.click(accountCard));
 
     const input = container.querySelector('input[name="amount"]');
     // Svelte generates code for listening to the `input` event
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(input, { target: { value: 22 } });
+    input && (await fireEvent.input(input, { target: { value: 22 } }));
 
     const createButton = container.querySelector('button[type="submit"]');
 
-    await fireEvent.click(createButton);
-
-    // create neuron tick
-    await tick();
+    createButton && (await fireEvent.click(createButton));
 
     const inputRange = container.querySelector('input[type="range"]');
+    waitFor(() => expect(inputRange).not.toBeNull());
+
     const ONE_YEAR = 60 * 60 * 24 * 365;
-    await fireEvent.input(inputRange, { target: { value: ONE_YEAR } });
+    inputRange &&
+      (await fireEvent.input(inputRange, { target: { value: ONE_YEAR } }));
 
     const updateDelayButton = container.querySelector(
       '[data-test="update-button"]'
     );
-    expect(updateDelayButton.getAttribute("disabled")).toBeNull();
+    waitFor(() =>
+      expect(updateDelayButton?.getAttribute("disabled")).toBeNull()
+    );
   });
 });

@@ -10,6 +10,11 @@ import { syncAccounts } from "./accounts.services";
 export const getICPs = async (icps: number) => {
   const { main }: AccountsStore = get(accountsStore);
 
+  if (!main) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
+    throw new Error("No account found to get ICPs");
+  }
+
   const result: BlockHeight | TransferError = await acquireICPTs({
     e8s: BigInt(icps * E8S_PER_ICP),
     accountIdentifier: main.identifier,
@@ -28,5 +33,11 @@ export const getICPs = async (icps: number) => {
   }
 
   const { identity }: AuthStore = get(authStore);
-  await syncAccounts({ identity });
+
+  if (identity) {
+    await syncAccounts({ identity });
+  } else {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
+    throw new Error("No identity found to sync accounts after getting ICPs");
+  }
 };

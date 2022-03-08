@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import type { Proposal } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import ProposalActions from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
 import {
@@ -18,7 +19,9 @@ describe("ProposalActions", () => {
       },
     });
 
-    const key = proposalFirstActionKey(mockProposalInfo.proposal);
+    const key = proposalFirstActionKey(
+      mockProposalInfo.proposal as Proposal
+    ) as string;
     expect(getByText(key)).toBeInTheDocument();
   });
 
@@ -29,10 +32,11 @@ describe("ProposalActions", () => {
       },
     });
 
-    const fields = proposalActionFields(mockProposalInfo.proposal);
+    const fields = proposalActionFields(mockProposalInfo.proposal as Proposal);
     for (const [key, value] of fields) {
-      expect(getByText(key)).toBeInTheDocument();
-      expect(getByText(key).nextElementSibling.textContent).toBe(value);
+      const element = getByText(key);
+      expect(element).toBeInTheDocument();
+      expect(element.nextElementSibling?.textContent).toBe(value);
     }
   });
 });

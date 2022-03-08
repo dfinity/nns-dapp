@@ -1,5 +1,6 @@
 import { ICP, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
+import { readable } from "svelte/store";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import type { AccountDetails } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
 import * as services from "../../../lib/services/accounts.services";
@@ -8,6 +9,16 @@ import {
   mockSubAccountDetails,
 } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+
+jest.mock("../../../lib/stores/auth.store", () => {
+  return {
+    authStore: readable({
+      identity: {
+        getPrincipal: jest.fn(),
+      },
+    }),
+  };
+});
 
 describe("accounts-services", () => {
   it("should call ledger and nnsdapp to get account and balance", async () => {

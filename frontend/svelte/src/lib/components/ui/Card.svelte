@@ -4,7 +4,7 @@
 
   let clickable: boolean = false;
 
-  $: clickable = ["button", "link"].includes(role);
+  $: clickable = role !== undefined ? ["button", "link"].includes(role) : false;
 </script>
 
 <article {role} on:click class:clickable aria-label={ariaLabel}>

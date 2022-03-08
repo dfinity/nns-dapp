@@ -1,5 +1,6 @@
 import { Actor } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/nns";
+import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {
   AccountNotFoundError,
@@ -13,7 +14,6 @@ import type {
   CreateSubAccountResponse,
   SubAccountDetails,
 } from "./nns-dapp.types";
-import type { NNSDappCanisterOptions } from "./types";
 
 export class NNSDappCanister {
   private constructor(

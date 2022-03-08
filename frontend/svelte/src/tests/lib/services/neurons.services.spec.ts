@@ -20,7 +20,7 @@ jest.mock("../../../lib/stores/auth.store", () => {
 describe("neurons-services", () => {
   const mockGovernanceCanister = mock<GovernanceCanister>();
   beforeEach(() => {
-    mockGovernanceCanister.getNeurons.mockImplementation(
+    mockGovernanceCanister.listNeurons.mockImplementation(
       jest.fn().mockResolvedValue([])
     );
     mockGovernanceCanister.stakeNeuron.mockImplementation(jest.fn());
@@ -33,7 +33,9 @@ describe("neurons-services", () => {
     jest.resetAllMocks();
   });
   it("stakeNeuron creates a new neuron", async () => {
-    jest.spyOn(LedgerCanister, "create").mockImplementation(() => undefined);
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mock<LedgerCanister>());
 
     await stakeNeuron({
       stake: ICP.fromString("2") as ICP,
@@ -45,7 +47,9 @@ describe("neurons-services", () => {
   it(`stakeNeuron should raise an error if amount less than ${
     E8S_PER_ICP / E8S_PER_ICP
   } ICP`, async () => {
-    jest.spyOn(LedgerCanister, "create").mockImplementation(() => undefined);
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mock<LedgerCanister>());
 
     const call = () =>
       stakeNeuron({
@@ -56,10 +60,10 @@ describe("neurons-services", () => {
   });
 
   it("listNeurons fetches neurons", async () => {
-    expect(mockGovernanceCanister.getNeurons).not.toBeCalled();
+    expect(mockGovernanceCanister.listNeurons).not.toBeCalled();
 
     await listNeurons();
 
-    expect(mockGovernanceCanister.getNeurons).toBeCalled();
+    expect(mockGovernanceCanister.listNeurons).toBeCalled();
   });
 });

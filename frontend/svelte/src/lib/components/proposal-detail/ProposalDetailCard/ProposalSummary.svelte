@@ -2,14 +2,12 @@
   import type { Proposal } from "@dfinity/nns";
   import CardBlock from "../../ui/CardBlock.svelte";
   import { i18n } from "../../../../lib/stores/i18n";
-  import { formatProposalSummary } from "../../../../lib/utils/proposals.utils";
   import Markdown from "../../ui/Markdown.svelte";
-  import { removeHTMLTags } from "../../../utils/security.utils";
 
   export let proposal: Proposal | undefined;
 
   let summary: string | undefined;
-  $: summary = formatProposalSummary(removeHTMLTags(proposal?.summary));
+  $: summary = proposal?.summary;
 </script>
 
 <CardBlock>

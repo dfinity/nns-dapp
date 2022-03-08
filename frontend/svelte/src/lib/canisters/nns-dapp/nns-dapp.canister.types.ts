@@ -2,8 +2,6 @@ import type { Agent } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type { NNSDappService } from "./nns-dapp.idl";
 
-export type { AccountIdentifier, SubAccountDetails } from "./nns-dapp.types";
-
 export interface NNSDappCanisterOptions {
   // The agent to use when communicating with the governance canister.
   agent: Agent;
