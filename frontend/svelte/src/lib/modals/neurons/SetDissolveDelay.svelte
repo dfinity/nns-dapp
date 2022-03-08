@@ -26,7 +26,7 @@
   let disableUpdate: boolean;
   $: disableUpdate = delayInSeconds < SIX_MONTHS;
   const dispatcher = createEventDispatcher();
-  const skip = (): void => {
+  const goToNext = (): void => {
     dispatcher("nnsNext");
   };
 
@@ -37,7 +37,7 @@
         neuronId,
         dissolveDelayInSeconds: delayInSeconds,
       });
-      skip();
+      goToNext();
     } catch (error) {
       // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-329
       console.error(error);
@@ -93,7 +93,7 @@
     </div>
   </Card>
   <div class="buttons">
-    <button on:click={skip} class="secondary full-width" disabled={loading}
+    <button on:click={goToNext} class="secondary full-width" disabled={loading}
       >{$i18n.neurons.skip}</button
     >
     <button
