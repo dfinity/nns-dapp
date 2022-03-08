@@ -18,7 +18,7 @@ else
 
   # Gets the most recent 'Backend wasm module' download:
   # shellcheck disable=SC2010 # we really do want this, not globbing.
-  DOWNLOAD_FILENAME="$(ls -t "$DOWNLOADS_DIR" | grep -E '.*(T|t)estnet backend wasm module( [(][0-9]+[)])?.zip$' | head -n1)"
+  DOWNLOAD_FILENAME="$(ls -t "$DOWNLOADS_DIR" | grep -E '.*backend wasm module( [(][0-9]+[)])?.zip$' | head -n1)"
   DOWNLOAD_PATH="$DOWNLOADS_DIR/$DOWNLOAD_FILENAME"
   echo "Sourcing WASM from: $DOWNLOAD_PATH"
 fi

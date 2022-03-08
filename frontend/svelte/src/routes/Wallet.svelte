@@ -7,7 +7,9 @@
   import { AppPath } from "../lib/constants/routes.constants";
 
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["never"].includes(process.env.REDIRECT_TO_LEGACY);
+  const showThisRoute = ["never"].includes(
+    process.env.REDIRECT_TO_LEGACY as string
+  );
   onMount(() => {
     if (!showThisRoute) {
       window.location.replace(`/${window.location.hash}`);

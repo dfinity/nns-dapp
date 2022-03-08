@@ -15,7 +15,7 @@ import {
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 
 describe("Accounts", () => {
-  let accountsStoreMock;
+  let accountsStoreMock: jest.MockedFunction<any>;
 
   beforeEach(() => {
     jest
