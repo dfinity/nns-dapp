@@ -60,7 +60,7 @@ export const listNeurons = async (): Promise<void> => {
     agent,
     canisterId: GOVERNANCE_CANISTER_ID,
   });
-  const neurons = await governanceCanister.getNeurons({
+  const neurons = await governanceCanister.listNeurons({
     certified: true,
     principal: identity.getPrincipal(),
   });
