@@ -3,9 +3,10 @@
  */
 
 import { GovernanceCanister } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
-import { authStore } from "../../../lib/stores/auth.store";
+import {render, waitFor} from "@testing-library/svelte";
+import { tick } from "svelte";
 import ProposerModal from "../../../lib/modals/proposals/ProposerModal.svelte";
+import { authStore } from "../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
@@ -38,5 +39,23 @@ describe("ProposerModal", () => {
     });
 
     expect(container.querySelector("div.modal")).not.toBeNull();
+  });
+
+  it("should render a title", () => {
+    const { getByText } = render(ProposerModal, {
+      props,
+    });
+
+    expect(getByText(en.neuron_detail.title)).toBeInTheDocument();
+  });
+
+  it("should render a neuron card", async () => {
+    const { container } = render(ProposerModal, {
+      props,
+    });
+
+    await waitFor(() =>
+        expect(container.querySelector("article")).not.toBeNull()
+    );
   });
 });
