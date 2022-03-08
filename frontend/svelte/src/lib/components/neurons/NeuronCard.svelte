@@ -53,30 +53,33 @@
       {$i18n.neurons[`status_${stateInfo.textKey}`]}
       <svelte:component this={stateInfo.Icon} />
     </p>
-
-    {#if dissolvingTime !== undefined}
-      <p class="duration">
-        {secondsToDuration(dissolvingTime)} - {$i18n.neurons.staked}
-      </p>
-    {/if}
-
-    {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
-      <p class="duration">
-        {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons
-          .staked}
-      </p>
-    {/if}
   </div>
 
   <div slot="end" class="currency">
     {#if neuronICP}
       <ICPComponent icp={neuronICP} />
-      <h5>{$i18n.neurons.stake}</h5>
+      <p class="info">{$i18n.neurons.stake}</p>
     {/if}
   </div>
+
+  {#if dissolvingTime !== undefined}
+    <p class="duration">
+      {secondsToDuration(dissolvingTime)} - {$i18n.neurons.staked}
+    </p>
+  {/if}
+
+  {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
+    <p class="duration">
+      {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons.staked}
+    </p>
+  {/if}
 </Card>
 
 <style lang="scss">
+  :global(div.modal article > div) {
+    margin-bottom: 0;
+  }
+
   h3 {
     line-height: var(--line-height-standard);
     margin-bottom: 0;
