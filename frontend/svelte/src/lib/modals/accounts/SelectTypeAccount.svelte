@@ -41,7 +41,7 @@
     cursor: pointer;
 
     &:hover {
-      background-color: var(--blue-700);
+      background: var(--background-hover);
     }
 
     h4 {
