@@ -107,7 +107,7 @@ describe("VotesCard", () => {
         },
       });
       const neuronElements = container.querySelectorAll(
-        '[data-test="neuron-data"]'
+        '[data-tid="neuron-data"]'
       );
       expect(neuronElements.length).toBe(2);
     });
@@ -122,12 +122,12 @@ describe("VotesCard", () => {
         },
       });
       const thumbUpElements = container.querySelectorAll(
-        '[data-test="thumb-up"]'
+        '[data-tid="thumb-up"]'
       );
       expect(thumbUpElements.length).toBe(1);
 
       const thumbDownElements = container.querySelectorAll(
-        '[data-test="thumb-down"]'
+        '[data-tid="thumb-down"]'
       );
       expect(thumbDownElements.length).toBe(1);
     });
