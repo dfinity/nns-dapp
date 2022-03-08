@@ -8,6 +8,8 @@ interface I18nCore {
   create: string;
   filter: string;
   back: string;
+  confirm_yes: string;
+  confirm_no: string;
 }
 
 interface I18nError {
@@ -21,6 +23,8 @@ interface I18nError {
   create_subaccount_too_long: string;
   create_subaccount_limit_exceeded: string;
   get_neurons: string;
+  register_vote: string;
+  register_vote_unknown: string;
 }
 
 interface I18nNavigation {
@@ -158,6 +162,19 @@ interface I18nProposal_detail {
   my_votes: string;
 }
 
+interface I18nProposal_detail__vote {
+  headline: string;
+  neurons: string;
+  voting_power: string;
+  total: string;
+  adopt: string;
+  reject: string;
+  confirm_adopt_headline: string;
+  confirm_adopt_text: string;
+  confirm_reject_headline: string;
+  confirm_reject_text: string;
+}
+
 interface I18nNeuron_detail {
   title: string;
 }
@@ -189,6 +206,7 @@ interface I18n {
   status: I18nStatus;
   wallet: I18nWallet;
   proposal_detail: I18nProposal_detail;
+  proposal_detail__vote: I18nProposal_detail__vote;
   neuron_detail: I18nNeuron_detail;
   time: I18nTime;
 }

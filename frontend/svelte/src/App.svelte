@@ -17,6 +17,7 @@
   import Toasts from "./lib/components/ui/Toasts.svelte";
   import { syncAccounts } from "./lib/services/accounts.services";
   import NeuronDetail from "./routes/NeuronDetail.svelte";
+  import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -58,6 +59,7 @@
 </Guard>
 
 <Toasts />
+<BusyScreen />
 
 <style lang="scss" global>
   @import "./lib/themes/fonts.scss";
