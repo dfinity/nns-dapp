@@ -9,7 +9,7 @@
 
 const ENVIRONMENT = process.env.ROLLUP_WATCH
   ? "local" // Note: This is also deployed to testnets.
-  : process.env.DEPLOY_ENV === "testnet"
+  : process.env.DEPLOY_ENV === "testnet" || process.env.DEPLOY_ENV === "e2e"
   ? "testnet"
   : "mainnet";
 
@@ -24,9 +24,12 @@ const MAINNET = `https://${domainMainnet}`;
 
 const IDENTITY_SERVICE_URL =
   process.env.IDENTITY_SERVICE_URL ||
-  (development
-    ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
-    : "https://identity.ic0.app/");
+  process.env.DEPLOY_ENV === "e2e"
+    // needs to match the port in `e2e-tests/test.js`
+    ? "http://localhost:8087"
+    : (development
+      ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
+      : "https://identity.ic0.app/");
 
 const HOST =
   process.env.HOST || (development ? `https://${domainTestnet}/` : undefined);

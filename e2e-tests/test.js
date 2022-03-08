@@ -13,9 +13,11 @@ const fs = require("fs");
  */
 const CANISTER_IDS_PATH = `${__dirname}/../.dfx/local/canister_ids.json`;
 let canister_id;
+let ii_canister_id;
 try {
   const canister_ids = JSON.parse(fs.readFileSync(CANISTER_IDS_PATH, "utf8"));
   canister_id = canister_ids["nns-dapp"].local;
+  ii_canister_id = canister_ids["internet_identity"].local;
 } catch (e) {
   console.log(
     `Could not read 'nns-dapp' local canister ID from ${CANISTER_IDS_PATH}`
@@ -23,7 +25,8 @@ try {
   throw e;
 }
 
-console.log(`Using canister ID: ${canister_id}`);
+console.log(`NNS Dapp using canister ID: ${canister_id}`);
+console.log(`II using canister id: ${ii_canister_id}`);
 
 const DFX_JSON_PATH = `${__dirname}/../dfx.json`;
 let replica_host;
@@ -47,37 +50,64 @@ console.log(`Using replica host: ${replica_host}`);
  * hence we set it as the `NNS_DAPP_URL` environment variable which is read by
  * wdio.conf.js..
  */
+const II_PORT = 8087;
+const II_URL = `http://localhost:${II_PORT}`;
 const NNS_DAPP_PORT = 8086;
 const NNS_DAPP_URL = `http://localhost:${NNS_DAPP_PORT}`;
 
 const child_process = require("child_process");
 
-const proxy = child_process.spawn("proxy", [
+const nnsDappProxy = child_process.spawn("npm", [
+  "run",
+  "proxy",
+  "--",
   "--replica-host",
   replica_host,
   `${canister_id}:${NNS_DAPP_PORT}`,
 ]);
 
-proxy.stdout.on("data", (data) => {
-  console.log(`proxy: ${data}`);
+nnsDappProxy.stdout.on("data", (data) => {
+  console.log(`nns dapp proxy: ${data}`);
 });
 
-proxy.stdout.on("close", (code) => {
-  console.log(`proxy returned with ${code}`);
+nnsDappProxy.stdout.on("close", (code) => {
+  console.log(`nns dapp proxy returned with ${code}`);
+});
+
+const iiProxy = child_process.spawn("npm", [
+  "run",
+  "proxy",
+  "--",
+  "--replica-host",
+  replica_host,
+  `${ii_canister_id}:${II_PORT}`,
+]);
+
+iiProxy.stdout.on("data", (data) => {
+  console.log(`ii proxy: ${data}`);
+});
+
+iiProxy.stdout.on("close", (code) => {
+  console.log(`ii proxy returned with ${code}`);
 });
 
 /*
  * Start the tests
  */
 const wdio = child_process.spawn("npm", ["run", "wdio"], {
-  env: { ...process.env, NNS_DAPP_URL: NNS_DAPP_URL },
+  env: { ...process.env, NNS_DAPP_URL, II_URL },
 });
 
 wdio.stdout.on("data", (data) => {
   console.log(`wdio: ${data}`);
 });
 
+wdio.stderr.on("data", (data) => {
+  console.log(`wdio error: ${data}`);
+})
+
 wdio.stdout.on("close", (code) => {
   console.log(`wdio returned with ${code}`);
-  proxy.kill();
+  nnsDappProxy.kill();
+  iiProxy.kill();
 });

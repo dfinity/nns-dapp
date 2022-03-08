@@ -47,22 +47,22 @@ describe("landing page", () => {
 
   // DO NOT RUN ON CI PIPELINE
   // TODO: Enable for CI Pipeline
-  xit("register and back to dashboard", async () => {
+  it("register and back to dashboard", async () => {
     await browser.url("/v2/");
+
+    await waitForLoad(browser);
 
     await browser.$("h1").waitForExist();
 
     // Click Login Button
-    await browser.$("button").click();
+    // We have the button from the TEST ENVIRONMENT banner
+    await browser.$("main button").waitForExist();
+    await browser.$("main button").click();
 
     // REGISTRATION
   
     // Internet Identity
-    // TODO: Deploy II canisters to localhost and proxy them.
-    // How do we do this when they are in another repo? Do we have a repository of docker images?
-    // TODO: Create docker image of NNS Dapp with IDENTITY_SERVICE_URL pointing to II proxy
-    // https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/#authorize
-    const iiURL = "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/#authorize"
+    const iiURL = `${process.env.II_URL}/#authorize`;
     await browser.switchWindow(iiURL);
     const registerButton = await browser.$("#registerButton");
     await registerButton.waitForExist({ timeout: 10_000 });

@@ -96,7 +96,7 @@ jobs:
 
       - name: Deploy
         run: |
-          DEPLOY_ENV=local dfx deploy --no-wallet --network local
+          DEPLOY_ENV=e2e dfx deploy --no-wallet --network local --argument '(null)'
 
       - name: Build proxy
         working-directory: proxy

@@ -7,8 +7,8 @@ TOPLEVEL="$TS_DIR/../../"
 
 # Check that the DEPLOY_ENV is set
 DEPLOY_ENV="${DEPLOY_ENV:-}"
-if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $DEPLOY_ENV = "local" ]]; then
-  echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet' or 'local'"
+if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $DEPLOY_ENV = "local" ]] && ! [[ $DEPLOY_ENV = "e2e" ]]; then
+  echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet' or 'local' or 'e2e'"
   exit 1
 fi
 
