@@ -30,7 +30,7 @@
 </script>
 
 <button class="text" on:click|stopPropagation={() => (visible = true)}
-  ><small>Proposer: {proposer || ""}</small></button
+  ><small>{$i18n.neuron_detail.proposer}: {proposer || ""}</small></button
 >
 
 <Modal {visible} on:nnsClose={() => (visible = false)} theme="dark">

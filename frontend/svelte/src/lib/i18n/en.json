@@ -143,7 +143,8 @@
     "my_votes": "My Votes"
   },
   "neuron_detail": {
-    "title": "Neuron"
+    "title": "Neuron",
+    "proposer": "Proposer"
   },
   "time": {
     "year": "year",

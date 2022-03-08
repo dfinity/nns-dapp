@@ -161,6 +161,7 @@ interface I18nProposal_detail {
 
 interface I18nNeuron_detail {
   title: string;
+  proposer: string;
 }
 
 interface I18nTime {
