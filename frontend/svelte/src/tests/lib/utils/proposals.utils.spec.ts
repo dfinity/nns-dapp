@@ -1,4 +1,4 @@
-import { Ballot, Vote } from "@dfinity/nns";
+import { Ballot, Proposal, Vote } from "@dfinity/nns";
 import {
   emptyProposals,
   formatVotingPower,
@@ -22,9 +22,9 @@ describe("proposals-utils", () => {
     expect(lastProposalId([])).toBeUndefined());
 
   it("should find fist action key", () =>
-    expect(proposalFirstActionKey(mockProposalInfo.proposal)).toEqual(
-      "ExecuteNnsFunction"
-    ));
+    expect(
+      proposalFirstActionKey(mockProposalInfo.proposal as Proposal)
+    ).toEqual("ExecuteNnsFunction"));
 
   it("should display proposal", () => {
     expect(
@@ -269,7 +269,9 @@ describe("proposals-utils", () => {
 
   describe("proposalActionFields", () => {
     it("should filter action fields", () => {
-      const fields = proposalActionFields(mockProposalInfo.proposal);
+      const fields = proposalActionFields(
+        mockProposalInfo.proposal as Proposal
+      );
 
       expect(fields.map(([key]) => key).join()).toEqual(
         "nnsFunctionId,nnsFunctionName,payload"

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { GovernanceCanister } from "@dfinity/nns";
+import { GovernanceCanister, Proposal, ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { authStore } from "../../lib/stores/auth.store";
 import { proposalsStore } from "../../lib/stores/proposals.store";
@@ -15,7 +15,8 @@ import {
   mockProposalsStoreSubscribe,
 } from "../mocks/proposals.store.mock";
 
-const en = require("../../lib/i18n/en.json");
+/* eslint-disable-next-line @typescript-eslint/no-var-requires */
+const en = require("../../lib/i18n/en.json") as I18n;
 
 describe("Proposals", () => {
   const nothingFound = (
@@ -25,24 +26,20 @@ describe("Proposals", () => {
       (p) => p.textContent === en.voting.nothing_found
     )[0];
 
-  let authStoreMock;
-
   beforeEach(() => {
-    authStoreMock = jest
+    jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
   describe("Matching results", () => {
-    let proposalsStoreMock;
-
     const mockGovernanceCanister: MockGovernanceCanister =
       new MockGovernanceCanister(mockProposals);
 
     const mockLoadProposals = () =>
-      (proposalsStoreMock = jest
+      jest
         .spyOn(proposalsStore, "subscribe")
-        .mockImplementation(mockProposalsStoreSubscribe));
+        .mockImplementation(mockProposalsStoreSubscribe);
 
     beforeEach(() =>
       jest
@@ -85,8 +82,14 @@ describe("Proposals", () => {
 
       const { getByText } = render(Proposals);
 
-      expect(getByText(mockProposals[0].proposal.title)).toBeInTheDocument();
-      expect(getByText(mockProposals[1].proposal.title)).toBeInTheDocument();
+      const firstProposal = mockProposals[0] as ProposalInfo;
+      const secondProposal = mockProposals[1] as ProposalInfo;
+      expect(
+        getByText((firstProposal.proposal as Proposal).title as string)
+      ).toBeInTheDocument();
+      expect(
+        getByText((secondProposal.proposal as Proposal).title as string)
+      ).toBeInTheDocument();
     });
 
     it("should not render not found text on init", () => {

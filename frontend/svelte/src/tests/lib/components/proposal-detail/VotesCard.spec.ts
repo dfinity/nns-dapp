@@ -27,8 +27,8 @@ describe("VotesCard", () => {
         },
       });
 
-      yes = Number(mockProposalInfo.latestTally.yes) / E8S_PER_ICP;
-      no = Number(mockProposalInfo.latestTally.no) / E8S_PER_ICP;
+      yes = Number(mockProposalInfo.latestTally?.yes) / E8S_PER_ICP;
+      no = Number(mockProposalInfo.latestTally?.no) / E8S_PER_ICP;
     });
 
     it('should render "Adopt" value', () => {
@@ -56,7 +56,7 @@ describe("VotesCard", () => {
       (neurons: NeuronInfo[] = []) =>
       (run: Subscriber<NeuronsStore>): (() => void) => {
         run(neurons);
-        return () => {};
+        return () => undefined;
       };
     const noVoted = {
       ...neuronMock,

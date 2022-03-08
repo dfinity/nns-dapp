@@ -1,10 +1,10 @@
+import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import { listCanisters } from "../../../lib/services/canisters.services";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { MockNNSDappCanister } from "../../mocks/canisters.store.mock";
 
 describe("canisters-services", () => {
-  const mockNNSDappCanister: MockNNSDappCanister = new MockNNSDappCanister();
+  const mockNNSDappCanister = mock<NNSDappCanister>();
 
   let spyListCanisters;
 
@@ -13,7 +13,9 @@ describe("canisters-services", () => {
       .spyOn(NNSDappCanister, "create")
       .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
 
-    spyListCanisters = jest.spyOn(mockNNSDappCanister, "getCanisters");
+    spyListCanisters = jest
+      .spyOn(mockNNSDappCanister, "getCanisters")
+      .mockResolvedValue([]);
   });
 
   afterEach(() => spyListCanisters.mockClear());

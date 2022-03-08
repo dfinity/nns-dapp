@@ -45,7 +45,6 @@ const initAuthStore = () => {
     signIn: () =>
       new Promise<void>(async (resolve, reject) => {
         const authClient: AuthClient = await AuthClient.create();
-
         await authClient.login({
           identityProvider: identityServiceURL,
           maxTimeToLive: BigInt(30 * 60 * 1_000_000_000), // 30 minutes

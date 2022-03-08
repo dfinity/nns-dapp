@@ -48,7 +48,7 @@ export const listNextProposals = async ({
     identity,
   });
 
-  if (!proposals.length) {
+  if (proposals.length === 0) {
     // There is no more proposals to fetch for the current filters.
     // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
     return;
@@ -130,6 +130,9 @@ const queryProposalInfo = async ({
 
 export const getProposalId = (path: string): ProposalId | undefined => {
   const pathDetail = path.split("/").pop();
+  if (pathDetail === undefined) {
+    return;
+  }
   const id = parseInt(pathDetail, 10);
   // ignore not integer ids
   return isFinite(id) && `${id}` === pathDetail ? BigInt(id) : undefined;

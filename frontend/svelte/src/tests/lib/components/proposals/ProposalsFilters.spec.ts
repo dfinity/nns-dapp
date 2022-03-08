@@ -69,9 +69,8 @@ describe("ProposalsFilters", () => {
 
     const input: HTMLInputElement | null = container.querySelector("input");
 
-    expect(input).not.toBeNull();
-    expect(input.getAttribute("type")).toEqual("checkbox");
-    expect(input.getAttribute("id")).toEqual("hide-unavailable-proposals");
+    expect(input?.getAttribute("type")).toEqual("checkbox");
+    expect(input?.getAttribute("id")).toEqual("hide-unavailable-proposals");
   });
 
   it("should set a ref to the checkbox", () => {

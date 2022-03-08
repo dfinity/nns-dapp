@@ -9,7 +9,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { AppPath } from "../lib/constants/routes.constants";
-  import type { ProposalInfo } from "@dfinity/nns";
+  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
   import CastVoteCard from "../lib/components/proposal-detail/CastVoteCard.svelte";
@@ -22,7 +22,7 @@
 
   // TODO: To be removed once this page has been implemented
   const showThisRoute = ["never", "staging"].includes(
-    process.env.REDIRECT_TO_LEGACY
+    process.env.REDIRECT_TO_LEGACY as string
   );
   onMount(async () => {
     if (!showThisRoute) {
@@ -33,41 +33,40 @@
     await listNeurons();
   });
 
-  const unsubscribe = showThisRoute
-    ? routeStore.subscribe(async ({ path }) => {
-        const proposalId = getProposalId(path);
-        if (proposalId === undefined) {
-          unsubscribe();
-          routeStore.replace({ path: AppPath.Proposals });
-          return;
-        }
+  const unsubscribe = routeStore.subscribe(async ({ path }) => {
+    const proposalIdMaybe = getProposalId(path);
+    if (proposalIdMaybe === undefined) {
+      unsubscribe();
+      routeStore.replace({ path: AppPath.Proposals });
+      return;
+    }
+    const proposalId: ProposalId = proposalIdMaybe;
 
-        try {
-          proposalInfo = await getProposalInfo({
-            proposalId,
-            identity: $authStore.identity,
-          });
+    try {
+      const proposalInfoMaybe = await getProposalInfo({
+        proposalId,
+        identity: $authStore.identity,
+      });
 
-          if (!proposalInfo) {
-            throw new Error("Proposal not found");
-          }
-        } catch (error) {
-          unsubscribe();
+      if (!proposalInfoMaybe) {
+        throw new Error("Proposal not found");
+      }
+      proposalInfo = proposalInfoMaybe;
+    } catch (error) {
+      unsubscribe();
+      console.error(error);
+      toastsStore.show({
+        labelKey: "error.proposal_not_found",
+        level: "error",
+        detail: `id: "${proposalId}"`,
+      });
 
-          console.error(error);
-          toastsStore.show({
-            labelKey: "error.proposal_not_found",
-            level: "error",
-            detail: `id: "${proposalId}"`,
-          });
-
-          // Wait a bit before redirection so the user recognizes on which page the error occures
-          setTimeout(() => {
-            routeStore.replace({ path: AppPath.Proposals });
-          }, 1500);
-        }
-      })
-    : () => {};
+      // Wait a bit before redirection so the user recognizes on which page the error occures
+      setTimeout(() => {
+        routeStore.replace({ path: AppPath.Proposals });
+      }, 1500);
+    }
+  });
 
   onDestroy(unsubscribe);
 

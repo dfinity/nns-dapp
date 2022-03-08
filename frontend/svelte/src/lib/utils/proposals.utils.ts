@@ -21,17 +21,18 @@ export const lastProposalId = (
 
 export const proposalFirstActionKey = (
   proposal: Proposal
-): string | undefined => Object.keys(proposal?.action)[0];
+): string | undefined => Object.keys(proposal.action || {})[0];
 
 export const proposalActionFields = (
   proposal: Proposal
 ): [string, string][] => {
   const key = proposalFirstActionKey(proposal);
-  if (!key) {
+  if (key === undefined) {
     return [];
   }
 
-  return Object.entries(proposal.action[key])
+  // TODO: https://dfinity.atlassian.net/browse/L2-348
+  return Object.entries(proposal.action?.[key])
     .filter(([key]) => key !== "payloadBytes")
     .map(([key, value]: [string, object]) => [
       key,
@@ -41,7 +42,7 @@ export const proposalActionFields = (
 
 // TODO: replace w/ markdown renderer -- eg https://nns.ic0.app/#/proposal/43574
 export const formatProposalSummary = (summary: string): string => {
-  if (!summary) return "";
+  if (summary?.length === 0) return "";
   // extend urls
   return summary.replace(
     /(https?:\/\/[\S]+)/g,
@@ -81,7 +82,7 @@ export const hasMatchingProposals = ({
   proposals: ProposalInfo[];
   excludeVotedProposals: boolean;
 }): boolean => {
-  if (!proposals.length) {
+  if (proposals.length === 0) {
     return false;
   }
 
