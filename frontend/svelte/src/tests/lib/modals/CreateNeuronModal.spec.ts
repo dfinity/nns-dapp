@@ -158,7 +158,7 @@ describe("CreateNeuronModal", () => {
     createButton && (await fireEvent.click(createButton));
 
     const updateDelayButton = container.querySelector(
-      '[data-test="update-button"]'
+      '[data-tid="update-button"]'
     );
     waitFor(() => expect(updateDelayButton).not.toBeNull());
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
@@ -189,7 +189,7 @@ describe("CreateNeuronModal", () => {
       (await fireEvent.input(inputRange, { target: { value: FIVE_MONTHS } }));
 
     const updateDelayButton = container.querySelector(
-      '[data-test="update-button"]'
+      '[data-tid="update-button"]'
     );
 
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
@@ -220,7 +220,7 @@ describe("CreateNeuronModal", () => {
       (await fireEvent.input(inputRange, { target: { value: ONE_YEAR } }));
 
     const updateDelayButton = container.querySelector(
-      '[data-test="update-button"]'
+      '[data-tid="update-button"]'
     );
     waitFor(() =>
       expect(updateDelayButton?.getAttribute("disabled")).toBeNull()
