@@ -3,6 +3,7 @@ import { Ed25519KeyIdentity } from "@dfinity/identity";
 import {
   AccountIdentifier,
   BlockHeight,
+  E8s,
   ICP,
   LedgerCanister,
   TransferError,
@@ -17,7 +18,7 @@ export const acquireICPTs = async ({
   e8s,
 }: {
   accountIdentifier: string;
-  e8s: bigint;
+  e8s: E8s;
 }): Promise<BlockHeight | TransferError> => {
   assertTestnet();
 
