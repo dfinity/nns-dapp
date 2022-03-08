@@ -4,8 +4,9 @@
 
 import { Vote } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import en from "../../../lib/i18n/en.json";
 import VoteConfirmationModal from "../../../lib/modals/proposals/VoteConfirmationModal.svelte";
+
+const en = require("../../../lib/i18n/en.json");
 
 describe("VoteConfirmationModal", () => {
   it("should display Adopt state", () => {
@@ -16,7 +17,7 @@ describe("VoteConfirmationModal", () => {
       },
     });
     expect(
-      container.querySelector('[data-test="thumb-up"]')
+      container.querySelector('[data-tid="thumb-up"]')
     ).toBeInTheDocument();
     expect(
       getByText(en.proposal_detail__vote.confirm_adopt_headline)
@@ -31,7 +32,7 @@ describe("VoteConfirmationModal", () => {
       },
     });
     expect(
-      container.querySelector('[data-test="thumb-down"]')
+      container.querySelector('[data-tid="thumb-down"]')
     ).toBeInTheDocument();
     expect(
       getByText(en.proposal_detail__vote.confirm_reject_headline)
@@ -56,10 +57,10 @@ describe("VoteConfirmationModal", () => {
       },
     });
     expect(
-      container.querySelector('[data-test="confirm-no"]')
+      container.querySelector('[data-tid="confirm-no"]')
     ).toBeInTheDocument();
     expect(
-      container.querySelector('[data-test="confirm-yes"]')
+      container.querySelector('[data-tid="confirm-yes"]')
     ).toBeInTheDocument();
   });
 });

@@ -11,12 +11,12 @@
     <slot />
     <div role="toolbar">
       <button
-        data-test="confirm-no"
+        data-tid="confirm-no"
         on:click={() => dispatch("nnsClose")}
         class="secondary full-width">{$i18n.core.confirm_no}</button
       >
       <button
-        data-test="confirm-yes"
+        data-tid="confirm-yes"
         class="primary full-width"
         on:click={() => dispatch("nnsConfirm")}>{$i18n.core.confirm_yes}</button
       >
