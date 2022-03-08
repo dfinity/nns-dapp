@@ -26,7 +26,7 @@
   let disableUpdate: boolean;
   $: disableUpdate = delayInSeconds < SIX_MONTHS;
   const dispatcher = createEventDispatcher();
-  const skip = () => {
+  const skip = (): void => {
     dispatcher("nnsNext");
   };
 
@@ -37,7 +37,7 @@
         neuronId,
         dissolveDelayInSeconds: delayInSeconds,
       });
-      dispatcher("nnsNext");
+      skip();
     } catch (error) {
       // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-329
       console.error(error);
