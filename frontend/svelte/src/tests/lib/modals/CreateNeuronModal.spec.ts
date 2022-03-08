@@ -6,7 +6,10 @@ import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import CreateNeuronModal from "../../../lib/modals/neurons/CreateNeuronModal.svelte";
-import { stakeNeuron } from "../../../lib/services/neurons.services";
+import {
+  stakeNeuron,
+  updateDelay,
+} from "../../../lib/services/neurons.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { mockAccountsStoreSubscribe } from "../../mocks/accounts.store.mock";
 
@@ -15,7 +18,8 @@ const en = require("../../../lib/i18n/en.json");
 
 jest.mock("../../../lib/services/neurons.services", () => {
   return {
-    stakeNeuron: jest.fn().mockResolvedValue(undefined),
+    stakeNeuron: jest.fn().mockResolvedValue(BigInt(10)),
+    updateDelay: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -191,7 +195,7 @@ describe("CreateNeuronModal", () => {
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
 
-  it("should be able to change dissolve delay value and enable button", async () => {
+  it("should be able to change dissolve delay value", async () => {
     const { container } = render(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
@@ -221,5 +225,8 @@ describe("CreateNeuronModal", () => {
     waitFor(() =>
       expect(updateDelayButton?.getAttribute("disabled")).toBeNull()
     );
+
+    updateDelayButton && (await fireEvent.click(updateDelayButton));
+    waitFor(() => expect(updateDelay).toBeCalled());
   });
 });

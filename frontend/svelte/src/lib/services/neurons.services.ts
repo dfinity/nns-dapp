@@ -2,7 +2,13 @@
 // - calls that require multiple canisters.
 // - calls that require additional systems such as hardware wallets.
 
-import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
+import {
+  GovernanceCanister,
+  ICP,
+  LedgerCanister,
+  NeuronId,
+  StakeNeuronError,
+} from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   GOVERNANCE_CANISTER_ID,
@@ -18,7 +24,11 @@ import { createAgent } from "../utils/agent.utils";
  *
  * TODO: L2-322 Create neurons from subaccount
  */
-export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
+export const stakeNeuron = async ({
+  stake,
+}: {
+  stake: ICP;
+}): Promise<NeuronId> => {
   if (stake.toE8s() < E8S_PER_ICP) {
     throw new Error("Need a minimum of 1 ICP to stake a neuron");
   }
@@ -38,14 +48,20 @@ export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
   });
 
   // TODO: L2-332 Get neuron information and add to store
-  await governanceCanister.stakeNeuron({
+  const response = await governanceCanister.stakeNeuron({
     stake,
     principal: identity.getPrincipal(),
     ledgerCanister,
   });
 
+  if (response instanceof StakeNeuronError) {
+    throw response;
+  }
+
   // TODO: Remove after L2-332
   await listNeurons();
+
+  return response;
 };
 
 // Gets neurons and adds them to the store
@@ -65,4 +81,33 @@ export const listNeurons = async (): Promise<void> => {
     principal: identity.getPrincipal(),
   });
   neuronsStore.setNeurons(neurons);
+};
+
+export const updateDelay = async ({
+  neuronId,
+  dissolveDelayInSeconds,
+}: {
+  neuronId: NeuronId;
+  dissolveDelayInSeconds: number;
+}): Promise<void> => {
+  const { identity }: AuthStore = get(authStore);
+  if (!identity) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
+    throw new Error("No identity found listing neurons");
+  }
+  const agent = await createAgent({ identity, host: process.env.HOST });
+  const governanceCanister: GovernanceCanister = GovernanceCanister.create({
+    agent,
+    canisterId: GOVERNANCE_CANISTER_ID,
+  });
+  const response = await governanceCanister.increaseDissolveDelay({
+    neuronId,
+    additionalDissolveDelaySeconds: dissolveDelayInSeconds,
+  });
+
+  if ("Err" in response) {
+    throw response.Err;
+  }
+  // TODO: Remove after L2-332
+  await listNeurons();
 };
