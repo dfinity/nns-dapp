@@ -3,19 +3,23 @@
  */
 
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
-import { tick } from "svelte";
 import CreateNeuronModal from "../../../lib/modals/neurons/CreateNeuronModal.svelte";
-import { stakeNeuron } from "../../../lib/services/neurons.services";
+import {
+  stakeNeuron,
+  updateDelay,
+} from "../../../lib/services/neurons.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { mockAccountsStoreSubscribe } from "../../mocks/accounts.store.mock";
 
+/* eslint-disable-next-line */
 const en = require("../../../lib/i18n/en.json");
 
 jest.mock("../../../lib/services/neurons.services", () => {
   return {
-    stakeNeuron: jest.fn().mockResolvedValue(undefined),
+    stakeNeuron: jest.fn().mockResolvedValue(BigInt(10)),
+    updateDelay: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -131,9 +135,9 @@ describe("CreateNeuronModal", () => {
 
     createButton && (await fireEvent.click(createButton));
 
-    // create neuron tick
-    await tick();
-    expect(queryByText(en.neurons.set_dissolve_delay)).not.toBeNull();
+    waitFor(() =>
+      expect(queryByText(en.neurons.set_dissolve_delay)).not.toBeNull()
+    );
   });
 
   it("should have the update delay button disabled", async () => {
@@ -153,12 +157,10 @@ describe("CreateNeuronModal", () => {
 
     createButton && (await fireEvent.click(createButton));
 
-    // create neuron tick
-    await tick();
-
     const updateDelayButton = container.querySelector(
       '[data-test="update-button"]'
     );
+    waitFor(() => expect(updateDelayButton).not.toBeNull());
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
 
@@ -179,10 +181,9 @@ describe("CreateNeuronModal", () => {
 
     createButton && (await fireEvent.click(createButton));
 
-    // create neuron tick
-    await tick();
-
     const inputRange = container.querySelector('input[type="range"]');
+    waitFor(() => expect(inputRange).not.toBeNull());
+
     const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
     inputRange &&
       (await fireEvent.input(inputRange, { target: { value: FIVE_MONTHS } }));
@@ -194,7 +195,7 @@ describe("CreateNeuronModal", () => {
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
 
-  it("should be able to change dissolve delay value and enable button", async () => {
+  it("should be able to change dissolve delay value", async () => {
     const { container } = render(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
@@ -211,10 +212,9 @@ describe("CreateNeuronModal", () => {
 
     createButton && (await fireEvent.click(createButton));
 
-    // create neuron tick
-    await tick();
-
     const inputRange = container.querySelector('input[type="range"]');
+    waitFor(() => expect(inputRange).not.toBeNull());
+
     const ONE_YEAR = 60 * 60 * 24 * 365;
     inputRange &&
       (await fireEvent.input(inputRange, { target: { value: ONE_YEAR } }));
@@ -222,6 +222,11 @@ describe("CreateNeuronModal", () => {
     const updateDelayButton = container.querySelector(
       '[data-test="update-button"]'
     );
-    expect(updateDelayButton?.getAttribute("disabled")).toBeNull();
+    waitFor(() =>
+      expect(updateDelayButton?.getAttribute("disabled")).toBeNull()
+    );
+
+    updateDelayButton && (await fireEvent.click(updateDelayButton));
+    waitFor(() => expect(updateDelay).toBeCalled());
   });
 });

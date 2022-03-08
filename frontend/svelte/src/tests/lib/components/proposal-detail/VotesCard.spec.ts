@@ -1,19 +1,19 @@
 /**
  * @jest-environment jsdom
  */
-import { NeuronInfo, Vote } from "@dfinity/nns";
+import { Vote } from "@dfinity/nns";
 import { render, RenderResult } from "@testing-library/svelte";
-import type { Subscriber } from "svelte/store";
 import VotesCard from "../../../../lib/components/proposal-detail/VotesCard.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
-import {
-  neuronsStore,
-  NeuronsStore,
-} from "../../../../lib/stores/neurons.store";
+import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import { formatNumber } from "../../../../lib/utils/format.utils";
-import { neuronMock } from "../../../mocks/neurons.mock";
+import {
+  buildMockNeuronsStoreSubscibe,
+  neuronMock,
+} from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
+/* eslint-disable-next-line */
 const en = require("../../../../lib/i18n/en.json");
 
 describe("VotesCard", () => {
@@ -52,12 +52,6 @@ describe("VotesCard", () => {
   });
 
   describe("My Votes section", () => {
-    const buildMockSubscibe =
-      (neurons: NeuronInfo[] = []) =>
-      (run: Subscriber<NeuronsStore>): (() => void) => {
-        run(neurons);
-        return () => undefined;
-      };
     const noVoted = {
       ...neuronMock,
       neuronId: BigInt(100),
@@ -82,7 +76,7 @@ describe("VotesCard", () => {
     it("should have title when proposal has been voted by some owned neuron", () => {
       jest
         .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(buildMockSubscibe(votedNeurons));
+        .mockImplementation(buildMockNeuronsStoreSubscibe(votedNeurons));
       const { getByText } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -94,7 +88,7 @@ describe("VotesCard", () => {
     it("should not have title when proposal has not been voted by some owned neuron", () => {
       jest
         .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(buildMockSubscibe());
+        .mockImplementation(buildMockNeuronsStoreSubscibe());
       const { getByText } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -106,7 +100,7 @@ describe("VotesCard", () => {
     it("should render an item per voted neuron", () => {
       jest
         .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(buildMockSubscibe(votedNeurons));
+        .mockImplementation(buildMockNeuronsStoreSubscibe(votedNeurons));
       const { container } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -121,7 +115,7 @@ describe("VotesCard", () => {
     it("should render the proper icon item for YES and NO", () => {
       jest
         .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(buildMockSubscibe(votedNeurons));
+        .mockImplementation(buildMockNeuronsStoreSubscibe(votedNeurons));
       const { container } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,

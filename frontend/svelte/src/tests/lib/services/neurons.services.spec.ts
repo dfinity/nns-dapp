@@ -5,6 +5,7 @@ import {
   getNeuron,
   listNeurons,
   stakeNeuron,
+  updateDelay,
 } from "../../../lib/services/neurons.services";
 import { authStore } from "../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
@@ -76,5 +77,39 @@ describe("neurons-services", () => {
     expect(mockGovernanceCanister.getNeuron).toBeCalled();
     expect(neuron).not.toBeUndefined();
     expect(neuron?.neuronId).toEqual(neuronMock.neuronId);
+  });
+
+  it("updateDelay updates neuron", async () => {
+    mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
+      jest.fn().mockResolvedValue({ Ok: null })
+    );
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mock<LedgerCanister>());
+
+    await updateDelay({
+      neuronId: BigInt(10),
+      dissolveDelayInSeconds: 12000,
+    });
+
+    expect(mockGovernanceCanister.increaseDissolveDelay).toBeCalled();
+  });
+
+  it("updateDelay throws error when updating neuron fails", async () => {
+    const error = new Error();
+    mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
+      jest.fn().mockResolvedValue({ Err: error })
+    );
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mock<LedgerCanister>());
+
+    const call = () =>
+      updateDelay({
+        neuronId: BigInt(10),
+        dissolveDelayInSeconds: 12000,
+      });
+
+    expect(call).rejects.toThrow(error);
   });
 });

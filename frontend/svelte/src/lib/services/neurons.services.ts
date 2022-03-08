@@ -9,6 +9,7 @@ import {
   LedgerCanister,
   NeuronId,
   NeuronInfo,
+  StakeNeuronError,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
@@ -25,7 +26,11 @@ import { createAgent } from "../utils/agent.utils";
  *
  * TODO: L2-322 Create neurons from subaccount
  */
-export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
+export const stakeNeuron = async ({
+  stake,
+}: {
+  stake: ICP;
+}): Promise<NeuronId> => {
   if (stake.toE8s() < E8S_PER_ICP) {
     throw new Error("Need a minimum of 1 ICP to stake a neuron");
   }
@@ -38,14 +43,20 @@ export const stakeNeuron = async ({ stake }: { stake: ICP }): Promise<void> => {
   });
 
   // TODO: L2-332 Get neuron information and add to store
-  await canister.stakeNeuron({
+  const response = await canister.stakeNeuron({
     stake,
     principal: identity.getPrincipal(),
     ledgerCanister,
   });
 
+  if (response instanceof StakeNeuronError) {
+    throw response;
+  }
+
   // TODO: Remove after L2-332
   await listNeurons();
+
+  return response;
 };
 
 // Gets neurons and adds them to the store
@@ -69,6 +80,28 @@ export const getNeuron = async (
     principal: identity.getPrincipal(),
     neuronId,
   });
+};
+
+export const updateDelay = async ({
+  neuronId,
+  dissolveDelayInSeconds,
+}: {
+  neuronId: NeuronId;
+  dissolveDelayInSeconds: number;
+}): Promise<void> => {
+  const { canister } = await governanceCanister();
+
+  const response = await canister.increaseDissolveDelay({
+    neuronId,
+    additionalDissolveDelaySeconds: dissolveDelayInSeconds,
+  });
+
+  if ("Err" in response) {
+    throw response.Err;
+  }
+
+  // TODO: Remove after L2-332
+  await listNeurons();
 };
 
 const governanceCanister = async (): Promise<{

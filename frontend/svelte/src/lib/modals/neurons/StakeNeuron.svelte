@@ -23,14 +23,17 @@
   const createNeuron = async () => {
     creating = true;
     try {
-      await stakeNeuron({
+      const neuronId = await stakeNeuron({
         stake: ICP.fromE8s(BigInt(amount * E8S_PER_ICP)),
       });
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts
-      syncAccounts({ identity: $authStore.identity });
-      dispatcher("nnsNeuronCreated");
+      // TODO: L2-329 Manage edge cases
+      if ($authStore.identity) {
+        syncAccounts({ identity: $authStore.identity });
+      }
+      dispatcher("nnsNeuronCreated", { neuronId });
     } catch (err) {
       // TODO: L2-329 Manage errors
       console.error(err);
@@ -68,6 +71,7 @@
         name="amount"
         bind:value={amount}
         theme="dark"
+        inputType="number"
       >
         <button
           type="button"
@@ -81,7 +85,7 @@
       <button
         class="primary full-width"
         type="submit"
-        disabled={!amount || creating}
+        disabled={amount === undefined || amount <= 0 || creating}
       >
         {#if creating}
           <Spinner />
