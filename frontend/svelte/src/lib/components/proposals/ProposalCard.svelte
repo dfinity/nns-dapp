@@ -12,8 +12,8 @@
   } from "../../constants/proposals.constants";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
-  import type { NeuronId, ProposalId } from "@dfinity/nns";
-  import ProposerModal from "../../modals/proposals/ProposerModal.svelte";
+  import type { ProposalId } from "@dfinity/nns";
+  import Proposer from "./Proposer.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -52,7 +52,7 @@
         >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
       >
 
-      <p class="info"><ProposerModal {proposalInfo} /></p>
+      <p class="info"><Proposer {proposalInfo} /></p>
       <p class="info"><small>Id: {id || ""}</small></p>
     </Card>
   {/if}

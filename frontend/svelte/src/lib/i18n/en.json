@@ -19,6 +19,7 @@
     "create_subaccount_too_long": "The name of the subaccount is too long. Please, choose a shorter name.",
     "create_subaccount_limit_exceeded": "Sorry, you reached the limit of subaccounts in this account.",
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
+    "get_neuron": "There was an unexpected issue while loading the neuron.",
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
     "register_vote_unknown": "Sorry, there was an unexpectedf error while registering the vote. Please try again later."
   },
@@ -75,6 +76,7 @@
     "community_fund": "[community fund]",
     "hotkey_control": "[hotkey control]",
     "stake": "Stake",
+    "staked": "Staked",
     "aria_label_neuron_card": "Go to neuron details",
     "neuron_id": "Neuron ID",
     "neuron_balance": "Balance",
@@ -158,7 +160,8 @@
     "confirm_reject_text": "You are about to cast $votingPower votes against this proposal, are you sure you want to proceed?"
   },
   "neuron_detail": {
-    "title": "Neuron"
+    "title": "Neuron",
+    "proposer": "Proposer"
   },
   "time": {
     "year": "year",
