@@ -7,7 +7,7 @@ import IconLockOpen from "../icons/IconLockOpen.svelte";
 export type StateInfo = {
   textKey: string;
   Icon?: typeof SvelteComponent;
-  colorVar: "--background-contrast" | "--yellow-500" | "--gray-200";
+  colorVar: "--gray-50" | "--yellow-500" | "--gray-200";
 };
 
 type StateMapper = {
@@ -17,11 +17,11 @@ const stateTextMapper: StateMapper = {
   [NeuronState.LOCKED]: {
     textKey: "locked",
     Icon: IconLockClock,
-    colorVar: "--background-contrast",
+    colorVar: "--gray-50",
   },
   [NeuronState.UNSPECIFIED]: {
     textKey: "unspecified",
-    colorVar: "--background-contrast",
+    colorVar: "--gray-50",
   },
   [NeuronState.DISSOLVED]: {
     textKey: "dissolved",
