@@ -23,6 +23,7 @@ interface I18nError {
   create_subaccount_too_long: string;
   create_subaccount_limit_exceeded: string;
   get_neurons: string;
+  get_neuron: string;
   register_vote: string;
   register_vote_unknown: string;
 }
@@ -84,6 +85,7 @@ interface I18nNeurons {
   community_fund: string;
   hotkey_control: string;
   stake: string;
+  staked: string;
   aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;
@@ -177,6 +179,7 @@ interface I18nProposal_detail__vote {
 
 interface I18nNeuron_detail {
   title: string;
+  proposer: string;
 }
 
 interface I18nTime {

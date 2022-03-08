@@ -8,7 +8,7 @@ import {
 } from "../../../lib/services/proposals.services";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../mocks/proposals.store.mock";
+import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
 
 describe("proposals-services", () => {
   const mockProposals: ProposalInfo[] = [
