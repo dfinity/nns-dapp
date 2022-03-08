@@ -1,11 +1,21 @@
 import type { ProposalInfo } from "@dfinity/nns";
 import {
+  EmptyResponse,
   GovernanceCanister,
+  ICP,
+  LedgerCanister,
   ListProposalsRequest,
   ListProposalsResponse,
+  NeuronId,
+  NeuronInfo,
+  ProposalId,
   ProposalStatus,
+  StakeNeuronError,
+  Vote,
 } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
+import { neuronMock } from "./neurons.mock";
 
 export const mockProposals: ProposalInfo[] = [
   {
@@ -72,5 +82,57 @@ export class MockGovernanceCanister extends GovernanceCanister {
     proposalId: any;
   }): Promise<ProposalInfo | undefined> => {
     return { id: BigInt(404) } as unknown as ProposalInfo;
+  };
+
+  public listNeurons = async ({
+    certified,
+    principal,
+    neuronIds,
+  }: {
+    certified: boolean;
+    principal: Principal;
+    neuronIds?: bigint[] | undefined;
+  }): Promise<NeuronInfo[]> => {
+    return [
+      {
+        ...neuronMock,
+      },
+    ];
+  };
+
+  public getNeuron = async ({
+    certified,
+    principal,
+    neuronId,
+  }: {
+    certified: boolean;
+    principal: Principal;
+    neuronId: NeuronId;
+  }): Promise<NeuronInfo | undefined> => {
+    return neuronMock;
+  };
+
+  public registerVote = async ({
+    neuronId,
+    vote,
+    proposalId,
+  }: {
+    neuronId: NeuronId;
+    vote: Vote;
+    proposalId: ProposalId;
+  }): Promise<EmptyResponse> => {
+    return { Ok: null };
+  };
+
+  public stakeNeuron = async ({
+    stake,
+    principal,
+    ledgerCanister,
+  }: {
+    stake: ICP;
+    principal: Principal;
+    ledgerCanister: LedgerCanister;
+  }): Promise<NeuronId | StakeNeuronError> => {
+    return neuronMock.neuronId;
   };
 }
