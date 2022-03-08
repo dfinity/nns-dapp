@@ -21,6 +21,20 @@ export const proposalFirstActionKey = (
   proposal: Proposal
 ): string | undefined => Object.keys(proposal.action || {})[0];
 
+/**
+ * Temporary solution till JSON renderer
+ * (removes redundant wrappers)
+ */
+const mockFlutterJSONFormatting = (value: string = ""): string => {
+  // "text" -> text
+  let formattedText = value.replace(/^"(.*)"$/g, "$1");
+  // "123" -> 123 (bigint is a string because of poor JSON.stringify support. See stringifyJson)
+  formattedText = formattedText.replace(/"([\d]+)"/g, "$1");
+  // \" -> "
+  formattedText = formattedText.replace(/\\"/g, '"');
+  return formattedText;
+};
+
 export const proposalActionFields = (
   proposal: Proposal
 ): [string, string][] => {
@@ -33,15 +47,10 @@ export const proposalActionFields = (
   return Object.entries(proposal.action?.[key])
     .filter(([key]) => key !== "payloadBytes")
     .map(([key, value]: [string, object]) => {
-      let asText = stringifyJson(value, { indentation: 2 });
-      // remove redundant wrappers
-      // "text" -> text
-      asText = asText?.replace(/^"(.*)"$/g, "$1");
-      // "123" -> 123 (bigint is a string because of poor JSON.stringify support. See stringifyJson)
-      asText = asText?.replace(/"([\d]+)"/g, "$1");
-      // \" -> "
-      asText = asText?.replace(/\\"/g, '"');
-      return [key, asText];
+      return [
+        key,
+        mockFlutterJSONFormatting(stringifyJson(value, { indentation: 2 })),
+      ];
     });
 };
 
