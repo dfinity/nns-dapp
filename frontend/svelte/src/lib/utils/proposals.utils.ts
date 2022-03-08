@@ -46,12 +46,10 @@ export const proposalActionFields = (
   // TODO: https://dfinity.atlassian.net/browse/L2-348
   return Object.entries(proposal.action?.[key])
     .filter(([key]) => key !== "payloadBytes")
-    .map(([key, value]: [string, object]) => {
-      return [
-        key,
-        mockFlutterJSONFormatting(stringifyJson(value, { indentation: 2 })),
-      ];
-    });
+    .map(([key, value]: [string, object]) => [
+      key,
+      mockFlutterJSONFormatting(stringifyJson(value, { indentation: 2 })),
+    ]);
 };
 
 /**
