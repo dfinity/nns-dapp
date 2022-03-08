@@ -61,9 +61,7 @@ describe("Neurons", () => {
     const { container } = render(Neurons);
 
     waitFor(() =>
-      expect(
-        container.querySelector('[data-test="neuron-card"]')
-      ).not.toBeNull()
+      expect(container.querySelector('article[role="link"]')).not.toBeNull()
     );
   });
 

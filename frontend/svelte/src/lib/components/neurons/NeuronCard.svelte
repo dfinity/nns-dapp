@@ -18,7 +18,10 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = neuron.joinedCommunityFundTimestampSeconds !== undefined;
   let neuronICP: ICP;
-  $: neuronICP = ICP.fromE8s(neuron.fullNeuron?.cachedNeuronStake || BigInt(0));
+  $: neuronICP =
+    neuron.fullNeuron?.cachedNeuronStake !== undefined
+      ? ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake)
+      : ICP.fromE8s(BigInt(0));
   $: isHotKeyControl =
     neuron.fullNeuron?.isCurrentUserController === undefined
       ? true
@@ -33,7 +36,7 @@
       : undefined;
 </script>
 
-<Card {role} on:click {ariaLabel} dataTest="neuron-card">
+<Card {role} on:click {ariaLabel}>
   <div slot="start" class="lock">
     <h4 class:has-neuron-control={isCommunityFund || isHotKeyControl}>
       {neuron.neuronId}
