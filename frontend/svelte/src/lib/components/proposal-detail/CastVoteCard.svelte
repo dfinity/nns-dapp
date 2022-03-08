@@ -53,6 +53,7 @@
         .reduce((sum, { votingPower }) => sum + votingPower, 0n)
     : 0n;
 
+  // TODO: split into filter component https://dfinity.atlassian.net/browse/L2-367
   const toggleNeuronSelection = (neuronId: bigint) => {
     if (selectedNeuronIds.has(neuronId)) {
       selectedNeuronIds.delete(neuronId);
