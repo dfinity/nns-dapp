@@ -3,7 +3,7 @@
  */
 
 import { GovernanceCanister } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import Proposer from "../../../../lib/components/proposals/Proposer.svelte";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
@@ -47,5 +47,19 @@ describe("Proposer", () => {
     });
 
     expect(container.querySelector("button.text")).not.toBeNull();
+  });
+
+  it("should open proposer modal", async () => {
+    const { container } = render(Proposer, {
+      props,
+    });
+
+    const button = container.querySelector("button.text");
+    expect(button).not.toBeNull();
+    button && (await fireEvent.click(button));
+
+    await waitFor(() =>
+      expect(container.querySelector("div.modal")).not.toBeNull()
+    );
   });
 });
