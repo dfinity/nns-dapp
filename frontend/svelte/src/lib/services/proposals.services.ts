@@ -125,7 +125,7 @@ const queryProposalInfo = async ({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.getProposalInfo({ proposalId });
+  return governance.getProposal({ proposalId });
 };
 
 export const getProposalId = (path: string): ProposalId | undefined => {
