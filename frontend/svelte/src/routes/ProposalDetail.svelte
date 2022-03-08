@@ -4,7 +4,7 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     getProposalId,
-    getProposalInfo,
+    getProposal,
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
   import { toastsStore } from "../lib/stores/toasts.store";
@@ -46,7 +46,7 @@
     const proposalId: ProposalId = proposalIdMaybe;
 
     try {
-      const proposalInfoMaybe = await getProposalInfo({
+      const proposalInfoMaybe = await getProposal({
         proposalId,
         identity: $authStore.identity,
       });

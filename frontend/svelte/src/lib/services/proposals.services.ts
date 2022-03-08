@@ -102,7 +102,7 @@ const queryProposals = async ({
 /**
  * Return single proposal from proposalsStore or fetch it (in case of page reload or direct navigation to proposal-detail page)
  */
-export const getProposalInfo = async ({
+export const getProposal = async ({
   proposalId,
   identity,
 }: {
@@ -110,10 +110,10 @@ export const getProposalInfo = async ({
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo | undefined> => {
   const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
-  return proposal || queryProposalInfo({ proposalId, identity });
+  return proposal || queryProposal({ proposalId, identity });
 };
 
-const queryProposalInfo = async ({
+const queryProposal = async ({
   proposalId,
   identity,
 }: {
@@ -128,7 +128,7 @@ const queryProposalInfo = async ({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.getProposalInfo({ proposalId });
+  return governance.getProposal({ proposalId });
 };
 
 export const getProposalId = (path: string): ProposalId | undefined => {

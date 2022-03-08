@@ -67,7 +67,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
     };
   };
 
-  public getProposalInfo = async ({
+  public getProposal = async ({
     proposalId,
   }: {
     proposalId: any;

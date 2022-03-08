@@ -1,8 +1,8 @@
 import { GovernanceCanister, ProposalInfo, Vote } from "@dfinity/nns";
 import {
   castVote,
+  getProposal,
   getProposalId,
-  getProposalInfo,
   listNextProposals,
   listProposals,
 } from "../../../lib/services/proposals.services";
@@ -29,7 +29,7 @@ describe("proposals-services", () => {
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
 
     spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
-    spyProposalInfo = jest.spyOn(mockGovernanceCanister, "getProposalInfo");
+    spyProposalInfo = jest.spyOn(mockGovernanceCanister, "getProposal");
     spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
   });
 
@@ -112,7 +112,7 @@ describe("proposals-services", () => {
   });
 
   it("should get proposalInfo from proposals store if presented", async () => {
-    const proposal = await getProposalInfo({
+    const proposal = await getProposal({
       proposalId: BigInt(100),
       identity: mockIdentity,
     });
@@ -122,7 +122,7 @@ describe("proposals-services", () => {
   });
 
   it("should call the canister to get proposalInfo", async () => {
-    const proposal = await getProposalInfo({
+    const proposal = await getProposal({
       proposalId: BigInt(404),
       identity: mockIdentity,
     });
@@ -131,7 +131,7 @@ describe("proposals-services", () => {
   });
 
   it("should not call listProposals if not in the store", async () => {
-    await getProposalInfo({
+    await getProposal({
       proposalId: BigInt(404),
       identity: mockIdentity,
     });
