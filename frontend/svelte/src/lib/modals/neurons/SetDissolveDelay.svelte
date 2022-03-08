@@ -112,6 +112,8 @@
 </section>
 
 <style lang="scss">
+  @use "../../themes/mixins/interaction";
+
   section {
     display: flex;
     flex-direction: column;
@@ -157,7 +159,7 @@
     width: var(--icon-width);
     border-radius: 50%;
     background: var(--background-contrast);
-    cursor: pointer;
+    @include interaction.tappable;
     appearance: none;
   }
 
@@ -166,7 +168,7 @@
     width: var(--icon-width);
     border-radius: 50%;
     background: var(--background-contrast);
-    cursor: pointer;
+    @include interaction.tappable;
   }
 
   input[type="range"]::-ms-thumb {
@@ -174,7 +176,7 @@
     width: var(--icon-width);
     border-radius: 50%;
     background: var(--background-contrast);
-    cursor: pointer;
+    @include interaction.tappable;
   }
 
   input[type="range"]::-webkit-slider-runnable-track {
