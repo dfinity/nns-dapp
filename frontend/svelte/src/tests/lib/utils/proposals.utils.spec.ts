@@ -278,7 +278,9 @@ describe("proposals-utils", () => {
     });
 
     it("should stringify all objects", () => {
-      const fields = proposalActionFields(mockProposalInfo.proposal);
+      const fields = proposalActionFields(
+        mockProposalInfo.proposal as Proposal
+      );
       const asText = fields.map((fields) => fields.join()).join();
 
       expect(/\[object Object\]/.test(asText)).toBeFalsy();
