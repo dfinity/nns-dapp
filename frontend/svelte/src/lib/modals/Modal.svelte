@@ -26,6 +26,7 @@
     role="dialog"
     aria-labelledby="modalTitle"
     aria-describedby="modalContent"
+    on:click|stopPropagation
   >
     <div class="backdrop" on:click|stopPropagation={close} />
     <div
@@ -63,6 +64,8 @@
     inset: 0;
 
     z-index: calc(var(--z-index) + 998);
+
+    @include interaction.initial;
 
     &.dark {
       color: var(--background-contrast);
