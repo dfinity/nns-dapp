@@ -1,6 +1,7 @@
 import { Ballot, Proposal, Vote } from "@dfinity/nns";
 import {
   emptyProposals,
+  formatVotingPower,
   hasMatchingProposals,
   hideProposal,
   lastProposalId,
@@ -294,6 +295,14 @@ describe("proposals-utils", () => {
       expect(fields[0][1]).toBe("4");
       expect(fields[2][0]).toBe("nnsFunctionName");
       expect(fields[2][1]).toBe("nnsFunctionValue");
+    });
+  });
+
+  describe("formatVotingPower", () => {
+    it("should format", () => {
+      expect(formatVotingPower(BigInt(0))).toBe("0.00");
+      expect(formatVotingPower(BigInt(100000000))).toBe("1.00");
+      expect(formatVotingPower(BigInt(9999900000))).toBe("100.00");
     });
   });
 });

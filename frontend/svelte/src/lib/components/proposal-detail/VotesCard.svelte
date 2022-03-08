@@ -11,8 +11,6 @@
 
   export let proposalInfo: ProposalInfo;
 
-  if (!proposalInfo) throw new Error("no proposalInfo provided");
-
   const { yes, no } = proposalInfo.latestTally || {};
   const yesValue = Number(yes) / E8S_PER_ICP;
   const noValue = Number(no) / E8S_PER_ICP;
@@ -76,7 +74,7 @@
     <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
     <ul>
       {#each neuronsVotedForProposal as neuron}
-        <li data-test="neuron-data">
+        <li data-tid="neuron-data">
           <p>{neuron.id}</p>
           <p class="vote-details">
             <span>{neuron.votingPower}</span>

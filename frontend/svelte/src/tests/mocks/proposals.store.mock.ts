@@ -1,10 +1,5 @@
 import type { ProposalInfo } from "@dfinity/nns";
-import {
-  GovernanceCanister,
-  ListProposalsRequest,
-  ListProposalsResponse,
-  ProposalStatus,
-} from "@dfinity/nns";
+import { ProposalStatus } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 
 export const mockProposals: ProposalInfo[] = [
@@ -43,34 +38,3 @@ export const mockEmptyProposalsStoreSubscribe = (
 
   return () => {};
 };
-
-// @ts-ignore
-export class MockGovernanceCanister extends GovernanceCanister {
-  constructor(private proposals: ProposalInfo[]) {
-    super();
-  }
-
-  create() {
-    return this;
-  }
-
-  public listProposals = async ({
-    request,
-    certified = true,
-  }: {
-    request: ListProposalsRequest;
-    certified?: boolean;
-  }): Promise<ListProposalsResponse> => {
-    return {
-      proposals: this.proposals,
-    };
-  };
-
-  public getProposal = async ({
-    proposalId,
-  }: {
-    proposalId: any;
-  }): Promise<ProposalInfo | undefined> => {
-    return { id: BigInt(404) } as unknown as ProposalInfo;
-  };
-}

@@ -100,7 +100,7 @@
       class="primary full-width"
       disabled={disableUpdate || loading}
       on:click={updateNeuron}
-      data-test="update-button"
+      data-tid="update-button"
     >
       {#if loading}
         <Spinner />
