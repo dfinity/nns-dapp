@@ -29,6 +29,23 @@ export const config: WebdriverIO.Config = {
     });
   },
 
+  afterTest: function (
+    test,
+    context,
+    { error, result, duration, passed, retries }
+  ) {
+    // Take a screenshot anytime a test fails and throws an error.
+    // Note: We could also use `result !== 0` or `passed === true`.
+    //       The reason for conditioning on an error is that if
+    //       no error is thrown, the code follows its normal flow
+    //       so it is possible to take a screenshot in the test itself.
+    //       This hook here captures "sudden" death that may be hard
+    //       to handle otherwise.
+    if (error) {
+      browser["screenshot"](`test-fail-${test.title.replace(/ /g, "-")}`);
+    }
+  },
+
   autoCompileOpts: {
     autoCompile: true,
     tsNodeOpts: {
