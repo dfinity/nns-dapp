@@ -48,7 +48,7 @@ abstract class AbstractPlatformICApi {
 
   Future<Result<Unit, Exception>> joinCommunityFund({required Neuron neuron});
 
-  Future<Neuron> spawnNeuron({required Neuron neuron});
+  Future<Neuron> spawnNeuron({required Neuron neuron, required int percentageToSpawn});
 
   Future<Result<Unit, Exception>> splitNeuron(
       {required Neuron neuron, required ICP amount});
