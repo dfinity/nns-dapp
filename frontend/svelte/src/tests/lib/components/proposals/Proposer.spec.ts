@@ -4,16 +4,16 @@
 
 import { GovernanceCanister } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import ProposerModal from "../../../lib/modals/proposals/ProposerModal.svelte";
-import { authStore } from "../../../lib/stores/auth.store";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
-import { mockProposalInfo } from "../../mocks/proposal.mock";
-import { mockProposals } from "../../mocks/proposals.store.mock";
+import Proposer from "../../../../lib/components/proposals/Proposer.svelte";
+import { authStore } from "../../../../lib/stores/auth.store";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
+import { mockProposalInfo } from "../../../mocks/proposal.mock";
+import { mockProposals } from "../../../mocks/proposals.store.mock";
 
-const en = require("../../../lib/i18n/en.json");
+const en = require("../../../../lib/i18n/en.json");
 
-describe("ProposerModal", () => {
+describe("Proposer", () => {
   const props = {
     proposalInfo: mockProposalInfo,
   };
@@ -32,7 +32,7 @@ describe("ProposerModal", () => {
   });
 
   it("should render proposer", () => {
-    const { container } = render(ProposerModal, {
+    const { container } = render(Proposer, {
       props,
     });
 
@@ -42,7 +42,7 @@ describe("ProposerModal", () => {
   });
 
   it("should render button to open modal", () => {
-    const { container } = render(ProposerModal, {
+    const { container } = render(Proposer, {
       props,
     });
 

@@ -10,10 +10,10 @@
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
 
   export let proposalInfo: ProposalInfo;
+  export let visible: boolean = false;
 
   let proposer: NeuronId | undefined;
   let neuron: NeuronInfo | undefined;
-  let visible: boolean = false;
 
   const initNeuron = async () => {
     if (!visible || !proposer) {
@@ -28,10 +28,6 @@
   $: ({ proposer } = proposalInfo);
   $: visible, proposer, (async () => initNeuron())();
 </script>
-
-<button class="text" on:click|stopPropagation={() => (visible = true)}
-  ><small>{$i18n.neuron_detail.proposer}: {proposer || ""}</small></button
->
 
 <Modal {visible} on:nnsClose={() => (visible = false)} theme="dark">
   <span slot="title">{$i18n.neuron_detail.title}</span>
@@ -51,11 +47,6 @@
 </Modal>
 
 <style lang="scss">
-  button {
-    padding: 0;
-    margin: 0;
-  }
-
   .content {
     padding: calc(2 * var(--padding));
   }
