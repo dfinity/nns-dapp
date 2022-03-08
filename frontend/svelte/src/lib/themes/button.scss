@@ -49,6 +49,12 @@ button {
     position: relative;
     min-height: 60px;
 
+    font-size: var(--font-size-small);
+
+    @include media.min-width(medium) {
+      font-size: var(--font-size-h3);
+    }
+
     &.small {
       min-height: inherit;
       font-size: inherit;
@@ -76,12 +82,6 @@ button {
 
   &.primary {
     padding: var(--padding);
-
-    font-size: var(--font-size-small);
-
-    @include media.min-width(medium) {
-      font-size: var(--font-size-h3);
-    }
 
     &:hover {
       background: var(--blue-400);
