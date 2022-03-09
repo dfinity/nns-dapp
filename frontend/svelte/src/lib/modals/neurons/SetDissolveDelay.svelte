@@ -62,7 +62,9 @@
   </div>
   <div>
     <h5>{$i18n.neurons.neuron_balance}</h5>
-    <p>{`${formatICP(neuronICP)} ${$i18n.neurons.icp_stake}`}</p>
+    <p data-tid="neuron-stake">
+      {`${formatICP(neuronICP)} ${$i18n.neurons.icp_stake}`}
+    </p>
   </div>
   <div>
     {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
