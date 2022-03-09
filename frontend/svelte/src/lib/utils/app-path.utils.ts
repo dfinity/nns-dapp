@@ -1,13 +1,14 @@
 import { AppPath } from "../constants/routes.constants";
 import { memoize } from "./optimization.utils";
 
-const pathValidation = (path: AppPath): string =>
-  ({
-    // exceptions only
-    [AppPath.Wallet]: `${AppPath.Wallet}/[a-zA-Z0-9]+`,
-    [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
-    [AppPath.NeuronDetail]: `${AppPath.NeuronDetail}/[0-9]+`,
-  }[path] || path);
+const mapper: Record<string, string> = {
+  // exceptions only
+  [AppPath.Wallet]: `${AppPath.Wallet}/[a-zA-Z0-9]+`,
+  [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
+  [AppPath.NeuronDetail]: `${AppPath.NeuronDetail}/[0-9]+`,
+};
+
+const pathValidation = (path: AppPath): string => mapper[path] ?? path;
 
 export const isAppPath = (routePath: string): routePath is AppPath =>
   Boolean(
