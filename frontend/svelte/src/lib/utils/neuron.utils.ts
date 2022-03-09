@@ -1,5 +1,10 @@
 import { NeuronState } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
+import {
+  SECONDS_IN_EIGHT_YEARS,
+  SECONDS_IN_HALF_YEAR,
+} from "../constants/constants";
+import { E8S_PER_ICP } from "../constants/icp.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
@@ -37,3 +42,12 @@ const stateTextMapper: StateMapper = {
 
 export const getStateInfo = (neuronState: NeuronState): StateInfo =>
   stateTextMapper[neuronState];
+
+export const votingPower = (
+  stake: bigint,
+  dissolveDelayInSeconds: number
+): number =>
+  dissolveDelayInSeconds > SECONDS_IN_HALF_YEAR
+    ? (Number(stake) / E8S_PER_ICP) *
+      (1 + dissolveDelayInSeconds / SECONDS_IN_EIGHT_YEARS)
+    : 0;

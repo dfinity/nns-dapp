@@ -4,29 +4,33 @@
   import { createEventDispatcher } from "svelte";
   import Card from "../../components/ui/Card.svelte";
   import Spinner from "../../components/ui/Spinner.svelte";
-  import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "../../constants/constants";
+  import {
+    SECONDS_IN_EIGHT_YEARS,
+    SECONDS_IN_HALF_YEAR,
+  } from "../../constants/constants";
   import { updateDelay } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import { formatICP } from "../../utils/icp.utils";
+  import { votingPower } from "../../utils/neuron.utils";
 
   export let neuron: NeuronInfo;
 
-  let EIGHT_YEARS = SECONDS_IN_YEAR * 8;
-  let SIX_MONTHS = (SECONDS_IN_DAY * 365) / 2;
   let delayInSeconds: number = 0;
   let loading: boolean = false;
 
   let backgroundStyle: string;
   $: {
-    const firstHalf: number = Math.round((delayInSeconds / EIGHT_YEARS) * 100);
+    const firstHalf: number = Math.round(
+      (delayInSeconds / SECONDS_IN_EIGHT_YEARS) * 100
+    );
     backgroundStyle = `linear-gradient(90deg, var(--background-contrast) ${firstHalf}%, var(--gray-200) ${
       1 - firstHalf
     }%)`;
   }
 
   let disableUpdate: boolean;
-  $: disableUpdate = delayInSeconds < SIX_MONTHS;
+  $: disableUpdate = delayInSeconds < SECONDS_IN_HALF_YEAR;
   const dispatcher = createEventDispatcher();
   const goToNext = (): void => {
     dispatcher("nnsNext");
@@ -77,15 +81,14 @@
     <div class="select-delay-container">
       <input
         min={0}
-        max={EIGHT_YEARS}
+        max={SECONDS_IN_EIGHT_YEARS}
         type="range"
         bind:value={delayInSeconds}
         style={`background-image: ${backgroundStyle};`}
       />
       <div class="details">
         <div>
-          <!-- TODO: Voting Power Calculation https://dfinity.atlassian.net/browse/L2-330 -->
-          <h5>1.26</h5>
+          <h5>{votingPower(neuronICP, delayInSeconds).toFixed(2)}</h5>
           <p>{$i18n.neurons.voting_power}</p>
         </div>
         <div>
