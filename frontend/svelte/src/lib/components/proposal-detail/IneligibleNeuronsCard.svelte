@@ -11,7 +11,7 @@
   export let proposalInfo: ProposalInfo;
   export let neurons: NeuronInfo[];
 
-  let ineligibleNeurons: NeuronInfo[] = [];
+  let ineligibleNeurons: NeuronInfo[];
   let visible: boolean = false;
 
   $: ineligibleNeurons = filterIneligibleNeurons({
