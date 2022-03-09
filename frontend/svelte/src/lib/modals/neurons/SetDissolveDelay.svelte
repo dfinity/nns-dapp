@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { NeuronId } from "@dfinity/nns";
+  import { NeuronState } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import Card from "../../components/ui/Card.svelte";
   import Spinner from "../../components/ui/Spinner.svelte";
@@ -7,8 +8,9 @@
   import { updateDelay } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
+  import { formatICP } from "../../utils/icp.utils";
 
-  export let neuronId: NeuronId;
+  export let neuron: NeuronInfo;
 
   let EIGHT_YEARS = SECONDS_IN_YEAR * 8;
   let SIX_MONTHS = (SECONDS_IN_DAY * 365) / 2;
@@ -29,12 +31,14 @@
   const goToNext = (): void => {
     dispatcher("nnsNext");
   };
+  let neuronICP: bigint;
+  $: neuronICP = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
 
   const updateNeuron = async () => {
     loading = true;
     try {
       await updateDelay({
-        neuronId,
+        neuronId: neuron.neuronId,
         dissolveDelayInSeconds: delayInSeconds,
       });
       goToNext();
@@ -50,17 +54,20 @@
 <section>
   <div>
     <h5>{$i18n.neurons.neuron_id}</h5>
-    <p>{neuronId}</p>
+    <p>{neuron.neuronId}</p>
   </div>
   <div>
     <h5>{$i18n.neurons.neuron_balance}</h5>
-    <!-- TODO: Get Neuron info https://dfinity.atlassian.net/browse/L2-330 -->
-    <p>1.10 ICP Stake</p>
+    <p>{`${formatICP(neuronICP)} ${$i18n.neurons.icp_stake}`}</p>
   </div>
   <div>
-    <h5>{$i18n.neurons.current_dissolve_delay}</h5>
-    <!-- TODO: Get Neuron info https://dfinity.atlassian.net/browse/L2-330 -->
-    <p>0</p>
+    {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
+      <h5>{$i18n.neurons.current_dissolve_delay}</h5>
+      <p class="duration">
+        {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons
+          .staked}
+      </p>
+    {/if}
   </div>
   <Card>
     <div slot="start">
