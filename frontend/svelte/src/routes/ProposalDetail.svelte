@@ -2,7 +2,10 @@
   import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import { getProposalId } from "../lib/services/proposals.services";
+  import {
+    getProposalId,
+    loadProposal,
+  } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
   import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
@@ -14,7 +17,6 @@
   import { authStore } from "../lib/stores/auth.store";
   import { listNeurons } from "../lib/services/neurons.services";
   import { neuronsStore } from "../lib/stores/neurons.store";
-  import { loadProposal } from "../lib/utils/proposals.utils";
 
   let proposalInfo: ProposalInfo | undefined;
   let neurons: NeuronInfo[] | undefined;

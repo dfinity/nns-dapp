@@ -1,10 +1,10 @@
 import { GovernanceCanister, ProposalInfo, Vote } from "@dfinity/nns";
 import {
   castVote,
-  getProposal,
   getProposalId,
   listNextProposals,
   listProposals,
+  loadProposal,
 } from "../../../lib/services/proposals.services";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -111,29 +111,39 @@ describe("proposals-services", () => {
     expect(getProposalId("/#/proposal/123n")).toBeUndefined();
   });
 
-  it("should get proposalInfo from proposals store if presented", async () => {
-    const proposal = await getProposal({
+  it("should get proposalInfo from proposals store if presented", (done) => {
+    loadProposal({
       proposalId: BigInt(100),
       identity: mockIdentity,
+      setProposal: (proposal: ProposalInfo) => {
+        expect(proposal?.id).toBe(BigInt(100));
+        expect(spyListProposals).not.toBeCalled();
+        expect(spyProposalInfo).not.toBeCalled();
+
+        done();
+      },
     });
-    expect(proposal?.id).toBe(BigInt(100));
-    expect(spyListProposals).not.toBeCalled();
-    expect(spyProposalInfo).not.toBeCalled();
   });
 
-  it("should call the canister to get proposalInfo", async () => {
-    const proposal = await getProposal({
+  it("should call the canister to get proposalInfo", (done) => {
+    loadProposal({
       proposalId: BigInt(404),
       identity: mockIdentity,
+      setProposal: (proposal: ProposalInfo) => {
+        expect(proposal?.id).toBe(BigInt(404));
+        expect(spyProposalInfo).toBeCalledTimes(1);
+
+        done();
+      },
     });
-    expect(proposal?.id).toBe(BigInt(404));
-    expect(spyProposalInfo).toBeCalledTimes(1);
   });
 
   it("should not call listProposals if not in the store", async () => {
-    await getProposal({
+    let proposal: ProposalInfo | undefined = undefined;
+    await loadProposal({
       proposalId: BigInt(404),
       identity: mockIdentity,
+      setProposal: (proposalInfo: ProposalInfo) => (proposal = proposalInfo),
     });
     expect(spyListProposals).not.toBeCalled();
   });

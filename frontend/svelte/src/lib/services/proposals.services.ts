@@ -17,6 +17,7 @@ import {
   ProposalsFiltersStore,
   proposalsStore,
 } from "../stores/proposals.store";
+import { toastsStore } from "../stores/toasts.store";
 import { createAgent } from "../utils/agent.utils";
 import { enumsExclude } from "../utils/enum.utils";
 
@@ -100,9 +101,53 @@ const queryProposals = async ({
 };
 
 /**
+ * Get from store or query a proposal and apply the result to the callback (`setProposal`).
+ * The function propagate error to the toast and call an optional callback in case of error.
+ */
+export const loadProposal = async ({
+  proposalId,
+  identity,
+  setProposal,
+  handleError,
+}: {
+  proposalId: ProposalId;
+  identity: Identity | undefined;
+  setProposal: (proposal: ProposalInfo) => void;
+  handleError?: () => void;
+}): Promise<void> => {
+  const catchError = (error: any) => {
+    console.error(error);
+
+    toastsStore.show({
+      labelKey: "error.proposal_not_found",
+      level: "error",
+      detail: `id: "${proposalId}"`,
+    });
+
+    handleError?.();
+  };
+
+  try {
+    const proposal: ProposalInfo | undefined = await getProposal({
+      proposalId,
+      identity,
+    });
+
+    if (!proposal) {
+      catchError(new Error("Proposal not found"));
+      return;
+    }
+
+    setProposal(proposal);
+  } catch (error: any) {
+    catchError(error);
+  }
+};
+
+/**
  * Return single proposal from proposalsStore or fetch it (in case of page reload or direct navigation to proposal-detail page)
  */
-export const getProposal = async ({
+const getProposal = async ({
   proposalId,
   identity,
 }: {

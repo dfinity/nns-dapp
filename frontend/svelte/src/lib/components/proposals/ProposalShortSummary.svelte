@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import { loadProposal } from "../../utils/proposals.utils";
   import { authStore } from "../../stores/auth.store";
+  import { loadProposal } from "../../services/proposals.services";
 
   export let proposalId: ProposalId;
 
