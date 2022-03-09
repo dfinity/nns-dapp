@@ -43,10 +43,13 @@ const stateTextMapper: StateMapper = {
 export const getStateInfo = (neuronState: NeuronState): StateInfo =>
   stateTextMapper[neuronState];
 
-export const votingPower = (
-  stake: bigint,
-  dissolveDelayInSeconds: number
-): number =>
+export const votingPower = ({
+  stake,
+  dissolveDelayInSeconds,
+}: {
+  stake: bigint;
+  dissolveDelayInSeconds: number;
+}): number =>
   dissolveDelayInSeconds > SECONDS_IN_HALF_YEAR
     ? (Number(stake) / E8S_PER_ICP) *
       (1 + dissolveDelayInSeconds / SECONDS_IN_EIGHT_YEARS)

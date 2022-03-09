@@ -90,7 +90,12 @@
       />
       <div class="details">
         <div>
-          <h5>{votingPower(neuronICP, delayInSeconds).toFixed(2)}</h5>
+          <h5>
+            {votingPower({
+              stake: neuronICP,
+              dissolveDelayInSeconds: delayInSeconds,
+            }).toFixed(2)}
+          </h5>
           <p>{$i18n.neurons.voting_power}</p>
         </div>
         <div>

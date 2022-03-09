@@ -42,7 +42,7 @@
     detail,
   }: CustomEvent<{ neuronId: NeuronId }>) => {
     newNeuron = $neuronsStore.find(
-      (neuron) => neuron.neuronId === detail.neuronId
+      ({ neuronId }) => neuronId === detail.neuronId
     );
     stateStep = stateStep.next();
   };

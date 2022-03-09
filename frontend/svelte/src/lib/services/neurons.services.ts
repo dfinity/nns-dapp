@@ -64,7 +64,7 @@ export const stakeNeuron = async ({
     throw response;
   }
 
-  await listNeuron(response);
+  await loadNeuron(response);
 
   return response;
 };
@@ -80,7 +80,7 @@ export const listNeurons = async (): Promise<void> => {
   neuronsStore.setNeurons(neurons);
 };
 
-export const listNeuron = async (neuronId: NeuronId): Promise<void> => {
+export const loadNeuron = async (neuronId: NeuronId): Promise<void> => {
   const neuron = await getNeuron(neuronId);
 
   // TODO: Manage errors and edge cases: https://dfinity.atlassian.net/browse/L2-329
@@ -107,7 +107,7 @@ export const updateDelay = async ({
     throw response.Err;
   }
 
-  await listNeuron(neuronId);
+  await loadNeuron(neuronId);
 };
 
 // TODO: Apply pattern to other canister instantiation L2-371

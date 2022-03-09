@@ -8,7 +8,7 @@
     TRANSACTION_FEE_E8S,
   } from "../../constants/icp.constants";
   import { syncAccounts } from "../../services/accounts.services";
-  import { listNeuron, stakeNeuron } from "../../services/neurons.services";
+  import { loadNeuron, stakeNeuron } from "../../services/neurons.services";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
@@ -30,7 +30,7 @@
       const neuronId = await stakeNeuron({
         stake,
       });
-      await listNeuron(neuronId);
+      await loadNeuron(neuronId);
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts

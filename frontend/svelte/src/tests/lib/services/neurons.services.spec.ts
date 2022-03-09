@@ -4,8 +4,8 @@ import { get } from "svelte/store";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
   getNeuron,
-  listNeuron,
   listNeurons,
+  loadNeuron,
   stakeNeuron,
   updateDelay,
 } from "../../../lib/services/neurons.services";
@@ -82,10 +82,10 @@ describe("neurons-services", () => {
     expect(neuron?.neuronId).toEqual(neuronMock.neuronId);
   });
 
-  it("listNeuron fetches one neuron and adds it to the store", async () => {
+  it("loadNeuron fetches one neuron and adds it to the store", async () => {
     expect(mockGovernanceCanister.getNeuron).not.toBeCalled();
 
-    await listNeuron(neuronMock.neuronId);
+    await loadNeuron(neuronMock.neuronId);
 
     expect(mockGovernanceCanister.getNeuron).toBeCalled();
     const neuronsInStore = get(neuronsStore);
