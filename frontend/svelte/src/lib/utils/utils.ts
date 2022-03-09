@@ -8,7 +8,10 @@ export const debounce = (func: Function, timeout?: number) => {
       clearTimeout(timer);
     }
 
-    timer = setTimeout(next, timeout && timeout > 0 ? timeout : 300);
+    timer = setTimeout(
+      next,
+      timeout !== undefined && timeout > 0 ? timeout : 300
+    );
   };
 };
 

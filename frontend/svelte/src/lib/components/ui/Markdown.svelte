@@ -7,7 +7,7 @@
 
   // do not load the lib if available
   let parse: (string) => string | undefined = globalThis?.marked?.parse;
-  let loading: boolean = !parse;
+  let loading: boolean = parse === undefined;
 
   const onLoad = () => {
     loading = false;

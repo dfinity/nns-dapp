@@ -46,10 +46,9 @@ const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}${domain}/`;
 
 // When developing with live reload in svelte, redirecting to flutter is
 // not desirable.  The default should match production:
-// - false while svelte is inactive
-// - true while flutter is being replaced by svelte
-// - false after flutter has been replaced, but before all scaffolding has been removed
-// - the flag may then be removed.
+// - prod => redirect to flutter as in prod.
+// - staging => redirect tabs as it will be after the next tab has been released.
+// - never => never => Never redirect to flutter, use svelte only.
 const REDIRECT_TO_LEGACY = ["true", "1", "prod"].includes(
   process.env.REDIRECT_TO_LEGACY
 )
