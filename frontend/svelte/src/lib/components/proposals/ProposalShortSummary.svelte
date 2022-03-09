@@ -23,6 +23,7 @@
 
 <!-- TODO(L2-282): use skeleton (new ui component) while loading -->
 <!-- TODO(L2-282): markdown parser, style and add script only once in head -->
+<!-- TODO(L2-282): clamp two lines and ask Mischa -->
 
 {#if summary !== undefined}
   <p>{@html summary}</p>
