@@ -1,21 +1,44 @@
 <script lang="ts">
-  import type { ProposalInfo } from "@dfinity/nns";
+  import {
+    ineligibleNeurons as filterIneligibleNeurons,
+    ProposalInfo,
+    NeuronInfo,
+  } from "@dfinity/nns";
+  import { i18n } from "../../stores/i18n";
   import Card from "../ui/Card.svelte";
 
   export let proposalInfo: ProposalInfo;
+  export let neurons: NeuronInfo[];
+
+  let ineligibleNeurons: NeuronInfo[] = [];
+  let visible: boolean = false;
+
+  $: ineligibleNeurons = filterIneligibleNeurons({
+    neurons,
+    proposal: proposalInfo,
+  });
+  $: visible = ineligibleNeurons.length > 0;
+
+  const reason = (neuron: NeuronInfo): string =>
+    neuron.createdTimestampSeconds > proposalInfo.proposalTimestampSeconds
+      ? $i18n.proposal_detail__ineligible.reason_after
+      : $i18n.proposal_detail__ineligible.reason_short;
 </script>
 
-<!-- TODO: https://dfinity.atlassian.net/browse/L2-284 -->
-<!-- if (ineligibleNeurons.isNotEmpty && latestProposal.status == ProposalStatus.Open) IneligibleNeuronsWidget(ineligibleNeurons: ineligibleNeurons) -->
-<Card>
-  <h3>Ineligible Neurons (TBD)</h3>
-  <p>
-    The following neurons had a dissolve delay of less than 6 months at the time
-    the proposal was submitted, or were created after the proposal was
-    submitted, and therefore are not eligible to vote on it:
-  </p>
-  <!-- ...ineligibleNeurons.map((p) => TableRow(children: [... -->
-</Card>
+{#if visible}
+  <Card>
+    <h3>{$i18n.proposal_detail__ineligible.headline}</h3>
+    <p>{$i18n.proposal_detail__ineligible.headline}</p>
+
+    <ul>
+      {#each ineligibleNeurons as neuron}
+        <li>
+          {neuron.neuronId}<small>{reason(neuron)}</small>
+        </li>
+      {/each}
+    </ul>
+  </Card>
+{/if}
 
 <style lang="scss">
 </style>

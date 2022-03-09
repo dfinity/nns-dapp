@@ -94,7 +94,7 @@
         <ProposalDetailCard {proposalInfo} />
         <VotesCard {proposalInfo} />
         <CastVoteCard {proposalInfo} {neurons} />
-        <IneligibleNeuronsCard {proposalInfo} />
+        <IneligibleNeuronsCard {proposalInfo} {neurons} />
       {:else}
         <Spinner />
       {/if}
