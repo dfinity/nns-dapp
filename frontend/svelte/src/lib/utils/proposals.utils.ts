@@ -1,3 +1,4 @@
+import type { Identity } from "@dfinity/agent";
 import {
   Proposal,
   ProposalId,
@@ -6,6 +7,8 @@ import {
   Vote,
 } from "@dfinity/nns";
 import { E8S_PER_ICP } from "../constants/icp.constants";
+import { getProposal } from "../services/proposals.services";
+import { toastsStore } from "../stores/toasts.store";
 import { formatNumber } from "./format.utils";
 import { stringifyJson } from "./utils";
 
@@ -110,4 +113,44 @@ export const hasMatchingProposals = ({
         !hideProposal({ proposalInfo, excludeVotedProposals })
     ) !== undefined
   );
+};
+
+export const loadProposal = async ({
+  proposalId,
+  identity,
+  setProposal,
+  onError,
+}: {
+  proposalId: ProposalId;
+  identity: Identity | undefined;
+  setProposal: (proposal: ProposalInfo) => void;
+  onError?: () => void;
+}): Promise<void> => {
+  const catchError = (error: any) => {
+    console.error(error);
+
+    toastsStore.show({
+      labelKey: "error.proposal_not_found",
+      level: "error",
+      detail: `id: "${proposalId}"`,
+    });
+
+    onError?.();
+  };
+
+  try {
+    const proposal: ProposalInfo | undefined = await getProposal({
+      proposalId,
+      identity,
+    });
+
+    if (!proposal) {
+      catchError(new Error("Proposal not found"));
+      return;
+    }
+
+    setProposal(proposal);
+  } catch (error: any) {
+    catchError(error);
+  }
 };
