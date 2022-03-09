@@ -129,7 +129,7 @@ const queryProposal = async ({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.getProposal({ proposalId });
+  return governance.getProposal({ proposalId, certified: true });
 };
 
 export const getProposalId = (path: string): ProposalId | undefined => {
