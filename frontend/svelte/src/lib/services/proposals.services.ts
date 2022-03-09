@@ -1,10 +1,13 @@
 import type { Identity } from "@dfinity/agent";
 import {
+  EmptyResponse,
   GovernanceCanister,
+  GovernanceError,
   ListProposalsResponse,
   ProposalId,
   ProposalInfo,
   Topic,
+  Vote,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { LIST_PAGINATION_LIMIT } from "../constants/constants";
@@ -99,7 +102,7 @@ const queryProposals = async ({
 /**
  * Return single proposal from proposalsStore or fetch it (in case of page reload or direct navigation to proposal-detail page)
  */
-export const getProposalInfo = async ({
+export const getProposal = async ({
   proposalId,
   identity,
 }: {
@@ -107,16 +110,17 @@ export const getProposalInfo = async ({
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo | undefined> => {
   const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
-  return proposal || queryProposalInfo({ proposalId, identity });
+  return proposal || queryProposal({ proposalId, identity });
 };
 
-const queryProposalInfo = async ({
+const queryProposal = async ({
   proposalId,
   identity,
 }: {
   proposalId: ProposalId;
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo | undefined> => {
+  // TODO: https://dfinity.atlassian.net/browse/L2-346
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
@@ -125,7 +129,7 @@ const queryProposalInfo = async ({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.getProposalInfo({ proposalId });
+  return governance.getProposal({ proposalId });
 };
 
 export const getProposalId = (path: string): ProposalId | undefined => {
@@ -136,4 +140,40 @@ export const getProposalId = (path: string): ProposalId | undefined => {
   const id = parseInt(pathDetail, 10);
   // ignore not integer ids
   return isFinite(id) && `${id}` === pathDetail ? BigInt(id) : undefined;
+};
+
+/**
+ * Makes multiple registerVote calls (1 per neuronId).
+ * @returns List of errors (order is preserved)
+ */
+export const castVote = async ({
+  neuronIds,
+  proposalId,
+  vote,
+  identity,
+}: {
+  neuronIds: bigint[];
+  proposalId: ProposalId;
+  vote: Vote;
+  identity: Identity | null | undefined;
+}): Promise<Array<GovernanceError | undefined>> => {
+  if (!identity) {
+    throw new Error(get(i18n).error.missing_identity);
+  }
+
+  const governance: GovernanceCanister = GovernanceCanister.create({
+    agent: await createAgent({ identity, host: process.env.HOST }),
+  });
+  // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
+  return Promise.all(
+    neuronIds.map((neuronId) =>
+      (
+        governance.registerVote({
+          neuronId,
+          vote,
+          proposalId,
+        }) as Promise<EmptyResponse>
+      ).then((res) => ("Err" in res ? res.Err : undefined))
+    )
+  );
 };

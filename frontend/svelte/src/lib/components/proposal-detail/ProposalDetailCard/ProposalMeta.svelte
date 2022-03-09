@@ -12,7 +12,7 @@
 
   $: ({ proposal, proposer, id } = proposalInfo);
   $: topic = $i18n.topics[Topic[proposalInfo?.topic]];
-  $: url = proposal.url;
+  $: url = proposal?.url;
 
   // TODO: show neuron modal https://dfinity.atlassian.net/browse/L2-282
   const showProposerNeuron = () => {

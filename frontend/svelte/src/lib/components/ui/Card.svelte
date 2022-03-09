@@ -4,7 +4,7 @@
 
   let clickable: boolean = false;
 
-  $: clickable = ["button", "link"].includes(role);
+  $: clickable = role !== undefined ? ["button", "link"].includes(role) : false;
 </script>
 
 <article {role} on:click class:clickable aria-label={ariaLabel}>
@@ -19,6 +19,7 @@
 <style lang="scss">
   @use "../../themes/mixins/interaction";
   @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/display";
 
   article {
     text-decoration: none;
@@ -43,11 +44,8 @@
   }
 
   div {
-    display: inline-flex;
-    justify-content: space-between;
+    @include display.space-between;
     align-items: flex-start;
-
-    width: 100%;
 
     margin: 0 0 var(--padding);
   }

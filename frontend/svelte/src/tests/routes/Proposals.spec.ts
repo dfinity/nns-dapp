@@ -8,9 +8,9 @@ import { authStore } from "../../lib/stores/auth.store";
 import { proposalsStore } from "../../lib/stores/proposals.store";
 import Proposals from "../../routes/Proposals.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
+import { MockGovernanceCanister } from "../mocks/governance.canister.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
-  MockGovernanceCanister,
   mockProposals,
   mockProposalsStoreSubscribe,
 } from "../mocks/proposals.store.mock";

@@ -14,6 +14,9 @@
   // Please do not use `showBackButton` without listening on `nnsBack`
   export let showBackButton: boolean = false;
 
+  let showToolbar: boolean;
+  $: showToolbar = $$slots.title ?? showBackButton;
+
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
   const back = () => dispatch("nnsBack");
@@ -24,27 +27,30 @@
     class={`modal ${theme}`}
     transition:fade
     role="dialog"
-    aria-labelledby="modalTitle"
+    aria-labelledby={showToolbar ? "modalTitle" : undefined}
     aria-describedby="modalContent"
+    on:click|stopPropagation
   >
     <div class="backdrop" on:click|stopPropagation={close} />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class={`wrapper ${size}`}
     >
-      <div class="toolbar">
-        {#if showBackButton}
-          <button
-            class="back"
-            on:click|stopPropagation={back}
-            aria-label={$i18n.core.back}><IconBackIosNew /></button
+      {#if showToolbar}
+        <div class="toolbar">
+          {#if showBackButton}
+            <button
+              class="back"
+              on:click|stopPropagation={back}
+              aria-label={$i18n.core.back}><IconBackIosNew /></button
+            >
+          {/if}
+          <h3 id="modalTitle"><slot name="title" /></h3>
+          <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
+            ><IconClose /></button
           >
-        {/if}
-        <h3 id="modalTitle"><slot name="title" /></h3>
-        <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
-          ><IconClose /></button
-        >
-      </div>
+        </div>
+      {/if}
 
       <div class="content" id="modalContent">
         <slot />
@@ -63,6 +69,8 @@
     inset: 0;
 
     z-index: calc(var(--z-index) + 998);
+
+    @include interaction.initial;
 
     &.dark {
       color: var(--background-contrast);
@@ -110,7 +118,10 @@
     height: fit-content;
     max-width: calc(100vw - (4 * var(--padding)));
     max-height: calc(100vw - (2 * var(--padding)));
-    min-height: 100px;
+
+    --modal-min-height: 100px;
+    --modal-toolbar-height: 35px;
+    min-height: var(--modal-min-height);
 
     background: white;
 
@@ -137,6 +148,8 @@
 
     z-index: var(--z-index);
 
+    height: var(--modal-toolbar-height);
+
     h3 {
       color: inherit;
       font-weight: 400;
@@ -162,11 +175,15 @@
   }
 
   .content {
+    position: relative;
+
     display: flex;
     flex-direction: column;
 
+    min-height: calc(var(--modal-min-height) - var(--modal-toolbar-height));
     max-height: calc(100vh - 156px);
-    overflow-y: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     color: var(--gray-800);
   }

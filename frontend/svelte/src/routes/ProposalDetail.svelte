@@ -4,51 +4,60 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     getProposalId,
-    getProposalInfo,
+    getProposal,
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { AppPath } from "../lib/constants/routes.constants";
-  import type { ProposalInfo } from "@dfinity/nns";
+  import type { NeuronInfo, ProposalId, ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
   import CastVoteCard from "../lib/components/proposal-detail/CastVoteCard.svelte";
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import { authStore } from "../lib/stores/auth.store";
+  import { listNeurons } from "../lib/services/neurons.services";
+  import { neuronsStore } from "../lib/stores/neurons.store";
 
-  let proposalInfo: ProposalInfo;
+  let proposalInfo: ProposalInfo | undefined;
+  let neurons: NeuronInfo[] | undefined;
+  $: neurons = $neuronsStore;
 
   // TODO: To be removed once this page has been implemented
   const showThisRoute = ["never", "staging"].includes(
-    process.env.REDIRECT_TO_LEGACY
+    process.env.REDIRECT_TO_LEGACY as string
   );
-  onMount(() => {
+  onMount(async () => {
     if (!showThisRoute) {
       window.location.replace(`/${window.location.hash}`);
+      return;
     }
+
+    // TODO: catch and error handling -- https://dfinity.atlassian.net/browse/L2-370
+    await listNeurons();
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    const proposalId = getProposalId(path);
-    if (proposalId === undefined) {
+    const proposalIdMaybe = getProposalId(path);
+    if (proposalIdMaybe === undefined) {
       unsubscribe();
       routeStore.replace({ path: AppPath.Proposals });
       return;
     }
+    const proposalId: ProposalId = proposalIdMaybe;
 
     try {
-      proposalInfo = await getProposalInfo({
+      const proposalInfoMaybe = await getProposal({
         proposalId,
         identity: $authStore.identity,
       });
 
-      if (!proposalInfo) {
+      if (!proposalInfoMaybe) {
         throw new Error("Proposal not found");
       }
+      proposalInfo = proposalInfoMaybe;
     } catch (error) {
       unsubscribe();
-
       console.error(error);
       toastsStore.show({
         labelKey: "error.proposal_not_found",
@@ -81,10 +90,10 @@
     >
 
     <section>
-      {#if proposalInfo}
+      {#if proposalInfo && neurons}
         <ProposalDetailCard {proposalInfo} />
         <VotesCard {proposalInfo} />
-        <CastVoteCard {proposalInfo} />
+        <CastVoteCard {proposalInfo} {neurons} />
         <IneligibleNeuronsCard {proposalInfo} />
       {:else}
         <Spinner />

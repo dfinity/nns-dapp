@@ -11,6 +11,7 @@
   import Transition from "../../components/ui/Transition.svelte";
   import { StepsState } from "../../services/stepsState.services";
   import SetDissolveDelay from "./SetDissolveDelay.svelte";
+  import type { NeuronId } from "@dfinity/nns";
 
   enum Steps {
     SelectAccount,
@@ -27,13 +28,18 @@
     }
   );
 
+  let newNeuronId: NeuronId | undefined;
+
   const chooseAccount = () => {
     stateStep = stateStep.next();
   };
   const goBack = () => {
     stateStep = stateStep.back();
   };
-  const goToDissolveDelay = () => {
+  const goToDissolveDelay = ({
+    detail,
+  }: CustomEvent<{ neuronId: NeuronId }>) => {
+    newNeuronId = detail.neuronId;
     stateStep = stateStep.next();
   };
 
@@ -67,7 +73,8 @@
 >
   <span slot="title">{$i18n.neurons?.[titleKey]}</span>
   <main>
-    {#if currentStep === Steps.SelectAccount}
+    <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
+    {#if currentStep === Steps.SelectAccount && selectedAccount}
       <Transition {diff}>
         <SelectAccount
           main={selectedAccount}
@@ -75,6 +82,7 @@
         />
       </Transition>
     {/if}
+    <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
     {#if currentStep === Steps.StakeNeuron && selectedAccount}
       <Transition {diff}>
         <StakeNeuron
@@ -83,10 +91,11 @@
         />
       </Transition>
     {/if}
-    {#if currentStep === Steps.SetDissolveDelay}
+    <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
+    {#if currentStep === Steps.SetDissolveDelay && newNeuronId}
       <Transition {diff}>
         <!-- TODO: Edit Followees https://dfinity.atlassian.net/browse/L2-337 -->
-        <SetDissolveDelay on:nnsNext={close} />
+        <SetDissolveDelay neuronId={newNeuronId} on:nnsNext={close} />
       </Transition>
     {/if}
   </main>

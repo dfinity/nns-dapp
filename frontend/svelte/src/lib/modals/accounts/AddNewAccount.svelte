@@ -54,7 +54,7 @@
     <button
       class="primary full-width"
       type="submit"
-      disabled={!newAccountName || creating}
+      disabled={newAccountName.length === 0 || creating}
     >
       {#if creating}
         <Spinner />

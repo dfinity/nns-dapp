@@ -9,6 +9,7 @@ export const mockProposalInfo: ProposalInfo = {
     action: {
       ExecuteNnsFunction: {
         nnsFunctionId: 4,
+        nodeProvider: { name: "Provider" },
         nnsFunctionName: "nnsFunctionValue",
         payload: {
           data_source: '{"icp":["Binance"],"sdr":"fixer.io"}',

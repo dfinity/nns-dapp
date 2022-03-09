@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Proposal, ProposalInfo, ProposalStatus, Topic } from "@dfinity/nns";
+  import { Proposal, ProposalInfo, ProposalStatus } from "@dfinity/nns";
   import Badge from "../../ui/Badge.svelte";
   import Card from "../../ui/Card.svelte";
   import {
@@ -15,19 +15,17 @@
 
   let proposal: Proposal | undefined;
   let title: string | undefined;
-  let status: ProposalStatus | undefined;
-  let color: ProposalColor | undefined;
+  let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
+  let color: ProposalColor;
 
   $: ({ proposal, status } = proposalInfo);
-  $: ({ title } = proposal);
+  $: title = proposal?.title;
   $: color = PROPOSAL_COLOR[status];
 </script>
 
 <Card>
   <h2 slot="start" {title}>{title}</h2>
-  <Badge slot="end" {color}
-    >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
-  >
+  <Badge slot="end" {color}>{$i18n.status[ProposalStatus[status]]}</Badge>
   <ProposalSummary {proposal} />
   <ProposalMeta {proposalInfo} />
   <ProposalActions {proposal} />

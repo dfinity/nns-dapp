@@ -1,13 +1,14 @@
-import { GovernanceCanister, ProposalInfo } from "@dfinity/nns";
+import { GovernanceCanister, ProposalInfo, Vote } from "@dfinity/nns";
 import {
+  castVote,
+  getProposal,
   getProposalId,
-  getProposalInfo,
   listNextProposals,
   listProposals,
 } from "../../../lib/services/proposals.services";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../mocks/proposals.store.mock";
+import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
 
 describe("proposals-services", () => {
   const mockProposals: ProposalInfo[] = [
@@ -20,6 +21,7 @@ describe("proposals-services", () => {
 
   let spyListProposals;
   let spyProposalInfo;
+  let spyRegisterVote;
 
   beforeEach(() => {
     jest
@@ -27,7 +29,8 @@ describe("proposals-services", () => {
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
 
     spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
-    spyProposalInfo = jest.spyOn(mockGovernanceCanister, "getProposalInfo");
+    spyProposalInfo = jest.spyOn(mockGovernanceCanister, "getProposal");
+    spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
   });
 
   afterEach(() => spyListProposals.mockClear());
@@ -109,7 +112,7 @@ describe("proposals-services", () => {
   });
 
   it("should get proposalInfo from proposals store if presented", async () => {
-    const proposal = await getProposalInfo({
+    const proposal = await getProposal({
       proposalId: BigInt(100),
       identity: mockIdentity,
     });
@@ -119,7 +122,7 @@ describe("proposals-services", () => {
   });
 
   it("should call the canister to get proposalInfo", async () => {
-    const proposal = await getProposalInfo({
+    const proposal = await getProposal({
       proposalId: BigInt(404),
       identity: mockIdentity,
     });
@@ -128,10 +131,50 @@ describe("proposals-services", () => {
   });
 
   it("should not call listProposals if not in the store", async () => {
-    await getProposalInfo({
+    await getProposal({
       proposalId: BigInt(404),
       identity: mockIdentity,
     });
     expect(spyListProposals).not.toBeCalled();
+  });
+
+  describe("castVote", () => {
+    const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
+    const identity = mockIdentity;
+    const proposalId = BigInt(0);
+
+    it("should call the canister to cast vote neuronIds count", async () => {
+      await castVote({
+        neuronIds,
+        proposalId,
+        vote: Vote.YES,
+        identity,
+      });
+      expect(spyRegisterVote).toHaveReturnedTimes(3);
+    });
+
+    it("should return list of undefined on successful update", async () => {
+      const results = await castVote({
+        neuronIds,
+        proposalId,
+        vote: Vote.YES,
+        identity,
+      });
+      expect(results).toEqual([undefined, undefined, undefined]);
+    });
+
+    it("should return list of unwrapped errors on update fail", async () => {
+      const results = await castVote({
+        neuronIds,
+        proposalId,
+        vote: Vote.NO,
+        identity,
+      });
+      expect(results).toEqual([
+        { errorMessage: "error", errorType: 0 },
+        { errorMessage: "error", errorType: 0 },
+        { errorMessage: "error", errorType: 0 },
+      ]);
+    });
   });
 });

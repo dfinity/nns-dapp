@@ -11,9 +11,7 @@
 
   export let proposalInfo: ProposalInfo;
 
-  if (!proposalInfo) throw new Error("no proposalInfo provided");
-
-  const { yes, no } = proposalInfo.latestTally;
+  const { yes, no } = proposalInfo.latestTally || {};
   const yesValue = Number(yes) / E8S_PER_ICP;
   const noValue = Number(no) / E8S_PER_ICP;
   const summ = yesValue + noValue;
@@ -33,14 +31,19 @@
     neuronsVotedForProposal = votedNeurons({
       neurons: $neuronsStore,
       proposal: proposalInfo,
-    }).map(({ neuronId, recentBallots, votingPower }) => ({
-      id: neuronId,
-      // TODO: replace w/ formatVotingPower()
-      votingPower: Number(votingPower) / E8S_PER_ICP,
-      vote: recentBallots.find(
-        ({ proposalId }) => proposalId === proposalInfo.id
-      )?.vote,
-    }));
+    })
+      .map(({ neuronId, recentBallots, votingPower }) => ({
+        id: neuronId,
+        // TODO: replace w/ formatVotingPower()
+        votingPower: Number(votingPower) / E8S_PER_ICP,
+        vote: recentBallots.find(
+          ({ proposalId }) => proposalId === proposalInfo.id
+        )?.vote,
+      }))
+      // Exclude the cases where the vote was not found.
+      .filter(
+        (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
+      ) as CompactNeuronInfo[];
   }
 </script>
 
@@ -71,7 +74,7 @@
     <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
     <ul>
       {#each neuronsVotedForProposal as neuron}
-        <li data-test="neuron-data">
+        <li data-tid="neuron-data">
           <p>{neuron.id}</p>
           <p class="vote-details">
             <span>{neuron.votingPower}</span>

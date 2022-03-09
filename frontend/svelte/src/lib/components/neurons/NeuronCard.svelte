@@ -12,70 +12,96 @@
   export let role: undefined | "link" | "button" = undefined;
   export let ariaLabel: string | undefined = undefined;
 
+  // TODO: https://dfinity.atlassian.net/browse/L2-366
   let stateInfo: StateInfo;
   $: stateInfo = getStateInfo(neuron.state);
   let isCommunityFund: boolean;
-  $: isCommunityFund = !!neuron.joinedCommunityFundTimestampSeconds;
-  let isHotKeyControl: boolean;
-  $: isHotKeyControl = !neuron.fullNeuron.isCurrentUserController;
+  $: isCommunityFund = neuron.joinedCommunityFundTimestampSeconds !== undefined;
   let neuronICP: ICP;
-  $: neuronICP = ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake);
+  $: neuronICP =
+    neuron.fullNeuron?.cachedNeuronStake !== undefined
+      ? ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake)
+      : ICP.fromE8s(BigInt(0));
+  $: isHotKeyControl =
+    neuron.fullNeuron?.isCurrentUserController === undefined
+      ? true
+      : !neuron.fullNeuron?.isCurrentUserController;
+  let dissolvingTime: bigint | undefined;
+  $: dissolvingTime =
+    neuron.state === NeuronState.DISSOLVING &&
+    neuron.fullNeuron !== undefined &&
+    neuron.fullNeuron.dissolveState !== undefined &&
+    "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
+      ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
+      : undefined;
 </script>
 
 <Card {role} on:click {ariaLabel}>
   <div slot="start" class="lock">
-    <h4 class:has-neuron-control={isCommunityFund || isHotKeyControl}>
+    <h3 class:has-neuron-control={isCommunityFund || isHotKeyControl}>
       {neuron.neuronId}
-    </h4>
+    </h3>
+
     {#if isCommunityFund}
-      <p class="neuron-control">{$i18n.neurons.community_fund}</p>
+      <span class="neuron-control">{$i18n.neurons.community_fund}</span>
     {/if}
     {#if isHotKeyControl}
-      <p class="neuron-control">{$i18n.neurons.hotkey_control}</p>
+      <span class="neuron-control">{$i18n.neurons.hotkey_control}</span>
     {/if}
-    <h5 style={`color: var(${stateInfo.colorVar});`}>
-      {$i18n.neurons[`status_${stateInfo.textKey}`]}
-      <svelte:component this={stateInfo.Icon} />
-    </h5>
   </div>
 
   <div slot="end" class="currency">
-    <ICPComponent icp={neuronICP} />
-    <h5>{$i18n.neurons.stake}</h5>
+    {#if neuronICP}
+      <ICPComponent icp={neuronICP} />
+    {/if}
   </div>
 
-  {#if neuron.state === NeuronState.DISSOLVING && "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState}
+  <div class="info">
+    <p style={`color: var(${stateInfo.colorVar});`} class="status">
+      {$i18n.neurons[`status_${stateInfo.textKey}`]}
+      <svelte:component this={stateInfo.Icon} />
+    </p>
+
+    <p>{$i18n.neurons.stake}</p>
+  </div>
+
+  {#if dissolvingTime !== undefined}
     <p class="duration">
-      {secondsToDuration(
-        neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
-      )}
+      {secondsToDuration(dissolvingTime)} - {$i18n.neurons.staked}
     </p>
   {/if}
 
   {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
-    <p class="duration">{secondsToDuration(neuron.dissolveDelaySeconds)}</p>
+    <p class="duration">
+      {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons.staked}
+    </p>
   {/if}
 </Card>
 
 <style lang="scss">
-  h4 {
-    line-height: var(--line-height-standard);
-  }
+  @use "../../themes/mixins/display";
 
-  h4.has-neuron-control {
+  :global(div.modal article > div) {
     margin-bottom: 0;
   }
 
-  .neuron-control {
-    margin-top: 0;
+  h3 {
+    line-height: var(--line-height-standard);
+    margin-bottom: 0;
   }
 
   .lock {
-    margin-bottom: 0;
-    h5 {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .status {
+    display: inline-flex;
+
+    :global {
+      svg {
+        margin-left: calc(var(--padding) / 2);
+      }
     }
   }
 
@@ -85,7 +111,18 @@
     align-items: flex-end;
   }
 
+  .info {
+    @include display.space-between;
+    align-items: center;
+
+    margin: calc(2 * var(--padding)) 0 0;
+
+    p {
+      margin: 0;
+    }
+  }
+
   .duration {
-    font-size: var(--font-size-h5);
+    margin: 0;
   }
 </style>

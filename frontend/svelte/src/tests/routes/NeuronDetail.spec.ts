@@ -7,11 +7,9 @@ import { authStore } from "../../lib/stores/auth.store";
 import NeuronDetail from "../../routes/NeuronDetail.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 
-describe("Canisters", () => {
-  let authStoreMock;
-
+describe("NeuronDetail", () => {
   beforeEach(() => {
-    authStoreMock = jest
+    jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
   });

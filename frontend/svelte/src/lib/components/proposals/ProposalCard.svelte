@@ -12,19 +12,19 @@
   } from "../../constants/proposals.constants";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
-  import type { NeuronId, ProposalId } from "@dfinity/nns";
-  import ProposerModal from "../../modals/proposals/ProposerModal.svelte";
+  import type { ProposalId } from "@dfinity/nns";
+  import Proposer from "./Proposer.svelte";
 
   export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal | undefined;
-  let status: ProposalStatus | undefined;
+  let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
   let id: ProposalId | undefined;
   let title: string | undefined;
   let color: ProposalColor | undefined;
 
   $: ({ proposal, status, id } = proposalInfo);
-  $: ({ title } = proposal);
+  $: title = proposal?.title ?? "";
   $: color = PROPOSAL_COLOR[status];
 
   const showProposal = () => {
@@ -47,13 +47,13 @@
 <div>
   {#if !hide}
     <Card role="link" on:click={showProposal}>
-      <p slot="start" class="title" {title}>{title || ""}</p>
+      <p slot="start" class="title" {title}>{title}</p>
       <Badge slot="end" {color}
-        >{status ? $i18n.status[ProposalStatus[status]] : ""}</Badge
+        >{$i18n.status[ProposalStatus[status]] ?? ""}</Badge
       >
 
-      <p class="info"><ProposerModal {proposalInfo} /></p>
-      <p class="info"><small>Id: {id || ""}</small></p>
+      <p class="info"><Proposer {proposalInfo} /></p>
+      <p class="info"><small>Id: {id ?? ""}</small></p>
     </Card>
   {/if}
 </div>

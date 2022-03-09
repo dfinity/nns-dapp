@@ -18,12 +18,12 @@
   export let props: ProposalsFilterModalProps | undefined;
 
   let visible: boolean;
-  let category: string | undefined;
+  let category: string;
   let filters: ProposalsFilters | undefined;
   let selectedFilters: (Topic | ProposalRewardStatus | ProposalStatus)[];
 
   $: visible = props !== undefined;
-  $: category = props?.category;
+  $: category = props?.category ?? "uncategorized";
   $: filters = props?.filters;
   $: selectedFilters = props?.selectedFilters || [];
 
@@ -72,7 +72,7 @@
 </script>
 
 <Modal {visible} on:nnsClose={close}>
-  <span slot="title">{$i18n.voting?.[category] || ""}</span>
+  <span slot="title">{$i18n.voting?.[category] ?? ""}</span>
 
   {#if filters}
     {#each enumValues(filters) as key (key)}

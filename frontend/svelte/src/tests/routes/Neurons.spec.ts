@@ -2,22 +2,38 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import * as en from "../../lib/i18n/en.json";
 import { authStore } from "../../lib/stores/auth.store";
+import { neuronsStore } from "../../lib/stores/neurons.store";
 import Neurons from "../../routes/Neurons.svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "../mocks/auth.store.mock";
-const en = require("../../lib/i18n/en.json");
+import {
+  buildMockNeuronsStoreSubscibe,
+  neuronMock,
+} from "../mocks/neurons.mock";
+
+jest.mock("../../lib/services/neurons.services", () => {
+  return {
+    listNeurons: jest.fn().mockResolvedValue(undefined),
+  };
+});
 
 describe("Neurons", () => {
-  let authStoreMock;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  let authStoreMock: jest.MockedFunction<any>;
 
   beforeEach(() => {
     authStoreMock = jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+
+    jest
+      .spyOn(neuronsStore, "subscribe")
+      .mockImplementation(buildMockNeuronsStoreSubscibe([neuronMock]));
   });
 
   it("should render content", () => {
@@ -41,11 +57,12 @@ describe("Neurons", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render a NeuronCard", () => {
+  it("should render a NeuronCard", async () => {
     const { container } = render(Neurons);
 
-    const anchor = container.querySelector("a");
-    expect(anchor).not.toBeNull();
+    waitFor(() =>
+      expect(container.querySelector('article[role="link"]')).not.toBeNull()
+    );
   });
 
   it("should open the CreateNeuronModal on click to Stake Neurons", async () => {
@@ -55,7 +72,7 @@ describe("Neurons", () => {
     expect(toolbarButton).not.toBeNull();
     expect(queryByText(en.neurons.select_source)).toBeNull();
 
-    toolbarButton && (await fireEvent.click(toolbarButton));
+    toolbarButton !== null && (await fireEvent.click(toolbarButton));
 
     expect(queryByText(en.neurons.select_source)).not.toBeNull();
   });
