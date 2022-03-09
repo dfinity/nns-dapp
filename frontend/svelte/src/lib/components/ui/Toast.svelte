@@ -13,12 +13,10 @@
   const close = () => toastsStore.hide();
   let text: string | undefined;
 
-  $: ({ labelKey, level, detail } = msg || {
-    labelKey: "",
-    level: "info",
-    detail: undefined,
-  });
-  $: text = `${translate({ labelKey })}${detail ? ` ${detail}` : ""}`;
+  $: ({ labelKey, level, detail } = msg);
+  $: text = `${translate({ labelKey })}${
+    detail !== undefined ? ` ${detail}` : ""
+  }`;
 </script>
 
 <div
