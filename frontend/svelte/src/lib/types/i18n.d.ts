@@ -180,7 +180,7 @@ interface I18nProposal_detail__vote {
 interface I18nProposal_detail__ineligible {
   headline: string;
   text: string;
-  reason_after: string;
+  reason_since: string;
   reason_short: string;
 }
 
