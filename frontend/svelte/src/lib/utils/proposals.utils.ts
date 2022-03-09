@@ -119,12 +119,12 @@ export const loadProposal = async ({
   proposalId,
   identity,
   setProposal,
-  onError,
+  handleError,
 }: {
   proposalId: ProposalId;
   identity: Identity | undefined;
   setProposal: (proposal: ProposalInfo) => void;
-  onError?: () => void;
+  handleError?: () => void;
 }): Promise<void> => {
   const catchError = (error: any) => {
     console.error(error);
@@ -135,7 +135,7 @@ export const loadProposal = async ({
       detail: `id: "${proposalId}"`,
     });
 
-    onError?.();
+    handleError?.();
   };
 
   try {

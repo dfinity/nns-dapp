@@ -55,7 +55,7 @@
       proposalId: proposalIdMaybe,
       identity: $authStore.identity,
       setProposal: (proposal: ProposalInfo) => (proposalInfo = proposal),
-      onError,
+      handleError: onError,
     });
   });
 
