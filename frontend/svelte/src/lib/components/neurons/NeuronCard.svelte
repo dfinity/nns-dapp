@@ -48,18 +48,21 @@
     {#if isHotKeyControl}
       <span class="neuron-control">{$i18n.neurons.hotkey_control}</span>
     {/if}
-
-    <p style={`color: var(${stateInfo.colorVar});`} class="status info">
-      {$i18n.neurons[`status_${stateInfo.textKey}`]}
-      <svelte:component this={stateInfo.Icon} />
-    </p>
   </div>
 
   <div slot="end" class="currency">
     {#if neuronICP}
       <ICPComponent icp={neuronICP} />
-      <p class="info">{$i18n.neurons.stake}</p>
     {/if}
+  </div>
+
+  <div class="info">
+    <p style={`color: var(${stateInfo.colorVar});`} class="status">
+      {$i18n.neurons[`status_${stateInfo.textKey}`]}
+      <svelte:component this={stateInfo.Icon} />
+    </p>
+
+    <p>{$i18n.neurons.stake}</p>
   </div>
 
   {#if dissolvingTime !== undefined}
@@ -76,6 +79,8 @@
 </Card>
 
 <style lang="scss">
+  @use "../../themes/mixins/display";
+
   :global(div.modal article > div) {
     margin-bottom: 0;
   }
@@ -107,7 +112,14 @@
   }
 
   .info {
+    @include display.space-between;
+    align-items: center;
+
     margin: calc(2 * var(--padding)) 0 0;
+
+    p {
+      margin: 0;
+    }
   }
 
   .duration {
