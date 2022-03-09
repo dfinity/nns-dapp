@@ -15,7 +15,7 @@ export const listCanisters = async ({
   clearBeforeQuery?: boolean;
   identity: Identity | null | undefined;
 }) => {
-  if (clearBeforeQuery) {
+  if (clearBeforeQuery === true) {
     canistersStore.setCanisters([]);
   }
 
