@@ -17,9 +17,7 @@ export const translate = ({
   childKey?: string;
   labelKey: string;
 }): string => {
-  const split: string[] = (childKey === undefined ? labelKey : childKey).split(
-    "."
-  );
+  const split: string[] = (childKey ?? labelKey).split(".");
 
   if (split[0] === "") {
     return labelKey;

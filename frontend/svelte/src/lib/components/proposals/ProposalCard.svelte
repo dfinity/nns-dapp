@@ -24,7 +24,7 @@
   let color: ProposalColor | undefined;
 
   $: ({ proposal, status, id } = proposalInfo);
-  $: title = proposal === undefined ? "" : proposal.title;
+  $: title = proposal?.title ?? "";
   $: color = PROPOSAL_COLOR[status];
 
   const showProposal = () => {
@@ -49,13 +49,11 @@
     <Card role="link" on:click={showProposal}>
       <p slot="start" class="title" {title}>{title}</p>
       <Badge slot="end" {color}
-        >{status !== undefined
-          ? $i18n.status[ProposalStatus[status]]
-          : ""}</Badge
+        >{$i18n.status[ProposalStatus[status]] ?? ""}</Badge
       >
 
       <p class="info"><Proposer {proposalInfo} /></p>
-      <p class="info"><small>Id: {id === undefined ? "" : id}</small></p>
+      <p class="info"><small>Id: {id ?? ""}</small></p>
     </Card>
   {/if}
 </div>

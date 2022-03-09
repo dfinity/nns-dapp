@@ -18,8 +18,7 @@
     (value =
       inputType === "number" ? +currentTarget.value : currentTarget.value);
 
-  $: step =
-    inputType === "number" ? (step === undefined ? "any" : step) : undefined;
+  $: step = inputType === "number" ? step ?? "any" : undefined;
 </script>
 
 <div class={`input-block ${theme}`} class:disabled>

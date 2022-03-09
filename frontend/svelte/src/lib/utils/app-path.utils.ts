@@ -8,8 +8,7 @@ const mapper: Record<string, string> = {
   [AppPath.NeuronDetail]: `${AppPath.NeuronDetail}/[0-9]+`,
 };
 
-const pathValidation = (path: AppPath): string =>
-  mapper[path] === undefined ? path : mapper[path];
+const pathValidation = (path: AppPath): string => mapper[path] ?? path;
 
 export const isAppPath = (routePath: string): routePath is AppPath =>
   Boolean(
