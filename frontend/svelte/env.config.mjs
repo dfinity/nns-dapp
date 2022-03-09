@@ -29,7 +29,7 @@ const IDENTITY_SERVICE_URL =
     : "https://identity.ic0.app/");
 
 const HOST =
-  process.env.HOST || (development ? `https://${domainTestnet}/` : "");
+  process.env.HOST || (development ? `https://${domainTestnet}/` : undefined);
 
 // Canister Ids for testnet and mainnet
 const GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";
