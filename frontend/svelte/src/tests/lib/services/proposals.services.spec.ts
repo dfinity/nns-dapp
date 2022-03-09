@@ -20,7 +20,7 @@ describe("proposals-services", () => {
     new MockGovernanceCanister(mockProposals);
 
   let spyListProposals;
-  let spyProposalInfo;
+  let spyGetProposal;
   let spyRegisterVote;
 
   beforeEach(() => {
@@ -29,7 +29,7 @@ describe("proposals-services", () => {
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
 
     spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
-    spyProposalInfo = jest.spyOn(mockGovernanceCanister, "getProposal");
+    spyGetProposal = jest.spyOn(mockGovernanceCanister, "getProposal");
     spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
   });
 
@@ -118,7 +118,7 @@ describe("proposals-services", () => {
     });
     expect(proposal?.id).toBe(BigInt(100));
     expect(spyListProposals).not.toBeCalled();
-    expect(spyProposalInfo).not.toBeCalled();
+    expect(spyGetProposal).not.toBeCalled();
   });
 
   it("should call the canister to get proposalInfo", async () => {
@@ -127,7 +127,11 @@ describe("proposals-services", () => {
       identity: mockIdentity,
     });
     expect(proposal?.id).toBe(BigInt(404));
-    expect(spyProposalInfo).toBeCalledTimes(1);
+    expect(spyGetProposal).toBeCalledTimes(1);
+    expect(spyGetProposal).toBeCalledWith({
+      proposalId: BigInt(404),
+      certified: true,
+    });
   });
 
   it("should not call listProposals if not in the store", async () => {
