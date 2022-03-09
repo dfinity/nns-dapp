@@ -41,7 +41,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
   }: {
     proposalId: any;
   }): Promise<ProposalInfo | undefined> => {
-    return { id: BigInt(404) } as unknown as ProposalInfo;
+    return this.proposals.find(({ id }) => id === proposalId);
   };
 
   public listNeurons = async ({
