@@ -21,6 +21,8 @@
 </div>
 
 <style lang="scss">
+  @use "../../themes/mixins/interaction";
+
   .wrapper {
     display: flex;
     flex-direction: column;
@@ -38,10 +40,10 @@
     padding: calc(4 * var(--padding));
     border-radius: var(--border-radius);
 
-    cursor: pointer;
+    @include interaction.tappable;
 
     &:hover {
-      background-color: var(--blue-700);
+      background: var(--background-hover);
     }
 
     h4 {

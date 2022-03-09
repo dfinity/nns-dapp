@@ -23,6 +23,20 @@ export const proposalFirstActionKey = (
   proposal: Proposal
 ): string | undefined => Object.keys(proposal.action || {})[0];
 
+/**
+ * Temporary solution till JSON renderer
+ * (removes redundant wrappers)
+ */
+const mockFlutterJSONFormatting = (value: string = ""): string => {
+  // "text" -> text
+  let formattedText = value.replace(/^"(.*)"$/g, "$1");
+  // "123" -> 123 (bigint is a string because of poor JSON.stringify support. See stringifyJson)
+  formattedText = formattedText.replace(/"([\d]+)"/g, "$1");
+  // \" -> "
+  formattedText = formattedText.replace(/\\"/g, '"');
+  return formattedText;
+};
+
 export const proposalActionFields = (
   proposal: Proposal
 ): [string, string][] => {
@@ -36,7 +50,7 @@ export const proposalActionFields = (
     .filter(([key]) => key !== "payloadBytes")
     .map(([key, value]: [string, object]) => [
       key,
-      key === "payload" ? stringifyJson(value) : `${value}`,
+      mockFlutterJSONFormatting(stringifyJson(value, { indentation: 2 })),
     ]);
 };
 
