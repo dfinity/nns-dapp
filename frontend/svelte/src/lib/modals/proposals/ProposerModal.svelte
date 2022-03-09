@@ -2,7 +2,7 @@
   import Modal from "../Modal.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { getNeuron } from "../../services/neurons.services";
   import Spinner from "../../components/ui/Spinner.svelte";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
