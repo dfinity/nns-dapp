@@ -2,13 +2,13 @@
   import Modal from "../Modal.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import Card from "../../components/ui/Card.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { getNeuron } from "../../services/neurons.services";
   import Spinner from "../../components/ui/Spinner.svelte";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import { onMount } from "svelte";
+  import VotingHistoryCard from "../../components/neurons/VotingHistoryCard.svelte";
 
   export let proposer: NeuronId;
   let neuron: NeuronInfo | undefined;
@@ -32,7 +32,7 @@
     <div class="content">
       <NeuronCard {neuron} />
 
-      <Card><h4>TODO: Voting history</h4></Card>
+      <VotingHistoryCard {neuron} />
     </div>
   {:else}
     <Spinner />
