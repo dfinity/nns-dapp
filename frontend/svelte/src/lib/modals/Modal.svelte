@@ -15,7 +15,7 @@
   export let showBackButton: boolean = false;
 
   let showToolbar: boolean;
-  $: showToolbar = $$slots.title || showBackButton;
+  $: showToolbar = $$slots.title === undefined ? showBackButton : $$slots.title;
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");

@@ -56,7 +56,7 @@ const fullPath = ({ path, query }: { path: string; query?: string }): string =>
  * Source: https://stackoverflow.com/a/6825002/5404186
  */
 const supportsHistory = (): boolean =>
-  window.history &&
+  window.history !== undefined &&
   "pushState" in window.history &&
   typeof window.history.pushState != "undefined";
 
@@ -66,5 +66,5 @@ const supportsHistory = (): boolean =>
 export const baseHref = (): string => {
   const base: HTMLBaseElement | null = document.querySelector("base");
   const { origin }: URL = new URL(document.baseURI);
-  return base?.href.replace(origin, "") || "/";
+  return base !== null ? base.href.replace(origin, "") : "/";
 };
