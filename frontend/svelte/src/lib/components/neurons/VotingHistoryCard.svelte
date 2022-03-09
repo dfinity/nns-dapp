@@ -19,6 +19,9 @@
   $: proposalIds = distinctProposalIds(neuron);
 </script>
 
+<!-- TODO(L2-282): add title and content should be split in two columns -->
+<!-- TODO(L2-282): add tests -->
+
 <Card>
   {#each proposalIds as proposalId}
     <ProposalShortSummary {proposalId} />
