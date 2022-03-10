@@ -23,7 +23,8 @@ const domain = development ? domainTestnet : domainMainnet;
 const MAINNET = `https://${domainMainnet}`;
 
 const IDENTITY_SERVICE_URL =
-  process.env.IDENTITY_SERVICE_URL || (development
+  process.env.IDENTITY_SERVICE_URL ||
+  (development
     ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
     : "https://identity.ic0.app/");
 
