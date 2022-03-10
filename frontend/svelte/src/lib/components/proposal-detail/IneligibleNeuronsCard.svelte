@@ -20,12 +20,10 @@
   });
   $: visible = ineligibleNeurons.length > 0;
 
-  const reason = ({ neuronId }: NeuronInfo): string =>
-    proposalInfo.ballots.find(
-      ({ neuronId: ballotNeuronId }: Ballot) => ballotNeuronId === neuronId
-    ) === undefined
-      ? $i18n.proposal_detail__ineligible.reason_short
-      : $i18n.proposal_detail__ineligible.reason_since;
+  const reason = ({ createdTimestampSeconds }: NeuronInfo): string =>
+    createdTimestampSeconds > proposalInfo.proposalTimestampSeconds
+      ? $i18n.proposal_detail__ineligible.reason_since
+      : $i18n.proposal_detail__ineligible.reason_short;
 </script>
 
 {#if visible}
