@@ -1,6 +1,5 @@
+import * as en from "../../../lib/i18n/en.json";
 import { secondsToDuration } from "../../../lib/utils/date.utils";
-
-const en = require("../../../lib/i18n/en.json");
 
 describe("secondsToDuration", () => {
   it("should give year details", () => {

@@ -11,13 +11,12 @@ import {
 } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
+import * as en from "../../../../lib/i18n/en.json";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { proposalsFiltersStore } from "../../../../lib/stores/proposals.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
-
-const en = require("../../../../lib/i18n/en.json");
 
 describe("ProposalCard", () => {
   const mockGovernanceCanister: MockGovernanceCanister =

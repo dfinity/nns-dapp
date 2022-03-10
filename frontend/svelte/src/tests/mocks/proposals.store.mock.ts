@@ -32,7 +32,7 @@ export const mockProposalsStoreSubscribe = (
 ): (() => void) => {
   run(mockProposals);
 
-  return () => {};
+  return () => undefined;
 };
 
 export const mockEmptyProposalsStoreSubscribe = (
@@ -40,5 +40,5 @@ export const mockEmptyProposalsStoreSubscribe = (
 ): (() => void) => {
   run([]);
 
-  return () => {};
+  return () => undefined;
 };

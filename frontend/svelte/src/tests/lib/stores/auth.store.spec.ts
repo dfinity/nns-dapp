@@ -20,7 +20,7 @@ describe("auth-store", () => {
   });
 
   it("should call auth-client login on sign-in", async () => {
-    // @ts-ignore
+    // @ts-ignore: test file
     mockAuthClient.login = async ({ onSuccess }: { onSuccess: () => void }) => {
       expect(true).toBeTruthy();
       onSuccess();
