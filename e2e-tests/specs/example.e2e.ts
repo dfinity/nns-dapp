@@ -116,18 +116,15 @@ describe("landing page", () => {
     await proceedButton.waitForExist();
     await proceedButton.click();
 
-    await browser.switchWindow("Network Nervous System");
+    await browser.switchWindow(process.env.NNS_DAPP_URL);
 
-    await browser.$("h1").waitForExist();
+    // At this point it's still the login page
+    // We wait for the header of the dashboard
+    await browser.$("header").waitForExist();
     const title = await browser.$("h1");
+    const titleText = await title.getText();
 
-    // TODO: remove or understand whether the problem is the exact match.
-    // await browser.waitUntil(
-    //   async () => {
-    //     return (await title.getText()) === "Accounts";
-    //   },
-    //   { timeout: 30_000 }
-    // );
+    expect(titleText).toBe("Accounts");
 
     await browser["screenshot"]("home-page");
     // TODO: Deploy Ledger and Governance canisters and proxy them
