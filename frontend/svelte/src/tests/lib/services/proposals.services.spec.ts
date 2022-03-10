@@ -16,7 +16,7 @@ describe("proposals-services", () => {
     new MockGovernanceCanister(mockProposals);
 
   let spyListProposals;
-  let spyProposalInfo;
+  let spyGetProposal;
   let spyRegisterVote;
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe("proposals-services", () => {
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
 
     spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
-    spyProposalInfo = jest.spyOn(mockGovernanceCanister, "getProposal");
+    spyGetProposal = jest.spyOn(mockGovernanceCanister, "getProposal");
     spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
   });
 
@@ -106,7 +106,7 @@ describe("proposals-services", () => {
         setProposal: (proposal: ProposalInfo) => {
           expect(proposal?.id).toBe(mockProposals[1].id);
           expect(spyListProposals).not.toBeCalled();
-          expect(spyProposalInfo).not.toBeCalled();
+          expect(spyGetProposal).not.toBeCalled();
 
           done();
         },
@@ -141,11 +141,15 @@ describe("proposals-services", () => {
   describe("load", () => {
     it("should call the canister to get proposalInfo", (done) => {
       loadProposal({
-        proposalId: mockProposals[0].id as bigint,
+        proposalId: BigInt(404),
         identity: mockIdentity,
         setProposal: (proposal: ProposalInfo) => {
-          expect(proposal?.id).toBe(mockProposals[0].id);
-          expect(spyProposalInfo).toBeCalledTimes(1);
+          expect(proposal?.id).toBe(BigInt(404));
+          expect(spyGetProposal).toBeCalledTimes(1);
+          expect(spyGetProposal).toBeCalledWith({
+            proposalId: BigInt(404),
+            certified: true,
+          });
 
           done();
         },
