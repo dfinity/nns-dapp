@@ -3,7 +3,7 @@ set -euo pipefail
 
 pushd "$(dirname "$0")" >/dev/null # Move to the script's directory.
 
-if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $DEPLOY_ENV = "local" ]] && ! [[ $DEPLOY_ENV = "e2e" ]]; then
+if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $DEPLOY_ENV = "local" ]]; then
   echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet' or 'local'"
   exit 1
 fi

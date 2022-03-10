@@ -94,9 +94,10 @@ jobs:
           dfx start --background
           dfx canister --no-wallet create --all
 
+      # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
       - name: Deploy
         run: |
-          DEPLOY_ENV=e2e dfx deploy --no-wallet --network local --argument '(null)'
+          DEPLOY_ENV=local IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --no-wallet --network local --argument '(null)'
 
       - name: Build proxy
         working-directory: proxy

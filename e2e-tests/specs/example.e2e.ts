@@ -5,13 +5,21 @@
  */
 function waitForLoad(browser) {
   // Check that the page has completely loaded, and we are not in the intermediate service worker bootstrap page:
-  return browser.waitUntil(() => browser.execute(() => {
-    // We do not want the service worker bootstrap page, so:
-    const serviceWorkerTitlePattern = /Content Validation Bootstrap/i;
-    const isServiceWorkerBootstrapPage = !!document.title.match(serviceWorkerTitlePattern);
-    // Check that the page has loaded and that it isn't the intermediate bootstrap page.
-    return (document.readyState === 'complete') && !isServiceWorkerBootstrapPage;
-  }), {timeout: 60_000});
+  return browser.waitUntil(
+    () =>
+      browser.execute(() => {
+        // We do not want the service worker bootstrap page, so:
+        const serviceWorkerTitlePattern = /Content Validation Bootstrap/i;
+        const isServiceWorkerBootstrapPage = !!document.title.match(
+          serviceWorkerTitlePattern
+        );
+        // Check that the page has loaded and that it isn't the intermediate bootstrap page.
+        return (
+          document.readyState === "complete" && !isServiceWorkerBootstrapPage
+        );
+      }),
+    { timeout: 60_000 }
+  );
 }
 
 describe("landing page", () => {
@@ -60,7 +68,7 @@ describe("landing page", () => {
     await browser.$("main button").click();
 
     // REGISTRATION
-  
+
     // Internet Identity
     const iiURL = `${process.env.II_URL}/#authorize`;
     await browser.switchWindow(iiURL);
@@ -73,7 +81,7 @@ describe("landing page", () => {
     await registerAlias.waitForExist();
     await registerAlias.setValue("My Device");
 
-    await browser.$("button[type=\"submit\"]").click();
+    await browser.$('button[type="submit"]').click();
 
     // Captcha Page
     const captchaInput = await browser.$("#captchaInput");
@@ -102,25 +110,24 @@ describe("landing page", () => {
     const skipButton = await browser.$("#displayWarningRemindLater");
     await skipButton.waitForExist();
     await skipButton.click();
-    
+
     // Confirm Redirect Page
     const proceedButton = await browser.$("#confirmRedirect");
     await proceedButton.waitForExist();
     await proceedButton.click();
 
     await browser.switchWindow("Network Nervous System");
-    
+
     await browser.$("h1").waitForExist();
     const title = await browser.$("h1");
 
-    
     await browser.waitUntil(
       async () => {
         return (await title.getText()) === "Accounts";
       },
-      { timeout: 20_000 }
+      { timeout: 30_000 }
     );
-    
+
     await browser["screenshot"]("home-page");
     // TODO: Deploy Ledger and Governance canisters and proxy them
     // How do we do this when they are in another repo? Do we have a repository of docker images?

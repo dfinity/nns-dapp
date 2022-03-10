@@ -29,8 +29,8 @@ if [[ $DEPLOY_ENV = "nobuild" ]]; then
   exit 0
 fi
 
-if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $DEPLOY_ENV = "local" ]] && ! [[ $DEPLOY_ENV = "e2e" ]]; then
-  echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet' or 'local' or 'e2e'"
+if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $DEPLOY_ENV = "local" ]]; then
+  echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet' or 'local'"
   exit 1
 fi
 

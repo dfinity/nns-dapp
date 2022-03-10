@@ -57,38 +57,19 @@ const NNS_DAPP_URL = `http://localhost:${NNS_DAPP_PORT}`;
 
 const child_process = require("child_process");
 
-const nnsDappProxy = child_process.spawn("npm", [
-  "run",
-  "proxy",
-  "--",
+const proxy = child_process.spawn("proxy", [
   "--replica-host",
   replica_host,
   `${canister_id}:${NNS_DAPP_PORT}`,
-]);
-
-nnsDappProxy.stdout.on("data", (data) => {
-  console.log(`nns dapp proxy: ${data}`);
-});
-
-nnsDappProxy.stdout.on("close", (code) => {
-  console.log(`nns dapp proxy returned with ${code}`);
-});
-
-const iiProxy = child_process.spawn("npm", [
-  "run",
-  "proxy",
-  "--",
-  "--replica-host",
-  replica_host,
   `${ii_canister_id}:${II_PORT}`,
 ]);
 
-iiProxy.stdout.on("data", (data) => {
-  console.log(`ii proxy: ${data}`);
+proxy.stdout.on("data", (data) => {
+  console.log(`proxy: ${data}`);
 });
 
-iiProxy.stdout.on("close", (code) => {
-  console.log(`ii proxy returned with ${code}`);
+proxy.stdout.on("close", (code) => {
+  console.log(`proxy returned with ${code}`);
 });
 
 /*
@@ -104,10 +85,9 @@ wdio.stdout.on("data", (data) => {
 
 wdio.stderr.on("data", (data) => {
   console.log(`wdio error: ${data}`);
-})
+});
 
 wdio.stdout.on("close", (code) => {
   console.log(`wdio returned with ${code}`);
-  nnsDappProxy.kill();
-  iiProxy.kill();
+  proxy.kill();
 });
