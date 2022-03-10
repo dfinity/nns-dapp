@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   GovernanceCanister,
   ICP,
@@ -39,7 +40,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
   public getProposal = async ({
     proposalId,
   }: {
-    proposalId: any;
+    proposalId: bigint;
   }): Promise<ProposalInfo | undefined> => {
     return this.proposals.find(({ id }) => id === proposalId);
   };

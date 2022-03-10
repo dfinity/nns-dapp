@@ -4,7 +4,8 @@ export class IntersectionObserverPassive {
     private options?: IntersectionObserverInit
   ) {}
 
-  observe(element: HTMLElement) {}
+  /* eslint-disable-next-line */
+  observe = (element: HTMLElement) => undefined;
 
   disconnect() {
     return null;

@@ -117,7 +117,7 @@ describe("proposals-services", () => {
       loadProposal({
         proposalId: mockProposals[0].id as bigint,
         identity: mockIdentity,
-        setProposal: (_proposalInfo: ProposalInfo) => {
+        setProposal: () => {
           expect(spyListProposals).not.toBeCalled();
           done();
         },
