@@ -106,7 +106,7 @@ describe("proposals-services", () => {
         setProposal: (proposal: ProposalInfo) => {
           expect(proposal?.id).toBe(mockProposals[1].id);
           expect(spyListProposals).not.toBeCalled();
-          expect(spyProposalInfo).not.toBeCalled();
+          expect(spyGetProposal).not.toBeCalled();
 
           done();
         },
