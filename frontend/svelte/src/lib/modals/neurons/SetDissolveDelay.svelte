@@ -13,6 +13,7 @@
   import { secondsToDuration } from "../../utils/date.utils";
   import { formatICP } from "../../utils/icp.utils";
   import { votingPower } from "../../utils/neuron.utils";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
 
   export let neuron: NeuronInfo;
 
@@ -63,7 +64,9 @@
   <div>
     <h5>{$i18n.neurons.neuron_balance}</h5>
     <p data-tid="neuron-stake">
-      {`${formatICP(neuronICP)} ${$i18n.neurons.icp_stake}`}
+      {replacePlaceholders($i18n.neurons.icp_stake, {
+        $amount: formatICP(neuronICP),
+      })}
     </p>
   </div>
   <div>
