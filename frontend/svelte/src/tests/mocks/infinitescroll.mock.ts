@@ -1,24 +1,21 @@
-export class IntersectionObserverPassive {
+export const IntersectionObserverPassive = jest.fn();
+IntersectionObserverPassive.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+});
+
+export class IntersectionObserverActive implements IntersectionObserver {
+  public readonly root: Element | Document | null;
+  public readonly rootMargin: string;
+  public readonly thresholds: ReadonlyArray<number>;
+  public takeRecords: () => IntersectionObserverEntry[];
+
   constructor(
-    private callback: (entries: IntersectionObserverEntry[], observer) => void,
-    private options?: IntersectionObserverInit
-  ) {}
-
-  /* eslint-disable-next-line */
-  observe = (element: HTMLElement) => undefined;
-
-  disconnect() {
-    return null;
-  }
-
-  unobserve() {
-    return null;
-  }
-}
-
-export class IntersectionObserverActive {
-  constructor(
-    private callback: (entries: IntersectionObserverEntry[], observer) => void,
+    private callback: (
+      entries: IntersectionObserverEntry[],
+      observer: IntersectionObserver
+    ) => void,
     private options?: IntersectionObserverInit
   ) {}
 
@@ -33,12 +30,6 @@ export class IntersectionObserverActive {
       this
     );
   }
-
-  disconnect() {
-    return null;
-  }
-
-  unobserve() {
-    return null;
-  }
+  disconnect = () => null;
+  unobserve = () => null;
 }
