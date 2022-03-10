@@ -52,7 +52,7 @@
 
 {#if showThisRoute}
   <Layout>
-    <section>
+    <section data-tid="accounts-route">
       <div class="title">
         <h1>{$i18n.accounts.title}</h1>
 
