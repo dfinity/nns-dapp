@@ -23,13 +23,12 @@ const domain = development ? domainTestnet : domainMainnet;
 const MAINNET = `https://${domainMainnet}`;
 
 const IDENTITY_SERVICE_URL =
-  process.env.IDENTITY_SERVICE_URL ||
-  process.env.DEPLOY_ENV === "e2e"
-    // needs to match the port in `e2e-tests/test.js`
-    ? "http://localhost:8087"
-    : (development
-      ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
-      : "https://identity.ic0.app/");
+  process.env.IDENTITY_SERVICE_URL || process.env.DEPLOY_ENV === "e2e"
+    ? // needs to match the port in `e2e-tests/test.js`
+      "http://localhost:8087"
+    : development
+    ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
+    : "https://identity.ic0.app/";
 
 const HOST =
   process.env.HOST || (development ? `https://${domainTestnet}/` : undefined);
