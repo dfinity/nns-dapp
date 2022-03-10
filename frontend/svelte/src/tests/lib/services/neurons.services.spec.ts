@@ -1,13 +1,16 @@
 import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
+import { get } from "svelte/store";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
   getNeuron,
   listNeurons,
+  loadNeuron,
   stakeNeuron,
   updateDelay,
 } from "../../../lib/services/neurons.services";
 import { authStore } from "../../../lib/stores/auth.store";
+import { neuronsStore } from "../../../lib/stores/neurons.store";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { neuronMock } from "../../mocks/neurons.mock";
 
@@ -77,6 +80,16 @@ describe("neurons-services", () => {
     expect(mockGovernanceCanister.getNeuron).toBeCalled();
     expect(neuron).not.toBeUndefined();
     expect(neuron?.neuronId).toEqual(neuronMock.neuronId);
+  });
+
+  it("loadNeuron fetches one neuron and adds it to the store", async () => {
+    expect(mockGovernanceCanister.getNeuron).not.toBeCalled();
+
+    await loadNeuron(neuronMock.neuronId);
+
+    expect(mockGovernanceCanister.getNeuron).toBeCalled();
+    const neuronsInStore = get(neuronsStore);
+    expect(neuronsInStore.length).toBe(1);
   });
 
   it("updateDelay updates neuron", async () => {

@@ -21,6 +21,18 @@ import { AuthStore, authStore } from "../stores/auth.store";
 import { neuronsStore } from "../stores/neurons.store";
 import { createAgent } from "../utils/agent.utils";
 
+export const getNeuron = async (
+  neuronId: NeuronId
+): Promise<NeuronInfo | undefined> => {
+  const { canister, identity } = await governanceCanister();
+
+  return canister.getNeuron({
+    certified: true,
+    principal: identity.getPrincipal(),
+    neuronId,
+  });
+};
+
 /**
  * Uses governance and ledger canisters to create a neuron and adds it to the store
  *
@@ -42,7 +54,6 @@ export const stakeNeuron = async ({
     canisterId: LEDGER_CANISTER_ID,
   });
 
-  // TODO: L2-332 Get neuron information and add to store
   const response = await canister.stakeNeuron({
     stake,
     principal: identity.getPrincipal(),
@@ -53,8 +64,7 @@ export const stakeNeuron = async ({
     throw response;
   }
 
-  // TODO: Remove after L2-332
-  await listNeurons();
+  await loadNeuron(response);
 
   return response;
 };
@@ -70,16 +80,13 @@ export const listNeurons = async (): Promise<void> => {
   neuronsStore.setNeurons(neurons);
 };
 
-export const getNeuron = async (
-  neuronId: NeuronId
-): Promise<NeuronInfo | undefined> => {
-  const { canister, identity } = await governanceCanister();
+export const loadNeuron = async (neuronId: NeuronId): Promise<void> => {
+  const neuron = await getNeuron(neuronId);
 
-  return canister.getNeuron({
-    certified: true,
-    principal: identity.getPrincipal(),
-    neuronId,
-  });
+  // TODO: Manage errors and edge cases: https://dfinity.atlassian.net/browse/L2-329
+  if (neuron) {
+    neuronsStore.pushNeurons([neuron]);
+  }
 };
 
 export const updateDelay = async ({
@@ -100,8 +107,7 @@ export const updateDelay = async ({
     throw response.Err;
   }
 
-  // TODO: Remove after L2-332
-  await listNeurons();
+  await loadNeuron(neuronId);
 };
 
 // TODO: Apply pattern to other canister instantiation L2-371
