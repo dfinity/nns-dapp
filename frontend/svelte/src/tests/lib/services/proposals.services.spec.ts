@@ -145,7 +145,6 @@ describe("proposals-services", () => {
         identity: mockIdentity,
         setProposal: (proposal: ProposalInfo) => {
           expect(proposal?.id).toBe(BigInt(404));
-          expect(spyProposalInfo).toBeCalledTimes(1);
           expect(spyGetProposal).toBeCalledTimes(1);
           expect(spyGetProposal).toBeCalledWith({
             proposalId: BigInt(404),
