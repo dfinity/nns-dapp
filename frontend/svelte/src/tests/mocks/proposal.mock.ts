@@ -28,4 +28,9 @@ export const mockProposalInfo: ProposalInfo = {
   topic: 8,
   status: 2,
   rewardStatus: 3,
+  ballots: [
+    {
+      neuronId: BigInt(0),
+    },
+  ],
 } as unknown as ProposalInfo;
