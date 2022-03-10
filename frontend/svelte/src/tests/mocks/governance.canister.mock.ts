@@ -15,7 +15,7 @@ import type { Principal } from "@dfinity/principal";
 import { neuronMock } from "./neurons.mock";
 
 // eslint-disable-next-line
-// @ts-ignore
+// @ts-ignore: test file
 export class MockGovernanceCanister extends GovernanceCanister {
   constructor(private proposals: ProposalInfo[]) {
     super();

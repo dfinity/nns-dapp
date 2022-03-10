@@ -5,6 +5,7 @@ import { Vote } from "@dfinity/nns";
 import { render, RenderResult } from "@testing-library/svelte";
 import VotesCard from "../../../../lib/components/proposal-detail/VotesCard.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
+import * as en from "../../../../lib/i18n/en.json";
 import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import { formatNumber } from "../../../../lib/utils/format.utils";
 import {
@@ -12,9 +13,6 @@ import {
   neuronMock,
 } from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
-
-/* eslint-disable-next-line */
-const en = require("../../../../lib/i18n/en.json");
 
 describe("VotesCard", () => {
   describe("Adopt-Reject section", () => {
