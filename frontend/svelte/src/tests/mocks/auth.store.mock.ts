@@ -54,5 +54,5 @@ export const mutableMockAuthStoreSubscribe = (
 ): (() => void) => {
   authStoreMock.subscribe((store: AuthStore) => run(store));
 
-  return () => {};
+  return () => undefined;
 };
