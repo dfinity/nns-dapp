@@ -18,7 +18,7 @@ describe("ProposalDetailCard", () => {
   });
 
   it("should render title", () => {
-    const { getByText, container } = renderResult;
+    const { getByText } = renderResult;
     expect(getByText("title")).toBeInTheDocument();
   });
 

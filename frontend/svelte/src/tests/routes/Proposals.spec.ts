@@ -4,6 +4,7 @@
 
 import { GovernanceCanister, Proposal, ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import * as en from "../../lib/i18n/en.json";
 import { authStore } from "../../lib/stores/auth.store";
 import { proposalsStore } from "../../lib/stores/proposals.store";
 import Proposals from "../../routes/Proposals.svelte";
@@ -14,9 +15,6 @@ import {
   mockProposals,
   mockProposalsStoreSubscribe,
 } from "../mocks/proposals.store.mock";
-
-/* eslint-disable-next-line @typescript-eslint/no-var-requires */
-const en = require("../../lib/i18n/en.json") as I18n;
 
 describe("Proposals", () => {
   const nothingFound = (

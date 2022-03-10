@@ -52,7 +52,7 @@
     // We disconnect previous observer first. We do want to observe multiple elements.
     observer.disconnect();
 
-    if (!container.children.length) {
+    if (container.children.length === 0) {
       return;
     }
 
@@ -91,7 +91,7 @@
         Math.round(LIST_PAGINATION_LIMIT * INFINITE_SCROLL_OFFSET)
     ];
 
-    if (!element) {
+    if (element === undefined) {
       return;
     }
 

@@ -50,5 +50,11 @@ module.exports = {
         allowNumber: false,
       },
     ],
+    "@typescript-eslint/ban-ts-comment": [
+      2,
+      {
+        "ts-ignore": "allow-with-description",
+      },
+    ],
   },
 };

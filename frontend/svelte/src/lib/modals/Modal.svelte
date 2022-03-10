@@ -15,7 +15,7 @@
   export let showBackButton: boolean = false;
 
   let showToolbar: boolean;
-  $: showToolbar = $$slots.title || showBackButton;
+  $: showToolbar = $$slots.title ?? showBackButton;
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
@@ -182,7 +182,8 @@
 
     min-height: calc(var(--modal-min-height) - var(--modal-toolbar-height));
     max-height: calc(100vh - 156px);
-    overflow-y: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     color: var(--gray-800);
   }

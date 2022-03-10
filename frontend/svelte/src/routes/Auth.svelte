@@ -39,7 +39,7 @@
         window.location.search
       );
       const redirectPath: string = `/#/${
-        urlParams.get("redirect") || "accounts"
+        urlParams.get("redirect") ?? "accounts"
       }`;
 
       // We do not want to push to the browser history but only want to update the url to not have two entries for the same page in the browser stack

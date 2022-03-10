@@ -7,12 +7,12 @@
   const localstorageKey: string = "nnsdapp-testnet-banner-display";
 
   let visible: boolean = JSON.parse(
-    localStorage.getItem(localstorageKey) || "true"
+    localStorage.getItem(localstorageKey) ?? "true"
   ) as boolean;
 
   const testnet: boolean = process.env.DEPLOY_ENV === "testnet";
   const localEnv: boolean = JSON.parse(
-    process.env.ROLLUP_WATCH || "false"
+    process.env.ROLLUP_WATCH ?? "false"
   ) as boolean;
   const banner: boolean = testnet && !localEnv;
 
