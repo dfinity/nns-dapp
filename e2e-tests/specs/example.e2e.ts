@@ -120,7 +120,7 @@ describe("landing page", () => {
 
     // At this point it's still the login page
     // We wait for the header of the dashboard
-    await browser.$("header").waitForExist();
+    await browser.$("header").waitForExist({ timeout: 20_000 });
     const title = await browser.$("h1");
     const titleText = await title.getText();
 
