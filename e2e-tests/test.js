@@ -12,11 +12,11 @@ const fs = require("fs");
  * Read the values from dfx.json and canister_ids.json
  */
 const CANISTER_IDS_PATH = `${__dirname}/../.dfx/local/canister_ids.json`;
-let canister_id;
+let nns_canister_id;
 let ii_canister_id;
 try {
   const canister_ids = JSON.parse(fs.readFileSync(CANISTER_IDS_PATH, "utf8"));
-  canister_id = canister_ids["nns-dapp"].local;
+  nns_canister_id = canister_ids["nns-dapp"].local;
   ii_canister_id = canister_ids["internet_identity"].local;
 } catch (e) {
   console.log(
@@ -25,7 +25,7 @@ try {
   throw e;
 }
 
-console.log(`NNS Dapp using canister ID: ${canister_id}`);
+console.log(`NNS Dapp using canister ID: ${nns_canister_id}`);
 console.log(`II using canister id: ${ii_canister_id}`);
 
 const DFX_JSON_PATH = `${__dirname}/../dfx.json`;
@@ -60,7 +60,7 @@ const child_process = require("child_process");
 const proxy = child_process.spawn("proxy", [
   "--replica-host",
   replica_host,
-  `${canister_id}:${NNS_DAPP_PORT}`,
+  `${nns_canister_id}:${NNS_DAPP_PORT}`,
   `${ii_canister_id}:${II_PORT}`,
 ]);
 

@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "wdio": "wdio run ./wdio.conf.ts",
-    "proxy": "proxy",
     "test": "./test.js",
     "format": "prettier --write --plugin-search-dir=. ."
   },
