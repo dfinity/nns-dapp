@@ -150,7 +150,7 @@ describe("proposals-services", () => {
             proposalId: BigInt(404),
             certified: true,
           });
-          
+
           done();
         },
       });
