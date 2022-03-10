@@ -111,7 +111,7 @@ export const loadProposal = async ({
   handleError,
 }: {
   proposalId: ProposalId;
-  identity: Identity | undefined;
+  identity: Identity | undefined | null;
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
 }): Promise<void> => {
