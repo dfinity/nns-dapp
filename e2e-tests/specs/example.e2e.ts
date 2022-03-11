@@ -116,7 +116,7 @@ describe("landing page", () => {
     await proceedButton.waitForExist();
     await proceedButton.click();
 
-    await browser.switchWindow(`${process.env.NNS_DAPP_URL}/v2/`);
+    await browser.switchWindow(process.env.NNS_DAPP_URL);
 
     // At this point it's still the login page
     // We wait for the header of the dashboard
