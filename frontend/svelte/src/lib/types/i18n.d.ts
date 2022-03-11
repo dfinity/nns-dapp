@@ -85,6 +85,7 @@ interface I18nNeurons {
   community_fund: string;
   hotkey_control: string;
   stake: string;
+  icp_stake: string;
   staked: string;
   aria_label_neuron_card: string;
   neuron_id: string;
@@ -177,6 +178,13 @@ interface I18nProposal_detail__vote {
   confirm_reject_text: string;
 }
 
+interface I18nProposal_detail__ineligible {
+  headline: string;
+  text: string;
+  reason_since: string;
+  reason_short: string;
+}
+
 interface I18nNeuron_detail {
   title: string;
   proposer: string;
@@ -210,6 +218,7 @@ interface I18n {
   wallet: I18nWallet;
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;
+  proposal_detail__ineligible: I18nProposal_detail__ineligible;
   neuron_detail: I18nNeuron_detail;
   time: I18nTime;
 }

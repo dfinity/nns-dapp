@@ -10,7 +10,7 @@ export interface AccountsStore {
  * A store that contains the account information.
  */
 export const initAccountsStore = () => {
-  const { subscribe, set, update } = writable<AccountsStore>({
+  const { subscribe, set } = writable<AccountsStore>({
     main: undefined,
     subAccounts: undefined,
   });

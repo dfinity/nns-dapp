@@ -20,6 +20,10 @@ module.exports = {
     browser: true,
     node: true,
   },
+  // vars in `global.d.ts`
+  globals: {
+    InputEventHandler: "readonly",
+  },
   overrides: [
     {
       files: ["*.svelte"],
@@ -48,6 +52,12 @@ module.exports = {
       {
         allowString: false,
         allowNumber: false,
+      },
+    ],
+    "@typescript-eslint/ban-ts-comment": [
+      2,
+      {
+        "ts-ignore": "allow-with-description",
       },
     ],
   },

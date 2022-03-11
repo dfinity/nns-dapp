@@ -4,12 +4,11 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     getProposalId,
-    getProposal,
+    loadProposal,
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
-  import { toastsStore } from "../lib/stores/toasts.store";
   import { AppPath } from "../lib/constants/routes.constants";
-  import type { NeuronInfo, ProposalId, ProposalInfo } from "@dfinity/nns";
+  import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
   import CastVoteCard from "../lib/components/proposal-detail/CastVoteCard.svelte";
@@ -44,32 +43,22 @@
       routeStore.replace({ path: AppPath.Proposals });
       return;
     }
-    const proposalId: ProposalId = proposalIdMaybe;
 
-    try {
-      const proposalInfoMaybe = await getProposal({
-        proposalId,
-        identity: $authStore.identity,
-      });
-
-      if (!proposalInfoMaybe) {
-        throw new Error("Proposal not found");
-      }
-      proposalInfo = proposalInfoMaybe;
-    } catch (error) {
+    const onError = () => {
       unsubscribe();
-      console.error(error);
-      toastsStore.show({
-        labelKey: "error.proposal_not_found",
-        level: "error",
-        detail: `id: "${proposalId}"`,
-      });
 
       // Wait a bit before redirection so the user recognizes on which page the error occures
       setTimeout(() => {
         routeStore.replace({ path: AppPath.Proposals });
       }, 1500);
-    }
+    };
+
+    await loadProposal({
+      proposalId: proposalIdMaybe,
+      identity: $authStore.identity,
+      setProposal: (proposal: ProposalInfo) => (proposalInfo = proposal),
+      handleError: onError,
+    });
   });
 
   onDestroy(unsubscribe);
@@ -92,9 +81,9 @@
     <section>
       {#if proposalInfo && neurons}
         <ProposalDetailCard {proposalInfo} />
-        <VotesCard {proposalInfo} />
+        <VotesCard {proposalInfo} {neurons} />
         <CastVoteCard {proposalInfo} {neurons} />
-        <IneligibleNeuronsCard {proposalInfo} />
+        <IneligibleNeuronsCard {proposalInfo} {neurons} />
       {:else}
         <Spinner />
       {/if}

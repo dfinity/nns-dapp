@@ -1,40 +1,49 @@
 <script lang="ts">
-  import type { NeuronId } from "@dfinity/nns";
+  import { NeuronState } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import Card from "../../components/ui/Card.svelte";
   import Spinner from "../../components/ui/Spinner.svelte";
-  import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "../../constants/constants";
+  import {
+    SECONDS_IN_EIGHT_YEARS,
+    SECONDS_IN_HALF_YEAR,
+  } from "../../constants/constants";
   import { updateDelay } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
+  import { formatICP } from "../../utils/icp.utils";
+  import { votingPower } from "../../utils/neuron.utils";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
 
-  export let neuronId: NeuronId;
+  export let neuron: NeuronInfo;
 
-  let EIGHT_YEARS = SECONDS_IN_YEAR * 8;
-  let SIX_MONTHS = (SECONDS_IN_DAY * 365) / 2;
   let delayInSeconds: number = 0;
   let loading: boolean = false;
 
   let backgroundStyle: string;
   $: {
-    const firstHalf: number = Math.round((delayInSeconds / EIGHT_YEARS) * 100);
+    const firstHalf: number = Math.round(
+      (delayInSeconds / SECONDS_IN_EIGHT_YEARS) * 100
+    );
     backgroundStyle = `linear-gradient(90deg, var(--background-contrast) ${firstHalf}%, var(--gray-200) ${
       1 - firstHalf
     }%)`;
   }
 
   let disableUpdate: boolean;
-  $: disableUpdate = delayInSeconds < SIX_MONTHS;
+  $: disableUpdate = delayInSeconds < SECONDS_IN_HALF_YEAR;
   const dispatcher = createEventDispatcher();
   const goToNext = (): void => {
     dispatcher("nnsNext");
   };
+  let neuronICP: bigint;
+  $: neuronICP = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
 
   const updateNeuron = async () => {
     loading = true;
     try {
       await updateDelay({
-        neuronId,
+        neuronId: neuron.neuronId,
         dissolveDelayInSeconds: delayInSeconds,
       });
       goToNext();
@@ -50,17 +59,24 @@
 <section>
   <div>
     <h5>{$i18n.neurons.neuron_id}</h5>
-    <p>{neuronId}</p>
+    <p>{neuron.neuronId}</p>
   </div>
   <div>
     <h5>{$i18n.neurons.neuron_balance}</h5>
-    <!-- TODO: Get Neuron info https://dfinity.atlassian.net/browse/L2-330 -->
-    <p>1.10 ICP Stake</p>
+    <p data-tid="neuron-stake">
+      {replacePlaceholders($i18n.neurons.icp_stake, {
+        $amount: formatICP(neuronICP),
+      })}
+    </p>
   </div>
   <div>
-    <h5>{$i18n.neurons.current_dissolve_delay}</h5>
-    <!-- TODO: Get Neuron info https://dfinity.atlassian.net/browse/L2-330 -->
-    <p>0</p>
+    {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
+      <h5>{$i18n.neurons.current_dissolve_delay}</h5>
+      <p class="duration">
+        {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons
+          .staked}
+      </p>
+    {/if}
   </div>
   <Card>
     <div slot="start">
@@ -70,15 +86,19 @@
     <div class="select-delay-container">
       <input
         min={0}
-        max={EIGHT_YEARS}
+        max={SECONDS_IN_EIGHT_YEARS}
         type="range"
         bind:value={delayInSeconds}
         style={`background-image: ${backgroundStyle};`}
       />
       <div class="details">
         <div>
-          <!-- TODO: Voting Power Calculation https://dfinity.atlassian.net/browse/L2-330 -->
-          <h5>1.26</h5>
+          <h5>
+            {votingPower({
+              stake: neuronICP,
+              dissolveDelayInSeconds: delayInSeconds,
+            }).toFixed(2)}
+          </h5>
           <p>{$i18n.neurons.voting_power}</p>
         </div>
         <div>

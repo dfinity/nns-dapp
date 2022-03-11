@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import ProposerModal from "../../modals/proposals/ProposerModal.svelte";
   import { i18n } from "../../stores/i18n";
 

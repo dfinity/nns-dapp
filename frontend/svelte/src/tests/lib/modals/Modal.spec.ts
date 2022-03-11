@@ -117,7 +117,7 @@ describe("Modal", () => {
       props: { ...props, showBackButton: true },
     });
 
-    component.$on("nnsClose", (e) => {
+    component.$on("nnsClose", () => {
       done();
     });
 
@@ -132,7 +132,7 @@ describe("Modal", () => {
       props: { visible: true, showBackButton: true },
     });
 
-    component.$on("nnsBack", (e) => {
+    component.$on("nnsBack", () => {
       done();
     });
 
