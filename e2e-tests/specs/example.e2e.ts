@@ -28,7 +28,7 @@ describe("landing page", () => {
 
     await waitForLoad(browser);
 
-    await browser.$("h1").waitForExist();
+    await browser.$("h8").waitForExist();
 
     // Wait for all images to be "complete", i.e. loaded
     browser.waitUntil(
@@ -55,7 +55,7 @@ describe("landing page", () => {
 
   // DO NOT RUN ON CI PIPELINE
   // TODO: Enable for CI Pipeline
-  it("register and back to dashboard", async () => {
+  xit("register and back to dashboard", async () => {
     await browser.url("/v2/");
 
     await waitForLoad(browser);
