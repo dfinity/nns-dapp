@@ -39,7 +39,7 @@
         beforeProposal: lastProposalId($proposalsStore),
         identity: $authStore.identity,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toastsStore.show({
         labelKey: "error.list_proposals",
         level: "error",
@@ -60,7 +60,7 @@
         clearBeforeQuery: !emptyProposals($proposalsStore),
         identity: $authStore.identity,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toastsStore.show({
         labelKey: "error.list_proposals",
         level: "error",

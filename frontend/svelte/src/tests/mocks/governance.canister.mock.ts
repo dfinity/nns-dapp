@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   GovernanceCanister,
   ICP,
@@ -14,7 +15,7 @@ import type { Principal } from "@dfinity/principal";
 import { neuronMock } from "./neurons.mock";
 
 // eslint-disable-next-line
-// @ts-ignore
+// @ts-ignore: test file
 export class MockGovernanceCanister extends GovernanceCanister {
   constructor(private proposals: ProposalInfo[]) {
     super();
@@ -39,9 +40,9 @@ export class MockGovernanceCanister extends GovernanceCanister {
   public getProposal = async ({
     proposalId,
   }: {
-    proposalId: any;
+    proposalId: bigint;
   }): Promise<ProposalInfo | undefined> => {
-    return { id: BigInt(404) } as unknown as ProposalInfo;
+    return this.proposals.find(({ id }) => id === proposalId);
   };
 
   public listNeurons = async ({

@@ -16,7 +16,7 @@
   const signIn = async () => {
     try {
       await authStore.signIn();
-    } catch (err: any) {
+    } catch (err: unknown) {
       toastsStore.show({
         labelKey: "error.sign_in",
         level: "error",

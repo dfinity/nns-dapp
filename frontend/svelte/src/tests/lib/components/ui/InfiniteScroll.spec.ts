@@ -15,10 +15,10 @@ import {
 import InfiniteScrollTest from "./InfiniteScrollTest.svelte";
 
 describe("InfiniteScroll", () => {
-  // @ts-ignore
+  // @ts-ignore: test file
   beforeAll(() => (global.IntersectionObserver = IntersectionObserverActive));
 
-  // @ts-ignore
+  // @ts-ignore: test file
   afterAll(() => (global.IntersectionObserver = IntersectionObserverPassive));
 
   it("should render a container", () => {

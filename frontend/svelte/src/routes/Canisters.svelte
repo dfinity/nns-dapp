@@ -20,7 +20,7 @@
         clearBeforeQuery: true,
         identity: $authStore.identity,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toastsStore.show({
         labelKey: "error.list_canisters",
         level: "error",

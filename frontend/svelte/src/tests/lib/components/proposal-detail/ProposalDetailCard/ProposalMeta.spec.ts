@@ -5,9 +5,8 @@
 import { Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import ProposalMeta from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalMeta.svelte";
+import * as en from "../../../../../lib/i18n/en.json";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
-
-const en = require("../../../../../lib/i18n/en.json");
 
 describe("ProposalMeta", () => {
   it("should render proposal url", () => {
