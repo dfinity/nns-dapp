@@ -13,7 +13,7 @@ import {
 } from "../mocks/auth.store.mock";
 
 describe("Canisters", () => {
-  let authStoreMock: jest.MockedFunction<any>;
+  let authStoreMock: jest.SpyInstance;
 
   const mockNNSDappCanister: NNSDappCanister = mock<NNSDappCanister>();
   mockNNSDappCanister.getCanisters = jest.fn().mockResolvedValue([]);

@@ -115,7 +115,7 @@ export const loadProposal = async ({
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
 }): Promise<void> => {
-  const catchError = (error: any) => {
+  const catchError = (error: unknown) => {
     console.error(error);
 
     toastsStore.show({
@@ -139,7 +139,7 @@ export const loadProposal = async ({
     }
 
     setProposal(proposal);
-  } catch (error: any) {
+  } catch (error: unknown) {
     catchError(error);
   }
 };

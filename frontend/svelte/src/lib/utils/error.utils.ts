@@ -1,4 +1,4 @@
-export const errorToString = (err?: any): string | undefined =>
+export const errorToString = (err?: unknown): string | undefined =>
   typeof err === "string"
     ? (err as string)
     : err instanceof Error

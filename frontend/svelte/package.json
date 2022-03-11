@@ -10,7 +10,7 @@
     "build": "rm -fr public/assets/assets && npm run i18n && rollup -c && npm run build:index",
     "dev": "npm run import-assets && npm run i18n && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
     "start": "sirv public",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "check": "svelte-check --tsconfig ./tsconfig.json && npm run lint",
     "lint": "eslint './src/**/*.{js,ts,svelte}'",
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "jest",
