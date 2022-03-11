@@ -1,7 +1,12 @@
 import type { Identity } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 import { writable } from "svelte/store";
+import { MILLISECONDS_IN_MINUTE } from "../constants/constants";
 import { identityServiceURL } from "../constants/identity.constants";
+import {
+  getTimeUntilSessionExpiryMs,
+  tryGetIdentity,
+} from "../utils/auth.utils";
 
 export interface AuthStore {
   identity: Identity | undefined | null;
@@ -30,15 +35,51 @@ const initAuthStore = () => {
     identity: undefined,
   });
 
+  // Source of type: https://stackoverflow.com/a/51040768
+  let expireSessionTimeout: ReturnType<typeof setTimeout> | undefined;
+  const signOut = async () => {
+    const authClient: AuthClient = await AuthClient.create();
+    if (expireSessionTimeout !== undefined) {
+      clearInterval(expireSessionTimeout);
+    }
+    await authClient.logout();
+
+    update((state: AuthStore) => ({
+      ...state,
+      identity: null,
+    }));
+  };
+
+  const setLogoutOnExpirationTimeout = (identity: Identity) => {
+    const durationUntilSessionExpiresMs = getTimeUntilSessionExpiryMs(identity);
+    if (
+      durationUntilSessionExpiresMs !== undefined &&
+      durationUntilSessionExpiresMs > MILLISECONDS_IN_MINUTE
+    ) {
+      console.log("setting timeout");
+      // Log the user out 1 minute before their session expires
+      expireSessionTimeout = setTimeout(
+        signOut,
+        durationUntilSessionExpiresMs - MILLISECONDS_IN_MINUTE
+      );
+    } else {
+      signOut();
+    }
+  };
+
   return {
     subscribe,
 
     sync: async () => {
       const authClient: AuthClient = await AuthClient.create();
       const isAuthenticated: boolean = await authClient.isAuthenticated();
+      const identity = isAuthenticated ? tryGetIdentity(authClient) : null;
+      if (identity) {
+        setLogoutOnExpirationTimeout(identity);
+      }
 
       set({
-        identity: isAuthenticated ? authClient.getIdentity() : null,
+        identity,
       });
     },
 
@@ -49,11 +90,14 @@ const initAuthStore = () => {
             identityProvider: identityServiceURL,
             maxTimeToLive: BigInt(30 * 60 * 1_000_000_000), // 30 minutes
             onSuccess: () => {
-              update((state: AuthStore) => ({
-                ...state,
-                identity: authClient.getIdentity(),
-              }));
-
+              const identity = tryGetIdentity(authClient);
+              if (identity) {
+                setLogoutOnExpirationTimeout(identity);
+                update((state: AuthStore) => ({
+                  ...state,
+                  identity,
+                }));
+              }
               resolve();
             },
             onError: reject,
@@ -61,16 +105,7 @@ const initAuthStore = () => {
         });
       }),
 
-    signOut: async () => {
-      const authClient: AuthClient = await AuthClient.create();
-
-      await authClient.logout();
-
-      update((state: AuthStore) => ({
-        ...state,
-        identity: null,
-      }));
-    },
+    signOut,
   };
 };
 

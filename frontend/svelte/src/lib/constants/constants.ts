@@ -4,6 +4,7 @@ export const LIST_PAGINATION_LIMIT: number = 100;
  */
 export const INFINITE_SCROLL_OFFSET: number = 0.2;
 export const SECONDS_IN_MINUTE = 60;
+export const MILLISECONDS_IN_MINUTE = SECONDS_IN_MINUTE * 1000;
 export const SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60;
 export const SECONDS_IN_DAY = SECONDS_IN_HOUR * 24;
 // Taking into account 1/4 of leap year
