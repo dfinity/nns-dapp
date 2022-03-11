@@ -95,7 +95,7 @@ wdio.stdout.on("close", (code) => {
 wdio.on('exit', (code, signal) => {
   if (code > 0) {
     // bubble up error from wdio tests
-    throw new Error('End-to-end tests failed');
+    throw new Error(`End-to-end tests returned with ${code}`);
   } else if (signal) {
     console.error('Child was killed with signal', signal);
   } else {
