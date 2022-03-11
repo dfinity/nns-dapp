@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { NeuronInfo, NeuronId } from "@dfinity/nns";
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import {
@@ -8,30 +7,23 @@
   } from "../../../utils/proposals.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
 
-  export let neurons: NeuronInfo[] = [];
+  let total: bigint;
 
-  let selectedIds: NeuronId[];
-  let total: bigint | undefined;
-
-  $: selectedIds = $votingNeuronSelectStore;
   $: total = selectedNeuronsVotingPover({
-    neurons,
-    selectedIds,
+    neurons: $votingNeuronSelectStore.neurons,
+    selectedIds: $votingNeuronSelectStore.selectedIds,
   });
-
-  // initially all neurons should be selected
-  votingNeuronSelectStore.set(neurons.map(({ neuronId }) => neuronId));
 
   const toggleSelection = (neuronId: bigint) =>
     votingNeuronSelectStore.toggleSelection(neuronId);
 </script>
 
 <ul>
-  {#each neurons as { neuronId, votingPower }}
+  {#each $votingNeuronSelectStore.neurons as { neuronId, votingPower }}
     <li>
       <Checkbox
         inputId={`${neuronId}`}
-        checked={selectedIds.includes(neuronId)}
+        checked={$votingNeuronSelectStore.selectedIds.includes(neuronId)}
         on:nnsChange={() => toggleSelection(neuronId)}
         theme="dark"
         text="block"

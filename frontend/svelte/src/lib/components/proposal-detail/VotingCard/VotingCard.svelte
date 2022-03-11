@@ -5,7 +5,6 @@
     ProposalStatus,
     notVotedNeurons as filterNotVotedNeurons,
     Vote,
-    NeuronId,
   } from "@dfinity/nns";
   import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
   import { listNeurons } from "../../../services/neurons.services";
@@ -24,24 +23,23 @@
   export let neurons: NeuronInfo[];
 
   let visible: boolean = false;
-  let notVotedNeurons: NeuronInfo[] = [];
-  let selectedIds: NeuronId[];
-  let total: bigint = 0n;
+  let total: bigint;
   let showConfirmationModal: boolean = false;
   let selectedVoteType: Vote = Vote.YES;
 
-  $: notVotedNeurons = filterNotVotedNeurons({
-    neurons,
-    proposal: proposalInfo,
-  });
+  $: votingNeuronSelectStore.set(
+    filterNotVotedNeurons({
+      neurons,
+      proposal: proposalInfo,
+    })
+  );
 
-  $: selectedIds = $votingNeuronSelectStore;
   $: total = selectedNeuronsVotingPover({
     neurons,
-    selectedIds,
+    selectedIds: $votingNeuronSelectStore.selectedIds,
   });
   $: visible =
-    notVotedNeurons.length > 0 &&
+    $votingNeuronSelectStore.neurons.length > 0 &&
     proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
 
   const showAdoptConfirmation = () => {
@@ -59,7 +57,7 @@
 
     try {
       const errors = await castVote({
-        neuronIds: $votingNeuronSelectStore,
+        neuronIds: $votingNeuronSelectStore.selectedIds,
         vote: selectedVoteType,
         proposalId: proposalInfo.id as bigint,
         identity: $authStore.identity,
@@ -100,7 +98,7 @@
       <span>{$i18n.proposal_detail__vote.voting_power}</span>
     </p>
 
-    <CastVoteCardNeuronSelect neurons={notVotedNeurons} />
+    <CastVoteCardNeuronSelect />
 
     <div role="toolbar">
       <button
