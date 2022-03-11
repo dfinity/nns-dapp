@@ -56,7 +56,6 @@ const initAuthStore = () => {
       durationUntilSessionExpiresMs !== undefined &&
       durationUntilSessionExpiresMs > MILLISECONDS_IN_MINUTE
     ) {
-      console.log("setting timeout");
       // Log the user out 1 minute before their session expires
       expireSessionTimeout = setTimeout(
         signOut,
@@ -73,14 +72,23 @@ const initAuthStore = () => {
     sync: async () => {
       const authClient: AuthClient = await AuthClient.create();
       const isAuthenticated: boolean = await authClient.isAuthenticated();
-      const identity = isAuthenticated ? tryGetIdentity(authClient) : null;
-      if (identity) {
-        setLogoutOnExpirationTimeout(identity);
+      if (!isAuthenticated) {
+        set({
+          identity: null,
+        });
+      } else {
+        const identity = tryGetIdentity(authClient);
+        if (identity === undefined) {
+          set({
+            identity: null,
+          });
+        } else {
+          setLogoutOnExpirationTimeout(identity);
+          set({
+            identity,
+          });
+        }
       }
-
-      set({
-        identity,
-      });
     },
 
     signIn: () =>
