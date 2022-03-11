@@ -2,8 +2,7 @@
 export const debounce = (func: Function, timeout?: number) => {
   let timer: NodeJS.Timer | undefined;
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  return (...args: any[]) => {
+  return (...args: unknown[]) => {
     const next = () => func(...args);
 
     if (timer) {
