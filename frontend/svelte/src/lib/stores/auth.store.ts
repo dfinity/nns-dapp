@@ -40,7 +40,7 @@ const initAuthStore = () => {
   const signOut = async () => {
     const authClient: AuthClient = await AuthClient.create();
     if (expireSessionTimeout !== undefined) {
-      clearInterval(expireSessionTimeout);
+      clearTimeout(expireSessionTimeout);
     }
     await authClient.logout();
 

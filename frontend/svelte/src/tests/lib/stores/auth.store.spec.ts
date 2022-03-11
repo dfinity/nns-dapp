@@ -29,6 +29,7 @@ describe("auth-store", () => {
     mockAuthClient.getIdentity.mockReturnValue(identity);
     jest.useFakeTimers();
     jest.spyOn(global, "setTimeout");
+    jest.spyOn(global, "clearTimeout");
     jest
       .spyOn(AuthClient, "create")
       .mockImplementation(async (): Promise<AuthClient> => mockAuthClient);
@@ -63,5 +64,6 @@ describe("auth-store", () => {
     await authStore.signOut();
 
     expect(spy).toHaveBeenCalled();
+    expect(clearTimeout).toHaveBeenCalled();
   });
 });
