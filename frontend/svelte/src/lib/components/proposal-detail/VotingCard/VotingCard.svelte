@@ -6,7 +6,6 @@
     notVotedNeurons as filterNotVotedNeurons,
     Vote,
   } from "@dfinity/nns";
-  import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
   import { listNeurons } from "../../../services/neurons.services";
   import { castVote } from "../../../services/proposals.services";
   import { authStore } from "../../../stores/auth.store";
@@ -14,18 +13,15 @@
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import { toastsStore } from "../../../stores/toasts.store";
-  import { selectedNeuronsVotingPover } from "../../../utils/proposals.utils";
   import { stringifyJson, uniqueObjects } from "../../../utils/utils";
   import Card from "../../ui/Card.svelte";
+  import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import CastVoteCardNeuronSelect from "./VotingNeuronSelect.svelte";
 
   export let proposalInfo: ProposalInfo;
   export let neurons: NeuronInfo[];
 
   let visible: boolean = false;
-  let total: bigint;
-  let showConfirmationModal: boolean = false;
-  let selectedVoteType: Vote = Vote.YES;
 
   $: votingNeuronSelectStore.set(
     filterNotVotedNeurons({
@@ -34,31 +30,17 @@
     })
   );
 
-  $: total = selectedNeuronsVotingPover({
-    neurons,
-    selectedIds: $votingNeuronSelectStore.selectedIds,
-  });
   $: visible =
     $votingNeuronSelectStore.neurons.length > 0 &&
     proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
 
-  const showAdoptConfirmation = () => {
-    selectedVoteType = Vote.YES;
-    showConfirmationModal = true;
-  };
-  const showRejectConfirmation = () => {
-    selectedVoteType = Vote.NO;
-    showConfirmationModal = true;
-  };
-  const cancelConfirmation = () => (showConfirmationModal = false);
-  const makeVote = async () => {
-    showConfirmationModal = false;
+  const vote = async ({ detail }: { detail: { voteType: Vote } }) => {
     busyStore.start("vote");
 
     try {
       const errors = await castVote({
         neuronIds: $votingNeuronSelectStore.selectedIds,
-        vote: selectedVoteType,
+        vote: detail.voteType,
         proposalId: proposalInfo.id as bigint,
         identity: $authStore.identity,
       });
@@ -99,33 +81,12 @@
     </p>
 
     <CastVoteCardNeuronSelect />
-
-    <div role="toolbar">
-      <button
-        disabled={total === 0n}
-        on:click={showAdoptConfirmation}
-        class="primary full-width">{$i18n.proposal_detail__vote.adopt}</button
-      >
-      <button
-        disabled={total === 0n}
-        on:click={showRejectConfirmation}
-        class="danger full-width">{$i18n.proposal_detail__vote.reject}</button
-      >
-    </div>
+    <VotingConfirmationToolbar on:nnsConfirm={vote} />
   </Card>
-  {#if showConfirmationModal}
-    <VoteConfirmationModal
-      on:nnsClose={cancelConfirmation}
-      on:nnsConfirm={makeVote}
-      voteType={selectedVoteType}
-      votingPower={total}
-    />
-  {/if}
 {/if}
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
-  @use "../../../themes/mixins/text";
 
   .headline {
     padding: calc(0.5 * var(--padding)) var(--padding)
@@ -145,12 +106,5 @@
         display: initial;
       }
     }
-  }
-
-  [role="toolbar"] {
-    margin-top: var(--padding);
-
-    display: flex;
-    gap: var(--padding);
   }
 </style>
