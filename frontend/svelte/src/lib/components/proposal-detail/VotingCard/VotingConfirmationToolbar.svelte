@@ -36,11 +36,13 @@
 
 <div role="toolbar">
   <button
+    data-tid="vote-yes"
     disabled={total === 0n}
     on:click={showAdoptConfirmation}
     class="primary full-width">{$i18n.proposal_detail__vote.adopt}</button
   >
   <button
+    data-tid="vote-no"
     disabled={total === 0n}
     on:click={showRejectConfirmation}
     class="danger full-width">{$i18n.proposal_detail__vote.reject}</button
