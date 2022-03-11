@@ -5,6 +5,7 @@ import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.cons
 import {
   proposalsFiltersStore,
   proposalsStore,
+  votingNeuronSelectStore,
 } from "../../../lib/stores/proposals.store";
 
 describe("proposals-store", () => {
@@ -118,6 +119,21 @@ describe("proposals-store", () => {
         ...DEFAULT_PROPOSALS_FILTERS,
         excludeVotedProposals: false,
       });
+    });
+  });
+
+  describe("votingNeuronSelectStore", () => {
+    it("should set neuronIds", () => {
+      votingNeuronSelectStore.set([BigInt(0), BigInt(1)]);
+      expect(get(votingNeuronSelectStore)).toEqual([BigInt(0), BigInt(1)]);
+    });
+
+    it("should toggle by neuronId", () => {
+      votingNeuronSelectStore.set([BigInt(0), BigInt(1)]);
+
+      votingNeuronSelectStore.toggleSelection(BigInt(1));
+      votingNeuronSelectStore.toggleSelection(BigInt(2));
+      expect(get(votingNeuronSelectStore)).toEqual([BigInt(0), BigInt(2)]);
     });
   });
 });

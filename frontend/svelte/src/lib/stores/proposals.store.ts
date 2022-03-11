@@ -1,4 +1,5 @@
 import type {
+  NeuronId,
   ProposalInfo,
   ProposalRewardStatus,
   ProposalStatus,
@@ -96,5 +97,26 @@ const initProposalsFiltersStore = () => {
   };
 };
 
+const initNeuronSelectionStore = () => {
+  const { subscribe, update, set } = writable<NeuronId[]>([]);
+
+  return {
+    subscribe,
+
+    toggleSelection(neuronId: NeuronId) {
+      update((ids: NeuronId[]) =>
+        ids.includes(neuronId)
+          ? ids.filter((id: NeuronId) => id !== neuronId)
+          : Array.from(new Set([...ids, neuronId]))
+      );
+    },
+
+    set(neuronIds: NeuronId[]) {
+      update(() => neuronIds);
+    },
+  };
+};
+
 export const proposalsStore = initProposalsStore();
 export const proposalsFiltersStore = initProposalsFiltersStore();
+export const votingNeuronSelectStore = initNeuronSelectionStore();
