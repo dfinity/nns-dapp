@@ -126,6 +126,7 @@ describe("landing page", () => {
 
     expect(titleText).toBe("Accounts");
 
+    // remove spinner to make screenshots deterministic
     const spinner = await browser.$('main section svg');
     await spinner.waitForExist();
     await browser.execute(() => document.querySelector('main section svg').remove());
