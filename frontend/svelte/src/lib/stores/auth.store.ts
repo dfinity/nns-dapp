@@ -43,20 +43,21 @@ const initAuthStore = () => {
     },
 
     signIn: () =>
-      new Promise<void>(async (resolve, reject) => {
-        const authClient: AuthClient = await AuthClient.create();
-        await authClient.login({
-          identityProvider: identityServiceURL,
-          maxTimeToLive: BigInt(30 * 60 * 1_000_000_000), // 30 minutes
-          onSuccess: () => {
-            update((state: AuthStore) => ({
-              ...state,
-              identity: authClient.getIdentity(),
-            }));
+      new Promise<void>((resolve, reject) => {
+        AuthClient.create().then((authClient: AuthClient) => {
+          authClient.login({
+            identityProvider: identityServiceURL,
+            maxTimeToLive: BigInt(30 * 60 * 1_000_000_000), // 30 minutes
+            onSuccess: () => {
+              update((state: AuthStore) => ({
+                ...state,
+                identity: authClient.getIdentity(),
+              }));
 
-            resolve();
-          },
-          onError: reject,
+              resolve();
+            },
+            onError: reject,
+          });
         });
       }),
 

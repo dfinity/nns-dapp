@@ -1,6 +1,8 @@
+/* eslint-disable-next-line @typescript-eslint/ban-types */
 export const debounce = (func: Function, timeout?: number) => {
   let timer: NodeJS.Timer | undefined;
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   return (...args: any[]) => {
     const next = () => func(...args);
 
