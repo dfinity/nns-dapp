@@ -126,6 +126,10 @@ describe("landing page", () => {
 
     expect(titleText).toBe("Accounts");
 
+    const spinner = await browser.$('main section svg');
+    await spinner.waitForExist();
+    await browser.execute(() => document.querySelector('main section svg').remove());
+
     await browser["screenshot"]("home-page");
     // TODO: Deploy Ledger and Governance canisters and proxy them
     // How do we do this when they are in another repo? Do we have a repository of docker images?
