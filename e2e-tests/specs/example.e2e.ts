@@ -120,11 +120,11 @@ describe("landing page", () => {
 
     // At this point it's still the login page
     // We wait for the header of the dashboard
-    await browser.$('[data-tid="accounts-route"]').waitForExist({ timeout: 20_000 });
-    const title = await browser.$("h1");
-    const titleText = await title.getText();
+    await browser.$('flt-glass-pane').waitForExist({ timeout: 20_000 });
+    // const title = await browser.$("h1");
+    // const titleText = await title.getText();
 
-    expect(titleText).toBe("Accounts");
+    // expect(titleText).toBe("Accounts");
 
     await browser["screenshot"]("home-page");
     // TODO: Deploy Ledger and Governance canisters and proxy them
