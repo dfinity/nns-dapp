@@ -12,10 +12,12 @@ const fs = require("fs");
  * Read the values from dfx.json and canister_ids.json
  */
 const CANISTER_IDS_PATH = `${__dirname}/../.dfx/local/canister_ids.json`;
-let canister_id;
+let nns_canister_id;
+let ii_canister_id;
 try {
   const canister_ids = JSON.parse(fs.readFileSync(CANISTER_IDS_PATH, "utf8"));
-  canister_id = canister_ids["nns-dapp"].local;
+  nns_canister_id = canister_ids["nns-dapp"].local;
+  ii_canister_id = canister_ids["internet_identity"].local;
 } catch (e) {
   console.log(
     `Could not read 'nns-dapp' local canister ID from ${CANISTER_IDS_PATH}`
@@ -23,7 +25,8 @@ try {
   throw e;
 }
 
-console.log(`Using canister ID: ${canister_id}`);
+console.log(`NNS Dapp using canister ID: ${nns_canister_id}`);
+console.log(`II using canister id: ${ii_canister_id}`);
 
 const DFX_JSON_PATH = `${__dirname}/../dfx.json`;
 let replica_host;
@@ -47,6 +50,8 @@ console.log(`Using replica host: ${replica_host}`);
  * hence we set it as the `NNS_DAPP_URL` environment variable which is read by
  * wdio.conf.js..
  */
+const II_PORT = 8087;
+const II_URL = `http://localhost:${II_PORT}`;
 const NNS_DAPP_PORT = 8086;
 const NNS_DAPP_URL = `http://localhost:${NNS_DAPP_PORT}`;
 
@@ -55,7 +60,8 @@ const child_process = require("child_process");
 const proxy = child_process.spawn("proxy", [
   "--replica-host",
   replica_host,
-  `${canister_id}:${NNS_DAPP_PORT}`,
+  `${nns_canister_id}:${NNS_DAPP_PORT}`,
+  `${ii_canister_id}:${II_PORT}`,
 ]);
 
 proxy.stdout.on("data", (data) => {
@@ -70,14 +76,29 @@ proxy.stdout.on("close", (code) => {
  * Start the tests
  */
 const wdio = child_process.spawn("npm", ["run", "wdio"], {
-  env: { ...process.env, NNS_DAPP_URL: NNS_DAPP_URL },
+  env: { ...process.env, NNS_DAPP_URL, II_URL },
 });
 
 wdio.stdout.on("data", (data) => {
   console.log(`wdio: ${data}`);
 });
 
+wdio.stderr.on("data", (data) => {
+  console.log(`wdio error: ${data}`);
+});
+
 wdio.stdout.on("close", (code) => {
   console.log(`wdio returned with ${code}`);
   proxy.kill();
 });
+
+wdio.on('exit', (code, signal) => {
+  if (code > 0) {
+    // bubble up error from wdio tests
+    throw new Error(`End-to-end tests returned with ${code}`);
+  } else if (signal) {
+    console.error('Child was killed with signal', signal);
+  } else {
+    console.log('Child exited okay');
+  }
+})
