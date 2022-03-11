@@ -7,6 +7,7 @@ import {
   proposalsStore,
   votingNeuronSelectStore,
 } from "../../../lib/stores/proposals.store";
+import { neuronMock } from "../../mocks/neurons.mock";
 
 describe("proposals-store", () => {
   describe("proposals", () => {
@@ -123,17 +124,37 @@ describe("proposals-store", () => {
   });
 
   describe("votingNeuronSelectStore", () => {
-    it("should set neuronIds", () => {
-      votingNeuronSelectStore.set([BigInt(0), BigInt(1)]);
-      expect(get(votingNeuronSelectStore)).toEqual([BigInt(0), BigInt(1)]);
+    const neurons = [
+      { ...neuronMock, neuronId: BigInt(0) },
+      { ...neuronMock, neuronId: BigInt(1) },
+      { ...neuronMock, neuronId: BigInt(2) },
+    ];
+
+    it("should set neurons", () => {
+      votingNeuronSelectStore.set(neurons);
+      expect(get(votingNeuronSelectStore).neurons).toEqual(neurons);
+    });
+
+    it("should select all on set", () => {
+      votingNeuronSelectStore.set(neurons);
+      expect(get(votingNeuronSelectStore).selectedIds).toEqual(
+        [0, 1, 2].map(BigInt)
+      );
     });
 
     it("should toggle by neuronId", () => {
-      votingNeuronSelectStore.set([BigInt(0), BigInt(1)]);
+      votingNeuronSelectStore.set([
+        { ...neuronMock, neuronId: BigInt(0) },
+        { ...neuronMock, neuronId: BigInt(1) },
+        { ...neuronMock, neuronId: BigInt(2) },
+      ]);
 
       votingNeuronSelectStore.toggleSelection(BigInt(1));
+      votingNeuronSelectStore.toggleSelection(BigInt(1));
       votingNeuronSelectStore.toggleSelection(BigInt(2));
-      expect(get(votingNeuronSelectStore)).toEqual([BigInt(0), BigInt(2)]);
+      expect(get(votingNeuronSelectStore).selectedIds).toEqual(
+        [0, 1].map(BigInt)
+      );
     });
   });
 });
