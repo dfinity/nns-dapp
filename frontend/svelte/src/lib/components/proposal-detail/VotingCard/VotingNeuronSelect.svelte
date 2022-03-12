@@ -18,6 +18,11 @@
     votingNeuronSelectStore.toggleSelection(neuronId);
 </script>
 
+<p class="headline">
+  <span>{$i18n.proposal_detail__vote.neurons}</span>
+  <span>{$i18n.proposal_detail__vote.voting_power}</span>
+</p>
+
 <ul>
   {#each $votingNeuronSelectStore.neurons as { neuronId, votingPower }}
     <li>
@@ -45,6 +50,26 @@
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
+
+  .headline {
+    padding: calc(0.5 * var(--padding)) var(--padding)
+      calc(0.5 * var(--padding)) calc(4.25 * var(--padding));
+    display: flex;
+    justify-content: space-between;
+
+    font-size: var(--font-size-h4);
+    color: var(--gray-200);
+    background: var(--gray-100-background);
+
+    // hide voting-power-headline because of the layout
+    :last-child {
+      display: none;
+
+      @include media.min-width(small) {
+        display: initial;
+      }
+    }
+  }
 
   ul {
     list-style: none;

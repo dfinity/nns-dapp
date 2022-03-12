@@ -3,8 +3,9 @@
     NeuronInfo,
     ProposalInfo,
     ProposalStatus,
-    notVotedNeurons as filterNotVotedNeurons,
     Vote,
+    notVotedNeurons,
+    ineligibleNeurons,
   } from "@dfinity/nns";
   import { listNeurons } from "../../../services/neurons.services";
   import { castVote } from "../../../services/proposals.services";
@@ -24,11 +25,36 @@
   let visible: boolean = false;
 
   $: votingNeuronSelectStore.set(
-    filterNotVotedNeurons({
+    notVotedNeurons({
       neurons,
       proposal: proposalInfo,
     })
   );
+
+  $: {
+    console.log(
+      "<Neurons>",
+      stringifyJson(neurons, { indentation: 2, devMode: true })
+    );
+    // console.log(
+    //   "proposalInfo",
+    //   stringifyJson(proposalInfo, { indentation: 2, devMode: true })
+    // );
+    console.log(
+      "notVotedNeurons",
+      notVotedNeurons({
+        neurons,
+        proposal: proposalInfo,
+      }).length
+    );
+    console.log(
+      "ineligibleNeurons",
+      ineligibleNeurons({
+        neurons,
+        proposal: proposalInfo,
+      }).length
+    );
+  }
 
   $: visible =
     $votingNeuronSelectStore.neurons.length > 0 &&
@@ -74,37 +100,10 @@
 {#if visible}
   <Card>
     <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
-
-    <p class="headline">
-      <span>{$i18n.proposal_detail__vote.neurons}</span>
-      <span>{$i18n.proposal_detail__vote.voting_power}</span>
-    </p>
-
     <CastVoteCardNeuronSelect />
     <VotingConfirmationToolbar on:nnsConfirm={vote} />
   </Card>
 {/if}
 
 <style lang="scss">
-  @use "../../../themes/mixins/media";
-
-  .headline {
-    padding: calc(0.5 * var(--padding)) var(--padding)
-      calc(0.5 * var(--padding)) calc(4.25 * var(--padding));
-    display: flex;
-    justify-content: space-between;
-
-    font-size: var(--font-size-h4);
-    color: var(--gray-200);
-    background: var(--gray-100-background);
-
-    // hide voting-power-headline because of the layout
-    :last-child {
-      display: none;
-
-      @include media.min-width(small) {
-        display: initial;
-      }
-    }
-  }
 </style>
