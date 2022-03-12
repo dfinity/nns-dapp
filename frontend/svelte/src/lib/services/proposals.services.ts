@@ -115,7 +115,7 @@ export const loadProposal = async ({
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
 }): Promise<void> => {
-  const catchError = (error: any) => {
+  const catchError = (error: unknown) => {
     console.error(error);
 
     toastsStore.show({
@@ -139,7 +139,7 @@ export const loadProposal = async ({
     }
 
     setProposal(proposal);
-  } catch (error: any) {
+  } catch (error: unknown) {
     catchError(error);
   }
 };
@@ -174,7 +174,7 @@ const queryProposal = async ({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.getProposal({ proposalId });
+  return governance.getProposal({ proposalId, certified: true });
 };
 
 export const getProposalId = (path: string): ProposalId | undefined => {

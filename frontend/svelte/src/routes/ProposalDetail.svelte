@@ -81,7 +81,7 @@
     <section>
       {#if proposalInfo && neurons}
         <ProposalDetailCard {proposalInfo} />
-        <VotesCard {proposalInfo} />
+        <VotesCard {proposalInfo} {neurons} />
         <VotingCard {proposalInfo} {neurons} />
         <IneligibleNeuronsCard {proposalInfo} {neurons} />
       {:else}

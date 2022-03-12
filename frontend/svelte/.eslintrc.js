@@ -20,6 +20,10 @@ module.exports = {
     browser: true,
     node: true,
   },
+  // vars in `global.d.ts`
+  globals: {
+    InputEventHandler: "readonly",
+  },
   overrides: [
     {
       files: ["*.svelte"],

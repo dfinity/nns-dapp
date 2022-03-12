@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { ProposalInfo, NeuronId } from "@dfinity/nns";
+  import type { ProposalInfo, NeuronId, NeuronInfo } from "@dfinity/nns";
   import { votedNeurons, Vote } from "@dfinity/nns";
   import Card from "../ui/Card.svelte";
   import { i18n } from "../../stores/i18n";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { formatNumber } from "../../utils/format.utils";
-  import { neuronsStore } from "../../stores/neurons.store";
   import IconThumbDown from "../../icons/IconThumbDown.svelte";
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
 
   export let proposalInfo: ProposalInfo;
+  export let neurons: NeuronInfo[];
 
   const { yes, no } = proposalInfo.latestTally || {};
   const yesValue = Number(yes) / E8S_PER_ICP;
@@ -29,7 +29,7 @@
 
   $: {
     neuronsVotedForProposal = votedNeurons({
-      neurons: $neuronsStore,
+      neurons,
       proposal: proposalInfo,
     })
       .map(({ neuronId, recentBallots, votingPower }) => ({

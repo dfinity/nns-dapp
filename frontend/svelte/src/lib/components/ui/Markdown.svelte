@@ -6,11 +6,13 @@
   export let text: string | undefined;
 
   // do not load the lib if available
+  /* eslint-disable-next-line no-undef */
   let parse: (string) => string | undefined = globalThis?.marked?.parse;
   let loading: boolean = parse === undefined;
 
   const onLoad = () => {
     loading = false;
+    /* eslint-disable-next-line no-undef */
     parse = globalThis?.marked?.parse;
   };
   const onError = () => {

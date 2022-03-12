@@ -32,7 +32,7 @@
       await getICPs(icps);
 
       reset();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       toastsStore.show({
         labelKey: "ICPs could not be transferred.",

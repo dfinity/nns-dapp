@@ -94,9 +94,11 @@ jobs:
           dfx start --background
           dfx canister --no-wallet create --all
 
+      # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
+      # REDIRECT_TO_LEGACY=never build and deploys only Svelte
       - name: Deploy
         run: |
-          DEPLOY_ENV=local dfx deploy --no-wallet --network local
+          REDIRECT_TO_LEGACY=never DEPLOY_ENV=local IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --no-wallet --network local --argument '(null)'
 
       - name: Build proxy
         working-directory: proxy
@@ -111,6 +113,7 @@ jobs:
 
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
+          set -o pipefail
           npm run test | tee -a wdio.log
 
       - name: Stop replica
