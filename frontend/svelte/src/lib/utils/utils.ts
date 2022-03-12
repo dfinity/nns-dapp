@@ -22,11 +22,17 @@ export const stringifyJson = (
   value,
   options?: {
     indentation?: number;
+    devMode?: boolean;
   }
 ): string =>
   JSON.stringify(
     value,
-    (key, value) => (typeof value === "bigint" ? value.toString() : value),
+    (key, value) =>
+      typeof value === "bigint"
+        ? options?.devMode !== undefined && options.devMode
+          ? `BigInt('${value.toString()}')`
+          : value.toString()
+        : value,
     options?.indentation ?? 0
   );
 
