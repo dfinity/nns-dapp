@@ -4,7 +4,6 @@
 
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import { get } from "svelte/store";
 import VotingNeuronSelect from "../../../../../lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
 import { E8S_PER_ICP } from "../../../../../lib/constants/icp.constants";
@@ -50,11 +49,6 @@ describe("VotingNeuronSelect", () => {
     const total = formatVotingPower(
       neurons[0].votingPower + neurons[1].votingPower + neurons[2].votingPower
     );
-
-    tick();
-    tick();
-    tick();
-
     expect(getByText(total)).toBeInTheDocument();
   });
 
