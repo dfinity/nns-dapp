@@ -20,6 +20,7 @@ import {
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
 import { createAgent } from "../utils/agent.utils";
+import { isNode } from "../utils/dev.utils";
 import { enumsExclude } from "../utils/enum.utils";
 import { stringifyJson, uniqueObjects } from "../utils/utils";
 import { listNeurons } from "./neurons.services";
@@ -218,7 +219,10 @@ export const registerVotes = async ({
       identity,
     });
   } catch (error) {
-    console.error("vote unknown:", error);
+    if (!isNode()) {
+      // preserve in unit-test
+      console.error("vote unknown:", error);
+    }
     toastsStore.show({
       labelKey: "error.register_vote_unknown",
       level: "error",
@@ -259,16 +263,24 @@ const requestRegisterVotes = async ({
   );
 
   // show only uqique error messages
-  const errorDetails = uniqueObjects(errors.filter(Boolean))
-    .map((error) => stringifyJson(error?.errorMessage, { indentation: 2 }))
+  const errorDetails: string = uniqueObjects(errors.filter(Boolean))
+    .map((error) =>
+      typeof error?.errorMessage === "string" && error.errorMessage.length > 0
+        ? stringifyJson(error?.errorMessage, { indentation: 2 })
+        : ""
+    )
+    .filter(Boolean)
     .join("\n");
 
-  if (errorDetails.length > 0) {
-    console.error("vote:", errorDetails);
+  if (errors.length > 0) {
+    if (!isNode()) {
+      // avoid in unit-test
+      console.error("vote:", errorDetails);
+    }
     toastsStore.show({
       labelKey: "error.register_vote",
       level: "error",
-      detail: `\n${errorDetails}`,
+      detail: errorDetails.length > 0 ? `\n${errorDetails}` : undefined,
     });
   }
 };
