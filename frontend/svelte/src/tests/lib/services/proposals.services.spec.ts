@@ -71,14 +71,16 @@ describe("proposals-services", () => {
     });
   });
 
-  describe("load from store", () => {
+  describe("load", () => {
     const spyQueryProposals = jest
       .spyOn(api, "queryProposals")
       .mockImplementation(() => Promise.resolve(mockProposals));
 
     const spyQueryProposal = jest
       .spyOn(api, "queryProposal")
-      .mockImplementation(() => Promise.resolve(mockProposals[0]));
+      .mockImplementation(() =>
+        Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
+      );
 
     beforeAll(() => proposalsStore.setProposals(mockProposals));
 
@@ -98,12 +100,29 @@ describe("proposals-services", () => {
       });
     });
 
-    it("should not call listProposals if not in the store", (done) => {
+    it("should not call listProposals if in the store", (done) => {
       loadProposal({
         proposalId: mockProposals[0].id as bigint,
         identity: mockIdentity,
         setProposal: () => {
           expect(spyQueryProposals).not.toBeCalled();
+          done();
+        },
+      });
+    });
+
+    it("should call the canister to get proposalInfo if not in store", (done) => {
+      loadProposal({
+        proposalId: BigInt(666),
+        identity: mockIdentity,
+        setProposal: (proposal: ProposalInfo) => {
+          expect(proposal?.id).toBe(BigInt(666));
+          expect(spyQueryProposal).toBeCalledTimes(1);
+          expect(spyQueryProposal).toBeCalledWith({
+            proposalId: BigInt(666),
+            identity: mockIdentity,
+          });
+
           done();
         },
       });
@@ -140,31 +159,6 @@ describe("proposals-services", () => {
       expect(getProposalId("/#/proposal/123n")).toBeUndefined();
     });
   });
-
-  // describe("load", () => {
-  //   const spyQueryProposal = jest
-  //     .spyOn(api, "queryProposal")
-  //     .mockImplementation(() => Promise.resolve(mockProposals[0]));
-  //
-  //   afterAll(() => proposalsStore.setProposals([]));
-  //
-  //   it("should call the canister to get proposalInfo", (done) => {
-  //     loadProposal({
-  //       proposalId: BigInt(404),
-  //       identity: mockIdentity,
-  //       setProposal: (proposal: ProposalInfo) => {
-  //         expect(proposal?.id).toBe(mockProposals[0].id);
-  //         expect(spyQueryProposal).toBeCalledTimes(1);
-  //         expect(spyQueryProposal).toBeCalledWith({
-  //           proposalId: mockProposals[0].id,
-  //           certified: true,
-  //         });
-  //
-  //         done();
-  //       },
-  //     });
-  //   });
-  // });
 
   describe("castVote", () => {
     const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
