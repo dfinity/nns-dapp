@@ -18,6 +18,7 @@ export const debounce = (func: Function, timeout?: number) => {
 
 /**
  * Transform bigint to string to avoid serialization error.
+ * devMode transforms 123n -> "BigInt(123)"
  */
 export const stringifyJson = (
   value,
