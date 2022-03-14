@@ -26,7 +26,7 @@
   }
   let stateStep = new StepsState<typeof Steps>(Steps);
 
-  // TODO: Get all the accounts and be able to select one.
+  // TODO: Get all the accounts and be able to select one https://dfinity.atlassian.net/browse/L2-322
   let selectedAccount: Account | undefined;
   const unsubscribeAccounts: Unsubscriber = accountsStore.subscribe(
     (accountStore) => {
@@ -36,8 +36,13 @@
 
   let newNeuron: NeuronInfo | undefined;
   let dissolveDelayInSeconds: number | undefined;
+  let showBackButton: boolean;
+  $: showBackButton =
+    currentStep === Steps.StakeNeuron ||
+    currentStep === Steps.ConfirmDisseolveDelay;
 
   const chooseAccount = () => {
+    // TODO: Stake Neurons From subaccounts https://dfinity.atlassian.net/browse/L2-322
     stateStep = stateStep.next();
   };
   const goBack = () => {
@@ -86,7 +91,7 @@
   on:nnsClose
   theme="dark"
   size="medium"
-  showBackButton={currentStep === Steps.StakeNeuron}
+  {showBackButton}
   on:nnsBack={goBack}
 >
   <span slot="title">{$i18n.neurons?.[titleKey]}</span>
