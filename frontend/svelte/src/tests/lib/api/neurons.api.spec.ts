@@ -1,8 +1,8 @@
 import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import {
-  queryNeuron,
   increaseDissolveDelay,
+  queryNeuron,
   queryNeurons,
   stakeNeuron,
 } from "../../../lib/api/neurons.api";

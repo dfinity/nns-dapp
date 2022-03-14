@@ -1,8 +1,8 @@
 import type { Identity } from "@dfinity/agent";
 import { ICP, NeuronId, NeuronInfo } from "@dfinity/nns";
 import {
-  queryNeuron,
   increaseDissolveDelay,
+  queryNeuron,
   queryNeurons,
   stakeNeuron,
 } from "../api/neurons.api";
