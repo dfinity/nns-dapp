@@ -26,7 +26,7 @@ import {
 jest.mock("../../../lib/services/neurons.services", () => {
   return {
     // need to return the same neuron id as mockNeuron.neuronId
-    stakeNeuron: jest.fn().mockResolvedValue(BigInt(1)),
+    stakeAndLoadNeuron: jest.fn().mockResolvedValue(BigInt(1)),
     updateDelay: jest.fn().mockResolvedValue(undefined),
     loadNeuron: jest.fn().mockResolvedValue(undefined),
   };
