@@ -3,19 +3,28 @@
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { getNeuron } from "../../services/neurons.services";
+  import { getNeuron } from "../../api/neurons.api";
   import Spinner from "../../components/ui/Spinner.svelte";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import { onMount } from "svelte";
   import VotingHistoryCard from "../../components/neurons/VotingHistoryCard.svelte";
+  import { authStore } from "../../stores/auth.store";
 
   export let proposer: NeuronId;
   let neuron: NeuronInfo | undefined;
 
   onMount(async () => {
+    if (!$authStore.identity) {
+      toastsStore.show({ labelKey: "error.missing_identity", level: "error" });
+      return;
+    }
+
     try {
-      neuron = await getNeuron(proposer);
+      neuron = await getNeuron({
+        neuronId: proposer,
+        identity: $authStore.identity,
+      });
     } catch (err) {
       neuron = undefined;
 

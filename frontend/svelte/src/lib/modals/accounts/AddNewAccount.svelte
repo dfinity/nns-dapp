@@ -10,7 +10,7 @@
   } from "../../canisters/nns-dapp/nns-dapp.errors";
   import { toastsStore } from "../../stores/toasts.store";
   import { errorToString } from "../../utils/error.utils";
-  import {authStore} from '../../stores/auth.store';
+  import { authStore } from "../../stores/auth.store";
 
   let newAccountName: string = "";
 
@@ -19,7 +19,10 @@
   const createNewAccount = async () => {
     try {
       creating = true;
-      await addSubAccount({name: newAccountName, identity: $authStore.identity});
+      await addSubAccount({
+        name: newAccountName,
+        identity: $authStore.identity,
+      });
       dispatcher("nnsClose");
     } catch (err) {
       const labelKey =

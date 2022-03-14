@@ -1,139 +1,98 @@
-// API calls with a scope wider than one canister:
-// - calls that require multiple canisters.
-// - calls that require additional systems such as hardware wallets.
-
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Identity } from "@dfinity/agent";
+import { ICP, NeuronId, NeuronInfo } from "@dfinity/nns";
 import {
-  GovernanceCanister,
-  ICP,
-  LedgerCanister,
-  NeuronId,
-  NeuronInfo,
-  StakeNeuronError,
-} from "@dfinity/nns";
-import { get } from "svelte/store";
-import {
-  GOVERNANCE_CANISTER_ID,
-  LEDGER_CANISTER_ID,
-} from "../constants/canister-ids.constants";
+  getNeuron,
+  increaseDissolveDelay,
+  queryNeurons,
+  stakeNeuron,
+} from "../api/neurons.api";
 import { E8S_PER_ICP } from "../constants/icp.constants";
-import { AuthStore, authStore } from "../stores/auth.store";
 import { neuronsStore } from "../stores/neurons.store";
-import { createAgent } from "../utils/agent.utils";
-
-export const getNeuron = async (
-  neuronId: NeuronId
-): Promise<NeuronInfo | undefined> => {
-  const { canister, identity } = await governanceCanister();
-
-  return canister.getNeuron({
-    certified: true,
-    principal: identity.getPrincipal(),
-    neuronId,
-  });
-};
 
 /**
  * Uses governance and ledger canisters to create a neuron and adds it to the store
  *
  * TODO: L2-322 Create neurons from subaccount
  */
-export const stakeNeuron = async ({
-  stake,
+export const stakeAndLoadNeuron = async ({
+  amount,
+  identity,
 }: {
-  stake: ICP;
+  amount: number;
+  identity: Identity | null | undefined;
 }): Promise<NeuronId> => {
+  const stake = ICP.fromString(String(amount));
+
+  if (!(stake instanceof ICP)) {
+    throw new Error(`Amount ${amount} is not valid`);
+  }
+
   if (stake.toE8s() < E8S_PER_ICP) {
     throw new Error("Need a minimum of 1 ICP to stake a neuron");
   }
 
-  const { canister, identity, agent } = await governanceCanister();
-
-  const ledgerCanister: LedgerCanister = LedgerCanister.create({
-    agent,
-    canisterId: LEDGER_CANISTER_ID,
-  });
-
-  const response = await canister.stakeNeuron({
-    stake,
-    principal: identity.getPrincipal(),
-    ledgerCanister,
-  });
-
-  if (response instanceof StakeNeuronError) {
-    throw response;
+  if (!identity) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
+    throw new Error("No identity");
   }
 
-  await loadNeuron(response);
+  const neuronId: NeuronId = await stakeNeuron({ stake, identity });
 
-  return response;
+  await loadNeuron({ neuronId, identity });
+
+  return neuronId;
 };
 
 // Gets neurons and adds them to the store
-export const listNeurons = async (): Promise<void> => {
-  const { canister, identity } = await governanceCanister();
-
-  const neurons = await canister.listNeurons({
-    certified: true,
-    principal: identity.getPrincipal(),
-  });
-  neuronsStore.setNeurons(neurons);
-};
-
-export const loadNeuron = async (neuronId: NeuronId): Promise<void> => {
-  const neuron = await getNeuron(neuronId);
-
-  // TODO: Manage errors and edge cases: https://dfinity.atlassian.net/browse/L2-329
-  if (neuron) {
-    neuronsStore.pushNeurons([neuron]);
-  }
-};
-
-export const updateDelay = async ({
-  neuronId,
-  dissolveDelayInSeconds,
+export const listNeurons = async ({
+  identity,
 }: {
-  neuronId: NeuronId;
-  dissolveDelayInSeconds: number;
+  identity: Identity | null | undefined;
 }): Promise<void> => {
-  const { canister } = await governanceCanister();
-
-  const response = await canister.increaseDissolveDelay({
-    neuronId,
-    additionalDissolveDelaySeconds: dissolveDelayInSeconds,
-  });
-
-  if ("Err" in response) {
-    throw response.Err;
-  }
-
-  await loadNeuron(neuronId);
-};
-
-// TODO: Apply pattern to other canister instantiation L2-371
-const governanceCanister = async (): Promise<{
-  canister: GovernanceCanister;
-  identity: Identity;
-  agent: HttpAgent;
-}> => {
-  const { identity }: AuthStore = get(authStore);
-
   if (!identity) {
     // TODO: https://dfinity.atlassian.net/browse/L2-346
     throw new Error("No identity found listing neurons");
   }
 
-  const agent: HttpAgent = await createAgent({
+  const neurons: NeuronInfo[] = await queryNeurons({ identity });
+  neuronsStore.setNeurons(neurons);
+};
+
+export const updateDelay = async ({
+  neuronId,
+  dissolveDelayInSeconds,
+  identity,
+}: {
+  neuronId: NeuronId;
+  dissolveDelayInSeconds: number;
+  identity: Identity | null | undefined;
+}): Promise<void> => {
+  if (!identity) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
+    throw new Error("No identity found listing neurons");
+  }
+
+  await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
+
+  await loadNeuron({ neuronId, identity });
+};
+
+const loadNeuron = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  const neuron: NeuronInfo | undefined = await getNeuron({
+    neuronId,
     identity,
-    host: process.env.HOST,
   });
 
-  return {
-    canister: GovernanceCanister.create({
-      agent,
-      canisterId: GOVERNANCE_CANISTER_ID,
-    }),
-    identity,
-    agent,
-  };
+  // TODO: Manage errors and edge cases: https://dfinity.atlassian.net/browse/L2-329
+  if (!neuron) {
+    return;
+  }
+
+  neuronsStore.pushNeurons([neuron]);
 };

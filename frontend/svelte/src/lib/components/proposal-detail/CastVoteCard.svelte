@@ -76,7 +76,7 @@
         proposalId: proposalInfo.id as bigint,
         identity: $authStore.identity,
       });
-      await listNeurons();
+      await listNeurons({ identity: $authStore.identity });
 
       // show one error message per UNIQ erroneous response
       const errorDetails = uniqueObjects(errors.filter(Boolean))
