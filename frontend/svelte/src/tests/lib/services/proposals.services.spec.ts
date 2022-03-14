@@ -275,41 +275,5 @@ describe("proposals-services", () => {
       });
       expect(spyOnListNeurons).toBeCalledTimes(1);
     });
-
-    // old
-
-    // it("should call the canister to cast vote neuronIds count", async () => {
-    //   await registerVotes({
-    //     neuronIds,
-    //     proposalId,
-    //     vote: Vote.YES,
-    //     identity,
-    //   });
-    //   expect(spyRegisterVote).toHaveReturnedTimes(3);
-    // });
-
-    // it("should return list of undefined on successful update", async () => {
-    //   const results = await registerVotes({
-    //     neuronIds,
-    //     proposalId,
-    //     vote: Vote.YES,
-    //     identity,
-    //   });
-    //   expect(results).toEqual([undefined, undefined, undefined]);
-    // });
-
-    // it("should return list of unwrapped errors on update fail", async () => {
-    //   const results = await registerVotes({
-    //     neuronIds,
-    //     proposalId,
-    //     vote: Vote.NO,
-    //     identity,
-    //   });
-    //   expect(results).toEqual([
-    //     { errorMessage: "error", errorType: 0 },
-    //     { errorMessage: "error", errorType: 0 },
-    //     { errorMessage: "error", errorType: 0 },
-    //   ]);
-    // });
   });
 });
