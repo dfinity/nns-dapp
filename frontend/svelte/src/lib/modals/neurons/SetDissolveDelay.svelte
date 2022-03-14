@@ -107,7 +107,7 @@
       class="primary full-width"
       disabled={disableUpdate || loading}
       on:click={goToConfirmation}
-      data-tid="update-button"
+      data-tid="go-confirm-delay-button"
     >
       {#if loading}
         <Spinner />

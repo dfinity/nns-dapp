@@ -34,7 +34,7 @@
   };
 </script>
 
-<section>
+<section data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
     <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
   </div>
