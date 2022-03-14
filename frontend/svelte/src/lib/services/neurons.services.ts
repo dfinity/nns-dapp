@@ -69,7 +69,7 @@ export const updateDelay = async ({
 }): Promise<void> => {
   if (!identity) {
     // TODO: https://dfinity.atlassian.net/browse/L2-346
-    throw new Error("No identity found listing neurons");
+    throw new Error("No identity");
   }
 
   await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
