@@ -28,4 +28,10 @@ export class StepsState<EnumType> {
     }
     return this;
   }
+
+  public set(newStep: number): StepsState<EnumType> {
+    this.previousStep = this.currentStep;
+    this.currentStep = newStep;
+    return this;
+  }
 }

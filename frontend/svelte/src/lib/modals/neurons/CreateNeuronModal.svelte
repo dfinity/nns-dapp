@@ -14,11 +14,15 @@
   import type { NeuronId } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
   import { neuronsStore } from "../../stores/neurons.store";
+  import ConfirmDissolveDelay from "./ConfirmDissolveDelay.svelte";
+  import EditFollowNeurons from "./EditFollowNeurons.svelte";
 
   enum Steps {
     SelectAccount,
     StakeNeuron,
     SetDissolveDelay,
+    ConfirmDisseolveDelay,
+    EditFolloNeurons,
   }
   let stateStep = new StepsState<typeof Steps>(Steps);
 
@@ -31,12 +35,16 @@
   );
 
   let newNeuron: NeuronInfo | undefined;
+  let dissolveDelayInSeconds: number | undefined;
 
   const chooseAccount = () => {
     stateStep = stateStep.next();
   };
   const goBack = () => {
     stateStep = stateStep.back();
+  };
+  const goNext = () => {
+    stateStep = stateStep.next();
   };
   const goToDissolveDelay = ({
     detail,
@@ -45,6 +53,15 @@
       ({ neuronId }) => neuronId === detail.neuronId
     );
     stateStep = stateStep.next();
+  };
+  const goConfirmDelay = ({
+    detail,
+  }: CustomEvent<{ delayInSeconds: number }>) => {
+    dissolveDelayInSeconds = detail.delayInSeconds;
+    stateStep = stateStep.next();
+  };
+  const goEditFollowers = () => {
+    stateStep = stateStep.set(Steps.EditFolloNeurons);
   };
 
   onDestroy(unsubscribeAccounts);
@@ -58,14 +75,11 @@
     "0": "select_source",
     "1": "stake_neuron",
     "2": "set_dissolve_delay",
+    "3": "confirm_dissolve_delay",
+    "4": "follow_neurons_screen",
   };
   let titleKey: string = titleMapper[0];
   $: titleKey = titleMapper[currentStep];
-
-  const dispatcher = createEventDispatcher();
-  const close = () => {
-    dispatcher("nnsClose");
-  };
 </script>
 
 <Modal
@@ -98,8 +112,30 @@
     <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
     {#if currentStep === Steps.SetDissolveDelay && newNeuron}
       <Transition {diff}>
+        <SetDissolveDelay
+          neuron={newNeuron}
+          on:nnsSkipDelay={goEditFollowers}
+          on:nnsConfirmDelay={goConfirmDelay}
+        />
+      </Transition>
+    {/if}
+    <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
+    {#if currentStep === Steps.ConfirmDisseolveDelay && newNeuron && dissolveDelayInSeconds}
+      <Transition {diff}>
         <!-- TODO: Edit Followees https://dfinity.atlassian.net/browse/L2-337 -->
-        <SetDissolveDelay neuron={newNeuron} on:nnsNext={close} />
+        <ConfirmDissolveDelay
+          neuron={newNeuron}
+          delayInSeconds={dissolveDelayInSeconds}
+          on:back={goBack}
+          on:nnsNext={goNext}
+        />
+      </Transition>
+    {/if}
+    <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
+    {#if currentStep === Steps.EditFolloNeurons}
+      <Transition {diff}>
+        <!-- TODO: Edit Followees https://dfinity.atlassian.net/browse/L2-337 -->
+        <EditFollowNeurons />
       </Transition>
     {/if}
   </main>
