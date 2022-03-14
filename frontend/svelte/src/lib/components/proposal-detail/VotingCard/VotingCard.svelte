@@ -6,6 +6,7 @@
     Vote,
     notVotedNeurons,
   } from "@dfinity/nns";
+  import { onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
   import { authStore } from "../../../stores/auth.store";
   import { i18n } from "../../../stores/i18n";
@@ -36,6 +37,8 @@
       proposalId: proposalInfo.id as bigint,
       identity: $authStore.identity,
     });
+
+  onDestroy(() => votingNeuronSelectStore.reset());
 </script>
 
 {#if visible}

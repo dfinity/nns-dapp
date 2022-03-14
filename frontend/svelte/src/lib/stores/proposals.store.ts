@@ -119,6 +119,10 @@ const initNeuronSelectionStore = () => {
       });
     },
 
+    reset() {
+      this.set([]);
+    },
+
     toggleSelection(neuronId: NeuronId) {
       update(({ neurons, selectedIds }) => ({
         neurons,
