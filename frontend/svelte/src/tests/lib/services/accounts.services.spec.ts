@@ -1,17 +1,19 @@
+import { get } from "svelte/store";
 import * as api from "../../../lib/api/accounts.api";
 import {
   addSubAccount,
   syncAccounts,
 } from "../../../lib/services/accounts.services";
+import { accountsStore } from "../../../lib/stores/accounts.store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 
 describe("accounts-services", () => {
+  const mockAccounts = { main: mockMainAccount, subAccounts: [] };
+
   const spyLoadAccounts = jest
     .spyOn(api, "loadAccounts")
-    .mockImplementation(() =>
-      Promise.resolve({ main: mockMainAccount, subAccounts: [] })
-    );
+    .mockImplementation(() => Promise.resolve(mockAccounts));
 
   const spyCreateSubAccount = jest
     .spyOn(api, "createSubAccount")
@@ -21,6 +23,9 @@ describe("accounts-services", () => {
     await syncAccounts({ identity: mockIdentity });
 
     expect(spyLoadAccounts).toHaveBeenCalled();
+
+    const accounts = get(accountsStore);
+    expect(accounts).toEqual(mockAccounts);
   });
 
   it("should add a subaccount", async () => {
