@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import { GovernanceError, ProposalInfo, Vote } from "@dfinity/nns";
+import { GovernanceError, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
 import {
@@ -7,7 +7,6 @@ import {
   getProposalId,
   listNextProposals,
   listProposals,
-  loadProposal,
 } from "../../../lib/services/proposals.services";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -24,11 +23,13 @@ describe("proposals-services", () => {
       .mockImplementation(() => Promise.resolve(mockProposals[0]));
 
     const spySetProposals = jest.spyOn(proposalsStore, "setProposals");
+    const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
 
     afterEach(() => {
       proposalsStore.setProposals([]);
 
       spySetProposals.mockClear();
+      spyPushProposals.mockClear();
     });
 
     it("should call the canister to list proposals", async () => {
@@ -63,13 +64,11 @@ describe("proposals-services", () => {
     });
 
     it("should push new proposals to the list", async () => {
-      const spy = jest.spyOn(proposalsStore, "pushProposals");
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
         identity: mockIdentity,
       });
-      expect(spy).toHaveBeenCalledTimes(1);
-      spy.mockClear();
+      expect(spyPushProposals).toHaveBeenCalledTimes(1);
     });
 
     // it("should get proposalInfo from proposals store if presented", (done) => {
@@ -100,23 +99,23 @@ describe("proposals-services", () => {
     // });
   });
 
-  // describe("empty list", () => {
-  //   jest
-  //     .spyOn(api, "queryProposals")
-  //     .mockImplementation(() => Promise.resolve([]));
-  //
-  //   afterAll(() => proposalsStore.setProposals([]));
-  //
-  //   it("should not push empty proposals to the list", async () => {
-  //     const spy = jest.spyOn(proposalsStore, "pushProposals");
-  //     await listNextProposals({
-  //       beforeProposal: mockProposals[mockProposals.length - 1].id,
-  //       identity: mockIdentity,
-  //     });
-  //     expect(spy).toHaveBeenCalledTimes(0);
-  //     spy.mockClear();
-  //   });
-  // });
+  describe("empty list", () => {
+    afterAll(() => proposalsStore.setProposals([]));
+
+    it("should not push empty proposals to the list", async () => {
+      jest
+        .spyOn(api, "queryProposals")
+        .mockImplementation(() => Promise.resolve([]));
+
+      const spy = jest.spyOn(proposalsStore, "pushProposals");
+      await listNextProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        identity: mockIdentity,
+      });
+      expect(spy).toHaveBeenCalledTimes(0);
+      spy.mockClear();
+    });
+  });
 
   describe("details", () => {
     it("should get proposalId from valid path", async () => {
