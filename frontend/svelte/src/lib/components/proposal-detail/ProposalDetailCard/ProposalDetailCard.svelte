@@ -25,7 +25,9 @@
 
 <Card>
   <h2 slot="start" {title}>{title}</h2>
-  <Badge slot="end" {color}>{$i18n.status[ProposalStatus[status]]}</Badge>
+  <Badge slot="end" {color}
+    ><h2 class="status">{$i18n.status[ProposalStatus[status]]}</h2></Badge
+  >
   <ProposalSummary {proposal} />
   <ProposalMeta {proposalInfo} />
   <ProposalActions {proposal} />
@@ -45,5 +47,9 @@
       padding-right: var(--padding);
       font-size: var(--font-size-h3);
     }
+  }
+
+  .status {
+    color: inherit;
   }
 </style>
