@@ -7,7 +7,7 @@
   $: clickable = role !== undefined ? ["button", "link"].includes(role) : false;
 </script>
 
-<article {role} on:click class:clickable aria-label={ariaLabel}>
+<article data-tid="card" {role} on:click class:clickable aria-label={ariaLabel}>
   <div>
     <slot name="start" />
     <slot name="end" />
