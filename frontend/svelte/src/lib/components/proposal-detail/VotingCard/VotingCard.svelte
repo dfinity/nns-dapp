@@ -30,8 +30,8 @@
     $votingNeuronSelectStore.neurons.length > 0 &&
     proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
 
-  const vote = ({ detail }: { detail: { voteType: Vote } }) =>
-    registerVotes({
+  const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
+    await registerVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds,
       vote: detail.voteType,
       proposalId: proposalInfo.id as bigint,
