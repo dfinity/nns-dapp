@@ -71,4 +71,16 @@ describe("StepsState", () => {
     expect(setpsState.currentStep).toBe(0);
     expect(setpsState.previousStep).toBe(0);
   });
+
+  it("it should be able to set to a specific step", async () => {
+    const setpsState = new StepsState(Steps);
+
+    expect(setpsState.currentStep).toBe(0);
+    expect(setpsState.previousStep).toBe(0);
+
+    setpsState.set(Steps.ThirdStep);
+
+    expect(setpsState.currentStep).toBe(2);
+    expect(setpsState.previousStep).toBe(0);
+  });
 });

@@ -6,7 +6,7 @@
 
 <!-- Display spinner and lock UI if busyStore is not empty -->
 {#if $busyStore.size > 0}
-  <div transition:fade>
+  <div data-tid="busy" transition:fade>
     <Spinner />
   </div>
 {/if}
