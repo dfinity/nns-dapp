@@ -2,7 +2,7 @@ import { Neuron, NeuronInfo, NeuronState } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 import type { NeuronsStore } from "../../lib/stores/neurons.store";
 
-export const fullNeuronMock: Neuron = {
+export const mockFullNeuron: Neuron = {
   id: BigInt(1),
   isCurrentUserController: true,
   controller: undefined,
@@ -21,7 +21,7 @@ export const fullNeuronMock: Neuron = {
   followees: [],
 };
 
-export const neuronMock: NeuronInfo = {
+export const mockNeuron: NeuronInfo = {
   neuronId: BigInt(1),
   dissolveDelaySeconds: BigInt(11111),
   recentBallots: [],
@@ -31,10 +31,10 @@ export const neuronMock: NeuronInfo = {
   retrievedAtTimestampSeconds: BigInt(10),
   votingPower: BigInt(100),
   ageSeconds: BigInt(100),
-  fullNeuron: fullNeuronMock,
+  fullNeuron: mockFullNeuron,
 };
 
-export const buildMockNeuronsStoreSubscibe =
+export const buildMockNeuronsStoreSubscribe =
   (neurons: NeuronInfo[] = []) =>
   (run: Subscriber<NeuronsStore>): (() => void) => {
     run(neurons);

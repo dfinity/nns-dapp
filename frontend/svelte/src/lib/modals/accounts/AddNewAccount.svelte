@@ -2,7 +2,7 @@
   import Input from "../../components/ui/Input.svelte";
   import { i18n } from "../../stores/i18n";
   import { createEventDispatcher } from "svelte";
-  import { createSubAccount } from "../../services/accounts.services";
+  import { addSubAccount } from "../../services/accounts.services";
   import Spinner from "../../components/ui/Spinner.svelte";
   import {
     NameTooLongError,
@@ -10,6 +10,7 @@
   } from "../../canisters/nns-dapp/nns-dapp.errors";
   import { toastsStore } from "../../stores/toasts.store";
   import { errorToString } from "../../utils/error.utils";
+  import { authStore } from "../../stores/auth.store";
 
   let newAccountName: string = "";
 
@@ -18,7 +19,10 @@
   const createNewAccount = async () => {
     try {
       creating = true;
-      await createSubAccount(newAccountName);
+      await addSubAccount({
+        name: newAccountName,
+        identity: $authStore.identity,
+      });
       dispatcher("nnsClose");
     } catch (err) {
       const labelKey =

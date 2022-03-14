@@ -17,7 +17,7 @@ import { SECONDS_IN_YEAR } from "../../../../../lib/constants/constants";
 import { authStore } from "../../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../../mocks/governance.canister.mock";
-import { neuronMock } from "../../../../mocks/neurons.mock";
+import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
 describe("VotingCard", () => {
@@ -29,7 +29,7 @@ describe("VotingCard", () => {
     status: ProposalStatus.PROPOSAL_STATUS_OPEN,
   };
   const neurons: NeuronInfo[] = neuronIds.map((neuronId) => ({
-    ...neuronMock,
+    ...mockNeuron,
     createdTimestampSeconds: BigInt(BigInt(1000)),
     dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
     neuronId,
