@@ -37,9 +37,9 @@
   let newNeuron: NeuronInfo | undefined;
   let delayInSeconds: number = 0;
   let showBackButton: boolean;
-  $: showBackButton =
-    currentStep === Steps.StakeNeuron ||
-    currentStep === Steps.ConfirmDisseolveDelay;
+  $: showBackButton = [Steps.StakeNeuron, Steps.ConfirmDisseolveDelay].includes(
+    currentStep
+  );
 
   const chooseAccount = () => {
     // TODO: Stake Neurons From subaccounts https://dfinity.atlassian.net/browse/L2-322
