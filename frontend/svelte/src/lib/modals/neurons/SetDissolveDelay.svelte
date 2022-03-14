@@ -8,17 +8,15 @@
     SECONDS_IN_EIGHT_YEARS,
     SECONDS_IN_HALF_YEAR,
   } from "../../constants/constants";
-  import { updateDelay } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import { formatICP } from "../../utils/icp.utils";
   import { votingPower } from "../../utils/neuron.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { authStore } from "../../stores/auth.store";
 
   export let neuron: NeuronInfo;
+  export let delayInSeconds: number;
 
-  let delayInSeconds: number = 0;
   let loading: boolean = false;
 
   let backgroundStyle: string;
@@ -34,27 +32,14 @@
   let disableUpdate: boolean;
   $: disableUpdate = delayInSeconds < SECONDS_IN_HALF_YEAR;
   const dispatcher = createEventDispatcher();
-  const goToNext = (): void => {
-    dispatcher("nnsNext");
+  const skipDelay = (): void => {
+    dispatcher("nnsSkipDelay");
   };
   let neuronICP: bigint;
   $: neuronICP = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
 
-  const updateNeuron = async () => {
-    loading = true;
-    try {
-      await updateDelay({
-        neuronId: neuron.neuronId,
-        dissolveDelayInSeconds: delayInSeconds,
-        identity: $authStore.identity,
-      });
-      goToNext();
-    } catch (error) {
-      // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-329
-      console.error(error);
-    } finally {
-      loading = false;
-    }
+  const goToConfirmation = async () => {
+    dispatcher("nnsConfirmDelay");
   };
 </script>
 
@@ -115,14 +100,14 @@
     </div>
   </Card>
   <div class="buttons">
-    <button on:click={goToNext} class="secondary full-width" disabled={loading}
+    <button on:click={skipDelay} class="secondary full-width" disabled={loading}
       >{$i18n.neurons.skip}</button
     >
     <button
       class="primary full-width"
       disabled={disableUpdate || loading}
-      on:click={updateNeuron}
-      data-tid="update-button"
+      on:click={goToConfirmation}
+      data-tid="go-confirm-delay-button"
     >
       {#if loading}
         <Spinner />

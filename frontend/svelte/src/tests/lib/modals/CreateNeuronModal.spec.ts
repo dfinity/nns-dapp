@@ -26,7 +26,7 @@ import {
 jest.mock("../../../lib/services/neurons.services", () => {
   return {
     // need to return the same neuron id as mockNeuron.neuronId
-    stakeAndLoadNeuron: jest.fn().mockResolvedValue(BigInt(1)),
+    stakeNeuron: jest.fn().mockResolvedValue(BigInt(1)),
     updateDelay: jest.fn().mockResolvedValue(undefined),
     loadNeuron: jest.fn().mockResolvedValue(undefined),
   };
@@ -152,7 +152,7 @@ describe("CreateNeuronModal", () => {
 
     await waitFor(() =>
       expect(
-        container.querySelector("[data-tid='update-button']")
+        container.querySelector("[data-tid='go-confirm-delay-button']")
       ).not.toBeNull()
     );
   });
@@ -179,11 +179,11 @@ describe("CreateNeuronModal", () => {
 
     await waitFor(() =>
       expect(
-        container.querySelector("[data-tid='update-button']")
+        container.querySelector("[data-tid='go-confirm-delay-button']")
       ).not.toBeNull()
     );
     const updateDelayButton = container.querySelector(
-      '[data-tid="update-button"]'
+      '[data-tid="go-confirm-delay-button"]'
     );
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
@@ -218,50 +218,9 @@ describe("CreateNeuronModal", () => {
       (await fireEvent.input(inputRange, { target: { value: FIVE_MONTHS } }));
 
     const updateDelayButton = container.querySelector(
-      '[data-tid="update-button"]'
+      '[data-tid="go-confirm-delay-button"]'
     );
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
-  });
-
-  it("should be able to change dissolve delay value", async () => {
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
-
-    const { container } = render(CreateNeuronModal);
-
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
-
-    accountCard && (await fireEvent.click(accountCard));
-
-    const input = container.querySelector('input[name="amount"]');
-    // Svelte generates code for listening to the `input` event
-    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: 22 } }));
-
-    const createButton = container.querySelector('button[type="submit"]');
-
-    createButton && (await fireEvent.click(createButton));
-
-    await waitFor(() =>
-      expect(container.querySelector('input[type="range"]')).not.toBeNull()
-    );
-    const inputRange = container.querySelector('input[type="range"]');
-
-    const ONE_YEAR = 60 * 60 * 24 * 365;
-    inputRange &&
-      (await fireEvent.input(inputRange, { target: { value: ONE_YEAR } }));
-
-    const updateDelayButton = container.querySelector(
-      '[data-tid="update-button"]'
-    );
-    await waitFor(() =>
-      expect(updateDelayButton?.getAttribute("disabled")).toBeNull()
-    );
-
-    updateDelayButton && (await fireEvent.click(updateDelayButton));
-    await waitFor(() => expect(updateDelay).toBeCalled());
   });
 
   it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
@@ -298,5 +257,58 @@ describe("CreateNeuronModal", () => {
     );
 
     expect(getByText(neuronStake, { exact: false })).not.toBeNull();
+  });
+
+  it("should be able to change dissolve delay in the confirmation screen", async () => {
+    jest
+      .spyOn(neuronsStore, "subscribe")
+      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
+
+    const { container } = render(CreateNeuronModal);
+
+    const accountCard = container.querySelector('article[role="button"]');
+    expect(accountCard).not.toBeNull();
+
+    accountCard && (await fireEvent.click(accountCard));
+
+    const input = container.querySelector('input[name="amount"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    input && (await fireEvent.input(input, { target: { value: 22 } }));
+
+    const createButton = container.querySelector('button[type="submit"]');
+
+    createButton && (await fireEvent.click(createButton));
+
+    await waitFor(() =>
+      expect(container.querySelector('input[type="range"]')).not.toBeNull()
+    );
+    const inputRange = container.querySelector('input[type="range"]');
+
+    const ONE_YEAR = 60 * 60 * 24 * 365;
+    inputRange &&
+      (await fireEvent.input(inputRange, { target: { value: ONE_YEAR } }));
+
+    const goToConfirmDelayButton = container.querySelector(
+      '[data-tid="go-confirm-delay-button"]'
+    );
+    await waitFor(() =>
+      expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
+    );
+
+    goToConfirmDelayButton && (await fireEvent.click(goToConfirmDelayButton));
+
+    await waitFor(() =>
+      expect(
+        container.querySelector('[data-tid="confirm-dissolve-delay-container"]')
+      ).not.toBeNull()
+    );
+
+    const confirmButton = container.querySelector(
+      '[data-tid="confirm-delay-button"]'
+    );
+    confirmButton && (await fireEvent.click(confirmButton));
+
+    await waitFor(() => expect(updateDelay).toBeCalled());
   });
 });
