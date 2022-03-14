@@ -19,6 +19,10 @@ import {
   proposalsStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
+import {busyStore} from '../stores/busy.store';
+import {isNode} from '../utils/dev.utils';
+import {stringifyJson, uniqueObjects} from '../utils/utils';
+import {listNeurons} from './neurons.services';
 
 export const listProposals = async ({
   clearBeforeQuery = false,
@@ -154,7 +158,7 @@ export const getProposalId = (path: string): ProposalId | undefined => {
  * Makes multiple registerVote calls (1 per neuronId).
  * @returns List of errors (order is preserved)
  */
-export const castVote = async ({
+export const registerVotes = async ({
   neuronIds,
   proposalId,
   vote,
@@ -164,20 +168,79 @@ export const castVote = async ({
   proposalId: ProposalId;
   vote: Vote;
   identity: Identity | null | undefined;
-}): Promise<Array<GovernanceError | undefined>> => {
+}): Promise<void> => {
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
 
+  busyStore.start("vote");
+
+  try {
+    await requestRegisterVotes({
+      neuronIds,
+      proposalId,
+      vote,
+      identity,
+    });
+  } catch (error) {
+    if (!isNode()) {
+      // preserve in unit-test
+      console.error("vote unknown:", error);
+    }
+    toastsStore.show({
+      labelKey: "error.register_vote_unknown",
+      level: "error",
+      detail: stringifyJson(error, { indentation: 2 }),
+    });
+  }
+
+  await listNeurons({identity});
+
+  busyStore.stop("vote");
+};
+
+const requestRegisterVotes = async ({
+  neuronIds,
+  proposalId,
+  vote,
+  identity,
+}: {
+  neuronIds: bigint[];
+  proposalId: ProposalId;
+  vote: Vote;
+  identity: Identity;
+}): Promise<void> => {
   // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
-  return Promise.all(
-    neuronIds.map((neuronId: NeuronId) =>
-      registerVote({
-        neuronId,
-        vote,
-        proposalId,
-        identity,
-      })
-    )
+  const errors: Array<GovernanceError | undefined> = await Promise.all(
+      neuronIds.map((neuronId: NeuronId) =>
+          registerVote({
+            neuronId,
+            vote,
+            proposalId,
+            identity,
+          })
+      )
   );
+
+  // show only unique error messages
+  const errorDetails: string = uniqueObjects(errors.filter(Boolean))
+    .map((error) =>
+      typeof error?.errorMessage === "string" && error.errorMessage.length > 0
+        ? stringifyJson(error?.errorMessage, { indentation: 2 })
+        : ""
+    )
+    .filter(Boolean)
+    .join("\n");
+
+  if (errors.length > 0) {
+    if (!isNode()) {
+      // avoid in unit-test
+      console.error("vote:", errorDetails);
+    }
+    toastsStore.show({
+      labelKey: "error.register_vote",
+      level: "error",
+      detail: errorDetails.length > 0 ? `\n${errorDetails}` : undefined,
+    });
+  }
 };

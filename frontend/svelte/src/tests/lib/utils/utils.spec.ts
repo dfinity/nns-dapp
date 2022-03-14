@@ -63,6 +63,15 @@ describe("utils", () => {
         JSON.stringify(SAMPLE, null, 2)
       );
     });
+
+    it("should convert bigints to function call in devMode", () => {
+      expect(
+        stringifyJson(
+          { value: BigInt("123456789012345678901234567890") },
+          { devMode: true }
+        )
+      ).toBe(`{"value":"BigInt('123456789012345678901234567890')"}`);
+    });
   });
 
   describe("uniqueObjects", () => {

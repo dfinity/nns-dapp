@@ -3,14 +3,17 @@ import { GovernanceError, ProposalInfo, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
 import * as en from "../../../lib/i18n/en.json";
+import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
-  castVote,
   getProposalId,
   listNextProposals,
   listProposals,
   loadProposal,
+  registerVotes,
 } from "../../../lib/services/proposals.services";
+import { busyStore } from "../../../lib/stores/busy.store";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
+import { toastsStore } from "../../../lib/stores/toasts.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
@@ -161,62 +164,174 @@ describe("proposals-services", () => {
     });
   });
 
-  describe("castVote", () => {
+  describe("vote registration", () => {
     const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
     const identity = mockIdentity;
     const proposalId = BigInt(0);
 
-    const mockRegisterVote = async ({
-      vote,
-    }: {
-      neuronId: bigint;
-      vote: Vote;
-      proposalId: bigint;
-      identity: Identity;
-    }): Promise<GovernanceError | undefined> => {
-      return vote === Vote.YES
-        ? undefined
-        : { errorMessage: "error", errorType: 0 };
-    };
+    describe("success", () => {
+      afterAll(() => jest.clearAllMocks());
 
-    const spyRegisterVote = jest
-      .spyOn(api, "registerVote")
-      .mockImplementation(mockRegisterVote);
+      const mockRegisterVote = async ({
+        vote,
+        neuronId,
+      }: {
+        neuronId: bigint;
+        vote: Vote;
+        proposalId: bigint;
+        identity: Identity;
+      }): Promise<GovernanceError | undefined> => {
+        return vote === Vote.YES
+          ? undefined
+          : { errorMessage: `${neuronId}`, errorType: 0 };
+      };
 
-    afterAll(() => proposalsStore.setProposals([]));
+      const spyRegisterVote = jest
+        .spyOn(api, "registerVote")
+        .mockImplementation(mockRegisterVote);
 
-    it("should call the canister to cast vote neuronIds count", async () => {
-      await castVote({
-        neuronIds,
-        proposalId,
-        vote: Vote.YES,
-        identity,
+      it("should call the canister to register multiple votes", async () => {
+        await registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.YES,
+          identity,
+        });
+        expect(spyRegisterVote).toHaveReturnedTimes(neuronIds.length);
       });
-      expect(spyRegisterVote).toHaveReturnedTimes(3);
+
+      it("should display appropriate busy screen", async () => {
+        const spyBusyStart = jest.spyOn(busyStore, "start");
+        const spyBusyStop = jest.spyOn(busyStore, "stop");
+        await registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.YES,
+          identity,
+        });
+        expect(spyBusyStart).toBeCalledWith("vote");
+        expect(spyBusyStop).toBeCalledWith("vote");
+      });
+
+      it("should refetch neurons after vote registration", async () => {
+        const spyOnListNeurons = jest
+          .spyOn(neuronsServices, "listNeurons")
+          .mockImplementation(() => Promise.resolve());
+        await registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.YES,
+          identity,
+        });
+        expect(spyOnListNeurons).toBeCalledTimes(1);
+      });
     });
 
-    it("should return list of undefined on successful update", async () => {
-      const results = await castVote({
-        neuronIds,
-        proposalId,
-        vote: Vote.YES,
-        identity,
+    describe("multiple errors nns-js", () => {
+      afterAll(() => jest.clearAllMocks());
+
+      const mockRegisterVote = async ({
+        vote,
+        neuronId,
+      }: {
+        neuronId: bigint;
+        vote: Vote;
+        proposalId: bigint;
+        identity: Identity;
+      }): Promise<GovernanceError | undefined> => {
+        return vote === Vote.YES
+          ? undefined
+          : { errorMessage: `${neuronId}`, errorType: 0 };
+      };
+
+      jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+
+      it("should show multiple nns-js errors in details", async () => {
+        const spyToastShow = jest.spyOn(toastsStore, "show");
+        await registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.NO,
+          identity,
+        });
+        expect(spyToastShow).toBeCalledTimes(1);
+        expect(spyToastShow).toBeCalledWith({
+          labelKey: "error.register_vote",
+          level: "error",
+          detail: "\n" + neuronIds.map((id) => `"${id}"`).join("\n"),
+        });
       });
-      expect(results).toEqual([undefined, undefined, undefined]);
     });
 
-    it("should return list of unwrapped errors on update fail", async () => {
-      const results = await castVote({
-        neuronIds,
-        proposalId,
-        vote: Vote.NO,
-        identity,
+    describe("unique errors nns-js", () => {
+      afterAll(() => jest.clearAllMocks());
+
+      let registerVoteCallCount = 0;
+
+      const mockRegisterVote = async ({
+        vote,
+      }: {
+        neuronId: bigint;
+        vote: Vote;
+        proposalId: bigint;
+        identity: Identity;
+      }): Promise<GovernanceError | undefined> => {
+        return vote === Vote.YES
+          ? undefined
+          : {
+              errorMessage: registerVoteCallCount++ === 0 ? "error0" : "error1",
+              errorType: 0,
+            };
+      };
+
+      jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+
+      it("should show only unique nns-js errors", async () => {
+        const spyToastShow = jest.spyOn(toastsStore, "show");
+        await registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.NO,
+          identity,
+        });
+        expect(spyToastShow).toBeCalledWith({
+          labelKey: "error.register_vote",
+          level: "error",
+          detail: `\n"error0"\n"error1"`,
+        });
       });
-      expect(results).toEqual([
-        { errorMessage: "error", errorType: 0 },
-        { errorMessage: "error", errorType: 0 },
-        { errorMessage: "error", errorType: 0 },
-      ]);
+    });
+
+    describe("unknow errors", () => {
+      afterAll(() => jest.clearAllMocks());
+
+      const mockRegisterVote = async ({
+        vote,
+      }: {
+        neuronId: bigint;
+        vote: Vote;
+        proposalId: bigint;
+        identity: Identity;
+      }): Promise<GovernanceError | undefined> => {
+        throw new Error("test");
+      };
+
+      jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+
+      it("should show register_vote_unknown on not nns-js-based error", async () => {
+        const spyToastShow = jest.spyOn(toastsStore, "show");
+        await registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.NO,
+          identity,
+        });
+        expect(spyToastShow).toBeCalledWith({
+          labelKey: "error.register_vote_unknown",
+          level: "error",
+          detail: "{}",
+        });
+      });
     });
   });
 
@@ -254,9 +369,9 @@ describe("proposals-services", () => {
       });
     });
 
-    it("should not cast vote if no identity", async () => {
+    it("should not register votes if no identity", async () => {
       const call = async () =>
-        await castVote({
+        await registerVotes({
           neuronIds: [],
           proposalId: BigInt(1),
           vote: Vote.YES,
