@@ -51,8 +51,10 @@
 
       font-size: var(--font-size-h5);
       line-height: var(--line-height-standard);
-      text-decoration: none;
+      text-align: start;
       color: var(--gray-100);
+      text-decoration: none;
+      overflow-wrap: anywhere;
 
       @include media.min-width(medium) {
         font-size: var(--font-size-h4);
