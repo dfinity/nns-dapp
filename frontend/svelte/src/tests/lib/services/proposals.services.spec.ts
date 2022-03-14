@@ -170,6 +170,10 @@ describe("proposals-services", () => {
     const proposalId = BigInt(0);
 
     describe("success", () => {
+      jest
+        .spyOn(neuronsServices, "listNeurons")
+        .mockImplementation(() => Promise.resolve());
+
       afterAll(() => jest.clearAllMocks());
 
       const mockRegisterVote = async ({
@@ -212,22 +216,13 @@ describe("proposals-services", () => {
         expect(spyBusyStart).toBeCalledWith("vote");
         expect(spyBusyStop).toBeCalledWith("vote");
       });
-
-      it("should refetch neurons after vote registration", async () => {
-        const spyOnListNeurons = jest
-          .spyOn(neuronsServices, "listNeurons")
-          .mockImplementation(() => Promise.resolve());
-        await registerVotes({
-          neuronIds,
-          proposalId,
-          vote: Vote.YES,
-          identity,
-        });
-        expect(spyOnListNeurons).toBeCalledTimes(1);
-      });
     });
 
-    describe("multiple errors nns-js", () => {
+    describe("refresh", () => {
+      jest
+        .spyOn(neuronsServices, "listNeurons")
+        .mockImplementation(() => Promise.resolve());
+
       afterAll(() => jest.clearAllMocks());
 
       const mockRegisterVote = async ({
@@ -244,9 +239,47 @@ describe("proposals-services", () => {
           : { errorMessage: `${neuronId}`, errorType: 0 };
       };
 
-      jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+      it("should refetch neurons after vote registration", async () => {
+        jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+
+        const spyOnListNeurons = jest
+          .spyOn(neuronsServices, "listNeurons")
+          .mockImplementation(() => Promise.resolve());
+
+        await registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.YES,
+          identity,
+        });
+        expect(spyOnListNeurons).toBeCalledTimes(1);
+      });
+    });
+
+    describe("multiple errors nns-js", () => {
+      jest
+        .spyOn(neuronsServices, "listNeurons")
+        .mockImplementation(() => Promise.resolve());
+
+      afterAll(() => jest.clearAllMocks());
+
+      const mockRegisterVote = async ({
+        vote,
+        neuronId,
+      }: {
+        neuronId: bigint;
+        vote: Vote;
+        proposalId: bigint;
+        identity: Identity;
+      }): Promise<GovernanceError | undefined> => {
+        return vote === Vote.YES
+          ? undefined
+          : { errorMessage: `${neuronId}`, errorType: 0 };
+      };
 
       it("should show multiple nns-js errors in details", async () => {
+        jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+
         const spyToastShow = jest.spyOn(toastsStore, "show");
         await registerVotes({
           neuronIds,
@@ -264,6 +297,10 @@ describe("proposals-services", () => {
     });
 
     describe("unique errors nns-js", () => {
+      jest
+        .spyOn(neuronsServices, "listNeurons")
+        .mockImplementation(() => Promise.resolve());
+
       afterAll(() => jest.clearAllMocks());
 
       let registerVoteCallCount = 0;
@@ -284,9 +321,9 @@ describe("proposals-services", () => {
             };
       };
 
-      jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
-
       it("should show only unique nns-js errors", async () => {
+        jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+
         const spyToastShow = jest.spyOn(toastsStore, "show");
         await registerVotes({
           neuronIds,
@@ -303,6 +340,10 @@ describe("proposals-services", () => {
     });
 
     describe("unknow errors", () => {
+      jest
+        .spyOn(neuronsServices, "listNeurons")
+        .mockImplementation(() => Promise.resolve());
+
       afterAll(() => jest.clearAllMocks());
 
       const mockRegisterVote = async ({
@@ -316,9 +357,9 @@ describe("proposals-services", () => {
         throw new Error("test");
       };
 
-      jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
-
       it("should show register_vote_unknown on not nns-js-based error", async () => {
+        jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+
         const spyToastShow = jest.spyOn(toastsStore, "show");
         await registerVotes({
           neuronIds,
@@ -370,6 +411,10 @@ describe("proposals-services", () => {
     });
 
     it("should not register votes if no identity", async () => {
+      jest
+        .spyOn(neuronsServices, "listNeurons")
+        .mockImplementation(() => Promise.resolve());
+
       const call = async () =>
         await registerVotes({
           neuronIds: [],
