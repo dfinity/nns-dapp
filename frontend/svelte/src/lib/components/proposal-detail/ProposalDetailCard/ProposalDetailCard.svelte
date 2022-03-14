@@ -25,7 +25,9 @@
 
 <Card>
   <h2 slot="start" {title}>{title}</h2>
-  <Badge slot="end" {color}><h2 class="status">{$i18n.status[ProposalStatus[status]]}</h2></Badge>
+  <Badge slot="end" {color}
+    ><h2 class="status">{$i18n.status[ProposalStatus[status]]}</h2></Badge
+  >
   <ProposalSummary {proposal} />
   <ProposalMeta {proposalInfo} />
   <ProposalActions {proposal} />
