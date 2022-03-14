@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import { GovernanceError, Vote } from "@dfinity/nns";
+import { GovernanceError, ProposalInfo, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
 import {
@@ -7,6 +7,7 @@ import {
   getProposalId,
   listNextProposals,
   listProposals,
+  loadProposal,
 } from "../../../lib/services/proposals.services";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -18,10 +19,6 @@ describe("proposals-services", () => {
       .spyOn(api, "queryProposals")
       .mockImplementation(() => Promise.resolve(mockProposals));
 
-    const spyQueryProposal = jest
-      .spyOn(api, "queryProposal")
-      .mockImplementation(() => Promise.resolve(mockProposals[0]));
-
     const spySetProposals = jest.spyOn(proposalsStore, "setProposals");
     const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
 
@@ -31,6 +28,8 @@ describe("proposals-services", () => {
       spySetProposals.mockClear();
       spyPushProposals.mockClear();
     });
+
+    afterAll(() => jest.clearAllMocks());
 
     it("should call the canister to list proposals", async () => {
       await listProposals({ identity: mockIdentity });
@@ -70,33 +69,45 @@ describe("proposals-services", () => {
       });
       expect(spyPushProposals).toHaveBeenCalledTimes(1);
     });
+  });
 
-    // it("should get proposalInfo from proposals store if presented", (done) => {
-    //   proposalsStore.setProposals(mockProposals);
-    //
-    //   loadProposal({
-    //     proposalId: mockProposals[mockProposals.length - 1].id as bigint,
-    //     identity: mockIdentity,
-    //     setProposal: (proposal: ProposalInfo) => {
-    //       expect(proposal?.id).toBe(mockProposals[1].id);
-    //       expect(spyQueryProposals).not.toBeCalled();
-    //       expect(spyQueryProposal).not.toBeCalled();
-    //
-    //       done();
-    //     },
-    //   });
-    // });
-    //
-    // it("should not call listProposals if not in the store", (done) => {
-    //   loadProposal({
-    //     proposalId: mockProposals[0].id as bigint,
-    //     identity: mockIdentity,
-    //     setProposal: () => {
-    //       expect(spyQueryProposals).not.toBeCalled();
-    //       done();
-    //     },
-    //   });
-    // });
+  describe("load from store", () => {
+    const spyQueryProposals = jest
+      .spyOn(api, "queryProposals")
+      .mockImplementation(() => Promise.resolve(mockProposals));
+
+    const spyQueryProposal = jest
+      .spyOn(api, "queryProposal")
+      .mockImplementation(() => Promise.resolve(mockProposals[0]));
+
+    beforeAll(() => proposalsStore.setProposals(mockProposals));
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should get proposalInfo from proposals store if presented", (done) => {
+      loadProposal({
+        proposalId: mockProposals[mockProposals.length - 1].id as bigint,
+        identity: mockIdentity,
+        setProposal: (proposal: ProposalInfo) => {
+          expect(proposal?.id).toBe(mockProposals[1].id);
+          expect(spyQueryProposals).not.toBeCalled();
+          expect(spyQueryProposal).not.toBeCalled();
+
+          done();
+        },
+      });
+    });
+
+    it("should not call listProposals if not in the store", (done) => {
+      loadProposal({
+        proposalId: mockProposals[0].id as bigint,
+        identity: mockIdentity,
+        setProposal: () => {
+          expect(spyQueryProposals).not.toBeCalled();
+          done();
+        },
+      });
+    });
   });
 
   describe("empty list", () => {
