@@ -2,6 +2,7 @@ import type { Identity } from "@dfinity/agent";
 import { GovernanceError, ProposalInfo, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
+import * as en from "../../../lib/i18n/en.json";
 import {
   castVote,
   getProposalId,
@@ -216,6 +217,53 @@ describe("proposals-services", () => {
         { errorMessage: "error", errorType: 0 },
         { errorMessage: "error", errorType: 0 },
       ]);
+    });
+  });
+
+  describe("errors", () => {
+    beforeAll(() => {
+      jest.spyOn(console, "error").mockImplementation(() => jest.fn());
+    });
+
+    afterAll(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should not list proposals if no identity", async () => {
+      const call = async () => await listProposals({ identity: null });
+
+      await expect(call).rejects.toThrow(Error(en.error.missing_identity));
+    });
+
+    it("should not list next proposals if no identity", async () => {
+      const call = async () =>
+        await listNextProposals({
+          beforeProposal: mockProposals[mockProposals.length - 1].id,
+          identity: null,
+        });
+
+      await expect(call).rejects.toThrow(Error(en.error.missing_identity));
+    });
+
+    it("should not load proposal if no identity", (done) => {
+      loadProposal({
+        proposalId: mockProposals[0].id as bigint,
+        identity: null,
+        setProposal: jest.fn(),
+        handleError: () => done(),
+      });
+    });
+
+    it("should not cast vote if no identity", async () => {
+      const call = async () =>
+        await castVote({
+          neuronIds: [],
+          proposalId: BigInt(1),
+          vote: Vote.YES,
+          identity: null,
+        });
+
+      await expect(call).rejects.toThrow(Error(en.error.missing_identity));
     });
   });
 });
