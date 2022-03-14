@@ -1,5 +1,8 @@
-<script lant="ts">
+<script lang="ts">
+  import type { NeuronInfo } from "@dfinity/nns";
   import Card from "../ui/Card.svelte";
+
+  export let neuron: NeuronInfo;
 </script>
 
 <Card>
