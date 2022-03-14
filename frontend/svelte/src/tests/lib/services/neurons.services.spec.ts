@@ -18,7 +18,7 @@ describe("neurons-services", () => {
     .mockImplementation(() => Promise.resolve(mockNeuron.neuronId));
 
   const spyGetNeuron = jest
-    .spyOn(api, "getNeuron")
+    .spyOn(api, "queryNeuron")
     .mockImplementation(() => Promise.resolve(mockNeuron));
 
   const neurons = [mockNeuron, { ...mockNeuron, neuronId: BigInt(2) }];

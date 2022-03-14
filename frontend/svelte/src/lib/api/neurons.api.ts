@@ -12,7 +12,7 @@ import {
 } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
 
-export const getNeuron = async ({
+export const queryNeuron = async ({
   neuronId,
   identity,
 }: {

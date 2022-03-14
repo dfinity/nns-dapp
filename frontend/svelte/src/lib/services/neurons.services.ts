@@ -1,7 +1,7 @@
 import type { Identity } from "@dfinity/agent";
 import { ICP, NeuronId, NeuronInfo } from "@dfinity/nns";
 import {
-  getNeuron,
+  queryNeuron,
   increaseDissolveDelay,
   queryNeurons,
   stakeNeuron,
@@ -84,7 +84,7 @@ const loadNeuron = async ({
   neuronId: NeuronId;
   identity: Identity;
 }): Promise<void> => {
-  const neuron: NeuronInfo | undefined = await getNeuron({
+  const neuron: NeuronInfo | undefined = await queryNeuron({
     neuronId,
     identity,
   });

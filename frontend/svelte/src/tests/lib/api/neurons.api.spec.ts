@@ -1,7 +1,7 @@
 import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import {
-  getNeuron,
+  queryNeuron,
   increaseDissolveDelay,
   queryNeurons,
   stakeNeuron,
@@ -52,7 +52,7 @@ describe("neurons-api", () => {
   it("get neuron returns expected neuron", async () => {
     expect(mockGovernanceCanister.getNeuron).not.toBeCalled();
 
-    const neuron = await getNeuron({
+    const neuron = await queryNeuron({
       neuronId: mockNeuron.neuronId,
       identity: mockIdentity,
     });
