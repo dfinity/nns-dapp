@@ -30,7 +30,7 @@
     $votingNeuronSelectStore.neurons.length > 0 &&
     proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
 
-  const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
+  const vote = ({ detail }: { detail: { voteType: Vote } }) =>
     registerVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds,
       vote: detail.voteType,

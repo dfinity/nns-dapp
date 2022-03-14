@@ -26,7 +26,7 @@
     showConfirmationModal = true;
   };
   const cancel = () => (showConfirmationModal = false);
-  const confirm = async () => {
+  const confirm = () => {
     showConfirmationModal = false;
     dispatch("nnsConfirm", {
       voteType: selectedVoteType,
