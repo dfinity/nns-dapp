@@ -5,6 +5,7 @@ import {
 } from "../../../lib/services/accounts.services";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import {AccountNotFoundError} from '../../../lib/canisters/nns-dapp/nns-dapp.errors';
 
 describe("accounts-services", () => {
   const spyLoadAccounts = jest
@@ -27,5 +28,17 @@ describe("accounts-services", () => {
     await addSubAccount({ name: "test subaccount", identity: mockIdentity });
 
     expect(spyCreateSubAccount).toHaveBeenCalled();
+  });
+
+  it("should not sync accounts if no identity", async () => {
+    const call = async () => await syncAccounts({ identity: null });
+
+    await expect(call).rejects.toThrow(Error("No identity"));
+  });
+
+  it("should not add subaccount if no identity", async () => {
+    const call = async () => await addSubAccount({ name: "test subaccount", identity: null });
+
+    await expect(call).rejects.toThrow(Error("No identity found to create subaccount"));
   });
 });
