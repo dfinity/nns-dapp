@@ -8,7 +8,7 @@
     TRANSACTION_FEE_E8S,
   } from "../../constants/icp.constants";
   import { syncAccounts } from "../../services/accounts.services";
-  import { loadNeuron, stakeNeuron } from "../../services/neurons.services";
+  import { stakeAndLoadNeuron } from "../../services/neurons.services";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
@@ -23,21 +23,17 @@
   const createNeuron = async () => {
     creating = true;
     try {
-      const stake = ICP.fromString(String(amount));
-      if (!(stake instanceof ICP)) {
-        throw new Error(`Amount ${amount} is not valid`);
-      }
-      const neuronId = await stakeNeuron({
-        stake,
+      const neuronId = await stakeAndLoadNeuron({
+        amount,
+        identity: $authStore.identity,
       });
-      await loadNeuron(neuronId);
+
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts
       // TODO: L2-329 Manage edge cases
-      if ($authStore.identity) {
-        syncAccounts({ identity: $authStore.identity });
-      }
+      syncAccounts({ identity: $authStore.identity });
+
       dispatcher("nnsNeuronCreated", { neuronId });
     } catch (err) {
       // TODO: L2-329 Manage errors

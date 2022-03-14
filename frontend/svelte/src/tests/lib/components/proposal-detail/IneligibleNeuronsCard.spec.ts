@@ -4,7 +4,7 @@
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import IneligibleNeuronsCard from "../../../../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
-import { neuronMock } from "../../../mocks/neurons.mock";
+import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 /* eslint-disable-next-line */
@@ -16,7 +16,7 @@ const proposalInfo = {
   proposalTimestampSeconds,
 } as ProposalInfo;
 const ineligibleNeuron = {
-  ...neuronMock,
+  ...mockNeuron,
   createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
 } as NeuronInfo;
 

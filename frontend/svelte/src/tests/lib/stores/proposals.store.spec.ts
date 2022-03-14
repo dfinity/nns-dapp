@@ -5,7 +5,9 @@ import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.cons
 import {
   proposalsFiltersStore,
   proposalsStore,
+  votingNeuronSelectStore,
 } from "../../../lib/stores/proposals.store";
+import { mockNeuron } from "../../mocks/neurons.mock";
 
 describe("proposals-store", () => {
   describe("proposals", () => {
@@ -118,6 +120,33 @@ describe("proposals-store", () => {
         ...DEFAULT_PROPOSALS_FILTERS,
         excludeVotedProposals: false,
       });
+    });
+  });
+
+  describe("votingNeuronSelectStore", () => {
+    const neuronIds = [0, 1, 2].map(BigInt);
+    const neurons = neuronIds.map((neuronId) => ({ ...mockNeuron, neuronId }));
+
+    it("should set neurons", () => {
+      votingNeuronSelectStore.set(neurons);
+      expect(get(votingNeuronSelectStore).neurons).toEqual(neurons);
+    });
+
+    it("should select all on set", () => {
+      votingNeuronSelectStore.set(neurons);
+      expect(get(votingNeuronSelectStore).selectedIds).toEqual(neuronIds);
+    });
+
+    it("should toggle by neuronId", () => {
+      votingNeuronSelectStore.set(neurons);
+
+      votingNeuronSelectStore.toggleSelection(neuronIds[1]);
+      votingNeuronSelectStore.toggleSelection(neuronIds[1]);
+      votingNeuronSelectStore.toggleSelection(neuronIds[2]);
+      expect(get(votingNeuronSelectStore).selectedIds).toEqual([
+        neuronIds[0],
+        neuronIds[1],
+      ]);
     });
   });
 });

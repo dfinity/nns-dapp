@@ -5,13 +5,13 @@ import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import * as en from "../../../lib/i18n/en.json";
 import AddAccountModal from "../../../lib/modals/accounts/AddAccountModal.svelte";
-import { createSubAccount } from "../../../lib/services/accounts.services";
+import { addSubAccount } from "../../../lib/services/accounts.services";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
-    createSubAccount: jest.fn().mockResolvedValue(undefined),
+    addSubAccount: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -94,6 +94,6 @@ describe("AddAccountModal", () => {
 
     createButton && (await fireEvent.click(createButton));
 
-    expect(createSubAccount).toBeCalled();
+    expect(addSubAccount).toBeCalled();
   });
 });

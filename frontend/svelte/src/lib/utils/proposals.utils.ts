@@ -1,4 +1,6 @@
 import {
+  NeuronId,
+  NeuronInfo,
   Proposal,
   ProposalId,
   ProposalInfo,
@@ -111,3 +113,14 @@ export const hasMatchingProposals = ({
     ) !== undefined
   );
 };
+
+export const selectedNeuronsVotingPover = ({
+  neurons,
+  selectedIds,
+}: {
+  neurons: NeuronInfo[];
+  selectedIds: NeuronId[];
+}): bigint =>
+  neurons
+    .filter(({ neuronId }) => selectedIds.includes(neuronId))
+    .reduce((sum, { votingPower }) => sum + votingPower, BigInt(0));

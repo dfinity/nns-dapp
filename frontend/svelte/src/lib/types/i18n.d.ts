@@ -69,6 +69,8 @@ interface I18nNeurons {
   stake_neurons: string;
   select_source: string;
   set_dissolve_delay: string;
+  confirm_dissolve_delay: string;
+  follow_neurons_screen: string;
   my_accounts: string;
   stake_neuron: string;
   source: string;
@@ -97,6 +99,7 @@ interface I18nNeurons {
   voting_power: string;
   skip: string;
   update_delay: string;
+  confirm_delay: string;
 }
 
 interface I18nVoting {

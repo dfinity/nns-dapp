@@ -60,6 +60,8 @@
     "stake_neurons": "Stake Neurons",
     "select_source": "Select Source Account",
     "set_dissolve_delay": "Set Dissolve Delay",
+    "confirm_dissolve_delay": "Confirm Dissolve Delay",
+    "follow_neurons_screen": "Follow neurons",
     "my_accounts": "My Accounts",
     "stake_neuron": "Stake Neuron",
     "source": "Source",
@@ -87,7 +89,8 @@
     "dissolve_delay_description": "Voting power is given when neurons are locked for at least 6 months",
     "voting_power": "Voting Power",
     "skip": "Skip",
-    "update_delay": "Update Delay"
+    "update_delay": "Update Delay",
+    "confirm_delay": "Confirm and Update Delay"
   },
   "voting": {
     "title": "Voting",

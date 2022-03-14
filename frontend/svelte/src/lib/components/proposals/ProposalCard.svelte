@@ -49,7 +49,7 @@
     <Card role="link" on:click={showProposal}>
       <p slot="start" class="title" {title}>{title}</p>
       <Badge slot="end" {color}
-        >{$i18n.status[ProposalStatus[status]] ?? ""}</Badge
+        ><span>{$i18n.status[ProposalStatus[status]] ?? ""}</span></Badge
       >
 
       <p class="info"><Proposer {proposalInfo} /></p>
@@ -63,7 +63,7 @@
 
   .title {
     @include text.clamp(3);
-    margin: 0 var(--padding) 0 0;
+    margin: 0 calc(2 * var(--padding)) 0 0;
   }
 
   .info {

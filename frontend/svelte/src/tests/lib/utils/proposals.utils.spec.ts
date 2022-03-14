@@ -1,4 +1,4 @@
-import { Ballot, Proposal, Vote } from "@dfinity/nns";
+import { Ballot, NeuronInfo, Proposal, Vote } from "@dfinity/nns";
 import {
   emptyProposals,
   formatVotingPower,
@@ -7,7 +7,9 @@ import {
   lastProposalId,
   proposalActionFields,
   proposalFirstActionKey,
+  selectedNeuronsVotingPover,
 } from "../../../lib/utils/proposals.utils";
+import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
@@ -303,6 +305,40 @@ describe("proposals-utils", () => {
       expect(formatVotingPower(BigInt(0))).toBe("0.00");
       expect(formatVotingPower(BigInt(100000000))).toBe("1.00");
       expect(formatVotingPower(BigInt(9999900000))).toBe("100.00");
+    });
+  });
+
+  describe("selectedNeuronsVotingPover", () => {
+    const neuron = (id: number, votingPower: number): NeuronInfo =>
+      ({
+        ...mockNeuron,
+        neuronId: BigInt(id),
+        votingPower: BigInt(votingPower),
+      } as NeuronInfo);
+
+    it("should calculate total", () => {
+      expect(
+        selectedNeuronsVotingPover({
+          neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
+          selectedIds: [1, 2, 3].map(BigInt),
+        })
+      ).toBe(BigInt(9));
+
+      expect(
+        selectedNeuronsVotingPover({
+          neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
+          selectedIds: [1, 3].map(BigInt),
+        })
+      ).toBe(BigInt(6));
+    });
+
+    it("should return 0 if no selection", () => {
+      expect(
+        selectedNeuronsVotingPover({
+          neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
+          selectedIds: [],
+        })
+      ).toBe(BigInt(0));
     });
   });
 });

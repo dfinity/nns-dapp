@@ -11,7 +11,7 @@
   import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
-  import CastVoteCard from "../lib/components/proposal-detail/CastVoteCard.svelte";
+  import VotingCard from "../lib/components/proposal-detail/VotingCard/VotingCard.svelte";
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import { authStore } from "../lib/stores/auth.store";
@@ -33,7 +33,7 @@
     }
 
     // TODO: catch and error handling -- https://dfinity.atlassian.net/browse/L2-370
-    await listNeurons();
+    await listNeurons({ identity: $authStore.identity });
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
@@ -82,7 +82,7 @@
       {#if proposalInfo && neurons}
         <ProposalDetailCard {proposalInfo} />
         <VotesCard {proposalInfo} {neurons} />
-        <CastVoteCard {proposalInfo} {neurons} />
+        <VotingCard {proposalInfo} {neurons} />
         <IneligibleNeuronsCard {proposalInfo} {neurons} />
       {:else}
         <Spinner />
