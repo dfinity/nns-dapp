@@ -124,11 +124,8 @@ describe("proposals-store", () => {
   });
 
   describe("votingNeuronSelectStore", () => {
-    const neurons = [
-      { ...neuronMock, neuronId: BigInt(0) },
-      { ...neuronMock, neuronId: BigInt(1) },
-      { ...neuronMock, neuronId: BigInt(2) },
-    ];
+    const neuronIds = [0, 1, 2].map(BigInt);
+    const neurons = neuronIds.map((neuronId) => ({ ...neuronMock, neuronId }));
 
     it("should set neurons", () => {
       votingNeuronSelectStore.set(neurons);
@@ -137,24 +134,19 @@ describe("proposals-store", () => {
 
     it("should select all on set", () => {
       votingNeuronSelectStore.set(neurons);
-      expect(get(votingNeuronSelectStore).selectedIds).toEqual(
-        [0, 1, 2].map(BigInt)
-      );
+      expect(get(votingNeuronSelectStore).selectedIds).toEqual(neuronIds);
     });
 
     it("should toggle by neuronId", () => {
-      votingNeuronSelectStore.set([
-        { ...neuronMock, neuronId: BigInt(0) },
-        { ...neuronMock, neuronId: BigInt(1) },
-        { ...neuronMock, neuronId: BigInt(2) },
-      ]);
+      votingNeuronSelectStore.set(neurons);
 
-      votingNeuronSelectStore.toggleSelection(BigInt(1));
-      votingNeuronSelectStore.toggleSelection(BigInt(1));
-      votingNeuronSelectStore.toggleSelection(BigInt(2));
-      expect(get(votingNeuronSelectStore).selectedIds).toEqual(
-        [0, 1].map(BigInt)
-      );
+      votingNeuronSelectStore.toggleSelection(neuronIds[1]);
+      votingNeuronSelectStore.toggleSelection(neuronIds[1]);
+      votingNeuronSelectStore.toggleSelection(neuronIds[2]);
+      expect(get(votingNeuronSelectStore).selectedIds).toEqual([
+        neuronIds[0],
+        neuronIds[1],
+      ]);
     });
   });
 });
