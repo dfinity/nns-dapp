@@ -4,7 +4,7 @@
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { accountsStore } from "../../stores/accounts.store";
-  import { createEventDispatcher, onDestroy } from "svelte";
+  import { onDestroy } from "svelte";
   import SelectAccount from "./SelectAccount.svelte";
   import StakeNeuron from "./StakeNeuron.svelte";
   import type { Unsubscriber } from "svelte/store";
@@ -35,7 +35,7 @@
   );
 
   let newNeuron: NeuronInfo | undefined;
-  let dissolveDelayInSeconds: number | undefined;
+  let delayInSeconds: number = 0;
   let showBackButton: boolean;
   $: showBackButton =
     currentStep === Steps.StakeNeuron ||
@@ -57,12 +57,6 @@
     newNeuron = $neuronsStore.find(
       ({ neuronId }) => neuronId === detail.neuronId
     );
-    stateStep = stateStep.next();
-  };
-  const goConfirmDelay = ({
-    detail,
-  }: CustomEvent<{ delayInSeconds: number }>) => {
-    dissolveDelayInSeconds = detail.delayInSeconds;
     stateStep = stateStep.next();
   };
   const goEditFollowers = () => {
@@ -120,17 +114,18 @@
         <SetDissolveDelay
           neuron={newNeuron}
           on:nnsSkipDelay={goEditFollowers}
-          on:nnsConfirmDelay={goConfirmDelay}
+          on:nnsConfirmDelay={goNext}
+          bind:delayInSeconds
         />
       </Transition>
     {/if}
     <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-    {#if currentStep === Steps.ConfirmDisseolveDelay && newNeuron && dissolveDelayInSeconds}
+    {#if currentStep === Steps.ConfirmDisseolveDelay && newNeuron && delayInSeconds}
       <Transition {diff}>
         <!-- TODO: Edit Followees https://dfinity.atlassian.net/browse/L2-337 -->
         <ConfirmDissolveDelay
           neuron={newNeuron}
-          delayInSeconds={dissolveDelayInSeconds}
+          {delayInSeconds}
           on:back={goBack}
           on:nnsNext={goNext}
         />

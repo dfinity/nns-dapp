@@ -15,8 +15,8 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
 
   export let neuron: NeuronInfo;
+  export let delayInSeconds: number;
 
-  let delayInSeconds: number = 0;
   let loading: boolean = false;
 
   let backgroundStyle: string;
@@ -39,7 +39,7 @@
   $: neuronICP = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
 
   const goToConfirmation = async () => {
-    dispatcher("nnsConfirmDelay", { delayInSeconds });
+    dispatcher("nnsConfirmDelay");
   };
 </script>
 
