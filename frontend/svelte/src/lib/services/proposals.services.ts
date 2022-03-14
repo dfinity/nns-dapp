@@ -12,6 +12,7 @@ import {
   queryProposals,
   registerVote,
 } from "../api/proposals.api";
+import { busyStore } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
 import {
   proposalsFiltersStore,
@@ -19,10 +20,9 @@ import {
   proposalsStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
-import {busyStore} from '../stores/busy.store';
-import {isNode} from '../utils/dev.utils';
-import {stringifyJson, uniqueObjects} from '../utils/utils';
-import {listNeurons} from './neurons.services';
+import { isNode } from "../utils/dev.utils";
+import { stringifyJson, uniqueObjects } from "../utils/utils";
+import { listNeurons } from "./neurons.services";
 
 export const listProposals = async ({
   clearBeforeQuery = false,
@@ -194,7 +194,7 @@ export const registerVotes = async ({
     });
   }
 
-  await listNeurons({identity});
+  await listNeurons({ identity });
 
   busyStore.stop("vote");
 };
@@ -212,14 +212,14 @@ const requestRegisterVotes = async ({
 }): Promise<void> => {
   // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
   const errors: Array<GovernanceError | undefined> = await Promise.all(
-      neuronIds.map((neuronId: NeuronId) =>
-          registerVote({
-            neuronId,
-            vote,
-            proposalId,
-            identity,
-          })
-      )
+    neuronIds.map((neuronId: NeuronId) =>
+      registerVote({
+        neuronId,
+        vote,
+        proposalId,
+        identity,
+      })
+    )
   );
 
   // show only unique error messages

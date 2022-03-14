@@ -8,7 +8,7 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import { votingPower } from "../../utils/neuron.utils";
-  import {authStore} from '../../stores/auth.store';
+  import { authStore } from "../../stores/auth.store";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
@@ -24,7 +24,7 @@
       await updateDelay({
         neuronId: neuron.neuronId,
         dissolveDelayInSeconds: delayInSeconds,
-        identity: $authStore.identity
+        identity: $authStore.identity,
       });
       dispatcher("nnsNext");
     } catch (error) {
