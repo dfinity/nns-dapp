@@ -29,20 +29,23 @@
     <a target="_blank" href={url}>{url}</a>
   {/if}
 
-  <button class="text" on:click|stopPropagation={() => (modalOpen = true)}>
-    {$i18n.proposal_detail.proposer_prefix}
-    {proposer}
-  </button>
+  {#if proposer !== undefined}
+    <button class="text" on:click|stopPropagation={() => (modalOpen = true)}>
+      {$i18n.proposal_detail.proposer_prefix}
+      {proposer}
+    </button>
+
+    {#if modalOpen}
+      <ProposerModal {proposer} on:nnsClose={() => (modalOpen = false)} />
+    {/if}
+  {/if}
+
   <p>
     {$i18n.proposal_detail.topic_prefix}
     {topic}
   </p>
   <p>{$i18n.proposal_detail.id_prefix} {id}</p>
 </div>
-
-{#if modalOpen}
-  <ProposerModal {proposer} on:nnsClose={() => (modalOpen = false)} />
-{/if}
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
