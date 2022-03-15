@@ -8,7 +8,7 @@
 
 <Modal theme="dark" size="medium" on:nnsClose>
   <span slot="title">{$i18n.new_followee.title}</span>
-  <main>
+  <main data-tid="new-followee-modal">
     <article>
       <h4>{$i18n.new_followee.options_title}</h4>
       <ul>

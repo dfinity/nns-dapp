@@ -20,7 +20,7 @@
   const closeNewFolloweeModal = () => (showNewFolloweeModal = false);
 </script>
 
-<article>
+<article data-tid="follow-topic-section">
   <div class="wrapper">
     <div>
       <h3>{title}</h3>
@@ -29,15 +29,21 @@
     <div class="toolbar">
       <!-- TODO: Set total followees -->
       <h3 class="badge">0</h3>
-      <span class:isExpanded on:click={toggleContent}><IconExpandMore /></span>
+      <span
+        class:isExpanded
+        on:click={toggleContent}
+        data-tid="expand-topic-followees"><IconExpandMore /></span
+      >
     </div>
   </div>
-  <div class="content" class:isExpanded>
+  <div class="content" class:isExpanded data-tid="follow-topic-section-current">
     <h5>{$i18n.follow_neurons.current_followees}</h5>
     <!-- TODO: Iterate followees -->
     <div class="button-wrapper">
-      <button class="secondary small" on:click={openNewFolloweeModal}
-        >{$i18n.follow_neurons.add}</button
+      <button
+        class="secondary small"
+        data-tid="open-new-followee-modal"
+        on:click={openNewFolloweeModal}>{$i18n.follow_neurons.add}</button
       >
     </div>
   </div>
@@ -93,12 +99,14 @@
   }
 
   .content {
+    visibility: hidden;
     max-height: 0;
     height: fit-content;
     overflow: hidden;
-    transition: max-height 0.3s;
+    transition: all 0.3s;
 
     &.isExpanded {
+      visibility: visible;
       max-height: calc(300px);
       height: fit-content;
     }
