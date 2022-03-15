@@ -27,7 +27,7 @@
     on:nnsLoad={onLoad}
     on:nnsError={onError}
   />
-{:else if parse && text}
+{:else if parse !== undefined && text !== undefined}
   {@html parse(removeHTMLTags(text))}
 {:else}
   <!-- fallback text content -->
