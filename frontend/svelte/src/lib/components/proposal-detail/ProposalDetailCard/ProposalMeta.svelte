@@ -1,12 +1,19 @@
 <script lang="ts">
-  import { Proposal, ProposalInfo, Topic } from "@dfinity/nns";
+  import type {
+    NeuronId,
+    Proposal,
+    ProposalId,
+    ProposalInfo,
+  } from "@dfinity/nns";
+  import { Topic } from "@dfinity/nns";
   import { i18n } from "../../../../lib/stores/i18n";
+  import ProposerModal from "../../../modals/proposals/ProposerModal.svelte";
 
   export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal | undefined;
-  let proposer: BigInt | undefined;
-  let id: BigInt | undefined;
+  let proposer: NeuronId | undefined;
+  let id: ProposalId | undefined;
   let topic: string | undefined;
   let url: string | undefined;
 
@@ -14,18 +21,15 @@
   $: topic = $i18n.topics[Topic[proposalInfo?.topic]];
   $: url = proposal?.url;
 
-  // TODO: show neuron modal https://dfinity.atlassian.net/browse/L2-282
-  const showProposerNeuron = () => {
-    alert("TBD");
-  };
+  let modalOpen = false;
 </script>
 
 <div>
   {#if url}
-    <a class="proposal-url" target="_blank" href={url}>{url}</a>
+    <a target="_blank" href={url}>{url}</a>
   {/if}
 
-  <button class="text" on:click|stopPropagation={showProposerNeuron}>
+  <button class="text" on:click|stopPropagation={() => (modalOpen = true)}>
     {$i18n.proposal_detail.proposer_prefix}
     {proposer}
   </button>
@@ -35,6 +39,10 @@
   </p>
   <p>{$i18n.proposal_detail.id_prefix} {id}</p>
 </div>
+
+{#if modalOpen}
+  <ProposerModal {proposer} on:nnsClose={() => (modalOpen = false)} />
+{/if}
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
@@ -53,25 +61,10 @@
       line-height: var(--line-height-standard);
       text-align: start;
       color: var(--gray-100);
-      text-decoration: none;
       overflow-wrap: anywhere;
 
       @include media.min-width(medium) {
         font-size: var(--font-size-h4);
-      }
-    }
-    a {
-      margin: 0 calc(-0.5 * var(--padding));
-      padding: calc(0.5 * var(--padding));
-      width: fit-content;
-      border-radius: calc(0.5 * var(--border-radius));
-
-      &:hover {
-        background: var(--background-tint);
-      }
-
-      &.proposal-url {
-        color: var(--blue-400);
       }
     }
   }
