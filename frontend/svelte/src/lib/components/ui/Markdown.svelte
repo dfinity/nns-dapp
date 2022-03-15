@@ -31,5 +31,5 @@
   {@html parse(removeHTMLTags(text))}
 {:else}
   <!-- fallback text content -->
-  {text}
+  <p>{text}</p>
 {/if}
