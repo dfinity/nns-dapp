@@ -12,7 +12,7 @@ import {
   Vote,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { neuronMock } from "./neurons.mock";
+import { mockNeuron } from "./neurons.mock";
 
 // eslint-disable-next-line
 // @ts-ignore: test file
@@ -56,7 +56,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
   }): Promise<NeuronInfo[]> => {
     return [
       {
-        ...neuronMock,
+        ...mockNeuron,
       },
     ];
   };
@@ -70,7 +70,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
     principal: Principal;
     neuronId: NeuronId;
   }): Promise<NeuronInfo | undefined> => {
-    return neuronMock;
+    return mockNeuron;
   };
 
   public registerVote = async ({
@@ -96,6 +96,6 @@ export class MockGovernanceCanister extends GovernanceCanister {
     principal: Principal;
     ledgerCanister: LedgerCanister;
   }): Promise<NeuronId | StakeNeuronError> => {
-    return neuronMock.neuronId;
+    return mockNeuron.neuronId;
   };
 }

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { translate } from "../../utils/i18n.utils";
-
   export let name: string;
   export let inputType: "number" | "text" = "number";
   export let required: boolean = true;

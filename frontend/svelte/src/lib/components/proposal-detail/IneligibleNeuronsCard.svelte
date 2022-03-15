@@ -3,7 +3,6 @@
     ineligibleNeurons as filterIneligibleNeurons,
     ProposalInfo,
     NeuronInfo,
-    Ballot,
   } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import Card from "../ui/Card.svelte";

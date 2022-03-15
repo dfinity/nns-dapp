@@ -4,7 +4,7 @@
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import IneligibleNeuronsCard from "../../../../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
-import { neuronMock } from "../../../mocks/neurons.mock";
+import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 /* eslint-disable-next-line */
@@ -16,7 +16,8 @@ const proposalInfo = {
   proposalTimestampSeconds,
 } as ProposalInfo;
 const neuron = {
-  ...neuronMock,
+  ...mockNeuron,
+  createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
 } as NeuronInfo;
 
 describe("IneligibleNeuronsCard", () => {
@@ -92,7 +93,11 @@ describe("IneligibleNeuronsCard", () => {
   it("should display multiple ineligible neurons", () => {
     const { container, getByText } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo: { ...proposalInfo, ballots: [] },
+        proposalInfo: {
+          ...proposalInfo,
+          proposalTimestampSeconds,
+          ballots: [],
+        },
         neurons: [
           {
             ...neuron,
@@ -102,6 +107,7 @@ describe("IneligibleNeuronsCard", () => {
           {
             ...neuron,
             neuronId: BigInt(222),
+            createdTimestampSeconds: proposalTimestampSeconds,
           },
         ] as NeuronInfo[],
       },

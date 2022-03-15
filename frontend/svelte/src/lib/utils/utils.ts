@@ -1,7 +1,8 @@
+/* eslint-disable-next-line @typescript-eslint/ban-types */
 export const debounce = (func: Function, timeout?: number) => {
   let timer: NodeJS.Timer | undefined;
 
-  return (...args: any[]) => {
+  return (...args: unknown[]) => {
     const next = () => func(...args);
 
     if (timer) {
@@ -17,16 +18,23 @@ export const debounce = (func: Function, timeout?: number) => {
 
 /**
  * Transform bigint to string to avoid serialization error.
+ * devMode transforms 123n -> "BigInt(123)"
  */
 export const stringifyJson = (
   value,
   options?: {
     indentation?: number;
+    devMode?: boolean;
   }
 ): string =>
   JSON.stringify(
     value,
-    (key, value) => (typeof value === "bigint" ? value.toString() : value),
+    (key, value) =>
+      typeof value === "bigint"
+        ? options?.devMode !== undefined && options.devMode
+          ? `BigInt('${value.toString()}')`
+          : value.toString()
+        : value,
     options?.indentation ?? 0
   );
 

@@ -12,8 +12,8 @@ import {
   mockPrincipal,
 } from "../mocks/auth.store.mock";
 import {
-  buildMockNeuronsStoreSubscibe,
-  neuronMock,
+  buildMockNeuronsStoreSubscribe,
+  mockNeuron,
 } from "../mocks/neurons.mock";
 
 jest.mock("../../lib/services/neurons.services", () => {
@@ -33,7 +33,7 @@ describe("Neurons", () => {
 
     jest
       .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscibe([neuronMock]));
+      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
   });
 
   it("should render content", () => {

@@ -7,12 +7,12 @@ import { fireEvent, render } from "@testing-library/svelte";
 import NeuronCard from "../../../../lib/components/neurons/NeuronCard.svelte";
 import * as en from "../../../../lib/i18n/en.json";
 import { formatICP } from "../../../../lib/utils/icp.utils";
-import { fullNeuronMock, neuronMock } from "../../../mocks/neurons.mock";
+import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
 describe("NeuronCard", () => {
   it("renders a Card", () => {
     const { container } = render(NeuronCard, {
-      props: { neuron: neuronMock },
+      props: { neuron: mockNeuron },
     });
 
     const articleElement = container.querySelector("article");
@@ -24,7 +24,7 @@ describe("NeuronCard", () => {
     const spyClick = jest.fn();
     const { container, component } = render(NeuronCard, {
       props: {
-        neuron: neuronMock,
+        neuron: mockNeuron,
       },
     });
     component.$on("click", spyClick);
@@ -41,7 +41,7 @@ describe("NeuronCard", () => {
     const ariaLabel = "test label";
     const { container } = render(NeuronCard, {
       props: {
-        neuron: neuronMock,
+        neuron: mockNeuron,
         role,
         ariaLabel,
       },
@@ -56,22 +56,22 @@ describe("NeuronCard", () => {
   it("renders the neuron stake and identifier", async () => {
     const { getByText } = render(NeuronCard, {
       props: {
-        neuron: neuronMock,
+        neuron: mockNeuron,
       },
     });
 
     const stakeText = formatICP(
-      (neuronMock.fullNeuron as Neuron).cachedNeuronStake
+      (mockNeuron.fullNeuron as Neuron).cachedNeuronStake
     );
     expect(getByText(stakeText)).toBeInTheDocument();
-    expect(getByText(neuronMock.neuronId.toString())).toBeInTheDocument();
+    expect(getByText(mockNeuron.neuronId.toString())).toBeInTheDocument();
   });
 
   it("renders the community fund label when neuron part of community fund", async () => {
     const { getByText } = render(NeuronCard, {
       props: {
         neuron: {
-          ...neuronMock,
+          ...mockNeuron,
           joinedCommunityFundTimestampSeconds: BigInt(1000),
         },
       },
@@ -84,8 +84,8 @@ describe("NeuronCard", () => {
     const { getByText } = render(NeuronCard, {
       props: {
         neuron: {
-          ...neuronMock,
-          fullNeuron: { ...fullNeuronMock, isCurrentUserController: false },
+          ...mockNeuron,
+          fullNeuron: { ...mockFullNeuron, isCurrentUserController: false },
         },
       },
     });
@@ -98,7 +98,7 @@ describe("NeuronCard", () => {
     const { getByText } = render(NeuronCard, {
       props: {
         neuron: {
-          ...neuronMock,
+          ...mockNeuron,
           dissolveDelaySeconds: BigInt(MORE_THAN_ONE_YEAR),
           state: NeuronState.LOCKED,
         },
@@ -113,7 +113,7 @@ describe("NeuronCard", () => {
     const { getByText } = render(NeuronCard, {
       props: {
         neuron: {
-          ...neuronMock,
+          ...mockNeuron,
           state: NeuronState.DISSOLVED,
         },
       },
@@ -127,10 +127,10 @@ describe("NeuronCard", () => {
     const { getByText } = render(NeuronCard, {
       props: {
         neuron: {
-          ...neuronMock,
+          ...mockNeuron,
           state: NeuronState.DISSOLVING,
           fullNeuron: {
-            ...fullNeuronMock,
+            ...mockFullNeuron,
             dissolveState: {
               WhenDissolvedTimestampSeconds: BigInt(MORE_THAN_ONE_YEAR),
             },
