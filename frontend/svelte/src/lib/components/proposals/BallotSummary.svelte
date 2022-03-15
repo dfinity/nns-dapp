@@ -21,9 +21,6 @@
   );
 </script>
 
-<!-- TODO(L2-282): use skeleton (new ui component) while loading -->
-<!-- TODO(L2-282): clamp two lines and ask Mischa -->
-
 {#if proposal?.proposal !== undefined}
   <p>{proposal.id}</p>
 
