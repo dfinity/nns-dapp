@@ -1,5 +1,6 @@
 import type { Identity } from "@dfinity/agent";
-import { ICP, NeuronId, NeuronInfo } from "@dfinity/nns";
+import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   increaseDissolveDelay,

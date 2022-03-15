@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  GovernanceCanister,
+import type {
   ICP,
   LedgerCanister,
   ListProposalsRequest,
@@ -9,8 +7,8 @@ import {
   NeuronInfo,
   ProposalInfo,
   StakeNeuronError,
-  Vote,
 } from "@dfinity/nns";
+import { GovernanceCanister, Vote } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { mockNeuron } from "./neurons.mock";
 

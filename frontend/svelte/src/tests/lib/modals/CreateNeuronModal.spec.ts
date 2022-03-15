@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { GovernanceCanister, LedgerCanister, NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@dfinity/nns";
+import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";

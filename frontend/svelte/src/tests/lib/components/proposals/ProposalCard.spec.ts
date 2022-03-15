@@ -2,13 +2,8 @@
  * @jest-environment jsdom
  */
 
-import {
-  Ballot,
-  GovernanceCanister,
-  Proposal,
-  ProposalInfo,
-  Vote,
-} from "@dfinity/nns";
+import type { Ballot, Proposal, ProposalInfo } from "@dfinity/nns";
+import { GovernanceCanister, Vote } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
 import * as en from "../../../../lib/i18n/en.json";

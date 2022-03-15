@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { Neuron, NeuronState } from "@dfinity/nns";
+import type { Neuron } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import NeuronCard from "../../../../lib/components/neurons/NeuronCard.svelte";
 import * as en from "../../../../lib/i18n/en.json";

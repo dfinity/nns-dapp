@@ -14,9 +14,9 @@ import {
 } from "../api/proposals.api";
 import { busyStore } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
+import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
   proposalsFiltersStore,
-  ProposalsFiltersStore,
   proposalsStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
