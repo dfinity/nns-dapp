@@ -35,6 +35,18 @@ describe("BallotSummary", () => {
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
+  it("should render proposal id", async () => {
+    const { container, getByText } = render(BallotSummary, {
+      props,
+    });
+
+    await waitFor(() =>
+      expect(container.querySelector("div.markdown p")).not.toBeNull()
+    );
+
+    expect(getByText(`${mockProposals[0].id}`)).toBeInTheDocument();
+  });
+
   it("should render proposal summary", async () => {
     const { container, getByText } = render(BallotSummary, {
       props,
@@ -70,5 +82,6 @@ describe("BallotSummary", () => {
 
   it("should render ballot vote no", async () => await testVote(Vote.NO));
 
-  it("should render ballot vote unspecified", async () => await testVote(Vote.UNSPECIFIED));
+  it("should render ballot vote unspecified", async () =>
+    await testVote(Vote.UNSPECIFIED));
 });

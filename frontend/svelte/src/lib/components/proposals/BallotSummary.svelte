@@ -25,9 +25,11 @@
 <!-- TODO(L2-282): clamp two lines and ask Mischa -->
 
 {#if proposal?.proposal !== undefined}
-  <ProposalSummary proposal={proposal.proposal} />
+  <p>{proposal.id}</p>
 
   <p class="vote">{$i18n.core[Vote[ballot.vote].toLowerCase()]}</p>
+
+  <div class="summary"><ProposalSummary proposal={proposal.proposal} /></div>
 {/if}
 
 <style lang="scss">
@@ -36,5 +38,14 @@
     align-items: flex-start;
     justify-content: flex-end;
     font-size: var(--font-size-small);
+  }
+
+  p {
+    margin: var(--padding) 0 0;
+  }
+
+  .summary {
+    grid-column-start: 1;
+    grid-column-end: 3;
   }
 </style>

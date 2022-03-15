@@ -55,7 +55,7 @@ describe("VoteHistoryCard", () => {
       props,
     });
 
-    expect(getByText(en.proposal_detail.summary)).toBeInTheDocument();
+    expect(getByText(en.proposal_detail.title)).toBeInTheDocument();
     expect(getByText(en.neuron_detail.vote)).toBeInTheDocument();
   });
 

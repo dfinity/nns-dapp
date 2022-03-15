@@ -14,8 +14,8 @@
   --section-max-width: 800px;
   --footer-height: 20vh;
 
-  --modal-small-width: 300px;
-  --modal-medium-width: 300px;
+  --modal-small-width: calc(100% - (8 * var(--padding)));
+  --modal-medium-width: calc(100% - (2 * var(--padding)));
 
   @include media.min-width(medium) {
     --modal-small-width: 500px;
