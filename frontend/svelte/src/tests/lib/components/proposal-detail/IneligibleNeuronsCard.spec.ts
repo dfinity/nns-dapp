@@ -15,7 +15,7 @@ const proposalInfo = {
   ...mockProposalInfo,
   proposalTimestampSeconds,
 } as ProposalInfo;
-const ineligibleNeuron = {
+const neuron = {
   ...mockNeuron,
   createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
 } as NeuronInfo;
@@ -35,7 +35,12 @@ describe("IneligibleNeuronsCard", () => {
     const { getByText } = render(IneligibleNeuronsCard, {
       props: {
         proposalInfo,
-        neurons: [ineligibleNeuron],
+        neurons: [
+          {
+            neuron,
+            createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
+          },
+        ],
       },
     });
     expect(
@@ -50,7 +55,7 @@ describe("IneligibleNeuronsCard", () => {
         proposalInfo: { ...proposalInfo, ballots: [] },
         neurons: [
           {
-            ...ineligibleNeuron,
+            ...neuron,
             createdTimestampSeconds: proposalTimestampSeconds - BigInt(1),
             neuronId: BigInt(123),
           },
@@ -66,34 +71,53 @@ describe("IneligibleNeuronsCard", () => {
   it("should display ineligible neurons (created after proposal) ", () => {
     const { getByText } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo: { ...proposalInfo, ballots: [{ neuronId: BigInt(123) }] },
+        proposalInfo: {
+          ...proposalInfo,
+          ballots: [],
+        },
         neurons: [
-          { ...ineligibleNeuron, neuronId: BigInt(123) },
+          {
+            ...neuron,
+            neuronId: BigInt(111),
+            createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
+          },
         ] as NeuronInfo[],
       },
     });
-    expect(getByText("123", { exact: false })).toBeInTheDocument();
+    expect(getByText("111", { exact: false })).toBeInTheDocument();
     expect(
       getByText(en.proposal_detail__ineligible.reason_since, { exact: false })
     ).toBeInTheDocument();
   });
 
   it("should display multiple ineligible neurons", () => {
-    const { container } = render(IneligibleNeuronsCard, {
+    const { container, getByText } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo: { ...proposalInfo, ballots: [] },
+        proposalInfo: {
+          ...proposalInfo,
+          proposalTimestampSeconds,
+          ballots: [],
+        },
         neurons: [
           {
-            ...ineligibleNeuron,
-            neuronId: BigInt(123),
+            ...neuron,
+            neuronId: BigInt(111),
+            createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
           },
           {
-            ...ineligibleNeuron,
-            neuronId: BigInt(321),
+            ...neuron,
+            neuronId: BigInt(222),
+            createdTimestampSeconds: proposalTimestampSeconds,
           },
         ] as NeuronInfo[],
       },
     });
     expect(container.querySelectorAll("li").length).toBe(2);
+    expect(
+      getByText(en.proposal_detail__ineligible.reason_since, { exact: false })
+    ).toBeInTheDocument();
+    expect(
+      getByText(en.proposal_detail__ineligible.reason_short, { exact: false })
+    ).toBeInTheDocument();
   });
 });
