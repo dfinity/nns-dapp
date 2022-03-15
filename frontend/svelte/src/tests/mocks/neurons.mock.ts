@@ -1,4 +1,5 @@
-import { Neuron, NeuronInfo, NeuronState } from "@dfinity/nns";
+import type { Neuron, NeuronInfo } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 import type { NeuronsStore } from "../../lib/stores/neurons.store";
 

@@ -2,7 +2,8 @@
   import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { AccountsStore, accountsStore } from "../lib/stores/accounts.store";
+  import { accountsStore } from "../lib/stores/accounts.store";
+  import type { AccountsStore } from "../lib/stores/accounts.store";
   import ICPComponent from "../lib/components/ic/ICP.svelte";
   import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";

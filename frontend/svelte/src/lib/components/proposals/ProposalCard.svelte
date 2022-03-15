@@ -6,10 +6,8 @@
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
-  import {
-    ProposalColor,
-    PROPOSAL_COLOR,
-  } from "../../constants/proposals.constants";
+  import { PROPOSAL_COLOR } from "../../constants/proposals.constants";
+  import type { ProposalColor } from "../../constants/proposals.constants";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";

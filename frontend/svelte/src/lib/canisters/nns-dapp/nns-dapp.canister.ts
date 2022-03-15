@@ -7,7 +7,8 @@ import {
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "./nns-dapp.errors";
-import { idlFactory, NNSDappService } from "./nns-dapp.idl";
+import type { NNSDappService } from "./nns-dapp.idl";
+import { idlFactory } from "./nns-dapp.idl";
 import type {
   AccountDetails,
   CanisterDetails,

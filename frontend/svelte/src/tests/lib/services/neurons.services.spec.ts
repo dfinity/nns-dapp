@@ -1,4 +1,5 @@
-import { LedgerCanister, NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@dfinity/nns";
+import { LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/neurons.api";

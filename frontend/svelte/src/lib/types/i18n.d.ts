@@ -10,6 +10,9 @@ interface I18nCore {
   back: string;
   confirm_yes: string;
   confirm_no: string;
+  yes: string;
+  no: string;
+  unspecified: string;
 }
 
 interface I18nError {
@@ -192,6 +195,8 @@ interface I18nProposal_detail__ineligible {
 interface I18nNeuron_detail {
   title: string;
   proposer: string;
+  voting_history: string;
+  vote: string;
 }
 
 interface I18nTime {

@@ -34,7 +34,7 @@
   });
 </script>
 
-<Modal on:nnsClose theme="dark">
+<Modal on:nnsClose theme="dark" size="medium">
   <span slot="title">{$i18n.neuron_detail.title}</span>
 
   {#if neuron !== undefined}
