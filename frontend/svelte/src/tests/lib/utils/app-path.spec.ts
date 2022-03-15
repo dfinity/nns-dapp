@@ -1,5 +1,9 @@
 import { AppPath } from "../../../lib/constants/routes.constants";
-import { isAppPath, isRoutePath } from "../../../lib/utils/app-path.utils";
+import {
+  getLastPathDetailId,
+  isAppPath,
+  isRoutePath,
+} from "../../../lib/utils/app-path.utils";
 
 describe("routes", () => {
   describe("isAppPath()", () => {
@@ -13,6 +17,24 @@ describe("routes", () => {
       expect(isAppPath("/some-invalid-url")).toBeFalsy();
       expect(isAppPath("//")).toBeFalsy();
       expect(isAppPath(`${AppPath.Wallet}/`)).toBeFalsy();
+    });
+  });
+
+  describe("getLastPathDetailId", () => {
+    it("should get id from valid path", async () => {
+      expect(getLastPathDetailId("/#/neuron/123")).toBe(BigInt(123));
+      expect(getLastPathDetailId("/neuron/123")).toBe(BigInt(123));
+      expect(getLastPathDetailId("/proposal/123")).toBe(BigInt(123));
+      expect(getLastPathDetailId("/#/neuron/0")).toBe(BigInt(0));
+      expect(getLastPathDetailId("/1234")).toBe(BigInt(1234));
+    });
+
+    it("should not get neuronId from invalid path", async () => {
+      expect(getLastPathDetailId("/#/neuron/")).toBeUndefined();
+      expect(getLastPathDetailId("/#/neuron/1.5")).toBeUndefined();
+      expect(getLastPathDetailId("/neuron/1.5")).toBeUndefined();
+      expect(getLastPathDetailId("/")).toBeUndefined();
+      expect(getLastPathDetailId("/#/neuron/123n")).toBeUndefined();
     });
   });
 
