@@ -4,13 +4,13 @@
 
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import ProposalSummary from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
+import ProposalSummaryCardBlock from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalSummaryCardBlock.svelte";
 import * as en from "../../../../../lib/i18n/en.json";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
-describe("ProposalSummary", () => {
+describe("ProposalSummaryCardBlock", () => {
   it("should render title", () => {
-    const { getByText } = render(ProposalSummary, {
+    const { getByText } = render(ProposalSummaryCardBlock, {
       props: {
         proposal: mockProposalInfo.proposal,
       },
@@ -19,7 +19,7 @@ describe("ProposalSummary", () => {
   });
 
   it("should render content", async () => {
-    const { getByText } = render(ProposalSummary, {
+    const { getByText } = render(ProposalSummaryCardBlock, {
       props: {
         proposal: mockProposalInfo.proposal,
       },
