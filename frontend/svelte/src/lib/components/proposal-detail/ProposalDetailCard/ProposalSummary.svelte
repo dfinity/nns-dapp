@@ -8,14 +8,14 @@
   $: summary = proposal?.summary;
 </script>
 
-<p>
+<div class="markdown">
   <Markdown text={summary} />
-</p>
+</div>
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
 
-  p {
+  .markdown {
     font-size: var(--font-size-small);
     color: var(--gray-100);
     overflow-wrap: break-word;
