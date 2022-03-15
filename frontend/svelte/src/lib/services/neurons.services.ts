@@ -1,5 +1,6 @@
 import type { Identity } from "@dfinity/agent";
 import { ICP, NeuronId, NeuronInfo } from "@dfinity/nns";
+import { get } from "svelte/store";
 import {
   increaseDissolveDelay,
   queryNeuron,
@@ -7,7 +8,10 @@ import {
   stakeNeuron,
 } from "../api/neurons.api";
 import { E8S_PER_ICP } from "../constants/icp.constants";
+import { i18n } from "../stores/i18n";
 import { neuronsStore } from "../stores/neurons.store";
+import { toastsStore } from "../stores/toasts.store";
+import { getLastPathDetailId } from "../utils/app-path.utils";
 
 /**
  * Uses governance and ledger canisters to create a neuron and adds it to the store
@@ -38,7 +42,11 @@ export const stakeAndLoadNeuron = async ({
 
   const neuronId: NeuronId = await stakeNeuron({ stake, identity });
 
-  await loadNeuron({ neuronId, identity });
+  await loadNeuron({
+    neuronId,
+    identity,
+    setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+  });
 
   return neuronId;
 };
@@ -74,25 +82,77 @@ export const updateDelay = async ({
 
   await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
 
-  await loadNeuron({ neuronId, identity });
+  await loadNeuron({
+    neuronId,
+    identity,
+    setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+  });
 };
 
-const loadNeuron = async ({
+/**
+ * Return single neuron from neuronsStore or fetch it (in case of page reload or direct navigation to neuron-detail page)
+ */
+const getNeuron = async ({
   neuronId,
   identity,
 }: {
   neuronId: NeuronId;
-  identity: Identity;
-}): Promise<void> => {
-  const neuron: NeuronInfo | undefined = await queryNeuron({
-    neuronId,
-    identity,
-  });
-
-  // TODO: Manage errors and edge cases: https://dfinity.atlassian.net/browse/L2-329
-  if (!neuron) {
-    return;
+  identity: Identity | null | undefined;
+}): Promise<NeuronInfo | undefined> => {
+  // TODO: https://dfinity.atlassian.net/browse/L2-346
+  if (!identity) {
+    throw new Error(get(i18n).error.missing_identity);
   }
 
-  neuronsStore.pushNeurons([neuron]);
+  const neuron = get(neuronsStore).find(
+    (neuron) => neuron.neuronId === neuronId
+  );
+  return neuron || queryNeuron({ neuronId, identity });
 };
+
+/**
+ * Get from store or query a neuron and apply the result to the callback (`setNeuron`).
+ * The function propagate error to the toast and call an optional callback in case of error.
+ */
+export const loadNeuron = async ({
+  neuronId,
+  identity,
+  setNeuron,
+  handleError,
+}: {
+  neuronId: NeuronId;
+  identity: Identity | undefined | null;
+  setNeuron: (neuron: NeuronInfo) => void;
+  handleError?: () => void;
+}): Promise<void> => {
+  const catchError = (error: unknown) => {
+    console.error(error);
+
+    toastsStore.show({
+      labelKey: "error.neuron_not_found",
+      level: "error",
+      detail: `id: "${neuronId}"`,
+    });
+
+    handleError?.();
+  };
+
+  try {
+    const neuron: NeuronInfo | undefined = await getNeuron({
+      neuronId,
+      identity,
+    });
+
+    if (!neuron) {
+      catchError(new Error("Neuron not found"));
+      return;
+    }
+
+    setNeuron(neuron);
+  } catch (error: unknown) {
+    catchError(error);
+  }
+};
+
+export const getNeuronId = (path: string): NeuronId | undefined =>
+  getLastPathDetailId(path);

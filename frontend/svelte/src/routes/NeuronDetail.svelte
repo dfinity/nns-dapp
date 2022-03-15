@@ -4,10 +4,7 @@
   import { onDestroy, onMount } from "svelte";
 
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
-  import {
-    getNeuronId,
-    loadNeuron,
-  } from "../lib/components/neuron-detail/helpers";
+  import { getNeuronId, loadNeuron } from "../lib/services/neurons.services";
   import NeuronFollowingCard from "../lib/components/neuron-detail/NeuronFollowingCard.svelte";
   import NeuronHotkeysCard from "../lib/components/neuron-detail/NeuronHotkeysCard.svelte";
   import NeuronMaturityCard from "../lib/components/neuron-detail/NeuronMaturityCard.svelte";
@@ -18,6 +15,7 @@
   import { AppPath } from "../lib/constants/routes.constants";
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
+  import { authStore } from "../lib/stores/auth.store";
 
   let neuron: NeuronInfo | undefined;
 
@@ -51,7 +49,8 @@
 
     await loadNeuron({
       neuronId: neuronIdMaybe,
-      setProposal: (neuronInfo: NeuronInfo) => (neuron = neuronInfo),
+      identity: $authStore.identity,
+      setNeuron: (neuronInfo: NeuronInfo) => (neuron = neuronInfo),
       handleError: onError,
     });
   });
@@ -62,7 +61,7 @@
     unsubscribe();
 
     routeStore.navigate({
-      path: AppPath.Proposals,
+      path: AppPath.Neurons,
     });
   };
 </script>
