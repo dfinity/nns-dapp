@@ -1,4 +1,19 @@
+<script>
+  import FollowTopicSection from "../../components/neurons/FollowTopicSection.svelte";
+
+  import Card from "../../components/ui/Card.svelte";
+  import { i18n } from "../../stores/i18n";
+</script>
+
 <section>
-  <!-- TODO: https://dfinity.atlassian.net/browse/L2-333 -->
-  Follow Neurons Modal
+  <p>{$i18n.neurons.follow_neurons_description}</p>
+  <Card>
+    <FollowTopicSection />
+  </Card>
 </section>
+
+<style lang="scss">
+  section {
+    padding: 0;
+  }
+</style>

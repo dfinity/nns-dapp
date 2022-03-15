@@ -94,7 +94,8 @@
     "voting_power": "Voting Power",
     "skip": "Skip",
     "update_delay": "Update Delay",
-    "confirm_delay": "Confirm and Update Delay"
+    "confirm_delay": "Confirm and Update Delay",
+    "follow_neurons_description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics."
   },
   "voting": {
     "title": "Voting",
