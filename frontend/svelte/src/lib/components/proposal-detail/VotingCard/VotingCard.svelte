@@ -1,9 +1,5 @@
 <script lang="ts">
-  import type {
-    NeuronInfo,
-    ProposalInfo,
-    Vote,
-  } from "@dfinity/nns";
+  import type { NeuronInfo, ProposalInfo, Vote } from "@dfinity/nns";
   import { notVotedNeurons, ProposalStatus } from "@dfinity/nns";
   import { onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
