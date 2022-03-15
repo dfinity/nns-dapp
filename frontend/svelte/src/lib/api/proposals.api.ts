@@ -44,6 +44,7 @@ export const queryProposals = async ({
       includeRewardStatus: rewards,
       includeStatus: status,
     },
+    certified: false,
   });
 
   return proposals;
