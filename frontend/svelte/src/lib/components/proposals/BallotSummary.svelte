@@ -21,6 +21,8 @@
   );
 </script>
 
+<!-- TODO(L2-282): use spinner or skeleton while loading if ux is not well suited -->
+
 {#if proposal?.proposal !== undefined}
   <p>{proposal.id}</p>
 
