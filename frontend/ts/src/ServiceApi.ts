@@ -17,6 +17,7 @@ import GovernanceService, {
   ListProposalsResponse,
   MergeMaturityRequest,
   MergeMaturityResponse,
+  MergeRequest,
   NeuronInfo,
   NeuronInfoForHw,
   RegisterVoteRequest,
@@ -369,6 +370,15 @@ export default class ServiceApi {
   ): Promise<DisburseToNeuronResponse> => {
     return executeWithLogging(() =>
       this.governanceService.disburseToNeuron(request)
+    );
+  };
+
+  public merge = (
+    identity: Identity,
+    request: MergeRequest
+  ): Promise<EmptyResponse> => {
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).merge(request)
     );
   };
 
