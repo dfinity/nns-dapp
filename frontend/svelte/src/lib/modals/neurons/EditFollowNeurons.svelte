@@ -27,6 +27,6 @@
 
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
+    gap: calc(1.5 * var(--padding));
   }
 </style>

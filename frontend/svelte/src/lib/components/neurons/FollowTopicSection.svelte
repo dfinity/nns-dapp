@@ -33,7 +33,7 @@
     </div>
   </div>
   <div class="content" class:isExpanded>
-    <h4>{$i18n.neurons.follow_neurons.current_followees}</h4>
+    <h5>{$i18n.neurons.follow_neurons.current_followees}</h5>
     <!-- TODO: Iterate followees -->
     <div class="button-wrapper">
       <button class="secondary small" on:click={openNewFolloweeModal}
@@ -87,7 +87,8 @@
     transition: transform 0.3s;
 
     &.isExpanded {
-      transform: rotate(180deg);
+      // We need to translateY to keep the center in the same place
+      transform: rotate(180deg) translateY(4px);
     }
   }
 
@@ -97,15 +98,9 @@
     overflow: hidden;
     transition: max-height 0.3s;
 
-    background: var(--background);
-
     &.isExpanded {
       max-height: calc(300px);
       height: fit-content;
-    }
-
-    h4 {
-      padding: var(--padding);
     }
 
     .button-wrapper {
