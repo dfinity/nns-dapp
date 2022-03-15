@@ -20,6 +20,7 @@ import {
   proposalsStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
+import { getLastPathDetailId } from "../utils/app-path.utils";
 import { isNode } from "../utils/dev.utils";
 import { stringifyJson, uniqueObjects } from "../utils/utils";
 import { listNeurons } from "./neurons.services";
@@ -144,15 +145,8 @@ const getProposal = async ({
   return proposal || queryProposal({ proposalId, identity });
 };
 
-export const getProposalId = (path: string): ProposalId | undefined => {
-  const pathDetail = path.split("/").pop();
-  if (pathDetail === undefined) {
-    return;
-  }
-  const id = parseInt(pathDetail, 10);
-  // ignore not integer ids
-  return isFinite(id) && `${id}` === pathDetail ? BigInt(id) : undefined;
-};
+export const getProposalId = (path: string): ProposalId | undefined =>
+  getLastPathDetailId(path);
 
 /**
  * Makes multiple registerVote calls (1 per neuronId).
