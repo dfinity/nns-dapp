@@ -1,11 +1,11 @@
 <script lang="ts">
-  import {
+  import type {
     NeuronInfo,
     ProposalInfo,
     ProposalStatus,
     Vote,
-    notVotedNeurons,
   } from "@dfinity/nns";
+  import { notVotedNeurons } from "@dfinity/nns";
   import { onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
   import { authStore } from "../../../stores/auth.store";
