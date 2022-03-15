@@ -1,23 +1,22 @@
 <script lang="ts">
-  import type { BallotInfo, NeuronInfo, ProposalId } from "@dfinity/nns";
+  import type { BallotInfo, NeuronInfo } from "@dfinity/nns";
   import Card from "../ui/Card.svelte";
-  import ProposalShortSummary from "../proposals/ProposalShortSummary.svelte";
   import { i18n } from "../../stores/i18n";
+  import BallotSummary from "../proposals/BallotSummary.svelte";
 
   export let neuron: NeuronInfo;
 
-  let proposalIds: ProposalId[];
+  let ballots: Required<BallotInfo>[];
 
-  const distinctProposalIds = ({ recentBallots }: NeuronInfo): ProposalId[] =>
+  const distinctBallots = ({ recentBallots }: NeuronInfo): Required<BallotInfo>[] =>
     Array.from(
       new Set(
         recentBallots
           .filter(({ proposalId }: BallotInfo) => proposalId !== undefined)
-          .map(({ proposalId }: BallotInfo) => proposalId as ProposalId)
       )
     );
 
-  $: proposalIds = distinctProposalIds(neuron);
+  $: ballots = distinctBallots(neuron);
 </script>
 
 <!-- TODO(L2-282): add tests -->
@@ -27,10 +26,10 @@
 
   <div class="history">
     <h4>{$i18n.proposal_detail.summary}</h4>
-    <h4>{$i18n.neuron_detail.vote}</h4>
+    <h4 class="vote">{$i18n.neuron_detail.vote}</h4>
 
-    {#each proposalIds as proposalId}
-      <ProposalShortSummary {proposalId} />
+    {#each ballots as ballot}
+      <BallotSummary {ballot} />
     {/each}
   </div>
 </Card>
@@ -40,5 +39,9 @@
     display: grid;
     grid-template-columns: 80% auto;
     grid-column-gap: var(--padding);
+  }
+
+  .vote {
+    justify-self: flex-end;
   }
 </style>

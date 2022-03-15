@@ -6,7 +6,10 @@
     "filter": "Filter",
     "back": "Back",
     "confirm_yes": "Yes, I'm sure",
-    "confirm_no": "Cancel"
+    "confirm_no": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "unspecified": "Unspecified"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
