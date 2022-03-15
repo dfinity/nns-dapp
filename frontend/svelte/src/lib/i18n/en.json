@@ -12,6 +12,7 @@
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
     "sign_in": "The sign-in process was aborted or did not succeed.",
     "proposal_not_found": "An error occurred while loading the proposal.",
+    "neuron_not_found": "An error occurred while loading the neuron.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",

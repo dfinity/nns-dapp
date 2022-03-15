@@ -1,5 +1,6 @@
 import type { Identity } from "@dfinity/agent";
-import { GovernanceError, ProposalInfo, Vote } from "@dfinity/nns";
+import type { GovernanceError, ProposalInfo } from "@dfinity/nns";
+import { Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
 import * as en from "../../../lib/i18n/en.json";
@@ -357,14 +358,9 @@ describe("proposals-services", () => {
 
       afterAll(() => jest.clearAllMocks());
 
-      const mockRegisterVote = async ({
-        vote,
-      }: {
-        neuronId: bigint;
-        vote: Vote;
-        proposalId: bigint;
-        identity: Identity;
-      }): Promise<GovernanceError | undefined> => {
+      const mockRegisterVote = async (): Promise<
+        GovernanceError | undefined
+      > => {
         throw new Error("test");
       };
 

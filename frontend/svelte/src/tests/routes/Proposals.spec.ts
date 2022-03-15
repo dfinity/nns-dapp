@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { GovernanceCanister, Proposal, ProposalInfo } from "@dfinity/nns";
+import type { Proposal, ProposalInfo } from "@dfinity/nns";
+import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import * as en from "../../lib/i18n/en.json";
 import { authStore } from "../../lib/stores/auth.store";

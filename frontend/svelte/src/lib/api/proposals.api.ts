@@ -1,15 +1,14 @@
 import type { Identity } from "@dfinity/agent";
-import {
+import type {
   EmptyResponse,
-  GovernanceCanister,
   GovernanceError,
   ListProposalsResponse,
   NeuronId,
   ProposalId,
   ProposalInfo,
-  Topic,
   Vote,
 } from "@dfinity/nns";
+import { GovernanceCanister, Topic } from "@dfinity/nns";
 import { LIST_PAGINATION_LIMIT } from "../constants/constants";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";

@@ -2,7 +2,8 @@
   import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { AuthStore, authStore } from "../lib/stores/auth.store";
+  import { authStore } from "../lib/stores/auth.store";
+  import type { AuthStore } from "../lib/stores/auth.store";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
