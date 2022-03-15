@@ -3,7 +3,8 @@
    * A toast - snack-bar to display a short info or error message.
    */
   import IconClose from "../../icons/IconClose.svelte";
-  import { toastsStore, ToastMsg } from "../../stores/toasts.store";
+  import { toastsStore } from "../../stores/toasts.store";
+  import type { ToastMsg } from "../../stores/toasts.store";
   import { fade, fly } from "svelte/transition";
   import { translate } from "../../utils/i18n.utils";
   import { i18n } from "../../stores/i18n";

@@ -9,7 +9,8 @@
   import Auth from "./routes/Auth.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { onDestroy } from "svelte";
-  import { AuthStore, authStore } from "./lib/stores/auth.store";
+  import { authStore } from "./lib/stores/auth.store";
+  import type { AuthStore } from "./lib/stores/auth.store";
   import Wallet from "./routes/Wallet.svelte";
   import ProposalDetail from "./routes/ProposalDetail.svelte";
   import { routeStore } from "./lib/stores/route.store";

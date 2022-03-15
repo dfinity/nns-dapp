@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { AuthStore, authStore } from "../lib/stores/auth.store";
+  import { authStore } from "../lib/stores/auth.store";
+  import type { AuthStore } from "../lib/stores/auth.store";
   import { routeStore } from "../lib/stores/route.store";
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";

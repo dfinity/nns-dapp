@@ -1,9 +1,6 @@
 <script lang="ts">
-  import {
-    ineligibleNeurons as filterIneligibleNeurons,
-    ProposalInfo,
-    NeuronInfo,
-  } from "@dfinity/nns";
+  import { ineligibleNeurons as filterIneligibleNeurons } from "@dfinity/nns";
+  import type { ProposalInfo, NeuronInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import Card from "../ui/Card.svelte";
 

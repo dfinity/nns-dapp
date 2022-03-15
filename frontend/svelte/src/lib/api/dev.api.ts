@@ -1,13 +1,7 @@
 import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
-import {
-  AccountIdentifier,
-  BlockHeight,
-  E8s,
-  ICP,
-  LedgerCanister,
-  TransferError,
-} from "@dfinity/nns";
+import type { BlockHeight, E8s, TransferError } from "@dfinity/nns";
+import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
 
 /*
  * Gives the caller the specified amount of (fake) ICPs.

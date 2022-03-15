@@ -3,7 +3,8 @@
   import { NeuronState, ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
-  import { getStateInfo, StateInfo } from "../../utils/neuron.utils";
+  import { getStateInfo } from "../../utils/neuron.utils";
+  import type { StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
 

@@ -2,14 +2,8 @@
  * @jest-environment jsdom
  */
 
-import type { NeuronInfo } from "@dfinity/nns";
-import {
-  Ballot,
-  GovernanceCanister,
-  ProposalInfo,
-  ProposalStatus,
-  Vote,
-} from "@dfinity/nns";
+import type { Ballot, NeuronInfo, ProposalInfo } from "@dfinity/nns";
+import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
 import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import VotingCard from "../../../../../lib/components/proposal-detail/VotingCard/VotingCard.svelte";
