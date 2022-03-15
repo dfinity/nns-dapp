@@ -2,12 +2,13 @@
  * @jest-environment jsdom
  */
 import { Vote } from "@dfinity/nns";
-import { render, RenderResult } from "@testing-library/svelte";
+import type { RenderResult } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import VotesCard from "../../../../lib/components/proposal-detail/VotesCard.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import * as en from "../../../../lib/i18n/en.json";
 import { formatNumber } from "../../../../lib/utils/format.utils";
-import { neuronMock } from "../../../mocks/neurons.mock";
+import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 describe("VotesCard", () => {
@@ -48,7 +49,7 @@ describe("VotesCard", () => {
 
   describe("My Votes section", () => {
     const noVoted = {
-      ...neuronMock,
+      ...mockNeuron,
       neuronId: BigInt(100),
       recentBallots: [
         {
@@ -58,7 +59,7 @@ describe("VotesCard", () => {
       ],
     };
     const yesVoted = {
-      ...neuronMock,
+      ...mockNeuron,
       neuronId: BigInt(10),
       recentBallots: [
         {
@@ -67,7 +68,7 @@ describe("VotesCard", () => {
         },
       ],
     };
-    const votedNeurons = [neuronMock, noVoted, yesVoted];
+    const votedNeurons = [mockNeuron, noVoted, yesVoted];
     it("should have title when proposal has been voted by some owned neuron", () => {
       const { getByText } = render(VotesCard, {
         props: {

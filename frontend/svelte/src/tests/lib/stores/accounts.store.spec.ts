@@ -1,8 +1,6 @@
 import { get } from "svelte/store";
-import {
-  AccountsStore,
-  initAccountsStore,
-} from "../../../lib/stores/accounts.store";
+import type { AccountsStore } from "../../../lib/stores/accounts.store";
+import { initAccountsStore } from "../../../lib/stores/accounts.store";
 
 describe("accountsStore", () => {
   it("initializes to undefined", () => {

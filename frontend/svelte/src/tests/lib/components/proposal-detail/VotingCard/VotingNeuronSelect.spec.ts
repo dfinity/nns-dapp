@@ -9,22 +9,22 @@ import VotingNeuronSelect from "../../../../../lib/components/proposal-detail/Vo
 import { E8S_PER_ICP } from "../../../../../lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
 import { formatVotingPower } from "../../../../../lib/utils/proposals.utils";
-import { neuronMock } from "../../../../mocks/neurons.mock";
+import { mockNeuron } from "../../../../mocks/neurons.mock";
 
 describe("VotingNeuronSelect", () => {
   const neurons: NeuronInfo[] = [
     {
-      ...neuronMock,
+      ...mockNeuron,
       neuronId: BigInt(111),
       votingPower: BigInt(100 * E8S_PER_ICP),
     },
     {
-      ...neuronMock,
+      ...mockNeuron,
       neuronId: BigInt(222),
       votingPower: BigInt(300 * E8S_PER_ICP),
     },
     {
-      ...neuronMock,
+      ...mockNeuron,
       neuronId: BigInt(333),
       votingPower: BigInt(500 * E8S_PER_ICP),
     },

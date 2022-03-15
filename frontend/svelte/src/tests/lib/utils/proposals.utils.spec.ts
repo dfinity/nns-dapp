@@ -1,4 +1,5 @@
-import { Ballot, NeuronInfo, Proposal, Vote } from "@dfinity/nns";
+import type { Ballot, NeuronInfo, Proposal } from "@dfinity/nns";
+import { Vote } from "@dfinity/nns";
 import {
   emptyProposals,
   formatVotingPower,
@@ -9,7 +10,7 @@ import {
   proposalFirstActionKey,
   selectedNeuronsVotingPover,
 } from "../../../lib/utils/proposals.utils";
-import { neuronMock } from "../../mocks/neurons.mock";
+import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
@@ -311,7 +312,7 @@ describe("proposals-utils", () => {
   describe("selectedNeuronsVotingPover", () => {
     const neuron = (id: number, votingPower: number): NeuronInfo =>
       ({
-        ...neuronMock,
+        ...mockNeuron,
         neuronId: BigInt(id),
         votingPower: BigInt(votingPower),
       } as NeuronInfo);

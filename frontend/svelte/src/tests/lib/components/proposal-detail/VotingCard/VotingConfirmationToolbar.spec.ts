@@ -9,12 +9,12 @@ import VotingConfirmationToolbar from "../../../../../lib/components/proposal-de
 import { E8S_PER_ICP } from "../../../../../lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
 import { formatVotingPower } from "../../../../../lib/utils/proposals.utils";
-import { neuronMock } from "../../../../mocks/neurons.mock";
+import { mockNeuron } from "../../../../mocks/neurons.mock";
 
 describe("VotingConfirmationToolbar", () => {
   const votingPower = BigInt(100 * E8S_PER_ICP);
   const neuron = {
-    ...neuronMock,
+    ...mockNeuron,
     neuronId: BigInt(111),
     votingPower,
   };

@@ -1,128 +1,158 @@
-import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
+import type { NeuronInfo } from "@dfinity/nns";
+import { LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { get } from "svelte/store";
+import * as api from "../../../lib/api/neurons.api";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
-  getNeuron,
+  getNeuronId,
   listNeurons,
   loadNeuron,
-  stakeNeuron,
+  stakeAndLoadNeuron,
   updateDelay,
 } from "../../../lib/services/neurons.services";
-import { authStore } from "../../../lib/stores/auth.store";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { neuronMock } from "../../mocks/neurons.mock";
+import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockNeuron } from "../../mocks/neurons.mock";
 
 describe("neurons-services", () => {
-  const mockGovernanceCanister = mock<GovernanceCanister>();
-  beforeEach(() => {
-    mockGovernanceCanister.listNeurons.mockImplementation(
-      jest.fn().mockResolvedValue([])
-    );
-    mockGovernanceCanister.stakeNeuron.mockImplementation(jest.fn());
-    mockGovernanceCanister.getNeuron.mockImplementation(
-      jest.fn().mockResolvedValue(neuronMock)
-    );
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation(() => mockGovernanceCanister);
+  const spyStakeNeuron = jest
+    .spyOn(api, "stakeNeuron")
+    .mockImplementation(() => Promise.resolve(mockNeuron.neuronId));
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-  });
+  const spyGetNeuron = jest
+    .spyOn(api, "queryNeuron")
+    .mockImplementation(() => Promise.resolve(mockNeuron));
+
+  const neurons = [mockNeuron, { ...mockNeuron, neuronId: BigInt(2) }];
+
+  const spyQueryNeurons = jest
+    .spyOn(api, "queryNeurons")
+    .mockImplementation(() => Promise.resolve(neurons));
+
+  const spyIncreaseDissolveDelay = jest
+    .spyOn(api, "increaseDissolveDelay")
+    .mockImplementation(() => Promise.resolve());
 
   afterEach(() => {
-    jest.resetAllMocks();
+    spyGetNeuron.mockClear();
+    neuronsStore.setNeurons([]);
   });
 
-  it("stakeNeuron creates a new neuron", async () => {
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => mock<LedgerCanister>());
+  describe("stake new neuron", () => {
+    it("should stake and load a neuron", async () => {
+      await stakeAndLoadNeuron({ amount: 10, identity: mockIdentity });
 
-    await stakeNeuron({
-      stake: ICP.fromString("2") as ICP,
+      expect(spyStakeNeuron).toHaveBeenCalled();
+
+      const neuron = get(neuronsStore)[0];
+      expect(neuron).toEqual(mockNeuron);
     });
 
-    expect(mockGovernanceCanister.stakeNeuron).toBeCalled();
-  });
+    it(`stakeNeuron should raise an error if amount less than ${
+      E8S_PER_ICP / E8S_PER_ICP
+    } ICP`, async () => {
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation(() => mock<LedgerCanister>());
 
-  it(`stakeNeuron should raise an error if amount less than ${
-    E8S_PER_ICP / E8S_PER_ICP
-  } ICP`, async () => {
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => mock<LedgerCanister>());
+      const call = () =>
+        stakeAndLoadNeuron({
+          amount: 0.1,
+          identity: mockIdentity,
+        });
 
-    const call = () =>
-      stakeNeuron({
-        stake: ICP.fromString("0.1") as ICP,
-      });
-
-    await expect(call).rejects.toThrow(Error);
-  });
-
-  it("listNeurons fetches neurons", async () => {
-    expect(mockGovernanceCanister.listNeurons).not.toBeCalled();
-
-    await listNeurons();
-
-    expect(mockGovernanceCanister.listNeurons).toBeCalled();
-  });
-
-  it("get neuron returns expected neuron", async () => {
-    expect(mockGovernanceCanister.getNeuron).not.toBeCalled();
-
-    const neuron = await getNeuron(neuronMock.neuronId);
-
-    expect(mockGovernanceCanister.getNeuron).toBeCalled();
-    expect(neuron).not.toBeUndefined();
-    expect(neuron?.neuronId).toEqual(neuronMock.neuronId);
-  });
-
-  it("loadNeuron fetches one neuron and adds it to the store", async () => {
-    expect(mockGovernanceCanister.getNeuron).not.toBeCalled();
-
-    await loadNeuron(neuronMock.neuronId);
-
-    expect(mockGovernanceCanister.getNeuron).toBeCalled();
-    const neuronsInStore = get(neuronsStore);
-    expect(neuronsInStore.length).toBe(1);
-  });
-
-  it("updateDelay updates neuron", async () => {
-    mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
-      jest.fn().mockResolvedValue({ Ok: null })
-    );
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => mock<LedgerCanister>());
-
-    await updateDelay({
-      neuronId: BigInt(10),
-      dissolveDelayInSeconds: 12000,
+      await expect(call).rejects.toThrow(Error);
     });
 
-    expect(mockGovernanceCanister.increaseDissolveDelay).toBeCalled();
+    it("should not stake neuron if no identity", async () => {
+      const call = async () =>
+        await stakeAndLoadNeuron({ amount: 10, identity: null });
+
+      await expect(call).rejects.toThrow(Error("No identity"));
+    });
   });
 
-  it("updateDelay throws error when updating neuron fails", async () => {
-    const error = new Error();
-    mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
-      jest.fn().mockResolvedValue({ Err: error })
-    );
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => mock<LedgerCanister>());
+  describe("list neurons", () => {
+    it("should list neurons", async () => {
+      await listNeurons({ identity: mockIdentity });
 
-    const call = () =>
-      updateDelay({
+      expect(spyQueryNeurons).toHaveBeenCalled();
+
+      const neuronsList = get(neuronsStore);
+      expect(neuronsList).toEqual(neurons);
+    });
+
+    it("should not list neurons if no identity", async () => {
+      const call = async () => await listNeurons({ identity: null });
+
+      await expect(call).rejects.toThrow("No identity found listing neurons");
+    });
+  });
+
+  describe("update delay", () => {
+    it("should update delay", async () => {
+      await updateDelay({
         neuronId: BigInt(10),
         dissolveDelayInSeconds: 12000,
+        identity: mockIdentity,
       });
 
-    expect(call).rejects.toThrow(error);
+      expect(spyIncreaseDissolveDelay).toHaveBeenCalled();
+
+      const neuron = get(neuronsStore)[0];
+      expect(neuron).toEqual(mockNeuron);
+    });
+
+    it("should not update delay if no identity", async () => {
+      const call = async () =>
+        await updateDelay({
+          neuronId: BigInt(10),
+          dissolveDelayInSeconds: 12000,
+          identity: null,
+        });
+
+      await expect(call).rejects.toThrow("No identity");
+    });
+  });
+
+  describe("details", () => {
+    it("should get neuronId from valid path", async () => {
+      expect(getNeuronId("/#/neuron/123")).toBe(BigInt(123));
+      expect(getNeuronId("/#/neuron/0")).toBe(BigInt(0));
+    });
+
+    it("should not get neuronId from invalid path", async () => {
+      expect(getNeuronId("/#/neuron/")).toBeUndefined();
+      expect(getNeuronId("/#/neuron/1.5")).toBeUndefined();
+      expect(getNeuronId("/#/neuron/123n")).toBeUndefined();
+    });
+  });
+
+  describe("load neuron", () => {
+    it("should get neuron from neurons store if presented and not call queryNeuron", (done) => {
+      neuronsStore.pushNeurons([mockNeuron]);
+      loadNeuron({
+        neuronId: mockNeuron.neuronId,
+        identity: mockIdentity,
+        setNeuron: (neuron: NeuronInfo) => {
+          expect(neuron?.neuronId).toBe(mockNeuron.neuronId);
+          expect(spyGetNeuron).not.toBeCalled();
+          neuronsStore.setNeurons([]);
+          done();
+        },
+      });
+    });
+
+    it("should call the api to get neuron if not in store", (done) => {
+      loadNeuron({
+        neuronId: mockNeuron.neuronId,
+        identity: mockIdentity,
+        setNeuron: () => {
+          expect(spyGetNeuron).toBeCalled();
+          done();
+        },
+      });
+    });
   });
 });

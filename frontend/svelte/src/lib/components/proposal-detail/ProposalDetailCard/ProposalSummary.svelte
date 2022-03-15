@@ -25,7 +25,7 @@
   p {
     font-size: var(--font-size-small);
     color: var(--gray-100);
-    white-space: break-spaces;
+    overflow-wrap: break-word;
 
     @include media.min-width(medium) {
       font-size: var(--font-size-small);

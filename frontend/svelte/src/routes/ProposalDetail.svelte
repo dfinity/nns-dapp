@@ -20,6 +20,7 @@
 
   let proposalInfo: ProposalInfo | undefined;
   let neurons: NeuronInfo[] | undefined;
+  let neuronsReady = false;
   $: neurons = $neuronsStore;
 
   // TODO: To be removed once this page has been implemented
@@ -33,10 +34,13 @@
     }
 
     // TODO: catch and error handling -- https://dfinity.atlassian.net/browse/L2-370
-    await listNeurons();
+    await listNeurons({ identity: $authStore.identity });
+    neuronsReady = true;
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
+    proposalInfo = undefined;
+
     const proposalIdMaybe = getProposalId(path);
     if (proposalIdMaybe === undefined) {
       unsubscribe();
@@ -79,7 +83,7 @@
     >
 
     <section>
-      {#if proposalInfo && neurons}
+      {#if proposalInfo && neurons && neuronsReady}
         <ProposalDetailCard {proposalInfo} />
         <VotesCard {proposalInfo} {neurons} />
         <VotingCard {proposalInfo} {neurons} />

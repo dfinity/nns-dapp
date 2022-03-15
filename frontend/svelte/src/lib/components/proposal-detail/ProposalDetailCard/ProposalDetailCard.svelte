@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { Proposal, ProposalInfo, ProposalStatus } from "@dfinity/nns";
+  import { ProposalStatus } from "@dfinity/nns";
+  import type { Proposal, ProposalInfo } from "@dfinity/nns";
   import Badge from "../../ui/Badge.svelte";
   import Card from "../../ui/Card.svelte";
-  import {
-    ProposalColor,
-    PROPOSAL_COLOR,
-  } from "../../../../lib/constants/proposals.constants";
+  import type { ProposalColor } from "../../../../lib/constants/proposals.constants";
+  import { PROPOSAL_COLOR } from "../../../../lib/constants/proposals.constants";
   import { i18n } from "../../../../lib/stores/i18n";
   import ProposalSummary from "./ProposalSummary.svelte";
   import ProposalMeta from "./ProposalMeta.svelte";
@@ -25,7 +24,9 @@
 
 <Card>
   <h2 slot="start" {title}>{title}</h2>
-  <Badge slot="end" {color}>{$i18n.status[ProposalStatus[status]]}</Badge>
+  <Badge slot="end" {color}
+    ><h2 class="status">{$i18n.status[ProposalStatus[status]]}</h2></Badge
+  >
   <ProposalSummary {proposal} />
   <ProposalMeta {proposalInfo} />
   <ProposalActions {proposal} />
@@ -45,5 +46,9 @@
       padding-right: var(--padding);
       font-size: var(--font-size-h3);
     }
+  }
+
+  .status {
+    color: inherit;
   }
 </style>

@@ -1,10 +1,12 @@
 import type { BlockHeight, TransferError } from "@dfinity/nns";
 import { InsufficientFunds } from "@dfinity/nns";
 import { get } from "svelte/store";
+import { acquireICPTs } from "../api/dev.api";
 import { E8S_PER_ICP } from "../constants/icp.constants";
-import { AccountsStore, accountsStore } from "../stores/accounts.store";
-import { AuthStore, authStore } from "../stores/auth.store";
-import { acquireICPTs } from "../utils/dev.utils";
+import type { AccountsStore } from "../stores/accounts.store";
+import { accountsStore } from "../stores/accounts.store";
+import type { AuthStore } from "../stores/auth.store";
+import { authStore } from "../stores/auth.store";
 import { syncAccounts } from "./accounts.services";
 
 export const getICPs = async (icps: number) => {

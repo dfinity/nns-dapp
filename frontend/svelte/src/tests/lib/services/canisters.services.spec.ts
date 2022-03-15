@@ -1,28 +1,28 @@
-import { mock } from "jest-mock-extended";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
+import { get } from "svelte/store";
+import * as api from "../../../lib/api/canisters.api";
+import * as en from "../../../lib/i18n/en.json";
 import { listCanisters } from "../../../lib/services/canisters.services";
+import { canistersStore } from "../../../lib/stores/canisters.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockCanisters } from "../../mocks/canisters.mock";
 
 describe("canisters-services", () => {
-  const mockNNSDappCanister = mock<NNSDappCanister>();
+  const spyQueryCanisters = jest
+    .spyOn(api, "queryCanisters")
+    .mockImplementation(() => Promise.resolve(mockCanisters));
 
-  let spyListCanisters;
-
-  beforeEach(() => {
-    jest
-      .spyOn(NNSDappCanister, "create")
-      .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
-
-    spyListCanisters = jest
-      .spyOn(mockNNSDappCanister, "getCanisters")
-      .mockResolvedValue([]);
-  });
-
-  afterEach(() => spyListCanisters.mockClear());
-
-  it("should call the canister to list the canisters 🤪", async () => {
+  it("should list canisters", async () => {
     await listCanisters({ identity: mockIdentity });
 
-    expect(spyListCanisters).toHaveReturnedTimes(1);
+    expect(spyQueryCanisters).toHaveBeenCalled();
+
+    const canisters = get(canistersStore);
+    expect(canisters).toEqual(mockCanisters);
+  });
+
+  it("should not list canisters if no identity", async () => {
+    const call = async () => await listCanisters({ identity: null });
+
+    await expect(call).rejects.toThrow(Error(en.error.missing_identity));
   });
 });

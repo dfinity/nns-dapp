@@ -2,14 +2,15 @@
  * @jest-environment jsdom
  */
 
-import { GovernanceCanister, LedgerCanister, NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@dfinity/nns";
+import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import * as en from "../../../lib/i18n/en.json";
 import CreateNeuronModal from "../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import {
-  stakeNeuron,
+  stakeAndLoadNeuron,
   updateDelay,
 } from "../../../lib/services/neurons.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
@@ -18,15 +19,15 @@ import { neuronsStore } from "../../../lib/stores/neurons.store";
 import { mockAccountsStoreSubscribe } from "../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
-  buildMockNeuronsStoreSubscibe,
-  fullNeuronMock,
-  neuronMock,
+  buildMockNeuronsStoreSubscribe,
+  mockFullNeuron,
+  mockNeuron,
 } from "../../mocks/neurons.mock";
 
 jest.mock("../../../lib/services/neurons.services", () => {
   return {
     // need to return the same neuron id as mockNeuron.neuronId
-    stakeNeuron: jest.fn().mockResolvedValue(BigInt(1)),
+    stakeAndLoadNeuron: jest.fn().mockResolvedValue(BigInt(1)),
     updateDelay: jest.fn().mockResolvedValue(undefined),
     loadNeuron: jest.fn().mockResolvedValue(undefined),
   };
@@ -127,13 +128,13 @@ describe("CreateNeuronModal", () => {
 
     createButton && (await fireEvent.click(createButton));
 
-    expect(stakeNeuron).toBeCalled();
+    expect(stakeAndLoadNeuron).toBeCalled();
   });
 
   it("should move to update dissolve delay after creating a neuron", async () => {
     jest
       .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscibe([neuronMock]));
+      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
     const { container } = render(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
@@ -160,7 +161,7 @@ describe("CreateNeuronModal", () => {
   it("should have the update delay button disabled", async () => {
     jest
       .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscibe([neuronMock]));
+      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
     const { container } = render(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
@@ -191,7 +192,7 @@ describe("CreateNeuronModal", () => {
   it("should have disabled button for dissolve less than six months", async () => {
     jest
       .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscibe([neuronMock]));
+      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
     const { container } = render(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
@@ -226,15 +227,15 @@ describe("CreateNeuronModal", () => {
   it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
     const neuronStake = 2.2;
     const newNeuron: NeuronInfo = {
-      ...neuronMock,
+      ...mockNeuron,
       fullNeuron: {
-        ...fullNeuronMock,
+        ...mockFullNeuron,
         cachedNeuronStake: BigInt(Math.round(neuronStake * E8S_PER_ICP)),
       },
     };
     jest
       .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscibe([newNeuron]));
+      .mockImplementation(buildMockNeuronsStoreSubscribe([newNeuron]));
 
     const { container, getByText } = render(CreateNeuronModal);
 
@@ -262,7 +263,7 @@ describe("CreateNeuronModal", () => {
   it("should be able to change dissolve delay in the confirmation screen", async () => {
     jest
       .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscibe([neuronMock]));
+      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
 
     const { container } = render(CreateNeuronModal);
 

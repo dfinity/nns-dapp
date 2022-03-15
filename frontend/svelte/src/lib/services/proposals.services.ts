@@ -1,27 +1,27 @@
 import type { Identity } from "@dfinity/agent";
-import {
-  EmptyResponse,
-  GovernanceCanister,
+import type {
   GovernanceError,
-  ListProposalsResponse,
+  NeuronId,
   ProposalId,
   ProposalInfo,
-  Topic,
   Vote,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { LIST_PAGINATION_LIMIT } from "../constants/constants";
+import {
+  queryProposal,
+  queryProposals,
+  registerVote,
+} from "../api/proposals.api";
 import { busyStore } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
+import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
   proposalsFiltersStore,
-  ProposalsFiltersStore,
   proposalsStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
-import { createAgent } from "../utils/agent.utils";
+import { getLastPathDetailId } from "../utils/app-path.utils";
 import { isNode } from "../utils/dev.utils";
-import { enumsExclude } from "../utils/enum.utils";
 import { stringifyJson, uniqueObjects } from "../utils/utils";
 import { listNeurons } from "./neurons.services";
 
@@ -36,7 +36,7 @@ export const listProposals = async ({
     proposalsStore.setProposals([]);
   }
 
-  const proposals: ProposalInfo[] = await queryProposals({
+  const proposals: ProposalInfo[] = await findProposals({
     beforeProposal: undefined,
     identity,
   });
@@ -51,7 +51,7 @@ export const listNextProposals = async ({
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
 }) => {
-  const proposals: ProposalInfo[] = await queryProposals({
+  const proposals: ProposalInfo[] = await findProposals({
     beforeProposal,
     identity,
   });
@@ -65,43 +65,21 @@ export const listNextProposals = async ({
   proposalsStore.pushProposals(proposals);
 };
 
-const queryProposals = async ({
+const findProposals = async ({
   beforeProposal,
   identity,
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo[]> => {
+  // TODO: https://dfinity.atlassian.net/browse/L2-346
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
 
-  const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: process.env.HOST }),
-  });
+  const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
 
-  const { rewards, status, topics }: ProposalsFiltersStore = get(
-    proposalsFiltersStore
-  );
-
-  // TODO(L2-206): In Flutter, proposals are sorted on the client side -> this needs to be deferred on backend side if we still want this feature
-  // sortedByDescending((element) => element.proposalTimestamp);
-  // Governance canister listProposals -> https://github.com/dfinity/ic/blob/5c05a2fe2a7f8863c3772c050ece7e20907c8252/rs/sns/governance/src/governance.rs#L1226
-
-  const { proposals }: ListProposalsResponse = await governance.listProposals({
-    request: {
-      limit: LIST_PAGINATION_LIMIT,
-      beforeProposal,
-      excludeTopic: enumsExclude<Topic>({
-        obj: Topic as unknown as Topic,
-        values: topics,
-      }),
-      includeRewardStatus: rewards,
-      includeStatus: status,
-    },
-  });
-
-  return proposals;
+  return queryProposals({ beforeProposal, identity, filters });
 };
 
 /**
@@ -158,41 +136,21 @@ const getProposal = async ({
   proposalId: ProposalId;
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo | undefined> => {
-  const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
-  return proposal || queryProposal({ proposalId, identity });
-};
-
-const queryProposal = async ({
-  proposalId,
-  identity,
-}: {
-  proposalId: ProposalId;
-  identity: Identity | null | undefined;
-}): Promise<ProposalInfo | undefined> => {
   // TODO: https://dfinity.atlassian.net/browse/L2-346
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
 
-  const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: process.env.HOST }),
-  });
-
-  return governance.getProposal({ proposalId, certified: true });
+  const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
+  return proposal || queryProposal({ proposalId, identity });
 };
 
-export const getProposalId = (path: string): ProposalId | undefined => {
-  const pathDetail = path.split("/").pop();
-  if (pathDetail === undefined) {
-    return;
-  }
-  const id = parseInt(pathDetail, 10);
-  // ignore not integer ids
-  return isFinite(id) && `${id}` === pathDetail ? BigInt(id) : undefined;
-};
+export const getProposalId = (path: string): ProposalId | undefined =>
+  getLastPathDetailId(path);
 
 /**
  * Makes multiple registerVote calls (1 per neuronId).
+ * @returns List of errors (order is preserved)
  */
 export const registerVotes = async ({
   neuronIds,
@@ -200,7 +158,7 @@ export const registerVotes = async ({
   vote,
   identity,
 }: {
-  neuronIds: bigint[];
+  neuronIds: NeuronId[];
   proposalId: ProposalId;
   vote: Vote;
   identity: Identity | null | undefined;
@@ -230,7 +188,8 @@ export const registerVotes = async ({
     });
   }
 
-  await listNeurons();
+  await listNeurons({ identity });
+
   busyStore.stop("vote");
 };
 
@@ -245,25 +204,20 @@ const requestRegisterVotes = async ({
   vote: Vote;
   identity: Identity;
 }): Promise<void> => {
-  const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: process.env.HOST }),
-  });
-
   // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
-  const errors: Array<GovernanceError | undefined> = await Promise.all(
-    neuronIds.map((neuronId) =>
-      (
-        governance.registerVote({
-          neuronId,
-          vote,
-          proposalId,
-        }) as Promise<EmptyResponse>
-      ).then((res) => ("Err" in res ? res.Err : undefined))
+  const responses: Array<GovernanceError | undefined> = await Promise.all(
+    neuronIds.map((neuronId: NeuronId) =>
+      registerVote({
+        neuronId,
+        vote,
+        proposalId,
+        identity,
+      })
     )
   );
-
-  // show only uqique error messages
-  const errorDetails: string = uniqueObjects(errors.filter(Boolean))
+  const errors = responses.filter(Boolean);
+  // collect unique error messages
+  const errorDetails: string = uniqueObjects(errors)
     .map((error) =>
       typeof error?.errorMessage === "string" && error.errorMessage.length > 0
         ? stringifyJson(error?.errorMessage, { indentation: 2 })

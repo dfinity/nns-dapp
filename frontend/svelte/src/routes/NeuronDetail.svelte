@@ -1,12 +1,85 @@
 <script lang="ts">
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
-  import { i18n } from "../lib/stores/i18n";
+  import type { NeuronInfo } from "@dfinity/nns";
 
-  const showThisRoute: boolean = process.env.REDIRECT_TO_LEGACY === "never";
+  import { onDestroy, onMount } from "svelte";
+
+  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import { getNeuronId, loadNeuron } from "../lib/services/neurons.services";
+  import NeuronFollowingCard from "../lib/components/neuron-detail/NeuronFollowingCard.svelte";
+  import NeuronHotkeysCard from "../lib/components/neuron-detail/NeuronHotkeysCard.svelte";
+  import NeuronMaturityCard from "../lib/components/neuron-detail/NeuronMaturityCard.svelte";
+  import NeuronMetaInfoCard from "../lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
+  import NeuronProposalsCard from "../lib/components/neuron-detail/NeuronProposalsCard.svelte";
+  import NeuronVotingHistoryCard from "../lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
+  import Spinner from "../lib/components/ui/Spinner.svelte";
+  import { AppPath } from "../lib/constants/routes.constants";
+  import { i18n } from "../lib/stores/i18n";
+  import { routeStore } from "../lib/stores/route.store";
+  import { authStore } from "../lib/stores/auth.store";
+
+  let neuron: NeuronInfo | undefined;
+
+  // TODO: To be removed once this page has been implemented
+  const showThisRoute = ["never", "staging"].includes(
+    process.env.REDIRECT_TO_LEGACY as string
+  );
+  onMount(() => {
+    if (!showThisRoute) {
+      window.location.replace(`/${window.location.hash}`);
+      return;
+    }
+  });
+
+  const unsubscribe = routeStore.subscribe(async ({ path }) => {
+    const neuronIdMaybe = getNeuronId(path);
+    if (neuronIdMaybe === undefined) {
+      unsubscribe();
+      routeStore.replace({ path: AppPath.Neurons });
+      return;
+    }
+
+    const onError = () => {
+      unsubscribe();
+
+      // Wait a bit before redirection so the user recognizes on which page the error occures
+      setTimeout(() => {
+        routeStore.replace({ path: AppPath.Neurons });
+      }, 1500);
+    };
+
+    await loadNeuron({
+      neuronId: neuronIdMaybe,
+      identity: $authStore.identity,
+      setNeuron: (neuronInfo: NeuronInfo) => (neuron = neuronInfo),
+      handleError: onError,
+    });
+  });
+
+  onDestroy(unsubscribe);
+
+  const goBack = () => {
+    unsubscribe();
+
+    routeStore.navigate({
+      path: AppPath.Neurons,
+    });
+  };
 </script>
 
 {#if showThisRoute}
-  <HeadlessLayout>
+  <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
+    <section>
+      {#if neuron}
+        <NeuronMetaInfoCard {neuron} />
+        <NeuronMaturityCard {neuron} />
+        <NeuronFollowingCard {neuron} />
+        <NeuronProposalsCard {neuron} />
+        <NeuronHotkeysCard {neuron} />
+        <NeuronVotingHistoryCard {neuron} />
+      {:else}
+        <Spinner />
+      {/if}
+    </section>
   </HeadlessLayout>
 {/if}

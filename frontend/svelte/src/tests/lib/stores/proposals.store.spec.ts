@@ -7,7 +7,7 @@ import {
   proposalsStore,
   votingNeuronSelectStore,
 } from "../../../lib/stores/proposals.store";
-import { neuronMock } from "../../mocks/neurons.mock";
+import { mockNeuron } from "../../mocks/neurons.mock";
 
 describe("proposals-store", () => {
   describe("proposals", () => {
@@ -125,7 +125,7 @@ describe("proposals-store", () => {
 
   describe("votingNeuronSelectStore", () => {
     const neuronIds = [0, 1, 2].map(BigInt);
-    const neurons = neuronIds.map((neuronId) => ({ ...neuronMock, neuronId }));
+    const neurons = neuronIds.map((neuronId) => ({ ...mockNeuron, neuronId }));
 
     it("should set neurons", () => {
       votingNeuronSelectStore.set(neurons);
