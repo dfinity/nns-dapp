@@ -10,6 +10,20 @@
   <span slot="title">{$i18n.new_followee.title}</span>
   <main data-tid="new-followee-modal">
     <article>
+      <h4>{$i18n.neurons.neuron_id}</h4>
+      <form on:submit|preventDefault>
+        <Input
+          inputType="text"
+          placeholderLabelKey="new_followee.address_placeholder"
+          name="new-followee-address"
+          bind:value={followeeAddress}
+          theme="dark"
+        />
+        <button class="primary small">{$i18n.new_followee.follow_neuron}</button
+        >
+      </form>
+    </article>
+    <article>
       <h4>{$i18n.new_followee.options_title}</h4>
       <ul>
         <li>
@@ -21,21 +35,6 @@
           <button class="secondary small">{$i18n.new_followee.follow}</button>
         </li>
       </ul>
-    </article>
-    <article>
-      <h4>{$i18n.neurons.neuron_id}</h4>
-      <form on:submit|preventDefault>
-        <Input
-          inputType="text"
-          placeholderLabelKey="new_followee.address_placeholder"
-          name="new-followee-address"
-          bind:value={followeeAddress}
-          theme="dark"
-        />
-        <button class="primary full-width"
-          >{$i18n.new_followee.follow_neuron}</button
-        >
-      </form>
     </article>
   </main>
 </Modal>
