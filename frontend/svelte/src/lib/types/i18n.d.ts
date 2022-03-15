@@ -16,6 +16,7 @@ interface I18nError {
   auth_sync: string;
   sign_in: string;
   proposal_not_found: string;
+  neuron_not_found: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
