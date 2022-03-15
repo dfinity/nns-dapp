@@ -211,7 +211,7 @@ const requestRegisterVotes = async ({
   identity: Identity;
 }): Promise<void> => {
   // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
-  const errors: Array<GovernanceError | undefined> = await Promise.all(
+  const responses: Array<GovernanceError | undefined> = await Promise.all(
     neuronIds.map((neuronId: NeuronId) =>
       registerVote({
         neuronId,
@@ -221,9 +221,9 @@ const requestRegisterVotes = async ({
       })
     )
   );
-
-  // show only unique error messages
-  const errorDetails: string = uniqueObjects(errors.filter(Boolean))
+  const errors = responses.filter(Boolean);
+  // collect unique error messages
+  const errorDetails: string = uniqueObjects(errors)
     .map((error) =>
       typeof error?.errorMessage === "string" && error.errorMessage.length > 0
         ? stringifyJson(error?.errorMessage, { indentation: 2 })

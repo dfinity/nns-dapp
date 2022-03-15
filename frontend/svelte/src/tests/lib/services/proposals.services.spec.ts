@@ -217,6 +217,17 @@ describe("proposals-services", () => {
         expect(spyBusyStart).toBeCalledWith("vote");
         expect(spyBusyStop).toBeCalledWith("vote");
       });
+
+      it("should not display errors on successful vote registration", async () => {
+        const spyToastShow = jest.spyOn(toastsStore, "show");
+        await registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.YES,
+          identity,
+        });
+        expect(spyToastShow).not.toBeCalled();
+      });
     });
 
     describe("refresh", () => {
