@@ -358,14 +358,9 @@ describe("proposals-services", () => {
 
       afterAll(() => jest.clearAllMocks());
 
-      const mockRegisterVote = async ({
-        vote,
-      }: {
-        neuronId: bigint;
-        vote: Vote;
-        proposalId: bigint;
-        identity: Identity;
-      }): Promise<GovernanceError | undefined> => {
+      const mockRegisterVote = async (): Promise<
+        GovernanceError | undefined
+      > => {
         throw new Error("test");
       };
 
