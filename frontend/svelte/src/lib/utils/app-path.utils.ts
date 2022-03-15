@@ -24,3 +24,17 @@ export const isRoutePath: ({
 }) => boolean = memoize(({ path, routePath }) =>
   new RegExp(`^${pathValidation(path)}$`).test(routePath)
 );
+
+export const getLastPathDetailId = (path: string): bigint | undefined => {
+  const pathDetail = path.split("/").pop();
+  if (pathDetail === undefined) {
+    return;
+  }
+  try {
+    const id = BigInt(pathDetail);
+    return `${id}` === pathDetail ? id : undefined;
+  } catch (err) {
+    console.log(`Couldn't get last detail id from ${pathDetail}`);
+    return undefined;
+  }
+};

@@ -1,12 +1,11 @@
-import {
+import type {
   NeuronId,
   NeuronInfo,
   Proposal,
   ProposalId,
   ProposalInfo,
-  ProposalStatus,
-  Vote,
 } from "@dfinity/nns";
+import { ProposalStatus, Vote } from "@dfinity/nns";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { formatNumber } from "./format.utils";
 import { stringifyJson } from "./utils";

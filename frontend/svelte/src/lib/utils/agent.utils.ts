@@ -1,4 +1,5 @@
-import { HttpAgent, Identity } from "@dfinity/agent";
+import type { Identity } from "@dfinity/agent";
+import { HttpAgent } from "@dfinity/agent";
 
 export const createAgent = async ({
   identity,

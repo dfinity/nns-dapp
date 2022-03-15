@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Proposal, ProposalInfo, Topic } from "@dfinity/nns";
+  import { Topic } from "@dfinity/nns";
+  import type { Proposal, ProposalInfo } from "@dfinity/nns";
   import { i18n } from "../../../../lib/stores/i18n";
 
   export let proposalInfo: ProposalInfo;
