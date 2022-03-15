@@ -24,4 +24,6 @@
 
 {#if proposal?.proposal !== undefined}
   <ProposalSummary proposal={proposal.proposal} />
+
+  <p>TODO</p>
 {/if}

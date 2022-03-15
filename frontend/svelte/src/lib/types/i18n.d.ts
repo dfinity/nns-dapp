@@ -191,6 +191,8 @@ interface I18nProposal_detail__ineligible {
 interface I18nNeuron_detail {
   title: string;
   proposer: string;
+  voting_history: string;
+  vote: string;
 }
 
 interface I18nTime {

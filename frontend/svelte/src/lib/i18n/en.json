@@ -171,7 +171,9 @@
   },
   "neuron_detail": {
     "title": "Neuron",
-    "proposer": "Proposer"
+    "proposer": "Proposer",
+    "voting_history": "Voting History",
+    "vote": "Vote"
   },
   "time": {
     "year": "year",
