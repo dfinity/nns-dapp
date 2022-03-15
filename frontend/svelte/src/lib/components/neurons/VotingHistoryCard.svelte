@@ -19,8 +19,6 @@
   $: ballots = distinctBallots(neuron);
 </script>
 
-<!-- TODO(L2-282): add tests -->
-
 <Card>
   <h3 slot="start">{$i18n.neuron_detail.voting_history}</h3>
 
