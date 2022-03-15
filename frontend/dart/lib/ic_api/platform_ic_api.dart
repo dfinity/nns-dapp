@@ -68,6 +68,9 @@ abstract class AbstractPlatformICApi {
       required ICP amount,
       required String? toAccountId});
 
+  Future<Result<Unit, Exception>> merge(
+      {required Neuron neuron1, required Neuron neuron2});
+
   Future<Result<Unit, Exception>> mergeMaturity(
       {required Neuron neuron, required int percentageToMerge});
 

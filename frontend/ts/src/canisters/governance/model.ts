@@ -163,6 +163,10 @@ export interface ManageNeuron {
 export interface Merge {
   sourceNeuronId: Option<NeuronId>;
 }
+export interface MergeRequest {
+  neuronId: NeuronId;
+  sourceNeuronId: NeuronId;
+}
 export interface MergeMaturity {
   percentageToMerge: number;
 }
@@ -538,6 +542,7 @@ export default interface ServiceInterface {
     request: JoinCommunityFundRequest
   ) => Promise<EmptyResponse>;
   follow: (request: FollowRequest) => Promise<EmptyResponse>;
+  merge: (request: MergeRequest) => Promise<EmptyResponse>;
   mergeMaturity: (
     request: MergeMaturityRequest
   ) => Promise<MergeMaturityResponse>;
