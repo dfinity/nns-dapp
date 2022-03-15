@@ -104,8 +104,42 @@ interface I18nNeurons {
   skip: string;
   update_delay: string;
   confirm_delay: string;
-  new_followee: string;
-  follow_neurons: string;
+}
+
+interface I18nNew_followee {
+  title: string;
+  address_placeholder: string;
+  follow_neuron: string;
+  options_title: string;
+  follow: string;
+}
+
+interface I18nFollow_neurons {
+  description: string;
+  topic_0_title: string;
+  topic_0_subtitle: string;
+  topic_1_title: string;
+  topic_1_subtitle: string;
+  topic_2_title: string;
+  topic_2_subtitle: string;
+  topic_3_title: string;
+  topic_3_subtitle: string;
+  topic_4_title: string;
+  topic_4_subtitle: string;
+  topic_5_title: string;
+  topic_5_subtitle: string;
+  topic_6_title: string;
+  topic_6_subtitle: string;
+  topic_7_title: string;
+  topic_7_subtitle: string;
+  topic_8_title: string;
+  topic_8_subtitle: string;
+  topic_9_title: string;
+  topic_9_subtitle: string;
+  topic_10_title: string;
+  topic_10_subtitle: string;
+  current_followees: string;
+  add: string;
 }
 
 interface I18nVoting {
@@ -221,6 +255,8 @@ interface I18n {
   auth: I18nAuth;
   accounts: I18nAccounts;
   neurons: I18nNeurons;
+  new_followee: I18nNew_followee;
+  follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;
   canisters: I18nCanisters;
   topics: I18nTopics;

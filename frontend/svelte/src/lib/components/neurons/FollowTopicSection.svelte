@@ -7,9 +7,9 @@
   export let topic: Topic;
 
   let title: string;
-  $: title = $i18n.neurons.follow_neurons[`topic_${topic}_title`];
+  $: title = $i18n.follow_neurons[`topic_${topic}_title`];
   let subtitle: string;
-  $: subtitle = $i18n.neurons.follow_neurons[`topic_${topic}_subtitle`];
+  $: subtitle = $i18n.follow_neurons[`topic_${topic}_subtitle`];
 
   let isExpanded: boolean = false;
   let showNewFolloweeModal: boolean = false;
@@ -33,11 +33,11 @@
     </div>
   </div>
   <div class="content" class:isExpanded>
-    <h5>{$i18n.neurons.follow_neurons.current_followees}</h5>
+    <h5>{$i18n.follow_neurons.current_followees}</h5>
     <!-- TODO: Iterate followees -->
     <div class="button-wrapper">
       <button class="secondary small" on:click={openNewFolloweeModal}
-        >{$i18n.neurons.follow_neurons.add}</button
+        >{$i18n.follow_neurons.add}</button
       >
     </div>
   </div>

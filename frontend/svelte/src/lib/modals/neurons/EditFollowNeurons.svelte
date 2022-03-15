@@ -9,7 +9,7 @@
 </script>
 
 <section>
-  <p>{$i18n.neurons.follow_neurons.description}</p>
+  <p>{$i18n.follow_neurons.description}</p>
   <div>
     {#each topics as topic}
       <FollowTopicSection {topic} />

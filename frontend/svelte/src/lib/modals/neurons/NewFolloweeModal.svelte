@@ -7,22 +7,18 @@
 </script>
 
 <Modal theme="dark" size="medium" on:nnsClose>
-  <span slot="title">{$i18n.neurons.new_followee.title}</span>
+  <span slot="title">{$i18n.new_followee.title}</span>
   <main>
     <article>
-      <h4>{$i18n.neurons.new_followee.options_title}</h4>
+      <h4>{$i18n.new_followee.options_title}</h4>
       <ul>
         <li>
           <p>Internet Computer Association</p>
-          <button class="secondary small"
-            >{$i18n.neurons.new_followee.follow}</button
-          >
+          <button class="secondary small">{$i18n.new_followee.follow}</button>
         </li>
         <li>
           <p>DFINITY Foundation</p>
-          <button class="secondary small"
-            >{$i18n.neurons.new_followee.follow}</button
-          >
+          <button class="secondary small">{$i18n.new_followee.follow}</button>
         </li>
       </ul>
     </article>
@@ -31,13 +27,13 @@
       <form on:submit|preventDefault>
         <Input
           inputType="text"
-          placeholderLabelKey="neurons.new_followee.address_placeholder"
+          placeholderLabelKey="new_followee.address_placeholder"
           name="new-followee-address"
           bind:value={followeeAddress}
           theme="dark"
         />
         <button class="primary full-width"
-          >{$i18n.neurons.new_followee.follow_neuron}</button
+          >{$i18n.new_followee.follow_neuron}</button
         >
       </form>
     </article>
