@@ -1,29 +1,49 @@
 <script lang="ts">
+  import type { Topic } from "@dfinity/nns";
   import IconExpandMore from "../../icons/IconExpandMore.svelte";
+  import NewFolloweeModal from "../../modals/neurons/NewFolloweeModal.svelte";
+  import { i18n } from "../../stores/i18n";
+
+  export let topic: Topic;
+
+  let title: string;
+  $: title = $i18n.neurons.follow_neurons[`topic_${topic}_title`];
+  let subtitle: string;
+  $: subtitle = $i18n.neurons.follow_neurons[`topic_${topic}_subtitle`];
 
   let isExpanded: boolean = false;
+  let showNewFolloweeModal: boolean = false;
 
   const toggleContent = () => (isExpanded = !isExpanded);
+
+  const openNewFolloweeModal = () => (showNewFolloweeModal = true);
+  const closeNewFolloweeModal = () => (showNewFolloweeModal = false);
 </script>
 
 <article>
   <div class="wrapper">
-    <div class="info">
-      <h3>All Topics Except Governance</h3>
-      <p>Follow neurons on all proposal topics except the governance topic.</p>
+    <div>
+      <h3>{title}</h3>
+      <p class="subtitle">{subtitle}</p>
     </div>
     <div class="toolbar">
+      <!-- TODO: Set total followees -->
       <h3 class="badge">0</h3>
       <span class:isExpanded on:click={toggleContent}><IconExpandMore /></span>
     </div>
   </div>
   <div class="content" class:isExpanded>
-    <h4>Currently Following</h4>
+    <h4>{$i18n.neurons.follow_neurons.current_followees}</h4>
     <!-- TODO: Iterate followees -->
     <div class="button-wrapper">
-      <button class="secondary small">Add Followee</button>
+      <button class="secondary small" on:click={openNewFolloweeModal}
+        >{$i18n.neurons.follow_neurons.add}</button
+      >
     </div>
   </div>
+  {#if showNewFolloweeModal}
+    <NewFolloweeModal on:nnsClose={closeNewFolloweeModal} />
+  {/if}
 </article>
 
 <style lang="scss">
@@ -31,8 +51,12 @@
   .wrapper {
     display: flex;
     align-items: start;
-    justify-content: space-around;
+    justify-content: space-between;
     gap: calc(2 * var(--padding));
+  }
+
+  .subtitle {
+    margin: 0 0 var(--padding) 0;
   }
 
   .toolbar {
@@ -73,7 +97,7 @@
     overflow: hidden;
     transition: max-height 0.3s;
 
-    background: var(--black);
+    background: var(--background);
 
     &.isExpanded {
       max-height: calc(300px);

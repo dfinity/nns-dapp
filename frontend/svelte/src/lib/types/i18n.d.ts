@@ -104,7 +104,8 @@ interface I18nNeurons {
   skip: string;
   update_delay: string;
   confirm_delay: string;
-  follow_neurons_description: string;
+  new_followee: string;
+  follow_neurons: string;
 }
 
 interface I18nVoting {

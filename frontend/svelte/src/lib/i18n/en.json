@@ -95,7 +95,40 @@
     "skip": "Skip",
     "update_delay": "Update Delay",
     "confirm_delay": "Confirm and Update Delay",
-    "follow_neurons_description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics."
+    "new_followee": {
+      "title": "Enter New Followee",
+      "address_placeholder": "Followee Address",
+      "follow_neuron": "Follow Neuron",
+      "options_title": "Options for Following",
+      "follow": "Follow"
+    },
+    "follow_neurons": {
+      "description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",
+      "topic_0_title": "All Topics Except Governance",
+      "topic_0_subtitle": "Follow neurons on all proposal topics except the governance topic",
+      "topic_1_title": "Manage Neuron",
+      "topic_1_subtitle": "Proposals that manage specific neurons, for example making them perform actions.",
+      "topic_2_title": "Exchange Rate",
+      "topic_2_subtitle": "All proposals that provide “real time” information about the value of ICP, as measured by an IMF SDR, which allows the NNS to convert ICP to cycles (which power computation) at a rate which keeps their real world cost constant.",
+      "topic_3_title": "Network Economics",
+      "topic_3_subtitle": "Proposals that administer network economics, for example, determining what rewards should be paid to node operators.",
+      "topic_4_title": "Governance",
+      "topic_4_subtitle": "All proposals that administer governance, for example to freeze malicious canisters that are harming the network.",
+      "topic_5_title": "Node Admin",
+      "topic_5_subtitle": "All proposals that administer node machines somehow, including, but not limited to, upgrading or configuring the OS, upgrading or configuring the virtual machine framework and upgrading or configuring the node replica software.",
+      "topic_6_title": "Participant Management",
+      "topic_6_subtitle": "All proposals that administer network participants, for example, granting and revoking DCIDs (data center identities) or NOIDs (node operator identities).",
+      "topic_7_title": "Subnet Management",
+      "topic_7_subtitle": "All proposals that administer network subnets, for example creating new subnets, adding and removing subnet nodes, and splitting subnets.",
+      "topic_8_title": "Network Canister Management",
+      "topic_8_subtitle": "Installing and upgrading “system” canisters that belong to the network. For example, upgrading the NNS.",
+      "topic_9_title": "Kyc",
+      "topic_9_subtitle": "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons.",
+      "topic_10_title": "Node Provider Rewards",
+      "topic_10_subtitle": "Proposals that reward node providers",
+      "current_followees": "Currently Following",
+      "add": "Add Followee"
+    }
   },
   "voting": {
     "title": "Voting",
