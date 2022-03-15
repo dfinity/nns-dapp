@@ -83,7 +83,7 @@
     >
 
     <section>
-      {#if proposalInfo && neuronsReady}
+      {#if proposalInfo && neurons && neuronsReady}
         <ProposalDetailCard {proposalInfo} />
         <VotesCard {proposalInfo} {neurons} />
         <VotingCard {proposalInfo} {neurons} />
