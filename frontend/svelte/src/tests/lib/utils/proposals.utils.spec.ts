@@ -1,4 +1,5 @@
-import { Ballot, NeuronInfo, Proposal, Vote } from "@dfinity/nns";
+import type { Ballot, NeuronInfo, Proposal } from "@dfinity/nns";
+import { Vote } from "@dfinity/nns";
 import {
   emptyProposals,
   formatVotingPower,

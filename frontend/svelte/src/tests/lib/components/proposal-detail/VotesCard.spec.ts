@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 import { Vote } from "@dfinity/nns";
-import { render, RenderResult } from "@testing-library/svelte";
+import type { RenderResult } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import VotesCard from "../../../../lib/components/proposal-detail/VotesCard.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import * as en from "../../../../lib/i18n/en.json";
