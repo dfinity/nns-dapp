@@ -346,7 +346,9 @@ describe("proposals-services", () => {
 
       afterAll(() => jest.clearAllMocks());
 
-      const mockRegisterVote = async (): Promise<GovernanceError | undefined> => {
+      const mockRegisterVote = async (): Promise<
+        GovernanceError | undefined
+      > => {
         throw new Error("test");
       };
 

@@ -8,11 +8,14 @@
 
   let ballots: Required<BallotInfo>[];
 
-  const distinctBallots = ({ recentBallots }: NeuronInfo): Required<BallotInfo>[] =>
+  const distinctBallots = ({
+    recentBallots,
+  }: NeuronInfo): Required<BallotInfo>[] =>
     Array.from(
       new Set(
-        recentBallots
-          .filter(({ proposalId }: BallotInfo) => proposalId !== undefined)
+        recentBallots.filter(
+          ({ proposalId }: BallotInfo) => proposalId !== undefined
+        )
       )
     );
 

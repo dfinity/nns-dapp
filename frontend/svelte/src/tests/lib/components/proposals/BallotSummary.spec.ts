@@ -70,5 +70,6 @@ describe("BallotSummary", () => {
 
   it("should render ballot vote no", async () => await testVote(Vote.NO));
 
-  it("should render ballot vote unspecified", async () => await testVote(Vote.UNSPECIFIED));
+  it("should render ballot vote unspecified", async () =>
+    await testVote(Vote.UNSPECIFIED));
 });
