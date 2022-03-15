@@ -49,17 +49,26 @@ describe("BallotSummary", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render ballot vote", async () => {
+  const testVote = async (vote: Vote) => {
     const { container, getByText } = render(BallotSummary, {
-      props,
+      props: {
+        ballot: {
+          ...mockBallot,
+          vote,
+        },
+      },
     });
 
     await waitFor(() =>
       expect(container.querySelector("p.vote")).not.toBeNull()
     );
 
-    expect(
-      getByText(en.core[Vote[mockBallot.vote].toLowerCase()])
-    ).toBeInTheDocument();
-  });
+    expect(getByText(en.core[Vote[vote].toLowerCase()])).toBeInTheDocument();
+  };
+
+  it("should render ballot vote yes", async () => await testVote(Vote.YES));
+
+  it("should render ballot vote no", async () => await testVote(Vote.NO));
+
+  it("should render ballot vote unspecified", async () => await testVote(Vote.UNSPECIFIED));
 });
