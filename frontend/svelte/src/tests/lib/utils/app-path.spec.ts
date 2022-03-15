@@ -21,6 +21,11 @@ describe("routes", () => {
   });
 
   describe("getLastPathDetailId", () => {
+    beforeAll(() => {
+      // Avoid to print errors during test
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+    afterAll(() => jest.clearAllMocks());
     it("should get id from valid path", async () => {
       expect(getLastPathDetailId("/#/neuron/123")).toBe(BigInt(123));
       expect(getLastPathDetailId("/neuron/123")).toBe(BigInt(123));

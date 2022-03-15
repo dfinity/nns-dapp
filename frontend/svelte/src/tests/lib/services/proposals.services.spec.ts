@@ -153,6 +153,11 @@ describe("proposals-services", () => {
   });
 
   describe("details", () => {
+    beforeAll(() => {
+      // Avoid to print errors during test
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+    afterAll(() => jest.clearAllMocks());
     it("should get proposalId from valid path", async () => {
       expect(getProposalId("/#/proposal/123")).toBe(BigInt(123));
       expect(getProposalId("/#/proposal/0")).toBe(BigInt(0));
