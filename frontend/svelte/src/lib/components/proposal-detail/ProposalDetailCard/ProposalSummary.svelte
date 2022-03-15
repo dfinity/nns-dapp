@@ -1,7 +1,5 @@
 <script lang="ts">
   import type { Proposal } from "@dfinity/nns";
-  import CardBlock from "../../ui/CardBlock.svelte";
-  import { i18n } from "../../../../lib/stores/i18n";
   import Markdown from "../../ui/Markdown.svelte";
 
   export let proposal: Proposal | undefined;
@@ -10,19 +8,14 @@
   $: summary = proposal?.summary;
 </script>
 
-<CardBlock>
-  <!-- TODO: add expandable support -- https://dfinity.atlassian.net/browse/L2-270 -->
-  <svelte:fragment slot="title">{$i18n.proposal_detail.summary}</svelte:fragment
-  >
-  <p>
-    <Markdown text={summary} />
-  </p>
-</CardBlock>
+<div class="markdown">
+  <Markdown text={summary} />
+</div>
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
 
-  p {
+  .markdown {
     font-size: var(--font-size-small);
     color: var(--gray-100);
     overflow-wrap: break-word;
