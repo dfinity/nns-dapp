@@ -58,6 +58,6 @@
   "dependencies": {
     "@dfinity/auth-client": "^0.10.3",
     "@dfinity/identity": "^0.10.3",
-    "@dfinity/nns": "^0.2.2-nightly-2022-03-15"
+    "@dfinity/nns": "nightly"
   }
 }
