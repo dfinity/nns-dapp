@@ -236,22 +236,23 @@ class PlatformICApi extends AbstractPlatformICApi {
       }
 
       // To ensure any built up age bonus is always preserved, if one neuron is
-      // dissolving and the other is not, then we merge the dissolving neuron
-      // into the other. In all other cases we merge the smaller neuron into the
+      // locked and the other is not, then we merge the neuron which is not
+      // locked into the locked neuron.
+      // In all other cases we merge the smaller neuron into the
       // larger one.
 
-      final neuron1Dissolving = neuron1.state == NeuronState.DISSOLVING;
-      final neuron2Dissolving = neuron2.state == NeuronState.DISSOLVING;
+      final neuron1Locked = neuron1.state == NeuronState.LOCKED;
+      final neuron2Locked = neuron2.state == NeuronState.LOCKED;
 
       Neuron targetNeuron;
       Neuron sourceNeuron;
-      if (neuron1Dissolving != neuron2Dissolving) {
-        if (neuron1Dissolving) {
-          targetNeuron = neuron2;
-          sourceNeuron = neuron1;
-        } else {
+      if (neuron1Locked != neuron2Locked) {
+        if (neuron1Locked) {
           targetNeuron = neuron1;
           sourceNeuron = neuron2;
+        } else {
+          targetNeuron = neuron2;
+          sourceNeuron = neuron1;
         }
       } else {
         if (neuron1.cachedNeuronStake.asE8s() >= neuron2.cachedNeuronStake.asE8s()) {
