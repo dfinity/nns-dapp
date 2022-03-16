@@ -24,6 +24,7 @@
     </article>
     <article>
       <h4>{$i18n.new_followee.options_title}</h4>
+      <!-- TODO: L2-333: Fetch and show known neurons -->
       <ul>
         <li>
           <p>Internet Computer Association</p>

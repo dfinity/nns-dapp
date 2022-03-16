@@ -13,7 +13,6 @@ describe("NewFolloweeModal", () => {
       '[name="new-followee-address"]'
     );
 
-    expect(inputElement).not.toBeNull();
     expect(inputElement).toBeInTheDocument();
   });
 });

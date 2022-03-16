@@ -27,7 +27,7 @@
       <p class="subtitle">{subtitle}</p>
     </div>
     <div class="toolbar">
-      <!-- TODO: Set total followees -->
+      <!-- TODO: L2-333: Set total followees -->
       <h3 class="badge">0</h3>
       <span
         class:isExpanded
@@ -38,7 +38,7 @@
   </div>
   <div class="content" class:isExpanded data-tid="follow-topic-section-current">
     <h5>{$i18n.follow_neurons.current_followees}</h5>
-    <!-- TODO: Iterate followees -->
+    <!-- TODO: L2-333:  Iterate followees -->
     <div class="button-wrapper">
       <button
         class="secondary small"

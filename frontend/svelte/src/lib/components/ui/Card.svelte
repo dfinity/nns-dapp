@@ -6,12 +6,12 @@
 
   $: clickable = role !== undefined ? ["button", "link"].includes(role) : false;
 
-  let showNamedSlots: boolean;
-  $: showNamedSlots = $$slots.start !== undefined || $$slots.end !== undefined;
+  let showHeadline: boolean;
+  $: showHeadline = $$slots.start !== undefined || $$slots.end !== undefined;
 </script>
 
 <article data-tid="card" {role} on:click class:clickable aria-label={ariaLabel}>
-  {#if showNamedSlots}
+  {#if showHeadline}
     <div>
       <slot name="start" />
       <slot name="end" />
