@@ -19,29 +19,7 @@
   import { syncAccounts } from "./lib/services/accounts.services";
   import NeuronDetail from "./routes/NeuronDetail.svelte";
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
-  import {localStorageAuth} from './lib/utils/auth.utils';
-  import type {PostMessageEventData} from './lib/types/post-messages';
-
-  const worker = new Worker("./build/worker.js", { type: "module" });
-
-  const syncAuthIdle = async (auth: AuthStore) => {
-    if (!auth.identity) {
-      worker.postMessage({msg: 'nnsStopIdleTimer'});
-      return;
-    }
-
-    worker.postMessage({msg: 'nnsStartIdleTimer', data: await localStorageAuth()})
-  }
-
-  worker.onmessage = async ({data}: MessageEvent<PostMessageEventData>) => {
-    const { msg } = data;
-
-    switch (msg) {
-      case "nnsSignOut":
-        await authStore.signOut();
-        return;
-    }
-  }
+  import {worker} from './lib/services/worker.services';
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -49,7 +27,7 @@
         return;
       }
 
-      await syncAuthIdle(auth);
+      await worker.syncAuthIdle(auth);
 
       // TODO: We do not need to load and sync the account data if we redirect to the Flutter app. Currently these data are not displayed with this application.
       if (!auth.identity) {
