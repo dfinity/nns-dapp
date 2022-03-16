@@ -19,7 +19,7 @@
   import { syncAccounts } from "./lib/services/accounts.services";
   import NeuronDetail from "./routes/NeuronDetail.svelte";
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
-  import {worker} from './lib/services/worker.services';
+  import { worker } from "./lib/services/worker.services";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
