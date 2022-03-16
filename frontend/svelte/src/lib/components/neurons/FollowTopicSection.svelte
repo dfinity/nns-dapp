@@ -88,7 +88,7 @@
   .toolbar span {
     @include interaction.tappable;
 
-    color: var(--black);
+    color: var(--background-contrast);
 
     transition: transform 0.3s;
 

@@ -10,7 +10,6 @@
   <span slot="title">{$i18n.new_followee.title}</span>
   <main data-tid="new-followee-modal">
     <article>
-      <h4>{$i18n.neurons.neuron_id}</h4>
       <form on:submit|preventDefault>
         <Input
           inputType="text"
