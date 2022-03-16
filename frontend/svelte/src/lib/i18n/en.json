@@ -27,6 +27,9 @@
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
     "register_vote_unknown": "Sorry, there was an unexpectedf error while registering the vote. Please try again later."
   },
+  "warning": {
+    "auth_sign_out": "You have been logged out because your session has expired."
+  },
   "navigation": {
     "icp": "ICP",
     "neurons": "Neurons",

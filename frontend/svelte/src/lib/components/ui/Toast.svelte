@@ -4,15 +4,19 @@
    */
   import IconClose from "../../icons/IconClose.svelte";
   import { toastsStore } from "../../stores/toasts.store";
-  import type { ToastMsg } from "../../stores/toasts.store";
   import { fade, fly } from "svelte/transition";
   import { translate } from "../../utils/i18n.utils";
   import { i18n } from "../../stores/i18n";
+  import type { ToastLevel, ToastMsg } from "../../types/toast";
 
   export let msg: ToastMsg;
 
   const close = () => toastsStore.hide();
   let text: string | undefined;
+
+  let labelKey: string;
+  let level: ToastLevel;
+  let detail: string | undefined;
 
   $: ({ labelKey, level, detail } = msg);
   $: text = `${translate({ labelKey })}${
@@ -24,6 +28,7 @@
   role="dialog"
   class="toast"
   class:error={level === "error"}
+  class:warn={level === "warn"}
   in:fly={{ y: 100, duration: 200 }}
   out:fade={{ delay: 100 }}
 >
@@ -67,6 +72,11 @@
     &.error {
       background: var(--pink);
       color: var(--pink-contrast);
+    }
+
+    &.warn {
+      background: var(--yellow-500);
+      color: var(--yellow-500-contrast);
     }
   }
 

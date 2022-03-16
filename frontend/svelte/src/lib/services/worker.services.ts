@@ -1,5 +1,6 @@
 import type { AuthStore } from "../stores/auth.store";
 import { authStore } from "../stores/auth.store";
+import { toastsStore } from "../stores/toasts.store";
 import type { PostMessageEventData } from "../types/post-messages";
 import { localStorageAuth } from "../utils/auth.utils";
 
@@ -12,6 +13,12 @@ const initWorker = () => {
     switch (msg) {
       case "nnsSignOut":
         await authStore.signOut();
+
+        toastsStore.show({
+          labelKey: "warning.auth_sign_out",
+          level: "warn",
+        });
+
         return;
     }
   };
