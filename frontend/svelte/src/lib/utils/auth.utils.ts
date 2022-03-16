@@ -1,6 +1,6 @@
-import type {Identity} from "@dfinity/agent";
-import {LocalStorage} from "@dfinity/auth-client";
-import type {LocalStorageAuth} from '../types/auth';
+import type { Identity } from "@dfinity/agent";
+import { LocalStorage } from "@dfinity/auth-client";
+import type { LocalStorageAuth } from "../types/auth";
 
 /**
  * The user is signed in when the identity is not undefined and not null.

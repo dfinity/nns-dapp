@@ -27,7 +27,7 @@ const initWorker = () => {
         msg: "nnsStartIdleTimer",
         data: await localStorageAuth(),
       });
-    }
+    },
   };
 };
 
