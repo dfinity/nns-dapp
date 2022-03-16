@@ -106,6 +106,9 @@ class ServiceApi {
   @JS("disburseToNeuron")
   external Promise<dynamic> disburseToNeuron(dynamic request);
 
+  @JS("merge")
+  external Promise<dynamic> merge(dynamic identity, dynamic request);
+
   @JS("mergeMaturity")
   external Promise<dynamic> mergeMaturity(dynamic identity, dynamic request);
 
@@ -221,6 +224,16 @@ class DisburseNeuronRequest {
 
   external factory DisburseNeuronRequest(
       {dynamic neuronId, dynamic amount, String? toAccountId});
+}
+
+@JS()
+@anonymous
+class MergeRequest {
+  external dynamic neuronId;
+  external dynamic sourceNeuronId;
+
+  external factory MergeRequest(
+      {dynamic neuronId, dynamic sourceNeuronId});
 }
 
 @JS()
