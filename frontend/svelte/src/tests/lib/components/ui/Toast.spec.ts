@@ -4,7 +4,7 @@
 
 import { render } from "@testing-library/svelte";
 import Toast from "../../../../lib/components/ui/Toast.svelte";
-import { ToastMsg } from "../../../../lib/types/toast";
+import type { ToastMsg } from "../../../../lib/types/toast";
 
 describe("Toast", () => {
   const props: { msg: ToastMsg } = {
