@@ -67,4 +67,5 @@
   @import "./lib/themes/variables.scss";
   @import "./lib/themes/theme.scss";
   @import "./lib/themes/button.scss";
+  @import "./lib/themes/link.scss";
 </style>
