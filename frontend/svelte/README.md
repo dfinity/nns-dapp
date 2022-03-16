@@ -1,17 +1,17 @@
 # NNS Dapp Frontend (Svelte)
 
-This is the project that will substitute the current frontend dapp. It has the same features and UI, but it's built with a different technology stack.
+This project will substitute the current frontend dapp. It has the same features and UI, but it's built with a different technology stack.
 
-- **Stack**: [Typescript](https://www.typescriptlang.org/), [Svelte](https://svelte.dev/), [Rollup](https://rollupjs.org/guide/en/) and [Jest](https://jestjs.io/).
+- **Stack**: [Typescript](https://www.typescriptlang.org/), [Svelte](https://svelte.dev/), [Rollup](https://rollupjs.org/guide/en/), and [Jest](https://jestjs.io/).
 - **Status**: This project is still under development.
 
-We are working on moving a lot of the logic for interfacing with the Internet Computer's Network Nervous System to its own open source project: [NNS-JS](https://github.com/dfinity/nns-js).
+We are moving a lot of the logic for interfacing with the Internet Computer's Network Nervous System to its own open-source project: [NNS-JS](https://github.com/dfinity/nns-js).
 
-All the interactions with the Internet Computer are done through NNS-JS or the official [Agent-JS](https://github.com/dfinity/agent-js) packages.
+All the Internet computer interactions are done through NNS-JS or the official [Agent-JS](https://github.com/dfinity/agent-js) packages.
 
 ## Installation and local development
 
-Clone the project in your computer and install the libraries:
+Clone the project on your computer and install the libraries:
 
 ```
 npm ci
@@ -27,20 +27,20 @@ Visit `localhost:8080`.
 
 ### Dependencies
 
-At the moment pure local development is not supported. A testnet deployed and working is needed.
+At the moment, pure local development is not supported. A testnet deployed, and working is needed.
 
 The environment variables in `env.config.mjs` need to point to the working testnet.
 
-Normally you don't need to review the variables, but these are a few that might need to be reviewed if a deployment to testnet is done with new configuration parameters:
+There is usually no need to review the variables, but these are a few that might need to be checked if the deployment to testnet is done with new configuration parameters:
 
-- `IDENTITY_SERVICE_URL`: This is the Internet Identity url to register and login.
+- `IDENTITY_SERVICE_URL`: This is the Internet Identity URL to register and log in.
 - `OWN_CANISTER_ID`: The canister id of the NNS Dapp.
 
 ## Testing
 
 Every Pull Request needs unit tests.
 
-After installing the project, yuo can run the test suite:
+After installing the project, you can run the test suite:
 
 ```
 npm test
@@ -54,5 +54,5 @@ This project uses [Prettier](https://prettier.io/) and [Eslint](https://eslint.o
 
 There are a few helpful commands:
 
-- `npm run format` automatically formats the code according to prettier. This runs also in the Github pipeline.
-- `npm run check` runs typescript and eslint checks.
+- `npm run format` automatically formats the code according to prettier. This command also runs in the Github pipeline.
+- `npm run check` runs Typescript and Eslint checks.
