@@ -17,6 +17,7 @@ import {
   DisburseResponse,
   DisburseToNeuronResponse,
   DissolveState,
+  EmptyResponse,
   Followees,
   KnownNeuron,
   ListProposalsResponse,
@@ -254,6 +255,16 @@ export default class ResponseConverters {
       };
     }
     throw this.throwUnrecognisedTypeError("response", response);
+  };
+
+  public toEmptyManageNeuronResponse = (
+    response: PbManageNeuronResponse
+  ): EmptyResponse => {
+    const error = response.getError();
+    if (error) {
+      throw error.getErrorMessage();
+    }
+    return { Ok: null };
   };
 
   private toNeuron = (neuron: RawNeuron, principalString: string): Neuron => {
