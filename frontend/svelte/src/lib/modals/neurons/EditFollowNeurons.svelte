@@ -2,10 +2,9 @@
   import { Topic } from "@dfinity/nns";
   import FollowTopicSection from "../../components/neurons/FollowTopicSection.svelte";
   import { i18n } from "../../stores/i18n";
+  import { enumValues } from "../../utils/enum.utils";
 
-  const topics: Topic[] = Object.keys(Topic)
-    .filter((topic) => !isNaN(Number(topic)))
-    .map((topic) => topic as unknown as Topic);
+  const topics: Topic[] = enumValues(Topic);
 </script>
 
 <section data-tid="edit-followers-screen">
