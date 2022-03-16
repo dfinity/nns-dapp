@@ -4,6 +4,7 @@ import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
+import OMT from "@surma/rollup-plugin-off-main-thread";
 import * as fs from "fs";
 import css from "rollup-plugin-css-only";
 import livereload from "rollup-plugin-livereload";
@@ -40,7 +41,28 @@ function serve() {
   };
 }
 
-export default {
+const replaceMap = {
+  preventAssignment: true,
+  "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
+  "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
+    envConfig.IDENTITY_SERVICE_URL
+  ),
+  "process.env.DEPLOY_ENV": JSON.stringify(envConfig.DEPLOY_ENV),
+  "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
+    envConfig.REDIRECT_TO_LEGACY
+  ),
+  "process.env.FETCH_ROOT_KEY": JSON.stringify(envConfig.FETCH_ROOT_KEY),
+  "process.env.HOST": JSON.stringify(envConfig.HOST),
+  "process.env.OWN_CANISTER_ID": JSON.stringify(envConfig.OWN_CANISTER_ID),
+  "process.env.LEDGER_CANISTER_ID": JSON.stringify(
+    envConfig.LEDGER_CANISTER_ID
+  ),
+  "process.env.GOVERNANCE_CANISTER_ID": JSON.stringify(
+    envConfig.GOVERNANCE_CANISTER_ID
+  ),
+};
+
+const configApp = {
   input: "src/main.ts",
   output: {
     sourcemap: !prodBuild,
@@ -97,26 +119,7 @@ export default {
     }),
     inject({ Buffer: ["buffer", "Buffer"] }),
     json(),
-    replace({
-      preventAssignment: true,
-      "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
-      "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
-        envConfig.IDENTITY_SERVICE_URL
-      ),
-      "process.env.DEPLOY_ENV": JSON.stringify(envConfig.DEPLOY_ENV),
-      "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-        envConfig.REDIRECT_TO_LEGACY
-      ),
-      "process.env.FETCH_ROOT_KEY": JSON.stringify(envConfig.FETCH_ROOT_KEY),
-      "process.env.HOST": JSON.stringify(envConfig.HOST),
-      "process.env.OWN_CANISTER_ID": JSON.stringify(envConfig.OWN_CANISTER_ID),
-      "process.env.LEDGER_CANISTER_ID": JSON.stringify(
-        envConfig.LEDGER_CANISTER_ID
-      ),
-      "process.env.GOVERNANCE_CANISTER_ID": JSON.stringify(
-        envConfig.GOVERNANCE_CANISTER_ID
-      ),
-    }),
+    replace(replaceMap),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated
@@ -134,3 +137,28 @@ export default {
     clearScreen: false,
   },
 };
+
+const configWorker = {
+  input: "src/worker.ts",
+  output: {
+    sourcemap: false,
+    format: "amd",
+    file: "public/build/worker.js",
+  },
+  plugins: [
+    resolve({
+      preferBuiltins: false,
+      browser: true,
+    }),
+    commonjs(),
+    typescript({
+      sourceMap: !prodBuild,
+      inlineSources: !prodBuild,
+    }),
+    json(),
+    replace(replaceMap),
+    OMT(),
+  ],
+};
+
+export default [configApp, configWorker];
