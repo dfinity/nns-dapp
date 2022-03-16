@@ -1,14 +1,23 @@
 <script lang="ts">
-  // TODO: collapsible -- https://dfinity.atlassian.net/browse/L2-270
-  // export let collapsible: boolean = false;
-  // export let initiallyExpanded = true;
+  import Accordion from "./Accordion.svelte";
+
+  export let expandable = false;
 </script>
 
-<article>
-  <h3><slot name="title" /></h3>
-  <div class="content">
-    <slot />
-  </div>
+<article class:expandable>
+  {#if expandable}
+    <Accordion maxContentHeigh={300} headerAlign="center">
+      <h3 slot="header"><slot name="title" /></h3>
+      <div class="content">
+        <slot />
+      </div>
+    </Accordion>
+  {:else}
+    <h3><slot name="title" /></h3>
+    <div class="content">
+      <slot />
+    </div>
+  {/if}
 </article>
 
 <style lang="scss">
@@ -30,11 +39,12 @@
   }
 
   h3 {
+    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 0 var(--padding);
 
+    line-height: var(--line-height-standard);
     font-size: var(--font-size-h5);
 
     @include media.min-width(medium) {
@@ -43,9 +53,6 @@
   }
 
   .content {
-    // TODO: change the height source/behaviour -- https://dfinity.atlassian.net/browse/L2-270
-    min-height: 30px;
-    max-height: 300px;
-    overflow-y: auto;
+    margin: calc(2 * var(--padding)) 0 var(--padding);
   }
 </style>
