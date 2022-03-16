@@ -9,6 +9,18 @@ We are moving a lot of the logic for interfacing with the Internet Computer's Ne
 
 All the Internet computer interactions are done through NNS-JS or the official [Agent-JS](https://github.com/dfinity/agent-js) packages.
 
+## Status
+
+The plan is to deploy the pages of this project one by one as soon they are ready.
+
+- Log in page: Deployed.
+- Proposals: In testing.
+- Neurons: In development.
+- Accounts: In development.
+- Canisters: In development.
+
+Until all the pages come from this project, the NNS Dapp is a hybrid of the pages in the `dart` directory and the pages in this project.
+
 ## Installation and local development
 
 Clone the project on your computer and install the libraries:
