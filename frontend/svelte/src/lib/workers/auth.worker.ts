@@ -5,7 +5,7 @@ import type { LocalStorageAuth } from "../types/auth";
 let timer: NodeJS.Timeout | undefined = undefined;
 
 export const startIdleTimer = (data?: LocalStorageAuth) =>
-  (timer = setInterval(async () => await onIdleSignOut(data), 250));
+  (timer = setInterval(async () => await onIdleSignOut(data), 1000));
 
 export const stopIdleTimer = () => {
   if (!timer) {
