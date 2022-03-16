@@ -6,7 +6,6 @@
   import { routeStore } from "../lib/stores/route.store";
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";
-  import Toasts from "../lib/components/ui/Toasts.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { errorToString } from "../lib/utils/error.utils";
   import Banner from "../lib/components/common/Banner.svelte";
@@ -77,8 +76,6 @@
     class="bottom-banner"
     loading="lazy"
   />
-
-  <Toasts />
 {/if}
 
 <style lang="scss">
