@@ -2,7 +2,7 @@
   import { afterUpdate, createEventDispatcher } from "svelte";
   import IconExpandMore from "../../icons/IconExpandMore.svelte";
 
-  export let id: string | undefined;
+  export let id: string | undefined = undefined;
   export let initiallyExpanded: boolean = false;
   export let headerAlign: "left" | "center" = "left";
   export let maxContentHeigh: number | undefined = undefined;
@@ -45,9 +45,10 @@
 </script>
 
 <div
-  id={id ?? `heading${id}`}
-  class="header"
+  data-tid="collapsible-header"
+  id={id === undefined ? `heading${id}` : undefined}
   role="term"
+  class="header"
   on:click={toggleContent}
   class:alignCenter={headerAlign === "center"}
 >
@@ -59,14 +60,15 @@
   </button>
 </div>
 <div
+  data-tid="collapsible-content"
+  role="definition"
   class="wrapper"
   class:expanded
   style={maxHeightStyle(maxHeight)}
-  role="definition"
 >
   <div
     {id}
-    aria-labelledby={id ?? `heading${id}`}
+    aria-labelledby={id === undefined ? `heading${id}` : undefined}
     class="content"
     bind:this={content}
   >
