@@ -5,9 +5,9 @@ This project will substitute the current frontend dapp. It has the same features
 - **Stack**: [Typescript](https://www.typescriptlang.org/), [Svelte](https://svelte.dev/), [Rollup](https://rollupjs.org/guide/en/), and [Jest](https://jestjs.io/).
 - **Status**: This project is still under development.
 
-We are moving a lot of the logic for interfacing with the Internet Computer's Network Nervous System to its own open-source project: [NNS-JS](https://github.com/dfinity/nns-js).
+We are moving a lot of the logic for interfacing with the Internet Computer's Network Nervous System to its own open-source project: [nns-js](https://github.com/dfinity/nns-js).
 
-All the Internet computer interactions are done through NNS-JS or the official [Agent-JS](https://github.com/dfinity/agent-js) packages.
+All the Internet computer interactions are done through nns-js or the official [agent-JS](https://github.com/dfinity/agent-js) packages.
 
 ## Status
 
