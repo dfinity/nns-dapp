@@ -5,10 +5,34 @@
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import EditFollowNeurons from "../../../lib/modals/neurons/EditFollowNeurons.svelte";
+import { authStore } from "../../../lib/stores/auth.store";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import { mockNeuron } from "../../mocks/neurons.mock";
+
+jest.mock("../../../lib/services/neurons.services", () => {
+  return {
+    removeFollowee: jest.fn(),
+    addFollowee: jest.fn(),
+  };
+});
+
+jest.mock("../../../lib/services/knownNeurons.services", () => {
+  return {
+    listKnownNeurons: jest.fn(),
+  };
+});
 
 describe("EditFollowNeurons", () => {
+  beforeEach(() => {
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
+  });
+
   it("renders list of topics", () => {
-    const { queryAllByTestId } = render(EditFollowNeurons);
+    const { queryAllByTestId } = render(EditFollowNeurons, {
+      props: { neuron: mockNeuron },
+    });
 
     const elements = queryAllByTestId("follow-topic-section");
 
@@ -16,7 +40,9 @@ describe("EditFollowNeurons", () => {
   });
 
   it("opens a topic", async () => {
-    const { queryAllByTestId } = render(EditFollowNeurons);
+    const { queryAllByTestId } = render(EditFollowNeurons, {
+      props: { neuron: mockNeuron },
+    });
 
     const topicElements = queryAllByTestId("follow-topic-section");
 
@@ -46,7 +72,9 @@ describe("EditFollowNeurons", () => {
   });
 
   it("a topic can open the NewFollowee Modal", async () => {
-    const { queryAllByTestId, queryByTestId } = render(EditFollowNeurons);
+    const { queryAllByTestId, queryByTestId } = render(EditFollowNeurons, {
+      props: { neuron: mockNeuron },
+    });
 
     const topicElements = queryAllByTestId("follow-topic-section");
 

@@ -1,40 +1,118 @@
 <script lang="ts">
+  import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
+  import { onMount } from "svelte";
   import Input from "../../components/ui/Input.svelte";
+  import Spinner from "../../components/ui/Spinner.svelte";
+  import { listKnownNeurons } from "../../services/knownNeurons.services";
+  import { addFollowee } from "../../services/neurons.services";
+  import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
+  import { knownNeuronsStore } from "../../stores/knownNeurons.store";
+  import { toastsStore } from "../../stores/toasts.store";
   import Modal from "../Modal.svelte";
 
-  let followeeAddress: string = "";
+  export let neuron: NeuronInfo;
+  export let topic: Topic;
+
+  let followeeAddress: number | undefined;
+  let loading: boolean = false;
+
+  onMount(() => {
+    listKnownNeurons({
+      identity: $authStore.identity,
+    });
+  });
+
+  const addFolloweeByAddress = async () => {
+    loading = true;
+    let followee: bigint;
+    if (followeeAddress === undefined) {
+      return;
+    }
+    try {
+      followee = BigInt(followeeAddress);
+    } catch (error) {
+      // TODO: Show error in Input - https://dfinity.atlassian.net/browse/L2-408
+      alert(`Incorrect followee address ${followeeAddress}`);
+      loading = false;
+      return;
+    }
+    await addFollowee({
+      identity: $authStore.identity,
+      neuronId: neuron.neuronId,
+      topic,
+      followee,
+    });
+    loading = false;
+    followeeAddress = undefined;
+    toastsStore.show({
+      labelKey: "new_followee.success_add_followee",
+      level: "info",
+    });
+  };
+
+  // TODO: Check with known neurons https://dfinity.atlassian.net/browse/L2-403
+  const addKnownNeuronFollowee = async (followeeId: NeuronId) => {
+    loading = true;
+    await addFollowee({
+      identity: $authStore.identity,
+      neuronId: neuron.neuronId,
+      topic,
+      followee: followeeId,
+    });
+    loading = false;
+    followeeAddress = undefined;
+    toastsStore.show({
+      labelKey: "new_followee.success_add_followee",
+      level: "info",
+    });
+  };
 </script>
 
 <Modal theme="dark" size="medium" on:nnsClose>
   <span slot="title">{$i18n.new_followee.title}</span>
   <main data-tid="new-followee-modal">
     <article>
-      <form on:submit|preventDefault>
+      <form on:submit|preventDefault={addFolloweeByAddress}>
         <Input
-          inputType="text"
+          inputType="number"
           placeholderLabelKey="new_followee.address_placeholder"
           name="new-followee-address"
           bind:value={followeeAddress}
           theme="dark"
         />
-        <button class="primary small">{$i18n.new_followee.follow_neuron}</button
+        <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-403 -->
+        <button
+          class="primary small"
+          type="submit"
+          disabled={followeeAddress === undefined || loading}
         >
+          {#if loading}
+            <Spinner />
+          {:else}
+            {$i18n.new_followee.follow_neuron}
+          {/if}
+        </button>
       </form>
     </article>
     <article>
       <h4>{$i18n.new_followee.options_title}</h4>
-      <!-- TODO: L2-333: Fetch and show known neurons -->
-      <ul>
-        <li>
-          <p>Internet Computer Association</p>
-          <button class="secondary small">{$i18n.new_followee.follow}</button>
-        </li>
-        <li>
-          <p>DFINITY Foundation</p>
-          <button class="secondary small">{$i18n.new_followee.follow}</button>
-        </li>
-      </ul>
+      {#if $knownNeuronsStore === undefined}
+        <Spinner />
+      {:else}
+        <ul>
+          {#each $knownNeuronsStore as knowNeuron}
+            <li data-tid="known-neuron-item">
+              <p>{knowNeuron.name}</p>
+              <button
+                class="secondary small"
+                on:click={() => addKnownNeuronFollowee(knowNeuron.id)}
+                >{$i18n.new_followee.follow}</button
+              >
+            </li>
+          {/each}
+        </ul>
+      {/if}
     </article>
   </main>
 </Modal>

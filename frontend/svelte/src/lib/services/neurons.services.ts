@@ -1,13 +1,14 @@
 import type { Identity } from "@dfinity/agent";
-import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+import type { Followees, NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
 import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   increaseDissolveDelay,
   queryNeuron,
   queryNeurons,
+  setFollowees,
   stakeNeuron,
-} from "../api/neurons.api";
+} from "../api/governance.api";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { i18n } from "../stores/i18n";
 import { neuronsStore } from "../stores/neurons.store";
@@ -39,7 +40,7 @@ export const stakeAndLoadNeuron = async ({
   }
 
   if (!identity) {
-    // TODO: https://dfinity.atlassian.net/browse/L2-346
+    // TODO: https://dfinity.atlassian.net/browse/L2-348
     throw new Error("No identity");
   }
 
@@ -61,7 +62,7 @@ export const listNeurons = async ({
   identity: Identity | null | undefined;
 }): Promise<void> => {
   if (!identity) {
-    // TODO: https://dfinity.atlassian.net/browse/L2-346
+    // TODO: https://dfinity.atlassian.net/browse/L2-348
     throw new Error("No identity found listing neurons");
   }
 
@@ -97,7 +98,7 @@ export const updateDelay = async ({
   identity: Identity | null | undefined;
 }): Promise<void> => {
   if (!identity) {
-    // TODO: https://dfinity.atlassian.net/browse/L2-346
+    // TODO: https://dfinity.atlassian.net/browse/L2-348
     throw new Error("No identity");
   }
 
@@ -107,6 +108,119 @@ export const updateDelay = async ({
     neuronId,
     identity,
     setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+  });
+};
+
+const setFolloweesHelper = async ({
+  identity,
+  neuronId,
+  topic,
+  followees,
+  errorKey,
+}: {
+  identity: Identity;
+  neuronId: NeuronId;
+  topic: Topic;
+  followees: NeuronId[];
+  errorKey: "add_followee" | "remove_followee";
+}) => {
+  try {
+    await setFollowees({
+      identity,
+      neuronId,
+      topic,
+      followees,
+    });
+    await loadNeuron({
+      neuronId,
+      identity,
+      setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+    });
+  } catch (error) {
+    toastsStore.show({
+      labelKey: `error.${errorKey}`,
+      level: "error",
+      detail: `id: "${neuronId}"`,
+    });
+  }
+};
+
+export const addFollowee = async ({
+  identity,
+  neuronId,
+  topic,
+  followee,
+}: {
+  identity: Identity | null | undefined;
+  neuronId: NeuronId;
+  topic: Topic;
+  followee: NeuronId;
+}): Promise<void> => {
+  if (!identity) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-348
+    throw new Error("No identity");
+  }
+  const neurons = get(neuronsStore);
+  const neuron = neurons.find(
+    ({ neuronId: currentNeuronId }) => currentNeuronId === neuronId
+  );
+  const topicFollowees = neuron?.fullNeuron?.followees.find(
+    ({ topic: currentTopic }) => currentTopic === topic
+  );
+  const newFollowees: NeuronId[] =
+    topicFollowees === undefined
+      ? [followee]
+      : [...topicFollowees.followees, followee];
+  await setFolloweesHelper({
+    identity,
+    neuronId,
+    topic,
+    followees: newFollowees,
+    errorKey: "add_followee",
+  });
+};
+
+export const removeFollowee = async ({
+  identity,
+  neuronId,
+  topic,
+  followee,
+}: {
+  identity: Identity | null | undefined;
+  neuronId: NeuronId;
+  topic: Topic;
+  followee: NeuronId;
+}): Promise<void> => {
+  if (!identity) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-348
+    throw new Error("No identity");
+  }
+  const neurons = get(neuronsStore);
+  const neuron = neurons.find(
+    ({ neuronId: currentNeuronId }) => currentNeuronId === neuronId
+  );
+  const topicFollowees: Followees | undefined =
+    neuron?.fullNeuron?.followees.find(
+      ({ topic: currentTopic }) => currentTopic === topic
+    );
+  if (topicFollowees === undefined) {
+    // Followee in that topic already does not exist.
+    toastsStore.show({
+      labelKey: "error.followee_does_not_exist",
+      level: "warn",
+      detail: `id: "${neuronId}"`,
+    });
+    return;
+  }
+  const newFollowees: NeuronId[] = topicFollowees.followees.filter(
+    (id) => id !== followee
+  );
+  await setFolloweesHelper({
+    identity,
+    neuronId,
+    topic,
+    followees: newFollowees,
+    errorKey: "remove_followee",
   });
 };
 
@@ -120,7 +234,7 @@ const getNeuron = async ({
   neuronId: NeuronId;
   identity: Identity | null | undefined;
 }): Promise<NeuronInfo | undefined> => {
-  // TODO: https://dfinity.atlassian.net/browse/L2-346
+  // TODO: https://dfinity.atlassian.net/browse/L2-348
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }

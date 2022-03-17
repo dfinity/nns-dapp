@@ -1,4 +1,4 @@
-import type { Neuron, NeuronInfo } from "@dfinity/nns";
+import type { KnownNeuron, Neuron, NeuronInfo } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 import type { NeuronsStore } from "../../lib/stores/neurons.store";
@@ -33,6 +33,12 @@ export const mockNeuron: NeuronInfo = {
   votingPower: BigInt(100),
   ageSeconds: BigInt(100),
   fullNeuron: mockFullNeuron,
+};
+
+export const mockKnownNeuron: KnownNeuron = {
+  id: BigInt(1000),
+  name: "Famous Neuron",
+  description: undefined,
 };
 
 export const buildMockNeuronsStoreSubscribe =
