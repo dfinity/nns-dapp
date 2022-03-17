@@ -1,21 +1,43 @@
 <script lang="ts">
+  import { afterUpdate } from "svelte";
   import IconExpandMore from "../../icons/IconExpandMore.svelte";
 
   export let initiallyExpanded: boolean = false;
   export let headerAlign: "left" | "center" = "left";
   export let maxContentHeigh: number | undefined = undefined;
 
+  // Minimum height when some part of the text-content is visible (empirical value)
+  const CONTENT_MIN_HEIGHT = 40;
+
   let expanded: boolean = initiallyExpanded;
   let content: HTMLDivElement | undefined;
+  let userUpdated: boolean = false;
+  let maxHeight: number | undefined;
 
-  const toggleContent = () => (expanded = !expanded);
-  const maxHeight = () => {
-    const height = (content && content.offsetHeight) || 0;
-    if (maxContentHeigh !== undefined && height > maxContentHeigh) {
-      return maxContentHeigh;
-    }
-    return height;
+  const toggleContent = () => {
+    userUpdated = true;
+    expanded = !expanded;
   };
+  const contentHeight = (): number => (content && content.offsetHeight) || 0;
+  const maxContentHeight = (): number => {
+    if (maxContentHeigh !== undefined) return maxContentHeigh;
+    const height = contentHeight();
+    return height < CONTENT_MIN_HEIGHT ? CONTENT_MIN_HEIGHT : height;
+  };
+  const maxHeightStyle = (value: number | undefined): string =>
+    value === undefined ? "" : `max-height: ${value}px;`;
+  // In case of `initiallyExpanded=true` we should avoid calculating `max-height` from the content-height
+  // because the content in the slot can be initialized w/ some delay.
+  const updateMaxHeight = () => {
+    if (userUpdated) {
+      maxHeight = expanded ? maxContentHeight() : 0;
+    } else {
+      maxHeight = initiallyExpanded ? maxContentHeigh : 0;
+    }
+  };
+
+  // recalculate max-height after DOM update
+  afterUpdate(() => updateMaxHeight());
 </script>
 
 <div
@@ -31,11 +53,7 @@
     <IconExpandMore />
   </button>
 </div>
-<div
-  class="wrapper"
-  class:expanded
-  style={`max-height: ${expanded ? maxHeight() : 0}px;`}
->
+<div class="wrapper" class:expanded style={maxHeightStyle(maxHeight)}>
   <div class="content" bind:this={content}>
     <slot />
   </div>
@@ -64,8 +82,12 @@
     }
 
     @include media.min-width(medium) {
-      .header-content {
-        .alignCenter {
+      &.alignCenter {
+        justify-content: center;
+
+        .header-content {
+          display: flex;
+          align-items: center;
           justify-content: center;
           margin-left: calc(3 * var(--padding));
         }
@@ -119,7 +141,9 @@
   }
 
   .content {
-    // to respect children margins in height calculation
+    // scrollbar
+    padding-right: var(--padding);
+    // to respect children margins in contentHeight calculation
     overflow: auto;
   }
 </style>
