@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Accordion from "./Accordion.svelte";
+  import Collapsible from "./Collapsible.svelte";
 
   export let expandable = false;
 
@@ -11,7 +11,7 @@
 
 <article data-tid="card-block" class:expanded>
   {#if expandable}
-    <Accordion
+    <Collapsible
       maxContentHeigh={300}
       headerAlign="center"
       initiallyExpanded
@@ -21,7 +21,7 @@
       <div class="content">
         <slot />
       </div>
-    </Accordion>
+    </Collapsible>
   {:else}
     <h3><slot name="title" /></h3>
     <div class="content">
