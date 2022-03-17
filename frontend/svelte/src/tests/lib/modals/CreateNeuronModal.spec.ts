@@ -312,4 +312,42 @@ describe("CreateNeuronModal", () => {
 
     await waitFor(() => expect(updateDelay).toBeCalled());
   });
+
+  it("should go to edit followers when skipping dissolve delay", async () => {
+    jest
+      .spyOn(neuronsStore, "subscribe")
+      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
+
+    const { container, queryByTestId } = render(CreateNeuronModal);
+
+    // SCREEN: Select Account
+    const accountCard = container.querySelector('article[role="button"]');
+    expect(accountCard).not.toBeNull();
+
+    accountCard && (await fireEvent.click(accountCard));
+
+    // SCREEN: Create Neuron
+    const input = container.querySelector('input[name="amount"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    input && (await fireEvent.input(input, { target: { value: 22 } }));
+
+    const createButton = container.querySelector('button[type="submit"]');
+
+    createButton && (await fireEvent.click(createButton));
+
+    // SCREEN: Set Dissolve Delay
+    await waitFor(() =>
+      expect(container.querySelector('input[type="range"]')).not.toBeNull()
+    );
+
+    const skipButton = queryByTestId("skip-neuron-delay");
+
+    skipButton && (await fireEvent.click(skipButton));
+
+    // SCREEN: Edit Followers
+    await waitFor(() =>
+      expect(queryByTestId("edit-followers-screen")).not.toBeNull()
+    );
+  });
 });
