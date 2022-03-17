@@ -34,7 +34,7 @@ export const getLastPathDetailId = (path: string): bigint | undefined => {
     const id = BigInt(pathDetail);
     return `${id}` === pathDetail ? id : undefined;
   } catch (err) {
-    console.log(`Couldn't get last detail id from ${pathDetail}`);
+    console.error(`Couldn't get last detail id from ${pathDetail}`);
     return undefined;
   }
 };

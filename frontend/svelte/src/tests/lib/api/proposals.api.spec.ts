@@ -62,7 +62,7 @@ describe("proposals-api", () => {
       expect(spyGetProposal).toBeCalledTimes(1);
       expect(spyGetProposal).toBeCalledWith({
         proposalId: BigInt(404),
-        certified: true,
+        certified: false,
       });
     });
   });

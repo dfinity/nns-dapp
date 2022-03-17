@@ -44,6 +44,7 @@ export const queryProposals = async ({
       includeRewardStatus: rewards,
       includeStatus: status,
     },
+    certified: false,
   });
 
   return proposals;
@@ -60,7 +61,7 @@ export const queryProposal = async ({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.getProposal({ proposalId, certified: true });
+  return governance.getProposal({ proposalId, certified: false });
 };
 
 export const registerVote = async ({

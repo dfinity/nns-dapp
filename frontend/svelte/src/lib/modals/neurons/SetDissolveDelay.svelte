@@ -100,8 +100,11 @@
     </div>
   </Card>
   <div class="buttons">
-    <button on:click={skipDelay} class="secondary full-width" disabled={loading}
-      >{$i18n.neurons.skip}</button
+    <button
+      on:click={skipDelay}
+      data-tid="skip-neuron-delay"
+      class="secondary full-width"
+      disabled={loading}>{$i18n.neurons.skip}</button
     >
     <button
       class="primary full-width"

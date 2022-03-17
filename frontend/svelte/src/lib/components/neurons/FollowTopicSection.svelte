@@ -1,0 +1,121 @@
+<script lang="ts">
+  import type { Topic } from "@dfinity/nns";
+  import IconExpandMore from "../../icons/IconExpandMore.svelte";
+  import NewFolloweeModal from "../../modals/neurons/NewFolloweeModal.svelte";
+  import { i18n } from "../../stores/i18n";
+
+  export let topic: Topic;
+
+  let title: string;
+  $: title = $i18n.follow_neurons[`topic_${topic}_title`];
+  let subtitle: string;
+  $: subtitle = $i18n.follow_neurons[`topic_${topic}_subtitle`];
+
+  let isExpanded: boolean = false;
+  let showNewFolloweeModal: boolean = false;
+
+  const toggleContent = () => (isExpanded = !isExpanded);
+
+  const openNewFolloweeModal = () => (showNewFolloweeModal = true);
+  const closeNewFolloweeModal = () => (showNewFolloweeModal = false);
+</script>
+
+<article data-tid="follow-topic-section">
+  <div class="wrapper">
+    <div>
+      <h3>{title}</h3>
+      <p class="subtitle">{subtitle}</p>
+    </div>
+    <div class="toolbar">
+      <!-- TODO: L2-333: Set total followees -->
+      <h3 class="badge">0</h3>
+      <span
+        class:isExpanded
+        on:click={toggleContent}
+        data-tid="expand-topic-followees"><IconExpandMore /></span
+      >
+    </div>
+  </div>
+  <div class="content" class:isExpanded data-tid="follow-topic-section-current">
+    <h5>{$i18n.follow_neurons.current_followees}</h5>
+    <!-- TODO: L2-333:  Iterate followees -->
+    <div class="button-wrapper">
+      <button
+        class="secondary small"
+        data-tid="open-new-followee-modal"
+        on:click={openNewFolloweeModal}>{$i18n.follow_neurons.add}</button
+      >
+    </div>
+  </div>
+  {#if showNewFolloweeModal}
+    <NewFolloweeModal on:nnsClose={closeNewFolloweeModal} />
+  {/if}
+</article>
+
+<style lang="scss">
+  @use "../../themes/mixins/interaction";
+  .wrapper {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: calc(2 * var(--padding));
+  }
+
+  .subtitle {
+    margin: 0 0 var(--padding) 0;
+  }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: calc(2 * var(--padding));
+    margin-top: calc(2 * var(--padding));
+  }
+
+  .badge {
+    background-color: var(--background-contrast);
+    color: var(--background);
+    border-radius: 50%;
+    padding: var(--padding);
+    width: calc(2 * var(--padding));
+    height: calc(2 * var(--padding));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toolbar span {
+    @include interaction.tappable;
+
+    color: var(--background-contrast);
+
+    transition: transform 0.3s;
+
+    &.isExpanded {
+      // We need to translateY to keep the center in the same place
+      transform: rotate(180deg) translateY(4px);
+    }
+  }
+
+  .content {
+    visibility: hidden;
+    max-height: 0;
+    height: fit-content;
+    overflow: hidden;
+    transition: all 0.3s;
+
+    &.isExpanded {
+      visibility: visible;
+      max-height: calc(300px);
+      height: fit-content;
+    }
+
+    .button-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--padding) 0;
+    }
+  }
+</style>

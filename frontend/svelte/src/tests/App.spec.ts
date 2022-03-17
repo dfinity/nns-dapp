@@ -3,11 +3,12 @@
  */
 
 import { ICP, LedgerCanister } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
-import { tick } from "svelte";
 import App from "../App.svelte";
 import { NNSDappCanister } from "../lib/canisters/nns-dapp/nns-dapp.canister";
+import { worker } from "../lib/services/worker.services";
+import type { AuthStore } from "../lib/stores/auth.store";
 import { authStore } from "../lib/stores/auth.store";
 import { mockAccountDetails } from "./mocks/accounts.store.mock";
 import {
@@ -15,6 +16,12 @@ import {
   mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "./mocks/auth.store.mock";
+
+jest.mock("../lib/services/worker.services", () => ({
+  worker: {
+    syncAuthIdle: jest.fn((auth: AuthStore) => Promise.resolve()),
+  },
+}));
 
 describe("App", () => {
   const mockLedgerCanister = mock<LedgerCanister>();
@@ -50,15 +57,31 @@ describe("App", () => {
       identity: mockIdentity,
     });
 
-    await tick();
-    expect(mockNNSDappCanister.addAccount).toHaveBeenCalledTimes(1);
+    await waitFor(() =>
+      expect(mockNNSDappCanister.addAccount).toHaveBeenCalledTimes(1)
+    );
 
-    await tick();
-    expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(1);
+    await waitFor(() =>
+      expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(1)
+    );
 
-    await tick();
-    await tick();
-    await tick();
-    expect(mockLedgerCanister.accountBalance).toHaveBeenCalledTimes(1);
+    await waitFor(() =>
+      expect(mockLedgerCanister.accountBalance).toHaveBeenCalledTimes(1)
+    );
+  });
+
+  it("should register auth worker sync after sign in", async () => {
+    mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
+    mockLedgerCanister.accountBalance.mockResolvedValue(
+      ICP.fromString("1") as ICP
+    );
+
+    render(App);
+
+    authStoreMock.next({
+      identity: mockIdentity,
+    });
+
+    expect(worker.syncAuthIdle).toHaveBeenCalled();
   });
 });

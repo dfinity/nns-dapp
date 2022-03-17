@@ -19,11 +19,18 @@
   import { syncAccounts } from "./lib/services/accounts.services";
   import NeuronDetail from "./routes/NeuronDetail.svelte";
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
+  import { worker } from "./lib/services/worker.services";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
+      if (process.env.REDIRECT_TO_LEGACY === "prod") {
+        return;
+      }
+
+      await worker.syncAuthIdle(auth);
+
       // TODO: We do not need to load and sync the account data if we redirect to the Flutter app. Currently these data are not displayed with this application.
-      if (process.env.REDIRECT_TO_LEGACY === "prod" || !auth.identity) {
+      if (!auth.identity) {
         return;
       }
 
