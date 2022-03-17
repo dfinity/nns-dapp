@@ -31,7 +31,7 @@ npm ci
 
 Run the local development server:
 
-```
+``` bash
 npm run dev
 ```
 
