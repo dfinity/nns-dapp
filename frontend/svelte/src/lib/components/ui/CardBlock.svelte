@@ -3,7 +3,7 @@
 
   export let expandable = false;
 
-  let expanded: boolean | undefined;
+  let expanded: boolean = expandable;
 
   const toggle = ({ detail }: { detail: { expanded: boolean } }) =>
     (expanded = detail.expanded);
