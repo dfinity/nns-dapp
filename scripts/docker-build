@@ -47,6 +47,7 @@ assets=(assets.tar.xz nns-dapp.wasm build-inputs.txt)
 
 set -x
 DOCKER_BUILDKIT=1 docker build \
+  --platform=linux/amd64 \
   --target scratch \
   --build-arg DEPLOY_ENV="$DEPLOY_ENV" \
   --build-arg OWN_CANISTER_ID="$OWN_CANISTER_ID" \
