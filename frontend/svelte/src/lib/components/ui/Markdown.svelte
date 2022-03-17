@@ -21,7 +21,7 @@
 </script>
 
 {#if loading}
-  <Spinner />
+  <Spinner inline />
   <ScriptLoader
     url="/assets/assets/libs/marked.min.js"
     on:nnsLoad={onLoad}
