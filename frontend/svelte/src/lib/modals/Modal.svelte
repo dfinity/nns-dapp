@@ -45,7 +45,7 @@
               aria-label={$i18n.core.back}><IconBackIosNew /></button
             >
           {:else}
-            <!-- TODO: find a better solution to preserve layout -->
+            <!-- preserve 3 column layout -->
             <div />
           {/if}
           <h3 id="modalTitle"><slot name="title" /></h3>
