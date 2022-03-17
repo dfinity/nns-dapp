@@ -32,6 +32,10 @@ interface I18nError {
   register_vote_unknown: string;
 }
 
+interface I18nWarning {
+  auth_sign_out: string;
+}
+
 interface I18nNavigation {
   icp: string;
   neurons: string;
@@ -250,6 +254,7 @@ interface I18n {
   lang: Languages;
   core: I18nCore;
   error: I18nError;
+  warning: I18nWarning;
   navigation: I18nNavigation;
   header: I18nHeader;
   auth: I18nAuth;
