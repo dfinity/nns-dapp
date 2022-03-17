@@ -42,7 +42,7 @@
 
 <div
   class="header"
-  role="button"
+  role="term"
   on:click={toggleContent}
   class:alignCenter={headerAlign === "center"}
 >
@@ -53,7 +53,12 @@
     <IconExpandMore />
   </button>
 </div>
-<div class="wrapper" class:expanded style={maxHeightStyle(maxHeight)}>
+<div
+  class="wrapper"
+  class:expanded
+  style={maxHeightStyle(maxHeight)}
+  role="definition"
+>
   <div class="content" bind:this={content}>
     <slot />
   </div>
