@@ -43,7 +43,7 @@ At the moment, pure local development is not supported. A testnet deployed, and 
 
 The environment variables in `env.config.mjs` need to point to the working testnet.
 
-There is usually no need to review the variables, but these are a few that might need to be checked if the deployment to testnet is done with new configuration parameters:
+There is usually no need to review the variables, but there are a few that might need to be checked if the deployment to testnet is done with new configuration parameters:
 
 - `IDENTITY_SERVICE_URL`: This is the Internet Identity URL to register and log in.
 - `OWN_CANISTER_ID`: The canister id of the NNS Dapp.
