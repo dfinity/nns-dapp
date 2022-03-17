@@ -2,6 +2,7 @@
   import { afterUpdate, createEventDispatcher } from "svelte";
   import IconExpandMore from "../../icons/IconExpandMore.svelte";
 
+  export let id: string | undefined;
   export let initiallyExpanded: boolean = false;
   export let headerAlign: "left" | "center" = "left";
   export let maxContentHeigh: number | undefined = undefined;
@@ -44,6 +45,7 @@
 </script>
 
 <div
+  id={id ?? `heading${id}`}
   class="header"
   role="term"
   on:click={toggleContent}
@@ -52,7 +54,7 @@
   <div class="header-content">
     <slot name="header" />
   </div>
-  <button tabindex="-1" class:expanded>
+  <button class:expanded aria-expanded={expanded} aria-controls={id}>
     <IconExpandMore />
   </button>
 </div>
@@ -62,7 +64,12 @@
   style={maxHeightStyle(maxHeight)}
   role="definition"
 >
-  <div class="content" bind:this={content}>
+  <div
+    {id}
+    aria-labelledby={id ?? `heading${id}`}
+    class="content"
+    bind:this={content}
+  >
     <slot />
   </div>
 </div>
