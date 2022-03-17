@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { afterUpdate } from "svelte";
+  import { afterUpdate, createEventDispatcher } from "svelte";
   import IconExpandMore from "../../icons/IconExpandMore.svelte";
 
   export let initiallyExpanded: boolean = false;
@@ -8,6 +8,7 @@
 
   // Minimum height when some part of the text-content is visible (empirical value)
   const CONTENT_MIN_HEIGHT = 40;
+  const dispatch = createEventDispatcher();
 
   let expanded: boolean = initiallyExpanded;
   let content: HTMLDivElement | undefined;
@@ -17,6 +18,7 @@
   const toggleContent = () => {
     userUpdated = true;
     expanded = !expanded;
+    dispatch("nnsToggle", { expanded });
   };
   const contentHeight = (): number => (content && content.offsetHeight) || 0;
   const maxContentHeight = (): number => {
