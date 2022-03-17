@@ -15,10 +15,11 @@
   let userUpdated: boolean = false;
   let maxHeight: number | undefined;
 
+  const dispatchUpdate = () => dispatch("nnsToggle", { expanded });
   const toggleContent = () => {
     userUpdated = true;
     expanded = !expanded;
-    dispatch("nnsToggle", { expanded });
+    dispatchUpdate();
   };
   const contentHeight = (): number => (content && content.offsetHeight) || 0;
   const maxContentHeight = (): number => {
@@ -117,6 +118,8 @@
 
     :global(svg) {
       width: calc(2.5 * var(--padding));
+      fill: var(--black);
+
       transition: transform 0.3s;
     }
 
@@ -144,13 +147,14 @@
 
       overflow-y: auto;
     }
-    // TODO: add some border eg border-top: 1px solid rgba(255,255,255, 0.15);
   }
 
   .content {
-    // scrollbar
-    padding-right: var(--padding);
+    // to not stick the content to the bottom
+    margin-bottom: calc(2 * var(--padding));
     // to respect children margins in contentHeight calculation
     overflow: auto;
+    // scrollbar
+    padding-right: var(--padding);
   }
 </style>
