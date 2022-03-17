@@ -46,7 +46,7 @@
 
 <div
   data-tid="collapsible-header"
-  id={id === undefined ? `heading${id}` : undefined}
+  id={id !== undefined ? `heading${id}` : undefined}
   role="term"
   class="header"
   on:click={toggleContent}
@@ -68,7 +68,7 @@
 >
   <div
     {id}
-    aria-labelledby={id === undefined ? `heading${id}` : undefined}
+    aria-labelledby={id !== undefined ? `heading${id}` : undefined}
     class="content"
     bind:this={content}
   >
