@@ -18,6 +18,26 @@ describe("CardBlock", () => {
 
   it("should render content", () => {
     const { getByText } = render(CardBlockTest);
-    expect(getByText("content")).toBeInTheDocument;
+    expect(getByText("content")).toBeInTheDocument();
+  });
+
+  it("should render expandable", () => {
+    const { getByTestId } = render(CardBlockTest, {
+      props: {
+        expandable: true,
+      },
+    });
+    expect(getByTestId("collapsible-header")).toBeInTheDocument();
+  });
+
+  it("should expandable be initially expanded", () => {
+    const { container } = render(CardBlockTest, {
+      props: {
+        expandable: true,
+      },
+    });
+    expect(
+      container.querySelector('[aria-expanded="true"]')
+    ).toBeInTheDocument();
   });
 });
