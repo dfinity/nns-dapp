@@ -25,13 +25,13 @@ Until all the pages come from this project, the NNS Dapp is a hybrid of the page
 
 Clone the project on your computer and install the libraries:
 
-``` bash
+```bash
 npm ci
 ```
 
 Run the local development server:
 
-``` bash
+```bash
 npm run dev
 ```
 
