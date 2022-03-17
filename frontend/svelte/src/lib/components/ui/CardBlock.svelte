@@ -2,11 +2,21 @@
   import Accordion from "./Accordion.svelte";
 
   export let expandable = false;
+
+  let expanded: boolean | undefined;
+
+  const toggle = ({ detail }: { detail: { expanded: boolean } }) =>
+    (expanded = detail.expanded);
 </script>
 
-<article class:expandable>
+<article data-tid="card-block" class:expanded>
   {#if expandable}
-    <Accordion maxContentHeigh={300} headerAlign="center">
+    <Accordion
+      maxContentHeigh={300}
+      headerAlign="center"
+      initiallyExpanded
+      on:nnsToggle={toggle}
+    >
       <h3 slot="header"><slot name="title" /></h3>
       <div class="content">
         <slot />
@@ -36,6 +46,13 @@
 
     // TODO: move to variables
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
+
+    transition: padding 0.3s, margin 0.3s;
+
+    &.expanded {
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
   }
 
   h3 {
