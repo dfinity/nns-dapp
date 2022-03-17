@@ -47,7 +47,7 @@
     // TODO: move to variables
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
 
-    transition: padding 0.3s, margin 0.3s;
+    transition: all var(--animation-time-normal);
 
     &.expanded {
       padding-bottom: 0;

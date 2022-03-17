@@ -120,7 +120,7 @@
       width: calc(2.5 * var(--padding));
       fill: var(--black);
 
-      transition: transform 0.3s;
+      transition: transform var(--animation-time-normal);
     }
 
     &.expanded {
@@ -135,7 +135,7 @@
     opacity: 0;
     visibility: hidden;
 
-    transition: all 0.3s;
+    transition: all var(--animation-time-normal);
 
     height: fit-content;
     overflow: hidden;
