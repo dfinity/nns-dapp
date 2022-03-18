@@ -51,13 +51,15 @@ export const increaseDissolveDelay = async ({
 
 export const queryNeurons = async ({
   identity,
+  certified,
 }: {
   identity: Identity;
+  certified: boolean;
 }): Promise<NeuronInfo[]> => {
   const { canister } = await governanceCanister({ identity });
 
   return canister.listNeurons({
-    certified: true,
+    certified,
     principal: identity.getPrincipal(),
   });
 };
