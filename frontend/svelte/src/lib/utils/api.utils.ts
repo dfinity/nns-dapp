@@ -46,11 +46,11 @@ export const queryAndUpdate = <Response, TError>({
     request({ certified: true })
       .then((response) => {
         certifiedDone = true;
-        onLoad({ certified: false, response });
+        onLoad({ certified: true, response });
       })
       .catch((error) => {
         certifiedDone = true;
-        onError({ certified: false, error });
+        onError({ certified: true, error });
       }),
   ]).then();
 };
