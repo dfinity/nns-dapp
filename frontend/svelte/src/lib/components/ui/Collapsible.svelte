@@ -5,14 +5,14 @@
   export let id: string | undefined = undefined;
   export let initiallyExpanded: boolean = false;
   export let headerAlign: "left" | "center" = "left";
-  export let maxContentHeigh: number | undefined = undefined;
+  export let maxContentHeight: number | undefined = undefined;
 
   // Minimum height when some part of the text-content is visible (empirical value)
   const CONTENT_MIN_HEIGHT = 40;
   const dispatch = createEventDispatcher();
 
   let expanded: boolean = initiallyExpanded;
-  let content: HTMLDivElement | undefined;
+  let contentElement: HTMLDivElement | undefined;
   let userUpdated: boolean = false;
   let maxHeight: number | undefined;
 
@@ -22,9 +22,10 @@
     expanded = !expanded;
     dispatchUpdate();
   };
-  const contentHeight = (): number => (content && content.offsetHeight) || 0;
-  const maxContentHeight = (): number => {
-    if (maxContentHeigh !== undefined) return maxContentHeigh;
+  const contentHeight = (): number =>
+    (contentElement && contentElement.offsetHeight) || 0;
+  const calculateMaxContentHeight = (): number => {
+    if (maxContentHeight !== undefined) return maxContentHeight;
     const height = contentHeight();
     return height < CONTENT_MIN_HEIGHT ? CONTENT_MIN_HEIGHT : height;
   };
@@ -34,14 +35,14 @@
   // because the content in the slot can be initialized w/ some delay.
   const updateMaxHeight = () => {
     if (userUpdated) {
-      maxHeight = expanded ? maxContentHeight() : 0;
+      maxHeight = expanded ? calculateMaxContentHeight() : 0;
     } else {
-      maxHeight = initiallyExpanded ? maxContentHeigh : 0;
+      maxHeight = initiallyExpanded ? maxContentHeight : 0;
     }
   };
 
   // recalculate max-height after DOM update
-  afterUpdate(() => updateMaxHeight());
+  afterUpdate(updateMaxHeight);
 </script>
 
 <div
@@ -70,7 +71,7 @@
     {id}
     aria-labelledby={id !== undefined ? `heading${id}` : undefined}
     class="content"
-    bind:this={content}
+    bind:this={contentElement}
   >
     <slot />
   </div>
@@ -127,7 +128,7 @@
 
     :global(svg) {
       width: calc(2.5 * var(--padding));
-      fill: var(--black);
+      fill: var(--background-contrast);
 
       transition: transform var(--animation-time-normal);
     }
