@@ -117,6 +117,11 @@ describe("neurons-services", () => {
   });
 
   describe("details", () => {
+    beforeAll(() => {
+      // Avoid to print errors during test
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+    afterAll(() => jest.clearAllMocks());
     it("should get neuronId from valid path", async () => {
       expect(getNeuronId("/#/neuron/123")).toBe(BigInt(123));
       expect(getNeuronId("/#/neuron/0")).toBe(BigInt(0));
