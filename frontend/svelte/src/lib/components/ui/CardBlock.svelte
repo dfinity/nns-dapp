@@ -12,7 +12,7 @@
 <article data-tid="card-block" class:expanded>
   {#if expandable}
     <Collapsible
-      maxContentHeigh={300}
+      maxContentHeight={300}
       headerAlign="center"
       initiallyExpanded
       on:nnsToggle={toggle}
