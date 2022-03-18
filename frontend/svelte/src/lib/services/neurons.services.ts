@@ -12,6 +12,7 @@ import { E8S_PER_ICP } from "../constants/icp.constants";
 import { i18n } from "../stores/i18n";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
+import { queryAndUpdate } from "../utils/api.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 
 /**
@@ -63,8 +64,12 @@ export const listNeurons = async ({
     throw new Error("No identity found listing neurons");
   }
 
-  const neurons: NeuronInfo[] = await queryNeurons({ identity });
-  neuronsStore.setNeurons(neurons);
+  return queryAndUpdate<NeuronInfo[], unknown>({
+    request: ({ certified }) => queryNeurons({ identity, certified }),
+    onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
+    // TODO: add error handling
+    onError: ({ error }) => console.error(error),
+  });
 };
 
 export const updateDelay = async ({

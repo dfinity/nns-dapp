@@ -20,6 +20,11 @@ import {
   proposalsStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateOnError,
+  type QueryAndUpdateOnResponse,
+} from "../utils/api.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { isNode } from "../utils/dev.utils";
 import { stringifyJson, uniqueObjects } from "../utils/utils";
@@ -109,21 +114,21 @@ export const loadProposal = async ({
     handleError?.();
   };
 
-  try {
-    const proposal: ProposalInfo | undefined = await getProposal({
-      proposalId,
-      identity,
-    });
+  getProposal({
+    proposalId,
+    identity,
+    onError: catchError,
+    onLoad: ({ response }) => {
+      console.log("getProposal/onLoad", response);
 
-    if (!proposal) {
-      catchError(new Error("Proposal not found"));
-      return;
-    }
-
-    setProposal(proposal);
-  } catch (error: unknown) {
-    catchError(error);
-  }
+      const proposal = response;
+      if (!proposal) {
+        catchError(new Error("Proposal not found"));
+        return;
+      }
+      setProposal(proposal);
+    },
+  });
 };
 
 /**
@@ -132,17 +137,33 @@ export const loadProposal = async ({
 const getProposal = async ({
   proposalId,
   identity,
+  onLoad,
+  onError,
 }: {
   proposalId: ProposalId;
   identity: Identity | null | undefined;
-}): Promise<ProposalInfo | undefined> => {
+  onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
+  onError: QueryAndUpdateOnError<unknown>;
+}): Promise<void> => {
   // TODO: https://dfinity.atlassian.net/browse/L2-346
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
 
   const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
-  return proposal || queryProposal({ proposalId, identity });
+  // from the store
+  if (proposal) {
+    onLoad({ response: proposal, certified: undefined });
+  }
+
+  const response = queryAndUpdate<ProposalInfo | undefined, unknown>({
+    request: ({ certified }) =>
+      queryProposal({ proposalId, identity, certified }),
+    onLoad,
+    onError,
+  });
+
+  return proposal ? Promise.resolve() : response;
 };
 
 export const getProposalId = (path: string): ProposalId | undefined =>
