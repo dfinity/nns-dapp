@@ -1,10 +1,5 @@
 import { writable } from "svelte/store";
-
-export interface ToastMsg {
-  labelKey: string;
-  level: "info" | "error";
-  detail?: string;
-}
+import type { ToastMsg } from "../types/toast";
 
 /**
  * Toast messages.
