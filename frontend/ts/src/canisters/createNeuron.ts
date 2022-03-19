@@ -75,17 +75,17 @@ export async function createNeuronWithNnsDapp(
     fromSubAccountId: request.fromSubAccountId,
   });
 
-      const outcome = await pollUntilComplete(
-        nnsDappService,
-        principal,
+  const outcome = await pollUntilComplete(
+    nnsDappService,
+    principal,
     blockHeight
-      );
+  );
 
-      if ("NeuronCreated" in outcome) {
-        return outcome.NeuronCreated;
+  if ("NeuronCreated" in outcome) {
+    return outcome.NeuronCreated;
   } else {
     throw new Error("Unable to create neuron");
-      }
+  }
 }
 
 // 32 bytes
