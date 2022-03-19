@@ -33,7 +33,7 @@ pub enum MultiPartTransactionStatus {
     Error(String),
     ErrorWithRefundPending(String),
     NotFound,
-    PendingSync,
+    PendingSync(BlockHeight),
     Queued,
 }
 

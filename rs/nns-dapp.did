@@ -173,7 +173,7 @@ type MultiPartTransactionStatus =
         Error: text;
         ErrorWithRefundPending: text;
         NotFound;
-        PendingSync;
+        PendingSync: nat64;
         Queued;
     };
 

@@ -83,7 +83,7 @@ export type MultiPartTransactionStatus =
   | { Complete: null }
   | { NotFound: null }
   | { NeuronCreated: NeuronId }
-  | { PendingSync: null }
+  | { PendingSync: BlockHeight }
   | { ErrorWithRefundPending: string };
 export interface Receive {
   fee: E8s;

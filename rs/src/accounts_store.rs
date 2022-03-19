@@ -748,8 +748,9 @@ impl AccountsStore {
         caller: PrincipalId,
         block_height: BlockHeight,
     ) -> MultiPartTransactionStatus {
-        if self.get_block_height_synced_up_to().unwrap_or(0) < block_height {
-            MultiPartTransactionStatus::PendingSync
+        let synced_block_height = self.get_block_height_synced_up_to().unwrap_or(0);
+        if synced_block_height < block_height {
+            MultiPartTransactionStatus::PendingSync(synced_block_height)
         } else {
             self.multi_part_transactions_processor.get_status(caller, block_height)
         }

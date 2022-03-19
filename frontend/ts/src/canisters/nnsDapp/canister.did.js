@@ -62,7 +62,7 @@ export const idlFactory = ({ IDL }) => {
     'Complete' : IDL.Null,
     'NotFound' : IDL.Null,
     'NeuronCreated' : NeuronId,
-    'PendingSync' : IDL.Null,
+    'PendingSync' : IDL.Nat64,
     'ErrorWithRefundPending' : IDL.Text,
   });
   const Stats = IDL.Record({

@@ -66,7 +66,7 @@ export type MultiPartTransactionStatus = { 'Queued' : null } |
   { 'Complete' : null } |
   { 'NotFound' : null } |
   { 'NeuronCreated' : NeuronId } |
-  { 'PendingSync' : null } |
+  { 'PendingSync' : BlockHeight } |
   { 'ErrorWithRefundPending' : string };
 export type NeuronId = bigint;
 export interface Receive {
