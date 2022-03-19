@@ -33,6 +33,8 @@ pub enum MultiPartTransactionStatus {
     Error(String),
     ErrorWithRefundPending(String),
     NotFound,
+    /// Returned when the nns-dapp backend canister has not yet synced the requested
+    /// ledger canister version.  Provides the currently synced ledger version.
     PendingSync(BlockHeight),
     Queued,
 }
