@@ -19,6 +19,10 @@ import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-services", () => {
+  beforeAll(() => {
+    jest.spyOn(global.console, "error");
+  });
+
   describe("list", () => {
     const spyQueryProposals = jest
       .spyOn(api, "queryProposals")
@@ -59,12 +63,12 @@ describe("proposals-services", () => {
 
     it("should clear the list proposals before query", async () => {
       await listProposals({ clearBeforeQuery: true, identity: mockIdentity });
-      expect(spySetProposals).toHaveBeenCalledTimes(2);
+      expect(spySetProposals).toHaveBeenCalledTimes(3);
     });
 
     it("should not clear the list proposals before query", async () => {
       await listProposals({ clearBeforeQuery: false, identity: mockIdentity });
-      expect(spySetProposals).toHaveBeenCalledTimes(1);
+      expect(spySetProposals).toHaveBeenCalledTimes(2);
     });
 
     it("should push new proposals to the list", async () => {
@@ -72,14 +76,15 @@ describe("proposals-services", () => {
         beforeProposal: mockProposals[mockProposals.length - 1].id,
         identity: mockIdentity,
       });
-      expect(spyPushProposals).toHaveBeenCalledTimes(1);
+      expect(spyPushProposals).toHaveBeenCalledTimes(2);
     });
   });
 
   describe("load", () => {
-    const spyQueryProposals = jest
-      .spyOn(api, "queryProposals")
-      .mockImplementation(() => Promise.resolve(mockProposals));
+    // TODO: remove if drop the functionality
+    // const spyQueryProposals = jest
+    //   .spyOn(api, "queryProposals")
+    //   .mockImplementation(() => Promise.resolve(mockProposals));
 
     const spyQueryProposal = jest
       .spyOn(api, "queryProposal")
@@ -89,46 +94,45 @@ describe("proposals-services", () => {
 
     beforeAll(() => proposalsStore.setProposals(mockProposals));
 
-    afterAll(() => jest.clearAllMocks());
+    afterEach(() => jest.clearAllMocks());
 
-    it("should get proposalInfo from proposals store if presented", (done) => {
-      loadProposal({
-        proposalId: mockProposals[mockProposals.length - 1].id as bigint,
-        identity: mockIdentity,
-        setProposal: (proposal: ProposalInfo) => {
-          expect(proposal?.id).toBe(mockProposals[1].id);
-          expect(spyQueryProposals).not.toBeCalled();
-          expect(spyQueryProposal).not.toBeCalled();
+    // TODO: remove if drop the functionality
+    // it("should get proposalInfo from proposals store if presented", (done) => {
+    //   loadProposal({
+    //     proposalId: mockProposals[mockProposals.length - 1].id as bigint,
+    //     identity: mockIdentity,
+    //     setProposal: (proposal: ProposalInfo) => {
+    //       expect(proposal?.id).toBe(mockProposals[1].id);
+    //       expect(spyQueryProposals).not.toBeCalled();
+    //       expect(spyQueryProposal).not.toBeCalled();
+    //       done();
+    //     },
+    //   });
+    // });
+    // it("should not call listProposals if in the store", (done) => {
+    //   loadProposal({
+    //     proposalId: mockProposals[0].id as bigint,
+    //     identity: mockIdentity,
+    //     setProposal: () => {
+    //       expect(spyQueryProposals).not.toBeCalled();
+    //       done();
+    //     },
+    //   });
+    // });
 
-          done();
-        },
-      });
-    });
-
-    it("should not call listProposals if in the store", (done) => {
-      loadProposal({
-        proposalId: mockProposals[0].id as bigint,
-        identity: mockIdentity,
-        setProposal: () => {
-          expect(spyQueryProposals).not.toBeCalled();
-          done();
-        },
-      });
-    });
-
-    it("should call the canister to get proposalInfo if not in store", (done) => {
+    it("should call the canister to get proposalInfo", (done) => {
+      let notDone = true;
       loadProposal({
         proposalId: BigInt(666),
         identity: mockIdentity,
         setProposal: (proposal: ProposalInfo) => {
           expect(proposal?.id).toBe(BigInt(666));
-          expect(spyQueryProposal).toBeCalledTimes(1);
-          expect(spyQueryProposal).toBeCalledWith({
-            proposalId: BigInt(666),
-            identity: mockIdentity,
-          });
+          expect(spyQueryProposal).toBeCalledTimes(2);
 
-          done();
+          if (notDone) {
+            notDone = false;
+            done();
+          }
         },
       });
     });
@@ -382,7 +386,7 @@ describe("proposals-services", () => {
         expect(spyToastShow).toBeCalledWith({
           labelKey: "error.register_vote_unknown",
           level: "error",
-          detail: "{}",
+          detail: "test",
         });
       });
     });
