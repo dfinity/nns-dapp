@@ -1,6 +1,7 @@
 import type {
   NeuronId,
   NeuronInfo,
+  ProposalId,
   ProposalInfo,
   ProposalRewardStatus,
   ProposalStatus,
@@ -38,10 +39,16 @@ const initProposalsStore = () => {
     },
 
     pushProposals(proposals: ProposalInfo[]) {
-      update((proposalInfos: ProposalInfo[]) => [
-        ...proposalInfos,
-        ...proposals,
-      ]);
+      update((proposalInfos: ProposalInfo[]) => {
+        const proposalIds = new Set<ProposalId>(
+          proposalInfos.map(({ id }) => id as ProposalId)
+        );
+        return [
+          ...proposalInfos,
+          // TODO: think about deep-compare because first the query-data are set
+          ...proposals.filter(({ id }) => !proposalIds.has(id as ProposalId)),
+        ];
+      });
     },
   };
 };

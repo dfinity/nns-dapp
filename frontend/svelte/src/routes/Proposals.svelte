@@ -34,19 +34,10 @@
   const findNextProposals = async () => {
     loading = true;
 
-    try {
-      await listNextProposals({
-        beforeProposal: lastProposalId($proposalsStore),
-        identity: $authStore.identity,
-      });
-    } catch (err: unknown) {
-      toastsStore.show({
-        labelKey: "error.list_proposals",
-        level: "error",
-        detail: errorToString(err),
-      });
-      console.error(err);
-    }
+    await listNextProposals({
+      beforeProposal: lastProposalId($proposalsStore),
+      identity: $authStore.identity,
+    });
 
     loading = false;
   };

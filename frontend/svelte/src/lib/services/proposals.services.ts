@@ -27,56 +27,76 @@ import {
 } from "../utils/api.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { isNode } from "../utils/dev.utils";
+import { errorToString } from "../utils/error.utils";
 import { stringifyJson, uniqueObjects } from "../utils/utils";
 import { listNeurons } from "./neurons.services";
 
-export const listProposals = async ({
+const handleFindProposalsError = ({ error, certified }) => {
+  console.error(error);
+
+  // Explicitly handle only UPDATE errors
+  if (certified === true) {
+    proposalsStore.setProposals([]);
+
+    toastsStore.show({
+      labelKey: "error.list_proposals",
+      level: "error",
+      detail: errorToString(error),
+    });
+  }
+};
+
+export const listProposals = ({
   clearBeforeQuery = false,
   identity,
 }: {
   clearBeforeQuery?: boolean;
   identity: Identity | null | undefined;
-}) => {
+}): Promise<void> => {
   if (clearBeforeQuery) {
     proposalsStore.setProposals([]);
   }
 
-  const proposals: ProposalInfo[] = await findProposals({
+  return findProposals({
     beforeProposal: undefined,
     identity,
+    onLoad: ({ response: proposals }) => proposalsStore.setProposals(proposals),
+    onError: handleFindProposalsError,
   });
-
-  proposalsStore.setProposals(proposals);
 };
 
-export const listNextProposals = async ({
+export const listNextProposals = ({
   beforeProposal,
   identity,
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
-}) => {
-  const proposals: ProposalInfo[] = await findProposals({
+}): Promise<void> =>
+  findProposals({
     beforeProposal,
     identity,
+    onLoad: ({ response: proposals }) => {
+      if (proposals.length === 0) {
+        // There is no more proposals to fetch for the current filters.
+        // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
+        return;
+      }
+      proposalsStore.pushProposals(proposals);
+    },
+    onError: handleFindProposalsError,
   });
-
-  if (proposals.length === 0) {
-    // There is no more proposals to fetch for the current filters.
-    // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
-    return;
-  }
-
-  proposalsStore.pushProposals(proposals);
-};
 
 const findProposals = async ({
   beforeProposal,
   identity,
+  onLoad,
+  onError,
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
-}): Promise<ProposalInfo[]> => {
+  onLoad: QueryAndUpdateOnResponse<ProposalInfo[]>;
+  onError: QueryAndUpdateOnError<unknown>;
+}): Promise<void> => {
   // TODO: https://dfinity.atlassian.net/browse/L2-346
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
@@ -84,14 +104,26 @@ const findProposals = async ({
 
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
 
-  return queryProposals({ beforeProposal, identity, filters });
+  return queryAndUpdate<ProposalInfo[], unknown>({
+    request: ({ certified }) =>
+      queryProposals({ beforeProposal, identity, filters, certified }),
+    onLoad: (options) => {
+      console.log(
+        `findProposals certified:${options.certified}`,
+        options.response
+      );
+
+      onLoad(options);
+    },
+    onError,
+  });
 };
 
 /**
  * Get from store or query a proposal and apply the result to the callback (`setProposal`).
  * The function propagate error to the toast and call an optional callback in case of error.
  */
-export const loadProposal = async ({
+export const loadProposal = ({
   proposalId,
   identity,
   setProposal,
@@ -101,7 +133,7 @@ export const loadProposal = async ({
   identity: Identity | undefined | null;
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
-}): Promise<void> => {
+}): void => {
   const catchError = (error: unknown) => {
     console.error(error);
 
@@ -114,27 +146,31 @@ export const loadProposal = async ({
     handleError?.();
   };
 
-  getProposal({
-    proposalId,
-    identity,
-    onError: catchError,
-    onLoad: ({ response }) => {
-      console.log("getProposal/onLoad", response);
+  try {
+    getProposal({
+      proposalId,
+      identity,
+      onLoad: ({ response, certified }) => {
+        console.log(`getProposal certified:${certified}`, response);
 
-      const proposal = response;
-      if (!proposal) {
-        catchError(new Error("Proposal not found"));
-        return;
-      }
-      setProposal(proposal);
-    },
-  });
+        const proposal = response;
+        if (!proposal) {
+          catchError(new Error("Proposal not found"));
+          return;
+        }
+        setProposal(proposal);
+      },
+      onError: catchError,
+    });
+  } catch (err) {
+    catchError(err);
+  }
 };
 
 /**
  * Return single proposal from proposalsStore or fetch it (in case of page reload or direct navigation to proposal-detail page)
  */
-const getProposal = async ({
+const getProposal = ({
   proposalId,
   identity,
   onLoad,
@@ -150,20 +186,12 @@ const getProposal = async ({
     throw new Error(get(i18n).error.missing_identity);
   }
 
-  const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
-  // from the store
-  if (proposal) {
-    onLoad({ response: proposal, certified: undefined });
-  }
-
-  const response = queryAndUpdate<ProposalInfo | undefined, unknown>({
+  return queryAndUpdate<ProposalInfo | undefined, unknown>({
     request: ({ certified }) =>
       queryProposal({ proposalId, identity, certified }),
     onLoad,
     onError,
   });
-
-  return proposal ? Promise.resolve() : response;
 };
 
 export const getProposalId = (path: string): ProposalId | undefined =>
@@ -198,6 +226,7 @@ export const registerVotes = async ({
       identity,
     });
   } catch (error) {
+    // TODO: replace w/ console.error mock
     if (!isNode()) {
       // preserve in unit-test
       console.error("vote unknown:", error);
@@ -205,7 +234,7 @@ export const registerVotes = async ({
     toastsStore.show({
       labelKey: "error.register_vote_unknown",
       level: "error",
-      detail: stringifyJson(error, { indentation: 2 }),
+      detail: errorToString(error),
     });
   }
 

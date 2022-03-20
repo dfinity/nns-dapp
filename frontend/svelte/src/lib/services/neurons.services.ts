@@ -14,6 +14,7 @@ import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { queryAndUpdate } from "../utils/api.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
+import { errorToString } from "../utils/error.utils";
 
 /**
  * Uses governance and ledger canisters to create a neuron and adds it to the store
@@ -67,8 +68,20 @@ export const listNeurons = async ({
   return queryAndUpdate<NeuronInfo[], unknown>({
     request: ({ certified }) => queryNeurons({ identity, certified }),
     onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
-    // TODO: add error handling
-    onError: ({ error }) => console.error(error),
+    onError: ({ error, certified }) => {
+      console.error(error);
+
+      // Explicitly handle only UPDATE errors
+      if (certified === true) {
+        neuronsStore.setNeurons([]);
+
+        toastsStore.show({
+          labelKey: "error.get_neurons",
+          level: "error",
+          detail: errorToString(error),
+        });
+      }
+    },
   });
 };
 

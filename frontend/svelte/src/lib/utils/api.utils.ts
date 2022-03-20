@@ -1,32 +1,25 @@
-import type { HttpAgent, Identity } from "@dfinity/agent";
-import { GovernanceCanister } from "@dfinity/nns";
-import { GOVERNANCE_CANISTER_ID } from "../constants/canister-ids.constants";
-import { createAgent } from "../utils/agent.utils";
-
-export type QueryAndUpdateResponse<Response> = {
+export type QueryAndUpdateOnResponse<R> = (options: {
   certified: boolean | undefined;
-  response: Response;
-};
-export type QueryAndUpdateOnResponse<Response> = (
-  params: QueryAndUpdateResponse<Response>
-) => void;
+  response: R;
+}) => void;
 
-export type QueryAndUpdateError<Error> = {
+export type QueryAndUpdateOnError<E> = (options: {
   certified: boolean | undefined;
-  error: Error;
-};
-export type QueryAndUpdateOnError<Response> = (
-  params: QueryAndUpdateError<Response>
-) => void;
+  error: E;
+}) => void;
 
-export const queryAndUpdate = <Response, TError>({
+/**
+ * Makes two requests (QUERY and UPDATE) in parallel.
+ * The returned promise notify when first fetched data are available.
+ */
+export const queryAndUpdate = <R, E>({
   request,
   onLoad,
   onError,
 }: {
-  request: (params: { certified: boolean }) => Promise<Response>;
-  onLoad: QueryAndUpdateOnResponse<Response>;
-  onError: QueryAndUpdateOnError<TError>;
+  request: (options: { certified: boolean }) => Promise<R>;
+  onLoad: QueryAndUpdateOnResponse<R>;
+  onError: QueryAndUpdateOnError<E>;
 }): Promise<void> => {
   let certifiedDone = false;
 
@@ -37,7 +30,7 @@ export const queryAndUpdate = <Response, TError>({
         if (certifiedDone) return;
         onLoad({ certified: false, response });
       })
-      .catch((error: TError) => {
+      .catch((error: E) => {
         if (certifiedDone) return;
         onError({ certified: false, error });
       }),
