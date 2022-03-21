@@ -7,5 +7,5 @@
 
 <Card>
   <!-- TODO: https://dfinity.atlassian.net/browse/L2-352 -->
-  Meta Info Card
+  Meta Info Card {neuron.neuronId}
 </Card>

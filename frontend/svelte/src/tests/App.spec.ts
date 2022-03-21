@@ -8,7 +8,6 @@ import { mock } from "jest-mock-extended";
 import App from "../App.svelte";
 import { NNSDappCanister } from "../lib/canisters/nns-dapp/nns-dapp.canister";
 import { worker } from "../lib/services/worker.services";
-import type { AuthStore } from "../lib/stores/auth.store";
 import { authStore } from "../lib/stores/auth.store";
 import { mockAccountDetails } from "./mocks/accounts.store.mock";
 import {
@@ -19,7 +18,7 @@ import {
 
 jest.mock("../lib/services/worker.services", () => ({
   worker: {
-    syncAuthIdle: jest.fn((auth: AuthStore) => Promise.resolve()),
+    syncAuthIdle: jest.fn(() => Promise.resolve()),
   },
 }));
 

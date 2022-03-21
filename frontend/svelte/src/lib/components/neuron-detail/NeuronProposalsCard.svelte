@@ -7,5 +7,5 @@
 
 <Card>
   <!-- TODO: https://dfinity.atlassian.net/browse/L2-355 -->
-  Proposals Card
+  Proposals Card {neuron.neuronId}
 </Card>
