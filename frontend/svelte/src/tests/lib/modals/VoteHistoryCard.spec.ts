@@ -66,7 +66,9 @@ describe("VoteHistoryCard", () => {
     });
 
     await waitFor(() =>
-      expect(container.querySelectorAll("div.markdown").length).toEqual(2)
+      expect(
+        container.querySelectorAll('[data-tid="markdown-text"]').length
+      ).toEqual(2)
     );
 
     expect(
@@ -76,5 +78,15 @@ describe("VoteHistoryCard", () => {
     expect(
       getByText((mockProposals[1].proposal as Proposal).summary)
     ).toBeInTheDocument();
+  });
+
+  it("should render skeleton texts", async () => {
+    const { container } = render(VotingHistoryCard, {
+      props,
+    });
+
+    expect(
+      container.querySelectorAll('[data-tid="skeleton-paragraph"]').length
+    ).toEqual(props.neuron.recentBallots.length * 5);
   });
 });

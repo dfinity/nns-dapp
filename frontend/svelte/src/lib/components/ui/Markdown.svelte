@@ -31,5 +31,5 @@
   {@html parse(removeHTMLTags(text))}
 {:else}
   <!-- fallback text content -->
-  <p>{text}</p>
+  <p data-tid="markdown-text">{text}</p>
 {/if}
