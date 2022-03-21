@@ -17,6 +17,8 @@
   --modal-small-width: calc(100% - (8 * var(--padding)));
   --modal-medium-width: calc(100% - (2 * var(--padding)));
 
+  --animation-time-normal: 0.2s;
+
   @include media.min-width(medium) {
     --modal-small-width: 500px;
     --modal-medium-width: 600px;
