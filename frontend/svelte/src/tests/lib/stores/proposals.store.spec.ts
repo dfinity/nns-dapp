@@ -33,10 +33,37 @@ describe("proposals-store", () => {
         id: BigInt(Number.MAX_SAFE_INTEGER + i),
       }));
 
-      proposalsStore.pushProposals(newProposals);
+      proposalsStore.pushProposals({
+        proposals: newProposals,
+        certified: false,
+      });
 
       const proposals = get(proposalsStore);
       expect(proposals).toEqual([...mockProposals, ...newProposals]);
+    });
+
+    it("should push proposals with certified-version replacement", () => {
+      proposalsStore.setProposals(
+        mockProposals.map((proposal) => ({
+          ...proposal,
+          proposalTimestampSeconds: BigInt(0),
+        }))
+      );
+
+      const newProposals = mockProposals.map((proposal) => ({
+        ...proposal,
+        proposalTimestampSeconds: BigInt(1),
+      }));
+
+      proposalsStore.pushProposals({
+        proposals: newProposals,
+        certified: true,
+      });
+
+      const proposals = get(proposalsStore);
+      expect(proposals[0].proposalTimestampSeconds).toEqual(BigInt(1));
+      expect(proposals[1].proposalTimestampSeconds).toEqual(BigInt(1));
+      expect(proposals.length).toEqual(mockProposals.length);
     });
 
     it("should reset proposals", () => {
