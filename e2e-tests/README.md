@@ -46,14 +46,3 @@ Use the environment variables `NNS_DAPP_URL` and direct wdio command:
 ```
 NNS_DAPP_URL=... npm run wdio
 ```
-
-We can also write tests that only run on testnet environment.
-
-```
-// Skip tests unless running in testnet
-let itFn = process.env.NNS_DAPP_URL.includes('localhost') ? xit : it;
-
-itFn("this is a test that runs only in testnet", async () => {
-  //...
-})
-```

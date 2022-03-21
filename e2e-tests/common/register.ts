@@ -5,8 +5,9 @@ export const register = async (browser: WebdriverIO.Browser) => {
   // REGISTRATION
   
   // Internet Identity
-  // Title changes once II is loaded. We wait a fair amount to switch tab.
+  // First title is from the Service Worker.
   await browser.pause(5000);
+  // We want to switch the tab to II.
   await browser.switchWindow('Internet Identity');
   const registerButton = await browser.$("#registerButton");
   await registerButton.waitForExist({ timeout: 10_000 });
