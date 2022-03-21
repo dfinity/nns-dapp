@@ -49,7 +49,7 @@
   role="term"
   class="header"
   on:click={toggleContent}
-  class:alignCenter={headerAlign === "center"}
+  class:align-center={headerAlign === "center"}
 >
   <div class="header-content">
     <slot name="header" />
@@ -98,7 +98,7 @@
     }
 
     @include media.min-width(medium) {
-      &.alignCenter {
+      &.align-center {
         justify-content: center;
 
         .header-content {
@@ -126,8 +126,6 @@
 
     :global(svg) {
       width: calc(2.5 * var(--padding));
-      fill: var(--background-contrast);
-
       transition: transform var(--animation-time-normal);
     }
 
