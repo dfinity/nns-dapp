@@ -44,9 +44,6 @@
               on:click|stopPropagation={back}
               aria-label={$i18n.core.back}><IconBackIosNew /></button
             >
-          {:else}
-            <!-- preserve 3 column layout -->
-            <div />
           {/if}
           <h3 id="modalTitle"><slot name="title" /></h3>
           <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
