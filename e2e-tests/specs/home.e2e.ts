@@ -3,7 +3,7 @@ import { waitForLoad } from '../common/waitForLoad';
 
 describe("landing page", () => {
   it("loads", async () => {
-    await browser.url("/v2/");
+    await browser.url("/");
 
     await waitForLoad(browser);
 
@@ -33,7 +33,7 @@ describe("landing page", () => {
   });
 
   it("register and back to dashboard", async () => {
-    await browser.url("/v2/");
+    await browser.url("/");
 
     await waitForLoad(browser);
 
