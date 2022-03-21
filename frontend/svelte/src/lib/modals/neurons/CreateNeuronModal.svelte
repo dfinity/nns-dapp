@@ -26,7 +26,6 @@
   }
   let stateStep = new StepsState<typeof Steps>(Steps);
 
-  // TODO: Get all the accounts and be able to select one https://dfinity.atlassian.net/browse/L2-322
   let selectedAccount: Account | undefined;
   const unsubscribeAccounts: Unsubscriber = accountsStore.subscribe(
     (accountStore) => {
@@ -41,8 +40,10 @@
     currentStep
   );
 
-  const chooseAccount = () => {
-    // TODO: Stake Neurons From subaccounts https://dfinity.atlassian.net/browse/L2-322
+  const chooseAccount = ({
+    detail,
+  }: CustomEvent<{ selectedAccount: Account }>) => {
+    selectedAccount = detail.selectedAccount;
     stateStep = stateStep.next();
   };
   const goBack = () => {
@@ -93,10 +94,7 @@
     <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
     {#if currentStep === Steps.SelectAccount && selectedAccount}
       <Transition {diff}>
-        <SelectAccount
-          main={selectedAccount}
-          on:nnsSelectAccount={chooseAccount}
-        />
+        <SelectAccount on:nnsSelectAccount={chooseAccount} />
       </Transition>
     {/if}
     <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->

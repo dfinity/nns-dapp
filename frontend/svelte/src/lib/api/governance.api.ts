@@ -6,11 +6,13 @@ import {
   LedgerCanister,
   StakeNeuronError,
 } from "@dfinity/nns";
+import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import {
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
+import { toSubAccountId } from "./utils.api";
 
 export const queryNeuron = async ({
   neuronId,
@@ -89,16 +91,16 @@ export const queryNeurons = async ({
 };
 
 /**
- * Uses governance and ledger canisters to create a neuron and adds it to the store
- *
- * TODO: L2-322 Create neurons from subaccount
+ * Uses governance and ledger canisters to create a neuron
  */
 export const stakeNeuron = async ({
   stake,
   identity,
+  fromSubAccount,
 }: {
   stake: ICP;
   identity: Identity;
+  fromSubAccount?: SubAccountArray;
 }): Promise<NeuronId> => {
   const { canister, agent } = await governanceCanister({ identity });
 
@@ -107,9 +109,12 @@ export const stakeNeuron = async ({
     canisterId: LEDGER_CANISTER_ID,
   });
 
+  const fromSubAccountId =
+    fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
   const response = await canister.stakeNeuron({
     stake,
     principal: identity.getPrincipal(),
+    fromSubAccountId,
     ledgerCanister,
   });
 

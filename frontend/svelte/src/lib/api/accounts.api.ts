@@ -14,6 +14,34 @@ import type { AccountsStore } from "../stores/accounts.store";
 import type { Account } from "../types/account";
 import { createAgent } from "../utils/agent.utils";
 
+// export const transferIcpstest = async () => {
+//   const auth = get(authStore);
+//   if (auth.identity) {
+//     const agent = await createAgent({
+//       identity: auth.identity,
+//       host: identityServiceURL,
+//     });
+//     const ledger: LedgerCanister = LedgerCanister.create({
+//       agent,
+//       canisterId: LEDGER_CANISTER_ID,
+//     });
+//     const accounts = get(accountsStore);
+//     if (accounts.subAccounts && accounts.subAccounts.length > 0) {
+//       const firstSubaccount = accounts.subAccounts[0];
+//       console.log("subaccount", firstSubaccount);
+//       try {
+//         await ledger.transfer({
+//           to: AccountIdentifier.fromHex(firstSubaccount.identifier),
+//           amount: ICP.fromString("5") as ICP,
+//         });
+//         console.log("after da transfer");
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     }
+//   }
+// };
+
 export const loadAccounts = async ({
   identity,
 }: {
@@ -46,8 +74,9 @@ export const loadAccounts = async ({
       certified: true,
     });
     return {
-      identifier: mainAccount.account_identifier,
+      identifier: account.account_identifier,
       balance,
+      subAccount: "sub_account" in account ? account.sub_account : undefined,
       // Account does not have "name" property. Typescript needed a check like this.
       name: "name" in account ? account.name : undefined,
     };
