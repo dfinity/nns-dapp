@@ -2,6 +2,7 @@
   import ScriptLoader from "../common/ScriptLoader.svelte";
   import Spinner from "./Spinner.svelte";
   import { removeHTMLTags } from "../../utils/security.utils";
+  import { addTargetBlank } from "../../utils/utils";
 
   export let text: string | undefined;
 
@@ -28,7 +29,7 @@
     on:nnsError={onError}
   />
 {:else if parse !== undefined && text !== undefined}
-  {@html parse(removeHTMLTags(text))}
+  {@html addTargetBlank(parse(removeHTMLTags(text)))}
 {:else}
   <!-- fallback text content -->
   <p>{text}</p>
