@@ -75,13 +75,13 @@ export const listNextProposals = ({
   findProposals({
     beforeProposal,
     identity,
-    onLoad: ({ response: proposals }) => {
+    onLoad: ({ response: proposals, certified }) => {
       if (proposals.length === 0) {
         // There is no more proposals to fetch for the current filters.
         // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
         return;
       }
-      proposalsStore.pushProposals(proposals);
+      proposalsStore.pushProposals({ proposals, certified });
     },
     onError: handleFindProposalsError,
   });
