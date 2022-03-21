@@ -19,7 +19,7 @@ export const queryAndUpdate = <R, E>({
 }: {
   request: (options: { certified: boolean }) => Promise<R>;
   onLoad: QueryAndUpdateOnResponse<R>;
-  onError: QueryAndUpdateOnError<E>;
+  onError?: QueryAndUpdateOnError<E>;
 }): Promise<void> => {
   let certifiedDone = false;
 
@@ -32,18 +32,13 @@ export const queryAndUpdate = <R, E>({
       })
       .catch((error: E) => {
         if (certifiedDone) return;
-        onError({ certified: false, error });
+        onError?.({ certified: false, error });
       }),
 
     // update
     request({ certified: true })
-      .then((response) => {
-        certifiedDone = true;
-        onLoad({ certified: true, response });
-      })
-      .catch((error) => {
-        certifiedDone = true;
-        onError({ certified: true, error });
-      }),
+      .then((response) => onLoad({ certified: true, response }))
+      .catch((error) => onError?.({ certified: true, error }))
+      .finally(() => (certifiedDone = true)),
   ]).then();
 };
