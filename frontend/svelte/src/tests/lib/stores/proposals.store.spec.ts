@@ -28,15 +28,10 @@ describe("proposals-store", () => {
     it("should push proposals", () => {
       proposalsStore.setProposals(mockProposals);
 
-      const newProposals = mockProposals.map((proposal, i) => ({
-        ...proposal,
-        id: BigInt(Number.MAX_SAFE_INTEGER + i),
-      }));
-
-      proposalsStore.pushProposals(newProposals);
+      proposalsStore.pushProposals(mockProposals);
 
       const proposals = get(proposalsStore);
-      expect(proposals).toEqual([...mockProposals, ...newProposals]);
+      expect(proposals).toEqual([...mockProposals, ...mockProposals]);
     });
 
     it("should reset proposals", () => {

@@ -26,28 +26,13 @@ import { errorToString } from "../utils/error.utils";
 import { stringifyJson, uniqueObjects } from "../utils/utils";
 import { listNeurons } from "./neurons.services";
 
-const handleFindProposalsError = ({ error, certified }) => {
-  console.error(error);
-
-  // Explicitly handle only UPDATE errors
-  if (certified === true) {
-    proposalsStore.setProposals([]);
-
-    toastsStore.show({
-      labelKey: "error.list_proposals",
-      level: "error",
-      detail: errorToString(error),
-    });
-  }
-};
-
 export const listProposals = async ({
   clearBeforeQuery = false,
   identity,
 }: {
   clearBeforeQuery?: boolean;
   identity: Identity | null | undefined;
-}): Promise<void> => {
+}) => {
   if (clearBeforeQuery) {
     proposalsStore.setProposals([]);
   }
@@ -66,7 +51,7 @@ export const listNextProposals = async ({
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
-}): Promise<void> => {
+}) => {
   const proposals: ProposalInfo[] = await findProposals({
     beforeProposal,
     identity,
@@ -142,8 +127,8 @@ export const loadProposal = async ({
     }
 
     setProposal(proposal);
-  } catch (err) {
-    catchError(err);
+  } catch (error: unknown) {
+    catchError(error);
   }
 };
 
