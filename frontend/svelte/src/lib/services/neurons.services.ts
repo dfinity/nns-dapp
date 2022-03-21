@@ -71,16 +71,18 @@ export const listNeurons = async ({
     onError: ({ error, certified }) => {
       console.error(error);
 
-      // Explicitly handle only UPDATE errors
-      if (certified === true) {
-        neuronsStore.setNeurons([]);
-
-        toastsStore.show({
-          labelKey: "error.get_neurons",
-          level: "error",
-          detail: errorToString(error),
-        });
+      if (certified !== true) {
+        return;
       }
+
+      // Explicitly handle only UPDATE errors
+      neuronsStore.setNeurons([]);
+
+      toastsStore.show({
+        labelKey: "error.get_neurons",
+        level: "error",
+        detail: errorToString(error),
+      });
     },
   });
 };
