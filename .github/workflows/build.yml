@@ -53,8 +53,8 @@ jobs:
           rustup default "$RUSTC_VERSION"
           rustup target add wasm32-unknown-unknown
 
-      - name: Install wassm-opt
-        run: apt-get update && apt-get install -yy binaryen
+      - name: Install wasm-opt
+        run: sudo apt-get update && sudo apt-get install -yy binaryen
 
       - name: Install DFX
         run: |
