@@ -7,5 +7,5 @@
 
 <Card>
   <!-- TODO: https://dfinity.atlassian.net/browse/L2-358 -->
-  Hokeys Card
+  Hokeys Card {neuron.neuronId}
 </Card>
