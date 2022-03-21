@@ -3,12 +3,12 @@
   export let animated: boolean = true;
 </script>
 
-<div class:animated data-tid="skeleton-text" aria-busy={true}>
+<p class:animated data-tid="skeleton-text" aria-busy={true}>
   <span>&nbsp;</span>
-</div>
+</p>
 
 <style lang="scss">
-  div {
+  p {
     display: block;
 
     width: 100%;

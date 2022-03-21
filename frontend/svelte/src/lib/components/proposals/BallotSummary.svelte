@@ -6,7 +6,7 @@
   import ProposalSummary from "../proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
   import { Vote } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import SkeletonText from "../ui/SkeletonText.svelte";
+  import SkeletonParagraph from "../ui/SkeletonParagraph.svelte";
 
   export let ballot: Required<BallotInfo>;
 
@@ -29,14 +29,14 @@
 
   <div class="summary"><ProposalSummary proposal={proposal.proposal} /></div>
 {:else}
-  <p><SkeletonText /></p>
+  <SkeletonParagraph />
 
-  <p><SkeletonText /></p>
+  <SkeletonParagraph />
 
   <div class="summary">
-    <SkeletonText />
-    <SkeletonText />
-    <SkeletonText />
+    <SkeletonParagraph />
+    <SkeletonParagraph />
+    <SkeletonParagraph />
   </div>
 {/if}
 
