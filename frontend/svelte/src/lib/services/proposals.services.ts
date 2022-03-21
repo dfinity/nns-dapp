@@ -107,14 +107,7 @@ const findProposals = async ({
   return queryAndUpdate<ProposalInfo[], unknown>({
     request: ({ certified }) =>
       queryProposals({ beforeProposal, identity, filters, certified }),
-    onLoad: (options) => {
-      console.log(
-        `findProposals certified:${options.certified}`,
-        options.response
-      );
-
-      onLoad(options);
-    },
+    onLoad,
     onError,
   });
 };
@@ -150,9 +143,7 @@ export const loadProposal = ({
     getProposal({
       proposalId,
       identity,
-      onLoad: ({ response, certified }) => {
-        console.log(`getProposal certified:${certified}`, response);
-
+      onLoad: ({ response }) => {
         const proposal = response;
         if (!proposal) {
           catchError(new Error("Proposal not found"));

@@ -19,10 +19,6 @@ import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-services", () => {
-  beforeAll(() => {
-    jest.spyOn(global.console, "error");
-  });
-
   describe("list", () => {
     const spyQueryProposals = jest
       .spyOn(api, "queryProposals")
