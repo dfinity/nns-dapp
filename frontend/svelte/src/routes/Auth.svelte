@@ -167,7 +167,7 @@
     color: white;
     text-indent: 4px; /* The text looks off centre otherwise, although technically it is centred. */
 
-    transition: background 0.2s;
+    transition: background var(--animation-time-normal);
 
     justify-self: center;
 
