@@ -6,6 +6,7 @@
   import ProposalSummary from "../proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
   import { Vote } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
+  import SkeletonText from "../ui/SkeletonText.svelte";
 
   export let ballot: Required<BallotInfo>;
 
@@ -21,14 +22,22 @@
   );
 </script>
 
-<!-- TODO(L2-282): use spinner or skeleton while loading if ux is not well suited -->
-
 {#if proposal?.proposal !== undefined}
   <p>{proposal.id}</p>
 
   <p class="vote">{$i18n.core[Vote[ballot.vote].toLowerCase()]}</p>
 
   <div class="summary"><ProposalSummary proposal={proposal.proposal} /></div>
+{:else}
+  <p><SkeletonText /></p>
+
+  <p><SkeletonText /></p>
+
+  <div class="summary">
+    <SkeletonText />
+    <SkeletonText />
+    <SkeletonText />
+  </div>
 {/if}
 
 <style lang="scss">
