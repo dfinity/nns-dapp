@@ -1,4 +1,5 @@
 import { register } from '../common/register';
+import { waitForImages } from '../common/waitForImages';
 import { waitForLoad } from '../common/waitForLoad';
 
 describe("landing page", () => {
@@ -9,25 +10,7 @@ describe("landing page", () => {
 
     await browser.$("h1").waitForExist();
 
-    // Wait for all images to be "complete", i.e. loaded
-    browser.waitUntil(
-      function () {
-        return this.execute(function () {
-          const imgs: HTMLCollectionOf<HTMLImageElement> =
-            document.getElementsByTagName("img");
-          if (imgs.length <= 0) {
-            return true;
-          }
-
-          return (
-            Array.prototype.every.call(imgs, (img) => {
-              return img.complete;
-            }) && document.readyState === "complete"
-          );
-        });
-      },
-      { timeoutMsg: "image wasn't loaded" }
-    );
+    await waitForImages(browser)
 
     await browser["screenshot"]("landing-page");
   });
@@ -53,6 +36,7 @@ describe("landing page", () => {
     const spinner = await browser.$('main section svg');
     await spinner.waitForExist();
     await browser.execute(() => document.querySelector('main section svg').remove());
+    await waitForImages(browser);
 
     await browser["screenshot"]("home-page");
     // TODO: Deploy Ledger and Governance canisters and proxy them
