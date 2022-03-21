@@ -20,7 +20,6 @@ jobs:
       DFX_VERSION: 0.8.3
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
-      IC_CDK_OPTIMIZER_VERSION: 0.3.1
     steps:
       - uses: actions/checkout@v2
 
@@ -54,24 +53,8 @@ jobs:
           rustup default "$RUSTC_VERSION"
           rustup target add wasm32-unknown-unknown
 
-      # Cache the ic-cdk-optimizer
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.local/bin/ic-cdk-optimizer
-            target
-          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}
-
-      - name: Install ic-cdk-optimizer
-        run: |
-          install_dir="$HOME/.local/bin/"
-          mkdir -p "$install_dir"
-          if [ ! -x "$install_dir/ic-cdk-optimizer" ]
-          then
-            cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
-            cp $HOME/.cargo/bin/ic-cdk-optimizer "$install_dir"
-            echo "$install_dir" >> $GITHUB_PATH
-          fi
+      - name: Install wassm-opt
+        run: apt-get update && apt-get install -yy binaryen
 
       - name: Install DFX
         run: |
@@ -87,7 +70,7 @@ jobs:
           npm --version
           rustc --version
           cargo --version
-          ic-cdk-optimizer --version
+          wasm-opt --version
 
       - name: Start replica
         run: |

@@ -15,11 +15,13 @@ ENV NODE_VERSION=16.13.2
 
 ENV TZ=UTC
 
+ENV RUST_BACKTRACE=full
+
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt -yq update && \
     apt -yqq install --no-install-recommends curl ca-certificates \
         build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake \
-        git jq
+        git jq binaryen
 
 # Install node
 RUN curl --fail -sSf https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
@@ -46,9 +48,6 @@ ENV PATH=/cargo/bin:$PATH
 RUN curl https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.2.3-stable.tar.xz -o flutter.tar.xz
 RUN tar xJf flutter.tar.xz
 ENV PATH=/flutter/bin:$PATH
-
-# Install IC CDK optimizer
-RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
 # to build only the dependecies, we pretend that our project is a simple, empty

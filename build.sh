@@ -5,8 +5,8 @@
 # into build/web. The frontend/svelte is built into public/. Both the dart
 # output (build/web/) and svelte output (public/) are bundled into a tarball,
 # assets.tar.xz. This tarball is baked into the wasm binary output at build
-# time by cargo, and finally the wasm binary is read by ic-cdk-optimizer and
-# optimizer. This scripts outputs a single file, nns-dapp.wasm.
+# time by cargo, and finally the wasm binary is read by an optimizer. These
+# scripts outputs a single file, nns-dapp.wasm.
 #
 #              ic_agent.js               build/web/
 #  frontend/ts◄────────────frontend/dart ◄──────────┐
@@ -16,7 +16,7 @@
 #                                                           │
 #                                                      cargo build
 #                                                           ▲
-#                                                           │ ic-cdk-optimizer
+#                                                           │ wasm optimizer
 #                                                           │
 #                                                      nns-dapp.wasm
 
@@ -112,11 +112,11 @@ fi
 
 (cd "$TOPLEVEL" && cargo build "${cargo_args[@]}")
 
-####################
-# ic-cdk-optimizer # (output: nns-dapp.wasm)
-####################
+##################
+# wasm optimizer # (output: nns-dapp.wasm)
+##################
 echo Optimising wasm
 cd "$TOPLEVEL"
-ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/nns-dapp.wasm -o ./nns-dapp.wasm
+wasm-opt -O2 ./target/wasm32-unknown-unknown/release/nns-dapp.wasm -o ./nns-dapp.wasm
 ls -sh ./nns-dapp.wasm
 sha256sum ./nns-dapp.wasm
