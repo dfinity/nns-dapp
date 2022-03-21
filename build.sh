@@ -117,6 +117,6 @@ fi
 ##################
 echo Optimising wasm
 cd "$TOPLEVEL"
-wasm-opt -O2 ./target/wasm32-unknown-unknown/release/nns-dapp.wasm -o ./nns-dapp.wasm
+wasm-opt -O2 --strip-debug --shrink-level 2 ./target/wasm32-unknown-unknown/release/nns-dapp.wasm -o ./nns-dapp.wasm
 ls -sh ./nns-dapp.wasm
 sha256sum ./nns-dapp.wasm
