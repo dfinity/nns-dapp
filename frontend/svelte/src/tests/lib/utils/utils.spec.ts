@@ -1,4 +1,5 @@
 import {
+  addTargetBlank,
   debounce,
   stringifyJson,
   uniqueObjects,
@@ -103,5 +104,32 @@ describe("utils", () => {
     ]);
     expect(uniqueObjects([1, 2, 3, 1, 2, 3])).toEqual([1, 2, 3]);
     expect(uniqueObjects([])).toEqual([]);
+  });
+
+  describe("addTargetBlank", () => {
+    it("should add a target prop", () => {
+      expect(addTargetBlank('<aa <a> <a href="/">test</a> <a/> /> <a ')).toBe(
+        '<aa <a> <a target="_blank" href="/">test</a> <a/> /> <a '
+      );
+    });
+
+    it("should add multiple target prop", () => {
+      expect(
+        addTargetBlank(
+          '<a href="/">test</a> <a href="http://google.com">test</a>'
+        )
+      ).toBe(
+        '<a target="_blank" href="/">test</a> <a target="_blank" href="http://google.com">test</a>'
+      );
+    });
+
+    it("should not add a target if there is a target", () => {
+      expect(addTargetBlank('<a target="_self" href="/">test</a>')).toBe(
+        '<a target="_self" href="/">test</a>'
+      );
+      expect(addTargetBlank('<a target="_blank" href="/">test</a>')).toBe(
+        '<a target="_blank" href="/">test</a>'
+      );
+    });
   });
 });
