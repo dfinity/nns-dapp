@@ -40,5 +40,5 @@ export const queryAndUpdate = <R, E>({
       .then((response) => onLoad({ certified: true, response }))
       .catch((error) => onError?.({ certified: true, error }))
       .finally(() => (certifiedDone = true)),
-  ]).then();
+  ]);
 };

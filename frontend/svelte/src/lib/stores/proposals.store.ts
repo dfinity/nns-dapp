@@ -1,7 +1,6 @@
 import type {
   NeuronId,
   NeuronInfo,
-  ProposalId,
   ProposalInfo,
   ProposalRewardStatus,
   ProposalStatus,
@@ -38,33 +37,11 @@ const initProposalsStore = () => {
       set([...proposals]);
     },
 
-    pushProposals({
-      proposals,
-      certified,
-    }: {
-      proposals: ProposalInfo[];
-      certified: boolean | undefined;
-    }) {
-      update((proposalInfos: ProposalInfo[]) => {
-        const proposalIds = new Set<ProposalId>(
-          proposalInfos.map(({ id }) => id as ProposalId)
-        );
-
-        // replace state entries with (most trusted) certified entries
-        if (certified === true) {
-          proposalInfos = proposalInfos.map(
-            (stateProposal) =>
-              proposals.find(({ id }) => stateProposal.id === id) ||
-              stateProposal
-          );
-        }
-
-        return [
-          ...proposalInfos,
-          // TODO: think about deep-compare because first the query-data are set
-          ...proposals.filter(({ id }) => !proposalIds.has(id as ProposalId)),
-        ];
-      });
+    pushProposals(proposals: ProposalInfo[]) {
+      update((proposalInfos: ProposalInfo[]) => [
+        ...proposalInfos,
+        ...proposals,
+      ]);
     },
   };
 };

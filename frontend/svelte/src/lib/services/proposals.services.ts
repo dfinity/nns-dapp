@@ -20,11 +20,6 @@ import {
   proposalsStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
-import {
-  queryAndUpdate,
-  type QueryAndUpdateOnError,
-  type QueryAndUpdateOnResponse,
-} from "../utils/api.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { isNode } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
@@ -46,7 +41,7 @@ const handleFindProposalsError = ({ error, certified }) => {
   }
 };
 
-export const listProposals = ({
+export const listProposals = async ({
   clearBeforeQuery = false,
   identity,
 }: {
@@ -57,46 +52,42 @@ export const listProposals = ({
     proposalsStore.setProposals([]);
   }
 
-  return findProposals({
+  const proposals: ProposalInfo[] = await findProposals({
     beforeProposal: undefined,
     identity,
-    onLoad: ({ response: proposals }) => proposalsStore.setProposals(proposals),
-    onError: handleFindProposalsError,
   });
+
+  proposalsStore.setProposals(proposals);
 };
 
-export const listNextProposals = ({
+export const listNextProposals = async ({
   beforeProposal,
   identity,
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
-}): Promise<void> =>
-  findProposals({
+}): Promise<void> => {
+  const proposals: ProposalInfo[] = await findProposals({
     beforeProposal,
     identity,
-    onLoad: ({ response: proposals, certified }) => {
-      if (proposals.length === 0) {
-        // There is no more proposals to fetch for the current filters.
-        // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
-        return;
-      }
-      proposalsStore.pushProposals({ proposals, certified });
-    },
-    onError: handleFindProposalsError,
   });
+
+  if (proposals.length === 0) {
+    // There is no more proposals to fetch for the current filters.
+    // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
+    return;
+  }
+
+  proposalsStore.pushProposals(proposals);
+};
 
 const findProposals = async ({
   beforeProposal,
   identity,
-  onLoad,
-  onError,
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
-  onLoad: QueryAndUpdateOnResponse<ProposalInfo[]>;
-  onError: QueryAndUpdateOnError<unknown>;
-}): Promise<void> => {
+}): Promise<ProposalInfo[]> => {
   // TODO: https://dfinity.atlassian.net/browse/L2-346
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
@@ -104,11 +95,11 @@ const findProposals = async ({
 
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
 
-  return queryAndUpdate<ProposalInfo[], unknown>({
-    request: ({ certified }) =>
-      queryProposals({ beforeProposal, identity, filters, certified }),
-    onLoad,
-    onError,
+  return await queryProposals({
+    beforeProposal,
+    identity,
+    filters,
+    certified: false,
   });
 };
 
@@ -116,7 +107,7 @@ const findProposals = async ({
  * Get from store or query a proposal and apply the result to the callback (`setProposal`).
  * The function propagate error to the toast and call an optional callback in case of error.
  */
-export const loadProposal = ({
+export const loadProposal = async ({
   proposalId,
   identity,
   setProposal,
@@ -126,7 +117,7 @@ export const loadProposal = ({
   identity: Identity | undefined | null;
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
-}): void => {
+}): Promise<void> => {
   const catchError = (error: unknown) => {
     console.error(error);
 
@@ -140,19 +131,17 @@ export const loadProposal = ({
   };
 
   try {
-    getProposal({
+    const proposal: ProposalInfo | undefined = await getProposal({
       proposalId,
       identity,
-      onLoad: ({ response }) => {
-        const proposal = response;
-        if (!proposal) {
-          catchError(new Error("Proposal not found"));
-          return;
-        }
-        setProposal(proposal);
-      },
-      onError: catchError,
     });
+
+    if (!proposal) {
+      catchError(new Error("Proposal not found"));
+      return;
+    }
+
+    setProposal(proposal);
   } catch (err) {
     catchError(err);
   }
@@ -161,28 +150,19 @@ export const loadProposal = ({
 /**
  * Return single proposal from proposalsStore or fetch it (in case of page reload or direct navigation to proposal-detail page)
  */
-const getProposal = ({
+const getProposal = async ({
   proposalId,
   identity,
-  onLoad,
-  onError,
 }: {
   proposalId: ProposalId;
   identity: Identity | null | undefined;
-  onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
-  onError: QueryAndUpdateOnError<unknown>;
-}): Promise<void> => {
+}): Promise<ProposalInfo | undefined> => {
   // TODO: https://dfinity.atlassian.net/browse/L2-346
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
 
-  return queryAndUpdate<ProposalInfo | undefined, unknown>({
-    request: ({ certified }) =>
-      queryProposal({ proposalId, identity, certified }),
-    onLoad,
-    onError,
-  });
+  return queryProposal({ proposalId, identity, certified: false });
 };
 
 export const getProposalId = (path: string): ProposalId | undefined =>
