@@ -7,7 +7,7 @@
   export let proposal: Proposal | undefined;
 </script>
 
-<CardBlock>
+<CardBlock expandable>
   <!-- TODO: add expandable support -- https://dfinity.atlassian.net/browse/L2-270 -->
   <svelte:fragment slot="title">{$i18n.proposal_detail.summary}</svelte:fragment
   >

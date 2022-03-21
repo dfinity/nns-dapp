@@ -122,7 +122,7 @@
     left: calc(2 * var(--padding));
     transform: translate(0, -50%);
 
-    transition: all 0.2s;
+    transition: all var(--animation-time-normal);
     transform-origin: top left;
 
     pointer-events: none;

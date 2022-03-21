@@ -1,14 +1,33 @@
 <script lang="ts">
-  // TODO: collapsible -- https://dfinity.atlassian.net/browse/L2-270
-  // export let collapsible: boolean = false;
-  // export let initiallyExpanded = true;
+  import Collapsible from "./Collapsible.svelte";
+
+  export let expandable = false;
+
+  let expanded: boolean = expandable;
+
+  const toggle = ({ detail }: { detail: { expanded: boolean } }) =>
+    (expanded = detail.expanded);
 </script>
 
-<article>
-  <h3><slot name="title" /></h3>
-  <div class="content">
-    <slot />
-  </div>
+<article data-tid="card-block" class:expanded>
+  {#if expandable}
+    <Collapsible
+      maxContentHeight={300}
+      headerAlign="center"
+      initiallyExpanded
+      on:nnsToggle={toggle}
+    >
+      <h3 slot="header"><slot name="title" /></h3>
+      <div class="content">
+        <slot />
+      </div>
+    </Collapsible>
+  {:else}
+    <h3><slot name="title" /></h3>
+    <div class="content">
+      <slot />
+    </div>
+  {/if}
 </article>
 
 <style lang="scss">
@@ -27,14 +46,22 @@
 
     // TODO: move to variables
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
+
+    transition: all var(--animation-time-normal);
+
+    &.expanded {
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
   }
 
   h3 {
+    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 0 var(--padding);
 
+    line-height: var(--line-height-standard);
     font-size: var(--font-size-h5);
 
     @include media.min-width(medium) {
@@ -43,9 +70,6 @@
   }
 
   .content {
-    // TODO: change the height source/behaviour -- https://dfinity.atlassian.net/browse/L2-270
-    min-height: 30px;
-    max-height: 300px;
-    overflow-y: auto;
+    margin: calc(2 * var(--padding)) 0 var(--padding);
   }
 </style>
