@@ -3,7 +3,7 @@
   export let animated: boolean = true;
 </script>
 
-<div class:animated data-tid="skeleton-text">
+<div class:animated data-tid="skeleton-text" aria-busy={true}>
   <span>&nbsp;</span>
 </div>
 
