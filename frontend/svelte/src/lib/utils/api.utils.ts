@@ -31,6 +31,7 @@ export const queryAndUpdate = <R, E>({
         onLoad({ certified: false, response });
       })
       .catch((error: E) => {
+        // TODO: somehow notify user about probably compromised state
         if (certifiedDone) return;
         onError?.({ certified: false, error });
       }),
