@@ -113,7 +113,7 @@ describe("utils", () => {
       );
     });
 
-    it("should add multiple target prop", () => {
+    it("should add multiple target props", () => {
       expect(
         addTargetBlank(
           '<a href="/">test</a> <a href="http://google.com">test</a>'
