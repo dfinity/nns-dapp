@@ -17,7 +17,10 @@
     margin: calc(var(--padding) / 2) 0;
 
     --skeleton-text-background: rgba(var(--light-background-rgb), 0.065);
-    --skeleton-text-background-animated: rgba(var(--light-background-rgb), 0.135);
+    --skeleton-text-background-animated: rgba(
+      var(--light-background-rgb),
+      0.135
+    );
     background: var(--skeleton-text-background);
 
     line-height: 0.8;
