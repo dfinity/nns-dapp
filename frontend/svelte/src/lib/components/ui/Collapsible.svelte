@@ -12,7 +12,7 @@
   const dispatch = createEventDispatcher();
 
   let expanded: boolean = initiallyExpanded;
-  let contentElement: HTMLDivElement | undefined;
+  let offsetHeight: number | undefined;
   let userUpdated: boolean = false;
   let maxHeight: number | undefined;
 
@@ -22,11 +22,9 @@
     expanded = !expanded;
     dispatchUpdate();
   };
-  const contentHeight = (): number =>
-    (contentElement && contentElement.offsetHeight) || 0;
   const calculateMaxContentHeight = (): number => {
     if (maxContentHeight !== undefined) return maxContentHeight;
-    const height = contentHeight();
+    const height = offsetHeight === undefined ? 0 : offsetHeight;
     return height < CONTENT_MIN_HEIGHT ? CONTENT_MIN_HEIGHT : height;
   };
   const maxHeightStyle = (value: number | undefined): string =>
@@ -71,7 +69,7 @@
     {id}
     aria-labelledby={id !== undefined ? `heading${id}` : undefined}
     class="content"
-    bind:this={contentElement}
+    bind:offsetHeight
   >
     <slot />
   </div>
