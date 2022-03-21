@@ -5,10 +5,10 @@
 import { GovernanceCanister } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import Proposer from "../../../../lib/components/proposals/Proposer.svelte";
-import * as en from "../../../../lib/i18n/en.json";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
+import en from "../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
 

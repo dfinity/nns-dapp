@@ -6,8 +6,8 @@ import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import VotesCard from "../../../../lib/components/proposal-detail/VotesCard.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
-import * as en from "../../../../lib/i18n/en.json";
 import { formatNumber } from "../../../../lib/utils/format.utils";
+import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
