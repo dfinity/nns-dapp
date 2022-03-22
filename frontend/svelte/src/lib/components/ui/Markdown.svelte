@@ -3,19 +3,10 @@
   import ScriptLoader from "../common/ScriptLoader.svelte";
   import Spinner from "./Spinner.svelte";
   import { removeHTMLTags } from "../../utils/security.utils";
-  import { targetBlankLinkRenderer } from "../../utils/utils";
-
+  import { renderer } from "../../utils/markdown.utils";
   type Marked = typeof marked;
-  type Renderer = marked.Renderer;
 
   export let text: string | undefined;
-
-  const renderer = (marked: Marked): Renderer => {
-    const renderer = new marked.Renderer();
-    // custom link renderer
-    renderer.link = targetBlankLinkRenderer;
-    return renderer;
-  };
 
   // do not load the lib if available
   /* eslint-disable-next-line no-undef */

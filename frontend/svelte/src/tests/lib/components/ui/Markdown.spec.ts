@@ -5,13 +5,19 @@
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import Markdown from "../../../../lib/components/ui/Markdown.svelte";
+import { targetBlankLinkRenderer } from "../../../../lib/utils/utils";
 
 const HTML_TEXT = "<p>demo<p>";
+
+class Renderer {
+  link: () => void;
+}
 
 describe("Markdown", () => {
   beforeEach(() => {
     globalThis.marked = {
       parse: jest.fn(() => HTML_TEXT),
+      Renderer,
     };
   });
 
@@ -38,6 +44,7 @@ describe("Markdown", () => {
     // lib load mock
     globalThis.marked = {
       parse: jest.fn(() => HTML_TEXT),
+      Renderer,
     };
 
     expect(container.querySelector("svg")).toBeInTheDocument();
@@ -59,6 +66,8 @@ describe("Markdown", () => {
       props: { text: "<script>alert('hack')</script>" },
     });
     await tick();
-    expect(globalThis.marked.parse).toBeCalledWith("alert('hack')");
+    expect(globalThis.marked.parse).toBeCalledWith("alert('hack')", {
+      renderer: { link: targetBlankLinkRenderer },
+    });
   });
 });
