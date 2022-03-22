@@ -1,6 +1,7 @@
 import {
   debounce,
   stringifyJson,
+  targetBlankLinkRenderer,
   uniqueObjects,
 } from "../../../lib/utils/utils";
 
@@ -103,5 +104,25 @@ describe("utils", () => {
     ]);
     expect(uniqueObjects([1, 2, 3, 1, 2, 3])).toEqual([1, 2, 3]);
     expect(uniqueObjects([])).toEqual([]);
+  });
+
+  describe("targetBlankLinkRenderer", () => {
+    it("should return rendered a tag", () => {
+      expect(targetBlankLinkRenderer("/", "title", "text")).toEqual(
+        `<a target="_blank" href="/" title="title">text</a>`
+      );
+    });
+
+    it("should skip title if not provided", () => {
+      expect(targetBlankLinkRenderer("/", null, "text")).toEqual(
+        `<a target="_blank" href="/">text</a>`
+      );
+    });
+
+    it("should skip href if not provided", () => {
+      expect(targetBlankLinkRenderer(null, "title", "text")).toEqual(
+        `<a title="title">text</a>`
+      );
+    });
   });
 });
