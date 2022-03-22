@@ -19,8 +19,16 @@ const initNeuronsStore = () => {
       set([...neurons]);
     },
 
-    pushNeurons(neurons: NeuronInfo[]) {
-      update((neuronInfos: NeuronInfo[]) => [...neuronInfos, ...neurons]);
+    pushNeurons(newNeurons: NeuronInfo[]) {
+      update((oldNeurons: NeuronInfo[]) => {
+        const filteredNeurons = oldNeurons.filter(
+          ({ neuronId: oldNeuronId }) =>
+            newNeurons.find(
+              ({ neuronId: newNeuronId }) => oldNeuronId === newNeuronId
+            ) === undefined
+        );
+        return [...filteredNeurons, ...newNeurons];
+      });
     },
   };
 };

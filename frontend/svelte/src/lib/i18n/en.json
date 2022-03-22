@@ -109,6 +109,7 @@
     "follow_neuron": "Follow Neuron",
     "options_title": "Options for Following",
     "follow": "Follow",
+    "unfollow": "Unfollow",
     "success_add_followee": "Followee added successfully",
     "success_remove_followee": "Followee removed successfully"
   },

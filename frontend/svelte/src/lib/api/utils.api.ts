@@ -1,6 +1,6 @@
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 
-export const arrayBufferToNumber = (buffer: ArrayBuffer): number => {
+const arrayBufferToNumber = (buffer: ArrayBuffer): number => {
   const view = new DataView(buffer);
   return view.getUint32(view.byteLength - 4);
 };

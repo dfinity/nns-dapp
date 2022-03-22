@@ -118,7 +118,25 @@ export const queryKnownNeurons = async ({
 }): Promise<KnownNeuron[]> => {
   const { canister } = await governanceCanister({ identity });
 
-  return canister.listKnownNeurons(certified);
+  const knownNeurons = await canister.listKnownNeurons(certified);
+
+  if (!knownNeurons.find(({ id }) => id === BigInt(27))) {
+    knownNeurons.push({
+      id: BigInt(27),
+      name: "DFINITY Foundation",
+      description: undefined,
+    });
+  }
+
+  if (!knownNeurons.find(({ id }) => id === BigInt(28))) {
+    knownNeurons.push({
+      id: BigInt(28),
+      name: "Internet Computer Association",
+      description: undefined,
+    });
+  }
+
+  return knownNeurons;
 };
 
 // TODO: Apply pattern to other canister instantiation L2-371

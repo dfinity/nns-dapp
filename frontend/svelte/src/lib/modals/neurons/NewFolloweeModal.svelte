@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
   import { onMount } from "svelte";
+  import KnownNeuronFollowItem from "../../components/neurons/KnownNeuronFollowItem.svelte";
   import Input from "../../components/ui/Input.svelte";
   import Spinner from "../../components/ui/Spinner.svelte";
   import { listKnownNeurons } from "../../services/knownNeurons.services";
@@ -15,8 +16,23 @@
 
   let followeeAddress: number | undefined;
   let loading: boolean = false;
+  let topicFollowees: NeuronId[];
+  $: {
+    const topicInfo = neuron.fullNeuron?.followees.find(
+      (followee) => followee.topic === topic
+    );
+    topicFollowees = topicInfo === undefined ? [] : topicInfo.followees;
+  }
 
   onMount(() => listKnownNeurons());
+
+  const followsKnownNeuron = ({
+    followees,
+    knownNeuronId,
+  }: {
+    followees: NeuronId[];
+    knownNeuronId: NeuronId;
+  }) => followees.find((id) => id === knownNeuronId) !== undefined;
 
   const addFolloweeByAddress = async () => {
     loading = true;
@@ -44,22 +60,6 @@
       level: "info",
     });
   };
-
-  // TODO: Check with known neurons https://dfinity.atlassian.net/browse/L2-403
-  const addKnownNeuronFollowee = async (followeeId: NeuronId) => {
-    loading = true;
-    await addFollowee({
-      neuronId: neuron.neuronId,
-      topic,
-      followee: followeeId,
-    });
-    loading = false;
-    followeeAddress = undefined;
-    toastsStore.show({
-      labelKey: "new_followee.success_add_followee",
-      level: "info",
-    });
-  };
 </script>
 
 <Modal theme="dark" size="medium" on:nnsClose>
@@ -74,7 +74,7 @@
           bind:value={followeeAddress}
           theme="dark"
         />
-        <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-403 -->
+        <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
         <button
           class="primary small"
           type="submit"
@@ -94,14 +94,17 @@
         <Spinner />
       {:else}
         <ul>
-          {#each $sortedknownNeuronsStore as knowNeuron}
+          {#each $sortedknownNeuronsStore as knownNeuron}
             <li data-tid="known-neuron-item">
-              <p>{knowNeuron.name}</p>
-              <button
-                class="secondary small"
-                on:click={() => addKnownNeuronFollowee(knowNeuron.id)}
-                >{$i18n.new_followee.follow}</button
-              >
+              <KnownNeuronFollowItem
+                {knownNeuron}
+                neuronId={neuron.neuronId}
+                {topic}
+                isFollowed={followsKnownNeuron({
+                  followees: topicFollowees,
+                  knownNeuronId: knownNeuron.id,
+                })}
+              />
             </li>
           {/each}
         </ul>
@@ -131,11 +134,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
-
-    li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
   }
 </style>

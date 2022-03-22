@@ -17,6 +17,9 @@ describe("neurons-api", () => {
     mockGovernanceCanister.listNeurons.mockImplementation(
       jest.fn().mockResolvedValue([])
     );
+    mockGovernanceCanister.listKnownNeurons.mockImplementation(
+      jest.fn().mockResolvedValue([])
+    );
     mockGovernanceCanister.stakeNeuron.mockImplementation(jest.fn());
     mockGovernanceCanister.getNeuron.mockImplementation(
       jest.fn().mockResolvedValue(mockNeuron)
