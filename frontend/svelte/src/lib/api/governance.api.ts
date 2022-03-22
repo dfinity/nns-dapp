@@ -4,7 +4,6 @@ import {
   GovernanceCanister,
   ICP,
   LedgerCanister,
-  StakeNeuronError,
 } from "@dfinity/nns";
 import {
   GOVERNANCE_CANISTER_ID,
@@ -58,15 +57,11 @@ export const setFollowees = async ({
 }): Promise<void> => {
   const { canister } = await governanceCanister({ identity });
 
-  const response = await canister.setFollowees({
+  return canister.setFollowees({
     neuronId,
     topic,
     followees,
   });
-
-  if ("Err" in response) {
-    throw response.Err;
-  }
 };
 
 export const queryNeurons = async ({

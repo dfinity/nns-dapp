@@ -90,7 +90,9 @@ describe("neurons-api", () => {
     it("throws error when updating neuron fails", async () => {
       const error = new Error();
       mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
-        jest.fn().mockResolvedValue({ Err: error })
+        jest.fn(() => {
+          throw error;
+        })
       );
 
       const call = () =>
@@ -123,7 +125,9 @@ describe("neurons-api", () => {
     it("throws error when setting followees fails", async () => {
       const error = new Error();
       mockGovernanceCanister.setFollowees.mockImplementation(
-        jest.fn().mockResolvedValue({ Err: error })
+        jest.fn(() => {
+          throw error;
+        })
       );
 
       const call = () =>
