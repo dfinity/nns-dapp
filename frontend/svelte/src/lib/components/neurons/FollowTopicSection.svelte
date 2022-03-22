@@ -1,10 +1,15 @@
 <script lang="ts">
-  import type { Topic } from "@dfinity/nns";
+  // Tested in EditFollowNeurons.spec.ts
+  import type { NeuronId, Topic, NeuronInfo } from "@dfinity/nns";
   import IconExpandMore from "../../icons/IconExpandMore.svelte";
   import NewFolloweeModal from "../../modals/neurons/NewFolloweeModal.svelte";
+  import { removeFollowee } from "../../services/neurons.services";
+  import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
+  import { toastsStore } from "../../stores/toasts.store";
 
   export let topic: Topic;
+  export let neuron: NeuronInfo;
 
   let title: string;
   $: title = $i18n.follow_neurons[`topic_${topic}_title`];
@@ -13,11 +18,29 @@
 
   let isExpanded: boolean = false;
   let showNewFolloweeModal: boolean = false;
+  let followees: NeuronId[] = [];
 
-  const toggleContent = () => (isExpanded = !isExpanded);
+  const toggleContent = () => {
+    // TODO: Fetch followees and render them - https://dfinity.atlassian.net/browse/L2-365
+    isExpanded = !isExpanded;
+  };
 
   const openNewFolloweeModal = () => (showNewFolloweeModal = true);
   const closeNewFolloweeModal = () => (showNewFolloweeModal = false);
+
+  // TODO: Check that it works - https://dfinity.atlassian.net/browse/L2-365
+  const removeCurrentFollowee = async (followee: NeuronId) => {
+    await removeFollowee({
+      identity: $authStore.identity,
+      neuronId: neuron.neuronId,
+      topic,
+      followee,
+    });
+    toastsStore.show({
+      labelKey: "new_followee.success_remove_followee",
+      level: "info",
+    });
+  };
 </script>
 
 <article data-tid="follow-topic-section">
@@ -27,8 +50,9 @@
       <p class="subtitle">{subtitle}</p>
     </div>
     <div class="toolbar">
-      <!-- TODO: L2-333: Set total followees -->
+      <!-- TODO: Set total followees - https://dfinity.atlassian.net/browse/L2-365 -->
       <h3 class="badge">0</h3>
+      <!-- TODO: Use expandable component -->
       <span
         class:isExpanded
         on:click={toggleContent}
@@ -38,7 +62,15 @@
   </div>
   <div class="content" class:isExpanded data-tid="follow-topic-section-current">
     <h5>{$i18n.follow_neurons.current_followees}</h5>
-    <!-- TODO: L2-333:  Iterate followees -->
+    <ul>
+      {#each followees as followee}
+        <li data-tid="current-followee-item">
+          <!-- TODO: Use followee details - https://dfinity.atlassian.net/browse/L2-365 -->
+          <p>DFINITY Foundation</p>
+          <button on:click={() => removeCurrentFollowee(followee)}>x</button>
+        </li>
+      {/each}
+    </ul>
     <div class="button-wrapper">
       <button
         class="secondary small"
@@ -48,7 +80,7 @@
     </div>
   </div>
   {#if showNewFolloweeModal}
-    <NewFolloweeModal on:nnsClose={closeNewFolloweeModal} />
+    <NewFolloweeModal {neuron} {topic} on:nnsClose={closeNewFolloweeModal} />
   {/if}
 </article>
 
@@ -116,6 +148,21 @@
       align-items: center;
       justify-content: center;
       padding: var(--padding) 0;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0 calc(3 * var(--padding));
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      span {
+        @include interaction.tappable;
+      }
     }
   }
 </style>

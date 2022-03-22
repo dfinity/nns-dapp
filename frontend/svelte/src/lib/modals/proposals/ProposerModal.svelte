@@ -3,7 +3,7 @@
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { queryNeuron } from "../../api/neurons.api";
+  import { queryNeuron } from "../../api/governance.api";
   import Spinner from "../../components/ui/Spinner.svelte";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
   import { toastsStore } from "../../stores/toasts.store";
