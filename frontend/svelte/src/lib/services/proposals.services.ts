@@ -232,11 +232,9 @@ const requestRegisterVotes = async ({
   const responses: Array<GovernanceError | undefined> = await Promise.all(
     neuronIds.map((neuronId: NeuronId) => register(neuronId))
   );
-  const errors: GovernanceError[] = responses.filter(
-    Boolean
-  ) as GovernanceError[];
+  const errors = responses.filter(Boolean);
   // collect unique error messages
-  const errorDetails: string = uniqueObjects<GovernanceError>(errors)
+  const errorDetails: string = uniqueObjects(errors)
     .map(({ detail }: GovernanceError) =>
       stringifyJson(detail.error_message, { indentation: 2 })
     )
