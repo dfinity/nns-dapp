@@ -17,12 +17,10 @@
     try {
       await authStore.signIn();
     } catch (err: unknown) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.sign_in",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
-      console.error(err);
     }
   };
 
