@@ -1,8 +1,12 @@
 import type { Identity } from "@dfinity/agent";
+import type { KnownNeuron } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../api/governance.api";
 import { i18n } from "../stores/i18n";
 import { knownNeuronsStore } from "../stores/knownNeurons.store";
+import { toastsStore } from "../stores/toasts.store";
+import { queryAndUpdate } from "../utils/api.utils";
+import { errorToString } from "../utils/error.utils";
 
 export const listKnownNeurons = async ({
   identity,
@@ -14,18 +18,28 @@ export const listKnownNeurons = async ({
     throw new Error(get(i18n).error.missing_identity);
   }
 
-  // Use updateAndQuery helper
-  const knownNeuronsQuery = await api.queryKnownNeurons({
-    identity,
-    certified: false,
+  queryAndUpdate<KnownNeuron[], unknown>({
+    request: ({ certified }) =>
+      api.queryKnownNeurons({
+        identity,
+        certified,
+      }),
+    onLoad: ({ response: neurons }) => knownNeuronsStore.setNeurons(neurons),
+    onError: ({ error, certified }) => {
+      console.error(error);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // Explicitly handle only UPDATE errors
+      knownNeuronsStore.setNeurons([]);
+
+      toastsStore.show({
+        labelKey: "error.get_known_neurons",
+        level: "error",
+        detail: errorToString(error),
+      });
+    },
   });
-
-  knownNeuronsStore.setNeurons(knownNeuronsQuery);
-
-  const knowNeuronsUpdate = await api.queryKnownNeurons({
-    identity,
-    certified: true,
-  });
-
-  knownNeuronsStore.setNeurons(knowNeuronsUpdate);
 };
