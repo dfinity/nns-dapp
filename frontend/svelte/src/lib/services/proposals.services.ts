@@ -230,7 +230,7 @@ const requestRegisterVotes = async ({
 
   // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
   const responses: Array<GovernanceError | undefined> = await Promise.all(
-    neuronIds.map((neuronId: NeuronId) => register(neuronId))
+    neuronIds.map(register)
   );
   const errors = responses.filter(Boolean);
   // collect unique error messages
