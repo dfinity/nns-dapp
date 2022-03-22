@@ -3,9 +3,9 @@
  */
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import * as en from "../../../lib/i18n/en.json";
 import AddAccountModal from "../../../lib/modals/accounts/AddAccountModal.svelte";
 import { addSubAccount } from "../../../lib/services/accounts.services";
+import en from "../../mocks/i18n.mock";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function

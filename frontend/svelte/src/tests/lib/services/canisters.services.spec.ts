@@ -1,10 +1,10 @@
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
-import * as en from "../../../lib/i18n/en.json";
 import { listCanisters } from "../../../lib/services/canisters.services";
 import { canistersStore } from "../../../lib/stores/canisters.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCanisters } from "../../mocks/canisters.mock";
+import en from "../../mocks/i18n.mock";
 
 describe("canisters-services", () => {
   const spyQueryCanisters = jest
