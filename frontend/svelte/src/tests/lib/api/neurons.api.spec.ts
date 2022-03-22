@@ -82,7 +82,9 @@ describe("neurons-api", () => {
   it("updateDelay throws error when updating neuron fails", async () => {
     const error = new Error();
     mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
-      jest.fn().mockResolvedValue({ Err: error })
+      jest.fn(() => {
+        throw error;
+      })
     );
     jest
       .spyOn(LedgerCanister, "create")

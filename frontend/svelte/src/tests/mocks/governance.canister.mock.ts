@@ -81,9 +81,6 @@ export class MockGovernanceCanister extends GovernanceCanister {
     vote: Vote;
     proposalId: bigint;
   }) => {
-    return vote === Vote.YES
-      ? { Ok: null }
-      : { Err: { errorMessage: "error", errorType: 0 } };
   };
 
   public stakeNeuron = async ({
@@ -94,7 +91,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
     stake: ICP;
     principal: Principal;
     ledgerCanister: LedgerCanister;
-  }): Promise<NeuronId | StakeNeuronError> => {
+  }): Promise<NeuronId> => {
     return mockNeuron.neuronId;
   };
 }

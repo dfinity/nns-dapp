@@ -39,14 +39,10 @@ export const increaseDissolveDelay = async ({
 }): Promise<void> => {
   const { canister } = await governanceCanister({ identity });
 
-  const response = await canister.increaseDissolveDelay({
+  return canister.increaseDissolveDelay({
     neuronId,
     additionalDissolveDelaySeconds: dissolveDelayInSeconds,
   });
-
-  if ("Err" in response) {
-    throw response.Err;
-  }
 };
 
 export const queryNeurons = async ({
@@ -83,17 +79,11 @@ export const stakeNeuron = async ({
     canisterId: LEDGER_CANISTER_ID,
   });
 
-  const response = await canister.stakeNeuron({
+  return canister.stakeNeuron({
     stake,
     principal: identity.getPrincipal(),
     ledgerCanister,
   });
-
-  if (response instanceof StakeNeuronError) {
-    throw response;
-  }
-
-  return response;
 };
 
 // TODO: Apply pattern to other canister instantiation L2-371

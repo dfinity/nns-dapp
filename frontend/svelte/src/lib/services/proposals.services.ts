@@ -1,11 +1,6 @@
 import type { Identity } from "@dfinity/agent";
-import type {
-  GovernanceError,
-  NeuronId,
-  ProposalId,
-  ProposalInfo,
-  Vote,
-} from "@dfinity/nns";
+import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
+import { GovernanceError } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   queryProposal,
@@ -210,26 +205,41 @@ const requestRegisterVotes = async ({
   vote: Vote;
   identity: Identity;
 }): Promise<void> => {
-  // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
-  const responses: Array<GovernanceError | undefined> = await Promise.all(
-    neuronIds.map((neuronId: NeuronId) =>
-      registerVote({
+  const register = async (
+    neuronId: NeuronId
+  ): Promise<GovernanceError | undefined> => {
+    try {
+      await registerVote({
         neuronId,
         vote,
         proposalId,
         identity,
-      })
-    )
+      });
+
+      return undefined;
+    } catch (error: GovernanceError | unknown) {
+      // We catch the error because we want to display only the distinct GovernanceError
+      if (error instanceof GovernanceError) {
+        return error;
+      }
+
+      // We throw anyway unexpected errors
+      throw error;
+    }
+  };
+
+  // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
+  const responses: Array<GovernanceError | undefined> = await Promise.all(
+    neuronIds.map((neuronId: NeuronId) => register(neuronId))
   );
-  const errors = responses.filter(Boolean);
+  const errors: GovernanceError[] = responses.filter(
+    Boolean
+  ) as GovernanceError[];
   // collect unique error messages
-  const errorDetails: string = uniqueObjects(errors)
-    .map((error) =>
-      typeof error?.errorMessage === "string" && error.errorMessage.length > 0
-        ? stringifyJson(error?.errorMessage, { indentation: 2 })
-        : ""
+  const errorDetails: string = uniqueObjects<GovernanceError>(errors)
+    .map(({ detail }: GovernanceError) =>
+      stringifyJson(detail.error_message, { indentation: 2 })
     )
-    .filter(Boolean)
     .join("\n");
 
   if (errors.length > 0) {

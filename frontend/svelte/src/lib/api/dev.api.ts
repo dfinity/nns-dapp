@@ -1,6 +1,6 @@
 import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
-import type { BlockHeight, E8s, TransferError } from "@dfinity/nns";
+import type { BlockHeight, E8s } from "@dfinity/nns";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
 
 /*
@@ -13,7 +13,7 @@ export const acquireICPTs = async ({
 }: {
   accountIdentifier: string;
   e8s: E8s;
-}): Promise<BlockHeight | TransferError> => {
+}): Promise<BlockHeight> => {
   assertTestnet();
 
   // Create an identity who's default ledger account is initialised with 10k ICP on the testnet, then use that
