@@ -4,6 +4,8 @@
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import { authStore } from "../lib/stores/auth.store";
+  import { toastsStore } from "../lib/stores/toasts.store";
+  import { errorToString } from "../lib/utils/error.utils";
   import { listCanisters } from "../lib/services/canisters.services";
   import { canistersStore } from "../lib/stores/canisters.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
@@ -13,10 +15,19 @@
   const loadCanisters = async () => {
     loading = true;
 
-    await listCanisters({
-      clearBeforeQuery: true,
-      identity: $authStore.identity,
-    });
+    try {
+      await listCanisters({
+        clearBeforeQuery: true,
+        identity: $authStore.identity,
+      });
+    } catch (err: unknown) {
+      toastsStore.show({
+        labelKey: "error.list_canisters",
+        level: "error",
+        detail: errorToString(err),
+      });
+      console.error(err);
+    }
 
     loading = false;
   };

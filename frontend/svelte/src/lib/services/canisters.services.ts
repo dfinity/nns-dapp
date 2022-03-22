@@ -15,25 +15,17 @@ export const listCanisters = async ({
   clearBeforeQuery?: boolean;
   identity: Identity | null | undefined;
 }) => {
+  if (!identity) {
+    // TODO: https://dfinity.atlassian.net/browse/L2-346
+    throw new Error(get(i18n).error.missing_identity);
+  }
+
   if (clearBeforeQuery === true) {
     canistersStore.setCanisters([]);
   }
 
-  const request = ({
-    certified,
-  }: {
-    certified: boolean;
-  }): Promise<CanisterDetails[]> => {
-    if (!identity) {
-      // TODO: https://dfinity.atlassian.net/browse/L2-346
-      throw new Error(get(i18n).error.missing_identity);
-    }
-
-    return queryCanisters({ identity, certified });
-  };
-
   return queryAndUpdate<CanisterDetails[], unknown>({
-    request,
+    request: ({ certified }) => queryCanisters({ identity, certified }),
     onLoad: ({ response: canisters }) => canistersStore.setCanisters(canisters),
     onError: ({ error, certified }) => {
       console.error(error);
