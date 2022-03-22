@@ -59,6 +59,8 @@ export const targetBlankLinkRenderer = (
   title: string | null,
   text: string
 ): string =>
-  `<a${href === null ? "" : ` target="_blank" href="${href}"`}${
-    title === null ? "" : ` title="${title}"`
-  }>${text}</a>`;
+  `<a${
+    href === null
+      ? ""
+      : ` target="_blank" rel="noopener noreferrer" href="${href}"`
+  }${title === null ? "" : ` title="${title}"`}>${text}</a>`;

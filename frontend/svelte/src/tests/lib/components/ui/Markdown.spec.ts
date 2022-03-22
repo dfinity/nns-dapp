@@ -5,7 +5,7 @@
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import Markdown from "../../../../lib/components/ui/Markdown.svelte";
-import { targetBlankLinkRenderer } from "../../../../lib/utils/utils";
+import { targetBlankLinkRenderer } from "../../../../lib/utils/markdown.utils";
 
 const HTML_TEXT = "<p>demo<p>";
 
