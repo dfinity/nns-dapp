@@ -26,6 +26,8 @@
       const neuronId = await stakeAndLoadNeuron({
         amount,
         identity: $authStore.identity,
+        fromSubAccount:
+          "subAccount" in account ? account.subAccount : undefined,
       });
 
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
