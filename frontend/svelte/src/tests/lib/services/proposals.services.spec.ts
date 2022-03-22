@@ -3,7 +3,6 @@ import type { GovernanceError, ProposalInfo } from "@dfinity/nns";
 import { Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
-import * as en from "../../../lib/i18n/en.json";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
   getProposalId,
@@ -16,6 +15,7 @@ import { busyStore } from "../../../lib/stores/busy.store";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-services", () => {

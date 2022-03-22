@@ -6,8 +6,8 @@ import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import ProposalsFilters from "../../../../lib/components/proposals/ProposalsFilters.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
-import * as en from "../../../../lib/i18n/en.json";
 import { enumSize } from "../../../../lib/utils/enum.utils";
+import en from "../../../mocks/i18n.mock";
 
 describe("ProposalsFilters", () => {
   const shouldRenderFilter = ({
