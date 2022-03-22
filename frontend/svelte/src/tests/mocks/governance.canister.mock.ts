@@ -7,7 +7,6 @@ import type {
   NeuronId,
   NeuronInfo,
   ProposalInfo,
-  StakeNeuronError,
 } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -80,8 +79,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
     neuronId: bigint;
     vote: Vote;
     proposalId: bigint;
-  }) => {
-  };
+  }) => {};
 
   public stakeNeuron = async ({
     stake,
