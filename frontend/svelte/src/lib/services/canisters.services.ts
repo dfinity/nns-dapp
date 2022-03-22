@@ -19,14 +19,18 @@ export const listCanisters = async ({
     canistersStore.setCanisters([]);
   }
 
-  const request = ({certified}: {certified: boolean}): Promise<CanisterDetails[]> => {
+  const request = ({
+    certified,
+  }: {
+    certified: boolean;
+  }): Promise<CanisterDetails[]> => {
     if (!identity) {
       // TODO: https://dfinity.atlassian.net/browse/L2-346
       throw new Error(get(i18n).error.missing_identity);
     }
 
     return queryCanisters({ identity, certified });
-  }
+  };
 
   return queryAndUpdate<CanisterDetails[], unknown>({
     request,
