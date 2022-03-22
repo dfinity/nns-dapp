@@ -35,6 +35,7 @@ describe("proposals-api", () => {
         beforeProposal: undefined,
         filters: DEFAULT_PROPOSALS_FILTERS,
         identity: mockIdentity,
+        certified: true,
       });
 
       expect(spyListProposals).toHaveReturnedTimes(1);
@@ -45,6 +46,7 @@ describe("proposals-api", () => {
         beforeProposal: mockProposals[mockProposals.length - 1].id,
         filters: DEFAULT_PROPOSALS_FILTERS,
         identity: mockIdentity,
+        certified: true,
       });
 
       expect(spyListProposals).toHaveReturnedTimes(1);
@@ -56,6 +58,7 @@ describe("proposals-api", () => {
       const proposal = await queryProposal({
         proposalId: BigInt(404),
         identity: mockIdentity,
+        certified: false,
       });
 
       expect(proposal?.id).toBe(BigInt(404));

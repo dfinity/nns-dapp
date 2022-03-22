@@ -7,5 +7,5 @@
 
 <Card>
   <!-- TODO: https://dfinity.atlassian.net/browse/L2-353 -->
-  Maturity Card
+  Maturity Card {neuron.neuronId}
 </Card>
