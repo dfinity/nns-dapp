@@ -4,6 +4,9 @@ import { queryCanisters } from "../api/canisters.api";
 import type { CanisterDetails } from "../canisters/nns-dapp/nns-dapp.types";
 import { canistersStore } from "../stores/canisters.store";
 import { i18n } from "../stores/i18n";
+import { toastsStore } from "../stores/toasts.store";
+import { queryAndUpdate } from "../utils/api.utils";
+import { errorToString } from "../utils/error.utils";
 
 export const listCanisters = async ({
   clearBeforeQuery,
@@ -21,9 +24,24 @@ export const listCanisters = async ({
     canistersStore.setCanisters([]);
   }
 
-  const canisters: CanisterDetails[] = await queryCanisters({
-    identity,
-  });
+  return queryAndUpdate<CanisterDetails[], unknown>({
+    request: ({ certified }) => queryCanisters({ identity, certified }),
+    onLoad: ({ response: canisters }) => canistersStore.setCanisters(canisters),
+    onError: ({ error, certified }) => {
+      console.error(error);
 
-  canistersStore.setCanisters(canisters);
+      if (certified !== true) {
+        return;
+      }
+
+      // Explicitly handle only UPDATE errors
+      canistersStore.setCanisters([]);
+
+      toastsStore.show({
+        labelKey: "error.list_canisters",
+        level: "error",
+        detail: errorToString(error),
+      });
+    },
+  });
 };
