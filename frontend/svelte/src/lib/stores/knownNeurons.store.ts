@@ -1,5 +1,5 @@
 import type { KnownNeuron } from "@dfinity/nns";
-import { writable } from "svelte/store";
+import { derived, writable } from "svelte/store";
 
 export type KnownNeuronsStore = KnownNeuron[];
 
@@ -21,3 +21,7 @@ const initKnownNeuronsStore = () => {
 };
 
 export const knownNeuronsStore = initKnownNeuronsStore();
+
+export const sortedknownNeuronsStore = derived(knownNeuronsStore, ($neurons) =>
+  $neurons.sort((neuronA, neuronB) => Number(neuronA.id - neuronB.id))
+);

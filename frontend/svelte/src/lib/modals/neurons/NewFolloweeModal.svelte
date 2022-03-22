@@ -7,7 +7,7 @@
   import { addFollowee } from "../../services/neurons.services";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
-  import { knownNeuronsStore } from "../../stores/knownNeurons.store";
+  import { sortedknownNeuronsStore } from "../../stores/knownNeurons.store";
   import { toastsStore } from "../../stores/toasts.store";
   import Modal from "../Modal.svelte";
 
@@ -97,11 +97,11 @@
     </article>
     <article>
       <h4>{$i18n.new_followee.options_title}</h4>
-      {#if $knownNeuronsStore === undefined}
+      {#if $sortedknownNeuronsStore === undefined}
         <Spinner />
       {:else}
         <ul>
-          {#each $knownNeuronsStore as knowNeuron}
+          {#each $sortedknownNeuronsStore as knowNeuron}
             <li data-tid="known-neuron-item">
               <p>{knowNeuron.name}</p>
               <button
