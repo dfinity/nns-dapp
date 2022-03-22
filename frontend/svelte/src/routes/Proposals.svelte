@@ -24,7 +24,6 @@
   } from "../lib/services/proposals.services";
   import { authStore } from "../lib/stores/auth.store";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { errorToString } from "../lib/utils/error.utils";
   import { routeStore } from "../lib/stores/route.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
 
@@ -40,12 +39,10 @@
         identity: $authStore.identity,
       });
     } catch (err: unknown) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.list_proposals",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
-      console.error(err);
     }
 
     loading = false;
@@ -61,12 +58,10 @@
         identity: $authStore.identity,
       });
     } catch (err: unknown) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.list_proposals",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
-      console.error(err);
     }
 
     loading = false;
