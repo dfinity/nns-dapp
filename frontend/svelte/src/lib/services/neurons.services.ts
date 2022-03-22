@@ -12,7 +12,9 @@ import { E8S_PER_ICP } from "../constants/icp.constants";
 import { i18n } from "../stores/i18n";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
+import { queryAndUpdate } from "../utils/api.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
+import { errorToString } from "../utils/error.utils";
 
 /**
  * Uses governance and ledger canisters to create a neuron and adds it to the store
@@ -63,8 +65,26 @@ export const listNeurons = async ({
     throw new Error("No identity found listing neurons");
   }
 
-  const neurons: NeuronInfo[] = await queryNeurons({ identity });
-  neuronsStore.setNeurons(neurons);
+  return queryAndUpdate<NeuronInfo[], unknown>({
+    request: ({ certified }) => queryNeurons({ identity, certified }),
+    onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
+    onError: ({ error, certified }) => {
+      console.error(error);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // Explicitly handle only UPDATE errors
+      neuronsStore.setNeurons([]);
+
+      toastsStore.show({
+        labelKey: "error.get_neurons",
+        level: "error",
+        detail: errorToString(error),
+      });
+    },
+  });
 };
 
 export const updateDelay = async ({
