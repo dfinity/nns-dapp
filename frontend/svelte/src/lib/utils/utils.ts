@@ -53,14 +53,3 @@ export const uniqueObjects = <T>(list: T[]): T[] => {
   }
   return result;
 };
-
-/**
- * Add `target="_blank"` to all links in the text (e.g. `<a href="/">` to `<a target="_blank" href="/">`)
- */
-export const addTargetBlank = (text: string = ""): string => {
-  return text.replace(/<a.+?>/gi, (tag) =>
-    tag.includes(" target=")
-      ? tag
-      : tag.replace(/<a (.*href=)/i, '<a target="_blank" $1')
-  );
-};
