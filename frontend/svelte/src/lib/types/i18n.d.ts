@@ -28,7 +28,6 @@ interface I18nError {
   create_subaccount_limit_exceeded: string;
   get_neurons: string;
   get_known_neurons: string;
-  get_neuron: string;
   register_vote: string;
   register_vote_unknown: string;
   add_followee: string;

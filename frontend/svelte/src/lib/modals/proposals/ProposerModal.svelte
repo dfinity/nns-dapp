@@ -10,6 +10,7 @@
   import { onMount } from "svelte";
   import VotingHistoryCard from "../../components/neurons/VotingHistoryCard.svelte";
   import { authStore } from "../../stores/auth.store";
+  import { loadNeuron } from "../../services/neurons.services";
 
   export let proposer: NeuronId;
   let neuron: NeuronInfo | undefined;
@@ -20,16 +21,12 @@
       return;
     }
 
-    try {
-      neuron = await queryNeuron({
-        neuronId: proposer,
-        identity: $authStore.identity,
-      });
-    } catch (err) {
-      neuron = undefined;
-
-      toastsStore.error({ labelKey: "error.get_neuron", err });
-    }
+    loadNeuron({
+      neuronId: proposer,
+      identity: $authStore.identity,
+      setNeuron: (neuronInfo) => (neuron = neuronInfo),
+      handleError: (neuron = undefined),
+    });
   });
 </script>
 
