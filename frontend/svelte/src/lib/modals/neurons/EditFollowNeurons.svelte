@@ -1,8 +1,11 @@
 <script lang="ts">
+  import type { NeuronInfo } from "@dfinity/nns";
   import { Topic } from "@dfinity/nns";
   import FollowTopicSection from "../../components/neurons/FollowTopicSection.svelte";
   import { i18n } from "../../stores/i18n";
   import { enumValues } from "../../utils/enum.utils";
+
+  export let neuron: NeuronInfo;
 
   const topics: Topic[] = enumValues(Topic);
 </script>
@@ -11,7 +14,7 @@
   <p>{$i18n.follow_neurons.description}</p>
   <div>
     {#each topics as topic}
-      <FollowTopicSection {topic} />
+      <FollowTopicSection {neuron} {topic} />
     {/each}
   </div>
 </section>

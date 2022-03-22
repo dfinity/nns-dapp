@@ -1,5 +1,5 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+import type { KnownNeuron, NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
 import {
   GovernanceCanister,
   ICP,
@@ -45,6 +45,30 @@ export const increaseDissolveDelay = async ({
   });
 };
 
+export const setFollowees = async ({
+  identity,
+  neuronId,
+  topic,
+  followees,
+}: {
+  identity: Identity;
+  neuronId: NeuronId;
+  topic: Topic;
+  followees: NeuronId[];
+}): Promise<void> => {
+  const { canister } = await governanceCanister({ identity });
+
+  const response = await canister.setFollowees({
+    neuronId,
+    topic,
+    followees,
+  });
+
+  if ("Err" in response) {
+    throw response.Err;
+  }
+};
+
 export const queryNeurons = async ({
   identity,
   certified,
@@ -86,6 +110,18 @@ export const stakeNeuron = async ({
   });
 };
 
+export const queryKnownNeurons = async ({
+  identity,
+  certified,
+}: {
+  identity: Identity;
+  certified: boolean;
+}): Promise<KnownNeuron[]> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.listKnownNeurons(certified);
+};
+
 // TODO: Apply pattern to other canister instantiation L2-371
 const governanceCanister = async ({
   identity,
@@ -95,16 +131,18 @@ const governanceCanister = async ({
   canister: GovernanceCanister;
   agent: HttpAgent;
 }> => {
-  const agent: HttpAgent = await createAgent({
+  const agent = await createAgent({
     identity,
     host: process.env.HOST,
   });
 
+  const canister = GovernanceCanister.create({
+    agent,
+    canisterId: GOVERNANCE_CANISTER_ID,
+  });
+
   return {
-    canister: GovernanceCanister.create({
-      agent,
-      canisterId: GOVERNANCE_CANISTER_ID,
-    }),
+    canister,
     agent,
   };
 };

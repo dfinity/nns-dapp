@@ -122,7 +122,6 @@
     <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
     {#if currentStep === Steps.ConfirmDisseolveDelay && newNeuron && delayInSeconds}
       <Transition {diff}>
-        <!-- TODO: Edit Followees https://dfinity.atlassian.net/browse/L2-337 -->
         <ConfirmDissolveDelay
           neuron={newNeuron}
           {delayInSeconds}
@@ -132,10 +131,9 @@
       </Transition>
     {/if}
     <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-    {#if currentStep === Steps.EditFolloNeurons}
+    {#if currentStep === Steps.EditFolloNeurons && newNeuron}
       <Transition {diff}>
-        <!-- TODO: Edit Followees https://dfinity.atlassian.net/browse/L2-337 -->
-        <EditFollowNeurons />
+        <EditFollowNeurons neuron={newNeuron} />
       </Transition>
     {/if}
   </main>

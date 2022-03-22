@@ -24,7 +24,7 @@
     </Collapsible>
   {:else}
     <h3><slot name="title" /></h3>
-    <div class="content">
+    <div class="content limit-height">
       <slot />
     </div>
   {/if}
@@ -71,5 +71,10 @@
 
   .content {
     margin: calc(2 * var(--padding)) 0 var(--padding);
+
+    &.limit-height {
+      max-height: 300px;
+      overflow-y: auto;
+    }
   }
 </style>
