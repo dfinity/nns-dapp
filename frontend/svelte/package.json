@@ -11,7 +11,7 @@
     "dev": "npm run import-assets && npm run i18n && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
     "start": "sirv public",
     "check": "svelte-check --tsconfig ./tsconfig.json && npm run lint",
-    "lint": "eslint './src/**/*.{js,ts,svelte}'",
+    "lint": "eslint --max-warnings 0 './src/**/*.{js,ts,svelte}'",
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "jest",
     "test:watch": "npm run test -- --watchAll",

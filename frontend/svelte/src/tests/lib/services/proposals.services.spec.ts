@@ -3,7 +3,6 @@ import type { GovernanceError, ProposalInfo } from "@dfinity/nns";
 import { Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
-import * as en from "../../../lib/i18n/en.json";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
   getProposalId,
@@ -16,6 +15,7 @@ import { busyStore } from "../../../lib/stores/busy.store";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-services", () => {
@@ -77,10 +77,6 @@ describe("proposals-services", () => {
   });
 
   describe("load", () => {
-    const spyQueryProposals = jest
-      .spyOn(api, "queryProposals")
-      .mockImplementation(() => Promise.resolve(mockProposals));
-
     const spyQueryProposal = jest
       .spyOn(api, "queryProposal")
       .mockImplementation(() =>
@@ -89,46 +85,21 @@ describe("proposals-services", () => {
 
     beforeAll(() => proposalsStore.setProposals(mockProposals));
 
-    afterAll(() => jest.clearAllMocks());
+    afterEach(() => jest.clearAllMocks());
 
-    it("should get proposalInfo from proposals store if presented", (done) => {
-      loadProposal({
-        proposalId: mockProposals[mockProposals.length - 1].id as bigint,
-        identity: mockIdentity,
-        setProposal: (proposal: ProposalInfo) => {
-          expect(proposal?.id).toBe(mockProposals[1].id);
-          expect(spyQueryProposals).not.toBeCalled();
-          expect(spyQueryProposal).not.toBeCalled();
-
-          done();
-        },
-      });
-    });
-
-    it("should not call listProposals if in the store", (done) => {
-      loadProposal({
-        proposalId: mockProposals[0].id as bigint,
-        identity: mockIdentity,
-        setProposal: () => {
-          expect(spyQueryProposals).not.toBeCalled();
-          done();
-        },
-      });
-    });
-
-    it("should call the canister to get proposalInfo if not in store", (done) => {
+    it("should call the canister to get proposalInfo", (done) => {
+      let notDone = true;
       loadProposal({
         proposalId: BigInt(666),
         identity: mockIdentity,
         setProposal: (proposal: ProposalInfo) => {
           expect(proposal?.id).toBe(BigInt(666));
           expect(spyQueryProposal).toBeCalledTimes(1);
-          expect(spyQueryProposal).toBeCalledWith({
-            proposalId: BigInt(666),
-            identity: mockIdentity,
-          });
 
-          done();
+          if (notDone) {
+            notDone = false;
+            done();
+          }
         },
       });
     });
@@ -382,7 +353,7 @@ describe("proposals-services", () => {
         expect(spyToastShow).toBeCalledWith({
           labelKey: "error.register_vote_unknown",
           level: "error",
-          detail: "{}",
+          detail: "test",
         });
       });
     });

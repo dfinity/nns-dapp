@@ -22,6 +22,7 @@ import {
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { isNode } from "../utils/dev.utils";
+import { errorToString } from "../utils/error.utils";
 import { stringifyJson, uniqueObjects } from "../utils/utils";
 import { listNeurons } from "./neurons.services";
 
@@ -79,7 +80,12 @@ const findProposals = async ({
 
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
 
-  return queryProposals({ beforeProposal, identity, filters });
+  return await queryProposals({
+    beforeProposal,
+    identity,
+    filters,
+    certified: false,
+  });
 };
 
 /**
@@ -141,8 +147,7 @@ const getProposal = async ({
     throw new Error(get(i18n).error.missing_identity);
   }
 
-  const proposal = get(proposalsStore).find(({ id }) => id === proposalId);
-  return proposal || queryProposal({ proposalId, identity });
+  return queryProposal({ proposalId, identity, certified: false });
 };
 
 export const getProposalId = (path: string): ProposalId | undefined =>
@@ -177,6 +182,7 @@ export const registerVotes = async ({
       identity,
     });
   } catch (error) {
+    // TODO: replace w/ console.error mock
     if (!isNode()) {
       // preserve in unit-test
       console.error("vote unknown:", error);
@@ -184,7 +190,7 @@ export const registerVotes = async ({
     toastsStore.show({
       labelKey: "error.register_vote_unknown",
       level: "error",
-      detail: stringifyJson(error, { indentation: 2 }),
+      detail: errorToString(error),
     });
   }
 
@@ -227,6 +233,7 @@ const requestRegisterVotes = async ({
     .join("\n");
 
   if (errors.length > 0) {
+    // TODO: replace w/ console.error mock
     if (!isNode()) {
       // avoid in unit-test
       console.error("vote:", errorDetails);

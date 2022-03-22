@@ -6,8 +6,8 @@ import type { Neuron } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import NeuronCard from "../../../../lib/components/neurons/NeuronCard.svelte";
-import * as en from "../../../../lib/i18n/en.json";
 import { formatICP } from "../../../../lib/utils/icp.utils";
+import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
 describe("NeuronCard", () => {

@@ -7,7 +7,6 @@
   import { getICPs } from "../../services/dev.services";
   import Spinner from "../ui/Spinner.svelte";
   import { toastsStore } from "../../stores/toasts.store";
-  import { errorToString } from "../../utils/error.utils";
 
   let visible: boolean = false;
   let transferring: boolean = false;
@@ -16,9 +15,8 @@
 
   const onSubmit = async ({ target }) => {
     if (invalidForm) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "Invalid ICPs input.",
-        level: "error",
       });
       return;
     }
@@ -33,11 +31,9 @@
 
       reset();
     } catch (err: unknown) {
-      console.error(err);
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "ICPs could not be transferred.",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
     }
 

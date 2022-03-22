@@ -1,13 +1,15 @@
 import type { NeuronInfo } from "@dfinity/nns";
-import { LedgerCanister } from "@dfinity/nns";
+import { LedgerCanister, Topic } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { get } from "svelte/store";
-import * as api from "../../../lib/api/neurons.api";
+import * as api from "../../../lib/api/governance.api";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
+  addFollowee,
   getNeuronId,
   listNeurons,
   loadNeuron,
+  removeFollowee,
   stakeAndLoadNeuron,
   updateDelay,
 } from "../../../lib/services/neurons.services";
@@ -32,6 +34,10 @@ describe("neurons-services", () => {
 
   const spyIncreaseDissolveDelay = jest
     .spyOn(api, "increaseDissolveDelay")
+    .mockImplementation(() => Promise.resolve());
+
+  const spySetFollowees = jest
+    .spyOn(api, "setFollowees")
     .mockImplementation(() => Promise.resolve());
 
   afterEach(() => {
@@ -112,6 +118,90 @@ describe("neurons-services", () => {
           identity: null,
         });
 
+      await expect(call).rejects.toThrow("No identity");
+    });
+  });
+
+  describe("add followee", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it("should add the followee to next call", async () => {
+      const followee = BigInt(8);
+      const neuronId = neurons[0].neuronId;
+      neuronsStore.setNeurons(neurons);
+      const topic = Topic.ExchangeRate;
+      await addFollowee({
+        neuronId,
+        identity: mockIdentity,
+        topic,
+        followee,
+      });
+
+      const expectedArgument = {
+        neuronId,
+        identity: mockIdentity,
+        topic,
+        followees: [followee],
+      };
+      expect(spySetFollowees).toHaveBeenCalledWith(expectedArgument);
+    });
+
+    it("should not call api if no identity", async () => {
+      const followee = BigInt(8);
+      const { neuronId } = neurons[0];
+      neuronsStore.setNeurons(neurons);
+      const topic = Topic.ExchangeRate;
+      const call = async () =>
+        await addFollowee({
+          neuronId,
+          identity: null,
+          topic,
+          followee,
+        });
+      await expect(call).rejects.toThrow("No identity");
+    });
+  });
+
+  describe("remove followee", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it("should remove the followee to next call", async () => {
+      const followee = BigInt(8);
+      const topic = Topic.ExchangeRate;
+      const neuron = neurons[0];
+      // @ts-ignore mockNeuron has `fullNeuron`
+      neuron.fullNeuron.followees = [{ topic, followees: [followee] }];
+      neuronsStore.setNeurons(neurons);
+      await removeFollowee({
+        neuronId: neuron.neuronId,
+        identity: mockIdentity,
+        topic,
+        followee,
+      });
+
+      const expectedArgument = {
+        neuronId: neuron.neuronId,
+        identity: mockIdentity,
+        topic,
+        followees: [],
+      };
+      expect(spySetFollowees).toHaveBeenCalledWith(expectedArgument);
+    });
+
+    it("should not call api if no identity", async () => {
+      const followee = BigInt(8);
+      const neuronId = neurons[0].neuronId;
+      neuronsStore.setNeurons(neurons);
+      const topic = Topic.ExchangeRate;
+      const call = async () =>
+        await removeFollowee({
+          neuronId,
+          identity: null,
+          topic,
+          followee,
+        });
       await expect(call).rejects.toThrow("No identity");
     });
   });

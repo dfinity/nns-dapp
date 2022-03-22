@@ -18,10 +18,12 @@ export const queryProposals = async ({
   beforeProposal,
   identity,
   filters,
+  certified,
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity;
   filters: ProposalsFiltersStore;
+  certified: boolean;
 }): Promise<ProposalInfo[]> => {
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
@@ -44,7 +46,7 @@ export const queryProposals = async ({
       includeRewardStatus: rewards,
       includeStatus: status,
     },
-    certified: false,
+    certified,
   });
 
   return proposals;
@@ -53,15 +55,17 @@ export const queryProposals = async ({
 export const queryProposal = async ({
   proposalId,
   identity,
+  certified,
 }: {
   proposalId: ProposalId;
   identity: Identity;
+  certified: boolean;
 }): Promise<ProposalInfo | undefined> => {
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.getProposal({ proposalId, certified: false });
+  return governance.getProposal({ proposalId, certified });
 };
 
 export const registerVote = async ({

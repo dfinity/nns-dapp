@@ -1,32 +1,30 @@
 import type { Identity } from "@dfinity/agent";
+import type { KnownNeuron } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { queryCanisters } from "../api/canisters.api";
-import type { CanisterDetails } from "../canisters/nns-dapp/nns-dapp.types";
-import { canistersStore } from "../stores/canisters.store";
+import * as api from "../api/governance.api";
 import { i18n } from "../stores/i18n";
+import { knownNeuronsStore } from "../stores/knownNeurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { queryAndUpdate } from "../utils/api.utils";
 import { errorToString } from "../utils/error.utils";
 
-export const listCanisters = async ({
-  clearBeforeQuery,
+export const listKnownNeurons = async ({
   identity,
 }: {
-  clearBeforeQuery?: boolean;
-  identity: Identity | null | undefined;
+  identity: Identity | undefined | null;
 }) => {
   if (!identity) {
     // TODO: https://dfinity.atlassian.net/browse/L2-346
     throw new Error(get(i18n).error.missing_identity);
   }
 
-  if (clearBeforeQuery === true) {
-    canistersStore.setCanisters([]);
-  }
-
-  return queryAndUpdate<CanisterDetails[], unknown>({
-    request: ({ certified }) => queryCanisters({ identity, certified }),
-    onLoad: ({ response: canisters }) => canistersStore.setCanisters(canisters),
+  queryAndUpdate<KnownNeuron[], unknown>({
+    request: ({ certified }) =>
+      api.queryKnownNeurons({
+        identity,
+        certified,
+      }),
+    onLoad: ({ response: neurons }) => knownNeuronsStore.setNeurons(neurons),
     onError: ({ error, certified }) => {
       console.error(error);
 
@@ -35,10 +33,10 @@ export const listCanisters = async ({
       }
 
       // Explicitly handle only UPDATE errors
-      canistersStore.setCanisters([]);
+      knownNeuronsStore.setNeurons([]);
 
       toastsStore.show({
-        labelKey: "error.list_canisters",
+        labelKey: "error.get_known_neurons",
         level: "error",
         detail: errorToString(error),
       });

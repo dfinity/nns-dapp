@@ -5,7 +5,7 @@
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import ProposalMeta from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalMeta.svelte";
-import * as en from "../../../../../lib/i18n/en.json";
+import en from "../../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
 describe("ProposalMeta", () => {

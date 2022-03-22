@@ -3,7 +3,7 @@
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { queryNeuron } from "../../api/neurons.api";
+  import { queryNeuron } from "../../api/governance.api";
   import Spinner from "../../components/ui/Spinner.svelte";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
   import { toastsStore } from "../../stores/toasts.store";
@@ -16,7 +16,7 @@
 
   onMount(async () => {
     if (!$authStore.identity) {
-      toastsStore.show({ labelKey: "error.missing_identity", level: "error" });
+      toastsStore.error({ labelKey: "error.missing_identity" });
       return;
     }
 
@@ -28,8 +28,7 @@
     } catch (err) {
       neuron = undefined;
 
-      toastsStore.show({ labelKey: "error.get_neuron", level: "error" });
-      console.error(err);
+      toastsStore.error({ labelKey: "error.get_neuron", err });
     }
   });
 </script>
