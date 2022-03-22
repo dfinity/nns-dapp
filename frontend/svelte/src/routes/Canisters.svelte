@@ -15,19 +15,10 @@
   const loadCanisters = async () => {
     loading = true;
 
-    try {
-      await listCanisters({
-        clearBeforeQuery: true,
-        identity: $authStore.identity,
-      });
-    } catch (err: unknown) {
-      toastsStore.show({
-        labelKey: "error.list_canisters",
-        level: "error",
-        detail: errorToString(err),
-      });
-      console.error(err);
-    }
+    await listCanisters({
+      clearBeforeQuery: true,
+      identity: $authStore.identity,
+    });
 
     loading = false;
   };
