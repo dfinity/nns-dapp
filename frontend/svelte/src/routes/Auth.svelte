@@ -7,7 +7,6 @@
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { errorToString } from "../lib/utils/error.utils";
   import Banner from "../lib/components/common/Banner.svelte";
 
   let signedIn: boolean = false;
