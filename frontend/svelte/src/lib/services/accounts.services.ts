@@ -10,7 +10,7 @@ import { queryAndUpdate } from "./utils.services";
 /**
  * - sync: load the account data using the ledger and the nns dapp canister itself
  */
-export const syncAccounts = async (): Promise<void> => {
+export const syncAccounts = (): Promise<void> => {
   return queryAndUpdate<AccountsStore, unknown>({
     request: (params) => loadAccounts(params),
     onLoad: ({ response: accounts }) => accountsStore.set(accounts),
