@@ -16,7 +16,7 @@
   let followeeAddress: number | undefined;
   let loading: boolean = false;
 
-  onMount(async () => await listKnownNeurons());
+  onMount(() => listKnownNeurons());
 
   const addFolloweeByAddress = async () => {
     loading = true;
