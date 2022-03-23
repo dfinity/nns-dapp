@@ -13,7 +13,9 @@ export const logout = async ({
 }) => {
   await authStore.signOut();
 
-  appendOptionalMsgToUrl(msg);
+  if (msg) {
+    appendMsgToUrl(msg);
+  }
 
   window.localStorage.clear();
 
@@ -24,11 +26,7 @@ export const logout = async ({
 /**
  * If a message was provided to the logout process - e.g. a message informing the logout happened because the session timedout - append the information to the url as query params
  */
-const appendOptionalMsgToUrl = (msg?: Pick<ToastMsg, "labelKey" | "level">) => {
-  if (!msg) {
-    return;
-  }
-
+const appendMsgToUrl = (msg: Pick<ToastMsg, "labelKey" | "level">) => {
   const { labelKey, level } = msg;
 
   const urlParams: URLSearchParams = new URLSearchParams(
