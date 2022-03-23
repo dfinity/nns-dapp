@@ -116,7 +116,7 @@ const setFolloweesHelper = async ({
       neuronId,
       identity,
       certified: true,
-      noCache: true,
+      forceFetch: true,
     });
 
     if (!neuron) {
@@ -207,14 +207,14 @@ const getNeuron = async ({
   neuronId,
   identity,
   certified,
-  noCache = false,
+  forceFetch = false,
 }: {
   neuronId: NeuronId;
   identity: Identity;
   certified: boolean;
-  noCache?: boolean;
+  forceFetch?: boolean;
 }): Promise<NeuronInfo | undefined> => {
-  if (noCache) {
+  if (forceFetch) {
     return queryNeuron({ neuronId, identity, certified });
   }
   const neuron = get(neuronsStore).find(
