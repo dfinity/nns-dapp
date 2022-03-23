@@ -60,15 +60,21 @@ describe("App", () => {
     const numberOfCalls = 2;
 
     await waitFor(() =>
-      expect(mockNNSDappCanister.addAccount).toHaveBeenCalledTimes(numberOfCalls)
+      expect(mockNNSDappCanister.addAccount).toHaveBeenCalledTimes(
+        numberOfCalls
+      )
     );
 
     await waitFor(() =>
-      expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(numberOfCalls)
+      expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(
+        numberOfCalls
+      )
     );
 
     await waitFor(() =>
-      expect(mockLedgerCanister.accountBalance).toHaveBeenCalledTimes(numberOfCalls)
+      expect(mockLedgerCanister.accountBalance).toHaveBeenCalledTimes(
+        numberOfCalls
+      )
     );
   });
 
