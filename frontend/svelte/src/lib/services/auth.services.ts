@@ -4,7 +4,6 @@ import { authStore } from "../stores/auth.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { ToastLevel, ToastMsg } from "../types/toast";
 import { replaceHistory } from "../utils/route.utils";
-import {i18n} from '../stores/i18n';
 
 const msgParam: string = "msg";
 const levelParam: string = "level";
@@ -36,14 +35,16 @@ export const getIdentity = async (): Promise<Identity> => {
     const identity: Identity | undefined | null = get(authStore).identity;
 
     if (!identity) {
-      await logout({msg: {labelKey: 'error.missing_identity', level: 'error'}});
+      await logout({
+        msg: { labelKey: "error.missing_identity", level: "error" },
+      });
 
       // We do not resolve on purpose. logout() does reload the browser
       return;
     }
 
     resolve(identity);
-  })
+  });
 };
 
 /**
