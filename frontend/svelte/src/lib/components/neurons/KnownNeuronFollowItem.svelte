@@ -15,13 +15,13 @@
   let loading: boolean = false;
   const dispatcher = createEventDispatcher();
 
-  const addKnownNeuronFollowee = async () => {
+  const toggleKnownNeuronFollowee = async () => {
     loading = true;
     dispatcher("nnsLoading", { loading: true });
     const toggleFollowee = isFollowed ? removeFollowee : addFollowee;
     await toggleFollowee({
       identity: $authStore.identity,
-      neuronId: neuronId,
+      neuronId,
       topic,
       followee: knownNeuron.id,
     });
@@ -33,7 +33,11 @@
 <div data-tid={`known-neuron-item-${knownNeuron.id}`}>
   <p>{knownNeuron.name}</p>
   <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
-  <button class="secondary small" {disabled} on:click={addKnownNeuronFollowee}>
+  <button
+    class="secondary small"
+    {disabled}
+    on:click={toggleKnownNeuronFollowee}
+  >
     {#if loading}
       <Spinner />
     {:else if isFollowed}
