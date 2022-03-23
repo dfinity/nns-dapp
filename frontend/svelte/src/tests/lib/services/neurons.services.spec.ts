@@ -1,6 +1,7 @@
 import type { NeuronInfo } from "@dfinity/nns";
 import { LedgerCanister, Topic } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
+import { tick } from "svelte/internal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
@@ -225,29 +226,27 @@ describe("neurons-services", () => {
   });
 
   describe("load neuron", () => {
-    it("should get neuron from neurons store if presented and not call queryNeuron", (done) => {
+    it("should get neuron from neurons store if presented and not call queryNeuron", async () => {
       neuronsStore.pushNeurons([mockNeuron]);
-      loadNeuron({
+      await loadNeuron({
         neuronId: mockNeuron.neuronId,
         identity: mockIdentity,
         setNeuron: (neuron: NeuronInfo) => {
-          expect(neuron?.neuronId).toBe(mockNeuron.neuronId);
-          expect(spyGetNeuron).not.toBeCalled();
           neuronsStore.setNeurons([]);
-          done();
+          expect(neuron?.neuronId).toBe(mockNeuron.neuronId);
         },
       });
+      await tick();
+      expect(spyGetNeuron).not.toBeCalled();
     });
 
-    it("should call the api to get neuron if not in store", (done) => {
-      loadNeuron({
+    it("should call the api to get neuron if not in store", async () => {
+      await loadNeuron({
         neuronId: mockNeuron.neuronId,
         identity: mockIdentity,
-        setNeuron: () => {
-          expect(spyGetNeuron).toBeCalled();
-          done();
-        },
+        setNeuron: jest.fn,
       });
+      expect(spyGetNeuron).toBeCalled();
     });
   });
 });
