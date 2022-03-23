@@ -4,7 +4,6 @@
   import IconExpandMore from "../../icons/IconExpandMore.svelte";
   import NewFolloweeModal from "../../modals/neurons/NewFolloweeModal.svelte";
   import { removeFollowee } from "../../services/neurons.services";
-  import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
 
@@ -31,7 +30,6 @@
   // TODO: Check that it works - https://dfinity.atlassian.net/browse/L2-365
   const removeCurrentFollowee = async (followee: NeuronId) => {
     await removeFollowee({
-      identity: $authStore.identity,
       neuronId: neuron.neuronId,
       topic,
       followee,

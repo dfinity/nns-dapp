@@ -3,7 +3,6 @@
   import { notVotedNeurons, ProposalStatus } from "@dfinity/nns";
   import { onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
-  import { authStore } from "../../../stores/auth.store";
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import Card from "../../ui/Card.svelte";
@@ -30,7 +29,6 @@
       neuronIds: $votingNeuronSelectStore.selectedIds,
       vote: detail.voteType,
       proposalId: proposalInfo.id as bigint,
-      identity: $authStore.identity,
     });
 
   onDestroy(() => votingNeuronSelectStore.reset());

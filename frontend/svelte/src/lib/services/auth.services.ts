@@ -1,7 +1,10 @@
+import type { Identity } from "@dfinity/agent";
+import { get } from "svelte/store";
 import { authStore } from "../stores/auth.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { ToastLevel, ToastMsg } from "../types/toast";
 import { replaceHistory } from "../utils/route.utils";
+import {i18n} from '../stores/i18n';
 
 const msgParam: string = "msg";
 const levelParam: string = "level";
@@ -21,6 +24,24 @@ export const logout = async ({
 
   // We reload the page to make sure all the states are cleared
   window.location.reload();
+};
+
+/**
+ * Provide the identity that has been authorized.
+ * If none is provided logout the user automatically. Services that are using this getter need an identity no matter what.
+ */
+export const getIdentity = async (): Promise<Identity> => {
+  const identity: Identity | undefined | null = get(authStore).identity;
+
+  if (!identity) {
+    // get(i18n).error.missing_identity
+    await logout({msg: {labelKey: 'error.missing_identity', level: 'error'}});
+
+    // This point will never be reached because logout() does reload the browser
+    throw new Error(get(i18n).error.missing_identity);
+  }
+
+  return identity;
 };
 
 /**

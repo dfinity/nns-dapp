@@ -3,24 +3,16 @@ import { createSubAccount, loadAccounts } from "../api/accounts.api";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
-import { queryAndUpdate } from "../utils/api.utils";
 import { errorToString } from "../utils/error.utils";
+import { getIdentity } from "./auth.services";
+import { queryAndUpdate } from "./utils.services";
 
 /**
  * - sync: load the account data using the ledger and the nns dapp canister itself
  */
-export const syncAccounts = async ({
-  identity,
-}: {
-  identity: Identity | undefined | null;
-}): Promise<void> => {
-  if (!identity) {
-    // TODO: https://dfinity.atlassian.net/browse/L2-346
-    throw new Error("No identity");
-  }
-
+export const syncAccounts = async (): Promise<void> => {
   return queryAndUpdate<AccountsStore, unknown>({
-    request: ({ certified }) => loadAccounts({ identity, certified }),
+    request: (params) => loadAccounts(params),
     onLoad: ({ response: accounts }) => accountsStore.set(accounts),
     onError: ({ error, certified }) => {
       console.error(error);
@@ -43,17 +35,12 @@ export const syncAccounts = async ({
 
 export const addSubAccount = async ({
   name,
-  identity,
 }: {
   name: string;
-  identity: Identity | null | undefined;
 }): Promise<void> => {
-  if (!identity) {
-    // TODO: https://dfinity.atlassian.net/browse/L2-346
-    throw new Error("No identity found to create subaccount");
-  }
+  const identity: Identity = await getIdentity();
 
   await createSubAccount({ name, identity });
 
-  await syncAccounts({ identity });
+  await syncAccounts();
 };
