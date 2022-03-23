@@ -1,20 +1,23 @@
 <script lang="ts">
   import type { KnownNeuron, NeuronId, Topic } from "@dfinity/nns";
+  import { createEventDispatcher } from "svelte";
   import { addFollowee, removeFollowee } from "../../services/neurons.services";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
-  import { toastsStore } from "../../stores/toasts.store";
   import Spinner from "../ui/Spinner.svelte";
 
   export let knownNeuron: KnownNeuron;
   export let topic: Topic;
   export let neuronId: NeuronId;
   export let isFollowed: boolean = false;
+  export let disabled: boolean = false;
 
   let loading: boolean = false;
+  const dispatcher = createEventDispatcher();
 
   const addKnownNeuronFollowee = async () => {
     loading = true;
+    dispatcher("nnsLoading", { loading: true });
     const toggleFollowee = isFollowed ? removeFollowee : addFollowee;
     await toggleFollowee({
       identity: $authStore.identity,
@@ -23,17 +26,14 @@
       followee: knownNeuron.id,
     });
     loading = false;
-    toastsStore.show({
-      labelKey: "new_followee.success_add_followee",
-      level: "info",
-    });
+    dispatcher("nnsLoading", { loading: false });
   };
 </script>
 
 <div data-tid={`known-neuron-item-${knownNeuron.id}`}>
   <p>{knownNeuron.name}</p>
   <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
-  <button class="secondary small" on:click={addKnownNeuronFollowee}>
+  <button class="secondary small" {disabled} on:click={addKnownNeuronFollowee}>
     {#if loading}
       <Spinner />
     {:else if isFollowed}

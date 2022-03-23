@@ -8,13 +8,13 @@
   import { addFollowee } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import { sortedknownNeuronsStore } from "../../stores/knownNeurons.store";
-  import { toastsStore } from "../../stores/toasts.store";
   import Modal from "../Modal.svelte";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;
 
   let followeeAddress: number | undefined;
+  let loadingAddress: boolean = false;
   let loading: boolean = false;
   let topicFollowees: NeuronId[];
   $: {
@@ -34,8 +34,15 @@
     knownNeuronId: NeuronId;
   }): boolean => followees.find((id) => id === knownNeuronId) !== undefined;
 
+  // We can't edit two followees at the same time.
+  // Canister edits followees by sending the new array of followees.
+  const updateLoading = ({ detail }: CustomEvent<{ loading: boolean }>) => {
+    loading = detail.loading;
+  };
+
   const addFolloweeByAddress = async () => {
     loading = true;
+    loadingAddress = true;
     let followee: bigint;
     if (followeeAddress === undefined) {
       return;
@@ -54,11 +61,8 @@
       followee,
     });
     loading = false;
+    loadingAddress = false;
     followeeAddress = undefined;
-    toastsStore.show({
-      labelKey: "new_followee.success_add_followee",
-      level: "info",
-    });
   };
 </script>
 
@@ -80,7 +84,7 @@
           type="submit"
           disabled={followeeAddress === undefined || loading}
         >
-          {#if loading}
+          {#if loadingAddress}
             <Spinner />
           {:else}
             {$i18n.new_followee.follow_neuron}
@@ -97,6 +101,8 @@
           {#each $sortedknownNeuronsStore as knownNeuron}
             <li data-tid="known-neuron-item">
               <KnownNeuronFollowItem
+                on:nnsLoading={updateLoading}
+                disabled={loading}
                 {knownNeuron}
                 neuronId={neuron.neuronId}
                 {topic}

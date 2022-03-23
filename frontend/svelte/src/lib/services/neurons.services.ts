@@ -100,12 +100,12 @@ const setFolloweesHelper = async ({
   neuronId,
   topic,
   followees,
-  errorKey,
+  labelKey,
 }: {
   neuronId: NeuronId;
   topic: Topic;
   followees: NeuronId[];
-  errorKey: "add_followee" | "remove_followee";
+  labelKey: "add_followee" | "remove_followee";
 }) => {
   const identity: Identity = await getIdentity();
 
@@ -127,9 +127,14 @@ const setFolloweesHelper = async ({
       throw new Error("Neuron not found");
     }
     neuronsStore.pushNeurons([neuron]);
+
+    toastsStore.show({
+      labelKey: `new_followee.success_${labelKey}`,
+      level: "info",
+    });
   } catch (err) {
     toastsStore.error({
-      labelKey: `error.${errorKey}`,
+      labelKey: `error.${labelKey}`,
       err,
     });
   }
@@ -160,7 +165,7 @@ export const addFollowee = async ({
     neuronId,
     topic,
     followees: newFollowees,
-    errorKey: "add_followee",
+    labelKey: "add_followee",
   });
 };
 
@@ -197,7 +202,7 @@ export const removeFollowee = async ({
     neuronId,
     topic,
     followees: newFollowees,
-    errorKey: "remove_followee",
+    labelKey: "remove_followee",
   });
 };
 
