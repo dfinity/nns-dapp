@@ -34,7 +34,6 @@ export const getIdentity = async (): Promise<Identity> => {
   const identity: Identity | undefined | null = get(authStore).identity;
 
   if (!identity) {
-    // get(i18n).error.missing_identity
     await logout({msg: {labelKey: 'error.missing_identity', level: 'error'}});
 
     // This point will never be reached because logout() does reload the browser
