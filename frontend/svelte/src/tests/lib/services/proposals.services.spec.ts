@@ -153,15 +153,7 @@ describe("proposals-services", () => {
 
       afterAll(() => jest.clearAllMocks());
 
-      const mockRegisterVote = async ({
-        vote,
-        neuronId,
-      }: {
-        neuronId: bigint;
-        vote: Vote;
-        proposalId: bigint;
-        identity: Identity;
-      }): Promise<void> => {
+      const mockRegisterVote = async (): Promise<void> => {
         return;
       };
 
@@ -211,15 +203,7 @@ describe("proposals-services", () => {
 
       afterAll(() => jest.clearAllMocks());
 
-      const mockRegisterVote = async ({
-        vote,
-        neuronId,
-      }: {
-        neuronId: bigint;
-        vote: Vote;
-        proposalId: bigint;
-        identity: Identity;
-      }): Promise<void> => {
+      const mockRegisterVote = async (): Promise<void> => {
         return;
       };
 
@@ -248,7 +232,6 @@ describe("proposals-services", () => {
       afterAll(() => jest.clearAllMocks());
 
       const mockRegisterVote = async ({
-        vote,
         neuronId,
       }: {
         neuronId: bigint;
@@ -290,14 +273,7 @@ describe("proposals-services", () => {
 
       let registerVoteCallCount = 0;
 
-      const mockRegisterVote = async ({
-        vote,
-      }: {
-        neuronId: bigint;
-        vote: Vote;
-        proposalId: bigint;
-        identity: Identity;
-      }): Promise<void> => {
+      const mockRegisterVote = async (): Promise<void> => {
         throw new GovernanceError({
           error_message: registerVoteCallCount++ === 0 ? "error0" : "error1",
           error_type: 0,
