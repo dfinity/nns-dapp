@@ -1,19 +1,28 @@
 import type { Identity } from "@dfinity/agent";
-import type { Followees, NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
+import type {
+  Followees,
+  Neuron,
+  NeuronId,
+  NeuronInfo,
+  Topic,
+} from "@dfinity/nns";
 import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
+  claimOrRefreshNeuron,
   increaseDissolveDelay,
   queryNeuron,
   queryNeurons,
   setFollowees,
   stakeNeuron,
 } from "../api/governance.api";
+import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
+import { createChunks } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -55,10 +64,34 @@ export const stakeAndLoadNeuron = async ({
 };
 
 // Gets neurons and adds them to the store
+// export const listNeurons = async (): Promise<void> => {
+//   return queryAndUpdate<NeuronInfo[], unknown>({
+//     request: (options) => queryNeurons(options),
+//     onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
+// This gets all neurons linked to the current user's principal, even those with a stake of 0.
+// And adds them to the store
 export const listNeurons = async (): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
-    request: (options) => queryNeurons(options),
-    onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
+    request: ({ certified, identity }) => queryNeurons({ certified, identity }),
+    onLoad: async ({ response: neurons, certified }) => {
+      neuronsStore.setNeurons(neurons);
+      if (certified) {
+        // Query the ledger for each neuron
+        // refresh those whose stake does not match their ledger balance.
+        const anyRefreshed = await checkNeuronBalances(neurons);
+        if (anyRefreshed) {
+          const identity = await getIdentity();
+          console.log(
+            "Found neurons needing to be refreshed. Resyncing neurons..."
+          );
+          const neuronsAfterRefresh = await queryNeurons({
+            identity,
+            certified: true,
+          });
+          neuronsStore.setNeurons(neuronsAfterRefresh);
+        }
+      }
+    },
     onError: ({ error, certified }) => {
       if (certified !== true) {
         return;
@@ -73,6 +106,76 @@ export const listNeurons = async (): Promise<void> => {
       });
     },
   });
+};
+
+const balanceMatchesStake = ({
+  balance,
+  fullNeuron,
+}: {
+  balance: ICP;
+  fullNeuron: Neuron;
+}): boolean => {
+  if (balance.toE8s() !== fullNeuron.cachedNeuronStake) {
+    if (balance.toE8s() < E8S_PER_ICP) {
+      // We can only refresh a neuron if its balance is at least 1 ICP
+      console.log(
+        `Cannot refresh neuron because its ledger balance is less than 1 ICP. NeuronId: ${fullNeuron.id}. AccountIdentifier: ${fullNeuron.accountIdentifier}`
+      );
+      return false;
+    }
+    return true;
+  }
+  return false;
+};
+
+const findNeuronsStakeNotBalance = async ({
+  neurons,
+  identity,
+}: {
+  neurons: Neuron[];
+  identity: Identity;
+}): Promise<NeuronId[]> =>
+  (
+    await Promise.all(
+      neurons.map(
+        async (fullNeuron): Promise<{ balance: ICP; fullNeuron: Neuron }> => ({
+          balance: await getNeuronBalance({ neuron: fullNeuron, identity }),
+          fullNeuron,
+        })
+      )
+    )
+  )
+    .filter(balanceMatchesStake)
+    .map(({ fullNeuron }) => fullNeuron.id)
+    .filter(Boolean)
+    // TS was complaining without the casting
+    .map((id) => id as NeuronId);
+
+const claimNeurons =
+  (identity: Identity) =>
+  async (neuronIds: NeuronId[]): Promise<Array<NeuronId | undefined>> =>
+    Promise.all(
+      neuronIds.map((neuronId) => claimOrRefreshNeuron({ identity, neuronId }))
+    );
+
+const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<boolean> => {
+  const identity = await getIdentity();
+  const neuronIdsToRefresh: NeuronId[] = await findNeuronsStakeNotBalance({
+    neurons: neurons
+      .map(({ fullNeuron }) => fullNeuron)
+      .filter(Boolean)
+      // TS does not like Option<Neuron>
+      // Type 'Option<Neuron>' is not assignable to type 'Neuron'.
+      // Type 'undefined' is not assignable to type 'Neuron'
+      .map((neuron) => neuron as Neuron),
+    identity,
+  });
+  if (neuronIdsToRefresh.length === 0) {
+    return false;
+  }
+  const neuronIdsChunks: NeuronId[][] = createChunks(neuronIdsToRefresh, 10);
+  await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
+  return true;
 };
 
 export const updateDelay = async ({

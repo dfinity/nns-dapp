@@ -1,5 +1,6 @@
 import type { NeuronInfo } from "@dfinity/nns";
 import { writable } from "svelte/store";
+import { hasValidStake } from "../utils/neuron.utils";
 
 export type NeuronsStore = NeuronInfo[];
 
@@ -16,7 +17,7 @@ const initNeuronsStore = () => {
     subscribe,
 
     setNeurons(neurons: NeuronInfo[]) {
-      set([...neurons]);
+      set([...neurons.filter(hasValidStake)]);
     },
 
     pushNeurons(newNeurons: NeuronInfo[]) {

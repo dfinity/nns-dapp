@@ -68,3 +68,18 @@ export const targetBlankLinkRenderer = (
       ? ""
       : ` target="_blank" rel="noopener noreferrer" href="${href}"`
   }${title === null ? "" : ` title="${title}"`}>${text}</a>`;
+
+/**
+ * Returns an array of arrays of size `chunkSize`
+ */
+export const createChunks = <T>(
+  elements: Array<T>,
+  chunkSize = 10
+): Array<Array<T>> => {
+  const chunks: Array<Array<T>> = [];
+  for (let i = 0; i < elements.length; i += chunkSize) {
+    const chunk = elements.slice(i, i + chunkSize);
+    chunks.push(chunk);
+  }
+  return chunks;
+};
