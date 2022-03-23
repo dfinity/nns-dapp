@@ -236,9 +236,11 @@ export const removeFollowee = async ({
 const getNeuron = async ({
   neuronId,
   identity,
+  certified,
 }: {
   neuronId: NeuronId;
   identity: Identity | null | undefined;
+  certified: boolean;
 }): Promise<NeuronInfo | undefined> => {
   // TODO: https://dfinity.atlassian.net/browse/L2-348
   if (!identity) {
@@ -248,14 +250,14 @@ const getNeuron = async ({
   const neuron = get(neuronsStore).find(
     (neuron) => neuron.neuronId === neuronId
   );
-  return neuron || queryNeuron({ neuronId, identity });
+  return neuron || queryNeuron({ neuronId, identity, certified });
 };
 
 /**
  * Get from store or query a neuron and apply the result to the callback (`setNeuron`).
  * The function propagate error to the toast and call an optional callback in case of error.
  */
-export const loadNeuron = async ({
+export const loadNeuron = ({
   neuronId,
   identity,
   setNeuron,
@@ -278,21 +280,30 @@ export const loadNeuron = async ({
     handleError?.();
   };
 
-  try {
-    const neuron: NeuronInfo | undefined = await getNeuron({
-      neuronId,
-      identity,
-    });
+  return queryAndUpdate<NeuronInfo | undefined, unknown>({
+    request: ({ certified }) =>
+      getNeuron({
+        neuronId,
+        identity,
+        certified,
+      }),
+    onLoad: ({ response: neuron }) => {
+      if (neuron === undefined) {
+        catchError(new Error("Neuron not found"));
+        return;
+      }
 
-    if (!neuron) {
-      catchError(new Error("Neuron not found"));
-      return;
-    }
+      setNeuron(neuron);
+    },
+    onError: ({ error, certified }) => {
+      console.error(error);
 
-    setNeuron(neuron);
-  } catch (error: unknown) {
-    catchError(error);
-  }
+      if (certified !== true) {
+        return;
+      }
+      catchError(error);
+    },
+  });
 };
 
 export const getNeuronId = (path: string): NeuronId | undefined =>

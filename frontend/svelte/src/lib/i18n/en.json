@@ -24,7 +24,6 @@
     "create_subaccount_limit_exceeded": "Sorry, you reached the limit of subaccounts in this account.",
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
     "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
-    "get_neuron": "There was an unexpected issue while loading the neuron.",
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
     "register_vote_unknown": "Sorry, there was an unexpectedf error while registering the vote. Please try again later.",
     "add_followee": "Sorry, there was an unexpectedf error while adding the followee. Please try again later.",
