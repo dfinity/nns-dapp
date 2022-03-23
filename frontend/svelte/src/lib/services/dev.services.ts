@@ -1,5 +1,3 @@
-import type { BlockHeight, TransferError } from "@dfinity/nns";
-import { InsufficientFunds } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { acquireICPTs } from "../api/dev.api";
 import { E8S_PER_ICP } from "../constants/icp.constants";
@@ -17,29 +15,17 @@ export const getICPs = async (icps: number) => {
     throw new Error("No account found to get ICPs");
   }
 
-  const result: BlockHeight | TransferError = await acquireICPTs({
+  await acquireICPTs({
     e8s: BigInt(icps * E8S_PER_ICP),
     accountIdentifier: main.identifier,
   });
 
-  if (!(typeof result === "bigint")) {
-    console.error(result);
-    if (result instanceof InsufficientFunds) {
-      throw new Error(
-        `Insuficient funds in source account: ${
-          Number(result.balance.toE8s()) / E8S_PER_ICP
-        }`
-      );
-    }
-    throw new Error(JSON.stringify(result));
-  }
-
   const { identity }: AuthStore = get(authStore);
 
-  if (identity) {
-    await syncAccounts({ identity });
-  } else {
+  if (!identity) {
     // TODO: https://dfinity.atlassian.net/browse/L2-346
     throw new Error("No identity found to sync accounts after getting ICPs");
   }
+
+  await syncAccounts({ identity });
 };
