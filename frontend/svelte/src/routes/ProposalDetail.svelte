@@ -32,7 +32,6 @@
       return;
     }
 
-    // TODO: catch and error handling -- https://dfinity.atlassian.net/browse/L2-370
     await listNeurons();
     neuronsReady = true;
   });
