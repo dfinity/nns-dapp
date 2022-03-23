@@ -149,6 +149,7 @@ export const addFollowee = async ({
   const neuron = neurons.find(
     ({ neuronId: currentNeuronId }) => currentNeuronId === neuronId
   );
+
   const topicFollowees = neuron?.fullNeuron?.followees.find(
     ({ topic: currentTopic }) => currentTopic === topic
   );
