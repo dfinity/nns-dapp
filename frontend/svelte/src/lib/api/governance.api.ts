@@ -7,6 +7,7 @@ import {
   LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
+import { dfinityNeuron, icNeuron } from "./constants.api";
 import { toSubAccountId } from "./utils.api";
 
 export const queryNeuron = async ({
@@ -120,20 +121,12 @@ export const queryKnownNeurons = async ({
 
   const knownNeurons = await canister.listKnownNeurons(certified);
 
-  if (!knownNeurons.find(({ id }) => id === BigInt(27))) {
-    knownNeurons.push({
-      id: BigInt(27),
-      name: "DFINITY Foundation",
-      description: undefined,
-    });
+  if (!knownNeurons.find(({ id }) => id === dfinityNeuron.id)) {
+    knownNeurons.push(dfinityNeuron);
   }
 
-  if (!knownNeurons.find(({ id }) => id === BigInt(28))) {
-    knownNeurons.push({
-      id: BigInt(28),
-      name: "Internet Computer Association",
-      description: undefined,
-    });
+  if (!knownNeurons.find(({ id }) => id === icNeuron.id)) {
+    knownNeurons.push(icNeuron);
   }
 
   return knownNeurons;

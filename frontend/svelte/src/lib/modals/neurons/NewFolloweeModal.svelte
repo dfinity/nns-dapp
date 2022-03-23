@@ -21,7 +21,7 @@
     const topicInfo = neuron.fullNeuron?.followees.find(
       (followee) => followee.topic === topic
     );
-    topicFollowees = topicInfo === undefined ? [] : topicInfo.followees;
+    topicFollowees = topicInfo?.followees ?? [];
   }
 
   onMount(() => listKnownNeurons());
@@ -32,7 +32,7 @@
   }: {
     followees: NeuronId[];
     knownNeuronId: NeuronId;
-  }) => followees.find((id) => id === knownNeuronId) !== undefined;
+  }): boolean => followees.find((id) => id === knownNeuronId) !== undefined;
 
   const addFolloweeByAddress = async () => {
     loading = true;

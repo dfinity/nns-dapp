@@ -3,6 +3,13 @@ import { writable } from "svelte/store";
 
 export type NeuronsStore = NeuronInfo[];
 
+const notInNewList =
+  (newNeurons: NeuronInfo[]) =>
+  ({ neuronId: oldNeuronId }) =>
+    newNeurons.find(
+      ({ neuronId: newNeuronId }) => oldNeuronId === newNeuronId
+    ) === undefined;
+
 /**
  * A store that contains the neurons
  *
@@ -21,12 +28,7 @@ const initNeuronsStore = () => {
 
     pushNeurons(newNeurons: NeuronInfo[]) {
       update((oldNeurons: NeuronInfo[]) => {
-        const filteredNeurons = oldNeurons.filter(
-          ({ neuronId: oldNeuronId }) =>
-            newNeurons.find(
-              ({ neuronId: newNeuronId }) => oldNeuronId === newNeuronId
-            ) === undefined
-        );
+        const filteredNeurons = oldNeurons.filter(notInNewList(newNeurons));
         return [...filteredNeurons, ...newNeurons];
       });
     },
