@@ -12,14 +12,16 @@ import { toSubAccountId } from "./utils.api";
 export const queryNeuron = async ({
   neuronId,
   identity,
+  certified,
 }: {
   neuronId: NeuronId;
   identity: Identity;
+  certified: boolean;
 }): Promise<NeuronInfo | undefined> => {
   const { canister } = await governanceCanister({ identity });
 
   return canister.getNeuron({
-    certified: true,
+    certified,
     principal: identity.getPrincipal(),
     neuronId,
   });
