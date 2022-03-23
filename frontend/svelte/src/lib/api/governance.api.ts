@@ -1,6 +1,7 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { KnownNeuron, NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
 import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
+import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import {
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
