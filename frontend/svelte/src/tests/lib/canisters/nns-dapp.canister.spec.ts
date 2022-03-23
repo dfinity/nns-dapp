@@ -57,7 +57,7 @@ describe("NNSDapp", () => {
 
       const nnsDapp = await createNnsDapp(service);
 
-      const res = await nnsDapp.getAccount();
+      const res = await nnsDapp.getAccount({certified: true});
 
       expect(res).toEqual(mockAccountDetails);
     });
@@ -71,7 +71,7 @@ describe("NNSDapp", () => {
 
       const nnsDapp = await createNnsDapp(service);
 
-      const call = async () => nnsDapp.getAccount();
+      const call = async () => nnsDapp.getAccount({certified: true});
 
       await expect(call).rejects.toThrow(AccountNotFoundError);
     });

@@ -2,6 +2,9 @@ import type { Identity } from "@dfinity/agent";
 import { createSubAccount, loadAccounts } from "../api/accounts.api";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
+import { toastsStore } from "../stores/toasts.store";
+import { queryAndUpdate } from "../utils/api.utils";
+import { errorToString } from "../utils/error.utils";
 
 /**
  * - sync: load the account data using the ledger and the nns dapp canister itself
@@ -16,8 +19,26 @@ export const syncAccounts = async ({
     throw new Error("No identity");
   }
 
-  const accounts: AccountsStore = await loadAccounts({ identity });
-  accountsStore.set(accounts);
+  return queryAndUpdate<AccountsStore, unknown>({
+    request: ({ certified }) => loadAccounts({ identity, certified }),
+    onLoad: ({ response: accounts }) => accountsStore.set(accounts),
+    onError: ({ error, certified }) => {
+      console.error(error);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // Explicitly handle only UPDATE errors
+      accountsStore.reset();
+
+      toastsStore.show({
+        labelKey: "error.accounts_not_found",
+        level: "error",
+        detail: errorToString(error),
+      });
+    },
+  });
 };
 
 export const addSubAccount = async ({
