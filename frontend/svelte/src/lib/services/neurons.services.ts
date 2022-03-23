@@ -242,13 +242,10 @@ export const loadNeuron = ({
   setNeuron: (neuron: NeuronInfo) => void;
   handleError?: () => void;
 }): Promise<void> => {
-  const catchError = (error: unknown) => {
-    console.error(error);
-
-    toastsStore.show({
+  const catchError = (err: unknown) => {
+    toastsStore.error({
       labelKey: "error.neuron_not_found",
-      level: "error",
-      detail: `id: "${neuronId}"`,
+      err,
     });
 
     handleError?.();
