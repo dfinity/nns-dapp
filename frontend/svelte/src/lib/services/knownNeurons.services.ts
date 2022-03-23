@@ -7,7 +7,7 @@ import { queryAndUpdate } from "./utils.services";
 
 export const listKnownNeurons = (): Promise<void> => {
   return queryAndUpdate<KnownNeuron[], unknown>({
-    request: (params) => api.queryKnownNeurons(params),
+    request: (options) => api.queryKnownNeurons(options),
     onLoad: ({ response: neurons }) => knownNeuronsStore.setNeurons(neurons),
     onError: ({ error, certified }) => {
       console.error(error);

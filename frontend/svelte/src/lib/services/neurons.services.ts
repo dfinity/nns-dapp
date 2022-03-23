@@ -58,7 +58,7 @@ export const stakeAndLoadNeuron = async ({
 // Gets neurons and adds them to the store
 export const listNeurons = async (): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
-    request: (params) => queryNeurons(params),
+    request: (options) => queryNeurons(options),
     onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
     onError: ({ error, certified }) => {
       console.error(error);
@@ -239,10 +239,10 @@ export const loadNeuron = ({
   };
 
   return queryAndUpdate<NeuronInfo | undefined, unknown>({
-    request: (params) =>
+    request: (options) =>
       getNeuron({
         neuronId,
-        ...params,
+        ...options,
       }),
     onLoad: ({ response: neuron }) => {
       if (neuron === undefined) {

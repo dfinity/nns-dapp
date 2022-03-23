@@ -15,7 +15,7 @@ export const listCanisters = async ({
   }
 
   return queryAndUpdate<CanisterDetails[], unknown>({
-    request: (params) => queryCanisters(params),
+    request: (options) => queryCanisters(options),
     onLoad: ({ response: canisters }) => canistersStore.setCanisters(canisters),
     onError: ({ error, certified }) => {
       console.error(error);

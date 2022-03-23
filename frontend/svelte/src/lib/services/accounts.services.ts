@@ -12,7 +12,7 @@ import { queryAndUpdate } from "./utils.services";
  */
 export const syncAccounts = (): Promise<void> => {
   return queryAndUpdate<AccountsStore, unknown>({
-    request: (params) => loadAccounts(params),
+    request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => accountsStore.set(accounts),
     onError: ({ error, certified }) => {
       console.error(error);
