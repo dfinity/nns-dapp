@@ -14,7 +14,6 @@ import { E8S_PER_ICP } from "../constants/icp.constants";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
-import { errorToString } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -61,8 +60,6 @@ export const listNeurons = async (): Promise<void> => {
     request: (options) => queryNeurons(options),
     onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
     onError: ({ error, certified }) => {
-      console.error(error);
-
       if (certified !== true) {
         return;
       }
@@ -70,10 +67,9 @@ export const listNeurons = async (): Promise<void> => {
       // Explicitly handle only UPDATE errors
       neuronsStore.setNeurons([]);
 
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.get_neurons",
-        level: "error",
-        detail: errorToString(error),
+        err: error,
       });
     },
   });
@@ -188,10 +184,8 @@ export const removeFollowee = async ({
     );
   if (topicFollowees === undefined) {
     // Followee in that topic already does not exist.
-    toastsStore.show({
+    toastsStore.error({
       labelKey: "error.followee_does_not_exist",
-      level: "warn",
-      detail: `id: "${neuronId}"`,
     });
     return;
   }
