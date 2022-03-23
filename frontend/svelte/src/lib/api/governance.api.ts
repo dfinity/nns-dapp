@@ -1,11 +1,6 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { KnownNeuron, NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
-import {
-  GovernanceCanister,
-  ICP,
-  LedgerCanister,
-  StakeNeuronError,
-} from "@dfinity/nns";
+import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import {
   GOVERNANCE_CANISTER_ID,
@@ -41,14 +36,10 @@ export const increaseDissolveDelay = async ({
 }): Promise<void> => {
   const { canister } = await governanceCanister({ identity });
 
-  const response = await canister.increaseDissolveDelay({
+  return canister.increaseDissolveDelay({
     neuronId,
     additionalDissolveDelaySeconds: dissolveDelayInSeconds,
   });
-
-  if ("Err" in response) {
-    throw response.Err;
-  }
 };
 
 export const setFollowees = async ({
@@ -64,15 +55,11 @@ export const setFollowees = async ({
 }): Promise<void> => {
   const { canister } = await governanceCanister({ identity });
 
-  const response = await canister.setFollowees({
+  return canister.setFollowees({
     neuronId,
     topic,
     followees,
   });
-
-  if ("Err" in response) {
-    throw response.Err;
-  }
 };
 
 export const queryNeurons = async ({
@@ -111,18 +98,13 @@ export const stakeNeuron = async ({
 
   const fromSubAccountId =
     fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
-  const response = await canister.stakeNeuron({
+
+  return canister.stakeNeuron({
     stake,
     principal: identity.getPrincipal(),
     fromSubAccountId,
     ledgerCanister,
   });
-
-  if (response instanceof StakeNeuronError) {
-    throw response;
-  }
-
-  return response;
 };
 
 export const queryKnownNeurons = async ({

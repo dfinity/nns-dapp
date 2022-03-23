@@ -1,6 +1,6 @@
 import type { Identity } from "@dfinity/agent";
-import type { GovernanceError, ProposalInfo } from "@dfinity/nns";
-import { Vote } from "@dfinity/nns";
+import type { ProposalInfo } from "@dfinity/nns";
+import { GovernanceError, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
 import * as neuronsServices from "../../../lib/services/neurons.services";
@@ -153,18 +153,8 @@ describe("proposals-services", () => {
 
       afterAll(() => jest.clearAllMocks());
 
-      const mockRegisterVote = async ({
-        vote,
-        neuronId,
-      }: {
-        neuronId: bigint;
-        vote: Vote;
-        proposalId: bigint;
-        identity: Identity;
-      }): Promise<GovernanceError | undefined> => {
-        return vote === Vote.YES
-          ? undefined
-          : { errorMessage: `${neuronId}`, errorType: 0 };
+      const mockRegisterVote = async (): Promise<void> => {
+        return;
       };
 
       const spyRegisterVote = jest
@@ -213,18 +203,8 @@ describe("proposals-services", () => {
 
       afterAll(() => jest.clearAllMocks());
 
-      const mockRegisterVote = async ({
-        vote,
-        neuronId,
-      }: {
-        neuronId: bigint;
-        vote: Vote;
-        proposalId: bigint;
-        identity: Identity;
-      }): Promise<GovernanceError | undefined> => {
-        return vote === Vote.YES
-          ? undefined
-          : { errorMessage: `${neuronId}`, errorType: 0 };
+      const mockRegisterVote = async (): Promise<void> => {
+        return;
       };
 
       it("should refetch neurons after vote registration", async () => {
@@ -252,17 +232,17 @@ describe("proposals-services", () => {
       afterAll(() => jest.clearAllMocks());
 
       const mockRegisterVote = async ({
-        vote,
         neuronId,
       }: {
         neuronId: bigint;
         vote: Vote;
         proposalId: bigint;
         identity: Identity;
-      }): Promise<GovernanceError | undefined> => {
-        return vote === Vote.YES
-          ? undefined
-          : { errorMessage: `${neuronId}`, errorType: 0 };
+      }): Promise<void> => {
+        throw new GovernanceError({
+          error_message: `${neuronId}`,
+          error_type: 0,
+        });
       };
 
       it("should show multiple nns-js errors in details", async () => {
@@ -293,20 +273,11 @@ describe("proposals-services", () => {
 
       let registerVoteCallCount = 0;
 
-      const mockRegisterVote = async ({
-        vote,
-      }: {
-        neuronId: bigint;
-        vote: Vote;
-        proposalId: bigint;
-        identity: Identity;
-      }): Promise<GovernanceError | undefined> => {
-        return vote === Vote.YES
-          ? undefined
-          : {
-              errorMessage: registerVoteCallCount++ === 0 ? "error0" : "error1",
-              errorType: 0,
-            };
+      const mockRegisterVote = async (): Promise<void> => {
+        throw new GovernanceError({
+          error_message: registerVoteCallCount++ === 0 ? "error0" : "error1",
+          error_type: 0,
+        });
       };
 
       it("should show only unique nns-js errors", async () => {
@@ -334,9 +305,7 @@ describe("proposals-services", () => {
 
       afterAll(() => jest.clearAllMocks());
 
-      const mockRegisterVote = async (): Promise<
-        GovernanceError | undefined
-      > => {
+      const mockRegisterVote = async (): Promise<void> => {
         throw new Error("test");
       };
 

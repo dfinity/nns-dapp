@@ -1,7 +1,5 @@
 import type { Identity } from "@dfinity/agent";
 import type {
-  EmptyResponse,
-  GovernanceError,
   ListProposalsResponse,
   NeuronId,
   ProposalId,
@@ -78,16 +76,14 @@ export const registerVote = async ({
   proposalId: ProposalId;
   vote: Vote;
   identity: Identity;
-}): Promise<GovernanceError | undefined> => {
+}): Promise<void> => {
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  const response: EmptyResponse = await governance.registerVote({
+  return governance.registerVote({
     neuronId,
     vote,
     proposalId,
   });
-
-  return "Err" in response ? response.Err : undefined;
 };
