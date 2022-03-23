@@ -79,7 +79,9 @@ export class MockGovernanceCanister extends GovernanceCanister {
     neuronId: bigint;
     vote: Vote;
     proposalId: bigint;
-  }) => {};
+  }) => {
+    return;
+  };
 
   public stakeNeuron = async ({
     stake,
