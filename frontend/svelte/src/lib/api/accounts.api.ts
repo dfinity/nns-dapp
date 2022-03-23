@@ -46,9 +46,10 @@ export const loadAccounts = async ({
       certified: true,
     });
     return {
-      identifier: mainAccount.account_identifier,
+      identifier: account.account_identifier,
       balance,
-      // Account does not have "name" property. Typescript needed a check like this.
+      // AccountDetails does not have "name" or "sub_account" property. Typescript needed a check like this.
+      subAccount: "sub_account" in account ? account.sub_account : undefined,
       name: "name" in account ? account.name : undefined,
     };
   };

@@ -241,6 +241,7 @@ const requestRegisterVotes = async ({
     .join("\n");
 
   if (errors.length > 0) {
+    // TODO: replace w/ console.error mock
     if (!isNode()) {
       // avoid in unit-test
       console.error("vote:", errorDetails);

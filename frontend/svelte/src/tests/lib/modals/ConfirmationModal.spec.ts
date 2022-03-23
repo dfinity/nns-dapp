@@ -3,8 +3,8 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import en from "../../../lib/i18n/en.json";
 import ConfirmationModal from "../../../lib/modals/ConfirmationModal.svelte";
+import en from "../../mocks/i18n.mock";
 import ConfirmationModalTest from "./ConfirmationModalTest.svelte";
 
 const yesButtonText = en.core.confirm_yes;

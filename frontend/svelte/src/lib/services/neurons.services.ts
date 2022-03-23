@@ -9,6 +9,7 @@ import {
   setFollowees,
   stakeNeuron,
 } from "../api/governance.api";
+import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { i18n } from "../stores/i18n";
 import { neuronsStore } from "../stores/neurons.store";
@@ -18,16 +19,17 @@ import { getLastPathDetailId } from "../utils/app-path.utils";
 import { errorToString } from "../utils/error.utils";
 
 /**
- * Uses governance and ledger canisters to create a neuron and adds it to the store
+ * Uses governance api to create a neuron and adds it to the store
  *
- * TODO: L2-322 Create neurons from subaccount
  */
 export const stakeAndLoadNeuron = async ({
   amount,
   identity,
+  fromSubAccount,
 }: {
   amount: number;
   identity: Identity | null | undefined;
+  fromSubAccount?: SubAccountArray;
 }): Promise<NeuronId> => {
   const stake = ICP.fromString(String(amount));
 
@@ -44,7 +46,11 @@ export const stakeAndLoadNeuron = async ({
     throw new Error("No identity");
   }
 
-  const neuronId: NeuronId = await stakeNeuron({ stake, identity });
+  const neuronId: NeuronId = await stakeNeuron({
+    stake,
+    identity,
+    fromSubAccount,
+  });
 
   await loadNeuron({
     neuronId,

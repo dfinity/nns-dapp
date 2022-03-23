@@ -3,7 +3,6 @@
  */
 
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import * as en from "../../lib/i18n/en.json";
 import { authStore } from "../../lib/stores/auth.store";
 import { neuronsStore } from "../../lib/stores/neurons.store";
 import Neurons from "../../routes/Neurons.svelte";
@@ -11,6 +10,7 @@ import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "../mocks/auth.store.mock";
+import en from "../mocks/i18n.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockNeuron,

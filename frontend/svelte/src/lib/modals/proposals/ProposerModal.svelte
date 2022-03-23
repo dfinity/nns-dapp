@@ -16,7 +16,7 @@
 
   onMount(async () => {
     if (!$authStore.identity) {
-      toastsStore.show({ labelKey: "error.missing_identity", level: "error" });
+      toastsStore.error({ labelKey: "error.missing_identity" });
       return;
     }
 
@@ -28,8 +28,7 @@
     } catch (err) {
       neuron = undefined;
 
-      toastsStore.show({ labelKey: "error.get_neuron", level: "error" });
-      console.error(err);
+      toastsStore.error({ labelKey: "error.get_neuron", err });
     }
   });
 </script>

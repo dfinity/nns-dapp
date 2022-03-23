@@ -1,5 +1,5 @@
-import * as en from "../../../lib/i18n/en.json";
 import { secondsToDuration } from "../../../lib/utils/date.utils";
+import en from "../../mocks/i18n.mock";
 
 describe("secondsToDuration", () => {
   it("should give year details", () => {
