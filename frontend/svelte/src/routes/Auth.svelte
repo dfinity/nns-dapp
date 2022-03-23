@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { authStore } from "../lib/stores/auth.store";
   import type { AuthStore } from "../lib/stores/auth.store";
@@ -8,6 +8,7 @@
   import { i18n } from "../lib/stores/i18n";
   import { toastsStore } from "../lib/stores/toasts.store";
   import Banner from "../lib/components/common/Banner.svelte";
+  import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
 
   let signedIn: boolean = false;
 
@@ -43,6 +44,8 @@
       routeStore.replace({ path: redirectPath });
     }
   );
+
+  onMount(() => displayAndCleanLogoutMsg());
 
   onDestroy(unsubscribe);
 </script>
