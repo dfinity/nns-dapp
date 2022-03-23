@@ -16,8 +16,10 @@ import { createAgent } from "../utils/agent.utils";
 
 export const loadAccounts = async ({
   identity,
+  certified,
 }: {
   identity: Identity;
+  certified: boolean;
 }): Promise<AccountsStore> => {
   const agent = await createAgent({ identity, host: identityServiceURL });
   // ACCOUNTS
@@ -30,7 +32,7 @@ export const loadAccounts = async ({
   // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L232
   await nnsDapp.addAccount();
 
-  const mainAccount: AccountDetails = await nnsDapp.getAccount();
+  const mainAccount: AccountDetails = await nnsDapp.getAccount({ certified });
 
   // ACCOUNT BALANCES
   const ledger: LedgerCanister = LedgerCanister.create({
@@ -43,7 +45,7 @@ export const loadAccounts = async ({
   ): Promise<Account> => {
     const balance: ICP = await ledger.accountBalance({
       accountIdentifier: AccountIdentifier.fromHex(account.account_identifier),
-      certified: true,
+      certified,
     });
     return {
       identifier: account.account_identifier,
