@@ -31,16 +31,19 @@ export const logout = async ({
  * If none is provided logout the user automatically. Services that are using this getter need an identity no matter what.
  */
 export const getIdentity = async (): Promise<Identity> => {
-  const identity: Identity | undefined | null = get(authStore).identity;
+  /* eslint-disable-next-line no-async-promise-executor */
+  return new Promise<Identity>(async (resolve) => {
+    const identity: Identity | undefined | null = get(authStore).identity;
 
-  if (!identity) {
-    await logout({msg: {labelKey: 'error.missing_identity', level: 'error'}});
+    if (!identity) {
+      await logout({msg: {labelKey: 'error.missing_identity', level: 'error'}});
 
-    // This point will never be reached because logout() does reload the browser
-    throw new Error(get(i18n).error.missing_identity);
-  }
+      // We do not resolve on purpose. logout() does reload the browser
+      return;
+    }
 
-  return identity;
+    resolve(identity);
+  })
 };
 
 /**
