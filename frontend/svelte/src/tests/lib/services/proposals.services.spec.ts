@@ -14,8 +14,6 @@ import { busyStore } from "../../../lib/stores/busy.store";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import type { ToastMsg } from "../../../lib/types/toast";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
 import {
   mockIdentityErrorMsg,
   resetIdentity,
