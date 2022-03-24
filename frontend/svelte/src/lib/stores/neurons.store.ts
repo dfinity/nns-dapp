@@ -22,10 +22,13 @@ const initNeuronsStore = () => {
 
     pushNeurons(newNeurons: NeuronInfo[]) {
       update((oldNeurons: NeuronInfo[]) => {
-        const newIds = new Set(newNeurons.map(({ neuronId }) => neuronId));
+        const filteredNewNeurons = newNeurons.filter(hasValidStake);
+        const newIds = new Set(
+          filteredNewNeurons.map(({ neuronId }) => neuronId)
+        );
         return [
           ...oldNeurons.filter(({ neuronId }) => !newIds.has(neuronId)),
-          ...newNeurons,
+          ...filteredNewNeurons,
         ];
       });
     },
