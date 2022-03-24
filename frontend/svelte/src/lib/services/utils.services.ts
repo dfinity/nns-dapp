@@ -1,3 +1,6 @@
+import type { Identity } from "@dfinity/agent";
+import { getIdentity } from "./auth.services";
+
 export type QueryAndUpdateOnResponse<R> = (options: {
   certified: boolean | undefined;
   response: R;
@@ -12,20 +15,22 @@ export type QueryAndUpdateOnError<E> = (options: {
  * Makes two requests (QUERY and UPDATE) in parallel.
  * The returned promise notify when first fetched data are available.
  */
-export const queryAndUpdate = <R, E>({
+export const queryAndUpdate = async <R, E>({
   request,
   onLoad,
   onError,
 }: {
-  request: (options: { certified: boolean }) => Promise<R>;
+  request: (options: { certified: boolean; identity: Identity }) => Promise<R>;
   onLoad: QueryAndUpdateOnResponse<R>;
   onError?: QueryAndUpdateOnError<E>;
 }): Promise<void> => {
   let certifiedDone = false;
 
+  const identity: Identity = await getIdentity();
+
   return Promise.race([
     // query
-    request({ certified: false })
+    request({ certified: false, identity })
       .then((response) => {
         if (certifiedDone) return;
         onLoad({ certified: false, response });
@@ -37,7 +42,7 @@ export const queryAndUpdate = <R, E>({
       }),
 
     // update
-    request({ certified: true })
+    request({ certified: true, identity })
       .then((response) => onLoad({ certified: true, response }))
       .catch((error) => onError?.({ certified: true, error }))
       .finally(() => (certifiedDone = true)),

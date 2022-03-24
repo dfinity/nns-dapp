@@ -1,3 +1,5 @@
+import type { Identity } from "@dfinity/agent";
+import { get } from "svelte/store";
 import { authStore } from "../stores/auth.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { ToastLevel, ToastMsg } from "../types/toast";
@@ -21,6 +23,28 @@ export const logout = async ({
 
   // We reload the page to make sure all the states are cleared
   window.location.reload();
+};
+
+/**
+ * Provide the identity that has been authorized.
+ * If none is provided logout the user automatically. Services that are using this getter need an identity no matter what.
+ */
+export const getIdentity = async (): Promise<Identity> => {
+  /* eslint-disable-next-line no-async-promise-executor */
+  return new Promise<Identity>(async (resolve) => {
+    const identity: Identity | undefined | null = get(authStore).identity;
+
+    if (!identity) {
+      await logout({
+        msg: { labelKey: "error.missing_identity", level: "error" },
+      });
+
+      // We do not resolve on purpose. logout() does reload the browser
+      return;
+    }
+
+    resolve(identity);
+  });
 };
 
 /**
