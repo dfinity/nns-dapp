@@ -180,11 +180,8 @@ export const registerVotes = async ({
       identity,
     });
   } catch (error) {
-    // TODO: replace w/ console.error mock
-    if (!isNode()) {
-      // preserve in unit-test
-      console.error("vote unknown:", error);
-    }
+    console.error("vote unknown:", error);
+
     toastsStore.show({
       labelKey: "error.register_vote_unknown",
       level: "error",
