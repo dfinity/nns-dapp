@@ -33,7 +33,9 @@
     }
   );
 
+  let newNeuronId: NeuronId | undefined;
   let newNeuron: NeuronInfo | undefined;
+  $: newNeuron = $neuronsStore.find(({ neuronId }) => newNeuronId === neuronId);
   let delayInSeconds: number = 0;
   let showBackButton: boolean;
   $: showBackButton = [Steps.StakeNeuron, Steps.ConfirmDisseolveDelay].includes(
@@ -55,9 +57,7 @@
   const goToDissolveDelay = ({
     detail,
   }: CustomEvent<{ neuronId: NeuronId }>) => {
-    newNeuron = $neuronsStore.find(
-      ({ neuronId }) => neuronId === detail.neuronId
-    );
+    newNeuronId = detail.neuronId;
     stateStep = stateStep.next();
   };
   const goEditFollowers = () => {

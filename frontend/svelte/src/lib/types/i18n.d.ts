@@ -120,6 +120,7 @@ interface I18nNew_followee {
   follow_neuron: string;
   options_title: string;
   follow: string;
+  unfollow: string;
   success_add_followee: string;
   success_remove_followee: string;
 }

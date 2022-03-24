@@ -14,7 +14,6 @@ import { E8S_PER_ICP } from "../constants/icp.constants";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
-import { errorToString } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -61,8 +60,6 @@ export const listNeurons = async (): Promise<void> => {
     request: (options) => queryNeurons(options),
     onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
     onError: ({ error, certified }) => {
-      console.error(error);
-
       if (certified !== true) {
         return;
       }
@@ -70,10 +67,9 @@ export const listNeurons = async (): Promise<void> => {
       // Explicitly handle only UPDATE errors
       neuronsStore.setNeurons([]);
 
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.get_neurons",
-        level: "error",
-        detail: errorToString(error),
+        err: error,
       });
     },
   });
@@ -100,12 +96,12 @@ const setFolloweesHelper = async ({
   neuronId,
   topic,
   followees,
-  errorKey,
+  labelKey,
 }: {
   neuronId: NeuronId;
   topic: Topic;
   followees: NeuronId[];
-  errorKey: "add_followee" | "remove_followee";
+  labelKey: "add_followee" | "remove_followee";
 }) => {
   const identity: Identity = await getIdentity();
 
@@ -116,16 +112,26 @@ const setFolloweesHelper = async ({
       topic,
       followees,
     });
-
-    await loadNeuron({
+    const neuron: NeuronInfo | undefined = await getNeuron({
       neuronId,
-      setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+      identity,
+      certified: true,
+      forceFetch: true,
     });
-  } catch (error) {
+
+    if (!neuron) {
+      throw new Error("Neuron not found");
+    }
+    neuronsStore.pushNeurons([neuron]);
+
     toastsStore.show({
-      labelKey: `error.${errorKey}`,
-      level: "error",
-      detail: `id: "${neuronId}"`,
+      labelKey: `new_followee.success_${labelKey}`,
+      level: "info",
+    });
+  } catch (err) {
+    toastsStore.error({
+      labelKey: `error.${labelKey}`,
+      err,
     });
   }
 };
@@ -143,6 +149,7 @@ export const addFollowee = async ({
   const neuron = neurons.find(
     ({ neuronId: currentNeuronId }) => currentNeuronId === neuronId
   );
+
   const topicFollowees = neuron?.fullNeuron?.followees.find(
     ({ topic: currentTopic }) => currentTopic === topic
   );
@@ -150,11 +157,12 @@ export const addFollowee = async ({
     topicFollowees === undefined
       ? [followee]
       : [...topicFollowees.followees, followee];
+
   await setFolloweesHelper({
     neuronId,
     topic,
     followees: newFollowees,
-    errorKey: "add_followee",
+    labelKey: "add_followee",
   });
 };
 
@@ -177,10 +185,8 @@ export const removeFollowee = async ({
     );
   if (topicFollowees === undefined) {
     // Followee in that topic already does not exist.
-    toastsStore.show({
+    toastsStore.error({
       labelKey: "error.followee_does_not_exist",
-      level: "warn",
-      detail: `id: "${neuronId}"`,
     });
     return;
   }
@@ -191,7 +197,7 @@ export const removeFollowee = async ({
     neuronId,
     topic,
     followees: newFollowees,
-    errorKey: "remove_followee",
+    labelKey: "remove_followee",
   });
 };
 
@@ -202,11 +208,16 @@ const getNeuron = async ({
   neuronId,
   identity,
   certified,
+  forceFetch = false,
 }: {
   neuronId: NeuronId;
   identity: Identity;
   certified: boolean;
+  forceFetch?: boolean;
 }): Promise<NeuronInfo | undefined> => {
+  if (forceFetch) {
+    return queryNeuron({ neuronId, identity, certified });
+  }
   const neuron = get(neuronsStore).find(
     (neuron) => neuron.neuronId === neuronId
   );
@@ -226,13 +237,10 @@ export const loadNeuron = ({
   setNeuron: (neuron: NeuronInfo) => void;
   handleError?: () => void;
 }): Promise<void> => {
-  const catchError = (error: unknown) => {
-    console.error(error);
-
-    toastsStore.show({
+  const catchError = (err: unknown) => {
+    toastsStore.error({
       labelKey: "error.neuron_not_found",
-      level: "error",
-      detail: `id: "${neuronId}"`,
+      err,
     });
 
     handleError?.();

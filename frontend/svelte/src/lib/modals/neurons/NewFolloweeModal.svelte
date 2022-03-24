@@ -1,25 +1,48 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
   import { onMount } from "svelte";
+  import KnownNeuronFollowItem from "../../components/neurons/KnownNeuronFollowItem.svelte";
   import Input from "../../components/ui/Input.svelte";
   import Spinner from "../../components/ui/Spinner.svelte";
   import { listKnownNeurons } from "../../services/knownNeurons.services";
   import { addFollowee } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import { sortedknownNeuronsStore } from "../../stores/knownNeurons.store";
-  import { toastsStore } from "../../stores/toasts.store";
   import Modal from "../Modal.svelte";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;
 
   let followeeAddress: number | undefined;
+  let loadingAddress: boolean = false;
   let loading: boolean = false;
+  let topicFollowees: NeuronId[];
+  $: {
+    const topicInfo = neuron.fullNeuron?.followees.find(
+      (followee) => followee.topic === topic
+    );
+    topicFollowees = topicInfo?.followees ?? [];
+  }
 
   onMount(() => listKnownNeurons());
 
+  const followsKnownNeuron = ({
+    followees,
+    knownNeuronId,
+  }: {
+    followees: NeuronId[];
+    knownNeuronId: NeuronId;
+  }): boolean => followees.find((id) => id === knownNeuronId) !== undefined;
+
+  // We can't edit two followees at the same time.
+  // Canister edits followees by sending the new array of followees.
+  const updateLoading = ({ detail }: CustomEvent<{ loading: boolean }>) => {
+    loading = detail.loading;
+  };
+
   const addFolloweeByAddress = async () => {
     loading = true;
+    loadingAddress = true;
     let followee: bigint;
     if (followeeAddress === undefined) {
       return;
@@ -38,27 +61,8 @@
       followee,
     });
     loading = false;
+    loadingAddress = false;
     followeeAddress = undefined;
-    toastsStore.show({
-      labelKey: "new_followee.success_add_followee",
-      level: "info",
-    });
-  };
-
-  // TODO: Check with known neurons https://dfinity.atlassian.net/browse/L2-403
-  const addKnownNeuronFollowee = async (followeeId: NeuronId) => {
-    loading = true;
-    await addFollowee({
-      neuronId: neuron.neuronId,
-      topic,
-      followee: followeeId,
-    });
-    loading = false;
-    followeeAddress = undefined;
-    toastsStore.show({
-      labelKey: "new_followee.success_add_followee",
-      level: "info",
-    });
   };
 </script>
 
@@ -74,13 +78,13 @@
           bind:value={followeeAddress}
           theme="dark"
         />
-        <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-403 -->
+        <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
         <button
           class="primary small"
           type="submit"
           disabled={followeeAddress === undefined || loading}
         >
-          {#if loading}
+          {#if loadingAddress}
             <Spinner />
           {:else}
             {$i18n.new_followee.follow_neuron}
@@ -94,14 +98,19 @@
         <Spinner />
       {:else}
         <ul>
-          {#each $sortedknownNeuronsStore as knowNeuron}
+          {#each $sortedknownNeuronsStore as knownNeuron}
             <li data-tid="known-neuron-item">
-              <p>{knowNeuron.name}</p>
-              <button
-                class="secondary small"
-                on:click={() => addKnownNeuronFollowee(knowNeuron.id)}
-                >{$i18n.new_followee.follow}</button
-              >
+              <KnownNeuronFollowItem
+                on:nnsLoading={updateLoading}
+                disabled={loading}
+                {knownNeuron}
+                neuronId={neuron.neuronId}
+                {topic}
+                isFollowed={followsKnownNeuron({
+                  followees: topicFollowees,
+                  knownNeuronId: knownNeuron.id,
+                })}
+              />
             </li>
           {/each}
         </ul>
@@ -131,11 +140,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
-
-    li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
   }
 </style>
