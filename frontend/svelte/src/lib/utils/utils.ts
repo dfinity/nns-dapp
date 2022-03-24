@@ -21,7 +21,7 @@ export const debounce = (func: Function, timeout?: number) => {
  * devMode transforms 123n -> "BigInt(123)"
  */
 export const stringifyJson = (
-  value,
+  value: unknown,
   options?: {
     indentation?: number;
     devMode?: boolean;

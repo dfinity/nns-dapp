@@ -28,7 +28,7 @@
     on:nnsError={onError}
   />
 {:else if parse !== undefined && text !== undefined}
-  {@html parse(removeHTMLTags(text))}
+  {@html parse(removeHTMLTags(text) ?? "")}
 {:else}
   <!-- fallback text content -->
   <p data-tid="markdown-text">{text}</p>
