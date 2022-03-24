@@ -4,7 +4,9 @@ import {
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_HOUR,
 } from "../../../lib/constants/constants";
-import { votingPower } from "../../../lib/utils/neuron.utils";
+import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import { hasValidStake, votingPower } from "../../../lib/utils/neuron.utils";
+import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 describe("neuron-utils", () => {
   describe("votingPower", () => {
@@ -34,6 +36,48 @@ describe("neuron-utils", () => {
           dissolveDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
         })
       ).toBe(Number(stake) * 2);
+    });
+  });
+
+  describe("hasValidStake", () => {
+    it("returns whether the stake is valid or not", () => {
+      const fullNeuronWithEnoughStake = {
+        ...mockFullNeuron,
+        cachedNeuronStake: BigInt(3_000_000_000),
+      };
+      const neuronWithEnoughStake = {
+        ...mockNeuron,
+        fullNeuron: fullNeuronWithEnoughStake,
+      };
+      expect(hasValidStake(neuronWithEnoughStake)).toBeTruthy();
+
+      const fullNeuronWithEnoughStakeInMaturity = {
+        ...mockFullNeuron,
+        cachedNeuronStake: BigInt(100_000_000),
+        maturityE8sEquivalent: BigInt(3_000_000_000),
+      };
+      const neuronWithEnoughStakeInMaturity = {
+        ...mockNeuron,
+        fullNeuron: fullNeuronWithEnoughStakeInMaturity,
+      };
+      expect(hasValidStake(neuronWithEnoughStakeInMaturity)).toBeTruthy();
+
+      const fullNeuronWithoutEnoughStake = {
+        ...mockFullNeuron,
+        cachedNeuronStake: BigInt(TRANSACTION_FEE_E8S / 4),
+        maturityE8sEquivalent: BigInt(TRANSACTION_FEE_E8S / 4),
+      };
+      const neuronWithoutEnoughStake = {
+        ...mockNeuron,
+        fullNeuron: fullNeuronWithoutEnoughStake,
+      };
+      expect(hasValidStake(neuronWithoutEnoughStake)).toBeFalsy();
+
+      const neuronWithoutFullNeuron = {
+        ...mockNeuron,
+      };
+      neuronWithoutFullNeuron.fullNeuron = undefined;
+      expect(hasValidStake(neuronWithoutFullNeuron)).toBeFalsy();
     });
   });
 });

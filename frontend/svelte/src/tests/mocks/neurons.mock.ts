@@ -10,7 +10,7 @@ export const mockFullNeuron: Neuron = {
   recentBallots: [],
   kycVerified: true,
   notForProfit: false,
-  cachedNeuronStake: BigInt(100000000),
+  cachedNeuronStake: BigInt(3_000_000_000),
   createdTimestampSeconds: BigInt(10),
   maturityE8sEquivalent: BigInt(10),
   agingSinceTimestampSeconds: BigInt(10),

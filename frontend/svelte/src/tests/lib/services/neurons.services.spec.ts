@@ -1,9 +1,10 @@
 import type { NeuronInfo } from "@dfinity/nns";
-import { LedgerCanister, Topic } from "@dfinity/nns";
+import { ICP, LedgerCanister, Topic } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { tick } from "svelte/internal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
+import * as ledgerApi from "../../../lib/api/ledger.api";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
   addFollowee,
@@ -21,7 +22,7 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
-import { mockNeuron } from "../../mocks/neurons.mock";
+import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 describe("neurons-services", () => {
   const spyStakeNeuron = jest
@@ -45,6 +46,14 @@ describe("neurons-services", () => {
   const spySetFollowees = jest
     .spyOn(api, "setFollowees")
     .mockImplementation(() => Promise.resolve());
+
+  const spyClaimOrRefresh = jest
+    .spyOn(api, "claimOrRefreshNeuron")
+    .mockImplementation(() => Promise.resolve(undefined));
+
+  const spyGetNeuronBalance = jest
+    .spyOn(ledgerApi, "getNeuronBalance")
+    .mockImplementation(() => Promise.resolve(ICP.fromString("1") as ICP));
 
   afterEach(() => {
     spyGetNeuron.mockClear();
@@ -88,6 +97,9 @@ describe("neurons-services", () => {
   });
 
   describe("list neurons", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
     it("should list neurons", async () => {
       await listNeurons();
 
@@ -95,6 +107,41 @@ describe("neurons-services", () => {
 
       const neuronsList = get(neuronsStore);
       expect(neuronsList).toEqual(neurons);
+    });
+
+    it("should check neurons balances", async () => {
+      await listNeurons();
+      // `await` does not wait for `onLoad` to finish
+      await tick();
+
+      expect(spyGetNeuronBalance).toBeCalledTimes(neurons.length);
+    });
+
+    it("should claim or refresh neurons whose balance does not match stake", async () => {
+      const balance = ICP.fromString("1") as ICP;
+      const neuronMatchingStake = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: balance.toE8s(),
+        },
+      };
+      const neuronNotMatchingStake = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(3_000_000_000),
+        },
+      };
+      spyGetNeuronBalance.mockImplementation(() => Promise.resolve(balance));
+      spyQueryNeurons.mockImplementation(() =>
+        Promise.resolve([neuronNotMatchingStake, neuronMatchingStake])
+      );
+      await listNeurons();
+      // `await` does not wait for `onLoad` to finish
+      await tick();
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(1);
     });
 
     it("should not list neurons if no identity", async () => {
