@@ -1,6 +1,10 @@
 import type { Identity } from "@dfinity/agent";
-import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
-import { GovernanceError } from "@dfinity/nns";
+import {
+  type NeuronId,
+  type ProposalId,
+  type ProposalInfo,
+  type Vote,
+} from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   queryProposal,
@@ -16,9 +20,8 @@ import {
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
-import { isNode } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
-import { stringifyJson, uniqueObjects } from "../utils/utils";
+import { replacePlaceholders } from "../utils/i18n.utils";
 import { listNeurons } from "./neurons.services";
 
 export const listProposals = async ({
@@ -205,51 +208,54 @@ const requestRegisterVotes = async ({
   vote: Vote;
   identity: Identity;
 }): Promise<void> => {
-  const register = async (
-    neuronId: NeuronId
-  ): Promise<GovernanceError | undefined> => {
-    try {
-      await registerVote({
-        neuronId,
-        vote,
-        proposalId,
-        identity,
-      });
-
-      return undefined;
-    } catch (error: GovernanceError | unknown) {
-      // We catch the error because we want to display only the distinct GovernanceError
-      if (error instanceof GovernanceError) {
-        return error;
-      }
-
-      // We throw anyway unexpected errors
-      throw error;
-    }
-  };
-
-  // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
-  const responses: Array<GovernanceError | undefined> = await Promise.all(
-    neuronIds.map(register)
-  );
-  const errors = responses.filter(Boolean);
-  // collect unique error messages
-  const errorDetails: string = uniqueObjects(errors)
-    .map(({ detail }: GovernanceError) =>
-      stringifyJson(detail.error_message, { indentation: 2 })
+  const responses: Array<PromiseSettledResult<void>> = await Promise.allSettled(
+    neuronIds.map(
+      (neuronId: NeuronId): Promise<void> =>
+        registerVote({
+          neuronId,
+          vote,
+          proposalId,
+          identity,
+        })
     )
-    .join("\n");
+  );
+  const errors: Array<{
+    neuronId: bigint;
+    error: Error;
+  }> = responses
+    // add neuronId
+    .map((result, i) => ({ neuronId: neuronIds[i], result }))
+    // use only not empty errors
+    .filter(
+      ({ result }) =>
+        result.status === "rejected" && result.reason instanceof Error
+    )
+    .map(({ neuronId, result }) => ({
+      neuronId,
+      error: (result as PromiseRejectedResult).reason,
+    }));
 
   if (errors.length > 0) {
-    // TODO: replace w/ console.error mock
-    if (!isNode()) {
-      // avoid in unit-test
-      console.error("vote:", errorDetails);
-    }
+    console.error("vote", errors);
+
+    // neuronId next to the error text
+    const detail: string = errors
+      .map(({ neuronId, error }) => {
+        const reason = errorToString(error);
+        console.log(typeof reason, error?.["message"], get(i18n).error.fail);
+        return replacePlaceholders(get(i18n).error.register_vote_neuron, {
+          $neuronId: neuronId.toString(),
+          $reason:
+            reason === undefined || reason?.length === 0
+              ? get(i18n).error.fail
+              : reason,
+        });
+      })
+      .join(", ");
     toastsStore.show({
       labelKey: "error.register_vote",
       level: "error",
-      detail: errorDetails.length > 0 ? `\n${errorDetails}` : undefined,
+      detail,
     });
   }
 };
