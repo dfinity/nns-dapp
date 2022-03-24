@@ -184,7 +184,15 @@ export const registerVotes = async ({
     });
   }
 
-  await listNeurons({ identity });
+  try {
+    await listNeurons({ identity });
+  } catch (err) {
+    console.error(err);
+    toastsStore.error({
+      labelKey: "error.list_proposals",
+      err,
+    });
+  }
 
   busyStore.stop("vote");
 };

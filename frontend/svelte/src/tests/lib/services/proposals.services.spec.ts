@@ -222,6 +222,28 @@ describe("proposals-services", () => {
         });
         expect(spyOnListNeurons).toBeCalledTimes(1);
       });
+
+      it("should show 'error.list_proposals' on refetch neurons error", async () => {
+        jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+        const err = new Error("test");
+        const spyToastError = jest.spyOn(toastsStore, "error");
+        // .mockImplementation((params) => (lastToastMessage = params));
+        const spyOnListNeurons = jest
+          .spyOn(neuronsServices, "listNeurons")
+          .mockImplementation(() => Promise.reject(err));
+
+        await registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.YES,
+          identity,
+        });
+        expect(spyOnListNeurons).toBeCalled();
+        expect(spyToastError).toBeCalledWith({
+          err,
+          labelKey: "error.list_proposals",
+        });
+      });
     });
 
     describe("register vote errors", () => {
