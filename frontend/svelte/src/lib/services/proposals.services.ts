@@ -225,7 +225,7 @@ const requestRegisterVotes = async ({
   }> = responses
     // add neuronId
     .map((result, i) => ({ neuronId: neuronIds[i], result }))
-    // use only not empty errors
+    // handle only not-empty errors
     .filter(
       ({ result }) =>
         result.status === "rejected" && result.reason instanceof Error
@@ -242,7 +242,6 @@ const requestRegisterVotes = async ({
     const detail: string = errors
       .map(({ neuronId, error }) => {
         const reason = errorToString(error);
-        console.log(typeof reason, error?.["message"], get(i18n).error.fail);
         return replacePlaceholders(get(i18n).error.register_vote_neuron, {
           $neuronId: neuronId.toString(),
           $reason:
