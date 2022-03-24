@@ -157,10 +157,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-
-      span {
-        @include interaction.tappable;
-      }
     }
   }
 </style>

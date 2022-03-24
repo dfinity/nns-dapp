@@ -2,7 +2,6 @@
   import type { KnownNeuron, NeuronId, Topic } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { addFollowee, removeFollowee } from "../../services/neurons.services";
-  import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import Spinner from "../ui/Spinner.svelte";
 
@@ -20,7 +19,6 @@
     dispatcher("nnsLoading", { loading: true });
     const toggleFollowee = isFollowed ? removeFollowee : addFollowee;
     await toggleFollowee({
-      identity: $authStore.identity,
       neuronId,
       topic,
       followee: knownNeuron.id,
