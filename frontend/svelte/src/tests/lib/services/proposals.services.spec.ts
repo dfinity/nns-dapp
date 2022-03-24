@@ -14,8 +14,11 @@ import {
 import { busyStore } from "../../../lib/stores/busy.store";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
+import {
+  mockIdentityErrorMsg,
+  resetIdentity,
+  setNoIdentity,
+} from "../../mocks/auth.store.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-services", () => {
@@ -37,7 +40,7 @@ describe("proposals-services", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should call the canister to list proposals", async () => {
-      await listProposals({ identity: mockIdentity });
+      await listProposals({});
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
@@ -48,7 +51,6 @@ describe("proposals-services", () => {
     it("should call the canister to list the next proposals", async () => {
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
-        identity: mockIdentity,
       });
 
       expect(spyQueryProposals).toHaveBeenCalled();
@@ -58,19 +60,18 @@ describe("proposals-services", () => {
     });
 
     it("should clear the list proposals before query", async () => {
-      await listProposals({ clearBeforeQuery: true, identity: mockIdentity });
+      await listProposals({ clearBeforeQuery: true });
       expect(spySetProposals).toHaveBeenCalledTimes(2);
     });
 
     it("should not clear the list proposals before query", async () => {
-      await listProposals({ clearBeforeQuery: false, identity: mockIdentity });
+      await listProposals({ clearBeforeQuery: false });
       expect(spySetProposals).toHaveBeenCalledTimes(1);
     });
 
     it("should push new proposals to the list", async () => {
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
-        identity: mockIdentity,
       });
       expect(spyPushProposals).toHaveBeenCalledTimes(1);
     });
@@ -91,7 +92,6 @@ describe("proposals-services", () => {
       let notDone = true;
       loadProposal({
         proposalId: BigInt(666),
-        identity: mockIdentity,
         setProposal: (proposal: ProposalInfo) => {
           expect(proposal?.id).toBe(BigInt(666));
           expect(spyQueryProposal).toBeCalledTimes(1);
@@ -116,7 +116,6 @@ describe("proposals-services", () => {
       const spy = jest.spyOn(proposalsStore, "pushProposals");
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
-        identity: mockIdentity,
       });
       expect(spy).toHaveBeenCalledTimes(0);
       spy.mockClear();
@@ -143,7 +142,6 @@ describe("proposals-services", () => {
 
   describe("vote registration", () => {
     const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
-    const identity = mockIdentity;
     const proposalId = BigInt(0);
 
     describe("success", () => {
@@ -166,7 +164,6 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.YES,
-          identity,
         });
         expect(spyRegisterVote).toHaveReturnedTimes(neuronIds.length);
       });
@@ -178,7 +175,6 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.YES,
-          identity,
         });
         expect(spyBusyStart).toBeCalledWith("vote");
         expect(spyBusyStop).toBeCalledWith("vote");
@@ -190,7 +186,6 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.YES,
-          identity,
         });
         expect(spyToastShow).not.toBeCalled();
       });
@@ -218,7 +213,6 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.YES,
-          identity,
         });
         expect(spyOnListNeurons).toBeCalledTimes(1);
       });
@@ -253,7 +247,6 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.NO,
-          identity,
         });
         expect(spyToastShow).toBeCalledTimes(1);
         expect(spyToastShow).toBeCalledWith({
@@ -288,7 +281,6 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.NO,
-          identity,
         });
         expect(spyToastShow).toBeCalledWith({
           labelKey: "error.register_vote",
@@ -298,7 +290,7 @@ describe("proposals-services", () => {
       });
     });
 
-    describe("unknow errors", () => {
+    describe("unknown errors", () => {
       jest
         .spyOn(neuronsServices, "listNeurons")
         .mockImplementation(() => Promise.resolve());
@@ -317,7 +309,6 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.NO,
-          identity,
         });
         expect(spyToastShow).toBeCalledWith({
           labelKey: "error.register_vote_unknown",
@@ -331,32 +322,34 @@ describe("proposals-services", () => {
   describe("errors", () => {
     beforeAll(() => {
       jest.spyOn(console, "error").mockImplementation(() => jest.fn());
+
+      setNoIdentity();
     });
 
     afterAll(() => {
       jest.clearAllMocks();
+
+      resetIdentity();
     });
 
     it("should not list proposals if no identity", async () => {
-      const call = async () => await listProposals({ identity: null });
+      const call = async () => await listProposals({});
 
-      await expect(call).rejects.toThrow(Error(en.error.missing_identity));
+      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
     });
 
     it("should not list next proposals if no identity", async () => {
       const call = async () =>
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
-          identity: null,
         });
 
-      await expect(call).rejects.toThrow(Error(en.error.missing_identity));
+      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
     });
 
     it("should not load proposal if no identity", (done) => {
       loadProposal({
         proposalId: mockProposals[0].id as bigint,
-        identity: null,
         setProposal: jest.fn(),
         handleError: () => done(),
       });
@@ -372,10 +365,9 @@ describe("proposals-services", () => {
           neuronIds: [],
           proposalId: BigInt(1),
           vote: Vote.YES,
-          identity: null,
         });
 
-      await expect(call).rejects.toThrow(Error(en.error.missing_identity));
+      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
     });
   });
 });

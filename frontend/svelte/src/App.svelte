@@ -34,7 +34,7 @@
         return;
       }
 
-      await syncAccounts(auth);
+      await syncAccounts();
     }
   );
 

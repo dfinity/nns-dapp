@@ -21,9 +21,8 @@
     }
 
     // The fetched neuron belongs to a proposer so it should not be added to the neuronsStore
-    loadNeuron({
+    await loadNeuron({
       neuronId: proposer,
-      identity: $authStore.identity,
       setNeuron: (neuronInfo) => (neuron = neuronInfo),
       handleError: (neuron = undefined),
     });

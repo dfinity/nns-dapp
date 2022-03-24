@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { BallotInfo, ProposalId, ProposalInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import { authStore } from "../../stores/auth.store";
   import { loadProposal } from "../../services/proposals.services";
   import ProposalSummary from "../proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
   import { Vote } from "@dfinity/nns";
@@ -16,7 +15,6 @@
     async () =>
       await loadProposal({
         proposalId: ballot.proposalId as ProposalId,
-        identity: $authStore.identity,
         setProposal: (proposalInfo: ProposalInfo) => (proposal = proposalInfo),
       })
   );

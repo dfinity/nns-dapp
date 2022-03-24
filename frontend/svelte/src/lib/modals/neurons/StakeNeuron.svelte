@@ -9,7 +9,6 @@
   } from "../../constants/icp.constants";
   import { syncAccounts } from "../../services/accounts.services";
   import { stakeAndLoadNeuron } from "../../services/neurons.services";
-  import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { formatICP } from "../../utils/icp.utils";
@@ -25,7 +24,6 @@
     try {
       const neuronId = await stakeAndLoadNeuron({
         amount,
-        identity: $authStore.identity,
         fromSubAccount:
           "subAccount" in account ? account.subAccount : undefined,
       });
@@ -34,7 +32,7 @@
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts
       // TODO: L2-329 Manage edge cases
-      syncAccounts({ identity: $authStore.identity });
+      syncAccounts();
 
       dispatcher("nnsNeuronCreated", { neuronId });
     } catch (err) {

@@ -15,7 +15,12 @@ import {
   updateDelay,
 } from "../../../lib/services/neurons.services";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import {
+  mockIdentity,
+  mockIdentityErrorMsg,
+  resetIdentity,
+  setNoIdentity,
+} from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 
 describe("neurons-services", () => {
@@ -48,7 +53,7 @@ describe("neurons-services", () => {
 
   describe("stake new neuron", () => {
     it("should stake and load a neuron", async () => {
-      await stakeAndLoadNeuron({ amount: 10, identity: mockIdentity });
+      await stakeAndLoadNeuron({ amount: 10 });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
 
@@ -66,23 +71,25 @@ describe("neurons-services", () => {
       const call = () =>
         stakeAndLoadNeuron({
           amount: 0.1,
-          identity: mockIdentity,
         });
 
       await expect(call).rejects.toThrow(Error);
     });
 
     it("should not stake neuron if no identity", async () => {
-      const call = async () =>
-        await stakeAndLoadNeuron({ amount: 10, identity: null });
+      setNoIdentity();
 
-      await expect(call).rejects.toThrow(Error("No identity"));
+      const call = async () => await stakeAndLoadNeuron({ amount: 10 });
+
+      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+
+      resetIdentity();
     });
   });
 
   describe("list neurons", () => {
     it("should list neurons", async () => {
-      await listNeurons({ identity: mockIdentity });
+      await listNeurons();
 
       expect(spyQueryNeurons).toHaveBeenCalled();
 
@@ -91,9 +98,13 @@ describe("neurons-services", () => {
     });
 
     it("should not list neurons if no identity", async () => {
-      const call = async () => await listNeurons({ identity: null });
+      setNoIdentity();
 
-      await expect(call).rejects.toThrow("No identity found listing neurons");
+      const call = async () => await listNeurons();
+
+      await expect(call).rejects.toThrow(mockIdentityErrorMsg);
+
+      resetIdentity();
     });
   });
 
@@ -102,7 +113,6 @@ describe("neurons-services", () => {
       await updateDelay({
         neuronId: BigInt(10),
         dissolveDelayInSeconds: 12000,
-        identity: mockIdentity,
       });
 
       expect(spyIncreaseDissolveDelay).toHaveBeenCalled();
@@ -112,14 +122,17 @@ describe("neurons-services", () => {
     });
 
     it("should not update delay if no identity", async () => {
+      setNoIdentity();
+
       const call = async () =>
         await updateDelay({
           neuronId: BigInt(10),
           dissolveDelayInSeconds: 12000,
-          identity: null,
         });
 
-      await expect(call).rejects.toThrow("No identity");
+      await expect(call).rejects.toThrow(mockIdentityErrorMsg);
+
+      resetIdentity();
     });
   });
 
@@ -134,7 +147,6 @@ describe("neurons-services", () => {
       const topic = Topic.ExchangeRate;
       await addFollowee({
         neuronId,
-        identity: mockIdentity,
         topic,
         followee,
       });
@@ -153,14 +165,18 @@ describe("neurons-services", () => {
       const { neuronId } = neurons[0];
       neuronsStore.setNeurons(neurons);
       const topic = Topic.ExchangeRate;
+
+      setNoIdentity();
+
       const call = async () =>
         await addFollowee({
           neuronId,
-          identity: null,
           topic,
           followee,
         });
-      await expect(call).rejects.toThrow("No identity");
+      await expect(call).rejects.toThrow(mockIdentityErrorMsg);
+
+      resetIdentity();
     });
   });
 
@@ -177,7 +193,6 @@ describe("neurons-services", () => {
       neuronsStore.setNeurons(neurons);
       await removeFollowee({
         neuronId: neuron.neuronId,
-        identity: mockIdentity,
         topic,
         followee,
       });
@@ -196,14 +211,18 @@ describe("neurons-services", () => {
       const neuronId = neurons[0].neuronId;
       neuronsStore.setNeurons(neurons);
       const topic = Topic.ExchangeRate;
+
+      setNoIdentity();
+
       const call = async () =>
         await removeFollowee({
           neuronId,
-          identity: null,
           topic,
           followee,
         });
-      await expect(call).rejects.toThrow("No identity");
+      await expect(call).rejects.toThrow(mockIdentityErrorMsg);
+
+      resetIdentity();
     });
   });
 
@@ -230,7 +249,6 @@ describe("neurons-services", () => {
       neuronsStore.pushNeurons([mockNeuron]);
       await loadNeuron({
         neuronId: mockNeuron.neuronId,
-        identity: mockIdentity,
         setNeuron: (neuron: NeuronInfo) => {
           neuronsStore.setNeurons([]);
           expect(neuron?.neuronId).toBe(mockNeuron.neuronId);
@@ -243,7 +261,6 @@ describe("neurons-services", () => {
     it("should call the api to get neuron if not in store", async () => {
       await loadNeuron({
         neuronId: mockNeuron.neuronId,
-        identity: mockIdentity,
         setNeuron: jest.fn,
       });
       expect(spyGetNeuron).toBeCalled();

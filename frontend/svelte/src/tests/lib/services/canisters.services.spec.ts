@@ -2,9 +2,12 @@ import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
 import { listCanisters } from "../../../lib/services/canisters.services";
 import { canistersStore } from "../../../lib/stores/canisters.store";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import {
+  mockIdentityErrorMsg,
+  resetIdentity,
+  setNoIdentity,
+} from "../../mocks/auth.store.mock";
 import { mockCanisters } from "../../mocks/canisters.mock";
-import en from "../../mocks/i18n.mock";
 
 describe("canisters-services", () => {
   const spyQueryCanisters = jest
@@ -12,7 +15,7 @@ describe("canisters-services", () => {
     .mockImplementation(() => Promise.resolve(mockCanisters));
 
   it("should list canisters", async () => {
-    await listCanisters({ identity: mockIdentity });
+    await listCanisters({});
 
     expect(spyQueryCanisters).toHaveBeenCalled();
 
@@ -21,8 +24,12 @@ describe("canisters-services", () => {
   });
 
   it("should not list canisters if no identity", async () => {
-    const call = async () => await listCanisters({ identity: null });
+    setNoIdentity();
 
-    await expect(call).rejects.toThrow(Error(en.error.missing_identity));
+    const call = async () => await listCanisters({});
+
+    await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+
+    resetIdentity();
   });
 });

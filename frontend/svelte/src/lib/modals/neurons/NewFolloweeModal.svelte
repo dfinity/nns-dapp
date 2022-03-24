@@ -5,7 +5,6 @@
   import Spinner from "../../components/ui/Spinner.svelte";
   import { listKnownNeurons } from "../../services/knownNeurons.services";
   import { addFollowee } from "../../services/neurons.services";
-  import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import { sortedknownNeuronsStore } from "../../stores/knownNeurons.store";
   import { toastsStore } from "../../stores/toasts.store";
@@ -17,11 +16,7 @@
   let followeeAddress: number | undefined;
   let loading: boolean = false;
 
-  onMount(() => {
-    listKnownNeurons({
-      identity: $authStore.identity,
-    });
-  });
+  onMount(() => listKnownNeurons());
 
   const addFolloweeByAddress = async () => {
     loading = true;
@@ -38,7 +33,6 @@
       return;
     }
     await addFollowee({
-      identity: $authStore.identity,
       neuronId: neuron.neuronId,
       topic,
       followee,
@@ -55,7 +49,6 @@
   const addKnownNeuronFollowee = async (followeeId: NeuronId) => {
     loading = true;
     await addFollowee({
-      identity: $authStore.identity,
       neuronId: neuron.neuronId,
       topic,
       followee: followeeId,

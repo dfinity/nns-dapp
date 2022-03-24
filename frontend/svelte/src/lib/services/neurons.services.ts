@@ -11,12 +11,12 @@ import {
 } from "../api/governance.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { E8S_PER_ICP } from "../constants/icp.constants";
-import { i18n } from "../stores/i18n";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
-import { queryAndUpdate } from "../utils/api.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { errorToString } from "../utils/error.utils";
+import { getIdentity } from "./auth.services";
+import { queryAndUpdate } from "./utils.services";
 
 /**
  * Uses governance api to create a neuron and adds it to the store
@@ -24,11 +24,9 @@ import { errorToString } from "../utils/error.utils";
  */
 export const stakeAndLoadNeuron = async ({
   amount,
-  identity,
   fromSubAccount,
 }: {
   amount: number;
-  identity: Identity | null | undefined;
   fromSubAccount?: SubAccountArray;
 }): Promise<NeuronId> => {
   const stake = ICP.fromString(String(amount));
@@ -41,10 +39,7 @@ export const stakeAndLoadNeuron = async ({
     throw new Error("Need a minimum of 1 ICP to stake a neuron");
   }
 
-  if (!identity) {
-    // TODO: https://dfinity.atlassian.net/browse/L2-348
-    throw new Error("No identity");
-  }
+  const identity: Identity = await getIdentity();
 
   const neuronId: NeuronId = await stakeNeuron({
     stake,
@@ -54,7 +49,6 @@ export const stakeAndLoadNeuron = async ({
 
   await loadNeuron({
     neuronId,
-    identity,
     setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
   });
 
@@ -62,18 +56,9 @@ export const stakeAndLoadNeuron = async ({
 };
 
 // Gets neurons and adds them to the store
-export const listNeurons = async ({
-  identity,
-}: {
-  identity: Identity | null | undefined;
-}): Promise<void> => {
-  if (!identity) {
-    // TODO: https://dfinity.atlassian.net/browse/L2-348
-    throw new Error("No identity found listing neurons");
-  }
-
+export const listNeurons = async (): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
-    request: ({ certified }) => queryNeurons({ identity, certified }),
+    request: (options) => queryNeurons(options),
     onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
     onError: ({ error, certified }) => {
       console.error(error);
@@ -97,39 +82,33 @@ export const listNeurons = async ({
 export const updateDelay = async ({
   neuronId,
   dissolveDelayInSeconds,
-  identity,
 }: {
   neuronId: NeuronId;
   dissolveDelayInSeconds: number;
-  identity: Identity | null | undefined;
 }): Promise<void> => {
-  if (!identity) {
-    // TODO: https://dfinity.atlassian.net/browse/L2-348
-    throw new Error("No identity");
-  }
+  const identity: Identity = await getIdentity();
 
   await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
 
   await loadNeuron({
     neuronId,
-    identity,
     setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
   });
 };
 
 const setFolloweesHelper = async ({
-  identity,
   neuronId,
   topic,
   followees,
   errorKey,
 }: {
-  identity: Identity;
   neuronId: NeuronId;
   topic: Topic;
   followees: NeuronId[];
   errorKey: "add_followee" | "remove_followee";
 }) => {
+  const identity: Identity = await getIdentity();
+
   try {
     await setFollowees({
       identity,
@@ -137,9 +116,9 @@ const setFolloweesHelper = async ({
       topic,
       followees,
     });
+
     await loadNeuron({
       neuronId,
-      identity,
       setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
     });
   } catch (error) {
@@ -152,20 +131,14 @@ const setFolloweesHelper = async ({
 };
 
 export const addFollowee = async ({
-  identity,
   neuronId,
   topic,
   followee,
 }: {
-  identity: Identity | null | undefined;
   neuronId: NeuronId;
   topic: Topic;
   followee: NeuronId;
 }): Promise<void> => {
-  if (!identity) {
-    // TODO: https://dfinity.atlassian.net/browse/L2-348
-    throw new Error("No identity");
-  }
   const neurons = get(neuronsStore);
   const neuron = neurons.find(
     ({ neuronId: currentNeuronId }) => currentNeuronId === neuronId
@@ -178,7 +151,6 @@ export const addFollowee = async ({
       ? [followee]
       : [...topicFollowees.followees, followee];
   await setFolloweesHelper({
-    identity,
     neuronId,
     topic,
     followees: newFollowees,
@@ -187,20 +159,14 @@ export const addFollowee = async ({
 };
 
 export const removeFollowee = async ({
-  identity,
   neuronId,
   topic,
   followee,
 }: {
-  identity: Identity | null | undefined;
   neuronId: NeuronId;
   topic: Topic;
   followee: NeuronId;
 }): Promise<void> => {
-  if (!identity) {
-    // TODO: https://dfinity.atlassian.net/browse/L2-348
-    throw new Error("No identity");
-  }
   const neurons = get(neuronsStore);
   const neuron = neurons.find(
     ({ neuronId: currentNeuronId }) => currentNeuronId === neuronId
@@ -222,7 +188,6 @@ export const removeFollowee = async ({
     (id) => id !== followee
   );
   await setFolloweesHelper({
-    identity,
     neuronId,
     topic,
     followees: newFollowees,
@@ -239,14 +204,9 @@ const getNeuron = async ({
   certified,
 }: {
   neuronId: NeuronId;
-  identity: Identity | null | undefined;
+  identity: Identity;
   certified: boolean;
 }): Promise<NeuronInfo | undefined> => {
-  // TODO: https://dfinity.atlassian.net/browse/L2-348
-  if (!identity) {
-    throw new Error(get(i18n).error.missing_identity);
-  }
-
   const neuron = get(neuronsStore).find(
     (neuron) => neuron.neuronId === neuronId
   );
@@ -259,12 +219,10 @@ const getNeuron = async ({
  */
 export const loadNeuron = ({
   neuronId,
-  identity,
   setNeuron,
   handleError,
 }: {
   neuronId: NeuronId;
-  identity: Identity | undefined | null;
   setNeuron: (neuron: NeuronInfo) => void;
   handleError?: () => void;
 }): Promise<void> => {
@@ -281,11 +239,10 @@ export const loadNeuron = ({
   };
 
   return queryAndUpdate<NeuronInfo | undefined, unknown>({
-    request: ({ certified }) =>
+    request: (options) =>
       getNeuron({
         neuronId,
-        identity,
-        certified,
+        ...options,
       }),
     onLoad: ({ response: neuron }) => {
       if (neuron === undefined) {

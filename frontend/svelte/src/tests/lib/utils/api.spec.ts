@@ -1,5 +1,5 @@
 import { tick } from "svelte";
-import { queryAndUpdate } from "../../../lib/utils/api.utils";
+import { queryAndUpdate } from "../../../lib/services/utils.services";
 
 describe("api-utils", () => {
   describe("queryAndUpdate", () => {
@@ -28,7 +28,7 @@ describe("api-utils", () => {
       const onLoad = jest.fn();
       const onError = jest.fn();
 
-      queryAndUpdate<number, unknown>({
+      await queryAndUpdate<number, unknown>({
         request,
         onLoad,
         onError,
