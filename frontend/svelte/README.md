@@ -19,7 +19,7 @@ The plan is to deploy the pages of this project one by one as soon they are read
 - Accounts: In development.
 - Canisters: In development.
 
-Until all the pages come from this project, the NNS Dapp is a hybrid of the pages in the `dart` directory and the pages in this project.
+Until all the pages come from this project, the NNS Dapp is a hybrid of the pages in the `dart` directory and the routes in this project.
 
 ## Installation and local development
 
