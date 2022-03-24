@@ -1,10 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import {
-  type NeuronId,
-  type ProposalId,
-  type ProposalInfo,
-  type Vote,
-} from "@dfinity/nns";
+import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   queryProposal,
