@@ -7,19 +7,22 @@ import {
   LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
+import { dfinityNeuron, icNeuron } from "./constants.api";
 import { toSubAccountId } from "./utils.api";
 
 export const queryNeuron = async ({
   neuronId,
   identity,
+  certified,
 }: {
   neuronId: NeuronId;
   identity: Identity;
+  certified: boolean;
 }): Promise<NeuronInfo | undefined> => {
   const { canister } = await governanceCanister({ identity });
 
   return canister.getNeuron({
-    certified: true,
+    certified,
     principal: identity.getPrincipal(),
     neuronId,
   });
@@ -116,7 +119,17 @@ export const queryKnownNeurons = async ({
 }): Promise<KnownNeuron[]> => {
   const { canister } = await governanceCanister({ identity });
 
-  return canister.listKnownNeurons(certified);
+  const knownNeurons = await canister.listKnownNeurons(certified);
+
+  if (!knownNeurons.find(({ id }) => id === dfinityNeuron.id)) {
+    knownNeurons.push(dfinityNeuron);
+  }
+
+  if (!knownNeurons.find(({ id }) => id === icNeuron.id)) {
+    knownNeurons.push(icNeuron);
+  }
+
+  return knownNeurons;
 };
 
 // TODO: Apply pattern to other canister instantiation L2-371

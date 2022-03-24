@@ -34,8 +34,7 @@
         return;
       }
 
-      // TODO: L2-316 Manage errors
-      await syncAccounts(auth);
+      await syncAccounts();
     }
   );
 

@@ -17,6 +17,9 @@ describe("neurons-api", () => {
     mockGovernanceCanister.listNeurons.mockImplementation(
       jest.fn().mockResolvedValue([])
     );
+    mockGovernanceCanister.listKnownNeurons.mockImplementation(
+      jest.fn().mockResolvedValue([])
+    );
     mockGovernanceCanister.stakeNeuron.mockImplementation(jest.fn());
     mockGovernanceCanister.getNeuron.mockImplementation(
       jest.fn().mockResolvedValue(mockNeuron)
@@ -65,6 +68,7 @@ describe("neurons-api", () => {
     const neuron = await queryNeuron({
       neuronId: mockNeuron.neuronId,
       identity: mockIdentity,
+      certified: true,
     });
 
     expect(mockGovernanceCanister.getNeuron).toBeCalled();

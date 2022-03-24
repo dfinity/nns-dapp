@@ -8,7 +8,6 @@ import {
   registerVote,
 } from "../api/proposals.api";
 import { busyStore } from "../stores/busy.store";
-import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
   proposalsFiltersStore,
@@ -19,14 +18,13 @@ import { getLastPathDetailId } from "../utils/app-path.utils";
 import { isNode } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
 import { stringifyJson, uniqueObjects } from "../utils/utils";
+import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 
 export const listProposals = async ({
   clearBeforeQuery = false,
-  identity,
 }: {
   clearBeforeQuery?: boolean;
-  identity: Identity | null | undefined;
 }) => {
   if (clearBeforeQuery) {
     proposalsStore.setProposals([]);
@@ -34,7 +32,6 @@ export const listProposals = async ({
 
   const proposals: ProposalInfo[] = await findProposals({
     beforeProposal: undefined,
-    identity,
   });
 
   proposalsStore.setProposals(proposals);
@@ -42,14 +39,11 @@ export const listProposals = async ({
 
 export const listNextProposals = async ({
   beforeProposal,
-  identity,
 }: {
   beforeProposal: ProposalId | undefined;
-  identity: Identity | null | undefined;
 }) => {
   const proposals: ProposalInfo[] = await findProposals({
     beforeProposal,
-    identity,
   });
 
   if (proposals.length === 0) {
@@ -63,17 +57,12 @@ export const listNextProposals = async ({
 
 const findProposals = async ({
   beforeProposal,
-  identity,
 }: {
   beforeProposal: ProposalId | undefined;
-  identity: Identity | null | undefined;
 }): Promise<ProposalInfo[]> => {
-  // TODO: https://dfinity.atlassian.net/browse/L2-346
-  if (!identity) {
-    throw new Error(get(i18n).error.missing_identity);
-  }
-
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
+
+  const identity: Identity = await getIdentity();
 
   return await queryProposals({
     beforeProposal,
@@ -89,12 +78,10 @@ const findProposals = async ({
  */
 export const loadProposal = async ({
   proposalId,
-  identity,
   setProposal,
   handleError,
 }: {
   proposalId: ProposalId;
-  identity: Identity | undefined | null;
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
 }): Promise<void> => {
@@ -113,7 +100,6 @@ export const loadProposal = async ({
   try {
     const proposal: ProposalInfo | undefined = await getProposal({
       proposalId,
-      identity,
     });
 
     if (!proposal) {
@@ -132,15 +118,10 @@ export const loadProposal = async ({
  */
 const getProposal = async ({
   proposalId,
-  identity,
 }: {
   proposalId: ProposalId;
-  identity: Identity | null | undefined;
 }): Promise<ProposalInfo | undefined> => {
-  // TODO: https://dfinity.atlassian.net/browse/L2-346
-  if (!identity) {
-    throw new Error(get(i18n).error.missing_identity);
-  }
+  const identity: Identity = await getIdentity();
 
   return queryProposal({ proposalId, identity, certified: false });
 };
@@ -156,25 +137,21 @@ export const registerVotes = async ({
   neuronIds,
   proposalId,
   vote,
-  identity,
 }: {
   neuronIds: NeuronId[];
   proposalId: ProposalId;
   vote: Vote;
-  identity: Identity | null | undefined;
 }): Promise<void> => {
-  if (!identity) {
-    throw new Error(get(i18n).error.missing_identity);
-  }
-
   busyStore.start("vote");
+
+  const identity: Identity = await getIdentity();
 
   try {
     await requestRegisterVotes({
       neuronIds,
       proposalId,
-      vote,
       identity,
+      vote,
     });
   } catch (error) {
     // TODO: replace w/ console.error mock
@@ -189,7 +166,7 @@ export const registerVotes = async ({
     });
   }
 
-  await listNeurons({ identity });
+  await listNeurons();
 
   busyStore.stop("vote");
 };
@@ -197,13 +174,13 @@ export const registerVotes = async ({
 const requestRegisterVotes = async ({
   neuronIds,
   proposalId,
-  vote,
   identity,
+  vote,
 }: {
   neuronIds: bigint[];
   proposalId: ProposalId;
-  vote: Vote;
   identity: Identity;
+  vote: Vote;
 }): Promise<void> => {
   const register = async (
     neuronId: NeuronId

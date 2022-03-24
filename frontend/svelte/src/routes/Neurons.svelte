@@ -25,7 +25,7 @@
     }
     try {
       isLoading = true;
-      await listNeurons({ identity: $authStore.identity });
+      await listNeurons();
     } catch (err) {
       toastsStore.error({
         labelKey: "errors.get_neurons",

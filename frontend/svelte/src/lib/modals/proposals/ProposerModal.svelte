@@ -3,13 +3,13 @@
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { queryNeuron } from "../../api/governance.api";
   import Spinner from "../../components/ui/Spinner.svelte";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import { onMount } from "svelte";
   import VotingHistoryCard from "../../components/neurons/VotingHistoryCard.svelte";
   import { authStore } from "../../stores/auth.store";
+  import { loadNeuron } from "../../services/neurons.services";
 
   export let proposer: NeuronId;
   let neuron: NeuronInfo | undefined;
@@ -20,16 +20,12 @@
       return;
     }
 
-    try {
-      neuron = await queryNeuron({
-        neuronId: proposer,
-        identity: $authStore.identity,
-      });
-    } catch (err) {
-      neuron = undefined;
-
-      toastsStore.error({ labelKey: "error.get_neuron", err });
-    }
+    // The fetched neuron belongs to a proposer so it should not be added to the neuronsStore
+    await loadNeuron({
+      neuronId: proposer,
+      setNeuron: (neuronInfo) => (neuron = neuronInfo),
+      handleError: (neuron = undefined),
+    });
   });
 </script>
 

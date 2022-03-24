@@ -24,12 +24,12 @@
     "create_subaccount_limit_exceeded": "Sorry, you reached the limit of subaccounts in this account.",
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
     "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
-    "get_neuron": "There was an unexpected issue while loading the neuron.",
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
     "register_vote_unknown": "Sorry, there was an unexpectedf error while registering the vote. Please try again later.",
     "add_followee": "Sorry, there was an unexpectedf error while adding the followee. Please try again later.",
     "remove_followee": "Sorry, there was an unexpectedf error while removing the followee. Please try again later.",
-    "followee_does_not_exist": "Sorry, followee already removed, refresh the page to have the latest data."
+    "followee_does_not_exist": "Sorry, followee already removed, refresh the page to have the latest data.",
+    "accounts_not_found": "An error occurred while loading the accounts information."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -109,6 +109,7 @@
     "follow_neuron": "Follow Neuron",
     "options_title": "Options for Following",
     "follow": "Follow",
+    "unfollow": "Unfollow",
     "success_add_followee": "Followee added successfully",
     "success_remove_followee": "Followee removed successfully"
   },

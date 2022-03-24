@@ -1,9 +1,12 @@
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
-import * as en from "../../../lib/i18n/en.json";
 import { listKnownNeurons } from "../../../lib/services/knownNeurons.services";
 import { knownNeuronsStore } from "../../../lib/stores/knownNeurons.store";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import {
+  mockIdentityErrorMsg,
+  resetIdentity,
+  setNoIdentity,
+} from "../../mocks/auth.store.mock";
 import { mockKnownNeuron } from "../../mocks/neurons.mock";
 
 describe("knownNeurons-services", () => {
@@ -12,7 +15,7 @@ describe("knownNeurons-services", () => {
     .mockResolvedValue([mockKnownNeuron]);
 
   it("should list known neurons", async () => {
-    await listKnownNeurons({ identity: mockIdentity });
+    await listKnownNeurons();
 
     expect(spyQueryKnownNeurons).toHaveBeenCalled();
 
@@ -21,8 +24,12 @@ describe("knownNeurons-services", () => {
   });
 
   it("should not list known neurons if no identity", async () => {
-    const call = async () => await listKnownNeurons({ identity: null });
+    setNoIdentity();
 
-    await expect(call).rejects.toThrow(Error(en.error.missing_identity));
+    const call = async () => await listKnownNeurons();
+
+    await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+
+    resetIdentity();
   });
 });

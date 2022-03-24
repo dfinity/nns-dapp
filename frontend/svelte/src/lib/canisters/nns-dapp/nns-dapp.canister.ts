@@ -62,8 +62,14 @@ export class NNSDappCanister {
    *
    * @returns Promise<void>
    */
-  public getAccount = async (): Promise<AccountDetails> => {
-    const { AccountNotFound, Ok } = await this.certifiedService.get_account();
+  public getAccount = async ({
+    certified,
+  }: {
+    certified: boolean;
+  }): Promise<AccountDetails> => {
+    const { AccountNotFound, Ok } = await this.getNNSDappService(
+      certified
+    ).get_account();
     if (AccountNotFound === null) {
       throw new AccountNotFoundError("Error creating subAccount");
     }
@@ -124,10 +130,10 @@ export class NNSDappCanister {
   }: {
     certified: boolean;
   }): Promise<CanisterDetails[]> => {
-    return this.serviceCaller(certified).get_canisters();
+    return this.getNNSDappService(certified).get_canisters();
   };
 
-  private serviceCaller(certified = true): NNSDappService {
+  private getNNSDappService(certified = true): NNSDappService {
     if (certified) {
       return this.certifiedService;
     }

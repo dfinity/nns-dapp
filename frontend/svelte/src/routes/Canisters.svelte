@@ -17,7 +17,6 @@
     try {
       await listCanisters({
         clearBeforeQuery: true,
-        identity: $authStore.identity,
       });
     } catch (err: unknown) {
       toastsStore.error({
