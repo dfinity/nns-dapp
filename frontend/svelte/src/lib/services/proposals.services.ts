@@ -17,6 +17,7 @@ import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
+import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 
@@ -186,6 +187,23 @@ const requestRegisterVotes = async ({
   identity: Identity;
   vote: Vote;
 }): Promise<void> => {
+  const errorDetail = (
+    neuronId: NeuronId,
+    result: PromiseSettledResult<void>
+  ): string | undefined => {
+    if (result.status === "rejected" && result.reason instanceof Error) {
+      const reason = errorToString(result.reason);
+      // detail text
+      return replacePlaceholders(get(i18n).error.register_vote_neuron, {
+        $neuronId: neuronId.toString(),
+        $reason:
+          reason === undefined || reason?.length === 0
+            ? get(i18n).error.fail
+            : reason,
+      });
+    }
+    return undefined;
+  };
   const responses: Array<PromiseSettledResult<void>> = await Promise.allSettled(
     neuronIds.map(
       (neuronId: NeuronId): Promise<void> =>
@@ -197,43 +215,17 @@ const requestRegisterVotes = async ({
         })
     )
   );
-  const errors: Array<{
-    neuronId: bigint;
-    // TODO: replace Error with NNSJsError
-    error: Error;
-  }> = responses
-    // map neuronId
-    .map((result, i) => ({ neuronId: neuronIds[i], result }))
-    // handle only not-empty errors
-    .filter(
-      ({ result }) =>
-        result.status === "rejected" && result.reason instanceof Error
-    )
-    .map(({ neuronId, result }) => ({
-      neuronId,
-      error: (result as PromiseRejectedResult).reason,
-    }));
+  const details: string[] = responses
+    .map((response, i) => errorDetail(neuronIds[i], response))
+    .filter(isDefined);
 
-  if (errors.length > 0) {
-    console.error("vote", errors);
+  if (details.length > 0) {
+    console.error("vote", details);
 
-    // neuronId next to the error text
-    const detail: string = errors
-      .map(({ neuronId, error }) => {
-        const reason = errorToString(error);
-        return replacePlaceholders(get(i18n).error.register_vote_neuron, {
-          $neuronId: neuronId.toString(),
-          $reason:
-            reason === undefined || reason?.length === 0
-              ? get(i18n).error.fail
-              : reason,
-        });
-      })
-      .join(", ");
     toastsStore.show({
       labelKey: "error.register_vote",
       level: "error",
-      detail,
+      detail: details.join(", "),
     });
   }
 };
