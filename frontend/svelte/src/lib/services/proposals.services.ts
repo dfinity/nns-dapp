@@ -199,9 +199,10 @@ const requestRegisterVotes = async ({
   );
   const errors: Array<{
     neuronId: bigint;
+    // TODO: replace Error with NNSJsError
     error: Error;
   }> = responses
-    // add neuronId
+    // map neuronId
     .map((result, i) => ({ neuronId: neuronIds[i], result }))
     // handle only not-empty errors
     .filter(
