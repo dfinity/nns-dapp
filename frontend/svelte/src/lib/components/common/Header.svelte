@@ -7,13 +7,6 @@
 </script>
 
 <header>
-  <img
-    loading="lazy"
-    role="presentation"
-    alt=""
-    src="/assets/assets/gradient.jpg"
-  />
-
   {#if deployEnv === "testnet"}
     <GetICPs />
   {/if}
@@ -40,10 +33,17 @@
 
     justify-content: center;
     align-items: center;
-  }
 
-  img {
-    @include img.background;
+    // Fallback
+    background: var(--brand-razzmatazz);
+    background: linear-gradient(
+      90deg,
+      var(--brand-sea-buckthorn) 0%,
+      var(--brand-flamingo) 25%,
+      var(--brand-razzmatazz) 50%,
+      var(--brand-meteorite) 75%,
+      var(--brand-picton-blue) 100%
+    );
   }
 
   h4 {
