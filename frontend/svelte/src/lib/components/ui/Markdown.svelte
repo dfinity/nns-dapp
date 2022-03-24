@@ -7,7 +7,7 @@
 
   // do not load the lib if available
   /* eslint-disable-next-line no-undef */
-  let parse: (string) => string | undefined = globalThis?.marked?.parse;
+  let parse: (value: string) => string | undefined = globalThis?.marked?.parse;
   let loading: boolean = parse === undefined;
 
   const onLoad = () => {
