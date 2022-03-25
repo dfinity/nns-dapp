@@ -1,4 +1,5 @@
 import { getLoginButton } from '../components/auth';
+import { getLogoutButton } from '../components/header.ts';
 
 export const loginWithIdentity = async (browser: WebdriverIO.Browser, identity: String) => {
   const loginButton = await getLoginButton(browser);
@@ -19,6 +20,7 @@ export const loginWithIdentity = async (browser: WebdriverIO.Browser, identity: 
 
   const iiLoginButton = await browser.$('#loginDifferent');
   await iiLoginButton.waitForExist();
+  //await browser["screenshot"]("ii_login_page");
   await iiLoginButton.click();
 
   const iiUserIdField = await browser.$('#registerUserNumber');
@@ -27,11 +29,16 @@ export const loginWithIdentity = async (browser: WebdriverIO.Browser, identity: 
 
   const iiLoginButton = await browser.$('#loginButton');
   await iiLoginButton.waitForExist();
+  //await browser["screenshot"]("ii_with_identity");
   await iiLoginButton.click();
 
   const iiConfirmRedirect = await browser.$('#confirmRedirect');
   await iiConfirmRedirect.waitForExist();
+  //await browser["screenshot"]("ii_confirm_redirect");
   await iiConfirmRedirect.click();
 
   await browser.switchToWindow(originalTabId);
+
+  let logoutButton = await getLogoutButton(browser);
+  await logoutButton.waitForExist({ timeout: 10000 });
 }
