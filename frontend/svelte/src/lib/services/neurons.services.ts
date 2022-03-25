@@ -63,33 +63,22 @@ export const stakeAndLoadNeuron = async ({
   return neuronId;
 };
 
-const refreshNeurons = async () => {
-  const identity = await getIdentity();
-  console.log("Found neurons needing to be refreshed. Resyncing neurons...");
-  const neuronsAfterRefresh = await queryNeurons({
-    identity,
-    certified: true,
-  });
-  neuronsStore.setNeurons(neuronsAfterRefresh);
-};
-
 // This gets all neurons linked to the current user's principal, even those with a stake of 0.
 // And adds them to the store
-export const listNeurons = async (): Promise<void> => {
+export const listNeurons = async ({
+  skipCheck = false,
+}: { skipCheck?: boolean } = {}): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
     request: ({ certified, identity }) => queryNeurons({ certified, identity }),
     onLoad: async ({ response: neurons, certified }) => {
       neuronsStore.setNeurons(neurons);
-      if (!certified) {
+      if (!certified || skipCheck) {
         return;
       }
       // Query the ledger for each neuron
       // refresh those whose stake does not match their ledger balance.
       try {
-        const anyRefreshed = await checkNeuronBalances(neurons);
-        if (anyRefreshed) {
-          await refreshNeurons();
-        }
+        await checkNeuronBalances(neurons);
       } catch (error) {
         // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-424
         console.error(error);
@@ -159,18 +148,19 @@ const claimNeurons =
       neuronIds.map((neuronId) => claimOrRefreshNeuron({ identity, neuronId }))
     );
 
-const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<boolean> => {
+const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   const identity = await getIdentity();
   const neuronIdsToRefresh: NeuronId[] = await findNeuronsStakeNotBalance({
     neurons: neurons.map(({ fullNeuron }) => fullNeuron).filter(isDefined),
     identity,
   });
   if (neuronIdsToRefresh.length === 0) {
-    return false;
+    return;
   }
+  console.log("Found neurons needing to be refreshed. Resyncing neurons...");
   const neuronIdsChunks: NeuronId[][] = createChunks(neuronIdsToRefresh, 10);
   await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
-  return true;
+  return listNeurons({ skipCheck: true });
 };
 
 export const updateDelay = async ({
