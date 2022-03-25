@@ -53,3 +53,14 @@ export const uniqueObjects = <T>(list: T[]): T[] => {
   }
   return result;
 };
+
+export const targetBlankLinkRenderer = (
+  href: string | null,
+  title: string | null,
+  text: string
+): string =>
+  `<a${
+    href === null
+      ? ""
+      : ` target="_blank" rel="noopener noreferrer" href="${href}"`
+  }${title === null ? "" : ` title="${title}"`}>${text}</a>`;
