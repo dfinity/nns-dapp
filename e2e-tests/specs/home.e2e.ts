@@ -1,5 +1,6 @@
 import { register } from '../common/register';
 import { logout } from '../common/logout';
+import { loginWithIdentity } from '../common/login';
 import { waitForImages } from '../common/waitForImages';
 import { waitForLoad } from '../common/waitForLoad';
 
@@ -47,5 +48,9 @@ describe("landing page", () => {
 
   it("logout", async () => {
     await logout(browser);
+  });
+
+  it("loginWithIdentity", async () => {
+    await loginWithIdentity(browser, "10000");
   });
 });

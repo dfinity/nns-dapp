@@ -1,7 +1,8 @@
-import { isAuthPage } from '../components/lib/auth';
+import { isAuthPage } from '../components/auth';
+import { getLogoutButton } from '../components/header.ts';
 
 export const logout = async (browser: WebdriverIO.Browser) => {
-  const logoutButton = await browser.$('[data-tid="logout-button"]'); // TODO: replace with data-tid=logout-button
+  const logoutButton = await getLogoutButton(browser);
   await logoutButton.waitForExist();
   await logoutButton.click();
   await browser.waitUntil(() => isAuthPage(browser));

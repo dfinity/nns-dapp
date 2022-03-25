@@ -1,11 +1,17 @@
 export const register = async (browser: WebdriverIO.Browser) => {
   await browser.$("main button").waitForExist();
+  const windowHandles = await browser.getWindowHandles();
   await browser.$("main button").click();
   
   // REGISTRATION
   
   // Internet Identity
   // First title is from the Service Worker.
+  for (let i=0; i<10; i++) {
+      await new Promise((yay) => setTimeout(yay, 100<<i));
+      if ((await browser.getWindowHandles()).length > windowHandles.length) break;
+  }
+
   await browser.pause(5000);
   // We want to switch the tab to II.
   const originalTabId = await browser.getWindowHandle();
