@@ -146,7 +146,7 @@ const findNeuronsStakeNotBalance = async ({
 
 const claimNeurons =
   (identity: Identity) =>
-  async (neuronIds: NeuronId[]): Promise<Array<NeuronId | undefined>> =>
+  (neuronIds: NeuronId[]): Promise<Array<NeuronId | undefined>> =>
     Promise.all(
       neuronIds.map((neuronId) => claimOrRefreshNeuron({ identity, neuronId }))
     );
