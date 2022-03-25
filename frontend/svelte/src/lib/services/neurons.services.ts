@@ -63,6 +63,16 @@ export const stakeAndLoadNeuron = async ({
   return neuronId;
 };
 
+const refreshNeurons = async () => {
+  const identity = await getIdentity();
+  console.log("Found neurons needing to be refreshed. Resyncing neurons...");
+  const neuronsAfterRefresh = await queryNeurons({
+    identity,
+    certified: true,
+  });
+  neuronsStore.setNeurons(neuronsAfterRefresh);
+};
+
 // This gets all neurons linked to the current user's principal, even those with a stake of 0.
 // And adds them to the store
 export const listNeurons = async (): Promise<void> => {
@@ -70,21 +80,19 @@ export const listNeurons = async (): Promise<void> => {
     request: ({ certified, identity }) => queryNeurons({ certified, identity }),
     onLoad: async ({ response: neurons, certified }) => {
       neuronsStore.setNeurons(neurons);
-      if (certified) {
-        // Query the ledger for each neuron
-        // refresh those whose stake does not match their ledger balance.
+      if (!certified) {
+        return;
+      }
+      // Query the ledger for each neuron
+      // refresh those whose stake does not match their ledger balance.
+      try {
         const anyRefreshed = await checkNeuronBalances(neurons);
         if (anyRefreshed) {
-          const identity = await getIdentity();
-          console.log(
-            "Found neurons needing to be refreshed. Resyncing neurons..."
-          );
-          const neuronsAfterRefresh = await queryNeurons({
-            identity,
-            certified: true,
-          });
-          neuronsStore.setNeurons(neuronsAfterRefresh);
+          await refreshNeurons();
         }
+      } catch (error) {
+        // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-424
+        console.error(error);
       }
     },
     onError: ({ error, certified }) => {
