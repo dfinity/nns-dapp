@@ -57,3 +57,14 @@ export const uniqueObjects = <T>(list: T[]): T[] => {
 // https://stackoverflow.com/questions/43010737/way-to-tell-typescript-compiler-array-prototype-filter-removes-certain-types-fro#answer-54318054
 export const isDefined = <T>(argument: T | undefined): argument is T =>
   argument !== undefined;
+
+export const targetBlankLinkRenderer = (
+  href: string | null,
+  title: string | null,
+  text: string
+): string =>
+  `<a${
+    href === null
+      ? ""
+      : ` target="_blank" rel="noopener noreferrer" href="${href}"`
+  }${title === null ? "" : ` title="${title}"`}>${text}</a>`;
