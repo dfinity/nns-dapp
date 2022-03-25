@@ -1,4 +1,5 @@
 import { register } from '../common/register';
+import { logout } from '../common/logout';
 import { waitForImages } from '../common/waitForImages';
 import { waitForLoad } from '../common/waitForLoad';
 
@@ -42,5 +43,9 @@ describe("landing page", () => {
     // TODO: Deploy Ledger and Governance canisters and proxy them
     // How do we do this when they are in another repo? Do we have a repository of docker images?
     // TODO: Create docker image of NNS Dapp with IDENTITY_SERVICE_URL pointing to these proxies
+  });
+
+  it("logout", async () => {
+    await logout(browser);
   });
 });
