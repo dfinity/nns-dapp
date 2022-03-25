@@ -48,9 +48,14 @@ describe("landing page", () => {
 
   it("logout", async () => {
     await logout(browser);
+    await waitForImages(browser);
+    await browser["screenshot"]("logout");
   });
 
   it("loginWithIdentity", async () => {
     await loginWithIdentity(browser, "10000");
+    await waitForImages(browser);
+    await browser.execute(() => document.querySelectorAll('main section svg').forEach(element => element.remove()));
+    await browser["screenshot"]("loginWithIdentity");
   });
 });
