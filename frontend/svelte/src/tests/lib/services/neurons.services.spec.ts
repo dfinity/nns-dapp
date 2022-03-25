@@ -118,7 +118,7 @@ describe("neurons-services", () => {
     });
 
     it("should claim or refresh neurons whose balance does not match stake", async () => {
-      const balance = ICP.fromString("1") as ICP;
+      const balance = ICP.fromString("2") as ICP;
       const neuronMatchingStake = {
         ...mockNeuron,
         fullNeuron: {
@@ -142,6 +142,33 @@ describe("neurons-services", () => {
       await tick();
 
       expect(spyClaimOrRefresh).toBeCalledTimes(1);
+    });
+
+    it("should not claim or refresh neurons whose balance does not match stake but ICP is less than one", async () => {
+      const balance = ICP.fromString("0.9") as ICP;
+      const neuronMatchingStake = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: balance.toE8s(),
+        },
+      };
+      const neuronNotMatchingStake = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(3_000_000_000),
+        },
+      };
+      spyGetNeuronBalance.mockImplementation(() => Promise.resolve(balance));
+      spyQueryNeurons.mockImplementation(() =>
+        Promise.resolve([neuronNotMatchingStake, neuronMatchingStake])
+      );
+      await listNeurons();
+      // `await` does not wait for `onLoad` to finish
+      await tick();
+
+      expect(spyClaimOrRefresh).not.toBeCalled();
     });
 
     it("should not list neurons if no identity", async () => {
