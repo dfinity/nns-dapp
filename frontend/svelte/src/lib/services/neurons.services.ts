@@ -63,11 +63,6 @@ export const stakeAndLoadNeuron = async ({
   return neuronId;
 };
 
-// Gets neurons and adds them to the store
-// export const listNeurons = async (): Promise<void> => {
-//   return queryAndUpdate<NeuronInfo[], unknown>({
-//     request: (options) => queryNeurons(options),
-//     onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
 // This gets all neurons linked to the current user's principal, even those with a stake of 0.
 // And adds them to the store
 export const listNeurons = async (): Promise<void> => {
@@ -162,10 +157,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<boolean> => {
     neurons: neurons
       .map(({ fullNeuron }) => fullNeuron)
       .filter(Boolean)
-      // TS does not like Option<Neuron>
-      // Type 'Option<Neuron>' is not assignable to type 'Neuron'.
-      // Type 'undefined' is not assignable to type 'Neuron'
-      .map((neuron) => neuron as Neuron),
+      .map(isDefined),
     identity,
   });
   if (neuronIdsToRefresh.length === 0) {
