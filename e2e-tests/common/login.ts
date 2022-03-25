@@ -18,10 +18,14 @@ export const loginWithIdentity = async (browser: WebdriverIO.Browser, identity: 
   */
   await browser.switchWindow('Internet Identity');
 
+  browser.waitUntil(() => browser.execute(() => document.readyState === 'complete'));
+  await browser["screenshot"]("ii_tab");
+
   const iiLoginButton = await browser.$('#loginDifferent');
-  await iiLoginButton.waitForExist();
-  //await browser["screenshot"]("ii_login_page");
-  await iiLoginButton.click();
+  if (await iiLoginButton.isExisting()) {
+    //await browser["screenshot"]("ii_login_page");
+    await iiLoginButton.click();
+  }
 
   const iiUserIdField = await browser.$('#registerUserNumber');
   await iiUserIdField.waitForExist();
