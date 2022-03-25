@@ -106,19 +106,10 @@ const balanceMatchesStake = ({
 }: {
   balance: ICP;
   fullNeuron: Neuron;
-}): boolean => {
-  if (balance.toE8s() !== fullNeuron.cachedNeuronStake) {
-    if (balance.toE8s() < E8S_PER_ICP) {
-      // We can only refresh a neuron if its balance is at least 1 ICP
-      console.log(
-        `Cannot refresh neuron because its ledger balance is less than 1 ICP. NeuronId: ${fullNeuron.id}. AccountIdentifier: ${fullNeuron.accountIdentifier}`
-      );
-      return false;
-    }
-    return true;
-  }
-  return false;
-};
+}): boolean => balance.toE8s() === fullNeuron.cachedNeuronStake;
+
+const balanceIsMoreThanOne = ({ balance }: { balance: ICP }): boolean =>
+  balance.toE8s() > E8S_PER_ICP;
 
 const findNeuronsStakeNotBalance = async ({
   neurons,
@@ -137,7 +128,9 @@ const findNeuronsStakeNotBalance = async ({
       )
     )
   )
-    .filter(balanceMatchesStake)
+    .filter((params) => !balanceMatchesStake(params))
+    // We can only refresh a neuron if its balance is at least 1 ICP
+    .filter(balanceIsMoreThanOne)
     .map(({ fullNeuron }) => fullNeuron.id)
     .filter(isDefined);
 
@@ -157,6 +150,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   if (neuronIdsToRefresh.length === 0) {
     return;
   }
+  console.log("refreshing");
   // We found neurons that need to be refreshed.
   const neuronIdsChunks: NeuronId[][] = createChunks(neuronIdsToRefresh, 10);
   await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
