@@ -60,6 +60,5 @@ export const register = async (browser: WebdriverIO.Browser) => {
   await proceedButton.waitForExist();
   await proceedButton.click();
 
-  console.log({originalTabId});
   await browser.switchToWindow(originalTabId);
 }
