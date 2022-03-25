@@ -154,10 +154,7 @@ const claimNeurons =
 const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<boolean> => {
   const identity = await getIdentity();
   const neuronIdsToRefresh: NeuronId[] = await findNeuronsStakeNotBalance({
-    neurons: neurons
-      .map(({ fullNeuron }) => fullNeuron)
-      .filter(Boolean)
-      .map(isDefined),
+    neurons: neurons.map(({ fullNeuron }) => fullNeuron).filter(isDefined),
     identity,
   });
   if (neuronIdsToRefresh.length === 0) {
