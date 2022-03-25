@@ -29,6 +29,7 @@
     "@testing-library/svelte": "^3.0.3",
     "@tsconfig/svelte": "^3.0.0",
     "@types/jest": "^27.4.1",
+    "@types/marked": "^4.0.3",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
     "autoprefixer": "^10.4.2",
