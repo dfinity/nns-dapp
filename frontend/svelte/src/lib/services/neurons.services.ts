@@ -157,7 +157,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   if (neuronIdsToRefresh.length === 0) {
     return;
   }
-  console.log("Found neurons needing to be refreshed. Resyncing neurons...");
+  // We found neurons that need to be refreshed.
   const neuronIdsChunks: NeuronId[][] = createChunks(neuronIdsToRefresh, 10);
   await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
   return listNeurons({ skipCheck: true });
