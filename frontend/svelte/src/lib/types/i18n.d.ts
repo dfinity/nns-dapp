@@ -29,11 +29,13 @@ interface I18nError {
   get_neurons: string;
   get_known_neurons: string;
   register_vote: string;
+  register_vote_neuron: string;
   register_vote_unknown: string;
   add_followee: string;
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
+  fail: string;
 }
 
 interface I18nWarning {

@@ -9,6 +9,8 @@ import en from "../../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
 describe("ProposalMeta", () => {
+  jest.spyOn(console, "error").mockImplementation(jest.fn);
+
   const props = {
     proposalInfo: mockProposalInfo,
   };

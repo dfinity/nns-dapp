@@ -1,6 +1,5 @@
 import type { Identity } from "@dfinity/agent";
 import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
-import { GovernanceError } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   queryProposal,
@@ -8,6 +7,7 @@ import {
   registerVote,
 } from "../api/proposals.api";
 import { busyStore } from "../stores/busy.store";
+import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
   proposalsFiltersStore,
@@ -15,9 +15,9 @@ import {
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
-import { isNode } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
-import { stringifyJson, uniqueObjects } from "../utils/utils";
+import { replacePlaceholders } from "../utils/i18n.utils";
+import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 
@@ -154,11 +154,8 @@ export const registerVotes = async ({
       vote,
     });
   } catch (error) {
-    // TODO: replace w/ console.error mock
-    if (!isNode()) {
-      // preserve in unit-test
-      console.error("vote unknown:", error);
-    }
+    console.error("vote unknown:", error);
+
     toastsStore.show({
       labelKey: "error.register_vote_unknown",
       level: "error",
@@ -166,7 +163,15 @@ export const registerVotes = async ({
     });
   }
 
-  await listNeurons();
+  try {
+    await listNeurons();
+  } catch (err) {
+    console.error(err);
+    toastsStore.error({
+      labelKey: "error.list_proposals",
+      err,
+    });
+  }
 
   busyStore.stop("vote");
 };
@@ -182,51 +187,45 @@ const requestRegisterVotes = async ({
   identity: Identity;
   vote: Vote;
 }): Promise<void> => {
-  const register = async (
-    neuronId: NeuronId
-  ): Promise<GovernanceError | undefined> => {
-    try {
-      await registerVote({
-        neuronId,
-        vote,
-        proposalId,
-        identity,
+  const errorDetail = (
+    neuronId: NeuronId,
+    result: PromiseSettledResult<void>
+  ): string | undefined => {
+    if (result.status === "rejected" && result.reason instanceof Error) {
+      const reason = errorToString(result.reason);
+      // detail text
+      return replacePlaceholders(get(i18n).error.register_vote_neuron, {
+        $neuronId: neuronId.toString(),
+        $reason:
+          reason === undefined || reason?.length === 0
+            ? get(i18n).error.fail
+            : reason,
       });
-
-      return undefined;
-    } catch (error: GovernanceError | unknown) {
-      // We catch the error because we want to display only the distinct GovernanceError
-      if (error instanceof GovernanceError) {
-        return error;
-      }
-
-      // We throw anyway unexpected errors
-      throw error;
     }
+    return undefined;
   };
-
-  // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
-  const responses: Array<GovernanceError | undefined> = await Promise.all(
-    neuronIds.map(register)
-  );
-  const errors = responses.filter(Boolean);
-  // collect unique error messages
-  const errorDetails: string = uniqueObjects(errors)
-    .map(({ detail }: GovernanceError) =>
-      stringifyJson(detail.error_message, { indentation: 2 })
+  const responses: Array<PromiseSettledResult<void>> = await Promise.allSettled(
+    neuronIds.map(
+      (neuronId: NeuronId): Promise<void> =>
+        registerVote({
+          neuronId,
+          vote,
+          proposalId,
+          identity,
+        })
     )
-    .join("\n");
+  );
+  const details: string[] = responses
+    .map((response, i) => errorDetail(neuronIds[i], response))
+    .filter(isDefined);
 
-  if (errors.length > 0) {
-    // TODO: replace w/ console.error mock
-    if (!isNode()) {
-      // avoid in unit-test
-      console.error("vote:", errorDetails);
-    }
+  if (details.length > 0) {
+    console.error("vote", details);
+
     toastsStore.show({
       labelKey: "error.register_vote",
       level: "error",
-      detail: errorDetails.length > 0 ? `\n${errorDetails}` : undefined,
+      detail: details.join(", "),
     });
   }
 };

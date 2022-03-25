@@ -8,7 +8,7 @@ import {
   lastProposalId,
   proposalActionFields,
   proposalFirstActionKey,
-  selectedNeuronsVotingPover,
+  selectedNeuronsVotingPower,
 } from "../../../lib/utils/proposals.utils";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
@@ -309,7 +309,7 @@ describe("proposals-utils", () => {
     });
   });
 
-  describe("selectedNeuronsVotingPover", () => {
+  describe("selectedNeuronsVotingPower", () => {
     const neuron = (id: number, votingPower: number): NeuronInfo =>
       ({
         ...mockNeuron,
@@ -319,14 +319,14 @@ describe("proposals-utils", () => {
 
     it("should calculate total", () => {
       expect(
-        selectedNeuronsVotingPover({
+        selectedNeuronsVotingPower({
           neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
           selectedIds: [1, 2, 3].map(BigInt),
         })
       ).toBe(BigInt(9));
 
       expect(
-        selectedNeuronsVotingPover({
+        selectedNeuronsVotingPower({
           neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
           selectedIds: [1, 3].map(BigInt),
         })
@@ -335,7 +335,7 @@ describe("proposals-utils", () => {
 
     it("should return 0 if no selection", () => {
       expect(
-        selectedNeuronsVotingPover({
+        selectedNeuronsVotingPower({
           neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
           selectedIds: [],
         })
