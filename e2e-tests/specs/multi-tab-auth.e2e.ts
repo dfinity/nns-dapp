@@ -1,8 +1,10 @@
 import { register } from '../common/register';
 import { logout } from '../common/logout';
 import { loginWithIdentity } from '../common/login';
+import { getLoginButton } from '../components/auth';
 import { waitForImages } from '../common/waitForImages';
 import { waitForLoad } from '../common/waitForLoad';
+import { getLogoutButton } from '../components/header.ts';
 
 describe("landing page", () => {
   const nns_tabs = [];
@@ -32,6 +34,22 @@ describe("landing page", () => {
       await browser.switchToWindow(tabId);
       let logoutButton = await getLogoutButton(browser);
       await logoutButton.waitForExist({ timeout: 10000 });
+    });
+  });
+
+  it("oneTabLogsOut", async () => {
+    const logoutButton = await getLogoutButton(browser);
+    await logoutButton.waitForExist();
+    await logoutButton.click();
+    const loginButton = await getLoginButton(browser);
+    await loginButton.waitForExist();
+  });
+
+  it("allTabsLogOut", async () => {
+    nns_tabs.forEach(async (tabId) => {
+      await browser.switchToWindow(tabId);
+      let loginButton = await getLoginButton(browser);
+      await loginButton.waitForExist({ timeout: 10000 });
     });
   });
 });
