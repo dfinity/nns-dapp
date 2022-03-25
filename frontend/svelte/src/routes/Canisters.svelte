@@ -5,7 +5,6 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import { authStore } from "../lib/stores/auth.store";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { errorToString } from "../lib/utils/error.utils";
   import { listCanisters } from "../lib/services/canisters.services";
   import { canistersStore } from "../lib/stores/canisters.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
@@ -18,15 +17,12 @@
     try {
       await listCanisters({
         clearBeforeQuery: true,
-        identity: $authStore.identity,
       });
     } catch (err: unknown) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.list_canisters",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
-      console.error(err);
     }
 
     loading = false;

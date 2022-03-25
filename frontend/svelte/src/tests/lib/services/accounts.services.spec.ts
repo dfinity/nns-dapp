@@ -6,7 +6,11 @@ import {
 } from "../../../lib/services/accounts.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import {
+  mockIdentityErrorMsg,
+  resetIdentity,
+  setNoIdentity,
+} from "../../mocks/auth.store.mock";
 
 describe("accounts-services", () => {
   const mockAccounts = { main: mockMainAccount, subAccounts: [] };
@@ -20,7 +24,7 @@ describe("accounts-services", () => {
     .mockImplementation(() => Promise.resolve());
 
   it("should sync accounts", async () => {
-    await syncAccounts({ identity: mockIdentity });
+    await syncAccounts();
 
     expect(spyLoadAccounts).toHaveBeenCalled();
 
@@ -29,23 +33,28 @@ describe("accounts-services", () => {
   });
 
   it("should add a subaccount", async () => {
-    await addSubAccount({ name: "test subaccount", identity: mockIdentity });
+    await addSubAccount({ name: "test subaccount" });
 
     expect(spyCreateSubAccount).toHaveBeenCalled();
   });
 
   it("should not sync accounts if no identity", async () => {
-    const call = async () => await syncAccounts({ identity: null });
+    setNoIdentity();
 
-    await expect(call).rejects.toThrow(Error("No identity"));
+    const call = async () => await syncAccounts();
+
+    await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+
+    resetIdentity();
   });
 
   it("should not add subaccount if no identity", async () => {
-    const call = async () =>
-      await addSubAccount({ name: "test subaccount", identity: null });
+    setNoIdentity();
 
-    await expect(call).rejects.toThrow(
-      Error("No identity found to create subaccount")
-    );
+    const call = async () => await addSubAccount({ name: "test subaccount" });
+
+    await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+
+    resetIdentity();
   });
 });

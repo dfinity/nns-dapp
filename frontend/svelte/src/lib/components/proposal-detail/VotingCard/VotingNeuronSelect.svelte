@@ -3,13 +3,13 @@
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import {
     formatVotingPower,
-    selectedNeuronsVotingPover,
+    selectedNeuronsVotingPower,
   } from "../../../utils/proposals.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
 
   let total: bigint;
 
-  $: total = selectedNeuronsVotingPover({
+  $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
   });

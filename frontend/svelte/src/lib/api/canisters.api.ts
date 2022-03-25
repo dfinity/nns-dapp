@@ -7,8 +7,10 @@ import { createAgent } from "../utils/agent.utils";
 
 export const queryCanisters = async ({
   identity,
+  certified,
 }: {
   identity: Identity;
+  certified: boolean;
 }): Promise<CanisterDetails[]> => {
   const agent = await createAgent({ identity, host: identityServiceURL });
 
@@ -17,5 +19,5 @@ export const queryCanisters = async ({
     canisterId: OWN_CANISTER_ID,
   });
 
-  return nnsDapp.getCanisters({ certified: true });
+  return nnsDapp.getCanisters({ certified });
 };

@@ -7,5 +7,5 @@
 
 <Card>
   <!-- TODO: https://dfinity.atlassian.net/browse/L2-354 -->
-  Following Card
+  Following Card {neuron.neuronId}
 </Card>

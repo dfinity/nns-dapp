@@ -23,7 +23,7 @@ describe("accounts-api", () => {
     nnsDappMock.getAccount.mockResolvedValue(mockAccountDetails);
     jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
-    await loadAccounts({ identity: mockIdentity });
+    await loadAccounts({ identity: mockIdentity, certified: true });
 
     expect(ledgerMock.accountBalance).toBeCalled();
     expect(nnsDappMock.getAccount).toBeCalled();
@@ -47,7 +47,7 @@ describe("accounts-api", () => {
     nnsDappMock.getAccount.mockResolvedValue(accountDetails);
     jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
-    await loadAccounts({ identity: mockIdentity });
+    await loadAccounts({ identity: mockIdentity, certified: true });
 
     // Called once for main, another for the subaccount = 2
     expect(ledgerMock.accountBalance).toBeCalledTimes(2);

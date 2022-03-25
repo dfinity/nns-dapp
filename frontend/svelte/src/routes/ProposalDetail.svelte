@@ -14,7 +14,6 @@
   import VotingCard from "../lib/components/proposal-detail/VotingCard/VotingCard.svelte";
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import { authStore } from "../lib/stores/auth.store";
   import { listNeurons } from "../lib/services/neurons.services";
   import { neuronsStore } from "../lib/stores/neurons.store";
 
@@ -33,8 +32,7 @@
       return;
     }
 
-    // TODO: catch and error handling -- https://dfinity.atlassian.net/browse/L2-370
-    await listNeurons({ identity: $authStore.identity });
+    await listNeurons();
     neuronsReady = true;
   });
 
@@ -59,7 +57,6 @@
 
     await loadProposal({
       proposalId: proposalIdMaybe,
-      identity: $authStore.identity,
       setProposal: (proposal: ProposalInfo) => (proposalInfo = proposal),
       handleError: onError,
     });

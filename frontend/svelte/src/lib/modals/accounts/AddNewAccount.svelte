@@ -9,8 +9,6 @@
     SubAccountLimitExceededError,
   } from "../../canisters/nns-dapp/nns-dapp.errors";
   import { toastsStore } from "../../stores/toasts.store";
-  import { errorToString } from "../../utils/error.utils";
-  import { authStore } from "../../stores/auth.store";
 
   let newAccountName: string = "";
 
@@ -21,7 +19,6 @@
       creating = true;
       await addSubAccount({
         name: newAccountName,
-        identity: $authStore.identity,
       });
       dispatcher("nnsClose");
     } catch (err) {
@@ -31,12 +28,10 @@
           : err instanceof SubAccountLimitExceededError
           ? "create_subaccount_limit_exceeded"
           : "create_subaccount";
-      toastsStore.show({
+      toastsStore.error({
         labelKey,
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
-      console.error(err);
     } finally {
       creating = false;
     }

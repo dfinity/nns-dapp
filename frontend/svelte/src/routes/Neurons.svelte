@@ -12,7 +12,6 @@
   import { listNeurons } from "../lib/services/neurons.services";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { errorToString } from "../lib/utils/error.utils";
   import { neuronsStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
@@ -26,12 +25,11 @@
     }
     try {
       isLoading = true;
-      await listNeurons({ identity: $authStore.identity });
+      await listNeurons();
     } catch (err) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "errors.get_neurons",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
     } finally {
       isLoading = false;

@@ -7,7 +7,6 @@ import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
-import * as en from "../../../lib/i18n/en.json";
 import CreateNeuronModal from "../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import {
   stakeAndLoadNeuron,
@@ -16,8 +15,12 @@ import {
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { authStore } from "../../../lib/stores/auth.store";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
-import { mockAccountsStoreSubscribe } from "../../mocks/accounts.store.mock";
+import {
+  mockAccountsStoreSubscribe,
+  mockSubAccount,
+} from "../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,
@@ -43,7 +46,7 @@ describe("CreateNeuronModal", () => {
   beforeEach(() => {
     jest
       .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
+      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
@@ -76,6 +79,22 @@ describe("CreateNeuronModal", () => {
     accountCard && (await fireEvent.click(accountCard));
 
     expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
+  });
+
+  it("should be able to select a subaccount and move to the next view", async () => {
+    const { container, queryByText } = render(CreateNeuronModal);
+
+    const accountCards = container.querySelectorAll('article[role="button"]');
+    expect(accountCards.length).toBe(2);
+
+    const subAccountCard = queryByText(mockSubAccount.name as string, {
+      exact: false,
+    });
+
+    subAccountCard && (await fireEvent.click(subAccountCard));
+
+    expect(queryByText(en.neurons.stake_neuron)).toBeInTheDocument();
+    expect(queryByText(mockSubAccount.identifier)).toBeInTheDocument();
   });
 
   it("should have disabled Create neuron button", async () => {

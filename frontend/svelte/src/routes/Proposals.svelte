@@ -22,9 +22,7 @@
     listNextProposals,
     listProposals,
   } from "../lib/services/proposals.services";
-  import { authStore } from "../lib/stores/auth.store";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { errorToString } from "../lib/utils/error.utils";
   import { routeStore } from "../lib/stores/route.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
 
@@ -37,15 +35,12 @@
     try {
       await listNextProposals({
         beforeProposal: lastProposalId($proposalsStore),
-        identity: $authStore.identity,
       });
     } catch (err: unknown) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.list_proposals",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
-      console.error(err);
     }
 
     loading = false;
@@ -58,15 +53,12 @@
       // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
       await listProposals({
         clearBeforeQuery: !emptyProposals($proposalsStore),
-        identity: $authStore.identity,
       });
     } catch (err: unknown) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.list_proposals",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
-      console.error(err);
     }
 
     loading = false;

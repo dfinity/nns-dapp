@@ -27,9 +27,15 @@ interface I18nError {
   create_subaccount_too_long: string;
   create_subaccount_limit_exceeded: string;
   get_neurons: string;
-  get_neuron: string;
+  get_known_neurons: string;
   register_vote: string;
+  register_vote_neuron: string;
   register_vote_unknown: string;
+  add_followee: string;
+  remove_followee: string;
+  followee_does_not_exist: string;
+  accounts_not_found: string;
+  fail: string;
 }
 
 interface I18nWarning {
@@ -116,6 +122,9 @@ interface I18nNew_followee {
   follow_neuron: string;
   options_title: string;
   follow: string;
+  unfollow: string;
+  success_add_followee: string;
+  success_remove_followee: string;
 }
 
 interface I18nFollow_neurons {

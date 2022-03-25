@@ -9,8 +9,7 @@
     try {
       await authStore.sync();
     } catch (err) {
-      toastsStore.show({ labelKey: "error.auth_sync", level: "error" });
-      console.error(err);
+      toastsStore.error({ labelKey: "error.auth_sync", err });
     }
   };
 </script>

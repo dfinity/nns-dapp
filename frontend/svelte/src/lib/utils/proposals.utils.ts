@@ -113,7 +113,7 @@ export const hasMatchingProposals = ({
   );
 };
 
-export const selectedNeuronsVotingPover = ({
+export const selectedNeuronsVotingPower = ({
   neurons,
   selectedIds,
 }: {

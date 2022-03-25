@@ -1,5 +1,6 @@
 import {
   debounce,
+  isDefined,
   stringifyJson,
   uniqueObjects,
 } from "../../../lib/utils/utils";
@@ -103,5 +104,18 @@ describe("utils", () => {
     ]);
     expect(uniqueObjects([1, 2, 3, 1, 2, 3])).toEqual([1, 2, 3]);
     expect(uniqueObjects([])).toEqual([]);
+  });
+
+  describe("isDefined", () => {
+    it("should return true if not undefined", () => {
+      expect(isDefined(true)).toBeTruthy();
+      expect(isDefined(1)).toBeTruthy();
+      expect(isDefined("")).toBeTruthy();
+      expect(isDefined(null)).toBeTruthy();
+    });
+
+    it("should return false if undefined", () => {
+      expect(isDefined(undefined)).toBeFalsy();
+    });
   });
 });

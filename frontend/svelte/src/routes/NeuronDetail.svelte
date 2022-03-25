@@ -15,7 +15,6 @@
   import { AppPath } from "../lib/constants/routes.constants";
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
-  import { authStore } from "../lib/stores/auth.store";
 
   let neuron: NeuronInfo | undefined;
 
@@ -49,7 +48,6 @@
 
     await loadNeuron({
       neuronId: neuronIdMaybe,
-      identity: $authStore.identity,
       setNeuron: (neuronInfo: NeuronInfo) => (neuron = neuronInfo),
       handleError: onError,
     });
