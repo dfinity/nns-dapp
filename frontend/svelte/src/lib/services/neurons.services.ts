@@ -22,7 +22,7 @@ import { E8S_PER_ICP } from "../constants/icp.constants";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
-import { createChunks } from "../utils/utils";
+import { createChunks, isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -147,9 +147,7 @@ const findNeuronsStakeNotBalance = async ({
   )
     .filter(balanceMatchesStake)
     .map(({ fullNeuron }) => fullNeuron.id)
-    .filter(Boolean)
-    // TS was complaining without the casting
-    .map((id) => id as NeuronId);
+    .filter(isDefined);
 
 const claimNeurons =
   (identity: Identity) =>

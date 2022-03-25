@@ -70,7 +70,7 @@ export const targetBlankLinkRenderer = (
   }${title === null ? "" : ` title="${title}"`}>${text}</a>`;
 
 /**
- * Returns an array of arrays of size `chunkSize`
+ * Returns an array of arrays of size <= `chunkSize`
  */
 export const createChunks = <T>(
   elements: Array<T>,
