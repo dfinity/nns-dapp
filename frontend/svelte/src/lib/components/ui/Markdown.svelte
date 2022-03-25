@@ -32,7 +32,7 @@
     on:nnsError={onError}
   />
 {:else if globalMarked !== undefined && text !== undefined}
-  {@html globalMarked?.parse(`${removeHTMLTags(text)}`, {
+  {@html globalMarked?.parse(removeHTMLTags(text) ?? "", {
     renderer: renderer(globalMarked),
   })}
 {:else}
