@@ -44,13 +44,13 @@ export const secondsToDuration = (seconds: bigint): string => {
     .join(", ");
 };
 
-export const secondsToDate = (seconds: bigint): string => {
+export const secondsToDate = (seconds: number): string => {
   const options: Intl.DateTimeFormatOptions = {
     month: "long",
     day: "numeric",
     year: "numeric",
   };
-  const millisedoncs = Number(seconds) * 1000;
+  const millisedoncs = seconds * 1000;
   // We only support english for now.
   return new Date(millisedoncs).toLocaleDateString("en", options);
 };

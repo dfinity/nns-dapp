@@ -38,7 +38,7 @@
 </script>
 
 <Card {role} on:click {ariaLabel}>
-  <div slot="start" class="lock">
+  <div slot="start" class="lock" data-tid="neuron-card-title">
     <h3 class:has-neuron-control={isCommunityFund || isHotKeyControl}>
       {neuron.neuronId}
     </h3>

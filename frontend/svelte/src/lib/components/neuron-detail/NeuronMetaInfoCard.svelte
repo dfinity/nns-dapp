@@ -8,7 +8,7 @@
   import {
     ageMultiplier,
     dissolveDelayMultiplier,
-    votingPower,
+    formatVotingPower,
   } from "../../utils/neuron.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
@@ -20,7 +20,8 @@
   <section>
     <div class="space-between">
       <p>
-        {secondsToDate(neuron.createdTimestampSeconds)} - {$i18n.neurons.staked}
+        {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
+          .staked}
       </p>
       <button class="primary small"
         >{$i18n.neuron_detail.join_community_fund}</button
@@ -28,33 +29,32 @@
     </div>
     <div class="space-between">
       <p class="voting-power">
-        {#if neuron.fullNeuron?.cachedNeuronStake !== undefined && neuron.dissolveDelaySeconds}
+        {#if neuron.votingPower}
           {`${$i18n.neurons.voting_power}:`}
           <span class="amount">
-            {votingPower({
-              stake: neuron.fullNeuron.cachedNeuronStake,
-              dissolveDelayInSeconds: Number(neuron.dissolveDelaySeconds),
-            }).toFixed(2)}
+            {formatVotingPower(neuron.votingPower)}
           </span>
-          <Tooltip
-            id="voting-power-info"
-            text={replacePlaceholders(
-              $i18n.neuron_detail.voting_power_tooltip,
-              {
-                $stake: formatICP(neuron.fullNeuron.cachedNeuronStake),
-                $delayMultiplier: dissolveDelayMultiplier(
-                  Number(neuron.dissolveDelaySeconds)
-                ).toFixed(2),
-                $ageMultiplier: ageMultiplier(
-                  Number(neuron.ageSeconds)
-                ).toFixed(2),
-              }
-            )}
-          >
-            <span>
-              <IconInfo />
-            </span>
-          </Tooltip>
+          {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
+            <Tooltip
+              id="voting-power-info"
+              text={replacePlaceholders(
+                $i18n.neuron_detail.voting_power_tooltip,
+                {
+                  $stake: formatICP(neuron.fullNeuron.cachedNeuronStake),
+                  $delayMultiplier: dissolveDelayMultiplier(
+                    Number(neuron.dissolveDelaySeconds)
+                  ).toFixed(2),
+                  $ageMultiplier: ageMultiplier(
+                    Number(neuron.ageSeconds)
+                  ).toFixed(2),
+                }
+              )}
+            >
+              <span>
+                <IconInfo />
+              </span>
+            </Tooltip>
+          {/if}
         {/if}
       </p>
       <div class="buttons">
