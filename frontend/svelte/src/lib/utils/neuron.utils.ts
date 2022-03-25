@@ -3,6 +3,7 @@ import { NeuronState } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
+  SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
 } from "../constants/constants";
 import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
@@ -63,3 +64,12 @@ export const hasValidStake = (neuron: NeuronInfo): boolean =>
         neuron.fullNeuron.maturityE8sEquivalent >
       BigInt(TRANSACTION_FEE_E8S)
     : false;
+
+export const dissolveDelayMultiplier = (delayInSeconds: number): number =>
+  1 +
+  1 *
+    (Math.min(delayInSeconds, SECONDS_IN_EIGHT_YEARS) / SECONDS_IN_EIGHT_YEARS);
+
+export const ageMultiplier = (ageSeconds: number): number =>
+  1 +
+  0.25 * (Math.min(ageSeconds, SECONDS_IN_FOUR_YEARS) / SECONDS_IN_FOUR_YEARS);

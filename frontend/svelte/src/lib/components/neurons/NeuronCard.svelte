@@ -74,9 +74,12 @@
 
   {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
     <p class="duration">
-      {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons.staked}
+      {secondsToDuration(neuron.dissolveDelaySeconds)}
+      - {$i18n.neurons.dissolve_delay_title}
     </p>
   {/if}
+
+  <slot />
 </Card>
 
 <style lang="scss">
