@@ -281,6 +281,10 @@ export default class RequestConverters {
       spawn.setNewController(newController);
     }
 
+    if (request.percentageToSpawn != null) {
+      spawn.setPercentageToSpawn(request.percentageToSpawn);
+    }
+
     const manageNeuron = new PbManageNeuron();
     manageNeuron.setSpawn(spawn);
 
@@ -624,6 +628,9 @@ export default class RequestConverters {
       const spawn = command.Spawn;
       return {
         Spawn: {
+          percentage_to_spawn: spawn.percentageToSpawn != null
+            ? [spawn.percentageToSpawn]
+            : [],
           new_controller: spawn.newController
             ? [Principal.fromText(spawn.newController)]
             : [],
