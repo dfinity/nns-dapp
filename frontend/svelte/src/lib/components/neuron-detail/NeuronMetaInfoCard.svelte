@@ -12,6 +12,11 @@
   } from "../../utils/neuron.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
+  import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
+  import IncreaseStakeButton from "./actions/IncreaseStakeButton.svelte";
+  import JoinCommunityFundButton from "./actions/JoinCommunityFundButton.svelte";
+  import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
+  import StartDissolvingButton from "./actions/StartDissolvingButton.svelte";
 
   export let neuron: NeuronInfo;
 </script>
@@ -23,9 +28,7 @@
         {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
           .staked}
       </p>
-      <button class="primary small"
-        >{$i18n.neuron_detail.join_community_fund}</button
-      >
+      <JoinCommunityFundButton />
     </div>
     <div class="space-between">
       <p class="voting-power">
@@ -58,18 +61,13 @@
         {/if}
       </p>
       <div class="buttons">
-        <button class="primary small"
-          >{$i18n.neuron_detail.increase_dissolve_delay}</button
-        >
-        <button class="warning small"
-          >{$i18n.neuron_detail.start_dissolving}</button
-        >
+        <IncreaseDissolveDelayButton />
+        <StartDissolvingButton />
       </div>
     </div>
     <div class="only-buttons">
-      <button class="primary small">{$i18n.neuron_detail.increase_stake}</button
-      >
-      <button class="primary small">{$i18n.neuron_detail.split_neuron}</button>
+      <IncreaseStakeButton />
+      <SplitNeuronButton />
     </div>
   </section>
 </NeuronCard>
