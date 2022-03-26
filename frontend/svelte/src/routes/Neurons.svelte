@@ -70,7 +70,6 @@
       {#if isLoading}
         <Spinner />
       {:else}
-        <Spinner />
         {#each $neuronsStore as neuron}
           <NeuronCard
             role="link"
