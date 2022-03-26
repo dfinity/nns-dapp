@@ -31,7 +31,7 @@
     aria-describedby="modalContent"
     on:click|stopPropagation
   >
-    <div data-tid="close-modal" class="backdrop" on:click|stopPropagation={close} />
+    <div class="backdrop" on:click|stopPropagation={close} />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class={`wrapper ${size}`}
@@ -46,7 +46,7 @@
             >
           {/if}
           <h3 id="modalTitle"><slot name="title" /></h3>
-          <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
+          <button data-tid="close-modal" on:click|stopPropagation={close} aria-label={$i18n.core.close}
             ><IconClose /></button
           >
         </div>
