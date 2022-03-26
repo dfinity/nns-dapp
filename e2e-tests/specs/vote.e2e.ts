@@ -14,18 +14,29 @@ describe("vote", () => {
     await loginWithIdentity(browser, "10000");
   });
 
-  it("getIcp", () => {
-    const getIcpButton = await browser.$('[data-tid="get-icp-button"]');
-    await getIcpButton.waitForExist();
-    await getIcpButton.click();
-    const numIcp = await browser.$('[data-tid="get-icp-value"]');
-    await numIcp.waitForExist();
-    await numIcp.setValue("10");
-    const submitButton = await browser.$('[data-tid="get-icp-submit"]');
-    await submitButton.waitForExist();
-    await submitButton.click();
+  it("getIcp", async () => {
+    const balanceField = await browser.$('[data-tid="card"] [data-tid="icp-value"]');
+    await balanceField.waitForExist({timeout: 10000});
+    const balance = Number(await balanceField.getText());
+    if (balance < 2){
+	    const getIcpButton = await browser.$('[data-tid="get-icp-button"]');
+	    await getIcpButton.waitForExist();
+	    await getIcpButton.click();
+	    const numIcp = await browser.$('[data-tid="get-icp-form"] input');
+	    await numIcp.waitForExist();
+	    await numIcp.setValue("10");
+	    const submitButton = await browser.$('[data-tid="get-icp-submit"]');
+	    await submitButton.waitForExist();
+	    await browser.pause(2000);
+	    await browser["screenshot"]("get-icp-form");
+	    await submitButton.click();
+	    await browser.waitUntil(async () => !numIcp.isExisting(), {timeout: 10000});
+    } else {
+        console.log("Balance is already sufficient:", balance);
+    }
   });
 
+  /*
   it("navigateToVotingTab", async () => {
     const votingTabButton = await getVotingTabButton(browser);
     await votingTabButton.waitForExist();
@@ -40,4 +51,5 @@ describe("vote", () => {
 
     console.log(result);
   });
+*/
 });
