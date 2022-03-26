@@ -4,7 +4,7 @@ import { loginWithIdentity } from '../common/login';
 import { getLoginButton } from '../components/auth';
 import { waitForImages } from '../common/waitForImages';
 import { waitForLoad } from '../common/waitForLoad';
-import { getLogoutButton } from '../components/header.ts';
+import { getLogoutButton, getVotingTabButton } from '../components/header.ts';
 
 describe("landing page", () => {
   const nns_tabs = [];
@@ -16,9 +16,17 @@ describe("landing page", () => {
   });
 
   it("navigateToVotingTab", async () => {
-    let votingTabButton = await browser.$('[data-tid="tab-proposals"]');
+    let votingTabButton = await getVotingTabButton(browser);
     await votingTabButton.waitForExist();
     await votingTabButton.click();
     await browser["screenshot"]("voting-page");
+  });
+
+  it("canShowAllProposals", async () => {
+    const result = await browser.execute(() =>
+      document.querySelectorAll('.filters button')
+    );
+
+    console.log(result);
   });
 });
