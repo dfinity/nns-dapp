@@ -19,7 +19,7 @@ describe("vote", () => {
     const balanceField = await browser.$('[data-tid="card"] [data-tid="icp-value"]');
     await balanceField.waitForExist({timeout: 10000});
     const balance = Number(await balanceField.getText());
-    if (balance < 2){
+    if (balance < 200){
 	    const getIcpButton = await browser.$('[data-tid="get-icp-button"]');
 	    await getIcpButton.waitForExist();
 	    await getIcpButton.click();
@@ -28,10 +28,12 @@ describe("vote", () => {
 	    await numIcp.setValue("10");
 	    const submitButton = await browser.$('[data-tid="get-icp-submit"]');
 	    await submitButton.waitForExist();
-	    await browser.pause(2000);
+	    await browser.waitUntil(() => submitButton.isClickable());
 	    await browser["screenshot"]("get-icp-form");
 	    await submitButton.click();
-	    await browser.waitUntil(async () => !numIcp.isExisting(), {timeout: 10000});
+	    //browser.pause(10000);
+	    await browser.waitUntil(async () => !await browser.$('[data-tid="get-icp-form"]').isExisting(), {timeout: 20000});
+	    await browser["screenshot"]("get-icp-finished");
     } else {
         console.log("Balance is already sufficient:", balance);
     }
@@ -40,6 +42,7 @@ describe("vote", () => {
   it("goToNeuronTab", async() => {
     const tabButton = await getNeuronTabButton(browser);
     await tabButton.waitForExist();
+    await browser.waitUntil(() => tabButton.isClickable());
     await tabButton.click();
     const neuronsTab = await getNeuronsBody(browser);
     await neuronsTab.waitForExist();
@@ -53,7 +56,7 @@ describe("vote", () => {
   it("createNeuronIfNone", async () => {
     await browser["screenshot"]("looking-for-neuron");
     const neuron = await browser.$('[data-tid="neurons-body"] [data-tid="card"]');
-    if (neuron.isExisting()) {
+    if (false && neuron.isExisting()) {
         console.log("We already have a neuron");
     } else {
         const stakingButton = await getStakingButton(browser);
