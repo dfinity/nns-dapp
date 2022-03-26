@@ -3,5 +3,5 @@ export const getLogoutButton = async (browser: WebdriverIO.Browser) => {
 };
 
 export const getVotingTabButton = async (browser: WebdriverIO.Browser) => {
-   return   	await browser.$('[data-tid="tab-proposals"]');
+   return   	await browser.$('[data-tid="tab-to-proposals"]');
 };
