@@ -72,8 +72,10 @@ describe("vote", () => {
 	await browser.pause(1000);
         const createButton = await browser.$('#modalContent [data-tid="create-neuron-button"]');
 	await createButton.waitForExist();
-        await browser["screenshot"]("entered-amount");
+        await browser["screenshot"]("entered-neuron-amount");
 	await createButton.click();
+	await browser.waitUntil(async () => !await browser.$('#modalContent [data-tid="create-neuron-button"]').isExisting(), {timeout: 20000});
+        await browser["screenshot"]("neuron-created");
     }
   });
   /*
