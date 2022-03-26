@@ -1,6 +1,4 @@
 import type {
-  NeuronId,
-  NeuronInfo,
   ProposalInfo,
   ProposalRewardStatus,
   ProposalStatus,
@@ -14,11 +12,6 @@ export interface ProposalsFiltersStore {
   rewards: ProposalRewardStatus[];
   status: ProposalStatus[];
   excludeVotedProposals: boolean;
-}
-
-export interface NeuronSelectionStore {
-  neurons: NeuronInfo[];
-  selectedIds: NeuronId[];
 }
 
 /**
@@ -103,37 +96,5 @@ const initProposalsFiltersStore = () => {
   };
 };
 
-const initNeuronSelectionStore = () => {
-  const { subscribe, update, set } = writable<NeuronSelectionStore>({
-    neurons: [],
-    selectedIds: [],
-  });
-
-  return {
-    subscribe,
-
-    set(neurons: NeuronInfo[]) {
-      set({
-        neurons: [...neurons],
-        selectedIds: neurons.map(({ neuronId }) => neuronId),
-      });
-    },
-
-    reset() {
-      this.set([]);
-    },
-
-    toggleSelection(neuronId: NeuronId) {
-      update(({ neurons, selectedIds }) => ({
-        neurons,
-        selectedIds: selectedIds.includes(neuronId)
-          ? selectedIds.filter((id: NeuronId) => id !== neuronId)
-          : Array.from(new Set([...selectedIds, neuronId])),
-      }));
-    },
-  };
-};
-
 export const proposalsStore = initProposalsStore();
 export const proposalsFiltersStore = initProposalsFiltersStore();
-export const votingNeuronSelectStore = initNeuronSelectionStore();

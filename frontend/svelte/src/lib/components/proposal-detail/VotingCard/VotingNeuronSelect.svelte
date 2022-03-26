@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../../stores/i18n";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
+  import { votingNeuronSelectStore } from "../../../stores/proposalDetail.store";
   import {
     formatVotingPower,
     selectedNeuronsVotingPower,
