@@ -68,9 +68,9 @@
       </p>
 
       {#if isLoading}
-        <Spinner data-tid="neurons-loading-spinner" />
+        <Spinner />
       {:else}
-        <Spinner data-tid="neurons-loading-spinner" />
+        <Spinner />
         {#each $neuronsStore as neuron}
           <NeuronCard
             role="link"
