@@ -52,7 +52,7 @@
   $: invalidForm = inputValue === undefined || inputValue <= 0;
 </script>
 
-<button on:click={() => (visible = true)} class="open text">Get ICPs</button>
+<button data-tid="get-icp" on:click={() => (visible = true)} class="open text">Get ICPs</button>
 
 <Modal {visible} on:nnsClose={onClose}>
   <span slot="title">Get ICPs</span>
