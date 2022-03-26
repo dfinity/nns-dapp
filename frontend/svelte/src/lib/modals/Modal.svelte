@@ -31,7 +31,7 @@
     aria-describedby="modalContent"
     on:click|stopPropagation
   >
-    <div class="backdrop" on:click|stopPropagation={close} />
+    <div data-tid="close-modal" class="backdrop" on:click|stopPropagation={close} />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class={`wrapper ${size}`}
