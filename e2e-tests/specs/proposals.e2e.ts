@@ -7,7 +7,6 @@ import { waitForLoad } from '../common/waitForLoad';
 import { getLogoutButton, getVotingTabButton } from '../components/header.ts';
 
 describe("viewProposals", () => {
-  const nns_tabs = [];
 
   it("login", async () => {
     await browser.url("/");
@@ -16,7 +15,7 @@ describe("viewProposals", () => {
   });
 
   it("navigateToVotingTab", async () => {
-    let votingTabButton = await getVotingTabButton(browser);
+    const votingTabButton = await getVotingTabButton(browser);
     await votingTabButton.waitForExist();
     await votingTabButton.click();
     await browser["screenshot"]("voting-page");

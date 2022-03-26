@@ -7,7 +7,6 @@ import { waitForLoad } from '../common/waitForLoad';
 import { getLogoutButton, getVotingTabButton } from '../components/header.ts';
 
 describe("vote", () => {
-  const nns_tabs = [];
 
   it("login", async () => {
     await browser.url("/");
