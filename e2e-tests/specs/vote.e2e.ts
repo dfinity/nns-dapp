@@ -19,7 +19,7 @@ describe("vote", () => {
     const balanceField = await browser.$('[data-tid="card"] [data-tid="icp-value"]');
     await balanceField.waitForExist({timeout: 10000});
     const balance = Number(await balanceField.getText());
-    if (balance < 200){
+    if (balance < 20){
 	    const getIcpButton = await browser.$('[data-tid="get-icp-button"]');
 	    await getIcpButton.waitForExist();
 	    await getIcpButton.click();
@@ -28,11 +28,11 @@ describe("vote", () => {
 	    await numIcp.setValue("10");
 	    const submitButton = await browser.$('[data-tid="get-icp-submit"]');
 	    await submitButton.waitForExist();
-	    await browser.waitUntil(() => submitButton.isClickable());
+	    await browser.waitUntil(() => submitButton.isClickable(), {timeoutMsg: "Timeout waiting for submitButton to be clickable."});
 	    await browser["screenshot"]("get-icp-form");
 	    await submitButton.click();
 	    //browser.pause(10000);
-	    await browser.waitUntil(async () => !await browser.$('[data-tid="get-icp-form"]').isExisting(), {timeout: 20000});
+	    await browser.waitUntil(async () => !await browser.$('[data-tid="get-icp-form"]').isExisting(), {timeout: 20000, timeoutMsg: "Timeout waiting for the GetICP form to disappear."});
 	    await browser["screenshot"]("get-icp-finished");
     } else {
         console.log("Balance is already sufficient:", balance);
@@ -42,7 +42,7 @@ describe("vote", () => {
   it("goToNeuronTab", async() => {
     const tabButton = await getNeuronTabButton(browser);
     await tabButton.waitForExist();
-    await browser.waitUntil(() => tabButton.isClickable());
+    await browser.waitUntil(() => tabButton.isClickable(), {timeoutMsg: "Timeout waiting for the neuron tab button."});
     await tabButton.click();
     const neuronsTab = await getNeuronsBody(browser);
     await neuronsTab.waitForExist();
@@ -74,8 +74,24 @@ describe("vote", () => {
 	await createButton.waitForExist();
         await browser["screenshot"]("entered-neuron-amount");
 	await createButton.click();
-	await browser.waitUntil(async () => !await browser.$('#modalContent [data-tid="create-neuron-button"]').isExisting(), {timeout: 20000});
+	await browser.waitUntil(async () => !await browser.$('#modalContent [data-tid="create-neuron-button"]').isExisting(), {timeout: 60000, timeoutMsg: "Timeout waiting for the create neuron button to disappear."});
         await browser["screenshot"]("neuron-created");
+	const dissolveDelaySlider = await browser.$('#modalContent input[type="range"]');
+	await dissolveDelaySlider.waitForExist();
+        const maxDissolveDelay = await dissolveDelaySlider.getAttribute("max");
+	await dissolveDelaySlider.setValue(maxDissolveDelay);
+        const updateDissolveDelayButton = await browser.$('#modalContent button.primary');
+	await browser.waitUntil(() => updateDissolveDelayButton.isClickable(), {timeoutMsg: "Timeout waiting for updateDissolveDelayButton to be clickable."});
+	updateDissolveDelayButton.click();
+	const confirmUpdateButton = await browser.$('#modalContent [data-tid="confirm-delay-button"]');
+	await browser.waitUntil(() => confirmUpdateButton.isClickable(), {timeoutMsg: "Timeout waiting for confirmUpdateButton to be clickable."});
+	confirmUpdateButton.click();
+	await browser.waitUntil(async () => !await browser.$('#modalContent [data-tid="confirm-delay-button"]').isExisting(), {timeout: 60000, timeoutMsg: "Timeout waiting for confirmUpdateButton to disappear."});
+	const closeFollowingModal = await browser.$('[data-tid="close-modal"]');
+	closeFollowingModal.waitForExist();
+	await browser.waitUntil(() => closeFollowingModal.isClickable(), {timeoutMsg: "Timeout waiting for the closeFollowingModal button to be clickable."});
+	await closeFollowingModal.click();
+	await browser.waitUntil(async () => !await browser.$('[data-tid="close-modal"]').isExisting(), {timeout: 60000, timeoutMsg: "Timeout waiting for the modal to disappear."});
     }
   });
   /*
