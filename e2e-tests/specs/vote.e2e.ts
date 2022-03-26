@@ -2,9 +2,10 @@ import { register } from '../common/register';
 import { logout } from '../common/logout';
 import { loginWithIdentity } from '../common/login';
 import { getLoginButton } from '../components/auth';
+import { getNeuronsBody, getStakingButton } from "../components/neurons";
 import { waitForImages } from '../common/waitForImages';
 import { waitForLoad } from '../common/waitForLoad';
-import { getLogoutButton, getVotingTabButton } from '../components/header.ts';
+import { getLogoutButton, getVotingTabButton, getNeuronTabButton } from '../components/header.ts';
 
 describe("vote", () => {
 
@@ -36,6 +37,42 @@ describe("vote", () => {
     }
   });
 
+  it("goToNeuronTab", async() => {
+    const tabButton = await getNeuronTabButton(browser);
+    await tabButton.waitForExist();
+    await tabButton.click();
+    const neuronsTab = await getNeuronsBody(browser);
+    await neuronsTab.waitForExist();
+  });
+
+  it("waitForNeuronsToLoad", async() => {
+    // const loadingSpinner = await browser.$('[data-tid="spinner"]');
+    // await browser.waitUntil(async () => !loadingSpinner.isExisting(), {timeout: 10000});
+    browser.pause(3000);
+  });
+  it("createNeuronIfNone", async () => {
+    await browser["screenshot"]("looking-for-neuron");
+    const neuron = await browser.$('[data-tid="neurons-body"] [data-tid="card"]');
+    if (neuron.isExisting()) {
+        console.log("We already have a neuron");
+    } else {
+        const stakingButton = await getStakingButton(browser);
+        await stakingButton.waitForExist();
+	await stakingButton.click();
+	const accountButton = await browser.$('#modalContent [data-tid="card"]');
+	await accountButton.waitForExist();
+        await browser["screenshot"]("selecting-account");
+        await accountButton.click();
+	const stakeValue = await browser.$('#modalContent input[type="number"]');
+        await stakeValue.waitForExist();
+	await stakeValue.setValue(1);
+	await browser.pause(1000);
+        const createButton = await browser.$('#modalContent [data-tid="create-neuron-button"]');
+	await createButton.waitForExist();
+        await browser["screenshot"]("entered-amount");
+	await createButton.click();
+    }
+  });
   /*
   it("navigateToVotingTab", async () => {
     const votingTabButton = await getVotingTabButton(browser);
