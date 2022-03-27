@@ -8,7 +8,7 @@
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
-  import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
+  import type { ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
   import VotingCard from "../lib/components/proposal-detail/VotingCard/VotingCard.svelte";
@@ -16,16 +16,19 @@
   import { i18n } from "../lib/stores/i18n";
   import { listNeurons } from "../lib/services/neurons.services";
   import { neuronsStore } from "../lib/stores/neurons.store";
+  import {
+    proposalIdStore,
+    proposalInfoStore,
+  } from "../lib/stores/proposalDetail.store";
+  import { isRoutePath } from "../lib/utils/app-path.utils";
 
-  let proposalInfo: ProposalInfo | undefined;
-  let neurons: NeuronInfo[] | undefined;
   let neuronsReady = false;
-  $: neurons = $neuronsStore;
 
   // TODO: To be removed once this page has been implemented
   const showThisRoute = ["never", "staging"].includes(
     process.env.REDIRECT_TO_LEGACY as string
   );
+
   onMount(async () => {
     if (!showThisRoute) {
       window.location.replace(`/${window.location.hash}`);
@@ -36,41 +39,51 @@
     neuronsReady = true;
   });
 
-  const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    proposalInfo = undefined;
+  const unsubscribeRouteStore = routeStore.subscribe(
+    async ({ path: routePath }) => {
+      if (!isRoutePath({ path: AppPath.ProposalDetail, routePath })) {
+        return;
+      }
+      const proposalId = getProposalId(routePath);
 
-    const proposalIdMaybe = getProposalId(path);
-    if (proposalIdMaybe === undefined) {
-      unsubscribe();
-      routeStore.replace({ path: AppPath.Proposals });
+      if (proposalId === undefined) {
+        // Navigate to the proposal list in no proposalId found
+        routeStore.replace({ path: AppPath.Proposals });
+        proposalIdStore.reset();
+        return;
+      }
+
+      proposalIdStore.set(proposalId);
+    }
+  );
+
+  const onError = () => {
+    routeStore.replace({ path: AppPath.Proposals });
+  };
+
+  const unsubscribeProposalIdStore = proposalIdStore.subscribe((proposalId) => {
+    if (proposalId === undefined || proposalId === $proposalInfoStore?.id) {
       return;
     }
-
-    const onError = () => {
-      unsubscribe();
-
-      // Wait a bit before redirection so the user recognizes on which page the error occures
-      setTimeout(() => {
-        routeStore.replace({ path: AppPath.Proposals });
-      }, 1500);
-    };
-
-    await loadProposal({
-      proposalId: proposalIdMaybe,
-      setProposal: (proposal: ProposalInfo) => (proposalInfo = proposal),
+    loadProposal({
+      proposalId,
+      setProposal: (proposalInfo: ProposalInfo) =>
+        proposalInfoStore.set(proposalInfo),
       handleError: onError,
     });
   });
 
-  onDestroy(unsubscribe);
-
   const goBack = () => {
-    unsubscribe();
-
     routeStore.navigate({
       path: AppPath.Proposals,
     });
   };
+
+  onDestroy(() => {
+    unsubscribeRouteStore();
+    unsubscribeProposalIdStore();
+    proposalIdStore.reset();
+  });
 </script>
 
 {#if showThisRoute}
@@ -80,11 +93,14 @@
     >
 
     <section>
-      {#if proposalInfo && neurons && neuronsReady}
-        <ProposalDetailCard {proposalInfo} />
-        <VotesCard {proposalInfo} {neurons} />
-        <VotingCard {proposalInfo} {neurons} />
-        <IneligibleNeuronsCard {proposalInfo} {neurons} />
+      {#if $proposalInfoStore && $neuronsStore && neuronsReady}
+        <ProposalDetailCard proposalInfo={$proposalInfoStore} />
+        <VotesCard proposalInfo={$proposalInfoStore} neurons={$neuronsStore} />
+        <VotingCard proposalInfo={$proposalInfoStore} neurons={$neuronsStore} />
+        <IneligibleNeuronsCard
+          proposalInfo={$proposalInfoStore}
+          neurons={$neuronsStore}
+        />
       {:else}
         <Spinner />
       {/if}

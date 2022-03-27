@@ -8,6 +8,7 @@ import {
 } from "../api/proposals.api";
 import { busyStore } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
+import { proposalInfoStore } from "../stores/proposalDetail.store";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
   proposalsFiltersStore,
@@ -172,6 +173,12 @@ export const registerVotes = async ({
       err,
     });
   }
+
+  await loadProposal({
+    proposalId,
+    setProposal: (proposalInfo: ProposalInfo) =>
+      proposalInfoStore.set(proposalInfo),
+  });
 
   busyStore.stop("vote");
 };
