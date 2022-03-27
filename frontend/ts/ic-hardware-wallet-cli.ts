@@ -249,7 +249,7 @@ async function stopDissolving(neuronId: string) {
 }
 
 async function getLedgerIdentity(): Promise<LedgerIdentity> {
-  const subaccountId = Number.parseInt(program.opts().subaccount ?? 0);
+  const subaccountId = tryParseInt(program.opts().subaccount);
   if (subaccountId < 0 || subaccountId > 255) {
     throw new InvalidArgumentError("Subaccount must be between 0 and 255 inclusive.");
   }
