@@ -62,6 +62,24 @@ const initNeuronSelectStore = () => {
       });
     },
 
+    updateNeurons(neurons: NeuronInfo[]) {
+      update(({ neurons: oldNeurons, selectedIds: oldSelectedIds }) => {
+        const newIds = new Set(neurons.map(({ neuronId }) => neuronId));
+        const oldIds = new Set(oldNeurons.map(({ neuronId }) => neuronId));
+        const preservedSelection = oldSelectedIds.filter((id) =>
+          newIds.has(id)
+        );
+        const newNeuronsSelection = Array.from(newIds).filter(
+          (id) => oldIds.has(id) === false
+        );
+        const selectedIds = [...preservedSelection, ...newNeuronsSelection];
+        return {
+          neurons,
+          selectedIds,
+        };
+      });
+    },
+
     reset() {
       this.set([]);
     },

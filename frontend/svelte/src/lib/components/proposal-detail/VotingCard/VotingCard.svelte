@@ -1,9 +1,13 @@
 <script lang="ts">
   import type { NeuronInfo, ProposalInfo, Vote } from "@dfinity/nns";
-  import { notVotedNeurons, ProposalStatus } from "@dfinity/nns";
+  import {
+    notVotedNeurons as getNotVotedNeurons,
+    ProposalStatus,
+  } from "@dfinity/nns";
   import { onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
+  import { neuronsStore } from "../../../stores/neurons.store";
   import { votingNeuronSelectStore } from "../../../stores/proposalDetail.store";
   import Card from "../../ui/Card.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
@@ -13,17 +17,26 @@
   export let neurons: NeuronInfo[];
 
   let visible: boolean = false;
+  /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
+  let initialSelectionDone = false;
 
-  $: votingNeuronSelectStore.set(
-    notVotedNeurons({
-      neurons,
-      proposal: proposalInfo,
-    })
-  );
   $: visible =
     $votingNeuronSelectStore.neurons.length > 0 &&
     proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
 
+  const unsubcribe = neuronsStore.subscribe((neurons: NeuronInfo[]) => {
+    const notVotedNeurons = getNotVotedNeurons({
+      neurons,
+      proposal: proposalInfo,
+    });
+    if (!initialSelectionDone) {
+      initialSelectionDone = true;
+      votingNeuronSelectStore.set(notVotedNeurons);
+    } else {
+      // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
+      votingNeuronSelectStore.updateNeurons(notVotedNeurons);
+    }
+  });
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
     await registerVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds,
@@ -31,7 +44,10 @@
       proposalId: proposalInfo.id as bigint,
     });
 
-  onDestroy(() => votingNeuronSelectStore.reset());
+  onDestroy(() => {
+    unsubcribe();
+    votingNeuronSelectStore.reset();
+  });
 </script>
 
 {#if visible}
