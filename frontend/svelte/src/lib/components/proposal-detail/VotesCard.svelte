@@ -11,10 +11,13 @@
   export let proposalInfo: ProposalInfo;
   export let neurons: NeuronInfo[];
 
-  const { yes, no } = proposalInfo.latestTally || {};
-  const yesValue = Number(yes) / E8S_PER_ICP;
-  const noValue = Number(no) / E8S_PER_ICP;
-  const summ = yesValue + noValue;
+  let yesValue: number;
+  let noValue: number;
+  let summ: number;
+
+  $: yesValue = Number(proposalInfo?.latestTally?.yes ?? 0) / E8S_PER_ICP;
+  $: noValue = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
+  $: summ = yesValue + noValue;
 
   type CompactNeuronInfo = {
     id: NeuronId;
@@ -24,6 +27,7 @@
   const voteIconMapper = {
     [Vote.NO]: IconThumbDown,
     [Vote.YES]: IconThumbUp,
+    [Vote.UNSPECIFIED]: undefined,
   };
   let neuronsVotedForProposal: CompactNeuronInfo[];
 
@@ -47,7 +51,6 @@
   }
 </script>
 
-<!-- TODO: Adop/Reject card content -- https://dfinity.atlassian.net/browse/L2-269 -->
 <Card>
   <div class="latest-tally">
     <h3>
