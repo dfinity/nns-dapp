@@ -181,7 +181,7 @@ async function removeHotkey(neuronId: string, principal: string) {
 async function disburseNeuron(
   neuronId: string,
   to?: AccountIdentifier,
-  amount?: string,
+  amount?: string
 ) {
   const identity = await getLedgerIdentity();
   const governance = await getGovernanceService(identity);
@@ -251,7 +251,9 @@ async function stopDissolving(neuronId: string) {
 async function getLedgerIdentity(): Promise<LedgerIdentity> {
   const subaccountId = tryParseInt(program.opts().subaccount);
   if (subaccountId < 0 || subaccountId > 255) {
-    throw new InvalidArgumentError("Subaccount must be between 0 and 255 inclusive.");
+    throw new InvalidArgumentError(
+      "Subaccount must be between 0 and 255 inclusive."
+    );
   }
   return await LedgerIdentity.create(`m/44'/223'/0'/0/${subaccountId}`);
 }
@@ -421,8 +423,9 @@ async function main() {
         .env("IC_NETWORK")
     )
     .addOption(
-      new Option("--subaccount <subaccount>", "The subaccount to use.")
-        .default(0)
+      new Option("--subaccount <subaccount>", "The subaccount to use.").default(
+        0
+      )
     )
     .addCommand(
       new Command("info")
