@@ -6,8 +6,6 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import { ProposalStatus, Vote } from "@dfinity/nns";
-import { E8S_PER_ICP } from "../constants/icp.constants";
-import { formatNumber } from "./format.utils";
 import { stringifyJson } from "./utils";
 
 export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
@@ -65,9 +63,6 @@ export const formatProposalSummary = (summary: string): string => {
   );
 };
 
-export const formatVotingPower = (value: bigint): string =>
-  formatNumber(Number(value) / E8S_PER_ICP);
-
 /**
  * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal is OPEN and has at least one UNSPECIFIED ballots' vote.
  */
@@ -123,3 +118,24 @@ export const selectedNeuronsVotingPower = ({
   neurons
     .filter(({ neuronId }) => selectedIds.includes(neuronId))
     .reduce((sum, { votingPower }) => sum + votingPower, BigInt(0));
+
+/**
+ * Generate new selected neuron id list after new neurons response w/o spoiling the previously done user selection
+ */
+export const preserveNeuronSelectionAfterUpdate = ({
+  selectedIds,
+  neurons,
+  updatedNeurons,
+}: {
+  selectedIds: NeuronId[];
+  neurons: NeuronInfo[];
+  updatedNeurons: NeuronInfo[];
+}): NeuronId[] => {
+  const newIds = new Set(updatedNeurons.map(({ neuronId }) => neuronId));
+  const oldIds = new Set(neurons.map(({ neuronId }) => neuronId));
+  const preservedSelection = selectedIds.filter((id) => newIds.has(id));
+  const newNeuronsSelection = Array.from(newIds).filter(
+    (id) => oldIds.has(id) === false
+  );
+  return [...preservedSelection, ...newNeuronsSelection];
+};

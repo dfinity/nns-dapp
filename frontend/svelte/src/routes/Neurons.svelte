@@ -11,7 +11,6 @@
   import type { NeuronId } from "@dfinity/nns";
   import { listNeurons } from "../lib/services/neurons.services";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import { toastsStore } from "../lib/stores/toasts.store";
   import { neuronsStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
@@ -23,17 +22,9 @@
     if (!showThisRoute) {
       window.location.replace("/#/neurons");
     }
-    try {
-      isLoading = true;
-      await listNeurons();
-    } catch (err) {
-      toastsStore.error({
-        labelKey: "errors.get_neurons",
-        err,
-      });
-    } finally {
-      isLoading = false;
-    }
+    isLoading = true;
+    await listNeurons();
+    isLoading = false;
   });
 
   let principalText: string = "";
