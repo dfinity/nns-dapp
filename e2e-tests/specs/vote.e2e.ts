@@ -97,6 +97,13 @@ describe("vote", () => {
   it('create-proposal', async () => {
     await createProposal();
   });
+  it("navigateToVotingTab", async () => {
+    const votingTabButton = await getVotingTabButton(browser);
+    await votingTabButton.waitForExist();
+    await votingTabButton.click();
+    await browser["screenshot"]("voting-page");
+  });
+
   /*
   it("navigateToVotingTab", async () => {
     const votingTabButton = await getVotingTabButton(browser);
