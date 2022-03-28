@@ -3,12 +3,14 @@ import { NeuronState } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
+  SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
 } from "../constants/constants";
 import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
+import { formatNumber } from "./format.utils";
 
 export type StateInfo = {
   textKey: string;
@@ -47,13 +49,16 @@ export const getStateInfo = (neuronState: NeuronState): StateInfo =>
 export const votingPower = ({
   stake,
   dissolveDelayInSeconds,
+  ageSeconds = 0,
 }: {
   stake: bigint;
   dissolveDelayInSeconds: number;
+  ageSeconds?: number;
 }): number =>
   dissolveDelayInSeconds > SECONDS_IN_HALF_YEAR
     ? (Number(stake) / E8S_PER_ICP) *
-      (1 + dissolveDelayInSeconds / SECONDS_IN_EIGHT_YEARS)
+      dissolveDelayMultiplier(dissolveDelayInSeconds) *
+      ageMultiplier(ageSeconds)
     : 0;
 
 export const hasValidStake = (neuron: NeuronInfo): boolean =>
@@ -63,3 +68,15 @@ export const hasValidStake = (neuron: NeuronInfo): boolean =>
         neuron.fullNeuron.maturityE8sEquivalent >
       BigInt(TRANSACTION_FEE_E8S)
     : false;
+
+export const dissolveDelayMultiplier = (delayInSeconds: number): number =>
+  1 +
+  1 *
+    (Math.min(delayInSeconds, SECONDS_IN_EIGHT_YEARS) / SECONDS_IN_EIGHT_YEARS);
+
+export const ageMultiplier = (ageSeconds: number): number =>
+  1 +
+  0.25 * (Math.min(ageSeconds, SECONDS_IN_FOUR_YEARS) / SECONDS_IN_FOUR_YEARS);
+
+export const formatVotingPower = (value: bigint): string =>
+  formatNumber(Number(value) / E8S_PER_ICP);

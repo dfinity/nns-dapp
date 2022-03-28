@@ -8,6 +8,7 @@ import { authStore } from "../../lib/stores/auth.store";
 import { routeStore } from "../../lib/stores/route.store";
 import NeuronDetail from "../../routes/NeuronDetail.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
+import en from "../mocks/i18n.mock";
 import { mockNeuron } from "../mocks/neurons.mock";
 import { mockRouteStoreSubscibe } from "../mocks/route.store.mock";
 
@@ -39,12 +40,8 @@ describe("NeuronDetail", () => {
   });
 
   it("should render title", () => {
-    const { getByText } = render(NeuronDetail);
+    const { getAllByText } = render(NeuronDetail);
 
-    expect(
-      getByText("Neuron", {
-        exact: false,
-      })
-    ).toBeInTheDocument();
+    expect(getAllByText(en.neuron_detail.title).length).toBeGreaterThan(0);
   });
 });
