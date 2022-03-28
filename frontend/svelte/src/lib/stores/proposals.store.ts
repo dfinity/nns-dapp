@@ -9,6 +9,7 @@ import type {
 } from "@dfinity/nns";
 import { derived, writable } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
+import { preserveNeuronSelectionAfterUpdate } from "../utils/proposals.utils";
 
 export interface ProposalsFiltersStore {
   topics: Topic[];
@@ -155,19 +156,14 @@ const initNeuronSelectStore = () => {
     },
 
     updateNeurons(neurons: NeuronInfo[]) {
-      update(({ neurons: oldNeurons, selectedIds: oldSelectedIds }) => {
-        const newIds = new Set(neurons.map(({ neuronId }) => neuronId));
-        const oldIds = new Set(oldNeurons.map(({ neuronId }) => neuronId));
-        const preservedSelection = oldSelectedIds.filter((id) =>
-          newIds.has(id)
-        );
-        const newNeuronsSelection = Array.from(newIds).filter(
-          (id) => oldIds.has(id) === false
-        );
-        const selectedIds = [...preservedSelection, ...newNeuronsSelection];
+      update(({ neurons: currentNeurons, selectedIds }) => {
         return {
           neurons,
-          selectedIds,
+          selectedIds: preserveNeuronSelectionAfterUpdate({
+            neurons: currentNeurons,
+            updatedNeurons: neurons,
+            selectedIds,
+          }),
         };
       });
     },

@@ -113,3 +113,24 @@ export const selectedNeuronsVotingPower = ({
   neurons
     .filter(({ neuronId }) => selectedIds.includes(neuronId))
     .reduce((sum, { votingPower }) => sum + votingPower, BigInt(0));
+
+/**
+ * Generate new selected neuron id list
+ */
+export const preserveNeuronSelectionAfterUpdate = ({
+  selectedIds,
+  neurons,
+  updatedNeurons,
+}: {
+  selectedIds: NeuronId[];
+  neurons: NeuronInfo[];
+  updatedNeurons: NeuronInfo[];
+}): NeuronId[] => {
+  const newIds = new Set(updatedNeurons.map(({ neuronId }) => neuronId));
+  const oldIds = new Set(neurons.map(({ neuronId }) => neuronId));
+  const preservedSelection = selectedIds.filter((id) => newIds.has(id));
+  const newNeuronsSelection = Array.from(newIds).filter(
+    (id) => oldIds.has(id) === false
+  );
+  return [...preservedSelection, ...newNeuronsSelection];
+};
