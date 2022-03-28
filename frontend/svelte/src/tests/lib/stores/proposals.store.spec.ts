@@ -2,10 +2,10 @@ import type { ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
-import { votingNeuronSelectStore } from "../../../lib/stores/proposalDetail.store";
 import {
   proposalsFiltersStore,
   proposalsStore,
+  votingNeuronSelectStore,
 } from "../../../lib/stores/proposals.store";
 import { mockNeuron } from "../../mocks/neurons.mock";
 

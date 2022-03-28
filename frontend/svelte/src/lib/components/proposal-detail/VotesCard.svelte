@@ -7,7 +7,8 @@
   import { formatNumber } from "../../utils/format.utils";
   import IconThumbDown from "../../icons/IconThumbDown.svelte";
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
-  import { votingNeuronSelectStore } from "../../stores/proposals.store";
+  import { votedNeurons } from "@dfinity/nns";
+  import { neuronsStore } from "../../stores/neurons.store";
 
   export let proposalInfo: ProposalInfo;
 
@@ -32,7 +33,10 @@
   let neuronsVotedForProposal: CompactNeuronInfo[];
 
   $: {
-    neuronsVotedForProposal = $votingNeuronSelectStore.neurons
+    neuronsVotedForProposal = votedNeurons({
+      neurons: $neuronsStore,
+      proposal: proposalInfo,
+    })
       .map(({ neuronId, recentBallots, votingPower }) => ({
         id: neuronId,
         // TODO: replace w/ formatVotingPower()
