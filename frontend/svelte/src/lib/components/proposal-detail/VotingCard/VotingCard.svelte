@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { NeuronInfo, ProposalInfo, Vote } from "@dfinity/nns";
+  import type { ProposalInfo, Vote } from "@dfinity/nns";
   import {
     notVotedNeurons as getNotVotedNeurons,
     ProposalStatus,

@@ -124,8 +124,7 @@ const initProposalInfoStore = () => {
   const proposal = writable<ProposalInfo | undefined>();
   const proposalChange = derived(
     [proposalIdStore, proposal],
-    // reset proposal on proposalId change
-    // TODO: add motivation
+    // Reset proposal on proposalId change. To not have this permanent effect in service or component.
     ([$proposalIdStore, $proposal]) =>
       $proposal?.id === $proposalIdStore ? $proposal : undefined
   );
