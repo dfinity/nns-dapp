@@ -281,6 +281,16 @@ describe("proposals-utils", () => {
       );
     });
 
+    it("should return empty array if no `action`", () => {
+      const proposal = {
+        ...mockProposalInfo.proposal,
+        action: undefined,
+      } as Proposal;
+      const fields = proposalActionFields(proposal);
+
+      expect(fields.length).toBe(0);
+    });
+
     it("should stringify all objects", () => {
       const fields = proposalActionFields(
         mockProposalInfo.proposal as Proposal
