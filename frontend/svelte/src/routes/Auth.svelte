@@ -9,6 +9,7 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import Banner from "../lib/components/common/Banner.svelte";
   import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
+  import IcLogo from "../lib/icons/IcLogo.svelte";
 
   let signedIn: boolean = false;
 
@@ -69,13 +70,11 @@
     <button on:click={signIn}>{$i18n.auth.login}</button>
   </main>
 
-  <img
-    src="/assets/assets/ic-badge-powered-by_label-stripe-white-text.svg"
-    role="presentation"
-    alt={$i18n.auth.powered_by}
-    class="bottom-banner"
-    loading="lazy"
-  />
+  <div class="bottom-banner">
+    <IcLogo />
+
+    <p>{$i18n.auth.on_chain}</p>
+  </div>
 {/if}
 
 <style lang="scss">
@@ -135,17 +134,27 @@
     align-self: flex-end;
   }
 
-  .background {
-    @include img.background;
-
-    z-index: 1;
-  }
-
   .bottom-banner {
     position: absolute;
     bottom: 20px;
     left: 50%;
     transform: translate(-50%, 0);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1;
+
+    p {
+      margin: 0;
+      padding-top: calc(var(--padding) / 2);
+    }
+  }
+
+  .background {
+    @include img.background;
 
     z-index: 1;
   }
