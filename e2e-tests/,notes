@@ -21,3 +21,6 @@ Remains if one logs in again.  To replicate:
 Go to th eneurons tab, click the staking button and look at the contents of the modal.  I have an iFrame. WTF???
 
 # It would be nice to have a data-tid that is distinct for each modal.
+
+# Build errors
+Compile + run errors can be quite unhelpful.
