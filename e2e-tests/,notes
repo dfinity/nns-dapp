@@ -1,0 +1,23 @@
+# Register
+Use window ID for switching back to the original window, to support multiple tabs on the same website.
+
+Docs:
+- getWindowHandle https://webdriver.io/docs/api/webdriver/#getwindowhandle
+- switchToWindow https://webdriver.io/docs/api/webdriver/#switchtowindow
+
+
+# Logged out banner
+Remains if one logs in again.  To replicate:
+
+- Open two logged in tabs.
+- Wait.
+- It seems that the tab in focus moves to the login screen, the other additionally gets the banner.
+- Log in on a tab with banner (others not tested).
+- The banner remains.
+
+
+# iFrame when staking a neuron???
+
+Go to th eneurons tab, click the staking button and look at the contents of the modal.  I have an iFrame. WTF???
+
+# It would be nice to have a data-tid that is distinct for each modal.

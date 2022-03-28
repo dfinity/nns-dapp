@@ -2,7 +2,7 @@ import { register } from '../common/register';
 import { logout } from '../common/logout';
 import { loginWithIdentity } from '../common/login';
 import { getLoginButton } from '../components/auth';
-import { getNeuronsBody, getStakingButton } from "../components/neurons";
+import { getNeuronsBody, getStakingButton, createProposal } from "../components/neurons";
 import { waitForImages } from '../common/waitForImages';
 import { waitForLoad } from '../common/waitForLoad';
 import { getLogoutButton, getVotingTabButton, getNeuronTabButton } from '../components/header.ts';
@@ -93,6 +93,9 @@ describe("vote", () => {
 	await closeFollowingModal.click();
 	await browser.waitUntil(async () => !await browser.$('[data-tid="close-modal"]').isExisting(), {timeout: 60000, timeoutMsg: "Timeout waiting for the modal to disappear."});
     }
+  });
+  it('create-proposal', async () => {
+    await createProposal();
   });
   /*
   it("navigateToVotingTab", async () => {
