@@ -11,6 +11,7 @@ import { get } from "svelte/store";
 import {
   claimOrRefreshNeuron,
   increaseDissolveDelay,
+  joinCommunityFund as joinCommunityFundApi,
   queryNeuron,
   queryNeurons,
   setFollowees,
@@ -168,10 +169,35 @@ export const updateDelay = async ({
 
   await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
 
-  await loadNeuron({
+  const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
-    setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+    identity,
+    certified: true,
+    forceFetch: true,
   });
+
+  if (!neuron) {
+    throw new Error("Neuron not found");
+  }
+  neuronsStore.pushNeurons([neuron]);
+};
+
+export const joinCommunityFund = async (neuronId: NeuronId): Promise<void> => {
+  const identity: Identity = await getIdentity();
+
+  await joinCommunityFundApi({ neuronId, identity });
+
+  const neuron: NeuronInfo | undefined = await getNeuron({
+    neuronId,
+    identity,
+    certified: true,
+    forceFetch: true,
+  });
+
+  if (!neuron) {
+    throw new Error("Neuron not found");
+  }
+  neuronsStore.pushNeurons([neuron]);
 };
 
 const setFolloweesHelper = async ({

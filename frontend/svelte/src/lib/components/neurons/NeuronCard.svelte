@@ -3,7 +3,10 @@
   import { NeuronState, ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
-  import { getStateInfo } from "../../utils/neuron.utils";
+  import {
+    getStateInfo,
+    hasJoinedCommunityFund,
+  } from "../../utils/neuron.utils";
   import type { StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
@@ -17,7 +20,7 @@
   let stateInfo: StateInfo;
   $: stateInfo = getStateInfo(neuron.state);
   let isCommunityFund: boolean;
-  $: isCommunityFund = neuron.joinedCommunityFundTimestampSeconds !== undefined;
+  $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let neuronICP: ICP;
   $: neuronICP =
     neuron.fullNeuron?.cachedNeuronStake !== undefined

@@ -1,8 +1,6 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-
+  import type { NeuronInfo, NeuronId } from "@dfinity/nns";
   import { onDestroy, onMount } from "svelte";
-
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { getNeuronId, loadNeuron } from "../lib/services/neurons.services";
   import NeuronFollowingCard from "../lib/components/neuron-detail/NeuronFollowingCard.svelte";
@@ -15,8 +13,16 @@
   import { AppPath } from "../lib/constants/routes.constants";
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
+  import { neuronsStore } from "../lib/stores/neurons.store";
 
+  let neuronId: NeuronId | undefined;
   let neuron: NeuronInfo | undefined;
+  $: {
+    neuron = $neuronsStore.find(
+      (currentNeuron) =>
+        neuronId !== undefined && currentNeuron.neuronId === neuronId
+    );
+  }
 
   // TODO: To be removed once this page has been implemented
   const showThisRoute = ["never", "staging"].includes(
@@ -36,6 +42,7 @@
       routeStore.replace({ path: AppPath.Neurons });
       return;
     }
+    neuronId = neuronIdMaybe;
 
     const onError = () => {
       unsubscribe();
@@ -48,7 +55,8 @@
 
     await loadNeuron({
       neuronId: neuronIdMaybe,
-      setNeuron: (neuronInfo: NeuronInfo) => (neuron = neuronInfo),
+      setNeuron: (neuronInfo: NeuronInfo) =>
+        neuronsStore.pushNeurons([neuronInfo]),
       handleError: onError,
     });
   });
