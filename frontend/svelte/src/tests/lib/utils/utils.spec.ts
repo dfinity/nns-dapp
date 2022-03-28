@@ -1,4 +1,5 @@
 import {
+  createChunks,
   debounce,
   isDefined,
   stringifyJson,
@@ -116,6 +117,23 @@ describe("utils", () => {
 
     it("should return false if undefined", () => {
       expect(isDefined(undefined)).toBeFalsy();
+    });
+  });
+
+  describe("createChunks", () => {
+    it("create chunks of elements", () => {
+      const twenty = new Array(20).fill(1);
+      expect(createChunks(twenty).length).toBe(2);
+      expect(createChunks(twenty)[0].length).toBe(10);
+      expect(createChunks(twenty, 7).length).toBe(3);
+      expect(createChunks(twenty, 7)[0].length).toBe(7);
+      expect(createChunks(twenty, 7)[1].length).toBe(7);
+      expect(createChunks(twenty, 7)[2].length).toBe(6);
+      expect(createChunks(twenty)[0].length).toBe(10);
+      expect(createChunks(twenty, 5).length).toBe(4);
+      expect(createChunks(twenty, 5)[0].length).toBe(5);
+      expect(createChunks(twenty, 1).length).toBe(twenty.length);
+      expect(createChunks(twenty, 1)[0].length).toBe(1);
     });
   });
 });
