@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { ProposalInfo, NeuronId, NeuronInfo } from "@dfinity/nns";
-  import { votedNeurons, Vote } from "@dfinity/nns";
+  import type { ProposalInfo, NeuronId } from "@dfinity/nns";
+  import { Vote } from "@dfinity/nns";
   import Card from "../ui/Card.svelte";
   import { i18n } from "../../stores/i18n";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
