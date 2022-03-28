@@ -11,6 +11,7 @@ import {
   ageMultiplier,
   dissolveDelayMultiplier,
   formatVotingPower,
+  hasJoinedCommunityFund,
   hasValidStake,
   votingPower,
 } from "../../../lib/utils/neuron.utils";
@@ -157,6 +158,24 @@ describe("neuron-utils", () => {
       };
       neuronWithoutFullNeuron.fullNeuron = undefined;
       expect(hasValidStake(neuronWithoutFullNeuron)).toBeFalsy();
+    });
+  });
+
+  describe("hasJoinedCommunityFund", () => {
+    it("returns true when neuron has joined community", () => {
+      const joinedNeuron = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: BigInt(100),
+      };
+      expect(hasJoinedCommunityFund(joinedNeuron)).toBe(true);
+    });
+
+    it("returns true when neuron has not joined community", () => {
+      const joinedNeuron = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: undefined,
+      };
+      expect(hasJoinedCommunityFund(joinedNeuron)).toBe(false);
     });
   });
 });

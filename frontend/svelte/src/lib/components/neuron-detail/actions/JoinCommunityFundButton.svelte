@@ -34,12 +34,15 @@
   };
 </script>
 
-<button {disabled} class="primary small" on:click={showModal}
-  >{$i18n.neuron_detail.join_community_fund}</button
+<button
+  data-tid="join-community-fund-button"
+  {disabled}
+  class="primary small"
+  on:click={showModal}>{$i18n.neuron_detail.join_community_fund}</button
 >
 {#if isOpen}
   <ConfirmationModal on:nnsClose={closeModal} on:nnsConfirm={joinFund}>
-    <div>
+    <div data-tid="join-community-fund-modal">
       <h4>{$i18n.core.confirm}</h4>
       <p>{$i18n.neuron_detail.join_community_fund_description}</p>
     </div>
