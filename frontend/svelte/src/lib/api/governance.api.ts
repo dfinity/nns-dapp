@@ -132,6 +132,21 @@ export const queryKnownNeurons = async ({
   return knownNeurons;
 };
 
+export const claimOrRefreshNeuron = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<NeuronId | undefined> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.claimOrRefreshNeuron({
+    neuronId,
+    by: { NeuronIdOrSubaccount: {} },
+  });
+};
+
 // TODO: Apply pattern to other canister instantiation L2-371
 const governanceCanister = async ({
   identity,
