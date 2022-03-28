@@ -49,7 +49,6 @@
       if (proposalId === undefined) {
         // Navigate to the proposal list in no proposalId found
         routeStore.replace({ path: AppPath.Proposals });
-        proposalIdStore.reset();
         return;
       }
 
