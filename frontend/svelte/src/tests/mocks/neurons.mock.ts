@@ -30,7 +30,7 @@ export const mockNeuron: NeuronInfo = {
   state: NeuronState.LOCKED,
   joinedCommunityFundTimestampSeconds: undefined,
   retrievedAtTimestampSeconds: BigInt(10),
-  votingPower: BigInt(100),
+  votingPower: BigInt(300_000_000),
   ageSeconds: BigInt(100),
   fullNeuron: mockFullNeuron,
 };
