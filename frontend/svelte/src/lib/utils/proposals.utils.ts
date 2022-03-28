@@ -6,8 +6,6 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import { ProposalStatus, Vote } from "@dfinity/nns";
-import { E8S_PER_ICP } from "../constants/icp.constants";
-import { formatNumber } from "./format.utils";
 import { stringifyJson } from "./utils";
 
 export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
@@ -55,8 +53,15 @@ export const proposalActionFields = (
     ]);
 };
 
-export const formatVotingPower = (value: bigint): string =>
-  formatNumber(Number(value) / E8S_PER_ICP);
+// TODO: replace w/ markdown renderer -- eg https://nns.ic0.app/#/proposal/43574
+export const formatProposalSummary = (summary: string): string => {
+  if (summary?.length === 0) return "";
+  // extend urls
+  return summary.replace(
+    /(https?:\/\/[\S]+)/g,
+    '<a target="_blank" href="$1">$1</a>'
+  );
+};
 
 /**
  * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal is OPEN and has at least one UNSPECIFIED ballots' vote.

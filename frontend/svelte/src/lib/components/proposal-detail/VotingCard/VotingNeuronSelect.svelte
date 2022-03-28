@@ -1,10 +1,8 @@
 <script lang="ts">
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import {
-    formatVotingPower,
-    selectedNeuronsVotingPower,
-  } from "../../../utils/proposals.utils";
+  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
+  import { formatVotingPower } from "../../../utils/neuron.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
 
   let total: bigint;
