@@ -11,17 +11,16 @@ import { createAgent } from "../utils/agent.utils";
 export const getNeuronBalance = async ({
   neuron,
   identity,
+  certified,
 }: {
   neuron: Neuron;
   identity: Identity;
+  certified: boolean;
 }): Promise<ICP> => {
   const { canister } = await ledgerCanister({ identity });
-  // NOTE: We fetch the balance in an uncertified way as it's more efficient,
-  // and a malicious actor wouldn't gain anything by spoofing this value in
-  // this context.
   return canister.accountBalance({
     accountIdentifier: AccountIdentifier.fromHex(neuron.accountIdentifier),
-    certified: false,
+    certified,
   });
 };
 
