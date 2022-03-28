@@ -12,13 +12,13 @@
 
   export let proposalInfo: ProposalInfo;
 
-  let yesValue: number;
-  let noValue: number;
-  let summ: number;
+  let yes: number;
+  let no: number;
+  let sum: number;
 
-  $: yesValue = Number(proposalInfo?.latestTally?.yes ?? 0) / E8S_PER_ICP;
-  $: noValue = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
-  $: summ = yesValue + noValue;
+  $: yes = Number(proposalInfo?.latestTally?.yes ?? 0) / E8S_PER_ICP;
+  $: no = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
+  $: sum = yes + no;
 
   type CompactNeuronInfo = {
     id: NeuronId;
@@ -55,22 +55,19 @@
 <Card>
   <div class="latest-tally">
     <h3>
-      {$i18n.proposal_detail.adopt}<span>{formatNumber(yesValue)}</span>
+      {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
     </h3>
     <div
       class="progressbar"
       role="progressbar"
-      aria-valuenow={yesValue}
+      aria-valuenow={yes}
       aria-valuemin={0}
-      aria-valuemax={summ}
+      aria-valuemax={sum}
     >
-      <div
-        class="progressbar-value"
-        style="width: {(yesValue / summ) * 100}%"
-      />
+      <div class="progressbar-value" style="width: {(yes / sum) * 100}%" />
     </div>
     <h3>
-      {$i18n.proposal_detail.reject}<span>{formatNumber(noValue)}</span>
+      {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
     </h3>
   </div>
 
