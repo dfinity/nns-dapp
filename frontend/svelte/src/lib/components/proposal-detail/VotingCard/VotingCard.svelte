@@ -14,7 +14,6 @@
   import CastVoteCardNeuronSelect from "./VotingNeuronSelect.svelte";
 
   export let proposalInfo: ProposalInfo;
-  export let neurons: NeuronInfo[];
 
   let visible: boolean = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */

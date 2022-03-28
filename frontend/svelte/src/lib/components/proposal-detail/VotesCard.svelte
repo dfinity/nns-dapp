@@ -7,9 +7,9 @@
   import { formatNumber } from "../../utils/format.utils";
   import IconThumbDown from "../../icons/IconThumbDown.svelte";
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
+  import { votingNeuronSelectStore } from "../../stores/proposalDetail.store";
 
   export let proposalInfo: ProposalInfo;
-  export let neurons: NeuronInfo[];
 
   let yesValue: number;
   let noValue: number;
@@ -32,10 +32,7 @@
   let neuronsVotedForProposal: CompactNeuronInfo[];
 
   $: {
-    neuronsVotedForProposal = votedNeurons({
-      neurons,
-      proposal: proposalInfo,
-    })
+    neuronsVotedForProposal = $votingNeuronSelectStore.neurons
       .map(({ neuronId, recentBallots, votingPower }) => ({
         id: neuronId,
         // TODO: replace w/ formatVotingPower()

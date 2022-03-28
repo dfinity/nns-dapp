@@ -95,8 +95,8 @@
     <section>
       {#if $proposalInfoStore && $neuronsStore && neuronsReady}
         <ProposalDetailCard proposalInfo={$proposalInfoStore} />
-        <VotesCard proposalInfo={$proposalInfoStore} neurons={$neuronsStore} />
-        <VotingCard proposalInfo={$proposalInfoStore} neurons={$neuronsStore} />
+        <VotesCard proposalInfo={$proposalInfoStore} />
+        <VotingCard proposalInfo={$proposalInfoStore} />
         <IneligibleNeuronsCard
           proposalInfo={$proposalInfoStore}
           neurons={$neuronsStore}
