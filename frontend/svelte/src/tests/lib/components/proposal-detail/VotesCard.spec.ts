@@ -6,6 +6,8 @@ import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import VotesCard from "../../../../lib/components/proposal-detail/VotesCard.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
+import { neuronsStore } from "../../../../lib/stores/neurons.store";
+import { votingNeuronSelectStore } from "../../../../lib/stores/proposals.store";
 import { formatNumber } from "../../../../lib/utils/format.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
@@ -16,10 +18,10 @@ describe("VotesCard", () => {
     let renderResult: RenderResult;
     let yes: number, no: number;
     beforeEach(() => {
+      neuronsStore.setNeurons([]);
       renderResult = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
-          neurons: [],
         },
       });
 
@@ -70,30 +72,30 @@ describe("VotesCard", () => {
     };
     const votedNeurons = [mockNeuron, noVoted, yesVoted];
     it("should have title when proposal has been voted by some owned neuron", () => {
+      votingNeuronSelectStore.set(votedNeurons);
       const { getByText } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
-          neurons: votedNeurons,
         },
       });
       expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
     });
 
     it("should not have title when proposal has not been voted by some owned neuron", () => {
+      votingNeuronSelectStore.set([]);
       const { getByText } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
-          neurons: [],
         },
       });
       expect(() => getByText(en.proposal_detail.my_votes)).toThrow();
     });
 
     it("should render an item per voted neuron", () => {
+      votingNeuronSelectStore.set(votedNeurons);
       const { container } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
-          neurons: votedNeurons,
         },
       });
       const neuronElements = container.querySelectorAll(
@@ -103,10 +105,10 @@ describe("VotesCard", () => {
     });
 
     it("should render the proper icon item for YES and NO", () => {
+      votingNeuronSelectStore.set(votedNeurons);
       const { container } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
-          neurons: votedNeurons,
         },
       });
       const thumbUpElements = container.querySelectorAll(

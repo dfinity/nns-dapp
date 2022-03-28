@@ -9,6 +9,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import VotingCard from "../../../../../lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 import { SECONDS_IN_YEAR } from "../../../../../lib/constants/constants";
 import { authStore } from "../../../../../lib/stores/auth.store";
+import { neuronsStore } from "../../../../../lib/stores/neurons.store";
 import { mockAuthStoreSubscribe } from "../../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../../mocks/governance.canister.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
@@ -30,9 +31,9 @@ describe("VotingCard", () => {
   }));
 
   it("should be hidden if there is no not-voted-neurons", async () => {
+    neuronsStore.setNeurons([]);
     const { queryByTestId } = render(VotingCard, {
       props: {
-        neurons: [],
         proposalInfo,
       },
     });
@@ -40,9 +41,9 @@ describe("VotingCard", () => {
   });
 
   it("should be visible if there are some not-voted-neurons", async () => {
+    neuronsStore.setNeurons(neurons);
     const { queryByTestId } = render(VotingCard, {
       props: {
-        neurons,
         proposalInfo,
       },
     });
@@ -67,9 +68,9 @@ describe("VotingCard", () => {
       spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
       spyListNeurons = jest.spyOn(mockGovernanceCanister, "listNeurons");
 
+      neuronsStore.setNeurons(neurons);
       render(VotingCard, {
         props: {
-          neurons,
           proposalInfo,
         },
       });

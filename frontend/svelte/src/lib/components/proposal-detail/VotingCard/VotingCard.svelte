@@ -15,25 +15,26 @@
 
   export let proposalInfo: ProposalInfo;
 
+  const notVotedNeurons = () =>
+    getNotVotedNeurons({
+      neurons: $neuronsStore,
+      proposal: proposalInfo,
+    });
   let visible: boolean = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
 
   $: visible =
-    $votingNeuronSelectStore.neurons.length > 0 &&
+    notVotedNeurons().length > 0 &&
     proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
 
-  const unsubcribe = neuronsStore.subscribe((neurons: NeuronInfo[]) => {
-    const notVotedNeurons = getNotVotedNeurons({
-      neurons,
-      proposal: proposalInfo,
-    });
+  const unsubcribe = neuronsStore.subscribe(() => {
     if (!initialSelectionDone) {
       initialSelectionDone = true;
-      votingNeuronSelectStore.set(notVotedNeurons);
+      votingNeuronSelectStore.set(notVotedNeurons());
     } else {
       // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
-      votingNeuronSelectStore.updateNeurons(notVotedNeurons);
+      votingNeuronSelectStore.updateNeurons(notVotedNeurons());
     }
   });
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
