@@ -1,10 +1,13 @@
 import type {
+  NeuronId,
+  NeuronInfo,
+  ProposalId,
   ProposalInfo,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
 } from "@dfinity/nns";
-import { writable } from "svelte/store";
+import { derived, writable } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
 
 export interface ProposalsFiltersStore {
@@ -12,6 +15,11 @@ export interface ProposalsFiltersStore {
   rewards: ProposalRewardStatus[];
   status: ProposalStatus[];
   excludeVotedProposals: boolean;
+}
+
+export interface NeuronSelectionStore {
+  neurons: NeuronInfo[];
+  selectedIds: NeuronId[];
 }
 
 /**
@@ -96,5 +104,92 @@ const initProposalsFiltersStore = () => {
   };
 };
 
+/**
+ * Contains proposalId of the proposalDetail page
+ */
+const initProposalIdStore = () => {
+  const { subscribe, set } = writable<ProposalId | undefined>();
+
+  return {
+    subscribe,
+    set,
+    reset: () => set(undefined),
+  };
+};
+
+/**
+ * Contains proposalInfo of the proposalDetail page
+ */
+const initProposalInfoStore = () => {
+  const proposal = writable<ProposalInfo | undefined>();
+  const proposalChange = derived(
+    [proposalIdStore, proposal],
+    // reset proposal on proposalId change
+    // TODO: add motivation
+    ([$proposalIdStore, $proposal]) =>
+      $proposal?.id === $proposalIdStore ? $proposal : undefined
+  );
+
+  return {
+    set: proposal.set,
+    ...proposalChange,
+  };
+};
+
+/**
+ * Contains available for voting neurons and their selection state
+ */
+const initNeuronSelectStore = () => {
+  const { subscribe, update, set } = writable<NeuronSelectionStore>({
+    neurons: [],
+    selectedIds: [],
+  });
+
+  return {
+    subscribe,
+
+    set(neurons: NeuronInfo[]) {
+      set({
+        neurons: [...neurons],
+        selectedIds: neurons.map(({ neuronId }) => neuronId),
+      });
+    },
+
+    updateNeurons(neurons: NeuronInfo[]) {
+      update(({ neurons: oldNeurons, selectedIds: oldSelectedIds }) => {
+        const newIds = new Set(neurons.map(({ neuronId }) => neuronId));
+        const oldIds = new Set(oldNeurons.map(({ neuronId }) => neuronId));
+        const preservedSelection = oldSelectedIds.filter((id) =>
+          newIds.has(id)
+        );
+        const newNeuronsSelection = Array.from(newIds).filter(
+          (id) => oldIds.has(id) === false
+        );
+        const selectedIds = [...preservedSelection, ...newNeuronsSelection];
+        return {
+          neurons,
+          selectedIds,
+        };
+      });
+    },
+
+    reset() {
+      this.set([]);
+    },
+
+    toggleSelection(neuronId: NeuronId) {
+      update(({ neurons, selectedIds }) => ({
+        neurons,
+        selectedIds: selectedIds.includes(neuronId)
+          ? selectedIds.filter((id: NeuronId) => id !== neuronId)
+          : Array.from(new Set([...selectedIds, neuronId])),
+      }));
+    },
+  };
+};
+
 export const proposalsStore = initProposalsStore();
 export const proposalsFiltersStore = initProposalsFiltersStore();
+export const proposalIdStore = initProposalIdStore();
+export const proposalInfoStore = initProposalInfoStore();
+export const votingNeuronSelectStore = initNeuronSelectStore();

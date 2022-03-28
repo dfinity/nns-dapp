@@ -7,7 +7,7 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import VotingNeuronSelect from "../../../../../lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
 import { E8S_PER_ICP } from "../../../../../lib/constants/icp.constants";
-import { votingNeuronSelectStore } from "../../../../../lib/stores/proposalDetail.store";
+import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
 import { formatVotingPower } from "../../../../../lib/utils/proposals.utils";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 

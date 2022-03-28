@@ -8,7 +8,7 @@
   import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
   import { neuronsStore } from "../../../stores/neurons.store";
-  import { votingNeuronSelectStore } from "../../../stores/proposalDetail.store";
+  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import Card from "../../ui/Card.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import CastVoteCardNeuronSelect from "./VotingNeuronSelect.svelte";

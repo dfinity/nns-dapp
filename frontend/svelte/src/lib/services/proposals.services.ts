@@ -8,9 +8,9 @@ import {
 } from "../api/proposals.api";
 import { busyStore } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
-import { proposalInfoStore } from "../stores/proposalDetail.store";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
+  proposalInfoStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "../stores/proposals.store";

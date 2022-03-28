@@ -3,7 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
   import { i18n } from "../../../stores/i18n";
-  import { votingNeuronSelectStore } from "../../../stores/proposalDetail.store";
+  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
 
   const dispatch = createEventDispatcher();

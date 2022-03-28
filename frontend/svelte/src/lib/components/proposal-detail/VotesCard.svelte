@@ -7,7 +7,7 @@
   import { formatNumber } from "../../utils/format.utils";
   import IconThumbDown from "../../icons/IconThumbDown.svelte";
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
-  import { votingNeuronSelectStore } from "../../stores/proposalDetail.store";
+  import { votingNeuronSelectStore } from "../../stores/proposals.store";
 
   export let proposalInfo: ProposalInfo;
 

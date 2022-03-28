@@ -19,7 +19,7 @@
   import {
     proposalIdStore,
     proposalInfoStore,
-  } from "../lib/stores/proposalDetail.store";
+  } from "../lib/stores/proposals.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
 
   let neuronsReady = false;
