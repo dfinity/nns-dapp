@@ -1,5 +1,6 @@
 import type { NeuronInfo } from "@dfinity/nns";
 import { writable } from "svelte/store";
+import { hasValidStake } from "../utils/neuron.utils";
 
 export type NeuronsStore = NeuronInfo[];
 
@@ -16,15 +17,18 @@ const initNeuronsStore = () => {
     subscribe,
 
     setNeurons(neurons: NeuronInfo[]) {
-      set([...neurons]);
+      set([...neurons.filter(hasValidStake)]);
     },
 
     pushNeurons(newNeurons: NeuronInfo[]) {
       update((oldNeurons: NeuronInfo[]) => {
-        const newIds = new Set(newNeurons.map(({ neuronId }) => neuronId));
+        const filteredNewNeurons = newNeurons.filter(hasValidStake);
+        const newIds = new Set(
+          filteredNewNeurons.map(({ neuronId }) => neuronId)
+        );
         return [
           ...oldNeurons.filter(({ neuronId }) => !newIds.has(neuronId)),
-          ...newNeurons,
+          ...filteredNewNeurons,
         ];
       });
     },
