@@ -2,7 +2,6 @@ import type { Ballot, NeuronInfo, Proposal } from "@dfinity/nns";
 import { Vote } from "@dfinity/nns";
 import {
   emptyProposals,
-  formatVotingPower,
   hasMatchingProposals,
   hideProposal,
   lastProposalId,
@@ -302,15 +301,7 @@ describe("proposals-utils", () => {
     });
   });
 
-  describe("formatVotingPower", () => {
-    it("should format", () => {
-      expect(formatVotingPower(BigInt(0))).toBe("0.00");
-      expect(formatVotingPower(BigInt(100000000))).toBe("1.00");
-      expect(formatVotingPower(BigInt(9999900000))).toBe("100.00");
-    });
-  });
-
-  describe("selectedNeuronsVotingPower", () => {
+  describe("selectedNeuronsVotingPover", () => {
     const neuron = (id: number, votingPower: number): NeuronInfo =>
       ({
         ...mockNeuron,
