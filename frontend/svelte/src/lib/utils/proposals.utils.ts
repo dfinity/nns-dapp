@@ -115,7 +115,7 @@ export const selectedNeuronsVotingPower = ({
     .reduce((sum, { votingPower }) => sum + votingPower, BigInt(0));
 
 /**
- * Generate new selected neuron id list
+ * Generate new selected neuron id list after new neurons response w/o spoiling the previously done user selection
  */
 export const preserveNeuronSelectionAfterUpdate = ({
   selectedIds,
