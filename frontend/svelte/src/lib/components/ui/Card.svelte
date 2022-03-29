@@ -12,7 +12,7 @@
 
 <article data-tid="card" {role} on:click class:clickable aria-label={ariaLabel}>
   {#if showHeadline}
-    <div class="headline">
+    <div>
       <slot name="start" />
       <slot name="end" />
     </div>
@@ -48,7 +48,7 @@
     }
   }
 
-  .headline {
+  div {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
