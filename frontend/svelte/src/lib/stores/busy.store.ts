@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 
-export type BusyStateInitiator = "vote" | "test";
+export type BusyStateInitiator = "vote" | "test" | "join-community-fund";
 
 /**
  * Store that reflects the app busy state.
