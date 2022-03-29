@@ -8,6 +8,7 @@ import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/transaction/wallet/select_source_wallet_page.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
 import 'package:nns_dapp/ui/transaction/wizard_path_button.dart';
+import 'package:universal_html/html.dart' as html;
 import '../../nns_dapp.dart';
 import 'account_row.dart';
 import 'balance_display_widget.dart';
@@ -22,6 +23,10 @@ class AccountsTabWidget extends StatefulWidget {
 class _AccountsTabWidgetState extends State<AccountsTabWidget> {
   @override
   Widget build(BuildContext context) {
+    if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
+      html.window.location.replace("/v2/#/proposals");
+      return Text('Redirecting...');
+    }
     return StreamBuilder<Object>(
         stream: context.boxes.accounts.changes,
         builder: (context, snapshot) {
