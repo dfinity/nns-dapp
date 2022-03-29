@@ -1,8 +1,6 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-
+  import type { NeuronInfo, NeuronId } from "@dfinity/nns";
   import { onDestroy, onMount } from "svelte";
-
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { getNeuronId, loadNeuron } from "../lib/services/neurons.services";
   import NeuronFollowingCard from "../lib/components/neuron-detail/NeuronFollowingCard.svelte";
@@ -15,8 +13,10 @@
   import { AppPath } from "../lib/constants/routes.constants";
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
+  import { neuronSelectStore, neuronsStore } from "../lib/stores/neurons.store";
 
-  let neuron: NeuronInfo | undefined;
+  let neuronId: NeuronId | undefined;
+  $: neuronSelectStore.select(neuronId);
 
   // TODO: To be removed once this page has been implemented
   const showThisRoute = ["svelte", "both", "staging"].includes(
@@ -36,6 +36,7 @@
       routeStore.replace({ path: AppPath.Neurons });
       return;
     }
+    neuronId = neuronIdMaybe;
 
     const onError = () => {
       unsubscribe();
@@ -48,7 +49,8 @@
 
     await loadNeuron({
       neuronId: neuronIdMaybe,
-      setNeuron: (neuronInfo: NeuronInfo) => (neuron = neuronInfo),
+      setNeuron: (neuronInfo: NeuronInfo) =>
+        neuronsStore.pushNeurons([neuronInfo]),
       handleError: onError,
     });
   });
@@ -68,13 +70,13 @@
   <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
     <section>
-      {#if neuron}
-        <NeuronMetaInfoCard {neuron} />
-        <NeuronMaturityCard {neuron} />
-        <NeuronFollowingCard {neuron} />
-        <NeuronProposalsCard {neuron} />
-        <NeuronHotkeysCard {neuron} />
-        <NeuronVotingHistoryCard {neuron} />
+      {#if $neuronSelectStore}
+        <NeuronMetaInfoCard neuron={$neuronSelectStore} />
+        <NeuronMaturityCard neuron={$neuronSelectStore} />
+        <NeuronFollowingCard neuron={$neuronSelectStore} />
+        <NeuronProposalsCard neuron={$neuronSelectStore} />
+        <NeuronHotkeysCard neuron={$neuronSelectStore} />
+        <NeuronVotingHistoryCard neuron={$neuronSelectStore} />
       {:else}
         <Spinner />
       {/if}

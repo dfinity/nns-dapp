@@ -80,3 +80,11 @@ export const ageMultiplier = (ageSeconds: number): number =>
 
 export const formatVotingPower = (value: bigint): string =>
   formatNumber(Number(value) / E8S_PER_ICP);
+
+export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
+  neuron.joinedCommunityFundTimestampSeconds !== undefined;
+
+export const isCurrentUserController = (neuron: NeuronInfo): boolean =>
+  neuron.fullNeuron?.isCurrentUserController === undefined
+    ? false
+    : Boolean(neuron.fullNeuron?.isCurrentUserController);
