@@ -37,7 +37,7 @@ describe("landing page", () => {
       const spinner = await browser.$('[data-tid="spinner"]');
       await spinner.waitForExist();
       await browser.execute(() =>
-        document.querySelector("main section svg").remove()
+        document.querySelector('[data-tid="spinner"]').remove()
       );
       await waitForImages(browser);
       // remove toast error to make screenshots deterministic
