@@ -20,7 +20,7 @@ describe("AccountBadge", () => {
 
   it("should render linked account badge", () => {
     const { getByText } = render(AccountBadge, {
-      props: { account: { ...mockMainAccount, subAccount: ["test"] } },
+      props: { account: { ...mockMainAccount, subAccount: [0] } },
     });
 
     expect(
