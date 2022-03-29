@@ -22,6 +22,7 @@
         labelKey: "neuron_detail.join_community_fund_success",
         level: "info",
       });
+      closeModal();
     } catch (err) {
       toastsStore.error({
         labelKey: "error.join_community_fund",
@@ -29,7 +30,6 @@
       });
     } finally {
       busyStore.stop("join-community-fund");
-      closeModal();
     }
   };
 </script>
