@@ -39,14 +39,16 @@ export const neuronsStore = initNeuronsStore();
 
 // source idea: https://svelte.dev/repl/44455916128c40d386927cb72f9a3004?version=3.29.7
 const initNeuronSelectStore = () => {
-  const _select = writable<NeuronId | undefined>(undefined);
-  const _selection = derived([neuronsStore, _select], ([neurons, selectedId]) =>
-    neurons.find((neuron) => neuron.neuronId === selectedId)
+  const _selectedId = writable<NeuronId | undefined>(undefined);
+  const _selectedNeuron = derived(
+    [neuronsStore, _selectedId],
+    ([neurons, selectedId]) =>
+      neurons.find((neuron) => neuron.neuronId === selectedId)
   );
 
   return {
-    select: _select.set,
-    ..._selection,
+    select: _selectedId.set,
+    ..._selectedNeuron,
   };
 };
 
