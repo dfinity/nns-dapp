@@ -59,7 +59,7 @@ interface I18nAuth {
   nns: string;
   icp_governance: string;
   login: string;
-  powered_by: string;
+  on_chain: string;
 }
 
 interface I18nAccounts {
@@ -246,6 +246,12 @@ interface I18nNeuron_detail {
   proposer: string;
   voting_history: string;
   vote: string;
+  join_community_fund: string;
+  increase_dissolve_delay: string;
+  start_dissolving: string;
+  increase_stake: string;
+  split_neuron: string;
+  voting_power_tooltip: string;
 }
 
 interface I18nTime {

@@ -51,7 +51,7 @@
     "nns": "NETWORK NERVOUS SYSTEM",
     "icp_governance": "ICP and governance",
     "login": "Login",
-    "powered_by": "Powered by IC Banner"
+    "on_chain": "100% on-chain Internet Computer"
   },
   "accounts": {
     "title": "Accounts",
@@ -223,7 +223,13 @@
     "title": "Neuron",
     "proposer": "Proposer",
     "voting_history": "Voting History",
-    "vote": "Vote"
+    "vote": "Vote",
+    "join_community_fund": "Join Community Fund",
+    "increase_dissolve_delay": "Increase Dissolve Delay",
+    "start_dissolving": "Start Dissolving",
+    "increase_stake": "Increase Neuron Stake",
+    "split_neuron": "Split Neuron",
+    "voting_power_tooltip": "Calculated as: \nICP stake x Dissolve Delay Bonus x Age Bonus:\n$stake x $delayMultiplier x $ageMultiplier"
   },
   "time": {
     "year": "year",
