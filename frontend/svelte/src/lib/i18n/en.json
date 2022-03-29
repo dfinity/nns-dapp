@@ -7,6 +7,7 @@
     "back": "Back",
     "confirm_yes": "Yes, I'm sure",
     "confirm_no": "Cancel",
+    "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
     "unspecified": "Unspecified"
@@ -31,8 +32,9 @@
     "remove_followee": "Sorry, there was an unexpectedf error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, followee already removed, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
-    "suspicious_response": "Suspicious response detected. Page reload suggested.",
-    "fail": "fail"
+    "fail": "fail",
+    "join_community_fund": "Sorry, there was an error joining the comomunity fund. Please try again later.",
+    "suspicious_response": "Suspicious response detected. Page reload suggested."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -230,7 +232,9 @@
     "start_dissolving": "Start Dissolving",
     "increase_stake": "Increase Neuron Stake",
     "split_neuron": "Split Neuron",
-    "voting_power_tooltip": "Calculated as: \nICP stake x Dissolve Delay Bonus x Age Bonus:\n$stake x $delayMultiplier x $ageMultiplier"
+    "voting_power_tooltip": "Calculated as: \nICP stake x Dissolve Delay Bonus x Age Bonus:\n$stake x $delayMultiplier x $ageMultiplier",
+    "join_community_fund_description": "Are you sure you want this neuron to join the community fund? This action is irreversible.",
+    "join_community_fund_success": "Your neuron has successfully joined the community fund."
   },
   "time": {
     "year": "year",

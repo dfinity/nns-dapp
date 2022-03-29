@@ -10,6 +10,7 @@ interface I18nCore {
   back: string;
   confirm_yes: string;
   confirm_no: string;
+  confirm: string;
   yes: string;
   no: string;
   unspecified: string;
@@ -37,6 +38,7 @@ interface I18nError {
   accounts_not_found: string;
   suspicious_response: string;
   fail: string;
+  join_community_fund: string;
 }
 
 interface I18nWarning {
@@ -253,6 +255,8 @@ interface I18nNeuron_detail {
   increase_stake: string;
   split_neuron: string;
   voting_power_tooltip: string;
+  join_community_fund_description: string;
+  join_community_fund_success: string;
 }
 
 interface I18nTime {

@@ -9,6 +9,7 @@ import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
   addFollowee,
   getNeuronId,
+  joinCommunityFund,
   listNeurons,
   loadNeuron,
   removeFollowee,
@@ -41,6 +42,10 @@ describe("neurons-services", () => {
 
   const spyIncreaseDissolveDelay = jest
     .spyOn(api, "increaseDissolveDelay")
+    .mockImplementation(() => Promise.resolve());
+
+  const spyJoinCommunityFund = jest
+    .spyOn(api, "joinCommunityFund")
     .mockImplementation(() => Promise.resolve());
 
   const spySetFollowees = jest
@@ -203,6 +208,24 @@ describe("neurons-services", () => {
           neuronId: BigInt(10),
           dissolveDelayInSeconds: 12000,
         });
+
+      await expect(call).rejects.toThrow(mockIdentityErrorMsg);
+
+      resetIdentity();
+    });
+  });
+
+  describe("joinCommunityFund", () => {
+    it("should update neuron", async () => {
+      await joinCommunityFund(BigInt(10));
+
+      expect(spyJoinCommunityFund).toHaveBeenCalled();
+    });
+
+    it("should not update neuron if no identity", async () => {
+      setNoIdentity();
+
+      const call = async () => await joinCommunityFund(BigInt(10));
 
       await expect(call).rejects.toThrow(mockIdentityErrorMsg);
 
