@@ -75,5 +75,5 @@ This environment varibale controls whether the svelte or flutter implementation 
 | prod        | svelte    | flutter      | flutter     | flutter       | flutter       |
 | staging     | svelte    | flutter      | flutter     | svelte        | flutter       |
 | svelte      | svelte    | svelte       | svelte      | svelte        | svelte        |
-| flutter     | flutter   | flutter      | flutter     | flutter       | flutter       |
+| flutter     | svelte    | flutter      | flutter     | flutter       | flutter       |
 | both        | svelte    | both         | both        | both          | both          |
