@@ -41,9 +41,9 @@ export const neuronsStore = initNeuronsStore();
 const initNeuronSelectStore = () => {
   const _select = writable<NeuronId | undefined>(undefined);
   const _selection = derived([neuronsStore, _select], ([neurons, selectedId]) =>
-    neurons.find(
-      (neuron) => selectedId !== undefined && neuron.neuronId === selectedId
-    )
+    selectedId === undefined
+      ? undefined
+      : neurons.find((neuron) => neuron.neuronId === selectedId)
   );
 
   return {
