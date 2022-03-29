@@ -13,6 +13,7 @@ import {
   formatVotingPower,
   hasJoinedCommunityFund,
   hasValidStake,
+  isCurrentUserController,
   votingPower,
 } from "../../../lib/utils/neuron.utils";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
@@ -176,6 +177,41 @@ describe("neuron-utils", () => {
         joinedCommunityFundTimestampSeconds: undefined,
       };
       expect(hasJoinedCommunityFund(joinedNeuron)).toBe(false);
+    });
+  });
+
+  describe("isCurrentUserController", () => {
+    it("returns false when isCurrentUserController not defined", () => {
+      const userControlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          isCurrentUserController: undefined,
+        },
+      };
+      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+    });
+
+    it("returns true when neuron is controlled by user", () => {
+      const userControlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          isCurrentUserController: true,
+        },
+      };
+      expect(isCurrentUserController(userControlledNeuron)).toBe(true);
+    });
+
+    it("returns false when isCurrentUserController is false", () => {
+      const userControlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          isCurrentUserController: false,
+        },
+      };
+      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
     });
   });
 });

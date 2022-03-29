@@ -10,6 +10,7 @@
     dissolveDelayMultiplier,
     formatVotingPower,
     hasJoinedCommunityFund,
+    isCurrentUserController,
   } from "../../utils/neuron.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
@@ -23,6 +24,8 @@
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
+  let userControlled: boolean;
+  $: userControlled = isCurrentUserController(neuron);
 </script>
 
 <NeuronCard {neuron}>
@@ -33,7 +36,7 @@
           .staked}
       </p>
       <JoinCommunityFundButton
-        disabled={isCommunityFund}
+        disabled={isCommunityFund || !userControlled}
         neuronId={neuron.neuronId}
       />
     </div>

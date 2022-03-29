@@ -6,6 +6,7 @@
   import {
     getStateInfo,
     hasJoinedCommunityFund,
+    isCurrentUserController,
   } from "../../utils/neuron.utils";
   import type { StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
@@ -26,10 +27,8 @@
     neuron.fullNeuron?.cachedNeuronStake !== undefined
       ? ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake)
       : ICP.fromE8s(BigInt(0));
-  $: isHotKeyControl =
-    neuron.fullNeuron?.isCurrentUserController === undefined
-      ? true
-      : !neuron.fullNeuron?.isCurrentUserController;
+  let isHotKeyControl: boolean;
+  $: isHotKeyControl = !isCurrentUserController(neuron);
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime =
     neuron.state === NeuronState.DISSOLVING &&

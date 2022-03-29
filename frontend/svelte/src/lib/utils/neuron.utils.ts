@@ -83,3 +83,8 @@ export const formatVotingPower = (value: bigint): string =>
 
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
+
+export const isCurrentUserController = (neuron: NeuronInfo): boolean =>
+  neuron.fullNeuron?.isCurrentUserController === undefined
+    ? false
+    : Boolean(neuron.fullNeuron?.isCurrentUserController);
