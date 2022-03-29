@@ -44,8 +44,7 @@ export const proposalActionFields = (
     return [];
   }
 
-  // TODO: https://dfinity.atlassian.net/browse/L2-348
-  return Object.entries(proposal.action?.[key])
+  return Object.entries(proposal.action?.[key] ?? {})
     .filter(([key]) => key !== "payloadBytes")
     .map(([key, value]: [string, object]) => [
       key,
@@ -118,3 +117,24 @@ export const selectedNeuronsVotingPower = ({
   neurons
     .filter(({ neuronId }) => selectedIds.includes(neuronId))
     .reduce((sum, { votingPower }) => sum + votingPower, BigInt(0));
+
+/**
+ * Generate new selected neuron id list after new neurons response w/o spoiling the previously done user selection
+ */
+export const preserveNeuronSelectionAfterUpdate = ({
+  selectedIds,
+  neurons,
+  updatedNeurons,
+}: {
+  selectedIds: NeuronId[];
+  neurons: NeuronInfo[];
+  updatedNeurons: NeuronInfo[];
+}): NeuronId[] => {
+  const newIds = new Set(updatedNeurons.map(({ neuronId }) => neuronId));
+  const oldIds = new Set(neurons.map(({ neuronId }) => neuronId));
+  const preservedSelection = selectedIds.filter((id) => newIds.has(id));
+  const newNeuronsSelection = Array.from(newIds).filter(
+    (id) => oldIds.has(id) === false
+  );
+  return [...preservedSelection, ...newNeuronsSelection];
+};

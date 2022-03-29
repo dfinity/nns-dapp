@@ -123,7 +123,15 @@ const findNeuronsStakeNotBalance = async ({
     await Promise.all(
       neurons.map(
         async (fullNeuron): Promise<{ balance: ICP; fullNeuron: Neuron }> => ({
-          balance: await getNeuronBalance({ neuron: fullNeuron, identity }),
+          // NOTE: We fetch the balance in an uncertified way as it's more efficient,
+          // and a malicious actor wouldn't gain anything by spoofing this value.
+          // This data is used only to now which neurons need to be refreshed.
+          // This data is not shown to the user, nor stored in any store.
+          balance: await getNeuronBalance({
+            neuron: fullNeuron,
+            identity,
+            certified: false,
+          }),
           fullNeuron,
         })
       )

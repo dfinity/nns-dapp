@@ -5,6 +5,7 @@ import {
   hasMatchingProposals,
   hideProposal,
   lastProposalId,
+  preserveNeuronSelectionAfterUpdate,
   proposalActionFields,
   proposalFirstActionKey,
   selectedNeuronsVotingPower,
@@ -280,6 +281,16 @@ describe("proposals-utils", () => {
       );
     });
 
+    it("should return empty array if no `action`", () => {
+      const proposal = {
+        ...mockProposalInfo.proposal,
+        action: undefined,
+      } as Proposal;
+      const fields = proposalActionFields(proposal);
+
+      expect(fields.length).toBe(0);
+    });
+
     it("should stringify all objects", () => {
       const fields = proposalActionFields(
         mockProposalInfo.proposal as Proposal
@@ -331,6 +342,78 @@ describe("proposals-utils", () => {
           selectedIds: [],
         })
       ).toBe(BigInt(0));
+    });
+  });
+
+  describe("preserveNeuronSelectionAfterUpdate", () => {
+    const neuron = (id: number): NeuronInfo =>
+      ({
+        ...mockNeuron,
+        neuronId: BigInt(id),
+      } as NeuronInfo);
+
+    it("should preserve old selection", () => {
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [0, 1, 2].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+        })
+      ).toEqual([0, 1, 2].map(BigInt));
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [0, 2].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+        })
+      ).toEqual([0, 2].map(BigInt));
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+        })
+      ).toEqual([].map(BigInt));
+    });
+
+    it("should select new neurons", () => {
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [
+            neuron(0),
+            neuron(1),
+            neuron(2),
+            neuron(3),
+            neuron(4),
+          ],
+        })
+      ).toEqual([3, 4].map(BigInt));
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [0].map(BigInt),
+          neurons: [neuron(0), neuron(1)],
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+        })
+      ).toEqual([0, 2].map(BigInt));
+    });
+
+    it("should remove selction from not existed anymore neurons", () => {
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [0, 1, 2].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [neuron(0), neuron(1)],
+        })
+      ).toEqual([0, 1].map(BigInt));
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [0, 1, 2].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [neuron(0), neuron(1), neuron(3)],
+        })
+      ).toEqual([0, 1, 3].map(BigInt));
     });
   });
 });

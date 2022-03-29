@@ -10,6 +10,7 @@ import { busyStore } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
+  proposalInfoStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "../stores/proposals.store";
@@ -163,15 +164,20 @@ export const registerVotes = async ({
     });
   }
 
-  try {
-    await listNeurons();
-  } catch (err) {
-    console.error(err);
-    toastsStore.error({
-      labelKey: "error.list_proposals",
-      err,
-    });
-  }
+  await Promise.all([
+    listNeurons().catch((err) => {
+      console.error(err);
+      toastsStore.error({
+        labelKey: "error.list_proposals",
+        err,
+      });
+    }),
+    loadProposal({
+      proposalId,
+      setProposal: (proposalInfo: ProposalInfo) =>
+        proposalInfoStore.set(proposalInfo),
+    }),
+  ]);
 
   busyStore.stop("vote");
 };

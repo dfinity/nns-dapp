@@ -61,7 +61,7 @@ interface I18nAuth {
   nns: string;
   icp_governance: string;
   login: string;
-  powered_by: string;
+  on_chain: string;
 }
 
 interface I18nAccounts {
