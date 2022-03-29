@@ -6,7 +6,7 @@ import {
   queryProposals,
   registerVote,
 } from "../api/proposals.api";
-import { busyStore } from "../stores/busy.store";
+import { startBusy, stopBusy } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
@@ -143,7 +143,7 @@ export const registerVotes = async ({
   proposalId: ProposalId;
   vote: Vote;
 }): Promise<void> => {
-  busyStore.start("vote");
+  startBusy("vote");
 
   const identity: Identity = await getIdentity();
 
@@ -179,7 +179,7 @@ export const registerVotes = async ({
     }),
   ]);
 
-  busyStore.stop("vote");
+  stopBusy("vote");
 };
 
 const requestRegisterVotes = async ({

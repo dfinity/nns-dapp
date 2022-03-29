@@ -1,6 +1,7 @@
-import { writable } from "svelte/store";
+import type { Readable } from "svelte/store";
+import { derived, writable } from "svelte/store";
 
-export type BusyStateInitiator = "vote" | "test";
+export type BusyStateInitiator = "vote" | "accounts" | "test";
 
 /**
  * Store that reflects the app busy state.
@@ -15,14 +16,14 @@ const initBusyStore = () => {
     /**
      * Show the busy-screen if not visible
      */
-    start(initiator: BusyStateInitiator) {
+    startBusy(initiator: BusyStateInitiator) {
       update((state) => state.add(initiator));
     },
 
     /**
      * Hide the busy-screen if no other initiators are done
      */
-    stop(initiator: BusyStateInitiator) {
+    stopBusy(initiator: BusyStateInitiator) {
       update((state) => {
         state.delete(initiator);
         return state;
@@ -31,4 +32,11 @@ const initBusyStore = () => {
   };
 };
 
-export const busyStore = initBusyStore();
+const busyStore = initBusyStore();
+
+export const { startBusy, stopBusy } = busyStore;
+
+export const busy: Readable<boolean> = derived(
+  busyStore,
+  ($busyStore) => $busyStore.size > 0
+);
