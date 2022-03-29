@@ -43,6 +43,8 @@
       {neuron.neuronId}
     </h3>
 
+    <span class="neuron-control">{$i18n.neurons.hotkey_control}</span>
+
     {#if isCommunityFund}
       <span class="neuron-control">{$i18n.neurons.community_fund}</span>
     {/if}
@@ -84,6 +86,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/display";
+  @use "../../themes/mixins/card";
 
   :global(div.modal article > div) {
     margin-bottom: 0;
@@ -95,8 +98,7 @@
   }
 
   .lock {
-    display: flex;
-    flex-direction: column;
+    @include card.stacked-title;
   }
 
   .status {
@@ -118,8 +120,6 @@
   .info {
     @include display.space-between;
     align-items: center;
-
-    margin: calc(2 * var(--padding)) 0 0;
 
     p {
       margin: 0;

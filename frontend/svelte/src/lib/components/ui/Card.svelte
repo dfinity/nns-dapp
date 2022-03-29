@@ -12,7 +12,7 @@
 
 <article data-tid="card" {role} on:click class:clickable aria-label={ariaLabel}>
   {#if showHeadline}
-    <div>
+    <div class="headline">
       <slot name="start" />
       <slot name="end" />
     </div>
@@ -48,10 +48,16 @@
     }
   }
 
-  div {
-    @include display.space-between;
+  .headline {
+    display: flex;
+    flex-direction: column;
     align-items: flex-start;
 
-    margin: 0 0 var(--padding);
+    @include media.min-width(small) {
+      @include display.space-between;
+      flex-direction: row;
+
+      margin: 0 0 var(--padding);
+    }
   }
 </style>

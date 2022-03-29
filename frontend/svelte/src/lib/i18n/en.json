@@ -64,7 +64,8 @@
     "attach_hardware_title": "Attach Hardware Wallet",
     "attach_hardware_subtitle": "Link a hardware wallet to this account",
     "new_linked_account_title": "New Linked Account",
-    "new_linked_account_placeholder": "Account Name"
+    "new_linked_account_placeholder": "Account Name",
+    "linked_account": "LINKED ACCOUNT"
   },
   "neurons": {
     "title": "Neurons",
@@ -88,8 +89,8 @@
     "status_unspecified": "",
     "status_dissolved": "Unlocked",
     "status_dissolving": "Dissolving",
-    "community_fund": "[community fund]",
-    "hotkey_control": "[hotkey control]",
+    "community_fund": "COMMUNITY FUND",
+    "hotkey_control": "HOTKEY CONTROL",
     "stake": "Stake",
     "icp_stake": "$amount ICP Stake",
     "staked": "Staked",
