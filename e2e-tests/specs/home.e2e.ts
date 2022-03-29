@@ -34,7 +34,7 @@ describe("landing page", () => {
 
     try {
       // remove spinner to make screenshots deterministic
-      const spinner = await browser.$("main section svg");
+      const spinner = await browser.$('[data-tid="spinner"]');
       await spinner.waitForExist();
       await browser.execute(() =>
         document.querySelector("main section svg").remove()
@@ -44,6 +44,7 @@ describe("landing page", () => {
       const errorToast = await browser.$(".toast");
       await errorToast.waitForExist({ timeout: 10_000 });
       await browser.execute(() => document.querySelector(".toast").remove());
+      await errorToast.waitUntil(() => !errorToast.isExisting())
     } catch (error) {
       // Log error, but continue and take screenshot
       console.log("Error waiting for spinner and toast error");
