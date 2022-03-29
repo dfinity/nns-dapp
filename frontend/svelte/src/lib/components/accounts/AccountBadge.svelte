@@ -8,5 +8,5 @@
 <!-- No badge for main account -->
 
 {#if account.subAccount !== undefined}
-  <span><small>{$i18n.accounts.linked_account}</small></span>
+  <small>{$i18n.accounts.linked_account}</small>
 {/if}
