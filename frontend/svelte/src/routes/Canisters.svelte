@@ -29,7 +29,9 @@
   };
 
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["both", "svelte"].includes(process.env.REDIRECT_TO_LEGACY as string);
+  const showThisRoute = ["both", "svelte"].includes(
+    process.env.REDIRECT_TO_LEGACY as string
+  );
   onMount(async () => {
     if (!showThisRoute) {
       window.location.replace("/#/canisters");

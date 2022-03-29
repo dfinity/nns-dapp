@@ -17,7 +17,9 @@
 
   let isLoading: boolean = false;
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["svelte", "both"].includes(process.env.REDIRECT_TO_LEGACY as string);
+  const showThisRoute = ["svelte", "both"].includes(
+    process.env.REDIRECT_TO_LEGACY as string
+  );
   onMount(async () => {
     if (!showThisRoute) {
       window.location.replace("/#/neurons");
