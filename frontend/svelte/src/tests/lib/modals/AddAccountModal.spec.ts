@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { fireEvent } from "@testing-library/dom";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import AddAccountModal from "../../../lib/modals/accounts/AddAccountModal.svelte";
 import { addSubAccount } from "../../../lib/services/accounts.services";
 import en from "../../mocks/i18n.mock";
@@ -75,15 +75,15 @@ describe("AddAccountModal", () => {
     expect(createButton?.getAttribute("disabled")).toBeNull();
   });
 
-  it("should create a subaccount", async () => {
+  const testSubaccount = async (): Promise<{container: HTMLElement}> => {
     const { container, queryByText } = render(AddAccountModal);
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
 
     accountCard &&
-      accountCard.parentElement &&
-      (await fireEvent.click(accountCard.parentElement));
+    accountCard.parentElement &&
+    (await fireEvent.click(accountCard.parentElement));
 
     const input = container.querySelector('input[name="newAccount"]');
     // Svelte generates code for listening to the `input` event
@@ -95,5 +95,19 @@ describe("AddAccountModal", () => {
     createButton && (await fireEvent.click(createButton));
 
     expect(addSubAccount).toBeCalled();
+
+    return {container};
+  }
+
+  it("should create a subaccount", async () => await testSubaccount())
+
+  it("should disable input and button when creating a subaccount", async () => {
+    const { container } = await testSubaccount();
+
+    const input = container.querySelector('input[name="newAccount"]');
+    expect(input?.hasAttribute('disabled')).toBeTruthy();
+
+    const createButton = container.querySelector('button[type="submit"]');
+    expect(createButton?.hasAttribute('disabled')).toBeTruthy();
   });
 });
