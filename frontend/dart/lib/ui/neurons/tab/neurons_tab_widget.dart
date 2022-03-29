@@ -10,6 +10,8 @@ import 'package:universal_html/html.dart' as html;
 import '../../../nns_dapp.dart';
 import 'neuron_row.dart';
 
+const REDIRECT_TO_LEGACY = String.fromEnvironment('REDIRECT_TO_LEGACY');
+
 class NeuronsPage extends StatefulWidget {
   @override
   _NeuronsPageState createState() => _NeuronsPageState();

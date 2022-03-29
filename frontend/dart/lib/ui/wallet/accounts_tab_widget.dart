@@ -15,6 +15,8 @@ import 'balance_display_widget.dart';
 
 import 'hardware_wallet_name_widget.dart';
 
+const REDIRECT_TO_LEGACY = String.fromEnvironment('REDIRECT_TO_LEGACY');
+
 class AccountsTabWidget extends StatefulWidget {
   @override
   _AccountsTabWidgetState createState() => _AccountsTabWidgetState();

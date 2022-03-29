@@ -12,6 +12,8 @@ import '../../nns_dapp.dart';
 import '../../wallet_router_delegate.dart';
 import 'select_canister_add_action_widget.dart';
 
+const REDIRECT_TO_LEGACY = String.fromEnvironment('REDIRECT_TO_LEGACY');
+
 class CanistersPage extends StatefulWidget {
   @override
   _CanistersPageState createState() => _CanistersPageState();
