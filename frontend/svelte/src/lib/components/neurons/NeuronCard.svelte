@@ -43,8 +43,6 @@
       {neuron.neuronId}
     </h3>
 
-    <span class="neuron-control">{$i18n.neurons.hotkey_control}</span>
-
     {#if isCommunityFund}
       <span class="neuron-control">{$i18n.neurons.community_fund}</span>
     {/if}
