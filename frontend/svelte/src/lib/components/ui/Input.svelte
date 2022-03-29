@@ -87,6 +87,7 @@
         background-color: var(--gray-50-background);
         border: 1px solid var(--black);
 
+        &[disabled] + span.placeholder,
         &:valid + span.placeholder,
         &:focus + span.placeholder {
           background-color: var(--gray-50-background);
@@ -146,5 +147,9 @@
 
   input:focus {
     border: 1px solid var(--blue-500);
+  }
+
+  input[disabled] {
+    cursor: text;
   }
 </style>
