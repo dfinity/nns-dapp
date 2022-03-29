@@ -64,7 +64,7 @@ describe("Accounts", () => {
       .mockImplementation(mockAccountsStoreSubscribe());
     const { container } = render(Accounts);
 
-    const cardTitleRow = container.querySelector("article > div > div");
+    const cardTitleRow = container.querySelector("article > div div:last-of-type");
 
     expect(cardTitleRow?.textContent).toEqual(
       `${formatICP(mockMainAccount.balance.toE8s())} ICP`
