@@ -13,16 +13,10 @@
   import { AppPath } from "../lib/constants/routes.constants";
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
-  import { neuronsStore } from "../lib/stores/neurons.store";
+  import { neuronSelectStore, neuronsStore } from "../lib/stores/neurons.store";
 
   let neuronId: NeuronId | undefined;
-  let neuron: NeuronInfo | undefined;
-  $: {
-    neuron = $neuronsStore.find(
-      (currentNeuron) =>
-        neuronId !== undefined && currentNeuron.neuronId === neuronId
-    );
-  }
+  $: neuronSelectStore.select(neuronId);
 
   // TODO: To be removed once this page has been implemented
   const showThisRoute = ["never", "staging"].includes(
@@ -76,13 +70,13 @@
   <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
     <section>
-      {#if neuron}
-        <NeuronMetaInfoCard {neuron} />
-        <NeuronMaturityCard {neuron} />
-        <NeuronFollowingCard {neuron} />
-        <NeuronProposalsCard {neuron} />
-        <NeuronHotkeysCard {neuron} />
-        <NeuronVotingHistoryCard {neuron} />
+      {#if $neuronSelectStore}
+        <NeuronMetaInfoCard neuron={$neuronSelectStore} />
+        <NeuronMaturityCard neuron={$neuronSelectStore} />
+        <NeuronFollowingCard neuron={$neuronSelectStore} />
+        <NeuronProposalsCard neuron={$neuronSelectStore} />
+        <NeuronHotkeysCard neuron={$neuronSelectStore} />
+        <NeuronVotingHistoryCard neuron={$neuronSelectStore} />
       {:else}
         <Spinner />
       {/if}
