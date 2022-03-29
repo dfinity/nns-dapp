@@ -88,11 +88,29 @@ const findProposals = async ({
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
+  let untrustedProposals: ProposalInfo[] | undefined;
 
   return queryAndUpdate<ProposalInfo[], unknown>({
     request: ({ certified }) =>
       queryProposals({ beforeProposal, identity, filters, certified }),
     onLoad: ({ response: proposals, certified }) => {
+      if (certified === false) {
+        untrustedProposals = proposals;
+        onLoad({ response: proposals, certified });
+        return;
+      }
+      if (untrustedProposals) {
+        // Remove proven untrusted proposals
+        const certifiedIds = proposalIdSet(proposals);
+        const proposalsToRemove = untrustedProposals.filter(
+          ({ id }) => !certifiedIds.has(id as ProposalId)
+        );
+        proposalsStore.removeProposals(proposalsToRemove);
+        toastsStore.show({
+          labelKey: "error.suspicious_response",
+          level: "error",
+        });
+      }
       onLoad({ response: proposals, certified });
     },
     onError,
