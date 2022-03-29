@@ -9,6 +9,8 @@
     ageMultiplier,
     dissolveDelayMultiplier,
     formatVotingPower,
+    hasJoinedCommunityFund,
+    isCurrentUserController,
   } from "../../utils/neuron.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
@@ -19,6 +21,11 @@
   import StartDissolvingButton from "./actions/StartDissolvingButton.svelte";
 
   export let neuron: NeuronInfo;
+
+  let isCommunityFund: boolean;
+  $: isCommunityFund = hasJoinedCommunityFund(neuron);
+  let userControlled: boolean;
+  $: userControlled = isCurrentUserController(neuron);
 </script>
 
 <NeuronCard {neuron}>
@@ -28,7 +35,10 @@
         {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
           .staked}
       </p>
-      <JoinCommunityFundButton />
+      <JoinCommunityFundButton
+        disabled={isCommunityFund || !userControlled}
+        neuronId={neuron.neuronId}
+      />
     </div>
     <div class="space-between">
       <p class="voting-power">

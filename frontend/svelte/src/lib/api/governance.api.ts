@@ -45,6 +45,18 @@ export const increaseDissolveDelay = async ({
   });
 };
 
+export const joinCommunityFund = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.joinCommunityFund(neuronId);
+};
+
 export const setFollowees = async ({
   identity,
   neuronId,
