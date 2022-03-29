@@ -35,15 +35,24 @@ class _HomePageState extends State<HomePage>
       if (!_tabController.indexIsChanging) {
         if (_tabController.index == 0) {
           pageName = accountsTabPage;
+          if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
+              html.window.location.replace("/v2/#/proposals");
+          }
         } else if (_tabController.index == 1) {
           pageName = neuronTabsPage;
+          if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
+              html.window.location.replace("/v2/#/proposals");
+          }
         } else if (_tabController.index == 2) {
           pageName = proposalsTabPage;
-          if (!["true", "1", "prod"].contains(REDIRECT_TO_LEGACY)) {
+          if (["svelte", "staging"].contains(REDIRECT_TO_LEGACY)) {
               html.window.location.replace("/v2/#/proposals");
           }
         } else if (_tabController.index == 3) {
           pageName = canistersTabPage;
+          if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
+              html.window.location.replace("/v2/#/proposals");
+          }
         }
         context.nav.push(pageName);
         setState(() {

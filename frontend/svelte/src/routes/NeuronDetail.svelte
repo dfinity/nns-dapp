@@ -19,7 +19,7 @@
   let neuron: NeuronInfo | undefined;
 
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["never", "staging"].includes(
+  const showThisRoute = ["svelte", "both", "staging"].includes(
     process.env.REDIRECT_TO_LEGACY as string
   );
   onMount(() => {

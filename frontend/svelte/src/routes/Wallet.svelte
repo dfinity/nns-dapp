@@ -7,7 +7,7 @@
   import { AppPath } from "../lib/constants/routes.constants";
 
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["never"].includes(
+  const showThisRoute = ["svelte", "both"].includes(
     process.env.REDIRECT_TO_LEGACY as string
   );
   onMount(() => {

@@ -71,7 +71,7 @@
     debounceFindProposals = debounce(async () => await findProposals(), 250);
   };
 
-  const showThisRoute = ["never", "staging"].includes(
+  const showThisRoute = ["both", "svelte", "staging"].includes(
     process.env.REDIRECT_TO_LEGACY as string
   );
   onMount(async () => {

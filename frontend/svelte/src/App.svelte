@@ -23,7 +23,7 @@
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
-      if (process.env.REDIRECT_TO_LEGACY === "prod") {
+      if (["prod", "flutter"].includes(process.env.REDIRECT_TO_LEGACY as string)) {
         return;
       }
 
