@@ -9,8 +9,12 @@ import type {
 } from "@dfinity/nns";
 import { derived, writable } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
-import { preserveNeuronSelectionAfterUpdate } from "../utils/proposals.utils";
-import { proposalIdSet } from "../utils/utils";
+import {
+  preserveNeuronSelectionAfterUpdate,
+  proposalIdSet,
+  pushUniqueProposals,
+  replaceAndPushProposals,
+} from "../utils/proposals.utils";
 
 export interface ProposalsFiltersStore {
   topics: Topic[];
@@ -28,7 +32,6 @@ export interface NeuronSelectionStore {
  * A store that contains the proposals
  *
  * - setProposals: replace the current list of proposals with a new list
- * - removeProposals: replace the current list of proposals with a new list without provided proposals. Is used to remove untrusted proposals from the store.
  * - pushProposals: append proposals to the current list of proposals. Notably useful when the proposals are fetched in a page that implements an infinite scrolling.
  */
 const initProposalsStore = () => {
@@ -41,6 +44,9 @@ const initProposalsStore = () => {
       set([...proposals]);
     },
 
+    /**
+     * Replace the current list of proposals with a new list without provided proposals to remove untrusted proposals from the store.
+     */
     removeProposals(proposals: ProposalInfo[]) {
       const idsToRemove = proposalIdSet(proposals);
       set(proposals.filter(({ id }) => !idsToRemove.has(id as ProposalId)));
@@ -51,27 +57,19 @@ const initProposalsStore = () => {
       certified,
     }: {
       proposals: ProposalInfo[];
-      certified: boolean | undefined;
+      certified: boolean;
     }) {
-      update((proposalInfos: ProposalInfo[]) => {
-        const proposalIds = new Set<ProposalId>(
-          proposalInfos.map(({ id }) => id as ProposalId)
-        );
-
-        // replace state entries with (trusted) certified entries
-        if (certified === true) {
-          proposalInfos = proposalInfos.map(
-            (stateProposal) =>
-              proposals.find(({ id }) => stateProposal.id === id) ||
-              stateProposal
-          );
-        }
-
-        return [
-          ...proposalInfos,
-          ...proposals.filter(({ id }) => !proposalIds.has(id as ProposalId)),
-        ];
-      });
+      update((oldProposals: ProposalInfo[]) =>
+        certified === true
+          ? replaceAndPushProposals({
+              oldProposals,
+              newProposals: proposals,
+            })
+          : pushUniqueProposals({
+              oldProposals,
+              newProposals: proposals,
+            })
+      );
     },
   };
 };

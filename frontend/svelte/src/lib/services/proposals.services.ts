@@ -18,7 +18,7 @@ import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
-import { proposalIdSet } from "../utils/proposals.utils";
+import { compareProposalsByIds, proposalIdSet } from "../utils/proposals.utils";
 import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
@@ -88,29 +88,39 @@ const findProposals = async ({
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
-  let untrustedProposals: ProposalInfo[] | undefined;
+  const validateResponses = (
+    trustedProposals: ProposalInfo[],
+    untrustedProposals: ProposalInfo[]
+  ) => {
+    if (compareProposalsByIds(untrustedProposals, trustedProposals)) {
+      toastsStore.show({
+        labelKey: "error.suspicious_response",
+        level: "error",
+      });
+    }
+    // Remove proven untrusted proposals
+    const certifiedIds = proposalIdSet(trustedProposals);
+    const proposalsToRemove = untrustedProposals.filter(
+      ({ id }) => !certifiedIds.has(id as ProposalId)
+    );
+    proposalsStore.removeProposals(proposalsToRemove);
+  };
+  let uncertifiedProposals: ProposalInfo[] | undefined;
 
   return queryAndUpdate<ProposalInfo[], unknown>({
     request: ({ certified }) =>
       queryProposals({ beforeProposal, identity, filters, certified }),
     onLoad: ({ response: proposals, certified }) => {
       if (certified === false) {
-        untrustedProposals = proposals;
+        uncertifiedProposals = proposals;
         onLoad({ response: proposals, certified });
         return;
       }
-      if (untrustedProposals) {
-        // Remove proven untrusted proposals
-        const certifiedIds = proposalIdSet(proposals);
-        const proposalsToRemove = untrustedProposals.filter(
-          ({ id }) => !certifiedIds.has(id as ProposalId)
-        );
-        proposalsStore.removeProposals(proposalsToRemove);
-        toastsStore.show({
-          labelKey: "error.suspicious_response",
-          level: "error",
-        });
+
+      if (uncertifiedProposals) {
+        validateResponses(proposals, uncertifiedProposals);
       }
+
       onLoad({ response: proposals, certified });
     },
     onError,
