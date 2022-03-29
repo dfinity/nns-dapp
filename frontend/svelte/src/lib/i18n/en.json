@@ -31,6 +31,7 @@
     "remove_followee": "Sorry, there was an unexpectedf error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, followee already removed, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
+    "suspicious_response": "Suspicious response detected. Page reload suggested.",
     "fail": "fail"
   },
   "warning": {

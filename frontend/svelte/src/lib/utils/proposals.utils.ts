@@ -6,7 +6,7 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import { ProposalStatus, Vote } from "@dfinity/nns";
-import { stringifyJson } from "./utils";
+import { isDefined, stringifyJson } from "./utils";
 
 export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
   length <= 0;
@@ -138,3 +138,6 @@ export const preserveNeuronSelectionAfterUpdate = ({
   );
   return [...preservedSelection, ...newNeuronsSelection];
 };
+
+export const proposalIdSet = (proposals: ProposalInfo[]): Set<ProposalId> =>
+  new Set(proposals.map(({ id }) => id).filter(isDefined));

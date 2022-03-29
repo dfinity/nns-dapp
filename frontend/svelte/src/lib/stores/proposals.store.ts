@@ -10,6 +10,7 @@ import type {
 import { derived, writable } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
 import { preserveNeuronSelectionAfterUpdate } from "../utils/proposals.utils";
+import { proposalIdSet } from "../utils/utils";
 
 export interface ProposalsFiltersStore {
   topics: Topic[];
@@ -27,6 +28,7 @@ export interface NeuronSelectionStore {
  * A store that contains the proposals
  *
  * - setProposals: replace the current list of proposals with a new list
+ * - removeProposals: replace the current list of proposals with a new list without provided proposals. Is used to remove untrusted proposals from the store.
  * - pushProposals: append proposals to the current list of proposals. Notably useful when the proposals are fetched in a page that implements an infinite scrolling.
  */
 const initProposalsStore = () => {
@@ -39,11 +41,37 @@ const initProposalsStore = () => {
       set([...proposals]);
     },
 
-    pushProposals(proposals: ProposalInfo[]) {
-      update((proposalInfos: ProposalInfo[]) => [
-        ...proposalInfos,
-        ...proposals,
-      ]);
+    removeProposals(proposals: ProposalInfo[]) {
+      const idsToRemove = proposalIdSet(proposals);
+      set(proposals.filter(({ id }) => !idsToRemove.has(id as ProposalId)));
+    },
+
+    pushProposals({
+      proposals,
+      certified,
+    }: {
+      proposals: ProposalInfo[];
+      certified: boolean | undefined;
+    }) {
+      update((proposalInfos: ProposalInfo[]) => {
+        const proposalIds = new Set<ProposalId>(
+          proposalInfos.map(({ id }) => id as ProposalId)
+        );
+
+        // replace state entries with (trusted) certified entries
+        if (certified === true) {
+          proposalInfos = proposalInfos.map(
+            (stateProposal) =>
+              proposals.find(({ id }) => stateProposal.id === id) ||
+              stateProposal
+          );
+        }
+
+        return [
+          ...proposalInfos,
+          ...proposals.filter(({ id }) => !proposalIds.has(id as ProposalId)),
+        ];
+      });
     },
   };
 };

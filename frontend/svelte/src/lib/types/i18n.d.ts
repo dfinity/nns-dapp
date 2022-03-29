@@ -35,6 +35,7 @@ interface I18nError {
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
+  suspicious_response: string;
   fail: string;
 }
 
