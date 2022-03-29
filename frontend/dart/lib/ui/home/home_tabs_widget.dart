@@ -40,17 +40,17 @@ class _HomePageState extends State<HomePage>
           }
         } else if (_tabController.index == 1) {
           pageName = neuronTabsPage;
-          if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
+          if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
               html.window.location.replace("/v2/#/neurons");
           }
         } else if (_tabController.index == 2) {
           pageName = proposalsTabPage;
-          if (["svelte", "staging"].contains(REDIRECT_TO_LEGACY)) {
+          if (["svelte", "staging"].contains(env.REDIRECT_TO_LEGACY)) {
               html.window.location.replace("/v2/#/proposals");
           }
         } else if (_tabController.index == 3) {
           pageName = canistersTabPage;
-          if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
+          if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
               html.window.location.replace("/v2/#/canisters");
           }
         }
