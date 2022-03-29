@@ -7,10 +7,9 @@ import 'package:nns_dapp/ui/transaction/wallet/merge_neuron_accounts_page.dart';
 import 'package:nns_dapp/ui/transaction/wallet/select_source_wallet_page.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:nns_dapp/data/env.dart' as env;
 import '../../../nns_dapp.dart';
 import 'neuron_row.dart';
-
-const REDIRECT_TO_LEGACY = String.fromEnvironment('REDIRECT_TO_LEGACY');
 
 class NeuronsPage extends StatefulWidget {
   @override
@@ -20,8 +19,8 @@ class NeuronsPage extends StatefulWidget {
 class _NeuronsPageState extends State<NeuronsPage> {
   @override
   Widget build(BuildContext context) {
-    if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
-      html.window.location.replace("/v2/#/proposals");
+    if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
+      html.window.location.replace("/v2/#/neurons");
       return Text('Redirecting...');
     }
     return StreamBuilder<void>(

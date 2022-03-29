@@ -3,10 +3,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/proposals/governance_tab_widget.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:nns_dapp/data/env.dart' as env;
 import '../../nns_dapp.dart';
 
 const DEPLOY_ENV = String.fromEnvironment('DEPLOY_ENV');
-const REDIRECT_TO_LEGACY = String.fromEnvironment('REDIRECT_TO_LEGACY');
 
 class HomePage extends StatefulWidget {
   final int initialTabIndex;
@@ -35,13 +35,13 @@ class _HomePageState extends State<HomePage>
       if (!_tabController.indexIsChanging) {
         if (_tabController.index == 0) {
           pageName = accountsTabPage;
-          if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
-              html.window.location.replace("/v2/#/proposals");
+          if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
+              html.window.location.replace("/v2/#/accounts");
           }
         } else if (_tabController.index == 1) {
           pageName = neuronTabsPage;
           if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
-              html.window.location.replace("/v2/#/proposals");
+              html.window.location.replace("/v2/#/neurons");
           }
         } else if (_tabController.index == 2) {
           pageName = proposalsTabPage;
@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage>
         } else if (_tabController.index == 3) {
           pageName = canistersTabPage;
           if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
-              html.window.location.replace("/v2/#/proposals");
+              html.window.location.replace("/v2/#/canisters");
           }
         }
         context.nav.push(pageName);

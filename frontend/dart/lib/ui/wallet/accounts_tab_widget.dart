@@ -25,7 +25,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
   @override
   Widget build(BuildContext context) {
     if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
-      html.window.location.replace("/v2/#/proposals");
+      html.window.location.replace("/v2/#/accounts");
       return Text('Redirecting...');
     }
     return StreamBuilder<Object>(

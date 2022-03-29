@@ -7,12 +7,11 @@ import 'package:nns_dapp/ui/_components/page_button.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/_components/tab_title_and_content.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import 'package:nns_dapp/data/env.dart' as env;
 import 'package:universal_html/html.dart' as html;
 import '../../nns_dapp.dart';
 import '../../wallet_router_delegate.dart';
 import 'select_canister_add_action_widget.dart';
-
-const REDIRECT_TO_LEGACY = String.fromEnvironment('REDIRECT_TO_LEGACY');
 
 class CanistersPage extends StatefulWidget {
   @override
@@ -28,7 +27,7 @@ class _CanistersPageState extends State<CanistersPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (["svelte"].contains(REDIRECT_TO_LEGACY)) {
+    if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
       html.window.location.replace("/v2/#/proposals");
       return Text('Redirecting...');
     }
