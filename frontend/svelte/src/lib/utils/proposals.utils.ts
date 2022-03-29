@@ -44,8 +44,7 @@ export const proposalActionFields = (
     return [];
   }
 
-  // TODO: https://dfinity.atlassian.net/browse/L2-348
-  return Object.entries(proposal.action?.[key])
+  return Object.entries(proposal.action?.[key] ?? {})
     .filter(([key]) => key !== "payloadBytes")
     .map(([key, value]: [string, object]) => [
       key,
