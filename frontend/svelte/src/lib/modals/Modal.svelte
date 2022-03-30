@@ -32,6 +32,7 @@
     aria-labelledby={showToolbar ? "modalTitle" : undefined}
     aria-describedby="modalContent"
     on:click|stopPropagation
+    on:introend
   >
     <div
       class="backdrop"

@@ -14,31 +14,36 @@
   $: ({ currentStepIndex, currentStep } = stepState);
 
   let transition;
-  $: stepState, transition = {diff: stepState.diff}
+  $: stepState, (transition = { diff: stepState.diff });
 
   export const next = () => (stepState = stepState.next());
   export const back = () => (stepState = stepState.back());
   export const set = (step: number) => (stepState = stepState.set(step));
+
+  let presented = false;
 </script>
 
 <Modal
   theme="dark"
   size="medium"
   on:nnsClose
+  on:introend={() => (presented = true)}
   showBackButton={currentStep?.showBackButton ?? false}
   on:nnsBack={back}
 >
   <span slot="title"><slot name="title" /></span>
   <section>
-    <Transition {transition}>
-      <slot />
-    </Transition>
+    {#if presented}
+      <Transition {transition}>
+        <slot />
+      </Transition>
+    {/if}
   </section>
 </Modal>
 
 <style lang="scss">
   section {
-    min-height: min(500px, calc(100vh - (2 * var(--padding))));
+    height: min(500px, calc(100vh - 156px - (2 * var(--padding))));
     margin: 0;
     padding: calc(2 * var(--padding));
     max-width: 100%;
