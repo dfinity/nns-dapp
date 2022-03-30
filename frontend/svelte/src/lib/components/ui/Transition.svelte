@@ -1,16 +1,16 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  export let diff: number;
+  export let transition: {diff: number} = {diff: 0};
   const DEFAULT_OFFSET = 200;
   const ANIMATION_DURATION = 200;
   let absolutOffset = DEFAULT_OFFSET;
   let slideOffset: number | undefined;
 
-  $: slideOffset = diff === 0 ? 0 : diff > 0 ? absolutOffset : -absolutOffset;
+  $: slideOffset = transition.diff === 0 ? 0 : transition.diff > 0 ? absolutOffset : -absolutOffset;
 </script>
 
-{#key slideOffset}
+{#key transition}
   <div
     bind:clientWidth={absolutOffset}
     in:fly={{ x: slideOffset, duration: ANIMATION_DURATION }}

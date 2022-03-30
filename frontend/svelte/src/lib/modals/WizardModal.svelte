@@ -1,6 +1,6 @@
 <script lang="ts">
-  import {StepsState} from "../stores/steps.state";
-  import type {Step} from "../stores/steps.state";
+  import { StepsState } from "../stores/steps.state";
+  import type { Step } from "../stores/steps.state";
   import Modal from "./Modal.svelte";
   import Transition from "../components/ui/Transition.svelte";
 
@@ -10,9 +10,11 @@
   $: stepState = new StepsState(steps);
 
   export let currentStepIndex: number;
-  let diff: number;
   let currentStep: Step | undefined;
-  $: ({ currentStepIndex, diff, currentStep } = stepState);
+  $: ({ currentStepIndex, currentStep } = stepState);
+
+  let transition;
+  $: stepState, transition = {diff: stepState.diff}
 
   export const next = () => (stepState = stepState.next());
   export const back = () => (stepState = stepState.back());
@@ -28,7 +30,7 @@
 >
   <span slot="title"><slot name="title" /></span>
   <section>
-    <Transition {diff}>
+    <Transition {transition}>
       <slot />
     </Transition>
   </section>
