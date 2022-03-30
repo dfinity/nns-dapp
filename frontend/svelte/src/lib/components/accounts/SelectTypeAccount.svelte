@@ -8,7 +8,7 @@
   };
 </script>
 
-<div class="wrapper">
+<div class="wizard-wrapper">
   <div class="card-item" role="button" on:click={selectNewAccount}>
     <h4>{$i18n.accounts.new_linked_title}</h4>
     <span>{$i18n.accounts.new_linked_subtitle}</span>
@@ -23,21 +23,9 @@
 <style lang="scss">
   @use "../../themes/mixins/interaction";
 
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-    gap: var(--padding);
-
-    box-sizing: border-box;
-    height: 100%;
-
-    padding: 0 calc(5 * var(--padding));
-  }
-
   .card-item {
     padding: calc(4 * var(--padding));
+    margin: 0 calc(2 * var(--padding));
     border-radius: var(--border-radius);
 
     @include interaction.tappable;

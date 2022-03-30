@@ -36,7 +36,16 @@
   // TODO: Manage modal height in L2-302
   article {
     height: 500px;
-    padding: 0;
     margin: 0;
+    padding: calc(2 * var(--padding));
+  }
+
+  :global(.wizard-wrapper) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: var(--padding);
+    height: 100%;
   }
 </style>

@@ -38,50 +38,33 @@
   };
 </script>
 
-<section>
-  <form on:submit|preventDefault={createNewAccount}>
-    <div>
-      <h4 class="balance">{$i18n.accounts.new_linked_account_title}</h4>
-      <Input
-        inputType="text"
-        placeholderLabelKey="accounts.new_linked_account_placeholder"
-        name="newAccount"
-        bind:value={newAccountName}
-        theme="dark"
-        disabled={$busy}
-      />
-    </div>
-    <button
-      class="primary full-width"
-      type="submit"
-      disabled={newAccountName.length === 0 || $busy}
-    >
-      {$i18n.core.create}
-    </button>
-  </form>
-</section>
+<form on:submit|preventDefault={createNewAccount} class="wizard-wrapper">
+  <div>
+    <h4 class="balance">{$i18n.accounts.new_linked_account_title}</h4>
+    <Input
+            inputType="text"
+            placeholderLabelKey="accounts.new_linked_account_placeholder"
+            name="newAccount"
+            bind:value={newAccountName}
+            theme="dark"
+            disabled={$busy}
+    />
+  </div>
+  <button
+          class="primary full-width"
+          type="submit"
+          disabled={newAccountName.length === 0 || $busy}
+  >
+    {$i18n.core.create}
+  </button>
+</form>
 
 <style lang="scss">
-  section {
-    padding: calc(2 * var(--padding));
-
-    box-sizing: border-box;
-    height: 100%;
-  }
-
   form {
-    height: 100%;
-    position: relative;
-
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-
     --input-width: 100%;
+    padding: 0 calc(2 * var(--padding));
 
     div {
-      padding: 0 calc(2 * var(--padding));
       // push button to the bottom
       flex-grow: 1;
 
