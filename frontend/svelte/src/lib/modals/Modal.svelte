@@ -138,7 +138,7 @@
     width: var(--modal-small-width);
     height: fit-content;
     max-width: calc(100vw - (4 * var(--padding)));
-    max-height: calc(100vw - (2 * var(--padding)));
+    max-height: calc(100vh - (2 * var(--padding)));
 
     --modal-min-height: 100px;
     --modal-toolbar-height: 35px;
