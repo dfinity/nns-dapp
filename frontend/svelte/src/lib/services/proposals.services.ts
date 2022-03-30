@@ -18,58 +18,126 @@ import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
+import {
+  excludeProposals,
+  proposalsHaveSameIds,
+} from "../utils/proposals.utils";
 import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateOnError,
+  type QueryAndUpdateOnResponse,
+} from "./utils.services";
+
+const handleFindProposalsError = ({ error, certified }) => {
+  console.error(error);
+
+  // Explicitly handle only UPDATE errors
+  if (certified === true) {
+    proposalsStore.setProposals([]);
+
+    toastsStore.show({
+      labelKey: "error.list_proposals",
+      level: "error",
+      detail: errorToString(error),
+    });
+  }
+};
 
 export const listProposals = async ({
   clearBeforeQuery = false,
 }: {
   clearBeforeQuery?: boolean;
-}) => {
+}): Promise<void> => {
   if (clearBeforeQuery) {
     proposalsStore.setProposals([]);
   }
 
-  const proposals: ProposalInfo[] = await findProposals({
+  return findProposals({
     beforeProposal: undefined,
+    onLoad: ({ response: proposals }) => proposalsStore.setProposals(proposals),
+    onError: handleFindProposalsError,
   });
-
-  proposalsStore.setProposals(proposals);
 };
 
 export const listNextProposals = async ({
   beforeProposal,
 }: {
   beforeProposal: ProposalId | undefined;
-}) => {
-  const proposals: ProposalInfo[] = await findProposals({
+}): Promise<void> =>
+  findProposals({
     beforeProposal,
+    onLoad: ({ response: proposals, certified }) => {
+      if (proposals.length === 0) {
+        // There is no more proposals to fetch for the current filters.
+        // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
+        return;
+      }
+      proposalsStore.pushProposals({ proposals, certified });
+    },
+    onError: handleFindProposalsError,
   });
-
-  if (proposals.length === 0) {
-    // There is no more proposals to fetch for the current filters.
-    // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
-    return;
-  }
-
-  proposalsStore.pushProposals(proposals);
-};
 
 const findProposals = async ({
   beforeProposal,
+  onLoad,
+  onError,
 }: {
   beforeProposal: ProposalId | undefined;
-}): Promise<ProposalInfo[]> => {
-  const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
-
+  onLoad: QueryAndUpdateOnResponse<ProposalInfo[]>;
+  onError: QueryAndUpdateOnError<unknown>;
+}): Promise<void> => {
   const identity: Identity = await getIdentity();
+  const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
+  const validateResponses = (
+    trustedProposals: ProposalInfo[],
+    untrustedProposals: ProposalInfo[]
+  ) => {
+    if (
+      proposalsHaveSameIds({
+        proposalsA: untrustedProposals,
+        proposalsB: trustedProposals,
+      })
+    ) {
+      return;
+    }
 
-  return await queryProposals({
-    beforeProposal,
-    identity,
-    filters,
-    certified: false,
+    console.error("suspisious u->t", untrustedProposals, trustedProposals);
+    toastsStore.show({
+      labelKey: "error.suspicious_response",
+      level: "error",
+    });
+
+    // Remove proven untrusted proposals (in query but not in update)
+    const proposalsToRemove = excludeProposals({
+      proposals: untrustedProposals,
+      exclusion: trustedProposals,
+    });
+    if (proposalsToRemove.length > 0) {
+      proposalsStore.removeProposals(proposalsToRemove);
+    }
+  };
+  let uncertifiedProposals: ProposalInfo[] | undefined;
+
+  return queryAndUpdate<ProposalInfo[], unknown>({
+    request: ({ certified }) =>
+      queryProposals({ beforeProposal, identity, filters, certified }),
+    onLoad: ({ response: proposals, certified }) => {
+      if (certified === false) {
+        uncertifiedProposals = proposals;
+        onLoad({ response: proposals, certified });
+        return;
+      }
+
+      if (uncertifiedProposals) {
+        validateResponses(proposals, uncertifiedProposals);
+      }
+
+      onLoad({ response: proposals, certified });
+    },
+    onError,
   });
 };
 
@@ -99,16 +167,17 @@ export const loadProposal = async ({
   };
 
   try {
-    const proposal: ProposalInfo | undefined = await getProposal({
+    return await getProposal({
       proposalId,
+      onLoad: ({ response: proposal }) => {
+        if (!proposal) {
+          catchError(new Error("Proposal not found"));
+          return;
+        }
+        setProposal(proposal);
+      },
+      onError: catchError,
     });
-
-    if (!proposal) {
-      catchError(new Error("Proposal not found"));
-      return;
-    }
-
-    setProposal(proposal);
   } catch (error: unknown) {
     catchError(error);
   }
@@ -119,12 +188,21 @@ export const loadProposal = async ({
  */
 const getProposal = async ({
   proposalId,
+  onLoad,
+  onError,
 }: {
   proposalId: ProposalId;
-}): Promise<ProposalInfo | undefined> => {
+  onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
+  onError: QueryAndUpdateOnError<unknown>;
+}): Promise<void> => {
   const identity: Identity = await getIdentity();
 
-  return queryProposal({ proposalId, identity, certified: false });
+  return queryAndUpdate<ProposalInfo | undefined, unknown>({
+    request: ({ certified }) =>
+      queryProposal({ proposalId, identity, certified }),
+    onLoad,
+    onError,
+  });
 };
 
 export const getProposalId = (path: string): ProposalId | undefined =>
@@ -154,7 +232,7 @@ export const registerVotes = async ({
       identity,
       vote,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("vote unknown:", error);
 
     toastsStore.show({

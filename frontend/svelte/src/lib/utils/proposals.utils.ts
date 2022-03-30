@@ -6,7 +6,7 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import { ProposalStatus, Vote } from "@dfinity/nns";
-import { stringifyJson } from "./utils";
+import { isDefined, stringifyJson } from "./utils";
 
 export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
   length <= 0;
@@ -137,4 +137,75 @@ export const preserveNeuronSelectionAfterUpdate = ({
     (id) => oldIds.has(id) === false
   );
   return [...preservedSelection, ...newNeuronsSelection];
+};
+
+export const proposalIdSet = (proposals: ProposalInfo[]): Set<ProposalId> =>
+  new Set(proposals.map(({ id }) => id).filter(isDefined));
+
+/**
+ * Compares proposals by "id"
+ */
+export const concatenateUniqueProposals = ({
+  oldProposals,
+  newProposals,
+}: {
+  oldProposals: ProposalInfo[];
+  newProposals: ProposalInfo[];
+}): ProposalInfo[] => [
+  ...oldProposals,
+  ...excludeProposals({
+    proposals: newProposals,
+    exclusion: oldProposals,
+  }),
+];
+
+/**
+ * Compares proposals by "id"
+ */
+export const replaceAndConcatenateProposals = ({
+  oldProposals,
+  newProposals,
+}: {
+  oldProposals: ProposalInfo[];
+  newProposals: ProposalInfo[];
+}): ProposalInfo[] => {
+  const updatedProposals = (oldProposals = oldProposals.map(
+    (stateProposal) =>
+      newProposals.find(({ id }) => stateProposal.id === id) || stateProposal
+  ));
+
+  return concatenateUniqueProposals({
+    oldProposals: updatedProposals,
+    newProposals,
+  });
+};
+
+/**
+ * Compares 2 proposal lists by entries "id"
+ */
+export const proposalsHaveSameIds = ({
+  proposalsA,
+  proposalsB,
+}: {
+  proposalsA: ProposalInfo[];
+  proposalsB: ProposalInfo[];
+}): boolean =>
+  proposalsA
+    .map(({ id }) => id)
+    .sort()
+    .join() ===
+  proposalsB
+    .map(({ id }) => id)
+    .sort()
+    .join();
+
+export const excludeProposals = ({
+  proposals,
+  exclusion,
+}: {
+  proposals: ProposalInfo[];
+  exclusion: ProposalInfo[];
+}): ProposalInfo[] => {
+  const excludeIds = proposalIdSet(exclusion);
+  return proposals.filter(({ id }) => !excludeIds.has(id as ProposalId));
 };

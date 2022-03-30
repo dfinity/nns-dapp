@@ -9,7 +9,12 @@ import type {
 } from "@dfinity/nns";
 import { derived, writable } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
-import { preserveNeuronSelectionAfterUpdate } from "../utils/proposals.utils";
+import {
+  concatenateUniqueProposals,
+  excludeProposals,
+  preserveNeuronSelectionAfterUpdate,
+  replaceAndConcatenateProposals,
+} from "../utils/proposals.utils";
 
 export interface ProposalsFiltersStore {
   topics: Topic[];
@@ -39,11 +44,36 @@ const initProposalsStore = () => {
       set([...proposals]);
     },
 
-    pushProposals(proposals: ProposalInfo[]) {
-      update((proposalInfos: ProposalInfo[]) => [
-        ...proposalInfos,
-        ...proposals,
-      ]);
+    /**
+     * Replace the current list of proposals with a new list without provided proposals to remove untrusted proposals from the store.
+     */
+    removeProposals(proposalsToRemove: ProposalInfo[]) {
+      update((proposals: ProposalInfo[]) =>
+        excludeProposals({
+          proposals,
+          exclusion: proposalsToRemove,
+        })
+      );
+    },
+
+    pushProposals({
+      proposals,
+      certified,
+    }: {
+      proposals: ProposalInfo[];
+      certified: boolean;
+    }) {
+      update((oldProposals: ProposalInfo[]) =>
+        certified === true
+          ? replaceAndConcatenateProposals({
+              oldProposals,
+              newProposals: proposals,
+            })
+          : concatenateUniqueProposals({
+              oldProposals,
+              newProposals: proposals,
+            })
+      );
     },
   };
 };

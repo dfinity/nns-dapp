@@ -30,6 +30,10 @@ describe("VotingCard", () => {
     neuronId,
   }));
 
+  beforeEach(() =>
+    jest.spyOn(console, "error").mockImplementation(() => undefined)
+  );
+
   it("should be hidden if there is no not-voted-neurons", async () => {
     neuronsStore.setNeurons([]);
     const { queryByTestId } = render(VotingCard, {
