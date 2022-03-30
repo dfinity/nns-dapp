@@ -11,16 +11,16 @@
   import ConfirmDissolveDelay from "../../components/neurons/ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "../../components/neurons/EditFollowNeurons.svelte";
   import WizardModal from "../WizardModal.svelte";
-  import type { Step } from "../../stores/steps.state";
+  import type { Steps } from "../../stores/steps.state";
   import { stepIndex } from "../../utils/step.utils";
 
-  const steps: Step[] = [
+  const steps: Steps = [
     { name: "SelectAccount", showBackButton: false },
     { name: "StakeNeuron", showBackButton: true },
     { name: "SetDissolveDelay", showBackButton: false },
     { name: "ConfirmDissolveDelay", showBackButton: true },
     { name: "EditFollowNeurons", showBackButton: false },
-  ] as const;
+  ];
 
   let currentStepIndex: number;
   let modal: WizardModal;

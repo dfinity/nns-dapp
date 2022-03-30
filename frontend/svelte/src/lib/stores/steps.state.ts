@@ -1,7 +1,9 @@
 export interface Step {
-  name: string;
-  showBackButton: boolean;
+  readonly name: string;
+  readonly showBackButton: boolean;
 }
+
+export type Steps = [Step, ...Step[]];
 
 export class StepsState {
   public currentStep: Step | undefined;
@@ -9,7 +11,7 @@ export class StepsState {
   public previousStepIndex = 0;
   private readonly steps: Step[];
 
-  constructor(steps: [Step, ...Step[]]) {
+  constructor(steps: Steps) {
     this.steps = steps;
     this.currentStep = this.steps[0];
   }

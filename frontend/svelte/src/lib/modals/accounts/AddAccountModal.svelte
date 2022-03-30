@@ -3,16 +3,16 @@
   import SelectTypeAccount from "../../components/accounts/SelectTypeAccount.svelte";
   import WizardModal from "../WizardModal.svelte";
   import { i18n } from "../../stores/i18n";
-  import type { Step } from "../../stores/steps.state";
+  import type { Steps } from "../../stores/steps.state";
   import { stepIndex } from "../../utils/step.utils";
 
-  const steps: Step[] = [
+  const steps: Steps = [
     {
       name: "SelectAccount",
       showBackButton: false,
     },
     { name: "AddNewAccount", showBackButton: true },
-  ] as const;
+  ];
 
   let currentStepIndex: number;
   let modal: WizardModal;
