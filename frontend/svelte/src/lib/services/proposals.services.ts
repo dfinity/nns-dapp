@@ -18,7 +18,10 @@ import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
-import { proposalIdSet, proposalsHasSameIds } from "../utils/proposals.utils";
+import {
+  excludeProposals,
+  proposalsHaveSameIds,
+} from "../utils/proposals.utils";
 import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
@@ -92,7 +95,12 @@ const findProposals = async ({
     trustedProposals: ProposalInfo[],
     untrustedProposals: ProposalInfo[]
   ) => {
-    if (proposalsHasSameIds(untrustedProposals, trustedProposals)) {
+    if (
+      proposalsHaveSameIds({
+        proposalsA: untrustedProposals,
+        proposalsB: trustedProposals,
+      })
+    ) {
       return;
     }
 
@@ -103,11 +111,13 @@ const findProposals = async ({
     });
 
     // Remove proven untrusted proposals (in query but not in update)
-    const certifiedIds = proposalIdSet(trustedProposals);
-    const proposalsToRemove = untrustedProposals.filter(
-      ({ id }) => !certifiedIds.has(id as ProposalId)
-    );
-    proposalsStore.removeProposals(proposalsToRemove);
+    const proposalsToRemove = excludeProposals({
+      proposals: untrustedProposals,
+      exclusion: trustedProposals,
+    });
+    if (proposalsToRemove.length > 0) {
+      proposalsStore.removeProposals(proposalsToRemove);
+    }
   };
   let uncertifiedProposals: ProposalInfo[] | undefined;
 

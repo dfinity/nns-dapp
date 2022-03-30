@@ -11,8 +11,8 @@ import { derived, writable } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
 import {
   concatenateUniqueProposals,
+  excludeProposals,
   preserveNeuronSelectionAfterUpdate,
-  proposalIdSet,
   replaceAndConcatenateProposals,
 } from "../utils/proposals.utils";
 
@@ -47,13 +47,13 @@ const initProposalsStore = () => {
     /**
      * Replace the current list of proposals with a new list without provided proposals to remove untrusted proposals from the store.
      */
-    removeProposals(proposals: ProposalInfo[]) {
-      update((stateProposals: ProposalInfo[]) => {
-        const idsToRemove = proposalIdSet(proposals);
-        return stateProposals.filter(
-          ({ id }) => !idsToRemove.has(id as ProposalId)
-        );
-      });
+    removeProposals(proposalsToRemove: ProposalInfo[]) {
+      update((proposals: ProposalInfo[]) =>
+        excludeProposals({
+          proposals,
+          exclusion: proposalsToRemove,
+        })
+      );
     },
 
     pushProposals({

@@ -3,6 +3,7 @@ import { Vote } from "@dfinity/nns";
 import {
   concatenateUniqueProposals,
   emptyProposals,
+  excludeProposals,
   hasMatchingProposals,
   hideProposal,
   lastProposalId,
@@ -10,7 +11,7 @@ import {
   proposalActionFields,
   proposalFirstActionKey,
   proposalIdSet,
-  proposalsHasSameIds,
+  proposalsHaveSameIds,
   replaceAndConcatenateProposals,
   selectedNeuronsVotingPower,
 } from "../../../lib/utils/proposals.utils";
@@ -443,6 +444,36 @@ describe("proposals-utils", () => {
     });
   });
 
+  describe("excludeProposals", () => {
+    it("should exclude proposals", () => {
+      const proposals = generateMockProposals(10);
+      expect(
+        excludeProposals({
+          proposals: proposals,
+          exclusion: proposals,
+        })
+      ).toEqual([]);
+      expect(
+        excludeProposals({
+          proposals: proposals,
+          exclusion: proposals.slice(5),
+        })
+      ).toEqual(proposals.slice(0, 5));
+      expect(
+        excludeProposals({
+          proposals: proposals,
+          exclusion: [],
+        })
+      ).toEqual(proposals);
+      expect(
+        excludeProposals({
+          proposals: [],
+          exclusion: proposals,
+        })
+      ).toEqual([]);
+    });
+  });
+
   describe("concatenateUniqueProposals", () => {
     it("should concatinate proposals", () => {
       const proposals = generateMockProposals(10);
@@ -498,15 +529,30 @@ describe("proposals-utils", () => {
     });
   });
 
-  describe("proposalsHasSameIds", () => {
+  describe("proposalsHaveSameIds", () => {
     const proposals = generateMockProposals(10);
 
     it("should comprare", () => {
-      expect(proposalsHasSameIds([], [])).toBeTruthy();
-      expect(proposalsHasSameIds(proposals, proposals.slice(0))).toBeTruthy();
-      expect(proposalsHasSameIds(proposals, proposals.slice(1))).toBeFalsy();
       expect(
-        proposalsHasSameIds(generateMockProposals(20).slice(10), proposals)
+        proposalsHaveSameIds({ proposalsA: [], proposalsB: [] })
+      ).toBeTruthy();
+      expect(
+        proposalsHaveSameIds({
+          proposalsA: proposals,
+          proposalsB: proposals.slice(0),
+        })
+      ).toBeTruthy();
+      expect(
+        proposalsHaveSameIds({
+          proposalsA: proposals,
+          proposalsB: proposals.slice(1),
+        })
+      ).toBeFalsy();
+      expect(
+        proposalsHaveSameIds({
+          proposalsA: generateMockProposals(20).slice(10),
+          proposalsB: proposals,
+        })
       ).toBeFalsy();
     });
   });

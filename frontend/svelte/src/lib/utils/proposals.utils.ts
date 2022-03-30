@@ -151,13 +151,13 @@ export const concatenateUniqueProposals = ({
 }: {
   oldProposals: ProposalInfo[];
   newProposals: ProposalInfo[];
-}): ProposalInfo[] => {
-  const proposalIds = proposalIdSet(oldProposals);
-  return [
-    ...oldProposals,
-    ...newProposals.filter(({ id }) => !proposalIds.has(id as ProposalId)),
-  ];
-};
+}): ProposalInfo[] => [
+  ...oldProposals,
+  ...excludeProposals({
+    proposals: newProposals,
+    exclusion: oldProposals,
+  }),
+];
 
 /**
  * Compares proposals by "id"
@@ -183,10 +183,13 @@ export const replaceAndConcatenateProposals = ({
 /**
  * Compares 2 proposal lists by entries "id"
  */
-export const proposalsHasSameIds = (
-  proposalsA: ProposalInfo[],
-  proposalsB: ProposalInfo[]
-): boolean =>
+export const proposalsHaveSameIds = ({
+  proposalsA,
+  proposalsB,
+}: {
+  proposalsA: ProposalInfo[];
+  proposalsB: ProposalInfo[];
+}): boolean =>
   proposalsA
     .map(({ id }) => id)
     .sort()
@@ -195,3 +198,14 @@ export const proposalsHasSameIds = (
     .map(({ id }) => id)
     .sort()
     .join();
+
+export const excludeProposals = ({
+  proposals,
+  exclusion,
+}: {
+  proposals: ProposalInfo[];
+  exclusion: ProposalInfo[];
+}): ProposalInfo[] => {
+  const excludeIds = proposalIdSet(exclusion);
+  return proposals.filter(({ id }) => !excludeIds.has(id as ProposalId));
+};
