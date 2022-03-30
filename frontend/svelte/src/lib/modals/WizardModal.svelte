@@ -51,4 +51,8 @@
     height: 100%;
     padding: 0 calc(2 * var(--padding));
   }
+
+  :global(.wizard-list) {
+    padding-bottom: calc(2 * var(--padding));
+  }
 </style>

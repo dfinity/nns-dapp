@@ -13,24 +13,27 @@
   let { main: mainAccount } = $accountsStore;
 </script>
 
-<h4>{$i18n.neurons.my_accounts}</h4>
-{#if mainAccount}
-  <!-- Needed mainAccount && because TS didn't learn that `mainAccount` is present in the click listener -->
-  <AccountCard
-    role="button"
-    on:click={() => mainAccount && chooseAccount(mainAccount)}
-    account={mainAccount}>{$i18n.accounts.main}</AccountCard
-  >
-  {#if $accountsStore.subAccounts}
-    {#each $accountsStore.subAccounts as subAccount}
-      <AccountCard
-        role="button"
-        on:click={() => chooseAccount(subAccount)}
-        account={subAccount}>{subAccount.name}</AccountCard
-      >
-    {/each}
+<div class="wizard-list">
+
+  <h4>{$i18n.neurons.my_accounts}</h4>
+  {#if mainAccount}
+    <!-- Needed mainAccount && because TS didn't learn that `mainAccount` is present in the click listener -->
+    <AccountCard
+            role="button"
+            on:click={() => mainAccount && chooseAccount(mainAccount)}
+            account={mainAccount}>{$i18n.accounts.main}</AccountCard
+    >
+    {#if $accountsStore.subAccounts}
+      {#each $accountsStore.subAccounts as subAccount}
+        <AccountCard
+                role="button"
+                on:click={() => chooseAccount(subAccount)}
+                account={subAccount}>{subAccount.name}</AccountCard
+        >
+      {/each}
+    {/if}
+  {:else}
+    <!-- TODO: https://dfinity.atlassian.net/browse/L2-411 Add Text Skeleton while loading -->
+    <Spinner />
   {/if}
-{:else}
-  <!-- TODO: https://dfinity.atlassian.net/browse/L2-411 Add Text Skeleton while loading -->
-  <Spinner />
-{/if}
+</div>

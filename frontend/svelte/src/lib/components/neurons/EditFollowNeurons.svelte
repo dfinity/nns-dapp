@@ -10,20 +10,16 @@
   const topics: Topic[] = enumValues(Topic);
 </script>
 
-<section data-tid="edit-followers-screen">
+<div class="wizard-list" data-tid="edit-followers-screen">
   <p>{$i18n.follow_neurons.description}</p>
   <div>
     {#each topics as topic}
       <FollowTopicSection {neuron} {topic} />
     {/each}
   </div>
-</section>
+</div>
 
 <style lang="scss">
-  section {
-    padding: 0;
-  }
-
   div {
     margin-top: calc(2 * var(--padding));
 
