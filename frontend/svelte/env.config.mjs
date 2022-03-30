@@ -45,8 +45,8 @@ const LEDGER_CANISTER_URL = `https://${LEDGER_CANISTER_ID}${domain}/`;
 const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}${domain}/`;
 
 // For values, see the [README](../../README.md).
-// The default should match production.
-const REDIRECT_TO_LEGACY = process.env.REDIRECT_TO_LEGACY || "prod";
+// The default should match production.  Except during local development.
+const REDIRECT_TO_LEGACY = process.env.REDIRECT_TO_LEGACY || ( process.env.DEPLOY_ENV === "local" ? "svelte" : "prod");
 
 export const envConfig = {
   ENVIRONMENT,
