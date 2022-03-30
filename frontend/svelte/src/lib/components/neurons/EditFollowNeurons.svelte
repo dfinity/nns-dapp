@@ -26,9 +26,7 @@
 
 <style lang="scss">
   div {
-    margin-top: calc(2 * var(--padding));
-
-    display: flex;
+   display: flex;
     flex-direction: column;
     gap: calc(1.5 * var(--padding));
   }
