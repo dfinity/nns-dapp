@@ -1,4 +1,4 @@
-import { StepsState } from "../../../lib/services/stepsState.services";
+import { StepsState } from "../../../lib/stores/steps.state";
 
 describe("StepsState", () => {
   enum Steps {

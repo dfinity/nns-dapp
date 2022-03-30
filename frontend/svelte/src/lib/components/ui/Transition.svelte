@@ -10,12 +10,14 @@
   $: slideOffset = diff === 0 ? 0 : diff > 0 ? absolutOffset : -absolutOffset;
 </script>
 
-<div
-  bind:clientWidth={absolutOffset}
-  in:fly={{ x: slideOffset, duration: ANIMATION_DURATION }}
->
-  <slot />
-</div>
+{#key slideOffset}
+  <div
+    bind:clientWidth={absolutOffset}
+    in:fly={{ x: slideOffset, duration: ANIMATION_DURATION }}
+  >
+    <slot />
+  </div>
+{/key}
 
 <style lang="scss">
   div {
