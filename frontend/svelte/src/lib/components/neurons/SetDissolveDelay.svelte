@@ -43,7 +43,7 @@
   };
 </script>
 
-<div class="wizard-wrapper">
+<div class="wizard-wrapper wrapper">
   {#if neuron !== undefined}
     <div>
       <h5>{$i18n.neurons.neuron_id}</h5>
@@ -195,7 +195,10 @@
     gap: var(--padding);
   }
 
-  :global(article) {
-    flex-grow: 1;
+  .wrapper {
+    :global(article) {
+      flex-grow: 1;
+      margin: 0 0 calc(2 * var(--padding));
+    }
   }
 </style>
