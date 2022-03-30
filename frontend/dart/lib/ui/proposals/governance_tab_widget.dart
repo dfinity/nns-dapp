@@ -105,7 +105,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (!env.SHOW_PROPOSALS_ROUTE()) {
+    if (!env.showProposalsRoute()) {
       html.window.location.replace("/v2/#/proposals");
       return Text('Redirecting...');
     }

@@ -19,7 +19,7 @@ class NeuronsPage extends StatefulWidget {
 class _NeuronsPageState extends State<NeuronsPage> {
   @override
   Widget build(BuildContext context) {
-    if (!env.SHOW_NEURONS_ROUTE()) {
+    if (!env.showNeuronsRoute()) {
       html.window.location.replace("/v2/#/neurons");
       return Text('Redirecting...');
     }

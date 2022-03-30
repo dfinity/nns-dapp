@@ -35,22 +35,22 @@ class _HomePageState extends State<HomePage>
       if (!_tabController.indexIsChanging) {
         if (_tabController.index == 0) {
           pageName = accountsTabPage;
-          if (!env.SHOW_ACCOUNTS_ROUTE()) {
+          if (!env.showAccountsRoute()) {
               html.window.location.replace("/v2/#/accounts");
           }
         } else if (_tabController.index == 1) {
           pageName = neuronTabsPage;
-          if (!env.SHOW_NEURONS_ROUTE()) {
+          if (!env.showNeuronsRoute()) {
               html.window.location.replace("/v2/#/neurons");
           }
         } else if (_tabController.index == 2) {
           pageName = proposalsTabPage;
-          if (!env.SHOW_PROPOSALS_ROUTE()) {
+          if (!env.showProposalsRoute()) {
               html.window.location.replace("/v2/#/proposals");
           }
         } else if (_tabController.index == 3) {
           pageName = canistersTabPage;
-          if (!env.SHOW_CANISTERS_ROUTE()) {
+          if (!env.showCanistersRoute()) {
               html.window.location.replace("/v2/#/canisters");
           }
         }

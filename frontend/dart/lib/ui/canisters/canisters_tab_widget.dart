@@ -27,7 +27,7 @@ class _CanistersPageState extends State<CanistersPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!env.SHOW_CANISTERS_ROUTE()) {
+    if (!env.showCanistersRoute()) {
       html.window.location.replace("/v2/#/canisters");
       return Text('Redirecting...');
     }

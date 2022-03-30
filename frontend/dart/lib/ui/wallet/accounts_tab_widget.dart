@@ -24,7 +24,7 @@ class AccountsTabWidget extends StatefulWidget {
 class _AccountsTabWidgetState extends State<AccountsTabWidget> {
   @override
   Widget build(BuildContext context) {
-    if (!env.SHOW_ACCOUNTS_ROUTE()) {
+    if (!env.showAccountsRoute()) {
       html.window.location.replace("/v2/#/accounts");
       return Text('Redirecting...');
     }
