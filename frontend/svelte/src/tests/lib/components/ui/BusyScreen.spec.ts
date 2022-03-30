@@ -4,12 +4,12 @@
 
 import { render, waitFor } from "@testing-library/svelte";
 import BusyScreen from "../../../../lib/components/ui/BusyScreen.svelte";
-import { busyStore } from "../../../../lib/stores/busy.store";
+import { startBusy, stopBusy } from "../../../../lib/stores/busy.store";
 
 describe("BusyScreen", () => {
   it("should show the spinner", async () => {
     const { container } = render(BusyScreen);
-    busyStore.start("test");
+    startBusy("vote");
     await waitFor(() =>
       expect(container.querySelector("svg")).toBeInTheDocument()
     );
@@ -17,11 +17,11 @@ describe("BusyScreen", () => {
 
   it("should hide the spinner", async () => {
     const { container } = render(BusyScreen);
-    busyStore.start("test");
+    startBusy("vote");
     await waitFor(() =>
       expect(container.querySelector("svg")).toBeInTheDocument()
     );
-    busyStore.stop("test");
+    stopBusy("vote");
     await waitFor(() =>
       expect(container.querySelector("svg")).not.toBeInTheDocument()
     );
