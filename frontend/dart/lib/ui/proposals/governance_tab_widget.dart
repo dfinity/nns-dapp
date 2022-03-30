@@ -105,7 +105,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (["svelte", "staging"].contains(env.REDIRECT_TO_LEGACY)) {
+    if (!env.SHOW_PROPOSALS_ROUTE()) {
       html.window.location.replace("/v2/#/proposals");
       return Text('Redirecting...');
     }

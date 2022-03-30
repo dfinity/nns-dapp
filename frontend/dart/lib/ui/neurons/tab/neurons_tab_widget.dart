@@ -19,7 +19,7 @@ class NeuronsPage extends StatefulWidget {
 class _NeuronsPageState extends State<NeuronsPage> {
   @override
   Widget build(BuildContext context) {
-    if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
+    if (!env.SHOW_NEURONS_ROUTE()) {
       html.window.location.replace("/v2/#/neurons");
       return Text('Redirecting...');
     }

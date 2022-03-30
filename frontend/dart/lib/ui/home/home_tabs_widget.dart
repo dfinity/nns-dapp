@@ -35,22 +35,22 @@ class _HomePageState extends State<HomePage>
       if (!_tabController.indexIsChanging) {
         if (_tabController.index == 0) {
           pageName = accountsTabPage;
-          if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
+          if (!env.SHOW_ACCOUNTS_ROUTE()) {
               html.window.location.replace("/v2/#/accounts");
           }
         } else if (_tabController.index == 1) {
           pageName = neuronTabsPage;
-          if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
+          if (!env.SHOW_NEURONS_ROUTE()) {
               html.window.location.replace("/v2/#/neurons");
           }
         } else if (_tabController.index == 2) {
           pageName = proposalsTabPage;
-          if (["svelte", "staging"].contains(env.REDIRECT_TO_LEGACY)) {
+          if (!env.SHOW_PROPOSALS_ROUTE()) {
               html.window.location.replace("/v2/#/proposals");
           }
         } else if (_tabController.index == 3) {
           pageName = canistersTabPage;
-          if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
+          if (!env.SHOW_CANISTERS_ROUTE()) {
               html.window.location.replace("/v2/#/canisters");
           }
         }

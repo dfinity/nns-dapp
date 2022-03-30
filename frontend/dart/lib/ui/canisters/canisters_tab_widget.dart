@@ -27,7 +27,7 @@ class _CanistersPageState extends State<CanistersPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (["svelte"].contains(env.REDIRECT_TO_LEGACY)) {
+    if (!env.SHOW_CANISTERS_ROUTE()) {
       html.window.location.replace("/v2/#/canisters");
       return Text('Redirecting...');
     }

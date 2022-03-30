@@ -29,10 +29,6 @@
     loading = false;
   };
 
-  // TODO: To be removed once this page has been implemented
-  const SHOW_CANISTERS_ROUTE = ["both", "svelte"].includes(
-    process.env.REDIRECT_TO_LEGACY as string
-  );
   onMount(async () => {
     if (!SHOW_CANISTERS_ROUTE) {
       window.location.replace("/#/canisters");
