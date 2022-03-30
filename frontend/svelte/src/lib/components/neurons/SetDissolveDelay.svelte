@@ -43,7 +43,7 @@
   };
 </script>
 
-<section>
+<div class="wizard-wrapper">
   <div>
     <h5>{$i18n.neurons.neuron_id}</h5>
     <p>{neuron.neuronId}</p>
@@ -119,17 +119,10 @@
       {/if}
     </button>
   </div>
-</section>
+</div>
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
-
-  section {
-    display: flex;
-    flex-direction: column;
-    gap: calc(2 * var(--padding));
-    padding: 0;
-  }
 
   p {
     margin-top: 0;
@@ -196,5 +189,9 @@
   .buttons {
     display: flex;
     gap: var(--padding);
+  }
+
+  :global(article) {
+    flex-grow: 1;
   }
 </style>

@@ -34,7 +34,7 @@
   };
 </script>
 
-<section data-tid="confirm-dissolve-delay-container">
+<div class="wizard-wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
     <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
   </div>
@@ -50,7 +50,7 @@
       })}
     </p>
   </div>
-  <div>
+  <div class="voting-power">
     <h5>{$i18n.neurons.voting_power}</h5>
     <p>
       {votingPower({
@@ -73,20 +73,17 @@
       {/if}
     </button>
   </div>
-</section>
+</div>
 
 <style lang="scss">
-  section {
-    display: flex;
-    flex-direction: column;
-    gap: calc(2 * var(--padding));
-    padding: 0;
-  }
-
   .main-info {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: calc(3 * var(--padding));
+  }
+
+  .voting-power {
+    flex-grow: 1;
   }
 </style>

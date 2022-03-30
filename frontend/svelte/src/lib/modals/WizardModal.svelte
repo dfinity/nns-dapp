@@ -37,7 +37,7 @@
 <style lang="scss">
   // TODO: Manage modal height in L2-302
   article {
-    height: 500px;
+    height: 550px;
     margin: 0;
     padding: calc(2 * var(--padding));
   }
@@ -49,5 +49,6 @@
     justify-content: center;
     gap: var(--padding);
     height: 100%;
+    padding: 0 calc(2 * var(--padding));
   }
 </style>

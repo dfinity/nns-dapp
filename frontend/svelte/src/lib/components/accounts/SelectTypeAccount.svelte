@@ -25,7 +25,6 @@
 
   .card-item {
     padding: calc(4 * var(--padding));
-    margin: 0 calc(2 * var(--padding));
     border-radius: var(--border-radius);
 
     @include interaction.tappable;

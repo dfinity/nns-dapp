@@ -62,7 +62,6 @@
 <style lang="scss">
   form {
     --input-width: 100%;
-    padding: 0 calc(2 * var(--padding));
 
     div {
       // push button to the bottom

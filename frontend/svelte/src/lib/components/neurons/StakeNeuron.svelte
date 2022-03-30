@@ -49,7 +49,7 @@
   };
 </script>
 
-<div class="wrapper wizard-wrapper">
+<div class="wizard-wrapper">
   <div>
     <h5>{$i18n.neurons.source}</h5>
     <small class="identifier">{account.identifier}</small>
@@ -99,10 +99,6 @@
 </div>
 
 <style lang="scss">
-  .wrapper {
-    padding: 0 calc(2 * var(--padding));
-  }
-
   small {
     word-break: break-all;
   }
