@@ -18,7 +18,7 @@ import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
-import { compareProposalsByIds, proposalIdSet } from "../utils/proposals.utils";
+import { proposalIdSet, proposalsWithSameIds } from "../utils/proposals.utils";
 import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
@@ -92,13 +92,17 @@ const findProposals = async ({
     trustedProposals: ProposalInfo[],
     untrustedProposals: ProposalInfo[]
   ) => {
-    if (compareProposalsByIds(untrustedProposals, trustedProposals)) {
-      toastsStore.show({
-        labelKey: "error.suspicious_response",
-        level: "error",
-      });
+    if (proposalsWithSameIds(untrustedProposals, trustedProposals)) {
+      return;
     }
-    // Remove proven untrusted proposals
+
+    console.error("suspisious u->t", untrustedProposals, trustedProposals);
+    toastsStore.show({
+      labelKey: "error.suspicious_response",
+      level: "error",
+    });
+
+    // Remove proven untrusted proposals (in query but not in update)
     const certifiedIds = proposalIdSet(trustedProposals);
     const proposalsToRemove = untrustedProposals.filter(
       ({ id }) => !certifiedIds.has(id as ProposalId)

@@ -174,7 +174,10 @@ export const replaceAndPushProposals = ({
   });
 };
 
-export const compareProposalsByIds = (
+/**
+ * Compares by proposals ids
+ */
+export const proposalsWithSameIds = (
   proposalsA: ProposalInfo[],
   proposalsB: ProposalInfo[]
 ): boolean =>

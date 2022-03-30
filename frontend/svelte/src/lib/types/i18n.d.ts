@@ -36,9 +36,9 @@ interface I18nError {
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
-  suspicious_response: string;
   fail: string;
   join_community_fund: string;
+  suspicious_response: string;
 }
 
 interface I18nWarning {
