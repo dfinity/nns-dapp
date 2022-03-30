@@ -74,6 +74,7 @@
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
   {#if currentStepIndex === stepIndex({ name: "StakeNeuron", steps })}
+    <!-- we spare a spinner for the selectedAccount within StakeNeuron because we reach this step once the selectedAccount has been selected -->
     {#if selectedAccount !== undefined}
       <StakeNeuron
         account={selectedAccount}
