@@ -505,6 +505,9 @@ describe("proposals-utils", () => {
       expect(proposalsHasSameIds([], [])).toBeTruthy();
       expect(proposalsHasSameIds(proposals, proposals.slice(0))).toBeTruthy();
       expect(proposalsHasSameIds(proposals, proposals.slice(1))).toBeFalsy();
+      expect(
+        proposalsHasSameIds(generateMockProposals(20).slice(10), proposals)
+      ).toBeFalsy();
     });
   });
 });
