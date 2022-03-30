@@ -11,7 +11,9 @@ import {
   ageMultiplier,
   dissolveDelayMultiplier,
   formatVotingPower,
+  hasJoinedCommunityFund,
   hasValidStake,
+  isCurrentUserController,
   votingPower,
 } from "../../../lib/utils/neuron.utils";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
@@ -157,6 +159,59 @@ describe("neuron-utils", () => {
       };
       neuronWithoutFullNeuron.fullNeuron = undefined;
       expect(hasValidStake(neuronWithoutFullNeuron)).toBeFalsy();
+    });
+  });
+
+  describe("hasJoinedCommunityFund", () => {
+    it("returns true when neuron has joined community", () => {
+      const joinedNeuron = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: BigInt(100),
+      };
+      expect(hasJoinedCommunityFund(joinedNeuron)).toBe(true);
+    });
+
+    it("returns true when neuron has not joined community", () => {
+      const joinedNeuron = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: undefined,
+      };
+      expect(hasJoinedCommunityFund(joinedNeuron)).toBe(false);
+    });
+  });
+
+  describe("isCurrentUserController", () => {
+    it("returns false when isCurrentUserController not defined", () => {
+      const userControlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          isCurrentUserController: undefined,
+        },
+      };
+      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+    });
+
+    it("returns true when neuron is controlled by user", () => {
+      const userControlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          isCurrentUserController: true,
+        },
+      };
+      expect(isCurrentUserController(userControlledNeuron)).toBe(true);
+    });
+
+    it("returns false when isCurrentUserController is false", () => {
+      const userControlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          isCurrentUserController: false,
+        },
+      };
+      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
     });
   });
 });
