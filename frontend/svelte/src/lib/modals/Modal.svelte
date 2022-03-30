@@ -46,6 +46,7 @@
         <div class="toolbar">
           {#if showBackButton}
             <button
+              transition:fade={{ duration: 150 }}
               class="back"
               on:click|stopPropagation={back}
               aria-label={$i18n.core.back}
