@@ -7,7 +7,9 @@ import SetDissolveDelay from "../../../../lib/components/neurons/SetDissolveDela
 
 describe("SetDissolveDelay", () => {
   it("should render a spinner until neuron loaded", () => {
-    const { container } = render(SetDissolveDelay, {props: {neuron: undefined}});
+    const { container } = render(SetDissolveDelay, {
+      props: { neuron: undefined },
+    });
 
     expect(container.querySelector('[data-tid="spinner"]')).toBeInTheDocument();
   });
