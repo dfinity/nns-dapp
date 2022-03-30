@@ -1,11 +1,11 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import { busyStore } from "../../stores/busy.store";
+  import { busy } from "../../stores/busy.store";
   import Spinner from "./Spinner.svelte";
 </script>
 
 <!-- Display spinner and lock UI if busyStore is not empty -->
-{#if $busyStore.size > 0}
+{#if $busy}
   <div data-tid="busy" transition:fade>
     <Spinner />
   </div>

@@ -75,7 +75,7 @@ describe("AddAccountModal", () => {
     expect(createButton?.getAttribute("disabled")).toBeNull();
   });
 
-  it("should create a subaccount", async () => {
+  const testSubaccount = async (): Promise<{ container: HTMLElement }> => {
     const { container, queryByText } = render(AddAccountModal);
 
     const accountCard = queryByText(en.accounts.new_linked_title);
@@ -95,5 +95,19 @@ describe("AddAccountModal", () => {
     createButton && (await fireEvent.click(createButton));
 
     expect(addSubAccount).toBeCalled();
+
+    return { container };
+  };
+
+  it("should create a subaccount", async () => await testSubaccount());
+
+  it("should disable input and button when creating a subaccount", async () => {
+    const { container } = await testSubaccount();
+
+    const input = container.querySelector('input[name="newAccount"]');
+    expect(input?.hasAttribute("disabled")).toBeTruthy();
+
+    const createButton = container.querySelector('button[type="submit"]');
+    expect(createButton?.hasAttribute("disabled")).toBeTruthy();
   });
 });
