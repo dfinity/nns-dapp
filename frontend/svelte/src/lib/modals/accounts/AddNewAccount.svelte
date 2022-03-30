@@ -3,20 +3,20 @@
   import { i18n } from "../../stores/i18n";
   import { createEventDispatcher } from "svelte";
   import { addSubAccount } from "../../services/accounts.services";
-  import Spinner from "../../components/ui/Spinner.svelte";
   import {
     NameTooLongError,
     SubAccountLimitExceededError,
   } from "../../canisters/nns-dapp/nns-dapp.errors";
   import { toastsStore } from "../../stores/toasts.store";
+  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
 
   let newAccountName: string = "";
 
   let dispatcher = createEventDispatcher();
-  let creating: boolean = false;
+
   const createNewAccount = async () => {
     try {
-      creating = true;
+      startBusy("accounts");
       await addSubAccount({
         name: newAccountName,
       });
@@ -33,7 +33,7 @@
         err,
       });
     } finally {
-      creating = false;
+      stopBusy("accounts");
     }
   };
 </script>
@@ -48,18 +48,15 @@
         name="newAccount"
         bind:value={newAccountName}
         theme="dark"
+        disabled={$busy}
       />
     </div>
     <button
       class="primary full-width"
       type="submit"
-      disabled={newAccountName.length === 0 || creating}
+      disabled={newAccountName.length === 0 || $busy}
     >
-      {#if creating}
-        <Spinner />
-      {:else}
-        {$i18n.core.create}
-      {/if}
+      {$i18n.core.create}
     </button>
   </form>
 </section>
