@@ -2,8 +2,8 @@
   import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import Card from "../../components/ui/Card.svelte";
-  import Spinner from "../../components/ui/Spinner.svelte";
+  import Card from "../ui/Card.svelte";
+  import Spinner from "../ui/Spinner.svelte";
   import {
     SECONDS_IN_EIGHT_YEARS,
     SECONDS_IN_HALF_YEAR,

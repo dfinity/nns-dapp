@@ -5,11 +5,13 @@
   import { createEventDispatcher } from "svelte";
   import IconBackIosNew from "../icons/IconBackIosNew.svelte";
   import { i18n } from "../stores/i18n";
+  import { busy } from "../stores/busy.store";
 
   export let visible: boolean = true;
   export let theme: "dark" | "light" = "light";
   export let size: "small" | "medium" = "small";
-  // There is no way to know to know whether a parent is listening to the "nnsBack" event
+
+  // There is no way to know whether a parent is listening to the "nnsBack" event
   // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
   // Please do not use `showBackButton` without listening on `nnsBack`
   export let showBackButton: boolean = false;
@@ -31,7 +33,11 @@
     aria-describedby="modalContent"
     on:click|stopPropagation
   >
-    <div class="backdrop" on:click|stopPropagation={close} />
+    <div
+      class="backdrop"
+      on:click|stopPropagation={close}
+      class:disabledActions={$busy}
+    />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class={`wrapper ${size}`}
@@ -42,12 +48,15 @@
             <button
               class="back"
               on:click|stopPropagation={back}
-              aria-label={$i18n.core.back}><IconBackIosNew /></button
+              aria-label={$i18n.core.back}
+              disabled={$busy}><IconBackIosNew /></button
             >
           {/if}
           <h3 id="modalTitle"><slot name="title" /></h3>
-          <button on:click|stopPropagation={close} aria-label={$i18n.core.close}
-            ><IconClose /></button
+          <button
+            on:click|stopPropagation={close}
+            aria-label={$i18n.core.close}
+            disabled={$busy}><IconClose /></button
           >
         </div>
       {/if}
@@ -87,6 +96,12 @@
         button {
           color: var(--background-contrast);
         }
+
+        button {
+          &[disabled] {
+            color: var(--gray-600);
+          }
+        }
       }
 
       .content {
@@ -103,6 +118,11 @@
     background: rgba(var(--background-rgb), 0.8);
 
     @include interaction.tappable;
+
+    &.disabledActions {
+      cursor: inherit;
+      pointer-events: none;
+    }
   }
 
   .wrapper {

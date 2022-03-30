@@ -3,8 +3,8 @@
   import { StepsState } from "../../services/stepsState.services";
   import { i18n } from "../../stores/i18n";
   import Modal from "../Modal.svelte";
-  import AddNewAccount from "./AddNewAccount.svelte";
-  import SelectTypeAccount from "./SelectTypeAccount.svelte";
+  import AddNewAccount from "../../components/accounts/AddNewAccount.svelte";
+  import SelectTypeAccount from "../../components/accounts/SelectTypeAccount.svelte";
 
   enum Steps {
     SelectAccount,

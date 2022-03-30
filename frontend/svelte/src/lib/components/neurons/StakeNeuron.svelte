@@ -1,8 +1,8 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import Input from "../../components/ui/Input.svelte";
-  import Spinner from "../../components/ui/Spinner.svelte";
+  import Input from "../ui/Input.svelte";
+  import Spinner from "../ui/Spinner.svelte";
   import {
     E8S_PER_ICP,
     TRANSACTION_FEE_E8S,

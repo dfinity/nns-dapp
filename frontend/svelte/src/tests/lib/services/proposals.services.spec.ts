@@ -10,7 +10,7 @@ import {
   loadProposal,
   registerVotes,
 } from "../../../lib/services/proposals.services";
-import { busyStore } from "../../../lib/stores/busy.store";
+import * as busyStore from "../../../lib/stores/busy.store";
 import { proposalsStore } from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import type { ToastMsg } from "../../../lib/types/toast";
@@ -166,8 +166,8 @@ describe("proposals-services", () => {
       });
 
       it("should display appropriate busy screen", async () => {
-        const spyBusyStart = jest.spyOn(busyStore, "start");
-        const spyBusyStop = jest.spyOn(busyStore, "stop");
+        const spyBusyStart = jest.spyOn(busyStore, "startBusy");
+        const spyBusyStop = jest.spyOn(busyStore, "stopBusy");
         await registerVotes({
           neuronIds,
           proposalId,

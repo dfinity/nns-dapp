@@ -77,6 +77,7 @@ interface I18nAccounts {
   attach_hardware_subtitle: string;
   new_linked_account_title: string;
   new_linked_account_placeholder: string;
+  linked_account: string;
 }
 
 interface I18nNeurons {

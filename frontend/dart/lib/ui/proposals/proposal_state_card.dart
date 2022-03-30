@@ -99,6 +99,10 @@ class ProposalStateCard extends StatelessWidget {
                           width: MediaQuery.of(context).size.width,
                           child: Markdown(
                               data: proposal.summary,
+                              onTapLink: (text, url, title){
+                                if(url!=null)
+                                launch(url);
+                              },
                               styleSheet: MarkdownStyleSheet.fromTheme(
                                   ThemeData(
                                       cardColor: AppColors.black,
