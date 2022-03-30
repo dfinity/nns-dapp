@@ -5,17 +5,17 @@
   import type { Account } from "../../types/account";
   import { accountsStore } from "../../stores/accounts.store";
   import { onDestroy } from "svelte";
-  import SelectAccount from "./SelectAccount.svelte";
-  import StakeNeuron from "./StakeNeuron.svelte";
+  import SelectAccount from "../../components/accounts/SelectAccount.svelte";
+  import StakeNeuron from "../../components/neurons/StakeNeuron.svelte";
   import type { Unsubscriber } from "svelte/store";
   import Transition from "../../components/ui/Transition.svelte";
   import { StepsState } from "../../services/stepsState.services";
-  import SetDissolveDelay from "./SetDissolveDelay.svelte";
+  import SetDissolveDelay from "../../components/neurons/SetDissolveDelay.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
   import { neuronsStore } from "../../stores/neurons.store";
-  import ConfirmDissolveDelay from "./ConfirmDissolveDelay.svelte";
-  import EditFollowNeurons from "./EditFollowNeurons.svelte";
+  import ConfirmDissolveDelay from "../../components/neurons/ConfirmDissolveDelay.svelte";
+  import EditFollowNeurons from "../../components/neurons/EditFollowNeurons.svelte";
 
   enum Steps {
     SelectAccount,

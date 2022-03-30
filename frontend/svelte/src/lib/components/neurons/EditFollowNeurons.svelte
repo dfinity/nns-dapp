@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { Topic } from "@dfinity/nns";
-  import FollowTopicSection from "../../components/neurons/FollowTopicSection.svelte";
+  import FollowTopicSection from "./FollowTopicSection.svelte";
   import { i18n } from "../../stores/i18n";
   import { enumValues } from "../../utils/enum.utils";
 

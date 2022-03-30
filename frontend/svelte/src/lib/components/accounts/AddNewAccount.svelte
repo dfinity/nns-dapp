@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Input from "../../components/ui/Input.svelte";
+  import Input from "../ui/Input.svelte";
   import { i18n } from "../../stores/i18n";
   import { createEventDispatcher } from "svelte";
   import { addSubAccount } from "../../services/accounts.services";

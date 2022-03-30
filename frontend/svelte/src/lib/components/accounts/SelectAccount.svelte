@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import AccountCard from "../../components/accounts/AccountCard.svelte";
-  import Spinner from "../../components/ui/Spinner.svelte";
+  import AccountCard from "./AccountCard.svelte";
+  import Spinner from "../ui/Spinner.svelte";
   import { accountsStore } from "../../stores/accounts.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
