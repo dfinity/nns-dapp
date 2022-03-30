@@ -17,6 +17,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Update II
         run: ./scripts/update-ii
+      - name: Define the git identity
+        run:  git config --global user.email "dev-null@dfinity.org" && git config --global user.name "Nightly Github Action"
       - name: Commit changes if any
         run: '[ -z "$(git status --porcelain)" ] || { git commit -m "Update II" dfx.json && git push ; }'
         
