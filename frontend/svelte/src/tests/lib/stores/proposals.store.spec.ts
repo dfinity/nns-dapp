@@ -10,65 +10,60 @@ import {
   votingNeuronSelectStore,
 } from "../../../lib/stores/proposals.store";
 import { mockNeuron } from "../../mocks/neurons.mock";
+import { generateMockProposals } from "../../mocks/proposal.mock";
 
 describe("proposals-store", () => {
   describe("proposals", () => {
-    const mockProposals: ProposalInfo[] = [
-      {
-        id: "test1",
-      },
-      { id: "test2" },
-    ] as unknown as ProposalInfo[];
-
     it("should set proposals", () => {
-      proposalsStore.setProposals(mockProposals);
+      proposalsStore.setProposals(generateMockProposals(10));
 
       const proposals = get(proposalsStore);
-      expect(proposals).toEqual(mockProposals);
+      expect(proposals).toEqual(generateMockProposals(10));
     });
 
     it("should push proposals", () => {
-      proposalsStore.setProposals(mockProposals);
+      const allProposals = generateMockProposals(10);
+      proposalsStore.setProposals(allProposals.slice(0, 5));
 
       proposalsStore.pushProposals({
-        proposals: mockProposals,
+        proposals: allProposals.slice(5),
         certified: true,
       });
 
       const proposals = get(proposalsStore);
-      expect(proposals).toEqual([...mockProposals, ...mockProposals]);
+      expect(proposals).toEqual(allProposals);
     });
 
     it("should push proposals with certified-version replacement", () => {
-      proposalsStore.setProposals(
-        mockProposals.map((proposal) => ({
-          ...proposal,
-          proposalTimestampSeconds: BigInt(0),
-        }))
-      );
-
-      const newProposals = mockProposals.map((proposal) => ({
-        ...proposal,
+      const queryProposals = generateMockProposals(10, {
+        proposalTimestampSeconds: BigInt(0),
+      });
+      const updateProposals = generateMockProposals(10, {
         proposalTimestampSeconds: BigInt(1),
-      }));
-
+      });
+      proposalsStore.setProposals(queryProposals);
       proposalsStore.pushProposals({
-        proposals: newProposals,
+        proposals: updateProposals,
         certified: true,
       });
 
       const proposals = get(proposalsStore);
-      expect(proposals[0].proposalTimestampSeconds).toEqual(BigInt(1));
-      expect(proposals[1].proposalTimestampSeconds).toEqual(BigInt(1));
-      expect(proposals.length).toEqual(mockProposals.length);
+      expect(proposals).toEqual(updateProposals);
     });
 
     it("should reset proposals", () => {
-      proposalsStore.setProposals(mockProposals);
+      proposalsStore.setProposals(generateMockProposals(2));
       proposalsStore.setProposals([]);
 
       const proposals = get(proposalsStore);
       expect(proposals).toEqual([]);
+    });
+
+    it("should remove proposals", () => {
+      const allProposals = generateMockProposals(10);
+      proposalsStore.setProposals(allProposals);
+      proposalsStore.removeProposals(allProposals.slice(0, 5));
+      expect(get(proposalsStore)).toEqual(allProposals.slice(5));
     });
   });
 

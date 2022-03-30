@@ -1,6 +1,7 @@
 import type { Ballot, NeuronInfo, Proposal } from "@dfinity/nns";
 import { Vote } from "@dfinity/nns";
 import {
+  concatenateUniqueProposals,
   emptyProposals,
   hasMatchingProposals,
   hideProposal,
@@ -8,10 +9,16 @@ import {
   preserveNeuronSelectionAfterUpdate,
   proposalActionFields,
   proposalFirstActionKey,
+  proposalIdSet,
+  proposalsHasSameIds,
+  replaceAndConcatenateProposals,
   selectedNeuronsVotingPower,
 } from "../../../lib/utils/proposals.utils";
 import { mockNeuron } from "../../mocks/neurons.mock";
-import { mockProposalInfo } from "../../mocks/proposal.mock";
+import {
+  generateMockProposals,
+  mockProposalInfo,
+} from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-utils", () => {
@@ -414,6 +421,90 @@ describe("proposals-utils", () => {
           updatedNeurons: [neuron(0), neuron(1), neuron(3)],
         })
       ).toEqual([0, 1, 3].map(BigInt));
+    });
+  });
+
+  describe("proposalIdSet", () => {
+    it("should return a set with ids", () => {
+      const proposals = generateMockProposals(10);
+      const idSet = proposalIdSet([...proposals, ...proposals]);
+      expect(idSet.size).toBe(proposals.length);
+      expect(Array.from(idSet).sort()).toStrictEqual(
+        proposals.map(({ id }) => id).sort()
+      );
+    });
+
+    it("should ignore records withoug id", () => {
+      const proposals = generateMockProposals(2);
+      proposals[0].id = undefined;
+      const idSet = proposalIdSet(proposals);
+      expect(idSet.size).toBe(1);
+      expect(Array.from(idSet)).toStrictEqual([BigInt(1)]);
+    });
+  });
+
+  describe("concatenateUniqueProposals", () => {
+    it("should concatinate proposals", () => {
+      const proposals = generateMockProposals(10);
+      const result = concatenateUniqueProposals({
+        oldProposals: proposals.slice(0, 5),
+        newProposals: proposals.slice(5),
+      });
+      expect(result).toEqual(proposals);
+    });
+
+    it("should concatenate only unique proposals", () => {
+      const proposals = generateMockProposals(10);
+      const result = concatenateUniqueProposals({
+        oldProposals: proposals.slice(0, 5),
+        newProposals: proposals,
+      });
+      expect(result).toEqual(proposals);
+    });
+  });
+
+  describe("replaceAndConcatenateProposals", () => {
+    const proposalsA = generateMockProposals(10, {
+      proposalTimestampSeconds: BigInt(0),
+    });
+    const proposalsB = generateMockProposals(10, {
+      proposalTimestampSeconds: BigInt(0),
+    });
+
+    it("should replace proposals by id", () => {
+      const result = replaceAndConcatenateProposals({
+        oldProposals: proposalsA,
+        newProposals: proposalsB,
+      });
+      expect(result).toStrictEqual(proposalsB);
+    });
+
+    it("should concatinate proposals", () => {
+      const result = replaceAndConcatenateProposals({
+        oldProposals: [],
+        newProposals: proposalsB,
+      });
+      expect(result).toStrictEqual(proposalsB);
+    });
+
+    it("should replace and concatinate", () => {
+      const oldProposals = proposalsA.slice(5);
+      const newProposals = proposalsB.slice(0, 5);
+      const result = replaceAndConcatenateProposals({
+        oldProposals,
+        newProposals,
+      });
+      expect(result).toStrictEqual([...oldProposals, ...newProposals]);
+    });
+  });
+
+  describe("proposalsHasSameIds", () => {
+    const proposals = generateMockProposals(10);
+
+    it("should comprare", () => {
+      expect(proposalsHasSameIds([], [])).toBeTruthy();
+      expect(proposalsHasSameIds(proposals, proposals.slice(0))).toBeTruthy();
+      expect(proposalsHasSameIds(proposals, proposals.slice(1))).toBeFalsy();
     });
   });
 });
