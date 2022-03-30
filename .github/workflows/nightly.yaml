@@ -3,6 +3,10 @@ name: Nightly Publication
 on:
   schedule:
     - cron: "0 0 * * *"
+  push:
+    branches:
+      # Commit to the nightly branch and push to test.
+      - nightly
 
 jobs:
   publish:
