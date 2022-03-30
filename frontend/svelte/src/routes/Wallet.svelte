@@ -4,7 +4,10 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath, SHOW_ACCOUNTS_ROUTE } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_ACCOUNTS_ROUTE,
+  } from "../lib/constants/routes.constants";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {

@@ -17,7 +17,10 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
-  import { AppPath, SHOW_PROPOSALS_ROUTE } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_PROPOSALS_ROUTE,
+  } from "../lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,

@@ -13,7 +13,10 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import { neuronsStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath, SHOW_NEURONS_ROUTE } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_NEURONS_ROUTE,
+  } from "../lib/constants/routes.constants";
 
   let isLoading: boolean = false;
   // TODO: To be removed once this page has been implemented

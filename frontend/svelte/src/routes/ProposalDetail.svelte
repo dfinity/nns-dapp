@@ -7,7 +7,10 @@
     loadProposal,
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath, SHOW_PROPOSALS_ROUTE } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_PROPOSALS_ROUTE,
+  } from "../lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";

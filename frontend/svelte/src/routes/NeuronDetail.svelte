@@ -10,7 +10,10 @@
   import NeuronProposalsCard from "../lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "../lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import { AppPath, SHOW_NEURONS_ROUTE } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_NEURONS_ROUTE,
+  } from "../lib/constants/routes.constants";
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
   import { neuronSelectStore, neuronsStore } from "../lib/stores/neurons.store";
