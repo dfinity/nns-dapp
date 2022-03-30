@@ -16,6 +16,8 @@ import {
   queryNeurons,
   setFollowees,
   stakeNeuron,
+  startDissolving as startDissolvingApi,
+  stopDissolving as stopDissolvingApi,
 } from "../api/governance.api";
 import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
@@ -166,17 +168,13 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   return listNeurons({ skipCheck: true });
 };
 
-export const updateDelay = async ({
+const getAndLoadNeuronHelper = async ({
   neuronId,
-  dissolveDelayInSeconds,
+  identity,
 }: {
   neuronId: NeuronId;
-  dissolveDelayInSeconds: number;
-}): Promise<void> => {
-  const identity: Identity = await getIdentity();
-
-  await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
-
+  identity: Identity;
+}) => {
   const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
     identity,
@@ -190,22 +188,42 @@ export const updateDelay = async ({
   neuronsStore.pushNeurons([neuron]);
 };
 
+export const updateDelay = async ({
+  neuronId,
+  dissolveDelayInSeconds,
+}: {
+  neuronId: NeuronId;
+  dissolveDelayInSeconds: number;
+}): Promise<void> => {
+  const identity: Identity = await getIdentity();
+
+  await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
+
+  await getAndLoadNeuronHelper({ neuronId, identity });
+};
+
 export const joinCommunityFund = async (neuronId: NeuronId): Promise<void> => {
   const identity: Identity = await getIdentity();
 
   await joinCommunityFundApi({ neuronId, identity });
 
-  const neuron: NeuronInfo | undefined = await getNeuron({
-    neuronId,
-    identity,
-    certified: true,
-    forceFetch: true,
-  });
+  await getAndLoadNeuronHelper({ neuronId, identity });
+};
 
-  if (!neuron) {
-    throw new Error("Neuron not found");
-  }
-  neuronsStore.pushNeurons([neuron]);
+export const startDissolving = async (neuronId: NeuronId): Promise<void> => {
+  const identity: Identity = await getIdentity();
+
+  await startDissolvingApi({ neuronId, identity });
+
+  await getAndLoadNeuronHelper({ neuronId, identity });
+};
+
+export const stopDissolving = async (neuronId: NeuronId): Promise<void> => {
+  const identity: Identity = await getIdentity();
+
+  await stopDissolvingApi({ neuronId, identity });
+
+  await getAndLoadNeuronHelper({ neuronId, identity });
 };
 
 const setFolloweesHelper = async ({

@@ -57,6 +57,30 @@ export const joinCommunityFund = async ({
   return canister.joinCommunityFund(neuronId);
 };
 
+export const startDissolving = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.startDissolving(neuronId);
+};
+
+export const stopDissolving = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.stopDissolving(neuronId);
+};
+
 export const setFollowees = async ({
   identity,
   neuronId,
