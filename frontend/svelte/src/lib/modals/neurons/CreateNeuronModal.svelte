@@ -14,13 +14,15 @@
   import ConfirmDissolveDelay from "./ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "./EditFollowNeurons.svelte";
   import WizardModal from "../WizardModal.svelte";
+  import type {Step} from '../../stores/steps.state';
+  import {stepIndex} from "../../utils/step.utils";
 
-  const steps: string[] = [
-    "SelectAccount",
-    "StakeNeuron",
-    "SetDissolveDelay",
-    "ConfirmDissolveDelay",
-    "EditFollowNeurons",
+  const steps: Step[] = [
+    {name: "SelectAccount", showBackButton: false},
+    {name: "StakeNeuron", showBackButton: true},
+    {name: "SetDissolveDelay", showBackButton: false},
+    {name: "ConfirmDissolveDelay", showBackButton: true},
+    {name: "EditFollowNeurons", showBackButton: false}
   ] as const;
 
   let currentStep: number;
@@ -37,10 +39,6 @@
   let newNeuron: NeuronInfo | undefined;
   $: newNeuron = $neuronsStore.find(({ neuronId }) => newNeuronId === neuronId);
   let delayInSeconds: number = 0;
-  let showBackButton: boolean;
-  $: showBackButton = ["StakeNeuron", "ConfirmDissolveDelay"].includes(
-    steps[currentStep]
-  );
 
   const chooseAccount = ({
     detail,
@@ -61,7 +59,7 @@
     modal.next();
   };
   const goEditFollowers = () => {
-    modal.set(steps.indexOf("EditFollowNeurons"));
+    modal.set(stepIndex({ name: "EditFollowNeurons", steps }));
   };
 
   onDestroy(unsubscribeAccounts);
@@ -81,18 +79,18 @@
   <svelte:fragment slot="title">{$i18n.neurons?.[titleKey]}</svelte:fragment>
 
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStep === steps.indexOf("SelectAccount") && selectedAccount}
+  {#if currentStep === stepIndex({ name: "SelectAccount", steps }) && selectedAccount}
     <SelectAccount on:nnsSelectAccount={chooseAccount} />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStep === steps.indexOf("StakeNeuron") && selectedAccount}
+  {#if currentStep === stepIndex({ name: "StakeNeuron", steps }) && selectedAccount}
     <StakeNeuron
       account={selectedAccount}
       on:nnsNeuronCreated={goToDissolveDelay}
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStep === steps.indexOf("SetDissolveDelay") && newNeuron}
+  {#if currentStep === stepIndex({ name: "SetDissolveDelay", steps }) && newNeuron}
     <SetDissolveDelay
       neuron={newNeuron}
       on:nnsSkipDelay={goEditFollowers}
@@ -101,7 +99,7 @@
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStep === steps.indexOf("ConfirmDissolveDelay") && newNeuron && delayInSeconds}
+  {#if currentStep === stepIndex({ name: "ConfirmDissolveDelay", steps }) && newNeuron && delayInSeconds}
     <ConfirmDissolveDelay
       neuron={newNeuron}
       {delayInSeconds}
@@ -110,7 +108,7 @@
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStep === steps.indexOf("EditFollowNeurons") && newNeuron}
+  {#if currentStep === stepIndex({ name: "EditFollowNeurons", steps }) && newNeuron}
     <EditFollowNeurons neuron={newNeuron} />
   {/if}
 </WizardModal>

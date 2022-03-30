@@ -2,9 +2,17 @@
   import AddNewAccount from "./AddNewAccount.svelte";
   import SelectTypeAccount from "./SelectTypeAccount.svelte";
   import WizardModal from "../WizardModal.svelte";
-  import {i18n} from "../../stores/i18n";
+  import { i18n } from "../../stores/i18n";
+  import type { Step } from "../../stores/steps.state";
+  import { stepIndex } from "../../utils/step.utils";
 
-  const steps: string[] = ["SelectAccount", "AddNewAccount"] as const;
+  const steps: Step[] = [
+    {
+      name: "SelectAccount",
+      showBackButton: false,
+    },
+    { name: "AddNewAccount", showBackButton: true },
+  ] as const;
 
   let currentStep: number;
   let modal: WizardModal;
@@ -19,10 +27,10 @@
   <svelte:fragment slot="title">{$i18n.accounts.add_account}</svelte:fragment>
 
   <svelte:fragment>
-    {#if currentStep === steps.indexOf("SelectAccount")}
+    {#if currentStep === stepIndex({ name: "SelectAccount", steps })}
       <SelectTypeAccount on:nnsSelect={handleSelectType} />
     {/if}
-    {#if currentStep === steps.indexOf("AddNewAccount")}
+    {#if currentStep === stepIndex({ name: "AddNewAccount", steps })}
       <AddNewAccount on:nnsClose />
     {/if}
   </svelte:fragment>

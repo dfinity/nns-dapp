@@ -1,9 +1,14 @@
+export interface Step {
+  name: string;
+  showBackButton: boolean;
+}
+
 export class StepsState {
   public currentStep = 0;
   public previousStep = 0;
-  private readonly steps: string[];
+  private readonly steps: Step[];
 
-  constructor(steps: [string, ...string[]]) {
+  constructor(steps: [Step, ...Step[]]) {
     this.steps = steps;
   }
 
