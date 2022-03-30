@@ -24,8 +24,8 @@
 </script>
 
 <div class="wizard-list">
-  <h4>{$i18n.neurons.my_accounts}</h4>
   {#if mainAccount}
+    <h4>{$i18n.neurons.my_accounts}</h4>
     <!-- Needed mainAccount && because TS didn't learn that `mainAccount` is present in the click listener -->
     <AccountCard
       role="button"
