@@ -22,7 +22,7 @@ test -z "${unexpected_chars:-}" || {
 }
 
 : "Defining build script..."
-export II_BUILD="$(printf 'curl -sSL "%s" -o internet_identity.wasm' "$II_URL")"
+export II_BUILD="$(printf 'curl --fail -sSL "%s" -o internet_identity.wasm' "$II_URL")"
 echo "II_BUILD: ${II_BUILD}"
 echo Verifying that the buid script works...
 printf "%s" "$II_BUILD" | bash -r
