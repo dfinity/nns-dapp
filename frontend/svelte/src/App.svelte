@@ -14,7 +14,7 @@
   import Wallet from "./routes/Wallet.svelte";
   import ProposalDetail from "./routes/ProposalDetail.svelte";
   import { routeStore } from "./lib/stores/route.store";
-  import { AppPath } from "./lib/constants/routes.constants";
+  import { AppPath, SHOW_ANY_TABS } from "./lib/constants/routes.constants";
   import Toasts from "./lib/components/ui/Toasts.svelte";
   import { syncAccounts } from "./lib/services/accounts.services";
   import NeuronDetail from "./routes/NeuronDetail.svelte";
@@ -23,9 +23,7 @@
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
-      if (
-        ["prod", "flutter"].includes(process.env.REDIRECT_TO_LEGACY as string)
-      ) {
+      if (!SHOW_ANY_TABS) {
         return;
       }
 

@@ -7,7 +7,7 @@
     loadProposal,
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import { AppPath, SHOW_PROPOSALS_ROUTE } from "../lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
@@ -24,13 +24,8 @@
 
   let neuronsReady = false;
 
-  // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["svelte", "both", "staging"].includes(
-    process.env.REDIRECT_TO_LEGACY as string
-  );
-
   onMount(async () => {
-    if (!showThisRoute) {
+    if (!SHOW_PROPOSALS_ROUTE) {
       window.location.replace(`/${window.location.hash}`);
       return;
     }
@@ -85,7 +80,7 @@
   });
 </script>
 
-{#if showThisRoute}
+{#if SHOW_PROPOSALS_ROUTE}
   <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header"
       >{$i18n.proposal_detail.title}</svelte:fragment

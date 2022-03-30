@@ -7,6 +7,7 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { listCanisters } from "../lib/services/canisters.services";
   import { canistersStore } from "../lib/stores/canisters.store";
+  import { SHOW_CANISTERS_ROUTE } from "../lib/constants/routes.constants";
   import Spinner from "../lib/components/ui/Spinner.svelte";
 
   let loading: boolean = false;
@@ -29,11 +30,11 @@
   };
 
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["both", "svelte"].includes(
+  const SHOW_CANISTERS_ROUTE = ["both", "svelte"].includes(
     process.env.REDIRECT_TO_LEGACY as string
   );
   onMount(async () => {
-    if (!showThisRoute) {
+    if (!SHOW_CANISTERS_ROUTE) {
       window.location.replace("/#/canisters");
     }
 
@@ -44,7 +45,7 @@
   const createOrLink = () => alert("Create or Link");
 </script>
 
-{#if showThisRoute}
+{#if SHOW_CANISTERS_ROUTE}
   <Layout>
     <section>
       <p>{$i18n.canisters.text}</p>

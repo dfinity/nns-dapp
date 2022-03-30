@@ -4,14 +4,10 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import { AppPath, SHOW_ACCOUNTS_ROUTE } from "../lib/constants/routes.constants";
 
-  // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["svelte", "both"].includes(
-    process.env.REDIRECT_TO_LEGACY as string
-  );
   onMount(() => {
-    if (!showThisRoute) {
+    if (!SHOW_ACCOUNTS_ROUTE) {
       window.location.replace(`/${window.location.hash}`);
     }
   });
@@ -26,7 +22,7 @@
   const createNewTransaction = () => alert("New Transaction");
 </script>
 
-{#if showThisRoute}
+{#if SHOW_ACCOUNTS_ROUTE}
   <HeadlessLayout on:nnsBack={goBack}>
     <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 

@@ -10,7 +10,7 @@
   import NeuronProposalsCard from "../lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "../lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import { AppPath, SHOW_NEURONS_ROUTE } from "../lib/constants/routes.constants";
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
   import { neuronSelectStore, neuronsStore } from "../lib/stores/neurons.store";
@@ -19,11 +19,8 @@
   $: neuronSelectStore.select(neuronId);
 
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["svelte", "both", "staging"].includes(
-    process.env.REDIRECT_TO_LEGACY as string
-  );
   onMount(() => {
-    if (!showThisRoute) {
+    if (!SHOW_NEURONS_ROUTE) {
       window.location.replace(`/${window.location.hash}`);
       return;
     }
@@ -66,7 +63,7 @@
   };
 </script>
 
-{#if showThisRoute}
+{#if SHOW_NEURONS_ROUTE}
   <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
     <section>
