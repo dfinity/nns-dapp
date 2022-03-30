@@ -157,7 +157,7 @@ export const loadProposal = async ({
   };
 
   try {
-    return getProposal({
+    return await getProposal({
       proposalId,
       onLoad: ({ response: proposal }) => {
         if (!proposal) {
