@@ -9,7 +9,7 @@ on:
       - nightly
 
 jobs:
-  publish:
+  update-ii:
     runs-on: ubuntu-20.04
 
     steps:
