@@ -1,0 +1,18 @@
+name: Nightly Publication
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  publish:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Update II
+        run: ./scripts/update-ii
+      - name: Commit changes if any
+        run: '[ -z "$(git status --porcelain)" ] || { git commit -m "Update II" dfx.json && git push ; }'
+        
