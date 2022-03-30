@@ -49,9 +49,15 @@
   }
 
   div {
-    @include display.space-between;
+    display: flex;
+    flex-direction: column;
     align-items: flex-start;
 
-    margin: 0 0 var(--padding);
+    @include media.min-width(small) {
+      @include display.space-between;
+      flex-direction: row;
+
+      margin: 0 0 var(--padding);
+    }
   }
 </style>
