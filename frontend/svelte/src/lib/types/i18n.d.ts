@@ -258,6 +258,10 @@ interface I18nNeuron_detail {
   voting_power_tooltip: string;
   join_community_fund_description: string;
   join_community_fund_success: string;
+  maturity_title: string;
+  merge_maturity: string;
+  spawn_neuron: string;
+  maturity_tooltip: string;
 }
 
 interface I18nTime {
