@@ -11,6 +11,7 @@ export class StepsState {
 
   constructor(steps: [Step, ...Step[]]) {
     this.steps = steps;
+    this.currentStep = this.steps[0];
   }
 
   public next(): StepsState {
