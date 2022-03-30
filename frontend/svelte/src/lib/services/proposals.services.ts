@@ -18,7 +18,7 @@ import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
-import { proposalIdSet, proposalsWithSameIds } from "../utils/proposals.utils";
+import { proposalIdSet, proposalsHasSameIds } from "../utils/proposals.utils";
 import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
@@ -92,7 +92,7 @@ const findProposals = async ({
     trustedProposals: ProposalInfo[],
     untrustedProposals: ProposalInfo[]
   ) => {
-    if (proposalsWithSameIds(untrustedProposals, trustedProposals)) {
+    if (proposalsHasSameIds(untrustedProposals, trustedProposals)) {
       return;
     }
 

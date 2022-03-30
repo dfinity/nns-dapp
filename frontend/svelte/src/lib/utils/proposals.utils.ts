@@ -142,7 +142,10 @@ export const preserveNeuronSelectionAfterUpdate = ({
 export const proposalIdSet = (proposals: ProposalInfo[]): Set<ProposalId> =>
   new Set(proposals.map(({ id }) => id).filter(isDefined));
 
-export const pushUniqueProposals = ({
+/**
+ * Compares proposals by "id"
+ */
+export const concatenateUniqueProposals = ({
   oldProposals,
   newProposals,
 }: {
@@ -156,7 +159,10 @@ export const pushUniqueProposals = ({
   ];
 };
 
-export const replaceAndPushProposals = ({
+/**
+ * Compares proposals by "id"
+ */
+export const replaceAndConcatenateProposals = ({
   oldProposals,
   newProposals,
 }: {
@@ -168,16 +174,16 @@ export const replaceAndPushProposals = ({
       newProposals.find(({ id }) => stateProposal.id === id) || stateProposal
   ));
 
-  return pushUniqueProposals({
+  return concatenateUniqueProposals({
     oldProposals: updatedProposals,
     newProposals,
   });
 };
 
 /**
- * Compares by proposals ids
+ * Compares 2 proposal lists by entries "id"
  */
-export const proposalsWithSameIds = (
+export const proposalsHasSameIds = (
   proposalsA: ProposalInfo[],
   proposalsB: ProposalInfo[]
 ): boolean =>

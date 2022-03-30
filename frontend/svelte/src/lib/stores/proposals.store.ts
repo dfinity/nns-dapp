@@ -10,10 +10,10 @@ import type {
 import { derived, writable } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
 import {
+  concatenateUniqueProposals,
   preserveNeuronSelectionAfterUpdate,
   proposalIdSet,
-  pushUniqueProposals,
-  replaceAndPushProposals,
+  replaceAndConcatenateProposals,
 } from "../utils/proposals.utils";
 
 export interface ProposalsFiltersStore {
@@ -61,11 +61,11 @@ const initProposalsStore = () => {
     }) {
       update((oldProposals: ProposalInfo[]) =>
         certified === true
-          ? replaceAndPushProposals({
+          ? replaceAndConcatenateProposals({
               oldProposals,
               newProposals: proposals,
             })
-          : pushUniqueProposals({
+          : concatenateUniqueProposals({
               oldProposals,
               newProposals: proposals,
             })
