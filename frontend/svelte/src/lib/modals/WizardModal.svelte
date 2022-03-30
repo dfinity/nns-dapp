@@ -1,16 +1,18 @@
 <script lang="ts">
-  import { StepsState } from "../stores/steps.state";
+  import {StepsState} from "../stores/steps.state";
+  import type {Step} from "../stores/steps.state";
   import Modal from "./Modal.svelte";
   import Transition from "../components/ui/Transition.svelte";
 
-  export let steps: string[];
+  export let steps: Step[];
 
   let stepState: StepsState;
   $: stepState = new StepsState(steps);
 
-  export let currentStep: number;
+  export let currentStepIndex: number;
   let diff: number;
-  $: ({ currentStep, diff } = stepState);
+  let currentStep: Step | undefined;
+  $: ({ currentStepIndex, diff, currentStep } = stepState);
 
   export const next = () => (stepState = stepState.next());
   export const back = () => (stepState = stepState.back());
@@ -21,7 +23,7 @@
   theme="dark"
   size="medium"
   on:nnsClose
-  showBackButton={currentStep > 0}
+  showBackButton={currentStep?.showBackButton ?? false}
   on:nnsBack={back}
 >
   <span slot="title"><slot name="title" /></span>

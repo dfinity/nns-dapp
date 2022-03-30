@@ -4,8 +4,9 @@ export interface Step {
 }
 
 export class StepsState {
-  public currentStep = 0;
-  public previousStep = 0;
+  public currentStep: Step | undefined;
+  public currentStepIndex = 0;
+  public previousStepIndex = 0;
   private readonly steps: Step[];
 
   constructor(steps: [Step, ...Step[]]) {
@@ -13,19 +14,19 @@ export class StepsState {
   }
 
   public next(): StepsState {
-    if (this.currentStep < this.steps.length - 1) {
-      this.move(this.currentStep + 1);
+    if (this.currentStepIndex < this.steps.length - 1) {
+      this.move(this.currentStepIndex + 1);
     }
     return this;
   }
 
   public get diff(): number {
-    return this.currentStep - this.previousStep;
+    return this.currentStepIndex - this.previousStepIndex;
   }
 
   public back(): StepsState {
-    if (this.currentStep > 0) {
-      this.move(this.currentStep - 1);
+    if (this.currentStepIndex > 0) {
+      this.move(this.currentStepIndex - 1);
     }
     return this;
   }
@@ -36,7 +37,8 @@ export class StepsState {
   }
 
   private move(nextStep: number) {
-    this.previousStep = this.currentStep;
-    this.currentStep = nextStep;
+    this.previousStepIndex = this.currentStepIndex;
+    this.currentStepIndex = nextStep;
+    this.currentStep = this.steps[this.currentStepIndex];
   }
 }

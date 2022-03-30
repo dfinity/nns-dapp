@@ -25,7 +25,7 @@
     {name: "EditFollowNeurons", showBackButton: false}
   ] as const;
 
-  let currentStep: number;
+  let currentStepIndex: number;
   let modal: WizardModal;
 
   let selectedAccount: Account | undefined;
@@ -72,25 +72,25 @@
     "4": "follow_neurons_screen",
   };
   let titleKey: string = titleMapper[0];
-  $: titleKey = titleMapper[currentStep];
+  $: titleKey = titleMapper[currentStepIndex];
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStepIndex bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title">{$i18n.neurons?.[titleKey]}</svelte:fragment>
 
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStep === stepIndex({ name: "SelectAccount", steps }) && selectedAccount}
+  {#if currentStepIndex === stepIndex({ name: "SelectAccount", steps }) && selectedAccount}
     <SelectAccount on:nnsSelectAccount={chooseAccount} />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStep === stepIndex({ name: "StakeNeuron", steps }) && selectedAccount}
+  {#if currentStepIndex === stepIndex({ name: "StakeNeuron", steps }) && selectedAccount}
     <StakeNeuron
       account={selectedAccount}
       on:nnsNeuronCreated={goToDissolveDelay}
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStep === stepIndex({ name: "SetDissolveDelay", steps }) && newNeuron}
+  {#if currentStepIndex === stepIndex({ name: "SetDissolveDelay", steps }) && newNeuron}
     <SetDissolveDelay
       neuron={newNeuron}
       on:nnsSkipDelay={goEditFollowers}
@@ -99,7 +99,7 @@
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStep === stepIndex({ name: "ConfirmDissolveDelay", steps }) && newNeuron && delayInSeconds}
+  {#if currentStepIndex === stepIndex({ name: "ConfirmDissolveDelay", steps }) && newNeuron && delayInSeconds}
     <ConfirmDissolveDelay
       neuron={newNeuron}
       {delayInSeconds}
@@ -108,7 +108,7 @@
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStep === stepIndex({ name: "EditFollowNeurons", steps }) && newNeuron}
+  {#if currentStepIndex === stepIndex({ name: "EditFollowNeurons", steps }) && newNeuron}
     <EditFollowNeurons neuron={newNeuron} />
   {/if}
 </WizardModal>
