@@ -1,10 +1,10 @@
 <script lang="ts">
   import { StepsState } from "../stores/steps.state";
-  import type { Step } from "../stores/steps.state";
+  import type { Steps, Step } from "../stores/steps.state";
   import Modal from "./Modal.svelte";
   import Transition from "../components/ui/Transition.svelte";
 
-  export let steps: Step[];
+  export let steps: Steps;
 
   let stepState: StepsState;
   $: stepState = new StepsState(steps);
@@ -13,7 +13,7 @@
   let currentStep: Step | undefined;
   $: ({ currentStepIndex, currentStep } = stepState);
 
-  let transition;
+  let transition: {diff: number};
   $: stepState, (transition = { diff: stepState.diff });
 
   export const next = () => (stepState = stepState.next());
