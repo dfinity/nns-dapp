@@ -48,8 +48,12 @@ const initProposalsStore = () => {
      * Replace the current list of proposals with a new list without provided proposals to remove untrusted proposals from the store.
      */
     removeProposals(proposals: ProposalInfo[]) {
-      const idsToRemove = proposalIdSet(proposals);
-      set(proposals.filter(({ id }) => !idsToRemove.has(id as ProposalId)));
+      update((stateProposals: ProposalInfo[]) => {
+        const idsToRemove = proposalIdSet(proposals);
+        return stateProposals.filter(
+          ({ id }) => !idsToRemove.has(id as ProposalId)
+        );
+      });
     },
 
     pushProposals({
