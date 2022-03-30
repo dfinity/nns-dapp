@@ -4,19 +4,19 @@
 
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import EditFollowNeurons from "../../../lib/modals/neurons/EditFollowNeurons.svelte";
-import { authStore } from "../../../lib/stores/auth.store";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { mockNeuron } from "../../mocks/neurons.mock";
+import EditFollowNeurons from "../../../../lib/components/neurons/EditFollowNeurons.svelte";
+import { authStore } from "../../../../lib/stores/auth.store";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import { mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../lib/services/neurons.services", () => {
+jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     removeFollowee: jest.fn(),
     addFollowee: jest.fn(),
   };
 });
 
-jest.mock("../../../lib/services/knownNeurons.services", () => {
+jest.mock("../../../../lib/services/knownNeurons.services", () => {
   return {
     listKnownNeurons: jest.fn(),
   };

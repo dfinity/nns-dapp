@@ -45,7 +45,9 @@
 <div>
   {#if !hide}
     <Card role="link" on:click={showProposal}>
-      <p slot="start" class="title" {title}>{title}</p>
+      <div slot="start" class="title-container">
+        <p class="title" {title}>{title}</p>
+      </div>
       <Badge slot="end" {color}
         ><span>{$i18n.status[ProposalStatus[status]] ?? ""}</span></Badge
       >
@@ -58,10 +60,19 @@
 
 <style lang="scss">
   @use "../../themes/mixins/text";
+  @use "../../themes/mixins/card";
+  @use "../../themes/mixins/media.scss";
+
+  .title-container {
+    @include card.stacked-title;
+  }
 
   .title {
     @include text.clamp(3);
-    margin: 0 calc(2 * var(--padding)) 0 0;
+
+    @include media.min-width(small) {
+      margin: 0 calc(2 * var(--padding)) 0 0;
+    }
   }
 
   .info {

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import AddNewAccount from "./AddNewAccount.svelte";
-  import SelectTypeAccount from "./SelectTypeAccount.svelte";
+  import AddNewAccount from "../../components/accounts/AddNewAccount.svelte";
+  import SelectTypeAccount from "../../components/accounts/SelectTypeAccount.svelte";
   import WizardModal from "../WizardModal.svelte";
   import { i18n } from "../../stores/i18n";
   import type { Step } from "../../stores/steps.state";
