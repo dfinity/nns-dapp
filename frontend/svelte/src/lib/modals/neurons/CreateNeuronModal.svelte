@@ -82,7 +82,7 @@
     {/if}
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepIndex === stepIndex( { name: "SetDissolveDelay", steps } )}
+  {#if currentStepIndex === stepIndex({ name: "SetDissolveDelay", steps })}
     <SetDissolveDelay
       neuron={newNeuron}
       on:nnsSkipDelay={goEditFollowers}
@@ -91,7 +91,7 @@
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepIndex === stepIndex( { name: "ConfirmDissolveDelay", steps } )}
+  {#if currentStepIndex === stepIndex({ name: "ConfirmDissolveDelay", steps })}
     <ConfirmDissolveDelay
       neuron={newNeuron}
       {delayInSeconds}
@@ -100,7 +100,7 @@
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepIndex === stepIndex( { name: "EditFollowNeurons", steps } )}
+  {#if currentStepIndex === stepIndex({ name: "EditFollowNeurons", steps })}
     <EditFollowNeurons neuron={newNeuron} />
   {/if}
 </WizardModal>

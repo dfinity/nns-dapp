@@ -26,7 +26,7 @@
 
 <style lang="scss">
   div {
-   display: flex;
+    display: flex;
     flex-direction: column;
     gap: calc(1.5 * var(--padding));
   }
