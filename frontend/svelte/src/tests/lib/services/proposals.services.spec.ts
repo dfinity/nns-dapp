@@ -371,4 +371,28 @@ describe("proposals-services", () => {
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
     });
   });
+
+  describe("suspisious responses", () => {
+    beforeAll(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should display suspicious_response error", async () => {
+      let requestIndex = 0;
+      const spyQueryProposals = jest
+        .spyOn(api, "queryProposals")
+        .mockImplementation(() =>
+          Promise.resolve(mockProposals.slice(requestIndex++))
+        );
+      const spyToastShow = jest.spyOn(toastsStore, "show");
+
+      await listProposals({});
+
+      expect(spyQueryProposals).toBeCalled();
+      expect(spyToastShow).toBeCalledWith({
+        labelKey: "error.suspicious_response",
+        level: "error",
+      });
+    });
+  });
 });
