@@ -1,8 +1,10 @@
 import type { Identity } from "@dfinity/agent";
+import { get } from "svelte/store";
 import { createSubAccount, loadAccounts } from "../api/accounts.api";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
+import type { Account } from "../types/account";
 import { errorToString } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -43,4 +45,20 @@ export const addSubAccount = async ({
   await createSubAccount({ name, identity });
 
   await syncAccounts();
+};
+
+/*
+ * Returns the principal's main or hardware account
+ *
+ * Subaccounts do not have Principal
+ */
+export const getAccountByPrincipal = (
+  principal: string
+): Account | undefined => {
+  const accounts = get(accountsStore);
+
+  if (accounts.main?.principal?.toText() === principal) {
+    return accounts.main;
+  }
+  return;
 };

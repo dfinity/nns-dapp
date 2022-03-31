@@ -21,6 +21,7 @@
   import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
+  import { isNeuronControllable } from "../../services/neurons.services";
 
   export let neuron: NeuronInfo;
 
@@ -28,6 +29,8 @@
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let userControlled: boolean;
   $: userControlled = isCurrentUserController(neuron);
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable(neuron);
 </script>
 
 <NeuronCard {neuron}>
@@ -78,7 +81,7 @@
           <DisburseButton />
         {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
           <DissolveActionButton
-            disabled={false}
+            disabled={!isControllable}
             neuronState={neuron.state}
             neuronId={neuron.neuronId}
           />

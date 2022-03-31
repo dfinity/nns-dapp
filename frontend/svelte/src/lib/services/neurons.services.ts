@@ -26,6 +26,7 @@ import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { createChunks, isDefined } from "../utils/utils";
+import { getAccountByPrincipal } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -407,3 +408,18 @@ export const loadNeuron = ({
 
 export const getNeuronId = (path: string): NeuronId | undefined =>
   getLastPathDetailId(path);
+
+/*
+ * Returns true if the neuron can be controlled. A neuron can be controlled if:
+ *
+ *  1. The user is the controller
+ *  OR
+ *  2. The user's hardware wallet is the controller.
+ *
+ */
+// TODO: Ask: what's the difference between this and property `isCurrentUserController` in the fullNeuron
+// TODO: Ask: Which actions are disabled by which scenarios
+export const isNeuronControllable = (neuron: NeuronInfo): boolean =>
+  neuron.fullNeuron !== undefined &&
+  neuron.fullNeuron.controller !== undefined &&
+  getAccountByPrincipal(neuron.fullNeuron.controller) !== undefined;

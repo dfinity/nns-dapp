@@ -8,6 +8,8 @@ import {
   queryNeurons,
   setFollowees,
   stakeNeuron,
+  startDissolving,
+  stopDissolving,
 } from "../../../lib/api/governance.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
@@ -170,6 +172,68 @@ describe("neurons-api", () => {
 
       const call = () =>
         joinCommunityFund({
+          identity: mockIdentity,
+          neuronId: BigInt(10),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("startDissolving", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.startDissolving.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await startDissolving({
+        identity: mockIdentity,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.startDissolving).toBeCalled();
+    });
+
+    it("throws error when startDissolving fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.startDissolving.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        startDissolving({
+          identity: mockIdentity,
+          neuronId: BigInt(10),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("stopDissolving", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.stopDissolving.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await stopDissolving({
+        identity: mockIdentity,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.stopDissolving).toBeCalled();
+    });
+
+    it("throws error when stopDissolving fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.stopDissolving.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        stopDissolving({
           identity: mockIdentity,
           neuronId: BigInt(10),
         });
