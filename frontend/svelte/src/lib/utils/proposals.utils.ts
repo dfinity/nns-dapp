@@ -77,7 +77,7 @@ export const hideProposal = ({
   return (
     excludeVotedProposals &&
     status === ProposalStatus.PROPOSAL_STATUS_OPEN &&
-    ballots.find(({ vote }) => vote !== Vote.UNSPECIFIED) !== undefined
+    ballots.find(({ vote }) => vote === Vote.UNSPECIFIED) === undefined
   );
 };
 
