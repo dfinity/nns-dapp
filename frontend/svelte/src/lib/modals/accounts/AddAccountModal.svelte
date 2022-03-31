@@ -4,7 +4,6 @@
   import WizardModal from "../WizardModal.svelte";
   import { i18n } from "../../stores/i18n";
   import type { Steps } from "../../stores/steps.state";
-  import { stepIndex } from "../../utils/step.utils";
 
   const steps: Steps = [
     {

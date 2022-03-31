@@ -62,7 +62,7 @@
     EditFollowNeurons: "follow_neurons_screen",
   };
   let titleKey: string = titleMapper[0];
-  $: titleKey = titleMapper[currentStepName];
+  $: titleKey = titleMapper[currentStepName ?? "SelectAccount"];
 </script>
 
 <WizardModal {steps} bind:currentStepName bind:this={modal} on:nnsClose>
