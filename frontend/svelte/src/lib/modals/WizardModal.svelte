@@ -9,12 +9,14 @@
   let stepState: StepsState;
   $: stepState = new StepsState(steps);
 
-  export let currentStepIndex: number;
   let currentStep: Step | undefined;
-  $: ({ currentStepIndex, currentStep } = stepState);
+  $: ({ currentStep } = stepState);
 
   let transition: { diff: number };
   $: stepState, (transition = { diff: stepState.diff });
+
+  export let currentStepName: string | undefined;
+  $: currentStepName = currentStep?.name;
 
   export const next = () => (stepState = stepState.next());
   export const back = () => (stepState = stepState.back());

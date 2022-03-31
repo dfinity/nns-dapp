@@ -3,7 +3,7 @@
   import SelectTypeAccount from "../../components/accounts/SelectTypeAccount.svelte";
   import WizardModal from "../WizardModal.svelte";
   import { i18n } from "../../stores/i18n";
-  import type { Steps } from "../../stores/steps.state";
+  import type {Steps} from "../../stores/steps.state";
   import { stepIndex } from "../../utils/step.utils";
 
   const steps: Steps = [
@@ -14,7 +14,7 @@
     { name: "AddNewAccount", showBackButton: true },
   ];
 
-  let currentStepIndex: number;
+  let currentStepName: string | undefined;
   let modal: WizardModal;
 
   const handleSelectType = () => {
@@ -23,14 +23,14 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStepIndex bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStepName bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title">{$i18n.accounts.add_account}</svelte:fragment>
 
   <svelte:fragment>
-    {#if currentStepIndex === stepIndex({ name: "SelectAccount", steps })}
+    {#if currentStepName === "SelectAccount"}
       <SelectTypeAccount on:nnsSelect={handleSelectType} />
     {/if}
-    {#if currentStepIndex === stepIndex({ name: "AddNewAccount", steps })}
+    {#if currentStepName === "AddNewAccount"}
       <AddNewAccount on:nnsClose />
     {/if}
   </svelte:fragment>
