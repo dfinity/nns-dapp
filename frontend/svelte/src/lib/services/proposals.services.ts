@@ -46,15 +46,7 @@ const handleFindProposalsError = ({ error, certified }) => {
   }
 };
 
-export const listProposals = async ({
-  clearBeforeQuery = false,
-}: {
-  clearBeforeQuery?: boolean;
-}): Promise<void> => {
-  if (clearBeforeQuery) {
-    proposalsStore.setProposals([]);
-  }
-
+export const listProposals = async (): Promise<void> => {
   return findProposals({
     beforeProposal: undefined,
     onLoad: ({ response: proposals }) => proposalsStore.setProposals(proposals),
