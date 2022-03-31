@@ -61,7 +61,6 @@
     <span class="how-much">How much?</span>
 
     <Input
-      data-tid="get-icp-value"
       placeholderLabelKey="core.icp"
       name="icp"
       bind:value={inputValue}

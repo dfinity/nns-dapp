@@ -81,7 +81,7 @@
       {/if}
     </section>
     <svelte:fragment slot="footer">
-      <Toolbar data-tid="neurons-footer">
+      <Toolbar>
         <button data-tid="stake-neuron-button" class="primary" on:click={stakeNeurons}
           >{$i18n.neurons.stake_neurons}</button
         >
