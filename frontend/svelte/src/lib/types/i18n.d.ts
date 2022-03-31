@@ -262,6 +262,11 @@ interface I18nNeuron_detail {
   merge_maturity: string;
   spawn_neuron: string;
   maturity_tooltip: string;
+  start_dissolve_description: string;
+  stop_dissolve_description: string;
+  join_community_fund_success: string;
+  start_dissolve_success: string;
+  stop_dissolve_success: string;
 }
 
 interface I18nTime {
