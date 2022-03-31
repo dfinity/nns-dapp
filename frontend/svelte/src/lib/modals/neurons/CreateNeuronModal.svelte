@@ -55,11 +55,11 @@
   };
 
   const titleMapper: Record<string, string> = {
-    "SelectAccount": "select_source",
-    "StakeNeuron": "stake_neuron",
-    "SetDissolveDelay": "set_dissolve_delay",
-    "ConfirmDissolveDelay": "confirm_dissolve_delay",
-    "EditFollowNeurons": "follow_neurons_screen",
+    SelectAccount: "select_source",
+    StakeNeuron: "stake_neuron",
+    SetDissolveDelay: "set_dissolve_delay",
+    ConfirmDissolveDelay: "confirm_dissolve_delay",
+    EditFollowNeurons: "follow_neurons_screen",
   };
   let titleKey: string = titleMapper[0];
   $: titleKey = titleMapper[currentStepName];
