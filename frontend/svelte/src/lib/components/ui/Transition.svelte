@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
+  // Instead of a number an object is used to make svelte notice any updates need rerender
   export let transition: { diff: number } = { diff: 0 };
   const DEFAULT_OFFSET = 200;
   const ANIMATION_DURATION = 200;
