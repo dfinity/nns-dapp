@@ -2,12 +2,11 @@
   import Logout from "./Logout.svelte";
   import { i18n } from "../../stores/i18n";
   import GetICPs from "../ic/GetICPs.svelte";
-
-  const deployEnv: string = String(process.env.DEPLOY_ENV);
+  import { IS_TESTNET } from "../../constants/environment.constants";
 </script>
 
 <header>
-  {#if deployEnv === "testnet"}
+  {#if IS_TESTNET}
     <GetICPs />
   {/if}
 
