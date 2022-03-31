@@ -74,4 +74,6 @@ export const config: WebdriverIO.Config = {
     ui: "bdd",
     timeout: 60000,
   },
+
+  maxInstances: 1,
 };
