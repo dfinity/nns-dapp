@@ -1,4 +1,7 @@
-import { formatNumber } from "../../../lib/utils/format.utils";
+import {
+  formatNumber,
+  formatPercentage,
+} from "../../../lib/utils/format.utils";
 
 describe("format.utils", () => {
   it("should format number", () => {
@@ -19,5 +22,17 @@ describe("format.utils", () => {
     expect(
       formatNumber(0.123456789, { minFraction: 3, maxFraction: 3 })
     ).toEqual("0.123");
+  });
+
+  it("should format percentage", () => {
+    expect(formatPercentage(0)).toEqual("0.000%");
+
+    expect(formatPercentage(1234567.89)).toEqual("123’456’789.000%");
+
+    expect(formatPercentage(0.1239)).toEqual("12.390%");
+
+    expect(formatPercentage(1.1239)).toEqual("112.390%");
+
+    expect(formatPercentage(0.123456789)).toEqual("12.346%");
   });
 });

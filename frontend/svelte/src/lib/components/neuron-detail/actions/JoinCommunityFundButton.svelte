@@ -2,7 +2,7 @@
   import type { NeuronId } from "@dfinity/nns";
   import ConfirmationModal from "../../../modals/ConfirmationModal.svelte";
   import { joinCommunityFund } from "../../../services/neurons.services";
-  import { busyStore } from "../../../stores/busy.store";
+  import { startBusy, stopBusy } from "../../../stores/busy.store";
   import { i18n } from "../../../stores/i18n";
   import { toastsStore } from "../../../stores/toasts.store";
 
@@ -15,7 +15,7 @@
   const closeModal = () => (isOpen = false);
 
   const joinFund = async () => {
-    busyStore.start("join-community-fund");
+    startBusy("join-community-fund");
     try {
       await joinCommunityFund(neuronId);
       toastsStore.show({
@@ -29,7 +29,7 @@
         err,
       });
     } finally {
-      busyStore.stop("join-community-fund");
+      stopBusy("join-community-fund");
     }
   };
 </script>

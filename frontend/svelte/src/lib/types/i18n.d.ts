@@ -38,6 +38,7 @@ interface I18nError {
   accounts_not_found: string;
   fail: string;
   join_community_fund: string;
+  suspicious_response: string;
 }
 
 interface I18nWarning {
@@ -76,6 +77,7 @@ interface I18nAccounts {
   attach_hardware_subtitle: string;
   new_linked_account_title: string;
   new_linked_account_placeholder: string;
+  linked_account: string;
 }
 
 interface I18nNeurons {
@@ -256,6 +258,10 @@ interface I18nNeuron_detail {
   voting_power_tooltip: string;
   join_community_fund_description: string;
   join_community_fund_success: string;
+  maturity_title: string;
+  merge_maturity: string;
+  spawn_neuron: string;
+  maturity_tooltip: string;
 }
 
 interface I18nTime {
