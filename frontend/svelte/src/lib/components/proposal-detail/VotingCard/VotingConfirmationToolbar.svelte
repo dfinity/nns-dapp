@@ -4,7 +4,7 @@
   import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import { selectedNeuronsVotingPover } from "../../../utils/proposals.utils";
+  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
 
   const dispatch = createEventDispatcher();
 
@@ -12,7 +12,7 @@
   let showConfirmationModal: boolean = false;
   let selectedVoteType: Vote = Vote.YES;
 
-  $: total = selectedNeuronsVotingPover({
+  $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
   });

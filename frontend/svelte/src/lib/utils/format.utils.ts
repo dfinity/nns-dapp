@@ -15,3 +15,9 @@ export const formatNumber = (
     .replace(/\s/g, "’")
     .replace(",", ".");
 };
+
+/**
+ * Default format: 0.150123 -> "15.012%"
+ */
+export const formatPercentage = (value: number) =>
+  `${formatNumber(value * 100, { minFraction: 3, maxFraction: 3 })}%`;

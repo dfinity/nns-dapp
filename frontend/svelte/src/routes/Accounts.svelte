@@ -10,15 +10,17 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_ACCOUNTS_ROUTE,
+  } from "../lib/constants/routes.constants";
   import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
   import { ICP } from "@dfinity/nns";
   import { sumICPs } from "../lib/utils/icp.utils";
 
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = process.env.REDIRECT_TO_LEGACY === "never";
   onMount(() => {
-    if (!showThisRoute) {
+    if (!SHOW_ACCOUNTS_ROUTE) {
       window.location.replace(AppPath.Accounts);
     }
   });
@@ -51,7 +53,7 @@
   }
 </script>
 
-{#if showThisRoute}
+{#if SHOW_ACCOUNTS_ROUTE}
   <Layout>
     <section>
       <div class="title">

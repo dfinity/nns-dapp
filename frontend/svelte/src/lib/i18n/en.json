@@ -7,6 +7,7 @@
     "back": "Back",
     "confirm_yes": "Yes, I'm sure",
     "confirm_no": "Cancel",
+    "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
     "unspecified": "Unspecified"
@@ -25,11 +26,15 @@
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
     "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
+    "register_vote_neuron": "$neuronId: $reason",
     "register_vote_unknown": "Sorry, there was an unexpectedf error while registering the vote. Please try again later.",
     "add_followee": "Sorry, there was an unexpectedf error while adding the followee. Please try again later.",
     "remove_followee": "Sorry, there was an unexpectedf error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, followee already removed, refresh the page to have the latest data.",
-    "accounts_not_found": "An error occurred while loading the accounts information."
+    "accounts_not_found": "An error occurred while loading the accounts information.",
+    "fail": "fail",
+    "join_community_fund": "Sorry, there was an error joining the comomunity fund. Please try again later.",
+    "suspicious_response": "Suspicious response detected. Page reload suggested."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -49,7 +54,7 @@
     "nns": "NETWORK NERVOUS SYSTEM",
     "icp_governance": "ICP and governance",
     "login": "Login",
-    "powered_by": "Powered by IC Banner"
+    "on_chain": "100% on-chain Internet Computer"
   },
   "accounts": {
     "title": "Accounts",
@@ -62,7 +67,8 @@
     "attach_hardware_title": "Attach Hardware Wallet",
     "attach_hardware_subtitle": "Link a hardware wallet to this account",
     "new_linked_account_title": "New Linked Account",
-    "new_linked_account_placeholder": "Account Name"
+    "new_linked_account_placeholder": "Account Name",
+    "linked_account": "LINKED ACCOUNT"
   },
   "neurons": {
     "title": "Neurons",
@@ -86,8 +92,8 @@
     "status_unspecified": "",
     "status_dissolved": "Unlocked",
     "status_dissolving": "Dissolving",
-    "community_fund": "[community fund]",
-    "hotkey_control": "[hotkey control]",
+    "community_fund": "COMMUNITY FUND",
+    "hotkey_control": "HOTKEY CONTROL",
     "stake": "Stake",
     "icp_stake": "$amount ICP Stake",
     "staked": "Staked",
@@ -221,7 +227,19 @@
     "title": "Neuron",
     "proposer": "Proposer",
     "voting_history": "Voting History",
-    "vote": "Vote"
+    "vote": "Vote",
+    "join_community_fund": "Join Community Fund",
+    "increase_dissolve_delay": "Increase Dissolve Delay",
+    "start_dissolving": "Start Dissolving",
+    "increase_stake": "Increase Neuron Stake",
+    "split_neuron": "Split Neuron",
+    "voting_power_tooltip": "Calculated as: \nICP stake x Dissolve Delay Bonus x Age Bonus:\n$stake x $delayMultiplier x $ageMultiplier",
+    "join_community_fund_description": "Are you sure you want this neuron to join the community fund? This action is irreversible.",
+    "join_community_fund_success": "Your neuron has successfully joined the community fund.",
+    "maturity_title": "Maturity",
+    "merge_maturity": "Merge Maturity",
+    "spawn_neuron": "Spawn Neuron",
+    "maturity_tooltip": "When your neuron votes, maturity increases.\nThis allows you to spawn a new neuron containing newly minted ICP.\nIncreases in maturity can take place up to three days after voting."
   },
   "time": {
     "year": "year",

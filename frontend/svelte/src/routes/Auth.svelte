@@ -70,9 +70,9 @@
   </main>
 
   <img
-    src="/assets/assets/ic-badge-powered-by_label-stripe-white-text.svg"
+    src="/assets/assets/100_on_chain-small-centered-white_text.svg"
     role="presentation"
-    alt={$i18n.auth.powered_by}
+    alt={$i18n.auth.on_chain}
     class="bottom-banner"
     loading="lazy"
   />

@@ -1,19 +1,29 @@
 import type { Identity } from "@dfinity/agent";
-import type { Followees, NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
+import type {
+  Followees,
+  Neuron,
+  NeuronId,
+  NeuronInfo,
+  Topic,
+} from "@dfinity/nns";
 import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
+  claimOrRefreshNeuron,
   increaseDissolveDelay,
+  joinCommunityFund as joinCommunityFundApi,
   queryNeuron,
   queryNeurons,
   setFollowees,
   stakeNeuron,
 } from "../api/governance.api";
+import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
+import { createChunks, isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -54,11 +64,27 @@ export const stakeAndLoadNeuron = async ({
   return neuronId;
 };
 
-// Gets neurons and adds them to the store
-export const listNeurons = async (): Promise<void> => {
+// This gets all neurons linked to the current user's principal, even those with a stake of 0.
+// And adds them to the store
+export const listNeurons = async ({
+  skipCheck = false,
+}: { skipCheck?: boolean } = {}): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
-    request: (options) => queryNeurons(options),
-    onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
+    request: ({ certified, identity }) => queryNeurons({ certified, identity }),
+    onLoad: async ({ response: neurons, certified }) => {
+      neuronsStore.setNeurons(neurons);
+      if (!certified || skipCheck) {
+        return;
+      }
+      // Query the ledger for each neuron
+      // refresh those whose stake does not match their ledger balance.
+      try {
+        await checkNeuronBalances(neurons);
+      } catch (error) {
+        // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-424
+        console.error(error);
+      }
+    },
     onError: ({ error, certified }) => {
       if (certified !== true) {
         return;
@@ -75,6 +101,71 @@ export const listNeurons = async (): Promise<void> => {
   });
 };
 
+const balanceMatchesStake = ({
+  balance,
+  fullNeuron,
+}: {
+  balance: ICP;
+  fullNeuron: Neuron;
+}): boolean => balance.toE8s() === fullNeuron.cachedNeuronStake;
+
+const balanceIsMoreThanOne = ({ balance }: { balance: ICP }): boolean =>
+  balance.toE8s() > E8S_PER_ICP;
+
+const findNeuronsStakeNotBalance = async ({
+  neurons,
+  identity,
+}: {
+  neurons: Neuron[];
+  identity: Identity;
+}): Promise<NeuronId[]> =>
+  (
+    await Promise.all(
+      neurons.map(
+        async (fullNeuron): Promise<{ balance: ICP; fullNeuron: Neuron }> => ({
+          // NOTE: We fetch the balance in an uncertified way as it's more efficient,
+          // and a malicious actor wouldn't gain anything by spoofing this value.
+          // This data is used only to now which neurons need to be refreshed.
+          // This data is not shown to the user, nor stored in any store.
+          balance: await getNeuronBalance({
+            neuron: fullNeuron,
+            identity,
+            certified: false,
+          }),
+          fullNeuron,
+        })
+      )
+    )
+  )
+    .filter((params) => !balanceMatchesStake(params))
+    // We can only refresh a neuron if its balance is at least 1 ICP
+    .filter(balanceIsMoreThanOne)
+    .map(({ fullNeuron }) => fullNeuron.id)
+    .filter(isDefined);
+
+const claimNeurons =
+  (identity: Identity) =>
+  (neuronIds: NeuronId[]): Promise<Array<NeuronId | undefined>> =>
+    Promise.all(
+      neuronIds.map((neuronId) => claimOrRefreshNeuron({ identity, neuronId }))
+    );
+
+const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
+  const identity = await getIdentity();
+  const neuronIdsToRefresh: NeuronId[] = await findNeuronsStakeNotBalance({
+    neurons: neurons.map(({ fullNeuron }) => fullNeuron).filter(isDefined),
+    identity,
+  });
+  if (neuronIdsToRefresh.length === 0) {
+    return;
+  }
+  console.log("refreshing");
+  // We found neurons that need to be refreshed.
+  const neuronIdsChunks: NeuronId[][] = createChunks(neuronIdsToRefresh, 10);
+  await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
+  return listNeurons({ skipCheck: true });
+};
+
 export const updateDelay = async ({
   neuronId,
   dissolveDelayInSeconds,
@@ -86,10 +177,35 @@ export const updateDelay = async ({
 
   await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
 
-  await loadNeuron({
+  const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
-    setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+    identity,
+    certified: true,
+    forceFetch: true,
   });
+
+  if (!neuron) {
+    throw new Error("Neuron not found");
+  }
+  neuronsStore.pushNeurons([neuron]);
+};
+
+export const joinCommunityFund = async (neuronId: NeuronId): Promise<void> => {
+  const identity: Identity = await getIdentity();
+
+  await joinCommunityFundApi({ neuronId, identity });
+
+  const neuron: NeuronInfo | undefined = await getNeuron({
+    neuronId,
+    identity,
+    certified: true,
+    forceFetch: true,
+  });
+
+  if (!neuron) {
+    throw new Error("Neuron not found");
+  }
+  neuronsStore.pushNeurons([neuron]);
 };
 
 const setFolloweesHelper = async ({

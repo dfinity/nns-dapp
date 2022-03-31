@@ -45,6 +45,18 @@ export const increaseDissolveDelay = async ({
   });
 };
 
+export const joinCommunityFund = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.joinCommunityFund(neuronId);
+};
+
 export const setFollowees = async ({
   identity,
   neuronId,
@@ -130,6 +142,21 @@ export const queryKnownNeurons = async ({
   }
 
   return knownNeurons;
+};
+
+export const claimOrRefreshNeuron = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<NeuronId | undefined> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.claimOrRefreshNeuron({
+    neuronId,
+    by: { NeuronIdOrSubaccount: {} },
+  });
 };
 
 // TODO: Apply pattern to other canister instantiation L2-371
