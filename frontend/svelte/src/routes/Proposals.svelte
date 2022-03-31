@@ -161,12 +161,9 @@
 {/if}
 
 <style lang="scss">
-  div {
-    transition: opacity var(--animation-time-normal);
-    &.hidden {
-      visibility: hidden;
-      position: absolute;
-    }
+  div.hidden {
+    visibility: hidden;
+    position: absolute;
   }
 
   .spinner {
