@@ -56,6 +56,7 @@
           {/if}
           <h3 id="modalTitle"><slot name="title" /></h3>
           <button
+            data-tid="close-modal"
             on:click|stopPropagation={close}
             aria-label={$i18n.core.close}
             disabled={$busy}><IconClose /></button

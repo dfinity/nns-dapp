@@ -52,12 +52,16 @@
   $: invalidForm = inputValue === undefined || inputValue <= 0;
 </script>
 
-<button on:click={() => (visible = true)} class="open text">Get ICPs</button>
+<button
+  data-tid="get-icp-button"
+  on:click={() => (visible = true)}
+  class="open text">Get ICPs</button
+>
 
 <Modal {visible} on:nnsClose={onClose}>
   <span slot="title">Get ICPs</span>
 
-  <form on:submit|preventDefault={onSubmit}>
+  <form data-tid="get-icp-form" on:submit|preventDefault={onSubmit}>
     <span class="how-much">How much?</span>
 
     <Input
@@ -68,6 +72,7 @@
     />
 
     <button
+      data-tid="get-icp-submit"
       type="submit"
       class="primary"
       disabled={invalidForm || transferring}
