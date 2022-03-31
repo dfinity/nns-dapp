@@ -50,19 +50,4 @@
     padding: calc(2 * var(--padding));
     max-width: 100%;
   }
-
-  :global(.wizard-wrapper) {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-    gap: var(--padding);
-    height: 100%;
-    min-height: inherit;
-    padding: 0 calc(2 * var(--padding));
-  }
-
-  :global(.wizard-list) {
-    padding-bottom: calc(2 * var(--padding));
-  }
 </style>
