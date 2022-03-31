@@ -32,6 +32,7 @@
     aria-labelledby={showToolbar ? "modalTitle" : undefined}
     aria-describedby="modalContent"
     on:click|stopPropagation
+    on:introend
   >
     <div
       class="backdrop"
@@ -46,6 +47,7 @@
         <div class="toolbar">
           {#if showBackButton}
             <button
+              transition:fade={{ duration: 150 }}
               class="back"
               on:click|stopPropagation={back}
               aria-label={$i18n.core.back}
@@ -137,7 +139,7 @@
     width: var(--modal-small-width);
     height: fit-content;
     max-width: calc(100vw - (4 * var(--padding)));
-    max-height: calc(100vw - (2 * var(--padding)));
+    max-height: calc(100vh - (2 * var(--padding)));
 
     --modal-min-height: 100px;
     --modal-toolbar-height: 35px;
