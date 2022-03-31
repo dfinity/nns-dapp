@@ -60,5 +60,7 @@ export const getAccountByPrincipal = (
   if (accounts.main?.principal?.toText() === principal) {
     return accounts.main;
   }
-  return;
+
+  // TODO: Check also the hardware wallets L2-433
+  return undefined;
 };

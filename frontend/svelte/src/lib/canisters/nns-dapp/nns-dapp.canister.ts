@@ -84,8 +84,6 @@ export class NNSDappCanister {
 
   /**
    * Creates a subaccount with the name and returns the Subaccount details
-   *
-   * TODO: Why is calling to `add_account` needed?
    */
   public createSubAccount = async ({
     subAccountName,

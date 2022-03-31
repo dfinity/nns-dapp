@@ -417,9 +417,7 @@ export const getNeuronId = (path: string): NeuronId | undefined =>
  *  2. The user's hardware wallet is the controller.
  *
  */
-// TODO: Ask: what's the difference between this and property `isCurrentUserController` in the fullNeuron
-// TODO: Ask: Which actions are disabled by which scenarios
-export const isNeuronControllable = (neuron: NeuronInfo): boolean =>
-  neuron.fullNeuron !== undefined &&
-  neuron.fullNeuron.controller !== undefined &&
-  getAccountByPrincipal(neuron.fullNeuron.controller) !== undefined;
+export const isNeuronControllable = ({ fullNeuron }: NeuronInfo): boolean =>
+  fullNeuron !== undefined &&
+  fullNeuron.controller !== undefined &&
+  getAccountByPrincipal(fullNeuron.controller) !== undefined;
