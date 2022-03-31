@@ -34,7 +34,7 @@ const REDIRECTS = {
 }[process.env.REDIRECT_TO_LEGACY || "prod"];
 
 /**
- * Wait for the document hash to match the given value.
+ * Waits for the document hash to match the given value.
  *
  *  Note: The `wdio` `getUrl(..)` method does not detect all changes in the hash, so cannot be used.
  */
@@ -52,7 +52,7 @@ const waitForHash = async (browser: WebdriverIO.Browser, hash: string, options?:
 };
 
 /**
- * Wait for the complete path, including hash, to match the given value.
+ * Waits for the complete path, including hash, to match the given value.
  *
  * Note: The `wdio` `getUrl(..)` method does not detect all changes in the hash, so cannot be used.
  */
@@ -60,7 +60,9 @@ const waitForPath = async (browser: WebdriverIO.Browser, path: string, options?:
     return browser.waitUntil(async () => await browser.execute((path) => `${document.location.pathname}${document.location.hash}` === path, path), options);
 };
 
-
+/**
+ * Describes the redirect, if any, that should occur from a given path+hash.
+ */
 const redirectTestTitle = (fromPath: string, hash: string) => {
     const toPath = REDIRECTS[hash][fromPath];
     if (fromPath === toPath) {
@@ -70,6 +72,9 @@ const redirectTestTitle = (fromPath: string, hash: string) => {
     }
 };
 
+/**
+ * Tests the redirect, if any, that should occur from a given path+hash.
+ */
 const redirectTest = async (browser: WebdriverIO.Browser, fromPath, hash) => {
     const toPath = REDIRECTS[hash][fromPath];
     await browser.url(`${fromPath}${hash}`);
