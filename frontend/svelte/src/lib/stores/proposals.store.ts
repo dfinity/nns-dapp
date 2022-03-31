@@ -21,6 +21,12 @@ export interface ProposalsFiltersStore {
   rewards: ProposalRewardStatus[];
   status: ProposalStatus[];
   excludeVotedProposals: boolean;
+  lastAppliedFilter:
+    | undefined
+    | "topics"
+    | "rewards"
+    | "status"
+    | "excludeVotedProposals";
 }
 
 export interface NeuronSelectionStore {
@@ -105,6 +111,7 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         topics,
+        lastAppliedFilter: "topics",
       }));
     },
 
@@ -112,6 +119,7 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         rewards,
+        lastAppliedFilter: "rewards",
       }));
     },
 
@@ -119,6 +127,7 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         status,
+        lastAppliedFilter: "status",
       }));
     },
 
@@ -126,6 +135,7 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         excludeVotedProposals: !filters.excludeVotedProposals,
+        lastAppliedFilter: "excludeVotedProposals",
       }));
     },
 

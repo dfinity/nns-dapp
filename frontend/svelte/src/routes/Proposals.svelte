@@ -30,6 +30,7 @@
   import { isRoutePath } from "../lib/utils/app-path.utils";
 
   let loading: boolean = false;
+  let hidden: boolean = false;
   let initialized: boolean = false;
 
   const findNextProposals = async () => {
@@ -98,13 +99,26 @@
     initialized = true;
   });
 
-  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() => {
-    // Show spinner right away avoiding debounce
-    loading = true;
-    proposalsStore.setProposals([]);
+  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
+    ({ lastAppliedFilter }) => {
+      if (lastAppliedFilter === "excludeVotedProposals") {
+        // mock fetching
+        hidden = true;
+        loading = true;
+        setTimeout(() => {
+          hidden = false;
+          loading = false;
+        }, 400);
+        return;
+      }
 
-    debounceFindProposals?.();
-  });
+      // Show spinner right away avoiding debounce
+      loading = true;
+      proposalsStore.setProposals([]);
+
+      debounceFindProposals?.();
+    }
+  );
 
   onDestroy(unsubscribe);
 
@@ -126,9 +140,11 @@
       <ProposalsFilters />
 
       <InfiniteScroll on:nnsIntersect={findNextProposals}>
-        {#each $proposalsStore as proposalInfo (proposalInfo.id)}
-          <ProposalCard {proposalInfo} />
-        {/each}
+        <div class:hidden>
+          {#each $proposalsStore as proposalInfo (proposalInfo.id)}
+            <ProposalCard {proposalInfo} />
+          {/each}
+        </div>
       </InfiniteScroll>
 
       {#if nothingFound}
@@ -145,6 +161,14 @@
 {/if}
 
 <style lang="scss">
+  div {
+    transition: opacity var(--animation-time-normal);
+    &.hidden {
+      visibility: hidden;
+      position: absolute;
+    }
+  }
+
   .spinner {
     position: relative;
     display: flex;
