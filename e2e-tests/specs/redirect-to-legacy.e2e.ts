@@ -15,6 +15,22 @@ const REDIRECTS = {
             [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
             [PROPOSALS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
             [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, } },
+    staging: { [ACCOUNTS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
+            [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
+            [PROPOSALS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
+            [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, } },
+    flutter: { [ACCOUNTS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
+            [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
+            [PROPOSALS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
+            [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, } },
+    svelte: { [ACCOUNTS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
+            [NEURONS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
+            [PROPOSALS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
+            [CANISTERS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, } },
+    both: { [ACCOUNTS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, },
+            [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, },
+            [PROPOSALS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, },
+            [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, } },
 }[process.env.REDIRECT_TO_LEGACY || "prod"];
 
 /**
@@ -28,9 +44,7 @@ const waitForHash = async (browser: WebdriverIO.Browser, hash: string, options?:
       await browser.waitUntil(async () => {
         let currentLocation = await browser.execute((hash) => document.location);
         currentHash = currentLocation.hash;
-        let success = hash === currentHash;
-        console.info(JSON.stringify({success, hash, currentHash, currentLocation}));
-        return success;
+        return hash === currentHash;
       }, options);
     } catch(err) {
       throw new Error(`Expected hash '${hash}' but have: '${currentHash}' with ${JSON.stringify(options)}`, { cause: err });
