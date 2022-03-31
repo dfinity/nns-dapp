@@ -57,7 +57,7 @@ describe("proposals-utils", () => {
         proposalInfo: mockProposals[0],
         excludeVotedProposals: true,
       })
-    ).toBeFalsy();
+    ).toBeTruthy();
 
     expect(
       hideProposal({

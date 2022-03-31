@@ -76,6 +76,8 @@ describe("proposals-store", () => {
 
     it("should be initialized with default filters", () => {
       const filters = get(proposalsFiltersStore);
+      // reset because of beforeEach
+      filters.lastAppliedFilter = undefined;
       expect(filters).toEqual(DEFAULT_PROPOSALS_FILTERS);
     });
 
@@ -96,6 +98,7 @@ describe("proposals-store", () => {
       const filters = get(proposalsFiltersStore);
       expect(filters).toEqual({
         ...DEFAULT_PROPOSALS_FILTERS,
+        lastAppliedFilter: "topics",
         topics: filter,
       });
     });
@@ -110,6 +113,7 @@ describe("proposals-store", () => {
       const filters = get(proposalsFiltersStore);
       expect(filters).toEqual({
         ...DEFAULT_PROPOSALS_FILTERS,
+        lastAppliedFilter: "rewards",
         rewards: filter,
       });
     });
@@ -124,6 +128,7 @@ describe("proposals-store", () => {
       const filters = get(proposalsFiltersStore);
       expect(filters).toEqual({
         ...DEFAULT_PROPOSALS_FILTERS,
+        lastAppliedFilter: "status",
         status: filter,
       });
     });
@@ -134,6 +139,7 @@ describe("proposals-store", () => {
       let filters = get(proposalsFiltersStore);
       expect(filters).toEqual({
         ...DEFAULT_PROPOSALS_FILTERS,
+        lastAppliedFilter: "excludeVotedProposals",
         excludeVotedProposals: true,
       });
 
@@ -142,6 +148,7 @@ describe("proposals-store", () => {
       filters = get(proposalsFiltersStore);
       expect(filters).toEqual({
         ...DEFAULT_PROPOSALS_FILTERS,
+        lastAppliedFilter: "excludeVotedProposals",
         excludeVotedProposals: false,
       });
     });
