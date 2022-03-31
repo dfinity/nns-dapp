@@ -9,14 +9,19 @@ import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
   addFollowee,
   getNeuronId,
+  isNeuronControllable,
   joinCommunityFund,
   listNeurons,
   loadNeuron,
   removeFollowee,
   stakeAndLoadNeuron,
+  startDissolving,
+  stopDissolving,
   updateDelay,
 } from "../../../lib/services/neurons.services";
+import { accountsStore } from "../../../lib/stores/accounts.store";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
+import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -46,6 +51,14 @@ describe("neurons-services", () => {
 
   const spyJoinCommunityFund = jest
     .spyOn(api, "joinCommunityFund")
+    .mockImplementation(() => Promise.resolve());
+
+  const spyStartDissolving = jest
+    .spyOn(api, "startDissolving")
+    .mockImplementation(() => Promise.resolve());
+
+  const spyStopDissolving = jest
+    .spyOn(api, "stopDissolving")
     .mockImplementation(() => Promise.resolve());
 
   const spySetFollowees = jest
@@ -233,6 +246,42 @@ describe("neurons-services", () => {
     });
   });
 
+  describe("startDissolving", () => {
+    it("should update neuron", async () => {
+      await startDissolving(BigInt(10));
+
+      expect(spyStartDissolving).toHaveBeenCalled();
+    });
+
+    it("should not update neuron if no identity", async () => {
+      setNoIdentity();
+
+      const call = async () => await startDissolving(BigInt(10));
+
+      await expect(call).rejects.toThrow(mockIdentityErrorMsg);
+
+      resetIdentity();
+    });
+  });
+
+  describe("stopDissolving", () => {
+    it("should update neuron", async () => {
+      await stopDissolving(BigInt(10));
+
+      expect(spyStopDissolving).toHaveBeenCalled();
+    });
+
+    it("should not update neuron if no identity", async () => {
+      setNoIdentity();
+
+      const call = async () => await stopDissolving(BigInt(10));
+
+      await expect(call).rejects.toThrow(mockIdentityErrorMsg);
+
+      resetIdentity();
+    });
+  });
+
   describe("add followee", () => {
     afterEach(() => {
       jest.clearAllMocks();
@@ -361,6 +410,52 @@ describe("neurons-services", () => {
         setNeuron: jest.fn,
       });
       expect(spyGetNeuron).toBeCalled();
+    });
+  });
+
+  describe("isNeuronControllable", () => {
+    it("should return true if neuron controller is the current main account", () => {
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockMainAccount.principal?.toText(),
+        },
+      };
+
+      expect(isNeuronControllable(neuron)).toBe(true);
+      accountsStore.set({
+        main: undefined,
+        subAccounts: undefined,
+      });
+    });
+
+    it("should return false if neuron controller is not current main account", () => {
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "bbbbb-b",
+        },
+      };
+
+      expect(isNeuronControllable(neuron)).toBe(false);
+      accountsStore.set({
+        main: undefined,
+        subAccounts: undefined,
+      });
+    });
+
+    it("should return false if no accounts", () => {
+      expect(isNeuronControllable(mockNeuron)).toBe(false);
     });
   });
 });

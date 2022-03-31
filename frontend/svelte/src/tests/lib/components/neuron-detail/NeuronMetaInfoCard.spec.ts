@@ -2,9 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import NeuronMetaInfoCard from "../../../../lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
-import { joinCommunityFund } from "../../../../lib/services/neurons.services";
 import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
@@ -12,6 +11,7 @@ import { mockNeuron } from "../../../mocks/neurons.mock";
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     joinCommunityFund: jest.fn().mockResolvedValue(undefined),
+    isNeuronControllable: jest.fn().mockReturnValue(true),
   };
 });
 
@@ -60,6 +60,7 @@ describe("NeuronMetaInfoCard", () => {
   });
 
   it("renders actions", () => {
+    // Each action button is tested separately
     const { queryByText } = render(NeuronMetaInfoCard, {
       neuron: mockNeuron,
     });
@@ -73,25 +74,5 @@ describe("NeuronMetaInfoCard", () => {
     expect(queryByText(en.neuron_detail.start_dissolving)).toBeInTheDocument();
     expect(queryByText(en.neuron_detail.increase_stake)).toBeInTheDocument();
     expect(queryByText(en.neuron_detail.split_neuron)).toBeInTheDocument();
-  });
-
-  it("allows neuron to join community fund", async () => {
-    const { queryByTestId } = render(NeuronMetaInfoCard, {
-      neuron: mockNeuron,
-    });
-
-    const joinButton = queryByTestId("join-community-fund-button");
-    expect(joinButton).not.toBeNull();
-
-    joinButton && (await fireEvent.click(joinButton));
-
-    const modal = queryByTestId("join-community-fund-modal");
-    expect(modal).toBeInTheDocument();
-
-    const confirmButton = queryByTestId("confirm-yes");
-    expect(confirmButton).toBeInTheDocument();
-
-    confirmButton && (await fireEvent.click(confirmButton));
-    expect(joinCommunityFund).toBeCalled();
   });
 });
