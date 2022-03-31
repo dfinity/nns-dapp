@@ -33,7 +33,8 @@
     "followee_does_not_exist": "Sorry, followee already removed, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
     "fail": "fail",
-    "join_community_fund": "Sorry, there was an error joining the comomunity fund. Please try again later."
+    "join_community_fund": "Sorry, there was an error joining the comomunity fund. Please try again later.",
+    "suspicious_response": "Suspicious response detected. Page reload suggested."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -234,7 +235,11 @@
     "split_neuron": "Split Neuron",
     "voting_power_tooltip": "Calculated as: \nICP stake x Dissolve Delay Bonus x Age Bonus:\n$stake x $delayMultiplier x $ageMultiplier",
     "join_community_fund_description": "Are you sure you want this neuron to join the community fund? This action is irreversible.",
-    "join_community_fund_success": "Your neuron has successfully joined the community fund."
+    "join_community_fund_success": "Your neuron has successfully joined the community fund.",
+    "maturity_title": "Maturity",
+    "merge_maturity": "Merge Maturity",
+    "spawn_neuron": "Spawn Neuron",
+    "maturity_tooltip": "When your neuron votes, maturity increases.\nThis allows you to spawn a new neuron containing newly minted ICP.\nIncreases in maturity can take place up to three days after voting."
   },
   "time": {
     "year": "year",
