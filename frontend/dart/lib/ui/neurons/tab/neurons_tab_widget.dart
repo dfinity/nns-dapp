@@ -6,6 +6,8 @@ import 'package:nns_dapp/ui/_components/tab_title_and_content.dart';
 import 'package:nns_dapp/ui/transaction/wallet/merge_neuron_accounts_page.dart';
 import 'package:nns_dapp/ui/transaction/wallet/select_source_wallet_page.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:nns_dapp/data/env.dart' as env;
 import '../../../nns_dapp.dart';
 import 'neuron_row.dart';
 
@@ -17,6 +19,10 @@ class NeuronsPage extends StatefulWidget {
 class _NeuronsPageState extends State<NeuronsPage> {
   @override
   Widget build(BuildContext context) {
+    if (!env.showNeuronsRoute()) {
+      html.window.location.replace("/v2/#/neurons");
+      return Text('Redirecting...');
+    }
     return StreamBuilder<void>(
         stream: context.boxes.neurons.changes,
         builder: (context, snapshot) {

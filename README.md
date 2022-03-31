@@ -62,3 +62,18 @@ To work on the UI locally, either use your IDE, or run the following:
 
     cd frontend/dart
     flutter run --no-sound-null-safety --dart-define=DEPLOY_ENV=staging --web-port 5021
+
+## Environment variables
+
+### `REDIRECT_TO_LEGACY`
+
+This environment varibale controls whether the svelte or flutter implementation will be available.
+
+| `REDIRECT_` | Login     | Accounts tab | Neurons tab | Proposals tab | Canisters tab |
+| `TO_LEGACY` | page      |              |             |               |               |
+|-------------|-----------|--------------|-------------|---------------|---------------|
+| prod        | svelte    | flutter      | flutter     | flutter       | flutter       |
+| staging     | svelte    | flutter      | flutter     | svelte        | flutter       |
+| svelte      | svelte    | svelte       | svelte      | svelte        | svelte        |
+| flutter     | svelte    | flutter      | flutter     | flutter       | flutter       |
+| both        | svelte    | both         | both        | both          | both          |

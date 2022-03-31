@@ -44,21 +44,11 @@ const GOVERNANCE_CANISTER_URL = `https://${GOVERNANCE_CANISTER_ID}${domain}/`;
 const LEDGER_CANISTER_URL = `https://${LEDGER_CANISTER_ID}${domain}/`;
 const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}${domain}/`;
 
-// When developing with live reload in svelte, redirecting to flutter is
-// not desirable.  The default should match production:
-// - prod => redirect to flutter as in prod.
-// - staging => redirect tabs as it will be after the next tab has been released.
-// - never => never => Never redirect to flutter, use svelte only.
-const REDIRECT_TO_LEGACY = ["true", "1", "prod"].includes(
-  process.env.REDIRECT_TO_LEGACY
-)
-  ? "prod" // Redirect to flutter as much as in prod.
-  : ["false", "0", "never"].includes(process.env.REDIRECT_TO_LEGACY) ||
-    ENVIRONMENT === "local"
-  ? "never" // Never redirect, use svelte only.
-  : ["staging"].includes(process.env.REDIRECT_TO_LEGACY)
-  ? "staging" // Redirect to flutter as in prod minus the next set of routes to convert.
-  : "prod"; // default
+// For values, see the [README](../../README.md).
+// The default should match production.  Except during local development.
+const REDIRECT_TO_LEGACY =
+  process.env.REDIRECT_TO_LEGACY ||
+  (process.env.DEPLOY_ENV === "local" ? "svelte" : "prod");
 
 export const envConfig = {
   ENVIRONMENT,

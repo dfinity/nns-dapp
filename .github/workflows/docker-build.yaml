@@ -37,7 +37,7 @@ jobs:
          - BUILD_NAME: "testnet"
            DEPLOY_ENV: "testnet"
            OWN_CANISTER_ID: "qhbym-qaaaa-aaaaa-aaafq-cai"
-           REDIRECT_TO_LEGACY: "false"
+           REDIRECT_TO_LEGACY: "both"
          - BUILD_NAME: "staging"
            DEPLOY_ENV: "testnet"
            OWN_CANISTER_ID: "qhbym-qaaaa-aaaaa-aaafq-cai"
