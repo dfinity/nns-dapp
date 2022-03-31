@@ -49,12 +49,12 @@
   };
 </script>
 
-<section>
+<div class="wizard-wrapper">
   <div>
     <h5>{$i18n.neurons.source}</h5>
     <small class="identifier">{account.identifier}</small>
   </div>
-  <div>
+  <div class="transaction-fee">
     <h5>{$i18n.neurons.transaction_fee}</h5>
     <small>
       <span>{`${formatICP(transactionIcp.toE8s())}`}</span>
@@ -96,17 +96,9 @@
       </button>
     </form>
   </div>
-</section>
+</div>
 
 <style lang="scss">
-  section {
-    color: var(--background-contrast);
-    display: flex;
-    flex-direction: column;
-    gap: calc(2 * var(--padding));
-    padding: 0;
-  }
-
   small {
     word-break: break-all;
   }
@@ -115,8 +107,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    padding: 0 calc(2 * var(--padding));
 
     .title {
       color: var(--gray-400);
@@ -143,5 +133,9 @@
     button[type="submit"] {
       margin-top: var(--padding);
     }
+  }
+
+  .transaction-fee {
+    flex-grow: 1;
   }
 </style>

@@ -3,11 +3,11 @@
  */
 
 import { render } from "@testing-library/svelte";
-import EditFollowNeurons from "../../../../lib/components/neurons/EditFollowNeurons.svelte";
+import SetDissolveDelay from "../../../../lib/components/neurons/SetDissolveDelay.svelte";
 
 describe("SetDissolveDelay", () => {
   it("should render a spinner until neuron loaded", () => {
-    const { container } = render(EditFollowNeurons, {
+    const { container } = render(SetDissolveDelay, {
       props: { neuron: undefined },
     });
 
