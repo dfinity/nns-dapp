@@ -1,0 +1,30 @@
+name: Nightly Publication
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  push:
+    branches:
+      # Commit to the nightly branch and push to test.
+      - nightly
+
+jobs:
+  update-ii:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Update II
+        run: ./scripts/update-ii
+      - name: Commit updated Internet Identity - will not trigger rebuild
+        uses: EndBug/add-and-commit@v7.2.0
+        with:
+          add: .
+          author_name: Nightly GitHub Action
+          author_email: "<nobody@dfinity.org>"
+          message: "Update Internet Identity"
+          # do not pull: if this branch is behind, then we might as well let
+          # the pushing fail
+          pull_strategy: "NO-PULL"
+
