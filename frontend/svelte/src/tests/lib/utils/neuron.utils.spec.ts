@@ -14,6 +14,7 @@ import {
   hasJoinedCommunityFund,
   hasValidStake,
   isCurrentUserController,
+  maturityByStake,
   votingPower,
 } from "../../../lib/utils/neuron.utils";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
@@ -212,6 +213,53 @@ describe("neuron-utils", () => {
         },
       };
       expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+    });
+  });
+
+  describe("maturityByStake", () => {
+    it("returns 0 when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(maturityByStake(neuron)).toBe(0);
+    });
+
+    it("returns 0 if neuron stake is 0", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(0),
+        },
+      };
+      expect(maturityByStake(neuron)).toBe(0);
+    });
+
+    it("returns maturity in percentage of stake", () => {
+      const stake = ICP.fromString("2") as ICP;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: stake.toE8s(),
+          maturityE8sEquivalent: stake.toE8s() / BigInt(2),
+        },
+      };
+      expect(maturityByStake(neuron)).toBe(0.5);
+    });
+
+    it("returns maturity up to 6 decimal places", () => {
+      const stake = ICP.fromString("3") as ICP;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: stake.toE8s(),
+          maturityE8sEquivalent: stake.toE8s() / BigInt(3),
+        },
+      };
+      expect(maturityByStake(neuron)).toBe(0.333333);
     });
   });
 });
