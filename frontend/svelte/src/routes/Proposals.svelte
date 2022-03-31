@@ -50,10 +50,7 @@
     loading = true;
 
     try {
-      // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
-      await listProposals({
-        clearBeforeQuery: !emptyProposals($proposalsStore),
-      });
+      await listProposals();
     } catch (err: unknown) {
       toastsStore.error({
         labelKey: "error.list_proposals",
@@ -101,9 +98,13 @@
     initialized = true;
   });
 
-  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() =>
-    debounceFindProposals?.()
-  );
+  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() => {
+    // Show spinner right away avoiding debounce
+    loading = true;
+    proposalsStore.setProposals([]);
+
+    debounceFindProposals?.();
+  });
 
   onDestroy(unsubscribe);
 
@@ -125,7 +126,7 @@
       <ProposalsFilters />
 
       <InfiniteScroll on:nnsIntersect={findNextProposals}>
-        {#each $proposalsStore as proposalInfo}
+        {#each $proposalsStore as proposalInfo (proposalInfo.id)}
           <ProposalCard {proposalInfo} />
         {/each}
       </InfiniteScroll>

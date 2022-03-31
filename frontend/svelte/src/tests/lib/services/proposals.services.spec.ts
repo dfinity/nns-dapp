@@ -43,7 +43,7 @@ describe("proposals-services", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should call the canister to list proposals", async () => {
-      await listProposals({});
+      await listProposals();
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
@@ -62,13 +62,8 @@ describe("proposals-services", () => {
       expect(proposals).toEqual(mockProposals);
     });
 
-    it("should clear the list proposals before query", async () => {
-      await listProposals({ clearBeforeQuery: true });
-      expect(spySetProposals).toHaveBeenCalledTimes(3);
-    });
-
     it("should not clear the list proposals before query", async () => {
-      await listProposals({ clearBeforeQuery: false });
+      await listProposals();
       expect(spySetProposals).toHaveBeenCalledTimes(2);
     });
 
@@ -334,7 +329,7 @@ describe("proposals-services", () => {
     });
 
     it("should not list proposals if no identity", async () => {
-      const call = async () => await listProposals({});
+      const call = async () => await listProposals();
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
     });
@@ -386,7 +381,7 @@ describe("proposals-services", () => {
         );
       const spyToastShow = jest.spyOn(toastsStore, "show");
 
-      await listProposals({});
+      await listProposals();
 
       expect(spyQueryProposals).toBeCalled();
       expect(spyToastShow).toBeCalledWith({
