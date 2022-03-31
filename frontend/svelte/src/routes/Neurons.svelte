@@ -13,13 +13,15 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import { neuronsStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_NEURONS_ROUTE,
+  } from "../lib/constants/routes.constants";
 
   let isLoading: boolean = false;
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = process.env.REDIRECT_TO_LEGACY === "never";
   onMount(async () => {
-    if (!showThisRoute) {
+    if (!SHOW_NEURONS_ROUTE) {
       window.location.replace("/#/neurons");
     }
     isLoading = true;
@@ -48,7 +50,7 @@
   };
 </script>
 
-{#if showThisRoute}
+{#if SHOW_NEURONS_ROUTE}
   <Layout>
     <section>
       <p>{$i18n.neurons.text}</p>

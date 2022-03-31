@@ -17,7 +17,10 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_PROPOSALS_ROUTE,
+  } from "../lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,
@@ -68,12 +71,9 @@
     debounceFindProposals = debounce(async () => await findProposals(), 250);
   };
 
-  const showThisRoute = ["never", "staging"].includes(
-    process.env.REDIRECT_TO_LEGACY as string
-  );
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
-    if (!showThisRoute) {
+    if (!SHOW_PROPOSALS_ROUTE) {
       window.location.replace(AppPath.Proposals);
     }
 
@@ -118,7 +118,7 @@
     });
 </script>
 
-{#if showThisRoute}
+{#if SHOW_PROPOSALS_ROUTE}
   <Layout>
     <section>
       <p>{$i18n.voting.text}</p>
