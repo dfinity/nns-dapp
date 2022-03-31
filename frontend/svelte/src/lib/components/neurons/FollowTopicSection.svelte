@@ -83,7 +83,7 @@
   article {
     :global(.collapsible-expand-icon) {
       align-items: start;
-      padding-top: 30px;
+      padding-top: calc(3 * var(--padding));
       color: var(--background-contrast);
     }
   }
