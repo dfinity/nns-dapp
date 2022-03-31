@@ -2,7 +2,7 @@
 set -euo pipefail
 
 [[ "$1" != "--help" ]] || {
-    cat <<-EOF
+  cat <<-EOF
 
 	Runs e2e tests against one of the nns-XXX.winning.gold endpoints
 
@@ -12,7 +12,7 @@ set -euo pipefail
 	  # Run just the redirect tests against nns-svelte:
 	  REDIRECT_TO_LEGACY=svelte ./test-winning --spec /specs/redirect-to-legacy.e2e.ts
 	EOF
-    exit 0
+  exit 0
 }
 
 REDIRECT_TO_LEGACY="${REDIRECT_TO_LEGACY:-prod}"
