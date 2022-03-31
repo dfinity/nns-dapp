@@ -38,6 +38,7 @@ interface I18nError {
   accounts_not_found: string;
   fail: string;
   join_community_fund: string;
+  suspicious_response: string;
 }
 
 interface I18nWarning {
