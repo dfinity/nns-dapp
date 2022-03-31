@@ -13,7 +13,7 @@
   $: ({ currentStep } = stepState);
 
   let transition: { diff: number };
-  $: stepState, (transition = { diff: stepState.diff });
+  $: transition = { diff: stepState.diff };
 
   export let currentStepName: string | undefined;
   $: currentStepName = currentStep?.name;
