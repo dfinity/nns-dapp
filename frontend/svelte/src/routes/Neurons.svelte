@@ -75,8 +75,10 @@
     </section>
     <svelte:fragment slot="footer">
       <Toolbar>
-        <button data-tid="stake-neuron-button" class="primary" on:click={stakeNeurons}
-          >{$i18n.neurons.stake_neurons}</button
+        <button
+          data-tid="stake-neuron-button"
+          class="primary"
+          on:click={stakeNeurons}>{$i18n.neurons.stake_neurons}</button
         >
       </Toolbar>
     </svelte:fragment>
