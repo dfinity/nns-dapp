@@ -6,6 +6,7 @@
   import Spinner from "../../components/ui/Spinner.svelte";
   import { listKnownNeurons } from "../../services/knownNeurons.services";
   import { addFollowee } from "../../services/neurons.services";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { sortedknownNeuronsStore } from "../../stores/knownNeurons.store";
   import Modal from "../Modal.svelte";
@@ -43,6 +44,7 @@
   const addFolloweeByAddress = async () => {
     loading = true;
     loadingAddress = true;
+    startBusy("add-followee");
     let followee: bigint;
     if (followeeAddress === undefined) {
       return;
@@ -63,6 +65,7 @@
     loading = false;
     loadingAddress = false;
     followeeAddress = undefined;
+    stopBusy("add-followee");
   };
 </script>
 
