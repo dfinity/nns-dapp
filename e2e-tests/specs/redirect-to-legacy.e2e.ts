@@ -1,5 +1,4 @@
 import { register } from "../common/register";
-import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
 
 const ACCOUNTS_HASH = "#/accounts";
@@ -42,7 +41,7 @@ const waitForHash = async (browser: WebdriverIO.Browser, hash: string, options?:
     var currentHash = "";
     try {
       await browser.waitUntil(async () => {
-        let currentLocation = await browser.execute((hash) => document.location);
+        let currentLocation = await browser.execute(() => document.location);
         currentHash = currentLocation.hash;
         return hash === currentHash;
       }, options);
@@ -95,28 +94,16 @@ describe("redirects", () => {
     await waitForHash(browser, ACCOUNTS_HASH, {timeout: 10000});
   });
 
-  it(redirectTestTitle(SVELTE_PATH, ACCOUNTS_HASH), async () => {
-    await redirectTest(browser, SVELTE_PATH, ACCOUNTS_HASH);
-  });
-  it(redirectTestTitle(SVELTE_PATH, NEURONS_HASH), async () => {
-    await redirectTest(browser, SVELTE_PATH, NEURONS_HASH);
-  });
-  it(redirectTestTitle(SVELTE_PATH, PROPOSALS_HASH), async () => {
-    await redirectTest(browser, SVELTE_PATH, PROPOSALS_HASH);
-  });
-  it(redirectTestTitle(SVELTE_PATH, CANISTERS_HASH), async () => {
-    await redirectTest(browser, SVELTE_PATH, CANISTERS_HASH);
-  });
-  it(redirectTestTitle(FLUTTER_PATH, ACCOUNTS_HASH), async () => {
-    await redirectTest(browser, FLUTTER_PATH, ACCOUNTS_HASH);
-  });
-  it(redirectTestTitle(FLUTTER_PATH, NEURONS_HASH), async () => {
-    await redirectTest(browser, FLUTTER_PATH, NEURONS_HASH);
-  });
-  it(redirectTestTitle(FLUTTER_PATH, PROPOSALS_HASH), async () => {
-    await redirectTest(browser, FLUTTER_PATH, PROPOSALS_HASH);
-  });
-  it(redirectTestTitle(FLUTTER_PATH, CANISTERS_HASH), async () => {
-    await redirectTest(browser, FLUTTER_PATH, CANISTERS_HASH);
+  [SVELTE_PATH, FLUTTER_PATH].forEach(path => {
+    [
+      ACCOUNTS_HASH,
+      NEURONS_HASH,
+      PROPOSALS_HASH,
+      CANISTERS_HASH
+    ].forEach(hash => {
+      it(redirectTestTitle(path, hash), async () => {
+        await redirectTest(browser, path, hash);
+      });    
+    });
   });
 });
