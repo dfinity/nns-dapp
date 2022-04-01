@@ -413,11 +413,23 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   if (!IS_TESTNET) {
     return;
   }
-  const identity: Identity = await getIdentity();
-  return makeDummyProposalsApi({
-    neuronId,
-    identity,
-  });
+  try {
+    const identity: Identity = await getIdentity();
+    await makeDummyProposalsApi({
+      neuronId,
+      identity,
+    });
+    toastsStore.show({
+      labelKey: "neuron_detail.dummy_proposal_success",
+      level: "info",
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    toastsStore.error({
+      labelKey: "error.dummy_proposal",
+    });
+  }
 };
 
 export const getNeuronId = (path: string): NeuronId | undefined =>
