@@ -69,7 +69,7 @@
   };
 </script>
 
-<article data-tid="follow-topic-section">
+<article data-tid={`follow-topic-${topic}-section`}>
   <Collapsible {id} iconSize="medium">
     <svelte:fragment slot="header">
       <div class="wrapper">
@@ -78,7 +78,9 @@
           <p class="subtitle">{subtitle}</p>
         </div>
         <div class="toolbar">
-          <h3 class="badge">{followees.length}</h3>
+          <h3 class="badge" data-tid={`topic-${topic}-followees-badge`}>
+            {followees.length}
+          </h3>
         </div>
       </div>
     </svelte:fragment>
