@@ -25,7 +25,9 @@
   let neuronICP: ICP;
   $: neuronICP =
     neuron.fullNeuron?.cachedNeuronStake !== undefined
-      ? ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake)
+      ? ICP.fromE8s(
+          neuron.fullNeuron.cachedNeuronStake - neuron.fullNeuron.neuronFees
+        )
       : ICP.fromE8s(BigInt(0));
   let isHotKeyControl: boolean;
   $: isHotKeyControl = !isCurrentUserController(neuron);
