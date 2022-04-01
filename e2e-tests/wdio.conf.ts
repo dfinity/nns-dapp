@@ -21,7 +21,7 @@ export const config: WebdriverIO.Config = {
       browser["screenshots-taken"].add(name);
 
       const SCREENSHOTS_DIR = "screenshots";
-      if (!existsSync(SCREENSHOTS_DIR)) {
+      if (!(existsSync(SCREENSHOTS_DIR) as boolean)) {
         mkdirSync(SCREENSHOTS_DIR);
       }
 

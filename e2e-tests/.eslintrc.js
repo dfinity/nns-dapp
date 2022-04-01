@@ -40,6 +40,7 @@ module.exports = {
     // This allows to use `async` functions also in function types that expect `void`.
     // https://typescript-eslint.io/rules/no-misused-promises
     "@typescript-eslint/no-misused-promises": [0, { checksVoidReturn: 0 }],
+    "@typescript-eslint/no-var-requires": [0],
     "@typescript-eslint/strict-boolean-expressions": [
       2,
       {
