@@ -11,7 +11,7 @@
   import type { NeuronId } from "@dfinity/nns";
   import { listNeurons } from "../lib/services/neurons.services";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import { neuronsStore } from "../lib/stores/neurons.store";
+  import { neuronsStore, sortedNeuronStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
   import {
     AppPath,
@@ -63,7 +63,7 @@
       {#if isLoading}
         <Spinner />
       {:else}
-        {#each $neuronsStore as neuron}
+        {#each $sortedNeuronStore as neuron}
           <NeuronCard
             role="link"
             ariaLabel={$i18n.neurons.aria_label_neuron_card}

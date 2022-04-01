@@ -105,3 +105,10 @@ export const maturityByStake = (neuron: NeuronInfo): number => {
     ) / precision
   );
 };
+
+export const sortNeuronsByCreatedTimestamp = (
+  neurons: NeuronInfo[]
+): NeuronInfo[] =>
+  neurons.sort((a, b) =>
+    Number(b.createdTimestampSeconds - a.createdTimestampSeconds)
+  );
