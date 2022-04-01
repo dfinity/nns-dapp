@@ -154,6 +154,8 @@ const waitForPath = async (
   path: string,
   options?: { timeout?: number }
 ) => {
+  const { timeout } = options;
+  const timeoutMsg = `Timed out waiting for path to be: '${path}'`;
   return browser.waitUntil(
     async () =>
       await browser.execute(
@@ -161,7 +163,7 @@ const waitForPath = async (
           `${document.location.pathname}${document.location.hash}` === path,
         path
       ),
-    options
+    { timeout, timeoutMsg }
   );
 };
 
@@ -187,10 +189,10 @@ const redirectTest = async (
 ) => {
   const toPath = REDIRECTS[hash][fromPath];
   await browser.url(`${fromPath}${hash}`);
-  await waitForPath(browser, `${toPath}${hash}`, { timeout: 10000 });
+  await waitForPath(browser, `${toPath}${hash}`, { timeout: 20_000 });
   if (fromPath === toPath) {
     // Check that we stay on this page.
-    await browser.pause(2000);
+    await browser.pause(2_000);
     const path = await browser.execute(
       () => `${document.location.pathname}${document.location.hash}`
     );
@@ -203,7 +205,7 @@ describe("redirects", () => {
     await browser.url("/");
     await waitForLoad(browser);
     await register(browser);
-    await waitForHash(browser, RouteHash.Accounts, { timeout: 10000 });
+    await waitForHash(browser, RouteHash.Accounts, { timeout: 10_000 });
   });
 
   Object.values(FrontendPath).forEach((path) => {
