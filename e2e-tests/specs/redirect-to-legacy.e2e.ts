@@ -12,11 +12,11 @@ enum FrontendPath {
   Svelte = "/v2/",
 }
 enum RedirectToLegacy {
-  prod,
-  staging,
-  flutter,
-  svelte,
-  both,
+  prod = "prod",
+  staging = "staging",
+  flutter = "flutter",
+  svelte = "svelte",
+  both = "both",
 }
 
 const REDIRECT_TO_LEGACY: RedirectToLegacy =
@@ -208,7 +208,6 @@ describe("redirects", () => {
 
   Object.values(FrontendPath).forEach((path) => {
     Object.values(RouteHash).forEach((hash) => {
-      console.log(`============ Testing '${path}${hash}' -> ${REDIRECTS[hash]?.[fromPath]}`);
       it(redirectTestTitle(path, hash), async () => {
         await redirectTest(browser, path, hash);
       });
