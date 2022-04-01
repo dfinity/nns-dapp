@@ -3,7 +3,9 @@
   import { type NeuronId, Topic, type NeuronInfo } from "@dfinity/nns";
   import NewFolloweeModal from "../../modals/neurons/NewFolloweeModal.svelte";
   import { removeFollowee } from "../../services/neurons.services";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
+  import { knownNeuronsStore } from "../../stores/knownNeurons.store";
   import { toastsStore } from "../../stores/toasts.store";
   import Collapsible from "../ui/Collapsible.svelte";
 
@@ -18,14 +20,38 @@
   $: id = Topic[topic];
 
   let showNewFolloweeModal: boolean = false;
-  let followees: NeuronId[] = [];
+  type FolloweeData = {
+    neuronId: NeuronId;
+    name?: string;
+  };
+  let followees: FolloweeData[] = [];
+  $: {
+    const followesPerTopic = neuron.fullNeuron?.followees.find(
+      ({ topic: currentTopic }) => topic === currentTopic
+    );
+    if (followesPerTopic !== undefined) {
+      followees = followesPerTopic.followees.map((neuronId): FolloweeData => {
+        const knownNeuron = $knownNeuronsStore.find(
+          (currentNeuron) => currentNeuron.id === neuronId
+        );
+        if (knownNeuron !== undefined) {
+          return {
+            neuronId: knownNeuron.id,
+            name: knownNeuron.name,
+          };
+        }
+        return {
+          neuronId,
+        };
+      });
+    }
+  }
 
-  // TODO: Fetch followees and render them - https://dfinity.atlassian.net/browse/L2-365
   const openNewFolloweeModal = () => (showNewFolloweeModal = true);
   const closeNewFolloweeModal = () => (showNewFolloweeModal = false);
 
-  // TODO: Check that it works - https://dfinity.atlassian.net/browse/L2-365
   const removeCurrentFollowee = async (followee: NeuronId) => {
+    startBusy("remove-followee");
     await removeFollowee({
       neuronId: neuron.neuronId,
       topic,
@@ -35,11 +61,12 @@
       labelKey: "new_followee.success_remove_followee",
       level: "info",
     });
+    stopBusy("remove-followee");
   };
 </script>
 
 <article data-tid="follow-topic-section">
-  <Collapsible {id} iconSize={"medium"}>
+  <Collapsible {id} iconSize="medium">
     <svelte:fragment slot="header">
       <div class="wrapper">
         <div>
@@ -47,8 +74,7 @@
           <p class="subtitle">{subtitle}</p>
         </div>
         <div class="toolbar">
-          <!-- TODO: Set total followees - https://dfinity.atlassian.net/browse/L2-365 -->
-          <h3 class="badge">0</h3>
+          <h3 class="badge">{followees.length}</h3>
         </div>
       </div>
     </svelte:fragment>
@@ -57,9 +83,10 @@
       <ul>
         {#each followees as followee}
           <li data-tid="current-followee-item">
-            <!-- TODO: Use followee details - https://dfinity.atlassian.net/browse/L2-365 -->
-            <p>DFINITY Foundation</p>
-            <button on:click={() => removeCurrentFollowee(followee)}>x</button>
+            <p>{followee.name ?? followee.neuronId}</p>
+            <button on:click={() => removeCurrentFollowee(followee.neuronId)}
+              >x</button
+            >
           </li>
         {/each}
       </ul>

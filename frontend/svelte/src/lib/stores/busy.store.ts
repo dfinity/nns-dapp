@@ -6,7 +6,8 @@ export type BusyStateInitiator =
   | "accounts"
   | "join-community-fund"
   | "dissolve-action"
-  | "add-followee";
+  | "add-followee"
+  | "remove-followee";
 
 /**
  * Store that reflects the app busy state.
