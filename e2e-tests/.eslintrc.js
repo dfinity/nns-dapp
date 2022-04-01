@@ -3,6 +3,7 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   extends: [
     "eslint:recommended",
+    "plugin:wdio/recommended",
     "plugin:@typescript-eslint/recommended",
     // TODO: Enable once we fix issues from above
     // "plugin:@typescript-eslint/recommended-requiring-type-checking",
@@ -31,7 +32,7 @@ module.exports = {
       },
     },
   ],
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "eslint-plugin-wdio"],
   ignorePatterns: ["node_modules", ".eslintrc.js"],
   rules: {
     // https://typescript-eslint.io/rules/no-inferrable-types/
@@ -59,5 +60,6 @@ module.exports = {
         caughtErrorsIgnorePattern: "^_",
       },
     ],
+    "wdio/no-pause": [0],
   },
 };
