@@ -35,7 +35,7 @@ export const register = async (browser: WebdriverIO.Browser) => {
 
   // Congratulations Page
   const continueButton = await browser.$("#displayUserContinue");
-  await continueButton.waitForExist({ timeout: 10_000 });
+  await continueButton.waitForExist({ timeout: 30_000 });
   await continueButton.click();
 
   // Recovery Mechanism Page
