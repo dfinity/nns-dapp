@@ -64,7 +64,7 @@ export const config: WebdriverIO.Config = {
       acceptInsecureCerts: true,
     },
   ],
-  logLevel: "info",
+  logLevel: "warn",
   services: ["chromedriver"],
 
   framework: "mocha",
@@ -74,4 +74,6 @@ export const config: WebdriverIO.Config = {
     ui: "bdd",
     timeout: 60000,
   },
+
+  maxInstances: 1,
 };

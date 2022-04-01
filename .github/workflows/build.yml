@@ -114,7 +114,7 @@ jobs:
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          npm run test | tee -a wdio.log
+          REDIRECT_TO_LEGACY=svelte npm run test | tee -a wdio.log
 
       - name: Stop replica
         run: dfx stop
