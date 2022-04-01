@@ -6,7 +6,8 @@
 
 "use strict";
 
-const fs = require("fs");
+import * as fs from "fs";
+import * as child_process from "child_process";
 
 /*
  * Read the values from dfx.json and canister_ids.json
@@ -33,7 +34,7 @@ let replica_host;
 try {
   const dfx_json = JSON.parse(fs.readFileSync(DFX_JSON_PATH, "utf8"));
   replica_host = dfx_json.networks.local.bind;
-  if (!replica_host.startsWith("http://")) {
+  if (!(replica_host.startsWith("http://") as boolean)) {
     replica_host = `http://${replica_host}`;
   }
 } catch (e) {
@@ -55,7 +56,6 @@ const II_URL = `http://localhost:${II_PORT}`;
 const NNS_DAPP_PORT = 8086;
 const NNS_DAPP_URL = `http://localhost:${NNS_DAPP_PORT}`;
 
-const child_process = require("child_process");
 
 const proxy = child_process.spawn("proxy", [
   "--replica-host",

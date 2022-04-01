@@ -44,7 +44,7 @@ describe("landing page", () => {
       const errorToast = await browser.$(".toast");
       await errorToast.waitForExist({ timeout: 10_000 });
       await browser.execute(() => document.querySelector(".toast").remove());
-      await errorToast.waitUntil(() => !errorToast.isExisting())
+      await errorToast.waitUntil(async () => !(await errorToast.isExisting()))
     } catch (error) {
       // Log error, but continue and take screenshot
       console.log("Error waiting for spinner and toast error");

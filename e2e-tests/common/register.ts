@@ -1,7 +1,7 @@
 export const register = async (browser: WebdriverIO.Browser) => {
   await browser.$("main button").waitForExist();
   await browser.$("main button").click();
-  
+
   // REGISTRATION
   
   // Internet Identity
