@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-[[ "$1" != "--help" ]] || {
+[[ "${1:-}" != "--help" ]] || {
   cat <<-EOF
 
 	Runs e2e tests against one of the nns-XXX.winning.gold endpoints
