@@ -50,27 +50,16 @@
 {/if}
 
 <style lang="scss">
+  @use "../../../themes/mixins/confirmation-modal.scss";
   div {
-    padding-bottom: calc(2 * var(--padding));
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: calc(1.5 * var(--padding));
-
-    color: var(--background-contrast);
+    @include confirmation-modal.wrapper;
   }
 
   h4 {
-    margin: 0;
-    font-size: var(--font-size-h3);
+    @include confirmation-modal.title;
   }
 
   p {
-    margin: 0;
-
-    font-size: var(--font-size-h4);
-    text-align: center;
+    @include confirmation-modal.text;
   }
 </style>

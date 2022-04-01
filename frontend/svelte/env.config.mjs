@@ -48,7 +48,7 @@ const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}${domain}/`;
 // The default should match production.  Except during local development.
 const REDIRECT_TO_LEGACY =
   process.env.REDIRECT_TO_LEGACY ||
-  (process.env.DEPLOY_ENV === "local" ? "svelte" : "prod");
+  (ENVIRONMENT === "local" ? "svelte" : "prod");
 
 export const envConfig = {
   ENVIRONMENT,

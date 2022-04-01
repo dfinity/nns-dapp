@@ -52,7 +52,7 @@
 
 {#if SHOW_NEURONS_ROUTE}
   <Layout>
-    <section>
+    <section data-tid="neurons-body">
       <p>{$i18n.neurons.text}</p>
 
       <p>
@@ -75,8 +75,10 @@
     </section>
     <svelte:fragment slot="footer">
       <Toolbar>
-        <button class="primary" on:click={stakeNeurons}
-          >{$i18n.neurons.stake_neurons}</button
+        <button
+          data-tid="stake-neuron-button"
+          class="primary"
+          on:click={stakeNeurons}>{$i18n.neurons.stake_neurons}</button
         >
       </Toolbar>
     </svelte:fragment>

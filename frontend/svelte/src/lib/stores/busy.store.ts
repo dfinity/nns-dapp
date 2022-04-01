@@ -1,7 +1,11 @@
 import type { Readable } from "svelte/store";
 import { derived, writable } from "svelte/store";
 
-export type BusyStateInitiator = "vote" | "accounts" | "join-community-fund";
+export type BusyStateInitiator =
+  | "vote"
+  | "accounts"
+  | "join-community-fund"
+  | "dissolve-action";
 
 /**
  * Store that reflects the app busy state.

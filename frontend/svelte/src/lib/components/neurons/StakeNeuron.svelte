@@ -86,6 +86,7 @@
       <button
         class="primary full-width"
         type="submit"
+        data-tid="create-neuron-button"
         disabled={amount === undefined || amount <= 0 || creating}
       >
         {#if creating}

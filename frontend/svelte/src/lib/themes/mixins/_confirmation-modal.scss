@@ -1,0 +1,23 @@
+@mixin wrapper {
+  padding-bottom: calc(2 * var(--padding));
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: calc(1.5 * var(--padding));
+
+  color: var(--background-contrast);
+}
+
+@mixin title {
+  margin: 0;
+  font-size: var(--font-size-h3);
+}
+
+@mixin text {
+  margin: 0;
+
+  font-size: var(--font-size-h4);
+  text-align: center;
+}

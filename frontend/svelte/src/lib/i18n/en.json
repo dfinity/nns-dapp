@@ -34,7 +34,10 @@
     "accounts_not_found": "An error occurred while loading the accounts information.",
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the comomunity fund. Please try again later.",
-    "suspicious_response": "Suspicious response detected. Page reload suggested."
+    "suspicious_response": "Suspicious response detected. Page reload suggested.",
+    "start_dissolving": "Sorry, there was an error dissolving the neuron. Please try again later.",
+    "stop_dissolving": "Sorry, there was an error stopping the dissolve process of the neuron. Please try again later.",
+    "dummy_proposal": "There was an error creating the proposals. Check the console for more details."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -231,15 +234,22 @@
     "join_community_fund": "Join Community Fund",
     "increase_dissolve_delay": "Increase Dissolve Delay",
     "start_dissolving": "Start Dissolving",
+    "stop_dissolving": "Stop Dissolving",
+    "disburse": "Disburse",
     "increase_stake": "Increase Neuron Stake",
     "split_neuron": "Split Neuron",
     "voting_power_tooltip": "Calculated as: \nICP stake x Dissolve Delay Bonus x Age Bonus:\n$stake x $delayMultiplier x $ageMultiplier",
     "join_community_fund_description": "Are you sure you want this neuron to join the community fund? This action is irreversible.",
-    "join_community_fund_success": "Your neuron has successfully joined the community fund.",
     "maturity_title": "Maturity",
     "merge_maturity": "Merge Maturity",
     "spawn_neuron": "Spawn Neuron",
-    "maturity_tooltip": "When your neuron votes, maturity increases.\nThis allows you to spawn a new neuron containing newly minted ICP.\nIncreases in maturity can take place up to three days after voting."
+    "maturity_tooltip": "When your neuron votes, maturity increases.\nThis allows you to spawn a new neuron containing newly minted ICP.\nIncreases in maturity can take place up to three days after voting.",
+    "start_dissolve_description": "This will cause your neuron to lose its age bonus.\nAre you sure you wish to continue?",
+    "stop_dissolve_description": "Are you sure you want to stop the dissolve process?",
+    "join_community_fund_success": "Your neuron has successfully joined the community fund.",
+    "start_dissolve_success": "Your neuron has started dissolving.",
+    "stop_dissolve_success": "Your neuron has stoped dissolving.",
+    "dummy_proposal_success": "Dummy proposals created successfully"
   },
   "time": {
     "year": "year",

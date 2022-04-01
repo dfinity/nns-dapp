@@ -39,6 +39,9 @@ interface I18nError {
   fail: string;
   join_community_fund: string;
   suspicious_response: string;
+  start_dissolving: string;
+  stop_dissolving: string;
+  dummy_proposal: string;
 }
 
 interface I18nWarning {
@@ -253,15 +256,22 @@ interface I18nNeuron_detail {
   join_community_fund: string;
   increase_dissolve_delay: string;
   start_dissolving: string;
+  stop_dissolving: string;
+  disburse: string;
   increase_stake: string;
   split_neuron: string;
   voting_power_tooltip: string;
   join_community_fund_description: string;
-  join_community_fund_success: string;
   maturity_title: string;
   merge_maturity: string;
   spawn_neuron: string;
   maturity_tooltip: string;
+  start_dissolve_description: string;
+  stop_dissolve_description: string;
+  join_community_fund_success: string;
+  start_dissolve_success: string;
+  stop_dissolve_success: string;
+  dummy_proposal_success: string;
 }
 
 interface I18nTime {

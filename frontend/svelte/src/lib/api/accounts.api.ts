@@ -50,6 +50,8 @@ export const loadAccounts = async ({
 
     return {
       identifier: account.account_identifier,
+      // SubAccountDetails does not have "principal"
+      principal: "principal" in account ? account.principal : undefined,
       balance,
       // AccountDetails does not have "name" or "sub_account" property. Typescript needed a check like this.
       subAccount: "sub_account" in account ? account.sub_account : undefined,
