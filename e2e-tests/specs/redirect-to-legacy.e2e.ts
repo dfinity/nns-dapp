@@ -1,7 +1,14 @@
 import { register } from "../common/register";
 import { waitForLoad } from "../common/waitForLoad";
 
-const ACCOUNTS_HASH = "#/accounts";
+enum RouteHash {
+  Accounts = "#/accounts",
+  Neurons = "#/neurons",
+  Proposals = "#/proposals",
+  canisters = "#/canisters",
+}
+
+
 const NEURONS_HASH = "#/neurons";
 const PROPOSALS_HASH = "#/proposals";
 const CANISTERS_HASH = "#/canisters";
@@ -10,23 +17,23 @@ const FLUTTER_PATH="/";
 const SVELTE_PATH="/v2/";
 
 const REDIRECTS = {
-    prod: { [ACCOUNTS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
+    prod: { [RouteHash.Accounts]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
             [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
             [PROPOSALS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
             [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, } },
-    staging: { [ACCOUNTS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
+    staging: { [RouteHash.Accounts]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
             [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
             [PROPOSALS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
             [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, } },
-    flutter: { [ACCOUNTS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
+    flutter: { [RouteHash.Accounts]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
             [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
             [PROPOSALS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
             [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, } },
-    svelte: { [ACCOUNTS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
+    svelte: { [RouteHash.Accounts]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
             [NEURONS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
             [PROPOSALS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
             [CANISTERS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, } },
-    both: { [ACCOUNTS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, },
+    both: { [RouteHash.Accounts]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, },
             [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, },
             [PROPOSALS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, },
             [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, } },
@@ -91,12 +98,12 @@ describe("redirects", () => {
     await browser.url("/");
     await waitForLoad(browser);
     await register(browser);
-    await waitForHash(browser, ACCOUNTS_HASH, {timeout: 10000});
+    await waitForHash(browser, RouteHash.Accounts, {timeout: 10000});
   });
 
   [SVELTE_PATH, FLUTTER_PATH].forEach(path => {
     [
-      ACCOUNTS_HASH,
+      RouteHash.Accounts,
       NEURONS_HASH,
       PROPOSALS_HASH,
       CANISTERS_HASH
