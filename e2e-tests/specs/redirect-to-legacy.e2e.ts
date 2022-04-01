@@ -1,5 +1,5 @@
-import { register } from "../common/register";
-import { waitForLoad } from "../common/waitForLoad";
+const { register } = require("../common/register");
+const { waitForLoad } = require("../common/waitForLoad");
 
 enum RouteHash {
   Accounts = "#/accounts",
@@ -208,6 +208,7 @@ describe("redirects", () => {
 
   Object.values(FrontendPath).forEach((path) => {
     Object.values(RouteHash).forEach((hash) => {
+      console.log(`============ Testing '${path}${hash}' -> ${REDIRECTS[hash]?.[fromPath]}`);
       it(redirectTestTitle(path, hash), async () => {
         await redirectTest(browser, path, hash);
       });

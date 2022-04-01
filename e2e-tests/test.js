@@ -6,8 +6,8 @@
 
 "use strict";
 
-import * as fs from "fs";
-import * as child_process from "child_process";
+const fs = require("fs");
+const child_process = require("child_process");
 
 /*
  * Read the values from dfx.json and canister_ids.json

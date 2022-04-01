@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync } from "fs";
+const { existsSync, mkdirSync } = require("fs");
 
 const NNS_DAPP_URL: string = (process.env.NNS_DAPP_URL as boolean)
   ? String(process.env.NNS_DAPP_URL)
@@ -64,7 +64,7 @@ export const config: WebdriverIO.Config = {
       acceptInsecureCerts: true,
     },
   ],
-  logLevel: "warn",
+  logLevel: "info",
   services: ["chromedriver"],
 
   framework: "mocha",
