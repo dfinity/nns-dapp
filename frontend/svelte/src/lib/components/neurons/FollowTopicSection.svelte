@@ -44,6 +44,10 @@
           neuronId,
         };
       });
+    } else {
+      // If we remove the last followee of that topic, followesPerTopic is undefined.
+      // and we need to reset the followees array
+      followees = [];
     }
   }
 

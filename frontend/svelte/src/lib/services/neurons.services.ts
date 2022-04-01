@@ -249,17 +249,7 @@ const setFolloweesHelper = async ({
       topic,
       followees,
     });
-    const neuron: NeuronInfo | undefined = await getNeuron({
-      neuronId,
-      identity,
-      certified: true,
-      forceFetch: true,
-    });
-
-    if (!neuron) {
-      throw new Error("Neuron not found");
-    }
-    neuronsStore.pushNeurons([neuron]);
+    await getAndLoadNeuronHelper({ neuronId, identity });
 
     toastsStore.show({
       labelKey: `new_followee.success_${labelKey}`,

@@ -22,6 +22,7 @@
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
   import { isNeuronControllable } from "../../services/neurons.services";
+  import { accountsStore } from "../../stores/accounts.store";
 
   export let neuron: NeuronInfo;
 
@@ -30,7 +31,9 @@
   let userControlled: boolean;
   $: userControlled = isCurrentUserController(neuron);
   let isControllable: boolean;
-  $: isControllable = isNeuronControllable(neuron);
+  // Hack to call isNeuronControllable every time accounts store changes
+  // TODO: Move logic to `accountsStore` directly
+  $: $accountsStore, (isControllable = isNeuronControllable(neuron));
 </script>
 
 <NeuronCard {neuron}>
