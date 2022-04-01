@@ -20,4 +20,4 @@ export const waitForLoad = (browser) => {
       }),
     { timeout: 60_000 }
   );
-}
+};
