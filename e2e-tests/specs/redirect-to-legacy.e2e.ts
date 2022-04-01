@@ -5,39 +5,43 @@ enum RouteHash {
   Accounts = "#/accounts",
   Neurons = "#/neurons",
   Proposals = "#/proposals",
-  canisters = "#/canisters",
+  Canisters = "#/canisters",
 }
-
-
-const NEURONS_HASH = "#/neurons";
-const PROPOSALS_HASH = "#/proposals";
-const CANISTERS_HASH = "#/canisters";
-
-const FLUTTER_PATH="/";
-const SVELTE_PATH="/v2/";
+enum FrontendPath {
+  Flutter = "/",
+  Svelte = "/v2/",
+}
+enum RedirectToLegacy {
+  prod,
+  staging,
+  flutter,
+  svelte,
+  both,
+}
+const REDIRECT_TO_LEGACY: RedirectToLegacy = process.env.REDIRECT_TO_LEGACY || RedirectToLegacy.prod;
 
 const REDIRECTS = {
-    prod: { [RouteHash.Accounts]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
-            [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
-            [PROPOSALS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
-            [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, } },
-    staging: { [RouteHash.Accounts]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
-            [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
-            [PROPOSALS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
-            [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, } },
-    flutter: { [RouteHash.Accounts]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
-            [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
-            [PROPOSALS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, },
-            [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: FLUTTER_PATH, } },
-    svelte: { [RouteHash.Accounts]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
-            [NEURONS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
-            [PROPOSALS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, },
-            [CANISTERS_HASH]: { [FLUTTER_PATH]: SVELTE_PATH, [SVELTE_PATH]: SVELTE_PATH, } },
-    both: { [RouteHash.Accounts]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, },
-            [NEURONS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, },
-            [PROPOSALS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, },
-            [CANISTERS_HASH]: { [FLUTTER_PATH]: FLUTTER_PATH, [SVELTE_PATH]: SVELTE_PATH, } },
-}[process.env.REDIRECT_TO_LEGACY || "prod"];
+    prod: { [RouteHash.Accounts]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, },
+            [RouteHash.Neurons]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, },
+            [RouteHash.Proposals]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, },
+            [RouteHash.Canisters]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, } },
+    staging: { [RouteHash.Accounts]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, },
+            [RouteHash.Neurons]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, },
+            [RouteHash.Proposals]: { [FrontendPath.Flutter]: FrontendPath.Svelte, [FrontendPath.Svelte]: FrontendPath.Svelte, },
+            [RouteHash.Canisters]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, } },
+    flutter: { [RouteHash.Accounts]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, },
+            [RouteHash.Neurons]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, },
+            [RouteHash.Proposals]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, },
+            [RouteHash.Canisters]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Flutter, } },
+    svelte: { [RouteHash.Accounts]: { [FrontendPath.Flutter]: FrontendPath.Svelte, [FrontendPath.Svelte]: FrontendPath.Svelte, },
+            [RouteHash.Neurons]: { [FrontendPath.Flutter]: FrontendPath.Svelte, [FrontendPath.Svelte]: FrontendPath.Svelte, },
+            [RouteHash.Proposals]: { [FrontendPath.Flutter]: FrontendPath.Svelte, [FrontendPath.Svelte]: FrontendPath.Svelte, },
+            [RouteHash.Canisters]: { [FrontendPath.Flutter]: FrontendPath.Svelte, [FrontendPath.Svelte]: FrontendPath.Svelte, } },
+    both: { [RouteHash.Accounts]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Svelte, },
+            [RouteHash.Neurons]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Svelte, },
+            [RouteHash.Proposals]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Svelte, },
+            [RouteHash.Canisters]: { [FrontendPath.Flutter]: FrontendPath.Flutter, [FrontendPath.Svelte]: FrontendPath.Svelte, } },
+}[REDIRECT_TO_LEGACY];
 
 /**
  * Waits for the document hash to match the given value.
@@ -69,7 +73,7 @@ const waitForPath = async (browser: WebdriverIO.Browser, path: string, options?:
 /**
  * Describes the redirect, if any, that should occur from a given path+hash.
  */
-const redirectTestTitle = (fromPath: string, hash: string) => {
+const redirectTestTitle = (fromPath: FrontendPath, hash: RouteHash) => {
     const toPath = REDIRECTS[hash][fromPath];
     if (fromPath === toPath) {
        return `Remains on ${fromPath}${hash}`;
@@ -81,7 +85,7 @@ const redirectTestTitle = (fromPath: string, hash: string) => {
 /**
  * Tests the redirect, if any, that should occur from a given path+hash.
  */
-const redirectTest = async (browser: WebdriverIO.Browser, fromPath, hash) => {
+const redirectTest = async (browser: WebdriverIO.Browser, fromPath: FrontendPath, hash: RouteHash) => {
     const toPath = REDIRECTS[hash][fromPath];
     await browser.url(`${fromPath}${hash}`);
     await waitForPath(browser, `${toPath}${hash}`, {timeout: 10000});
@@ -101,13 +105,8 @@ describe("redirects", () => {
     await waitForHash(browser, RouteHash.Accounts, {timeout: 10000});
   });
 
-  [SVELTE_PATH, FLUTTER_PATH].forEach(path => {
-    [
-      RouteHash.Accounts,
-      NEURONS_HASH,
-      PROPOSALS_HASH,
-      CANISTERS_HASH
-    ].forEach(hash => {
+  Object.values(FrontendPath).forEach(path => {
+    Object.values(RouteHash).forEach(hash => {
       it(redirectTestTitle(path, hash), async () => {
         await redirectTest(browser, path, hash);
       });    
