@@ -2,7 +2,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { NeuronState, ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import { secondsToDuration } from "../../utils/date.utils";
+  import { secondsToDate, secondsToDuration } from "../../utils/date.utils";
   import {
     getStateInfo,
     hasJoinedCommunityFund,
@@ -13,6 +13,7 @@
   import Card from "../ui/Card.svelte";
 
   export let neuron: NeuronInfo;
+  export let proposerNeuron: boolean = false;
   // Setting default value avoids warning missing props during testing
   export let role: undefined | "link" | "button" = undefined;
   export let ariaLabel: string | undefined = undefined;
@@ -76,7 +77,12 @@
     </p>
   {/if}
 
-  {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
+  {#if proposerNeuron}
+    <p class="duration">
+      {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
+        .staked}
+    </p>
+  {:else if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
     <p class="duration">
       {secondsToDuration(neuron.dissolveDelaySeconds)}
       - {$i18n.neurons.dissolve_delay_title}

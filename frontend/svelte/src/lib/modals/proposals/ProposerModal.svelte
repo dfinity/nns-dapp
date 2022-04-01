@@ -34,7 +34,7 @@
 
   {#if neuron !== undefined}
     <div class="content">
-      <NeuronCard {neuron} />
+      <NeuronCard proposerNeuron {neuron} />
 
       <VotingHistoryCard {neuron} />
     </div>
