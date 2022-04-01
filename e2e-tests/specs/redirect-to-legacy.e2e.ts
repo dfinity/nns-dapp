@@ -18,8 +18,8 @@ enum RedirectToLegacy {
   svelte,
   both,
 }
-const REDIRECT_TO_LEGACY: RedirectToLegacy =
-  process.env.REDIRECT_TO_LEGACY || RedirectToLegacy.prod;
+
+const REDIRECT_TO_LEGACY: RedirectToLegacy = RedirectToLegacy[process.env.REDIRECT_TO_LEGACY] !== undefined? RedirectToLegacy[process.env.REDIRECT_TO_LEGACY] : RedirectToLegacy.prod;
 
 const REDIRECTS = {
   prod: {
@@ -122,12 +122,12 @@ const REDIRECTS = {
 const waitForHash = async (
   browser: WebdriverIO.Browser,
   hash: string,
-  options?: { timeout?: Number }
+  options?: { timeout?: number }
 ) => {
-  var currentHash = "";
+  let currentHash = "";
   try {
     await browser.waitUntil(async () => {
-      let currentLocation = await browser.execute(() => document.location);
+      const currentLocation = await browser.execute(() => document.location);
       currentHash = currentLocation.hash;
       return hash === currentHash;
     }, options);
@@ -149,7 +149,7 @@ const waitForHash = async (
 const waitForPath = async (
   browser: WebdriverIO.Browser,
   path: string,
-  options?: { timeout?: Number }
+  options?: { timeout?: number }
 ) => {
   return browser.waitUntil(
     async () =>
