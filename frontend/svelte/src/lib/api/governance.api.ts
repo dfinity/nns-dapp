@@ -8,6 +8,16 @@ import {
 } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
 import { dfinityNeuron, icNeuron } from "./constants.api";
+import {
+  addNodeToSubnetPayload,
+  addOrRemoveDataCentersPayload,
+  makeExecuteNnsFunctionDummyProposalRequest,
+  makeMotionDummyProposalRequest,
+  makeNetworkEconomicsDummyProposalRequest,
+  makeRewardNodeProviderDummyProposal,
+  updateSubnetConfigPayload,
+  updateSubnetPayload,
+} from "./dummyProposals.utils";
 import { toSubAccountId } from "./utils.api";
 
 export const queryNeuron = async ({
@@ -157,11 +167,11 @@ export const queryKnownNeurons = async ({
 
   const knownNeurons = await canister.listKnownNeurons(certified);
 
-  if (!knownNeurons.find(({ id }) => id === dfinityNeuron.id)) {
+  if (knownNeurons.find(({ id }) => id === dfinityNeuron.id) === undefined) {
     knownNeurons.push(dfinityNeuron);
   }
 
-  if (!knownNeurons.find(({ id }) => id === icNeuron.id)) {
+  if (knownNeurons.find(({ id }) => id === icNeuron.id) === undefined) {
     knownNeurons.push(icNeuron);
   }
 
@@ -181,6 +191,92 @@ export const claimOrRefreshNeuron = async ({
     neuronId,
     by: { NeuronIdOrSubaccount: {} },
   });
+};
+
+export const makeDummyProposals = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  const { canister } = await governanceCanister({ identity });
+  try {
+    // Used only on testnet
+    // We do one by one, in case one fails, we don't do the others.
+    const request1 = makeMotionDummyProposalRequest({
+      title: "Test proposal title - Lower all prices!",
+      neuronId,
+      url: "http://free-stuff-for-all.com",
+      summary: "Change the world with the IC - lower all prices!",
+    });
+    console.log("Motion Proposal...");
+    await canister.makeProposal(request1);
+    const request2 = makeNetworkEconomicsDummyProposalRequest({
+      neuronId,
+      title: "Increase minimum neuron stake",
+      url: "https://www.lipsum.com/",
+      summary: "Increase minimum neuron stake",
+    });
+    console.log("Netowrk Economics Proposal...");
+    await canister.makeProposal(request2);
+    const request3 = makeRewardNodeProviderDummyProposal({
+      neuronId,
+      url: "https://www.lipsum.com/",
+      title: "Reward for Node Provider 'ABC'",
+      summary: "Reward for Node Provider 'ABC'",
+    });
+    console.log("Rewards Node Provide Proposal...");
+    await canister.makeProposal(request3);
+    const request4 = makeExecuteNnsFunctionDummyProposalRequest({
+      neuronId,
+      title: "Add node(s) to subnet 10",
+      url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
+      summary: "Add node(s) to subnet 10",
+      nnsFunction: 2,
+      payload: addNodeToSubnetPayload,
+    });
+    console.log("Execute NNS Function Proposal...");
+    await canister.makeProposal(request4);
+    const request5 = makeExecuteNnsFunctionDummyProposalRequest({
+      neuronId,
+      title: "Update configuration of subnet: tdb26-",
+      url: "",
+      summary:
+        "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
+      nnsFunction: 7,
+      payload: updateSubnetConfigPayload,
+    });
+    console.log("Execute NNS Function Proposal...");
+    await canister.makeProposal(request5);
+    const request6 = makeExecuteNnsFunctionDummyProposalRequest({
+      neuronId,
+      title:
+        "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+      url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
+      summary:
+        "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+      nnsFunction: 11,
+      payload: updateSubnetPayload,
+    });
+    console.log("Execute NNS Function Proposal...");
+    await canister.makeProposal(request6);
+    const request7 = makeExecuteNnsFunctionDummyProposalRequest({
+      neuronId,
+      title: "Initialize datacenter records",
+      url: "",
+      summary:
+        "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
+      nnsFunction: 21,
+      payload: addOrRemoveDataCentersPayload,
+    });
+    console.log("Execute NNS Function Proposal...");
+    await canister.makeProposal(request7);
+    console.log("Finished making dummy proposals");
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
 };
 
 // TODO: Apply pattern to other canister instantiation L2-371

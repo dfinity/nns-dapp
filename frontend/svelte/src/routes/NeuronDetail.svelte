@@ -17,6 +17,7 @@
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
   import { neuronSelectStore, neuronsStore } from "../lib/stores/neurons.store";
+  import { IS_TESTNET } from "../lib/constants/environment.constants";
 
   let neuronId: NeuronId | undefined;
   $: neuronSelectStore.select(neuronId);
@@ -74,7 +75,9 @@
         <NeuronMetaInfoCard neuron={$neuronSelectStore} />
         <NeuronMaturityCard neuron={$neuronSelectStore} />
         <NeuronFollowingCard neuron={$neuronSelectStore} />
-        <NeuronProposalsCard neuron={$neuronSelectStore} />
+        {#if IS_TESTNET}
+          <NeuronProposalsCard neuron={$neuronSelectStore} />
+        {/if}
         <NeuronHotkeysCard neuron={$neuronSelectStore} />
         <NeuronVotingHistoryCard neuron={$neuronSelectStore} />
       {:else}

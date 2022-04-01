@@ -12,6 +12,7 @@ import {
   claimOrRefreshNeuron,
   increaseDissolveDelay,
   joinCommunityFund as joinCommunityFundApi,
+  makeDummyProposals as makeDummyProposalsApi,
   queryNeuron,
   queryNeurons,
   setFollowees,
@@ -21,6 +22,7 @@ import {
 } from "../api/governance.api";
 import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
+import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
@@ -404,6 +406,30 @@ export const loadNeuron = ({
       catchError(error);
     },
   });
+};
+
+export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
+  // Only available in testnet
+  if (!IS_TESTNET) {
+    return;
+  }
+  try {
+    const identity: Identity = await getIdentity();
+    await makeDummyProposalsApi({
+      neuronId,
+      identity,
+    });
+    toastsStore.show({
+      labelKey: "neuron_detail.dummy_proposal_success",
+      level: "info",
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    toastsStore.error({
+      labelKey: "error.dummy_proposal",
+    });
+  }
 };
 
 export const getNeuronId = (path: string): NeuronId | undefined =>
