@@ -1,12 +1,7 @@
 {
-  "compilerOptions": {
-    "types": [
-      "node",
-      "webdriverio/async",
-      "@wdio/mocha-framework",
-      "expect-webdriverio"
-    ],
-    "strictNullChecks": true,
-    "target": "ES5"
-  }
+	"compilerOptions": {
+		"types": ["node", "webdriverio/async", "@wdio/mocha-framework", "expect-webdriverio"],
+		"strictNullChecks": true,
+		"target": "ES5"
+	}
 }

@@ -1,57 +1,57 @@
 export const register = async (browser: WebdriverIO.Browser) => {
-  await browser.$("main button").waitForExist();
-  await browser.$("main button").click();
+	await browser.$('main button').waitForExist();
+	await browser.$('main button').click();
 
-  // REGISTRATION
-  
-  // Internet Identity
-  // First title is from the Service Worker.
-  await browser.pause(5000);
-  // We want to switch the tab to II.
-  await browser.switchWindow('Internet Identity');
-  const registerButton = await browser.$("#registerButton");
-  await registerButton.waitForExist({ timeout: 10_000 });
-  await registerButton.click();
+	// REGISTRATION
 
-  // Add Device Page
-  const registerAlias = await browser.$("#registerAlias");
-  await registerAlias.waitForExist();
-  await registerAlias.setValue("My Device");
+	// Internet Identity
+	// First title is from the Service Worker.
+	await browser.pause(5000);
+	// We want to switch the tab to II.
+	await browser.switchWindow('Internet Identity');
+	const registerButton = await browser.$('#registerButton');
+	await registerButton.waitForExist({ timeout: 10_000 });
+	await registerButton.click();
 
-  await browser.$('button[type="submit"]').click();
+	// Add Device Page
+	const registerAlias = await browser.$('#registerAlias');
+	await registerAlias.waitForExist();
+	await registerAlias.setValue('My Device');
 
-  // Captcha Page
-  const captchaInput = await browser.$("#captchaInput");
-  await captchaInput.waitForExist({ timeout: 30_000 });
-  await captchaInput.setValue("a");
-  await browser.waitUntil(async () => {
-    return (await captchaInput.getValue()) === "a";
-  });
+	await browser.$('button[type="submit"]').click();
 
-  const confirmCaptchaButton = await browser.$("#confirmRegisterButton");
-  // Long wait: Construction Your Identity Anchor
-  await confirmCaptchaButton.waitForEnabled({ timeout: 30_000 });
-  await confirmCaptchaButton.click();
+	// Captcha Page
+	const captchaInput = await browser.$('#captchaInput');
+	await captchaInput.waitForExist({ timeout: 30_000 });
+	await captchaInput.setValue('a');
+	await browser.waitUntil(async () => {
+		return (await captchaInput.getValue()) === 'a';
+	});
 
-  // Congratulations Page
-  const continueButton = await browser.$("#displayUserContinue");
-  await continueButton.waitForExist({ timeout: 10_000 });
-  await continueButton.click();
+	const confirmCaptchaButton = await browser.$('#confirmRegisterButton');
+	// Long wait: Construction Your Identity Anchor
+	await confirmCaptchaButton.waitForEnabled({ timeout: 30_000 });
+	await confirmCaptchaButton.click();
 
-  // Recovery Mechanism Page
-  const addLaterButton = await browser.$("#skipRecovery");
-  await addLaterButton.waitForExist();
-  await addLaterButton.click();
+	// Congratulations Page
+	const continueButton = await browser.$('#displayUserContinue');
+	await continueButton.waitForExist({ timeout: 10_000 });
+	await continueButton.click();
 
-  // Warning Recovery Mechanism Page
-  const skipButton = await browser.$("#displayWarningRemindLater");
-  await skipButton.waitForExist();
-  await skipButton.click();
+	// Recovery Mechanism Page
+	const addLaterButton = await browser.$('#skipRecovery');
+	await addLaterButton.waitForExist();
+	await addLaterButton.click();
 
-  // Confirm Redirect Page
-  const proceedButton = await browser.$("#confirmRedirect");
-  await proceedButton.waitForExist();
-  await proceedButton.click();
+	// Warning Recovery Mechanism Page
+	const skipButton = await browser.$('#displayWarningRemindLater');
+	await skipButton.waitForExist();
+	await skipButton.click();
 
-  await browser.switchWindow("Network Nervous System frontend dapp");
-}
+	// Confirm Redirect Page
+	const proceedButton = await browser.$('#confirmRedirect');
+	await proceedButton.waitForExist();
+	await proceedButton.click();
+
+	await browser.switchWindow('Network Nervous System frontend dapp');
+};
