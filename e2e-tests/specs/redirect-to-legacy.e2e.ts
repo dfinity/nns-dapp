@@ -19,7 +19,10 @@ enum RedirectToLegacy {
   both,
 }
 
-const REDIRECT_TO_LEGACY: RedirectToLegacy = RedirectToLegacy[process.env.REDIRECT_TO_LEGACY] !== undefined? RedirectToLegacy[process.env.REDIRECT_TO_LEGACY] : RedirectToLegacy.prod;
+const REDIRECT_TO_LEGACY: RedirectToLegacy =
+  RedirectToLegacy[process.env.REDIRECT_TO_LEGACY] !== undefined
+    ? RedirectToLegacy[process.env.REDIRECT_TO_LEGACY]
+    : RedirectToLegacy.prod;
 
 const REDIRECTS = {
   prod: {
