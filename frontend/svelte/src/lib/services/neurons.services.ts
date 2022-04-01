@@ -11,18 +11,24 @@ import { get } from "svelte/store";
 import {
   claimOrRefreshNeuron,
   increaseDissolveDelay,
+  joinCommunityFund as joinCommunityFundApi,
+  makeDummyProposals as makeDummyProposalsApi,
   queryNeuron,
   queryNeurons,
   setFollowees,
   stakeNeuron,
+  startDissolving as startDissolvingApi,
+  stopDissolving as stopDissolvingApi,
 } from "../api/governance.api";
 import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
+import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { createChunks, isDefined } from "../utils/utils";
+import { getAccountByPrincipal } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -165,6 +171,26 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   return listNeurons({ skipCheck: true });
 };
 
+const getAndLoadNeuronHelper = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}) => {
+  const neuron: NeuronInfo | undefined = await getNeuron({
+    neuronId,
+    identity,
+    certified: true,
+    forceFetch: true,
+  });
+
+  if (!neuron) {
+    throw new Error("Neuron not found");
+  }
+  neuronsStore.pushNeurons([neuron]);
+};
+
 export const updateDelay = async ({
   neuronId,
   dissolveDelayInSeconds,
@@ -176,10 +202,31 @@ export const updateDelay = async ({
 
   await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
 
-  await loadNeuron({
-    neuronId,
-    setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
-  });
+  await getAndLoadNeuronHelper({ neuronId, identity });
+};
+
+export const joinCommunityFund = async (neuronId: NeuronId): Promise<void> => {
+  const identity: Identity = await getIdentity();
+
+  await joinCommunityFundApi({ neuronId, identity });
+
+  await getAndLoadNeuronHelper({ neuronId, identity });
+};
+
+export const startDissolving = async (neuronId: NeuronId): Promise<void> => {
+  const identity: Identity = await getIdentity();
+
+  await startDissolvingApi({ neuronId, identity });
+
+  await getAndLoadNeuronHelper({ neuronId, identity });
+};
+
+export const stopDissolving = async (neuronId: NeuronId): Promise<void> => {
+  const identity: Identity = await getIdentity();
+
+  await stopDissolvingApi({ neuronId, identity });
+
+  await getAndLoadNeuronHelper({ neuronId, identity });
 };
 
 const setFolloweesHelper = async ({
@@ -361,5 +408,42 @@ export const loadNeuron = ({
   });
 };
 
+export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
+  // Only available in testnet
+  if (!IS_TESTNET) {
+    return;
+  }
+  try {
+    const identity: Identity = await getIdentity();
+    await makeDummyProposalsApi({
+      neuronId,
+      identity,
+    });
+    toastsStore.show({
+      labelKey: "neuron_detail.dummy_proposal_success",
+      level: "info",
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    toastsStore.error({
+      labelKey: "error.dummy_proposal",
+    });
+  }
+};
+
 export const getNeuronId = (path: string): NeuronId | undefined =>
   getLastPathDetailId(path);
+
+/*
+ * Returns true if the neuron can be controlled. A neuron can be controlled if:
+ *
+ *  1. The user is the controller
+ *  OR
+ *  2. The user's hardware wallet is the controller.
+ *
+ */
+export const isNeuronControllable = ({ fullNeuron }: NeuronInfo): boolean =>
+  fullNeuron !== undefined &&
+  fullNeuron.controller !== undefined &&
+  getAccountByPrincipal(fullNeuron.controller) !== undefined;

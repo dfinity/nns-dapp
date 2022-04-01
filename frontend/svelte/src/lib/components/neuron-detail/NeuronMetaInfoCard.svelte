@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
   import IconInfo from "../../icons/IconInfo.svelte";
   import { i18n } from "../../stores/i18n";
@@ -9,6 +10,8 @@
     ageMultiplier,
     dissolveDelayMultiplier,
     formatVotingPower,
+    hasJoinedCommunityFund,
+    isCurrentUserController,
   } from "../../utils/neuron.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
@@ -16,9 +19,18 @@
   import IncreaseStakeButton from "./actions/IncreaseStakeButton.svelte";
   import JoinCommunityFundButton from "./actions/JoinCommunityFundButton.svelte";
   import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
-  import StartDissolvingButton from "./actions/StartDissolvingButton.svelte";
+  import DissolveActionButton from "./actions/DissolveActionButton.svelte";
+  import DisburseButton from "./actions/DisburseButton.svelte";
+  import { isNeuronControllable } from "../../services/neurons.services";
 
   export let neuron: NeuronInfo;
+
+  let isCommunityFund: boolean;
+  $: isCommunityFund = hasJoinedCommunityFund(neuron);
+  let userControlled: boolean;
+  $: userControlled = isCurrentUserController(neuron);
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable(neuron);
 </script>
 
 <NeuronCard {neuron}>
@@ -28,7 +40,10 @@
         {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
           .staked}
       </p>
-      <JoinCommunityFundButton />
+      <JoinCommunityFundButton
+        disabled={isCommunityFund || !userControlled}
+        neuronId={neuron.neuronId}
+      />
     </div>
     <div class="space-between">
       <p class="voting-power">
@@ -62,7 +77,15 @@
       </p>
       <div class="buttons">
         <IncreaseDissolveDelayButton />
-        <StartDissolvingButton />
+        {#if neuron.state === NeuronState.DISSOLVED}
+          <DisburseButton />
+        {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
+          <DissolveActionButton
+            disabled={!isControllable}
+            neuronState={neuron.state}
+            neuronId={neuron.neuronId}
+          />
+        {/if}
       </div>
     </div>
     <div class="only-buttons">

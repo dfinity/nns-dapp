@@ -40,15 +40,18 @@ export const loadAccounts = async ({
     canisterId: LEDGER_CANISTER_ID,
   });
 
-  const getAccountBalance = async (
+  const mapAccount = async (
     account: AccountDetails | SubAccountDetails
   ): Promise<Account> => {
     const balance: ICP = await ledger.accountBalance({
       accountIdentifier: AccountIdentifier.fromHex(account.account_identifier),
       certified,
     });
+
     return {
       identifier: account.account_identifier,
+      // SubAccountDetails does not have "principal"
+      principal: "principal" in account ? account.principal : undefined,
       balance,
       // AccountDetails does not have "name" or "sub_account" property. Typescript needed a check like this.
       subAccount: "sub_account" in account ? account.sub_account : undefined,
@@ -57,8 +60,8 @@ export const loadAccounts = async ({
   };
 
   const [main, ...subAccounts] = await Promise.all([
-    getAccountBalance(mainAccount),
-    ...mainAccount.sub_accounts.map(getAccountBalance),
+    mapAccount(mainAccount),
+    ...mainAccount.sub_accounts.map(mapAccount),
   ]);
 
   return {

@@ -11,7 +11,10 @@ import {
   ageMultiplier,
   dissolveDelayMultiplier,
   formatVotingPower,
+  hasJoinedCommunityFund,
   hasValidStake,
+  isCurrentUserController,
+  maturityByStake,
   votingPower,
 } from "../../../lib/utils/neuron.utils";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
@@ -157,6 +160,106 @@ describe("neuron-utils", () => {
       };
       neuronWithoutFullNeuron.fullNeuron = undefined;
       expect(hasValidStake(neuronWithoutFullNeuron)).toBeFalsy();
+    });
+  });
+
+  describe("hasJoinedCommunityFund", () => {
+    it("returns true when neuron has joined community", () => {
+      const joinedNeuron = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: BigInt(100),
+      };
+      expect(hasJoinedCommunityFund(joinedNeuron)).toBe(true);
+    });
+
+    it("returns true when neuron has not joined community", () => {
+      const joinedNeuron = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: undefined,
+      };
+      expect(hasJoinedCommunityFund(joinedNeuron)).toBe(false);
+    });
+  });
+
+  describe("isCurrentUserController", () => {
+    it("returns false when isCurrentUserController not defined", () => {
+      const userControlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          isCurrentUserController: undefined,
+        },
+      };
+      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+    });
+
+    it("returns true when neuron is controlled by user", () => {
+      const userControlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          isCurrentUserController: true,
+        },
+      };
+      expect(isCurrentUserController(userControlledNeuron)).toBe(true);
+    });
+
+    it("returns false when isCurrentUserController is false", () => {
+      const userControlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          isCurrentUserController: false,
+        },
+      };
+      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+    });
+  });
+
+  describe("maturityByStake", () => {
+    it("returns 0 when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(maturityByStake(neuron)).toBe(0);
+    });
+
+    it("returns 0 if neuron stake is 0", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(0),
+        },
+      };
+      expect(maturityByStake(neuron)).toBe(0);
+    });
+
+    it("returns maturity in percentage of stake", () => {
+      const stake = ICP.fromString("2") as ICP;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: stake.toE8s(),
+          maturityE8sEquivalent: stake.toE8s() / BigInt(2),
+        },
+      };
+      expect(maturityByStake(neuron)).toBe(0.5);
+    });
+
+    it("returns maturity up to 6 decimal places", () => {
+      const stake = ICP.fromString("3") as ICP;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: stake.toE8s(),
+          maturityE8sEquivalent: stake.toE8s() / BigInt(3),
+        },
+      };
+      expect(maturityByStake(neuron)).toBe(0.333333);
     });
   });
 });

@@ -80,3 +80,28 @@ export const ageMultiplier = (ageSeconds: number): number =>
 
 export const formatVotingPower = (value: bigint): string =>
   formatNumber(Number(value) / E8S_PER_ICP);
+
+export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
+  neuron.joinedCommunityFundTimestampSeconds !== undefined;
+
+export const isCurrentUserController = (neuron: NeuronInfo): boolean =>
+  neuron.fullNeuron?.isCurrentUserController === undefined
+    ? false
+    : Boolean(neuron.fullNeuron?.isCurrentUserController);
+
+export const maturityByStake = (neuron: NeuronInfo): number => {
+  if (
+    neuron.fullNeuron === undefined ||
+    neuron.fullNeuron.cachedNeuronStake <= 0
+  ) {
+    return 0;
+  }
+  // Keep at least 6 decimal places in the BigInt division
+  const precision = 1_000_000;
+  return (
+    Number(
+      (neuron.fullNeuron.maturityE8sEquivalent * BigInt(precision)) /
+        neuron.fullNeuron.cachedNeuronStake
+    ) / precision
+  );
+};

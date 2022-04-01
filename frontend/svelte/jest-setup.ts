@@ -12,7 +12,7 @@ global.TextEncoder = TextEncoder;
 ).IntersectionObserver = IntersectionObserverPassive;
 
 // Environment Variables Setup
-process.env.REDIRECT_TO_LEGACY = "never";
+process.env.REDIRECT_TO_LEGACY = "svelte";
 process.env.IDENTITY_SERVICE_URL = "http://localhost:8000/";
 process.env.OWN_CANISTER_ID = "qhbym-qaaaa-aaaaa-aaafq-cai";
 process.env.GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";

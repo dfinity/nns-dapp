@@ -10,6 +10,7 @@ interface I18nCore {
   back: string;
   confirm_yes: string;
   confirm_no: string;
+  confirm: string;
   yes: string;
   no: string;
   unspecified: string;
@@ -36,6 +37,11 @@ interface I18nError {
   followee_does_not_exist: string;
   accounts_not_found: string;
   fail: string;
+  join_community_fund: string;
+  suspicious_response: string;
+  start_dissolving: string;
+  stop_dissolving: string;
+  dummy_proposal: string;
 }
 
 interface I18nWarning {
@@ -74,6 +80,7 @@ interface I18nAccounts {
   attach_hardware_subtitle: string;
   new_linked_account_title: string;
   new_linked_account_placeholder: string;
+  linked_account: string;
 }
 
 interface I18nNeurons {
@@ -249,9 +256,22 @@ interface I18nNeuron_detail {
   join_community_fund: string;
   increase_dissolve_delay: string;
   start_dissolving: string;
+  stop_dissolving: string;
+  disburse: string;
   increase_stake: string;
   split_neuron: string;
   voting_power_tooltip: string;
+  join_community_fund_description: string;
+  maturity_title: string;
+  merge_maturity: string;
+  spawn_neuron: string;
+  maturity_tooltip: string;
+  start_dissolve_description: string;
+  stop_dissolve_description: string;
+  join_community_fund_success: string;
+  start_dissolve_success: string;
+  stop_dissolve_success: string;
+  dummy_proposal_success: string;
 }
 
 interface I18nTime {

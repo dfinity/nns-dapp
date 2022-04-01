@@ -2,11 +2,14 @@ import { GovernanceCanister, ICP, LedgerCanister, Topic } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import {
   increaseDissolveDelay,
+  joinCommunityFund,
   queryKnownNeurons,
   queryNeuron,
   queryNeurons,
   setFollowees,
   stakeNeuron,
+  startDissolving,
+  stopDissolving,
 } from "../../../lib/api/governance.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
@@ -79,7 +82,7 @@ describe("neurons-api", () => {
   describe("increaseDissolveDelay", () => {
     it("updates neuron", async () => {
       mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
-        jest.fn().mockResolvedValue({ Ok: null })
+        jest.fn().mockResolvedValue(undefined)
       );
 
       await increaseDissolveDelay({
@@ -113,7 +116,7 @@ describe("neurons-api", () => {
   describe("setFollowees", () => {
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.setFollowees.mockImplementation(
-        jest.fn().mockResolvedValue({ Ok: null })
+        jest.fn().mockResolvedValue(undefined)
       );
 
       await setFollowees({
@@ -140,6 +143,99 @@ describe("neurons-api", () => {
           neuronId: BigInt(10),
           topic: Topic.ExchangeRate,
           followees: [BigInt(4), BigInt(7)],
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("joinCommunityFund", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.joinCommunityFund.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await joinCommunityFund({
+        identity: mockIdentity,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.joinCommunityFund).toBeCalled();
+    });
+
+    it("throws error when setting followees fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.joinCommunityFund.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        joinCommunityFund({
+          identity: mockIdentity,
+          neuronId: BigInt(10),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("startDissolving", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.startDissolving.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await startDissolving({
+        identity: mockIdentity,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.startDissolving).toBeCalled();
+    });
+
+    it("throws error when startDissolving fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.startDissolving.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        startDissolving({
+          identity: mockIdentity,
+          neuronId: BigInt(10),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("stopDissolving", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.stopDissolving.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await stopDissolving({
+        identity: mockIdentity,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.stopDissolving).toBeCalled();
+    });
+
+    it("throws error when stopDissolving fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.stopDissolving.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        stopDissolving({
+          identity: mockIdentity,
+          neuronId: BigInt(10),
         });
       await expect(call).rejects.toThrow(error);
     });

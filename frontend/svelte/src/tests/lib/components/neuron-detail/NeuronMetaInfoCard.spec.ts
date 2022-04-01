@@ -8,6 +8,13 @@ import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
+jest.mock("../../../../lib/services/neurons.services", () => {
+  return {
+    joinCommunityFund: jest.fn().mockResolvedValue(undefined),
+    isNeuronControllable: jest.fn().mockReturnValue(true),
+  };
+});
+
 describe("NeuronMetaInfoCard", () => {
   it("renders neuron id", () => {
     const { queryByText } = render(NeuronMetaInfoCard, {
@@ -53,6 +60,7 @@ describe("NeuronMetaInfoCard", () => {
   });
 
   it("renders actions", () => {
+    // Each action button is tested separately
     const { queryByText } = render(NeuronMetaInfoCard, {
       neuron: mockNeuron,
     });
