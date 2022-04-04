@@ -23,6 +23,8 @@ jobs:
         run: ./scripts/update-ii
       - name: Update chromedriver
         run: |
+          node --version
+          npm --version
           npm update chromedriver
           git diff package-lock.json
         working-directory: e2e-tests
