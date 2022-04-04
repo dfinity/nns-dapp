@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+[[ "${1:-}" == "help" ]] || {
+    cat <<-EOF
+
+	Runs npm audit against all the packages in this repo.
+
+	Usage:
+	  ./scripts/npm-audit     <- Checks all packages.
+	  ./scripts/npm-audit fix <- replaces all vulnerable dependencies that can be fixed automatically.
+	EOF
+}
+
+git ls-files | grep package.json  | while read line ; do ( echo "## npm audit $line" &&  cd "$(dirname "$line")" && npm audit "${@}" ; ) ; done

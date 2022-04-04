@@ -53,3 +53,25 @@ jobs:
           # do not pull: if this branch is behind, then we might as well let
           # the pushing fail
           pull_strategy: "NO-PULL"
+  npm-audit-fix:
+    needs: update-chromedriver # Forces git updates to run sequentially so that they don't conflict.
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
+      - name: Npm audit fix
+        run: scripts/npm-audit fix
+      - name: Commit updated chromedriver
+        uses: EndBug/add-and-commit@v7.2.0
+        with:
+          add: .
+          author_name: Nightly GitHub Action
+          author_email: "<nobody@dfinity.org>"
+          message: "Update vulnerable npm dependencies."
+          # do not pull: if this branch is behind, then we might as well let
+          # the pushing fail
+          pull_strategy: "NO-PULL"
