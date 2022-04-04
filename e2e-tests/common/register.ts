@@ -7,9 +7,9 @@ export const register = async (browser: WebdriverIO.Browser) => {
 
   // Internet Identity
   // First title is from the Service Worker.
-  for (let i=0; i<10; i++) {
-      await new Promise((yay) => setTimeout(yay, 100<<i));
-      if ((await browser.getWindowHandles()).length > windowHandles.length) break;
+  for (let i = 0; i < 10; i++) {
+    await new Promise((yay) => setTimeout(yay, 100 << i));
+    if ((await browser.getWindowHandles()).length > windowHandles.length) break;
   }
 
   await browser.pause(5000);
@@ -60,10 +60,5 @@ export const register = async (browser: WebdriverIO.Browser) => {
   await proceedButton.waitForExist();
   await proceedButton.click();
 
-<<<<<<< HEAD
   await browser.switchToWindow(originalTabId);
-}
-=======
-  await browser.switchWindow("Network Nervous System frontend dapp");
 };
->>>>>>> origin/main

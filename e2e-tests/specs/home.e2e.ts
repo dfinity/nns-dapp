@@ -1,8 +1,8 @@
-import { register } from '../common/register';
-import { logout } from '../common/logout';
-import { loginWithIdentity } from '../common/login';
-import { waitForImages } from '../common/waitForImages';
-import { waitForLoad } from '../common/waitForLoad';
+import { register } from "../common/register";
+import { logout } from "../common/logout";
+import { loginWithIdentity } from "../common/login";
+import { waitForImages } from "../common/waitForImages";
+import { waitForLoad } from "../common/waitForLoad";
 
 describe("landing page", () => {
   it("loads", async () => {
@@ -68,7 +68,11 @@ describe("landing page", () => {
   it("loginWithIdentity", async () => {
     await loginWithIdentity(browser, "10000");
     await waitForImages(browser);
-    await browser.execute(() => document.querySelectorAll('main section svg').forEach(element => element.remove()));
+    await browser.execute(() =>
+      document
+        .querySelectorAll("main section svg")
+        .forEach((element) => element.remove())
+    );
     await browser["screenshot"]("loginWithIdentity");
   });
 });

@@ -1,7 +1,10 @@
-import { getLoginButton } from '../components/auth';
-import { getLogoutButton } from '../components/header.ts';
+import { getLoginButton } from "../components/auth";
+import { getLogoutButton } from "../components/header.ts";
 
-export const loginWithIdentity = async (browser: WebdriverIO.Browser, identity: String) => {
+export const loginWithIdentity = async (
+  browser: WebdriverIO.Browser,
+  identity: String
+) => {
   const loginButton = await getLoginButton(browser);
   await loginButton.waitForExist();
 
@@ -16,27 +19,29 @@ export const loginWithIdentity = async (browser: WebdriverIO.Browser, identity: 
       if ((await browser.getWindowHandles()).length > windowHandles.length) break;
   }
   */
-  await browser.switchWindow('Internet Identity');
+  await browser.switchWindow("Internet Identity");
 
-  browser.waitUntil(() => browser.execute(() => document.readyState === 'complete'));
+  browser.waitUntil(() =>
+    browser.execute(() => document.readyState === "complete")
+  );
   await browser["screenshot"]("ii_tab");
 
-  const iiLoginButton = await browser.$('#loginDifferent');
+  const iiLoginButton = await browser.$("#loginDifferent");
   if (await iiLoginButton.isExisting()) {
     //await browser["screenshot"]("ii_login_page");
     await iiLoginButton.click();
   }
 
-  const iiUserIdField = await browser.$('#registerUserNumber');
+  const iiUserIdField = await browser.$("#registerUserNumber");
   await iiUserIdField.waitForExist();
   await iiUserIdField.setValue(identity);
 
-  const iiLoginButton = await browser.$('#loginButton');
+  const iiLoginButton = await browser.$("#loginButton");
   await iiLoginButton.waitForExist();
   //await browser["screenshot"]("ii_with_identity");
   await iiLoginButton.click();
 
-  const iiConfirmRedirect = await browser.$('#confirmRedirect');
+  const iiConfirmRedirect = await browser.$("#confirmRedirect");
   await iiConfirmRedirect.waitForExist();
   //await browser["screenshot"]("ii_confirm_redirect");
   await iiConfirmRedirect.click();
@@ -45,4 +50,4 @@ export const loginWithIdentity = async (browser: WebdriverIO.Browser, identity: 
 
   let logoutButton = await getLogoutButton(browser);
   await logoutButton.waitForExist({ timeout: 10000 });
-}
+};

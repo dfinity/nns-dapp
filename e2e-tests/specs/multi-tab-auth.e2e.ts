@@ -1,10 +1,10 @@
-import { register } from '../common/register';
-import { logout } from '../common/logout';
-import { loginWithIdentity } from '../common/login';
-import { getLoginButton } from '../components/auth';
-import { waitForImages } from '../common/waitForImages';
-import { waitForLoad } from '../common/waitForLoad';
-import { getLogoutButton } from '../components/header.ts';
+import { register } from "../common/register";
+import { logout } from "../common/logout";
+import { loginWithIdentity } from "../common/login";
+import { getLoginButton } from "../components/auth";
+import { waitForImages } from "../common/waitForImages";
+import { waitForLoad } from "../common/waitForLoad";
+import { getLogoutButton } from "../components/header.ts";
 
 describe("landing page", () => {
   const nns_tabs = [];
@@ -21,7 +21,7 @@ describe("landing page", () => {
     console.log(await browser.getTitle());
     await browser["screenshot"]("tab-two");
     nns_tabs.push(await browser.getWindowHandle());
-    console.log(JSON.stringify({nns_tabs}));
+    console.log(JSON.stringify({ nns_tabs }));
   });
 
   it("loginTabOne", async () => {

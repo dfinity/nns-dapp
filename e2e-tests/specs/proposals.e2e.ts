@@ -1,13 +1,12 @@
-import { register } from '../common/register';
-import { logout } from '../common/logout';
-import { loginWithIdentity } from '../common/login';
-import { getLoginButton } from '../components/auth';
-import { waitForImages } from '../common/waitForImages';
-import { waitForLoad } from '../common/waitForLoad';
-import { getLogoutButton, getVotingTabButton } from '../components/header.ts';
+import { register } from "../common/register";
+import { logout } from "../common/logout";
+import { loginWithIdentity } from "../common/login";
+import { getLoginButton } from "../components/auth";
+import { waitForImages } from "../common/waitForImages";
+import { waitForLoad } from "../common/waitForLoad";
+import { getLogoutButton, getVotingTabButton } from "../components/header.ts";
 
 describe("viewProposals", () => {
-
   it("login", async () => {
     await browser.url("/");
     await waitForLoad(browser);
@@ -23,7 +22,7 @@ describe("viewProposals", () => {
 
   it("canShowAllProposals", async () => {
     const result = await browser.execute(() =>
-      document.querySelectorAll('.filters button')
+      document.querySelectorAll(".filters button")
     );
 
     console.log(result);
