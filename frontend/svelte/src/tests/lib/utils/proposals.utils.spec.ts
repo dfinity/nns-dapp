@@ -1,17 +1,25 @@
 import type { Ballot, NeuronInfo, Proposal } from "@dfinity/nns";
 import { Vote } from "@dfinity/nns";
 import {
+  concatenateUniqueProposals,
   emptyProposals,
-  formatVotingPower,
+  excludeProposals,
   hasMatchingProposals,
   hideProposal,
   lastProposalId,
+  preserveNeuronSelectionAfterUpdate,
   proposalActionFields,
   proposalFirstActionKey,
-  selectedNeuronsVotingPover,
+  proposalIdSet,
+  proposalsHaveSameIds,
+  replaceAndConcatenateProposals,
+  selectedNeuronsVotingPower,
 } from "../../../lib/utils/proposals.utils";
 import { mockNeuron } from "../../mocks/neurons.mock";
-import { mockProposalInfo } from "../../mocks/proposal.mock";
+import {
+  generateMockProposals,
+  mockProposalInfo,
+} from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-utils", () => {
@@ -281,6 +289,16 @@ describe("proposals-utils", () => {
       );
     });
 
+    it("should return empty array if no `action`", () => {
+      const proposal = {
+        ...mockProposalInfo.proposal,
+        action: undefined,
+      } as Proposal;
+      const fields = proposalActionFields(proposal);
+
+      expect(fields.length).toBe(0);
+    });
+
     it("should stringify all objects", () => {
       const fields = proposalActionFields(
         mockProposalInfo.proposal as Proposal
@@ -301,14 +319,6 @@ describe("proposals-utils", () => {
     });
   });
 
-  describe("formatVotingPower", () => {
-    it("should format", () => {
-      expect(formatVotingPower(BigInt(0))).toBe("0.00");
-      expect(formatVotingPower(BigInt(100000000))).toBe("1.00");
-      expect(formatVotingPower(BigInt(9999900000))).toBe("100.00");
-    });
-  });
-
   describe("selectedNeuronsVotingPover", () => {
     const neuron = (id: number, votingPower: number): NeuronInfo =>
       ({
@@ -319,14 +329,14 @@ describe("proposals-utils", () => {
 
     it("should calculate total", () => {
       expect(
-        selectedNeuronsVotingPover({
+        selectedNeuronsVotingPower({
           neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
           selectedIds: [1, 2, 3].map(BigInt),
         })
       ).toBe(BigInt(9));
 
       expect(
-        selectedNeuronsVotingPover({
+        selectedNeuronsVotingPower({
           neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
           selectedIds: [1, 3].map(BigInt),
         })
@@ -335,11 +345,215 @@ describe("proposals-utils", () => {
 
     it("should return 0 if no selection", () => {
       expect(
-        selectedNeuronsVotingPover({
+        selectedNeuronsVotingPower({
           neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
           selectedIds: [],
         })
       ).toBe(BigInt(0));
+    });
+  });
+
+  describe("preserveNeuronSelectionAfterUpdate", () => {
+    const neuron = (id: number): NeuronInfo =>
+      ({
+        ...mockNeuron,
+        neuronId: BigInt(id),
+      } as NeuronInfo);
+
+    it("should preserve old selection", () => {
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [0, 1, 2].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+        })
+      ).toEqual([0, 1, 2].map(BigInt));
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [0, 2].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+        })
+      ).toEqual([0, 2].map(BigInt));
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+        })
+      ).toEqual([].map(BigInt));
+    });
+
+    it("should select new neurons", () => {
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [
+            neuron(0),
+            neuron(1),
+            neuron(2),
+            neuron(3),
+            neuron(4),
+          ],
+        })
+      ).toEqual([3, 4].map(BigInt));
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [0].map(BigInt),
+          neurons: [neuron(0), neuron(1)],
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+        })
+      ).toEqual([0, 2].map(BigInt));
+    });
+
+    it("should remove selction from not existed anymore neurons", () => {
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [0, 1, 2].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [neuron(0), neuron(1)],
+        })
+      ).toEqual([0, 1].map(BigInt));
+      expect(
+        preserveNeuronSelectionAfterUpdate({
+          selectedIds: [0, 1, 2].map(BigInt),
+          neurons: [neuron(0), neuron(1), neuron(2)],
+          updatedNeurons: [neuron(0), neuron(1), neuron(3)],
+        })
+      ).toEqual([0, 1, 3].map(BigInt));
+    });
+  });
+
+  describe("proposalIdSet", () => {
+    it("should return a set with ids", () => {
+      const proposals = generateMockProposals(10);
+      const idSet = proposalIdSet([...proposals, ...proposals]);
+      expect(idSet.size).toBe(proposals.length);
+      expect(Array.from(idSet).sort()).toStrictEqual(
+        proposals.map(({ id }) => id).sort()
+      );
+    });
+
+    it("should ignore records withoug id", () => {
+      const proposals = generateMockProposals(2);
+      proposals[0].id = undefined;
+      const idSet = proposalIdSet(proposals);
+      expect(idSet.size).toBe(1);
+      expect(Array.from(idSet)).toStrictEqual([BigInt(1)]);
+    });
+  });
+
+  describe("excludeProposals", () => {
+    it("should exclude proposals", () => {
+      const proposals = generateMockProposals(10);
+      expect(
+        excludeProposals({
+          proposals: proposals,
+          exclusion: proposals,
+        })
+      ).toEqual([]);
+      expect(
+        excludeProposals({
+          proposals: proposals,
+          exclusion: proposals.slice(5),
+        })
+      ).toEqual(proposals.slice(0, 5));
+      expect(
+        excludeProposals({
+          proposals: proposals,
+          exclusion: [],
+        })
+      ).toEqual(proposals);
+      expect(
+        excludeProposals({
+          proposals: [],
+          exclusion: proposals,
+        })
+      ).toEqual([]);
+    });
+  });
+
+  describe("concatenateUniqueProposals", () => {
+    it("should concatinate proposals", () => {
+      const proposals = generateMockProposals(10);
+      const result = concatenateUniqueProposals({
+        oldProposals: proposals.slice(0, 5),
+        newProposals: proposals.slice(5),
+      });
+      expect(result).toEqual(proposals);
+    });
+
+    it("should concatenate only unique proposals", () => {
+      const proposals = generateMockProposals(10);
+      const result = concatenateUniqueProposals({
+        oldProposals: proposals.slice(0, 5),
+        newProposals: proposals,
+      });
+      expect(result).toEqual(proposals);
+    });
+  });
+
+  describe("replaceAndConcatenateProposals", () => {
+    const proposalsA = generateMockProposals(10, {
+      proposalTimestampSeconds: BigInt(0),
+    });
+    const proposalsB = generateMockProposals(10, {
+      proposalTimestampSeconds: BigInt(0),
+    });
+
+    it("should replace proposals by id", () => {
+      const result = replaceAndConcatenateProposals({
+        oldProposals: proposalsA,
+        newProposals: proposalsB,
+      });
+      expect(result).toStrictEqual(proposalsB);
+    });
+
+    it("should concatinate proposals", () => {
+      const result = replaceAndConcatenateProposals({
+        oldProposals: [],
+        newProposals: proposalsB,
+      });
+      expect(result).toStrictEqual(proposalsB);
+    });
+
+    it("should replace and concatinate", () => {
+      const oldProposals = proposalsA.slice(5);
+      const newProposals = proposalsB.slice(0, 5);
+      const result = replaceAndConcatenateProposals({
+        oldProposals,
+        newProposals,
+      });
+      expect(result).toStrictEqual([...oldProposals, ...newProposals]);
+    });
+  });
+
+  describe("proposalsHaveSameIds", () => {
+    const proposals = generateMockProposals(10);
+
+    it("should comprare", () => {
+      expect(
+        proposalsHaveSameIds({ proposalsA: [], proposalsB: [] })
+      ).toBeTruthy();
+      expect(
+        proposalsHaveSameIds({
+          proposalsA: proposals,
+          proposalsB: proposals.slice(0),
+        })
+      ).toBeTruthy();
+      expect(
+        proposalsHaveSameIds({
+          proposalsA: proposals,
+          proposalsB: proposals.slice(1),
+        })
+      ).toBeFalsy();
+      expect(
+        proposalsHaveSameIds({
+          proposalsA: generateMockProposals(20).slice(10),
+          proposalsB: proposals,
+        })
+      ).toBeFalsy();
     });
   });
 });

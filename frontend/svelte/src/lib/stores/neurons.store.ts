@@ -1,5 +1,6 @@
-import type { NeuronInfo } from "@dfinity/nns";
-import { writable } from "svelte/store";
+import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+import { derived, writable } from "svelte/store";
+import { hasValidStake } from "../utils/neuron.utils";
 
 export type NeuronsStore = NeuronInfo[];
 
@@ -16,15 +17,18 @@ const initNeuronsStore = () => {
     subscribe,
 
     setNeurons(neurons: NeuronInfo[]) {
-      set([...neurons]);
+      set([...neurons.filter(hasValidStake)]);
     },
 
     pushNeurons(newNeurons: NeuronInfo[]) {
       update((oldNeurons: NeuronInfo[]) => {
-        const newIds = new Set(newNeurons.map(({ neuronId }) => neuronId));
+        const filteredNewNeurons = newNeurons.filter(hasValidStake);
+        const newIds = new Set(
+          filteredNewNeurons.map(({ neuronId }) => neuronId)
+        );
         return [
           ...oldNeurons.filter(({ neuronId }) => !newIds.has(neuronId)),
-          ...newNeurons,
+          ...filteredNewNeurons,
         ];
       });
     },
@@ -32,3 +36,20 @@ const initNeuronsStore = () => {
 };
 
 export const neuronsStore = initNeuronsStore();
+
+// source idea: https://svelte.dev/repl/44455916128c40d386927cb72f9a3004?version=3.29.7
+const initNeuronSelectStore = () => {
+  const _selectedId = writable<NeuronId | undefined>(undefined);
+  const _selectedNeuron = derived(
+    [neuronsStore, _selectedId],
+    ([neurons, selectedId]) =>
+      neurons.find((neuron) => neuron.neuronId === selectedId)
+  );
+
+  return {
+    select: _selectedId.set,
+    ..._selectedNeuron,
+  };
+};
+
+export const neuronSelectStore = initNeuronSelectStore();

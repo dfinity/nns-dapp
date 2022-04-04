@@ -1,20 +1,24 @@
 <script lang="ts">
-  import type { ProposalInfo, NeuronId, NeuronInfo } from "@dfinity/nns";
-  import { votedNeurons, Vote } from "@dfinity/nns";
+  import type { ProposalInfo, NeuronId } from "@dfinity/nns";
+  import { Vote } from "@dfinity/nns";
   import Card from "../ui/Card.svelte";
   import { i18n } from "../../stores/i18n";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { formatNumber } from "../../utils/format.utils";
   import IconThumbDown from "../../icons/IconThumbDown.svelte";
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
+  import { votedNeurons } from "@dfinity/nns";
+  import { neuronsStore } from "../../stores/neurons.store";
 
   export let proposalInfo: ProposalInfo;
-  export let neurons: NeuronInfo[];
 
-  const { yes, no } = proposalInfo.latestTally || {};
-  const yesValue = Number(yes) / E8S_PER_ICP;
-  const noValue = Number(no) / E8S_PER_ICP;
-  const summ = yesValue + noValue;
+  let yes: number;
+  let no: number;
+  let sum: number;
+
+  $: yes = Number(proposalInfo?.latestTally?.yes ?? 0) / E8S_PER_ICP;
+  $: no = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
+  $: sum = yes + no;
 
   type CompactNeuronInfo = {
     id: NeuronId;
@@ -24,12 +28,13 @@
   const voteIconMapper = {
     [Vote.NO]: IconThumbDown,
     [Vote.YES]: IconThumbUp,
+    [Vote.UNSPECIFIED]: undefined,
   };
   let neuronsVotedForProposal: CompactNeuronInfo[];
 
   $: {
     neuronsVotedForProposal = votedNeurons({
-      neurons,
+      neurons: $neuronsStore,
       proposal: proposalInfo,
     })
       .map(({ neuronId, recentBallots, votingPower }) => ({
@@ -47,26 +52,22 @@
   }
 </script>
 
-<!-- TODO: Adop/Reject card content -- https://dfinity.atlassian.net/browse/L2-269 -->
 <Card>
   <div class="latest-tally">
     <h3>
-      {$i18n.proposal_detail.adopt}<span>{formatNumber(yesValue)}</span>
+      {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
     </h3>
     <div
       class="progressbar"
       role="progressbar"
-      aria-valuenow={yesValue}
+      aria-valuenow={yes}
       aria-valuemin={0}
-      aria-valuemax={summ}
+      aria-valuemax={sum}
     >
-      <div
-        class="progressbar-value"
-        style="width: {(yesValue / summ) * 100}%"
-      />
+      <div class="progressbar-value" style="width: {(yes / sum) * 100}%" />
     </div>
     <h3>
-      {$i18n.proposal_detail.reject}<span>{formatNumber(noValue)}</span>
+      {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
     </h3>
   </div>
 

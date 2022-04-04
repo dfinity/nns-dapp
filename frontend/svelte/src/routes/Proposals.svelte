@@ -17,7 +17,10 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_PROPOSALS_ROUTE,
+  } from "../lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,
@@ -50,10 +53,7 @@
     loading = true;
 
     try {
-      // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
-      await listProposals({
-        clearBeforeQuery: !emptyProposals($proposalsStore),
-      });
+      await listProposals();
     } catch (err: unknown) {
       toastsStore.error({
         labelKey: "error.list_proposals",
@@ -71,12 +71,9 @@
     debounceFindProposals = debounce(async () => await findProposals(), 250);
   };
 
-  const showThisRoute = ["never", "staging"].includes(
-    process.env.REDIRECT_TO_LEGACY as string
-  );
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
-    if (!showThisRoute) {
+    if (!SHOW_PROPOSALS_ROUTE) {
       window.location.replace(AppPath.Proposals);
     }
 
@@ -101,9 +98,13 @@
     initialized = true;
   });
 
-  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() =>
-    debounceFindProposals?.()
-  );
+  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() => {
+    // Show spinner right away avoiding debounce
+    loading = true;
+    proposalsStore.setProposals([]);
+
+    debounceFindProposals?.();
+  });
 
   onDestroy(unsubscribe);
 
@@ -117,7 +118,7 @@
     });
 </script>
 
-{#if showThisRoute}
+{#if SHOW_PROPOSALS_ROUTE}
   <Layout>
     <section>
       <p>{$i18n.voting.text}</p>
@@ -125,7 +126,7 @@
       <ProposalsFilters />
 
       <InfiniteScroll on:nnsIntersect={findNextProposals}>
-        {#each $proposalsStore as proposalInfo}
+        {#each $proposalsStore as proposalInfo (proposalInfo.id)}
           <ProposalCard {proposalInfo} />
         {/each}
       </InfiniteScroll>

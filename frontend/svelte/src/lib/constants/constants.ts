@@ -9,4 +9,5 @@ export const SECONDS_IN_DAY = SECONDS_IN_HOUR * 24;
 // Taking into account 1/4 of leap year
 export const SECONDS_IN_YEAR = ((4 * 365 + 1) * SECONDS_IN_DAY) / 4;
 export const SECONDS_IN_HALF_YEAR = SECONDS_IN_YEAR / 2;
+export const SECONDS_IN_FOUR_YEARS = SECONDS_IN_YEAR * 4;
 export const SECONDS_IN_EIGHT_YEARS = SECONDS_IN_YEAR * 8;

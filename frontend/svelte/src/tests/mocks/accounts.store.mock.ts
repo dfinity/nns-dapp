@@ -12,6 +12,7 @@ export const mockMainAccount: Account = {
   identifier:
     "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
   balance: ICP.fromString("1234567.8901") as ICP,
+  principal: Principal.fromText("aaaaa-aa"),
 };
 
 export const mockSubAccount: Account = {

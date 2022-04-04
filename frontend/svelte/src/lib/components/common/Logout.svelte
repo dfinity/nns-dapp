@@ -3,7 +3,9 @@
   import { logout } from "../../services/auth.services";
 </script>
 
-<button data-tid="logout" on:click={() => logout({})} class="text">{$i18n.header.logout}</button>
+<button data-tid="logout" on:click={() => logout({})} class="text"
+  >{$i18n.header.logout}</button
+>
 
 <style lang="scss">
   button {

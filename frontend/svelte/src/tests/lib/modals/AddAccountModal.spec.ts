@@ -2,10 +2,12 @@
  * @jest-environment jsdom
  */
 import { fireEvent } from "@testing-library/dom";
+import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import AddAccountModal from "../../../lib/modals/accounts/AddAccountModal.svelte";
 import { addSubAccount } from "../../../lib/services/accounts.services";
 import en from "../../mocks/i18n.mock";
+import { waitModalIntroEnd } from "../../mocks/modal.mock";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function
@@ -22,15 +24,26 @@ describe("AddAccountModal", () => {
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
-  it("should display two button cards", () => {
-    const { container } = render(AddAccountModal);
+  const modalTitleSelector = "h4";
+
+  const renderModal = async (): Promise<RenderResult> => {
+    const modal = render(AddAccountModal);
+
+    const { container } = modal;
+    await waitModalIntroEnd({ container, selector: modalTitleSelector });
+
+    return modal;
+  };
+
+  it("should display two button cards", async () => {
+    const { container } = await renderModal();
 
     const buttons = container.querySelectorAll('div[role="button"]');
     expect(buttons.length).toEqual(2);
   });
 
   it("should be able to select new account ", async () => {
-    const { queryByText } = render(AddAccountModal);
+    const { queryByText } = await renderModal();
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
@@ -43,7 +56,7 @@ describe("AddAccountModal", () => {
   });
 
   it("should have disabled Add Account button", async () => {
-    const { container, queryByText } = render(AddAccountModal);
+    const { container, queryByText } = await renderModal();
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
@@ -57,7 +70,7 @@ describe("AddAccountModal", () => {
   });
 
   it("should have enabled Add Account button when entering name", async () => {
-    const { container, queryByText } = render(AddAccountModal);
+    const { container, queryByText } = await renderModal();
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
@@ -75,8 +88,8 @@ describe("AddAccountModal", () => {
     expect(createButton?.getAttribute("disabled")).toBeNull();
   });
 
-  it("should create a subaccount", async () => {
-    const { container, queryByText } = render(AddAccountModal);
+  const testSubaccount = async (): Promise<{ container: HTMLElement }> => {
+    const { container, queryByText } = await renderModal();
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
@@ -95,5 +108,19 @@ describe("AddAccountModal", () => {
     createButton && (await fireEvent.click(createButton));
 
     expect(addSubAccount).toBeCalled();
+
+    return { container };
+  };
+
+  it("should create a subaccount", async () => await testSubaccount());
+
+  it("should disable input and button when creating a subaccount", async () => {
+    const { container } = await testSubaccount();
+
+    const input = container.querySelector('input[name="newAccount"]');
+    expect(input?.hasAttribute("disabled")).toBeTruthy();
+
+    const createButton = container.querySelector('button[type="submit"]');
+    expect(createButton?.hasAttribute("disabled")).toBeTruthy();
   });
 });
