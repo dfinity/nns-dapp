@@ -1,8 +1,5 @@
 const { existsSync, mkdirSync } = require("fs");
-
-const NNS_DAPP_URL: string = (process.env.NNS_DAPP_URL as boolean)
-  ? String(process.env.NNS_DAPP_URL)
-  : "http://localhost:8080";
+const { NNS_DAPP_URL } = require("./common/constants");
 
 export const config: WebdriverIO.Config = {
   baseUrl: NNS_DAPP_URL,
