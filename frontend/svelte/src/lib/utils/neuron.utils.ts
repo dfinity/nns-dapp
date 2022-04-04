@@ -10,6 +10,8 @@ import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
+import type { AccountsStore } from "../stores/accounts.store";
+import { getAccountByPrincipal } from "./accounts.utils";
 import { formatNumber } from "./format.utils";
 
 export type StateInfo = {
@@ -105,3 +107,23 @@ export const maturityByStake = (neuron: NeuronInfo): number => {
     ) / precision
   );
 };
+
+/*
+ * Returns true if the neuron can be controlled. A neuron can be controlled if:
+ *
+ *  1. The user is the controller
+ *  OR
+ *  2. The user's hardware wallet is the controller.
+ *
+ */
+export const isNeuronControllable = ({
+  neuron: { fullNeuron },
+  accounts,
+}: {
+  neuron: NeuronInfo;
+  accounts: AccountsStore;
+}): boolean =>
+  fullNeuron !== undefined &&
+  fullNeuron.controller !== undefined &&
+  getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
+    undefined;

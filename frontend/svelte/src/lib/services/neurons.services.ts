@@ -28,7 +28,6 @@ import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { createChunks, isDefined } from "../utils/utils";
-import { getAccountByPrincipal } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -424,16 +423,3 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
 
 export const getNeuronId = (path: string): NeuronId | undefined =>
   getLastPathDetailId(path);
-
-/*
- * Returns true if the neuron can be controlled. A neuron can be controlled if:
- *
- *  1. The user is the controller
- *  OR
- *  2. The user's hardware wallet is the controller.
- *
- */
-export const isNeuronControllable = ({ fullNeuron }: NeuronInfo): boolean =>
-  fullNeuron !== undefined &&
-  fullNeuron.controller !== undefined &&
-  getAccountByPrincipal(fullNeuron.controller) !== undefined;
