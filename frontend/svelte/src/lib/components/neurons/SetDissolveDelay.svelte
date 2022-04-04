@@ -14,7 +14,7 @@
   import { votingPower } from "../../utils/neuron.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
 
-  export let neuron: NeuronInfo | undefined;
+  export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;
 
   let loading: boolean = false;
@@ -36,7 +36,7 @@
     dispatcher("nnsSkipDelay");
   };
   let neuronICP: bigint;
-  $: neuronICP = neuron?.fullNeuron?.cachedNeuronStake ?? BigInt(0);
+  $: neuronICP = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
 
   const goToConfirmation = async () => {
     dispatcher("nnsConfirmDelay");

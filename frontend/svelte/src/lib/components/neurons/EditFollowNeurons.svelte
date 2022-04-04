@@ -4,11 +4,10 @@
   import FollowTopicSection from "./FollowTopicSection.svelte";
   import { i18n } from "../../stores/i18n";
   import { enumValues } from "../../utils/enum.utils";
-  import Spinner from "../ui/Spinner.svelte";
   import { onMount } from "svelte";
   import { listKnownNeurons } from "../../services/knownNeurons.services";
 
-  export let neuron: NeuronInfo | undefined;
+  export let neuron: NeuronInfo;
 
   // Load KnownNeurons which are used in the FollowTopicSections
   onMount(() => listKnownNeurons());
@@ -17,16 +16,12 @@
 </script>
 
 <div class="wizard-list" data-tid="edit-followers-screen">
-  {#if neuron !== undefined}
-    <p>{$i18n.follow_neurons.description}</p>
-    <div>
-      {#each topics as topic}
-        <FollowTopicSection {neuron} {topic} />
-      {/each}
-    </div>
-  {:else}
-    <Spinner />
-  {/if}
+  <p>{$i18n.follow_neurons.description}</p>
+  <div>
+    {#each topics as topic}
+      <FollowTopicSection {neuron} {topic} />
+    {/each}
+  </div>
 </div>
 
 <style lang="scss">

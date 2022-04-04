@@ -2,6 +2,8 @@ import type { Readable } from "svelte/store";
 import { derived, writable } from "svelte/store";
 
 export type BusyStateInitiator =
+  | "stake-neuron"
+  | "update-delay"
   | "vote"
   | "accounts"
   | "join-community-fund"
