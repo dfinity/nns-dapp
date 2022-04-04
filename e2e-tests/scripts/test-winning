@@ -15,7 +15,7 @@ set -euo pipefail
   exit 0
 }
 
-REDIRECT_TO_LEGACY="${REDIRECT_TO_LEGACY:-prod}"
+REDIRECT_TO_LEGACY="${REDIRECT_TO_LEGACY:-svelte}"
 export REDIRECT_TO_LEGACY
 NNS_DAPP_URL="$(curl -v "https://nns-${REDIRECT_TO_LEGACY}.winning.gold" 2>&1 | awk '/location:/{print $3}' | tr -d '[:space:]')"
 echo "NNS_DAPP_URL=$NNS_DAPP_URL"

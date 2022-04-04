@@ -60,6 +60,7 @@
     class="collapsible-expand-icon"
     class:size-medium={iconSize === "medium"}
     class:expanded
+    data-tid="collapsible-expand-button"
     aria-expanded={expanded}
     aria-controls={id}
   >

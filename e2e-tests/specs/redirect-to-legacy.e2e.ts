@@ -1,28 +1,14 @@
-import { register } from "../common/register";
-import { waitForLoad } from "../common/waitForLoad";
-
-enum RouteHash {
-  Accounts = "#/accounts",
-  Neurons = "#/neurons",
-  Proposals = "#/proposals",
-  Canisters = "#/canisters",
-}
-enum FrontendPath {
-  Flutter = "/",
-  Svelte = "/v2/",
-}
-enum RedirectToLegacy {
-  prod,
-  staging,
-  flutter,
-  svelte,
-  both,
-}
-const REDIRECT_TO_LEGACY: RedirectToLegacy =
-  process.env.REDIRECT_TO_LEGACY || RedirectToLegacy.prod;
+const { register } = require("../common/register");
+const { waitForLoad } = require("../common/waitForLoad");
+const {
+  RouteHash,
+  FrontendPath,
+  RedirectToLegacy,
+  REDIRECT_TO_LEGACY,
+} = require("../common/constants");
 
 const REDIRECTS = {
-  prod: {
+  [RedirectToLegacy.prod]: {
     [RouteHash.Accounts]: {
       [FrontendPath.Flutter]: FrontendPath.Flutter,
       [FrontendPath.Svelte]: FrontendPath.Flutter,
@@ -40,7 +26,7 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Flutter,
     },
   },
-  staging: {
+  [RedirectToLegacy.staging]: {
     [RouteHash.Accounts]: {
       [FrontendPath.Flutter]: FrontendPath.Flutter,
       [FrontendPath.Svelte]: FrontendPath.Flutter,
@@ -58,7 +44,7 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Flutter,
     },
   },
-  flutter: {
+  [RedirectToLegacy.flutter]: {
     [RouteHash.Accounts]: {
       [FrontendPath.Flutter]: FrontendPath.Flutter,
       [FrontendPath.Svelte]: FrontendPath.Flutter,
@@ -76,7 +62,7 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Flutter,
     },
   },
-  svelte: {
+  [RedirectToLegacy.svelte]: {
     [RouteHash.Accounts]: {
       [FrontendPath.Flutter]: FrontendPath.Svelte,
       [FrontendPath.Svelte]: FrontendPath.Svelte,
@@ -94,7 +80,7 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
   },
-  both: {
+  [RedirectToLegacy.both]: {
     [RouteHash.Accounts]: {
       [FrontendPath.Flutter]: FrontendPath.Flutter,
       [FrontendPath.Svelte]: FrontendPath.Svelte,
@@ -122,12 +108,12 @@ const REDIRECTS = {
 const waitForHash = async (
   browser: WebdriverIO.Browser,
   hash: string,
-  options?: { timeout?: Number }
+  options?: { timeout?: number }
 ) => {
-  var currentHash = "";
+  let currentHash = "";
   try {
     await browser.waitUntil(async () => {
-      let currentLocation = await browser.execute(() => document.location);
+      const currentLocation = await browser.execute(() => document.location);
       currentHash = currentLocation.hash;
       return hash === currentHash;
     }, options);
@@ -149,8 +135,10 @@ const waitForHash = async (
 const waitForPath = async (
   browser: WebdriverIO.Browser,
   path: string,
-  options?: { timeout?: Number }
+  options?: { timeout?: number }
 ) => {
+  const { timeout } = options;
+  const timeoutMsg = `Timed out waiting for path to be: '${path}'`;
   return browser.waitUntil(
     async () =>
       await browser.execute(
@@ -158,7 +146,7 @@ const waitForPath = async (
           `${document.location.pathname}${document.location.hash}` === path,
         path
       ),
-    options
+    { timeout, timeoutMsg }
   );
 };
 
@@ -184,10 +172,10 @@ const redirectTest = async (
 ) => {
   const toPath = REDIRECTS[hash][fromPath];
   await browser.url(`${fromPath}${hash}`);
-  await waitForPath(browser, `${toPath}${hash}`, { timeout: 10000 });
+  await waitForPath(browser, `${toPath}${hash}`, { timeout: 20_000 });
   if (fromPath === toPath) {
     // Check that we stay on this page.
-    await browser.pause(2000);
+    await browser.pause(2_000);
     const path = await browser.execute(
       () => `${document.location.pathname}${document.location.hash}`
     );
@@ -200,7 +188,7 @@ describe("redirects", () => {
     await browser.url("/");
     await waitForLoad(browser);
     await register(browser);
-    await waitForHash(browser, RouteHash.Accounts, { timeout: 10000 });
+    await waitForHash(browser, RouteHash.Accounts, { timeout: 10_000 });
   });
 
   Object.values(FrontendPath).forEach((path) => {
