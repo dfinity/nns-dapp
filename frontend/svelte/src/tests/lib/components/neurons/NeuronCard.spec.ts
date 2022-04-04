@@ -6,6 +6,7 @@ import type { Neuron } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import NeuronCard from "../../../../lib/components/neurons/NeuronCard.svelte";
+import { secondsToDate } from "../../../../lib/utils/date.utils";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
@@ -143,5 +144,22 @@ describe("NeuronCard", () => {
 
     expect(getByText(en.neurons.status_dissolving)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
+  });
+
+  it("renders the `proposerNeuron` version", async () => {
+    const createdTimestampSeconds = Math.floor(Date.now() / 1000);
+    const { getByText } = render(NeuronCard, {
+      props: {
+        neuron: { ...mockNeuron, createdTimestampSeconds },
+        proposerNeuron: true,
+      },
+    });
+
+    const votingValue = formatICP(mockNeuron.votingPower);
+    expect(getByText(votingValue)).toBeInTheDocument();
+    const stakedDate = `${secondsToDate(Number(createdTimestampSeconds))} - ${
+      en.neurons.staked
+    }`;
+    expect(getByText(stakedDate)).toBeInTheDocument();
   });
 });
