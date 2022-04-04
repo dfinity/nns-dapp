@@ -7,6 +7,7 @@
 "use strict";
 
 const fs = require("fs");
+const child_process = require("child_process");
 
 /*
  * Read the values from dfx.json and canister_ids.json
@@ -33,7 +34,7 @@ let replica_host;
 try {
   const dfx_json = JSON.parse(fs.readFileSync(DFX_JSON_PATH, "utf8"));
   replica_host = dfx_json.networks.local.bind;
-  if (!replica_host.startsWith("http://")) {
+  if (replica_host.match(/^https?:\/\//) === null) {
     replica_host = `http://${replica_host}`;
   }
 } catch (e) {
@@ -54,8 +55,6 @@ const II_PORT = 8087;
 const II_URL = `http://localhost:${II_PORT}`;
 const NNS_DAPP_PORT = 8086;
 const NNS_DAPP_URL = `http://localhost:${NNS_DAPP_PORT}`;
-
-const child_process = require("child_process");
 
 const proxy = child_process.spawn("proxy", [
   "--replica-host",
@@ -92,11 +91,12 @@ wdio.stdout.on("close", (code) => {
   proxy.kill();
 });
 
-wdio.on("exit", (code, signal) => {
+wdio.on("exit", (code: number, signal?: number) => {
+  console.log("EXITING", code, signal);
   if (code > 0) {
     // bubble up error from wdio tests
     throw new Error(`End-to-end tests returned with ${code}`);
-  } else if (signal) {
+  } else if (undefined !== signal) {
     console.error("Child was killed with signal", signal);
   } else {
     console.log("Child exited okay");
