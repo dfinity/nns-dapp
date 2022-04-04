@@ -2,7 +2,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { NeuronState, ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import { secondsToDate, secondsToDuration } from "../../utils/date.utils";
+  import { secondsToDuration } from "../../utils/date.utils";
   import {
     getStateInfo,
     hasJoinedCommunityFund,
@@ -24,13 +24,12 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let neuronICP: ICP;
-  $: neuronICP = proposerNeuron
-    ? ICP.fromE8s(neuron.votingPower)
-    : neuron.fullNeuron?.cachedNeuronStake !== undefined
-    ? ICP.fromE8s(
-        neuron.fullNeuron.cachedNeuronStake - neuron.fullNeuron.neuronFees
-      )
-    : ICP.fromE8s(BigInt(0));
+  $: neuronICP =
+    neuron.fullNeuron?.cachedNeuronStake !== undefined
+      ? ICP.fromE8s(
+          neuron.fullNeuron.cachedNeuronStake - neuron.fullNeuron.neuronFees
+        )
+      : ICP.fromE8s(BigInt(0));
   let isHotKeyControl: boolean;
   $: isHotKeyControl = !isCurrentUserController(neuron);
   let dissolvingTime: bigint | undefined;
@@ -58,7 +57,12 @@
   </div>
 
   <div slot="end" class="currency">
-    {#if neuronICP}
+    {#if proposerNeuron}
+      <ICPComponent
+        label={$i18n.neurons.voting_power}
+        icp={ICP.fromE8s(neuron.votingPower)}
+      />
+    {:else if neuronICP}
       <ICPComponent icp={neuronICP} />
     {/if}
   </div>
@@ -69,7 +73,9 @@
       <svelte:component this={stateInfo.Icon} />
     </p>
 
-    <p>{$i18n.neurons.stake}</p>
+    {#if !proposerNeuron}
+      <p>{$i18n.neurons.stake}</p>
+    {/if}
   </div>
 
   {#if dissolvingTime !== undefined}
@@ -78,12 +84,7 @@
     </p>
   {/if}
 
-  {#if proposerNeuron}
-    <p class="duration">
-      {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
-        .staked}
-    </p>
-  {:else if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
+  {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
     <p class="duration">
       {secondsToDuration(neuron.dissolveDelaySeconds)}
       - {$i18n.neurons.dissolve_delay_title}
