@@ -1,14 +1,14 @@
 export const register = async (browser: WebdriverIO.Browser) => {
   await browser.$("main button").waitForExist();
   await browser.$("main button").click();
-  
+
   // REGISTRATION
-  
+
   // Internet Identity
   // First title is from the Service Worker.
   await browser.pause(5000);
   // We want to switch the tab to II.
-  await browser.switchWindow('Internet Identity');
+  await browser.switchWindow("Internet Identity");
   const registerButton = await browser.$("#registerButton");
   await registerButton.waitForExist({ timeout: 10_000 });
   await registerButton.click();
@@ -35,7 +35,7 @@ export const register = async (browser: WebdriverIO.Browser) => {
 
   // Congratulations Page
   const continueButton = await browser.$("#displayUserContinue");
-  await continueButton.waitForExist({ timeout: 10_000 });
+  await continueButton.waitForExist({ timeout: 30_000 });
   await continueButton.click();
 
   // Recovery Mechanism Page
@@ -54,4 +54,4 @@ export const register = async (browser: WebdriverIO.Browser) => {
   await proceedButton.click();
 
   await browser.switchWindow("Network Nervous System frontend dapp");
-}
+};

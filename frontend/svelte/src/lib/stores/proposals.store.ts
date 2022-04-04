@@ -1,13 +1,20 @@
 import type {
   NeuronId,
   NeuronInfo,
+  ProposalId,
   ProposalInfo,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
 } from "@dfinity/nns";
-import { writable } from "svelte/store";
+import { derived, writable } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
+import {
+  concatenateUniqueProposals,
+  excludeProposals,
+  preserveNeuronSelectionAfterUpdate,
+  replaceAndConcatenateProposals,
+} from "../utils/proposals.utils";
 
 export interface ProposalsFiltersStore {
   topics: Topic[];
@@ -37,11 +44,36 @@ const initProposalsStore = () => {
       set([...proposals]);
     },
 
-    pushProposals(proposals: ProposalInfo[]) {
-      update((proposalInfos: ProposalInfo[]) => [
-        ...proposalInfos,
-        ...proposals,
-      ]);
+    /**
+     * Replace the current list of proposals with a new list without provided proposals to remove untrusted proposals from the store.
+     */
+    removeProposals(proposalsToRemove: ProposalInfo[]) {
+      update((proposals: ProposalInfo[]) =>
+        excludeProposals({
+          proposals,
+          exclusion: proposalsToRemove,
+        })
+      );
+    },
+
+    pushProposals({
+      proposals,
+      certified,
+    }: {
+      proposals: ProposalInfo[];
+      certified: boolean;
+    }) {
+      update((oldProposals: ProposalInfo[]) =>
+        certified === true
+          ? replaceAndConcatenateProposals({
+              oldProposals,
+              newProposals: proposals,
+            })
+          : concatenateUniqueProposals({
+              oldProposals,
+              newProposals: proposals,
+            })
+      );
     },
   };
 };
@@ -103,7 +135,41 @@ const initProposalsFiltersStore = () => {
   };
 };
 
-const initNeuronSelectionStore = () => {
+/**
+ * Contains proposalId of the proposalDetail page
+ */
+const initProposalIdStore = () => {
+  const { subscribe, set } = writable<ProposalId | undefined>();
+
+  return {
+    subscribe,
+    set,
+    reset: () => set(undefined),
+  };
+};
+
+/**
+ * Contains proposalInfo of the proposalDetail page
+ */
+const initProposalInfoStore = () => {
+  const proposal = writable<ProposalInfo | undefined>();
+  const proposalChange = derived(
+    [proposalIdStore, proposal],
+    // Reset proposal on proposalId change. To not have this permanent effect in service or component.
+    ([$proposalIdStore, $proposal]) =>
+      $proposal?.id === $proposalIdStore ? $proposal : undefined
+  );
+
+  return {
+    set: proposal.set,
+    ...proposalChange,
+  };
+};
+
+/**
+ * Contains available for voting neurons and their selection state
+ */
+const initNeuronSelectStore = () => {
   const { subscribe, update, set } = writable<NeuronSelectionStore>({
     neurons: [],
     selectedIds: [],
@@ -116,6 +182,19 @@ const initNeuronSelectionStore = () => {
       set({
         neurons: [...neurons],
         selectedIds: neurons.map(({ neuronId }) => neuronId),
+      });
+    },
+
+    updateNeurons(neurons: NeuronInfo[]) {
+      update(({ neurons: currentNeurons, selectedIds }) => {
+        return {
+          neurons,
+          selectedIds: preserveNeuronSelectionAfterUpdate({
+            neurons: currentNeurons,
+            updatedNeurons: neurons,
+            selectedIds,
+          }),
+        };
       });
     },
 
@@ -136,4 +215,6 @@ const initNeuronSelectionStore = () => {
 
 export const proposalsStore = initProposalsStore();
 export const proposalsFiltersStore = initProposalsFiltersStore();
-export const votingNeuronSelectStore = initNeuronSelectionStore();
+export const proposalIdStore = initProposalIdStore();
+export const proposalInfoStore = initProposalInfoStore();
+export const votingNeuronSelectStore = initNeuronSelectStore();

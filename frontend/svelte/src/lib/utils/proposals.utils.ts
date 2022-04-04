@@ -6,9 +6,7 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import { ProposalStatus, Vote } from "@dfinity/nns";
-import { E8S_PER_ICP } from "../constants/icp.constants";
-import { formatNumber } from "./format.utils";
-import { stringifyJson } from "./utils";
+import { isDefined, stringifyJson } from "./utils";
 
 export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
   length <= 0;
@@ -46,8 +44,7 @@ export const proposalActionFields = (
     return [];
   }
 
-  // TODO: https://dfinity.atlassian.net/browse/L2-348
-  return Object.entries(proposal.action?.[key])
+  return Object.entries(proposal.action?.[key] ?? {})
     .filter(([key]) => key !== "payloadBytes")
     .map(([key, value]: [string, object]) => [
       key,
@@ -64,9 +61,6 @@ export const formatProposalSummary = (summary: string): string => {
     '<a target="_blank" href="$1">$1</a>'
   );
 };
-
-export const formatVotingPower = (value: bigint): string =>
-  formatNumber(Number(value) / E8S_PER_ICP);
 
 /**
  * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal is OPEN and has at least one UNSPECIFIED ballots' vote.
@@ -113,7 +107,7 @@ export const hasMatchingProposals = ({
   );
 };
 
-export const selectedNeuronsVotingPover = ({
+export const selectedNeuronsVotingPower = ({
   neurons,
   selectedIds,
 }: {
@@ -123,3 +117,95 @@ export const selectedNeuronsVotingPover = ({
   neurons
     .filter(({ neuronId }) => selectedIds.includes(neuronId))
     .reduce((sum, { votingPower }) => sum + votingPower, BigInt(0));
+
+/**
+ * Generate new selected neuron id list after new neurons response w/o spoiling the previously done user selection
+ */
+export const preserveNeuronSelectionAfterUpdate = ({
+  selectedIds,
+  neurons,
+  updatedNeurons,
+}: {
+  selectedIds: NeuronId[];
+  neurons: NeuronInfo[];
+  updatedNeurons: NeuronInfo[];
+}): NeuronId[] => {
+  const newIds = new Set(updatedNeurons.map(({ neuronId }) => neuronId));
+  const oldIds = new Set(neurons.map(({ neuronId }) => neuronId));
+  const preservedSelection = selectedIds.filter((id) => newIds.has(id));
+  const newNeuronsSelection = Array.from(newIds).filter(
+    (id) => oldIds.has(id) === false
+  );
+  return [...preservedSelection, ...newNeuronsSelection];
+};
+
+export const proposalIdSet = (proposals: ProposalInfo[]): Set<ProposalId> =>
+  new Set(proposals.map(({ id }) => id).filter(isDefined));
+
+/**
+ * Compares proposals by "id"
+ */
+export const concatenateUniqueProposals = ({
+  oldProposals,
+  newProposals,
+}: {
+  oldProposals: ProposalInfo[];
+  newProposals: ProposalInfo[];
+}): ProposalInfo[] => [
+  ...oldProposals,
+  ...excludeProposals({
+    proposals: newProposals,
+    exclusion: oldProposals,
+  }),
+];
+
+/**
+ * Compares proposals by "id"
+ */
+export const replaceAndConcatenateProposals = ({
+  oldProposals,
+  newProposals,
+}: {
+  oldProposals: ProposalInfo[];
+  newProposals: ProposalInfo[];
+}): ProposalInfo[] => {
+  const updatedProposals = (oldProposals = oldProposals.map(
+    (stateProposal) =>
+      newProposals.find(({ id }) => stateProposal.id === id) || stateProposal
+  ));
+
+  return concatenateUniqueProposals({
+    oldProposals: updatedProposals,
+    newProposals,
+  });
+};
+
+/**
+ * Compares 2 proposal lists by entries "id"
+ */
+export const proposalsHaveSameIds = ({
+  proposalsA,
+  proposalsB,
+}: {
+  proposalsA: ProposalInfo[];
+  proposalsB: ProposalInfo[];
+}): boolean =>
+  proposalsA
+    .map(({ id }) => id)
+    .sort()
+    .join() ===
+  proposalsB
+    .map(({ id }) => id)
+    .sort()
+    .join();
+
+export const excludeProposals = ({
+  proposals,
+  exclusion,
+}: {
+  proposals: ProposalInfo[];
+  exclusion: ProposalInfo[];
+}): ProposalInfo[] => {
+  const excludeIds = proposalIdSet(exclusion);
+  return proposals.filter(({ id }) => !excludeIds.has(id as ProposalId));
+};
