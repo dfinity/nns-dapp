@@ -2,6 +2,7 @@ import { loginWithIdentity } from "../common/login";
 import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
 import { getLogoutButton } from "../components/header.ts";
+import { getLoginButton } from "../components/auth";
 
 describe("landing page", () => {
   const nns_tabs = [];
