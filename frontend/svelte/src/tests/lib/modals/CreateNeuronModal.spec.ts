@@ -60,7 +60,7 @@ describe("CreateNeuronModal", () => {
       .mockImplementation(() => mock<GovernanceCanister>());
   });
 
-  const modalTitleSelector = "h4";
+  const modalSelector = "div.toolbar";
 
   it("should display modal", () => {
     const { container } = render(CreateNeuronModal);
@@ -72,7 +72,7 @@ describe("CreateNeuronModal", () => {
     const modal = render(CreateNeuronModal);
 
     const { container } = modal;
-    await waitModalIntroEnd({ container, selector: modalTitleSelector });
+    await waitModalIntroEnd({ container, selector: modalSelector });
 
     return modal;
   };

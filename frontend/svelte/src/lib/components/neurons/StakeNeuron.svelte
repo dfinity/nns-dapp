@@ -77,7 +77,7 @@
         <button
           type="button"
           on:click|preventDefault={stakeMaximum}
-          class="primary small"
+          class="secondary small"
           slot="button">{$i18n.neurons.max}</button
         >
       </Input>

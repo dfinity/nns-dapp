@@ -4,9 +4,9 @@ import { stepIndex } from "../../../lib/utils/step.utils";
 
 describe("StepsState", () => {
   const steps: Steps = [
-    { name: "FirstStep", showBackButton: false },
-    { name: "SecondStep", showBackButton: true },
-    { name: "ThirdStep", showBackButton: true },
+    { name: "FirstStep", showBackButton: false, title: 'FirstStep' },
+    { name: "SecondStep", showBackButton: true, title: 'SecondStep' },
+    { name: "ThirdStep", showBackButton: true, title: 'ThirdStep' },
   ];
 
   it("initialize state to 0", () => {
