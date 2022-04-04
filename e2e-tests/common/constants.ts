@@ -20,6 +20,6 @@ export const REDIRECT_TO_LEGACY: RedirectToLegacy = ((
   env = RedirectToLegacy.prod
 ) => env)(RedirectToLegacy[process.env.REDIRECT_TO_LEGACY]);
 
-const NNS_DAPP_URL: string = (process.env.NNS_DAPP_URL as boolean)
+export const NNS_DAPP_URL: string = (process.env.NNS_DAPP_URL as boolean)
   ? String(process.env.NNS_DAPP_URL)
   : "http://localhost:8080";
