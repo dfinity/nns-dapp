@@ -183,26 +183,8 @@ export const claimOrRefreshNeuron = async ({
   });
 };
 
-export const makeDummyProposals = async ({
-  neuronId,
-  identity,
-}: {
-  neuronId: NeuronId;
-  identity: Identity;
-}): Promise<void> => {
-  const { canister } = await governanceCanister({ identity });
-
-  const dummyProposalsScriptPath: string =
-    "/assets/assets/libs/dummy-proposals.utils.js";
-  const { makeDummyProposals: makeProposals } = await import(
-    dummyProposalsScriptPath
-  );
-
-  await makeProposals({ neuronId, canister });
-};
-
 // TODO: Apply pattern to other canister instantiation L2-371
-const governanceCanister = async ({
+export const governanceCanister = async ({
   identity,
 }: {
   identity: Identity;

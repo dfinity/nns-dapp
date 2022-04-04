@@ -8,11 +8,11 @@ import type {
 } from "@dfinity/nns";
 import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
+import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
   claimOrRefreshNeuron,
   increaseDissolveDelay,
   joinCommunityFund as joinCommunityFundApi,
-  makeDummyProposals as makeDummyProposalsApi,
   queryNeuron,
   queryNeurons,
   setFollowees,
