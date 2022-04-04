@@ -15,6 +15,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Update II
         run: ./scripts/update-ii
       - name: Update chromedriver
