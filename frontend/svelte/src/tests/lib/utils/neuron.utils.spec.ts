@@ -15,6 +15,7 @@ import {
   hasValidStake,
   isCurrentUserController,
   maturityByStake,
+  sortNeuronsByCreatedTimestamp,
   votingPower,
 } from "../../../lib/utils/neuron.utils";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
@@ -260,6 +261,22 @@ describe("neuron-utils", () => {
         },
       };
       expect(maturityByStake(neuron)).toBe(0.333333);
+    });
+  });
+
+  describe("sortNeuronsByCreatedTimestamp", () => {
+    it("should sort neurons by createdTimestampSeconds", () => {
+      const neuron1 = { ...mockNeuron, createdTimestampSeconds: BigInt(1) };
+      const neuron2 = { ...mockNeuron, createdTimestampSeconds: BigInt(2) };
+      const neuron3 = { ...mockNeuron, createdTimestampSeconds: BigInt(3) };
+      expect(sortNeuronsByCreatedTimestamp([])).toEqual([]);
+      expect(sortNeuronsByCreatedTimestamp([neuron1])).toEqual([neuron1]);
+      expect(
+        sortNeuronsByCreatedTimestamp([neuron3, neuron2, neuron1])
+      ).toEqual([neuron3, neuron2, neuron1]);
+      expect(
+        sortNeuronsByCreatedTimestamp([neuron2, neuron1, neuron3])
+      ).toEqual([neuron3, neuron2, neuron1]);
     });
   });
 });
