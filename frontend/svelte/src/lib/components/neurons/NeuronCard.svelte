@@ -24,12 +24,13 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let neuronICP: ICP;
-  $: neuronICP =
-    neuron.fullNeuron?.cachedNeuronStake !== undefined
-      ? ICP.fromE8s(
-          neuron.fullNeuron.cachedNeuronStake - neuron.fullNeuron.neuronFees
-        )
-      : ICP.fromE8s(BigInt(0));
+  $: neuronICP = proposerNeuron
+    ? ICP.fromE8s(neuron.votingPower)
+    : neuron.fullNeuron?.cachedNeuronStake !== undefined
+    ? ICP.fromE8s(
+        neuron.fullNeuron.cachedNeuronStake - neuron.fullNeuron.neuronFees
+      )
+    : ICP.fromE8s(BigInt(0));
   let isHotKeyControl: boolean;
   $: isHotKeyControl = !isCurrentUserController(neuron);
   let dissolvingTime: bigint | undefined;
