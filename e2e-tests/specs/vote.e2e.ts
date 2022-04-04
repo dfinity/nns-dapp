@@ -1,16 +1,11 @@
-import { register } from "../common/register";
-import { logout } from "../common/logout";
 import { loginWithIdentity } from "../common/login";
-import { getLoginButton } from "../components/auth";
 import {
   getNeuronsBody,
   getStakingButton,
   createProposal,
 } from "../components/neurons";
-import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
 import {
-  getLogoutButton,
   getVotingTabButton,
   getNeuronTabButton,
 } from "../components/header.ts";
@@ -78,7 +73,7 @@ describe("vote", () => {
     const neuron = await browser.$(
       '[data-tid="neurons-body"] [data-tid="card"]'
     );
-    if (neuron.isExisting()) {
+    if (await neuron.isExisting()) {
       console.log("We already have a neuron");
     } else {
       const stakingButton = await getStakingButton(browser);

@@ -3,6 +3,6 @@ export const getLoginButton = async (browser: WebdriverIO.Browser) => {
 };
 
 export const isAuthPage = async (browser: WebdriverIO.Browser) => {
-  let loginButton = await getLoginButton(browser);
+  const loginButton = await getLoginButton(browser);
   return await loginButton.isExisting();
 };

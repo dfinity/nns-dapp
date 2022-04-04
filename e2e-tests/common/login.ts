@@ -3,14 +3,14 @@ import { getLogoutButton } from "../components/header.ts";
 
 export const loginWithIdentity = async (
   browser: WebdriverIO.Browser,
-  identity: String
+  identity: string
 ) => {
   const loginButton = await getLoginButton(browser);
   await loginButton.waitForExist();
 
   // Check which windows already exist, then wait for a new window to appear.
   const originalTabId = await browser.getWindowHandle();
-  const windowHandles = await browser.getWindowHandles();
+  // const windowHandles = await browser.getWindowHandles();
   await loginButton.click();
   await browser.pause(5000);
   /*
@@ -48,6 +48,6 @@ export const loginWithIdentity = async (
 
   await browser.switchToWindow(originalTabId);
 
-  let logoutButton = await getLogoutButton(browser);
+  const logoutButton = await getLogoutButton(browser);
   await logoutButton.waitForExist({ timeout: 10000 });
 };

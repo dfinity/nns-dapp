@@ -1,10 +1,6 @@
-import { register } from "../common/register";
-import { logout } from "../common/logout";
 import { loginWithIdentity } from "../common/login";
-import { getLoginButton } from "../components/auth";
-import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
-import { getLogoutButton, getVotingTabButton } from "../components/header.ts";
+import { getVotingTabButton } from "../components/header.ts";
 
 describe("viewProposals", () => {
   it("login", async () => {
