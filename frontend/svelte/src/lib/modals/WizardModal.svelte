@@ -46,6 +46,6 @@
 <style lang="scss">
   @use "../themes/mixins/modal.scss";
   section {
-    @include modal.wrapper;
+    @include modal.section;
   }
 </style>

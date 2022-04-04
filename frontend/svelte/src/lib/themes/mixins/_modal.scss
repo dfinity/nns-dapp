@@ -1,4 +1,4 @@
-@mixin wrapper {
+@mixin section {
   height: min(500px, calc(100vh - 156px - (2 * var(--padding))));
   margin: 0;
   padding: calc(2 * var(--padding));
