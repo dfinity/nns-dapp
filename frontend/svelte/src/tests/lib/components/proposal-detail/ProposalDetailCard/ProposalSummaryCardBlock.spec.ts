@@ -5,7 +5,7 @@
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 import ProposalSummaryCardBlock from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalSummaryCardBlock.svelte";
-import * as en from "../../../../../lib/i18n/en.json";
+import en from "../../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
 describe("ProposalSummaryCardBlock", () => {

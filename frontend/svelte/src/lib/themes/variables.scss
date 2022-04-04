@@ -17,10 +17,20 @@
   --modal-small-width: calc(100% - (8 * var(--padding)));
   --modal-medium-width: calc(100% - (2 * var(--padding)));
 
+  --animation-time-normal: 0.2s;
+
   @include media.min-width(medium) {
     --modal-small-width: 500px;
     --modal-medium-width: 600px;
   }
+
+  // BRAND COLORS
+  --brand-picton-blue: #29abe2;
+  --brand-black: #000000;
+  --brand-flamingo: #f15a24;
+  --brand-sea-buckthorn: #fbb03b;
+  --brand-razzmatazz: #ed1e79;
+  --brand-meteorite: #522785;
 
   --background: #272929;
   --background-rgb: 39, 41, 41;

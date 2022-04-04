@@ -1,8 +1,6 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-
+  import type { NeuronInfo, NeuronId } from "@dfinity/nns";
   import { onDestroy, onMount } from "svelte";
-
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { getNeuronId, loadNeuron } from "../lib/services/neurons.services";
   import NeuronFollowingCard from "../lib/components/neuron-detail/NeuronFollowingCard.svelte";
@@ -12,19 +10,21 @@
   import NeuronProposalsCard from "../lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "../lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_NEURONS_ROUTE,
+  } from "../lib/constants/routes.constants";
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
-  import { authStore } from "../lib/stores/auth.store";
+  import { neuronSelectStore, neuronsStore } from "../lib/stores/neurons.store";
+  import { IS_TESTNET } from "../lib/constants/environment.constants";
 
-  let neuron: NeuronInfo | undefined;
+  let neuronId: NeuronId | undefined;
+  $: neuronSelectStore.select(neuronId);
 
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = ["never", "staging"].includes(
-    process.env.REDIRECT_TO_LEGACY as string
-  );
   onMount(() => {
-    if (!showThisRoute) {
+    if (!SHOW_NEURONS_ROUTE) {
       window.location.replace(`/${window.location.hash}`);
       return;
     }
@@ -37,6 +37,7 @@
       routeStore.replace({ path: AppPath.Neurons });
       return;
     }
+    neuronId = neuronIdMaybe;
 
     const onError = () => {
       unsubscribe();
@@ -49,8 +50,8 @@
 
     await loadNeuron({
       neuronId: neuronIdMaybe,
-      identity: $authStore.identity,
-      setNeuron: (neuronInfo: NeuronInfo) => (neuron = neuronInfo),
+      setNeuron: (neuronInfo: NeuronInfo) =>
+        neuronsStore.pushNeurons([neuronInfo]),
       handleError: onError,
     });
   });
@@ -66,17 +67,19 @@
   };
 </script>
 
-{#if showThisRoute}
+{#if SHOW_NEURONS_ROUTE}
   <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
     <section>
-      {#if neuron}
-        <NeuronMetaInfoCard {neuron} />
-        <NeuronMaturityCard {neuron} />
-        <NeuronFollowingCard {neuron} />
-        <NeuronProposalsCard {neuron} />
-        <NeuronHotkeysCard {neuron} />
-        <NeuronVotingHistoryCard {neuron} />
+      {#if $neuronSelectStore}
+        <NeuronMetaInfoCard neuron={$neuronSelectStore} />
+        <NeuronMaturityCard neuron={$neuronSelectStore} />
+        <NeuronFollowingCard neuron={$neuronSelectStore} />
+        {#if IS_TESTNET}
+          <NeuronProposalsCard neuron={$neuronSelectStore} />
+        {/if}
+        <NeuronHotkeysCard neuron={$neuronSelectStore} />
+        <NeuronVotingHistoryCard neuron={$neuronSelectStore} />
       {:else}
         <Spinner />
       {/if}

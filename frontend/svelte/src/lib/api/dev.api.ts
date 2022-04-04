@@ -1,7 +1,9 @@
+import type { Identity } from "@dfinity/agent";
 import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
-import type { BlockHeight, E8s, TransferError } from "@dfinity/nns";
+import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import { governanceCanister } from "./governance.api";
 
 /*
  * Gives the caller the specified amount of (fake) ICPs.
@@ -13,7 +15,7 @@ export const acquireICPTs = async ({
 }: {
   accountIdentifier: string;
   e8s: E8s;
-}): Promise<BlockHeight | TransferError> => {
+}): Promise<BlockHeight> => {
   assertTestnet();
 
   // Create an identity who's default ledger account is initialised with 10k ICP on the testnet, then use that
@@ -41,6 +43,26 @@ export const acquireICPTs = async ({
     amount: ICP.fromE8s(e8s),
     to: AccountIdentifier.fromHex(accountIdentifier),
   });
+};
+
+export const makeDummyProposals = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  assertTestnet();
+
+  const { canister } = await governanceCanister({ identity });
+
+  const dummyProposalsScriptPath: string =
+    "/assets/assets/libs/dummy-proposals.utils.js";
+  const { makeDummyProposals: makeProposals } = await import(
+    dummyProposalsScriptPath
+  );
+
+  await makeProposals({ neuronId, canister });
 };
 
 const assertTestnet = () => {

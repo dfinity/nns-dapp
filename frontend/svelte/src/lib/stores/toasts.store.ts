@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 import type { ToastMsg } from "../types/toast";
+import { errorToString } from "../utils/error.utils";
 
 /**
  * Toast messages.
@@ -15,6 +16,15 @@ const initToastsStore = () => {
 
     show(msg: ToastMsg) {
       update((messages: ToastMsg[]) => [...messages, msg]);
+    },
+
+    error({ labelKey, err }: { labelKey: string; err?: unknown }) {
+      update((messages: ToastMsg[]) => [
+        ...messages,
+        { labelKey, level: "error", detail: errorToString(err) },
+      ]);
+
+      console.error(err);
     },
 
     hide() {

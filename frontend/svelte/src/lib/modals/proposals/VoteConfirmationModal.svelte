@@ -4,7 +4,7 @@
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
   import { i18n } from "../../stores/i18n";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatVotingPower } from "../../utils/proposals.utils";
+  import { formatVotingPower } from "../../utils/neuron.utils";
   import ConfirmationModal from "../ConfirmationModal.svelte";
 
   export let voteType: Vote;

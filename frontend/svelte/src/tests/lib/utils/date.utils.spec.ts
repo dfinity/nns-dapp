@@ -1,5 +1,8 @@
-import * as en from "../../../lib/i18n/en.json";
-import { secondsToDuration } from "../../../lib/utils/date.utils";
+import {
+  secondsToDate,
+  secondsToDuration,
+} from "../../../lib/utils/date.utils";
+import en from "../../mocks/i18n.mock";
 
 describe("secondsToDuration", () => {
   it("should give year details", () => {
@@ -20,5 +23,20 @@ describe("secondsToDuration", () => {
   it("should give minute details", () => {
     const MORE_THAN_ONE_MINUTE = BigInt(60 * 4);
     expect(secondsToDuration(MORE_THAN_ONE_MINUTE)).toContain(en.time.minute);
+  });
+});
+
+describe("secondsToDate", () => {
+  it("starts in 1970", () => {
+    expect(secondsToDate(0)).toBe("January 1, 1970");
+  });
+
+  it("returns day in number, month and year", () => {
+    // We only support english for now
+    const march25of2022InSeconds = Math.round(1648200639061 / 1000);
+    const expectedDateText = secondsToDate(march25of2022InSeconds);
+    expect(expectedDateText).toContain("March");
+    expect(expectedDateText).toContain("2022");
+    expect(expectedDateText).toContain("25");
   });
 });

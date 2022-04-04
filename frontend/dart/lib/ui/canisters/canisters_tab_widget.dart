@@ -7,6 +7,8 @@ import 'package:nns_dapp/ui/_components/page_button.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/_components/tab_title_and_content.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
+import 'package:nns_dapp/data/env.dart' as env;
+import 'package:universal_html/html.dart' as html;
 import '../../nns_dapp.dart';
 import '../../wallet_router_delegate.dart';
 import 'select_canister_add_action_widget.dart';
@@ -25,6 +27,10 @@ class _CanistersPageState extends State<CanistersPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!env.showCanistersRoute()) {
+      html.window.location.replace("/v2/#/canisters");
+      return Text('Redirecting...');
+    }
     return StreamBuilder(
         stream: context.boxes.canisters.changes,
         builder: (context, snapshot) {

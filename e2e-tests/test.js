@@ -92,13 +92,13 @@ wdio.stdout.on("close", (code) => {
   proxy.kill();
 });
 
-wdio.on('exit', (code, signal) => {
+wdio.on("exit", (code, signal) => {
   if (code > 0) {
     // bubble up error from wdio tests
     throw new Error(`End-to-end tests returned with ${code}`);
   } else if (signal) {
-    console.error('Child was killed with signal', signal);
+    console.error("Child was killed with signal", signal);
   } else {
-    console.log('Child exited okay');
+    console.log("Child exited okay");
   }
-})
+});

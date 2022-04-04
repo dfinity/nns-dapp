@@ -21,7 +21,7 @@ describe("canisters-api", () => {
   afterEach(() => spyGetCanisters.mockClear());
 
   it("should call the canister to list the canisters 🤪", async () => {
-    await queryCanisters({ identity: mockIdentity });
+    await queryCanisters({ identity: mockIdentity, certified: true });
 
     expect(spyGetCanisters).toHaveReturnedTimes(1);
   });

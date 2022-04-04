@@ -5,9 +5,9 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import { authStore } from "../lib/stores/auth.store";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { errorToString } from "../lib/utils/error.utils";
   import { listCanisters } from "../lib/services/canisters.services";
   import { canistersStore } from "../lib/stores/canisters.store";
+  import { SHOW_CANISTERS_ROUTE } from "../lib/constants/routes.constants";
   import Spinner from "../lib/components/ui/Spinner.svelte";
 
   let loading: boolean = false;
@@ -18,24 +18,19 @@
     try {
       await listCanisters({
         clearBeforeQuery: true,
-        identity: $authStore.identity,
       });
     } catch (err: unknown) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.list_canisters",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
-      console.error(err);
     }
 
     loading = false;
   };
 
-  // TODO: To be removed once this page has been implemented
-  const showThisRoute = process.env.REDIRECT_TO_LEGACY === "never";
   onMount(async () => {
-    if (!showThisRoute) {
+    if (!SHOW_CANISTERS_ROUTE) {
       window.location.replace("/#/canisters");
     }
 
@@ -46,7 +41,7 @@
   const createOrLink = () => alert("Create or Link");
 </script>
 
-{#if showThisRoute}
+{#if SHOW_CANISTERS_ROUTE}
   <Layout>
     <section>
       <p>{$i18n.canisters.text}</p>

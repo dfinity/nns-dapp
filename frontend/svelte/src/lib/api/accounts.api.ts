@@ -16,8 +16,10 @@ import { createAgent } from "../utils/agent.utils";
 
 export const loadAccounts = async ({
   identity,
+  certified,
 }: {
   identity: Identity;
+  certified: boolean;
 }): Promise<AccountsStore> => {
   const agent = await createAgent({ identity, host: identityServiceURL });
   // ACCOUNTS
@@ -30,7 +32,7 @@ export const loadAccounts = async ({
   // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L232
   await nnsDapp.addAccount();
 
-  const mainAccount: AccountDetails = await nnsDapp.getAccount();
+  const mainAccount: AccountDetails = await nnsDapp.getAccount({ certified });
 
   // ACCOUNT BALANCES
   const ledger: LedgerCanister = LedgerCanister.create({
@@ -38,24 +40,28 @@ export const loadAccounts = async ({
     canisterId: LEDGER_CANISTER_ID,
   });
 
-  const getAccountBalance = async (
+  const mapAccount = async (
     account: AccountDetails | SubAccountDetails
   ): Promise<Account> => {
     const balance: ICP = await ledger.accountBalance({
       accountIdentifier: AccountIdentifier.fromHex(account.account_identifier),
-      certified: true,
+      certified,
     });
+
     return {
-      identifier: mainAccount.account_identifier,
+      identifier: account.account_identifier,
+      // SubAccountDetails does not have "principal"
+      principal: "principal" in account ? account.principal : undefined,
       balance,
-      // Account does not have "name" property. Typescript needed a check like this.
+      // AccountDetails does not have "name" or "sub_account" property. Typescript needed a check like this.
+      subAccount: "sub_account" in account ? account.sub_account : undefined,
       name: "name" in account ? account.name : undefined,
     };
   };
 
   const [main, ...subAccounts] = await Promise.all([
-    getAccountBalance(mainAccount),
-    ...mainAccount.sub_accounts.map(getAccountBalance),
+    mapAccount(mainAccount),
+    ...mainAccount.sub_accounts.map(mapAccount),
   ]);
 
   return {

@@ -47,6 +47,13 @@ jobs:
         run: npm run format
         working-directory: ./frontend/svelte
 
+      - name: Install e2e test dependencies
+        run: npm ci
+        working-directory: ./e2e-tests
+      - name: Format e2e-tests
+        run: npm run format
+        working-directory: ./e2e-tests
+
       - name: Commit Formatting changes - will not trigger rebuild
         uses: EndBug/add-and-commit@v7.2.0
         if: ${{ github.event_name == 'pull_request' }}
@@ -158,7 +165,7 @@ jobs:
         working-directory: ./frontend/svelte
     env:
       DEPLOY_ENV: mainnet
-      REDIRECT_TO_LEGACY: never
+      REDIRECT_TO_LEGACY: svelte
 
     steps:
       - name: Checkout

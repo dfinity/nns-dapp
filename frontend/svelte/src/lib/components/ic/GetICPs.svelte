@@ -7,7 +7,6 @@
   import { getICPs } from "../../services/dev.services";
   import Spinner from "../ui/Spinner.svelte";
   import { toastsStore } from "../../stores/toasts.store";
-  import { errorToString } from "../../utils/error.utils";
 
   let visible: boolean = false;
   let transferring: boolean = false;
@@ -16,9 +15,8 @@
 
   const onSubmit = async ({ target }) => {
     if (invalidForm) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "Invalid ICPs input.",
-        level: "error",
       });
       return;
     }
@@ -33,11 +31,9 @@
 
       reset();
     } catch (err: unknown) {
-      console.error(err);
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "ICPs could not be transferred.",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
     }
 
@@ -56,12 +52,16 @@
   $: invalidForm = inputValue === undefined || inputValue <= 0;
 </script>
 
-<button on:click={() => (visible = true)} class="open text">Get ICPs</button>
+<button
+  data-tid="get-icp-button"
+  on:click={() => (visible = true)}
+  class="open text">Get ICPs</button
+>
 
 <Modal {visible} on:nnsClose={onClose}>
   <span slot="title">Get ICPs</span>
 
-  <form on:submit|preventDefault={onSubmit}>
+  <form data-tid="get-icp-form" on:submit|preventDefault={onSubmit}>
     <span class="how-much">How much?</span>
 
     <Input
@@ -72,6 +72,7 @@
     />
 
     <button
+      data-tid="get-icp-submit"
       type="submit"
       class="primary"
       disabled={invalidForm || transferring}

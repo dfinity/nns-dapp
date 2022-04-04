@@ -203,6 +203,7 @@ export const idlFactory = ({ IDL }) => {
     ),
   });
 };
-export const init = ({ IDL }) => {
+// Remove param `{ IDL }` because TS was complaining of unused variable
+export const init = () => {
   return [];
 };

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { authStore } from "../lib/stores/auth.store";
   import type { AuthStore } from "../lib/stores/auth.store";
@@ -7,8 +7,8 @@
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { errorToString } from "../lib/utils/error.utils";
   import Banner from "../lib/components/common/Banner.svelte";
+  import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
 
   let signedIn: boolean = false;
 
@@ -17,12 +17,10 @@
     try {
       await authStore.signIn();
     } catch (err: unknown) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.sign_in",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
-      console.error(err);
     }
   };
 
@@ -47,6 +45,8 @@
     }
   );
 
+  onMount(() => displayAndCleanLogoutMsg());
+
   onDestroy(unsubscribe);
 </script>
 
@@ -70,9 +70,9 @@
   </main>
 
   <img
-    src="/assets/assets/ic-badge-powered-by_label-stripe-white-text.svg"
+    src="/assets/assets/100_on_chain-small-centered-white_text.svg"
     role="presentation"
-    alt={$i18n.auth.powered_by}
+    alt={$i18n.auth.on_chain}
     class="bottom-banner"
     loading="lazy"
   />
@@ -167,7 +167,7 @@
     color: white;
     text-indent: 4px; /* The text looks off centre otherwise, although technically it is centred. */
 
-    transition: background 0.2s;
+    transition: background var(--animation-time-normal);
 
     justify-self: center;
 

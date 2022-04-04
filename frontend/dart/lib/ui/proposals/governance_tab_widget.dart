@@ -8,9 +8,8 @@ import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/_components/tab_title_and_content.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:nns_dapp/data/env.dart' as env;
 import '../../nns_dapp.dart';
-
-const REDIRECT_TO_LEGACY = String.fromEnvironment('REDIRECT_TO_LEGACY');
 
 class GovernanceTabWidget extends StatefulWidget {
   @override
@@ -106,7 +105,7 @@ class _GovernanceTabWidgetState extends State<GovernanceTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (!["true", "1", "prod"].contains(REDIRECT_TO_LEGACY)) {
+    if (!env.showProposalsRoute()) {
       html.window.location.replace("/v2/#/proposals");
       return Text('Redirecting...');
     }

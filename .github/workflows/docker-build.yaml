@@ -37,7 +37,7 @@ jobs:
          - BUILD_NAME: "testnet"
            DEPLOY_ENV: "testnet"
            OWN_CANISTER_ID: "qhbym-qaaaa-aaaaa-aaafq-cai"
-           REDIRECT_TO_LEGACY: "false"
+           REDIRECT_TO_LEGACY: "both"
          - BUILD_NAME: "staging"
            DEPLOY_ENV: "testnet"
            OWN_CANISTER_ID: "qhbym-qaaaa-aaaaa-aaafq-cai"
@@ -83,7 +83,7 @@ jobs:
          SHA="$(sha256sum < "${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm")"
          git fetch origin "+${NOTE}:${NOTE}"
          if git notes --ref="${{ matrix.BUILD_NAME }}/wasm-sha" add -m "$SHA"
-         then git push origin "${NOTE}:${NOTE}"
+         then git push origin "${NOTE}:${NOTE}" || true
          else echo SHA already set
          fi
       - name: "Verify that the WASM module is small enough to deploy"

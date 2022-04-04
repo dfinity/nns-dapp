@@ -87,6 +87,7 @@
         background-color: var(--gray-50-background);
         border: 1px solid var(--black);
 
+        &[disabled] + span.placeholder,
         &:valid + span.placeholder,
         &:focus + span.placeholder {
           background-color: var(--gray-50-background);
@@ -122,7 +123,7 @@
     left: calc(2 * var(--padding));
     transform: translate(0, -50%);
 
-    transition: all 0.2s;
+    transition: all var(--animation-time-normal);
     transform-origin: top left;
 
     pointer-events: none;
@@ -146,5 +147,9 @@
 
   input:focus {
     border: 1px solid var(--blue-500);
+  }
+
+  input[disabled] {
+    cursor: text;
   }
 </style>

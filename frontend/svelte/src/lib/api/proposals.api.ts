@@ -1,7 +1,5 @@
 import type { Identity } from "@dfinity/agent";
 import type {
-  EmptyResponse,
-  GovernanceError,
   ListProposalsResponse,
   NeuronId,
   ProposalId,
@@ -18,10 +16,12 @@ export const queryProposals = async ({
   beforeProposal,
   identity,
   filters,
+  certified,
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity;
   filters: ProposalsFiltersStore;
+  certified: boolean;
 }): Promise<ProposalInfo[]> => {
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
@@ -44,7 +44,7 @@ export const queryProposals = async ({
       includeRewardStatus: rewards,
       includeStatus: status,
     },
-    certified: false,
+    certified,
   });
 
   return proposals;
@@ -53,15 +53,17 @@ export const queryProposals = async ({
 export const queryProposal = async ({
   proposalId,
   identity,
+  certified,
 }: {
   proposalId: ProposalId;
   identity: Identity;
+  certified: boolean;
 }): Promise<ProposalInfo | undefined> => {
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.getProposal({ proposalId, certified: false });
+  return governance.getProposal({ proposalId, certified });
 };
 
 export const registerVote = async ({
@@ -74,16 +76,14 @@ export const registerVote = async ({
   proposalId: ProposalId;
   vote: Vote;
   identity: Identity;
-}): Promise<GovernanceError | undefined> => {
+}): Promise<void> => {
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  const response: EmptyResponse = await governance.registerVote({
+  return governance.registerVote({
     neuronId,
     vote,
     proposalId,
   });
-
-  return "Err" in response ? response.Err : undefined;
 };

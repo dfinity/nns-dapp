@@ -7,6 +7,7 @@
     "back": "Back",
     "confirm_yes": "Yes, I'm sure",
     "confirm_no": "Cancel",
+    "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
     "unspecified": "Unspecified"
@@ -23,9 +24,20 @@
     "create_subaccount_too_long": "The name of the subaccount is too long. Please, choose a shorter name.",
     "create_subaccount_limit_exceeded": "Sorry, you reached the limit of subaccounts in this account.",
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
-    "get_neuron": "There was an unexpected issue while loading the neuron.",
+    "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
-    "register_vote_unknown": "Sorry, there was an unexpectedf error while registering the vote. Please try again later."
+    "register_vote_neuron": "$neuronId: $reason",
+    "register_vote_unknown": "Sorry, there was an unexpectedf error while registering the vote. Please try again later.",
+    "add_followee": "Sorry, there was an unexpectedf error while adding the followee. Please try again later.",
+    "remove_followee": "Sorry, there was an unexpectedf error while removing the followee. Please try again later.",
+    "followee_does_not_exist": "Sorry, followee already removed, refresh the page to have the latest data.",
+    "accounts_not_found": "An error occurred while loading the accounts information.",
+    "fail": "fail",
+    "join_community_fund": "Sorry, there was an error joining the comomunity fund. Please try again later.",
+    "suspicious_response": "Suspicious response detected. Page reload suggested.",
+    "start_dissolving": "Sorry, there was an error dissolving the neuron. Please try again later.",
+    "stop_dissolving": "Sorry, there was an error stopping the dissolve process of the neuron. Please try again later.",
+    "dummy_proposal": "There was an error creating the proposals. Check the console for more details."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -45,7 +57,7 @@
     "nns": "NETWORK NERVOUS SYSTEM",
     "icp_governance": "ICP and governance",
     "login": "Login",
-    "powered_by": "Powered by IC Banner"
+    "on_chain": "100% on-chain Internet Computer"
   },
   "accounts": {
     "title": "Accounts",
@@ -58,7 +70,8 @@
     "attach_hardware_title": "Attach Hardware Wallet",
     "attach_hardware_subtitle": "Link a hardware wallet to this account",
     "new_linked_account_title": "New Linked Account",
-    "new_linked_account_placeholder": "Account Name"
+    "new_linked_account_placeholder": "Account Name",
+    "linked_account": "LINKED ACCOUNT"
   },
   "neurons": {
     "title": "Neurons",
@@ -82,8 +95,8 @@
     "status_unspecified": "",
     "status_dissolved": "Unlocked",
     "status_dissolving": "Dissolving",
-    "community_fund": "[community fund]",
-    "hotkey_control": "[hotkey control]",
+    "community_fund": "COMMUNITY FUND",
+    "hotkey_control": "HOTKEY CONTROL",
     "stake": "Stake",
     "icp_stake": "$amount ICP Stake",
     "staked": "Staked",
@@ -104,7 +117,10 @@
     "address_placeholder": "Followee Address",
     "follow_neuron": "Follow Neuron",
     "options_title": "Options for Following",
-    "follow": "Follow"
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "success_add_followee": "Followee added successfully",
+    "success_remove_followee": "Followee removed successfully"
   },
   "follow_neurons": {
     "description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",
@@ -214,7 +230,26 @@
     "title": "Neuron",
     "proposer": "Proposer",
     "voting_history": "Voting History",
-    "vote": "Vote"
+    "vote": "Vote",
+    "join_community_fund": "Join Community Fund",
+    "increase_dissolve_delay": "Increase Dissolve Delay",
+    "start_dissolving": "Start Dissolving",
+    "stop_dissolving": "Stop Dissolving",
+    "disburse": "Disburse",
+    "increase_stake": "Increase Neuron Stake",
+    "split_neuron": "Split Neuron",
+    "voting_power_tooltip": "Calculated as: \nICP stake x Dissolve Delay Bonus x Age Bonus:\n$stake x $delayMultiplier x $ageMultiplier",
+    "join_community_fund_description": "Are you sure you want this neuron to join the community fund? This action is irreversible.",
+    "maturity_title": "Maturity",
+    "merge_maturity": "Merge Maturity",
+    "spawn_neuron": "Spawn Neuron",
+    "maturity_tooltip": "When your neuron votes, maturity increases.\nThis allows you to spawn a new neuron containing newly minted ICP.\nIncreases in maturity can take place up to three days after voting.",
+    "start_dissolve_description": "This will cause your neuron to lose its age bonus.\nAre you sure you wish to continue?",
+    "stop_dissolve_description": "Are you sure you want to stop the dissolve process?",
+    "join_community_fund_success": "Your neuron has successfully joined the community fund.",
+    "start_dissolve_success": "Your neuron has started dissolving.",
+    "stop_dissolve_success": "Your neuron has stoped dissolving.",
+    "dummy_proposal_success": "Dummy proposals created successfully"
   },
   "time": {
     "year": "year",

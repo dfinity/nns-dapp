@@ -4,11 +4,11 @@
 
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import * as en from "../../../lib/i18n/en.json";
 import ProposerModal from "../../../lib/modals/proposals/ProposerModal.svelte";
 import { authStore } from "../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
+import en from "../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
