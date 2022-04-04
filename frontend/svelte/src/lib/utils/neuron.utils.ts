@@ -123,7 +123,6 @@ export const isNeuronControllable = ({
   neuron: NeuronInfo;
   accounts: AccountsStore;
 }): boolean =>
-  fullNeuron !== undefined &&
-  fullNeuron.controller !== undefined &&
+  fullNeuron?.controller !== undefined &&
   getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
     undefined;
