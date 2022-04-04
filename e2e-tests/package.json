@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "wdio": "wdio run ./wdio.conf.ts",
-    "test": "./test.js",
+    "test": "tsc test.ts && node test.js",
     "lint": "eslint --max-warnings 0 './**/*.{js,ts}'",
     "format": "prettier --write --plugin-search-dir=. ."
   },

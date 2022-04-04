@@ -1,31 +1,14 @@
 const { register } = require("../common/register");
 const { waitForLoad } = require("../common/waitForLoad");
-
-enum RouteHash {
-  Accounts = "#/accounts",
-  Neurons = "#/neurons",
-  Proposals = "#/proposals",
-  Canisters = "#/canisters",
-}
-enum FrontendPath {
-  Flutter = "/",
-  Svelte = "/v2/",
-}
-enum RedirectToLegacy {
-  prod = "prod",
-  staging = "staging",
-  flutter = "flutter",
-  svelte = "svelte",
-  both = "both",
-}
-
-const REDIRECT_TO_LEGACY: RedirectToLegacy =
-  RedirectToLegacy[process.env.REDIRECT_TO_LEGACY] !== undefined
-    ? RedirectToLegacy[process.env.REDIRECT_TO_LEGACY]
-    : RedirectToLegacy.prod;
+const {
+  RouteHash,
+  FrontendPath,
+  RedirectToLegacy,
+  REDIRECT_TO_LEGACY,
+} = require("../common/constants");
 
 const REDIRECTS = {
-  prod: {
+  [RedirectToLegacy.prod]: {
     [RouteHash.Accounts]: {
       [FrontendPath.Flutter]: FrontendPath.Flutter,
       [FrontendPath.Svelte]: FrontendPath.Flutter,
@@ -43,7 +26,7 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Flutter,
     },
   },
-  staging: {
+  [RedirectToLegacy.staging]: {
     [RouteHash.Accounts]: {
       [FrontendPath.Flutter]: FrontendPath.Flutter,
       [FrontendPath.Svelte]: FrontendPath.Flutter,
@@ -61,7 +44,7 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Flutter,
     },
   },
-  flutter: {
+  [RedirectToLegacy.flutter]: {
     [RouteHash.Accounts]: {
       [FrontendPath.Flutter]: FrontendPath.Flutter,
       [FrontendPath.Svelte]: FrontendPath.Flutter,
@@ -79,7 +62,7 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Flutter,
     },
   },
-  svelte: {
+  [RedirectToLegacy.svelte]: {
     [RouteHash.Accounts]: {
       [FrontendPath.Flutter]: FrontendPath.Svelte,
       [FrontendPath.Svelte]: FrontendPath.Svelte,
@@ -97,7 +80,7 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
   },
-  both: {
+  [RedirectToLegacy.both]: {
     [RouteHash.Accounts]: {
       [FrontendPath.Flutter]: FrontendPath.Flutter,
       [FrontendPath.Svelte]: FrontendPath.Svelte,

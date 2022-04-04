@@ -92,6 +92,7 @@ wdio.stdout.on("close", (code) => {
 });
 
 wdio.on("exit", (code: number, signal?: number) => {
+  console.log("EXITING", code, signal);
   if (code > 0) {
     // bubble up error from wdio tests
     throw new Error(`End-to-end tests returned with ${code}`);
