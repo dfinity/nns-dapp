@@ -19,6 +19,7 @@ jobs:
         run: ./scripts/update-ii
       - name: Update chromedriver
         run: npm update chromedriver
+        working-directory: e2e-tests
       - name: Commit updated Internet Identity - will not trigger rebuild
         uses: EndBug/add-and-commit@v7.2.0
         with:
