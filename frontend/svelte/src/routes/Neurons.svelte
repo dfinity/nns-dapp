@@ -11,7 +11,7 @@
   import type { NeuronId } from "@dfinity/nns";
   import { listNeurons } from "../lib/services/neurons.services";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import { neuronsStore, sortedNeuronStore } from "../lib/stores/neurons.store";
+  import { sortedNeuronStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
   import {
     AppPath,
