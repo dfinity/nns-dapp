@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 [[ "${1:-}" == "help" ]] || {
-    cat <<-EOF
+  cat <<-EOF
 
 	Runs npm audit against all the packages in this repo.
 
@@ -11,4 +11,4 @@
 	EOF
 }
 
-git ls-files | grep package.json  | while read line ; do ( echo "## npm audit $line" &&  cd "$(dirname "$line")" && npm audit "${@}" ; ) ; done
+git ls-files | grep package.json | while read -r line; do (echo "## npm audit $line" && cd "$(dirname "$line")" && npm audit "${@}"); done
