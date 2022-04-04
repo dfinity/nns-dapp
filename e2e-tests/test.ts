@@ -34,7 +34,7 @@ let replica_host;
 try {
   const dfx_json = JSON.parse(fs.readFileSync(DFX_JSON_PATH, "utf8"));
   replica_host = dfx_json.networks.local.bind;
-  if (replica_host.startsWith("http://") !== true) {
+  if (replica_host.match(/^https?:\/\//) === null) {
     replica_host = `http://${replica_host}`;
   }
 } catch (e) {
