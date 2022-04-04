@@ -1,7 +1,5 @@
-import type { MakeProposalRequest, NeuronId } from "@dfinity/nns";
-
 // Taken from proposal 22690
-export const addNodeToSubnetPayload = new Uint8Array([
+const addNodeToSubnetPayload = new Uint8Array([
   68, 73, 68, 76, 2, 108, 2, 189, 134, 157, 139, 4, 104, 187, 248, 253, 237, 15,
   1, 109, 104, 1, 0, 1, 29, 48, 88, 10, 26, 118, 67, 4, 149, 19, 248, 247, 214,
   255, 230, 245, 16, 0, 87, 3, 69, 166, 49, 96, 202, 183, 120, 76, 89, 2, 6, 1,
@@ -19,7 +17,7 @@ export const addNodeToSubnetPayload = new Uint8Array([
 ]);
 
 // Taken from payload 22955
-export const updateSubnetPayload = new Uint8Array([
+const updateSubnetPayload = new Uint8Array([
   68, 73, 68, 76, 1, 108, 2, 189, 134, 157, 139, 4, 104, 201, 239, 142, 197, 9,
   113, 1, 0, 1, 29, 106, 143, 103, 216, 110, 204, 131, 7, 4, 128, 56, 173, 113,
   89, 148, 88, 193, 49, 181, 49, 220, 155, 176, 182, 145, 148, 13, 185, 2, 40,
@@ -28,7 +26,7 @@ export const updateSubnetPayload = new Uint8Array([
   52, 56, 55, 100,
 ]);
 
-export const updateSubnetConfigPayload = new Uint8Array([
+const updateSubnetConfigPayload = new Uint8Array([
   68, 73, 68, 76, 10, 108, 28, 157, 188, 214, 5, 1, 140, 222, 255, 11, 2, 205,
   168, 240, 102, 1, 253, 217, 221, 150, 1, 3, 135, 210, 149, 176, 1, 126, 134,
   159, 150, 194, 1, 1, 200, 139, 164, 208, 3, 2, 189, 134, 157, 139, 4, 104,
@@ -64,7 +62,7 @@ export const updateSubnetConfigPayload = new Uint8Array([
 ]);
 
 // Taken from payload 43825
-export const addOrRemoveDataCentersPayload = new Uint8Array([
+const addOrRemoveDataCentersPayload = new Uint8Array([
   68, 73, 68, 76, 6, 108, 2, 179, 128, 187, 160, 15, 1, 242, 202, 249, 200, 15,
   5, 109, 2, 108, 4, 219, 183, 1, 113, 170, 148, 186, 2, 3, 244, 129, 179, 4,
   113, 179, 176, 218, 195, 3, 113, 110, 4, 108, 2, 236, 142, 163, 51, 115, 175,
@@ -236,23 +234,7 @@ export const addOrRemoveDataCentersPayload = new Uint8Array([
   44, 84, 111, 107, 121, 111, 7, 69, 113, 117, 105, 110, 105, 120, 0,
 ]);
 
-// Uses the passed in neuron to make a few dummy proposals.
-// Should/can only be used on testnets.
-type DummyProposal = {
-  neuronId: NeuronId;
-  title: string;
-  url: string;
-  summary: string;
-  nnsFunction?: number;
-  payload?: Uint8Array;
-};
-
-export const makeMotionDummyProposalRequest = ({
-  title,
-  url,
-  summary,
-  neuronId,
-}: DummyProposal): MakeProposalRequest => ({
+const makeMotionDummyProposalRequest = ({ title, url, summary, neuronId }) => ({
   neuronId,
   title,
   url: url,
@@ -265,12 +247,12 @@ export const makeMotionDummyProposalRequest = ({
   },
 });
 
-export const makeNetworkEconomicsDummyProposalRequest = ({
+const makeNetworkEconomicsDummyProposalRequest = ({
   title,
   url,
   summary,
   neuronId,
-}: DummyProposal): MakeProposalRequest => ({
+}) => ({
   neuronId,
   title,
   url,
@@ -289,12 +271,12 @@ export const makeNetworkEconomicsDummyProposalRequest = ({
   },
 });
 
-export const makeRewardNodeProviderDummyProposal = ({
+const makeRewardNodeProviderDummyProposal = ({
   title,
   url,
   summary,
   neuronId,
-}: DummyProposal): MakeProposalRequest => ({
+}) => ({
   neuronId,
   title,
   url,
@@ -313,14 +295,14 @@ export const makeRewardNodeProviderDummyProposal = ({
   },
 });
 
-export const makeExecuteNnsFunctionDummyProposalRequest = ({
+const makeExecuteNnsFunctionDummyProposalRequest = ({
   title,
   url,
   summary,
   neuronId,
   nnsFunction,
   payload,
-}: DummyProposal): MakeProposalRequest => ({
+}) => ({
   neuronId,
   title,
   url,
@@ -328,10 +310,89 @@ export const makeExecuteNnsFunctionDummyProposalRequest = ({
   action: {
     ExecuteNnsFunction: {
       // Used only in testnet and hardcoding values
-      nnsFunctionId: nnsFunction as number,
+      nnsFunctionId: nnsFunction,
       nnsFunctionName: undefined,
       payload: {},
-      payloadBytes: payload as Uint8Array,
+      payloadBytes: payload,
     },
   },
 });
+
+export const makeDummyProposals = async ({ neuronId, canister }) => {
+  try {
+    // Used only on testnet
+    // We do one by one, in case one fails, we don't do the others.
+    const request1 = makeMotionDummyProposalRequest({
+      title: "Test proposal title - Lower all prices!",
+      neuronId,
+      url: "http://free-stuff-for-all.com",
+      summary: "Change the world with the IC - lower all prices!",
+    });
+    console.log("Motion Proposal...");
+    await canister.makeProposal(request1);
+    const request2 = makeNetworkEconomicsDummyProposalRequest({
+      neuronId,
+      title: "Increase minimum neuron stake",
+      url: "https://www.lipsum.com/",
+      summary: "Increase minimum neuron stake",
+    });
+    console.log("Netowrk Economics Proposal...");
+    await canister.makeProposal(request2);
+    const request3 = makeRewardNodeProviderDummyProposal({
+      neuronId,
+      url: "https://www.lipsum.com/",
+      title: "Reward for Node Provider 'ABC'",
+      summary: "Reward for Node Provider 'ABC'",
+    });
+    console.log("Rewards Node Provide Proposal...");
+    await canister.makeProposal(request3);
+    const request4 = makeExecuteNnsFunctionDummyProposalRequest({
+      neuronId,
+      title: "Add node(s) to subnet 10",
+      url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
+      summary: "Add node(s) to subnet 10",
+      nnsFunction: 2,
+      payload: addNodeToSubnetPayload,
+    });
+    console.log("Execute NNS Function Proposal...");
+    await canister.makeProposal(request4);
+    const request5 = makeExecuteNnsFunctionDummyProposalRequest({
+      neuronId,
+      title: "Update configuration of subnet: tdb26-",
+      url: "",
+      summary:
+        "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
+      nnsFunction: 7,
+      payload: updateSubnetConfigPayload,
+    });
+    console.log("Execute NNS Function Proposal...");
+    await canister.makeProposal(request5);
+    const request6 = makeExecuteNnsFunctionDummyProposalRequest({
+      neuronId,
+      title:
+        "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+      url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
+      summary:
+        "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+      nnsFunction: 11,
+      payload: updateSubnetPayload,
+    });
+    console.log("Execute NNS Function Proposal...");
+    await canister.makeProposal(request6);
+    const request7 = makeExecuteNnsFunctionDummyProposalRequest({
+      neuronId,
+      title: "Initialize datacenter records",
+      url: "",
+      summary:
+        "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
+      nnsFunction: 21,
+      payload: addOrRemoveDataCentersPayload,
+    });
+    console.log("Execute NNS Function Proposal...");
+    await canister.makeProposal(request7);
+    console.log("Finished making dummy proposals");
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
