@@ -12,6 +12,7 @@
     formatVotingPower,
     hasJoinedCommunityFund,
     isCurrentUserController,
+    isNeuronControllable,
   } from "../../utils/neuron.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
@@ -21,7 +22,7 @@
   import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
-  import { isNeuronControllable } from "../../services/neurons.services";
+  import { accountsStore } from "../../stores/accounts.store";
 
   export let neuron: NeuronInfo;
 
@@ -30,7 +31,10 @@
   let userControlled: boolean;
   $: userControlled = isCurrentUserController(neuron);
   let isControllable: boolean;
-  $: isControllable = isNeuronControllable(neuron);
+  $: isControllable = isNeuronControllable({
+    neuron,
+    accounts: $accountsStore,
+  });
 </script>
 
 <NeuronCard {neuron}>
