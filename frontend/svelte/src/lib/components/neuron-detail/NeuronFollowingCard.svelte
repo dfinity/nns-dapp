@@ -5,7 +5,6 @@
   import FollowNeuronsButton from "./actions/FollowNeuronsButton.svelte";
 
   export let neuron: NeuronInfo;
-  console.log(neuron);
 </script>
 
 <Card>

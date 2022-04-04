@@ -15,10 +15,9 @@
 </Modal>
 
 <style lang="scss">
+  @use "../../themes/mixins/modal.scss";
+
   section {
-    height: min(500px, calc(100vh - 156px - (2 * var(--padding))));
-    margin: 0;
-    padding: calc(2 * var(--padding));
-    max-width: 100%;
+    @include modal.wrapper;
   }
 </style>

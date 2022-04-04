@@ -42,13 +42,13 @@
   };
 
   const addFolloweeByAddress = async () => {
-    loading = true;
-    loadingAddress = true;
-    startBusy("add-followee");
     let followee: bigint;
     if (followeeAddress === undefined) {
       return;
     }
+    loading = true;
+    loadingAddress = true;
+    startBusy("add-followee");
     try {
       followee = BigInt(followeeAddress);
     } catch (error) {

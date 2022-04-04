@@ -29,21 +29,19 @@
     const followesPerTopic = neuron.fullNeuron?.followees.find(
       ({ topic: currentTopic }) => topic === currentTopic
     );
-    if (followesPerTopic !== undefined) {
-      followees = followesPerTopic.followees.map((neuronId): FolloweeData => {
-        const knownNeuron = $knownNeuronsStore.find(
-          (currentNeuron) => currentNeuron.id === neuronId
-        );
-        if (knownNeuron !== undefined) {
-          return {
+    const mapToKnownNeuron = (neuronId: NeuronId): FolloweeData => {
+      const knownNeuron = $knownNeuronsStore.find(
+        (currentNeuron) => currentNeuron.id === neuronId
+      );
+      return knownNeuron !== undefined
+        ? {
             neuronId: knownNeuron.id,
             name: knownNeuron.name,
-          };
-        }
-        return {
-          neuronId,
-        };
-      });
+          }
+        : { neuronId };
+    };
+    if (followesPerTopic !== undefined) {
+      followees = followesPerTopic.followees.map(mapToKnownNeuron);
     } else {
       // If we remove the last followee of that topic, followesPerTopic is undefined.
       // and we need to reset the followees array
