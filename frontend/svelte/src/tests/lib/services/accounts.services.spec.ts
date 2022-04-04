@@ -2,7 +2,6 @@ import { get } from "svelte/store";
 import * as api from "../../../lib/api/accounts.api";
 import {
   addSubAccount,
-  getAccountByPrincipal,
   syncAccounts,
 } from "../../../lib/services/accounts.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
@@ -57,31 +56,5 @@ describe("accounts-services", () => {
     await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
 
     resetIdentity();
-  });
-
-  describe("getAccountByPrincipal", () => {
-    it("returns main account when principal matches", () => {
-      accountsStore.set({
-        main: mockMainAccount,
-        subAccounts: undefined,
-      });
-
-      console.log(mockMainAccount.principal?.toText());
-      const found = getAccountByPrincipal(
-        mockMainAccount.principal?.toText() as string
-      );
-      expect(found).toBe(mockMainAccount);
-      accountsStore.reset();
-    });
-
-    it("returns undefined if it doesn't match", () => {
-      accountsStore.set({
-        main: mockMainAccount,
-      });
-
-      const found = getAccountByPrincipal("bbbbb-aa");
-      expect(found).toBeUndefined();
-      accountsStore.reset();
-    });
   });
 });

@@ -9,7 +9,6 @@ import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
   addFollowee,
   getNeuronId,
-  isNeuronControllable,
   joinCommunityFund,
   listNeurons,
   loadNeuron,
@@ -19,9 +18,7 @@ import {
   stopDissolving,
   updateDelay,
 } from "../../../lib/services/neurons.services";
-import { accountsStore } from "../../../lib/stores/accounts.store";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -410,52 +407,6 @@ describe("neurons-services", () => {
         setNeuron: jest.fn,
       });
       expect(spyGetNeuron).toBeCalled();
-    });
-  });
-
-  describe("isNeuronControllable", () => {
-    it("should return true if neuron controller is the current main account", () => {
-      accountsStore.set({
-        main: mockMainAccount,
-      });
-
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: mockMainAccount.principal?.toText(),
-        },
-      };
-
-      expect(isNeuronControllable(neuron)).toBe(true);
-      accountsStore.set({
-        main: undefined,
-        subAccounts: undefined,
-      });
-    });
-
-    it("should return false if neuron controller is not current main account", () => {
-      accountsStore.set({
-        main: mockMainAccount,
-      });
-
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: "bbbbb-b",
-        },
-      };
-
-      expect(isNeuronControllable(neuron)).toBe(false);
-      accountsStore.set({
-        main: undefined,
-        subAccounts: undefined,
-      });
-    });
-
-    it("should return false if no accounts", () => {
-      expect(isNeuronControllable(mockNeuron)).toBe(false);
     });
   });
 });

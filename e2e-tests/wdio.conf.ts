@@ -1,9 +1,10 @@
-import { existsSync, mkdirSync } from "fs";
+const { existsSync, mkdirSync } = require("fs");
+const { NNS_DAPP_URL } = require("./common/constants");
 
 export const config: WebdriverIO.Config = {
-  baseUrl: process.env.NNS_DAPP_URL || "http://localhost:8080",
+  baseUrl: NNS_DAPP_URL,
 
-  before: (capabilities, spec) => {
+  before: (_capabilities, _spec) => {
     browser["screenshot-count"] = 0;
     browser["screenshots-taken"] = new Set();
 
@@ -11,13 +12,13 @@ export const config: WebdriverIO.Config = {
       const countStr: string = browser["screenshots-taken"].size
         .toFixed()
         .padStart(2, "0");
-      if (browser["screenshots-taken"].has(name)) {
+      if (true === browser["screenshots-taken"].has(name)) {
         throw Error(`A screenshot with this name was already taken: '${name}'`);
       }
       browser["screenshots-taken"].add(name);
 
       const SCREENSHOTS_DIR = "screenshots";
-      if (!existsSync(SCREENSHOTS_DIR)) {
+      if (!(existsSync(SCREENSHOTS_DIR) as boolean)) {
         mkdirSync(SCREENSHOTS_DIR);
       }
 
@@ -27,11 +28,7 @@ export const config: WebdriverIO.Config = {
     });
   },
 
-  afterTest: function (
-    test,
-    context,
-    { error, result, duration, passed, retries }
-  ) {
+  afterTest: function (test, context, { error }) {
     // Take a screenshot anytime a test fails and throws an error.
     // Note: We could also use `result !== 0` or `passed === true`.
     //       The reason for conditioning on an error is that if
@@ -39,7 +36,7 @@ export const config: WebdriverIO.Config = {
     //       so it is possible to take a screenshot in the test itself.
     //       This hook here captures "sudden" death that may be hard
     //       or tedious to capture otherwise.
-    if (error) {
+    if (undefined !== error) {
       // Filenames containing spaces are painful to work with on the command line,
       // so we replace any spaces in the test name when we create the screenshot.
       browser["screenshot"](`test-fail-${test.title.replace(/ /g, "-")}`);
@@ -74,4 +71,6 @@ export const config: WebdriverIO.Config = {
     ui: "bdd",
     timeout: 60000,
   },
+
+  maxInstances: 1,
 };

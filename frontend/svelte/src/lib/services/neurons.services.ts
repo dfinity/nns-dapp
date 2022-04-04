@@ -8,6 +8,7 @@ import type {
 } from "@dfinity/nns";
 import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
+import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
   claimOrRefreshNeuron,
   increaseDissolveDelay,
@@ -21,12 +22,12 @@ import {
 } from "../api/governance.api";
 import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
+import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { createChunks, isDefined } from "../utils/utils";
-import { getAccountByPrincipal } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -247,17 +248,7 @@ const setFolloweesHelper = async ({
       topic,
       followees,
     });
-    const neuron: NeuronInfo | undefined = await getNeuron({
-      neuronId,
-      identity,
-      certified: true,
-      forceFetch: true,
-    });
-
-    if (!neuron) {
-      throw new Error("Neuron not found");
-    }
-    neuronsStore.pushNeurons([neuron]);
+    await getAndLoadNeuronHelper({ neuronId, identity });
 
     toastsStore.show({
       labelKey: `new_followee.success_${labelKey}`,
@@ -406,18 +397,29 @@ export const loadNeuron = ({
   });
 };
 
+export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
+  // Only available in testnet
+  if (!IS_TESTNET) {
+    return;
+  }
+  try {
+    const identity: Identity = await getIdentity();
+    await makeDummyProposalsApi({
+      neuronId,
+      identity,
+    });
+    toastsStore.show({
+      labelKey: "neuron_detail.dummy_proposal_success",
+      level: "info",
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    toastsStore.error({
+      labelKey: "error.dummy_proposal",
+    });
+  }
+};
+
 export const getNeuronId = (path: string): NeuronId | undefined =>
   getLastPathDetailId(path);
-
-/*
- * Returns true if the neuron can be controlled. A neuron can be controlled if:
- *
- *  1. The user is the controller
- *  OR
- *  2. The user's hardware wallet is the controller.
- *
- */
-export const isNeuronControllable = ({ fullNeuron }: NeuronInfo): boolean =>
-  fullNeuron !== undefined &&
-  fullNeuron.controller !== undefined &&
-  getAccountByPrincipal(fullNeuron.controller) !== undefined;

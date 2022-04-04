@@ -157,11 +157,11 @@ export const queryKnownNeurons = async ({
 
   const knownNeurons = await canister.listKnownNeurons(certified);
 
-  if (!knownNeurons.find(({ id }) => id === dfinityNeuron.id)) {
+  if (knownNeurons.find(({ id }) => id === dfinityNeuron.id) === undefined) {
     knownNeurons.push(dfinityNeuron);
   }
 
-  if (!knownNeurons.find(({ id }) => id === icNeuron.id)) {
+  if (knownNeurons.find(({ id }) => id === icNeuron.id) === undefined) {
     knownNeurons.push(icNeuron);
   }
 
@@ -184,7 +184,7 @@ export const claimOrRefreshNeuron = async ({
 };
 
 // TODO: Apply pattern to other canister instantiation L2-371
-const governanceCanister = async ({
+export const governanceCanister = async ({
   identity,
 }: {
   identity: Identity;

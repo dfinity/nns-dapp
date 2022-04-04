@@ -36,7 +36,8 @@
     "join_community_fund": "Sorry, there was an error joining the comomunity fund. Please try again later.",
     "suspicious_response": "Suspicious response detected. Page reload suggested.",
     "start_dissolving": "Sorry, there was an error dissolving the neuron. Please try again later.",
-    "stop_dissolving": "Sorry, there was an error stopping the dissolve process of the neuron. Please try again later."
+    "stop_dissolving": "Sorry, there was an error stopping the dissolve process of the neuron. Please try again later.",
+    "dummy_proposal": "There was an error creating the proposals. Check the console for more details."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -247,7 +248,11 @@
     "stop_dissolve_description": "Are you sure you want to stop the dissolve process?",
     "join_community_fund_success": "Your neuron has successfully joined the community fund.",
     "start_dissolve_success": "Your neuron has started dissolving.",
-    "stop_dissolve_success": "Your neuron has stoped dissolving."
+    "stop_dissolve_success": "Your neuron has stoped dissolving.",
+    "dummy_proposal_success": "Dummy proposals created successfully",
+    "following_title": "Following",
+    "following_description": "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
+    "follow_neurons": "Follow Neurons"
   },
   "time": {
     "year": "year",
