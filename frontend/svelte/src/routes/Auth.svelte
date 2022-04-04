@@ -66,7 +66,7 @@
     <h1>{$i18n.auth.nns}</h1>
     <h2>{$i18n.auth.ic}</h2>
     <p>{$i18n.auth.icp_governance}</p>
-    <button on:click={signIn}>{$i18n.auth.login}</button>
+    <button on:click={signIn} data-tid="login-button">{$i18n.auth.login}</button>
   </main>
 
   <img
