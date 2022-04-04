@@ -1,6 +1,6 @@
-import { register } from "../common/register";
-import { waitForImages } from "../common/waitForImages";
-import { waitForLoad } from "../common/waitForLoad";
+const { register } = require("../common/register");
+const { waitForImages } = require("../common/waitForImages");
+const { waitForLoad } = require("../common/waitForLoad");
 
 describe("landing page", () => {
   it("loads", async () => {
@@ -44,7 +44,7 @@ describe("landing page", () => {
       const errorToast = await browser.$(".toast");
       await errorToast.waitForExist({ timeout: 10_000 });
       await browser.execute(() => document.querySelector(".toast").remove());
-      await errorToast.waitUntil(() => !errorToast.isExisting());
+      await errorToast.waitUntil(async () => !(await errorToast.isExisting()));
     } catch (error) {
       // Log error, but continue and take screenshot
       console.log("Error waiting for spinner and toast error");
