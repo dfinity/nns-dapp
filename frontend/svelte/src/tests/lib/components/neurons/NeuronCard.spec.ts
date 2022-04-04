@@ -62,7 +62,8 @@ describe("NeuronCard", () => {
     });
 
     const stakeText = formatICP(
-      (mockNeuron.fullNeuron as Neuron).cachedNeuronStake
+      (mockNeuron.fullNeuron as Neuron).cachedNeuronStake -
+        (mockNeuron.fullNeuron as Neuron).neuronFees
     );
     expect(getByText(stakeText)).toBeInTheDocument();
     expect(getByText(mockNeuron.neuronId.toString())).toBeInTheDocument();
