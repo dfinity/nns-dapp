@@ -7,29 +7,29 @@ import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
-import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
-import CreateNeuronModal from "../../../lib/modals/neurons/CreateNeuronModal.svelte";
+import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
+import CreateNeuronModal from "../../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import {
   stakeAndLoadNeuron,
   updateDelay,
-} from "../../../lib/services/neurons.services";
-import { accountsStore } from "../../../lib/stores/accounts.store";
-import { authStore } from "../../../lib/stores/auth.store";
-import { neuronsStore } from "../../../lib/stores/neurons.store";
+} from "../../../../lib/services/neurons.services";
+import { accountsStore } from "../../../../lib/stores/accounts.store";
+import { authStore } from "../../../../lib/stores/auth.store";
+import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
-import { waitModalIntroEnd } from "../../mocks/modal.mock";
+} from "../../../mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import en from "../../../mocks/i18n.mock";
+import { waitModalIntroEnd } from "../../../mocks/modal.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,
   mockNeuron,
-} from "../../mocks/neurons.mock";
+} from "../../../mocks/neurons.mock";
 
-jest.mock("../../../lib/services/neurons.services", () => {
+jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     // need to return the same neuron id as mockNeuron.neuronId
     stakeAndLoadNeuron: jest.fn().mockResolvedValue(BigInt(1)),
@@ -38,7 +38,7 @@ jest.mock("../../../lib/services/neurons.services", () => {
   };
 });
 
-jest.mock("../../../lib/services/accounts.services", () => {
+jest.mock("../../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn().mockResolvedValue(undefined),
   };
