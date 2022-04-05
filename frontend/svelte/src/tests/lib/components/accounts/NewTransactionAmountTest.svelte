@@ -9,7 +9,9 @@
 
   setContext<TransactionContext>(NEW_TRANSACTION_CONTEXT_KEY, {
     store: transactionStore,
-    next: jest.fn(),
+    next: () => {
+      // Do nothing here - test purpose
+    },
   });
 </script>
 

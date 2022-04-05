@@ -1,7 +1,6 @@
 <script lang="ts">
   import WizardModal from "../WizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
-  import SelectAccount from "../../components/accounts/SelectAccount.svelte";
   import { i18n } from "../../stores/i18n";
   import NewTransactionDestination from "../../components/accounts/NewTransactionDestination.svelte";
   import NewTransactionSource from "../../components/accounts/NewTransactionSource.svelte";

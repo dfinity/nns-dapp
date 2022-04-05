@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import Input from "../ui/Input.svelte";
   import Spinner from "../ui/Spinner.svelte";
