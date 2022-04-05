@@ -1,30 +1,29 @@
 <script lang="ts">
   import Input from "../ui/Input.svelte";
   import { i18n } from "../../stores/i18n";
+  import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../constants/accounts.constants";
+  import { invalidAddress } from "../../utils/accounts.utils";
 
-  export let address: number | undefined;
+  export let address: string = "";
 
   // TODO(L2-430): to be implemented
   const submitAddress = () => console.log("submitAddress");
-
-  // TODO(L2-430): Input is of type number?
-  // TODO(L2-430): Input validation rules - max 40 characters?
-  // TODO(L2-430): tests
 </script>
 
 <article>
   <form on:submit|preventDefault={submitAddress}>
     <Input
-      inputType="number"
+      inputType="text"
       placeholderLabelKey="accounts.address"
-      name="transaction-address"
+      name="accounts-address"
       bind:value={address}
+      minLength={ACCOUNT_ADDRESS_MIN_LENGTH}
       theme="dark"
     />
     <button
       class="primary small"
       type="submit"
-      disabled={address === undefined || address === 0}
+      disabled={invalidAddress(address)}
     >
       {$i18n.core.continue}
     </button>

@@ -6,6 +6,7 @@
   export let spellcheck: boolean | undefined = undefined;
   export let step: number | "any" | undefined = undefined;
   export let disabled: boolean = false;
+  export let minLength: number | undefined = undefined;
 
   export let value: string | number | undefined = undefined;
 
@@ -18,6 +19,9 @@
       inputType === "number" ? +currentTarget.value : currentTarget.value);
 
   $: step = inputType === "number" ? step ?? "any" : undefined;
+
+  let placeholder: string;
+  $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
 <div class={`input-block ${theme}`} class:disabled>
@@ -29,11 +33,13 @@
     {step}
     {disabled}
     {value}
+    {minLength}
+    {placeholder}
     on:input={handleInput}
   />
 
   <span class="placeholder">
-    {translate({ labelKey: placeholderLabelKey })}
+    {placeholder}
   </span>
 
   <slot name="button" />
@@ -87,9 +93,7 @@
         background-color: var(--gray-50-background);
         border: 1px solid var(--black);
 
-        &[disabled] + span.placeholder,
-        &:valid + span.placeholder,
-        &:focus + span.placeholder {
+        &:not(:placeholder-shown) + span.placeholder {
           background-color: var(--gray-50-background);
         }
       }
@@ -130,11 +134,12 @@
 
     font-size: var(--font-size-h4);
     color: var(--gray-600);
+
+    /** Space to display fully the caret if field is focused and empty */
+    margin-left: 4px;
   }
 
-  .input-block input[disabled] + span.placeholder,
-  .input-block input:valid + span.placeholder,
-  .input-block input:focus + span.placeholder {
+  .input-block input:not(:placeholder-shown) + span.placeholder {
     transform: scale(0.8) translate(0, calc(-50% - 30px));
     background: #ffffff;
 
@@ -151,5 +156,9 @@
 
   input[disabled] {
     cursor: text;
+  }
+
+  input::placeholder {
+    visibility: hidden;
   }
 </style>
