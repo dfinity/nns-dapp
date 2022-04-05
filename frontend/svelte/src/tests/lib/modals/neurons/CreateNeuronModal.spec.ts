@@ -16,6 +16,7 @@ import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../../lib/stores/toasts.store";
+import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
@@ -302,11 +303,12 @@ describe("CreateNeuronModal", () => {
 
   it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
     const neuronStake = 2.2;
+    const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
     const newNeuron: NeuronInfo = {
       ...mockNeuron,
       fullNeuron: {
         ...mockFullNeuron,
-        cachedNeuronStake: BigInt(Math.round(neuronStake * E8S_PER_ICP)),
+        cachedNeuronStake: neuronStakeE8s,
       },
     };
     jest
@@ -335,7 +337,9 @@ describe("CreateNeuronModal", () => {
       expect(container.querySelector('input[type="range"]')).not.toBeNull()
     );
 
-    expect(getByText(neuronStake, { exact: false })).not.toBeNull();
+    expect(
+      getByText(formatVotingPower(neuronStakeE8s), { exact: false })
+    ).not.toBeNull();
   });
 
   it("should be able to change dissolve delay in the confirmation screen", async () => {

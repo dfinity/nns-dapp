@@ -209,18 +209,23 @@ export const updateDelay = async ({
 }: {
   neuronId: NeuronId;
   dissolveDelayInSeconds: number;
-}): Promise<void> => {
+}): Promise<NeuronId | undefined> => {
   const identity: Identity = await getIdentity();
 
   try {
     await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
 
     await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return neuronId;
   } catch (err) {
     toastsStore.error({
       labelKey: "error.unknown",
       err,
     });
+
+    // To inform there was an error
+    return undefined;
   }
 };
 

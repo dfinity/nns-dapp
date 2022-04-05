@@ -7,7 +7,11 @@
   import { secondsToDuration } from "../../utils/date.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
-  import { votingPower } from "../../utils/neuron.utils";
+  import {
+    formatVotingPower,
+    neuronStake,
+    votingPower,
+  } from "../../utils/neuron.utils";
   import { startBusy, stopBusy } from "../../stores/busy.store";
 
   export let delayInSeconds: number;
@@ -16,18 +20,20 @@
 
   const dispatcher = createEventDispatcher();
   let neuronICP: bigint;
-  $: neuronICP = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
+  $: neuronICP = neuronStake(neuron);
 
   const updateNeuron = async () => {
     startBusy("update-delay");
     loading = true;
-    await updateDelay({
+    const neuronId = await updateDelay({
       neuronId: neuron.neuronId,
       dissolveDelayInSeconds: delayInSeconds,
     });
     stopBusy("update-delay");
-    dispatcher("nnsNext");
     loading = false;
+    if (neuronId !== undefined) {
+      dispatcher("nnsNext");
+    }
   };
 </script>
 
@@ -50,10 +56,12 @@
   <div class="voting-power">
     <h5>{$i18n.neurons.voting_power}</h5>
     <p>
-      {votingPower({
-        stake: neuronICP,
-        dissolveDelayInSeconds: delayInSeconds,
-      }).toFixed(2)}
+      {formatVotingPower(
+        votingPower({
+          stake: neuronICP,
+          dissolveDelayInSeconds: delayInSeconds,
+        })
+      )}
     </p>
   </div>
   <div>

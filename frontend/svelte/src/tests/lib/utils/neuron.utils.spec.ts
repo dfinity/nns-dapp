@@ -28,7 +28,7 @@ describe("neuron-utils", () => {
     it("should return zero for delays less than six months", () => {
       expect(
         votingPower({ stake: BigInt(2), dissolveDelayInSeconds: 100 })
-      ).toBe(0);
+      ).toBe(BigInt(0));
     });
 
     it("should return more than stake when delay more than six months", () => {
@@ -39,7 +39,7 @@ describe("neuron-utils", () => {
           stake: icp.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
         })
-      ).toBeGreaterThan(Number(stake));
+      ).toBeGreaterThan(icp.toE8s());
     });
 
     it("should return the double when delay is eight years", () => {
@@ -50,7 +50,7 @@ describe("neuron-utils", () => {
           stake: icp.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
         })
-      ).toBe(Number(stake) * 2);
+      ).toBe(icp.toE8s() * BigInt(2));
     });
 
     it("should add age multiplier", () => {
