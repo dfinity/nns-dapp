@@ -29,7 +29,9 @@
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <svelte:fragment slot="title">{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment>
+  <svelte:fragment slot="title"
+    >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
+  >
 
   <svelte:fragment>
     {#if currentStep?.name === "SelectAccount"}
