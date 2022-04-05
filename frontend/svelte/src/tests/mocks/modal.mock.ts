@@ -2,7 +2,7 @@ import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-const waitModalIntroEnd = async ({
+export const waitModalIntroEnd = async ({
   container,
   selector,
 }: {
