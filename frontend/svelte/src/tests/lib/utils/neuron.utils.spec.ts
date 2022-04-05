@@ -16,6 +16,7 @@ import {
   isCurrentUserController,
   isNeuronControllable,
   maturityByStake,
+  neuronStake,
   sortNeuronsByCreatedTimestamp,
   votingPower,
 } from "../../../lib/utils/neuron.utils";
@@ -325,6 +326,28 @@ describe("neuron-utils", () => {
       expect(isNeuronControllable({ neuron: mockNeuron, accounts })).toBe(
         false
       );
+    });
+  });
+
+  describe("neuronStake", () => {
+    it("should calculate neuron stake", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(100),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronStake(neuron)).toBe(BigInt(90));
+    });
+
+    it("should return 0n when stake is not available", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(neuronStake(neuron)).toBe(BigInt(0));
     });
   });
 });
