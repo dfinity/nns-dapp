@@ -91,7 +91,7 @@ async function showInfo(showOnDevice?: boolean) {
  * Fetches the balance of the main account on the wallet.
  */
 async function getBalance() {
-  const identity = await LedgerIdentity.create();
+  const identity = await getLedgerIdentity();
   const accountIdentifier = principalToAccountIdentifier(
     identity.getPrincipal()
   );
@@ -114,7 +114,7 @@ async function getBalance() {
  * @param amount Amount to send in e8s.
  */
 async function sendICP(to: AccountIdentifier, amount: string) {
-  const identity = await LedgerIdentity.create();
+  const identity = await getLedgerIdentity();
   const ledger = await getLedgerService(identity);
   const blockHeight = await ledger.sendICPTs({
     to: to,
@@ -135,7 +135,7 @@ async function sendICP(to: AccountIdentifier, amount: string) {
  * @param amount Amount to stake in e8s.
  */
 async function stakeNeuron(amount: E8s) {
-  const identity = await LedgerIdentity.create();
+  const identity = await getLedgerIdentity();
   const ledger = await getLedgerService(identity);
   const governance = await getGovernanceService(new AnonymousIdentity());
 
@@ -156,7 +156,7 @@ async function stakeNeuron(amount: E8s) {
 }
 
 async function addHotkey(neuronId: string, principal: string) {
-  const identity = await LedgerIdentity.create();
+  const identity = await getLedgerIdentity();
   const governance = await getGovernanceService(identity);
 
   const response = await governance.addHotKey({
@@ -168,7 +168,7 @@ async function addHotkey(neuronId: string, principal: string) {
 }
 
 async function removeHotkey(neuronId: string, principal: string) {
-  const identity = await LedgerIdentity.create();
+  const identity = await getLedgerIdentity();
   const governance = await getGovernanceService(identity);
 
   const response = await governance.removeHotKey({
@@ -212,7 +212,7 @@ async function increaseDissolveDelay(
   minutes: number,
   seconds: number
 ) {
-  const identity = await LedgerIdentity.create();
+  const identity = await getLedgerIdentity();
   const governance = await getGovernanceService(identity);
 
   const additionalDissolveDelaySeconds =
@@ -229,7 +229,7 @@ async function increaseDissolveDelay(
 }
 
 async function startDissolving(neuronId: string) {
-  const identity = await LedgerIdentity.create();
+  const identity = await getLedgerIdentity();
   const response = await (
     await getGovernanceService(identity)
   ).startDissolving({
@@ -239,7 +239,7 @@ async function startDissolving(neuronId: string) {
 }
 
 async function stopDissolving(neuronId: string) {
-  const identity = await LedgerIdentity.create();
+  const identity = await getLedgerIdentity();
   const response = await (
     await getGovernanceService(identity)
   ).stopDissolving({
@@ -259,7 +259,7 @@ async function getLedgerIdentity(): Promise<LedgerIdentity> {
 }
 
 async function listNeurons() {
-  const identity = await LedgerIdentity.create();
+  const identity = await getLedgerIdentity();
   const res = await (await getGovernanceService(identity)).getNeuronsForHW();
 
   // We filter neurons with no ICP, as they'll be garbage collected by the governance canister.
