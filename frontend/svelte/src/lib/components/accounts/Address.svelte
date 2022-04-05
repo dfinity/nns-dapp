@@ -7,7 +7,9 @@
   // TODO(L2-430): to be implemented
   const submitAddress = () => console.log("submitAddress");
 
+  // TODO(L2-430): Input is of type number?
   // TODO(L2-430): Input validation rules - max 40 characters?
+  // TODO(L2-430): tests
 </script>
 
 <article>
