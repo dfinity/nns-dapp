@@ -9,7 +9,7 @@
   export let canSelectAccount: boolean;
 
   const steps: Steps = [
-    ...(canSelectAccount
+    ...((canSelectAccount
       ? [
           {
             name: "SelectAccount",
@@ -17,7 +17,7 @@
             title: $i18n.accounts.select_source,
           },
         ]
-      : []) as Steps,
+      : []) as Steps),
     {
       name: "SelectDestination",
       showBackButton: canSelectAccount,
