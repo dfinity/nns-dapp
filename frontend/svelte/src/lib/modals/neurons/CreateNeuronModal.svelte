@@ -81,8 +81,8 @@
       ({ stepName, isNeuronInvalid, isAccountInvalid }) => {
         return (
           stepName === currentStep?.name &&
-          ((isNeuronInvalid && isNeuronInvalid(newNeuron)) ||
-            (isAccountInvalid && isAccountInvalid(selectedAccount)))
+          ((isNeuronInvalid?.(newNeuron) ?? false) ||
+            (isAccountInvalid?.(selectedAccount) ?? false))
         );
       }
     );
