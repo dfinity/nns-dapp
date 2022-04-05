@@ -16,6 +16,8 @@ import {
   isCurrentUserController,
   isNeuronControllable,
   maturityByStake,
+  neuronStake,
+  sortNeuronsByCreatedTimestamp,
   votingPower,
 } from "../../../lib/utils/neuron.utils";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
@@ -265,6 +267,22 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("sortNeuronsByCreatedTimestamp", () => {
+    it("should sort neurons by createdTimestampSeconds", () => {
+      const neuron1 = { ...mockNeuron, createdTimestampSeconds: BigInt(1) };
+      const neuron2 = { ...mockNeuron, createdTimestampSeconds: BigInt(2) };
+      const neuron3 = { ...mockNeuron, createdTimestampSeconds: BigInt(3) };
+      expect(sortNeuronsByCreatedTimestamp([])).toEqual([]);
+      expect(sortNeuronsByCreatedTimestamp([neuron1])).toEqual([neuron1]);
+      expect(
+        sortNeuronsByCreatedTimestamp([neuron3, neuron2, neuron1])
+      ).toEqual([neuron3, neuron2, neuron1]);
+      expect(
+        sortNeuronsByCreatedTimestamp([neuron2, neuron1, neuron3])
+      ).toEqual([neuron3, neuron2, neuron1]);
+    });
+  });
+
   describe("isNeuronControllable", () => {
     it("should return true if neuron controller is the current main account", () => {
       const accounts = {
@@ -308,6 +326,28 @@ describe("neuron-utils", () => {
       expect(isNeuronControllable({ neuron: mockNeuron, accounts })).toBe(
         false
       );
+    });
+  });
+
+  describe("neuronStake", () => {
+    it("should calculate neuron stake", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(100),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronStake(neuron)).toBe(BigInt(90));
+    });
+
+    it("should return 0n when stake is not available", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(neuronStake(neuron)).toBe(BigInt(0));
     });
   });
 });

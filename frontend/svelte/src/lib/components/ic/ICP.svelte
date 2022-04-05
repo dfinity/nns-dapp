@@ -1,14 +1,16 @@
 <script lang="ts">
   import type { ICP } from "@dfinity/nns";
+  import { i18n } from "../../stores/i18n";
   import { formatICP } from "../../utils/icp.utils";
 
   export let icp: ICP;
+  export let label: string = $i18n.core.icp;
 </script>
 
 {#if icp}
   <div>
     <span data-tid="icp-value">{`${formatICP(icp.toE8s())}`}</span>
-    <span>ICP</span>
+    <span>{label}</span>
   </div>
 {/if}
 
