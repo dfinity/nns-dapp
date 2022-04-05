@@ -18,11 +18,15 @@ const waitModalIntroEnd = async ({
 
 const modalToolbarSelector = "div.toolbar";
 
-export const renderModal = async (
-  component: typeof SvelteComponent
-): Promise<RenderResult> => {
+export const renderModal = async ({
+  component,
+  props,
+}: {
+  component: typeof SvelteComponent;
+  props?: Record<string, string | boolean>;
+}): Promise<RenderResult> => {
   const modal = render(component, {
-    props: { canSelectAccount: true },
+    props,
   });
 
   const { container } = modal;
