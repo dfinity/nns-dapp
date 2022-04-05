@@ -54,24 +54,38 @@
   const dispatcher = createEventDispatcher();
   type InvalidState = {
     stepName: string;
-    neuron?: null;
-    account?: null;
+    isNeuronInvalid?: (n?: NeuronInfo) => boolean;
+    isAccountInvalid?: (a?: Account) => boolean;
   };
   const invalidStates: InvalidState[] = [
-    { stepName: "StakeNeuron", account: null },
-    { stepName: "SetDissolveDelay", neuron: null },
-    { stepName: "ConfirmDissolveDelay", neuron: null },
-    { stepName: "EditFollowNeurons", neuron: null },
+    {
+      stepName: "StakeNeuron",
+      isAccountInvalid: (account?: Account) => account === undefined,
+    },
+    {
+      stepName: "SetDissolveDelay",
+      isNeuronInvalid: (neuron?: NeuronInfo) => neuron === undefined,
+    },
+    {
+      stepName: "ConfirmDissolveDelay",
+      isNeuronInvalid: (neuron?: NeuronInfo) => neuron === undefined,
+    },
+    {
+      stepName: "EditFollowNeurons",
+      isNeuronInvalid: (neuron?: NeuronInfo) => neuron === undefined,
+    },
   ];
   $: {
     newNeuron = $neuronsStore.find(({ neuronId }) => newNeuronId === neuronId);
-    const invalidState = invalidStates.find(({ stepName, neuron, account }) => {
-      return (
-        stepName === currentStep?.name &&
-        ((neuron === null && newNeuron === undefined) ||
-          (account === null && selectedAccount === undefined))
-      );
-    });
+    const invalidState = invalidStates.find(
+      ({ stepName, isNeuronInvalid, isAccountInvalid }) => {
+        return (
+          stepName === currentStep?.name &&
+          ((isNeuronInvalid && isNeuronInvalid(newNeuron)) ||
+            (isAccountInvalid && isAccountInvalid(selectedAccount)))
+        );
+      }
+    );
     if (invalidState !== undefined) {
       toastsStore.error({
         labelKey: "error.unknown",
