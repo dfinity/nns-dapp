@@ -65,6 +65,16 @@ describe("proposals-store", () => {
       proposalsStore.removeProposals(allProposals.slice(0, 5));
       expect(get(proposalsStore)).toEqual(allProposals.slice(5));
     });
+
+    it("should replace proposals", () => {
+      const allProposals = generateMockProposals(10);
+      const replacedProposals = generateMockProposals(10, {
+        proposalTimestampSeconds: BigInt(666),
+      });
+      proposalsStore.setProposals(allProposals);
+      proposalsStore.replaceProposals(replacedProposals);
+      expect(get(proposalsStore)).toEqual(replacedProposals);
+    });
   });
 
   describe("filter", () => {

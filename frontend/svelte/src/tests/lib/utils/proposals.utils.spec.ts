@@ -13,6 +13,7 @@ import {
   proposalIdSet,
   proposalsHaveSameIds,
   replaceAndConcatenateProposals,
+  replaceProposals,
   selectedNeuronsVotingPower,
 } from "../../../lib/utils/proposals.utils";
 import { mockNeuron } from "../../mocks/neurons.mock";
@@ -554,6 +555,42 @@ describe("proposals-utils", () => {
           proposalsB: proposals,
         })
       ).toBeFalsy();
+    });
+  });
+
+  describe("replaceProposals", () => {
+    const oldProposals = generateMockProposals(10, {
+      proposalTimestampSeconds: BigInt(1),
+    });
+    const newProposals = generateMockProposals(10, {
+      proposalTimestampSeconds: BigInt(2),
+    });
+
+    it("should replace proposals", () => {
+      expect(
+        replaceProposals({
+          oldProposals,
+          newProposals,
+        })
+      ).toEqual(newProposals);
+    });
+
+    it("should not remove existent proposals", () => {
+      expect(
+        replaceProposals({
+          oldProposals,
+          newProposals: newProposals.slice(5),
+        })
+      ).toEqual([...oldProposals.slice(0, 5), ...newProposals.slice(5)]);
+    });
+
+    it("should not add new proposals", () => {
+      expect(
+        replaceProposals({
+          oldProposals: [],
+          newProposals,
+        })
+      ).toEqual([]);
     });
   });
 });
