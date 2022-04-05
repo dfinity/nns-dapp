@@ -83,12 +83,16 @@
       routePath: $routeStore.referrerPath,
     });
 
+    console.log("onMount 0", $proposalsStore, isReferrerProposalDetail);
     // If the previous page is the proposal detail page and if we have proposals in store, we don't reset and query the proposals after mount.
     // We do this to smoothness the back and forth navigation between this page and the detail page.
     if (!emptyProposals($proposalsStore) && isReferrerProposalDetail) {
       initDebounceFindProposals();
+
       return;
     }
+
+    console.log("onMount 1");
 
     proposalsFiltersStore.reset();
 

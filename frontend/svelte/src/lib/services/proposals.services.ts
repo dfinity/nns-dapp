@@ -143,7 +143,7 @@ export const loadProposal = async ({
   handleError,
 }: {
   proposalId: ProposalId;
-  setProposal: (proposal: ProposalInfo) => void;
+  setProposal: (props: { proposal: ProposalInfo; certified: boolean }) => void;
   handleError?: () => void;
 }): Promise<void> => {
   const catchError = (error: unknown) => {
@@ -161,12 +161,12 @@ export const loadProposal = async ({
   try {
     return await getProposal({
       proposalId,
-      onLoad: ({ response: proposal }) => {
+      onLoad: ({ response: proposal, certified }) => {
         if (!proposal) {
           catchError(new Error("Proposal not found"));
           return;
         }
-        setProposal(proposal);
+        setProposal({ proposal, certified });
       },
       onError: catchError,
     });
@@ -244,8 +244,14 @@ export const registerVotes = async ({
     }),
     loadProposal({
       proposalId,
-      setProposal: (proposalInfo: ProposalInfo) =>
-        proposalInfoStore.set(proposalInfo),
+      setProposal: ({ proposal, certified }) => {
+        proposalInfoStore.set(proposal);
+        // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
+        proposalsStore.pushProposals({
+          proposals: [proposal],
+          certified,
+        });
+      },
     }),
   ]);
 

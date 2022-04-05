@@ -64,8 +64,7 @@
     }
     loadProposal({
       proposalId,
-      setProposal: (proposalInfo: ProposalInfo) =>
-        proposalInfoStore.set(proposalInfo),
+      setProposal: ({ proposal }) => proposalInfoStore.set(proposal),
       handleError: onError,
     });
   });

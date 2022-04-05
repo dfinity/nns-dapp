@@ -1,4 +1,4 @@
-import type { NeuronId, ProposalInfo } from "@dfinity/nns";
+import type { NeuronId } from "@dfinity/nns";
 import { GovernanceError, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
@@ -90,7 +90,7 @@ describe("proposals-services", () => {
       let result;
       await loadProposal({
         proposalId: BigInt(666),
-        setProposal: (proposal: ProposalInfo) => (result = proposal),
+        setProposal: ({ proposal }) => (result = proposal),
       });
       expect(result?.id).toBe(BigInt(666));
       expect(spyQueryProposal).toBeCalledTimes(2);
