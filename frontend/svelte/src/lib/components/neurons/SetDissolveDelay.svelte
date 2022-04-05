@@ -116,26 +116,6 @@
         </div>
       </div>
     </div>
-    <div class="buttons">
-      <button
-        on:click={cancel}
-        data-tid="skip-neuron-delay"
-        class="secondary full-width"
-        disabled={loading}>{secondaryButtonText}</button
-      >
-      <button
-        class="primary full-width"
-        disabled={disableUpdate || loading}
-        on:click={goToConfirmation}
-        data-tid="go-confirm-delay-button"
-      >
-        {#if loading}
-          <Spinner />
-        {:else}
-          {$i18n.neurons.update_delay}
-        {/if}
-      </button>
-    </div>
   </Card>
   <div class="buttons">
     <button
