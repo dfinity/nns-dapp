@@ -83,7 +83,6 @@
       routePath: $routeStore.referrerPath,
     });
 
-    console.log("onMount 0", $proposalsStore, isReferrerProposalDetail);
     // If the previous page is the proposal detail page and if we have proposals in store, we don't reset and query the proposals after mount.
     // We do this to smoothness the back and forth navigation between this page and the detail page.
     if (!emptyProposals($proposalsStore) && isReferrerProposalDetail) {
@@ -91,8 +90,6 @@
 
       return;
     }
-
-    console.log("onMount 1");
 
     proposalsFiltersStore.reset();
 
@@ -106,13 +103,9 @@
   const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
     ({ lastAppliedFilter }) => {
       if (lastAppliedFilter === "excludeVotedProposals") {
-        // mock fetching
+        // Make a visual feedback that the filter was applyed
         hidden = true;
-        loading = true;
-        setTimeout(() => {
-          hidden = false;
-          loading = false;
-        }, 400);
+        setTimeout(() => (hidden = false), 200);
         return;
       }
 
@@ -144,11 +137,9 @@
       <ProposalsFilters />
 
       <InfiniteScroll on:nnsIntersect={findNextProposals}>
-        <div class:hidden>
-          {#each $proposalsStore as proposalInfo (proposalInfo.id)}
-            <ProposalCard {proposalInfo} />
-          {/each}
-        </div>
+        {#each $proposalsStore as proposalInfo (proposalInfo.id)}
+          <ProposalCard {hidden} {proposalInfo} />
+        {/each}
       </InfiniteScroll>
 
       {#if nothingFound}
@@ -165,11 +156,6 @@
 {/if}
 
 <style lang="scss">
-  div.hidden {
-    visibility: hidden;
-    position: absolute;
-  }
-
   .spinner {
     position: relative;
     display: flex;
