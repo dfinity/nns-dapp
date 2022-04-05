@@ -15,6 +15,8 @@ import {
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { neuronsStore } from "../../../../lib/stores/neurons.store";
+import { toastsStore } from "../../../../lib/stores/toasts.store";
+import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
@@ -40,6 +42,15 @@ jest.mock("../../../../lib/services/neurons.services", () => {
 jest.mock("../../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("../../../../lib/stores/toasts.store", () => {
+  return {
+    toastsStore: {
+      error: jest.fn(),
+      show: jest.fn(),
+    },
   };
 });
 
@@ -186,6 +197,44 @@ describe("CreateNeuronModal", () => {
     );
   });
 
+  it("should close modal if it finds an invalid state", async () => {
+    jest
+      .spyOn(neuronsStore, "subscribe")
+      .mockImplementation(buildMockNeuronsStoreSubscribe([]));
+    const { container, component } = await renderModal({
+      component: CreateNeuronModal,
+    });
+
+    const accountCard = container.querySelector('article[role="button"]');
+    expect(accountCard).not.toBeNull();
+
+    accountCard && (await fireEvent.click(accountCard));
+
+    const input = container.querySelector('input[name="amount"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    input && (await fireEvent.input(input, { target: { value: 22 } }));
+
+    const createButton = container.querySelector('button[type="submit"]');
+
+    createButton && (await fireEvent.click(createButton));
+
+    // Confirm Delay is not rendered.
+    expect(
+      container.querySelector("[data-tid='go-confirm-delay-button']")
+    ).toBeNull();
+
+    // cannost use `done` callback with async
+    let closed = false;
+    component.$on("nnsClose", async () => {
+      closed = true;
+    });
+
+    expect(toastsStore.error).toBeCalled();
+
+    await waitFor(() => closed);
+  });
+
   it("should have the update delay button disabled", async () => {
     jest
       .spyOn(neuronsStore, "subscribe")
@@ -254,11 +303,12 @@ describe("CreateNeuronModal", () => {
 
   it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
     const neuronStake = 2.2;
+    const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
     const newNeuron: NeuronInfo = {
       ...mockNeuron,
       fullNeuron: {
         ...mockFullNeuron,
-        cachedNeuronStake: BigInt(Math.round(neuronStake * E8S_PER_ICP)),
+        cachedNeuronStake: neuronStakeE8s,
       },
     };
     jest
@@ -287,7 +337,9 @@ describe("CreateNeuronModal", () => {
       expect(container.querySelector('input[type="range"]')).not.toBeNull()
     );
 
-    expect(getByText(neuronStake, { exact: false })).not.toBeNull();
+    expect(
+      getByText(formatVotingPower(neuronStakeE8s), { exact: false })
+    ).not.toBeNull();
   });
 
   it("should be able to change dissolve delay in the confirmation screen", async () => {

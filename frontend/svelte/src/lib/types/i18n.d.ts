@@ -43,6 +43,11 @@ interface I18nError {
   start_dissolving: string;
   stop_dissolving: string;
   dummy_proposal: string;
+  update_delay: string;
+  unknown: string;
+  amount_not_valid: string;
+  amount_not_enough: string;
+  stake_neuron: string;
 }
 
 interface I18nWarning {

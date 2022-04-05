@@ -85,27 +85,40 @@ describe("neurons-services", () => {
       expect(neuron).toEqual(mockNeuron);
     });
 
-    it(`stakeNeuron should raise an error if amount less than ${
+    it(`stakeNeuron return undefined if amount less than ${
       E8S_PER_ICP / E8S_PER_ICP
     } ICP`, async () => {
       jest
         .spyOn(LedgerCanister, "create")
         .mockImplementation(() => mock<LedgerCanister>());
 
-      const call = () =>
-        stakeAndLoadNeuron({
-          amount: 0.1,
-        });
+      const response = await stakeAndLoadNeuron({
+        amount: 0.1,
+      });
 
-      await expect(call).rejects.toThrow(Error);
+      expect(response).toBeUndefined();
+    });
+
+    it("stake neuron should return undefined if amount not valid", async () => {
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation(() => mock<LedgerCanister>());
+
+      const response = await stakeAndLoadNeuron({
+        amount: NaN,
+      });
+
+      expect(response).toBeUndefined();
     });
 
     it("should not stake neuron if no identity", async () => {
       setNoIdentity();
 
-      const call = async () => await stakeAndLoadNeuron({ amount: 10 });
+      const response = await stakeAndLoadNeuron({
+        amount: 10,
+      });
 
-      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+      expect(response).toBeUndefined();
 
       resetIdentity();
     });

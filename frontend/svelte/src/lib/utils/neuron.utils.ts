@@ -55,12 +55,17 @@ export const votingPower = ({
   stake: bigint;
   dissolveDelayInSeconds: number;
   ageSeconds?: number;
-}): number =>
+}): bigint =>
   dissolveDelayInSeconds > SECONDS_IN_HALF_YEAR
-    ? (Number(stake) / E8S_PER_ICP) *
-      dissolveDelayMultiplier(dissolveDelayInSeconds) *
-      ageMultiplier(ageSeconds)
-    : 0;
+    ? BigInt(
+        Math.round(
+          (Number(stake) / E8S_PER_ICP) *
+            dissolveDelayMultiplier(dissolveDelayInSeconds) *
+            ageMultiplier(ageSeconds) *
+            E8S_PER_ICP
+        )
+      )
+    : BigInt(0);
 
 export const hasValidStake = (neuron: NeuronInfo): boolean =>
   // Ignore if we can't validate the stake

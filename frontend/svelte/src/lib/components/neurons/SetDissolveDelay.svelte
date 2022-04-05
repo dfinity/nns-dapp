@@ -11,10 +11,14 @@
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import { formatICP } from "../../utils/icp.utils";
-  import { votingPower } from "../../utils/neuron.utils";
+  import {
+    formatVotingPower,
+    neuronStake,
+    votingPower,
+  } from "../../utils/neuron.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
 
-  export let neuron: NeuronInfo | undefined;
+  export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;
 
   let loading: boolean = false;
@@ -36,7 +40,7 @@
     dispatcher("nnsSkipDelay");
   };
   let neuronICP: bigint;
-  $: neuronICP = neuron?.fullNeuron?.cachedNeuronStake ?? BigInt(0);
+  $: neuronICP = neuronStake(neuron);
 
   const goToConfirmation = async () => {
     dispatcher("nnsConfirmDelay");
@@ -44,85 +48,83 @@
 </script>
 
 <div class="wizard-wrapper wrapper">
-  {#if neuron !== undefined}
-    <div>
-      <h5>{$i18n.neurons.neuron_id}</h5>
-      <p>{neuron.neuronId}</p>
-    </div>
-    <div>
-      <h5>{$i18n.neurons.neuron_balance}</h5>
-      <p data-tid="neuron-stake">
-        {replacePlaceholders($i18n.neurons.icp_stake, {
-          $amount: formatICP(neuronICP),
-        })}
+  <div>
+    <h5>{$i18n.neurons.neuron_id}</h5>
+    <p>{neuron.neuronId}</p>
+  </div>
+  <div>
+    <h5>{$i18n.neurons.neuron_balance}</h5>
+    <p data-tid="neuron-stake">
+      {replacePlaceholders($i18n.neurons.icp_stake, {
+        $amount: formatICP(neuronICP),
+      })}
+    </p>
+  </div>
+  <div>
+    {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
+      <h5>{$i18n.neurons.current_dissolve_delay}</h5>
+      <p class="duration">
+        {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons
+          .staked}
       </p>
+    {/if}
+  </div>
+  <Card>
+    <div slot="start">
+      <h5>{$i18n.neurons.dissolve_delay_title}</h5>
+      <p>{$i18n.neurons.dissolve_delay_description}</p>
     </div>
-    <div>
-      {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
-        <h5>{$i18n.neurons.current_dissolve_delay}</h5>
-        <p class="duration">
-          {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons
-            .staked}
-        </p>
-      {/if}
-    </div>
-    <Card>
-      <div slot="start">
-        <h5>{$i18n.neurons.dissolve_delay_title}</h5>
-        <p>{$i18n.neurons.dissolve_delay_description}</p>
-      </div>
-      <div class="select-delay-container">
-        <input
-          min={0}
-          max={SECONDS_IN_EIGHT_YEARS}
-          type="range"
-          bind:value={delayInSeconds}
-          style={`background-image: ${backgroundStyle};`}
-        />
-        <div class="details">
-          <div>
-            <h5>
-              {votingPower({
+    <div class="select-delay-container">
+      <input
+        min={0}
+        max={SECONDS_IN_EIGHT_YEARS}
+        type="range"
+        bind:value={delayInSeconds}
+        style={`background-image: ${backgroundStyle};`}
+      />
+      <div class="details">
+        <div>
+          <h5>
+            {formatVotingPower(
+              votingPower({
                 stake: neuronICP,
                 dissolveDelayInSeconds: delayInSeconds,
-              }).toFixed(2)}
-            </h5>
-            <p>{$i18n.neurons.voting_power}</p>
-          </div>
-          <div>
-            {#if delayInSeconds > 0}
-              <h5>{secondsToDuration(BigInt(delayInSeconds))}</h5>
-            {:else}
-              <h5>{$i18n.neurons.no_delay}</h5>
-            {/if}
-            <p>{$i18n.neurons.dissolve_delay_title}</p>
-          </div>
+              })
+            )}
+          </h5>
+          <p>{$i18n.neurons.voting_power}</p>
+        </div>
+        <div>
+          {#if delayInSeconds > 0}
+            <h5>{secondsToDuration(BigInt(delayInSeconds))}</h5>
+          {:else}
+            <h5>{$i18n.neurons.no_delay}</h5>
+          {/if}
+          <p>{$i18n.neurons.dissolve_delay_title}</p>
         </div>
       </div>
-    </Card>
-    <div class="buttons">
-      <button
-        on:click={skipDelay}
-        data-tid="skip-neuron-delay"
-        class="secondary full-width"
-        disabled={loading}>{$i18n.neurons.skip}</button
-      >
-      <button
-        class="primary full-width"
-        disabled={disableUpdate || loading}
-        on:click={goToConfirmation}
-        data-tid="go-confirm-delay-button"
-      >
-        {#if loading}
-          <Spinner />
-        {:else}
-          {$i18n.neurons.update_delay}
-        {/if}
-      </button>
     </div>
-  {:else}
-    <Spinner />
-  {/if}
+  </Card>
+  <div class="buttons">
+    <button
+      on:click={skipDelay}
+      data-tid="skip-neuron-delay"
+      class="secondary full-width"
+      disabled={loading}>{$i18n.neurons.skip}</button
+    >
+    <button
+      class="primary full-width"
+      disabled={disableUpdate || loading}
+      on:click={goToConfirmation}
+      data-tid="go-confirm-delay-button"
+    >
+      {#if loading}
+        <Spinner />
+      {:else}
+        {$i18n.neurons.update_delay}
+      {/if}
+    </button>
+  </div>
 </div>
 
 <style lang="scss">
