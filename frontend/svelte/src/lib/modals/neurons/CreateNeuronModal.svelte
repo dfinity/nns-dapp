@@ -137,8 +137,9 @@
   {#if currentStep?.name === "SetDissolveDelay"}
     {#if newNeuron !== undefined}
       <SetDissolveDelay
+        secondaryButtonText={$i18n.neurons.skip}
         neuron={newNeuron}
-        on:nnsSkipDelay={goEditFollowers}
+        on:nnsCancel={goEditFollowers}
         on:nnsConfirmDelay={goNext}
         bind:delayInSeconds
       />
