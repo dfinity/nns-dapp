@@ -14,9 +14,11 @@ import {
   hasJoinedCommunityFund,
   hasValidStake,
   isCurrentUserController,
+  isNeuronControllable,
   maturityByStake,
   votingPower,
 } from "../../../lib/utils/neuron.utils";
+import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 describe("neuron-utils", () => {
@@ -260,6 +262,52 @@ describe("neuron-utils", () => {
         },
       };
       expect(maturityByStake(neuron)).toBe(0.333333);
+    });
+  });
+
+  describe("isNeuronControllable", () => {
+    it("should return true if neuron controller is the current main account", () => {
+      const accounts = {
+        main: mockMainAccount,
+        subaccounts: undefined,
+      };
+
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockMainAccount.principal?.toText(),
+        },
+      };
+
+      expect(isNeuronControllable({ neuron, accounts })).toBe(true);
+    });
+
+    it("should return false if neuron controller is not current main account", () => {
+      const accounts = {
+        main: mockMainAccount,
+        subaccounts: undefined,
+      };
+
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "bbbbb-b",
+        },
+      };
+
+      expect(isNeuronControllable({ neuron, accounts })).toBe(false);
+    });
+
+    it("should return false if no accounts", () => {
+      const accounts = {
+        main: undefined,
+        subaccounts: undefined,
+      };
+      expect(isNeuronControllable({ neuron: mockNeuron, accounts })).toBe(
+        false
+      );
     });
   });
 });

@@ -276,6 +276,9 @@ interface I18nNeuron_detail {
   start_dissolve_success: string;
   stop_dissolve_success: string;
   dummy_proposal_success: string;
+  following_title: string;
+  following_description: string;
+  follow_neurons: string;
 }
 
 interface I18nTime {

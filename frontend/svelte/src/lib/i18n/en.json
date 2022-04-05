@@ -253,7 +253,10 @@
     "join_community_fund_success": "Your neuron has successfully joined the community fund.",
     "start_dissolve_success": "Your neuron has started dissolving.",
     "stop_dissolve_success": "Your neuron has stoped dissolving.",
-    "dummy_proposal_success": "Dummy proposals created successfully"
+    "dummy_proposal_success": "Dummy proposals created successfully",
+    "following_title": "Following",
+    "following_description": "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
+    "follow_neurons": "Follow Neurons"
   },
   "time": {
     "year": "year",

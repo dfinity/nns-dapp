@@ -5,8 +5,13 @@
   import { i18n } from "../../stores/i18n";
   import { enumValues } from "../../utils/enum.utils";
   import Spinner from "../ui/Spinner.svelte";
+  import { onMount } from "svelte";
+  import { listKnownNeurons } from "../../services/knownNeurons.services";
 
   export let neuron: NeuronInfo | undefined;
+
+  // Load KnownNeurons which are used in the FollowTopicSections
+  onMount(() => listKnownNeurons());
 
   const topics: Topic[] = enumValues(Topic);
 </script>
