@@ -200,7 +200,9 @@ describe("CreateNeuronModal", () => {
     jest
       .spyOn(neuronsStore, "subscribe")
       .mockImplementation(buildMockNeuronsStoreSubscribe([]));
-    const { container, component } = await renderModal(CreateNeuronModal);
+    const { container, component } = await renderModal({
+      component: CreateNeuronModal,
+    });
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
