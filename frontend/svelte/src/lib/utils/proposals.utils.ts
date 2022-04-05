@@ -181,6 +181,21 @@ export const replaceAndConcatenateProposals = ({
 };
 
 /**
+ * Compares proposals by "id"
+ */
+export const replaceProposals = ({
+  oldProposals,
+  newProposals,
+}: {
+  oldProposals: ProposalInfo[];
+  newProposals: ProposalInfo[];
+}): ProposalInfo[] =>
+  oldProposals.map(
+    (oldProposal) =>
+      newProposals.find(({ id }) => id === oldProposal.id) ?? oldProposal
+  );
+
+/**
  * Compares 2 proposal lists by entries "id"
  */
 export const proposalsHaveSameIds = ({

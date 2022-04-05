@@ -14,6 +14,7 @@ import {
   excludeProposals,
   preserveNeuronSelectionAfterUpdate,
   replaceAndConcatenateProposals,
+  replaceProposals,
 } from "../utils/proposals.utils";
 
 export interface ProposalsFiltersStore {
@@ -79,6 +80,15 @@ const initProposalsStore = () => {
               oldProposals,
               newProposals: proposals,
             })
+      );
+    },
+
+    replaceProposals(proposals: ProposalInfo[]) {
+      update((oldProposals: ProposalInfo[]) =>
+        replaceProposals({
+          oldProposals,
+          newProposals: proposals,
+        })
       );
     },
   };
