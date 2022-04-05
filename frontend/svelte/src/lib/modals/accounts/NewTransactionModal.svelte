@@ -3,8 +3,16 @@
   import type { Step, Steps } from "../../stores/steps.state";
   import SelectAccount from "../../components/accounts/SelectAccount.svelte";
   import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
-  import SelectDestination from "../../components/accounts/SelectDestination.svelte";
+  import NewTransactionDestination from "../../components/accounts/NewTransactionDestination.svelte";
+  import NewTransactionSource from "../../components/accounts/NewTransactionSource.svelte";
+  import { setContext } from "svelte";
+  import { writable } from "svelte/store";
+  import type {
+    TransactionContext,
+    TransactionStore,
+  } from "../../stores/transaction.store";
+  import NewTransactionAmount from "../../components/accounts/NewTransactionAmount.svelte";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
 
   export let canSelectAccount: boolean;
 
@@ -23,19 +31,25 @@
       showBackButton: canSelectAccount,
       title: $i18n.accounts.select_destination,
     },
+    {
+      name: "SelectAmount",
+      showBackButton: true,
+      title: $i18n.accounts.enter_icp_amount,
+    },
   ];
 
-  let selectedAccount: Account | undefined;
+  const newTransactionStore = writable<TransactionStore>({
+    selectedAccount: undefined,
+    destinationAddress: undefined,
+  });
 
-  const chooseAccount = ({
-    detail,
-  }: CustomEvent<{ selectedAccount: Account }>) => {
-    selectedAccount = detail.selectedAccount;
-    modal.next();
-  };
+  setContext<TransactionContext>(NEW_TRANSACTION_CONTEXT_KEY, {
+    store: newTransactionStore,
+    next: () => modal?.next(),
+  });
 
   let currentStep: Step | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal | undefined;
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
@@ -45,10 +59,13 @@
 
   <svelte:fragment>
     {#if currentStep?.name === "SelectAccount"}
-      <SelectAccount on:nnsSelectAccount={chooseAccount} />
+      <NewTransactionSource />
     {/if}
     {#if currentStep?.name === "SelectDestination"}
-      <SelectDestination />
+      <NewTransactionDestination />
+    {/if}
+    {#if currentStep?.name === "SelectAmount"}
+      <NewTransactionAmount />
     {/if}
   </svelte:fragment>
 </WizardModal>

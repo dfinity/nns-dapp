@@ -87,6 +87,10 @@ interface I18nAccounts {
   address: string;
   enter_address_or_select: string;
   my_accounts: string;
+  enter_icp_amount: string;
+  source: string;
+  destination: string;
+  transaction_fee: string;
 }
 
 interface I18nNeurons {

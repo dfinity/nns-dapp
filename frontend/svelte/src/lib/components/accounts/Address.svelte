@@ -3,11 +3,12 @@
   import { i18n } from "../../stores/i18n";
   import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../constants/accounts.constants";
   import { invalidAddress } from "../../utils/accounts.utils";
+  import { createEventDispatcher } from "svelte";
 
   export let address: string = "";
 
-  // TODO(L2-430): to be implemented
-  const submitAddress = () => console.log("submitAddress");
+  const dispatcher = createEventDispatcher();
+  const submitAddress = () => dispatcher("nnsAddress", { address });
 </script>
 
 <article>
