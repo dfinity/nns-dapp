@@ -1,4 +1,4 @@
-/**
+/*
  * A CLI tool for testing the Ledger hardware wallet integration.
  *
  * As this matures, we may eventually spin it out to a proper tool for
@@ -313,7 +313,11 @@ function tryParseBigInt(value: string): bigint {
   try {
     return BigInt(value);
   } catch (err) {
-    throw new InvalidArgumentError(err.toString());
+    if (err instanceof SyntaxError) {
+      throw new InvalidArgumentError(err.toString());
+    } else {
+      throw err;
+    }
   }
 }
 
