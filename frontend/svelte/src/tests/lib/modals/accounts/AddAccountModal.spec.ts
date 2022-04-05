@@ -4,14 +4,14 @@
 import { fireEvent } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
-import AddAccountModal from "../../../lib/modals/accounts/AddAccountModal.svelte";
-import { addSubAccount } from "../../../lib/services/accounts.services";
-import en from "../../mocks/i18n.mock";
-import { waitModalIntroEnd } from "../../mocks/modal.mock";
+import AddAccountModal from "../../../../lib/modals/accounts/AddAccountModal.svelte";
+import { addSubAccount } from "../../../../lib/services/accounts.services";
+import en from "../../../mocks/i18n.mock";
+import { waitModalIntroEnd } from "../../../mocks/modal.mock";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function
-jest.mock("../../../lib/services/accounts.services", () => {
+jest.mock("../../../../lib/services/accounts.services", () => {
   return {
     addSubAccount: jest.fn().mockResolvedValue(undefined),
   };
