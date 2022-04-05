@@ -73,9 +73,7 @@ async function getAgent(identity: Identity): Promise<Agent> {
 async function showInfo(showOnDevice?: boolean) {
   const identity = await getLedgerIdentity();
   const principal = identity.getPrincipal();
-  const accountIdentifier = principalToAccountIdentifier(
-    identity.getPrincipal()
-  );
+  const accountIdentifier = principalToAccountIdentifier(principal);
 
   const balance = await (
     await getLedgerService(new AnonymousIdentity())
@@ -94,7 +92,7 @@ async function showInfo(showOnDevice?: boolean) {
 }
 
 /**
- * Creates the account identifier from the ledger identity.
+ * Creates the account identifier for the specified subaccount from the ledger identity.
  */
 function getAccountIdentifier(
   identity: LedgerIdentity,
