@@ -3,16 +3,12 @@
   import { i18n } from "../../stores/i18n";
   import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../constants/accounts.constants";
   import { invalidAddress } from "../../utils/accounts.utils";
-  import { createEventDispatcher } from "svelte";
 
   export let address: string = "";
-
-  const dispatcher = createEventDispatcher();
-  const submitAddress = () => dispatcher("nnsAddress", { address });
 </script>
 
 <article>
-  <form on:submit|preventDefault={submitAddress}>
+  <form on:submit|preventDefault>
     <Input
       inputType="text"
       placeholderLabelKey="accounts.address"

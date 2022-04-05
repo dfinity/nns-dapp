@@ -23,8 +23,7 @@
   }: CustomEvent<{ selectedAccount: Account }>) =>
     chooseDestinationAddress(detail.selectedAccount.identifier);
 
-  const chooseAddress = ({ detail }: CustomEvent<{ address: string }>) =>
-    chooseDestinationAddress(detail.address);
+  const chooseAddress = () => chooseDestinationAddress(address);
 
   const chooseDestinationAddress = (destinationAddress: string) => {
     const { store, next }: TransactionContext = context;
@@ -41,7 +40,7 @@
 <div>
   <p>{$i18n.accounts.enter_address_or_select}</p>
 
-  <Address bind:address on:nnsAddress={chooseAddress} />
+  <Address bind:address on:submit={chooseAddress} />
 
   <!-- Prevent the component to be presented with a scroll offset when navigating between wizard steps -->
   {#if mounted}
