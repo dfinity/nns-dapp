@@ -8,7 +8,7 @@ import en from "../../../mocks/i18n.mock";
 
 describe("Address", () => {
   it("should render a form to enter an address", () => {
-    const { container } = render(Address);
+    const { container } = render(Address, { props: { address: undefined } });
 
     expect(container.querySelector("input")).not.toBeNull();
     expect(container.querySelector("form")).not.toBeNull();

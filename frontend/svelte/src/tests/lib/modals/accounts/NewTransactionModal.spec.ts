@@ -21,8 +21,8 @@ describe("NewTransactionModal", () => {
 
   const modalSelector = "div.toolbar";
 
-  it("should display modal", () => {
-    const { container } = render(NewTransactionModal);
+  it("should display modal", async () => {
+    const { container } = await renderModal();
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
