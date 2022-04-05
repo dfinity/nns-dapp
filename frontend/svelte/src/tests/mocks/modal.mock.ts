@@ -1,6 +1,8 @@
-import { waitFor } from "@testing-library/svelte";
+import type { RenderResult } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 
-export const waitModalIntroEnd = async ({
+const waitModalIntroEnd = async ({
   container,
   selector,
 }: {
@@ -12,4 +14,23 @@ export const waitModalIntroEnd = async ({
   container.querySelector('div[role="dialog"]')?.dispatchEvent(event);
 
   await waitFor(() => expect(container.querySelector(selector)).not.toBeNull());
+};
+
+const modalToolbarSelector = "div.toolbar";
+
+export const renderModal = async ({
+  component,
+  props,
+}: {
+  component: typeof SvelteComponent;
+  props?: Record<string, string | boolean>;
+}): Promise<RenderResult> => {
+  const modal = render(component, {
+    props,
+  });
+
+  const { container } = modal;
+  await waitModalIntroEnd({ container, selector: modalToolbarSelector });
+
+  return modal;
 };

@@ -11,18 +11,38 @@
   import ConfirmDissolveDelay from "../../components/neurons/ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "../../components/neurons/EditFollowNeurons.svelte";
   import WizardModal from "../WizardModal.svelte";
-  import type { Steps } from "../../stores/steps.state";
+  import type { Step, Steps } from "../../stores/steps.state";
   import { stepIndex } from "../../utils/step.utils";
 
   const steps: Steps = [
-    { name: "SelectAccount", showBackButton: false },
-    { name: "StakeNeuron", showBackButton: true },
-    { name: "SetDissolveDelay", showBackButton: false },
-    { name: "ConfirmDissolveDelay", showBackButton: true },
-    { name: "EditFollowNeurons", showBackButton: false },
+    {
+      name: "SelectAccount",
+      showBackButton: false,
+      title: $i18n.accounts.select_source,
+    },
+    {
+      name: "StakeNeuron",
+      showBackButton: true,
+      title: $i18n.neurons.stake_neuron,
+    },
+    {
+      name: "SetDissolveDelay",
+      showBackButton: false,
+      title: $i18n.neurons.set_dissolve_delay,
+    },
+    {
+      name: "ConfirmDissolveDelay",
+      showBackButton: true,
+      title: $i18n.neurons.confirm_dissolve_delay,
+    },
+    {
+      name: "EditFollowNeurons",
+      showBackButton: false,
+      title: $i18n.neurons.follow_neurons_screen,
+    },
   ];
 
-  let currentStepName: string | undefined;
+  let currentStep: Step | undefined;
   let modal: WizardModal;
 
   let selectedAccount: Account | undefined;
@@ -53,27 +73,19 @@
   const goEditFollowers = () => {
     modal.set(stepIndex({ name: "EditFollowNeurons", steps }));
   };
-
-  const titleMapper: Record<string, string> = {
-    SelectAccount: "select_source",
-    StakeNeuron: "stake_neuron",
-    SetDissolveDelay: "set_dissolve_delay",
-    ConfirmDissolveDelay: "confirm_dissolve_delay",
-    EditFollowNeurons: "follow_neurons_screen",
-  };
-  let titleKey: string = titleMapper[0];
-  $: titleKey = titleMapper[currentStepName ?? "SelectAccount"];
 </script>
 
-<WizardModal {steps} bind:currentStepName bind:this={modal} on:nnsClose>
-  <svelte:fragment slot="title">{$i18n.neurons?.[titleKey]}</svelte:fragment>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+  <svelte:fragment slot="title"
+    >{currentStep?.title ?? $i18n.accounts.select_source}</svelte:fragment
+  >
 
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepName === "SelectAccount"}
+  {#if currentStep?.name === "SelectAccount"}
     <SelectAccount on:nnsSelectAccount={chooseAccount} />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepName === "StakeNeuron"}
+  {#if currentStep?.name === "StakeNeuron"}
     <!-- we spare a spinner for the selectedAccount within StakeNeuron because we reach this step once the selectedAccount has been selected -->
     {#if selectedAccount !== undefined}
       <StakeNeuron
@@ -83,7 +95,7 @@
     {/if}
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepName === "SetDissolveDelay"}
+  {#if currentStep?.name === "SetDissolveDelay"}
     <SetDissolveDelay
       neuron={newNeuron}
       on:nnsSkipDelay={goEditFollowers}
@@ -92,7 +104,7 @@
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepName === "ConfirmDissolveDelay"}
+  {#if currentStep?.name === "ConfirmDissolveDelay"}
     <ConfirmDissolveDelay
       neuron={newNeuron}
       {delayInSeconds}
@@ -101,7 +113,7 @@
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepName === "EditFollowNeurons"}
+  {#if currentStep?.name === "EditFollowNeurons"}
     <EditFollowNeurons neuron={newNeuron} />
   {/if}
 </WizardModal>

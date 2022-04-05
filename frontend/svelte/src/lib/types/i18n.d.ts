@@ -14,6 +14,7 @@ interface I18nCore {
   yes: string;
   no: string;
   unspecified: string;
+  continue: string;
 }
 
 interface I18nError {
@@ -81,6 +82,11 @@ interface I18nAccounts {
   new_linked_account_title: string;
   new_linked_account_placeholder: string;
   linked_account: string;
+  select_source: string;
+  select_destination: string;
+  address: string;
+  enter_address_or_select: string;
+  my_accounts: string;
 }
 
 interface I18nNeurons {
@@ -88,11 +94,9 @@ interface I18nNeurons {
   text: string;
   principal_is: string;
   stake_neurons: string;
-  select_source: string;
   set_dissolve_delay: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
-  my_accounts: string;
   stake_neuron: string;
   source: string;
   transaction_fee: string;

@@ -1,3 +1,4 @@
+import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../constants/accounts.constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Account } from "../types/account";
 
@@ -20,3 +21,15 @@ export const getAccountByPrincipal = ({
   // TODO: Check also the hardware wallets L2-433
   return undefined;
 };
+
+/**
+ * Is the address a valid entry to proceed with any action such as transferring ICP?
+ */
+export const invalidAddress = (address: string | undefined): boolean =>
+  address === undefined || address.length < ACCOUNT_ADDRESS_MIN_LENGTH;
+
+/**
+ * Is the address an empty value? Useful to detect if user is currently entering an address regardless if valid or invalid
+ */
+export const emptyAddress = (address: string | undefined): boolean =>
+  address === undefined || address.length === 0;
