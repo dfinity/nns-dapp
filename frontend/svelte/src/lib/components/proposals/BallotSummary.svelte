@@ -15,7 +15,7 @@
     async () =>
       await loadProposal({
         proposalId: ballot.proposalId as ProposalId,
-        setProposal: ({ proposal: proposalInfo }) => (proposal = proposalInfo),
+        setProposal: (proposalInfo: ProposalInfo) => (proposal = proposalInfo),
       })
   );
 </script>
