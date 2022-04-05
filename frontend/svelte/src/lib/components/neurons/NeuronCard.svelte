@@ -72,10 +72,6 @@
       {$i18n.neurons[`status_${stateInfo.textKey}`]}
       <svelte:component this={stateInfo.Icon} />
     </p>
-
-    {#if !proposerNeuron}
-      <p>{$i18n.neurons.stake}</p>
-    {/if}
   </div>
 
   {#if dissolvingTime !== undefined}
