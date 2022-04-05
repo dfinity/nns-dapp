@@ -30,6 +30,7 @@
   import { isRoutePath } from "../lib/utils/app-path.utils";
 
   let loading: boolean = false;
+  let hidden: boolean = false;
   let initialized: boolean = false;
 
   const findNextProposals = async () => {
@@ -86,6 +87,7 @@
     // We do this to smoothness the back and forth navigation between this page and the detail page.
     if (!emptyProposals($proposalsStore) && isReferrerProposalDetail) {
       initDebounceFindProposals();
+
       return;
     }
 
@@ -98,13 +100,22 @@
     initialized = true;
   });
 
-  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() => {
-    // Show spinner right away avoiding debounce
-    loading = true;
-    proposalsStore.setProposals([]);
+  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
+    ({ lastAppliedFilter }) => {
+      if (lastAppliedFilter === "excludeVotedProposals") {
+        // Make a visual feedback that the filter was applyed
+        hidden = true;
+        setTimeout(() => (hidden = false), 200);
+        return;
+      }
 
-    debounceFindProposals?.();
-  });
+      // Show spinner right away avoiding debounce
+      loading = true;
+      proposalsStore.setProposals([]);
+
+      debounceFindProposals?.();
+    }
+  );
 
   onDestroy(unsubscribe);
 
@@ -127,7 +138,7 @@
 
       <InfiniteScroll on:nnsIntersect={findNextProposals}>
         {#each $proposalsStore as proposalInfo (proposalInfo.id)}
-          <ProposalCard {proposalInfo} />
+          <ProposalCard {hidden} {proposalInfo} />
         {/each}
       </InfiniteScroll>
 
