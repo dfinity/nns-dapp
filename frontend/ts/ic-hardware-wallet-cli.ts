@@ -354,7 +354,6 @@ async function main() {
         .requiredOption("--neuron-id <neuron-id>")
         .option("--to <account-identifier>")
         .option("--amount <amount>")
-        .option("--subaccount <subaccount>", "ID of the subaccount")
         .action((args) => {
           run(() => disburseNeuron(args.neuronId, args.to, args.amount));
         })
