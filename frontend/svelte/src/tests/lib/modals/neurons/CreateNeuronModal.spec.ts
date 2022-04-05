@@ -4,8 +4,7 @@
 
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import type { RenderResult } from "@testing-library/svelte";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import CreateNeuronModal from "../../../../lib/modals/neurons/CreateNeuronModal.svelte";
@@ -22,7 +21,7 @@ import {
 } from "../../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
-import { waitModalIntroEnd } from "../../../mocks/modal.mock";
+import { renderModal } from "../../../mocks/modal.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,
@@ -60,31 +59,20 @@ describe("CreateNeuronModal", () => {
       .mockImplementation(() => mock<GovernanceCanister>());
   });
 
-  const modalSelector = "div.toolbar";
-
-  it("should display modal", () => {
-    const { container } = render(CreateNeuronModal);
+  it("should display modal", async () => {
+    const { container } = await renderModal(CreateNeuronModal);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
-  const renderModal = async (): Promise<RenderResult> => {
-    const modal = render(CreateNeuronModal);
-
-    const { container } = modal;
-    await waitModalIntroEnd({ container, selector: modalSelector });
-
-    return modal;
-  };
-
   it("should display accounts as cards", async () => {
-    const { container } = await renderModal();
+    const { container } = await renderModal(CreateNeuronModal);
 
     expect(container.querySelector('article[role="button"]')).not.toBeNull();
   });
 
   it("should be able to select an account and move to the next view", async () => {
-    const { container, queryByText } = await renderModal();
+    const { container, queryByText } = await renderModal(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -95,7 +83,7 @@ describe("CreateNeuronModal", () => {
   });
 
   it("should be able to select a subaccount and move to the next view", async () => {
-    const { container, queryByText } = await renderModal();
+    const { container, queryByText } = await renderModal(CreateNeuronModal);
 
     const accountCards = container.querySelectorAll('article[role="button"]');
     expect(accountCards.length).toBe(2);
@@ -111,7 +99,7 @@ describe("CreateNeuronModal", () => {
   });
 
   it("should have disabled Create neuron button", async () => {
-    const { container, queryByText } = await renderModal();
+    const { container, queryByText } = await renderModal(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -125,7 +113,7 @@ describe("CreateNeuronModal", () => {
   });
 
   it("should have enabled Create neuron button when entering amount", async () => {
-    const { container, queryByText } = await renderModal();
+    const { container, queryByText } = await renderModal(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -144,7 +132,7 @@ describe("CreateNeuronModal", () => {
   });
 
   it("should be able to create a new neuron", async () => {
-    const { container } = await renderModal();
+    const { container } = await renderModal(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -167,7 +155,7 @@ describe("CreateNeuronModal", () => {
     jest
       .spyOn(neuronsStore, "subscribe")
       .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
-    const { container } = await renderModal();
+    const { container } = await renderModal(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -194,7 +182,7 @@ describe("CreateNeuronModal", () => {
     jest
       .spyOn(neuronsStore, "subscribe")
       .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
-    const { container } = await renderModal();
+    const { container } = await renderModal(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -225,7 +213,7 @@ describe("CreateNeuronModal", () => {
     jest
       .spyOn(neuronsStore, "subscribe")
       .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
-    const { container } = await renderModal();
+    const { container } = await renderModal(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -269,7 +257,7 @@ describe("CreateNeuronModal", () => {
       .spyOn(neuronsStore, "subscribe")
       .mockImplementation(buildMockNeuronsStoreSubscribe([newNeuron]));
 
-    const { container, getByText } = await renderModal();
+    const { container, getByText } = await renderModal(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -297,7 +285,7 @@ describe("CreateNeuronModal", () => {
       .spyOn(neuronsStore, "subscribe")
       .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
 
-    const { container } = await renderModal();
+    const { container } = await renderModal(CreateNeuronModal);
 
     const accountCard = container.querySelector('article[role="button"]');
     expect(accountCard).not.toBeNull();
@@ -350,7 +338,7 @@ describe("CreateNeuronModal", () => {
       .spyOn(neuronsStore, "subscribe")
       .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
 
-    const { container, queryByTestId } = await renderModal();
+    const { container, queryByTestId } = await renderModal(CreateNeuronModal);
 
     // SCREEN: Select Account
     const accountCard = container.querySelector('article[role="button"]');
