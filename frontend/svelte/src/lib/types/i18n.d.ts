@@ -130,6 +130,7 @@ interface I18nNeurons {
   skip: string;
   update_delay: string;
   confirm_delay: string;
+  dissolve_delay_success: string;
 }
 
 interface I18nNew_followee {
