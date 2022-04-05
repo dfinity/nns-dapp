@@ -25,7 +25,6 @@
 
 <div class="filters">
   <FiltersButton
-    data-tid="filters-by-topics"
     totalFilters={enumSize(Topic)}
     activeFilters={topics.length}
     on:nnsFilter={() =>
