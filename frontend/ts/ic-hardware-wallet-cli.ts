@@ -249,13 +249,13 @@ async function stopDissolving(neuronId: string) {
 }
 
 async function getLedgerIdentity(): Promise<LedgerIdentity> {
-  const subaccountId = tryParseInt(program.opts().subaccount);
-  if (subaccountId < 0 || subaccountId > 255) {
+  const principalIndex = tryParseInt(program.opts().principal);
+  if (principalIndex < 0 || principalIndex > 255) {
     throw new InvalidArgumentError(
-      "Subaccount must be between 0 and 255 inclusive."
+      "Principal Index must be between 0 and 255 inclusive."
     );
   }
-  return await LedgerIdentity.create(`m/44'/223'/0'/0/${subaccountId}`);
+  return await LedgerIdentity.create(`m/44'/223'/0'/0/${principalIndex}`);
 }
 
 async function listNeurons() {
@@ -430,6 +430,9 @@ async function main() {
       new Option("--subaccount <subaccount>", "The subaccount to use.").default(
         0
       )
+    )
+    .addOption(
+      new Option("--principal <principal>", "The principal to use.").default(0)
     )
     .addCommand(
       new Command("info")
