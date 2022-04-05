@@ -42,3 +42,8 @@ export const mockAccountsStoreSubscribe =
 
     return () => undefined;
   };
+
+export const mockAddressInput = (length: number): string =>
+  Array.from(Array(length))
+    .map(() => "a")
+    .join("");

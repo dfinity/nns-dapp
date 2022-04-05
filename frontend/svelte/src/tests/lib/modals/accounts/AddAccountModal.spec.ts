@@ -24,14 +24,14 @@ describe("AddAccountModal", () => {
   });
 
   it("should display two button cards", async () => {
-    const { container } = await renderModal(AddAccountModal);
+    const { container } = await renderModal({ component: AddAccountModal });
 
     const buttons = container.querySelectorAll('div[role="button"]');
     expect(buttons.length).toEqual(2);
   });
 
   it("should be able to select new account ", async () => {
-    const { queryByText } = await renderModal(AddAccountModal);
+    const { queryByText } = await renderModal({ component: AddAccountModal });
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
@@ -44,7 +44,9 @@ describe("AddAccountModal", () => {
   });
 
   it("should have disabled Add Account button", async () => {
-    const { container, queryByText } = await renderModal(AddAccountModal);
+    const { container, queryByText } = await renderModal({
+      component: AddAccountModal,
+    });
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
@@ -58,7 +60,9 @@ describe("AddAccountModal", () => {
   });
 
   it("should have enabled Add Account button when entering name", async () => {
-    const { container, queryByText } = await renderModal(AddAccountModal);
+    const { container, queryByText } = await renderModal({
+      component: AddAccountModal,
+    });
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
@@ -77,7 +81,9 @@ describe("AddAccountModal", () => {
   });
 
   const testSubaccount = async (): Promise<{ container: HTMLElement }> => {
-    const { container, queryByText } = await renderModal(AddAccountModal);
+    const { container, queryByText } = await renderModal({
+      component: AddAccountModal,
+    });
 
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();

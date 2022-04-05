@@ -19,13 +19,19 @@ describe("NewTransactionModal", () => {
     .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
 
   it("should display modal", async () => {
-    const { container } = await renderModal(NewTransactionModal);
+    const { container } = await renderModal({
+      component: NewTransactionModal,
+      props: { canSelectAccount: true },
+    });
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
   it("should navigate back and forth between step SelectAccount and SelectDestination", async () => {
-    const { container, getByText } = await renderModal(NewTransactionModal);
+    const { container, getByText } = await renderModal({
+      component: NewTransactionModal,
+      props: { canSelectAccount: true },
+    });
 
     expect(
       getByText(en.accounts.select_source, { exact: false })

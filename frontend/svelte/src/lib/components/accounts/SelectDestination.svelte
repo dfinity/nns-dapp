@@ -3,8 +3,9 @@
   import Address from "./Address.svelte";
   import SelectAccount from "./SelectAccount.svelte";
   import { onMount } from "svelte";
+  import { emptyAddress } from "../../utils/accounts.utils";
 
-  let address: number | undefined;
+  let address: string;
   let mounted: boolean = false;
 
   onMount(() => (mounted = true));
@@ -21,7 +22,7 @@
   {#if mounted}
     <SelectAccount
       displayTitle={true}
-      disableSelection={address !== undefined && address !== 0}
+      disableSelection={!emptyAddress(address)}
     />
   {/if}
 </div>
