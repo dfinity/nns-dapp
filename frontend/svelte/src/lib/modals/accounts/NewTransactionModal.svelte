@@ -17,7 +17,7 @@
             title: $i18n.accounts.select_source,
           },
         ]
-      : [{}]),
+      : []) as Steps,
     {
       name: "SelectDestination",
       showBackButton: canSelectAccount,
