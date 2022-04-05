@@ -58,7 +58,7 @@ describe("proposals-utils", () => {
         proposalInfo: mockProposals[0],
         excludeVotedProposals: true,
       })
-    ).toBeTruthy();
+    ).toBeFalsy();
 
     expect(
       hideProposal({
@@ -152,6 +152,31 @@ describe("proposals-utils", () => {
         excludeVotedProposals: true,
       })
     ).toBeTruthy();
+  });
+
+  it("should show proposal without ballots", () => {
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[0],
+          ballots: [],
+        },
+        excludeVotedProposals: true,
+      })
+    ).toBeFalsy();
+    expect(
+      hideProposal({
+        proposalInfo: {
+          ...mockProposals[0],
+          ballots: [
+            {
+              vote: Vote.UNSPECIFIED,
+            } as Ballot,
+          ],
+        },
+        excludeVotedProposals: true,
+      })
+    ).toBeFalsy();
   });
 
   it("should have matching proposals", () => {
