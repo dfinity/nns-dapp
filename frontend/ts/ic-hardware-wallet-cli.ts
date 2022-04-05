@@ -68,12 +68,14 @@ async function getAgent(identity: Identity): Promise<Agent> {
 }
 
 /**
- * Displays the account idenifier on the terminal and the wallet's screen.
+ * Displays the default (subaccount 0) account idenifier on the terminal and the wallet's screen.
  */
 async function showInfo(showOnDevice?: boolean) {
   const identity = await getLedgerIdentity();
   const principal = identity.getPrincipal();
-  const accountIdentifier = getAccountIdentifier(identity);
+  const accountIdentifier = principalToAccountIdentifier(
+    identity.getPrincipal()
+  );
 
   const balance = await (
     await getLedgerService(new AnonymousIdentity())
@@ -94,8 +96,11 @@ async function showInfo(showOnDevice?: boolean) {
 /**
  * Creates the account identifier from the ledger identity.
  */
-function getAccountIdentifier(identity: LedgerIdentity): string {
-  const subAccount = tryParseInt(program.opts().subaccount);
+function getAccountIdentifier(
+  identity: LedgerIdentity,
+  subaccount: string
+): string {
+  const subAccount = tryParseInt(subaccount);
   if (subAccount < 0 || subAccount > 255) {
     throw new InvalidArgumentError(
       "Subaccount must be between 0 and 255 inclusive."
@@ -112,9 +117,9 @@ function getAccountIdentifier(identity: LedgerIdentity): string {
 /**
  * Fetches the balance of the main account or subaccount - if specified - on the wallet.
  */
-async function getBalance() {
+async function getBalance(subaccount: string) {
   const identity = await getLedgerIdentity();
-  const accountIdentifier = getAccountIdentifier(identity);
+  const accountIdentifier = getAccountIdentifier(identity, subaccount);
 
   const ledgerService = await getLedgerService(new AnonymousIdentity());
 
@@ -133,14 +138,18 @@ async function getBalance() {
  * @param to The account identifier in hex.
  * @param amount Amount to send in e8s.
  */
-async function sendICP(to: AccountIdentifier, amount: string) {
+async function sendICP(
+  to: AccountIdentifier,
+  amount: string,
+  subaccount: string
+) {
   const identity = await getLedgerIdentity();
   const ledger = await getLedgerService(identity);
   const blockHeight = await ledger.sendICPTs({
     to: to,
     amount: BigInt(amount),
     memo: BigInt(0),
-    fromSubAccountId: tryParseInt(program.opts().subaccount),
+    fromSubAccountId: tryParseInt(subaccount),
   });
 
   log(
@@ -420,11 +429,16 @@ async function main() {
   const icp = new Command("icp")
     .description("Commands for managing ICP.")
     .showSuggestionAfterError()
+    .addOption(
+      new Option("--subaccount <subaccount>", "The subaccount to use.").default(
+        0
+      )
+    )
     .addCommand(
       new Command("balance")
         .description("Fetch current balance.")
         .action(() => {
-          run(getBalance);
+          run(() => getBalance(icp.opts().subaccount));
         })
     )
     .addCommand(
@@ -434,7 +448,9 @@ async function main() {
           "The address to send the funds to."
         )
         .requiredOption("--amount <amount>", "Amount to transfer in e8s.")
-        .action((args) => run(() => sendICP(args.to, args.amount)))
+        .action((args) =>
+          run(() => sendICP(args.to, args.amount, icp.opts().subaccount))
+        )
     );
 
   program
@@ -445,11 +461,6 @@ async function main() {
       new Option("--network <network>", "The IC network to talk to.")
         .default("https://ic0.app")
         .env("IC_NETWORK")
-    )
-    .addOption(
-      new Option("--subaccount <subaccount>", "The subaccount to use.").default(
-        0
-      )
     )
     .addOption(
       new Option("--principal <principal>", "The principal to use.").default(0)
