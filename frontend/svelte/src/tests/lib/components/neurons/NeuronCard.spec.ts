@@ -62,7 +62,8 @@ describe("NeuronCard", () => {
     });
 
     const stakeText = formatICP(
-      (mockNeuron.fullNeuron as Neuron).cachedNeuronStake
+      (mockNeuron.fullNeuron as Neuron).cachedNeuronStake -
+        (mockNeuron.fullNeuron as Neuron).neuronFees
     );
     expect(getByText(stakeText)).toBeInTheDocument();
     expect(getByText(mockNeuron.neuronId.toString())).toBeInTheDocument();
@@ -142,5 +143,16 @@ describe("NeuronCard", () => {
 
     expect(getByText(en.neurons.status_dissolving)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
+  });
+
+  it("renders voting power in `proposerNeuron` version", async () => {
+    const { getByText } = render(NeuronCard, {
+      props: {
+        neuron: mockNeuron,
+        proposerNeuron: true,
+      },
+    });
+    const votingValue = formatICP(mockNeuron.votingPower);
+    expect(getByText(votingValue)).toBeInTheDocument();
   });
 });

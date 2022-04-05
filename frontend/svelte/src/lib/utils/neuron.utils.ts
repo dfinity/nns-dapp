@@ -1,5 +1,4 @@
-import type { NeuronInfo } from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
@@ -108,6 +107,13 @@ export const maturityByStake = (neuron: NeuronInfo): number => {
   );
 };
 
+export const sortNeuronsByCreatedTimestamp = (
+  neurons: NeuronInfo[]
+): NeuronInfo[] =>
+  neurons.sort((a, b) =>
+    Number(b.createdTimestampSeconds - a.createdTimestampSeconds)
+  );
+
 /*
  * Returns true if the neuron can be controlled. A neuron can be controlled if:
  *
@@ -126,3 +132,12 @@ export const isNeuronControllable = ({
   fullNeuron?.controller !== undefined &&
   getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
     undefined;
+
+/**
+ * Calculate neuron stake (cachedNeuronStake - neuronFees)
+ * @returns 0n if stake not available
+ */
+export const neuronStake = (neuron: NeuronInfo): bigint =>
+  neuron.fullNeuron?.cachedNeuronStake !== undefined
+    ? neuron.fullNeuron?.cachedNeuronStake - neuron.fullNeuron?.neuronFees
+    : BigInt(0);

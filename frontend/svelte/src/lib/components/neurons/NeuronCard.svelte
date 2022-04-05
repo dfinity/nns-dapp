@@ -7,12 +7,14 @@
     getStateInfo,
     hasJoinedCommunityFund,
     isCurrentUserController,
+    neuronStake,
   } from "../../utils/neuron.utils";
   import type { StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
 
   export let neuron: NeuronInfo;
+  export let proposerNeuron: boolean = false;
   // Setting default value avoids warning missing props during testing
   export let role: undefined | "link" | "button" = undefined;
   export let ariaLabel: string | undefined = undefined;
@@ -23,10 +25,7 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let neuronICP: ICP;
-  $: neuronICP =
-    neuron.fullNeuron?.cachedNeuronStake !== undefined
-      ? ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake)
-      : ICP.fromE8s(BigInt(0));
+  $: neuronICP = ICP.fromE8s(neuronStake(neuron));
   let isHotKeyControl: boolean;
   $: isHotKeyControl = !isCurrentUserController(neuron);
   let dissolvingTime: bigint | undefined;
@@ -54,7 +53,12 @@
   </div>
 
   <div slot="end" class="currency">
-    {#if neuronICP}
+    {#if proposerNeuron}
+      <ICPComponent
+        label={$i18n.neurons.voting_power}
+        icp={ICP.fromE8s(neuron.votingPower)}
+      />
+    {:else if neuronICP}
       <ICPComponent icp={neuronICP} />
     {/if}
   </div>
@@ -64,8 +68,6 @@
       {$i18n.neurons[`status_${stateInfo.textKey}`]}
       <svelte:component this={stateInfo.Icon} />
     </p>
-
-    <p>{$i18n.neurons.stake}</p>
   </div>
 
   {#if dissolvingTime !== undefined}

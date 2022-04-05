@@ -4,8 +4,8 @@
 
 import { Vote } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import VoteConfirmationModal from "../../../lib/modals/proposals/VoteConfirmationModal.svelte";
-import en from "../../mocks/i18n.mock";
+import VoteConfirmationModal from "../../../../lib/modals/proposals/VoteConfirmationModal.svelte";
+import en from "../../../mocks/i18n.mock";
 
 describe("VoteConfirmationModal", () => {
   it("should display Adopt state", () => {

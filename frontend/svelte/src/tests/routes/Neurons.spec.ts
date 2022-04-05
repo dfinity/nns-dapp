@@ -70,10 +70,10 @@ describe("Neurons", () => {
 
     const toolbarButton = container.querySelector('[role="toolbar"] button');
     expect(toolbarButton).not.toBeNull();
-    expect(queryByText(en.neurons.select_source)).toBeNull();
+    expect(queryByText(en.accounts.select_source)).toBeNull();
 
     toolbarButton !== null && (await fireEvent.click(toolbarButton));
 
-    expect(queryByText(en.neurons.select_source)).not.toBeNull();
+    expect(queryByText(en.accounts.select_source)).not.toBeNull();
   });
 });
