@@ -6,7 +6,11 @@
  */
 import { Command, Option, InvalidArgumentError } from "commander";
 import { LedgerIdentity } from "./src/ledger/identity";
-import { principalToAccountIdentifier } from "./src/canisters/converter";
+import {
+  arrayOfNumberToUint8Array,
+  fromSubAccountId,
+  principalToAccountIdentifier,
+} from "./src/canisters/converter";
 import governanceBuilder from "./src/canisters/governance/builder";
 import GovernanceService, {
   EmptyResponse,
@@ -69,7 +73,7 @@ async function getAgent(identity: Identity): Promise<Agent> {
 async function showInfo(showOnDevice?: boolean) {
   const identity = await getLedgerIdentity();
   const principal = identity.getPrincipal();
-  const accountIdentifier = principalToAccountIdentifier(principal);
+  const accountIdentifier = getAccountIdentifier(identity);
 
   const balance = await (
     await getLedgerService(new AnonymousIdentity())
@@ -88,13 +92,29 @@ async function showInfo(showOnDevice?: boolean) {
 }
 
 /**
- * Fetches the balance of the main account on the wallet.
+ * Creates the account identifier from the ledger identity.
+ */
+function getAccountIdentifier(identity: LedgerIdentity): string {
+  const subAccount = tryParseInt(program.opts().subaccount);
+  if (subAccount < 0 || subAccount > 255) {
+    throw new InvalidArgumentError(
+      "Subaccount must be between 0 and 255 inclusive."
+    );
+  }
+  const accountIdentifier = principalToAccountIdentifier(
+    identity.getPrincipal(),
+    arrayOfNumberToUint8Array(fromSubAccountId(subAccount))
+  );
+
+  return accountIdentifier;
+}
+
+/**
+ * Fetches the balance of the main account or subaccount - if specified - on the wallet.
  */
 async function getBalance() {
   const identity = await getLedgerIdentity();
-  const accountIdentifier = principalToAccountIdentifier(
-    identity.getPrincipal()
-  );
+  const accountIdentifier = getAccountIdentifier(identity);
 
   const ledgerService = await getLedgerService(new AnonymousIdentity());
 
@@ -120,6 +140,7 @@ async function sendICP(to: AccountIdentifier, amount: string) {
     to: to,
     amount: BigInt(amount),
     memo: BigInt(0),
+    fromSubAccountId: tryParseInt(program.opts().subaccount),
   });
 
   log(
