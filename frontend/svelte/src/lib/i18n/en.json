@@ -76,7 +76,8 @@
     "select_source": "Select Source Account",
     "select_destination": "Select destination",
     "address": "Address",
-    "enter_address_or_select": "Enter a destination address or select an account."
+    "enter_address_or_select": "Enter a destination address or select an account.",
+    "my_accounts": "My Accounts"
   },
   "neurons": {
     "title": "Neurons",
@@ -86,7 +87,6 @@
     "set_dissolve_delay": "Set Dissolve Delay",
     "confirm_dissolve_delay": "Confirm Dissolve Delay",
     "follow_neurons_screen": "Follow neurons",
-    "my_accounts": "My Accounts",
     "stake_neuron": "Stake Neuron",
     "source": "Source",
     "transaction_fee": "Transaction Fee",

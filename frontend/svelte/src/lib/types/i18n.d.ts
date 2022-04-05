@@ -86,6 +86,7 @@ interface I18nAccounts {
   select_destination: string;
   address: string;
   enter_address_or_select: string;
+  my_accounts: string;
 }
 
 interface I18nNeurons {
@@ -96,7 +97,6 @@ interface I18nNeurons {
   set_dissolve_delay: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
-  my_accounts: string;
   stake_neuron: string;
   source: string;
   transaction_fee: string;

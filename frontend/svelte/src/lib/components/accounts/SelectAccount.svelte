@@ -29,7 +29,7 @@
 <div class="wizard-list" class:disabled={disableSelection}>
   {#if mainAccount}
     {#if displayTitle}
-      <h4>{$i18n.neurons.my_accounts}</h4>
+      <h4>{$i18n.accounts.my_accounts}</h4>
     {/if}
     <!-- Needed mainAccount && because TS didn't learn that `mainAccount` is present in the click listener -->
     <AccountCard
