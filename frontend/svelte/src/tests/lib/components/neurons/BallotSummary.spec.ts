@@ -6,7 +6,7 @@ import type { BallotInfo } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import type { Proposal } from "@dfinity/nns/dist/types/types/governance_converters";
 import { render, waitFor } from "@testing-library/svelte";
-import BallotSummary from "../../../../lib/components/proposals/BallotSummary.svelte";
+import BallotSummary from "../../../../lib/components/neurons/Ballots/BallotSummary.svelte";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
