@@ -43,11 +43,9 @@ describe("NewTransactionAmount", () => {
   });
 
   it("should render current balance", () => {
-    const { container } = render(NewTransactionTest, { props });
+    const { queryByTestId } = render(NewTransactionTest, { props });
 
-    const icp: HTMLSpanElement | null = container.querySelector(
-      '[data-tid="icp-value"]'
-    );
+    const icp: HTMLSpanElement | null = queryByTestId("icp-value");
 
     expect(icp?.innerHTML).toEqual(
       `${formatICP(mockMainAccount.balance.toE8s())}`

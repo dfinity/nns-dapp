@@ -20,11 +20,9 @@ describe("CurrentBalance", () => {
   });
 
   it("should render a balance in ICP", () => {
-    const { getByText, container } = render(CurrentBalance, { props });
+    const { getByText, queryByTestId } = render(CurrentBalance, { props });
 
-    const icp: HTMLSpanElement | null = container.querySelector(
-      '[data-tid="icp-value"]'
-    );
+    const icp: HTMLSpanElement | null = queryByTestId("icp-value");
 
     expect(icp?.innerHTML).toEqual(
       `${formatICP(mockMainAccount.balance.toE8s())}`
@@ -33,13 +31,11 @@ describe("CurrentBalance", () => {
   });
 
   it("should render a zero balance as fallback", () => {
-    const { container } = render(CurrentBalance, {
+    const { queryByTestId } = render(CurrentBalance, {
       props: { account: undefined },
     });
 
-    const icp: HTMLSpanElement | null = container.querySelector(
-      '[data-tid="icp-value"]'
-    );
+    const icp: HTMLSpanElement | null = queryByTestId("icp-value");
 
     expect(icp?.innerHTML).toEqual("0.00000000");
   });

@@ -43,12 +43,9 @@ describe("NewTransactionReview", () => {
   });
 
   it("should render the amount the user has entered", () => {
-    const { container } = render(NewTransactionTest, { props });
+    const { queryByTestId } = render(NewTransactionTest, { props });
 
-    const icp: HTMLSpanElement | null = container.querySelector(
-      '[data-tid="icp-value"]'
-    );
-
+    const icp: HTMLSpanElement | null = queryByTestId("icp-value");
     expect(icp?.innerHTML).toEqual(`${formatICP(amount.toE8s())}`);
   });
 });
