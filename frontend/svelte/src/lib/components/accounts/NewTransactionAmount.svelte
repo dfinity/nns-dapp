@@ -17,7 +17,7 @@
   const { store }: TransactionContext = context;
 
   let amount: number | undefined = $store.amount
-    ? Number($store.amount)
+    ? Number($store.amount.toE8s()) / E8S_PER_ICP
     : undefined;
 
   let max: number = 0;
