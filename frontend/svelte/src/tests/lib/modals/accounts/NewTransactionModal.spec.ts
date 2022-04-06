@@ -53,6 +53,37 @@ describe("NewTransactionModal", () => {
     );
   };
 
+  const goToStep4 = async ({
+    container,
+    getByText,
+    enterAmount,
+  }: {
+    container: HTMLElement;
+    getByText;
+    enterAmount: boolean;
+  }) => {
+    if (enterAmount) {
+      const input: HTMLInputElement = container.querySelector(
+        "input"
+      ) as HTMLInputElement;
+      await fireEvent.input(input, { target: { value: "1" } });
+    }
+
+    const button: HTMLButtonElement | null = container.querySelector(
+      'button[type="submit"]'
+    );
+
+    await waitFor(() => expect(button?.getAttribute("disabled")).toBeNull());
+
+    fireEvent.click(button as HTMLButtonElement);
+
+    await waitFor(() =>
+      expect(
+        getByText(en.accounts.review_transaction, { exact: false })
+      ).toBeInTheDocument()
+    );
+  };
+
   const goBack = async ({ container, getByText, title }) => {
     const back = container.querySelector("button.back") as HTMLButtonElement;
     fireEvent.click(back);
@@ -92,5 +123,31 @@ describe("NewTransactionModal", () => {
       getByText,
       title: en.accounts.select_destination,
     });
+
+    // Go to step 3.
+    await goToStep3({ container, getByText });
+
+    // Go to step 4.
+    await goToStep4({ container, getByText, enterAmount: true });
+
+    // Go back to step 3.
+    await goBack({
+      container,
+      getByText,
+      title: en.accounts.enter_icp_amount,
+    });
+
+    // Go back to step 2.
+    await goBack({
+      container,
+      getByText,
+      title: en.accounts.select_destination,
+    });
+
+    // Go to step 3.
+    await goToStep3({ container, getByText });
+
+    // Go to step 4 without entering the amount again as it should be kept in store - input should be set with previous value
+    await goToStep4({ container, getByText, enterAmount: false });
   });
 });

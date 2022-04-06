@@ -12,6 +12,7 @@
   } from "../../stores/transaction.store";
   import NewTransactionAmount from "../../components/accounts/NewTransactionAmount.svelte";
   import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
+  import NewTransactionReview from "../../components/accounts/NewTransactionReview.svelte";
 
   export let canSelectAccount: boolean;
 
@@ -35,11 +36,17 @@
       showBackButton: true,
       title: $i18n.accounts.enter_icp_amount,
     },
+    {
+      name: "Review",
+      showBackButton: true,
+      title: $i18n.accounts.review_transaction,
+    },
   ];
 
   const newTransactionStore = writable<TransactionStore>({
     selectedAccount: undefined,
     destinationAddress: undefined,
+    amount: undefined,
   });
 
   setContext<TransactionContext>(NEW_TRANSACTION_CONTEXT_KEY, {
@@ -65,6 +72,9 @@
     {/if}
     {#if currentStep?.name === "SelectAmount"}
       <NewTransactionAmount />
+    {/if}
+    {#if currentStep?.name === "Review"}
+      <NewTransactionReview />
     {/if}
   </svelte:fragment>
 </WizardModal>
