@@ -8,7 +8,8 @@
 
   let balance: ICPType;
 
-  $: ({ balance } = account ?? ({ balance: ICPType.fromString('0') } as unknown as Account));
+  $: ({ balance } =
+    account ?? ({ balance: ICPType.fromString("0") } as unknown as Account));
 </script>
 
 <div>
