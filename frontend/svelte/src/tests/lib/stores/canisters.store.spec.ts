@@ -2,19 +2,19 @@ import { get } from "svelte/store";
 import { canistersStore } from "../../../lib/stores/canisters.store";
 import { mockCanisters } from "../../mocks/canisters.mock";
 
-describe("proposals", () => {
+describe("canisters-store", () => {
   it("should set canisters", () => {
     canistersStore.setCanisters(mockCanisters);
 
-    const proposals = get(canistersStore);
-    expect(proposals).toEqual(mockCanisters);
+    const canisters = get(canistersStore);
+    expect(canisters).toEqual(mockCanisters);
   });
 
-  it("should reset proposals", () => {
+  it("should reset canisters", () => {
     canistersStore.setCanisters(mockCanisters);
     canistersStore.setCanisters([]);
 
-    const proposals = get(canistersStore);
-    expect(proposals).toEqual([]);
+    const canisters = get(canistersStore);
+    expect(canisters).toEqual([]);
   });
 });
