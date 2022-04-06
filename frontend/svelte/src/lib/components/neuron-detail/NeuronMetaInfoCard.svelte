@@ -29,7 +29,7 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let userControlled: boolean;
-  $: userControlled = isCurrentUserController(neuron);
+  $: userControlled = isCurrentUserController(neuron, $accountsStore);
   let isControllable: boolean;
   $: isControllable = isNeuronControllable({
     neuron,

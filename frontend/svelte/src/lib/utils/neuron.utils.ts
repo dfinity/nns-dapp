@@ -90,10 +90,13 @@ export const formatVotingPower = (value: bigint): string =>
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
-export const isCurrentUserController = (neuron: NeuronInfo): boolean =>
-  neuron.fullNeuron?.isCurrentUserController === undefined
+export const isCurrentUserController = (
+  neuron: NeuronInfo,
+  accounts: AccountsStore
+): boolean =>
+  neuron.fullNeuron?.controller === undefined
     ? false
-    : Boolean(neuron.fullNeuron?.isCurrentUserController);
+    : accounts.main?.principal?.toText() === neuron.fullNeuron.controller;
 
 export const maturityByStake = (neuron: NeuronInfo): number => {
   if (
