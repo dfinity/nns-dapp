@@ -10,6 +10,7 @@
   import { stakeAndLoadNeuron } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { formatICP, formattedTransactionFeeICP } from "../../utils/icp.utils";
 
   export let account: Account;
@@ -18,27 +19,22 @@
   const dispatcher = createEventDispatcher();
 
   const createNeuron = async () => {
+    startBusy("stake-neuron");
     creating = true;
-    try {
-      const neuronId = await stakeAndLoadNeuron({
-        amount,
-        fromSubAccount:
-          "subAccount" in account ? account.subAccount : undefined,
-      });
-
+    const neuronId = await stakeAndLoadNeuron({
+      amount,
+      fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
+    });
+    if (neuronId !== undefined) {
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts
-      // TODO: L2-329 Manage edge cases
       syncAccounts();
 
       dispatcher("nnsNeuronCreated", { neuronId });
-    } catch (err) {
-      // TODO: L2-329 Manage errors
-      console.error(err);
-    } finally {
-      creating = false;
     }
+    creating = false;
+    stopBusy("stake-neuron");
   };
 
   const stakeMaximum = () => {

@@ -14,7 +14,7 @@ export const mockFullNeuron: Neuron = {
   createdTimestampSeconds: BigInt(10),
   maturityE8sEquivalent: BigInt(10),
   agingSinceTimestampSeconds: BigInt(10),
-  neuronFees: BigInt(10000000),
+  neuronFees: BigInt(0),
   hotKeys: [],
   accountIdentifier: "account-identifier-text",
   joinedCommunityFundTimestampSeconds: undefined,
