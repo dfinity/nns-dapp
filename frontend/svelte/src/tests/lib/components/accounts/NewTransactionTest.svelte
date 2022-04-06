@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { setContext } from "svelte";
+  import { setContext, SvelteComponent } from "svelte";
   import {
     NEW_TRANSACTION_CONTEXT_KEY,
     TransactionContext,
     transactionStore,
   } from "../../../../lib/stores/transaction.store";
-  import NewTransactionAmount from "../../../../lib/components/accounts/NewTransactionAmount.svelte";
+
+  export let testComponent: typeof SvelteComponent;
 
   setContext<TransactionContext>(NEW_TRANSACTION_CONTEXT_KEY, {
     store: transactionStore,
@@ -15,4 +16,4 @@
   });
 </script>
 
-<NewTransactionAmount />
+<svelte:component this={testComponent} />
