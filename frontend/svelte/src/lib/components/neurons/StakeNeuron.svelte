@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import Input from "../ui/Input.svelte";
   import Spinner from "../ui/Spinner.svelte";
@@ -11,11 +10,10 @@
   import { stakeAndLoadNeuron } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
-  import { formatICP } from "../../utils/icp.utils";
   import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { formatICP, formattedTransactionFeeICP } from "../../utils/icp.utils";
 
   export let account: Account;
-  const transactionIcp: ICP = ICP.fromE8s(BigInt(TRANSACTION_FEE_E8S)) as ICP;
   let amount: number;
   let creating: boolean = false;
   const dispatcher = createEventDispatcher();
@@ -53,7 +51,7 @@
   <div class="transaction-fee">
     <h5>{$i18n.neurons.transaction_fee}</h5>
     <small>
-      <span>{`${formatICP(transactionIcp.toE8s())}`}</span>
+      <span>{formattedTransactionFeeICP()}</span>
       <span>ICP</span>
     </small>
   </div>
