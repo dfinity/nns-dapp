@@ -13,8 +13,8 @@
   import type { StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
-  import { accountsStore } from "../../stores/accounts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { authStore } from "../../stores/auth.store";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
@@ -30,7 +30,10 @@
   let neuronICP: ICP;
   $: neuronICP = ICP.fromE8s(neuronStake(neuron));
   let isHotKeyControl: boolean;
-  $: isHotKeyControl = !isCurrentUserController(neuron, $accountsStore.main);
+  $: isHotKeyControl = !isCurrentUserController({
+    neuron,
+    identity: $authStore.identity,
+  });
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
 </script>

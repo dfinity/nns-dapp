@@ -22,6 +22,7 @@ import {
   votingPower,
 } from "../../../lib/utils/neuron.utils";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 describe("neuron-utils", () => {
@@ -226,7 +227,7 @@ describe("neuron-utils", () => {
 
   describe("isCurrentUserController", () => {
     it("returns false when controller not defined", () => {
-      const userControlledNeuron = {
+      const notControlledNeuron = {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
@@ -234,7 +235,10 @@ describe("neuron-utils", () => {
         },
       };
       expect(
-        isCurrentUserController(userControlledNeuron, mockMainAccount)
+        isCurrentUserController({
+          neuron: notControlledNeuron,
+          identity: mockIdentity,
+        })
       ).toBe(false);
     });
 
@@ -243,11 +247,14 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          controller: mockMainAccount.principal?.toText(),
+          controller: mockIdentity.getPrincipal().toText(),
         },
       };
       expect(
-        isCurrentUserController(userControlledNeuron, mockMainAccount)
+        isCurrentUserController({
+          neuron: userControlledNeuron,
+          identity: mockIdentity,
+        })
       ).toBe(true);
     });
 
@@ -260,7 +267,10 @@ describe("neuron-utils", () => {
         },
       };
       expect(
-        isCurrentUserController(userControlledNeuron, mockMainAccount)
+        isCurrentUserController({
+          neuron: userControlledNeuron,
+          identity: mockIdentity,
+        })
       ).toBe(false);
     });
   });

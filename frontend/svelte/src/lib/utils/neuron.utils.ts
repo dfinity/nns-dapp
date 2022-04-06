@@ -1,3 +1,4 @@
+import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
@@ -10,7 +11,6 @@ import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
-import type { Account } from "../types/account";
 import { getAccountByPrincipal } from "./accounts.utils";
 import { formatNumber } from "./format.utils";
 
@@ -101,13 +101,16 @@ export const formatVotingPower = (value: bigint): string =>
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
-export const isCurrentUserController = (
-  neuron: NeuronInfo,
-  mainAccount?: Account
-): boolean =>
+export const isCurrentUserController = ({
+  neuron,
+  identity,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+}): boolean =>
   neuron.fullNeuron?.controller === undefined
     ? false
-    : mainAccount?.principal?.toText() === neuron.fullNeuron.controller;
+    : identity?.getPrincipal().toText() === neuron.fullNeuron.controller;
 
 export const maturityByStake = (neuron: NeuronInfo): number => {
   if (

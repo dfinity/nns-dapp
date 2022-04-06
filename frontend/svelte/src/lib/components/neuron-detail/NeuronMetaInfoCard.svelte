@@ -23,13 +23,17 @@
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
   import { accountsStore } from "../../stores/accounts.store";
+  import { authStore } from "../../stores/auth.store";
 
   export let neuron: NeuronInfo;
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let userControlled: boolean;
-  $: userControlled = isCurrentUserController(neuron, $accountsStore.main);
+  $: userControlled = isCurrentUserController({
+    neuron,
+    identity: $authStore.identity,
+  });
   let isControllable: boolean;
   $: isControllable = isNeuronControllable({
     neuron,
