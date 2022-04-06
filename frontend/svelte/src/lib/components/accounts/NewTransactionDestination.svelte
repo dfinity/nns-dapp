@@ -43,6 +43,7 @@
   <Address bind:address on:submit={chooseAddress} />
 
   <!-- Prevent the component to be presented with a scroll offset when navigating between wizard steps -->
+  <!-- note about disableSelection: if user is entering an address with the input field, the address is not empty and therefore no account shall be selected -->
   {#if mounted}
     <SelectAccount
       on:nnsSelectAccount={chooseAccount}
