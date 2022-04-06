@@ -87,7 +87,7 @@ describe("NeuronCard", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          fullNeuron: { ...mockFullNeuron, isCurrentUserController: false },
+          fullNeuron: { ...mockFullNeuron, controller: "bbbbb-bb" },
         },
       },
     });
