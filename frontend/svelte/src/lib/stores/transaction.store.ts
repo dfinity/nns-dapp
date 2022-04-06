@@ -12,7 +12,7 @@ export interface TransactionContext {
   next: () => void;
 }
 
-export const NEW_TRANSACTION_CONTEXT_KEY = "new-transaction";
+export const NEW_TRANSACTION_CONTEXT_KEY = Symbol("new-transaction");
 
 /**
  * A store that contain transaction information - i.e. information that are use to issue a new transaction between accounts.
