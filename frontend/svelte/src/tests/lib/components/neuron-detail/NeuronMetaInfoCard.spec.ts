@@ -4,18 +4,22 @@
 
 import { render } from "@testing-library/svelte";
 import NeuronMetaInfoCard from "../../../../lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
-import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
+import * as utils from "../../../../lib/utils/neuron.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
-  return {
-    joinCommunityFund: jest.fn().mockResolvedValue(undefined),
-    isNeuronControllable: jest.fn().mockReturnValue(true),
-  };
-});
-
 describe("NeuronMetaInfoCard", () => {
+  beforeEach(() => {
+    jest
+      .spyOn(utils, "isCurrentUserController")
+      .mockImplementation((): boolean => true);
+    jest
+      .spyOn(utils, "hasJoinedCommunityFund")
+      .mockImplementation((): boolean => false);
+  });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
   it("renders neuron id", () => {
     const { queryByText } = render(NeuronMetaInfoCard, {
       neuron: mockNeuron,
@@ -42,7 +46,7 @@ describe("NeuronMetaInfoCard", () => {
       queryByText(en.neurons.voting_power, { exact: false })
     ).toBeInTheDocument();
     expect(
-      queryByText(formatVotingPower(mockNeuron.votingPower))
+      queryByText(utils.formatVotingPower(mockNeuron.votingPower))
     ).toBeInTheDocument();
   });
 
@@ -74,5 +78,28 @@ describe("NeuronMetaInfoCard", () => {
     expect(queryByText(en.neuron_detail.start_dissolving)).toBeInTheDocument();
     expect(queryByText(en.neuron_detail.increase_stake)).toBeInTheDocument();
     expect(queryByText(en.neuron_detail.split_neuron)).toBeInTheDocument();
+  });
+
+  it("renders no actions if user is not controller", () => {
+    jest
+      .spyOn(utils, "isCurrentUserController")
+      .mockImplementation((): boolean => false);
+    const { queryByText } = render(NeuronMetaInfoCard, {
+      neuron: mockNeuron,
+    });
+
+    expect(
+      queryByText(en.neuron_detail.join_community_fund)
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(en.neuron_detail.increase_dissolve_delay)
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(en.neuron_detail.start_dissolving)
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(en.neuron_detail.increase_stake)
+    ).not.toBeInTheDocument();
+    expect(queryByText(en.neuron_detail.split_neuron)).not.toBeInTheDocument();
   });
 });

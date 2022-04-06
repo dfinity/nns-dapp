@@ -353,10 +353,31 @@ describe("neuron-utils", () => {
         },
       };
 
-      expect(isNeuronControllable({ neuron, accounts })).toBe(true);
+      expect(
+        isNeuronControllable({ neuron, identity: mockIdentity, accounts })
+      ).toBe(true);
     });
 
-    it("should return false if neuron controller is not current main account", () => {
+    it("should return true if neuron controller is the current identity principal", () => {
+      const accounts = {
+        main: undefined,
+        subaccounts: undefined,
+      };
+
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+
+      expect(
+        isNeuronControllable({ neuron, identity: mockIdentity, accounts })
+      ).toBe(true);
+    });
+
+    it("should return false if neuron controller is not current main account nor identity", () => {
       const accounts = {
         main: mockMainAccount,
         subaccounts: undefined,
@@ -370,17 +391,23 @@ describe("neuron-utils", () => {
         },
       };
 
-      expect(isNeuronControllable({ neuron, accounts })).toBe(false);
+      expect(
+        isNeuronControllable({ neuron, identity: mockIdentity, accounts })
+      ).toBe(false);
     });
 
-    it("should return false if no accounts", () => {
+    it("should return false if no accounts and no in the identity", () => {
       const accounts = {
         main: undefined,
         subaccounts: undefined,
       };
-      expect(isNeuronControllable({ neuron: mockNeuron, accounts })).toBe(
-        false
-      );
+      expect(
+        isNeuronControllable({
+          neuron: mockNeuron,
+          identity: mockIdentity,
+          accounts,
+        })
+      ).toBe(false);
     });
   });
 

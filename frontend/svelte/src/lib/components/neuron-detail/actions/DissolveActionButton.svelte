@@ -11,7 +11,6 @@
   import { toastsStore } from "../../../stores/toasts.store";
 
   export let neuronId: NeuronId;
-  export let disabled: boolean = false;
   export let neuronState: NeuronState;
 
   let isOpen: boolean = false;
@@ -57,7 +56,7 @@
   };
 </script>
 
-<button on:click={showModal} {disabled} class="warning small"
+<button on:click={showModal} class="warning small"
   >{$i18n.neuron_detail[buttonKey]}</button
 >
 {#if isOpen}

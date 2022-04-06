@@ -30,6 +30,7 @@
   let neuronICP: ICP;
   $: neuronICP = ICP.fromE8s(neuronStake(neuron));
   let isHotKeyControl: boolean;
+  // TODO: Refactor to check with hotkeys
   $: isHotKeyControl = !isCurrentUserController({
     neuron,
     identity: $authStore.identity,
