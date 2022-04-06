@@ -47,7 +47,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                         NeuronStateCard(neuron: widget.neuron),
                         NeuronRewardsCard(neuron: widget.neuron),
                         NeuronFolloweesCard(neuron: widget.neuron),
-                        if (DEPLOY_ENV == "staging")
+                        if (DEPLOY_ENV != "mainnet")
                           NeuronProposalsCard(neuron: widget.neuron),
                         NeuronHotkeysCard(neuron: widget.neuron),
                         NeuronVotesCard(neuron: widget.neuron),

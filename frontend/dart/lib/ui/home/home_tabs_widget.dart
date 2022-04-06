@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage>
                         letterSpacing: 2),
                   )),
               actions: [
-                if (DEPLOY_ENV == "staging")
+                if (DEPLOY_ENV != "mainnet")
                   Padding(
                     padding: Responsive.isDesktop(context)
                         ? const EdgeInsets.only(top: 20.0, right: 20.0)

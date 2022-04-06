@@ -13,12 +13,13 @@ MYPATH="$(
 echo "Assuming dart codebase path is $MYPATH"
 cd "$MYPATH"
 
-if [[ $DEPLOY_ENV = "mainnet" ]]; then
-  flutter build web --web-renderer html --release --no-sound-null-safety --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/ --dart-define=REDIRECT_TO_LEGACY="prod"
-else
-  # For all networks that are not mainnet, build with the staging config
-  flutter build web --web-renderer html --release --no-sound-null-safety --pwa-strategy=none --dart-define=DEPLOY_ENV=staging --dart-define=REDIRECT_TO_LEGACY="${REDIRECT_TO_LEGACY:-prod}"
-fi
+flutter build web
+  --web-renderer html \
+  --release --no-sound-null-safety \
+  --pwa-strategy=none \
+  ${USE_FLUTTER_CANVASKIT:+--dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/} \
+  --dart-define=DEPLOY_ENV="${DEPLOY_ENV:-mainnet}" \
+  --dart-define=REDIRECT_TO_LEGACY="${REDIRECT_TO_LEGACY:-prod}"
 
 # Remove the random hash from flutter output
 sed -i -e 's/flutter_service_worker.js?v=[0-9]*/flutter_service_worker.js/' build/web/index.html
