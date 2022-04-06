@@ -14,7 +14,7 @@ echo "Assuming dart codebase path is $MYPATH"
 cd "$MYPATH"
 
 flutter build web
-  --web-renderer html \
+--web-renderer html \
   --release --no-sound-null-safety \
   --pwa-strategy=none \
   ${USE_FLUTTER_CANVASKIT:+--dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/} \
