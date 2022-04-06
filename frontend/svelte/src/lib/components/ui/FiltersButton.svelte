@@ -7,7 +7,7 @@
    */
   export let totalFilters: number;
   export let activeFilters: number;
-  export let testId: string | undefined;
+  export let testId: string | undefined = undefined;
   const dispatch = createEventDispatcher();
   const filter = () => dispatch("nnsFilter");
 </script>
