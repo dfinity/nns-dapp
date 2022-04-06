@@ -82,7 +82,11 @@
     "select_destination": "Select destination",
     "address": "Address",
     "enter_address_or_select": "Enter a destination address or select an account.",
-    "my_accounts": "My Accounts"
+    "my_accounts": "My Accounts",
+    "enter_icp_amount": "Enter ICP amount",
+    "source": "Source",
+    "destination": "Destination",
+    "transaction_fee": "Transaction Fee (billed to source)"
   },
   "neurons": {
     "title": "Neurons",

@@ -5,13 +5,10 @@
   import { invalidAddress } from "../../utils/accounts.utils";
 
   export let address: string = "";
-
-  // TODO(L2-430): to be implemented
-  const submitAddress = () => console.log("submitAddress");
 </script>
 
 <article>
-  <form on:submit|preventDefault={submitAddress}>
+  <form on:submit|preventDefault>
     <Input
       inputType="text"
       placeholderLabelKey="accounts.address"
