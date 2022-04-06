@@ -9,7 +9,7 @@
     NEW_TRANSACTION_CONTEXT_KEY
   );
 
-  const chooseAccount = ({
+  const onSelectAccount = ({
     detail,
   }: CustomEvent<{ selectedAccount: Account }>) => {
     const { store, next }: TransactionContext = context;
@@ -23,4 +23,4 @@
   };
 </script>
 
-<SelectAccount on:nnsSelectAccount={chooseAccount} />
+<SelectAccount on:nnsSelectAccount={onSelectAccount} />
