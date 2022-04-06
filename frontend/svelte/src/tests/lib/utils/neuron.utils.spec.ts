@@ -28,7 +28,7 @@ describe("neuron-utils", () => {
     it("should return zero for delays less than six months", () => {
       expect(
         votingPower({ stake: BigInt(2), dissolveDelayInSeconds: 100 })
-      ).toBe(0);
+      ).toBe(BigInt(0));
     });
 
     it("should return more than stake when delay more than six months", () => {
@@ -39,7 +39,7 @@ describe("neuron-utils", () => {
           stake: icp.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
         })
-      ).toBeGreaterThan(Number(stake));
+      ).toBeGreaterThan(icp.toE8s());
     });
 
     it("should return the double when delay is eight years", () => {
@@ -50,7 +50,7 @@ describe("neuron-utils", () => {
           stake: icp.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
         })
-      ).toBe(Number(stake) * 2);
+      ).toBe(icp.toE8s() * BigInt(2));
     });
 
     it("should add age multiplier", () => {
@@ -186,15 +186,17 @@ describe("neuron-utils", () => {
   });
 
   describe("isCurrentUserController", () => {
-    it("returns false when isCurrentUserController not defined", () => {
+    it("returns false when controller not defined", () => {
       const userControlledNeuron = {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          isCurrentUserController: undefined,
+          controller: undefined,
         },
       };
-      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(false);
     });
 
     it("returns true when neuron is controlled by user", () => {
@@ -202,21 +204,25 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          isCurrentUserController: true,
+          controller: mockMainAccount.principal?.toText(),
         },
       };
-      expect(isCurrentUserController(userControlledNeuron)).toBe(true);
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(true);
     });
 
-    it("returns false when isCurrentUserController is false", () => {
+    it("returns false when controller does not match main", () => {
       const userControlledNeuron = {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          isCurrentUserController: false,
+          controller: "bbbbb-bb",
         },
       };
-      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(false);
     });
   });
 

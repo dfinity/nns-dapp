@@ -5,6 +5,7 @@ import type { NeuronsStore } from "../../lib/stores/neurons.store";
 
 export const mockFullNeuron: Neuron = {
   id: BigInt(1),
+  // TODO: To be removed when we remove it from nns-js
   isCurrentUserController: true,
   controller: undefined,
   recentBallots: [],
@@ -14,7 +15,7 @@ export const mockFullNeuron: Neuron = {
   createdTimestampSeconds: BigInt(10),
   maturityE8sEquivalent: BigInt(10),
   agingSinceTimestampSeconds: BigInt(10),
-  neuronFees: BigInt(10000000),
+  neuronFees: BigInt(0),
   hotKeys: [],
   accountIdentifier: "account-identifier-text",
   joinedCommunityFundTimestampSeconds: undefined,

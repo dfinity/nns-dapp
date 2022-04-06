@@ -41,31 +41,44 @@ export const stakeAndLoadNeuron = async ({
 }: {
   amount: number;
   fromSubAccount?: SubAccountArray;
-}): Promise<NeuronId> => {
+}): Promise<NeuronId | undefined> => {
   const stake = ICP.fromString(String(amount));
 
   if (!(stake instanceof ICP)) {
-    throw new Error(`Amount ${amount} is not valid`);
+    toastsStore.error({
+      labelKey: "error.amount_not_valid",
+    });
+    return;
   }
 
   if (stake.toE8s() < E8S_PER_ICP) {
-    throw new Error("Need a minimum of 1 ICP to stake a neuron");
+    toastsStore.error({
+      labelKey: "error.amount_not_enough",
+    });
+    return;
   }
 
-  const identity: Identity = await getIdentity();
+  try {
+    const identity: Identity = await getIdentity();
 
-  const neuronId: NeuronId = await stakeNeuron({
-    stake,
-    identity,
-    fromSubAccount,
-  });
+    const neuronId: NeuronId = await stakeNeuron({
+      stake,
+      identity,
+      fromSubAccount,
+    });
 
-  await loadNeuron({
-    neuronId,
-    setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
-  });
+    await loadNeuron({
+      neuronId,
+      setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+    });
 
-  return neuronId;
+    return neuronId;
+  } catch (err) {
+    toastsStore.error({
+      labelKey: "error.stake_neuron",
+      err,
+    });
+  }
 };
 
 // This gets all neurons linked to the current user's principal, even those with a stake of 0.
@@ -163,7 +176,6 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   if (neuronIdsToRefresh.length === 0) {
     return;
   }
-  console.log("refreshing");
   // We found neurons that need to be refreshed.
   const neuronIdsChunks: NeuronId[][] = createChunks(neuronIdsToRefresh, 10);
   await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
@@ -196,12 +208,24 @@ export const updateDelay = async ({
 }: {
   neuronId: NeuronId;
   dissolveDelayInSeconds: number;
-}): Promise<void> => {
+}): Promise<NeuronId | undefined> => {
   const identity: Identity = await getIdentity();
 
-  await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
+  try {
+    await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
 
-  await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return neuronId;
+  } catch (err) {
+    toastsStore.error({
+      labelKey: "error.unknown",
+      err,
+    });
+
+    // To inform there was an error
+    return undefined;
+  }
 };
 
 export const joinCommunityFund = async (neuronId: NeuronId): Promise<void> => {

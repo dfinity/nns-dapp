@@ -43,6 +43,11 @@ interface I18nError {
   start_dissolving: string;
   stop_dissolving: string;
   dummy_proposal: string;
+  update_delay: string;
+  unknown: string;
+  amount_not_valid: string;
+  amount_not_enough: string;
+  stake_neuron: string;
 }
 
 interface I18nWarning {
@@ -87,6 +92,10 @@ interface I18nAccounts {
   address: string;
   enter_address_or_select: string;
   my_accounts: string;
+  enter_icp_amount: string;
+  source: string;
+  destination: string;
+  transaction_fee: string;
 }
 
 interface I18nNeurons {
@@ -125,6 +134,7 @@ interface I18nNeurons {
   skip: string;
   update_delay: string;
   confirm_delay: string;
+  dissolve_delay_success: string;
 }
 
 interface I18nNew_followee {

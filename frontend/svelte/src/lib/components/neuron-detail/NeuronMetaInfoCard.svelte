@@ -29,7 +29,7 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let userControlled: boolean;
-  $: userControlled = isCurrentUserController(neuron);
+  $: userControlled = isCurrentUserController(neuron, $accountsStore.main);
   let isControllable: boolean;
   $: isControllable = isNeuronControllable({
     neuron,
@@ -80,7 +80,7 @@
         {/if}
       </p>
       <div class="buttons">
-        <IncreaseDissolveDelayButton />
+        <IncreaseDissolveDelayButton disabled={!userControlled} {neuron} />
         {#if neuron.state === NeuronState.DISSOLVED}
           <DisburseButton />
         {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}

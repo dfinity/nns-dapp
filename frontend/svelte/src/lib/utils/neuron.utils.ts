@@ -10,6 +10,7 @@ import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
+import type { Account } from "../types/account";
 import { getAccountByPrincipal } from "./accounts.utils";
 import { formatNumber } from "./format.utils";
 
@@ -55,12 +56,17 @@ export const votingPower = ({
   stake: bigint;
   dissolveDelayInSeconds: number;
   ageSeconds?: number;
-}): number =>
+}): bigint =>
   dissolveDelayInSeconds > SECONDS_IN_HALF_YEAR
-    ? (Number(stake) / E8S_PER_ICP) *
-      dissolveDelayMultiplier(dissolveDelayInSeconds) *
-      ageMultiplier(ageSeconds)
-    : 0;
+    ? BigInt(
+        Math.round(
+          (Number(stake) / E8S_PER_ICP) *
+            dissolveDelayMultiplier(dissolveDelayInSeconds) *
+            ageMultiplier(ageSeconds) *
+            E8S_PER_ICP
+        )
+      )
+    : BigInt(0);
 
 export const hasValidStake = (neuron: NeuronInfo): boolean =>
   // Ignore if we can't validate the stake
@@ -85,10 +91,13 @@ export const formatVotingPower = (value: bigint): string =>
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
-export const isCurrentUserController = (neuron: NeuronInfo): boolean =>
-  neuron.fullNeuron?.isCurrentUserController === undefined
+export const isCurrentUserController = (
+  neuron: NeuronInfo,
+  mainAccount?: Account
+): boolean =>
+  neuron.fullNeuron?.controller === undefined
     ? false
-    : Boolean(neuron.fullNeuron?.isCurrentUserController);
+    : mainAccount?.principal?.toText() === neuron.fullNeuron.controller;
 
 export const maturityByStake = (neuron: NeuronInfo): number => {
   if (

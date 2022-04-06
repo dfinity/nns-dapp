@@ -19,6 +19,7 @@ import {
   updateDelay,
 } from "../../../lib/services/neurons.services";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
+import { toastsStore } from "../../../lib/stores/toasts.store";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -26,6 +27,15 @@ import {
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
+
+jest.mock("../../../lib/stores/toasts.store", () => {
+  return {
+    toastsStore: {
+      error: jest.fn(),
+      show: jest.fn(),
+    },
+  };
+});
 
 describe("neurons-services", () => {
   const spyStakeNeuron = jest
@@ -85,27 +95,43 @@ describe("neurons-services", () => {
       expect(neuron).toEqual(mockNeuron);
     });
 
-    it(`stakeNeuron should raise an error if amount less than ${
+    it(`stakeNeuron return undefined if amount less than ${
       E8S_PER_ICP / E8S_PER_ICP
     } ICP`, async () => {
       jest
         .spyOn(LedgerCanister, "create")
         .mockImplementation(() => mock<LedgerCanister>());
 
-      const call = () =>
-        stakeAndLoadNeuron({
-          amount: 0.1,
-        });
+      const response = await stakeAndLoadNeuron({
+        amount: 0.1,
+      });
 
-      await expect(call).rejects.toThrow(Error);
+      expect(response).toBeUndefined();
+      expect(toastsStore.error).toBeCalled();
+    });
+
+    it("stake neuron should return undefined if amount not valid", async () => {
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation(() => mock<LedgerCanister>());
+
+      const response = await stakeAndLoadNeuron({
+        amount: NaN,
+      });
+
+      expect(response).toBeUndefined();
+      expect(toastsStore.error).toBeCalled();
     });
 
     it("should not stake neuron if no identity", async () => {
       setNoIdentity();
 
-      const call = async () => await stakeAndLoadNeuron({ amount: 10 });
+      const response = await stakeAndLoadNeuron({
+        amount: 10,
+      });
 
-      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+      expect(response).toBeUndefined();
+      expect(toastsStore.error).toBeCalled();
 
       resetIdentity();
     });

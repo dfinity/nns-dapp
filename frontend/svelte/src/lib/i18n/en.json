@@ -38,7 +38,12 @@
     "suspicious_response": "Suspicious response detected. Page reload suggested.",
     "start_dissolving": "Sorry, there was an error dissolving the neuron. Please try again later.",
     "stop_dissolving": "Sorry, there was an error stopping the dissolve process of the neuron. Please try again later.",
-    "dummy_proposal": "There was an error creating the proposals. Check the console for more details."
+    "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
+    "update_delay": "Sorry, there was an error updating the delay of the neuron",
+    "unknown": "Sorry, there was an unexpected error. Please try again later.",
+    "amount_not_valid": "Sorry, the amount is not valid",
+    "amount_not_enough": "Sorry, the amount is not large enough. You need a minimum of 1 ICP to stake a neuron",
+    "stake_neuron": "Sorry, there was an unexpected error staking the neuron. Please try again later."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -77,7 +82,11 @@
     "select_destination": "Select destination",
     "address": "Address",
     "enter_address_or_select": "Enter a destination address or select an account.",
-    "my_accounts": "My Accounts"
+    "my_accounts": "My Accounts",
+    "enter_icp_amount": "Enter ICP amount",
+    "source": "Source",
+    "destination": "Destination",
+    "transaction_fee": "Transaction Fee (billed to source)"
   },
   "neurons": {
     "title": "Neurons",
@@ -114,7 +123,8 @@
     "voting_power": "Voting Power",
     "skip": "Skip",
     "update_delay": "Update Delay",
-    "confirm_delay": "Confirm and Update Delay"
+    "confirm_delay": "Confirm and Update Delay",
+    "dissolve_delay_success": "Dissolve delay successfully updated."
   },
   "new_followee": {
     "title": "Enter New Followee",

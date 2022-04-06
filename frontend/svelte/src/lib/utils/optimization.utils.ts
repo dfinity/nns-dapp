@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Uses JSON.stringify to generate hashes
  */
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const memoize = <ResultType>(fn): ((...args: any[]) => ResultType) => {
+type MemoizedFn<T> = (...args: any[]) => T;
+export const memoize = <ResultType>(
+  fn: MemoizedFn<ResultType>
+): ((...args: any[]) => ResultType) => {
   const cache = {};
   return (...args) => {
     const key = JSON.stringify(args);
