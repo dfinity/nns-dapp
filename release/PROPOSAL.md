@@ -3,7 +3,7 @@ Wasm sha256 hash: `9057f2bd4a28ec2d83fb9a9f7c66290b2c4aa8454b4f093c289e8c924d8e0
 
 ## Change Log:
 - Merge neuron functionality (using quill, not the GUI)
-- Links in proposals fixed
+- Support links in proposal descriptions
 - Updated logo
 - UI improvements
 - More tests
