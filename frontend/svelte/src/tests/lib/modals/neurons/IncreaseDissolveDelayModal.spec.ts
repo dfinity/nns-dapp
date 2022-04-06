@@ -4,11 +4,11 @@
 
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
-import { render, waitFor, type RenderResult } from "@testing-library/svelte";
+import { waitFor, type RenderResult } from "@testing-library/svelte";
 import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
 import IncreaseDissolveDelayModal from "../../../../lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
 import { updateDelay } from "../../../../lib/services/neurons.services";
-import { waitModalIntroEnd } from "../../../mocks/modal.mock";
+import { renderModal } from "../../../mocks/modal.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
 jest.mock("../../../../lib/services/neurons.services", () => {
@@ -18,25 +18,23 @@ jest.mock("../../../../lib/services/neurons.services", () => {
 });
 
 describe("IncreaseDissolveDelayModal", () => {
-  const modalTitleSelector = "h3";
-
-  const renderModal = async (neuron: NeuronInfo): Promise<RenderResult> => {
-    const modal = render(IncreaseDissolveDelayModal, { neuron });
-
-    const { container } = modal;
-    await waitModalIntroEnd({ container, selector: modalTitleSelector });
-
-    return modal;
+  const renderIncreaseDelayModal = async (
+    neuron: NeuronInfo
+  ): Promise<RenderResult> => {
+    return renderModal({
+      component: IncreaseDissolveDelayModal,
+      props: { neuron },
+    });
   };
 
   it("should display modal", async () => {
-    const { container } = await renderModal(mockNeuron);
+    const { container } = await renderIncreaseDelayModal(mockNeuron);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
   it("should have the update delay button disabled by default", async () => {
-    const { container } = await renderModal(mockNeuron);
+    const { container } = await renderIncreaseDelayModal(mockNeuron);
 
     const updateDelayButton = container.querySelector(
       '[data-tid="go-confirm-delay-button"]'
@@ -49,7 +47,7 @@ describe("IncreaseDissolveDelayModal", () => {
       ...mockNeuron,
       dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
     };
-    const { container } = await renderModal(editableNeuron);
+    const { container } = await renderIncreaseDelayModal(editableNeuron);
 
     await waitFor(() =>
       expect(container.querySelector('input[type="range"]')).not.toBeNull()
@@ -90,7 +88,7 @@ describe("IncreaseDissolveDelayModal", () => {
       ...mockNeuron,
       dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
     };
-    const { container } = await renderModal(editableNeuron);
+    const { container } = await renderIncreaseDelayModal(editableNeuron);
 
     await waitFor(() =>
       expect(container.querySelector('input[type="range"]')).not.toBeNull()

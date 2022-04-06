@@ -425,7 +425,7 @@ describe("CreateNeuronModal", () => {
       expect(container.querySelector('input[type="range"]')).not.toBeNull()
     );
 
-    const skipButton = queryByTestId("skip-neuron-delay");
+    const skipButton = queryByTestId("cancel-neuron-delay");
 
     skipButton && (await fireEvent.click(skipButton));
 

@@ -28,9 +28,6 @@
   let delayInSeconds: number = Number(neuron.dissolveDelaySeconds);
 
   const dispatcher = createEventDispatcher();
-  const goBack = () => {
-    modal.back();
-  };
   const goNext = () => {
     modal.next();
   };
@@ -44,7 +41,7 @@
   {#if currentStep.name === "SetDissolveDelay"}
     <SetDissolveDelay
       {neuron}
-      secondaryButtonText={$i18n.core.confirm_no}
+      cancelButtonText={$i18n.core.confirm_no}
       minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
       on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
@@ -55,7 +52,6 @@
     <ConfirmDissolveDelay
       {neuron}
       {delayInSeconds}
-      on:back={goBack}
       on:nnsUpdated={closeModal}
     />
   {/if}

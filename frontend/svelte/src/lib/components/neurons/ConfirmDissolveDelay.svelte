@@ -33,7 +33,7 @@
     stopBusy("update-delay");
     loading = false;
     if (neuronId !== undefined) {
-      dispatcher("nnsNext");
+      dispatcher("nnsUpdated");
       toastsStore.show({
         labelKey: "neurons.dissolve_delay_success",
         level: "info",

@@ -20,7 +20,7 @@
 
   export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;
-  export let secondaryButtonText: string;
+  export let cancelButtonText: string;
   export let minDelayInSeconds: number = 0;
 
   let loading: boolean = false;
@@ -120,9 +120,9 @@
   <div class="buttons">
     <button
       on:click={cancel}
-      data-tid="skip-neuron-delay"
+      data-tid="cancel-neuron-delay"
       class="secondary full-width"
-      disabled={loading}>{secondaryButtonText}</button
+      disabled={loading}>{cancelButtonText}</button
     >
     <button
       class="primary full-width"
