@@ -12,6 +12,7 @@
   import type { StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
+  import { accountsStore } from "../../stores/accounts.store";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
@@ -27,7 +28,7 @@
   let neuronICP: ICP;
   $: neuronICP = ICP.fromE8s(neuronStake(neuron));
   let isHotKeyControl: boolean;
-  $: isHotKeyControl = !isCurrentUserController(neuron);
+  $: isHotKeyControl = !isCurrentUserController(neuron, $accountsStore.main);
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime =
     neuron.state === NeuronState.DISSOLVING &&

@@ -186,15 +186,17 @@ describe("neuron-utils", () => {
   });
 
   describe("isCurrentUserController", () => {
-    it("returns false when isCurrentUserController not defined", () => {
+    it("returns false when controller not defined", () => {
       const userControlledNeuron = {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          isCurrentUserController: undefined,
+          controller: undefined,
         },
       };
-      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(false);
     });
 
     it("returns true when neuron is controlled by user", () => {
@@ -202,21 +204,25 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          isCurrentUserController: true,
+          controller: mockMainAccount.principal?.toText(),
         },
       };
-      expect(isCurrentUserController(userControlledNeuron)).toBe(true);
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(true);
     });
 
-    it("returns false when isCurrentUserController is false", () => {
+    it("returns false when controller does not match main", () => {
       const userControlledNeuron = {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          isCurrentUserController: false,
+          controller: "bbbbb-bb",
         },
       };
-      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(false);
     });
   });
 
