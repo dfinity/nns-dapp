@@ -1,4 +1,4 @@
-# Upgrade frontend NNS Dapp canister to commit `2c714a95aa8de7486949d1d8826f8420b244098c`
+# Upgrade frontend NNS Dapp canister to commit `f248b401e52951946f877aff9ef541665f5238b5`
 Wasm sha256 hash: `a28438b4b473c2fddad0137522595ea34b766bafe10d30246637f67447f0aeeb` (`https://github.com/dfinity/nns-dapp/actions/runs/2101696518`)
 
 ## Change Log:
@@ -12,7 +12,10 @@ Wasm sha256 hash: `a28438b4b473c2fddad0137522595ea34b766bafe10d30246637f67447f0a
 ## Commit log:
 
 ```
-+ git log '--format=%C(auto) %h %s' e40bd206e28343b8c8b90d621802aa448277c250..453d27379f3c5271af011464aada554be8bc9a4d
+ f248b401 fix: flutter auto redirect in prod (#661)
+ edfb8735 feat: new transaction store, context and init amount step (#657)
+ 9ef23d0d L2-361: Neuron detail dissolve delay (#656)
+ fe1a26b9 L2-329: Manage errors stake neuron (#649)
  453d2737 L2 449 hide open proposals issue (#643)
  7de11a8f Fix/l2 451 inconsistency in neuron icp amount overview (#648)
  a25d8227 feat: account address input rules (#655)
@@ -143,6 +146,6 @@ Wasm sha256 hash: `a28438b4b473c2fddad0137522595ea34b766bafe10d30246637f67447f0a
 To build the wasm module yourself and verify its hash, run the following commands from the root of the nns-dapp repo:
 
 git pull  # to ensure you have the latest changes.
-git checkout `2c714a95aa8de7486949d1d8826f8420b244098c`
+git checkout `f248b401e52951946f877aff9ef541665f5238b5`
 ./scripts/docker-build
 sha256sum nns-dapp.wasm
