@@ -24,7 +24,7 @@
   $: max = Number($store.selectedAccount?.balance.toE8s() ?? 0) / E8S_PER_ICP;
 
   let validForm: boolean;
-  $: validForm = amount > 0 && amount < max;
+  $: validForm = amount !== undefined && amount > 0 && amount < max;
 
   const onMax = () => (amount = max);
   const onSubmit = () => {
