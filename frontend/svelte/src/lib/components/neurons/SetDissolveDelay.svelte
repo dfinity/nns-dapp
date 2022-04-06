@@ -20,6 +20,8 @@
 
   export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;
+  export let cancelButtonText: string;
+  export let minDelayInSeconds: number = 0;
 
   let loading: boolean = false;
 
@@ -33,11 +35,19 @@
     }%)`;
   }
 
+  const checkMinimum = () => {
+    if (delayInSeconds < minDelayInSeconds) {
+      delayInSeconds = minDelayInSeconds;
+    }
+  };
+
   let disableUpdate: boolean;
-  $: disableUpdate = delayInSeconds < SECONDS_IN_HALF_YEAR;
+  $: disableUpdate =
+    delayInSeconds < SECONDS_IN_HALF_YEAR ||
+    delayInSeconds <= minDelayInSeconds;
   const dispatcher = createEventDispatcher();
-  const skipDelay = (): void => {
-    dispatcher("nnsSkipDelay");
+  const cancel = (): void => {
+    dispatcher("nnsCancel");
   };
   let neuronICP: bigint;
   $: neuronICP = neuronStake(neuron);
@@ -75,11 +85,13 @@
       <p>{$i18n.neurons.dissolve_delay_description}</p>
     </div>
     <div class="select-delay-container">
+      <!-- Order of on:input and bind:value matters: https://svelte.dev/docs#template-syntax-element-directives-bind-property -->
       <input
         min={0}
         max={SECONDS_IN_EIGHT_YEARS}
         type="range"
         bind:value={delayInSeconds}
+        on:input={checkMinimum}
         style={`background-image: ${backgroundStyle};`}
       />
       <div class="details">
@@ -107,10 +119,10 @@
   </Card>
   <div class="buttons">
     <button
-      on:click={skipDelay}
-      data-tid="skip-neuron-delay"
+      on:click={cancel}
+      data-tid="cancel-neuron-delay"
       class="secondary full-width"
-      disabled={loading}>{$i18n.neurons.skip}</button
+      disabled={loading}>{cancelButtonText}</button
     >
     <button
       class="primary full-width"

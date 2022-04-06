@@ -80,7 +80,7 @@
         {/if}
       </p>
       <div class="buttons">
-        <IncreaseDissolveDelayButton />
+        <IncreaseDissolveDelayButton {neuron} />
         {#if neuron.state === NeuronState.DISSOLVED}
           <DisburseButton />
         {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
