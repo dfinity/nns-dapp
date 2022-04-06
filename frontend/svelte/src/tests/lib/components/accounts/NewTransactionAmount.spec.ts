@@ -23,7 +23,7 @@ describe("NewTransactionAmount", () => {
     transactionStore.set({
       selectedAccount: mockMainAccount,
       destinationAddress: mockSubAccount.identifier,
-      amount: ICP.fromString("10.25") as ICP,
+      amount: undefined,
     });
   });
 
