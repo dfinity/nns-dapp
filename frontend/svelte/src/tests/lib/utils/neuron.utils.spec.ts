@@ -1,4 +1,4 @@
-import { ICP } from "@dfinity/nns";
+import { ICP, Vote, type BallotInfo } from "@dfinity/nns";
 import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
@@ -9,6 +9,7 @@ import {
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import {
   ageMultiplier,
+  ballotsWithProposal,
   dissolveDelayMultiplier,
   formatVotingPower,
   hasJoinedCommunityFund,
@@ -354,6 +355,38 @@ describe("neuron-utils", () => {
         fullNeuron: undefined,
       };
       expect(neuronStake(neuron)).toBe(BigInt(0));
+    });
+  });
+
+  describe("ballotsWithProposal", () => {
+    const ballot: BallotInfo = {
+      vote: Vote.YES,
+      proposalId: undefined,
+    };
+    const ballotWithProposalId: BallotInfo = {
+      vote: Vote.YES,
+      proposalId: BigInt(0),
+    };
+
+    it("should filter out ballots w/o proposalIds", () => {
+      expect(
+        ballotsWithProposal({
+          ...mockNeuron,
+          recentBallots: [ballot, ballot],
+        })
+      ).toEqual([]);
+      expect(
+        ballotsWithProposal({
+          ...mockNeuron,
+          recentBallots: [ballot, ballotWithProposalId],
+        })
+      ).toEqual([ballotWithProposalId]);
+      expect(
+        ballotsWithProposal({
+          ...mockNeuron,
+          recentBallots: [ballotWithProposalId, ballotWithProposalId],
+        })
+      ).toEqual([ballotWithProposalId, ballotWithProposalId]);
     });
   });
 });
