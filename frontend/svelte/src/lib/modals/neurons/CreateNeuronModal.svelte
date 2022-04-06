@@ -101,9 +101,6 @@
     selectedAccount = detail.selectedAccount;
     modal.next();
   };
-  const goBack = () => {
-    modal.back();
-  };
   const goNext = () => {
     modal.next();
   };
@@ -137,8 +134,9 @@
   {#if currentStep?.name === "SetDissolveDelay"}
     {#if newNeuron !== undefined}
       <SetDissolveDelay
+        cancelButtonText={$i18n.neurons.skip}
         neuron={newNeuron}
-        on:nnsSkipDelay={goEditFollowers}
+        on:nnsCancel={goEditFollowers}
         on:nnsConfirmDelay={goNext}
         bind:delayInSeconds
       />
@@ -149,8 +147,7 @@
       <ConfirmDissolveDelay
         neuron={newNeuron}
         {delayInSeconds}
-        on:back={goBack}
-        on:nnsNext={goNext}
+        on:nnsUpdated={goNext}
       />
     {/if}
   {/if}

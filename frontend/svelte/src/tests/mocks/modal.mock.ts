@@ -23,7 +23,8 @@ export const renderModal = async ({
   props,
 }: {
   component: typeof SvelteComponent;
-  props?: Record<string, string | boolean>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  props?: Record<string, any>;
 }): Promise<RenderResult> => {
   const modal = render(component, {
     props,

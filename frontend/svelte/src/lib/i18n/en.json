@@ -123,7 +123,8 @@
     "voting_power": "Voting Power",
     "skip": "Skip",
     "update_delay": "Update Delay",
-    "confirm_delay": "Confirm and Update Delay"
+    "confirm_delay": "Confirm and Update Delay",
+    "dissolve_delay_success": "Dissolve delay successfully updated."
   },
   "new_followee": {
     "title": "Enter New Followee",

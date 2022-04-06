@@ -9,7 +9,7 @@ describe("SetDissolveDelay", () => {
   // Tested in CreateNeuronModal.spec.ts
   it("is not tested in isolation", () => {
     render(SetDissolveDelay, {
-      props: { neuron: mockNeuron },
+      props: { neuron: mockNeuron, cancelButtonText: "Cancel" },
     });
     expect(true).toBeTruthy();
   });
