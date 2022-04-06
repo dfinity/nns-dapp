@@ -7,7 +7,7 @@ import {
   SECONDS_IN_YEAR,
 } from "../../../lib/constants/constants";
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
-import { AccountsStore } from "../../../lib/stores/accounts.store";
+import type { AccountsStore } from "../../../lib/stores/accounts.store";
 import {
   ageMultiplier,
   dissolveDelayMultiplier,
@@ -209,7 +209,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          controller: accounts.main.principal.toText(),
+          controller: accounts.main?.principal?.toText(),
         },
       };
       expect(isCurrentUserController(userControlledNeuron, accounts)).toBe(
