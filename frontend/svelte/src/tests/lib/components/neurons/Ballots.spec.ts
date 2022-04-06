@@ -5,7 +5,7 @@
 import type { BallotInfo } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import Ballots from "../../../../lib/components/neurons/Ballots/Ballots.svelte";
+import Ballots from "../../../../lib/components/neuron-detail/Ballots/Ballots.svelte";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
@@ -61,6 +61,6 @@ describe("Ballots", () => {
       },
     });
 
-    expect(getByText(en.neurons.no_ballots)).toBeInTheDocument();
+    expect(getByText(en.neuron_detail.no_ballots)).toBeInTheDocument();
   });
 });

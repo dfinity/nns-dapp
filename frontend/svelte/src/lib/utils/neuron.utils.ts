@@ -152,7 +152,7 @@ export const neuronStake = (neuron: NeuronInfo): bigint =>
     : BigInt(0);
 
 /**
- * @returns 0n if stake not available
+ * Returns neuron ballots that contain "proposalId"
  */
 export const ballotsWithProposal = ({
   recentBallots,

@@ -124,8 +124,7 @@
     "skip": "Skip",
     "update_delay": "Update Delay",
     "confirm_delay": "Confirm and Update Delay",
-    "dissolve_delay_success": "Dissolve delay successfully updated.",
-    "no_ballots": "No recent ballots"
+    "dissolve_delay_success": "Dissolve delay successfully updated."
   },
   "new_followee": {
     "title": "Enter New Followee",
@@ -267,7 +266,8 @@
     "dummy_proposal_success": "Dummy proposals created successfully",
     "following_title": "Following",
     "following_description": "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
-    "follow_neurons": "Follow Neurons"
+    "follow_neurons": "Follow Neurons",
+    "no_ballots": "No recent ballots"
   },
   "time": {
     "year": "year",

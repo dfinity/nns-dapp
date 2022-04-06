@@ -135,7 +135,6 @@ interface I18nNeurons {
   update_delay: string;
   confirm_delay: string;
   dissolve_delay_success: string;
-  no_ballots: string;
 }
 
 interface I18nNew_followee {
@@ -290,6 +289,7 @@ interface I18nNeuron_detail {
   following_title: string;
   following_description: string;
   follow_neurons: string;
+  no_ballots: string;
 }
 
 interface I18nTime {
