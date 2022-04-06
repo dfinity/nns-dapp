@@ -12,6 +12,7 @@ Wasm sha256 hash: `a28438b4b473c2fddad0137522595ea34b766bafe10d30246637f67447f0a
 ## Commit log:
 
 ```
+ git log '--format=%C(auto) %h %s' e40bd206e28343b8c8b90d621802aa448277c250..f248b401e52951946f877aff9ef541665f5238b5
  f248b401 fix: flutter auto redirect in prod (#661)
  edfb8735 feat: new transaction store, context and init amount step (#657)
  9ef23d0d L2-361: Neuron detail dissolve delay (#656)
