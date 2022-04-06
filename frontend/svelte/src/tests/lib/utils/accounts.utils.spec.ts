@@ -17,7 +17,6 @@ describe("accounts-utils", () => {
         subAccounts: undefined,
       };
 
-      console.log(mockMainAccount.principal?.toText());
       const found = getAccountByPrincipal({
         accounts,
         principal: mockMainAccount.principal?.toText() as string,

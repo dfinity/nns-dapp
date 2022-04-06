@@ -39,6 +39,12 @@ jest.mock("../../../../lib/services/neurons.services", () => {
   };
 });
 
+jest.mock("../../../../lib/services/knownNeurons.services", () => {
+  return {
+    listKnownNeurons: jest.fn(),
+  };
+});
+
 jest.mock("../../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn().mockResolvedValue(undefined),

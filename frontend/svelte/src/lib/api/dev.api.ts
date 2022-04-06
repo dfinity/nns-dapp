@@ -73,5 +73,5 @@ const assertTestnet = () => {
 
 // If ultimately we need this function in many calls, we shall move it in "converter.utils" of nns-js and expose the function
 const base64ToUInt8Array = (base64String: string): Uint8Array => {
-  return Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0));
+  return Uint8Array.from(window.atob(base64String), (c) => c.charCodeAt(0));
 };
