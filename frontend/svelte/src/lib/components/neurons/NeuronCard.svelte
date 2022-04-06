@@ -28,7 +28,7 @@
   let neuronICP: ICP;
   $: neuronICP = ICP.fromE8s(neuronStake(neuron));
   let isHotKeyControl: boolean;
-  $: isHotKeyControl = !isCurrentUserController(neuron, $accountsStore);
+  $: isHotKeyControl = !isCurrentUserController(neuron, $accountsStore.main);
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime =
     neuron.state === NeuronState.DISSOLVING &&

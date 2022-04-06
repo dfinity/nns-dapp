@@ -10,6 +10,7 @@ import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
+import type { Account } from "../types/account";
 import { getAccountByPrincipal } from "./accounts.utils";
 import { formatNumber } from "./format.utils";
 
@@ -92,11 +93,11 @@ export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
 
 export const isCurrentUserController = (
   neuron: NeuronInfo,
-  accounts: AccountsStore
+  mainAccount?: Account
 ): boolean =>
   neuron.fullNeuron?.controller === undefined
     ? false
-    : accounts.main?.principal?.toText() === neuron.fullNeuron.controller;
+    : mainAccount?.principal?.toText() === neuron.fullNeuron.controller;
 
 export const maturityByStake = (neuron: NeuronInfo): number => {
   if (

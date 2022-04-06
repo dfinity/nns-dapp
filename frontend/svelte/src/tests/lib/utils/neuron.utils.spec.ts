@@ -7,7 +7,6 @@ import {
   SECONDS_IN_YEAR,
 } from "../../../lib/constants/constants";
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
-import type { AccountsStore } from "../../../lib/stores/accounts.store";
 import {
   ageMultiplier,
   dissolveDelayMultiplier,
@@ -187,10 +186,6 @@ describe("neuron-utils", () => {
   });
 
   describe("isCurrentUserController", () => {
-    const accounts: AccountsStore = {
-      main: mockMainAccount,
-      subAccounts: undefined,
-    };
     it("returns false when controller not defined", () => {
       const userControlledNeuron = {
         ...mockNeuron,
@@ -199,9 +194,9 @@ describe("neuron-utils", () => {
           controller: undefined,
         },
       };
-      expect(isCurrentUserController(userControlledNeuron, accounts)).toBe(
-        false
-      );
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(false);
     });
 
     it("returns true when neuron is controlled by user", () => {
@@ -209,12 +204,12 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          controller: accounts.main?.principal?.toText(),
+          controller: mockMainAccount.principal?.toText(),
         },
       };
-      expect(isCurrentUserController(userControlledNeuron, accounts)).toBe(
-        true
-      );
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(true);
     });
 
     it("returns false when controller does not match main", () => {
@@ -225,9 +220,9 @@ describe("neuron-utils", () => {
           controller: "bbbbb-bb",
         },
       };
-      expect(isCurrentUserController(userControlledNeuron, accounts)).toBe(
-        false
-      );
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(false);
     });
   });
 
