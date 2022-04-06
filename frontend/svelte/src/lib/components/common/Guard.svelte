@@ -23,6 +23,6 @@
 
 {#await syncAuthStore()}
   <Spinner />
-{:then value}
+{:then}
   <slot />
 {/await}

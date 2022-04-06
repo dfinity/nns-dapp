@@ -19,6 +19,7 @@ import {
   updateDelay,
 } from "../../../lib/services/neurons.services";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
+import { toastsStore } from "../../../lib/stores/toasts.store";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -26,6 +27,15 @@ import {
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
+
+jest.mock("../../../lib/stores/toasts.store", () => {
+  return {
+    toastsStore: {
+      error: jest.fn(),
+      show: jest.fn(),
+    },
+  };
+});
 
 describe("neurons-services", () => {
   const spyStakeNeuron = jest
@@ -97,6 +107,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
+      expect(toastsStore.error).toBeCalled();
     });
 
     it("stake neuron should return undefined if amount not valid", async () => {
@@ -109,6 +120,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
+      expect(toastsStore.error).toBeCalled();
     });
 
     it("should not stake neuron if no identity", async () => {
@@ -119,6 +131,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
+      expect(toastsStore.error).toBeCalled();
 
       resetIdentity();
     });
