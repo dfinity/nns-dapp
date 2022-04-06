@@ -28,7 +28,8 @@
     loading = true;
     const neuronId = await updateDelay({
       neuronId: neuron.neuronId,
-      dissolveDelayInSeconds: delayInSeconds,
+      dissolveDelayInSeconds:
+        delayInSeconds - Number(neuron.dissolveDelaySeconds),
     });
     stopBusy("update-delay");
     loading = false;

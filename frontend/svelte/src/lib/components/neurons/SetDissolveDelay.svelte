@@ -44,7 +44,7 @@
   let disableUpdate: boolean;
   $: disableUpdate =
     delayInSeconds < SECONDS_IN_HALF_YEAR ||
-    delayInSeconds === minDelayInSeconds;
+    delayInSeconds <= minDelayInSeconds;
   const dispatcher = createEventDispatcher();
   const cancel = (): void => {
     dispatcher("nnsCancel");
