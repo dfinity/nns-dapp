@@ -15,6 +15,7 @@ describe("NewTransactionAmount", () => {
     transactionStore.set({
       selectedAccount: mockMainAccount,
       destinationAddress: mockSubAccount.identifier,
+      amount: undefined,
     });
 
     const { getByText } = render(NewTransactionAmountTest);
