@@ -4,13 +4,14 @@
   import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
+  export let disabled: boolean = false;
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
 </script>
 
-<button class="primary small" on:click={openModal}
+<button class="primary small" {disabled} on:click={openModal}
   >{$i18n.neuron_detail.increase_dissolve_delay}</button
 >
 
