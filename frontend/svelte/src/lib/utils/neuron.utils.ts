@@ -1,4 +1,4 @@
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type BallotInfo, type NeuronInfo } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
@@ -141,3 +141,13 @@ export const neuronStake = (neuron: NeuronInfo): bigint =>
   neuron.fullNeuron?.cachedNeuronStake !== undefined
     ? neuron.fullNeuron?.cachedNeuronStake - neuron.fullNeuron?.neuronFees
     : BigInt(0);
+
+/**
+ * @returns 0n if stake not available
+ */
+export const ballotsWithProposal = ({
+  recentBallots,
+}: NeuronInfo): Required<BallotInfo>[] =>
+  recentBallots.filter(
+    ({ proposalId }: BallotInfo) => proposalId !== undefined
+  );

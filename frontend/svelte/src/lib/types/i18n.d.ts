@@ -279,6 +279,7 @@ interface I18nNeuron_detail {
   following_title: string;
   following_description: string;
   follow_neurons: string;
+  no_ballots: string;
 }
 
 interface I18nTime {

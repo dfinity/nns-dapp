@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { BallotInfo, ProposalId, ProposalInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import { loadProposal } from "../../services/proposals.services";
-  import ProposalSummary from "../proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
+  import { loadProposal } from "../../../services/proposals.services";
   import { Vote } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import SkeletonParagraph from "../ui/SkeletonParagraph.svelte";
+  import { i18n } from "../../../stores/i18n";
+  import ProposalSummary from "../../proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
+  import SkeletonParagraph from "../../ui/SkeletonParagraph.svelte";
 
   export let ballot: Required<BallotInfo>;
 
@@ -40,18 +40,17 @@
 
 <style lang="scss">
   .vote {
-    display: inline-flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    font-size: var(--font-size-small);
+    text-align: right;
   }
 
   p {
-    margin: var(--padding) 0 0;
+    margin: 0;
   }
 
   .summary {
     grid-column-start: 1;
     grid-column-end: 3;
+    // fix broken layout with too long urls in summary
+    word-break: break-word;
   }
 </style>
