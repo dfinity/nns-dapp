@@ -91,14 +91,13 @@ jobs:
 
       - name: Start replica
         run: |
-          dfx start --background
-          dfx canister --no-wallet create --all
+          dfx start --background --clean
 
       # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
       # REDIRECT_TO_LEGACY=svelte builds and deploys only Svelte
       - name: Deploy
         run: |
-          REDIRECT_TO_LEGACY=svelte DEPLOY_ENV=local IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --no-wallet --network local --argument '(null)'
+          ./e2e-tests/scripts/deploy-local-canisters
 
       - name: Build proxy
         working-directory: proxy

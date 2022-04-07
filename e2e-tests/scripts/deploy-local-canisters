@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+dfx canister --no-wallet create --all || echo Canisters may have been created already.  Proceeding...
+REDIRECT_TO_LEGACY=svelte DEPLOY_ENV=local IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --no-wallet --network local --argument '(null)'
