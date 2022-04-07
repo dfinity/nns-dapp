@@ -11,7 +11,9 @@
     "yes": "Yes",
     "no": "No",
     "unspecified": "Unspecified",
-    "continue": "Continue"
+    "continue": "Continue",
+    "amount": "Amount",
+    "max": "Max"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -43,7 +45,8 @@
     "unknown": "Sorry, there was an unexpected error. Please try again later.",
     "amount_not_valid": "Sorry, the amount is not valid",
     "amount_not_enough": "Sorry, the amount is not large enough. You need a minimum of 1 ICP to stake a neuron",
-    "stake_neuron": "Sorry, there was an unexpected error staking the neuron. Please try again later."
+    "stake_neuron": "Sorry, there was an unexpected error staking the neuron. Please try again later.",
+    "transaction_invalid_amount": "The amount is less than zero or exceeds the amount of available funds for the selected account."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -86,7 +89,9 @@
     "enter_icp_amount": "Enter ICP amount",
     "source": "Source",
     "destination": "Destination",
-    "transaction_fee": "Transaction Fee (billed to source)"
+    "transaction_fee": "Transaction Fee (billed to source)",
+    "review_transaction": "Review transaction",
+    "current_balance": "Current balance"
   },
   "neurons": {
     "title": "Neurons",
@@ -101,8 +106,6 @@
     "transaction_fee": "Transaction Fee",
     "current_balance": "Current Balance",
     "may_take_while": "(This may take up to 1 minute)",
-    "amount": "Amount",
-    "max": "Max",
     "create": "Create",
     "status_locked": "Locked",
     "status_unspecified": "",
@@ -113,6 +116,7 @@
     "stake": "Stake",
     "icp_stake": "$amount ICP Stake",
     "staked": "Staked",
+    "remaining": "$duration remaining",
     "aria_label_neuron_card": "Go to neuron details",
     "neuron_id": "Neuron ID",
     "neuron_balance": "Balance",

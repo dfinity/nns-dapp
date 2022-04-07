@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import Input from "../ui/Input.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import {
     E8S_PER_ICP,
@@ -12,6 +11,7 @@
   import type { Account } from "../../types/account";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { formatICP, formattedTransactionFeeICP } from "../../utils/icp.utils";
+  import AmountInput from "../ui/AmountInput.svelte";
 
   export let account: Account;
   let amount: number;
@@ -37,10 +37,11 @@
     stopBusy("stake-neuron");
   };
 
-  const stakeMaximum = () => {
-    amount =
-      (Number(account.balance.toE8s()) - TRANSACTION_FEE_E8S) / E8S_PER_ICP;
-  };
+  let max: number = 0;
+  $: max =
+    (Number(account.balance.toE8s()) - TRANSACTION_FEE_E8S) / E8S_PER_ICP;
+
+  const stakeMaximum = () => (amount = max);
 </script>
 
 <div class="wizard-wrapper">
@@ -61,20 +62,8 @@
       {`${formatICP(account.balance.toE8s())}`}
     </h4>
     <form on:submit|preventDefault={createNeuron}>
-      <Input
-        placeholderLabelKey="neurons.amount"
-        name="amount"
-        bind:value={amount}
-        theme="dark"
-        inputType="number"
-      >
-        <button
-          type="button"
-          on:click|preventDefault={stakeMaximum}
-          class="secondary small"
-          slot="button">{$i18n.neurons.max}</button
-        >
-      </Input>
+      <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} />
+
       <small>{$i18n.neurons.may_take_while}</small>
       <!-- TODO: L2-252 -->
       <button

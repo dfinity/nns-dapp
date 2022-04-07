@@ -15,6 +15,8 @@ interface I18nCore {
   no: string;
   unspecified: string;
   continue: string;
+  amount: string;
+  max: string;
 }
 
 interface I18nError {
@@ -48,6 +50,7 @@ interface I18nError {
   amount_not_valid: string;
   amount_not_enough: string;
   stake_neuron: string;
+  transaction_invalid_amount: string;
 }
 
 interface I18nWarning {
@@ -96,6 +99,8 @@ interface I18nAccounts {
   source: string;
   destination: string;
   transaction_fee: string;
+  review_transaction: string;
+  current_balance: string;
 }
 
 interface I18nNeurons {
@@ -111,8 +116,6 @@ interface I18nNeurons {
   transaction_fee: string;
   current_balance: string;
   may_take_while: string;
-  amount: string;
-  max: string;
   create: string;
   status_locked: string;
   status_unspecified: string;
@@ -123,6 +126,7 @@ interface I18nNeurons {
   stake: string;
   icp_stake: string;
   staked: string;
+  remaining: string;
   aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;
