@@ -1,10 +1,19 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
+  import { accountsStore } from "../../stores/accounts.store";
+  import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
+  import { isNeuronControllable } from "../../utils/neuron.utils";
   import Card from "../ui/Card.svelte";
   import FollowNeuronsButton from "./actions/FollowNeuronsButton.svelte";
 
   export let neuron: NeuronInfo;
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable({
+    neuron,
+    identity: $authStore.identity,
+    accounts: $accountsStore,
+  });
 </script>
 
 <Card>
@@ -12,7 +21,9 @@
   <p>{$i18n.neuron_detail.following_description}</p>
   <!-- TODO: https://dfinity.atlassian.net/browse/L2-354 -->
   <div class="actions">
-    <FollowNeuronsButton {neuron} />
+    {#if isControllable}
+      <FollowNeuronsButton {neuron} />
+    {/if}
   </div>
 </Card>
 

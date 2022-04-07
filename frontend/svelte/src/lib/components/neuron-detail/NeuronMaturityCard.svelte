@@ -1,15 +1,23 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import IconInfo from "../../icons/IconInfo.svelte";
+  import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import { formatPercentage } from "../../utils/format.utils";
-  import { maturityByStake } from "../../utils/neuron.utils";
+  import * as utils from "../../utils/neuron.utils";
   import Card from "../ui/Card.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
 
+  const { isCurrentUserController, maturityByStake } = utils;
+
   export let neuron: NeuronInfo;
+  let userControlled: boolean;
+  $: userControlled = isCurrentUserController({
+    neuron,
+    identity: $authStore.identity,
+  });
 </script>
 
 <Card>
@@ -25,8 +33,10 @@
     <h3>{formatPercentage(maturityByStake(neuron))}</h3>
   </div>
   <div class="actions">
-    <MergeMaturityButton />
-    <SpawnNeuronButton />
+    {#if userControlled}
+      <MergeMaturityButton />
+      <SpawnNeuronButton />
+    {/if}
   </div>
 </Card>
 
