@@ -7,6 +7,9 @@
   import type { Account } from "../../types/account";
   import type { Unsubscriber } from "svelte/types/runtime/store";
 
+  export let displayTitle = false;
+  export let disableSelection: boolean = false;
+
   const dispatch = createEventDispatcher();
   const chooseAccount = (selectedAccount: Account) => {
     dispatch("nnsSelectAccount", { selectedAccount });
@@ -23,9 +26,11 @@
   onDestroy(unsubscribeAccounts);
 </script>
 
-<div class="wizard-list">
+<div class="wizard-list" class:disabled={disableSelection}>
   {#if mainAccount}
-    <h4>{$i18n.neurons.my_accounts}</h4>
+    {#if displayTitle}
+      <h4>{$i18n.accounts.my_accounts}</h4>
+    {/if}
     <!-- Needed mainAccount && because TS didn't learn that `mainAccount` is present in the click listener -->
     <AccountCard
       role="button"
@@ -46,3 +51,22 @@
     <Spinner />
   {/if}
 </div>
+
+<style lang="scss">
+  :global(article:first-of-type) {
+    margin-top: var(--padding);
+  }
+
+  .disabled {
+    --disabled-card-opacity: 0.2;
+
+    h4 {
+      opacity: var(--disabled-card-opacity);
+    }
+
+    :global(article) {
+      pointer-events: none;
+      opacity: var(--disabled-card-opacity);
+    }
+  }
+</style>

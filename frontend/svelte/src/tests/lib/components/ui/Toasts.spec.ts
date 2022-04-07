@@ -92,7 +92,7 @@ describe("Toasts", () => {
     const button: HTMLButtonElement | null = container.querySelector(
       'button[aria-label="Close"]'
     );
-    button && fireEvent.click(button);
+    button && (await fireEvent.click(button));
 
     await waitFor(() =>
       expect(container.querySelector("div.toast")).toBeNull()

@@ -1,4 +1,4 @@
-import { ICP } from "@dfinity/nns";
+import { ICP, NeuronState } from "@dfinity/nns";
 import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
@@ -11,12 +11,17 @@ import {
   ageMultiplier,
   dissolveDelayMultiplier,
   formatVotingPower,
+  getDissolvingTimeInSeconds,
   hasJoinedCommunityFund,
   hasValidStake,
   isCurrentUserController,
+  isNeuronControllable,
   maturityByStake,
+  neuronStake,
+  sortNeuronsByCreatedTimestamp,
   votingPower,
 } from "../../../lib/utils/neuron.utils";
+import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 describe("neuron-utils", () => {
@@ -24,7 +29,7 @@ describe("neuron-utils", () => {
     it("should return zero for delays less than six months", () => {
       expect(
         votingPower({ stake: BigInt(2), dissolveDelayInSeconds: 100 })
-      ).toBe(0);
+      ).toBe(BigInt(0));
     });
 
     it("should return more than stake when delay more than six months", () => {
@@ -35,7 +40,7 @@ describe("neuron-utils", () => {
           stake: icp.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
         })
-      ).toBeGreaterThan(Number(stake));
+      ).toBeGreaterThan(icp.toE8s());
     });
 
     it("should return the double when delay is eight years", () => {
@@ -46,7 +51,7 @@ describe("neuron-utils", () => {
           stake: icp.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
         })
-      ).toBe(Number(stake) * 2);
+      ).toBe(icp.toE8s() * BigInt(2));
     });
 
     it("should add age multiplier", () => {
@@ -181,16 +186,56 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("getDissolvingTimeInSeconds", () => {
+    it("returns undefined if neuron not dissolving", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.DISSOLVED,
+      };
+      expect(getDissolvingTimeInSeconds(neuron)).toBeUndefined();
+    });
+
+    it("returns undefined if dissolve state has no timestamp", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.DISSOLVING,
+        fullNeuron: {
+          ...mockFullNeuron,
+          dissolveState: undefined,
+        },
+      };
+      expect(getDissolvingTimeInSeconds(neuron)).toBeUndefined();
+    });
+
+    it("returns duration from today until dissolving time", () => {
+      const todayInSeconds = BigInt(Math.round(Date.now() / 1000));
+      const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.DISSOLVING,
+        fullNeuron: {
+          ...mockFullNeuron,
+          dissolveState: {
+            WhenDissolvedTimestampSeconds: delayInSeconds,
+          },
+        },
+      };
+      expect(getDissolvingTimeInSeconds(neuron)).toBe(BigInt(SECONDS_IN_YEAR));
+    });
+  });
+
   describe("isCurrentUserController", () => {
-    it("returns false when isCurrentUserController not defined", () => {
+    it("returns false when controller not defined", () => {
       const userControlledNeuron = {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          isCurrentUserController: undefined,
+          controller: undefined,
         },
       };
-      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(false);
     });
 
     it("returns true when neuron is controlled by user", () => {
@@ -198,21 +243,25 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          isCurrentUserController: true,
+          controller: mockMainAccount.principal?.toText(),
         },
       };
-      expect(isCurrentUserController(userControlledNeuron)).toBe(true);
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(true);
     });
 
-    it("returns false when isCurrentUserController is false", () => {
+    it("returns false when controller does not match main", () => {
       const userControlledNeuron = {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          isCurrentUserController: false,
+          controller: "bbbbb-bb",
         },
       };
-      expect(isCurrentUserController(userControlledNeuron)).toBe(false);
+      expect(
+        isCurrentUserController(userControlledNeuron, mockMainAccount)
+      ).toBe(false);
     });
   });
 
@@ -260,6 +309,90 @@ describe("neuron-utils", () => {
         },
       };
       expect(maturityByStake(neuron)).toBe(0.333333);
+    });
+  });
+
+  describe("sortNeuronsByCreatedTimestamp", () => {
+    it("should sort neurons by createdTimestampSeconds", () => {
+      const neuron1 = { ...mockNeuron, createdTimestampSeconds: BigInt(1) };
+      const neuron2 = { ...mockNeuron, createdTimestampSeconds: BigInt(2) };
+      const neuron3 = { ...mockNeuron, createdTimestampSeconds: BigInt(3) };
+      expect(sortNeuronsByCreatedTimestamp([])).toEqual([]);
+      expect(sortNeuronsByCreatedTimestamp([neuron1])).toEqual([neuron1]);
+      expect(
+        sortNeuronsByCreatedTimestamp([neuron3, neuron2, neuron1])
+      ).toEqual([neuron3, neuron2, neuron1]);
+      expect(
+        sortNeuronsByCreatedTimestamp([neuron2, neuron1, neuron3])
+      ).toEqual([neuron3, neuron2, neuron1]);
+    });
+  });
+
+  describe("isNeuronControllable", () => {
+    it("should return true if neuron controller is the current main account", () => {
+      const accounts = {
+        main: mockMainAccount,
+        subaccounts: undefined,
+      };
+
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockMainAccount.principal?.toText(),
+        },
+      };
+
+      expect(isNeuronControllable({ neuron, accounts })).toBe(true);
+    });
+
+    it("should return false if neuron controller is not current main account", () => {
+      const accounts = {
+        main: mockMainAccount,
+        subaccounts: undefined,
+      };
+
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "bbbbb-b",
+        },
+      };
+
+      expect(isNeuronControllable({ neuron, accounts })).toBe(false);
+    });
+
+    it("should return false if no accounts", () => {
+      const accounts = {
+        main: undefined,
+        subaccounts: undefined,
+      };
+      expect(isNeuronControllable({ neuron: mockNeuron, accounts })).toBe(
+        false
+      );
+    });
+  });
+
+  describe("neuronStake", () => {
+    it("should calculate neuron stake", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(100),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronStake(neuron)).toBe(BigInt(90));
+    });
+
+    it("should return 0n when stake is not available", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(neuronStake(neuron)).toBe(BigInt(0));
     });
   });
 });

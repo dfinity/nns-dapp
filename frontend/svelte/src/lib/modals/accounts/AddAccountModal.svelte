@@ -4,16 +4,22 @@
   import WizardModal from "../WizardModal.svelte";
   import { i18n } from "../../stores/i18n";
   import type { Steps } from "../../stores/steps.state";
+  import type { Step } from "../../stores/steps.state";
 
   const steps: Steps = [
     {
       name: "SelectAccount",
+      title: $i18n.accounts.add_account,
       showBackButton: false,
     },
-    { name: "AddNewAccount", showBackButton: true },
+    {
+      name: "AddNewAccount",
+      title: $i18n.accounts.add_account,
+      showBackButton: true,
+    },
   ];
 
-  let currentStepName: string | undefined;
+  let currentStep: Step | undefined;
   let modal: WizardModal;
 
   const handleSelectType = () => {
@@ -22,14 +28,16 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStepName bind:this={modal} on:nnsClose>
-  <svelte:fragment slot="title">{$i18n.accounts.add_account}</svelte:fragment>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+  <svelte:fragment slot="title"
+    >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
+  >
 
   <svelte:fragment>
-    {#if currentStepName === "SelectAccount"}
+    {#if currentStep?.name === "SelectAccount"}
       <SelectTypeAccount on:nnsSelect={handleSelectType} />
     {/if}
-    {#if currentStepName === "AddNewAccount"}
+    {#if currentStep?.name === "AddNewAccount"}
       <AddNewAccount on:nnsClose />
     {/if}
   </svelte:fragment>

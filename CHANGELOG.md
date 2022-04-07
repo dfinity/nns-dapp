@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal 53536
+- Merge neuron functionality (using quill, not the GUI).
+- Updated logo
+- UI improvements
+- More tests
+
 ## Proposal 47824
 * Update changelog for the last release
 * Remove upgrade code needed for the last release only

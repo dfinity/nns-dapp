@@ -3,7 +3,7 @@ import type { ProposalInfo } from "@dfinity/nns";
 /**
  * Generate mock proposals with autoincremented "id".
  * @param count How many proposals to create
- * @param fields Static fields to set to mock entries
+ * @param fields Static fields to set to mock entries e.g. {proposalTimestampSeconds: BigInt(0)}
  * @returns List of mock proposals (not fully set)
  */
 export const generateMockProposals = (

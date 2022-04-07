@@ -1,5 +1,6 @@
 export interface Step {
   readonly name: string;
+  readonly title: string;
   readonly showBackButton: boolean;
 }
 

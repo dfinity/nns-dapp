@@ -29,7 +29,7 @@ export const stringifyJson = (
 ): string =>
   JSON.stringify(
     value,
-    (key, value) =>
+    (_, value) =>
       typeof value === "bigint"
         ? options?.devMode !== undefined && options.devMode
           ? `BigInt('${value.toString()}')`

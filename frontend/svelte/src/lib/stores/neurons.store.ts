@@ -1,6 +1,9 @@
 import type { NeuronId, NeuronInfo } from "@dfinity/nns";
-import { derived, writable } from "svelte/store";
-import { hasValidStake } from "../utils/neuron.utils";
+import { derived, writable, type Readable } from "svelte/store";
+import {
+  hasValidStake,
+  sortNeuronsByCreatedTimestamp,
+} from "../utils/neuron.utils";
 
 export type NeuronsStore = NeuronInfo[];
 
@@ -53,3 +56,8 @@ const initNeuronSelectStore = () => {
 };
 
 export const neuronSelectStore = initNeuronSelectStore();
+
+export const sortedNeuronStore: Readable<NeuronInfo[]> = derived(
+  neuronsStore,
+  ($neuronsStore) => sortNeuronsByCreatedTimestamp($neuronsStore)
+);

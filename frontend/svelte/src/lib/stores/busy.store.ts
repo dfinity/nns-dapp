@@ -2,10 +2,14 @@ import type { Readable } from "svelte/store";
 import { derived, writable } from "svelte/store";
 
 export type BusyStateInitiator =
+  | "stake-neuron"
+  | "update-delay"
   | "vote"
   | "accounts"
   | "join-community-fund"
-  | "dissolve-action";
+  | "dissolve-action"
+  | "add-followee"
+  | "remove-followee";
 
 /**
  * Store that reflects the app busy state.

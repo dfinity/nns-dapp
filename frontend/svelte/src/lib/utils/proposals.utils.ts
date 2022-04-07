@@ -73,11 +73,16 @@ export const hideProposal = ({
   excludeVotedProposals: boolean;
 }): boolean => {
   const { status, ballots } = proposalInfo;
-
+  const containsUnspecifiedBallot = (): boolean =>
+    // Sometimes ballots contains all neurons with Vote.UNSPECIFIED
+    // something ballots is empty (inconsistent backend behaviour)
+    ballots?.length === 0
+      ? true
+      : ballots.find(({ vote }) => vote === Vote.UNSPECIFIED) !== undefined;
   return (
     excludeVotedProposals &&
     status === ProposalStatus.PROPOSAL_STATUS_OPEN &&
-    ballots.find(({ vote }) => vote !== Vote.UNSPECIFIED) !== undefined
+    !containsUnspecifiedBallot()
   );
 };
 
@@ -179,6 +184,21 @@ export const replaceAndConcatenateProposals = ({
     newProposals,
   });
 };
+
+/**
+ * Compares proposals by "id"
+ */
+export const replaceProposals = ({
+  oldProposals,
+  newProposals,
+}: {
+  oldProposals: ProposalInfo[];
+  newProposals: ProposalInfo[];
+}): ProposalInfo[] =>
+  oldProposals.map(
+    (oldProposal) =>
+      newProposals.find(({ id }) => id === oldProposal.id) ?? oldProposal
+  );
 
 /**
  * Compares 2 proposal lists by entries "id"

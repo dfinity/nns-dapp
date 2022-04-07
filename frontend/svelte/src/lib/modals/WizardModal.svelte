@@ -9,14 +9,11 @@
   let stepState: StepsState;
   $: stepState = new StepsState(steps);
 
-  let currentStep: Step | undefined;
+  export let currentStep: Step | undefined;
   $: ({ currentStep } = stepState);
 
   let transition: { diff: number };
   $: transition = { diff: stepState.diff };
-
-  export let currentStepName: string | undefined;
-  $: currentStepName = currentStep?.name;
 
   export const next = () => (stepState = stepState.next());
   export const back = () => (stepState = stepState.back());
@@ -44,10 +41,8 @@
 </Modal>
 
 <style lang="scss">
+  @use "../themes/mixins/modal.scss";
   section {
-    height: min(500px, calc(100vh - 156px - (2 * var(--padding))));
-    margin: 0;
-    padding: calc(2 * var(--padding));
-    max-width: 100%;
+    @include modal.section;
   }
 </style>

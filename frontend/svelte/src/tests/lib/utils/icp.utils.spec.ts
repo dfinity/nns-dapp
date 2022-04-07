@@ -1,5 +1,9 @@
 import { ICP } from "@dfinity/nns";
-import { formatICP, sumICPs } from "../../../lib/utils/icp.utils";
+import {
+  formatICP,
+  formattedTransactionFeeICP,
+  sumICPs,
+} from "../../../lib/utils/icp.utils";
 
 describe("icp-utils", () => {
   it("should format icp", () => {
@@ -32,4 +36,7 @@ describe("icp-utils", () => {
     expect(sumICPs(icp1, icp2, icp3)).toEqual(icp6);
     expect(sumICPs(icp15, icp2)).toEqual(icp35);
   });
+
+  it("should format a specific transaction fee", () =>
+    expect(formattedTransactionFeeICP()).toEqual("0.00010000"));
 });

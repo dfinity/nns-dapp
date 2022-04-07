@@ -5,12 +5,12 @@
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
-import ProposalsFilterModal from "../../../lib/modals/proposals/ProposalsFilterModal.svelte";
-import { proposalsFiltersStore } from "../../../lib/stores/proposals.store";
-import type { ProposalsFilterModalProps } from "../../../lib/types/proposals";
-import { enumKeys } from "../../../lib/utils/enum.utils";
-import en from "../../mocks/i18n.mock";
+import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
+import ProposalsFilterModal from "../../../../lib/modals/proposals/ProposalsFilterModal.svelte";
+import { proposalsFiltersStore } from "../../../../lib/stores/proposals.store";
+import type { ProposalsFilterModalProps } from "../../../../lib/types/proposals";
+import { enumKeys } from "../../../../lib/utils/enum.utils";
+import en from "../../../mocks/i18n.mock";
 
 describe("ProposalsFilterModal", () => {
   const props: { props: ProposalsFilterModalProps } = {

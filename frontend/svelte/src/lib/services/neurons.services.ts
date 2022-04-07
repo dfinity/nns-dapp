@@ -28,7 +28,6 @@ import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { createChunks, isDefined } from "../utils/utils";
-import { getAccountByPrincipal } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -42,31 +41,44 @@ export const stakeAndLoadNeuron = async ({
 }: {
   amount: number;
   fromSubAccount?: SubAccountArray;
-}): Promise<NeuronId> => {
+}): Promise<NeuronId | undefined> => {
   const stake = ICP.fromString(String(amount));
 
   if (!(stake instanceof ICP)) {
-    throw new Error(`Amount ${amount} is not valid`);
+    toastsStore.error({
+      labelKey: "error.amount_not_valid",
+    });
+    return;
   }
 
   if (stake.toE8s() < E8S_PER_ICP) {
-    throw new Error("Need a minimum of 1 ICP to stake a neuron");
+    toastsStore.error({
+      labelKey: "error.amount_not_enough",
+    });
+    return;
   }
 
-  const identity: Identity = await getIdentity();
+  try {
+    const identity: Identity = await getIdentity();
 
-  const neuronId: NeuronId = await stakeNeuron({
-    stake,
-    identity,
-    fromSubAccount,
-  });
+    const neuronId: NeuronId = await stakeNeuron({
+      stake,
+      identity,
+      fromSubAccount,
+    });
 
-  await loadNeuron({
-    neuronId,
-    setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
-  });
+    await loadNeuron({
+      neuronId,
+      setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+    });
 
-  return neuronId;
+    return neuronId;
+  } catch (err) {
+    toastsStore.error({
+      labelKey: "error.stake_neuron",
+      err,
+    });
+  }
 };
 
 // This gets all neurons linked to the current user's principal, even those with a stake of 0.
@@ -164,7 +176,6 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   if (neuronIdsToRefresh.length === 0) {
     return;
   }
-  console.log("refreshing");
   // We found neurons that need to be refreshed.
   const neuronIdsChunks: NeuronId[][] = createChunks(neuronIdsToRefresh, 10);
   await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
@@ -197,12 +208,24 @@ export const updateDelay = async ({
 }: {
   neuronId: NeuronId;
   dissolveDelayInSeconds: number;
-}): Promise<void> => {
+}): Promise<NeuronId | undefined> => {
   const identity: Identity = await getIdentity();
 
-  await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
+  try {
+    await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
 
-  await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return neuronId;
+  } catch (err) {
+    toastsStore.error({
+      labelKey: "error.unknown",
+      err,
+    });
+
+    // To inform there was an error
+    return undefined;
+  }
 };
 
 export const joinCommunityFund = async (neuronId: NeuronId): Promise<void> => {
@@ -249,17 +272,7 @@ const setFolloweesHelper = async ({
       topic,
       followees,
     });
-    const neuron: NeuronInfo | undefined = await getNeuron({
-      neuronId,
-      identity,
-      certified: true,
-      forceFetch: true,
-    });
-
-    if (!neuron) {
-      throw new Error("Neuron not found");
-    }
-    neuronsStore.pushNeurons([neuron]);
+    await getAndLoadNeuronHelper({ neuronId, identity });
 
     toastsStore.show({
       labelKey: `new_followee.success_${labelKey}`,
@@ -434,16 +447,3 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
 
 export const getNeuronId = (path: string): NeuronId | undefined =>
   getLastPathDetailId(path);
-
-/*
- * Returns true if the neuron can be controlled. A neuron can be controlled if:
- *
- *  1. The user is the controller
- *  OR
- *  2. The user's hardware wallet is the controller.
- *
- */
-export const isNeuronControllable = ({ fullNeuron }: NeuronInfo): boolean =>
-  fullNeuron !== undefined &&
-  fullNeuron.controller !== undefined &&
-  getAccountByPrincipal(fullNeuron.controller) !== undefined;

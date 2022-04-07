@@ -1,16 +1,16 @@
 /**
  * @jest-environment jsdom
  */
-
 import { render } from "@testing-library/svelte";
-import ConfirmDissolveDelay from "../../../../lib/components/neurons/ConfirmDissolveDelay.svelte";
+import ConfirmDisolveDelay from "../../../../lib/components/neurons/ConfirmDissolveDelay.svelte";
+import { mockNeuron } from "../../../mocks/neurons.mock";
 
 describe("ConfirmDissolveDelay", () => {
-  it("should render a spinner until neuron loaded", () => {
-    const { container } = render(ConfirmDissolveDelay, {
-      props: { neuron: undefined, delayInSeconds: 0 },
+  // Tested in CreateNeuronModal.spec.ts
+  it("is not tested in isolation", () => {
+    render(ConfirmDisolveDelay, {
+      props: { neuron: mockNeuron, delayInSeconds: 10_000 },
     });
-
-    expect(container.querySelector('[data-tid="spinner"]')).toBeInTheDocument();
+    expect(true).toBeTruthy();
   });
 });

@@ -2,7 +2,7 @@
   /** Used in aria-describedby */
   export let id: string;
   export let text = "";
-  export let noWrap: boolean = true;
+  export let noWrap: boolean = false;
 </script>
 
 <div class="tooltip-wrapper">
@@ -38,7 +38,7 @@
     color: var(--gray-600-contrast);
     white-space: pre;
 
-    .noWrap {
+    &.noWrap {
       white-space: nowrap;
     }
 

@@ -17,7 +17,7 @@ export const mockMainAccount: Account = {
 
 export const mockSubAccount: Account = {
   identifier:
-    "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
+    "aaaa5b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
   balance: ICP.fromString("1234567.8901") as ICP,
   name: "test subaccount",
 };
@@ -42,3 +42,8 @@ export const mockAccountsStoreSubscribe =
 
     return () => undefined;
   };
+
+export const mockAddressInput = (length: number): string =>
+  Array.from(Array(length))
+    .map(() => "a")
+    .join("");

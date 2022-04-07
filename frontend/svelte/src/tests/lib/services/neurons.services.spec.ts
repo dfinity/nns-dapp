@@ -9,7 +9,6 @@ import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
   addFollowee,
   getNeuronId,
-  isNeuronControllable,
   joinCommunityFund,
   listNeurons,
   loadNeuron,
@@ -19,9 +18,8 @@ import {
   stopDissolving,
   updateDelay,
 } from "../../../lib/services/neurons.services";
-import { accountsStore } from "../../../lib/stores/accounts.store";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import { toastsStore } from "../../../lib/stores/toasts.store";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -29,6 +27,15 @@ import {
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
+
+jest.mock("../../../lib/stores/toasts.store", () => {
+  return {
+    toastsStore: {
+      error: jest.fn(),
+      show: jest.fn(),
+    },
+  };
+});
 
 describe("neurons-services", () => {
   const spyStakeNeuron = jest
@@ -88,27 +95,43 @@ describe("neurons-services", () => {
       expect(neuron).toEqual(mockNeuron);
     });
 
-    it(`stakeNeuron should raise an error if amount less than ${
+    it(`stakeNeuron return undefined if amount less than ${
       E8S_PER_ICP / E8S_PER_ICP
     } ICP`, async () => {
       jest
         .spyOn(LedgerCanister, "create")
         .mockImplementation(() => mock<LedgerCanister>());
 
-      const call = () =>
-        stakeAndLoadNeuron({
-          amount: 0.1,
-        });
+      const response = await stakeAndLoadNeuron({
+        amount: 0.1,
+      });
 
-      await expect(call).rejects.toThrow(Error);
+      expect(response).toBeUndefined();
+      expect(toastsStore.error).toBeCalled();
+    });
+
+    it("stake neuron should return undefined if amount not valid", async () => {
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation(() => mock<LedgerCanister>());
+
+      const response = await stakeAndLoadNeuron({
+        amount: NaN,
+      });
+
+      expect(response).toBeUndefined();
+      expect(toastsStore.error).toBeCalled();
     });
 
     it("should not stake neuron if no identity", async () => {
       setNoIdentity();
 
-      const call = async () => await stakeAndLoadNeuron({ amount: 10 });
+      const response = await stakeAndLoadNeuron({
+        amount: 10,
+      });
 
-      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+      expect(response).toBeUndefined();
+      expect(toastsStore.error).toBeCalled();
 
       resetIdentity();
     });
@@ -410,52 +433,6 @@ describe("neurons-services", () => {
         setNeuron: jest.fn,
       });
       expect(spyGetNeuron).toBeCalled();
-    });
-  });
-
-  describe("isNeuronControllable", () => {
-    it("should return true if neuron controller is the current main account", () => {
-      accountsStore.set({
-        main: mockMainAccount,
-      });
-
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: mockMainAccount.principal?.toText(),
-        },
-      };
-
-      expect(isNeuronControllable(neuron)).toBe(true);
-      accountsStore.set({
-        main: undefined,
-        subAccounts: undefined,
-      });
-    });
-
-    it("should return false if neuron controller is not current main account", () => {
-      accountsStore.set({
-        main: mockMainAccount,
-      });
-
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: "bbbbb-b",
-        },
-      };
-
-      expect(isNeuronControllable(neuron)).toBe(false);
-      accountsStore.set({
-        main: undefined,
-        subAccounts: undefined,
-      });
-    });
-
-    it("should return false if no accounts", () => {
-      expect(isNeuronControllable(mockNeuron)).toBe(false);
     });
   });
 });

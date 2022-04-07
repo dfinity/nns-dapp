@@ -10,7 +10,10 @@
     "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
-    "unspecified": "Unspecified"
+    "unspecified": "Unspecified",
+    "continue": "Continue",
+    "amount": "Amount",
+    "max": "Max"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -37,7 +40,13 @@
     "suspicious_response": "Suspicious response detected. Page reload suggested.",
     "start_dissolving": "Sorry, there was an error dissolving the neuron. Please try again later.",
     "stop_dissolving": "Sorry, there was an error stopping the dissolve process of the neuron. Please try again later.",
-    "dummy_proposal": "There was an error creating the proposals. Check the console for more details."
+    "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
+    "update_delay": "Sorry, there was an error updating the delay of the neuron",
+    "unknown": "Sorry, there was an unexpected error. Please try again later.",
+    "amount_not_valid": "Sorry, the amount is not valid",
+    "amount_not_enough": "Sorry, the amount is not large enough. You need a minimum of 1 ICP to stake a neuron",
+    "stake_neuron": "Sorry, there was an unexpected error staking the neuron. Please try again later.",
+    "transaction_invalid_amount": "The amount is less than zero or exceeds the amount of available funds for the selected account."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -71,25 +80,32 @@
     "attach_hardware_subtitle": "Link a hardware wallet to this account",
     "new_linked_account_title": "New Linked Account",
     "new_linked_account_placeholder": "Account Name",
-    "linked_account": "LINKED ACCOUNT"
+    "linked_account": "LINKED ACCOUNT",
+    "select_source": "Select Source Account",
+    "select_destination": "Select destination",
+    "address": "Address",
+    "enter_address_or_select": "Enter a destination address or select an account.",
+    "my_accounts": "My Accounts",
+    "enter_icp_amount": "Enter ICP amount",
+    "source": "Source",
+    "destination": "Destination",
+    "transaction_fee": "Transaction Fee (billed to source)",
+    "review_transaction": "Review transaction",
+    "current_balance": "Current balance"
   },
   "neurons": {
     "title": "Neurons",
     "text": "Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.",
     "principal_is": "Your principal id is",
     "stake_neurons": "Stake Neurons",
-    "select_source": "Select Source Account",
     "set_dissolve_delay": "Set Dissolve Delay",
     "confirm_dissolve_delay": "Confirm Dissolve Delay",
     "follow_neurons_screen": "Follow neurons",
-    "my_accounts": "My Accounts",
     "stake_neuron": "Stake Neuron",
     "source": "Source",
     "transaction_fee": "Transaction Fee",
     "current_balance": "Current Balance",
     "may_take_while": "(This may take up to 1 minute)",
-    "amount": "Amount",
-    "max": "Max",
     "create": "Create",
     "status_locked": "Locked",
     "status_unspecified": "",
@@ -100,6 +116,7 @@
     "stake": "Stake",
     "icp_stake": "$amount ICP Stake",
     "staked": "Staked",
+    "remaining": "$duration remaining",
     "aria_label_neuron_card": "Go to neuron details",
     "neuron_id": "Neuron ID",
     "neuron_balance": "Balance",
@@ -110,7 +127,8 @@
     "voting_power": "Voting Power",
     "skip": "Skip",
     "update_delay": "Update Delay",
-    "confirm_delay": "Confirm and Update Delay"
+    "confirm_delay": "Confirm and Update Delay",
+    "dissolve_delay_success": "Dissolve delay successfully updated."
   },
   "new_followee": {
     "title": "Enter New Followee",
@@ -249,7 +267,10 @@
     "join_community_fund_success": "Your neuron has successfully joined the community fund.",
     "start_dissolve_success": "Your neuron has started dissolving.",
     "stop_dissolve_success": "Your neuron has stoped dissolving.",
-    "dummy_proposal_success": "Dummy proposals created successfully"
+    "dummy_proposal_success": "Dummy proposals created successfully",
+    "following_title": "Following",
+    "following_description": "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
+    "follow_neurons": "Follow Neurons"
   },
   "time": {
     "year": "year",

@@ -1,6 +1,9 @@
 import type { NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { neuronsStore } from "../../../lib/stores/neurons.store";
+import {
+  neuronsStore,
+  sortedNeuronStore,
+} from "../../../lib/stores/neurons.store";
 import { mockNeuron } from "../../mocks/neurons.mock";
 
 describe("neurons-store", () => {
@@ -48,5 +51,21 @@ describe("neurons-store", () => {
 
     const neuronsInStore = get(neuronsStore);
     expect(neuronsInStore.length).toEqual(3);
+  });
+
+  describe("sortedNeuronStore", () => {
+    it("should sort neurons by createdTimestampSeconds", () => {
+      const neurons = [
+        { ...mockNeuron, createdTimestampSeconds: BigInt(2) },
+        { ...mockNeuron, createdTimestampSeconds: BigInt(1) },
+        { ...mockNeuron, createdTimestampSeconds: BigInt(3) },
+      ];
+      neuronsStore.setNeurons([...neurons]);
+      expect(get(sortedNeuronStore)).toEqual([
+        neurons[2],
+        neurons[0],
+        neurons[1],
+      ]);
+    });
   });
 });

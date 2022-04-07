@@ -14,6 +14,7 @@ import {
   excludeProposals,
   preserveNeuronSelectionAfterUpdate,
   replaceAndConcatenateProposals,
+  replaceProposals,
 } from "../utils/proposals.utils";
 
 export interface ProposalsFiltersStore {
@@ -21,6 +22,12 @@ export interface ProposalsFiltersStore {
   rewards: ProposalRewardStatus[];
   status: ProposalStatus[];
   excludeVotedProposals: boolean;
+  lastAppliedFilter:
+    | undefined
+    | "topics"
+    | "rewards"
+    | "status"
+    | "excludeVotedProposals";
 }
 
 export interface NeuronSelectionStore {
@@ -75,6 +82,15 @@ const initProposalsStore = () => {
             })
       );
     },
+
+    replaceProposals(proposals: ProposalInfo[]) {
+      update((oldProposals: ProposalInfo[]) =>
+        replaceProposals({
+          oldProposals,
+          newProposals: proposals,
+        })
+      );
+    },
   };
 };
 
@@ -105,6 +121,7 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         topics,
+        lastAppliedFilter: "topics",
       }));
     },
 
@@ -112,6 +129,7 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         rewards,
+        lastAppliedFilter: "rewards",
       }));
     },
 
@@ -119,6 +137,7 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         status,
+        lastAppliedFilter: "status",
       }));
     },
 
@@ -126,6 +145,7 @@ const initProposalsFiltersStore = () => {
       update((filters: ProposalsFiltersStore) => ({
         ...filters,
         excludeVotedProposals: !filters.excludeVotedProposals,
+        lastAppliedFilter: "excludeVotedProposals",
       }));
     },
 

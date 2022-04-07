@@ -23,49 +23,49 @@ describe("VotingConfirmationToolbar", () => {
     votingNeuronSelectStore.set([neuron]);
   });
 
-  it("should disable buttons if nothing is selected", () => {
+  it("should disable buttons if nothing is selected", async () => {
     const { container } = render(VotingConfirmationToolbar);
     votingNeuronSelectStore.toggleSelection(neuron.neuronId);
-    waitFor(() =>
+    await waitFor(() =>
       expect(
-        container.querySelectorAll('[data-tid="vote-yes"][disabled]')
+        container.querySelector('[data-tid="vote-yes"][disabled]')
       ).toBeInTheDocument()
     );
-    waitFor(() =>
+    await waitFor(() =>
       expect(
-        container.querySelectorAll('[data-tid="vote-no"][disabled]')
+        container.querySelector('[data-tid="vote-no"][disabled]')
       ).toBeInTheDocument()
     );
   });
 
-  it("should display Vote.YES modal", () => {
+  it("should display Vote.YES modal", async () => {
     const { container } = render(VotingConfirmationToolbar);
     fireEvent.click(
       container.querySelector('[data-tid="vote-yes"]') as Element
     );
-    waitFor(() =>
+    await waitFor(() =>
       expect(
         container.querySelector('[data-tid="thumb-up"]')
       ).toBeInTheDocument()
     );
   });
 
-  it("should display Vote.NO modal", () => {
+  it("should display Vote.NO modal", async () => {
     const { container } = render(VotingConfirmationToolbar);
     fireEvent.click(container.querySelector('[data-tid="vote-no"]') as Element);
-    waitFor(() =>
+    await waitFor(() =>
       expect(
         container.querySelector('[data-tid="thumb-down"]')
       ).toBeInTheDocument()
     );
   });
 
-  it('should display "total" in modal', () => {
+  it('should display "total" in modal', async () => {
     const { getByText, container } = render(VotingConfirmationToolbar);
     fireEvent.click(
       container.querySelector('[data-tid="vote-yes"]') as Element
     );
-    waitFor(() =>
+    await waitFor(() =>
       expect(
         getByText(formatVotingPower(votingPower), { exact: false })
       ).toBeInTheDocument()
@@ -82,7 +82,7 @@ describe("VotingConfirmationToolbar", () => {
         container.querySelector('[data-tid="confirm-no"]')
       ).toBeInTheDocument()
     );
-    fireEvent.click(
+    await fireEvent.click(
       container.querySelector('[data-tid="confirm-no"]') as Element
     );
     await waitFor(() =>
@@ -98,9 +98,11 @@ describe("VotingConfirmationToolbar", () => {
     const onConfirm = jest.fn((ev) => (calledVoteType = ev?.detail?.voteType));
     component.$on("nnsConfirm", onConfirm);
 
-    fireEvent.click(container.querySelector('[data-tid="vote-no"]') as Element);
+    await fireEvent.click(
+      container.querySelector('[data-tid="vote-no"]') as Element
+    );
     await waitFor(() => container.querySelector('[data-tid="confirm-yes"]'));
-    fireEvent.click(
+    await fireEvent.click(
       container.querySelector('[data-tid="confirm-yes"]') as Element
     );
     await waitFor(() =>

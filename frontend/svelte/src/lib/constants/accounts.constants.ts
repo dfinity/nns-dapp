@@ -1,0 +1,1 @@
+export const ACCOUNT_ADDRESS_MIN_LENGTH = 40;

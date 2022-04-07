@@ -244,8 +244,11 @@ export const registerVotes = async ({
     }),
     loadProposal({
       proposalId,
-      setProposal: (proposalInfo: ProposalInfo) =>
-        proposalInfoStore.set(proposalInfo),
+      setProposal: (proposalInfo: ProposalInfo) => {
+        proposalInfoStore.set(proposalInfo);
+        // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
+        proposalsStore.replaceProposals([proposalInfo]);
+      },
     }),
   ]);
 

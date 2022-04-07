@@ -9,6 +9,7 @@ import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
 } from "../../../mocks/accounts.store.mock";
+import en from "../../../mocks/i18n.mock";
 
 describe("SelectAccount", () => {
   it("should render a spinner until accounts loaded", () => {
@@ -27,5 +28,19 @@ describe("SelectAccount", () => {
     expect(
       getByText(mockMainAccount.identifier, { exact: false })
     ).toBeInTheDocument();
+  });
+
+  it("should render no title per default", () => {
+    const { queryByText } = render(SelectAccount);
+
+    expect(queryByText(en.accounts.my_accounts)).not.toBeInTheDocument();
+  });
+
+  it("should render a title", () => {
+    const { queryByText } = render(SelectAccount, {
+      props: { displayTitle: true },
+    });
+
+    expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument();
   });
 });

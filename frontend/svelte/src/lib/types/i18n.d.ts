@@ -14,6 +14,9 @@ interface I18nCore {
   yes: string;
   no: string;
   unspecified: string;
+  continue: string;
+  amount: string;
+  max: string;
 }
 
 interface I18nError {
@@ -42,6 +45,12 @@ interface I18nError {
   start_dissolving: string;
   stop_dissolving: string;
   dummy_proposal: string;
+  update_delay: string;
+  unknown: string;
+  amount_not_valid: string;
+  amount_not_enough: string;
+  stake_neuron: string;
+  transaction_invalid_amount: string;
 }
 
 interface I18nWarning {
@@ -81,6 +90,17 @@ interface I18nAccounts {
   new_linked_account_title: string;
   new_linked_account_placeholder: string;
   linked_account: string;
+  select_source: string;
+  select_destination: string;
+  address: string;
+  enter_address_or_select: string;
+  my_accounts: string;
+  enter_icp_amount: string;
+  source: string;
+  destination: string;
+  transaction_fee: string;
+  review_transaction: string;
+  current_balance: string;
 }
 
 interface I18nNeurons {
@@ -88,18 +108,14 @@ interface I18nNeurons {
   text: string;
   principal_is: string;
   stake_neurons: string;
-  select_source: string;
   set_dissolve_delay: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
-  my_accounts: string;
   stake_neuron: string;
   source: string;
   transaction_fee: string;
   current_balance: string;
   may_take_while: string;
-  amount: string;
-  max: string;
   create: string;
   status_locked: string;
   status_unspecified: string;
@@ -110,6 +126,7 @@ interface I18nNeurons {
   stake: string;
   icp_stake: string;
   staked: string;
+  remaining: string;
   aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;
@@ -121,6 +138,7 @@ interface I18nNeurons {
   skip: string;
   update_delay: string;
   confirm_delay: string;
+  dissolve_delay_success: string;
 }
 
 interface I18nNew_followee {
@@ -272,6 +290,9 @@ interface I18nNeuron_detail {
   start_dissolve_success: string;
   stop_dissolve_success: string;
   dummy_proposal_success: string;
+  following_title: string;
+  following_description: string;
+  follow_neurons: string;
 }
 
 interface I18nTime {

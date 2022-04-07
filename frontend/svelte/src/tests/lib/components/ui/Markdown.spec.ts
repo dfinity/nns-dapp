@@ -5,7 +5,10 @@
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import Markdown from "../../../../lib/components/ui/Markdown.svelte";
-import { targetBlankLinkRenderer } from "../../../../lib/utils/markdown.utils";
+import {
+  imageToLinkRenderer,
+  targetBlankLinkRenderer,
+} from "../../../../lib/utils/markdown.utils";
 
 const HTML_TEXT = "<p>demo<p>";
 
@@ -61,13 +64,23 @@ describe("Markdown", () => {
     expect(getByText(HTML_TEXT)).toBeInTheDocument();
   });
 
+  it("should be called with custom renderers", async () => {
+    render(Markdown, {
+      props: { text: "" },
+    });
+    await tick();
+    expect(globalThis.marked.parse).toBeCalledWith("", {
+      renderer: { link: targetBlankLinkRenderer, image: imageToLinkRenderer },
+    });
+  });
+
   it('should "sanitize" the text', async () => {
     render(Markdown, {
       props: { text: "<script>alert('hack')</script>" },
     });
     await tick();
     expect(globalThis.marked.parse).toBeCalledWith("alert('hack')", {
-      renderer: { link: targetBlankLinkRenderer },
+      renderer: { link: targetBlankLinkRenderer, image: imageToLinkRenderer },
     });
   });
 });

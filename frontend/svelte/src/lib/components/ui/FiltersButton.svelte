@@ -7,11 +7,12 @@
    */
   export let totalFilters: number;
   export let activeFilters: number;
+  export let testId: string | undefined = undefined;
   const dispatch = createEventDispatcher();
   const filter = () => dispatch("nnsFilter");
 </script>
 
-<button on:click={filter} class="dark small"
+<button data-tid={testId} on:click={filter} class="dark small"
   ><IconFilter /><slot />
   <small>{`(${activeFilters}/${totalFilters})`}</small></button
 >

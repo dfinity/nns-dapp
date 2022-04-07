@@ -14,6 +14,7 @@
   import Proposer from "./Proposer.svelte";
 
   export let proposalInfo: ProposalInfo;
+  export let hidden: boolean = false;
 
   let proposal: Proposal | undefined;
   let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
@@ -42,7 +43,7 @@
 </script>
 
 <!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
-<div>
+<div class:hidden>
   {#if !hide}
     <Card role="link" on:click={showProposal}>
       <div slot="start" class="title-container">
@@ -62,6 +63,10 @@
   @use "../../themes/mixins/text";
   @use "../../themes/mixins/card";
   @use "../../themes/mixins/media.scss";
+
+  div.hidden {
+    visibility: hidden;
+  }
 
   .title-container {
     @include card.stacked-title;

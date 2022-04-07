@@ -12,6 +12,7 @@
     formatVotingPower,
     hasJoinedCommunityFund,
     isCurrentUserController,
+    isNeuronControllable,
   } from "../../utils/neuron.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
@@ -21,16 +22,19 @@
   import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
-  import { isNeuronControllable } from "../../services/neurons.services";
+  import { accountsStore } from "../../stores/accounts.store";
 
   export let neuron: NeuronInfo;
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let userControlled: boolean;
-  $: userControlled = isCurrentUserController(neuron);
+  $: userControlled = isCurrentUserController(neuron, $accountsStore.main);
   let isControllable: boolean;
-  $: isControllable = isNeuronControllable(neuron);
+  $: isControllable = isNeuronControllable({
+    neuron,
+    accounts: $accountsStore,
+  });
 </script>
 
 <NeuronCard {neuron}>
@@ -76,7 +80,7 @@
         {/if}
       </p>
       <div class="buttons">
-        <IncreaseDissolveDelayButton />
+        <IncreaseDissolveDelayButton disabled={!userControlled} {neuron} />
         {#if neuron.state === NeuronState.DISSOLVED}
           <DisburseButton />
         {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
