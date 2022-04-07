@@ -24,4 +24,5 @@ export const NNS_DAPP_URL: string = (process.env.NNS_DAPP_URL as boolean)
   ? String(process.env.NNS_DAPP_URL)
   : "http://localhost:8080";
 
-export const CAN_TEST_GOVERNANCE: boolean = (process.env.CAN_TEST_GOVERNANCE as boolean);
+export const CAN_TEST_GOVERNANCE: boolean = process.env
+  .CAN_TEST_GOVERNANCE as boolean;

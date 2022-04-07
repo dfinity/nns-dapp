@@ -1,3 +1,4 @@
+import { CAN_TEST_GOVERNANCE } from "../common/constants";
 import { loginWithIdentity } from "../common/login";
 import {
   getNeuronsBody,
@@ -11,6 +12,12 @@ import {
 } from "../components/header.ts";
 
 describe("vote", () => {
+  before(function () {
+    if (!CAN_TEST_GOVERNANCE) {
+      this.skip();
+    }
+  });
+
   it("login", async () => {
     await browser.url("/");
     await waitForLoad(browser);
