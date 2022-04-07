@@ -9,7 +9,7 @@ import {
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import {
   ageMultiplier,
-  ballotsWithProposal,
+  ballotsWithDefinedProposal,
   dissolveDelayMultiplier,
   formatVotingPower,
   hasJoinedCommunityFund,
@@ -358,7 +358,7 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("ballotsWithProposal", () => {
+  describe("ballotsWithDefinedProposal", () => {
     const ballot: BallotInfo = {
       vote: Vote.YES,
       proposalId: undefined,
@@ -370,19 +370,19 @@ describe("neuron-utils", () => {
 
     it("should filter out ballots w/o proposalIds", () => {
       expect(
-        ballotsWithProposal({
+        ballotsWithDefinedProposal({
           ...mockNeuron,
           recentBallots: [ballot, ballot],
         })
       ).toEqual([]);
       expect(
-        ballotsWithProposal({
+        ballotsWithDefinedProposal({
           ...mockNeuron,
           recentBallots: [ballot, ballotWithProposalId],
         })
       ).toEqual([ballotWithProposalId]);
       expect(
-        ballotsWithProposal({
+        ballotsWithDefinedProposal({
           ...mockNeuron,
           recentBallots: [ballotWithProposalId, ballotWithProposalId],
         })

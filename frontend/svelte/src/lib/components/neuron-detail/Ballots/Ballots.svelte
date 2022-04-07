@@ -2,12 +2,12 @@
   import type { BallotInfo, NeuronInfo } from "@dfinity/nns";
   import BallotSummary from "./BallotSummary.svelte";
   import { i18n } from "../../../stores/i18n";
-  import { ballotsWithProposal } from "../../../utils/neuron.utils";
+  import { ballotsWithDefinedProposal } from "../../../utils/neuron.utils";
 
   export let neuron: NeuronInfo | undefined;
 
   let ballots: Required<BallotInfo>[] = [];
-  $: ballots = neuron === undefined ? [] : ballotsWithProposal(neuron);
+  $: ballots = neuron === undefined ? [] : ballotsWithDefinedProposal(neuron);
 </script>
 
 {#if neuron !== undefined}

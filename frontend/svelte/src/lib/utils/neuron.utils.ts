@@ -154,7 +154,7 @@ export const neuronStake = (neuron: NeuronInfo): bigint =>
 /**
  * Returns neuron ballots that contain "proposalId"
  */
-export const ballotsWithProposal = ({
+export const ballotsWithDefinedProposal = ({
   recentBallots,
 }: NeuronInfo): Required<BallotInfo>[] =>
   recentBallots.filter(
