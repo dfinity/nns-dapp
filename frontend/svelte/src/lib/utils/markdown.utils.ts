@@ -20,26 +20,26 @@ export const targetBlankLinkRenderer = (
  * @returns <a> tag to image
  */
 export const imageToLinkRenderer = (
-  href: string | null | undefined,
+  src: string | null | undefined,
   title: string | null | undefined,
   alt: string
 ): string => {
-  if (href === undefined || href === null || href?.length === 0) {
+  if (src === undefined || src === null || src?.length === 0) {
     return alt;
   }
-  const fileExtention = href.includes(".")
-    ? (href.split(".").pop() as string)
+  const fileExtention = src.includes(".")
+    ? (src.split(".").pop() as string)
     : "";
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-type
   const typeProp =
     fileExtention === "" ? undefined : ` type="image/${fileExtention}"`;
   const titleDefined = title !== undefined && title !== null;
   const titleProp = titleDefined ? ` title="${title}"` : undefined;
-  const text = alt === "" ? (titleDefined ? title : href) : alt;
+  const text = alt === "" ? (titleDefined ? title : src) : alt;
 
-  return `<a href="${href}" target="_blank" rel="noopener noreferrer"${
-    typeProp === undefined ? "" : typeProp
-  }${titleProp === undefined ? "" : titleProp}>${text}</a>`;
+  return `<a href="${src}" target="_blank" rel="noopener noreferrer"${
+    typeProp ?? ""
+  }${titleProp ?? ""}>${text}</a>`;
 };
 
 export const renderer = (marked: Marked): Renderer => {
