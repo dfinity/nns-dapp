@@ -1,5 +1,7 @@
 # Changelog
 
+## Placeholder for the release on April 7
+
 ## Proposal 47824
 * Update changelog for the last release
 * Remove upgrade code needed for the last release only
