@@ -6,14 +6,7 @@
   import { secondsToDate } from "../../utils/date.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
-  import {
-    ageMultiplier,
-    dissolveDelayMultiplier,
-    formatVotingPower,
-    hasJoinedCommunityFund,
-    isCurrentUserController,
-    isNeuronControllable,
-  } from "../../utils/neuron.utils";
+  import * as utils from "../../utils/neuron.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
@@ -22,18 +15,24 @@
   import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
-  import { accountsStore } from "../../stores/accounts.store";
+  import { authStore } from "../../stores/auth.store";
+
+  const {
+    ageMultiplier,
+    dissolveDelayMultiplier,
+    formatVotingPower,
+    hasJoinedCommunityFund,
+    isCurrentUserController,
+  } = utils;
 
   export let neuron: NeuronInfo;
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let userControlled: boolean;
-  $: userControlled = isCurrentUserController(neuron, $accountsStore.main);
-  let isControllable: boolean;
-  $: isControllable = isNeuronControllable({
+  $: userControlled = isCurrentUserController({
     neuron,
-    accounts: $accountsStore,
+    identity: $authStore.identity,
   });
 </script>
 
@@ -44,10 +43,9 @@
         {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
           .staked}
       </p>
-      <JoinCommunityFundButton
-        disabled={isCommunityFund || !userControlled}
-        neuronId={neuron.neuronId}
-      />
+      {#if !isCommunityFund && userControlled}
+        <JoinCommunityFundButton neuronId={neuron.neuronId} />
+      {/if}
     </div>
     <div class="space-between">
       <p class="voting-power">
@@ -80,21 +78,24 @@
         {/if}
       </p>
       <div class="buttons">
-        <IncreaseDissolveDelayButton disabled={!userControlled} {neuron} />
-        {#if neuron.state === NeuronState.DISSOLVED}
-          <DisburseButton />
-        {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
-          <DissolveActionButton
-            disabled={!isControllable}
-            neuronState={neuron.state}
-            neuronId={neuron.neuronId}
-          />
+        {#if userControlled}
+          <IncreaseDissolveDelayButton {neuron} />
+          {#if neuron.state === NeuronState.DISSOLVED}
+            <DisburseButton />
+          {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
+            <DissolveActionButton
+              neuronState={neuron.state}
+              neuronId={neuron.neuronId}
+            />
+          {/if}
         {/if}
       </div>
     </div>
     <div class="only-buttons">
-      <IncreaseStakeButton />
-      <SplitNeuronButton />
+      {#if userControlled}
+        <IncreaseStakeButton />
+        <SplitNeuronButton />
+      {/if}
     </div>
   </section>
 </NeuronCard>

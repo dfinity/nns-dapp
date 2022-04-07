@@ -7,7 +7,6 @@
   import { toastsStore } from "../../../stores/toasts.store";
 
   export let neuronId: NeuronId;
-  export let disabled: boolean = false;
 
   let isOpen: boolean = false;
 
@@ -36,7 +35,6 @@
 
 <button
   data-tid="join-community-fund-button"
-  {disabled}
   class="primary small"
   on:click={showModal}>{$i18n.neuron_detail.join_community_fund}</button
 >
