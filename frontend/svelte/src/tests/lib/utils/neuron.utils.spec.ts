@@ -1,4 +1,4 @@
-import { ICP } from "@dfinity/nns";
+import { ICP, NeuronState } from "@dfinity/nns";
 import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
@@ -11,6 +11,7 @@ import {
   ageMultiplier,
   dissolveDelayMultiplier,
   formatVotingPower,
+  getDissolvingTimeInSeconds,
   hasJoinedCommunityFund,
   hasValidStake,
   isCurrentUserController,
@@ -182,6 +183,44 @@ describe("neuron-utils", () => {
         joinedCommunityFundTimestampSeconds: undefined,
       };
       expect(hasJoinedCommunityFund(joinedNeuron)).toBe(false);
+    });
+  });
+
+  describe("getDissolvingTimeInSeconds", () => {
+    it("returns undefined if neuron not dissolving", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.DISSOLVED,
+      };
+      expect(getDissolvingTimeInSeconds(neuron)).toBeUndefined();
+    });
+
+    it("returns undefined if dissolve state has no timestamp", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.DISSOLVING,
+        fullNeuron: {
+          ...mockFullNeuron,
+          dissolveState: undefined,
+        },
+      };
+      expect(getDissolvingTimeInSeconds(neuron)).toBeUndefined();
+    });
+
+    it("returns duration from today until dissolving time", () => {
+      const todayInSeconds = BigInt(Math.round(Date.now() / 1000));
+      const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.DISSOLVING,
+        fullNeuron: {
+          ...mockFullNeuron,
+          dissolveState: {
+            WhenDissolvedTimestampSeconds: delayInSeconds,
+          },
+        },
+      };
+      expect(getDissolvingTimeInSeconds(neuron)).toBe(BigInt(SECONDS_IN_YEAR));
     });
   });
 

@@ -4,6 +4,7 @@
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import {
+    getDissolvingTimeInSeconds,
     getStateInfo,
     hasJoinedCommunityFund,
     isCurrentUserController,
@@ -31,13 +32,7 @@
   let isHotKeyControl: boolean;
   $: isHotKeyControl = !isCurrentUserController(neuron, $accountsStore.main);
   let dissolvingTime: bigint | undefined;
-  $: dissolvingTime =
-    neuron.state === NeuronState.DISSOLVING &&
-    neuron.fullNeuron?.dissolveState !== undefined &&
-    "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
-      ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
-        BigInt(Math.round(Date.now() / 1000))
-      : undefined;
+  $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
 </script>
 
 <Card {role} on:click {ariaLabel}>
