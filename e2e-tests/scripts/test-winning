@@ -17,6 +17,7 @@ set -euo pipefail
 
 REDIRECT_TO_LEGACY="${REDIRECT_TO_LEGACY:-svelte}"
 export REDIRECT_TO_LEGACY
+
 NNS_DAPP_URL="$(curl -v "https://nns-${REDIRECT_TO_LEGACY}.winning.gold" 2>&1 | awk '/location:/{print $3}' | tr -d '[:space:]')"
 echo "NNS_DAPP_URL=$NNS_DAPP_URL"
 : "Sanity checking URL..."
@@ -30,5 +31,8 @@ test -z "${unexpected_chars:-}" || {
   exit 1
 }
 export NNS_DAPP_URL
+
+CAN_TEST_GOVERNANCE=true
+export CAN_TEST_GOVERNANCE
 
 npm run wdio -- "${@}"
