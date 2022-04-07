@@ -1,5 +1,5 @@
 # Upgrade frontend NNS Dapp canister to commit `e971f6d6ac41cdb95d2eb4dd72944f55ba8766d6`
-Wasm sha256 hash: `a28438b4b473c2fddad0137522595ea34b766bafe10d30246637f67447f0aeeb` (`https://github.com/dfinity/nns-dapp/actions/runs/2101696518`)
+Wasm sha256 hash: `9f643dc2e0040eba51875e495d99cc94e42fbb528a13afbba7951c0eb7ac5605` (`https://github.com/dfinity/nns-dapp/actions/runs/2101696518`)
 
 ## Change Log:
 - Merge neuron functionality (using quill, not the GUI).
