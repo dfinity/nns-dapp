@@ -1,6 +1,10 @@
 # Changelog
 
-## Placeholder for the release on April 7
+## Proposal 53536
+- Merge neuron functionality (using quill, not the GUI).
+- Updated logo
+- UI improvements
+- More tests
 
 ## Proposal 47824
 * Update changelog for the last release
