@@ -377,6 +377,22 @@ describe("neuron-utils", () => {
       ).toBe(true);
     });
 
+    it("should return false if fullNeuron not defined", () => {
+      const accounts = {
+        main: undefined,
+        subaccounts: undefined,
+      };
+
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+
+      expect(
+        isNeuronControllable({ neuron, identity: mockIdentity, accounts })
+      ).toBe(false);
+    });
+
     it("should return false if neuron controller is not current main account nor identity", () => {
       const accounts = {
         main: mockMainAccount,
