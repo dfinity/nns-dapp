@@ -13,6 +13,7 @@
   import ICPComponent from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
   import { accountsStore } from "../../stores/accounts.store";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
@@ -32,10 +33,10 @@
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime =
     neuron.state === NeuronState.DISSOLVING &&
-    neuron.fullNeuron !== undefined &&
-    neuron.fullNeuron.dissolveState !== undefined &&
+    neuron.fullNeuron?.dissolveState !== undefined &&
     "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
-      ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
+      ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
+        BigInt(Math.round(Date.now() / 1000))
       : undefined;
 </script>
 
@@ -73,7 +74,9 @@
 
   {#if dissolvingTime !== undefined}
     <p class="duration">
-      {secondsToDuration(dissolvingTime)} - {$i18n.neurons.staked}
+      {replacePlaceholders($i18n.neurons.remaining, {
+        $duration: secondsToDuration(dissolvingTime),
+      })}
     </p>
   {/if}
 
