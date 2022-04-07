@@ -7,6 +7,7 @@
   export let step: number | "any" | undefined = undefined;
   export let disabled: boolean = false;
   export let minLength: number | undefined = undefined;
+  export let max: number | undefined = undefined;
 
   export let value: string | number | undefined = undefined;
 
@@ -35,6 +36,7 @@
     {value}
     {minLength}
     {placeholder}
+    {max}
     on:input={handleInput}
   />
 

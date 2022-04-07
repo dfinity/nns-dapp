@@ -9,6 +9,7 @@ describe("transaction-store", () => {
   const mock = {
     selectedAccount: mockMainAccount,
     destinationAddress: mockSubAccount.identifier,
+    amount: undefined,
   };
 
   it("should set transaction", () => {
@@ -24,6 +25,7 @@ describe("transaction-store", () => {
     const clearMock = {
       selectedAccount: undefined,
       destinationAddress: undefined,
+      amount: undefined,
     };
 
     transactionStore.set(clearMock);

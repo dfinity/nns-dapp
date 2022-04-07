@@ -18,12 +18,12 @@
   onMount(() => (mounted = true));
 
   // TODO(L2-430): do we need the identifier or another information of the account for the next function of the wizard?
-  const chooseAccount = ({
+  const onSelectAccount = ({
     detail,
   }: CustomEvent<{ selectedAccount: Account }>) =>
     chooseDestinationAddress(detail.selectedAccount.identifier);
 
-  const chooseAddress = () => chooseDestinationAddress(address);
+  const onEnterAddress = () => chooseDestinationAddress(address);
 
   const chooseDestinationAddress = (destinationAddress: string) => {
     const { store, next }: TransactionContext = context;
@@ -35,18 +35,20 @@
 
     next?.();
   };
+
+  // TODO(L2-430): SelectAccount should be filtered with source account - i.e. source account should not be displayed and if only one account the all section should not be displayed
 </script>
 
 <div>
   <p>{$i18n.accounts.enter_address_or_select}</p>
 
-  <Address bind:address on:submit={chooseAddress} />
+  <Address bind:address on:submit={onEnterAddress} />
 
   <!-- Prevent the component to be presented with a scroll offset when navigating between wizard steps -->
   <!-- note about disableSelection: if user is entering an address with the input field, the address is not empty and therefore no account shall be selected -->
   {#if mounted}
     <SelectAccount
-      on:nnsSelectAccount={chooseAccount}
+      on:nnsSelectAccount={onSelectAccount}
       displayTitle={true}
       disableSelection={!emptyAddress(address)}
     />

@@ -130,6 +130,14 @@ describe("Input", () => {
     testGetAttribute({ container, attribute: "minLength", expected: "10" });
   });
 
+  it("should render an input with a max attribute", () => {
+    const { container } = render(Input, {
+      props: { ...props, max: 10 },
+    });
+
+    testGetAttribute({ container, attribute: "max", expected: "10" });
+  });
+
   it("should render an input with a particular step attribute", () => {
     const { container } = render(Input, {
       props: {
