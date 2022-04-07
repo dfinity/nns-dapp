@@ -1,4 +1,4 @@
-const { existsSync, mkdirSync } = require("fs");
+const { existsSync, mkdirSync, writeFileSync } = require("fs");
 const { NNS_DAPP_URL } = require("./common/constants");
 
 export const config: WebdriverIO.Config = {
@@ -28,7 +28,7 @@ export const config: WebdriverIO.Config = {
     });
   },
 
-  afterTest: function (test, context, { error }) {
+  afterTest: async function (test, context, { error }) {
     // Take a screenshot anytime a test fails and throws an error.
     // Note: We could also use `result !== 0` or `passed === true`.
     //       The reason for conditioning on an error is that if
@@ -39,7 +39,10 @@ export const config: WebdriverIO.Config = {
     if (undefined !== error) {
       // Filenames containing spaces are painful to work with on the command line,
       // so we replace any spaces in the test name when we create the screenshot.
-      browser["screenshot"](`test-fail-${test.title.replace(/ /g, "-")}`);
+      const screenshotName = `test-fail-${test.title.replace(/ /g, "-")}`;
+      const htmlFileName = `${screenshotName}.html`;
+      browser["screenshot"](screenshotName);
+      writeFileSync(htmlFileName, await $(':root', {encoding: "utf8"}).getHTML(), {encoding: "utf8"});
     }
   },
 
@@ -50,7 +53,7 @@ export const config: WebdriverIO.Config = {
       project: "tsconfig.json",
     },
   },
-  specs: ["./specs/**/*.ts"],
+  specs: [["./specs/home.e2e.ts", "./specs/**/*.ts"]],
   exclude: [],
   capabilities: [
     {
@@ -61,7 +64,8 @@ export const config: WebdriverIO.Config = {
       acceptInsecureCerts: true,
     },
   ],
-  logLevel: "info",
+  logLevel:
+    process.env.LOG_LEVEL === undefined ? "info" : process.env.LOG_LEVEL,
   services: ["chromedriver"],
 
   framework: "mocha",
