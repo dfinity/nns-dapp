@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 mkdir -p release
-cat <<EOF > release/PROPOSAL.md
+cat <<EOF >release/PROPOSAL.md
 # Upgrade frontend NNS Dapp canister to commit \`$(git rev-parse tags/release-candidate)\`
 Wasm sha256 hash: \`<WASM_HASH>\` (\`<LINK_TO_GITHUB_ACTION>\`)
 
