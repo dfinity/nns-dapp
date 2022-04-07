@@ -15,8 +15,8 @@ Wasm sha256 hash: \`<WASM_HASH>\` (\`<LINK_TO_GITHUB_ACTION>\`)
 ## Commit log:
 
 \`\`\`
-+ bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse tags/prod)..$(git rev-parse tags/release-candidate)"
-$(bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse tags/prod)..$(git rev-parse tags/release-candidate)")
++ bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/prod)..$(git rev-parse --short tags/release-candidate)"
+$(bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/prod)..$(git rev-parse --short tags/release-candidate)")
 \`\`\`
 
 ## Wasm Verification

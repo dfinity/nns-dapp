@@ -10,7 +10,7 @@ Wasm sha256 hash: `a28438b4b473c2fddad0137522595ea34b766bafe10d30246637f67447f0a
 ## Commit log:
 
 ```
-+ bash -xc "git log --format='%C(auto) %h %s' e40bd206e28343b8c8b90d621802aa448277c250..e971f6d6ac41cdb95d2eb4dd72944f55ba8766d6"
++ bash -xc "git log --format='%C(auto) %h %s' e40bd206..e971f6d6"
  e971f6d6 Chore: Remove logs and warnings (#665)
  ab658a43 Add CSP for the web worker (#664)
  0af737ce chore: remove created w/o testId warnings (#662)
