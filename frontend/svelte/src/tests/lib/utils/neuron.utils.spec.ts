@@ -1,4 +1,4 @@
-import { ICP, NeuronState } from "@dfinity/nns";
+import { ICP, NeuronState, Topic } from "@dfinity/nns";
 import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
@@ -10,6 +10,7 @@ import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import {
   ageMultiplier,
   dissolveDelayMultiplier,
+  followeesNeurons,
   formatVotingPower,
   getDissolvingTimeInSeconds,
   hasJoinedCommunityFund,
@@ -446,6 +447,64 @@ describe("neuron-utils", () => {
         fullNeuron: undefined,
       };
       expect(neuronStake(neuron)).toBe(BigInt(0));
+    });
+  });
+
+  describe.only("followeesNeurons", () => {
+    it("should transform followees", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          followees: [
+            {
+              topic: Topic.ExchangeRate,
+              followees: [BigInt(0), BigInt(1)],
+            },
+            {
+              topic: Topic.Kyc,
+              followees: [BigInt(1)],
+            },
+            {
+              topic: Topic.Governance,
+              followees: [BigInt(0), BigInt(1), BigInt(2)],
+            },
+          ],
+        },
+      };
+      expect(followeesNeurons(neuron)).toStrictEqual([
+        {
+          neuronId: BigInt(0),
+          topics: [Topic.ExchangeRate, Topic.Governance],
+        },
+        {
+          neuronId: BigInt(1),
+          topics: [Topic.ExchangeRate, Topic.Kyc, Topic.Governance],
+        },
+        {
+          neuronId: BigInt(2),
+          topics: [Topic.Governance],
+        },
+      ]);
+    });
+
+    it("should return empty array if no followees", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          followees: [],
+        },
+      };
+      expect(followeesNeurons(neuron)).toStrictEqual([]);
+    });
+
+    it("should return empty array if no fullNeuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(followeesNeurons(neuron)).toStrictEqual([]);
     });
   });
 });
