@@ -4,7 +4,7 @@
 
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import ProposerModal from "../../../../lib/modals/proposals/ProposerModal.svelte";
+import VotingHistoryModal from "../../../../lib/modals/neurons/VotingHistoryModal.svelte";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
@@ -12,9 +12,9 @@ import en from "../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
 
-describe("ProposerModal", () => {
+describe("VotingHistoryModal", () => {
   const props = {
-    proposer: mockProposalInfo.proposer,
+    neuronId: mockProposalInfo.proposer,
   };
 
   const mockGovernanceCanister: MockGovernanceCanister =
@@ -31,7 +31,7 @@ describe("ProposerModal", () => {
   });
 
   it("should display modal", () => {
-    const { container } = render(ProposerModal, {
+    const { container } = render(VotingHistoryModal, {
       props,
     });
 
@@ -39,7 +39,7 @@ describe("ProposerModal", () => {
   });
 
   it("should render a title", () => {
-    const { getByText } = render(ProposerModal, {
+    const { getByText } = render(VotingHistoryModal, {
       props,
     });
 
@@ -47,7 +47,7 @@ describe("ProposerModal", () => {
   });
 
   it("should render a neuron card", async () => {
-    const { container } = render(ProposerModal, {
+    const { container } = render(VotingHistoryModal, {
       props,
     });
 

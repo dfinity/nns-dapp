@@ -11,7 +11,7 @@
   import { authStore } from "../../stores/auth.store";
   import { loadNeuron } from "../../services/neurons.services";
 
-  export let proposer: NeuronId;
+  export let neuronId: NeuronId;
   let neuron: NeuronInfo | undefined;
 
   onMount(async () => {
@@ -20,9 +20,9 @@
       return;
     }
 
-    // The fetched neuron belongs to a proposer so it should not be added to the neuronsStore
+    // The fetched neuron doesn't belong to a user so it should not be added to the neuronsStore
     await loadNeuron({
-      neuronId: proposer,
+      neuronId,
       setNeuron: (neuronInfo) => (neuron = neuronInfo),
       handleError: (neuron = undefined),
     });
