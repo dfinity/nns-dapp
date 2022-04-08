@@ -2,6 +2,7 @@
   import { Topic } from "@dfinity/nns";
   import type { FolloweesNeuron } from "../../../utils/neuron.utils";
   import { i18n } from "../../../stores/i18n";
+  import VotingHistoryModal from "../../../modals/neurons/VotingHistoryModal.svelte";
 
   export let followee: FolloweesNeuron;
   let modalOpen = false;
@@ -18,12 +19,15 @@
 </ul>
 
 {#if modalOpen}
-  Neuron Info
+  <VotingHistoryModal
+    neuronId={followee.neuronId}
+    on:nnsClose={() => (modalOpen = false)}
+  />
 {/if}
 
 <style lang="scss">
   button {
-    margin: calc(0.5 * var(--padding)) 0;
+    margin: 0 0 calc(0.5 * var(--padding));
   }
 
   ul {

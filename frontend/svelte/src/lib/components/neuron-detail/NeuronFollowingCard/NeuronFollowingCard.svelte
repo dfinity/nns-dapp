@@ -21,13 +21,6 @@
   });
   let followees: FolloweesNeuron[];
   $: followees = followeesNeurons(neuron);
-
-  /*
-  export interface Followees {
-    topic: Topic;
-    followees: Array<NeuronId>;
-  }
-  */
 </script>
 
 <Card>
