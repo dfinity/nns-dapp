@@ -79,6 +79,19 @@ export const assertNeuronControllable = async (
   }
 };
 
+const convertNumberToICP = (amount: number): ICP | undefined => {
+  const stake = ICP.fromString(String(amount));
+
+  if (!(stake instanceof ICP)) {
+    toastsStore.error({
+      labelKey: "error.amount_not_valid",
+    });
+    return;
+  }
+
+  return stake;
+};
+
 /**
  * Uses governance api to create a neuron and adds it to the store
  *
@@ -90,23 +103,19 @@ export const stakeAndLoadNeuron = async ({
   amount: number;
   fromSubAccount?: SubAccountArray;
 }): Promise<NeuronId | undefined> => {
-  const stake = ICP.fromString(String(amount));
-
-  if (!(stake instanceof ICP)) {
-    toastsStore.error({
-      labelKey: "error.amount_not_valid",
-    });
-    return;
-  }
-
-  if (stake.toE8s() < E8S_PER_ICP) {
-    toastsStore.error({
-      labelKey: "error.amount_not_enough",
-    });
-    return;
-  }
-
   try {
+    const stake = convertNumberToICP(amount);
+
+    if (stake === undefined) {
+      return;
+    }
+
+    if (stake.toE8s() < E8S_PER_ICP) {
+      toastsStore.error({
+        labelKey: "error.amount_not_enough",
+      });
+      return;
+    }
     const identity: Identity = await getIdentity();
 
     const neuronId: NeuronId = await stakeNeuron({
@@ -295,14 +304,37 @@ export const splitNeuron = async ({
   neuronId: NeuronId;
   amount: number;
 }): Promise<void> => {
-  // Try/catch done in the component
-  await assertNeuronUserControlled(neuronId);
+  try {
+    // Try/catch done in the component
+    await assertNeuronUserControlled(neuronId);
 
-  const identity: Identity = await getIdentity();
+    const identity: Identity = await getIdentity();
 
-  await splitNeuronApi({ neuronId, identity, amount });
+    const stake = convertNumberToICP(amount);
 
-  await getAndLoadNeuronHelper({ neuronId, identity });
+    if (stake.toE8s() < E8S_PER_ICP) {
+      toastsStore.error({
+        labelKey: "error.amount_not_enough",
+      });
+      return;
+    }
+    await splitNeuronApi({ neuronId, identity, amount: stake });
+    toastsStore.show({
+      labelKey: "neuron_detail.split_neuron_success",
+      level: "info",
+    });
+    // TODO: Should we try/catch this independently? Or have it inside?
+    // This is done to load the neuron with the new data
+    // If this failes doesn't mean the action was not successful
+    // Just that there was a problem getting the neuron
+    await getAndLoadNeuronHelper({ neuronId, identity });
+  } catch (err) {
+    toastsStore.error({
+      labelKey: "error.split_neuron",
+      err,
+    });
+    return;
+  }
 };
 
 export const startDissolving = async (neuronId: NeuronId): Promise<void> => {

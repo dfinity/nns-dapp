@@ -65,6 +65,10 @@ describe("neurons-services", () => {
     .spyOn(api, "joinCommunityFund")
     .mockImplementation(() => Promise.resolve());
 
+  const spySplitNeuron = jest
+    .spyOn(api, "splitNeuron")
+    .mockImplementation(() => Promise.resolve());
+
   const spyStartDissolving = jest
     .spyOn(api, "startDissolving")
     .mockImplementation(() => Promise.resolve());
@@ -457,6 +461,51 @@ describe("neurons-services", () => {
 
       await expect(call).rejects.toThrowError();
       expect(spyStopDissolving).not.toHaveBeenCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("splitNeuron", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it("should update neuron", async () => {
+      mockAssertUserControlled();
+      await services.splitNeuron({
+        neuronId: BigInt(10),
+        amount: 2.2,
+      });
+
+      expect(spySplitNeuron).toHaveBeenCalled();
+    });
+
+    it("should not update neuron if no identity", async () => {
+      mockAssertUserControlled();
+      setNoIdentity();
+
+      await services.splitNeuron({
+        neuronId: BigInt(10),
+        amount: 2.2,
+      });
+
+      expect(toastsStore.error).toHaveBeenCalled();
+      expect(spySplitNeuron).not.toHaveBeenCalled();
+
+      resetIdentity();
+    });
+
+    it("should not update neuron if not controlled by user", async () => {
+      mockAssertUserControlled();
+      setNoIdentity();
+
+      await services.splitNeuron({
+        neuronId: BigInt(10),
+        amount: 2.2,
+      });
+
+      expect(toastsStore.error).toHaveBeenCalled();
+      expect(spySplitNeuron).not.toHaveBeenCalled();
 
       resetIdentity();
     });

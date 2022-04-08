@@ -11,7 +11,6 @@
   import { i18n } from "../../stores/i18n";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
   import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { toastsStore } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "../../services/neurons.services";
 
@@ -40,21 +39,9 @@
       return;
     }
     startBusy("split-neuron");
-    try {
-      await splitNeuron({ neuronId: neuron.neuronId, amount });
-      toastsStore.show({
-        labelKey: "neuron_detail.split_neuron_success",
-        level: "info",
-      });
-      dispatcher("nnsClose");
-    } catch (err) {
-      toastsStore.error({
-        labelKey: "error.split_neuron",
-        err,
-      });
-    } finally {
-      stopBusy("split-neuron");
-    }
+    await splitNeuron({ neuronId: neuron.neuronId, amount });
+    dispatcher("nnsClose");
+    stopBusy("split-neuron");
   };
 </script>
 
@@ -71,7 +58,12 @@
       <p>{formattedTransactionFeeICP()} ICP</p>
     </div>
 
-    <button class="primary full-width" on:click={split} disabled={!validForm}>
+    <button
+      data-tid="split-neuron-button"
+      class="primary full-width"
+      on:click={split}
+      disabled={!validForm}
+    >
       {$i18n.neuron_detail.split_neuron_confirm}
     </button>
   </section>
