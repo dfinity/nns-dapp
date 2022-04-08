@@ -17,6 +17,7 @@ import {
   isCurrentUserController,
   isNeuronControllable,
   maturityByStake,
+  neuronCanBeSplit,
   neuronStake,
   sortNeuronsByCreatedTimestamp,
   votingPower,
@@ -446,6 +447,32 @@ describe("neuron-utils", () => {
         fullNeuron: undefined,
       };
       expect(neuronStake(neuron)).toBe(BigInt(0));
+    });
+  });
+
+  describe("neuronCanBeSplit", () => {
+    it("should return true if neuron has enough stake to be splitted", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(1_000_000_000),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronCanBeSplit(neuron)).toBe(true);
+    });
+
+    it("should return false if neuron has not enough stake to be splitted", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(100),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronCanBeSplit(neuron)).toBe(false);
     });
   });
 });

@@ -6,7 +6,11 @@ import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
 } from "../constants/constants";
-import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
+import {
+  E8S_PER_ICP,
+  MIN_NEURON_STAKE_SPLITTABLE,
+  TRANSACTION_FEE_E8S,
+} from "../constants/icp.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
@@ -168,3 +172,6 @@ export const neuronStake = (neuron: NeuronInfo): bigint =>
   neuron.fullNeuron?.cachedNeuronStake !== undefined
     ? neuron.fullNeuron?.cachedNeuronStake - neuron.fullNeuron?.neuronFees
     : BigInt(0);
+
+export const neuronCanBeSplit = (neuron: NeuronInfo): boolean =>
+  neuronStake(neuron) >= BigInt(MIN_NEURON_STAKE_SPLITTABLE);

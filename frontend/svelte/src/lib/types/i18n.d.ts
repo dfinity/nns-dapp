@@ -296,6 +296,7 @@ interface I18nNeuron_detail {
   follow_neurons: string;
   split_neuron_confirm: string;
   split_neuron_success: string;
+  split_neuron_disabled_tooltip: string;
 }
 
 interface I18nTime {

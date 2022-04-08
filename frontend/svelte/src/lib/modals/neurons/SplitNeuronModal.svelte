@@ -47,7 +47,7 @@
 
 <Modal on:nnsClose theme="dark" size="medium">
   <span slot="title">{$i18n.neuron_detail.split_neuron}</span>
-  <section>
+  <section data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
 
     <AmountInput bind:amount on:nnsMax={onMax} {max} />
