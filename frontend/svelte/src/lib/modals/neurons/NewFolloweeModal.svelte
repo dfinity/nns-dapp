@@ -46,26 +46,30 @@
     if (followeeAddress.length === 0) {
       return;
     }
-    loading = true;
-    loadingAddress = true;
-    startBusy("add-followee");
+
     try {
       followee = BigInt(followeeAddress);
     } catch (error) {
       // TODO: Show error in Input - https://dfinity.atlassian.net/browse/L2-408
       alert(`Incorrect followee address ${followeeAddress}`);
-      loading = false;
       return;
     }
+
+    loading = true;
+    loadingAddress = true;
+    startBusy("add-followee");
+
     await addFollowee({
       neuronId: neuron.neuronId,
       topic,
       followee,
     });
+
     loading = false;
     loadingAddress = false;
-    followeeAddress = "";
     stopBusy("add-followee");
+
+    followeeAddress = "";
   };
 </script>
 
