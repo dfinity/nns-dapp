@@ -27,6 +27,11 @@
   let validForm: boolean;
   $: validForm = amount !== undefined && amount > 0 && amount <= max;
 
+  let balance: ICP;
+  $: ({ balance } = $store.selectedAccount ?? {
+    balance: ICP.fromE8s(BigInt(0)),
+  });
+
   const onMax = () => (amount = max);
   const onSubmit = () => {
     if (!validForm) {
@@ -57,7 +62,7 @@
 </script>
 
 <form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
-  <CurrentBalance account={$store.selectedAccount} />
+  <CurrentBalance {balance} />
 
   <AmountInput bind:amount on:nnsMax={onMax} {max} />
 
