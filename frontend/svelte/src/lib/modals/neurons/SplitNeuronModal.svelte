@@ -10,6 +10,10 @@
   } from "../../constants/icp.constants";
   import { i18n } from "../../stores/i18n";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { toastsStore } from "../../stores/toasts.store";
+  import { createEventDispatcher } from "svelte";
+  import { splitNeuron } from "../../services/neurons.services";
 
   export let neuron: NeuronInfo;
 
@@ -29,8 +33,28 @@
 
   const onMax = () => (amount = max);
 
-  const split = () => {
-    console.log("splitting neuron...");
+  const dispatcher = createEventDispatcher();
+  const split = async () => {
+    // TS is not smart enought to understand that `validForm` also covers `amount === undefined`
+    if (!validForm || amount === undefined) {
+      return;
+    }
+    startBusy("split-neuron");
+    try {
+      await splitNeuron({ neuronId: neuron.neuronId, amount });
+      toastsStore.show({
+        labelKey: "neuron_detail.split_neuron_success",
+        level: "info",
+      });
+      dispatcher("nnsClose");
+    } catch (err) {
+      toastsStore.error({
+        labelKey: "error.split_neuron",
+        err,
+      });
+    } finally {
+      stopBusy("split-neuron");
+    }
   };
 </script>
 

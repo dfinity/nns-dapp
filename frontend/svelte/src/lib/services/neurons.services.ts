@@ -16,6 +16,7 @@ import {
   queryNeuron,
   queryNeurons,
   setFollowees,
+  splitNeuron as splitNeuronApi,
   stakeNeuron,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
@@ -283,6 +284,23 @@ export const joinCommunityFund = async (neuronId: NeuronId): Promise<void> => {
   const identity: Identity = await getIdentity();
 
   await joinCommunityFundApi({ neuronId, identity });
+
+  await getAndLoadNeuronHelper({ neuronId, identity });
+};
+
+export const splitNeuron = async ({
+  neuronId,
+  amount,
+}: {
+  neuronId: NeuronId;
+  amount: number;
+}): Promise<void> => {
+  // Try/catch done in the component
+  await assertNeuronUserControlled(neuronId);
+
+  const identity: Identity = await getIdentity();
+
+  await splitNeuronApi({ neuronId, identity, amount });
 
   await getAndLoadNeuronHelper({ neuronId, identity });
 };
