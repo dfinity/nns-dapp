@@ -107,6 +107,9 @@ export const stakeAndLoadNeuron = async ({
     const stake = convertNumberToICP(amount);
 
     if (stake === undefined) {
+      toastsStore.error({
+        labelKey: "error.amount_not_valid",
+      });
       return;
     }
 
@@ -311,6 +314,13 @@ export const splitNeuron = async ({
     const identity: Identity = await getIdentity();
 
     const stake = convertNumberToICP(amount);
+
+    if (stake === undefined) {
+      toastsStore.error({
+        labelKey: "error.amount_not_valid",
+      });
+      return;
+    }
 
     if (stake.toE8s() < E8S_PER_ICP) {
       toastsStore.error({

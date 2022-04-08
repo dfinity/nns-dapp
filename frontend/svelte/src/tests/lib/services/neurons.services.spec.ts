@@ -67,7 +67,7 @@ describe("neurons-services", () => {
 
   const spySplitNeuron = jest
     .spyOn(api, "splitNeuron")
-    .mockImplementation(() => Promise.resolve());
+    .mockImplementation(() => Promise.resolve(BigInt(11)));
 
   const spyStartDissolving = jest
     .spyOn(api, "startDissolving")

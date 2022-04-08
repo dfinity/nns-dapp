@@ -64,7 +64,7 @@ export const splitNeuron = async ({
   neuronId: NeuronId;
   amount: ICP;
   identity: Identity;
-}): Promise<void> => {
+}): Promise<NeuronId> => {
   const { canister } = await governanceCanister({ identity });
 
   return canister.splitNeuron({

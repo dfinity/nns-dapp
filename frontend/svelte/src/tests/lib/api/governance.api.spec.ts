@@ -245,7 +245,7 @@ describe("neurons-api", () => {
   describe("splitNeuron", () => {
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.splitNeuron.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        jest.fn().mockResolvedValue(BigInt(11))
       );
 
       await splitNeuron({
@@ -254,7 +254,7 @@ describe("neurons-api", () => {
         amount: ICP.fromString("2.2") as ICP,
       });
 
-      expect(mockGovernanceCanister.stopDissolving).toBeCalled();
+      expect(mockGovernanceCanister.splitNeuron).toBeCalled();
     });
 
     it("throws error when stopDissolving fails", async () => {
@@ -271,6 +271,7 @@ describe("neurons-api", () => {
           neuronId: BigInt(10),
           amount: ICP.fromString("2.2") as ICP,
         });
+      expect(mockGovernanceCanister.splitNeuron).not.toBeCalled();
       await expect(call).rejects.toThrow(error);
     });
   });
