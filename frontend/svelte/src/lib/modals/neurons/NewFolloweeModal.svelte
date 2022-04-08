@@ -76,6 +76,7 @@
       <form on:submit|preventDefault={addFolloweeByAddress}>
         <Input
           inputType="text"
+          autocomplete="off"
           placeholderLabelKey="new_followee.address_placeholder"
           name="new-followee-address"
           bind:value={followeeAddress}
