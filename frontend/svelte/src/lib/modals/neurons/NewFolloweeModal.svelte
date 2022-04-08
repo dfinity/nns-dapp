@@ -14,7 +14,7 @@
   export let neuron: NeuronInfo;
   export let topic: Topic;
 
-  let followeeAddress: number | undefined;
+  let followeeAddress: string = "";
   let loadingAddress: boolean = false;
   let loading: boolean = false;
   let topicFollowees: NeuronId[];
@@ -43,7 +43,7 @@
 
   const addFolloweeByAddress = async () => {
     let followee: bigint;
-    if (followeeAddress === undefined) {
+    if (followeeAddress.length === 0) {
       return;
     }
     loading = true;
@@ -64,7 +64,7 @@
     });
     loading = false;
     loadingAddress = false;
-    followeeAddress = undefined;
+    followeeAddress = "";
     stopBusy("add-followee");
   };
 </script>
@@ -75,7 +75,7 @@
     <article>
       <form on:submit|preventDefault={addFolloweeByAddress}>
         <Input
-          inputType="number"
+          inputType="text"
           placeholderLabelKey="new_followee.address_placeholder"
           name="new-followee-address"
           bind:value={followeeAddress}
@@ -85,7 +85,7 @@
         <button
           class="primary small"
           type="submit"
-          disabled={followeeAddress === undefined || loading}
+          disabled={followeeAddress.length === 0 || loading}
         >
           {#if loadingAddress}
             <Spinner />
