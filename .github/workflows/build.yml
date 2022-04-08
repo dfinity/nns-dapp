@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     env:
-      DFX_VERSION: 0.8.3
+      DFX_VERSION: 0.9.2
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
@@ -92,13 +92,13 @@ jobs:
       - name: Start replica
         run: |
           dfx start --background
-          dfx canister --no-wallet create --all
+          dfx canister create --all
 
       # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
       # REDIRECT_TO_LEGACY=svelte builds and deploys only Svelte
       - name: Deploy
         run: |
-          REDIRECT_TO_LEGACY=svelte DEPLOY_ENV=local IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --no-wallet --network local --argument '(null)'
+          REDIRECT_TO_LEGACY=svelte DEPLOY_ENV=local IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --network local --argument '(null)'
 
       - name: Build proxy
         working-directory: proxy
