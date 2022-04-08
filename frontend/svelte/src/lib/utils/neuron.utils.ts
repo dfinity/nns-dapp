@@ -1,5 +1,10 @@
 import type { Identity } from "@dfinity/agent";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import {
+  NeuronState,
+  Topic,
+  type NeuronId,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
@@ -168,3 +173,35 @@ export const neuronStake = (neuron: NeuronInfo): bigint =>
   neuron.fullNeuron?.cachedNeuronStake !== undefined
     ? neuron.fullNeuron?.cachedNeuronStake - neuron.fullNeuron?.neuronFees
     : BigInt(0);
+
+export interface FolloweesNeuron {
+  neuronId: NeuronId;
+  topics: [Topic, ...Topic[]];
+}
+/**
+ * Transforms Neuron.Followees into FolloweesNeuron[] format
+ */
+export const followeesNeurons = (neuron: NeuronInfo): FolloweesNeuron[] => {
+  if (neuron.fullNeuron?.followees === undefined) {
+    return [];
+  }
+  const result: FolloweesNeuron[] = [];
+  const resultNeuron = (neuronId: NeuronId): FolloweesNeuron | undefined =>
+    result.find(({ neuronId: id }) => id === neuronId);
+
+  for (const { followees, topic } of neuron.fullNeuron.followees) {
+    for (const neuronId of followees) {
+      const followeesNeuron = resultNeuron(neuronId);
+      if (followeesNeuron === undefined) {
+        result.push({
+          neuronId,
+          topics: [topic],
+        });
+      } else {
+        followeesNeuron.topics.push(topic);
+      }
+    }
+  }
+
+  return result;
+};
