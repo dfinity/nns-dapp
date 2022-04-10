@@ -1,5 +1,34 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/../.."
+
+wait_for_url() {
+	local url="$1"
+	local seconds="${2:-10}"
+	local options="${3:-}"
+	for ((i = 0; i < seconds; i++)); do if curl ${options:+${options}} -so /dev/null "$url"; then return 0; else sleep 1; fi; done
+	echo "URL not ready after ${seconds}s: curl ${options} -so /dev/null $url" >&2
+	return 1
+}
+
+DEPLOY_ENV="local"
+NETWORK_URL="localhost:8080"
+wait_for_url "$NETWORK_URL"
+
+while (($# > 0)); do
+	arg="$1"
+	shift 1
+	case "$arg" in
+	--nobuild) DEPLOY_ENV=nobuild ;;
+	esac
+done
+
+set -x
 dfx canister --no-wallet create --all || echo Canisters may have been created already. Proceeding...
-REDIRECT_TO_LEGACY=svelte DEPLOY_ENV=local IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --no-wallet --network local --argument '(null)'
+REDIRECT_TO_LEGACY=svelte DEPLOY_ENV="$DEPLOY_ENV" IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --no-wallet --network local --argument '(null)'
+
+NNS_DAPP_CANISTER_ID="$(dfx canister --no-wallet --network local id nns-dapp)"
+NNS_DAPP_CANISTER_URL="${NNS_DAPP_CANISTER_ID}.${NETWORK_URL}"
+wait_for_url "$NNS_DAPP_CANISTER_URL" 10 --fail
+
+echo OK
