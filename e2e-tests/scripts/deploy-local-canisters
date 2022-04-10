@@ -3,12 +3,12 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 wait_for_url() {
-	local url="$1"
-	local seconds="${2:-10}"
-	local options="${3:-}"
-	for ((i = 0; i < seconds; i++)); do if curl ${options:+${options}} -so /dev/null "$url"; then return 0; else sleep 1; fi; done
-	echo "URL not ready after ${seconds}s: curl ${options} -so /dev/null $url" >&2
-	return 1
+  local url="$1"
+  local seconds="${2:-10}"
+  local options="${3:-}"
+  for ((i = 0; i < seconds; i++)); do if curl ${options:+${options}} -so /dev/null "$url"; then return 0; else sleep 1; fi; done
+  echo "URL not ready after ${seconds}s: curl ${options} -so /dev/null $url" >&2
+  return 1
 }
 
 DEPLOY_ENV="local"
@@ -16,11 +16,11 @@ NETWORK_URL="localhost:8080"
 wait_for_url "$NETWORK_URL"
 
 while (($# > 0)); do
-	arg="$1"
-	shift 1
-	case "$arg" in
-	--nobuild) DEPLOY_ENV=nobuild ;;
-	esac
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --nobuild) DEPLOY_ENV=nobuild ;;
+  esac
 done
 
 set -x
