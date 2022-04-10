@@ -42,7 +42,11 @@ export const config: WebdriverIO.Config = {
       const screenshotName = `test-fail-${test.title.replace(/ /g, "-")}`;
       const htmlFileName = `${screenshotName}.html`;
       browser["screenshot"](screenshotName);
-      writeFileSync(htmlFileName, await $(':root', {encoding: "utf8"}).getHTML(), {encoding: "utf8"});
+      writeFileSync(
+        htmlFileName,
+        await $(":root", { encoding: "utf8" }).getHTML(),
+        { encoding: "utf8" }
+      );
     }
   },
 
