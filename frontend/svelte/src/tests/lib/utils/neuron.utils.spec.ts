@@ -1,4 +1,4 @@
-import { ICP, NeuronState, type BallotInfo } from "@dfinity/nns";
+import { ICP, NeuronState, Vote, type BallotInfo } from "@dfinity/nns";
 import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,

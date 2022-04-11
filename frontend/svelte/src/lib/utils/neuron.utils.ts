@@ -1,5 +1,5 @@
-import { NeuronState, type BallotInfo, type NeuronInfo } from "@dfinity/nns";
 import type { Identity } from "@dfinity/agent";
+import { NeuronState, type BallotInfo, type NeuronInfo } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
