@@ -44,7 +44,7 @@
   .title {
     display: flex;
     align-items: center;
-    gap: var(--padding-half);
+    gap: var(--padding-0_5x);
   }
 
   .actions {

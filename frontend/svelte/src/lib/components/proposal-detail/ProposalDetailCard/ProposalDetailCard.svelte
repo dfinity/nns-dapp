@@ -42,7 +42,7 @@
     @include text.clamp(3);
 
     @include media.min-width(medium) {
-      margin-top: var(--padding-half);
+      margin-top: var(--padding-0_5x);
       padding-right: var(--padding);
       font-size: var(--font-size-h3);
     }

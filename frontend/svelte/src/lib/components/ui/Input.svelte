@@ -145,7 +145,7 @@
     transform: scale(0.8) translate(0, calc(-50% - 30px));
     background: #ffffff;
 
-    padding: 0 var(--padding-half);
+    padding: 0 var(--padding-0_5x);
 
     @include media.min-width(medium) {
       transform: scale(0.8) translate(0, calc(-50% - 43px));

@@ -32,7 +32,7 @@
       pointer-events: all;
 
       flex: 1 1;
-      margin: 0 var(--padding-half);
+      margin: 0 var(--padding-0_5x);
       max-width: 60%;
 
       @include media.min-width(medium) {

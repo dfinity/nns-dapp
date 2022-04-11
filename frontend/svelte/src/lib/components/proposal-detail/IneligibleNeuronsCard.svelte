@@ -58,7 +58,7 @@
     font-size: var(--font-size-h5);
 
     @include media.min-width(small) {
-      margin: var(--padding-half) 0;
+      margin: var(--padding-0_5x) 0;
       flex-direction: row;
       align-items: center;
     }

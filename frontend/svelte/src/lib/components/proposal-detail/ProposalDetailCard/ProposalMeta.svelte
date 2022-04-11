@@ -57,7 +57,7 @@
     p,
     button {
       display: block;
-      margin: 0 0 var(--padding-half);
+      margin: 0 0 var(--padding-0_5x);
       padding: 0;
 
       font-size: var(--font-size-h5);

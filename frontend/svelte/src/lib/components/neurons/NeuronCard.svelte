@@ -111,7 +111,7 @@
 
     :global {
       svg {
-        margin-left: var(--padding-half);
+        margin-left: var(--padding-0_5x);
       }
     }
   }

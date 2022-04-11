@@ -92,7 +92,7 @@
   }
 
   .how-much {
-    margin-bottom: var(--padding-half);
+    margin-bottom: var(--padding-0_5x);
   }
 
   form {
@@ -102,7 +102,7 @@
     padding: var(--padding-2x);
 
     button {
-      margin-top: var(--padding-half);
+      margin-top: var(--padding-0_5x);
     }
   }
 </style>
