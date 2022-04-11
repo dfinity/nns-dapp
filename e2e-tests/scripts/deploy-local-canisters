@@ -13,6 +13,7 @@ while (($# > 0)); do
 done
 
 wait_for_url() {
+  : "Waiting up to ${seconds} seconds for: ${url}"
   local url="$1"
   local seconds="${2:-10}"
   local options="${3:-}"
@@ -23,19 +24,19 @@ wait_for_url() {
       sleep 1
     fi
   done
-  echo "URL not ready after ${seconds}s: curl ${options} -so /dev/null $url" >&2
+  echo "URL not ready after ${seconds}s: curl ${options:+${options}} -so /dev/null $url" >&2
   return 1
 }
 
-: "Checking that the network is present at the expected location..."
-: "Note: The network is expected to complain that we haven't specified the canister ID."
+: "Waiting for the network to be present at: ${NETWORK_URL}"
+: "Note: The network is expected to complain, with a non-200 response, that we haven't specified the canister ID."
 wait_for_url "$NETWORK_URL"
 
 : "Creating and deploying canisters..."
 dfx canister --no-wallet create --all || echo Canisters may have been created already. Proceeding...
 REDIRECT_TO_LEGACY=svelte DEPLOY_ENV="$DEPLOY_ENV" IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --no-wallet --network local --argument '(null)'
 
-: "Checking that the canister returns with HTTP code 200..."
+: "Waiting for the canister to return with HTTP code 200..."
 NNS_DAPP_CANISTER_ID="$(dfx canister --no-wallet --network local id nns-dapp)"
 NNS_DAPP_CANISTER_URL="${NNS_DAPP_CANISTER_ID}.${NETWORK_URL}"
 wait_for_url "$NNS_DAPP_CANISTER_URL" 10 --fail
