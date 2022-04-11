@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-DEPLOY_ENV="local"
+DEPLOY_ENV="${DEPLOY_ENV:-local}"
 NETWORK_URL="localhost:8080"
 while (($# > 0)); do
   arg="$1"
