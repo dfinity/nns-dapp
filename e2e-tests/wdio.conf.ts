@@ -1,15 +1,15 @@
-const { existsSync, mkdirSync } = require("fs");
+const { existsSync, mkdirSync, writeFileSync } = require("fs");
 const { NNS_DAPP_URL } = require("./common/constants");
 
 export const config: WebdriverIO.Config = {
   baseUrl: NNS_DAPP_URL,
 
   before: (_capabilities, _spec) => {
-    browser["screenshots-taken"] = new Set();
-    browser["screenshot-prefix"] = "before";
-    browser["screenshot-count"] = 0;
+    browser["screenshot-prefix"] = "before"; // Suite name
+    browser["screenshot-count"] = 0; // Counter restarted with each new suite
+    browser["screenshots-taken"] = new Set(); // Set of all screenshot names
 
-    browser.addCommand("screenshot", async (name) => {
+    browser.addCommand("screenshot", async (name: string, options: {saveDom: boolean} = {}) => {
       const countStr: string = (browser["screenshot-count"]++)
         .toFixed()
         .padStart(2, "0");
@@ -31,6 +31,14 @@ export const config: WebdriverIO.Config = {
       await browser.saveScreenshot(
         `${SCREENSHOTS_DIR}/${filename}.png`
       );
+
+      if (options.saveDom === true) {
+              writeFileSync(
+        `${SCREENSHOTS_DIR}/${filename}.png`,
+        await $(":root", { encoding: "utf8" }).getHTML(),
+        { encoding: "utf8" }
+      );
+      }
     });
   },
 
@@ -39,7 +47,7 @@ export const config: WebdriverIO.Config = {
     browser["screenshot-count"] = 0;
   },
 
-  afterTest: function (test, context, {error}) {
+  afterTest: async function (test, context, {error}) {
     // Take a screenshot anytime a test fails and throws an error.
     // Note: We could also use `result !== 0` or `passed === true`.
     //       The reason for conditioning on an error is that if
@@ -50,7 +58,7 @@ export const config: WebdriverIO.Config = {
     if (undefined !== error) {
       // Filenames containing spaces are painful to work with on the command line,
       // so we replace any spaces in the test name when we create the screenshot.
-      browser["screenshot"](`test-fail_${test.title}`);
+      await browser["screenshot"](`test-fail_${test.title}`, {saveDom: true});
     }
   },
 
@@ -61,7 +69,7 @@ export const config: WebdriverIO.Config = {
       project: "tsconfig.json",
     },
   },
-  specs: ["./specs/**/*.ts"],
+  specs: ["./specs/**/*.e2e.ts"],
   exclude: [],
   capabilities: [
     {
