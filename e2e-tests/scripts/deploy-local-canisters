@@ -17,9 +17,10 @@ wait_for_url() {
   local seconds="${2:-10}"
   local options="${3:-}"
   for ((i = 0; i < seconds; i++)); do
-    if curl ${options:+${options}} -so /dev/null "$url"
-    then return 0
-    else sleep 1
+    if curl ${options:+${options}} -so /dev/null "$url"; then
+      return 0
+    else
+      sleep 1
     fi
   done
   echo "URL not ready after ${seconds}s: curl ${options} -so /dev/null $url" >&2
