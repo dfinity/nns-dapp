@@ -102,7 +102,7 @@ export const stakeAndLoadNeuron = async ({
       return;
     }
 
-    if (!isEnoughToStakeNeuron(stake)) {
+    if (!isEnoughToStakeNeuron({ stake })) {
       toastsStore.error({
         labelKey: "error.amount_not_enough",
       });
@@ -310,7 +310,7 @@ export const splitNeuron = async ({
       return;
     }
 
-    if (!isEnoughToStakeNeuron(stake)) {
+    if (!isEnoughToStakeNeuron({ stake, withTransactionFee: true })) {
       toastsStore.error({
         labelKey: "error.amount_not_enough",
       });

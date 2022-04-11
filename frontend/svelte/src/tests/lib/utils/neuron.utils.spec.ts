@@ -508,11 +508,17 @@ describe("neuron-utils", () => {
   describe("isEnoughToStakeNeuron", () => {
     it("return true if enough ICP to create a neuron", () => {
       const stake = ICP.fromString("3") as ICP;
-      expect(isEnoughToStakeNeuron(stake)).toBe(true);
+      expect(isEnoughToStakeNeuron({ stake })).toBe(true);
     });
     it("returns false if not enough ICP to create a neuron", () => {
       const stake = ICP.fromString("0.000001") as ICP;
-      expect(isEnoughToStakeNeuron(stake)).toBe(false);
+      expect(isEnoughToStakeNeuron({ stake })).toBe(false);
+    });
+    it("takes into account transaction fee", () => {
+      const stake = ICP.fromString("1") as ICP;
+      expect(isEnoughToStakeNeuron({ stake, withTransactionFee: true })).toBe(
+        false
+      );
     });
   });
 });
