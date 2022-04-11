@@ -9,6 +9,7 @@ import {
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import {
   ageMultiplier,
+  convertNumberToICP,
   dissolveDelayMultiplier,
   formatVotingPower,
   getDissolvingTimeInSeconds,
@@ -16,6 +17,7 @@ import {
   hasValidStake,
   isCurrentUserController,
   isNeuronControllable,
+  isValidInputAmount,
   maturityByStake,
   neuronCanBeSplit,
   neuronStake,
@@ -473,6 +475,32 @@ describe("neuron-utils", () => {
         },
       };
       expect(neuronCanBeSplit(neuron)).toBe(false);
+    });
+  });
+
+  describe("isValidInputAmount", () => {
+    it("return false if amount is undefined", () => {
+      expect(isValidInputAmount({ amount: undefined, max: 10 })).toBe(false);
+    });
+
+    it("return true if amount is lower than max", () => {
+      expect(isValidInputAmount({ amount: 3, max: 10 })).toBe(true);
+    });
+
+    it("return false if amount is higher than max", () => {
+      expect(isValidInputAmount({ amount: 40, max: 10 })).toBe(false);
+    });
+  });
+
+  describe("convertNumberToICP", () => {
+    it("returns ICP from number", () => {
+      expect(convertNumberToICP(10)?.toE8s()).toBe(BigInt(1_000_000_000));
+      expect(convertNumberToICP(10.1234)?.toE8s()).toBe(BigInt(1_012_340_000));
+      expect(convertNumberToICP(0.004)?.toE8s()).toBe(BigInt(400_000));
+    });
+
+    it("returns undefined on negative numbers", () => {
+      expect(convertNumberToICP(-10)).toBeUndefined();
     });
   });
 });

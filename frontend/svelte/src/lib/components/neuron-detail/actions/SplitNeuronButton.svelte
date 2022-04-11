@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { MIN_NEURON_STAKE_SPLITTABLE } from "../../../constants/icp.constants";
+  import { MIN_NEURON_STAKE_SPLITTABLE } from "../../../constants/neurons.constants";
   import SplitNeuronModal from "../../../modals/neurons/SplitNeuronModal.svelte";
   import { i18n } from "../../../stores/i18n";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
@@ -17,28 +17,18 @@
 
   let isSplittable: boolean;
   $: isSplittable = neuronCanBeSplit(neuron);
-  $i18n.neuron_detail.split_neuron_disabled_tooltip;
 </script>
 
-{#if isSplittable}
-  <button class="primary small" on:click={openModal}
+<Tooltip
+  id="split-neuron-button"
+  text={replacePlaceholders($i18n.neuron_detail.split_neuron_disabled_tooltip, {
+    $amount: formatICP(BigInt(MIN_NEURON_STAKE_SPLITTABLE)),
+  })}
+>
+  <button on:click={openModal} class="primary small" disabled={!isSplittable}
     >{$i18n.neuron_detail.split_neuron}</button
   >
-{:else}
-  <Tooltip
-    id="split-neuron-button"
-    text={replacePlaceholders(
-      $i18n.neuron_detail.split_neuron_disabled_tooltip,
-      {
-        $amount: formatICP(BigInt(MIN_NEURON_STAKE_SPLITTABLE)),
-      }
-    )}
-  >
-    <button class="primary small" disabled
-      >{$i18n.neuron_detail.split_neuron}</button
-    >
-  </Tooltip>
-{/if}
+</Tooltip>
 
 {#if isOpen}
   <SplitNeuronModal {neuron} on:nnsClose={closeModal} />

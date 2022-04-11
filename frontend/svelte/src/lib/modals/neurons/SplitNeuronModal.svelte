@@ -2,7 +2,7 @@
   import CurrentBalance from "../../components/accounts/CurrentBalance.svelte";
   import Modal from "../Modal.svelte";
   import { ICP, type NeuronInfo } from "@dfinity/nns";
-  import { neuronStake } from "../../utils/neuron.utils";
+  import { isValidInputAmount, neuronStake } from "../../utils/neuron.utils";
   import AmountInput from "../../components/ui/AmountInput.svelte";
   import {
     E8S_PER_ICP,
@@ -13,6 +13,7 @@
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "../../services/neurons.services";
+  import { toastsStore } from "../../stores/toasts.store";
 
   export let neuron: NeuronInfo;
 
@@ -25,10 +26,13 @@
   $: balance = ICP.fromE8s(stakeE8s);
 
   let max: number = 0;
-  $: max = (Number(stakeE8s) - TRANSACTION_FEE_E8S) / E8S_PER_ICP;
+  $: max =
+    stakeE8s === BigInt(0)
+      ? 0
+      : (Number(stakeE8s) - TRANSACTION_FEE_E8S) / E8S_PER_ICP;
 
   let validForm: boolean;
-  $: validForm = amount !== undefined && amount > 0 && amount <= max;
+  $: validForm = isValidInputAmount({ amount, max });
 
   const onMax = () => (amount = max);
 
@@ -36,6 +40,9 @@
   const split = async () => {
     // TS is not smart enought to understand that `validForm` also covers `amount === undefined`
     if (!validForm || amount === undefined) {
+      toastsStore.error({
+        labelKey: "error.amount_not_valid",
+      });
       return;
     }
     startBusy("split-neuron");

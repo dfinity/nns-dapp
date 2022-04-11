@@ -1,7 +1,5 @@
 export const E8S_PER_ICP = 100_000_000;
 export const TRANSACTION_FEE_E8S = 10_000;
-export const MIN_NEURON_STAKE_SPLITTABLE =
-  2 * E8S_PER_ICP + TRANSACTION_FEE_E8S;
 
 /*
  * The format should be:

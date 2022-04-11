@@ -1,12 +1,12 @@
 import type { Identity } from "@dfinity/agent";
 import type {
   Followees,
+  ICP,
   Neuron,
   NeuronId,
   NeuronInfo,
   Topic,
 } from "@dfinity/nns";
-import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
@@ -30,6 +30,7 @@ import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import {
+  convertNumberToICP,
   isCurrentUserController,
   isNeuronControllable,
 } from "../utils/neuron.utils";
@@ -77,19 +78,6 @@ export const assertNeuronControllable = async (
   if (!isControllable) {
     throw new Error("User is not authorized to perform the action");
   }
-};
-
-const convertNumberToICP = (amount: number): ICP | undefined => {
-  const stake = ICP.fromString(String(amount));
-
-  if (!(stake instanceof ICP)) {
-    toastsStore.error({
-      labelKey: "error.amount_not_valid",
-    });
-    return;
-  }
-
-  return stake;
 };
 
 /**
@@ -308,7 +296,6 @@ export const splitNeuron = async ({
   amount: number;
 }): Promise<void> => {
   try {
-    // Try/catch done in the component
     await assertNeuronUserControlled(neuronId);
 
     const identity: Identity = await getIdentity();
