@@ -92,17 +92,17 @@
   }
 
   .how-much {
-    margin-bottom: calc(var(--padding) / 2);
+    margin-bottom: var(--padding-half);
   }
 
   form {
     display: flex;
     flex-direction: column;
 
-    padding: calc(2 * var(--padding));
+    padding: var(--padding-2x);
 
     button {
-      margin-top: calc(var(--padding) / 2);
+      margin-top: var(--padding-half);
     }
   }
 </style>

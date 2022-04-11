@@ -51,13 +51,13 @@
   @use "../../../themes/mixins/media";
 
   div {
-    margin: calc(3 * var(--padding)) 0;
+    margin: var(--padding-3x) 0;
 
     a,
     p,
     button {
       display: block;
-      margin: 0 0 calc(0.5 * var(--padding));
+      margin: 0 0 var(--padding-half);
       padding: 0;
 
       font-size: var(--font-size-h5);

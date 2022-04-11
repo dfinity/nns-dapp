@@ -32,7 +32,7 @@ button {
 
     vertical-align: bottom;
 
-    padding: calc(var(--padding) / 2);
+    padding: var(--padding-half);
 
     border-radius: 50%;
 
@@ -59,7 +59,7 @@ button {
     &.small {
       min-height: inherit;
       font-size: inherit;
-      padding: calc(var(--padding) / 2) var(--padding);
+      padding: var(--padding-half) var(--padding);
     }
   }
 
@@ -112,12 +112,12 @@ button {
   }
 
   &.input-button {
-    padding: calc(0.5 * var(--padding)) calc(1.5 * var(--padding));
+    padding: var(--padding-half) calc(1.5 * var(--padding));
 
     font-size: var(--font-size-ultra-small);
 
     @include media.min-width(medium) {
-      padding: calc(0.5 * var(--padding)) calc(2 * var(--padding));
+      padding: var(--padding-half) var(--padding-2x);
 
       font-size: var(--font-size-small);
       font-weight: bold;

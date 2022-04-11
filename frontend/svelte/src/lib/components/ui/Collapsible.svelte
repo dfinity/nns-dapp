@@ -103,7 +103,7 @@
 
     .header-content {
       flex: 1;
-      margin-right: calc(3 * var(--padding));
+      margin-right: var(--padding-3x);
     }
 
     @include media.min-width(medium) {
@@ -114,7 +114,7 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-left: calc(3 * var(--padding));
+          margin-left: var(--padding-3x);
         }
       }
     }
@@ -171,7 +171,7 @@
 
   .content {
     // to not stick the content to the bottom
-    padding-bottom: calc(2 * var(--padding));
+    padding-bottom: var(--padding-2x);
     // to respect children margins in contentHeight calculation
     overflow: auto;
     // scrollbar

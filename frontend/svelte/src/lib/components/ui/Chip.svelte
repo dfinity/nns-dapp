@@ -11,8 +11,8 @@
     background: var(--gray-800);
     color: var(--gray-50);
 
-    padding: calc(var(--padding) / 2) var(--padding);
-    margin: calc(var(--padding) / 2);
+    padding: var(--padding-half) var(--padding);
+    margin: var(--padding-half);
 
     border-radius: calc(2 * var(--border-radius));
   }

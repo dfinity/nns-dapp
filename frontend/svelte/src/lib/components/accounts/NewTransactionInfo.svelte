@@ -27,7 +27,7 @@
   }
 
   p {
-    margin: 0 0 calc(var(--padding) / 2);
+    margin: 0 0 var(--padding-half);
     word-wrap: break-word;
   }
 </style>

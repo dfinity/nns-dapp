@@ -49,7 +49,7 @@
     align-items: center;
 
     position: fixed;
-    bottom: calc(2 * var(--padding));
+    bottom: var(--padding-2x);
     left: 50%;
     transform: translate(-50%, 0);
 
@@ -60,7 +60,7 @@
 
     width: calc(100% - (8 * var(--padding)));
 
-    padding: var(--padding) calc(var(--padding) * 2);
+    padding: var(--padding) var(--padding-2x);
     box-sizing: border-box;
 
     z-index: calc(var(--z-index) + 999);

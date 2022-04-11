@@ -1,5 +1,5 @@
 @mixin wrapper {
-  padding-bottom: calc(2 * var(--padding));
+  padding-bottom: var(--padding-2x);
 
   display: flex;
   flex-direction: column;

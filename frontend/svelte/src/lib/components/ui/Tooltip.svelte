@@ -22,7 +22,7 @@
     display: inline-block;
 
     left: 50%;
-    bottom: calc(var(--padding) / 2);
+    bottom: var(--padding-half);
     transform: translate(-50%, 100%);
 
     opacity: 0;

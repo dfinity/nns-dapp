@@ -70,7 +70,7 @@
   }
 
   .content {
-    margin: calc(2 * var(--padding)) 0 var(--padding);
+    margin: var(--padding-2x) 0 var(--padding);
 
     &.limit-height {
       max-height: 300px;

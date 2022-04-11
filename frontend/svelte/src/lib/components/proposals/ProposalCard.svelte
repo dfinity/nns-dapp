@@ -76,7 +76,7 @@
     @include text.clamp(3);
 
     @include media.min-width(small) {
-      margin: 0 calc(2 * var(--padding)) 0 0;
+      margin: 0 var(--padding-2x) 0 0;
     }
   }
 

@@ -5,6 +5,11 @@
   --icon-width: 24px;
 
   --padding: 10px;
+
+  --padding-half: calc(var(--padding) / 2);
+  --padding-2x: calc(2 * var(--padding));
+  --padding-3x: calc(3 * var(--padding));
+
   --border-radius: 10px;
 
   --z-index: 1;
@@ -15,7 +20,7 @@
   --footer-height: 20vh;
 
   --modal-small-width: calc(100% - (8 * var(--padding)));
-  --modal-medium-width: calc(100% - (2 * var(--padding)));
+  --modal-medium-width: calc(100% - var(--padding-2x));
 
   --animation-time-normal: 0.2s;
 

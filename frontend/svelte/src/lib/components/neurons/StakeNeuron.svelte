@@ -111,7 +111,7 @@
     --input-width: 100%;
 
     small {
-      margin-top: calc(2 * var(--padding));
+      margin-top: var(--padding-2x);
     }
 
     button[type="submit"] {
