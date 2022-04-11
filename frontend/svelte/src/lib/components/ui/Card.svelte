@@ -32,7 +32,7 @@
     background: var(--background);
     color: var(--gray-50);
 
-    padding: calc(2.5 * var(--padding));
+    padding: var(--padding-2_5x);
     margin: var(--padding-2x) 0;
     border-radius: var(--border-radius);
 
