@@ -18,8 +18,8 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Flutter,
     },
     [RouteHash.Proposals]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Canisters]: {
       [FrontendPath.Flutter]: FrontendPath.Flutter,
