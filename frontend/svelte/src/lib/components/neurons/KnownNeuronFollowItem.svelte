@@ -35,12 +35,12 @@
   <p>{knownNeuron.name}</p>
   <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
   <button
-    class="secondary small"
+    class={`secondary small ${loading ? "icon-only" : ""}`}
     {disabled}
     on:click={toggleKnownNeuronFollowee}
   >
     {#if loading}
-      <Spinner />
+      <Spinner inline size="small" />
     {:else if isFollowed}
       {$i18n.new_followee.unfollow}
     {:else}
