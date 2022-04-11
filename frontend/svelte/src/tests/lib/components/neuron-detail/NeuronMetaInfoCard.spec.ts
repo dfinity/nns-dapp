@@ -73,7 +73,7 @@ describe("NeuronMetaInfoCard", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders actions", async () => {
+  it("renders actions", () => {
     // Each action button is tested separately
     const { queryByText } = render(NeuronMetaInfoCard, {
       props,
