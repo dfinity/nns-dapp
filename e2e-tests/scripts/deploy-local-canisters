@@ -27,10 +27,10 @@ while (($# > 0)); do
 done
 
 wait_for_url() {
-  : "Waiting up to ${seconds} seconds for: ${url}"
   local url="$1"
   local seconds="${2:-10}"
   local options="${3:-}"
+  : "Waiting up to ${seconds} seconds for: ${url}"
   for ((i = 0; i < seconds; i++)); do
     if curl ${options:+${options}} -so /dev/null "$url"; then
       return 0
