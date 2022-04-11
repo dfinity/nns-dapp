@@ -8,7 +8,8 @@ while (($# > 0)); do
   arg="$1"
   shift 1
   case "$arg" in
-  --help) cat <<-EOF
+  --help)
+    cat <<-EOF
 
 	Deploys nns-dapp and required canisters to localhost.
 
@@ -19,7 +20,8 @@ while (($# > 0)); do
 	  --nobuild == set DEPLOY_ENV=nobuild so that the existing wasm is used.
 
 	EOF
-        exit 0 ;;
+    exit 0
+    ;;
   --nobuild) DEPLOY_ENV=nobuild ;;
   esac
 done
