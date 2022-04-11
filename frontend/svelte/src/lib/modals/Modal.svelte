@@ -10,6 +10,7 @@
   export let visible: boolean = true;
   export let theme: "dark" | "light" = "light";
   export let size: "small" | "medium" = "small";
+  export let testId: string | undefined = undefined;
 
   // There is no way to know whether a parent is listening to the "nnsBack" event
   // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
@@ -29,6 +30,7 @@
     class={`modal ${theme}`}
     transition:fade
     role="dialog"
+    data-tid={testId}
     aria-labelledby={showToolbar ? "modalTitle" : undefined}
     aria-describedby="modalContent"
     on:click|stopPropagation
