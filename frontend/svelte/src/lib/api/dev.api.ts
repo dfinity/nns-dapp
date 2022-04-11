@@ -1,7 +1,9 @@
+import type { Identity } from "@dfinity/agent";
 import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
-import type { BlockHeight, E8s } from "@dfinity/nns";
+import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import { governanceCanister } from "./governance.api";
 
 /*
  * Gives the caller the specified amount of (fake) ICPs.
@@ -43,6 +45,26 @@ export const acquireICPTs = async ({
   });
 };
 
+export const makeDummyProposals = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  assertTestnet();
+
+  const { canister } = await governanceCanister({ identity });
+
+  const dummyProposalsScriptPath: string =
+    "/assets/assets/libs/dummy-proposals.utils.js";
+  const { makeDummyProposals: makeProposals } = await import(
+    dummyProposalsScriptPath
+  );
+
+  await makeProposals({ neuronId, canister });
+};
+
 const assertTestnet = () => {
   if (process.env.DEPLOY_ENV !== "testnet") {
     throw new Error('The environment is not "testnet"');
@@ -51,5 +73,5 @@ const assertTestnet = () => {
 
 // If ultimately we need this function in many calls, we shall move it in "converter.utils" of nns-js and expose the function
 const base64ToUInt8Array = (base64String: string): Uint8Array => {
-  return Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0));
+  return Uint8Array.from(window.atob(base64String), (c) => c.charCodeAt(0));
 };

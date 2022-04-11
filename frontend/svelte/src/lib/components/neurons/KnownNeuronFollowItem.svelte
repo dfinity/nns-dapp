@@ -2,6 +2,7 @@
   import type { KnownNeuron, NeuronId, Topic } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { addFollowee, removeFollowee } from "../../services/neurons.services";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import Spinner from "../ui/Spinner.svelte";
 
@@ -16,6 +17,7 @@
 
   const toggleKnownNeuronFollowee = async () => {
     loading = true;
+    startBusy("add-followee");
     dispatcher("nnsLoading", { loading: true });
     const toggleFollowee = isFollowed ? removeFollowee : addFollowee;
     await toggleFollowee({
@@ -25,6 +27,7 @@
     });
     loading = false;
     dispatcher("nnsLoading", { loading: false });
+    stopBusy("add-followee");
   };
 </script>
 
@@ -32,12 +35,12 @@
   <p>{knownNeuron.name}</p>
   <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
   <button
-    class="secondary small"
+    class={`secondary small ${loading ? "icon-only" : ""}`}
     {disabled}
     on:click={toggleKnownNeuronFollowee}
   >
     {#if loading}
-      <Spinner />
+      <Spinner inline size="small" />
     {:else if isFollowed}
       {$i18n.new_followee.unfollow}
     {:else}

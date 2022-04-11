@@ -1,74 +1,135 @@
 import type { Identity } from "@dfinity/agent";
 import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
-import { GovernanceError } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   queryProposal,
   queryProposals,
   registerVote,
 } from "../api/proposals.api";
-import { busyStore } from "../stores/busy.store";
+import { startBusy, stopBusy } from "../stores/busy.store";
+import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
+  proposalInfoStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
-import { isNode } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
-import { stringifyJson, uniqueObjects } from "../utils/utils";
+import { replacePlaceholders } from "../utils/i18n.utils";
+import {
+  excludeProposals,
+  proposalsHaveSameIds,
+} from "../utils/proposals.utils";
+import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateOnError,
+  type QueryAndUpdateOnResponse,
+} from "./utils.services";
 
-export const listProposals = async ({
-  clearBeforeQuery = false,
-}: {
-  clearBeforeQuery?: boolean;
-}) => {
-  if (clearBeforeQuery) {
+const handleFindProposalsError = ({ error, certified }) => {
+  console.error(error);
+
+  // Explicitly handle only UPDATE errors
+  if (certified === true) {
     proposalsStore.setProposals([]);
+
+    toastsStore.show({
+      labelKey: "error.list_proposals",
+      level: "error",
+      detail: errorToString(error),
+    });
   }
+};
 
-  const proposals: ProposalInfo[] = await findProposals({
+export const listProposals = async (): Promise<void> => {
+  return findProposals({
     beforeProposal: undefined,
+    onLoad: ({ response: proposals }) => proposalsStore.setProposals(proposals),
+    onError: handleFindProposalsError,
   });
-
-  proposalsStore.setProposals(proposals);
 };
 
 export const listNextProposals = async ({
   beforeProposal,
 }: {
   beforeProposal: ProposalId | undefined;
-}) => {
-  const proposals: ProposalInfo[] = await findProposals({
+}): Promise<void> =>
+  findProposals({
     beforeProposal,
+    onLoad: ({ response: proposals, certified }) => {
+      if (proposals.length === 0) {
+        // There is no more proposals to fetch for the current filters.
+        // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
+        return;
+      }
+      proposalsStore.pushProposals({ proposals, certified });
+    },
+    onError: handleFindProposalsError,
   });
-
-  if (proposals.length === 0) {
-    // There is no more proposals to fetch for the current filters.
-    // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
-    return;
-  }
-
-  proposalsStore.pushProposals(proposals);
-};
 
 const findProposals = async ({
   beforeProposal,
+  onLoad,
+  onError,
 }: {
   beforeProposal: ProposalId | undefined;
-}): Promise<ProposalInfo[]> => {
-  const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
-
+  onLoad: QueryAndUpdateOnResponse<ProposalInfo[]>;
+  onError: QueryAndUpdateOnError<unknown>;
+}): Promise<void> => {
   const identity: Identity = await getIdentity();
+  const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
+  const validateResponses = (
+    trustedProposals: ProposalInfo[],
+    untrustedProposals: ProposalInfo[]
+  ) => {
+    if (
+      proposalsHaveSameIds({
+        proposalsA: untrustedProposals,
+        proposalsB: trustedProposals,
+      })
+    ) {
+      return;
+    }
 
-  return await queryProposals({
-    beforeProposal,
-    identity,
-    filters,
-    certified: false,
+    console.error("suspisious u->t", untrustedProposals, trustedProposals);
+    toastsStore.show({
+      labelKey: "error.suspicious_response",
+      level: "error",
+    });
+
+    // Remove proven untrusted proposals (in query but not in update)
+    const proposalsToRemove = excludeProposals({
+      proposals: untrustedProposals,
+      exclusion: trustedProposals,
+    });
+    if (proposalsToRemove.length > 0) {
+      proposalsStore.removeProposals(proposalsToRemove);
+    }
+  };
+  let uncertifiedProposals: ProposalInfo[] | undefined;
+
+  return queryAndUpdate<ProposalInfo[], unknown>({
+    request: ({ certified }) =>
+      queryProposals({ beforeProposal, identity, filters, certified }),
+    onLoad: ({ response: proposals, certified }) => {
+      if (certified === false) {
+        uncertifiedProposals = proposals;
+        onLoad({ response: proposals, certified });
+        return;
+      }
+
+      if (uncertifiedProposals) {
+        validateResponses(proposals, uncertifiedProposals);
+      }
+
+      onLoad({ response: proposals, certified });
+    },
+    onError,
   });
 };
 
@@ -98,16 +159,17 @@ export const loadProposal = async ({
   };
 
   try {
-    const proposal: ProposalInfo | undefined = await getProposal({
+    return await getProposal({
       proposalId,
+      onLoad: ({ response: proposal }) => {
+        if (!proposal) {
+          catchError(new Error("Proposal not found"));
+          return;
+        }
+        setProposal(proposal);
+      },
+      onError: catchError,
     });
-
-    if (!proposal) {
-      catchError(new Error("Proposal not found"));
-      return;
-    }
-
-    setProposal(proposal);
   } catch (error: unknown) {
     catchError(error);
   }
@@ -118,12 +180,21 @@ export const loadProposal = async ({
  */
 const getProposal = async ({
   proposalId,
+  onLoad,
+  onError,
 }: {
   proposalId: ProposalId;
-}): Promise<ProposalInfo | undefined> => {
+  onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
+  onError: QueryAndUpdateOnError<unknown>;
+}): Promise<void> => {
   const identity: Identity = await getIdentity();
 
-  return queryProposal({ proposalId, identity, certified: false });
+  return queryAndUpdate<ProposalInfo | undefined, unknown>({
+    request: ({ certified }) =>
+      queryProposal({ proposalId, identity, certified }),
+    onLoad,
+    onError,
+  });
 };
 
 export const getProposalId = (path: string): ProposalId | undefined =>
@@ -142,7 +213,7 @@ export const registerVotes = async ({
   proposalId: ProposalId;
   vote: Vote;
 }): Promise<void> => {
-  busyStore.start("vote");
+  startBusy("vote");
 
   const identity: Identity = await getIdentity();
 
@@ -153,12 +224,9 @@ export const registerVotes = async ({
       identity,
       vote,
     });
-  } catch (error) {
-    // TODO: replace w/ console.error mock
-    if (!isNode()) {
-      // preserve in unit-test
-      console.error("vote unknown:", error);
-    }
+  } catch (error: unknown) {
+    console.error("vote unknown:", error);
+
     toastsStore.show({
       labelKey: "error.register_vote_unknown",
       level: "error",
@@ -166,9 +234,25 @@ export const registerVotes = async ({
     });
   }
 
-  await listNeurons();
+  await Promise.all([
+    listNeurons().catch((err) => {
+      console.error(err);
+      toastsStore.error({
+        labelKey: "error.list_proposals",
+        err,
+      });
+    }),
+    loadProposal({
+      proposalId,
+      setProposal: (proposalInfo: ProposalInfo) => {
+        proposalInfoStore.set(proposalInfo);
+        // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
+        proposalsStore.replaceProposals([proposalInfo]);
+      },
+    }),
+  ]);
 
-  busyStore.stop("vote");
+  stopBusy("vote");
 };
 
 const requestRegisterVotes = async ({
@@ -182,51 +266,45 @@ const requestRegisterVotes = async ({
   identity: Identity;
   vote: Vote;
 }): Promise<void> => {
-  const register = async (
-    neuronId: NeuronId
-  ): Promise<GovernanceError | undefined> => {
-    try {
-      await registerVote({
-        neuronId,
-        vote,
-        proposalId,
-        identity,
+  const errorDetail = (
+    neuronId: NeuronId,
+    result: PromiseSettledResult<void>
+  ): string | undefined => {
+    if (result.status === "rejected" && result.reason instanceof Error) {
+      const reason = errorToString(result.reason);
+      // detail text
+      return replacePlaceholders(get(i18n).error.register_vote_neuron, {
+        $neuronId: neuronId.toString(),
+        $reason:
+          reason === undefined || reason?.length === 0
+            ? get(i18n).error.fail
+            : reason,
       });
-
-      return undefined;
-    } catch (error: GovernanceError | unknown) {
-      // We catch the error because we want to display only the distinct GovernanceError
-      if (error instanceof GovernanceError) {
-        return error;
-      }
-
-      // We throw anyway unexpected errors
-      throw error;
     }
+    return undefined;
   };
-
-  // TODO: switch to Promise.allSettled -- https://dfinity.atlassian.net/browse/L2-369
-  const responses: Array<GovernanceError | undefined> = await Promise.all(
-    neuronIds.map(register)
-  );
-  const errors = responses.filter(Boolean);
-  // collect unique error messages
-  const errorDetails: string = uniqueObjects(errors)
-    .map(({ detail }: GovernanceError) =>
-      stringifyJson(detail.error_message, { indentation: 2 })
+  const responses: Array<PromiseSettledResult<void>> = await Promise.allSettled(
+    neuronIds.map(
+      (neuronId: NeuronId): Promise<void> =>
+        registerVote({
+          neuronId,
+          vote,
+          proposalId,
+          identity,
+        })
     )
-    .join("\n");
+  );
+  const details: string[] = responses
+    .map((response, i) => errorDetail(neuronIds[i], response))
+    .filter(isDefined);
 
-  if (errors.length > 0) {
-    // TODO: replace w/ console.error mock
-    if (!isNode()) {
-      // avoid in unit-test
-      console.error("vote:", errorDetails);
-    }
+  if (details.length > 0) {
+    console.error("vote", details);
+
     toastsStore.show({
       labelKey: "error.register_vote",
       level: "error",
-      detail: errorDetails.length > 0 ? `\n${errorDetails}` : undefined,
+      detail: details.join(", "),
     });
   }
 };

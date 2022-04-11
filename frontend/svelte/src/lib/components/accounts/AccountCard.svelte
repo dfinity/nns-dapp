@@ -3,16 +3,40 @@
   import Card from "../ui/Card.svelte";
   import ICP from "../ic/ICP.svelte";
   import Identifier from "../ic/Identifier.svelte";
+  import type { ICP as ICPType } from "@dfinity/nns";
+  import AccountBadge from "./AccountBadge.svelte";
 
   export let account: Account;
   export let showCopy: boolean = false;
   export let role: "button" | "link" | undefined = undefined;
 
+  let identifier: string;
+  let balance: ICPType;
+
   $: ({ identifier, balance } = account);
 </script>
 
 <Card on:click {role}>
-  <h4 slot="start"><slot /></h4>
+  <div slot="start" class="title">
+    <h3><slot /></h3>
+    <AccountBadge {account} />
+  </div>
   <ICP slot="end" icp={balance} />
   <Identifier {identifier} {showCopy} />
 </Card>
+
+<style lang="scss">
+  @use "../../themes/mixins/text.scss";
+  @use "../../themes/mixins/card.scss";
+
+  .title {
+    @include card.stacked-title;
+  }
+
+  h3 {
+    line-height: var(--line-height-standard);
+    margin: 0 var(--padding) 0 0;
+
+    @include text.truncate;
+  }
+</style>

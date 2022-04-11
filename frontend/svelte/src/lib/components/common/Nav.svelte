@@ -19,6 +19,7 @@
     <a
       href={`${baseUrl}#/${context}`}
       class:selected={currentContext === context}
+      data-tid={`tab-to-${context}`}
       aria-label={label}><span>{$i18n.navigation[label]}</span></a
     >
   {/each}

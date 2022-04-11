@@ -6,6 +6,7 @@ import type { Neuron } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import NeuronCard from "../../../../lib/components/neurons/NeuronCard.svelte";
+import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
@@ -62,7 +63,8 @@ describe("NeuronCard", () => {
     });
 
     const stakeText = formatICP(
-      (mockNeuron.fullNeuron as Neuron).cachedNeuronStake
+      (mockNeuron.fullNeuron as Neuron).cachedNeuronStake -
+        (mockNeuron.fullNeuron as Neuron).neuronFees
     );
     expect(getByText(stakeText)).toBeInTheDocument();
     expect(getByText(mockNeuron.neuronId.toString())).toBeInTheDocument();
@@ -86,7 +88,7 @@ describe("NeuronCard", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          fullNeuron: { ...mockFullNeuron, isCurrentUserController: false },
+          fullNeuron: { ...mockFullNeuron, controller: "bbbbb-bb" },
         },
       },
     });
@@ -124,7 +126,7 @@ describe("NeuronCard", () => {
   });
 
   it("renders proper text when status is DISSOLVING", async () => {
-    const MORE_THAN_ONE_YEAR = 60 * 60 * 24 * 365 * 1.5;
+    const ONE_YEAR_FROM_NOW = SECONDS_IN_YEAR + Math.round(Date.now() / 1000);
     const { getByText } = render(NeuronCard, {
       props: {
         neuron: {
@@ -133,7 +135,7 @@ describe("NeuronCard", () => {
           fullNeuron: {
             ...mockFullNeuron,
             dissolveState: {
-              WhenDissolvedTimestampSeconds: BigInt(MORE_THAN_ONE_YEAR),
+              WhenDissolvedTimestampSeconds: BigInt(ONE_YEAR_FROM_NOW),
             },
           },
         },
@@ -142,5 +144,16 @@ describe("NeuronCard", () => {
 
     expect(getByText(en.neurons.status_dissolving)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
+  });
+
+  it("renders voting power in `proposerNeuron` version", async () => {
+    const { getByText } = render(NeuronCard, {
+      props: {
+        neuron: mockNeuron,
+        proposerNeuron: true,
+      },
+    });
+    const votingValue = formatICP(mockNeuron.votingPower);
+    expect(getByText(votingValue)).toBeInTheDocument();
   });
 });

@@ -17,7 +17,10 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_PROPOSALS_ROUTE,
+  } from "../lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,
@@ -27,6 +30,7 @@
   import { isRoutePath } from "../lib/utils/app-path.utils";
 
   let loading: boolean = false;
+  let hidden: boolean = false;
   let initialized: boolean = false;
 
   const findNextProposals = async () => {
@@ -50,10 +54,7 @@
     loading = true;
 
     try {
-      // If proposals are already displayed we reset the store first otherwise it might give the user the feeling than the new filters were already applied while the proposals are still being searched.
-      await listProposals({
-        clearBeforeQuery: !emptyProposals($proposalsStore),
-      });
+      await listProposals();
     } catch (err: unknown) {
       toastsStore.error({
         labelKey: "error.list_proposals",
@@ -71,12 +72,9 @@
     debounceFindProposals = debounce(async () => await findProposals(), 250);
   };
 
-  const showThisRoute = ["never", "staging"].includes(
-    process.env.REDIRECT_TO_LEGACY as string
-  );
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
-    if (!showThisRoute) {
+    if (!SHOW_PROPOSALS_ROUTE) {
       window.location.replace(AppPath.Proposals);
     }
 
@@ -89,6 +87,7 @@
     // We do this to smoothness the back and forth navigation between this page and the detail page.
     if (!emptyProposals($proposalsStore) && isReferrerProposalDetail) {
       initDebounceFindProposals();
+
       return;
     }
 
@@ -101,8 +100,21 @@
     initialized = true;
   });
 
-  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(() =>
-    debounceFindProposals?.()
+  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
+    ({ lastAppliedFilter }) => {
+      if (lastAppliedFilter === "excludeVotedProposals") {
+        // Make a visual feedback that the filter was applyed
+        hidden = true;
+        setTimeout(() => (hidden = false), 200);
+        return;
+      }
+
+      // Show spinner right away avoiding debounce
+      loading = true;
+      proposalsStore.setProposals([]);
+
+      debounceFindProposals?.();
+    }
   );
 
   onDestroy(unsubscribe);
@@ -117,7 +129,7 @@
     });
 </script>
 
-{#if showThisRoute}
+{#if SHOW_PROPOSALS_ROUTE}
   <Layout>
     <section>
       <p>{$i18n.voting.text}</p>
@@ -125,8 +137,8 @@
       <ProposalsFilters />
 
       <InfiniteScroll on:nnsIntersect={findNextProposals}>
-        {#each $proposalsStore as proposalInfo}
-          <ProposalCard {proposalInfo} />
+        {#each $proposalsStore as proposalInfo (proposalInfo.id)}
+          <ProposalCard {hidden} {proposalInfo} />
         {/each}
       </InfiniteScroll>
 

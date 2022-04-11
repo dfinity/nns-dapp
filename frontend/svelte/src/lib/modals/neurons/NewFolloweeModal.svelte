@@ -6,6 +6,7 @@
   import Spinner from "../../components/ui/Spinner.svelte";
   import { listKnownNeurons } from "../../services/knownNeurons.services";
   import { addFollowee } from "../../services/neurons.services";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { sortedknownNeuronsStore } from "../../stores/knownNeurons.store";
   import Modal from "../Modal.svelte";
@@ -41,12 +42,13 @@
   };
 
   const addFolloweeByAddress = async () => {
-    loading = true;
-    loadingAddress = true;
     let followee: bigint;
     if (followeeAddress === undefined) {
       return;
     }
+    loading = true;
+    loadingAddress = true;
+    startBusy("add-followee");
     try {
       followee = BigInt(followeeAddress);
     } catch (error) {
@@ -63,6 +65,7 @@
     loading = false;
     loadingAddress = false;
     followeeAddress = undefined;
+    stopBusy("add-followee");
   };
 </script>
 
@@ -80,12 +83,12 @@
         />
         <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
         <button
-          class="primary small"
+          class={`primary small ${loadingAddress ? "icon-only" : ""}`}
           type="submit"
           disabled={followeeAddress === undefined || loading}
         >
           {#if loadingAddress}
-            <Spinner />
+            <Spinner inline size="small" />
           {:else}
             {$i18n.new_followee.follow_neuron}
           {/if}

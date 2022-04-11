@@ -23,7 +23,6 @@ export const queryNeuron = async ({
 
   return canister.getNeuron({
     certified,
-    principal: identity.getPrincipal(),
     neuronId,
   });
 };
@@ -43,6 +42,42 @@ export const increaseDissolveDelay = async ({
     neuronId,
     additionalDissolveDelaySeconds: dissolveDelayInSeconds,
   });
+};
+
+export const joinCommunityFund = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.joinCommunityFund(neuronId);
+};
+
+export const startDissolving = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.startDissolving(neuronId);
+};
+
+export const stopDissolving = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.stopDissolving(neuronId);
 };
 
 export const setFollowees = async ({
@@ -76,7 +111,6 @@ export const queryNeurons = async ({
 
   return canister.listNeurons({
     certified,
-    principal: identity.getPrincipal(),
   });
 };
 
@@ -121,19 +155,34 @@ export const queryKnownNeurons = async ({
 
   const knownNeurons = await canister.listKnownNeurons(certified);
 
-  if (!knownNeurons.find(({ id }) => id === dfinityNeuron.id)) {
+  if (knownNeurons.find(({ id }) => id === dfinityNeuron.id) === undefined) {
     knownNeurons.push(dfinityNeuron);
   }
 
-  if (!knownNeurons.find(({ id }) => id === icNeuron.id)) {
+  if (knownNeurons.find(({ id }) => id === icNeuron.id) === undefined) {
     knownNeurons.push(icNeuron);
   }
 
   return knownNeurons;
 };
 
+export const claimOrRefreshNeuron = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<NeuronId | undefined> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.claimOrRefreshNeuron({
+    neuronId,
+    by: { NeuronIdOrSubaccount: {} },
+  });
+};
+
 // TODO: Apply pattern to other canister instantiation L2-371
-const governanceCanister = async ({
+export const governanceCanister = async ({
   identity,
 }: {
   identity: Identity;

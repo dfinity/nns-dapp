@@ -25,6 +25,7 @@
 
 <div class="filters">
   <FiltersButton
+    testId="filters-by-topics"
     totalFilters={enumSize(Topic)}
     activeFilters={topics.length}
     on:nnsFilter={() =>
@@ -36,6 +37,7 @@
   >
 
   <FiltersButton
+    testId="filters-by-rewards"
     totalFilters={enumSize(ProposalRewardStatus)}
     activeFilters={rewards.length}
     on:nnsFilter={() =>
@@ -47,6 +49,7 @@
   >
 
   <FiltersButton
+    testId="filters-by-status"
     totalFilters={enumSize(ProposalStatus)}
     activeFilters={status.length}
     on:nnsFilter={() =>

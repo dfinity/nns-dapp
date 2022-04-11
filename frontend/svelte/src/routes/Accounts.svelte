@@ -10,15 +10,18 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_ACCOUNTS_ROUTE,
+  } from "../lib/constants/routes.constants";
   import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
   import { ICP } from "@dfinity/nns";
   import { sumICPs } from "../lib/utils/icp.utils";
+  import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
 
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = process.env.REDIRECT_TO_LEGACY === "never";
   onMount(() => {
-    if (!showThisRoute) {
+    if (!SHOW_ACCOUNTS_ROUTE) {
       window.location.replace(AppPath.Accounts);
     }
   });
@@ -29,17 +32,15 @@
     async (storeData: AccountsStore) => (accounts = storeData)
   );
 
-  // TODO: TBD https://dfinity.atlassian.net/browse/L2-225
-  const createNewTransaction = () => alert("New Transaction");
-
   const cardClick = (identifier: string) =>
     routeStore.navigate({ path: `${AppPath.Wallet}/${identifier}` });
 
   onDestroy(unsubscribe);
 
-  let showAddAccountModal: boolean = false;
-  const openAddAccountModal = () => (showAddAccountModal = true);
-  const closeModal = () => (showAddAccountModal = false);
+  let modal: "AddAccountModal" | "NewTransaction" | undefined = undefined;
+  const openAddAccountModal = () => (modal = "AddAccountModal");
+  const openNewTransaction = () => (modal = "NewTransaction");
+  const closeModal = () => (modal = undefined);
 
   let totalBalance: ICP;
   const zeroICPs = ICP.fromE8s(BigInt(0));
@@ -51,7 +52,7 @@
   }
 </script>
 
-{#if showThisRoute}
+{#if SHOW_ACCOUNTS_ROUTE}
   <Layout>
     <section>
       <div class="title">
@@ -85,7 +86,7 @@
     <svelte:fragment slot="footer">
       {#if accounts}
         <Toolbar>
-          <button class="primary" on:click={createNewTransaction}
+          <button class="primary" on:click={openNewTransaction}
             >{$i18n.accounts.new_transaction}</button
           >
           <button class="primary" on:click={openAddAccountModal}
@@ -94,8 +95,11 @@
         </Toolbar>
       {/if}
     </svelte:fragment>
-    {#if showAddAccountModal}
+    {#if modal === "AddAccountModal"}
       <AddAcountModal on:nnsClose={closeModal} />
+    {/if}
+    {#if modal === "NewTransaction"}
+      <NewTransactionModal on:nnsClose={closeModal} canSelectAccount={true} />
     {/if}
   </Layout>
 {/if}

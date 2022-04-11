@@ -1,5 +1,23 @@
 import type { ProposalInfo } from "@dfinity/nns";
 
+/**
+ * Generate mock proposals with autoincremented "id".
+ * @param count How many proposals to create
+ * @param fields Static fields to set to mock entries e.g. {proposalTimestampSeconds: BigInt(0)}
+ * @returns List of mock proposals (not fully set)
+ */
+export const generateMockProposals = (
+  count: number,
+  fields?: Partial<ProposalInfo>
+): ProposalInfo[] =>
+  Array.from(Array(count)).map(
+    (_, index) =>
+      ({
+        ...fields,
+        id: BigInt(index),
+      } as unknown as ProposalInfo)
+  );
+
 // Not a valid `ProposalInfo` object. Only related to the test fields are included
 export const mockProposalInfo: ProposalInfo = {
   id: BigInt(10000),

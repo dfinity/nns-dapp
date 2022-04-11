@@ -7,6 +7,8 @@
   export let headerAlign: "left" | "center" = "left";
   export let maxContentHeight: number | undefined = undefined;
 
+  export let iconSize: "small" | "medium" = "small";
+
   // Minimum height when some part of the text-content is visible (empirical value)
   const CONTENT_MIN_HEIGHT = 40;
   const dispatch = createEventDispatcher();
@@ -54,7 +56,14 @@
   <div class="header-content">
     <slot name="header" />
   </div>
-  <button class:expanded aria-expanded={expanded} aria-controls={id}>
+  <button
+    class="collapsible-expand-icon"
+    class:size-medium={iconSize === "medium"}
+    class:expanded
+    data-tid="collapsible-expand-button"
+    aria-expanded={expanded}
+    aria-controls={id}
+  >
     <IconExpandMore />
   </button>
 </div>
@@ -129,6 +138,11 @@
       transition: transform var(--animation-time-normal);
     }
 
+    &.size-medium {
+      :global(svg) {
+        width: calc(4 * var(--padding));
+      }
+    }
     &.expanded {
       :global(svg) {
         transform: rotate(180deg);
@@ -157,7 +171,7 @@
 
   .content {
     // to not stick the content to the bottom
-    margin-bottom: calc(2 * var(--padding));
+    padding-bottom: calc(2 * var(--padding));
     // to respect children margins in contentHeight calculation
     overflow: auto;
     // scrollbar

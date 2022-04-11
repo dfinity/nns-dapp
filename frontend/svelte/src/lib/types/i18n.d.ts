@@ -10,9 +10,13 @@ interface I18nCore {
   back: string;
   confirm_yes: string;
   confirm_no: string;
+  confirm: string;
   yes: string;
   no: string;
   unspecified: string;
+  continue: string;
+  amount: string;
+  max: string;
 }
 
 interface I18nError {
@@ -29,11 +33,24 @@ interface I18nError {
   get_neurons: string;
   get_known_neurons: string;
   register_vote: string;
+  register_vote_neuron: string;
   register_vote_unknown: string;
   add_followee: string;
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
+  fail: string;
+  join_community_fund: string;
+  suspicious_response: string;
+  start_dissolving: string;
+  stop_dissolving: string;
+  dummy_proposal: string;
+  update_delay: string;
+  unknown: string;
+  amount_not_valid: string;
+  amount_not_enough: string;
+  stake_neuron: string;
+  transaction_invalid_amount: string;
 }
 
 interface I18nWarning {
@@ -57,7 +74,7 @@ interface I18nAuth {
   nns: string;
   icp_governance: string;
   login: string;
-  powered_by: string;
+  on_chain: string;
 }
 
 interface I18nAccounts {
@@ -72,6 +89,18 @@ interface I18nAccounts {
   attach_hardware_subtitle: string;
   new_linked_account_title: string;
   new_linked_account_placeholder: string;
+  linked_account: string;
+  select_source: string;
+  select_destination: string;
+  address: string;
+  enter_address_or_select: string;
+  my_accounts: string;
+  enter_icp_amount: string;
+  source: string;
+  destination: string;
+  transaction_fee: string;
+  review_transaction: string;
+  current_balance: string;
 }
 
 interface I18nNeurons {
@@ -79,18 +108,14 @@ interface I18nNeurons {
   text: string;
   principal_is: string;
   stake_neurons: string;
-  select_source: string;
   set_dissolve_delay: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
-  my_accounts: string;
   stake_neuron: string;
   source: string;
   transaction_fee: string;
   current_balance: string;
   may_take_while: string;
-  amount: string;
-  max: string;
   create: string;
   status_locked: string;
   status_unspecified: string;
@@ -101,6 +126,7 @@ interface I18nNeurons {
   stake: string;
   icp_stake: string;
   staked: string;
+  remaining: string;
   aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;
@@ -112,6 +138,7 @@ interface I18nNeurons {
   skip: string;
   update_delay: string;
   confirm_delay: string;
+  dissolve_delay_success: string;
 }
 
 interface I18nNew_followee {
@@ -244,6 +271,28 @@ interface I18nNeuron_detail {
   proposer: string;
   voting_history: string;
   vote: string;
+  join_community_fund: string;
+  increase_dissolve_delay: string;
+  start_dissolving: string;
+  stop_dissolving: string;
+  disburse: string;
+  increase_stake: string;
+  split_neuron: string;
+  voting_power_tooltip: string;
+  join_community_fund_description: string;
+  maturity_title: string;
+  merge_maturity: string;
+  spawn_neuron: string;
+  maturity_tooltip: string;
+  start_dissolve_description: string;
+  stop_dissolve_description: string;
+  join_community_fund_success: string;
+  start_dissolve_success: string;
+  stop_dissolve_success: string;
+  dummy_proposal_success: string;
+  following_title: string;
+  following_description: string;
+  follow_neurons: string;
 }
 
 interface I18nTime {

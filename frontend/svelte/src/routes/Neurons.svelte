@@ -11,29 +11,22 @@
   import type { NeuronId } from "@dfinity/nns";
   import { listNeurons } from "../lib/services/neurons.services";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import { toastsStore } from "../lib/stores/toasts.store";
-  import { neuronsStore } from "../lib/stores/neurons.store";
+  import { sortedNeuronStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_NEURONS_ROUTE,
+  } from "../lib/constants/routes.constants";
 
   let isLoading: boolean = false;
   // TODO: To be removed once this page has been implemented
-  const showThisRoute = process.env.REDIRECT_TO_LEGACY === "never";
   onMount(async () => {
-    if (!showThisRoute) {
+    if (!SHOW_NEURONS_ROUTE) {
       window.location.replace("/#/neurons");
     }
-    try {
-      isLoading = true;
-      await listNeurons();
-    } catch (err) {
-      toastsStore.error({
-        labelKey: "errors.get_neurons",
-        err,
-      });
-    } finally {
-      isLoading = false;
-    }
+    isLoading = true;
+    await listNeurons();
+    isLoading = false;
   });
 
   let principalText: string = "";
@@ -57,9 +50,9 @@
   };
 </script>
 
-{#if showThisRoute}
+{#if SHOW_NEURONS_ROUTE}
   <Layout>
-    <section>
+    <section data-tid="neurons-body">
       <p>{$i18n.neurons.text}</p>
 
       <p>
@@ -70,7 +63,7 @@
       {#if isLoading}
         <Spinner />
       {:else}
-        {#each $neuronsStore as neuron}
+        {#each $sortedNeuronStore as neuron}
           <NeuronCard
             role="link"
             ariaLabel={$i18n.neurons.aria_label_neuron_card}
@@ -82,8 +75,10 @@
     </section>
     <svelte:fragment slot="footer">
       <Toolbar>
-        <button class="primary" on:click={stakeNeurons}
-          >{$i18n.neurons.stake_neurons}</button
+        <button
+          data-tid="stake-neuron-button"
+          class="primary"
+          on:click={stakeNeurons}>{$i18n.neurons.stake_neurons}</button
         >
       </Toolbar>
     </svelte:fragment>

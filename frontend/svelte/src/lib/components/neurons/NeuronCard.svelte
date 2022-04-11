@@ -3,12 +3,21 @@
   import { NeuronState, ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
-  import { getStateInfo } from "../../utils/neuron.utils";
+  import {
+    getDissolvingTimeInSeconds,
+    getStateInfo,
+    hasJoinedCommunityFund,
+    isCurrentUserController,
+    neuronStake,
+  } from "../../utils/neuron.utils";
   import type { StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { authStore } from "../../stores/auth.store";
 
   export let neuron: NeuronInfo;
+  export let proposerNeuron: boolean = false;
   // Setting default value avoids warning missing props during testing
   export let role: undefined | "link" | "button" = undefined;
   export let ariaLabel: string | undefined = undefined;
@@ -17,28 +26,21 @@
   let stateInfo: StateInfo;
   $: stateInfo = getStateInfo(neuron.state);
   let isCommunityFund: boolean;
-  $: isCommunityFund = neuron.joinedCommunityFundTimestampSeconds !== undefined;
+  $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let neuronICP: ICP;
-  $: neuronICP =
-    neuron.fullNeuron?.cachedNeuronStake !== undefined
-      ? ICP.fromE8s(neuron.fullNeuron.cachedNeuronStake)
-      : ICP.fromE8s(BigInt(0));
-  $: isHotKeyControl =
-    neuron.fullNeuron?.isCurrentUserController === undefined
-      ? true
-      : !neuron.fullNeuron?.isCurrentUserController;
+  $: neuronICP = ICP.fromE8s(neuronStake(neuron));
+  let isHotKeyControl: boolean;
+  // TODO: Refactor to check with hotkeys
+  $: isHotKeyControl = !isCurrentUserController({
+    neuron,
+    identity: $authStore.identity,
+  });
   let dissolvingTime: bigint | undefined;
-  $: dissolvingTime =
-    neuron.state === NeuronState.DISSOLVING &&
-    neuron.fullNeuron !== undefined &&
-    neuron.fullNeuron.dissolveState !== undefined &&
-    "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
-      ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
-      : undefined;
+  $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
 </script>
 
 <Card {role} on:click {ariaLabel}>
-  <div slot="start" class="lock">
+  <div slot="start" class="lock" data-tid="neuron-card-title">
     <h3 class:has-neuron-control={isCommunityFund || isHotKeyControl}>
       {neuron.neuronId}
     </h3>
@@ -52,7 +54,12 @@
   </div>
 
   <div slot="end" class="currency">
-    {#if neuronICP}
+    {#if proposerNeuron}
+      <ICPComponent
+        label={$i18n.neurons.voting_power}
+        icp={ICP.fromE8s(neuron.votingPower)}
+      />
+    {:else if neuronICP}
       <ICPComponent icp={neuronICP} />
     {/if}
   </div>
@@ -62,25 +69,29 @@
       {$i18n.neurons[`status_${stateInfo.textKey}`]}
       <svelte:component this={stateInfo.Icon} />
     </p>
-
-    <p>{$i18n.neurons.stake}</p>
   </div>
 
   {#if dissolvingTime !== undefined}
     <p class="duration">
-      {secondsToDuration(dissolvingTime)} - {$i18n.neurons.staked}
+      {replacePlaceholders($i18n.neurons.remaining, {
+        $duration: secondsToDuration(dissolvingTime),
+      })}
     </p>
   {/if}
 
   {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
     <p class="duration">
-      {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons.staked}
+      {secondsToDuration(neuron.dissolveDelaySeconds)}
+      - {$i18n.neurons.dissolve_delay_title}
     </p>
   {/if}
+
+  <slot />
 </Card>
 
 <style lang="scss">
   @use "../../themes/mixins/display";
+  @use "../../themes/mixins/card";
 
   :global(div.modal article > div) {
     margin-bottom: 0;
@@ -92,8 +103,7 @@
   }
 
   .lock {
-    display: flex;
-    flex-direction: column;
+    @include card.stacked-title;
   }
 
   .status {
@@ -115,8 +125,6 @@
   .info {
     @include display.space-between;
     align-items: center;
-
-    margin: calc(2 * var(--padding)) 0 0;
 
     p {
       margin: 0;
