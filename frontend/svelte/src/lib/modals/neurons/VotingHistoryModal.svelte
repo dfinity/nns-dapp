@@ -6,13 +6,15 @@
   import Spinner from "../../components/ui/Spinner.svelte";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
   import { toastsStore } from "../../stores/toasts.store";
-  import { onMount } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import VotingHistoryCard from "../../components/neurons/VotingHistoryCard.svelte";
   import { authStore } from "../../stores/auth.store";
   import { loadNeuron } from "../../services/neurons.services";
 
   export let neuronId: NeuronId;
   let neuron: NeuronInfo | undefined;
+
+  const dispatch = createEventDispatcher();
 
   onMount(async () => {
     if (!$authStore.identity) {
@@ -24,7 +26,10 @@
     await loadNeuron({
       neuronId,
       setNeuron: (neuronInfo) => (neuron = neuronInfo),
-      handleError: (neuron = undefined),
+      handleError: () => {
+        neuron = undefined;
+        dispatch("nnsClose");
+      },
     });
   });
 </script>
