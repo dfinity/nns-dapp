@@ -1,4 +1,4 @@
-/* Font sizing source: https://type-scale.com/ */
+  /* Font sizing source: https://type-scale.com/ */
 
 @font-face {
   font-family: "Circular";
@@ -49,6 +49,7 @@ textarea {
 }
 
 :root {
+  --font-size-huge: 3.052rem;
   --font-size-h1: 1.802rem;
   --font-size-h2: 1.602rem;
   --font-size-h3: 1.424rem;

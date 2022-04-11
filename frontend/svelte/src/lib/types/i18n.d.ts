@@ -101,6 +101,7 @@ interface I18nAccounts {
   transaction_fee: string;
   review_transaction: string;
   current_balance: string;
+  confirm_and_send: string;
 }
 
 interface I18nNeurons {

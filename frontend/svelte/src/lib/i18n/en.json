@@ -82,7 +82,7 @@
     "new_linked_account_placeholder": "Account Name",
     "linked_account": "LINKED ACCOUNT",
     "select_source": "Select Source Account",
-    "select_destination": "Select destination",
+    "select_destination": "Select Destination",
     "address": "Address",
     "enter_address_or_select": "Enter a destination address or select an account.",
     "my_accounts": "My Accounts",
@@ -90,8 +90,9 @@
     "source": "Source",
     "destination": "Destination",
     "transaction_fee": "Transaction Fee (billed to source)",
-    "review_transaction": "Review transaction",
-    "current_balance": "Current balance"
+    "review_transaction": "Review Transaction",
+    "current_balance": "Current balance",
+    "confirm_and_send": "Confirm and Send"
   },
   "neurons": {
     "title": "Neurons",
