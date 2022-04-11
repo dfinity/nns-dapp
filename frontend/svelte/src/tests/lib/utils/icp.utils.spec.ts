@@ -1,7 +1,8 @@
 import { ICP } from "@dfinity/nns";
 import {
   formatICP,
-  formattedTransactionFeeICP, maxICP,
+  formattedTransactionFeeICP,
+  maxICP,
   sumICPs,
 } from "../../../lib/utils/icp.utils";
 
