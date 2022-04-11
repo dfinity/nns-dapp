@@ -23,7 +23,6 @@ export const queryNeuron = async ({
 
   return canister.getNeuron({
     certified,
-    principal: identity.getPrincipal(),
     neuronId,
   });
 };
@@ -112,7 +111,6 @@ export const queryNeurons = async ({
 
   return canister.listNeurons({
     certified,
-    principal: identity.getPrincipal(),
   });
 };
 
