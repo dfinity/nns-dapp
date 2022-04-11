@@ -1,11 +1,9 @@
 # Upgrade frontend NNS Dapp canister to commit `b39dd5a91e565e631688f963f3d5577ae6de4bfd`
-Wasm sha256 hash: `<WASM_HASH>` (`<LINK_TO_GITHUB_ACTION>`)
+Wasm sha256 hash: `0a7e600a3ec293406e3f1bca0fdfd7914e8b91ca515003edbed9779e86d872fb` (`https://github.com/dfinity/nns-dapp/actions/runs/2147345158`)
 
 ## Change Log:
 
-* Write about...
-* ... what has changed
-* ... in simple bullet points
+- The proposals tab is now rendered using svelte.
 
 ## Commit log:
 
