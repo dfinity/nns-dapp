@@ -138,17 +138,13 @@ const waitForPath = async (
   options?: { timeout?: number }
 ) => {
   const { timeout } = options;
-  const timeoutMsg = `Timed out waiting for path to be: '${path}'`;
   let currentPath = "";
   try {
-   return browser.waitUntil(
-    async () => {
+    await browser.waitUntil(async () => {
       const currentLocation = await browser.execute(() => document.location);
       currentPath = `${currentLocation.pathname}${currentLocation.hash}`;
       return currentPath === path;
-      },
-    { timeout, timeoutMsg }
-   );
+    }, options);
   } catch (err) {
     throw new Error(
       `Expected path '${path}' but have: '${currentPath}' with ${JSON.stringify(
