@@ -32,6 +32,7 @@ import { getLastPathDetailId } from "../utils/app-path.utils";
 import {
   convertNumberToICP,
   isCurrentUserController,
+  isEnoughToStakeNeuron,
   isNeuronControllable,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
@@ -101,7 +102,7 @@ export const stakeAndLoadNeuron = async ({
       return;
     }
 
-    if (stake.toE8s() < E8S_PER_ICP) {
+    if (!isEnoughToStakeNeuron(stake)) {
       toastsStore.error({
         labelKey: "error.amount_not_enough",
       });
@@ -309,7 +310,7 @@ export const splitNeuron = async ({
       return;
     }
 
-    if (stake.toE8s() < E8S_PER_ICP) {
+    if (!isEnoughToStakeNeuron(stake)) {
       toastsStore.error({
         labelKey: "error.amount_not_enough",
       });

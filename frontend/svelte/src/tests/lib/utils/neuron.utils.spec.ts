@@ -16,6 +16,7 @@ import {
   hasJoinedCommunityFund,
   hasValidStake,
   isCurrentUserController,
+  isEnoughToStakeNeuron,
   isNeuronControllable,
   isValidInputAmount,
   maturityByStake,
@@ -501,6 +502,17 @@ describe("neuron-utils", () => {
 
     it("returns undefined on negative numbers", () => {
       expect(convertNumberToICP(-10)).toBeUndefined();
+    });
+  });
+
+  describe("isEnoughToStakeNeuron", () => {
+    it("return true if enough ICP to create a neuron", () => {
+      const stake = ICP.fromString("3") as ICP;
+      expect(isEnoughToStakeNeuron(stake)).toBe(true);
+    });
+    it("returns false if not enough ICP to create a neuron", () => {
+      const stake = ICP.fromString("0.000001") as ICP;
+      expect(isEnoughToStakeNeuron(stake)).toBe(false);
     });
   });
 });

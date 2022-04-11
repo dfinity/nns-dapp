@@ -190,3 +190,6 @@ export const convertNumberToICP = (amount: number): ICP | undefined => {
 
   return stake;
 };
+
+export const isEnoughToStakeNeuron = (stake: ICP): boolean =>
+  stake.toE8s() > E8S_PER_ICP;
