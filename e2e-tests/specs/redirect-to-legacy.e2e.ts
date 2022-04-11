@@ -139,15 +139,24 @@ const waitForPath = async (
 ) => {
   const { timeout } = options;
   const timeoutMsg = `Timed out waiting for path to be: '${path}'`;
-  return browser.waitUntil(
-    async () =>
-      await browser.execute(
-        (path) =>
-          `${document.location.pathname}${document.location.hash}` === path,
-        path
-      ),
+  let currentPath = "";
+  try {
+   return browser.waitUntil(
+    async () => {
+      const currentLocation = await browser.execute(() => document.location);
+      currentPath = `${currentLocation.pathname}${currentLocation.hash}`;
+      return currentPath === path;
+      },
     { timeout, timeoutMsg }
-  );
+   );
+  } catch (err) {
+    throw new Error(
+      `Expected path '${path}' but have: '${currentPath}' with ${JSON.stringify(
+        options
+      )}`,
+      { cause: err }
+    );
+  }
 };
 
 /**
