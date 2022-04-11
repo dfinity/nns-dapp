@@ -36,7 +36,7 @@ export const config: WebdriverIO.Config = {
 
         if (options.saveDom === true) {
           writeFileSync(
-            `${SCREENSHOTS_DIR}/${filename}.png`,
+            `${SCREENSHOTS_DIR}/${filename}.html`,
             await $(":root", { encoding: "utf8" }).getHTML(),
             { encoding: "utf8" }
           );
