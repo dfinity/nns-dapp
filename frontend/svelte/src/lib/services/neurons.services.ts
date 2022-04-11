@@ -24,12 +24,59 @@ import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
+import { accountsStore } from "../stores/accounts.store";
 import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
+import {
+  isCurrentUserController,
+  isNeuronControllable,
+} from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
+
+export const assertNeuronUserControlled = async (
+  neuronId: NeuronId
+): Promise<void> => {
+  const identity = await getIdentity();
+  const neurons = get(neuronsStore);
+  const neuron = neurons.find(
+    (currentNeuron) => currentNeuron.neuronId === neuronId
+  );
+  if (neuron === undefined) {
+    throw new Error(`Neuron with id ${neuronId} not found.`);
+  }
+  const isControlled = isCurrentUserController({
+    neuron,
+    identity,
+  });
+  if (!isControlled) {
+    throw new Error("User is not authorized to perform the action");
+  }
+};
+
+export const assertNeuronControllable = async (
+  neuronId: NeuronId
+): Promise<void> => {
+  const identity = await getIdentity();
+  const accounts = get(accountsStore);
+  const neurons = get(neuronsStore);
+  const neuron = neurons.find(
+    (currentNeuron) => currentNeuron.neuronId === neuronId
+  );
+  if (neuron === undefined) {
+    throw new Error(`Neuron with id ${neuronId} not found.`);
+  }
+  const isControllable = isNeuronControllable({
+    neuron,
+    identity,
+    accounts,
+  });
+  if (!isControllable) {
+    throw new Error("User is not authorized to perform the action");
+  }
+};
 
 /**
  * Uses governance api to create a neuron and adds it to the store
@@ -209,9 +256,10 @@ export const updateDelay = async ({
   neuronId: NeuronId;
   dissolveDelayInSeconds: number;
 }): Promise<NeuronId | undefined> => {
-  const identity: Identity = await getIdentity();
-
   try {
+    await assertNeuronUserControlled(neuronId);
+    const identity: Identity = await getIdentity();
+
     await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
 
     await getAndLoadNeuronHelper({ neuronId, identity });
@@ -229,6 +277,9 @@ export const updateDelay = async ({
 };
 
 export const joinCommunityFund = async (neuronId: NeuronId): Promise<void> => {
+  // Try/catch done in the component
+  await assertNeuronUserControlled(neuronId);
+
   const identity: Identity = await getIdentity();
 
   await joinCommunityFundApi({ neuronId, identity });
@@ -237,6 +288,9 @@ export const joinCommunityFund = async (neuronId: NeuronId): Promise<void> => {
 };
 
 export const startDissolving = async (neuronId: NeuronId): Promise<void> => {
+  // Try/catch done in the component
+  await assertNeuronUserControlled(neuronId);
+
   const identity: Identity = await getIdentity();
 
   await startDissolvingApi({ neuronId, identity });
@@ -245,6 +299,9 @@ export const startDissolving = async (neuronId: NeuronId): Promise<void> => {
 };
 
 export const stopDissolving = async (neuronId: NeuronId): Promise<void> => {
+  // Try/catch done in the component
+  await assertNeuronUserControlled(neuronId);
+
   const identity: Identity = await getIdentity();
 
   await stopDissolvingApi({ neuronId, identity });
@@ -263,9 +320,11 @@ const setFolloweesHelper = async ({
   followees: NeuronId[];
   labelKey: "add_followee" | "remove_followee";
 }) => {
-  const identity: Identity = await getIdentity();
-
   try {
+    await assertNeuronControllable(neuronId);
+
+    const identity: Identity = await getIdentity();
+
     await setFollowees({
       identity,
       neuronId,
@@ -427,6 +486,7 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     return;
   }
   try {
+    await assertNeuronControllable(neuronId);
     const identity: Identity = await getIdentity();
     await makeDummyProposalsApi({
       neuronId,

@@ -83,12 +83,12 @@
         />
         <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
         <button
-          class="primary small"
+          class={`primary small ${loadingAddress ? "icon-only" : ""}`}
           type="submit"
           disabled={followeeAddress === undefined || loading}
         >
           {#if loadingAddress}
-            <Spinner />
+            <Spinner inline size="small" />
           {:else}
             {$i18n.new_followee.follow_neuron}
           {/if}

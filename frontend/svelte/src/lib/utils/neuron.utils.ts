@@ -1,4 +1,5 @@
 import { NeuronState, type BallotInfo, type NeuronInfo } from "@dfinity/nns";
+import type { Identity } from "@dfinity/agent";
 import type { SvelteComponent } from "svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
@@ -10,7 +11,6 @@ import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
-import type { Account } from "../types/account";
 import { getAccountByPrincipal } from "./accounts.utils";
 import { formatNumber } from "./format.utils";
 
@@ -81,6 +81,16 @@ export const dissolveDelayMultiplier = (delayInSeconds: number): number =>
   1 *
     (Math.min(delayInSeconds, SECONDS_IN_EIGHT_YEARS) / SECONDS_IN_EIGHT_YEARS);
 
+export const getDissolvingTimeInSeconds = (
+  neuron: NeuronInfo
+): bigint | undefined =>
+  neuron.state === NeuronState.DISSOLVING &&
+  neuron.fullNeuron?.dissolveState !== undefined &&
+  "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
+    ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
+      BigInt(Math.round(Date.now() / 1000))
+    : undefined;
+
 export const ageMultiplier = (ageSeconds: number): number =>
   1 +
   0.25 * (Math.min(ageSeconds, SECONDS_IN_FOUR_YEARS) / SECONDS_IN_FOUR_YEARS);
@@ -91,13 +101,16 @@ export const formatVotingPower = (value: bigint): string =>
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
-export const isCurrentUserController = (
-  neuron: NeuronInfo,
-  mainAccount?: Account
-): boolean =>
+export const isCurrentUserController = ({
+  neuron,
+  identity,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+}): boolean =>
   neuron.fullNeuron?.controller === undefined
     ? false
-    : mainAccount?.principal?.toText() === neuron.fullNeuron.controller;
+    : identity?.getPrincipal().toText() === neuron.fullNeuron.controller;
 
 export const maturityByStake = (neuron: NeuronInfo): number => {
   if (
@@ -128,19 +141,24 @@ export const sortNeuronsByCreatedTimestamp = (
  *
  *  1. The user is the controller
  *  OR
- *  2. The user's hardware wallet is the controller.
+ *  2. The main account (same as user) is the controller
+ *  OR
+ *  3. The user's hardware wallet is the controller.
  *
  */
 export const isNeuronControllable = ({
   neuron: { fullNeuron },
+  identity,
   accounts,
 }: {
   neuron: NeuronInfo;
+  identity?: Identity | null;
   accounts: AccountsStore;
 }): boolean =>
   fullNeuron?.controller !== undefined &&
-  getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
-    undefined;
+  (fullNeuron.controller === identity?.getPrincipal().toText() ||
+    getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
+      undefined);
 
 /**
  * Calculate neuron stake (cachedNeuronStake - neuronFees)
