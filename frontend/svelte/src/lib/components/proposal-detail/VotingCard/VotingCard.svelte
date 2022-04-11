@@ -15,26 +15,28 @@
 
   export let proposalInfo: ProposalInfo;
 
-  const notVotedNeurons = () =>
+  const votableNeurons = () =>
     getNotVotedNeurons({
       neurons: $neuronsStore,
       proposal: proposalInfo,
-    });
+    })
+      // fix selection of neurons witout votingPower
+      .filter(({ votingPower }) => votingPower > 0);
   let visible: boolean = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
 
   $: visible =
-    notVotedNeurons().length > 0 &&
+    votableNeurons().length > 0 &&
     proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
 
   const unsubcribe = neuronsStore.subscribe(() => {
     if (!initialSelectionDone) {
       initialSelectionDone = true;
-      votingNeuronSelectStore.set(notVotedNeurons());
+      votingNeuronSelectStore.set(votableNeurons());
     } else {
       // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
-      votingNeuronSelectStore.updateNeurons(notVotedNeurons());
+      votingNeuronSelectStore.updateNeurons(votableNeurons());
     }
   });
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
