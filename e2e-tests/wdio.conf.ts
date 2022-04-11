@@ -9,37 +9,40 @@ export const config: WebdriverIO.Config = {
     browser["screenshot-count"] = 0; // Counter restarted with each new suite
     browser["screenshots-taken"] = new Set(); // Set of all screenshot names
 
-    browser.addCommand("screenshot", async (name: string, options: {saveDom: boolean} = {}) => {
-      const countStr: string = (browser["screenshot-count"]++)
-        .toFixed()
-        .padStart(2, "0");
-      const unsafeFilename = `${browser["screenshot-prefix"]}_${countStr}_${name}`;
-      // Filesystem-safe characters: ASCII alnum and hyphen.
-      // Underscore may be used to separate the components of the path.
-      const filename = unsafeFilename.replace(/[^a-zA-Z0-9_]+/g, "-");
+    browser.addCommand(
+      "screenshot",
+      async (name: string, options: { saveDom: boolean } = {}) => {
+        const countStr: string = (browser["screenshot-count"]++)
+          .toFixed()
+          .padStart(2, "0");
+        const unsafeFilename = `${browser["screenshot-prefix"]}_${countStr}_${name}`;
+        // Filesystem-safe characters: ASCII alnum and hyphen.
+        // Underscore may be used to separate the components of the path.
+        const filename = unsafeFilename.replace(/[^a-zA-Z0-9_]+/g, "-");
 
-      if (true === browser["screenshots-taken"].has(filename)) {
-        throw Error(`A screenshot with this name was already taken: '${filename}'`);
+        if (true === browser["screenshots-taken"].has(filename)) {
+          throw Error(
+            `A screenshot with this name was already taken: '${filename}'`
+          );
+        }
+        browser["screenshots-taken"].add(filename);
+
+        const SCREENSHOTS_DIR = "screenshots";
+        if (!(existsSync(SCREENSHOTS_DIR) as boolean)) {
+          mkdirSync(SCREENSHOTS_DIR);
+        }
+
+        await browser.saveScreenshot(`${SCREENSHOTS_DIR}/${filename}.png`);
+
+        if (options.saveDom === true) {
+          writeFileSync(
+            `${SCREENSHOTS_DIR}/${filename}.png`,
+            await $(":root", { encoding: "utf8" }).getHTML(),
+            { encoding: "utf8" }
+          );
+        }
       }
-      browser["screenshots-taken"].add(filename);
-
-      const SCREENSHOTS_DIR = "screenshots";
-      if (!(existsSync(SCREENSHOTS_DIR) as boolean)) {
-        mkdirSync(SCREENSHOTS_DIR);
-      }
-
-      await browser.saveScreenshot(
-        `${SCREENSHOTS_DIR}/${filename}.png`
-      );
-
-      if (options.saveDom === true) {
-              writeFileSync(
-        `${SCREENSHOTS_DIR}/${filename}.png`,
-        await $(":root", { encoding: "utf8" }).getHTML(),
-        { encoding: "utf8" }
-      );
-      }
-    });
+    );
   },
 
   beforeSuite: (suite) => {
@@ -47,7 +50,7 @@ export const config: WebdriverIO.Config = {
     browser["screenshot-count"] = 0;
   },
 
-  afterTest: async function (test, context, {error}) {
+  afterTest: async function (test, context, { error }) {
     // Take a screenshot anytime a test fails and throws an error.
     // Note: We could also use `result !== 0` or `passed === true`.
     //       The reason for conditioning on an error is that if
@@ -58,7 +61,7 @@ export const config: WebdriverIO.Config = {
     if (undefined !== error) {
       // Filenames containing spaces are painful to work with on the command line,
       // so we replace any spaces in the test name when we create the screenshot.
-      await browser["screenshot"](`test-fail_${test.title}`, {saveDom: true});
+      await browser["screenshot"](`test-fail_${test.title}`, { saveDom: true });
     }
   },
 
