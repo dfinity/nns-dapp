@@ -125,7 +125,7 @@
     top: 0;
     bottom: 0;
     right: 0;
-    width: calc(4 * var(--padding));
+    width: var(--padding-4x);
 
     margin: 0;
     padding: 0;
@@ -140,7 +140,7 @@
 
     &.size-medium {
       :global(svg) {
-        width: calc(4 * var(--padding));
+        width: var(--padding-4x);
       }
     }
     &.expanded {

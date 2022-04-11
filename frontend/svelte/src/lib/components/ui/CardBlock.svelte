@@ -40,8 +40,8 @@
     background: var(--gray-100-background);
     color: var(--gray-100-background-contrast);
 
-    padding: calc(1.5 * var(--padding));
-    margin: calc(1.5 * var(--padding)) 0;
+    padding: var(--padding-1_5x);
+    margin: var(--padding-1_5x) 0;
     border-radius: var(--border-radius);
 
     // TODO: move to variables

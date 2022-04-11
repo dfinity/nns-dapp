@@ -58,7 +58,7 @@
     color: var(--black-contrast);
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
 
-    width: calc(100% - (8 * var(--padding)));
+    width: calc(100% - var(--padding-8x));
 
     padding: var(--padding) var(--padding-2x);
     box-sizing: border-box;

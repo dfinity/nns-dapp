@@ -44,7 +44,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: calc(1.5 * var(--padding));
+    gap: var(--padding-1_5x);
 
     color: var(--background-contrast);
 

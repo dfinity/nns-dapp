@@ -24,7 +24,7 @@
   @use "../../themes/mixins/interaction";
 
   .card-item {
-    padding: calc(4 * var(--padding));
+    padding: var(--padding-4x);
     border-radius: var(--border-radius);
 
     @include interaction.tappable;
