@@ -21,10 +21,10 @@ describe("VotingHistoryModal", () => {
     new MockGovernanceCanister(mockProposals);
 
   beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementation(jest.fn);
     jest
       .spyOn(GovernanceCanister, "create")
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
-
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
@@ -54,5 +54,21 @@ describe("VotingHistoryModal", () => {
     await waitFor(() =>
       expect(container.querySelector("article")).not.toBeNull()
     );
+  });
+
+  it("should close on error", async () => {
+    jest
+      .spyOn(GovernanceCanister, "create")
+      .mockImplementation((): GovernanceCanister => {
+        throw new Error("test");
+      });
+
+    const onClose = jest.fn();
+    const { component } = render(VotingHistoryModal, {
+      props,
+    });
+    component.$on("nnsClose", onClose);
+
+    await waitFor(() => expect(onClose).toBeCalled());
   });
 });
