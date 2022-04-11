@@ -18,6 +18,8 @@
   }
 
   .tooltip {
+    z-index: 1;
+
     position: absolute;
     display: inline-block;
 
@@ -36,7 +38,11 @@
     background: var(--gray-600);
 
     color: var(--gray-600-contrast);
-    white-space: pre;
+
+    // limit width
+    white-space: pre-wrap;
+    max-width: 240px;
+    width: max-content;
 
     &.noWrap {
       white-space: nowrap;
