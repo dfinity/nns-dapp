@@ -1,5 +1,8 @@
 # Changelog
 
+## Proposal XXXX
+- Display the proposals tab using svelte
+
 ## Proposal 53536
 - Merge neuron functionality (using quill, not the GUI).
 - Updated logo
