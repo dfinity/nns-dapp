@@ -6,13 +6,15 @@
 
   export let followee: FolloweesNeuron;
   let modalOpen = false;
+  let id: string;
+  $: id = `followee-${followee.neuronId}`;
 </script>
 
-<button class="text" on:click|stopPropagation={() => (modalOpen = true)}>
+<button {id} class="text" on:click|stopPropagation={() => (modalOpen = true)}>
   {followee.neuronId}
 </button>
 
-<ul>
+<ul aria-labelledby={id}>
   {#each followee.topics as topic}
     <li>{$i18n.topics[Topic[topic]]}</li>
   {/each}
@@ -28,11 +30,12 @@
 <style lang="scss">
   button {
     margin: 0 0 calc(0.5 * var(--padding));
+    font-size: var(--font-size-h5);
   }
 
   ul {
     display: flex;
-    gap: var(--padding);
+    gap: calc(0.5 * var(--padding));
     flex-wrap: wrap;
 
     list-style: none;
