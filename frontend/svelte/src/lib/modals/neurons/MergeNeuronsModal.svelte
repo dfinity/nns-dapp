@@ -2,7 +2,7 @@
   import { i18n } from "../../stores/i18n";
   import WizardModal from "../WizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
-  import SelectTwoNeurons from "../../components/neurons/SelectTwoNeurons.svelte";
+  import SelectNeurons from "../../components/neurons/SelectNeurons.svelte";
   import ConfirmNeuronsMerge from "../../components/neurons/ConfirmNeuronsMerge.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { neuronsStore } from "../../stores/neurons.store";
@@ -70,7 +70,7 @@
       $i18n.neurons.merge_neurons_modal_title}</svelte:fragment
   >
   {#if currentStep?.name === "SelectNeurons"}
-    <SelectTwoNeurons {neurons} on:nnsSelect={handleNeuronSelection} />
+    <SelectNeurons {neurons} on:nnsSelect={handleNeuronSelection} />
   {/if}
   {#if currentStep?.name === "ConfirmMerge"}
     {#if selectedNeurons !== undefined}

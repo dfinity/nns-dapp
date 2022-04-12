@@ -56,6 +56,7 @@ interface I18nError {
   transaction_no_destination_address: string;
   transaction_error: string;
   unexpected_number_neurons_merge: string;
+  cannot_merge: string;
 }
 
 interface I18nWarning {
@@ -151,6 +152,7 @@ interface I18nNeurons {
   update_delay: string;
   confirm_delay: string;
   dissolve_delay_success: string;
+  merge_neurons_article_title: string;
 }
 
 interface I18nNew_followee {

@@ -12,6 +12,7 @@
 
   const dispatcher = createEventDispatcher();
   $: {
+    // Only two neurons can be merged
     if (neurons.length !== 2) {
       toastsStore.error({
         labelKey: "error.unexpected_number_neurons_merge",

@@ -61,8 +61,11 @@
     <!-- Show the error only when there are two selected neurons -->
     {#if !validSelection && selectedNeuronIds.length === MAX_NEURONS_MERGED}
       <p>
-        Those two neurons cannot be merged. Check the article for more
-        information.
+        {$i18n.error.cannot_merge}
+        <a
+          href="https://medium.com/dfinity/internet-computer-nns-neurons-can-now-be-merged-8b4e44584dc2"
+          >{$i18n.neurons.merge_neurons_article_title}</a
+        >
       </p>
     {/if}
   </div>
@@ -81,7 +84,15 @@
   }
 
   p {
-    color: red;
+    color: var(--pink);
+    font-size: var(--font-size-ultra-small);
+
+    margin-bottom: 0;
+
+    a {
+      text-decoration: underline;
+      font-size: inherit;
+    }
   }
 
   .items {
@@ -94,6 +105,8 @@
 
   .actions {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-end;
   }
 </style>
