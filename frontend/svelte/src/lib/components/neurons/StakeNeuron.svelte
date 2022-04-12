@@ -1,16 +1,16 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import Spinner from "../ui/Spinner.svelte";
-  import {
-    E8S_PER_ICP,
-    TRANSACTION_FEE_E8S,
-  } from "../../constants/icp.constants";
   import { syncAccounts } from "../../services/accounts.services";
   import { stakeAndLoadNeuron } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { formatICP, formattedTransactionFeeICP } from "../../utils/icp.utils";
+  import {
+    formatICP,
+    formattedTransactionFeeICP,
+    maxICP,
+  } from "../../utils/icp.utils";
   import AmountInput from "../ui/AmountInput.svelte";
 
   export let account: Account;
@@ -38,8 +38,7 @@
   };
 
   let max: number = 0;
-  $: max =
-    (Number(account.balance.toE8s()) - TRANSACTION_FEE_E8S) / E8S_PER_ICP;
+  $: max = maxICP(account.balance);
 
   const stakeMaximum = () => (amount = max);
 </script>
@@ -111,7 +110,7 @@
     --input-width: 100%;
 
     small {
-      margin-top: calc(2 * var(--padding));
+      margin-top: var(--padding-2x);
     }
 
     button[type="submit"] {

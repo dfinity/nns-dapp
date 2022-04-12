@@ -6,6 +6,7 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import { ProposalStatus, Vote } from "@dfinity/nns";
+import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { isDefined, stringifyJson } from "./utils";
 
 export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
@@ -62,16 +63,53 @@ export const formatProposalSummary = (summary: string): string => {
   );
 };
 
+export const hideProposal = ({
+  proposalInfo,
+  filters,
+}: {
+  proposalInfo: ProposalInfo;
+  filters: ProposalsFiltersStore;
+}): boolean =>
+  !matchFilters({ proposalInfo, filters }) ||
+  isExcludedVotedProposal({ proposalInfo, filters });
+
+/**
+ * Does the proposal returned by the backend really matches the filter selected by the user?
+ */
+const matchFilters = ({
+  proposalInfo,
+  filters,
+}: {
+  proposalInfo: ProposalInfo;
+  filters: ProposalsFiltersStore;
+}): boolean => {
+  const { topics, rewards, status } = filters;
+
+  const {
+    topic: proposalTopic,
+    status: proposalStatus,
+    rewardStatus,
+  } = proposalInfo;
+
+  return (
+    topics.includes(proposalTopic) &&
+    rewards.includes(rewardStatus) &&
+    status.includes(proposalStatus)
+  );
+};
+
 /**
  * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal is OPEN and has at least one UNSPECIFIED ballots' vote.
  */
-export const hideProposal = ({
+const isExcludedVotedProposal = ({
   proposalInfo,
-  excludeVotedProposals,
+  filters,
 }: {
   proposalInfo: ProposalInfo;
-  excludeVotedProposals: boolean;
+  filters: ProposalsFiltersStore;
 }): boolean => {
+  const { excludeVotedProposals } = filters;
+
   const { status, ballots } = proposalInfo;
   const containsUnspecifiedBallot = (): boolean =>
     // Sometimes ballots contains all neurons with Vote.UNSPECIFIED
@@ -91,23 +129,18 @@ export const hideProposal = ({
  */
 export const hasMatchingProposals = ({
   proposals,
-  excludeVotedProposals,
+  filters,
 }: {
   proposals: ProposalInfo[];
-  excludeVotedProposals: boolean;
+  filters: ProposalsFiltersStore;
 }): boolean => {
   if (proposals.length === 0) {
     return false;
   }
 
-  if (!excludeVotedProposals) {
-    return true;
-  }
-
   return (
     proposals.find(
-      (proposalInfo: ProposalInfo) =>
-        !hideProposal({ proposalInfo, excludeVotedProposals })
+      (proposalInfo: ProposalInfo) => !hideProposal({ proposalInfo, filters })
     ) !== undefined
   );
 };

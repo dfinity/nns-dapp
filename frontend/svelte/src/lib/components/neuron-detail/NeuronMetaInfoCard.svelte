@@ -120,7 +120,7 @@
   .voting-power {
     display: flex;
     align-items: center;
-    gap: calc(0.5 * var(--padding));
+    gap: var(--padding-0_5x);
 
     span {
       display: flex;
