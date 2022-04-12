@@ -125,6 +125,7 @@
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
     if ($proposalsStore.certified === false) {
+      if (loading) nothingFound = false;
       return;
     }
 
