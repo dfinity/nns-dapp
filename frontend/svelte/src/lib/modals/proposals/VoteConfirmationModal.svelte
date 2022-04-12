@@ -38,13 +38,13 @@
   @use "../../themes/mixins/text";
 
   div {
-    padding: calc(2 * var(--padding)) 0;
+    padding: var(--padding-2x) 0;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: calc(1.5 * var(--padding));
+    gap: var(--padding-1_5x);
 
     color: var(--background-contrast);
 

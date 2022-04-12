@@ -45,6 +45,6 @@
 
 <style lang="scss">
   .content {
-    padding: calc(2 * var(--padding));
+    padding: var(--padding-2x);
   }
 </style>

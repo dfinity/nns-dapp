@@ -26,7 +26,7 @@
 
 <style lang="scss">
   article {
-    padding: calc(2 * var(--padding));
+    padding: var(--padding-2x);
   }
 
   [role="toolbar"] {
