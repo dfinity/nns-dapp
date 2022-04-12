@@ -56,6 +56,23 @@ export const joinCommunityFund = async ({
   return canister.joinCommunityFund(neuronId);
 };
 
+export const splitNeuron = async ({
+  neuronId,
+  amount,
+  identity,
+}: {
+  neuronId: NeuronId;
+  amount: ICP;
+  identity: Identity;
+}): Promise<NeuronId> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.splitNeuron({
+    neuronId,
+    amount,
+  });
+};
+
 export const startDissolving = async ({
   neuronId,
   identity,
