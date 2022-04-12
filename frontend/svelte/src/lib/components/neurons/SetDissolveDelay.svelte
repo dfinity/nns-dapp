@@ -212,7 +212,7 @@
   .wrapper {
     :global(article) {
       flex-grow: 1;
-      margin: 0 0 calc(2 * var(--padding));
+      margin: 0 0 var(--padding-2x);
     }
   }
 </style>

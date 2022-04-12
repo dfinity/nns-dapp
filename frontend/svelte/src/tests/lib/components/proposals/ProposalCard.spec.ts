@@ -3,9 +3,10 @@
  */
 
 import type { Ballot, Proposal, ProposalInfo } from "@dfinity/nns";
-import { GovernanceCanister, Vote } from "@dfinity/nns";
+import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
+import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { proposalsFiltersStore } from "../../../../lib/stores/proposals.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
@@ -75,13 +76,23 @@ describe("ProposalCard", () => {
   });
 
   it("should render a specific color for the status", () => {
+    proposalsFiltersStore.filterStatus([
+      ...DEFAULT_PROPOSALS_FILTERS.status,
+      ProposalStatus.PROPOSAL_STATUS_EXECUTED,
+    ]);
+
     const { container } = render(ProposalCard, {
       props: {
-        proposalInfo: mockProposals[1],
+        proposalInfo: {
+          ...mockProposals[1],
+          status: ProposalStatus.PROPOSAL_STATUS_EXECUTED,
+        },
       },
     });
 
     expect(container.querySelector("div.success")).not.toBeNull();
+
+    proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
   });
 
   it("should hide card if already voted", async () => {

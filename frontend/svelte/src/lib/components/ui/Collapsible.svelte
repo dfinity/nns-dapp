@@ -103,7 +103,7 @@
 
     .header-content {
       flex: 1;
-      margin-right: calc(3 * var(--padding));
+      margin-right: var(--padding-3x);
     }
 
     @include media.min-width(medium) {
@@ -114,7 +114,7 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-left: calc(3 * var(--padding));
+          margin-left: var(--padding-3x);
         }
       }
     }
@@ -125,7 +125,7 @@
     top: 0;
     bottom: 0;
     right: 0;
-    width: calc(4 * var(--padding));
+    width: var(--padding-4x);
 
     margin: 0;
     padding: 0;
@@ -134,13 +134,13 @@
     align-items: center;
 
     :global(svg) {
-      width: calc(2.5 * var(--padding));
+      width: var(--padding-2_5x);
       transition: transform var(--animation-time-normal);
     }
 
     &.size-medium {
       :global(svg) {
-        width: calc(4 * var(--padding));
+        width: var(--padding-4x);
       }
     }
     &.expanded {
@@ -171,7 +171,7 @@
 
   .content {
     // to not stick the content to the bottom
-    padding-bottom: calc(2 * var(--padding));
+    padding-bottom: var(--padding-2x);
     // to respect children margins in contentHeight calculation
     overflow: auto;
     // scrollbar

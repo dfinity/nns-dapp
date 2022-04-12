@@ -6,7 +6,6 @@
   import { secondsToDate } from "../../utils/date.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
-  import * as utils from "../../utils/neuron.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
@@ -16,14 +15,13 @@
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
   import { authStore } from "../../stores/auth.store";
-
-  const {
+  import {
     ageMultiplier,
     dissolveDelayMultiplier,
     formatVotingPower,
     hasJoinedCommunityFund,
     isCurrentUserController,
-  } = utils;
+  } from "../../utils/neuron.utils";
 
   export let neuron: NeuronInfo;
 
@@ -94,7 +92,7 @@
     <div class="only-buttons">
       {#if userControlled}
         <IncreaseStakeButton />
-        <SplitNeuronButton />
+        <SplitNeuronButton {neuron} />
       {/if}
     </div>
   </section>
@@ -122,7 +120,7 @@
   .voting-power {
     display: flex;
     align-items: center;
-    gap: calc(0.5 * var(--padding));
+    gap: var(--padding-0_5x);
 
     span {
       display: flex;

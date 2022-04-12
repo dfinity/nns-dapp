@@ -56,7 +56,7 @@
   .input-block {
     position: relative;
 
-    margin: calc(2 * var(--padding)) 0;
+    margin: var(--padding-2x) 0;
 
     display: flex;
     align-items: center;
@@ -65,7 +65,7 @@
 
     :global(button) {
       position: absolute;
-      right: calc(2 * var(--padding));
+      right: var(--padding-2x);
     }
 
     --disabled-color: var(--gray-100);
@@ -112,7 +112,7 @@
   input {
     width: 100%;
 
-    padding: var(--padding) calc(2 * var(--padding));
+    padding: var(--padding) var(--padding-2x);
     box-sizing: border-box;
 
     border-radius: calc(4 * var(--border-radius));
@@ -121,7 +121,7 @@
     outline: none;
 
     @include media.min-width(medium) {
-      padding: calc(2 * var(--padding));
+      padding: var(--padding-2x);
       font-size: var(--font-size-h3);
     }
   }
@@ -129,7 +129,7 @@
   .placeholder {
     position: absolute;
     top: 50%;
-    left: calc(2 * var(--padding));
+    left: var(--padding-2x);
     transform: translate(0, -50%);
 
     transition: all var(--animation-time-normal);
@@ -148,7 +148,7 @@
     transform: scale(0.8) translate(0, calc(-50% - 30px));
     background: #ffffff;
 
-    padding: 0 calc(var(--padding) / 2);
+    padding: 0 var(--padding-0_5x);
 
     @include media.min-width(medium) {
       transform: scale(0.8) translate(0, calc(-50% - 43px));

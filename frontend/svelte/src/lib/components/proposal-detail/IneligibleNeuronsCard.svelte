@@ -40,7 +40,7 @@
   @use "../../themes/mixins/media";
 
   p {
-    margin: 0 0 calc(2 * var(--padding));
+    margin: 0 0 var(--padding-2x);
     font-size: var(--font-size-h5);
   }
 
@@ -58,7 +58,7 @@
     font-size: var(--font-size-h5);
 
     @include media.min-width(small) {
-      margin: calc(0.5 * var(--padding)) 0;
+      margin: var(--padding-0_5x) 0;
       flex-direction: row;
       align-items: center;
     }

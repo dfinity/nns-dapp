@@ -142,8 +142,8 @@
 
     width: var(--modal-small-width);
     height: fit-content;
-    max-width: calc(100vw - (4 * var(--padding)));
-    max-height: calc(100vh - (2 * var(--padding)));
+    max-width: calc(100vw - var(--padding-4x));
+    max-height: calc(100vh - var(--padding-2x));
 
     --modal-min-height: 100px;
     --modal-toolbar-height: 35px;
@@ -161,7 +161,7 @@
   }
 
   .toolbar {
-    padding: var(--padding) calc(2 * var(--padding));
+    padding: var(--padding) var(--padding-2x);
 
     background: var(--gray-100);
     color: var(--gray-800);

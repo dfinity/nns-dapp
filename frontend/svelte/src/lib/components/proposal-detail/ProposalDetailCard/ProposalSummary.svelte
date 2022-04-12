@@ -30,5 +30,10 @@
       line-height: var(--line-height-standard);
       text-decoration: none;
     }
+
+    :global(pre) {
+      // make the <code> scrollable
+      overflow-x: auto;
+    }
   }
 </style>

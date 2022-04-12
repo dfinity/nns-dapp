@@ -9,6 +9,7 @@ import {
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import {
   ageMultiplier,
+  convertNumberToICP,
   dissolveDelayMultiplier,
   followeesNeurons,
   formatVotingPower,
@@ -16,8 +17,11 @@ import {
   hasJoinedCommunityFund,
   hasValidStake,
   isCurrentUserController,
+  isEnoughToStakeNeuron,
   isNeuronControllable,
+  isValidInputAmount,
   maturityByStake,
+  neuronCanBeSplit,
   neuronStake,
   sortNeuronsByCreatedTimestamp,
   votingPower,
@@ -450,6 +454,58 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("neuronCanBeSplit", () => {
+    it("should return true if neuron has enough stake to be splitted", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(1_000_000_000),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronCanBeSplit(neuron)).toBe(true);
+    });
+
+    it("should return false if neuron has not enough stake to be splitted", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(100),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronCanBeSplit(neuron)).toBe(false);
+    });
+  });
+
+  describe("isValidInputAmount", () => {
+    it("return false if amount is undefined", () => {
+      expect(isValidInputAmount({ amount: undefined, max: 10 })).toBe(false);
+    });
+
+    it("return true if amount is lower than max", () => {
+      expect(isValidInputAmount({ amount: 3, max: 10 })).toBe(true);
+    });
+
+    it("return false if amount is higher than max", () => {
+      expect(isValidInputAmount({ amount: 40, max: 10 })).toBe(false);
+    });
+  });
+
+  describe("convertNumberToICP", () => {
+    it("returns ICP from number", () => {
+      expect(convertNumberToICP(10)?.toE8s()).toBe(BigInt(1_000_000_000));
+      expect(convertNumberToICP(10.1234)?.toE8s()).toBe(BigInt(1_012_340_000));
+      expect(convertNumberToICP(0.004)?.toE8s()).toBe(BigInt(400_000));
+    });
+
+    it("returns undefined on negative numbers", () => {
+      expect(convertNumberToICP(-10)).toBeUndefined();
+    });
+  });
+
   describe.only("followeesNeurons", () => {
     it("should transform followees", () => {
       const neuron = {
@@ -472,6 +528,7 @@ describe("neuron-utils", () => {
           ],
         },
       };
+
       expect(followeesNeurons(neuron)).toStrictEqual([
         {
           neuronId: BigInt(0),
@@ -505,6 +562,23 @@ describe("neuron-utils", () => {
         fullNeuron: undefined,
       };
       expect(followeesNeurons(neuron)).toStrictEqual([]);
+    });
+  });
+
+  describe("isEnoughToStakeNeuron", () => {
+    it("return true if enough ICP to create a neuron", () => {
+      const stake = ICP.fromString("3") as ICP;
+      expect(isEnoughToStakeNeuron({ stake })).toBe(true);
+    });
+    it("returns false if not enough ICP to create a neuron", () => {
+      const stake = ICP.fromString("0.000001") as ICP;
+      expect(isEnoughToStakeNeuron({ stake })).toBe(false);
+    });
+    it("takes into account transaction fee", () => {
+      const stake = ICP.fromString("1") as ICP;
+      expect(isEnoughToStakeNeuron({ stake, withTransactionFee: true })).toBe(
+        false
+      );
     });
   });
 });

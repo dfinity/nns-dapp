@@ -28,6 +28,6 @@
   div {
     display: flex;
     flex-direction: column;
-    gap: calc(1.5 * var(--padding));
+    gap: var(--padding-1_5x);
   }
 </style>
