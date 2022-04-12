@@ -2,6 +2,7 @@ import type { NeuronId, ProposalInfo } from "@dfinity/nns";
 import { GovernanceError, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
+import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
   getProposalId,
@@ -11,7 +12,10 @@ import {
   registerVotes,
 } from "../../../lib/services/proposals.services";
 import * as busyStore from "../../../lib/stores/busy.store";
-import { proposalsStore } from "../../../lib/stores/proposals.store";
+import {
+  proposalsFiltersStore,
+  proposalsStore,
+} from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import type { ToastMsg } from "../../../lib/types/toast";
 import {
@@ -34,7 +38,7 @@ describe("proposals-services", () => {
     });
 
     afterEach(() => {
-      proposalsStore.setProposals([]);
+      proposalsStore.setProposals({ proposals: [], certified: true });
 
       spySetProposals.mockClear();
       spyPushProposals.mockClear();
@@ -47,7 +51,7 @@ describe("proposals-services", () => {
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
-      const proposals = get(proposalsStore);
+      const { proposals } = get(proposalsStore);
       expect(proposals).toEqual(mockProposals);
     });
 
@@ -58,7 +62,7 @@ describe("proposals-services", () => {
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
-      const proposals = get(proposalsStore);
+      const { proposals } = get(proposalsStore);
       expect(proposals).toEqual(mockProposals);
     });
 
@@ -82,7 +86,9 @@ describe("proposals-services", () => {
         Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
       );
 
-    beforeAll(() => proposalsStore.setProposals(mockProposals));
+    beforeAll(() =>
+      proposalsStore.setProposals({ proposals: mockProposals, certified: true })
+    );
 
     afterEach(() => jest.clearAllMocks());
 
@@ -98,7 +104,9 @@ describe("proposals-services", () => {
   });
 
   describe("empty list", () => {
-    afterAll(() => proposalsStore.setProposals([]));
+    afterAll(() =>
+      proposalsStore.setProposals({ proposals: [], certified: true })
+    );
 
     it("should not push empty proposals to the list", async () => {
       jest
@@ -388,6 +396,50 @@ describe("proposals-services", () => {
         labelKey: "error.suspicious_response",
         level: "error",
       });
+    });
+  });
+
+  describe("filter", () => {
+    const spySetProposals = jest.spyOn(proposalsStore, "setProposals");
+    const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
+    let spyQueryProposals;
+
+    beforeAll(() => {
+      jest.clearAllMocks();
+
+      spyQueryProposals = jest
+        .spyOn(api, "queryProposals")
+        .mockImplementation(() => Promise.resolve(mockProposals));
+    });
+
+    afterEach(() => {
+      proposalsStore.setProposals({ proposals: [], certified: true });
+
+      spySetProposals.mockClear();
+      spyPushProposals.mockClear();
+    });
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should not call the canister if empty filter", async () => {
+      proposalsFiltersStore.filterStatus([]);
+
+      await listProposals();
+
+      expect(spyQueryProposals).not.toHaveBeenCalled();
+
+      proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
+    });
+
+    it("should reset the proposal store if empty filter", async () => {
+      proposalsFiltersStore.filterStatus([]);
+
+      await listProposals();
+
+      const { proposals } = get(proposalsStore);
+      expect(proposals).toEqual([]);
+
+      proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
     });
   });
 });

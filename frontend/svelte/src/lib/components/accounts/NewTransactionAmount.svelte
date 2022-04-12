@@ -10,6 +10,7 @@
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
   import { ICP } from "@dfinity/nns";
   import type { FromICPStringError } from "@dfinity/nns";
+  import { maxICP } from "../../utils/icp.utils";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -21,7 +22,7 @@
     : undefined;
 
   let max: number = 0;
-  $: max = Number($store.selectedAccount?.balance.toE8s() ?? 0) / E8S_PER_ICP;
+  $: max = maxICP($store.selectedAccount?.balance);
 
   let validForm: boolean;
   $: validForm = amount !== undefined && amount > 0 && amount <= max;

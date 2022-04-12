@@ -75,6 +75,7 @@
 
 <style lang="scss">
   @use "../themes/mixins/interaction";
+  @use "../themes/mixins/text";
 
   .modal {
     position: fixed;
@@ -174,6 +175,8 @@
     height: var(--modal-toolbar-height);
 
     h3 {
+      @include text.clamp(1);
+
       color: inherit;
       font-weight: 400;
       margin-bottom: 0;

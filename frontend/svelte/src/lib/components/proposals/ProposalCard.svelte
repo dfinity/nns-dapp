@@ -32,12 +32,18 @@
     });
   };
 
-  // HACK: the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
-  // That's why we hide these proposals on the client side only.
+  // HACK:
+  //
+  // 1. the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
+  // 2. the governance canister interprets queries with empty filter (e.g. topics=[]) has "any" queries and returns proposals anyway. On the contrary, the Flutter app displays nothing if one filter is empty.
+  // 3. the Flutter app does not simply display nothing when a filter is empty but re-filter the results provided by the backend.
+  //
+  // That's why we hide and re-process these proposals delivered by the backend on the client side.
+  //
   // We do not filter these types of proposals from the list but "only" hide these because removing them from the list is not compatible with an infinite scroll feature.
   let hide: boolean;
   $: hide = hideProposal({
-    excludeVotedProposals: $proposalsFiltersStore.excludeVotedProposals,
+    filters: $proposalsFiltersStore,
     proposalInfo,
   });
 </script>
