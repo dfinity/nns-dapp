@@ -18,7 +18,7 @@
   }
 
   .tooltip {
-    z-index: 1;
+    z-index: var(--z-index);
 
     position: absolute;
     display: inline-block;
