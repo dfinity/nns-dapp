@@ -28,6 +28,6 @@
   .amount {
     display: inline-flex;
     justify-content: center;
-    padding: var(--padding) 0 calc(2 * var(--padding));
+    padding: var(--padding) 0 var(--padding-2x);
   }
 </style>
