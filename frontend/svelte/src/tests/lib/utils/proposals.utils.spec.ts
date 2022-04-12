@@ -1,5 +1,10 @@
 import type { Ballot, NeuronInfo, Proposal } from "@dfinity/nns";
-import { Vote } from "@dfinity/nns";
+import {
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+  Vote,
+} from "@dfinity/nns";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import {
   concatenateUniqueProposals,
@@ -151,6 +156,78 @@ describe("proposals-utils", () => {
           ],
         },
         filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
+      })
+    ).toBeTruthy();
+  });
+
+  it("should hide proposal if a filter is empty", () => {
+    expect(
+      hideProposal({
+        proposalInfo: mockProposals[0],
+        filters: {
+          ...DEFAULT_PROPOSALS_FILTERS,
+          topics: [],
+          excludeVotedProposals: false,
+        },
+      })
+    ).toBeTruthy();
+
+    expect(
+      hideProposal({
+        proposalInfo: mockProposals[0],
+        filters: {
+          ...DEFAULT_PROPOSALS_FILTERS,
+          status: [],
+          excludeVotedProposals: false,
+        },
+      })
+    ).toBeTruthy();
+
+    expect(
+      hideProposal({
+        proposalInfo: mockProposals[0],
+        filters: {
+          ...DEFAULT_PROPOSALS_FILTERS,
+          rewards: [],
+          excludeVotedProposals: false,
+        },
+      })
+    ).toBeTruthy();
+  });
+
+  it("should hide proposal if does not match filter", () => {
+    expect(
+      hideProposal({
+        proposalInfo: mockProposals[0],
+        filters: {
+          ...DEFAULT_PROPOSALS_FILTERS,
+          topics: [Topic.Kyc],
+          excludeVotedProposals: false,
+        },
+      })
+    ).toBeTruthy();
+
+    expect(
+      hideProposal({
+        proposalInfo: mockProposals[0],
+        filters: {
+          ...DEFAULT_PROPOSALS_FILTERS,
+          status: [ProposalStatus.PROPOSAL_STATUS_EXECUTED],
+          excludeVotedProposals: false,
+        },
+      })
+    ).toBeTruthy();
+
+    expect(
+      hideProposal({
+        proposalInfo: mockProposals[0],
+        filters: {
+          ...DEFAULT_PROPOSALS_FILTERS,
+          rewards: [
+            ProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
+          ],
+          excludeVotedProposals: false,
+        },
       })
     ).toBeTruthy();
   });
