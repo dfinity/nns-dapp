@@ -180,7 +180,7 @@ const redirectTest = async (
       () => `${document.location.pathname}${document.location.hash}`
     );
     expect(path).toBe(`${toPath}${hash}`);
-throw new Error("Let's see a screenshot");
+    throw new Error("Let's see a screenshot");
   }
 };
 
