@@ -116,7 +116,7 @@ jobs:
           if REDIRECT_TO_LEGACY=svelte npm run test | tee -a wdio.log
           then echo Success
           else echo Tests failed.  Proceeding but taking note.
-               touch .tests-failed
+               echo "E2E_TEST_RESULT=FAIL" >> "$GITHUB_ENV"
           fi
 
       - name: Stop replica
@@ -149,4 +149,4 @@ jobs:
           path: screenshots/**/*.png
       - name: e2e tests succeeded
         working-directory: e2e-tests
-        run: bash -c "! test -e .tests-failed"
+        run: [[ "${E2E_TEST_RESULT:-}" != "FAIL" ]]
