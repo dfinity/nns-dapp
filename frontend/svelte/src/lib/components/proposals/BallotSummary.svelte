@@ -53,5 +53,10 @@
   .summary {
     grid-column-start: 1;
     grid-column-end: 3;
+    // fix broken layout with too long urls in summary
+    word-break: break-word;
+    // Fix too wide <pre> with code-blocks
+    // (By default, flex items won’t shrink below their minimum content size)
+    min-width: 0;
   }
 </style>
