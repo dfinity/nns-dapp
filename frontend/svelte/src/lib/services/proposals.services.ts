@@ -49,7 +49,8 @@ const handleFindProposalsError = ({ error, certified }) => {
 export const listProposals = async (): Promise<void> => {
   return findProposals({
     beforeProposal: undefined,
-    onLoad: ({ response: proposals, certified }) => proposalsStore.setProposals({proposals, certified}),
+    onLoad: ({ response: proposals, certified }) =>
+      proposalsStore.setProposals({ proposals, certified }),
     onError: handleFindProposalsError,
   });
 };

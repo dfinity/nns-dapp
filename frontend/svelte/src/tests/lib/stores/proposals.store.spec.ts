@@ -15,22 +15,28 @@ import { generateMockProposals } from "../../mocks/proposal.mock";
 describe("proposals-store", () => {
   describe("proposals", () => {
     it("should set proposals", () => {
-      proposalsStore.setProposals(generateMockProposals(10));
+      proposalsStore.setProposals({
+        proposals: generateMockProposals(10),
+        certified: true,
+      });
 
-      const proposals = get(proposalsStore);
+      const { proposals } = get(proposalsStore);
       expect(proposals).toEqual(generateMockProposals(10));
     });
 
     it("should push proposals", () => {
       const allProposals = generateMockProposals(10);
-      proposalsStore.setProposals(allProposals.slice(0, 5));
+      proposalsStore.setProposals({
+        proposals: allProposals.slice(0, 5),
+        certified: true,
+      });
 
       proposalsStore.pushProposals({
         proposals: allProposals.slice(5),
         certified: true,
       });
 
-      const proposals = get(proposalsStore);
+      const { proposals } = get(proposalsStore);
       expect(proposals).toEqual(allProposals);
     });
 
@@ -41,29 +47,37 @@ describe("proposals-store", () => {
       const updateProposals = generateMockProposals(10, {
         proposalTimestampSeconds: BigInt(1),
       });
-      proposalsStore.setProposals(queryProposals);
+      proposalsStore.setProposals({
+        proposals: queryProposals,
+        certified: true,
+      });
       proposalsStore.pushProposals({
         proposals: updateProposals,
         certified: true,
       });
 
-      const proposals = get(proposalsStore);
+      const { proposals } = get(proposalsStore);
       expect(proposals).toEqual(updateProposals);
     });
 
     it("should reset proposals", () => {
-      proposalsStore.setProposals(generateMockProposals(2));
-      proposalsStore.setProposals([]);
+      proposalsStore.setProposals({
+        proposals: generateMockProposals(2),
+        certified: true,
+      });
+      proposalsStore.setProposals({ proposals: [], certified: true });
 
-      const proposals = get(proposalsStore);
+      const { proposals } = get(proposalsStore);
       expect(proposals).toEqual([]);
     });
 
     it("should remove proposals", () => {
       const allProposals = generateMockProposals(10);
-      proposalsStore.setProposals(allProposals);
+      proposalsStore.setProposals({ proposals: allProposals, certified: true });
       proposalsStore.removeProposals(allProposals.slice(0, 5));
-      expect(get(proposalsStore)).toEqual(allProposals.slice(5));
+
+      const { proposals } = get(proposalsStore);
+      expect(proposals).toEqual(allProposals.slice(5));
     });
 
     it("should replace proposals", () => {
@@ -71,9 +85,11 @@ describe("proposals-store", () => {
       const replacedProposals = generateMockProposals(10, {
         proposalTimestampSeconds: BigInt(666),
       });
-      proposalsStore.setProposals(allProposals);
+      proposalsStore.setProposals({ proposals: allProposals, certified: true });
       proposalsStore.replaceProposals(replacedProposals);
-      expect(get(proposalsStore)).toEqual(replacedProposals);
+
+      const { proposals } = get(proposalsStore);
+      expect(proposals).toEqual(replacedProposals);
     });
   });
 

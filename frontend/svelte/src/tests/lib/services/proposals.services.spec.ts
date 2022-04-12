@@ -34,7 +34,7 @@ describe("proposals-services", () => {
     });
 
     afterEach(() => {
-      proposalsStore.setProposals([]);
+      proposalsStore.setProposals({ proposals: [], certified: true });
 
       spySetProposals.mockClear();
       spyPushProposals.mockClear();
@@ -47,7 +47,7 @@ describe("proposals-services", () => {
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
-      const proposals = get(proposalsStore);
+      const { proposals } = get(proposalsStore);
       expect(proposals).toEqual(mockProposals);
     });
 
@@ -58,7 +58,7 @@ describe("proposals-services", () => {
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
-      const proposals = get(proposalsStore);
+      const { proposals } = get(proposalsStore);
       expect(proposals).toEqual(mockProposals);
     });
 
@@ -82,7 +82,9 @@ describe("proposals-services", () => {
         Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
       );
 
-    beforeAll(() => proposalsStore.setProposals(mockProposals));
+    beforeAll(() =>
+      proposalsStore.setProposals({ proposals: mockProposals, certified: true })
+    );
 
     afterEach(() => jest.clearAllMocks());
 
@@ -98,7 +100,9 @@ describe("proposals-services", () => {
   });
 
   describe("empty list", () => {
-    afterAll(() => proposalsStore.setProposals([]));
+    afterAll(() =>
+      proposalsStore.setProposals({ proposals: [], certified: true })
+    );
 
     it("should not push empty proposals to the list", async () => {
       jest

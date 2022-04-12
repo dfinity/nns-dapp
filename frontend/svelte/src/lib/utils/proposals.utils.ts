@@ -6,10 +6,7 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import { ProposalStatus, Vote } from "@dfinity/nns";
-import type {
-  ProposalsFiltersStore,
-  ProposalsStore,
-} from "../stores/proposals.store";
+import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { isDefined, stringifyJson } from "./utils";
 
 export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>

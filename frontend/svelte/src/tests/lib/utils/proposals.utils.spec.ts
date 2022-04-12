@@ -1,5 +1,6 @@
 import type { Ballot, NeuronInfo, Proposal } from "@dfinity/nns";
 import { Vote } from "@dfinity/nns";
+import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import {
   concatenateUniqueProposals,
   emptyProposals,
@@ -42,28 +43,28 @@ describe("proposals-utils", () => {
     expect(
       hideProposal({
         proposalInfo: mockProposals[0],
-        excludeVotedProposals: false,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
       })
     ).toBeFalsy();
 
     expect(
       hideProposal({
         proposalInfo: mockProposals[1],
-        excludeVotedProposals: false,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
       })
     ).toBeFalsy();
 
     expect(
       hideProposal({
         proposalInfo: mockProposals[0],
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeFalsy();
 
     expect(
       hideProposal({
         proposalInfo: mockProposals[1],
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeFalsy();
 
@@ -77,7 +78,7 @@ describe("proposals-utils", () => {
             } as Ballot,
           ],
         },
-        excludeVotedProposals: false,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
       })
     ).toBeFalsy();
 
@@ -91,7 +92,7 @@ describe("proposals-utils", () => {
             } as Ballot,
           ],
         },
-        excludeVotedProposals: false,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
       })
     ).toBeFalsy();
 
@@ -105,7 +106,7 @@ describe("proposals-utils", () => {
             } as Ballot,
           ],
         },
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeFalsy();
 
@@ -119,7 +120,7 @@ describe("proposals-utils", () => {
             } as Ballot,
           ],
         },
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeFalsy();
   });
@@ -135,7 +136,7 @@ describe("proposals-utils", () => {
             } as Ballot,
           ],
         },
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeTruthy();
 
@@ -149,7 +150,7 @@ describe("proposals-utils", () => {
             } as Ballot,
           ],
         },
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeTruthy();
   });
@@ -161,7 +162,7 @@ describe("proposals-utils", () => {
           ...mockProposals[0],
           ballots: [],
         },
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeFalsy();
     expect(
@@ -174,7 +175,7 @@ describe("proposals-utils", () => {
             } as Ballot,
           ],
         },
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeFalsy();
   });
@@ -183,14 +184,14 @@ describe("proposals-utils", () => {
     expect(
       hasMatchingProposals({
         proposals: mockProposals,
-        excludeVotedProposals: false,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
       })
     ).toBeTruthy();
 
     expect(
       hasMatchingProposals({
         proposals: mockProposals,
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeTruthy();
 
@@ -207,7 +208,7 @@ describe("proposals-utils", () => {
             ],
           },
         ],
-        excludeVotedProposals: false,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
       })
     ).toBeTruthy();
 
@@ -224,7 +225,7 @@ describe("proposals-utils", () => {
             ],
           },
         ],
-        excludeVotedProposals: false,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
       })
     ).toBeTruthy();
 
@@ -241,7 +242,7 @@ describe("proposals-utils", () => {
             ],
           },
         ],
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeTruthy();
 
@@ -258,7 +259,7 @@ describe("proposals-utils", () => {
             ],
           },
         ],
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeTruthy();
   });
@@ -267,7 +268,7 @@ describe("proposals-utils", () => {
     expect(
       hasMatchingProposals({
         proposals: [],
-        excludeVotedProposals: false,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
       })
     ).toBeFalsy();
 
@@ -283,7 +284,7 @@ describe("proposals-utils", () => {
             ],
           },
         ],
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeFalsy();
 
@@ -299,7 +300,7 @@ describe("proposals-utils", () => {
             ],
           },
         ],
-        excludeVotedProposals: true,
+        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
       })
     ).toBeFalsy();
   });
