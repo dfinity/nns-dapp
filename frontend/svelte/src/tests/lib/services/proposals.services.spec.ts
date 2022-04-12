@@ -11,7 +11,7 @@ import {
   registerVotes,
 } from "../../../lib/services/proposals.services";
 import * as busyStore from "../../../lib/stores/busy.store";
-import { proposalsStore } from "../../../lib/stores/proposals.store";
+import {proposalsFiltersStore, proposalsStore} from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import type { ToastMsg } from "../../../lib/types/toast";
 import {
@@ -20,6 +20,7 @@ import {
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
+import {DEFAULT_PROPOSALS_FILTERS} from '../../../lib/constants/proposals.constants';
 
 describe("proposals-services", () => {
   describe("list", () => {
@@ -392,6 +393,50 @@ describe("proposals-services", () => {
         labelKey: "error.suspicious_response",
         level: "error",
       });
+    });
+  });
+
+  describe("filter", () => {
+    const spySetProposals = jest.spyOn(proposalsStore, "setProposals");
+    const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
+    let spyQueryProposals;
+
+    beforeAll(() => {
+      jest.clearAllMocks();
+
+      spyQueryProposals = jest
+          .spyOn(api, "queryProposals")
+          .mockImplementation(() => Promise.resolve(mockProposals));
+    });
+
+    afterEach(() => {
+      proposalsStore.setProposals({ proposals: [], certified: true });
+
+      spySetProposals.mockClear();
+      spyPushProposals.mockClear();
+    });
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should not call the canister if empty filter", async () => {
+      proposalsFiltersStore.filterStatus([]);
+
+      await listProposals();
+
+      expect(spyQueryProposals).not.toHaveBeenCalled();
+
+      proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
+    });
+
+    it("should reset the proposal store if empty filter", async () => {
+      proposalsFiltersStore.filterStatus([]);
+
+      await listProposals();
+
+      const { proposals } = get(proposalsStore);
+      expect(proposals).toEqual([]);
+
+      proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
     });
   });
 });
