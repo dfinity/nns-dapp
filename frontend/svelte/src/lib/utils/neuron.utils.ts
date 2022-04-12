@@ -1,5 +1,10 @@
 import type { Identity } from "@dfinity/agent";
-import { ICP, NeuronState, type NeuronInfo } from "@dfinity/nns";
+import {
+  ICP,
+  NeuronState,
+  type BallotInfo,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
@@ -169,6 +174,16 @@ export const neuronStake = (neuron: NeuronInfo): bigint =>
   neuron.fullNeuron?.cachedNeuronStake !== undefined
     ? neuron.fullNeuron?.cachedNeuronStake - neuron.fullNeuron?.neuronFees
     : BigInt(0);
+
+/**
+ * Returns neuron ballots that contain "proposalId"
+ */
+export const ballotsWithDefinedProposal = ({
+  recentBallots,
+}: NeuronInfo): Required<BallotInfo>[] =>
+  recentBallots.filter(
+    ({ proposalId }: BallotInfo) => proposalId !== undefined
+  );
 
 export const neuronCanBeSplit = (neuron: NeuronInfo): boolean =>
   neuronStake(neuron) >= BigInt(MIN_NEURON_STAKE_SPLITTABLE);
