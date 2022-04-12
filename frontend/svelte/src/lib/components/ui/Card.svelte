@@ -32,8 +32,8 @@
     background: var(--background);
     color: var(--gray-50);
 
-    padding: calc(2.5 * var(--padding));
-    margin: calc(2 * var(--padding)) 0;
+    padding: var(--padding-2_5x);
+    margin: var(--padding-2x) 0;
     border-radius: var(--border-radius);
 
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);

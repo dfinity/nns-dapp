@@ -2,6 +2,7 @@ import { ICP } from "@dfinity/nns";
 import {
   formatICP,
   formattedTransactionFeeICP,
+  maxICP,
   sumICPs,
 } from "../../../lib/utils/icp.utils";
 
@@ -39,4 +40,12 @@ describe("icp-utils", () => {
 
   it("should format a specific transaction fee", () =>
     expect(formattedTransactionFeeICP()).toEqual("0.00010000"));
+
+  it("should max ICP value", () => {
+    expect(maxICP(undefined)).toEqual(0);
+    expect(maxICP(ICP.fromString("0") as ICP)).toEqual(0);
+    expect(maxICP(ICP.fromString("0.0001") as ICP)).toEqual(0);
+    expect(maxICP(ICP.fromString("0.00011") as ICP)).toEqual(0.00001);
+    expect(maxICP(ICP.fromString("1") as ICP)).toEqual(0.9999);
+  });
 });
