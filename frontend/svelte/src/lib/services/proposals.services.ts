@@ -85,13 +85,13 @@ const findProposals = async ({
   const identity: Identity = await getIdentity();
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
 
-  const {topics, rewards, status} = filters;
+  const { topics, rewards, status } = filters;
 
   // The governance canister consider empty filters and an "any" query. Flutter on the contrary considers empty as empty.
   // That's why we implement the same behavior and do not render any proposals if one of the filter is empty.
   // This is covered by our utils "hideProposal" but to avoid glitch, like displaying a spinner appearing and disappearing for a while, we "just" do not query the canister and empty the store if one of the filter is empty.
   if (topics.length === 0 || rewards.length === 0 || status.length === 0) {
-    proposalsStore.setProposals({proposals: [], certified: undefined});
+    proposalsStore.setProposals({ proposals: [], certified: undefined });
     return;
   }
 
