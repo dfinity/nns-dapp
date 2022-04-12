@@ -56,7 +56,7 @@ To deploy the NNS Dapp canister to the testnet, run the following:
 
 You can now access the frontend using:
 
-    open "https://$(dfx canister --no-wallet --network testnet id nns-dapp).nnsdapp.dfinity.network"
+    open "https://$(dfx canister --network testnet id nns-dapp).nnsdapp.dfinity.network"
 
 To work on the UI locally, either use your IDE, or run the following:
 
