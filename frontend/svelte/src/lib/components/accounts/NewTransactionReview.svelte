@@ -4,8 +4,14 @@
   import { ICP as ICPType } from "@dfinity/nns";
   import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
   import type { TransactionContext } from "../../stores/transaction.store";
-  import { getContext } from "svelte";
-  import {i18n} from "../../stores/i18n";
+  import { createEventDispatcher, getContext } from "svelte";
+  import { i18n } from "../../stores/i18n";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { toastsStore } from "../../stores/toasts.store";
+  import {
+    transferICP,
+    TransferICPError,
+  } from "../../services/accounts.services";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -13,9 +19,36 @@
   const { store }: TransactionContext = context;
 
   let amount: ICPType = $store.amount ?? ICPType.fromE8s(BigInt(0));
+
+  const dispatcher = createEventDispatcher();
+
+  const executeTransaction = async () => {
+    try {
+      startBusy("accounts");
+
+      await transferICP($store);
+
+      dispatcher("nnsClose");
+    } catch (err) {
+      if (err instanceof TransferICPError) {
+        toastsStore.error({
+          labelKey: err.message,
+        });
+
+        return;
+      }
+
+      toastsStore.error({
+        labelKey: "error.transaction_error",
+        err,
+      });
+    }
+
+    stopBusy("accounts");
+  };
 </script>
 
-<form class="wizard-wrapper">
+<form on:submit|preventDefault={executeTransaction} class="wizard-wrapper">
   <div class="amount">
     <ICP inline={true} icp={amount} />
   </div>
@@ -28,17 +61,19 @@
 </form>
 
 <style lang="scss">
+  @use "../../themes/mixins/modal";
+
   .amount {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
-    padding: var(--padding) 0 var(--padding-2x);
-
     flex-grow: 1;
 
     --icp-font-size: var(--font-size-huge);
+
+    @include modal.header;
   }
 
   button {

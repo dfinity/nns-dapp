@@ -57,9 +57,11 @@
 </script>
 
 <form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
-  <CurrentBalance account={$store.selectedAccount} />
+  <div class="head">
+    <CurrentBalance account={$store.selectedAccount} />
 
-  <AmountInput bind:amount on:nnsMax={onMax} {max} />
+    <AmountInput bind:amount on:nnsMax={onMax} {max} />
+  </div>
 
   <NewTransactionInfo />
 
@@ -69,6 +71,12 @@
 </form>
 
 <style lang="scss">
+  @use "../../themes/mixins/modal";
+
+  .head {
+    @include modal.header;
+  }
+
   button {
     margin-top: var(--padding);
   }
