@@ -2,6 +2,7 @@ import type { NeuronId, ProposalInfo } from "@dfinity/nns";
 import { GovernanceError, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
+import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
   getProposalId,
@@ -11,7 +12,10 @@ import {
   registerVotes,
 } from "../../../lib/services/proposals.services";
 import * as busyStore from "../../../lib/stores/busy.store";
-import {proposalsFiltersStore, proposalsStore} from "../../../lib/stores/proposals.store";
+import {
+  proposalsFiltersStore,
+  proposalsStore,
+} from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import type { ToastMsg } from "../../../lib/types/toast";
 import {
@@ -20,7 +24,6 @@ import {
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
-import {DEFAULT_PROPOSALS_FILTERS} from '../../../lib/constants/proposals.constants';
 
 describe("proposals-services", () => {
   describe("list", () => {
@@ -405,8 +408,8 @@ describe("proposals-services", () => {
       jest.clearAllMocks();
 
       spyQueryProposals = jest
-          .spyOn(api, "queryProposals")
-          .mockImplementation(() => Promise.resolve(mockProposals));
+        .spyOn(api, "queryProposals")
+        .mockImplementation(() => Promise.resolve(mockProposals));
     });
 
     afterEach(() => {
