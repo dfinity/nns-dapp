@@ -35,6 +35,11 @@ export interface NeuronSelectionStore {
   selectedIds: NeuronId[];
 }
 
+export interface ProposalsStore {
+  proposals: ProposalInfo[];
+  certified: boolean | undefined;
+}
+
 /**
  * A store that contains the proposals
  *
@@ -42,25 +47,29 @@ export interface NeuronSelectionStore {
  * - pushProposals: append proposals to the current list of proposals. Notably useful when the proposals are fetched in a page that implements an infinite scrolling.
  */
 const initProposalsStore = () => {
-  const { subscribe, update, set } = writable<ProposalInfo[]>([]);
+  const { subscribe, update, set } = writable<ProposalsStore>({
+    proposals: [],
+    certified: undefined,
+  });
 
   return {
     subscribe,
 
-    setProposals(proposals: ProposalInfo[]) {
-      set([...proposals]);
+    setProposals({ proposals, certified }: ProposalsStore) {
+      set({ proposals: [...proposals], certified });
     },
 
     /**
      * Replace the current list of proposals with a new list without provided proposals to remove untrusted proposals from the store.
      */
     removeProposals(proposalsToRemove: ProposalInfo[]) {
-      update((proposals: ProposalInfo[]) =>
-        excludeProposals({
+      update(({ proposals, certified }) => ({
+        proposals: excludeProposals({
           proposals,
           exclusion: proposalsToRemove,
-        })
-      );
+        }),
+        certified,
+      }));
     },
 
     pushProposals({
@@ -70,26 +79,29 @@ const initProposalsStore = () => {
       proposals: ProposalInfo[];
       certified: boolean;
     }) {
-      update((oldProposals: ProposalInfo[]) =>
-        certified === true
-          ? replaceAndConcatenateProposals({
-              oldProposals,
-              newProposals: proposals,
-            })
-          : concatenateUniqueProposals({
-              oldProposals,
-              newProposals: proposals,
-            })
-      );
+      update(({ proposals: oldProposals }) => ({
+        proposals:
+          certified === true
+            ? replaceAndConcatenateProposals({
+                oldProposals,
+                newProposals: proposals,
+              })
+            : concatenateUniqueProposals({
+                oldProposals,
+                newProposals: proposals,
+              }),
+        certified,
+      }));
     },
 
     replaceProposals(proposals: ProposalInfo[]) {
-      update((oldProposals: ProposalInfo[]) =>
-        replaceProposals({
+      update(({ proposals: oldProposals, certified }) => ({
+        proposals: replaceProposals({
           oldProposals,
           newProposals: proposals,
-        })
-      );
+        }),
+        certified,
+      }));
     },
   };
 };
