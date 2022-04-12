@@ -18,7 +18,7 @@
   let color: ProposalColor;
 
   $: ({ proposal, status } = proposalInfo);
-  $: title = proposal?.title ?? '';
+  $: title = proposal?.title ?? "";
   $: color = PROPOSAL_COLOR[status];
 </script>
 
