@@ -36,7 +36,7 @@ const handleFindProposalsError = ({ error, certified }) => {
 
   // Explicitly handle only UPDATE errors
   if (certified === true) {
-    proposalsStore.setProposals([]);
+    proposalsStore.setProposals({ proposals: [], certified });
 
     toastsStore.show({
       labelKey: "error.list_proposals",
@@ -49,7 +49,7 @@ const handleFindProposalsError = ({ error, certified }) => {
 export const listProposals = async (): Promise<void> => {
   return findProposals({
     beforeProposal: undefined,
-    onLoad: ({ response: proposals }) => proposalsStore.setProposals(proposals),
+    onLoad: ({ response: proposals, certified }) => proposalsStore.setProposals({proposals, certified}),
     onError: handleFindProposalsError,
   });
 };
