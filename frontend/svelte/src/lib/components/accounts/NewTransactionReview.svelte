@@ -34,7 +34,7 @@
     align-items: center;
     justify-content: center;
 
-    padding: var(--padding) 0 calc(2 * var(--padding));
+    padding: var(--padding) 0 var(--padding-2x);
 
     flex-grow: 1;
 

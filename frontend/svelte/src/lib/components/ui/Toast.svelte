@@ -49,7 +49,7 @@
     align-items: center;
 
     position: fixed;
-    bottom: calc(2 * var(--padding));
+    bottom: var(--padding-2x);
     left: 50%;
     transform: translate(-50%, 0);
 
@@ -58,9 +58,9 @@
     color: var(--black-contrast);
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
 
-    width: calc(100% - (8 * var(--padding)));
+    width: calc(100% - var(--padding-8x));
 
-    padding: var(--padding) calc(var(--padding) * 2);
+    padding: var(--padding) var(--padding-2x);
     box-sizing: border-box;
 
     z-index: calc(var(--z-index) + 999);
