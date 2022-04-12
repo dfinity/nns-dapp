@@ -3,6 +3,7 @@ import {
   ICP,
   NeuronState,
   Topic,
+  type BallotInfo,
   type NeuronId,
   type NeuronInfo,
 } from "@dfinity/nns";
@@ -207,6 +208,16 @@ export const followeesNeurons = (neuron: NeuronInfo): FolloweesNeuron[] => {
 
   return result;
 };
+
+/**
+ * Returns neuron ballots that contain "proposalId"
+ */
+export const ballotsWithDefinedProposal = ({
+  recentBallots,
+}: NeuronInfo): Required<BallotInfo>[] =>
+  recentBallots.filter(
+    ({ proposalId }: BallotInfo) => proposalId !== undefined
+  );
 
 export const neuronCanBeSplit = (neuron: NeuronInfo): boolean =>
   neuronStake(neuron) >= BigInt(MIN_NEURON_STAKE_SPLITTABLE);
