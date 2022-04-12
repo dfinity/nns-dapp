@@ -90,6 +90,6 @@
 
 <style lang="scss">
   p:last-of-type {
-    margin-bottom: calc(3 * var(--padding));
+    margin-bottom: var(--padding-3x);
   }
 </style>

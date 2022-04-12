@@ -83,12 +83,12 @@
         />
         <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
         <button
-          class="primary small"
+          class={`primary small ${loadingAddress ? "icon-only" : ""}`}
           type="submit"
           disabled={followeeAddress === undefined || loading}
         >
           {#if loadingAddress}
-            <Spinner />
+            <Spinner inline size="small" />
           {:else}
             {$i18n.new_followee.follow_neuron}
           {/if}
@@ -124,12 +124,12 @@
 
 <style lang="scss">
   main {
-    padding: calc(3 * var(--padding));
+    padding: var(--padding-3x);
 
     --input-width: 100%;
     display: flex;
     flex-direction: column;
-    gap: calc(2 * var(--padding));
+    gap: var(--padding-2x);
   }
 
   form {

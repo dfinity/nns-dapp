@@ -50,8 +50,8 @@
   @use "../../../themes/mixins/media";
 
   .headline {
-    padding: calc(0.5 * var(--padding)) var(--padding)
-      calc(0.5 * var(--padding)) calc(4.25 * var(--padding));
+    padding: var(--padding-0_5x) var(--padding) var(--padding-0_5x)
+      calc(4.25 * var(--padding));
     display: flex;
     justify-content: space-between;
 
@@ -81,7 +81,7 @@
       margin-left: 0;
     }
     :global(label) {
-      margin-left: calc(0.5 * var(--padding));
+      margin-left: var(--padding-0_5x);
 
       display: flex;
       flex-direction: column;
