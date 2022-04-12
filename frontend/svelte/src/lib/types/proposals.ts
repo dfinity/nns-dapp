@@ -11,4 +11,4 @@ export interface ProposalsFilterModalProps {
   selectedFilters: (Topic | ProposalRewardStatus | ProposalStatus)[];
 }
 
-export const PROPOSAL_FILTER_UNDEFINED_VALUE = 0;
+export const PROPOSAL_FILTER_UNSPECIFIED_VALUE = 0;

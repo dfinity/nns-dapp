@@ -14,7 +14,7 @@
     ProposalStatus,
     Topic,
   } from "@dfinity/nns";
-  import { PROPOSAL_FILTER_UNDEFINED_VALUE } from "../../types/proposals";
+  import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "../../types/proposals";
 
   export let props: ProposalsFilterModalProps | undefined;
 
@@ -29,7 +29,7 @@
   $: filters = props?.filters;
   $: filtersValues = filters
     ? enumValues(filters).filter(
-        (value) => value !== PROPOSAL_FILTER_UNDEFINED_VALUE
+        (value) => value !== PROPOSAL_FILTER_UNSPECIFIED_VALUE
       )
     : [];
   $: selectedFilters = props?.selectedFilters || [];
