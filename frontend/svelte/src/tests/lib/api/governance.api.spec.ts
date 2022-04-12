@@ -7,6 +7,7 @@ import {
   queryNeuron,
   queryNeurons,
   setFollowees,
+  splitNeuron,
   stakeNeuron,
   startDissolving,
   stopDissolving,
@@ -237,6 +238,40 @@ describe("neurons-api", () => {
           identity: mockIdentity,
           neuronId: BigInt(10),
         });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("splitNeuron", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.splitNeuron.mockImplementation(
+        jest.fn().mockResolvedValue(BigInt(11))
+      );
+
+      await splitNeuron({
+        identity: mockIdentity,
+        neuronId: BigInt(10),
+        amount: ICP.fromString("2.2") as ICP,
+      });
+
+      expect(mockGovernanceCanister.splitNeuron).toBeCalled();
+    });
+
+    it("throws error when stopDissolving fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.splitNeuron.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        splitNeuron({
+          identity: mockIdentity,
+          neuronId: BigInt(10),
+          amount: ICP.fromString("2.2") as ICP,
+        });
+      expect(mockGovernanceCanister.splitNeuron).not.toBeCalled();
       await expect(call).rejects.toThrow(error);
     });
   });
