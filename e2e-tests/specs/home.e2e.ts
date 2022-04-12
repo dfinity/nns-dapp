@@ -52,7 +52,7 @@ describe("landing page", () => {
     } finally {
       await browser["screenshot"]("home-page");
     }
-throw new Error("Let's see a screenshot");
+    throw new Error("Let's see a screenshot");
     // TODO: Deploy Ledger and Governance canisters and proxy them
     // How do we do this when they are in another repo? Do we have a repository of docker images?
     // TODO: Create docker image of NNS Dapp with IDENTITY_SERVICE_URL pointing to these proxies
