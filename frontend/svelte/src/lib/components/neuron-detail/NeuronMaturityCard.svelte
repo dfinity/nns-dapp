@@ -4,13 +4,14 @@
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import { formatPercentage } from "../../utils/format.utils";
-  import * as utils from "../../utils/neuron.utils";
   import Card from "../ui/Card.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
-
-  const { isCurrentUserController, maturityByStake } = utils;
+  import {
+    isCurrentUserController,
+    maturityByStake,
+  } from "../../utils/neuron.utils";
 
   export let neuron: NeuronInfo;
   let userControlled: boolean;
@@ -44,7 +45,7 @@
   .title {
     display: flex;
     align-items: center;
-    gap: calc(0.5 * var(--padding));
+    gap: var(--padding-0_5x);
   }
 
   .actions {

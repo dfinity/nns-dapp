@@ -51,6 +51,7 @@ interface I18nError {
   amount_not_enough: string;
   stake_neuron: string;
   transaction_invalid_amount: string;
+  split_neuron: string;
 }
 
 interface I18nWarning {
@@ -294,6 +295,9 @@ interface I18nNeuron_detail {
   following_description: string;
   follow_neurons: string;
   no_ballots: string;
+  split_neuron_confirm: string;
+  split_neuron_success: string;
+  split_neuron_disabled_tooltip: string;
 }
 
 interface I18nTime {

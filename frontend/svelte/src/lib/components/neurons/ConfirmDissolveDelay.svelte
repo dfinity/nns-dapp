@@ -91,7 +91,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: calc(3 * var(--padding));
+    padding: var(--padding-3x);
   }
 
   .voting-power {

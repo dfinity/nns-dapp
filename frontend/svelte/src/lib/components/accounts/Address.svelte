@@ -29,8 +29,8 @@
 
 <style lang="scss">
   article {
-    margin-bottom: calc(2 * var(--padding));
-    padding: 0 0 calc(2 * var(--padding));
+    margin-bottom: var(--padding-2x);
+    padding: 0 0 var(--padding-2x);
   }
 
   form {
