@@ -4,25 +4,35 @@
 
 import { render } from "@testing-library/svelte";
 import NeuronMetaInfoCard from "../../../../lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
-import * as utils from "../../../../lib/utils/neuron.utils";
+import { authStore } from "../../../../lib/stores/auth.store";
+import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
 describe("NeuronMetaInfoCard", () => {
-  beforeEach(() => {
+  const props = {
+    neuron: {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        controller: mockIdentity.getPrincipal().toText(),
+      },
+    },
+  };
+
+  beforeAll(() =>
     jest
-      .spyOn(utils, "isCurrentUserController")
-      .mockImplementation((): boolean => true);
-    jest
-      .spyOn(utils, "hasJoinedCommunityFund")
-      .mockImplementation((): boolean => false);
-  });
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   it("renders neuron id", () => {
     const { queryByText } = render(NeuronMetaInfoCard, {
-      neuron: mockNeuron,
+      props,
     });
 
     expect(queryByText(mockNeuron.neuronId.toString())).toBeInTheDocument();
@@ -31,7 +41,7 @@ describe("NeuronMetaInfoCard", () => {
   it("renders a NeuronCard", () => {
     // We can skip many edge cases tested in the NeuronCard
     const { queryByTestId } = render(NeuronMetaInfoCard, {
-      neuron: mockNeuron,
+      props,
     });
 
     expect(queryByTestId("neuron-card-title")).toBeInTheDocument();
@@ -39,14 +49,14 @@ describe("NeuronMetaInfoCard", () => {
 
   it("renders voting power", () => {
     const { queryByText } = render(NeuronMetaInfoCard, {
-      neuron: mockNeuron,
+      props,
     });
 
     expect(
       queryByText(en.neurons.voting_power, { exact: false })
     ).toBeInTheDocument();
     expect(
-      queryByText(utils.formatVotingPower(mockNeuron.votingPower))
+      queryByText(formatVotingPower(mockNeuron.votingPower))
     ).toBeInTheDocument();
   });
 
@@ -66,7 +76,7 @@ describe("NeuronMetaInfoCard", () => {
   it("renders actions", () => {
     // Each action button is tested separately
     const { queryByText } = render(NeuronMetaInfoCard, {
-      neuron: mockNeuron,
+      props,
     });
 
     expect(
@@ -81,11 +91,18 @@ describe("NeuronMetaInfoCard", () => {
   });
 
   it("renders no actions if user is not controller", () => {
-    jest
-      .spyOn(utils, "isCurrentUserController")
-      .mockImplementation((): boolean => false);
+    const props = {
+      neuron: {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "not-controller",
+        },
+      },
+    };
+
     const { queryByText } = render(NeuronMetaInfoCard, {
-      neuron: mockNeuron,
+      props,
     });
 
     expect(
