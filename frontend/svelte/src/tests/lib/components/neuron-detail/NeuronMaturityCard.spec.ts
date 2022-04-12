@@ -5,52 +5,56 @@
 import { render } from "@testing-library/svelte";
 import NeuronMaturityCard from "../../../../lib/components/neuron-detail/NeuronMaturityCard.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
+import { authStore } from "../../../../lib/stores/auth.store";
 import { formatPercentage } from "../../../../lib/utils/format.utils";
-import * as utils from "../../../../lib/utils/neuron.utils";
 import { maturityByStake } from "../../../../lib/utils/neuron.utils";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
 describe("NeuronMaturityCard", () => {
-  beforeEach(() => {
+  const maturity = BigInt(E8S_PER_ICP * 2);
+
+  const props = {
+    neuron: {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        maturityE8sEquivalent: maturity,
+        controller: mockIdentity.getPrincipal().toText(),
+      },
+    },
+  };
+
+  beforeAll(() =>
     jest
-      .spyOn(utils, "isCurrentUserController")
-      .mockImplementation((): boolean => true);
-  });
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   it("renders maturity title", () => {
     const { queryByText } = render(NeuronMaturityCard, {
-      neuron: mockNeuron,
+      props,
     });
 
     expect(queryByText(en.neuron_detail.maturity_title)).toBeInTheDocument();
   });
 
   it("renders maturity in %", () => {
-    const maturity = BigInt(E8S_PER_ICP * 2);
-    const neuron = {
-      ...mockNeuron,
-      fullNeuonr: {
-        ...mockFullNeuron,
-        maturityE8sEquivalent: maturity,
-      },
-    };
     const { queryByText } = render(NeuronMaturityCard, {
-      neuron,
+      props,
     });
-    const inPercentage = maturityByStake(neuron);
+    const inPercentage = maturityByStake(props.neuron);
 
     expect(queryByText(formatPercentage(inPercentage))).toBeInTheDocument();
   });
 
   it("renders actions", () => {
     const { queryByText } = render(NeuronMaturityCard, {
-      neuron: mockNeuron,
+      props,
     });
 
     expect(queryByText(en.neuron_detail.merge_maturity)).toBeInTheDocument();
@@ -58,11 +62,18 @@ describe("NeuronMaturityCard", () => {
   });
 
   it("renders no actions if user not controller", () => {
-    jest
-      .spyOn(utils, "isCurrentUserController")
-      .mockImplementation((): boolean => false);
+    const props = {
+      neuron: {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "not-controller",
+        },
+      },
+    };
+
     const { queryByText } = render(NeuronMaturityCard, {
-      neuron: mockNeuron,
+      props,
     });
 
     expect(
