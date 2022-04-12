@@ -318,6 +318,94 @@ const makeExecuteNnsFunctionDummyProposalRequest = ({
   },
 });
 
+const DEMO_SUMMARY = JSON.parse(
+  JSON.stringify(`# Pedum natura bimembres florem missos protinus
+
+## Pariter dote tremens adiectoque facit quas effugit
+
+__Lorem__ markdownum sacrilegi pro opus [quicquam paternis]. _Origine aestus_,
+ecce nam voluntas suco.
+
+## Visum sub at inlita terra Odrysius magnae
+
+- https://picsum.photos/1200
+- ![alt text](https://picsum.photos/1200 "The title")
+- ![text](https://picsum.photos/1200)
+
+Levis ius Rhodopen fata deo, Medea eripiat dixi recipit potuere. Simul suis
+defluxere et visae _caput_ inerti. Saucius devenit, delabor fine scelerata,
+curam. Fidesque hic gaudet nomine mea dubitas alitibus [vultu]. Profundi mearum
+se oscula Euphorbus volentem nurus crimina, cum nuper habet, tristitiam furoris
+illam viscera.
+
+- Volitare ingenti venerat
+- Non nec
+- Regale Eumenidum inire longe vestibus Latreus flagrantemque
+
+## Nox successibus fer ubi ardentis umbra
+
+Tantum summam longaeque et diversorum alter anhelitus ferae; cum ubi tandem,
+sed. Nunc secutus Sigeia, tamen avidae, in una duas.
+
+## Utque inplet tale
+
+Suis cervi habere anguipedum tinctam, mihi [dare]! Collibus dissimulare tamen
+doctior modo natus inmensum inhibere aegra testantur? Armentum bellum undae
+vertice Sirenum; cum semper caedis pedum. Intulit procubuit vadorum. Que ipse,
+verba absens [Pygmalion] factum?
+
+\`\`\`
+if (down_path_dvd + 5 >= 32) {
+    internicLanguage.boot_text_clipboard = sectorJreManet(verticalApacheClick,
+            emulation);
+    cluster(basicSupercomputer, optical_reader_trash(chip_vpn_codec));
+} else {
+    card_dvd_num(4);
+    primary = igpAjax(freewareRipcording(analog, interactive_alert_standalone,
+            public), gif, scareware);
+    dvdFunction *= compressionComputer.stationCloud(kernelSsid, ispLte);
+}
+if (-4 < command_nosql_golden) {
+    file.scanner -= expansionHeapError;
+    metaExternal.smartphone_pebibyte_active(rosetta);
+} else {
+    balance_payload_domain(processHtml, 3, printAddUnit.gnuCrossplatformToken(
+            5));
+    python_wais_record *= scannerIllegalWhitelist(wan, address(intellectual));
+    overwrite.mpeg(throughput_disk, folder_cifs_cybersquatter,
+            wysiwyg_boot.system_wired(269111));
+}
+var push_infringement = newbie;
+if (scraping_winsock(qbe.ccdOn.node(5) * raw_bank(dslam_hoc, 2, 1), -4)) {
+    text_mac_hyper.inboxLayout.adHoneypot(unc, dvd_dongle + 35);
+    nativeCifs(table_stack_toggle + frame_recycle);
+    login.rss_hsf_snmp -= 2;
+}
+if (icq >= dv_gigo - rubySolidLog) {
+    drive -= cgi_samba_mebibyte;
+}
+\`\`\`
+
+## Solet artus orbam parentis auraeque Priamum
+
+__Semper locorum__, quamvis qui census minuunt vernat; cupit colonis suo quoque
+arcum illum totidem. Grata erat perierunt aerias notavit presso, puellas
+[intravit]. Gravi capillis. Flore _utque animam_ vota minimum mentis, ingens
+eripuisse, albis mihi auctore.
+
+[Acuta condi fessos] ille! Inde erit sic terraeque leti ruricolasque fisso pro
+adstas patrios, nescio quam coepit!
+
+[Acuta condi fessos]: http://ingentia.com/deriguere.aspx
+[Pygmalion]: http://tibi.net/retro
+[dare]: http://tacta.io/cognosse-cnosiaco
+[ignis Iovis sacrilegos]: http://dissimulant.net/
+[intravit]: http://tamen-tumulus.org/
+[pecoris redeunt]: http://www.ego-ingens.io/
+[quicquam paternis]: http://visasit.com/dumque
+[vultu]: http://lentas-petitur.com/`)
+);
+
 export const makeDummyProposals = async ({ neuronId, canister }) => {
   try {
     // Used only on testnet
@@ -327,8 +415,7 @@ export const makeDummyProposals = async ({ neuronId, canister }) => {
         "Test proposal title - Lower all prices! (update subnet trq4oi-xbazd-zui8u-o55wc-ehun7-932tw-8qpqs-nittd-nbpq6-4aabt-1ur to replica version gffdb82z637e374yd3b8f48a831cbed889d35397)",
       neuronId,
       url: "https://www.google.com/search?q=The+world%E2%80%99s+fastest+general-purpose+blockchain+to+build+the+future+of+Web3",
-      summary:
-        "# Pedum natura bimembres florem missos protinus\n\n## Pariter dote tremens adiectoque facit quas effugit\n\n__Lorem__ markdownum sacrilegi pro opus [quicquam paternis]. _Origine aestus_,\necce nam voluntas suco.\n\n## Visum sub at inlita terra Odrysius magnae\n\nLevis ius Rhodopen fata deo, Medea eripiat dixi recipit potuere. Simul suis\ndefluxere et visae _caput_ inerti. Saucius devenit, delabor fine scelerata,\ncuram. Fidesque hic gaudet nomine mea dubitas alitibus [vultu]. Profundi mearum\nse oscula Euphorbus volentem nurus crimina, cum nuper habet, tristitiam furoris\nillam viscera.\n\n- Volitare ingenti venerat\n- Non nec\n- Regale Eumenidum inire longe vestibus Latreus flagrantemque\n\n## Nox successibus fer ubi ardentis umbra\n\nTantum summam longaeque et diversorum alter anhelitus ferae; cum ubi tandem,\nsed. Nunc secutus Sigeia, tamen avidae, in una duas.\n\n## Utque inplet tale\n\nSuis cervi habere anguipedum tinctam, mihi [dare]! Collibus dissimulare tamen\ndoctior modo natus inmensum inhibere aegra testantur? Armentum bellum undae\nvertice Sirenum; cum semper caedis pedum. Intulit procubuit vadorum. Que ipse,\nverba absens [Pygmalion] factum?\n\n```\nif (down_path_dvd + 5 >= 32) {\n    internicLanguage.boot_text_clipboard = sectorJreManet(verticalApacheClick,\n            emulation);\n    cluster(basicSupercomputer, optical_reader_trash(chip_vpn_codec));\n} else {\n    card_dvd_num(4);\n    primary = igpAjax(freewareRipcording(analog, interactive_alert_standalone,\n            public), gif, scareware);\n    dvdFunction *= compressionComputer.stationCloud(kernelSsid, ispLte);\n}\nif (-4 < command_nosql_golden) {\n    file.scanner -= expansionHeapError;\n    metaExternal.smartphone_pebibyte_active(rosetta);\n} else {\n    balance_payload_domain(processHtml, 3, printAddUnit.gnuCrossplatformToken(\n            5));\n    python_wais_record *= scannerIllegalWhitelist(wan, address(intellectual));\n    overwrite.mpeg(throughput_disk, folder_cifs_cybersquatter,\n            wysiwyg_boot.system_wired(269111));\n}\nvar push_infringement = newbie;\nif (scraping_winsock(qbe.ccdOn.node(5) * raw_bank(dslam_hoc, 2, 1), -4)) {\n    text_mac_hyper.inboxLayout.adHoneypot(unc, dvd_dongle + 35);\n    nativeCifs(table_stack_toggle + frame_recycle);\n    login.rss_hsf_snmp -= 2;\n}\nif (icq >= dv_gigo - rubySolidLog) {\n    drive -= cgi_samba_mebibyte;\n}\n```\n\n## Solet artus orbam parentis auraeque Priamum\n\nTale in miserae ibat suo matrem oblivia cognita praebebat, dexteriore novus:\nauro nec [ignis Iovis sacrilegos] ipsum. Servat recanduit acta? Intrat feruntur\ncruentas, esse mitis, dea conterit prodamne, una tunc. Ceyca __qui dare__\nspectare tumulati cadit. Manare et aequora, hoc __indignis noster sententia__\ntollite vivum: [pecoris redeunt]?\n\n__Semper locorum__, quamvis qui census minuunt vernat; cupit colonis suo quoque\narcum illum totidem. Grata erat perierunt aerias notavit presso, puellas\n[intravit]. Gravi capillis. Flore _utque animam_ vota minimum mentis, ingens\neripuisse, albis mihi auctore.\n\n[Acuta condi fessos] ille! Inde erit sic terraeque leti ruricolasque fisso pro\nadstas patrios, nescio quam coepit!\n\n[Acuta condi fessos]: http://ingentia.com/deriguere.aspx\n[Pygmalion]: http://tibi.net/retro\n[dare]: http://tacta.io/cognosse-cnosiaco\n[ignis Iovis sacrilegos]: http://dissimulant.net/\n[intravit]: http://tamen-tumulus.org/\n[pecoris redeunt]: http://www.ego-ingens.io/\n[quicquam paternis]: http://visasit.com/dumque\n[vultu]: http://lentas-petitur.com/",
+      summary: DEMO_SUMMARY,
     });
     console.log("Motion Proposal...");
     await canister.makeProposal(request1);
