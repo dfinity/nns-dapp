@@ -14,3 +14,6 @@ export const sumICPs = (...icps: ICP[]): ICP =>
 
 export const formattedTransactionFeeICP = () =>
   formatICP(ICP.fromE8s(BigInt(TRANSACTION_FEE_E8S)).toE8s());
+
+export const maxICP = (icp: ICP | undefined): number =>
+  Math.max((Number(icp?.toE8s() ?? 0) - TRANSACTION_FEE_E8S) / E8S_PER_ICP, 0);

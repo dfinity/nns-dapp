@@ -124,12 +124,12 @@
 
 <style lang="scss">
   main {
-    padding: calc(3 * var(--padding));
+    padding: var(--padding-3x);
 
     --input-width: 100%;
     display: flex;
     flex-direction: column;
-    gap: calc(2 * var(--padding));
+    gap: var(--padding-2x);
   }
 
   form {

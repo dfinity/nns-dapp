@@ -47,11 +47,11 @@ wait_for_url() {
 wait_for_url "$NETWORK_URL"
 
 : "Creating and deploying canisters..."
-dfx canister --no-wallet create --all || echo Canisters may have been created already. Proceeding...
-REDIRECT_TO_LEGACY=svelte DEPLOY_ENV="$DEPLOY_ENV" IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --no-wallet --network local --argument '(null)'
+dfx canister create --all || echo Canisters may have been created already. Proceeding...
+REDIRECT_TO_LEGACY=svelte DEPLOY_ENV="$DEPLOY_ENV" IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --network local --argument '(null)'
 
 : "Waiting for the canister to return with HTTP code 200..."
-NNS_DAPP_CANISTER_ID="$(dfx canister --no-wallet --network local id nns-dapp)"
+NNS_DAPP_CANISTER_ID="$(dfx canister --network local id nns-dapp)"
 NNS_DAPP_CANISTER_URL="${NNS_DAPP_CANISTER_ID}.${NETWORK_URL}"
 wait_for_url "$NNS_DAPP_CANISTER_URL" 10 --fail
 

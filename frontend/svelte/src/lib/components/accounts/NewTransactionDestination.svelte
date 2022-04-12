@@ -57,6 +57,6 @@
 
 <style lang="scss">
   p {
-    margin-bottom: calc(1.5 * var(--padding));
+    margin-bottom: var(--padding-1_5x);
   }
 </style>

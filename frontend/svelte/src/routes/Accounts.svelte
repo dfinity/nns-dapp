@@ -111,7 +111,7 @@
     display: block;
     width: 100%;
 
-    margin-bottom: calc(2 * var(--padding));
+    margin-bottom: var(--padding-2x);
 
     --icp-font-size: var(--font-size-h1);
 
