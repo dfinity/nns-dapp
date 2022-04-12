@@ -17,6 +17,7 @@
     AppPath,
     SHOW_NEURONS_ROUTE,
   } from "../lib/constants/routes.constants";
+  import MergeNeuronsModal from "../lib/modals/neurons/MergeNeuronsModal.svelte";
 
   let isLoading: boolean = false;
   // TODO: To be removed once this page has been implemented
@@ -39,9 +40,12 @@
   onDestroy(unsubscribe);
 
   let showStakeNeuronModal: boolean = false;
-  const stakeNeurons = () => (showStakeNeuronModal = true);
+  const openStakeNeuron = () => (showStakeNeuronModal = true);
+  const closeStakeNeuron = () => (showStakeNeuronModal = false);
 
-  const closeModal = () => (showStakeNeuronModal = false);
+  let showMergeNeuronsModal: boolean = false;
+  const openMergeNeurons = () => (showMergeNeuronsModal = true);
+  const closeMergeNeurons = () => (showMergeNeuronsModal = false);
 
   const goToNeuronDetails = (id: NeuronId) => () => {
     routeStore.navigate({
@@ -78,12 +82,20 @@
         <button
           data-tid="stake-neuron-button"
           class="primary"
-          on:click={stakeNeurons}>{$i18n.neurons.stake_neurons}</button
+          on:click={openStakeNeuron}>{$i18n.neurons.stake_neurons}</button
+        >
+        <button
+          data-tid="merge-neurons-button"
+          class="primary"
+          on:click={openMergeNeurons}>{$i18n.neurons.merge_neurons}</button
         >
       </Toolbar>
     </svelte:fragment>
     {#if showStakeNeuronModal}
-      <CreateNeuronModal on:nnsClose={closeModal} />
+      <CreateNeuronModal on:nnsClose={closeStakeNeuron} />
+    {/if}
+    {#if showMergeNeuronsModal}
+      <MergeNeuronsModal on:nnsClose={closeMergeNeurons} />
     {/if}
   </Layout>
 {/if}

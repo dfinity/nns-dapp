@@ -1,16 +1,25 @@
 <script lang="ts">
-  export let role: "link" | "button" | undefined = undefined;
+  export let role: "link" | "button" | "checkbox" | undefined = undefined;
   export let ariaLabel: string | undefined = undefined;
+  export let selected: boolean = false;
 
   let clickable: boolean = false;
 
-  $: clickable = role !== undefined ? ["button", "link"].includes(role) : false;
+  $: clickable =
+    role !== undefined ? ["button", "link", "checkbox"].includes(role) : false;
 
   let showHeadline: boolean;
   $: showHeadline = $$slots.start !== undefined || $$slots.end !== undefined;
 </script>
 
-<article data-tid="card" {role} on:click class:clickable aria-label={ariaLabel}>
+<article
+  data-tid="card"
+  {role}
+  on:click
+  class:clickable
+  class:selected
+  aria-label={ariaLabel}
+>
   {#if showHeadline}
     <div>
       <slot name="start" />
@@ -46,6 +55,10 @@
     &:hover {
       background: var(--background-hover);
     }
+  }
+
+  .selected {
+    border: 2px solid var(--blue-500);
   }
 
   div {

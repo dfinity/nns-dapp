@@ -21,6 +21,7 @@ import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import { getAccountByPrincipal } from "./accounts.utils";
 import { formatNumber } from "./format.utils";
+import { isDefined } from "./utils";
 
 export type StateInfo = {
   textKey: string;
@@ -248,3 +249,24 @@ export const isEnoughToStakeNeuron = ({
   withTransactionFee?: boolean;
 }): boolean =>
   stake.toE8s() > E8S_PER_ICP + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
+
+// TODO: Next PR with functionality
+export const mergeableNeurons = (neurons: NeuronInfo[]): NeuronInfo[] =>
+  neurons;
+
+// TODO: Next PR with functionality
+export const canBeMerged = (neurons: NeuronInfo[]): boolean =>
+  neurons.length === 2;
+
+export const mapNeuronIds = ({
+  neuronIds,
+  neurons,
+}: {
+  neuronIds: NeuronId[];
+  neurons: NeuronInfo[];
+}) =>
+  neuronIds
+    .map((selectedId) =>
+      neurons.find(({ neuronId }) => neuronId === selectedId)
+    )
+    .filter(isDefined);

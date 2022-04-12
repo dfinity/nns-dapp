@@ -21,6 +21,7 @@ import {
   isEnoughToStakeNeuron,
   isNeuronControllable,
   isValidInputAmount,
+  mapNeuronIds,
   maturityByStake,
   neuronCanBeSplit,
   neuronStake,
@@ -612,6 +613,16 @@ describe("neuron-utils", () => {
       expect(isEnoughToStakeNeuron({ stake, withTransactionFee: true })).toBe(
         false
       );
+    });
+  });
+
+  describe("mapNeuronIds", () => {
+    it("should map neuron id to neuron info", () => {
+      const mappedNeurons = mapNeuronIds({
+        neuronIds: [mockNeuron.neuronId],
+        neurons: [mockNeuron],
+      });
+      expect(mappedNeurons[0]).toBe(mockNeuron);
     });
   });
 });

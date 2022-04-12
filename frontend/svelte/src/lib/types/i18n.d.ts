@@ -55,6 +55,7 @@ interface I18nError {
   transaction_no_source_account: string;
   transaction_no_destination_address: string;
   transaction_error: string;
+  unexpected_number_neurons_merge: string;
 }
 
 interface I18nWarning {
@@ -113,6 +114,12 @@ interface I18nNeurons {
   text: string;
   principal_is: string;
   stake_neurons: string;
+  merge_neurons: string;
+  merge_neurons_modal_title: string;
+  merge_neurons_modal_confirm: string;
+  merge_neurons_modal_merge_button: string;
+  merge_neurons_modal_title_2: string;
+  merge_neurons_modal_with: string;
   set_dissolve_delay: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
