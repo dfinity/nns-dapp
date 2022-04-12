@@ -92,7 +92,7 @@
     <div class="only-buttons">
       {#if userControlled}
         <IncreaseStakeButton />
-        <SplitNeuronButton />
+        <SplitNeuronButton {neuron} />
       {/if}
     </div>
   </section>
