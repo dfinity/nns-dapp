@@ -105,6 +105,11 @@
 
   const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
     ({ lastAppliedFilter }) => {
+      // We only want to display spinner and reset the proposals store if filters are modified by the user
+      if (!initialized) {
+        return;
+      }
+
       if (lastAppliedFilter === "excludeVotedProposals") {
         // Make a visual feedback that the filter was applyed
         hidden = true;
