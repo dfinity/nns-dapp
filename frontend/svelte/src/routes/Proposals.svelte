@@ -173,11 +173,11 @@
     position: relative;
     display: flex;
 
-    padding: calc(2 * var(--padding)) 0;
+    padding: var(--padding-2x) 0;
   }
 
   .no-proposals {
     text-align: center;
-    margin: calc(var(--padding) * 2) 0;
+    margin: var(--padding-2x) 0;
   }
 </style>

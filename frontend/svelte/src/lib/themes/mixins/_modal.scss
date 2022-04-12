@@ -1,6 +1,6 @@
 @mixin section {
-  height: min(500px, calc(100vh - 156px - (2 * var(--padding))));
+  height: min(500px, calc(100vh - 156px - var(--padding-2x)));
   margin: 0;
-  padding: calc(2 * var(--padding));
+  padding: var(--padding-2x);
   max-width: 100%;
 }

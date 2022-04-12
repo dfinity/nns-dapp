@@ -34,7 +34,7 @@
     left: 0;
     right: 0;
 
-    margin: var(--padding) calc(2 * var(--padding));
+    margin: var(--padding) var(--padding-2x);
 
     height: var(--nav-height);
 

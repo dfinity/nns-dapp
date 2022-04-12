@@ -24,11 +24,11 @@
     align-items: center;
 
     :global(svg) {
-      margin-right: calc(var(--padding) / 2);
+      margin-right: var(--padding-0_5x);
     }
   }
 
   small {
-    margin: 0 calc(var(--padding) / 2);
+    margin: 0 var(--padding-0_5x);
   }
 </style>
