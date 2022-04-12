@@ -10,6 +10,10 @@
 
   let showHeadline: boolean;
   $: showHeadline = $$slots.start !== undefined || $$slots.end !== undefined;
+
+  let ariaChecked: "true" | "false" | undefined = undefined;
+  $: ariaChecked =
+    role === "checkbox" ? (selected ? "true" : "false") : undefined;
 </script>
 
 <article
@@ -18,6 +22,7 @@
   on:click
   class:clickable
   class:selected
+  aria-checked={ariaChecked}
   aria-label={ariaLabel}
 >
   {#if showHeadline}
