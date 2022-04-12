@@ -149,4 +149,5 @@ jobs:
           path: screenshots/**/*.png
       - name: e2e tests succeeded
         working-directory: e2e-tests
-        run: [[ "${E2E_TEST_RESULT:-}" != "FAIL" ]]
+        run: |
+          [[ "${E2E_TEST_RESULT:-}" != "FAIL" ]]
