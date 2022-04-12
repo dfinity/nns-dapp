@@ -272,6 +272,7 @@
     "following_title": "Following",
     "following_description": "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
     "follow_neurons": "Follow Neurons",
+    "no_ballots": "No recent ballots",
     "split_neuron_confirm": "Confirm Split",
     "split_neuron_success": "Your neuron has successfully been splitted.",
     "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable."
