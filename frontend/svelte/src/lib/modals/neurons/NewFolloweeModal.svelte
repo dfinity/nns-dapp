@@ -14,7 +14,7 @@
   export let neuron: NeuronInfo;
   export let topic: Topic;
 
-  let followeeAddress: number | undefined;
+  let followeeAddress: string = "";
   let loadingAddress: boolean = false;
   let loading: boolean = false;
   let topicFollowees: NeuronId[];
@@ -43,29 +43,33 @@
 
   const addFolloweeByAddress = async () => {
     let followee: bigint;
-    if (followeeAddress === undefined) {
+    if (followeeAddress.length === 0) {
       return;
     }
-    loading = true;
-    loadingAddress = true;
-    startBusy("add-followee");
+
     try {
       followee = BigInt(followeeAddress);
     } catch (error) {
       // TODO: Show error in Input - https://dfinity.atlassian.net/browse/L2-408
       alert(`Incorrect followee address ${followeeAddress}`);
-      loading = false;
       return;
     }
+
+    loading = true;
+    loadingAddress = true;
+    startBusy("add-followee");
+
     await addFollowee({
       neuronId: neuron.neuronId,
       topic,
       followee,
     });
+
     loading = false;
     loadingAddress = false;
-    followeeAddress = undefined;
     stopBusy("add-followee");
+
+    followeeAddress = "";
   };
 </script>
 
@@ -75,7 +79,8 @@
     <article>
       <form on:submit|preventDefault={addFolloweeByAddress}>
         <Input
-          inputType="number"
+          inputType="text"
+          autocomplete="off"
           placeholderLabelKey="new_followee.address_placeholder"
           name="new-followee-address"
           bind:value={followeeAddress}
@@ -85,7 +90,7 @@
         <button
           class={`primary small ${loadingAddress ? "icon-only" : ""}`}
           type="submit"
-          disabled={followeeAddress === undefined || loading}
+          disabled={followeeAddress.length === 0 || loading}
         >
           {#if loadingAddress}
             <Spinner inline size="small" />

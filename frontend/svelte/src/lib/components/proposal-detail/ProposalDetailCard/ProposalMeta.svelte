@@ -7,7 +7,7 @@
   } from "@dfinity/nns";
   import { Topic } from "@dfinity/nns";
   import { i18n } from "../../../../lib/stores/i18n";
-  import ProposerModal from "../../../modals/proposals/ProposerModal.svelte";
+  import VotingHistoryModal from "../../../modals/neurons/VotingHistoryModal.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -36,7 +36,10 @@
     </button>
 
     {#if modalOpen}
-      <ProposerModal {proposer} on:nnsClose={() => (modalOpen = false)} />
+      <VotingHistoryModal
+        neuronId={proposer}
+        on:nnsClose={() => (modalOpen = false)}
+      />
     {/if}
   {/if}
 
