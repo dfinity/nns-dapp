@@ -1,8 +1,10 @@
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:nns_dapp/data/topic.dart';
 import 'package:nns_dapp/ui/_components/constants.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
+import 'package:nns_dapp/ui/neurons/following/followee_suggestions.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
 
 import '../../../nns_dapp.dart';
@@ -29,6 +31,12 @@ class NeuronFolloweesCard extends StatelessWidget {
         .entries
         .toList();
 
+    final followeeSuggeston = neuron.followees.map((followee) =>
+    followee.followees.map((e) => FolloweeSuggestion(followee.topic, followee.followees)))
+        .groupBy((element) => element.neuron)
+        .entries
+        .toList();
+
     return Card(
       color: AppColors.background,
       child: Container(
@@ -47,6 +55,36 @@ class NeuronFolloweesCard extends StatelessWidget {
                   style: context.textTheme.subtitle2),
             ),
             VerySmallFormDivider(),
+            // FutureBuilder(
+            //     future: context.icApi.followeeSuggestions(),
+            //     builder: (context, AsyncSnapshot<List<FolloweeSuggestion>> snapshot) {
+            //       if (snapshot.hasData) {
+            //         return Column(
+            //           children: [
+            //             //TODO : change this somehow
+            //             ...neuron.followees.map((e) => Container(
+            //               child: Padding(
+            //                 padding: const EdgeInsets.all(8.0),
+            //                 child: Row(
+            //                   children: [
+            //                     Expanded(
+            //                       child: Align(
+            //                         alignment: Alignment.centerLeft,
+            //                         child: Text(
+            //                             snapshot.data!.firstWhereOrNull(
+            //                                     (element) => element.id == e)?.name ?? e.toString(),
+            //                             style: context.textTheme.bodyText2),
+            //                       ),
+            //                     ),
+            //                   ],
+            //                 ),
+            //               ),
+            //             ))
+            //           ],
+            //         );
+            //       }
+            //       return Text('Loading..');
+            //     }),
             if (followeeTopics.isNotEmpty)
               Container(
                 padding: const EdgeInsets.all(8.0),
