@@ -38,11 +38,10 @@ describe("NewTransactionAmount", () => {
     });
   });
 
-  it("should render a source transaction", () => {
+  it("should not render a source transaction", () => {
     const { getByText } = render(NewTransactionTest, { props });
 
-    // More tests about details are provided in NewTransactionInfo.spec.ts
-    expect(getByText(en.accounts.source)).toBeTruthy();
+    expect(() => getByText(en.accounts.source)).toThrow();
   });
 
   it("should render current balance", () => {
