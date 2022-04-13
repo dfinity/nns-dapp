@@ -7,6 +7,7 @@ import {
 } from "@dfinity/nns";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
+import type {BlockHeight} from '@dfinity/nns';
 
 export const getNeuronBalance = async ({
   neuron,
@@ -42,7 +43,7 @@ export const sendICP = async ({
   to: string;
   amount: ICP;
   fromSubAccountId?: number | undefined;
-}) => {
+}): Promise<BlockHeight> => {
   const { canister } = await ledgerCanister({ identity });
 
   return canister.transfer({
