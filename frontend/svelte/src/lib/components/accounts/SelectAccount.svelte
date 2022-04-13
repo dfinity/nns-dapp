@@ -22,7 +22,7 @@
     ({ identifier }: Account) => identifier !== filterIdentifier
   );
 
-  // Display the "My Account" title only when we filter the list
+  // Display the "My Accounts" title only when we filter the list
   let displayTitle;
   $: displayTitle = filterIdentifier !== undefined;
 </script>
