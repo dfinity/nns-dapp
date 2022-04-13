@@ -19,6 +19,7 @@ import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
+import type { Step } from "../stores/steps.state";
 import { getAccountByPrincipal } from "./accounts.utils";
 import { formatNumber } from "./format.utils";
 import { isDefined } from "./utils";
@@ -270,3 +271,27 @@ export const mapNeuronIds = ({
       neurons.find(({ neuronId }) => neuronId === selectedId)
     )
     .filter(isDefined);
+
+export type InvalidState<T> = {
+  stepName: string;
+  isInvalid: (arg?: T) => boolean;
+  onInvalid: () => void;
+};
+// Checks if there is an invalid state in a Wizard Step
+export const checkInvalidState = <T>({
+  invalidStates,
+  currentStep,
+  args,
+}: {
+  invalidStates: InvalidState<T>[];
+  currentStep?: Step;
+  args: T;
+}): void => {
+  const invalidState = invalidStates.find(
+    ({ stepName, isInvalid }) =>
+      stepName === currentStep?.name && isInvalid(args)
+  );
+  if (invalidState !== undefined) {
+    invalidState.onInvalid();
+  }
+};

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
+  import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -13,7 +14,7 @@
   const dispatcher = createEventDispatcher();
   $: {
     // Only two neurons can be merged
-    if (neurons.length !== 2) {
+    if (neurons.length !== MAX_NEURONS_MERGED) {
       toastsStore.error({
         labelKey: "error.unexpected_number_neurons_merge",
       });
@@ -67,6 +68,9 @@
       {/if}
     </button>
   </div>
+  <div class="disclaimer">
+    <p>This action is irreversible.</p>
+  </div>
 </div>
 
 <style lang="scss">
@@ -84,5 +88,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .disclaimer p {
+    width: 100%;
+    text-align: center;
+    margin: 0;
   }
 </style>

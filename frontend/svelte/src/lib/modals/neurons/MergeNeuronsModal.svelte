@@ -6,11 +6,17 @@
   import ConfirmNeuronsMerge from "../../components/neurons/ConfirmNeuronsMerge.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { neuronsStore } from "../../stores/neurons.store";
-  import { mergeableNeurons } from "../../utils/neuron.utils";
+  import {
+    mergeableNeurons,
+    checkInvalidState,
+    type InvalidState,
+  } from "../../utils/neuron.utils";
   import { toastsStore } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
+  import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
 
   let neurons: NeuronInfo[];
+  // TODO: Add type wrapper to tell whether neuron is mergeable or not.
   $: neurons = mergeableNeurons($neuronsStore);
 
   let selectedNeurons: NeuronInfo[] | undefined;
@@ -31,30 +37,25 @@
   let currentStep: Step | undefined;
   let modal: WizardModal;
 
-  type InvalidState = {
-    stepName: string;
-    isSelectionValid?: (s?: NeuronInfo[]) => boolean;
-  };
-  const invalidStates: InvalidState[] = [
+  const dispatcher = createEventDispatcher();
+  const invalidStates: InvalidState<NeuronInfo[]>[] = [
     {
       stepName: "ConfirmMerge",
-      isSelectionValid: (s?: NeuronInfo[]) => s === undefined || s.length !== 2,
+      isInvalid: (s?: NeuronInfo[]) =>
+        s === undefined || s.length !== MAX_NEURONS_MERGED,
+      onInvalid: () => {
+        toastsStore.error({
+          labelKey: "error.unknown",
+        });
+        dispatcher("nnsClose");
+      },
     },
   ];
-  const dispatcher = createEventDispatcher();
-  $: {
-    const invalidState = invalidStates.find(
-      ({ stepName, isSelectionValid }) =>
-        stepName === currentStep?.name &&
-        (isSelectionValid?.(selectedNeurons) ?? false)
-    );
-    if (invalidState !== undefined) {
-      toastsStore.error({
-        labelKey: "error.unknown",
-      });
-      dispatcher("nnsClose");
-    }
-  }
+  $: checkInvalidState({
+    invalidStates,
+    currentStep,
+    args: selectedNeurons,
+  });
 
   const handleNeuronSelection = ({
     detail,

@@ -11,9 +11,8 @@
   let showHeadline: boolean;
   $: showHeadline = $$slots.start !== undefined || $$slots.end !== undefined;
 
-  let ariaChecked: "true" | "false" | undefined = undefined;
-  $: ariaChecked =
-    role === "checkbox" ? (selected ? "true" : "false") : undefined;
+  let ariaChecked: boolean | undefined = undefined;
+  $: ariaChecked = role === "checkbox" ? selected : undefined;
 </script>
 
 <article
@@ -51,6 +50,11 @@
     border-radius: var(--border-radius);
 
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
+
+    border: 2px solid transparent;
+    &.selected {
+      border: 2px solid var(--blue-500);
+    }
   }
 
   .clickable {
@@ -60,10 +64,6 @@
     &:hover {
       background: var(--background-hover);
     }
-  }
-
-  .selected {
-    border: 2px solid var(--blue-500);
   }
 
   div {

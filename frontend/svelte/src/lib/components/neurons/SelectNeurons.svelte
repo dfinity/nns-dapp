@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
+  import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
   import { i18n } from "../../stores/i18n";
   import { canBeMerged, mapNeuronIds } from "../../utils/neuron.utils";
   import NeuronCard from "./NeuronCard.svelte";
@@ -15,7 +16,6 @@
   };
 
   let selectedNeuronIds: NeuronId[] = [];
-  const MAX_NEURONS_MERGED = 2;
   // We only allow the selection of two neurons.
   const toggleNeuronId = (neuronId: NeuronId): void => {
     if (selectedNeuronIds.includes(neuronId)) {
@@ -39,6 +39,7 @@
 
 <div class="wrapper">
   <ul class="items">
+    <!-- TODO: Disable all neurons when 2 are selected -->
     {#each neurons as neuron}
       <li>
         <NeuronCard
@@ -64,6 +65,8 @@
         {$i18n.error.cannot_merge}
         <a
           href="https://medium.com/dfinity/internet-computer-nns-neurons-can-now-be-merged-8b4e44584dc2"
+          target="_blank"
+          rel="noopener noreferrer"
           >{$i18n.neurons.merge_neurons_article_title}</a
         >
       </p>

@@ -39,13 +39,10 @@
 
   onDestroy(unsubscribe);
 
-  let showStakeNeuronModal: boolean = false;
-  const openStakeNeuron = () => (showStakeNeuronModal = true);
-  const closeStakeNeuron = () => (showStakeNeuronModal = false);
-
-  let showMergeNeuronsModal: boolean = false;
-  const openMergeNeurons = () => (showMergeNeuronsModal = true);
-  const closeMergeNeurons = () => (showMergeNeuronsModal = false);
+  type ModalKey = "stake-neuron" | "merge-neurons";
+  let showModal: ModalKey | undefined = undefined;
+  const openModal = (key: ModalKey) => (showModal = key);
+  const closeModal = () => (showModal = undefined);
 
   const goToNeuronDetails = (id: NeuronId) => () => {
     routeStore.navigate({
@@ -82,20 +79,22 @@
         <button
           data-tid="stake-neuron-button"
           class="primary"
-          on:click={openStakeNeuron}>{$i18n.neurons.stake_neurons}</button
+          on:click={() => openModal("stake-neuron")}
+          >{$i18n.neurons.stake_neurons}</button
         >
         <button
           data-tid="merge-neurons-button"
           class="primary"
-          on:click={openMergeNeurons}>{$i18n.neurons.merge_neurons}</button
+          on:click={() => openModal("merge-neurons")}
+          >{$i18n.neurons.merge_neurons}</button
         >
       </Toolbar>
     </svelte:fragment>
-    {#if showStakeNeuronModal}
-      <CreateNeuronModal on:nnsClose={closeStakeNeuron} />
+    {#if showModal === "stake-neuron"}
+      <CreateNeuronModal on:nnsClose={closeModal} />
     {/if}
-    {#if showMergeNeuronsModal}
-      <MergeNeuronsModal on:nnsClose={closeMergeNeurons} />
+    {#if showModal === "merge-neurons"}
+      <MergeNeuronsModal on:nnsClose={closeModal} />
     {/if}
   </Layout>
 {/if}

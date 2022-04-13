@@ -7,9 +7,11 @@ import {
   SECONDS_IN_YEAR,
 } from "../../../lib/constants/constants";
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import type { Step } from "../../../lib/stores/steps.state";
 import {
   ageMultiplier,
   ballotsWithDefinedProposal,
+  checkInvalidState,
   convertNumberToICP,
   dissolveDelayMultiplier,
   followeesNeurons,
@@ -27,6 +29,7 @@ import {
   neuronStake,
   sortNeuronsByCreatedTimestamp,
   votingPower,
+  type InvalidState,
 } from "../../../lib/utils/neuron.utils";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -623,6 +626,46 @@ describe("neuron-utils", () => {
         neurons: [mockNeuron],
       });
       expect(mappedNeurons[0]).toBe(mockNeuron);
+    });
+  });
+
+  describe("checkInvalidState", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    const stepName = "ok";
+    const spyOnInvalid = jest.fn();
+    const invalidStates: InvalidState<boolean>[] = [
+      {
+        stepName,
+        isInvalid: (arg: boolean) => arg,
+        onInvalid: spyOnInvalid,
+      },
+    ];
+    const currentStep: Step = {
+      name: stepName,
+      title: "some title",
+      showBackButton: false,
+    };
+    it("does nothing if state is valid", () => {
+      checkInvalidState({
+        invalidStates,
+        currentStep,
+        // We use the args to trigger an invalid state or not
+        args: false,
+      });
+      expect(spyOnInvalid).not.toHaveBeenCalled();
+    });
+
+    it("calls onInvalid if state is invalid", () => {
+      checkInvalidState({
+        invalidStates,
+        currentStep,
+        // We use the args to trigger an invalid state or not
+        args: true,
+      });
+      expect(spyOnInvalid).toHaveBeenCalled();
     });
   });
 });
