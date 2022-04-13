@@ -12,23 +12,16 @@ export class MockLedgerCanister extends LedgerCanister {
     return this;
   }
 
-  public accountBalance = async ({
-    accountIdentifier,
-    certified,
-  }: {
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  public accountBalance = async (_: {
     accountIdentifier: AccountIdentifier;
     certified?: boolean | undefined;
   }): Promise<ICP> => {
     return ICP.fromE8s(BigInt(1));
   };
 
-  public transfer = async ({
-    to,
-    amount,
-    memo,
-    fee,
-    fromSubAccountId,
-  }: {
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  public transfer = async (_: {
     to: AccountIdentifier;
     amount: ICP;
     memo?: bigint | undefined;

@@ -26,17 +26,15 @@ export class MockNNSDappCanister extends NNSDappCanister {
     return AccountIdentifier.fromHex(mockMainAccount.identifier);
   };
 
-  public getAccount = async ({
-    certified,
-  }: {
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  public getAccount = async (_: {
     certified: boolean;
   }): Promise<AccountDetails> => {
     return mockAccountDetails;
   };
 
-  public createSubAccount = async ({
-    subAccountName,
-  }: {
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  public createSubAccount = async (_: {
     subAccountName: string;
   }): Promise<SubAccountDetails> => {
     return mockSubAccountDetails;
