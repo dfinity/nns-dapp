@@ -7,6 +7,7 @@ export type BusyStateInitiator =
   | "vote"
   | "accounts"
   | "join-community-fund"
+  | "split-neuron"
   | "dissolve-action"
   | "add-followee"
   | "remove-followee";

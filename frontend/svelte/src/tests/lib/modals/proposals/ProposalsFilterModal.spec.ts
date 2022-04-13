@@ -42,9 +42,19 @@ describe("ProposalsFilterModal", () => {
       props,
     });
 
-    enumKeys(Topic).forEach((key: string) =>
-      expect(getByText(en.topics[key])).toBeInTheDocument()
-    );
+    enumKeys(Topic)
+      .filter((key: string) => key !== "Unspecified")
+      .forEach((key: string) =>
+        expect(getByText(en.topics[key])).toBeInTheDocument()
+      );
+  });
+
+  it("should not render filter Unspecified", () => {
+    const { getByText } = render(ProposalsFilterModal, {
+      props,
+    });
+
+    expect(() => getByText(en.topics.Unspecified)).toThrow();
   });
 
   it("should forward close modal event", (done) => {
@@ -86,6 +96,7 @@ describe("ProposalsFilterModal", () => {
     button && (await fireEvent.click(button));
 
     const selectedTopics = get(proposalsFiltersStore).topics;
-    expect(selectedTopics).toEqual([...DEFAULT_PROPOSALS_FILTERS.topics, 0, 1]);
+
+    expect(selectedTopics).toEqual([...DEFAULT_PROPOSALS_FILTERS.topics, 1, 2]);
   });
 });

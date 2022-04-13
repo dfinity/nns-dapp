@@ -1,5 +1,12 @@
 import type { Identity } from "@dfinity/agent";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import {
+  ICP,
+  NeuronState,
+  Topic,
+  type BallotInfo,
+  type NeuronId,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
@@ -7,6 +14,7 @@ import {
   SECONDS_IN_HALF_YEAR,
 } from "../constants/constants";
 import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
+import { MIN_NEURON_STAKE_SPLITTABLE } from "../constants/neurons.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
@@ -168,3 +176,75 @@ export const neuronStake = (neuron: NeuronInfo): bigint =>
   neuron.fullNeuron?.cachedNeuronStake !== undefined
     ? neuron.fullNeuron?.cachedNeuronStake - neuron.fullNeuron?.neuronFees
     : BigInt(0);
+
+export interface FolloweesNeuron {
+  neuronId: NeuronId;
+  topics: [Topic, ...Topic[]];
+}
+/**
+ * Transforms Neuron.Followees into FolloweesNeuron[] format
+ */
+export const followeesNeurons = (neuron: NeuronInfo): FolloweesNeuron[] => {
+  if (neuron.fullNeuron?.followees === undefined) {
+    return [];
+  }
+  const result: FolloweesNeuron[] = [];
+  const resultNeuron = (neuronId: NeuronId): FolloweesNeuron | undefined =>
+    result.find(({ neuronId: id }) => id === neuronId);
+
+  for (const { followees, topic } of neuron.fullNeuron.followees) {
+    for (const neuronId of followees) {
+      const followeesNeuron = resultNeuron(neuronId);
+      if (followeesNeuron === undefined) {
+        result.push({
+          neuronId,
+          topics: [topic],
+        });
+      } else {
+        followeesNeuron.topics.push(topic);
+      }
+    }
+  }
+
+  return result;
+};
+
+/**
+ * Returns neuron ballots that contain "proposalId"
+ */
+export const ballotsWithDefinedProposal = ({
+  recentBallots,
+}: NeuronInfo): Required<BallotInfo>[] =>
+  recentBallots.filter(
+    ({ proposalId }: BallotInfo) => proposalId !== undefined
+  );
+
+export const neuronCanBeSplit = (neuron: NeuronInfo): boolean =>
+  neuronStake(neuron) >= BigInt(MIN_NEURON_STAKE_SPLITTABLE);
+
+export const isValidInputAmount = ({
+  amount,
+  max,
+}: {
+  amount?: number;
+  max: number;
+}): boolean => amount !== undefined && amount > 0 && amount <= max;
+
+export const convertNumberToICP = (amount: number): ICP | undefined => {
+  const stake = ICP.fromString(String(amount));
+
+  if (!(stake instanceof ICP)) {
+    return undefined;
+  }
+
+  return stake;
+};
+
+export const isEnoughToStakeNeuron = ({
+  stake,
+  withTransactionFee = false,
+}: {
+  stake: ICP;
+  withTransactionFee?: boolean;
+}): boolean =>
+  stake.toE8s() > E8S_PER_ICP + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);

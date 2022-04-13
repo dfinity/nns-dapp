@@ -54,13 +54,18 @@ describe("Input", () => {
     attribute,
     expected,
     container,
+    expectedValue,
   }: {
     attribute: string;
     expected: boolean;
     container: HTMLElement;
+    expectedValue?: boolean;
   }) => {
     const input: HTMLInputElement | null = container.querySelector("input");
     expect(input?.hasAttribute(attribute)).toEqual(expected);
+    if (expectedValue !== undefined) {
+      expect(input?.getAttribute(attribute)).toEqual(expectedValue);
+    }
   };
 
   it("should render an input of type number", () => {
@@ -112,6 +117,25 @@ describe("Input", () => {
     });
 
     testHasAttribute({ container, attribute: "spellcheck", expected: true });
+  });
+
+  it("should render an input without autocomplete", () => {
+    const { container } = render(Input, {
+      props,
+    });
+
+    testHasAttribute({ container, attribute: "autocomplete", expected: false });
+  });
+
+  it("should render an input with autocomplete", () => {
+    const { container } = render(Input, {
+      props: {
+        ...props,
+        autocomplete: "off",
+      },
+    });
+
+    testHasAttribute({ container, attribute: "autocomplete", expected: true });
   });
 
   it("should render an input with step any", () => {

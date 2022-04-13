@@ -9,8 +9,11 @@
   import { toastsStore } from "../../stores/toasts.store";
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
   import { ICP } from "@dfinity/nns";
-  import type { FromICPStringError } from "@dfinity/nns";
   import { maxICP } from "../../utils/icp.utils";
+  import {
+    convertNumberToICP,
+    isValidInputAmount,
+  } from "../../utils/neuron.utils";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -25,20 +28,26 @@
   $: max = maxICP($store.selectedAccount?.balance);
 
   let validForm: boolean;
-  $: validForm = amount !== undefined && amount > 0 && amount <= max;
+  $: validForm = isValidInputAmount({ amount, max });
+
+  let balance: ICP;
+  $: ({ balance } = $store.selectedAccount ?? {
+    balance: ICP.fromE8s(BigInt(0)),
+  });
 
   const onMax = () => (amount = max);
   const onSubmit = () => {
-    if (!validForm) {
+    // TS not smart enough to know that validForm also covers `amount === undefiend`
+    if (!validForm || amount === undefined) {
       toastsStore.error({
         labelKey: "error.transaction_invalid_amount",
       });
       return;
     }
 
-    const icp: ICP | FromICPStringError = ICP.fromString(`${amount}`);
+    const icp: ICP | undefined = convertNumberToICP(amount);
 
-    if (!(icp instanceof ICP)) {
+    if (icp === undefined) {
       toastsStore.error({
         labelKey: "error.amount_not_valid",
       });
@@ -58,7 +67,7 @@
 
 <form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
   <div class="head">
-    <CurrentBalance account={$store.selectedAccount} />
+    <CurrentBalance {balance} />
 
     <AmountInput bind:amount on:nnsMax={onMax} {max} />
   </div>
