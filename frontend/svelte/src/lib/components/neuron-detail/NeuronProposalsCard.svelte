@@ -23,6 +23,7 @@
     <button
       on:click={makeProposals}
       class={`primary small ${loading ? "icon-only" : ""}`}
+      disabled={loading}
     >
       {#if loading}
         <Spinner inline size="small" />
