@@ -72,7 +72,7 @@
     <AmountInput bind:amount on:nnsMax={onMax} {max} />
   </div>
 
-  <NewTransactionInfo />
+  <NewTransactionInfo feeOnly={true} />
 
   <button class="primary full-width" type="submit" disabled={!validForm}>
     {$i18n.accounts.review_transaction}
