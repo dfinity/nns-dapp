@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo, Vote } from "@dfinity/nns";
   import {
-    notVotedNeurons as getNotVotedNeurons,
+    votableNeurons as getVotableNeurons,
     ProposalStatus,
   } from "@dfinity/nns";
   import { onDestroy } from "svelte";
@@ -16,7 +16,7 @@
   export let proposalInfo: ProposalInfo;
 
   const votableNeurons = () =>
-    getNotVotedNeurons({
+    getVotableNeurons({
       neurons: $neuronsStore,
       proposal: proposalInfo,
     })
