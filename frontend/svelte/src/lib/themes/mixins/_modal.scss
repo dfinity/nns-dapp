@@ -4,3 +4,9 @@
   padding: var(--padding-2x);
   max-width: 100%;
 }
+
+@mixin header {
+  min-height: 182px;
+  max-height: 182px;
+  padding: 0;
+}
