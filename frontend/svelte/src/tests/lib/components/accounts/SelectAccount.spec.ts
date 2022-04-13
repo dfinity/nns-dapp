@@ -38,8 +38,8 @@ describe("SelectAccount", () => {
 
   it("should render a title", async () => {
     jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe());
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe());
 
     const { queryByText } = render(SelectAccount, {
       props: {
