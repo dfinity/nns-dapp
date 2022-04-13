@@ -19,8 +19,9 @@
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
   // Setting default value avoids warning missing props during testing
-  export let role: undefined | "link" | "button" = undefined;
+  export let role: undefined | "link" | "button" | "checkbox" = undefined;
   export let ariaLabel: string | undefined = undefined;
+  export let selected: boolean = false;
 
   // TODO: https://dfinity.atlassian.net/browse/L2-366
   let stateInfo: StateInfo;
@@ -39,7 +40,7 @@
   $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
 </script>
 
-<Card {role} on:click {ariaLabel}>
+<Card {role} {selected} on:click {ariaLabel}>
   <div slot="start" class="lock" data-tid="neuron-card-title">
     <h3 class:has-neuron-control={isCommunityFund || isHotKeyControl}>
       {neuron.neuronId}

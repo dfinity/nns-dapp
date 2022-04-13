@@ -66,14 +66,26 @@ describe("Neurons", () => {
   });
 
   it("should open the CreateNeuronModal on click to Stake Neurons", async () => {
-    const { container, queryByText } = render(Neurons);
+    const { queryByTestId, queryByText } = render(Neurons);
 
-    const toolbarButton = container.querySelector('[role="toolbar"] button');
+    const toolbarButton = queryByTestId("stake-neuron-button");
     expect(toolbarButton).not.toBeNull();
     expect(queryByText(en.accounts.select_source)).toBeNull();
 
     toolbarButton !== null && (await fireEvent.click(toolbarButton));
 
     expect(queryByText(en.accounts.select_source)).not.toBeNull();
+  });
+
+  it("should open the MergeNeuronsModal on click to Merge Neurons", async () => {
+    const { queryByTestId, queryByText } = render(Neurons);
+
+    const toolbarButton = queryByTestId("merge-neurons-button");
+    expect(toolbarButton).not.toBeNull();
+    expect(queryByText(en.neurons.merge_neurons_modal_title)).toBeNull();
+
+    toolbarButton !== null && (await fireEvent.click(toolbarButton));
+
+    expect(queryByText(en.neurons.merge_neurons_modal_title)).not.toBeNull();
   });
 });

@@ -50,7 +50,9 @@
     "transaction_invalid_amount": "The amount is less than zero or exceeds the amount of available funds for the selected account.",
     "transaction_no_source_account": "No source account has been selected to execute the transaction.",
     "transaction_no_destination_address": "No destination address has been selected to execute the transaction.",
-    "transaction_error": "Sorry, there was an error trying to execute the transaction."
+    "transaction_error": "Sorry, there was an error trying to execute the transaction.",
+    "unexpected_number_neurons_merge": "Sorry, the number of neurons to merge should be only 2. Please try selecting again.",
+    "cannot_merge": "Those two neurons cannot be merged. Check the article: "
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -103,6 +105,12 @@
     "text": "Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.",
     "principal_is": "Your principal id is",
     "stake_neurons": "Stake Neurons",
+    "merge_neurons": "Merge Neurons",
+    "merge_neurons_modal_title": "Select two neurons to merge",
+    "merge_neurons_modal_confirm": "Confirm merge",
+    "merge_neurons_modal_merge_button": "Merge Neurons",
+    "merge_neurons_modal_title_2": "Merge neuron",
+    "merge_neurons_modal_with": "with",
     "set_dissolve_delay": "Set Dissolve Delay",
     "confirm_dissolve_delay": "Confirm Dissolve Delay",
     "follow_neurons_screen": "Follow neurons",
@@ -133,7 +141,8 @@
     "skip": "Skip",
     "update_delay": "Update Delay",
     "confirm_delay": "Confirm and Update Delay",
-    "dissolve_delay_success": "Dissolve delay successfully updated."
+    "dissolve_delay_success": "Dissolve delay successfully updated.",
+    "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged"
   },
   "new_followee": {
     "title": "Enter New Followee",
