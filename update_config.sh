@@ -47,7 +47,7 @@ else
 EOF
 fi
 
-echo "wrote config from DEPLOY_ENV '$DEPLOY_ENV' :"
+echo "wrote config from DEPLOY_ENV '$DEPLOY_ENV' :" >&2
 cat frontend/ts/src/config.json
 
 popd >/dev/null

@@ -5,35 +5,59 @@
       "type": "custom",
       "candid": "rs/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
-      "build": "./build.sh"
+      "BUILD": "./build.sh"
     },
     "internet_identity": {
       "type": "custom",
       "wasm": "internet_identity.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-03-30/internet_identity_dev.wasm\" -o internet_identity.wasm"
+      "BUILD": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-03-30/internet_identity_dev.wasm\" -o internet_identity.wasm"
     }
   },
   "networks": {
     "mainnet": {
+      "config": {
+        "BUILD": "release",
+        "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
+        "FETCH_ROOT_KEY": false,
+        "REDIRECT_TO_LEGACY": "prod",
+        "IDENTITY_SERVICE_URL": "https://identity.ic0.app/"
+      },
       "providers": [
         "https://ic0.app/"
       ],
       "type": "persistent"
     },
     "testnet": {
+      "config": {
+        "BUILD": "dev",
+        "FETCH_ROOT_KEY": true,
+        "REDIRECT_TO_LEGACY": "svelte",
+        "HOST": "https://nnsdapp.dfinity.network/",
+        "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
+      },
       "providers": [
         "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
       ],
       "type": "persistent"
     },
     "local": {
+      "config": {
+        "BUILD": "dev",
+        "FETCH_ROOT_KEY": true,
+        "REDIRECT_TO_LEGACY": "svelte",
+        "HOST": "http://localhost:8080"
+      },
       "bind": "127.0.0.1:8080",
       "type": "ephemeral"
     }
   },
   "defaults": {
-    "build": {
+    "network": {"config": {
+      "GOVERNANCE_CANISTER_ID": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+      "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+    }},
+    "BUILD": {
       "packtool": ""
     }
   },
