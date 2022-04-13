@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import AccountCard from "./AccountCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import { accountsStore } from "../../stores/accounts.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
 
   export let displayTitle = false;
   export let disableSelection: boolean = false;
@@ -16,14 +15,7 @@
   };
 
   let mainAccount: Account | undefined;
-
-  const unsubscribeAccounts: Unsubscriber = accountsStore.subscribe(
-    (accountStore) => {
-      mainAccount = accountStore?.main;
-    }
-  );
-
-  onDestroy(unsubscribeAccounts);
+  $: mainAccount = $accountsStore?.main;
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>
