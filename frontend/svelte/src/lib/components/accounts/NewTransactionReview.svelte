@@ -7,11 +7,7 @@
   import { createEventDispatcher, getContext } from "svelte";
   import { i18n } from "../../stores/i18n";
   import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { toastsStore } from "../../stores/toasts.store";
-  import {
-    transferICP,
-    TransferICPError,
-  } from "../../services/accounts.services";
+  import { transferICP } from "../../services/accounts.services";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -23,28 +19,17 @@
   const dispatcher = createEventDispatcher();
 
   const executeTransaction = async () => {
-    try {
-      startBusy("accounts");
+    startBusy("accounts");
 
-      await transferICP($store);
-
-      dispatcher("nnsClose");
-    } catch (err) {
-      if (err instanceof TransferICPError) {
-        toastsStore.error({
-          labelKey: err.message,
-        });
-
-        return;
-      }
-
-      toastsStore.error({
-        labelKey: "error.transaction_error",
-        err,
-      });
-    }
+    const { success } = await transferICP($store);
 
     stopBusy("accounts");
+
+    if (!success) {
+      return;
+    }
+
+    dispatcher("nnsClose");
   };
 </script>
 

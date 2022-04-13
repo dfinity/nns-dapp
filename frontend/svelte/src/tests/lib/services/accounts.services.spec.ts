@@ -6,7 +6,6 @@ import {
   addSubAccount,
   syncAccounts,
   transferICP,
-  TransferICPError,
 } from "../../../lib/services/accounts.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import type { TransactionStore } from "../../../lib/stores/transaction.store";
@@ -19,7 +18,6 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
 
 describe("accounts-services", () => {
   const mockAccounts = { main: mockMainAccount, subAccounts: [] };
@@ -35,6 +33,10 @@ describe("accounts-services", () => {
   const spySendICP = jest
     .spyOn(ledgerApi, "sendICP")
     .mockImplementation(() => Promise.resolve(BigInt(0)));
+
+  beforeAll(() => jest.spyOn(console, "error").mockImplementation(jest.fn));
+
+  afterAll(() => jest.clearAllMocks());
 
   it("should sync accounts", async () => {
     await syncAccounts();
@@ -90,34 +92,27 @@ describe("accounts-services", () => {
   });
 
   it("should throw errors if transfer params not provided", async () => {
-    let call = async () =>
-      await transferICP({
-        ...transferICPParams,
-        selectedAccount: undefined,
-      });
+    const { err: errSelectedAccount } = await transferICP({
+      ...transferICPParams,
+      selectedAccount: undefined,
+    });
 
-    await expect(call).rejects.toThrow(
-      new TransferICPError(en.error.transaction_no_source_account)
+    expect(errSelectedAccount).toEqual("error.transaction_no_source_account");
+
+    const { err: errDestinationAddress } = await transferICP({
+      ...transferICPParams,
+      destinationAddress: undefined,
+    });
+
+    expect(errDestinationAddress).toEqual(
+      "error.transaction_no_destination_address"
     );
 
-    call = async () =>
-      await transferICP({
-        ...transferICPParams,
-        destinationAddress: undefined,
-      });
+    const { err: errAmount } = await transferICP({
+      ...transferICPParams,
+      amount: undefined,
+    });
 
-    await expect(call).rejects.toThrow(
-      new TransferICPError(en.error.transaction_no_destination_address)
-    );
-
-    call = async () =>
-      await transferICP({
-        ...transferICPParams,
-        amount: undefined,
-      });
-
-    await expect(call).rejects.toThrow(
-      new TransferICPError(en.error.transaction_invalid_amount)
-    );
+    expect(errAmount).toEqual("error.transaction_invalid_amount");
   });
 });
