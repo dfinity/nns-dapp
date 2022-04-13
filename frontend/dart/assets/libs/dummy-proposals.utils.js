@@ -318,8 +318,7 @@ const makeExecuteNnsFunctionDummyProposalRequest = ({
   },
 });
 
-const DEMO_SUMMARY = JSON.parse(
-  JSON.stringify(`# Pedum natura bimembres florem missos protinus
+const DEMO_SUMMARY = `# Pedum natura bimembres florem missos protinus
 
 ## Pariter dote tremens adiectoque facit quas effugit
 
@@ -403,8 +402,7 @@ adstas patrios, nescio quam coepit!
 [intravit]: http://tamen-tumulus.org/
 [pecoris redeunt]: http://www.ego-ingens.io/
 [quicquam paternis]: http://visasit.com/dumque
-[vultu]: http://lentas-petitur.com/`)
-);
+[vultu]: http://lentas-petitur.com/`;
 
 export const makeDummyProposals = async ({ neuronId, canister }) => {
   try {
