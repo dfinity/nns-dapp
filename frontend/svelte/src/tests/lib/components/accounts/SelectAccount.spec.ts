@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import SelectAccount from "../../../../lib/components/accounts/SelectAccount.svelte";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
@@ -36,12 +36,20 @@ describe("SelectAccount", () => {
     expect(queryByText(en.accounts.my_accounts)).not.toBeInTheDocument();
   });
 
-  it("should render a title", () => {
+  it("should render a title", async () => {
+    jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(mockAccountsStoreSubscribe());
+
     const { queryByText } = render(SelectAccount, {
-      props: { displayTitle: true },
+      props: {
+        filterIdentifier: mockMainAccount.identifier,
+      },
     });
 
-    expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument();
+    await waitFor(() =>
+      expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument()
+    );
   });
 
   it("should filter an account for a given identifier", () => {

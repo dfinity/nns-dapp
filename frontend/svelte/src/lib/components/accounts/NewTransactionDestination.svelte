@@ -50,7 +50,6 @@
   {#if mounted}
     <SelectAccount
       on:nnsSelectAccount={onSelectAccount}
-      displayTitle={true}
       disableSelection={!emptyAddress(address)}
       filterIdentifier={selectedAccount?.identifier}
     />

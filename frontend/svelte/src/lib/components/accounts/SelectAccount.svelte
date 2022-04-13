@@ -6,9 +6,7 @@
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
 
-  export let displayTitle = false;
   export let disableSelection: boolean = false;
-
   export let filterIdentifier: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
@@ -23,14 +21,19 @@
   $: subAccounts = ($accountsStore?.subAccounts ?? []).filter(
     ({ identifier }: Account) => identifier !== filterIdentifier
   );
+
+  // Display the "My Account" title only when we filter the list
+  let displayTitle;
+  $: displayTitle = filterIdentifier !== undefined;
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>
   {#if mainAccount}
+    {#if displayTitle}
+      <h4>{$i18n.accounts.my_accounts}</h4>
+    {/if}
+
     {#if filterIdentifier !== mainAccount.identifier}
-      {#if displayTitle}
-        <h4>{$i18n.accounts.my_accounts}</h4>
-      {/if}
       <!-- Needed mainAccount && because TS didn't learn that `mainAccount` is present in the click listener -->
       <AccountCard
         role="button"
