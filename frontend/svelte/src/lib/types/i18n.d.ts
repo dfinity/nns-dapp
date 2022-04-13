@@ -42,21 +42,23 @@ interface I18nError {
   fail: string;
   join_community_fund: string;
   suspicious_response: string;
-  start_dissolving: string;
-  stop_dissolving: string;
   dummy_proposal: string;
   update_delay: string;
   unknown: string;
   amount_not_valid: string;
   amount_not_enough: string;
   stake_neuron: string;
-  split_neuron: string;
   transaction_invalid_amount: string;
   transaction_no_source_account: string;
   transaction_no_destination_address: string;
   transaction_error: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
+  split_neuron: string;
+  not_authorized: string;
+  invalid_sender: string;
+  insufficient_funds: string;
+  transfer_error: string;
 }
 
 interface I18nWarning {
@@ -153,6 +155,7 @@ interface I18nNeurons {
   confirm_delay: string;
   dissolve_delay_success: string;
   merge_neurons_article_title: string;
+  split_neuron_success: string;
 }
 
 interface I18nNew_followee {

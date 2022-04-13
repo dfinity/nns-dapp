@@ -5,8 +5,11 @@
 import { Topic, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronFollowingCard from "../../../../../lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
-import * as utils from "../../../../../lib/utils/neuron.utils";
-import { mockMainAccount } from "../../../../mocks/accounts.store.mock";
+import { authStore } from "../../../../../lib/stores/auth.store";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "../../../../mocks/auth.store.mock";
 import en from "../../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../../mocks/neurons.mock";
 
@@ -16,7 +19,7 @@ describe("NeuronFollowingCard", () => {
     ...mockNeuron,
     fullNeuron: {
       ...mockFullNeuron,
-      controller: mockMainAccount.principal?.toText(),
+      controller: mockIdentity.getPrincipal().toText(),
       followees: [
         {
           topic: Topic.ExchangeRate,
@@ -27,8 +30,8 @@ describe("NeuronFollowingCard", () => {
   };
   beforeEach(() => {
     jest
-      .spyOn(utils, "isNeuronControllable")
-      .mockImplementation((): boolean => true);
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
   });
 
   afterEach(() => {
