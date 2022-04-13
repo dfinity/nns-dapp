@@ -29,9 +29,9 @@ export const getNeuronBalance = async ({
  * Transfer ICP between accounts.
  *
  * @param to: send ICP to destination address - an account identifier
- * @param identity
- * @param amount
- * @param fromSubAccountId
+ * @param identity: user identity
+ * @param amount: the amount to be transferred in ICP
+ * @param fromSubAccountId: the optional subaccount id that would be the source of the transaction
  */
 export const sendICP = async ({
   identity,
