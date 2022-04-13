@@ -10,7 +10,7 @@
   import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import { listNeurons } from "../lib/services/neurons.services";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
+  import RouteSpinner from "../lib/components/ui/RouteSpinner.svelte";
   import { sortedNeuronStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
   import {
@@ -61,7 +61,7 @@
       </p>
 
       {#if isLoading}
-        <Spinner />
+        <RouteSpinner />
       {:else}
         {#each $sortedNeuronStore as neuron}
           <NeuronCard
