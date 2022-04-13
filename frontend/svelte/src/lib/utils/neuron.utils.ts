@@ -287,11 +287,10 @@ export const checkInvalidState = <T>({
   currentStep?: Step;
   args: T;
 }): void => {
-  const invalidState = invalidStates.find(
-    ({ stepName, isInvalid }) =>
-      stepName === currentStep?.name && isInvalid(args)
-  );
-  if (invalidState !== undefined) {
-    invalidState.onInvalid();
-  }
+  invalidStates
+    .filter(
+      ({ stepName, isInvalid }) =>
+        stepName === currentStep?.name && isInvalid(args)
+    )
+    .forEach(({ onInvalid }) => onInvalid());
 };
