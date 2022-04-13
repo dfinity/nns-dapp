@@ -50,8 +50,11 @@ interface I18nError {
   amount_not_valid: string;
   amount_not_enough: string;
   stake_neuron: string;
-  transaction_invalid_amount: string;
   split_neuron: string;
+  transaction_invalid_amount: string;
+  transaction_no_source_account: string;
+  transaction_no_destination_address: string;
+  transaction_error: string;
 }
 
 interface I18nWarning {
@@ -102,6 +105,7 @@ interface I18nAccounts {
   transaction_fee: string;
   review_transaction: string;
   current_balance: string;
+  confirm_and_send: string;
 }
 
 interface I18nNeurons {

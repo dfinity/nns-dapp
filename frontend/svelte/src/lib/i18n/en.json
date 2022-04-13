@@ -30,13 +30,13 @@
     "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
     "register_vote_neuron": "$neuronId: $reason",
-    "register_vote_unknown": "Sorry, there was an unexpectedf error while registering the vote. Please try again later.",
-    "add_followee": "Sorry, there was an unexpectedf error while adding the followee. Please try again later.",
-    "remove_followee": "Sorry, there was an unexpectedf error while removing the followee. Please try again later.",
+    "register_vote_unknown": "Sorry, there was an unexpected error while registering the vote. Please try again later.",
+    "add_followee": "Sorry, there was an unexpected error while adding the followee. Please try again later.",
+    "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, followee already removed, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
     "fail": "fail",
-    "join_community_fund": "Sorry, there was an error joining the comomunity fund. Please try again later.",
+    "join_community_fund": "Sorry, there was an error joining the community fund. Please try again later.",
     "suspicious_response": "Suspicious response detected. Page reload suggested.",
     "start_dissolving": "Sorry, there was an error dissolving the neuron. Please try again later.",
     "stop_dissolving": "Sorry, there was an error stopping the dissolve process of the neuron. Please try again later.",
@@ -46,8 +46,11 @@
     "amount_not_valid": "Sorry, the amount is not valid",
     "amount_not_enough": "Sorry, the amount is not large enough. You need a minimum of 1 ICP to stake a neuron",
     "stake_neuron": "Sorry, there was an unexpected error staking the neuron. Please try again later.",
+    "split_neuron": "Sorry, there was an unexpected error splitting the neuron. Please try again later.",
     "transaction_invalid_amount": "The amount is less than zero or exceeds the amount of available funds for the selected account.",
-    "split_neuron": "SOrry, there was an unexpected error splitting the neuron. Please try again later."
+    "transaction_no_source_account": "No source account has been selected to execute the transaction.",
+    "transaction_no_destination_address": "No destination address has been selected to execute the transaction.",
+    "transaction_error": "Sorry, there was an error trying to execute the transaction."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -83,7 +86,7 @@
     "new_linked_account_placeholder": "Account Name",
     "linked_account": "LINKED ACCOUNT",
     "select_source": "Select Source Account",
-    "select_destination": "Select destination",
+    "select_destination": "Select Destination",
     "address": "Address",
     "enter_address_or_select": "Enter a destination address or select an account.",
     "my_accounts": "My Accounts",
@@ -91,8 +94,9 @@
     "source": "Source",
     "destination": "Destination",
     "transaction_fee": "Transaction Fee (billed to source)",
-    "review_transaction": "Review transaction",
-    "current_balance": "Current balance"
+    "review_transaction": "Review Transaction",
+    "current_balance": "Current balance",
+    "confirm_and_send": "Confirm and Send"
   },
   "neurons": {
     "title": "Neurons",
