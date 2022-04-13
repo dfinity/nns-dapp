@@ -43,4 +43,20 @@ describe("SelectAccount", () => {
 
     expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument();
   });
+
+  it("should filter an account for a given identifier", () => {
+    jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe());
+
+    const { getByText } = render(SelectAccount, {
+      props: {
+        filterIdentifier: mockMainAccount.identifier,
+      },
+    });
+
+    expect(() =>
+      getByText(mockMainAccount.identifier, { exact: false })
+    ).toThrow();
+  });
 });

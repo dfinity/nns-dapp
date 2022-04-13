@@ -9,6 +9,8 @@
   export let displayTitle = false;
   export let disableSelection: boolean = false;
 
+  export let filterIdentifier: string | undefined = undefined;
+
   const dispatch = createEventDispatcher();
   const chooseAccount = (selectedAccount: Account) => {
     dispatch("nnsSelectAccount", { selectedAccount });
@@ -16,28 +18,34 @@
 
   let mainAccount: Account | undefined;
   $: mainAccount = $accountsStore?.main;
+
+  let subAccounts: Account[];
+  $: subAccounts = ($accountsStore?.subAccounts ?? []).filter(
+    ({ identifier }: Account) => identifier !== filterIdentifier
+  );
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>
   {#if mainAccount}
-    {#if displayTitle}
-      <h4>{$i18n.accounts.my_accounts}</h4>
+    {#if filterIdentifier !== mainAccount.identifier}
+      {#if displayTitle}
+        <h4>{$i18n.accounts.my_accounts}</h4>
+      {/if}
+      <!-- Needed mainAccount && because TS didn't learn that `mainAccount` is present in the click listener -->
+      <AccountCard
+        role="button"
+        on:click={() => mainAccount && chooseAccount(mainAccount)}
+        account={mainAccount}>{$i18n.accounts.main}</AccountCard
+      >
     {/if}
-    <!-- Needed mainAccount && because TS didn't learn that `mainAccount` is present in the click listener -->
-    <AccountCard
-      role="button"
-      on:click={() => mainAccount && chooseAccount(mainAccount)}
-      account={mainAccount}>{$i18n.accounts.main}</AccountCard
-    >
-    {#if $accountsStore.subAccounts}
-      {#each $accountsStore.subAccounts as subAccount}
-        <AccountCard
-          role="button"
-          on:click={() => chooseAccount(subAccount)}
-          account={subAccount}>{subAccount.name}</AccountCard
-        >
-      {/each}
-    {/if}
+
+    {#each subAccounts as subAccount}
+      <AccountCard
+        role="button"
+        on:click={() => chooseAccount(subAccount)}
+        account={subAccount}>{subAccount.name}</AccountCard
+      >
+    {/each}
   {:else}
     <!-- TODO: https://dfinity.atlassian.net/browse/L2-411 Add Text Skeleton while loading -->
     <Spinner />
