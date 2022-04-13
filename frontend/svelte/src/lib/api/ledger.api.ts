@@ -1,4 +1,5 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { BlockHeight } from "@dfinity/nns";
 import {
   AccountIdentifier,
   ICP,
@@ -7,7 +8,6 @@ import {
 } from "@dfinity/nns";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
-import type {BlockHeight} from '@dfinity/nns';
 
 export const getNeuronBalance = async ({
   neuron,
