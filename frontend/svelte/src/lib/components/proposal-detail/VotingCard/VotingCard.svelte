@@ -19,9 +19,7 @@
     getVotableNeurons({
       neurons: $neuronsStore,
       proposal: proposalInfo,
-    })
-      // fix selection of neurons witout votingPower
-      .filter(({ votingPower }) => votingPower > 0);
+    });
   let visible: boolean = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
