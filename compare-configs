@@ -9,4 +9,4 @@ DEPLOY_ENV="$variant" ./update_config.sh
 DFX_NETWORK="$variant" bash config.sh
 
 diff -y -W200 <(jq --sort-keys . frontend/ts/src/config.json | sed 's/,$//g') <(jq --sort-keys . config.json | sed 's/,$//g') || true
-jsondiff frontend/ts/src/config.json config.json  | jq .
+jsondiff frontend/ts/src/config.json config.json | jq .
