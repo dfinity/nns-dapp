@@ -6,13 +6,15 @@
   import Spinner from "../../components/ui/Spinner.svelte";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
   import { toastsStore } from "../../stores/toasts.store";
-  import { onMount } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import VotingHistoryCard from "../../components/neurons/VotingHistoryCard.svelte";
   import { authStore } from "../../stores/auth.store";
   import { loadNeuron } from "../../services/neurons.services";
 
-  export let proposer: NeuronId;
+  export let neuronId: NeuronId;
   let neuron: NeuronInfo | undefined;
+
+  const dispatch = createEventDispatcher();
 
   onMount(async () => {
     if (!$authStore.identity) {
@@ -20,16 +22,19 @@
       return;
     }
 
-    // The fetched neuron belongs to a proposer so it should not be added to the neuronsStore
+    // The fetched neuron doesn't belong to a user so it should not be added to the neuronsStore
     await loadNeuron({
-      neuronId: proposer,
+      neuronId,
       setNeuron: (neuronInfo) => (neuron = neuronInfo),
-      handleError: (neuron = undefined),
+      handleError: () => {
+        neuron = undefined;
+        dispatch("nnsClose");
+      },
     });
   });
 </script>
 
-<Modal on:nnsClose theme="dark" size="medium">
+<Modal testId="voting-history-modal" on:nnsClose theme="dark" size="medium">
   <span slot="title">{$i18n.neuron_detail.title}</span>
 
   {#if neuron !== undefined}
@@ -45,6 +50,6 @@
 
 <style lang="scss">
   .content {
-    padding: calc(2 * var(--padding));
+    padding: var(--padding-2x);
   }
 </style>

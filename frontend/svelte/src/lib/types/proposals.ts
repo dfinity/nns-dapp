@@ -10,3 +10,5 @@ export interface ProposalsFilterModalProps {
   filters: ProposalsFilters;
   selectedFilters: (Topic | ProposalRewardStatus | ProposalStatus)[];
 }
+
+export const PROPOSAL_FILTER_UNSPECIFIED_VALUE = 0;

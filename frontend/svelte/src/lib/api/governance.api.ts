@@ -23,7 +23,6 @@ export const queryNeuron = async ({
 
   return canister.getNeuron({
     certified,
-    principal: identity.getPrincipal(),
     neuronId,
   });
 };
@@ -55,6 +54,23 @@ export const joinCommunityFund = async ({
   const { canister } = await governanceCanister({ identity });
 
   return canister.joinCommunityFund(neuronId);
+};
+
+export const splitNeuron = async ({
+  neuronId,
+  amount,
+  identity,
+}: {
+  neuronId: NeuronId;
+  amount: ICP;
+  identity: Identity;
+}): Promise<NeuronId> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.splitNeuron({
+    neuronId,
+    amount,
+  });
 };
 
 export const startDissolving = async ({
@@ -112,7 +128,6 @@ export const queryNeurons = async ({
 
   return canister.listNeurons({
     certified,
-    principal: identity.getPrincipal(),
   });
 };
 

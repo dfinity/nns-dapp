@@ -20,9 +20,13 @@
   <h3 slot="start">Proposals</h3>
 
   <div>
-    <button on:click={makeProposals} class="primary small">
+    <button
+      on:click={makeProposals}
+      class={`primary small ${loading ? "icon-only" : ""}`}
+      disabled={loading}
+    >
       {#if loading}
-        <Spinner />
+        <Spinner inline size="small" />
       {:else}
         Make Dummy Proposals
       {/if}

@@ -2,8 +2,10 @@
  * @jest-environment jsdom
  */
 
+import { LedgerCanister } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
+import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import NewTransactionModal from "../../../../lib/modals/accounts/NewTransactionModal.svelte";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
@@ -11,12 +13,29 @@ import {
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
+import { MockLedgerCanister } from "../../../mocks/ledger.canister.mock";
 import { renderModal } from "../../../mocks/modal.mock";
+import { MockNNSDappCanister } from "../../../mocks/nns-dapp.canister.mock";
 
 describe("NewTransactionModal", () => {
-  jest
-    .spyOn(accountsStore, "subscribe")
-    .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+  const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
+  const mockNNSDappCanister: MockNNSDappCanister = new MockNNSDappCanister();
+
+  beforeAll(() => {
+    jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation((): LedgerCanister => mockLedgerCanister);
+
+    jest
+      .spyOn(NNSDappCanister, "create")
+      .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
+  });
+
+  afterAll(() => jest.clearAllMocks());
 
   it("should display modal", async () => {
     const { container } = await renderModal({
@@ -149,5 +168,27 @@ describe("NewTransactionModal", () => {
 
     // Go to step 4 without entering the amount again as it should be kept in store - input should be set with previous value
     await goToStep4({ container, getByText, enterAmount: false });
+  });
+
+  it("should close wizard once transaction executed", async () => {
+    const { container, getByText, component } = await renderModal({
+      component: NewTransactionModal,
+      props: { canSelectAccount: true },
+    });
+
+    await goToStep2({ container, getByText });
+
+    await goToStep3({ container, getByText });
+
+    await goToStep4({ container, getByText, enterAmount: true });
+
+    const button = container.querySelector(
+      "button[type='submit']"
+    ) as HTMLButtonElement;
+    await fireEvent.click(button);
+
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
+    await waitFor(() => expect(onClose).toBeCalled());
   });
 });

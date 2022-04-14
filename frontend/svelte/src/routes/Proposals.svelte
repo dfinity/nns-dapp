@@ -38,7 +38,7 @@
 
     try {
       await listNextProposals({
-        beforeProposal: lastProposalId($proposalsStore),
+        beforeProposal: lastProposalId($proposalsStore.proposals),
       });
     } catch (err: unknown) {
       toastsStore.error({
@@ -85,7 +85,10 @@
 
     // If the previous page is the proposal detail page and if we have proposals in store, we don't reset and query the proposals after mount.
     // We do this to smoothness the back and forth navigation between this page and the detail page.
-    if (!emptyProposals($proposalsStore) && isReferrerProposalDetail) {
+    if (
+      !emptyProposals($proposalsStore.proposals) &&
+      isReferrerProposalDetail
+    ) {
       initDebounceFindProposals();
 
       return;
@@ -102,6 +105,11 @@
 
   const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
     ({ lastAppliedFilter }) => {
+      // We only want to display spinner and reset the proposals store if filters are modified by the user
+      if (!initialized) {
+        return;
+      }
+
       if (lastAppliedFilter === "excludeVotedProposals") {
         // Make a visual feedback that the filter was applyed
         hidden = true;
@@ -111,7 +119,7 @@
 
       // Show spinner right away avoiding debounce
       loading = true;
-      proposalsStore.setProposals([]);
+      proposalsStore.setProposals({ proposals: [], certified: undefined });
 
       debounceFindProposals?.();
     }
@@ -119,14 +127,24 @@
 
   onDestroy(unsubscribe);
 
+  const updateNothingFound = () => {
+    // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
+    if ($proposalsStore.certified === false) {
+      if (loading) nothingFound = false;
+      return;
+    }
+
+    nothingFound =
+      initialized &&
+      !loading &&
+      !hasMatchingProposals({
+        proposals: $proposalsStore.proposals,
+        filters: $proposalsFiltersStore,
+      });
+  };
+
   let nothingFound: boolean;
-  $: nothingFound =
-    initialized &&
-    !loading &&
-    !hasMatchingProposals({
-      proposals: $proposalsStore,
-      excludeVotedProposals: $proposalsFiltersStore.excludeVotedProposals,
-    });
+  $: initialized, loading, $proposalsStore, (() => updateNothingFound())();
 </script>
 
 {#if SHOW_PROPOSALS_ROUTE}
@@ -137,7 +155,7 @@
       <ProposalsFilters />
 
       <InfiniteScroll on:nnsIntersect={findNextProposals}>
-        {#each $proposalsStore as proposalInfo (proposalInfo.id)}
+        {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
           <ProposalCard {hidden} {proposalInfo} />
         {/each}
       </InfiniteScroll>
@@ -160,11 +178,11 @@
     position: relative;
     display: flex;
 
-    padding: calc(2 * var(--padding)) 0;
+    padding: var(--padding-2x) 0;
   }
 
   .no-proposals {
     text-align: center;
-    margin: calc(var(--padding) * 2) 0;
+    margin: var(--padding-2x) 0;
   }
 </style>

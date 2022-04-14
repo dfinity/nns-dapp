@@ -1,14 +1,13 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import AccountCard from "./AccountCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import { accountsStore } from "../../stores/accounts.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
 
-  export let displayTitle = false;
   export let disableSelection: boolean = false;
+  export let filterIdentifier: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
   const chooseAccount = (selectedAccount: Account) => {
@@ -16,14 +15,16 @@
   };
 
   let mainAccount: Account | undefined;
+  $: mainAccount = $accountsStore?.main;
 
-  const unsubscribeAccounts: Unsubscriber = accountsStore.subscribe(
-    (accountStore) => {
-      mainAccount = accountStore?.main;
-    }
+  let subAccounts: Account[];
+  $: subAccounts = ($accountsStore?.subAccounts ?? []).filter(
+    ({ identifier }: Account) => identifier !== filterIdentifier
   );
 
-  onDestroy(unsubscribeAccounts);
+  // Display the "My Accounts" title only when we filter the list
+  let displayTitle;
+  $: displayTitle = filterIdentifier !== undefined;
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>
@@ -31,21 +32,23 @@
     {#if displayTitle}
       <h4>{$i18n.accounts.my_accounts}</h4>
     {/if}
-    <!-- Needed mainAccount && because TS didn't learn that `mainAccount` is present in the click listener -->
-    <AccountCard
-      role="button"
-      on:click={() => mainAccount && chooseAccount(mainAccount)}
-      account={mainAccount}>{$i18n.accounts.main}</AccountCard
-    >
-    {#if $accountsStore.subAccounts}
-      {#each $accountsStore.subAccounts as subAccount}
-        <AccountCard
-          role="button"
-          on:click={() => chooseAccount(subAccount)}
-          account={subAccount}>{subAccount.name}</AccountCard
-        >
-      {/each}
+
+    {#if filterIdentifier !== mainAccount.identifier}
+      <!-- Needed mainAccount && because TS didn't learn that `mainAccount` is present in the click listener -->
+      <AccountCard
+        role="button"
+        on:click={() => mainAccount && chooseAccount(mainAccount)}
+        account={mainAccount}>{$i18n.accounts.main}</AccountCard
+      >
     {/if}
+
+    {#each subAccounts as subAccount}
+      <AccountCard
+        role="button"
+        on:click={() => chooseAccount(subAccount)}
+        account={subAccount}>{subAccount.name}</AccountCard
+      >
+    {/each}
   {:else}
     <!-- TODO: https://dfinity.atlassian.net/browse/L2-411 Add Text Skeleton while loading -->
     <Spinner />

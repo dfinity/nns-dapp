@@ -14,7 +14,7 @@ All the Internet computer interactions are done through nns-js or the official [
 The plan is to deploy the pages of this project one by one as soon they are ready.
 
 - Log in page: Deployed.
-- Proposals: In testing.
+- Proposals: Deployed.
 - Neurons: In development.
 - Accounts: In development.
 - Canisters: In development.

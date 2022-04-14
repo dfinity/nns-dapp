@@ -34,25 +34,16 @@
     const successKey = isDissolving
       ? "neuron_detail.stop_dissolve_success"
       : "neuron_detail.start_dissolve_success";
-    const errorKey = isDissolving
-      ? "error.stop_dissolving"
-      : "error.start_dissolving";
     startBusy("dissolve-action");
-    try {
-      await action(neuronId);
+    const id = await action(neuronId);
+    if (id !== undefined) {
       toastsStore.show({
         labelKey: successKey,
         level: "info",
       });
-      closeModal();
-    } catch (err) {
-      toastsStore.error({
-        labelKey: errorKey,
-        err,
-      });
-    } finally {
-      stopBusy("dissolve-action");
     }
+    closeModal();
+    stopBusy("dissolve-action");
   };
 </script>
 
