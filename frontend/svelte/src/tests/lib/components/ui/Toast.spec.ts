@@ -5,6 +5,7 @@
 import { render } from "@testing-library/svelte";
 import Toast from "../../../../lib/components/ui/Toast.svelte";
 import type { ToastMsg } from "../../../../lib/types/toast";
+import en from "../../../mocks/i18n.mock";
 
 describe("Toast", () => {
   const props: { msg: ToastMsg } = {
@@ -22,13 +23,13 @@ describe("Toast", () => {
   });
 
   it("should render a close button", async () => {
-    const { getByRole } = render(Toast, {
+    const { getByText } = render(Toast, {
       props,
     });
 
-    const button = getByRole("button");
+    const button = getByText(en.core.close);
 
-    expect(button?.getAttribute("aria-label")).toEqual("Close");
+    expect(button).toBeInTheDocument();
   });
 
   it("should render details", async () => {
@@ -39,15 +40,5 @@ describe("Toast", () => {
     const p: HTMLParagraphElement | null = container.querySelector("p");
 
     expect(p?.textContent).toContain("more details");
-  });
-
-  it("should render title", async () => {
-    const { container } = render(Toast, {
-      props,
-    });
-
-    const elementWithTitle: HTMLParagraphElement | null =
-      container.querySelector('[title="Close more details"]');
-    expect(elementWithTitle).not.toBeNull();
   });
 });

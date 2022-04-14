@@ -89,9 +89,8 @@ describe("Toasts", () => {
 
     await waitForDialog(container);
 
-    const button: HTMLButtonElement | null = container.querySelector(
-      'button[aria-label="Close"]'
-    );
+    const button: HTMLButtonElement | null =
+      container.querySelector("button.close");
     button && (await fireEvent.click(button));
 
     await waitFor(() =>
