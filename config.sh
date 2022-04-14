@@ -1,9 +1,17 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -x
 set -euo pipefail
 
 ##################################################
 # SINGLE SOURCE OF TRUTH FOR BUILD CONFIGURATION #
 ##################################################
+
+# Usage:
+# - In bash scripts, source this file.
+# - In javascript, load config.json
+JSON_CONFIG_FILE="config.json"
+
+: "Move into the repository root directory"
+pushd "$(dirname "${BASH_SOURCE[0]}")"
 
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.
@@ -39,7 +47,6 @@ local_deployment_data="$(
 : "- The dfx.json networks section has the highest priority,"
 : "- next, look at the environment,"
 : "- last is the defaults section in dfx.json"
-JSON_CONFIG_FILE="frontend/ts/src/config.json"
 jq -s '(.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config' dfx.json <(echo "$local_deployment_data") | tee "$JSON_CONFIG_FILE"
 echo "Config has been defined.  Let it never be changed." >&2
 
@@ -61,4 +68,6 @@ export HOST
 FETCH_ROOT_KEY="$(get_var FETCH_ROOT_KEY)"
 export FETCH_ROOT_KEY
 
+: "Return to the original working directory."
+popd
 echo FIN >&2
