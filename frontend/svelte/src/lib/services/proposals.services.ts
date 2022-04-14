@@ -108,11 +108,7 @@ const findProposals = async ({
       return;
     }
 
-    console.error("suspisious u->t", untrustedProposals, trustedProposals);
-    toastsStore.show({
-      labelKey: "error.suspicious_response",
-      level: "error",
-    });
+    console.error("query != update", untrustedProposals, trustedProposals);
 
     // Remove proven untrusted proposals (in query but not in update)
     const proposalsToRemove = excludeProposals({
@@ -153,19 +149,23 @@ export const loadProposal = async ({
   proposalId,
   setProposal,
   handleError,
+  silentErrorMessages,
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
+  silentErrorMessages?: boolean;
 }): Promise<void> => {
   const catchError = (error: unknown) => {
     console.error(error);
 
-    toastsStore.show({
-      labelKey: "error.proposal_not_found",
-      level: "error",
-      detail: `id: "${proposalId}"`,
-    });
+    if (silentErrorMessages !== true) {
+      toastsStore.show({
+        labelKey: "error.proposal_not_found",
+        level: "error",
+        detail: `id: "${proposalId}"`,
+      });
+    }
 
     handleError?.();
   };

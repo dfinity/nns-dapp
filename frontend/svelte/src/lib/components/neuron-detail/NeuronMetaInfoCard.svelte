@@ -20,15 +20,23 @@
     dissolveDelayMultiplier,
     formatVotingPower,
     hasJoinedCommunityFund,
-    isCurrentUserController,
+    isHotKeyControllable,
+    isNeuronControllable,
   } from "../../utils/neuron.utils";
+  import { accountsStore } from "../../stores/accounts.store";
 
   export let neuron: NeuronInfo;
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
-  let userControlled: boolean;
-  $: userControlled = isCurrentUserController({
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable({
+    neuron,
+    identity: $authStore.identity,
+    accounts: $accountsStore,
+  });
+  let hotkeyControlled: boolean;
+  $: hotkeyControlled = isHotKeyControllable({
     neuron,
     identity: $authStore.identity,
   });
@@ -41,7 +49,7 @@
         {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
           .staked}
       </p>
-      {#if !isCommunityFund && userControlled}
+      {#if !isCommunityFund && isControllable}
         <JoinCommunityFundButton neuronId={neuron.neuronId} />
       {/if}
     </div>
@@ -76,7 +84,7 @@
         {/if}
       </p>
       <div class="buttons">
-        {#if userControlled}
+        {#if isControllable}
           <IncreaseDissolveDelayButton {neuron} />
           {#if neuron.state === NeuronState.DISSOLVED}
             <DisburseButton />
@@ -90,8 +98,10 @@
       </div>
     </div>
     <div class="only-buttons">
-      {#if userControlled}
+      {#if isControllable || hotkeyControlled}
         <IncreaseStakeButton />
+      {/if}
+      {#if isControllable}
         <SplitNeuronButton {neuron} />
       {/if}
     </div>
