@@ -58,6 +58,9 @@ interface I18nError {
   invalid_sender: string;
   insufficient_funds: string;
   transfer_error: string;
+  merge_neurons_same_id: string;
+  merge_neurons_not_same_controller: string;
+  merge_neurons_not_same_manage_neuron_followees: string;
 }
 
 interface I18nWarning {
@@ -155,6 +158,8 @@ interface I18nNeurons {
   dissolve_delay_success: string;
   merge_neurons_article_title: string;
   split_neuron_success: string;
+  cannot_merge_neuron_community: string;
+  only_merge_two: string;
 }
 
 interface I18nNew_followee {

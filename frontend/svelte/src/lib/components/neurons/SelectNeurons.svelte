@@ -1,17 +1,39 @@
 <script lang="ts">
-  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
   import { i18n } from "../../stores/i18n";
-  import { canBeMerged, mapNeuronIds } from "../../utils/neuron.utils";
+  import { translate } from "../../utils/i18n.utils";
+  import {
+    canBeMerged,
+    mapNeuronIds,
+    type MergeableNeuron,
+  } from "../../utils/neuron.utils";
+  import Tooltip from "../ui/Tooltip.svelte";
   import NeuronCard from "./NeuronCard.svelte";
 
-  export let neurons: NeuronInfo[];
+  export let neurons: MergeableNeuron[];
+  //
+  let renderedNeurons = neurons;
+  $: {
+    if (selectedNeuronIds.length === MAX_NEURONS_MERGED) {
+      renderedNeurons = renderedNeurons.map(({ neuron }) => ({
+        neuron,
+        mergeable: selectedNeuronIds.indexOf(neuron.neuronId) > -1,
+        messageKey: "neurons.only_merge_two",
+      }));
+    } else {
+      renderedNeurons = neurons;
+    }
+  }
 
   const dispatcher = createEventDispatcher();
   const confirmSelection = () => {
     dispatcher("nnsSelect", {
-      neurons: mapNeuronIds({ neuronIds: selectedNeuronIds, neurons }),
+      neurons: mapNeuronIds({
+        neuronIds: selectedNeuronIds,
+        neurons: neurons.map(({ neuron }) => neuron),
+      }),
     });
   };
 
@@ -29,25 +51,63 @@
     }
   };
   let validSelection: boolean;
-  $: validSelection = canBeMerged(
-    mapNeuronIds({
-      neuronIds: selectedNeuronIds,
-      neurons,
-    })
-  );
+  let errorLabelKey: string | undefined;
+  $: {
+    const { isValid, messageKey } = canBeMerged(
+      mapNeuronIds({
+        neuronIds: selectedNeuronIds,
+        neurons: neurons.map(({ neuron }) => neuron),
+      })
+    );
+    validSelection = isValid;
+    errorLabelKey = messageKey;
+  }
+  const isNeuronSelected = (
+    selectedNeuronIds: NeuronId[],
+    neuronId: NeuronId
+  ): boolean => selectedNeuronIds.indexOf(neuronId) > -1;
+  const isMaxSelection = (selectedNeuronIds: NeuronId[]) =>
+    selectedNeuronIds.length === MAX_NEURONS_MERGED;
 </script>
 
 <div class="wrapper">
   <ul class="items">
-    <!-- TODO: Disable all neurons when 2 are selected -->
-    {#each neurons as neuron}
+    {#each renderedNeurons as { neuron, mergeable, messageKey }}
+      <!-- We have four possibilities: -->
+      <!-- 1. Maximum number selected and neuron is one of the selected -->
+      <!-- 2. Maximum number selected and neuron is NOT one of the selected -->
+      <!-- 3. User can still select and neuron is mergeable -->
+      <!-- 4. User can still select but neuron is NOT mergeable -->
       <li>
-        <NeuronCard
-          on:click={() => toggleNeuronId(neuron.neuronId)}
-          role="checkbox"
-          selected={selectedNeuronIds.indexOf(neuron.neuronId) > -1}
-          {neuron}
-        />
+        {#if isMaxSelection(selectedNeuronIds) && isNeuronSelected(selectedNeuronIds, neuron.neuronId)}
+          <NeuronCard
+            on:click={() => toggleNeuronId(neuron.neuronId)}
+            role="checkbox"
+            selected
+            {neuron}
+          />
+        {:else if isMaxSelection(selectedNeuronIds) && !isNeuronSelected(selectedNeuronIds, neuron.neuronId)}
+          <Tooltip
+            id={`disabled-mergeable-neuron-${neuron.neuronId}`}
+            text={$i18n.neurons.only_merge_two}
+          >
+            <NeuronCard disabled role="checkbox" {neuron} />
+          </Tooltip>
+        {:else if mergeable}
+          <NeuronCard
+            on:click={() => toggleNeuronId(neuron.neuronId)}
+            role="checkbox"
+            selected={selectedNeuronIds.indexOf(neuron.neuronId) > -1}
+            {neuron}
+          />
+        {:else}
+          <Tooltip
+            id={`disabled-mergeable-neuron-${neuron.neuronId}`}
+            text={translate({ labelKey: messageKey })}
+          >
+            <NeuronCard disabled role="checkbox" {neuron} />
+          </Tooltip>
+        {/if}
       </li>
     {/each}
   </ul>
@@ -62,7 +122,7 @@
     <!-- Show the error only when there are two selected neurons -->
     {#if !validSelection && selectedNeuronIds.length === MAX_NEURONS_MERGED}
       <p>
-        {$i18n.error.cannot_merge}
+        {translate({ labelKey: errorLabelKey ?? "error.cannot_merge" })}
         <a
           href="https://medium.com/dfinity/internet-computer-nns-neurons-can-now-be-merged-8b4e44584dc2"
           target="_blank"

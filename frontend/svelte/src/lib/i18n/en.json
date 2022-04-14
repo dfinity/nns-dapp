@@ -53,7 +53,10 @@
     "not_authorized": "Sorry, you are not authorized to perform this action.",
     "invalid_sender": "Sorry, you can't send funds from this account.",
     "insufficient_funds": "Sorry, there are not enough funds in this account",
-    "transfer_error": "Sorry, there was an error with the transaction. Please try again later."
+    "transfer_error": "Sorry, there was an error with the transaction. Please try again later.",
+    "merge_neurons_same_id": "Two neurons with same id can't be merged. Check the article for more: ",
+    "merge_neurons_not_same_controller": "Two neurons need to have the same controller. Check the article for more: ",
+    "merge_neurons_not_same_manage_neuron_followees": "Two neurons need to have the same followees on the topic of \"Manage Neuron\". Check the article for more: "
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -144,7 +147,9 @@
     "confirm_delay": "Confirm and Update Delay",
     "dissolve_delay_success": "Dissolve delay successfully updated.",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
-    "split_neuron_success": "Neuron successfully splitted."
+    "split_neuron_success": "Neuron successfully splitted.",
+    "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
+    "only_merge_two": "You can only merge two neurons at a time."
   },
   "new_followee": {
     "title": "Enter New Followee",

@@ -7,17 +7,18 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { definedNeuronsStore } from "../../stores/neurons.store";
   import {
-    mergeableNeurons,
+    mapMergeableNeurons,
     checkInvalidState,
     type InvalidState,
+    type MergeableNeuron,
   } from "../../utils/neuron.utils";
   import { toastsStore } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
 
-  let neurons: NeuronInfo[];
+  let neurons: MergeableNeuron[];
   // TODO: Add type wrapper to tell whether neuron is mergeable or not.
-  $: neurons = mergeableNeurons($definedNeuronsStore);
+  $: neurons = mapMergeableNeurons($definedNeuronsStore);
 
   let selectedNeurons: NeuronInfo[] | undefined;
 

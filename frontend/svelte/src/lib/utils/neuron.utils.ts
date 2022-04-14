@@ -4,6 +4,7 @@ import {
   NeuronState,
   Topic,
   type BallotInfo,
+  type Neuron,
   type NeuronId,
   type NeuronInfo,
 } from "@dfinity/nns";
@@ -14,7 +15,10 @@ import {
   SECONDS_IN_HALF_YEAR,
 } from "../constants/constants";
 import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
-import { MIN_NEURON_STAKE_SPLITTABLE } from "../constants/neurons.constants";
+import {
+  MAX_NEURONS_MERGED,
+  MIN_NEURON_STAKE_SPLITTABLE,
+} from "../constants/neurons.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
@@ -252,13 +256,93 @@ export const isEnoughToStakeNeuron = ({
 }): boolean =>
   stake.toE8s() > E8S_PER_ICP + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
 
-// TODO: Next PR with functionality
-export const mergeableNeurons = (neurons: NeuronInfo[]): NeuronInfo[] =>
-  neurons;
+export type MergeableNeuron = {
+  mergeable: boolean;
+  messageKey: string;
+  neuron: NeuronInfo;
+};
+// TODO: use hotkey util when merged
+export const mapMergeableNeurons = (neurons: NeuronInfo[]): MergeableNeuron[] =>
+  neurons.map((neuron: NeuronInfo) => ({
+    neuron,
+    mergeable: !hasJoinedCommunityFund(neuron),
+    messageKey: "neurons.cannot_merge_neuron_community",
+  }));
 
-// TODO: Next PR with functionality
-export const canBeMerged = (neurons: NeuronInfo[]): boolean =>
-  neurons.length === 2;
+const sameController = (neurons: NeuronInfo[]): boolean =>
+  new Set(
+    neurons.map(({ neuronId, fullNeuron }) =>
+      // If fullNeuron is not present
+      fullNeuron === undefined ? String(neuronId) : fullNeuron.controller
+    )
+  ).size === 1;
+
+const sameId = (neurons: NeuronInfo[]): boolean =>
+  new Set(neurons.map(({ neuronId }) => neuronId)).size === 1;
+
+const sameMangeNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
+  const fullNeurons: Neuron[] = neurons
+    .map(({ fullNeuron }) => fullNeuron)
+    .filter(isDefined);
+  // If we don't have the info, return false
+  if (fullNeurons.length === 0) {
+    return false;
+  }
+  const manageNeuronFollowees: NeuronId[][] = fullNeurons
+    .map(({ followees }) =>
+      followees.find(({ topic }) => topic === Topic.ManageNeuron)
+    )
+    .filter(isDefined)
+    .map(({ followees }) => followees);
+  // If no neuron has ManageNeuron followees, return true
+  if (manageNeuronFollowees.length === 0) {
+    return true;
+  }
+  // Dictionary of followees and how many times they appear
+  const dictFollowees: { [id: string]: number } = manageNeuronFollowees.reduce(
+    (acc, followees) => {
+      for (const followee of followees.map(String)) {
+        acc[followee] = (acc[followee] ?? 0) + 1;
+      }
+      return acc;
+    },
+    {}
+  );
+  // All ids should be present the number of neurons.
+  return Object.values(dictFollowees).every(
+    (amount) => amount === neurons.length
+  );
+};
+
+export const canBeMerged = (
+  neurons: NeuronInfo[]
+): { isValid: boolean; messageKey?: string } => {
+  if (neurons.length !== MAX_NEURONS_MERGED) {
+    return {
+      isValid: false,
+    };
+  }
+  if (sameId(neurons)) {
+    return {
+      isValid: false,
+      messageKey: "error.merge_neurons_same_id",
+    };
+  }
+  if (!sameController(neurons)) {
+    return {
+      isValid: false,
+      messageKey: "error.merge_neurons_not_same_controller",
+    };
+  }
+  return sameMangeNeuronFollowees(neurons)
+    ? {
+        isValid: true,
+      }
+    : {
+        isValid: false,
+        messageKey: "error.merge_neurons_not_same_manage_neuron_followees",
+      };
+};
 
 export const mapNeuronIds = ({
   neuronIds,
