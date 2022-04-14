@@ -7,7 +7,7 @@ set -euo pipefail
 
 # Usage:
 # - In bash scripts, source this file.
-# - In javascript, load config.json
+# - In javascript, load config.json, located in the repo root directory and created by running this script.
 #
 # To define a constant:
 # - Add it to dfx.json
