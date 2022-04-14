@@ -46,7 +46,13 @@
       return;
     }
     startBusy("split-neuron");
-    await splitNeuron({ neuronId: neuron.neuronId, amount });
+    const id = await splitNeuron({ neuronId: neuron.neuronId, amount });
+    if (id !== undefined) {
+      toastsStore.show({
+        labelKey: "neurons.split_neuron_success",
+        level: "info",
+      });
+    }
     dispatcher("nnsClose");
     stopBusy("split-neuron");
   };

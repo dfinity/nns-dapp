@@ -7,9 +7,12 @@ import {
   SECONDS_IN_YEAR,
 } from "../../../lib/constants/constants";
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import type { Step } from "../../../lib/stores/steps.state";
+import { InvalidAmountError } from "../../../lib/types/errors";
 import {
   ageMultiplier,
   ballotsWithDefinedProposal,
+  checkInvalidState,
   convertNumberToICP,
   dissolveDelayMultiplier,
   followeesNeurons,
@@ -17,15 +20,18 @@ import {
   getDissolvingTimeInSeconds,
   hasJoinedCommunityFund,
   hasValidStake,
-  isCurrentUserController,
   isEnoughToStakeNeuron,
+  isHotKeyControllable,
+  isIdentityController,
   isNeuronControllable,
   isValidInputAmount,
+  mapNeuronIds,
   maturityByStake,
   neuronCanBeSplit,
   neuronStake,
   sortNeuronsByCreatedTimestamp,
   votingPower,
+  type InvalidState,
 } from "../../../lib/utils/neuron.utils";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -228,56 +234,6 @@ describe("neuron-utils", () => {
         },
       };
       expect(getDissolvingTimeInSeconds(neuron)).toBe(BigInt(SECONDS_IN_YEAR));
-    });
-  });
-
-  describe("isCurrentUserController", () => {
-    it("returns false when controller not defined", () => {
-      const notControlledNeuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: undefined,
-        },
-      };
-      expect(
-        isCurrentUserController({
-          neuron: notControlledNeuron,
-          identity: mockIdentity,
-        })
-      ).toBe(false);
-    });
-
-    it("returns true when neuron is controlled by user", () => {
-      const userControlledNeuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: mockIdentity.getPrincipal().toText(),
-        },
-      };
-      expect(
-        isCurrentUserController({
-          neuron: userControlledNeuron,
-          identity: mockIdentity,
-        })
-      ).toBe(true);
-    });
-
-    it("returns false when controller does not match main", () => {
-      const userControlledNeuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: "bbbbb-bb",
-        },
-      };
-      expect(
-        isCurrentUserController({
-          neuron: userControlledNeuron,
-          identity: mockIdentity,
-        })
-      ).toBe(false);
     });
   });
 
@@ -534,8 +490,9 @@ describe("neuron-utils", () => {
       expect(convertNumberToICP(0.004)?.toE8s()).toBe(BigInt(400_000));
     });
 
-    it("returns undefined on negative numbers", () => {
-      expect(convertNumberToICP(-10)).toBeUndefined();
+    it("raises error on negative numbers", () => {
+      const call = () => convertNumberToICP(-10);
+      expect(call).toThrow(InvalidAmountError);
     });
   });
 
@@ -610,6 +567,128 @@ describe("neuron-utils", () => {
     it("takes into account transaction fee", () => {
       const stake = ICP.fromString("1") as ICP;
       expect(isEnoughToStakeNeuron({ stake, withTransactionFee: true })).toBe(
+        false
+      );
+    });
+  });
+
+  describe("mapNeuronIds", () => {
+    it("should map neuron id to neuron info", () => {
+      const mappedNeurons = mapNeuronIds({
+        neuronIds: [mockNeuron.neuronId],
+        neurons: [mockNeuron],
+      });
+      expect(mappedNeurons[0]).toBe(mockNeuron);
+    });
+  });
+
+  describe("checkInvalidState", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    const stepName = "ok";
+    const spyOnInvalid = jest.fn();
+    const invalidStates: InvalidState<boolean>[] = [
+      {
+        stepName,
+        isInvalid: (arg: boolean) => arg,
+        onInvalid: spyOnInvalid,
+      },
+    ];
+    const currentStep: Step = {
+      name: stepName,
+      title: "some title",
+      showBackButton: false,
+    };
+    it("does nothing if state is valid", () => {
+      checkInvalidState({
+        invalidStates,
+        currentStep,
+        // We use the args to trigger an invalid state or not
+        args: false,
+      });
+      expect(spyOnInvalid).not.toHaveBeenCalled();
+    });
+
+    it("calls onInvalid if state is invalid", () => {
+      checkInvalidState({
+        invalidStates,
+        currentStep,
+        // We use the args to trigger an invalid state or not
+        args: true,
+      });
+      expect(spyOnInvalid).toHaveBeenCalled();
+    });
+  });
+
+  describe("isHotKeyControllable", () => {
+    it("returns true if neuron is controllable by hotkey", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        isHotKeyControllable({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false if neuron is not controllable by hotkey", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hotKeys: ["not-current-principal"],
+        },
+      };
+      expect(
+        isHotKeyControllable({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+  });
+
+  describe("isIdentityController", () => {
+    it("return true if identity is the controller of the neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      expect(isIdentityController({ neuron, identity: mockIdentity })).toBe(
+        true
+      );
+    });
+
+    it("return false if identity is not the controller of the neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "not-controlled",
+        },
+      };
+      expect(isIdentityController({ neuron, identity: mockIdentity })).toBe(
+        false
+      );
+    });
+
+    it("return true if identity not defined", () => {
+      expect(isIdentityController({ neuron: mockNeuron })).toBe(false);
+    });
+
+    it("return true if identity is null", () => {
+      expect(isIdentityController({ neuron: mockNeuron, identity: null })).toBe(
         false
       );
     });

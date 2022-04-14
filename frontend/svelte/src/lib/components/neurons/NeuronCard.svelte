@@ -7,7 +7,7 @@
     getDissolvingTimeInSeconds,
     getStateInfo,
     hasJoinedCommunityFund,
-    isCurrentUserController,
+    isHotKeyControllable,
     neuronStake,
   } from "../../utils/neuron.utils";
   import type { StateInfo } from "../../utils/neuron.utils";
@@ -19,8 +19,9 @@
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
   // Setting default value avoids warning missing props during testing
-  export let role: undefined | "link" | "button" = undefined;
+  export let role: undefined | "link" | "button" | "checkbox" = undefined;
   export let ariaLabel: string | undefined = undefined;
+  export let selected: boolean = false;
 
   // TODO: https://dfinity.atlassian.net/browse/L2-366
   let stateInfo: StateInfo;
@@ -30,8 +31,7 @@
   let neuronICP: ICP;
   $: neuronICP = ICP.fromE8s(neuronStake(neuron));
   let isHotKeyControl: boolean;
-  // TODO: Refactor to check with hotkeys
-  $: isHotKeyControl = !isCurrentUserController({
+  $: isHotKeyControl = isHotKeyControllable({
     neuron,
     identity: $authStore.identity,
   });
@@ -39,11 +39,9 @@
   $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
 </script>
 
-<Card {role} on:click {ariaLabel}>
+<Card {role} {selected} on:click {ariaLabel}>
   <div slot="start" class="lock" data-tid="neuron-card-title">
-    <h3 class:has-neuron-control={isCommunityFund || isHotKeyControl}>
-      {neuron.neuronId}
-    </h3>
+    <h3>{neuron.neuronId}</h3>
 
     {#if isCommunityFund}
       <span class="neuron-control">{$i18n.neurons.community_fund}</span>

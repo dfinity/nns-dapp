@@ -19,8 +19,11 @@ import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
+import type { Step } from "../stores/steps.state";
+import { InvalidAmountError } from "../types/errors";
 import { getAccountByPrincipal } from "./accounts.utils";
 import { formatNumber } from "./format.utils";
+import { isDefined } from "./utils";
 
 export type StateInfo = {
   textKey: string;
@@ -109,17 +112,6 @@ export const formatVotingPower = (value: bigint): string =>
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
-export const isCurrentUserController = ({
-  neuron,
-  identity,
-}: {
-  neuron: NeuronInfo;
-  identity?: Identity | null;
-}): boolean =>
-  neuron.fullNeuron?.controller === undefined
-    ? false
-    : identity?.getPrincipal().toText() === neuron.fullNeuron.controller;
-
 export const maturityByStake = (neuron: NeuronInfo): number => {
   if (
     neuron.fullNeuron === undefined ||
@@ -151,7 +143,7 @@ export const sortNeuronsByCreatedTimestamp = (
  *  OR
  *  2. The main account (same as user) is the controller
  *  OR
- *  3. The user's hardware wallet is the controller.
+ *  3. TODO: The user's hardware wallet is the controller.
  *
  */
 export const isNeuronControllable = ({
@@ -167,6 +159,17 @@ export const isNeuronControllable = ({
   (fullNeuron.controller === identity?.getPrincipal().toText() ||
     getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
       undefined);
+
+export const isHotKeyControllable = ({
+  neuron: { fullNeuron },
+  identity,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+}): boolean =>
+  fullNeuron?.hotKeys.find(
+    (hotkey) => hotkey === identity?.getPrincipal().toText()
+  ) !== undefined;
 
 /**
  * Calculate neuron stake (cachedNeuronStake - neuronFees)
@@ -230,11 +233,11 @@ export const isValidInputAmount = ({
   max: number;
 }): boolean => amount !== undefined && amount > 0 && amount <= max;
 
-export const convertNumberToICP = (amount: number): ICP | undefined => {
+export const convertNumberToICP = (amount: number): ICP => {
   const stake = ICP.fromString(String(amount));
 
-  if (!(stake instanceof ICP)) {
-    return undefined;
+  if (!(stake instanceof ICP) || stake === undefined) {
+    throw new InvalidAmountError();
   }
 
   return stake;
@@ -248,3 +251,60 @@ export const isEnoughToStakeNeuron = ({
   withTransactionFee?: boolean;
 }): boolean =>
   stake.toE8s() > E8S_PER_ICP + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
+
+// TODO: Next PR with functionality
+export const mergeableNeurons = (neurons: NeuronInfo[]): NeuronInfo[] =>
+  neurons;
+
+// TODO: Next PR with functionality
+export const canBeMerged = (neurons: NeuronInfo[]): boolean =>
+  neurons.length === 2;
+
+export const mapNeuronIds = ({
+  neuronIds,
+  neurons,
+}: {
+  neuronIds: NeuronId[];
+  neurons: NeuronInfo[];
+}) =>
+  neuronIds
+    .map((selectedId) =>
+      neurons.find(({ neuronId }) => neuronId === selectedId)
+    )
+    .filter(isDefined);
+
+export type InvalidState<T> = {
+  stepName: string;
+  isInvalid: (arg?: T) => boolean;
+  onInvalid: () => void;
+};
+// Checks if there is an invalid state in a Wizard Step
+export const checkInvalidState = <T>({
+  invalidStates,
+  currentStep,
+  args,
+}: {
+  invalidStates: InvalidState<T>[];
+  currentStep?: Step;
+  args: T;
+}): void => {
+  invalidStates
+    .filter(
+      ({ stepName, isInvalid }) =>
+        stepName === currentStep?.name && isInvalid(args)
+    )
+    .forEach(({ onInvalid }) => onInvalid());
+};
+
+export const isIdentityController = ({
+  neuron,
+  identity,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+}): boolean => {
+  if (identity === null || identity === undefined) {
+    return false;
+  }
+  return neuron.fullNeuron?.controller === identity.getPrincipal().toText();
+};
