@@ -108,11 +108,7 @@ const findProposals = async ({
       return;
     }
 
-    console.error("suspisious u->t", untrustedProposals, trustedProposals);
-    toastsStore.show({
-      labelKey: "error.suspicious_response",
-      level: "error",
-    });
+    console.error("query != update", untrustedProposals, trustedProposals);
 
     // Remove proven untrusted proposals (in query but not in update)
     const proposalsToRemove = excludeProposals({
