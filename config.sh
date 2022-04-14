@@ -8,6 +8,13 @@ set -euo pipefail
 # Usage:
 # - In bash scripts, source this file.
 # - In javascript, load config.json
+#
+# To define a constant:
+# - Add it to dfx.json
+#   - either under defaults.networks.config.SOMEVAR=SOMEVAL
+#   - or under networks.SOME_NETWORK.config.SOMEVAR=SOMEVAL
+# - Verify that the constant appears in constants.json if you run this script.
+# - Add an export clause to the bottom of this file, if you will need the constant in bash.
 JSON_CONFIG_FILE="config.json"
 
 : "Move into the repository root directory"
