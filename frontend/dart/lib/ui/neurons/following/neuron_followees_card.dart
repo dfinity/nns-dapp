@@ -24,15 +24,9 @@ class NeuronFolloweesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isFolloweeSelected = false;
     final followeeTopics = neuron.followees
-        .flatMap((followee) =>
-            followee.followees.map((e) => TopicFollowee(e, followee.topic)))
-        .groupBy((element) => element.neuron)
-        .entries
-        .toList();
-
-    final followeeSuggeston = neuron.followees.map((followee) =>
-    followee.followees.map((e) => FolloweeSuggestion(followee.topic, followee.followees)))
+        .flatMap((followee) => followee.followees.map((e) => TopicFollowee(e, followee.topic)))
         .groupBy((element) => element.neuron)
         .entries
         .toList();
@@ -55,36 +49,6 @@ class NeuronFolloweesCard extends StatelessWidget {
                   style: context.textTheme.subtitle2),
             ),
             VerySmallFormDivider(),
-            // FutureBuilder(
-            //     future: context.icApi.followeeSuggestions(),
-            //     builder: (context, AsyncSnapshot<List<FolloweeSuggestion>> snapshot) {
-            //       if (snapshot.hasData) {
-            //         return Column(
-            //           children: [
-            //             //TODO : change this somehow
-            //             ...neuron.followees.map((e) => Container(
-            //               child: Padding(
-            //                 padding: const EdgeInsets.all(8.0),
-            //                 child: Row(
-            //                   children: [
-            //                     Expanded(
-            //                       child: Align(
-            //                         alignment: Alignment.centerLeft,
-            //                         child: Text(
-            //                             snapshot.data!.firstWhereOrNull(
-            //                                     (element) => element.id == e)?.name ?? e.toString(),
-            //                             style: context.textTheme.bodyText2),
-            //                       ),
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             ))
-            //           ],
-            //         );
-            //       }
-            //       return Text('Loading..');
-            //     }),
             if (followeeTopics.isNotEmpty)
               Container(
                 padding: const EdgeInsets.all(8.0),
@@ -98,59 +62,59 @@ class NeuronFolloweesCard extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                TextButton(
-                                  onPressed: () {
-                                    showNeuronInfo(context, e.key);
-                                  },
-                                  child: SelectableText(
-                                    e.key.toString(),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: Fonts.circularBold,
-                                        color: AppColors.white,
-                                        fontWeight: FontWeight.w700,
-                                        decoration: TextDecoration.underline),
-                                    onTap: () {
-                                      showNeuronInfo(context, e.key);
-                                    },
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4.0),
-                                  child: Wrap(
-                                    children:
-                                        e.value.mapToList((topic) => Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: 4.0, left: 4.0),
-                                              child: Container(
-                                                decoration: ShapeDecoration(
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                        side: BorderSide(
-                                                            width: 2,
-                                                            color: Color(
-                                                                0xffFBB03B)))),
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(4.0),
-                                                  child: Text(
-                                                    topic.topic.name,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontFamily:
-                                                            Fonts.circularBook,
-                                                        color:
-                                                            Color(0xffFBB03B),
-                                                        fontWeight:
-                                                            FontWeight.normal),
+                                FutureBuilder(
+                                  future: context.icApi.followeeSuggestions(),
+                                  builder: (BuildContext context, AsyncSnapshot<List<FolloweeSuggestion>> snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          ...snapshot.data!.filter(
+                                            (element) {
+                                              isFolloweeSelected = false;
+                                              if (e.key == element.id) {
+                                                isFolloweeSelected = true;
+                                              } else {
+                                                isFolloweeSelected = false;
+                                              }
+                                              return isFolloweeSelected;
+                                            },
+                                          ).mapToList(
+                                            (e) => FolloweeSelected(
+                                              suggestion: e,
+                                            ),
+                                          ),
+                                          Wrap(
+                                            children: e.value.mapToList(
+                                              (topic) => Padding(
+                                                padding: EdgeInsets.only(top: 4.0, left: 4.0),
+                                                child: Container(
+                                                  decoration: ShapeDecoration(
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(8),
+                                                          side: BorderSide(width: 2, color: Color(0xffFBB03B)))),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(4.0),
+                                                    child: Text(
+                                                      topic.topic.name,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily: Fonts.circularBook,
+                                                          color: Color(0xffFBB03B),
+                                                          fontWeight: FontWeight.normal),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            )),
-                                  ),
-                                )
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                    return Text('Loading...');
+                                  },
+                                ),
                               ],
                             ),
                           ))
@@ -176,17 +140,13 @@ class NeuronFolloweesCard extends StatelessWidget {
                                 OverlayBaseWidget.of(context)?.dismiss();
                               }),
                         ),
-                        maxSize: Size(
-                            700, MediaQuery.of(context).size.height - 100));
+                        maxSize: Size(700, MediaQuery.of(context).size.height - 100));
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
-                      followeeTopics.isEmpty
-                          ? "Follow Neurons"
-                          : "Edit Followees",
-                      style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 14 : 16),
+                      followeeTopics.isEmpty ? "Follow Neurons" : "Edit Followees",
+                      style: TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
                     ),
                   )),
             )
@@ -198,5 +158,34 @@ class NeuronFolloweesCard extends StatelessWidget {
 
   void showNeuronInfo(BuildContext context, String neuronId) {
     OverlayBaseWidget.show(context, NeuronInfoWidget(neuronId));
+  }
+}
+
+class FolloweeSelected extends StatelessWidget {
+  final FolloweeSuggestion suggestion;
+
+  const FolloweeSelected({Key? key, required this.suggestion}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(12),
+      child: Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextButton(
+              child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(suggestion.name,
+                      style: Responsive.isMobile(context) ? context.textTheme.bodyText2 : context.textTheme.bodyText1)),
+              onPressed: () {
+                OverlayBaseWidget.show(context, NeuronInfoWidget(suggestion.id));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
