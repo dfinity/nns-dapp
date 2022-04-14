@@ -149,6 +149,7 @@
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
     "split_neuron_success": "Neuron successfully splitted.",
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
+    "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by hotkey",
     "only_merge_two": "You can only merge two neurons at a time."
   },
   "new_followee": {

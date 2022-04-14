@@ -12,6 +12,7 @@ import { InvalidAmountError } from "../../../lib/types/errors";
 import {
   ageMultiplier,
   ballotsWithDefinedProposal,
+  canBeMerged,
   checkInvalidState,
   convertNumberToICP,
   dissolveDelayMultiplier,
@@ -25,6 +26,7 @@ import {
   isIdentityController,
   isNeuronControllable,
   isValidInputAmount,
+  mapMergeableNeurons,
   mapNeuronIds,
   maturityByStake,
   neuronCanBeSplit,
@@ -691,6 +693,166 @@ describe("neuron-utils", () => {
       expect(isIdentityController({ neuron: mockNeuron, identity: null })).toBe(
         false
       );
+    });
+  });
+
+  describe("mapMergeableNeurons", () => {
+    it("wraps mergeable neurons with true if mergeable", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [],
+        },
+      };
+      const neuron2 = {
+        ...neuron,
+        neuronId: BigInt(444),
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron, neuron2],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(true);
+      expect(wrappedNeurons[1].mergeable).toBe(true);
+    });
+
+    it("wraps mergeable neurons with false if controlled by hotkey or joined community fund", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        joinedCommunityFundTimestampSeconds: BigInt(1234),
+        fullNeuron: {
+          ...mockFullNeuron,
+          hotKeys: [],
+        },
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron, neuron2],
+        identity: mockIdentity,
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(false);
+      expect(wrappedNeurons[1].mergeable).toBe(false);
+    });
+  });
+
+  describe("canBeMerged", () => {
+    it("return valid if two neurons can be merged", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "same",
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "same",
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(true);
+    });
+
+    it("return invalid if two neurons have same id", () => {
+      const neuron = {
+        ...mockNeuron,
+      };
+      const neuron2 = {
+        ...mockNeuron,
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
+
+    it("return invalid if two neurons do not have same controller", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller-1",
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller-2",
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
+
+    it("return invalid if two neurons do not have same followees on Manage Neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(10), BigInt(40)],
+            },
+          ],
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(10)],
+            },
+          ],
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
+
+    it("return invalid if two neurons have same followees on Manage Neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(10), BigInt(40)],
+            },
+          ],
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(10), BigInt(40)],
+            },
+          ],
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(true);
     });
   });
 });

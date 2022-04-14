@@ -12,33 +12,19 @@
   import Tooltip from "../ui/Tooltip.svelte";
   import NeuronCard from "./NeuronCard.svelte";
 
-  export let neurons: MergeableNeuron[];
-  //
-  let renderedNeurons = neurons;
-  $: {
-    if (selectedNeuronIds.length === MAX_NEURONS_MERGED) {
-      renderedNeurons = renderedNeurons.map(({ neuron }) => ({
-        neuron,
-        mergeable: selectedNeuronIds.indexOf(neuron.neuronId) > -1,
-        messageKey: "neurons.only_merge_two",
-      }));
-    } else {
-      renderedNeurons = neurons;
-    }
-  }
+  export let neuronsData: MergeableNeuron[];
 
   const dispatcher = createEventDispatcher();
   const confirmSelection = () => {
     dispatcher("nnsSelect", {
       neurons: mapNeuronIds({
         neuronIds: selectedNeuronIds,
-        neurons: neurons.map(({ neuron }) => neuron),
+        neurons: neuronsData.map(({ neuron }) => neuron),
       }),
     });
   };
 
   let selectedNeuronIds: NeuronId[] = [];
-  // We only allow the selection of two neurons.
   const toggleNeuronId = (neuronId: NeuronId): void => {
     if (selectedNeuronIds.includes(neuronId)) {
       selectedNeuronIds = selectedNeuronIds.filter(
@@ -46,6 +32,7 @@
       );
       return;
     }
+    // We only allow the selection of two neurons.
     if (selectedNeuronIds.length < MAX_NEURONS_MERGED) {
       selectedNeuronIds = [...selectedNeuronIds, neuronId];
     }
@@ -56,7 +43,7 @@
     const { isValid, messageKey } = canBeMerged(
       mapNeuronIds({
         neuronIds: selectedNeuronIds,
-        neurons: neurons.map(({ neuron }) => neuron),
+        neurons: neuronsData.map(({ neuron }) => neuron),
       })
     );
     validSelection = isValid;
@@ -72,7 +59,7 @@
 
 <div class="wrapper">
   <ul class="items">
-    {#each renderedNeurons as { neuron, mergeable, messageKey }}
+    {#each neuronsData as { neuron, mergeable, messageKey }}
       <!-- We have four possibilities: -->
       <!-- 1. Maximum number selected and neuron is one of the selected -->
       <!-- 2. Maximum number selected and neuron is NOT one of the selected -->
@@ -103,7 +90,7 @@
         {:else}
           <Tooltip
             id={`disabled-mergeable-neuron-${neuron.neuronId}`}
-            text={translate({ labelKey: messageKey })}
+            text={translate({ labelKey: messageKey ?? "error.cannot_merge" })}
           >
             <NeuronCard disabled role="checkbox" {neuron} />
           </Tooltip>

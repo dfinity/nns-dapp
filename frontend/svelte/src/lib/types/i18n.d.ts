@@ -159,6 +159,7 @@ interface I18nNeurons {
   merge_neurons_article_title: string;
   split_neuron_success: string;
   cannot_merge_neuron_community: string;
+  cannot_merge_neuron_hotkey: string;
   only_merge_two: string;
 }
 

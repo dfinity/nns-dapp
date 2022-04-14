@@ -258,16 +258,36 @@ export const isEnoughToStakeNeuron = ({
 
 export type MergeableNeuron = {
   mergeable: boolean;
-  messageKey: string;
+  messageKey?: string;
   neuron: NeuronInfo;
 };
-// TODO: use hotkey util when merged
-export const mapMergeableNeurons = (neurons: NeuronInfo[]): MergeableNeuron[] =>
-  neurons.map((neuron: NeuronInfo) => ({
-    neuron,
-    mergeable: !hasJoinedCommunityFund(neuron),
-    messageKey: "neurons.cannot_merge_neuron_community",
-  }));
+export const mapMergeableNeurons = ({
+  neurons,
+  identity,
+}: {
+  neurons: NeuronInfo[];
+  identity?: Identity | null;
+}): MergeableNeuron[] =>
+  neurons
+    .map((neuron: NeuronInfo) => ({
+      neuron,
+      mergeable: !hasJoinedCommunityFund(neuron),
+      messageKey: hasJoinedCommunityFund(neuron)
+        ? "neurons.cannot_merge_neuron_community"
+        : undefined,
+    }))
+    .map(({ neuron, mergeable, messageKey }: MergeableNeuron) => ({
+      neuron,
+      mergeable: !mergeable
+        ? mergeable
+        : !isHotKeyControllable({ neuron, identity }),
+      messageKey:
+        messageKey !== undefined
+          ? messageKey
+          : isHotKeyControllable({ neuron, identity })
+          ? "neurons.cannot_merge_neuron_hotkey"
+          : undefined,
+    }));
 
 const sameController = (neurons: NeuronInfo[]): boolean =>
   new Set(
