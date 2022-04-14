@@ -16,6 +16,7 @@
       await loadProposal({
         proposalId: ballot.proposalId as ProposalId,
         setProposal: (proposalInfo: ProposalInfo) => (proposal = proposalInfo),
+        silentErrorMessages: true,
       })
   );
 </script>
