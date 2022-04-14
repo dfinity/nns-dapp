@@ -57,7 +57,7 @@
       "GOVERNANCE_CANISTER_ID": "rrkah-fqaaa-aaaaa-aaaaq-cai",
       "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai"
     }},
-    "BUILD": {
+    "build": {
       "packtool": ""
     }
   },
