@@ -37,7 +37,6 @@
     "accounts_not_found": "An error occurred while loading the accounts information.",
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the community fund. Please try again later.",
-    "suspicious_response": "Suspicious response detected. Page reload suggested.",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
     "update_delay": "Sorry, there was an error updating the delay of the neuron",
     "unknown": "Sorry, there was an unexpected error. Please try again later.",
