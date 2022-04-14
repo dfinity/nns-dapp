@@ -6,6 +6,7 @@ import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
 import MergeNeuronsModal from "../../../../lib/modals/neurons/MergeNeuronsModal.svelte";
+import { mergeNeurons } from "../../../../lib/services/neurons.services";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import {
@@ -19,6 +20,12 @@ import {
   mockFullNeuron,
   mockNeuron,
 } from "../../../mocks/neurons.mock";
+
+jest.mock("../../../../lib/services/neurons.services", () => {
+  return {
+    mergeNeurons: jest.fn().mockResolvedValue(BigInt(10)),
+  };
+});
 
 describe("MergeNeuronsModal", () => {
   const controller = mockIdentity.getPrincipal().toText();
@@ -129,10 +136,33 @@ describe("MergeNeuronsModal", () => {
 
     button && (await fireEvent.click(button));
 
-    // Confirm Screen
+    // Confirm Merge Screen
     expect(
       queryAllByText(en.neurons.merge_neurons_modal_confirm).length
     ).toBeGreaterThan(0);
     expect(queryByText(mergeableNeuron1.neuronId.toString())).not.toBeNull();
+  });
+
+  it("allows user to select two neurons and merge them", async () => {
+    const { queryAllByTestId, queryByTestId, queryByText, queryAllByText } =
+      await renderMergeModal(mergeableNeurons);
+
+    await selectAndTestTwoNeurons({ queryAllByTestId });
+
+    const button = queryByTestId("merge-neurons-confirm-selection-button");
+    expect(button).not.toBeNull();
+
+    button && (await fireEvent.click(button));
+
+    // Confirm Merge Screen
+    expect(
+      queryAllByText(en.neurons.merge_neurons_modal_confirm).length
+    ).toBeGreaterThan(0);
+
+    const confirmMergeButton = queryByTestId("confirm-merge-neurons-button");
+
+    confirmMergeButton && (await fireEvent.click(confirmMergeButton));
+
+    expect(mergeNeurons).toBeCalled();
   });
 });

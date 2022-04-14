@@ -53,14 +53,17 @@ interface I18nError {
   transaction_error: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
+  cannot_merge_check_article: string;
   split_neuron: string;
   not_authorized: string;
   invalid_sender: string;
   insufficient_funds: string;
   transfer_error: string;
+  governance_error: string;
   merge_neurons_same_id: string;
   merge_neurons_not_same_controller: string;
   merge_neurons_not_same_manage_neuron_followees: string;
+  not_mergeable: string;
 }
 
 interface I18nWarning {
@@ -161,6 +164,7 @@ interface I18nNeurons {
   cannot_merge_neuron_community: string;
   cannot_merge_neuron_hotkey: string;
   only_merge_two: string;
+  irreversible_action: string;
 }
 
 interface I18nNew_followee {
@@ -320,6 +324,7 @@ interface I18nNeuron_detail {
   split_neuron_confirm: string;
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
+  merge_neurons_success: string;
 }
 
 interface I18nTime {

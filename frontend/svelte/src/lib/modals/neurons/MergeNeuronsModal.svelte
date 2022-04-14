@@ -79,7 +79,7 @@
   {/if}
   {#if currentStep?.name === "ConfirmMerge"}
     {#if selectedNeurons !== undefined}
-      <ConfirmNeuronsMerge neurons={selectedNeurons} />
+      <ConfirmNeuronsMerge neurons={selectedNeurons} on:nnsClose />
     {/if}
   {/if}
 </WizardModal>

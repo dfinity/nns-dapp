@@ -12,7 +12,9 @@ export type BusyStateInitiator =
   | "add-followee"
   | "remove-followee"
   | "reload-neurons"
-  | "reload-proposal";
+  | "reload-proposal"
+  | "merge-neurons"
+  | "remove-followee";
 
 /**
  * Store that reflects the app busy state.

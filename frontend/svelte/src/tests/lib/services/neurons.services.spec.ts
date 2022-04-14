@@ -30,6 +30,7 @@ const {
   startDissolving,
   stopDissolving,
   updateDelay,
+  mergeNeurons,
 } = services;
 
 jest.mock("../../../lib/stores/toasts.store", () => {
@@ -80,6 +81,10 @@ describe("neurons-services", () => {
   const spyJoinCommunityFund = jest
     .spyOn(api, "joinCommunityFund")
     .mockImplementation(() => Promise.resolve());
+
+  const spyMergeNeurons = jest
+    .spyOn(api, "mergeNeurons")
+    .mockImplementation(() => Promise.resolve(BigInt(10)));
 
   const spySplitNeuron = jest
     .spyOn(api, "splitNeuron")
@@ -329,6 +334,56 @@ describe("neurons-services", () => {
 
       expect(toastsStore.error).toHaveBeenCalled();
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("mergeNeurons", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      neuronsStore.setNeurons([]);
+    });
+    it("should update neuron", async () => {
+      neuronsStore.pushNeurons(neurons);
+      await mergeNeurons({
+        sourceNeuronId: neurons[0].neuronId,
+        targetNeuronId: neurons[1].neuronId,
+      });
+
+      expect(spyMergeNeurons).toHaveBeenCalled();
+    });
+
+    it("should not update neuron if no identity", async () => {
+      setNoIdentity();
+
+      await mergeNeurons({
+        sourceNeuronId: neurons[0].neuronId,
+        targetNeuronId: neurons[1].neuronId,
+      });
+
+      expect(toastsStore.error).toHaveBeenCalled();
+      expect(spyMergeNeurons).not.toHaveBeenCalled();
+
+      resetIdentity();
+    });
+
+    it("should not update neuron if different controllers", async () => {
+      const neuron = {
+        ...mockNeuron,
+        neuronId: BigInt(5555),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "another",
+        },
+      };
+      neuronsStore.pushNeurons([notControlledNeuron, neuron]);
+
+      await mergeNeurons({
+        sourceNeuronId: notControlledNeuron.neuronId,
+        targetNeuronId: neuron.neuronId,
+      });
+
+      expect(toastsStore.error).toHaveBeenCalled();
+      expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
   });
 

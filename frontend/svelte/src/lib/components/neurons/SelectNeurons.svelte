@@ -90,7 +90,7 @@
         {:else}
           <Tooltip
             id={`disabled-mergeable-neuron-${neuron.neuronId}`}
-            text={translate({ labelKey: messageKey ?? "error.cannot_merge" })}
+            text={translate({ labelKey: messageKey ?? "error.not_mergeable" })}
           >
             <NeuronCard disabled role="checkbox" {neuron} />
           </Tooltip>
@@ -109,7 +109,9 @@
     <!-- Show the error only when there are two selected neurons -->
     {#if !validSelection && selectedNeuronIds.length === MAX_NEURONS_MERGED}
       <p>
-        {translate({ labelKey: errorLabelKey ?? "error.cannot_merge" })}
+        {translate({
+          labelKey: errorLabelKey ?? "error.cannot_merge_check_article",
+        })}
         <a
           href="https://medium.com/dfinity/internet-computer-nns-neurons-can-now-be-merged-8b4e44584dc2"
           target="_blank"

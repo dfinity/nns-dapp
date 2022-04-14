@@ -98,6 +98,23 @@ export const splitNeuron = async ({
   return response;
 };
 
+export const mergeNeurons = async ({
+  sourceNeuronId,
+  targetNeuronId,
+  identity,
+}: {
+  sourceNeuronId: NeuronId;
+  targetNeuronId: NeuronId;
+  identity: Identity;
+}): Promise<NeuronId> => {
+  const { canister } = await governanceCanister({ identity });
+
+  return canister.mergeNeurons({
+    sourceNeuronId,
+    targetNeuronId,
+  });
+};
+
 export const startDissolving = async ({
   neuronId,
   identity,
