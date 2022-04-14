@@ -1,5 +1,12 @@
 import type { Identity } from "@dfinity/agent";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import {
+  ICP,
+  NeuronState,
+  Topic,
+  type BallotInfo,
+  type NeuronId,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
@@ -7,12 +14,16 @@ import {
   SECONDS_IN_HALF_YEAR,
 } from "../constants/constants";
 import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
+import { MIN_NEURON_STAKE_SPLITTABLE } from "../constants/neurons.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
+import type { Step } from "../stores/steps.state";
+import { InvalidAmountError } from "../types/errors";
 import { getAccountByPrincipal } from "./accounts.utils";
 import { formatNumber } from "./format.utils";
+import { isDefined } from "./utils";
 
 export type StateInfo = {
   textKey: string;
@@ -101,17 +112,6 @@ export const formatVotingPower = (value: bigint): string =>
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
-export const isCurrentUserController = ({
-  neuron,
-  identity,
-}: {
-  neuron: NeuronInfo;
-  identity?: Identity | null;
-}): boolean =>
-  neuron.fullNeuron?.controller === undefined
-    ? false
-    : identity?.getPrincipal().toText() === neuron.fullNeuron.controller;
-
 export const maturityByStake = (neuron: NeuronInfo): number => {
   if (
     neuron.fullNeuron === undefined ||
@@ -143,7 +143,7 @@ export const sortNeuronsByCreatedTimestamp = (
  *  OR
  *  2. The main account (same as user) is the controller
  *  OR
- *  3. The user's hardware wallet is the controller.
+ *  3. TODO: The user's hardware wallet is the controller.
  *
  */
 export const isNeuronControllable = ({
@@ -160,6 +160,17 @@ export const isNeuronControllable = ({
     getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
       undefined);
 
+export const isHotKeyControllable = ({
+  neuron: { fullNeuron },
+  identity,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+}): boolean =>
+  fullNeuron?.hotKeys.find(
+    (hotkey) => hotkey === identity?.getPrincipal().toText()
+  ) !== undefined;
+
 /**
  * Calculate neuron stake (cachedNeuronStake - neuronFees)
  * @returns 0n if stake not available
@@ -168,3 +179,132 @@ export const neuronStake = (neuron: NeuronInfo): bigint =>
   neuron.fullNeuron?.cachedNeuronStake !== undefined
     ? neuron.fullNeuron?.cachedNeuronStake - neuron.fullNeuron?.neuronFees
     : BigInt(0);
+
+export interface FolloweesNeuron {
+  neuronId: NeuronId;
+  topics: [Topic, ...Topic[]];
+}
+/**
+ * Transforms Neuron.Followees into FolloweesNeuron[] format
+ */
+export const followeesNeurons = (neuron: NeuronInfo): FolloweesNeuron[] => {
+  if (neuron.fullNeuron?.followees === undefined) {
+    return [];
+  }
+  const result: FolloweesNeuron[] = [];
+  const resultNeuron = (neuronId: NeuronId): FolloweesNeuron | undefined =>
+    result.find(({ neuronId: id }) => id === neuronId);
+
+  for (const { followees, topic } of neuron.fullNeuron.followees) {
+    for (const neuronId of followees) {
+      const followeesNeuron = resultNeuron(neuronId);
+      if (followeesNeuron === undefined) {
+        result.push({
+          neuronId,
+          topics: [topic],
+        });
+      } else {
+        followeesNeuron.topics.push(topic);
+      }
+    }
+  }
+
+  return result;
+};
+
+/**
+ * Returns neuron ballots that contain "proposalId"
+ */
+export const ballotsWithDefinedProposal = ({
+  recentBallots,
+}: NeuronInfo): Required<BallotInfo>[] =>
+  recentBallots.filter(
+    ({ proposalId }: BallotInfo) => proposalId !== undefined
+  );
+
+export const neuronCanBeSplit = (neuron: NeuronInfo): boolean =>
+  neuronStake(neuron) >= BigInt(MIN_NEURON_STAKE_SPLITTABLE);
+
+export const isValidInputAmount = ({
+  amount,
+  max,
+}: {
+  amount?: number;
+  max: number;
+}): boolean => amount !== undefined && amount > 0 && amount <= max;
+
+export const convertNumberToICP = (amount: number): ICP => {
+  const stake = ICP.fromString(String(amount));
+
+  if (!(stake instanceof ICP) || stake === undefined) {
+    throw new InvalidAmountError();
+  }
+
+  return stake;
+};
+
+export const isEnoughToStakeNeuron = ({
+  stake,
+  withTransactionFee = false,
+}: {
+  stake: ICP;
+  withTransactionFee?: boolean;
+}): boolean =>
+  stake.toE8s() > E8S_PER_ICP + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
+
+// TODO: Next PR with functionality
+export const mergeableNeurons = (neurons: NeuronInfo[]): NeuronInfo[] =>
+  neurons;
+
+// TODO: Next PR with functionality
+export const canBeMerged = (neurons: NeuronInfo[]): boolean =>
+  neurons.length === 2;
+
+export const mapNeuronIds = ({
+  neuronIds,
+  neurons,
+}: {
+  neuronIds: NeuronId[];
+  neurons: NeuronInfo[];
+}) =>
+  neuronIds
+    .map((selectedId) =>
+      neurons.find(({ neuronId }) => neuronId === selectedId)
+    )
+    .filter(isDefined);
+
+export type InvalidState<T> = {
+  stepName: string;
+  isInvalid: (arg?: T) => boolean;
+  onInvalid: () => void;
+};
+// Checks if there is an invalid state in a Wizard Step
+export const checkInvalidState = <T>({
+  invalidStates,
+  currentStep,
+  args,
+}: {
+  invalidStates: InvalidState<T>[];
+  currentStep?: Step;
+  args: T;
+}): void => {
+  invalidStates
+    .filter(
+      ({ stepName, isInvalid }) =>
+        stepName === currentStep?.name && isInvalid(args)
+    )
+    .forEach(({ onInvalid }) => onInvalid());
+};
+
+export const isIdentityController = ({
+  neuron,
+  identity,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+}): boolean => {
+  if (identity === null || identity === undefined) {
+    return false;
+  }
+  return neuron.fullNeuron?.controller === identity.getPrincipal().toText();
+};

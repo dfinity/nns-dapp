@@ -6,7 +6,6 @@
   import { secondsToDate } from "../../utils/date.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
-  import * as utils from "../../utils/neuron.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
@@ -16,21 +15,28 @@
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
   import { authStore } from "../../stores/auth.store";
-
-  const {
+  import {
     ageMultiplier,
     dissolveDelayMultiplier,
     formatVotingPower,
     hasJoinedCommunityFund,
-    isCurrentUserController,
-  } = utils;
+    isHotKeyControllable,
+    isNeuronControllable,
+  } from "../../utils/neuron.utils";
+  import { accountsStore } from "../../stores/accounts.store";
 
   export let neuron: NeuronInfo;
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
-  let userControlled: boolean;
-  $: userControlled = isCurrentUserController({
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable({
+    neuron,
+    identity: $authStore.identity,
+    accounts: $accountsStore,
+  });
+  let hotkeyControlled: boolean;
+  $: hotkeyControlled = isHotKeyControllable({
     neuron,
     identity: $authStore.identity,
   });
@@ -43,7 +49,7 @@
         {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
           .staked}
       </p>
-      {#if !isCommunityFund && userControlled}
+      {#if !isCommunityFund && isControllable}
         <JoinCommunityFundButton neuronId={neuron.neuronId} />
       {/if}
     </div>
@@ -78,7 +84,7 @@
         {/if}
       </p>
       <div class="buttons">
-        {#if userControlled}
+        {#if isControllable}
           <IncreaseDissolveDelayButton {neuron} />
           {#if neuron.state === NeuronState.DISSOLVED}
             <DisburseButton />
@@ -92,9 +98,11 @@
       </div>
     </div>
     <div class="only-buttons">
-      {#if userControlled}
+      {#if isControllable || hotkeyControlled}
         <IncreaseStakeButton />
-        <SplitNeuronButton />
+      {/if}
+      {#if isControllable}
+        <SplitNeuronButton {neuron} />
       {/if}
     </div>
   </section>

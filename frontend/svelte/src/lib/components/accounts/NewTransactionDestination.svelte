@@ -14,6 +14,9 @@
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
   );
+  const { store }: TransactionContext = context;
+
+  let selectedAccount: Account | undefined = $store.selectedAccount;
 
   onMount(() => (mounted = true));
 
@@ -35,8 +38,6 @@
 
     next?.();
   };
-
-  // TODO(L2-430): SelectAccount should be filtered with source account - i.e. source account should not be displayed and if only one account the all section should not be displayed
 </script>
 
 <div>
@@ -49,8 +50,8 @@
   {#if mounted}
     <SelectAccount
       on:nnsSelectAccount={onSelectAccount}
-      displayTitle={true}
       disableSelection={!emptyAddress(address)}
+      filterIdentifier={selectedAccount?.identifier}
     />
   {/if}
 </div>

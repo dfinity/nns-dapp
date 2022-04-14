@@ -1,8 +1,9 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { BlockHeight } from "@dfinity/nns";
 import {
   AccountIdentifier,
+  ICP,
   LedgerCanister,
-  type ICP,
   type Neuron,
 } from "@dfinity/nns";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
@@ -21,6 +22,35 @@ export const getNeuronBalance = async ({
   return canister.accountBalance({
     accountIdentifier: AccountIdentifier.fromHex(neuron.accountIdentifier),
     certified,
+  });
+};
+
+/**
+ * Transfer ICP between accounts.
+ *
+ * @param {Object} params
+ * @param {Identity} params.identity user identity
+ * @param {string} params.to send ICP to destination address - an account identifier
+ * @param {ICP} params.amount the amount to be transferred in ICP
+ * @param {number | undefined} params.fromSubAccountId the optional subaccount id that would be the source of the transaction
+ */
+export const sendICP = async ({
+  identity,
+  to,
+  amount,
+  fromSubAccountId,
+}: {
+  identity: Identity;
+  to: string;
+  amount: ICP;
+  fromSubAccountId?: number | undefined;
+}): Promise<BlockHeight> => {
+  const { canister } = await ledgerCanister({ identity });
+
+  return canister.transfer({
+    to: AccountIdentifier.fromHex(to),
+    amount,
+    fromSubAccountId,
   });
 };
 

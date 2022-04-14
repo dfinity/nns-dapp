@@ -1,15 +1,9 @@
 <script lang="ts">
   import ICP from "../ic/ICP.svelte";
-  import { ICP as ICPType } from "@dfinity/nns";
-  import type { Account } from "../../types/account";
+  import type { ICP as ICPType } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
 
-  export let account: Account | undefined;
-
-  let balance: ICPType;
-
-  $: ({ balance } =
-    account ?? ({ balance: ICPType.fromString("0") } as unknown as Account));
+  export let balance: ICPType;
 </script>
 
 <div>

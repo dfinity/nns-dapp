@@ -18,12 +18,12 @@
   let color: ProposalColor;
 
   $: ({ proposal, status } = proposalInfo);
-  $: title = proposal?.title;
+  $: title = proposal?.title ?? "";
   $: color = PROPOSAL_COLOR[status];
 </script>
 
 <Card>
-  <h2 slot="start" {title}>{title}</h2>
+  <h2 class="title" slot="start" {title}>{title}</h2>
   <Badge slot="end" {color}
     ><h2 class="status">{$i18n.status[ProposalStatus[status]]}</h2></Badge
   >
@@ -36,9 +36,10 @@
   @use "../../../themes/mixins/media";
   @use "../../../themes/mixins/text";
 
-  h2 {
+  .title {
     font-size: var(--font-size-h5);
     line-height: var(--line-height-standard);
+    overflow-wrap: anywhere;
     @include text.clamp(3);
 
     @include media.min-width(medium) {
@@ -49,6 +50,8 @@
   }
 
   .status {
+    min-width: fit-content;
+    font-size: var(--font-size-h3);
     color: inherit;
   }
 </style>

@@ -4,7 +4,7 @@ cd "$(dirname "$(realpath "$0")")/.." || exit
 
 ./scripts/docker-build
 
-DEPLOY_ENV=nobuild dfx deploy --no-wallet --network testnet
+DEPLOY_ENV=nobuild dfx deploy --network testnet
 
 set +x
 echo "Deployed to: https://$(jq -jc '.["nns-dapp"].testnet' canister_ids.json).nnsdapp.dfinity.network"

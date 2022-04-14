@@ -58,8 +58,8 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@dfinity/auth-client": "^0.10.3",
-    "@dfinity/identity": "^0.10.3",
+    "@dfinity/agent": "^0.11.0",
+    "@dfinity/auth-client": "^0.11.0",
     "@dfinity/nns": "nightly"
   }
 }
