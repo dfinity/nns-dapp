@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+##################################################
+# SINGLE SOURCE OF TRUTH FOR BUILD CONFIGURATION #
+##################################################
+
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.
 export DFX_NETWORK
