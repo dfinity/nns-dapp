@@ -1,2 +1,7 @@
+#!/usr/bin/env bash
+
+# NOT TO BE MERGED INTO MAIN
+# Used to compare this config with that created by "update_config.sh".
+
 variant="${1:-mainnet}"
 diff -y -W200 <(DEPLOY_ENV="$variant" ./update_config.sh | jq --sort-keys . | sed 's/,$//g') <(DFX_NETWORK="$variant" bash config.sh | jq --sort-keys . | sed 's/,$//g')
