@@ -9,15 +9,17 @@
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import {
-    isCurrentUserController,
+    isNeuronControllable,
     maturityByStake,
   } from "../../utils/neuron.utils";
+  import { accountsStore } from "../../stores/accounts.store";
 
   export let neuron: NeuronInfo;
-  let userControlled: boolean;
-  $: userControlled = isCurrentUserController({
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable({
     neuron,
     identity: $authStore.identity,
+    accounts: $accountsStore,
   });
 </script>
 
@@ -34,7 +36,7 @@
     <h3>{formatPercentage(maturityByStake(neuron))}</h3>
   </div>
   <div class="actions">
-    {#if userControlled}
+    {#if isControllable}
       <MergeMaturityButton />
       <SpawnNeuronButton />
     {/if}

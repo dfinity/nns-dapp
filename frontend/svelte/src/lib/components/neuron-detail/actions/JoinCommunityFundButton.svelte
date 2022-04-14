@@ -15,21 +15,15 @@
 
   const joinFund = async () => {
     startBusy("join-community-fund");
-    try {
-      await joinCommunityFund(neuronId);
+    const id = await joinCommunityFund(neuronId);
+    if (id !== undefined) {
       toastsStore.show({
         labelKey: "neuron_detail.join_community_fund_success",
         level: "info",
       });
-      closeModal();
-    } catch (err) {
-      toastsStore.error({
-        labelKey: "error.join_community_fund",
-        err,
-      });
-    } finally {
-      stopBusy("join-community-fund");
     }
+    closeModal();
+    stopBusy("join-community-fund");
   };
 </script>
 
