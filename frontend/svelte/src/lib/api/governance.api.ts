@@ -106,7 +106,7 @@ export const mergeNeurons = async ({
   sourceNeuronId: NeuronId;
   targetNeuronId: NeuronId;
   identity: Identity;
-}): Promise<NeuronId> => {
+}): Promise<void> => {
   const { canister } = await governanceCanister({ identity });
 
   return canister.mergeNeurons({

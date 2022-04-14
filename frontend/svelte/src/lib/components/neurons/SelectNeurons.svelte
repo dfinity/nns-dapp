@@ -64,7 +64,7 @@
       <!-- 1. Maximum number selected and neuron is one of the selected -->
       <!-- 2. Maximum number selected and neuron is NOT one of the selected -->
       <!-- 3. User can still select and neuron is mergeable -->
-      <!-- 4. User can still select but neuron is NOT mergeable -->
+      <!-- 4. User can still select and neuron is NOT mergeable -->
       <li>
         {#if isMaxSelection(selectedNeuronIds) && isNeuronSelected(selectedNeuronIds, neuron.neuronId)}
           <NeuronCard

@@ -39,7 +39,7 @@
         level: "info",
       });
     }
-    loading = true;
+    loading = false;
     dispatcher("nnsClose");
     stopBusy("merge-neurons");
   };
