@@ -18,8 +18,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install shfmt
-        run: sudo snap install --classic shfmt
+      # Disabled due to temporary installation problems.
+      #- name: Install shfmt
+      #  run: sudo snap install --classic shfmt
 
       - name: Install Rust
         run: |
@@ -30,8 +31,9 @@ jobs:
       - name: Format rust
         run: cargo fmt
 
-      - name: Format shell scripts
-        run: ./scripts/fmt-sh
+      # Disabled due to temporary installation problems.
+      #- name: Format shell scripts
+      #  run: ./scripts/fmt-sh
 
       - name: Install ts dependencies
         run: npm ci
