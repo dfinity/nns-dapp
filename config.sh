@@ -40,7 +40,7 @@ local_deployment_data="$(
     set -euo pipefail
     id="$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
     : "If we have a canister ID, insert it into HOST as a subdomain."
-    test -z "$id" || { jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json | sed -E "s,^(https?://)?,&${id}.,g"; }
+    test -z "${id:-}" || { jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json | sed -E "s,^(https?://)?,&${id}.,g"; }
   )"
   export IDENTITY_SERVICE_URL
   test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
