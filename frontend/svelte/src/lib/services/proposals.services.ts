@@ -149,19 +149,23 @@ export const loadProposal = async ({
   proposalId,
   setProposal,
   handleError,
+  silentErrorMessages,
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
+  silentErrorMessages?: boolean;
 }): Promise<void> => {
   const catchError = (error: unknown) => {
     console.error(error);
 
-    toastsStore.show({
-      labelKey: "error.proposal_not_found",
-      level: "error",
-      detail: `id: "${proposalId}"`,
-    });
+    if (silentErrorMessages !== true) {
+      toastsStore.show({
+        labelKey: "error.proposal_not_found",
+        level: "error",
+        detail: `id: "${proposalId}"`,
+      });
+    }
 
     handleError?.();
   };
