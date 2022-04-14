@@ -32,11 +32,16 @@
   in:fly={{ y: 100, duration: 200 }}
   out:fade={{ delay: 100 }}
 >
-  <p title={text}>
+  <p>
     {text}
   </p>
 
-  <button on:click={close} aria-label={$i18n.core.close}><IconClose /></button>
+  <button
+    class="close"
+    class:error={level === "error"}
+    class:warning={level === "warn"}
+    on:click={close}>{$i18n.core.close}</button
+  >
 </div>
 
 <style lang="scss">
@@ -47,6 +52,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: var(--padding);
+
+    // (>=3 lines x 1rem) + top/bottom paddings
+    height: calc(8.5 * var(--padding));
 
     position: fixed;
     bottom: var(--padding-2x);
@@ -77,26 +86,25 @@
     &.warn {
       background: var(--yellow-500);
       color: var(--yellow-500-contrast);
+
+      button.close {
+        color: var(--yellow-500-contrast);
+      }
     }
   }
 
   p {
-    @include text.clamp(4);
-
     margin: 0;
-    font-size: 1rem;
-
-    @include media.min-width(medium) {
-      @include text.clamp(2);
-    }
+    max-height: 100%;
+    overflow-y: auto;
   }
 
-  button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
-    padding: 0;
+  button.close {
+    // rewrite default button styles
+    padding: var(--padding-0_5x) var(--padding);
+    min-height: 0;
+    border: 1px solid;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-h5);
   }
 </style>
