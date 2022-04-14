@@ -12,6 +12,11 @@ export const config: WebdriverIO.Config = {
     browser.addCommand(
       "screenshot",
       async (name: string, options: { saveDom: boolean } = {}) => {
+        // Safe increment.  If you see screenshot counts this high, think why.
+        browser["screenshot-count"] =
+          (Number.isNaN(browser["screenshot-count"])
+            ? 1000
+            : Number(browser["screenshot-count"])) + 1;
         const countStr: string = (browser["screenshot-count"]++)
           .toFixed()
           .padStart(2, "0");
@@ -59,8 +64,6 @@ export const config: WebdriverIO.Config = {
     //       This hook here captures "sudden" death that may be hard
     //       or tedious to capture otherwise.
     if (undefined !== error) {
-      // Filenames containing spaces are painful to work with on the command line,
-      // so we replace any spaces in the test name when we create the screenshot.
       await browser["screenshot"](`test-fail_${test.title}`, { saveDom: true });
     }
   },
