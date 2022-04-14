@@ -7,7 +7,7 @@
     getDissolvingTimeInSeconds,
     getStateInfo,
     hasJoinedCommunityFund,
-    isCurrentUserController,
+    isHotKeyControllable,
     neuronStake,
   } from "../../utils/neuron.utils";
   import type { StateInfo } from "../../utils/neuron.utils";
@@ -31,8 +31,7 @@
   let neuronICP: ICP;
   $: neuronICP = ICP.fromE8s(neuronStake(neuron));
   let isHotKeyControl: boolean;
-  // TODO: Refactor to check with hotkeys
-  $: isHotKeyControl = !isCurrentUserController({
+  $: isHotKeyControl = isHotKeyControllable({
     neuron,
     identity: $authStore.identity,
   });
@@ -42,9 +41,7 @@
 
 <Card {role} {selected} on:click {ariaLabel}>
   <div slot="start" class="lock" data-tid="neuron-card-title">
-    <h3 class:has-neuron-control={isCommunityFund || isHotKeyControl}>
-      {neuron.neuronId}
-    </h3>
+    <h3>{neuron.neuronId}</h3>
 
     {#if isCommunityFund}
       <span class="neuron-control">{$i18n.neurons.community_fund}</span>

@@ -7,11 +7,22 @@ import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import NeuronCard from "../../../../lib/components/neurons/NeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
+import { authStore } from "../../../../lib/stores/auth.store";
 import { formatICP } from "../../../../lib/utils/icp.utils";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
 describe("NeuronCard", () => {
+  beforeAll(() => {
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
+  });
+
   it("renders a Card", () => {
     const { container } = render(NeuronCard, {
       props: { neuron: mockNeuron },
@@ -83,12 +94,16 @@ describe("NeuronCard", () => {
     expect(getByText(en.neurons.community_fund)).toBeInTheDocument();
   });
 
-  it("renders the hotkey_control label when neuron is not controlled by current user", async () => {
+  it("renders the hotkey_control label when neuron is not controlled by current user but by hotkey", async () => {
     const { getByText } = render(NeuronCard, {
       props: {
         neuron: {
           ...mockNeuron,
-          fullNeuron: { ...mockFullNeuron, controller: "bbbbb-bb" },
+          fullNeuron: {
+            ...mockFullNeuron,
+            hotKeys: [mockIdentity.getPrincipal().toText()],
+            controller: "bbbbb-bb",
+          },
         },
       },
     });

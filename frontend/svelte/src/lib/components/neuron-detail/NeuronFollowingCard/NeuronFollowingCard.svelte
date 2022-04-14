@@ -3,20 +3,30 @@
   import { accountsStore } from "../../../stores/accounts.store";
   import { authStore } from "../../../stores/auth.store";
   import { i18n } from "../../../stores/i18n";
-  import * as neuronUtils from "../../../utils/neuron.utils";
+  import {
+    type FolloweesNeuron,
+    followeesNeurons,
+    isNeuronControllable,
+    isHotKeyControllable,
+  } from "../../../utils/neuron.utils";
   import Card from "../../ui/Card.svelte";
   import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
   import Followee from "./Followee.svelte";
 
   export let neuron: NeuronInfo;
   let isControllable: boolean;
-  $: isControllable = neuronUtils.isNeuronControllable({
-    neuron,
-    identity: $authStore.identity,
-    accounts: $accountsStore,
-  });
-  let followees: neuronUtils.FolloweesNeuron[];
-  $: followees = neuronUtils.followeesNeurons(neuron);
+  $: isControllable =
+    isNeuronControllable({
+      neuron,
+      identity: $authStore.identity,
+      accounts: $accountsStore,
+    }) ||
+    isHotKeyControllable({
+      neuron,
+      identity: $authStore.identity,
+    });
+  let followees: FolloweesNeuron[];
+  $: followees = followeesNeurons(neuron);
 </script>
 
 <Card>
