@@ -29,6 +29,7 @@ import {
   queryAndUpdate,
   type QueryAndUpdateOnError,
   type QueryAndUpdateOnResponse,
+  type QueryAndUpdateStrategy,
 } from "./utils.services";
 
 const handleFindProposalsError = ({ error, certified }) => {
@@ -150,11 +151,13 @@ export const loadProposal = async ({
   setProposal,
   handleError,
   silentErrorMessages,
+  strategy,
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
   silentErrorMessages?: boolean;
+  strategy: QueryAndUpdateStrategy;
 }): Promise<void> => {
   const catchError = (error: unknown) => {
     console.error(error);
@@ -181,6 +184,7 @@ export const loadProposal = async ({
         setProposal(proposal);
       },
       onError: catchError,
+      strategy,
     });
   } catch (error: unknown) {
     catchError(error);
@@ -194,10 +198,12 @@ const getProposal = async ({
   proposalId,
   onLoad,
   onError,
+  strategy,
 }: {
   proposalId: ProposalId;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
   onError: QueryAndUpdateOnError<unknown>;
+  strategy: QueryAndUpdateStrategy;
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
 
@@ -206,6 +212,7 @@ const getProposal = async ({
       queryProposal({ proposalId, identity, certified }),
     onLoad,
     onError,
+    strategy,
   });
 };
 
@@ -261,6 +268,9 @@ export const registerVotes = async ({
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
       },
+      // TODO: 🚧 to be discussed
+      // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
+      strategy: "update",
     }),
   ]);
 

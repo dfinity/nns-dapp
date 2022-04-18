@@ -11,8 +11,11 @@ export type QueryAndUpdateOnError<E> = (options: {
   error: E;
 }) => void;
 
+// as a type to easier switch between strategies
+export type QueryAndUpdateStrategy = "query_and_update" | "query" | "update";
+
 /**
- * Makes two requests (QUERY and UPDATE) in parallel.
+ * Depending on the strategy makes one or two requests (QUERY and UPDATE in parallel).
  * The returned promise notify when first fetched data are available.
  * Could call onLoad only once if the update response was first.
  */
@@ -20,17 +23,17 @@ export const queryAndUpdate = async <R, E>({
   request,
   onLoad,
   onError,
+  strategy = "query_and_update",
 }: {
   request: (options: { certified: boolean; identity: Identity }) => Promise<R>;
   onLoad: QueryAndUpdateOnResponse<R>;
   onError?: QueryAndUpdateOnError<E>;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   let certifiedDone = false;
-
+  let requests: Array<Promise<void>>;
   const identity: Identity = await getIdentity();
-
-  return Promise.race([
-    // query
+  const query = () =>
     request({ certified: false, identity })
       .then((response) => {
         if (certifiedDone) return;
@@ -40,12 +43,23 @@ export const queryAndUpdate = async <R, E>({
         // TODO: somehow notify user about probably compromised state
         if (certifiedDone) return;
         onError?.({ certified: false, error });
-      }),
-
-    // update
+      });
+  const update = () =>
     request({ certified: true, identity })
       .then((response) => onLoad({ certified: true, response }))
-      .catch((error) => onError?.({ certified: true, error }))
-      .finally(() => (certifiedDone = true)),
-  ]);
+      .catch((error) => {
+        onError?.({ certified: true, error });
+      })
+      .finally(() => (certifiedDone = true));
+
+  // apply fetching strategy
+  if (strategy === "query") {
+    requests = [query()];
+  } else if (strategy === "update") {
+    requests = [update()];
+  } else {
+    requests = [query(), update()];
+  }
+
+  return Promise.race(requests);
 };
