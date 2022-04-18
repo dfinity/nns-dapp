@@ -41,13 +41,13 @@ describe("api-utils", () => {
       expect(onError).not.toBeCalled();
     });
 
-    it("should request w/ different certified values", async () => {
+    it('should support "query_and_update" strategy', async () => {
       const requestCertified: boolean[] = [];
       const request = jest
         .fn()
         .mockImplementation(({ certified }: { certified: boolean }) => {
           requestCertified.push(certified);
-          return Promise.resolve({ certified: true });
+          return Promise.resolve();
         });
       const onLoad = jest.fn();
 
@@ -57,6 +57,44 @@ describe("api-utils", () => {
       });
 
       expect(requestCertified.sort()).toEqual([false, true]);
+    });
+
+    it('should support "query" strategy', async () => {
+      const requestCertified: boolean[] = [];
+      const request = jest
+        .fn()
+        .mockImplementation(({ certified }: { certified: boolean }) => {
+          requestCertified.push(certified);
+          return Promise.resolve();
+        });
+      const onLoad = jest.fn();
+
+      await queryAndUpdate<number, unknown>({
+        request,
+        onLoad,
+        strategy: "query",
+      });
+
+      expect(requestCertified.sort()).toEqual([false]);
+    });
+
+    it('should support "update" strategy', async () => {
+      const requestCertified: boolean[] = [];
+      const request = jest
+        .fn()
+        .mockImplementation(({ certified }: { certified: boolean }) => {
+          requestCertified.push(certified);
+          return Promise.resolve();
+        });
+      const onLoad = jest.fn();
+
+      await queryAndUpdate<number, unknown>({
+        request,
+        onLoad,
+        strategy: "update",
+      });
+
+      expect(requestCertified.sort()).toEqual([true]);
     });
 
     it("should catch errors", async () => {
