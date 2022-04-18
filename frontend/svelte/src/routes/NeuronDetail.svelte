@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { NeuronInfo, NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { getNeuronId, loadNeuron } from "../lib/services/neurons.services";
@@ -50,8 +50,8 @@
 
     await loadNeuron({
       neuronId: neuronIdMaybe,
-      setNeuron: (neuronInfo: NeuronInfo) =>
-        neuronsStore.pushNeurons([neuronInfo]),
+      setNeuron: ({ neuron, certified }) =>
+        neuronsStore.pushNeurons({ neurons: [neuron], certified }),
       handleError: onError,
     });
   });

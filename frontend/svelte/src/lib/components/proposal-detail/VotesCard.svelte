@@ -8,7 +8,7 @@
   import IconThumbDown from "../../icons/IconThumbDown.svelte";
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
   import { votedNeurons } from "@dfinity/nns";
-  import { neuronsStore } from "../../stores/neurons.store";
+  import { definedNeuronsStore } from "../../stores/neurons.store";
 
   export let proposalInfo: ProposalInfo;
 
@@ -34,7 +34,7 @@
 
   $: {
     neuronsVotedForProposal = votedNeurons({
-      neurons: $neuronsStore,
+      neurons: $definedNeuronsStore,
       proposal: proposalInfo,
     })
       .map(({ neuronId, recentBallots, votingPower }) => ({

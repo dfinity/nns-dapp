@@ -18,14 +18,30 @@
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import { listNeurons } from "../lib/services/neurons.services";
-  import { neuronsStore } from "../lib/stores/neurons.store";
+  import {
+    definedNeuronsStore,
+    neuronsStore,
+  } from "../lib/stores/neurons.store";
   import {
     proposalIdStore,
     proposalInfoStore,
   } from "../lib/stores/proposals.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
 
+  const neuronsStoreReady = (): boolean => {
+    // We consider the neurons store as ready if it has been initialized once. Subsequent changes that happen after vote or other functions are handled with the busy store.
+    // This to avoid the display of a spinner within the page and another spinner over it (the busy spinner) when the user vote is being processed.
+    if (neuronsReady) {
+      return true;
+    }
+
+    return (
+      $neuronsStore.neurons !== undefined && $neuronsStore.certified === true
+    );
+  };
+
   let neuronsReady = false;
+  $: $neuronsStore, (neuronsReady = neuronsStoreReady());
 
   onMount(async () => {
     if (!SHOW_PROPOSALS_ROUTE) {
@@ -33,8 +49,12 @@
       return;
     }
 
+    // We query the neurons only if they were not yet fully fetched - i.e. never initialized
+    if (neuronsStoreReady()) {
+      return;
+    }
+
     await listNeurons();
-    neuronsReady = true;
   });
 
   const unsubscribeRouteStore = routeStore.subscribe(
@@ -90,13 +110,13 @@
     >
 
     <section>
-      {#if $proposalInfoStore && $neuronsStore && neuronsReady}
+      {#if $proposalInfoStore && neuronsReady}
         <ProposalDetailCard proposalInfo={$proposalInfoStore} />
         <VotesCard proposalInfo={$proposalInfoStore} />
         <VotingCard proposalInfo={$proposalInfoStore} />
         <IneligibleNeuronsCard
           proposalInfo={$proposalInfoStore}
-          neurons={$neuronsStore}
+          neurons={$definedNeuronsStore}
         />
       {:else}
         <Spinner />
