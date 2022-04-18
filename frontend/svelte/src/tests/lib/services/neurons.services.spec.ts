@@ -203,6 +203,8 @@ describe("neurons-services", () => {
       await listNeurons();
       // `await` does not wait for `onLoad` to finish
       await tick();
+      await tick();
+      await tick();
 
       expect(spyClaimOrRefresh).toBeCalledTimes(1);
     });
