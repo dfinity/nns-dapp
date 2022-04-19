@@ -14,7 +14,7 @@ export const logWithTimestamp = (...args): void => {
 
 // Insecure but fast
 // https://gist.github.com/hyamamoto/fd435505d29ebfa3d9716fd2be8d42f0
-const seed = Math.round(Math.random() * 99999);
+const seed = Math.round(Math.random() * 1e6);
 export const hashCode = (value: string | bigint | number): string =>
   (
     Array.from(`${value}`).reduce(
