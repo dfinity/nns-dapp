@@ -25,6 +25,7 @@ import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
+import { MAX_CONCURRENCY } from "../constants/neurons.constants";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import {
@@ -238,30 +239,58 @@ const findNeuronsStakeNotBalance = async ({
 }: {
   neurons: Neuron[];
   identity: Identity;
-}): Promise<NeuronId[]> =>
-  (
-    await Promise.all(
-      neurons.map(
-        async (fullNeuron): Promise<{ balance: ICP; fullNeuron: Neuron }> => ({
-          // NOTE: We fetch the balance in an uncertified way as it's more efficient,
-          // and a malicious actor wouldn't gain anything by spoofing this value.
-          // This data is used only to now which neurons need to be refreshed.
-          // This data is not shown to the user, nor stored in any store.
-          balance: await getNeuronBalance({
-            neuron: fullNeuron,
-            identity,
-            certified: false,
-          }),
-          fullNeuron,
-        })
-      )
+}): Promise<NeuronId[]> => {
+  // TODO switch to getting multiple balances in a single request once it is supported by the ledger.
+  // Until the above is supported we must limit the max concurrency otherwise our requests may be throttled.
+
+  const neuronChunks: Neuron[][] = createChunks(neurons, MAX_CONCURRENCY);
+
+  let neuronIdsToRefresh: NeuronId[] = [];
+
+  for (const neuronChunk of neuronChunks) {
+    const notMatchingNeuronIds: NeuronId[] = (
+      await getNeuronsBalance({ neurons: neuronChunk, identity })
     )
-  )
-    .filter((params) => !balanceMatchesStake(params))
-    // We can only refresh a neuron if its balance is at least 1 ICP
-    .filter(balanceIsMoreThanOne)
-    .map(({ fullNeuron }) => fullNeuron.id)
-    .filter(isDefined);
+      .filter((params) => !balanceMatchesStake(params))
+      // We can only refresh a neuron if its balance is at least 1 ICP
+      .filter(balanceIsMoreThanOne)
+      .map(({ fullNeuron }) => fullNeuron.id)
+      .filter(isDefined);
+
+    neuronIdsToRefresh = [...neuronIdsToRefresh, ...notMatchingNeuronIds];
+  }
+
+  return neuronIdsToRefresh;
+};
+
+const getNeuronsBalance = async ({
+  neurons,
+  identity,
+}: {
+  neurons: Neuron[];
+  identity: Identity;
+}): Promise<
+  {
+    balance: ICP;
+    fullNeuron: Neuron;
+  }[]
+> =>
+  Promise.all(
+    neurons.map(
+      async (fullNeuron): Promise<{ balance: ICP; fullNeuron: Neuron }> => ({
+        // NOTE: We fetch the balance in an uncertified way as it's more efficient,
+        // and a malicious actor wouldn't gain anything by spoofing this value.
+        // This data is used only to now which neurons need to be refreshed.
+        // This data is not shown to the user, nor stored in any store.
+        balance: await getNeuronBalance({
+          neuron: fullNeuron,
+          identity,
+          certified: false,
+        }),
+        fullNeuron,
+      })
+    )
+  );
 
 const claimNeurons =
   (identity: Identity) =>
@@ -272,16 +301,31 @@ const claimNeurons =
 
 const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   const identity = await getIdentity();
+
+  const fullNeurons: Neuron[] = neurons
+    .map(({ fullNeuron }) => fullNeuron)
+    .filter(isDefined);
+
+  if (fullNeurons.length === 0) {
+    return;
+  }
+
   const neuronIdsToRefresh: NeuronId[] = await findNeuronsStakeNotBalance({
-    neurons: neurons.map(({ fullNeuron }) => fullNeuron).filter(isDefined),
+    neurons: fullNeurons,
     identity,
   });
+
   if (neuronIdsToRefresh.length === 0) {
     return;
   }
+
   // We found neurons that need to be refreshed.
-  const neuronIdsChunks: NeuronId[][] = createChunks(neuronIdsToRefresh, 10);
+  const neuronIdsChunks: NeuronId[][] = createChunks(
+    neuronIdsToRefresh,
+    MAX_CONCURRENCY
+  );
   await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
+
   return listNeurons({ skipCheck: true });
 };
 
