@@ -4,6 +4,7 @@ import type { CanisterDetails } from "../canisters/nns-dapp/nns-dapp.types";
 import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
 import { identityServiceURL } from "../constants/identity.constants";
 import { createAgent } from "../utils/agent.utils";
+import { logWithTimestamp } from "../utils/dev.utils";
 
 export const queryCanisters = async ({
   identity,
@@ -12,6 +13,7 @@ export const queryCanisters = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<CanisterDetails[]> => {
+  logWithTimestamp(`Querying Canisters certified:${certified} call...`);
   const agent = await createAgent({ identity, host: identityServiceURL });
 
   const nnsDapp: NNSDappCanister = NNSDappCanister.create({
@@ -19,5 +21,7 @@ export const queryCanisters = async ({
     canisterId: OWN_CANISTER_ID,
   });
 
-  return nnsDapp.getCanisters({ certified });
+  const response = await nnsDapp.getCanisters({ certified });
+  logWithTimestamp(`Querying Canisters certified:${certified} complete.`);
+  return response;
 };
