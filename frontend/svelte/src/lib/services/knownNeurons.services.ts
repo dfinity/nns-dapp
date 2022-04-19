@@ -25,5 +25,6 @@ export const listKnownNeurons = (): Promise<void> => {
         detail: errorToString(error),
       });
     },
+    logMessage: "Syncing Known Neurons",
   });
 };

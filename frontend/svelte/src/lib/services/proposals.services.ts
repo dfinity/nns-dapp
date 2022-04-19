@@ -20,6 +20,7 @@ import {
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
+import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
 import {
@@ -142,6 +143,9 @@ const findProposals = async ({
       onLoad({ response: proposals, certified });
     },
     onError,
+    logMessage: `Syncing proposals ${
+      beforeProposal === undefined ? "" : `from: ${hashCode(beforeProposal)}`
+    }`,
   });
 };
 
@@ -215,6 +219,7 @@ const getProposal = async ({
       queryProposal({ proposalId, identity, certified }),
     onLoad,
     onError,
+    logMessage: `Syncing Proposal ${hashCode(proposalId)}`,
   });
 };
 
@@ -237,14 +242,34 @@ export const registerVotes = async ({
   startBusy("vote");
 
   const identity: Identity = await getIdentity();
+  const uniqueNeuronIds = Array.from(new Set(neuronIds));
+
+  // <test_log>
+  // https://forum.dfinity.org/t/potentially-serious-nns-error-nns-app-ui-shows-error-when-voting-every-time/12212
+  try {
+    if (uniqueNeuronIds.length !== neuronIds.length) {
+      console.error(
+        "registerVotes/TL(ids, ids_text)",
+        neuronIds.map(hashCode),
+        uniqueNeuronIds.map(hashCode)
+      );
+    }
+  } catch (err) {
+    console.error("registerVotes/TL(unknown)", err);
+  }
+  // </test_log>
 
   try {
+    logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
     await requestRegisterVotes({
-      neuronIds,
+      neuronIds: uniqueNeuronIds,
       proposalId,
       identity,
       vote,
     });
+    logWithTimestamp(
+      `Registering [${neuronIds.map(hashCode)}] votes complete.`
+    );
   } catch (error: unknown) {
     console.error("vote unknown:", error);
 
@@ -348,12 +373,14 @@ const requestRegisterVotes = async ({
         })
     )
   );
+  const rejectedResponses = responses.filter(
+    ({ status }) => status === "rejected"
+  );
   const details: string[] = responses
     .map((response, i) => errorDetail(neuronIds[i], response))
     .filter(isDefined);
-
-  if (details.length > 0) {
-    console.error("vote", details);
+  if (rejectedResponses.length > 0) {
+    console.error("vote", rejectedResponses);
 
     toastsStore.show({
       labelKey: "error.register_vote",
