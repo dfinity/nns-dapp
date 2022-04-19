@@ -38,7 +38,7 @@
 </svelte:head>
 
 {#if banner && visible}
-  <div class:headless>
+  <div class:headless class="toast">
     <h4>For <strong>test</strong> purpose only.</h4>
     <button on:click={close} aria-label={$i18n.core.close}><IconClose /></button
     >
