@@ -348,10 +348,10 @@ describe("neurons-services", () => {
   describe("mergeNeurons", () => {
     afterEach(() => {
       jest.clearAllMocks();
-      neuronsStore.setNeurons([]);
+      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
     it("should update neuron", async () => {
-      neuronsStore.pushNeurons(neurons);
+      neuronsStore.pushNeurons({ neurons, certified: true });
       await mergeNeurons({
         sourceNeuronId: neurons[0].neuronId,
         targetNeuronId: neurons[1].neuronId,
@@ -383,7 +383,10 @@ describe("neurons-services", () => {
           controller: "another",
         },
       };
-      neuronsStore.pushNeurons([notControlledNeuron, neuron]);
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron, neuron],
+        certified: true,
+      });
 
       await mergeNeurons({
         sourceNeuronId: notControlledNeuron.neuronId,
@@ -617,7 +620,7 @@ describe("neurons-services", () => {
     });
 
     it("should not call api if no identity", async () => {
-      neuronsStore.setNeurons([neuronFollowing]);
+      neuronsStore.setNeurons({ neurons: [neuronFollowing], certified: true });
 
       setNoIdentity();
 
