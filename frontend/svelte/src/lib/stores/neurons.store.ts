@@ -7,6 +7,7 @@ import {
 
 export interface NeuronsStore {
   neurons?: NeuronInfo[];
+  // certified is an optimistic value - i.e. it represents the last value that has been pushed in store
   certified: boolean | undefined;
 }
 
