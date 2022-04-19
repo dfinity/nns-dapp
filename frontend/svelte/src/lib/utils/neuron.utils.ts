@@ -300,7 +300,7 @@ const sameController = (neurons: NeuronInfo[]): boolean =>
 const sameId = (neurons: NeuronInfo[]): boolean =>
   new Set(neurons.map(({ neuronId }) => neuronId)).size === 1;
 
-const sameMangeNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
+const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
   const fullNeurons: Neuron[] = neurons
     .map(({ fullNeuron }) => fullNeuron)
     .filter(isDefined);
@@ -308,30 +308,33 @@ const sameMangeNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
   if (fullNeurons.length === 0) {
     return false;
   }
-  const manageNeuronFollowees: NeuronId[][] = fullNeurons
+  const sortedFollowees: NeuronId[][] = fullNeurons
     .map(({ followees }) =>
       followees.find(({ topic }) => topic === Topic.ManageNeuron)
     )
     .filter(isDefined)
-    .map(({ followees }) => followees);
+    .map(({ followees }) => followees)
+    .sort();
   // If no neuron has ManageNeuron followees, return true
-  if (manageNeuronFollowees.length === 0) {
+  if (sortedFollowees.length === 0) {
     return true;
   }
-  // Dictionary of followees and how many times they appear
-  const dictFollowees: { [id: string]: number } = manageNeuronFollowees.reduce(
-    (acc, followees) => {
-      for (const followee of followees.map(String)) {
-        acc[followee] = (acc[followee] ?? 0) + 1;
-      }
-      return acc;
-    },
-    {}
-  );
-  // All ids should be present the number of neurons.
-  return Object.values(dictFollowees).every(
-    (amount) => amount === neurons.length
-  );
+  // If lengths of followes are different, return false
+  const lengths = sortedFollowees.map(({ length }) => length);
+  if (new Set(lengths).size > 1) {
+    return false;
+  }
+  const firstList = sortedFollowees[0];
+  for (let i = 0; i < firstList.length; i++) {
+    const currentIndexFollowees = sortedFollowees.map(
+      (followees) => followees[i]
+    );
+    if (new Set(currentIndexFollowees).size !== 1) {
+      return false;
+    }
+  }
+  // If we haven't returned is because all sorted lists of followees are the same.
+  return true;
 };
 
 export const canBeMerged = (
@@ -354,7 +357,7 @@ export const canBeMerged = (
       messageKey: "error.merge_neurons_not_same_controller",
     };
   }
-  return sameMangeNeuronFollowees(neurons)
+  return sameManageNeuronFollowees(neurons)
     ? {
         isValid: true,
       }
