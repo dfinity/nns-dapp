@@ -15,8 +15,9 @@ export class Navigator {
     description: string,
     options?: { timeout?: number }
   ) {
+    // Sadly typescript does not prevent undefined from being provided as a selector.
     if (undefined === selector) {
-      throw new Error(`Cannot click undefined selector for "${description}".`);
+      throw new Error(`Cannot get undefined selector for "${description}".`);
     }
     const element = await this.browser.$(selector);
     const timeout = options?.timeout;
@@ -34,6 +35,7 @@ export class Navigator {
     description: string,
     options?: { timeout?: number }
   ) {
+    // Sadly typescript does not prevent undefined from being provided as a selector.
     if (undefined === selector) {
       throw new Error(`Cannot click undefined selector for "${description}".`);
     }
