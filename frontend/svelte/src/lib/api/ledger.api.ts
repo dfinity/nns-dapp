@@ -8,6 +8,7 @@ import {
 } from "@dfinity/nns";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
+import { logWithTimestamp } from "../utils/dev.utils";
 
 export const getNeuronBalance = async ({
   neuron,
@@ -18,11 +19,14 @@ export const getNeuronBalance = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<ICP> => {
+  logWithTimestamp(`Getting Neuron Balance certified:${certified} call...`);
   const { canister } = await ledgerCanister({ identity });
-  return canister.accountBalance({
+  const response = await canister.accountBalance({
     accountIdentifier: AccountIdentifier.fromHex(neuron.accountIdentifier),
     certified,
   });
+  logWithTimestamp(`Getting Neuron Balance certified:${certified} complete.`);
+  return response;
 };
 
 /**
@@ -45,13 +49,16 @@ export const sendICP = async ({
   amount: ICP;
   fromSubAccountId?: number | undefined;
 }): Promise<BlockHeight> => {
+  logWithTimestamp(`Sending icp call...`);
   const { canister } = await ledgerCanister({ identity });
 
-  return canister.transfer({
+  const response = await canister.transfer({
     to: AccountIdentifier.fromHex(to),
     amount,
     fromSubAccountId,
   });
+  logWithTimestamp(`Sending icp complete.`);
+  return response;
 };
 
 const ledgerCanister = async ({
@@ -62,6 +69,7 @@ const ledgerCanister = async ({
   canister: LedgerCanister;
   agent: HttpAgent;
 }> => {
+  logWithTimestamp(`LC call...`);
   const agent = await createAgent({
     identity,
     host: process.env.HOST,
@@ -71,6 +79,8 @@ const ledgerCanister = async ({
     agent,
     canisterId: LEDGER_CANISTER_ID,
   });
+
+  logWithTimestamp(`LC complete.`);
 
   return {
     canister,

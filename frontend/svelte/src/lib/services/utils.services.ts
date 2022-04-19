@@ -1,4 +1,5 @@
 import type { Identity } from "@dfinity/agent";
+import { logWithTimestamp } from "../utils/dev.utils";
 import { getIdentity } from "./auth.services";
 
 export type QueryAndUpdateOnResponse<R> = (options: {
@@ -11,6 +12,8 @@ export type QueryAndUpdateOnError<E> = (options: {
   error: E;
 }) => void;
 
+let lastIndex: number = Math.round(Math.random() * 100000);
+
 /**
  * Makes two requests (QUERY and UPDATE) in parallel.
  * The returned promise notify when first fetched data are available.
@@ -20,19 +23,24 @@ export const queryAndUpdate = async <R, E>({
   request,
   onLoad,
   onError,
+  logMessage,
 }: {
   request: (options: { certified: boolean; identity: Identity }) => Promise<R>;
   onLoad: QueryAndUpdateOnResponse<R>;
+  logMessage: string;
   onError?: QueryAndUpdateOnError<E>;
 }): Promise<void> => {
   let certifiedDone = false;
-
+  const logPrefix = `[${lastIndex++}] ${logMessage}`;
   const identity: Identity = await getIdentity();
+
+  logWithTimestamp(`${logPrefix} calls...`);
 
   return Promise.race([
     // query
     request({ certified: false, identity })
       .then((response) => {
+        logWithTimestamp(`${logPrefix} query complete.`);
         if (certifiedDone) return;
         onLoad({ certified: false, response });
       })
@@ -44,7 +52,10 @@ export const queryAndUpdate = async <R, E>({
 
     // update
     request({ certified: true, identity })
-      .then((response) => onLoad({ certified: true, response }))
+      .then((response) => {
+        logWithTimestamp(`${logPrefix} update complete.`);
+        onLoad({ certified: true, response });
+      })
       .catch((error) => onError?.({ certified: true, error }))
       .finally(() => (certifiedDone = true)),
   ]);
