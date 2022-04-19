@@ -17,7 +17,7 @@ export const config: WebdriverIO.Config = {
           (Number.isNaN(browser["screenshot-count"])
             ? 1000
             : Number(browser["screenshot-count"])) + 1;
-        const countStr: string = (browser["screenshot-count"]++)
+        const countStr: string = browser["screenshot-count"]
           .toFixed()
           .padStart(2, "0");
         const unsafeFilename = `${browser["screenshot-prefix"]}_${countStr}_${name}`;

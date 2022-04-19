@@ -59,7 +59,7 @@ export const register = async (browser: WebdriverIO.Browser) => {
   );
   await registerAlias.waitForExist();
   await registerAlias.setValue("My Device");
-
+  await browser["screenshot"]("registration-ii-device-name");
   await browser.$(IIAddDevicePage.SUBMIT_BUTTON_SELECTOR).click();
 
   // Captcha Page
@@ -75,6 +75,7 @@ export const register = async (browser: WebdriverIO.Browser) => {
   );
   // Long wait: Construction Your Identity Anchor
   await confirmCaptchaButton.waitForEnabled({ timeout: 30_000 });
+  await browser["screenshot"]("registration-ii-captcha");
   await confirmCaptchaButton.click();
 
   // Congratulations Page
@@ -82,6 +83,7 @@ export const register = async (browser: WebdriverIO.Browser) => {
     IICongratulationsPage.CONTINUE_BUTTON_SELECTOR
   );
   await continueButton.waitForExist({ timeout: 30_000 });
+  await browser["screenshot"]("registration-ii-congratulations");
   await continueButton.click();
 
   // Recovery Mechanism Page
@@ -89,6 +91,7 @@ export const register = async (browser: WebdriverIO.Browser) => {
     IIRecoveryMechanismPage.SKIP_RECOVERY_BUTTON_SELECTOR
   );
   await addLaterButton.waitForExist();
+  await browser["screenshot"]("registration-ii-recovery-mechanisms");
   await addLaterButton.click();
 
   // Warning Recovery Mechanism Page
@@ -96,6 +99,7 @@ export const register = async (browser: WebdriverIO.Browser) => {
     IIRecoveryMissingWarningPage.SKIP_BUTTON_SELECTOR
   );
   await skipButton.waitForExist();
+  await browser["screenshot"]("registration-ii-recovery-warning");
   await skipButton.click();
 
   // Confirm Redirect Page
@@ -103,6 +107,7 @@ export const register = async (browser: WebdriverIO.Browser) => {
     IIConfirmRedirectPage.CONFIRM_REDIRECT_BUTTON_SELECTOR
   );
   await proceedButton.waitForExist();
+  await browser["screenshot"]("registration-ii-confirm-redirect");
   await proceedButton.click();
 
   // Switch back to original window
