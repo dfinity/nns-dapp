@@ -7,7 +7,7 @@
   import SetDissolveDelay from "../../components/neurons/SetDissolveDelay.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { neuronsStore } from "../../stores/neurons.store";
+  import { definedNeuronsStore } from "../../stores/neurons.store";
   import ConfirmDissolveDelay from "../../components/neurons/ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "../../components/neurons/EditFollowNeurons.svelte";
   import WizardModal from "../WizardModal.svelte";
@@ -76,7 +76,9 @@
     },
   ];
   $: {
-    newNeuron = $neuronsStore.find(({ neuronId }) => newNeuronId === neuronId);
+    newNeuron = $definedNeuronsStore.find(
+      ({ neuronId }) => newNeuronId === neuronId
+    );
     const invalidState = invalidStates.find(
       ({ stepName, isNeuronInvalid, isAccountInvalid }) => {
         return (

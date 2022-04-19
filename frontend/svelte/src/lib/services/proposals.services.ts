@@ -6,7 +6,11 @@ import {
   queryProposals,
   registerVote,
 } from "../api/proposals.api";
-import { startBusy, stopBusy } from "../stores/busy.store";
+import {
+  startBusy,
+  stopBusy,
+  type BusyStateInitiator,
+} from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
@@ -150,11 +154,13 @@ export const loadProposal = async ({
   setProposal,
   handleError,
   silentErrorMessages,
+  callback,
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
   silentErrorMessages?: boolean;
+  callback?: (certified: boolean) => void;
 }): Promise<void> => {
   const catchError = (error: unknown) => {
     console.error(error);
@@ -173,12 +179,15 @@ export const loadProposal = async ({
   try {
     return await getProposal({
       proposalId,
-      onLoad: ({ response: proposal }) => {
+      onLoad: ({ response: proposal, certified }) => {
         if (!proposal) {
           catchError(new Error("Proposal not found"));
           return;
         }
+
         setProposal(proposal);
+
+        callback?.(certified);
       },
       onError: catchError,
     });
@@ -246,23 +255,56 @@ export const registerVotes = async ({
     });
   }
 
-  await Promise.all([
-    listNeurons().catch((err) => {
+  const stopBusySpinner = ({
+    certified,
+    initiator,
+  }: {
+    certified: boolean;
+    initiator: BusyStateInitiator;
+  }) => {
+    if (!certified) {
+      return;
+    }
+
+    stopBusy(initiator);
+  };
+
+  const reloadListNeurons = async () => {
+    startBusy("reload-neurons");
+
+    try {
+      await listNeurons({
+        callback: (certified: boolean) =>
+          stopBusySpinner({ certified, initiator: "reload-neurons" }),
+      });
+    } catch (err) {
       console.error(err);
       toastsStore.error({
         labelKey: "error.list_proposals",
         err,
       });
-    }),
-    loadProposal({
+
+      stopBusy("reload-neurons");
+    }
+  };
+
+  const reloadProposal = async () => {
+    startBusy("reload-proposal");
+
+    await loadProposal({
       proposalId,
       setProposal: (proposalInfo: ProposalInfo) => {
         proposalInfoStore.set(proposalInfo);
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
       },
-    }),
-  ]);
+      callback: (certified: boolean) =>
+        stopBusySpinner({ certified, initiator: "reload-proposal" }),
+      handleError: () => stopBusy("reload-proposal"),
+    });
+  };
+
+  await Promise.all([reloadListNeurons(), reloadProposal()]);
 
   stopBusy("vote");
 };
