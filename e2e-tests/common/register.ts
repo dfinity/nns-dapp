@@ -1,3 +1,4 @@
+import { AuthPage } from "../components/auth";
 import { IIWelcomeBackPage } from "../components/ii-welcome-back-page";
 import { IIWelcomePage } from "../components/ii-welcome-page";
 import { IIWelcomePage } from "../components/ii-add-device-page";
@@ -6,19 +7,21 @@ import { IICongratulationsPage } from "../components/ii-congratulations-page";
 import { IIRecoveryMechanismPage } from "../components/ii-recovery-mechanism";
 import { IIRecoveryMissingWarningPage } from "../components/ii-recovery-warning";
 import { IIConfirmRedirectPage } from "../components/ii-confirm-redirect";
+import { IIAddDevicePage } from "../components/ii-add-device-page";
 
 export const register = async (browser: WebdriverIO.Browser) => {
   // Record the ID of the tab we started on.
   const originalTabId = await browser.getWindowHandle();
+  const lengthBefore = (await browser.getWindowHandles()).length;
 
   // On the NNS frontend dapp, click "Login".
-  const loginButton = await getLoginButton(browser);
+  await browser["screenshot"]("registration-nns-login-page");
+  const loginButton = await browser.$(AuthPage.LOGIN_BUTTON_SELECTOR);
   await loginButton.waitForExist();
   await loginButton.click();
 
   // REGISTRATION
   // Wait for a new tab to open, then switch to it.
-  const lengthBefore = (await browser.getWindowHandles()).length;
   await browser.waitUntil(
     async () => (await browser.getWindowHandles()).length > lengthBefore,
     { timeoutMsg: "Timed out waiting for II window to open.", timeout: 10_000 }
@@ -33,11 +36,12 @@ export const register = async (browser: WebdriverIO.Browser) => {
     await browser.$(
       `${IIWelcomeBackPage.LOGIN_DIFFERENT_BUTTON_SELECTOR}, ${IIWelcomePage.REGISTER_BUTTON_SELECTOR}`
     )
-  ).waitForExist({ timeout: 10_000 });
+  ).waitForExist({ timeout: 30_000 });
   const loginDifferent = browser.$(
     IIWelcomeBackPage.LOGIN_DIFFERENT_BUTTON_SELECTOR
   );
   if (await loginDifferent.isExisting()) {
+    await browser["screenshot"]("registration-ii-welcome-back");
     await loginDifferent.click();
   }
 
@@ -45,17 +49,18 @@ export const register = async (browser: WebdriverIO.Browser) => {
   const registerButton = await browser.$(
     IIWelcomePage.REGISTER_BUTTON_SELECTOR
   );
-  await registerButton.waitForExist({ timeout: 10_000 });
+  await registerButton.waitForExist({ timeout: 20_000 });
+  await browser["screenshot"]("registration-ii-welcome-page");
   await registerButton.click();
 
   // Add Device Page
   const registerAlias = await browser.$(
-    IIWelcomePage.REGISTER_ALIAS_INPUT_SELECTOR
+    IIAddDevicePage.REGISTER_ALIAS_INPUT_SELECTOR
   );
   await registerAlias.waitForExist();
   await registerAlias.setValue("My Device");
 
-  await browser.$(IIWelcomePage.SUBMIT_BUTTON_SELECTOR).click();
+  await browser.$(IIAddDevicePage.SUBMIT_BUTTON_SELECTOR).click();
 
   // Captcha Page
   const captchaInput = await browser.$(IICaptchaPage.CAPTCHA_INPUT_SELECTOR);
