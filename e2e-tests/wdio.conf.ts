@@ -87,7 +87,7 @@ export const config: WebdriverIO.Config = {
     },
   ],
   logLevel:
-    process.env.LOG_LEVEL === undefined ? "info" : process.env.LOG_LEVEL,
+    process.env.LOG_LEVEL === undefined ? "warn" : process.env.LOG_LEVEL,
   services: ["chromedriver"],
 
   framework: "mocha",
