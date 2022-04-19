@@ -14,6 +14,7 @@ describe("api-utils", () => {
         request,
         onLoad,
         onError,
+        logMessage: "",
       });
 
       expect(request).toHaveBeenCalledTimes(2);
@@ -32,6 +33,7 @@ describe("api-utils", () => {
         request,
         onLoad,
         onError,
+        logMessage: "",
       });
 
       await tick();
@@ -54,6 +56,7 @@ describe("api-utils", () => {
       await queryAndUpdate<number, unknown>({
         request,
         onLoad,
+        logMessage: "",
       });
 
       expect(requestCertified.sort()).toEqual([false, true]);
@@ -70,6 +73,7 @@ describe("api-utils", () => {
         request,
         onLoad,
         onError,
+        logMessage: "",
       });
 
       expect(onLoad).not.toBeCalled();
@@ -98,6 +102,7 @@ describe("api-utils", () => {
         request,
         onLoad,
         onError,
+        logMessage: "",
       });
       await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -134,9 +139,26 @@ describe("api-utils", () => {
       await queryAndUpdate<number, unknown>({
         request,
         onLoad,
+        logMessage: "",
       });
       expect(updateDone).toBeTruthy();
       expect(queryDone).toBeFalsy();
+    });
+
+    it.only("should log", async () => {
+      const log = jest.spyOn(console, "log").mockImplementation((text) => {
+        console.error(text);
+      });
+      const request = jest.fn().mockImplementation(() => Promise.resolve());
+      const onLoad = jest.fn();
+
+      await queryAndUpdate<number, unknown>({
+        request,
+        onLoad,
+        logMessage: "test-log",
+      });
+
+      expect(log).toBeCalled();
     });
   });
 });
