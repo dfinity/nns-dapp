@@ -32,6 +32,7 @@ export const stringifyJson = (
     (_, value) => {
       switch (typeof value) {
         case "object": {
+          // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
           if (value?._isPrincipal === true) {
             return value.toString();
           }
