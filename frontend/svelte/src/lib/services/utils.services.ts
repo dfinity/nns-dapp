@@ -27,13 +27,13 @@ export const queryAndUpdate = async <R, E>({
 }: {
   request: (options: { certified: boolean; identity: Identity }) => Promise<R>;
   onLoad: QueryAndUpdateOnResponse<R>;
-  logMessage: string;
+  logMessage?: string;
   onError?: QueryAndUpdateOnError<E>;
 }): Promise<void> => {
   let certifiedDone = false;
-  const logPrefix = `[${lastIndex++}] ${logMessage}`;
   const identity: Identity = await getIdentity();
 
+  const logPrefix = `[${lastIndex++}] ${logMessage ?? ""}`;
   logWithTimestamp(`${logPrefix} calls...`);
 
   return Promise.race([
