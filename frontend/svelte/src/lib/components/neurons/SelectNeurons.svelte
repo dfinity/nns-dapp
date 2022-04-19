@@ -33,7 +33,7 @@
       return;
     }
     // We only allow the selection of two neurons.
-    if (selectedNeuronIds.length < MAX_NEURONS_MERGED) {
+    if (!isMaxSelection) {
       selectedNeuronIds = [...selectedNeuronIds, neuronId];
     }
   };
@@ -53,27 +53,28 @@
     selectedNeuronIds: NeuronId[],
     neuronId: NeuronId
   ): boolean => selectedNeuronIds.indexOf(neuronId) > -1;
-  const isMaxSelection = (selectedNeuronIds: NeuronId[]) =>
-    selectedNeuronIds.length === MAX_NEURONS_MERGED;
+  let isMaxSelection: boolean;
+  $: isMaxSelection = selectedNeuronIds.length >= MAX_NEURONS_MERGED;
 </script>
 
 <div class="wrapper">
   <ul class="items">
     {#each neuronsData as { neuron, mergeable, messageKey }}
+      {@const isSelected = isNeuronSelected(selectedNeuronIds, neuron.neuronId)}
       <!-- We have four possibilities: -->
       <!-- 1. Maximum number selected and neuron is one of the selected -->
       <!-- 2. Maximum number selected and neuron is NOT one of the selected -->
       <!-- 3. User can still select and neuron is mergeable -->
       <!-- 4. User can still select and neuron is NOT mergeable -->
       <li>
-        {#if isMaxSelection(selectedNeuronIds) && isNeuronSelected(selectedNeuronIds, neuron.neuronId)}
+        {#if isMaxSelection && isSelected}
           <NeuronCard
             on:click={() => toggleNeuronId(neuron.neuronId)}
             role="checkbox"
             selected
             {neuron}
           />
-        {:else if isMaxSelection(selectedNeuronIds) && !isNeuronSelected(selectedNeuronIds, neuron.neuronId)}
+        {:else if isMaxSelection && !isSelected}
           <Tooltip
             id={`disabled-mergeable-neuron-${neuron.neuronId}`}
             text={$i18n.neurons.only_merge_two}

@@ -59,6 +59,14 @@ describe("neurons-services", () => {
       controller: mockIdentity.getPrincipal().toText(),
     },
   };
+  const sameControlledNeuron = {
+    ...mockNeuron,
+    neuronId: BigInt(1234555),
+    fullNeuron: {
+      ...mockFullNeuron,
+      controller: mockIdentity.getPrincipal().toText(),
+    },
+  };
 
   const spyStakeNeuron = jest
     .spyOn(api, "stakeNeuron")
@@ -68,7 +76,7 @@ describe("neurons-services", () => {
     .spyOn(api, "queryNeuron")
     .mockImplementation(() => Promise.resolve(mockNeuron));
 
-  const neurons = [mockNeuron, controlledNeuron];
+  const neurons = [sameControlledNeuron, controlledNeuron];
 
   const spyQueryNeurons = jest
     .spyOn(api, "queryNeurons")
@@ -84,7 +92,7 @@ describe("neurons-services", () => {
 
   const spyMergeNeurons = jest
     .spyOn(api, "mergeNeurons")
-    .mockImplementation(() => Promise.resolve(BigInt(10)));
+    .mockImplementation(() => Promise.resolve());
 
   const spySplitNeuron = jest
     .spyOn(api, "splitNeuron")
@@ -277,7 +285,7 @@ describe("neurons-services", () => {
         dissolveDelayInSeconds: 12000,
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyIncreaseDissolveDelay).not.toHaveBeenCalled();
 
       resetIdentity();
@@ -294,7 +302,7 @@ describe("neurons-services", () => {
         dissolveDelayInSeconds: 12000,
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyIncreaseDissolveDelay).not.toHaveBeenCalled();
 
       neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -318,7 +326,7 @@ describe("neurons-services", () => {
 
       await joinCommunityFund(BigInt(10));
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
 
       resetIdentity();
@@ -332,7 +340,7 @@ describe("neurons-services", () => {
 
       await joinCommunityFund(notControlledNeuron.neuronId);
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
     });
   });
@@ -360,7 +368,7 @@ describe("neurons-services", () => {
         targetNeuronId: neurons[1].neuronId,
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyMergeNeurons).not.toHaveBeenCalled();
 
       resetIdentity();
@@ -382,7 +390,7 @@ describe("neurons-services", () => {
         targetNeuronId: neuron.neuronId,
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
   });
@@ -404,7 +412,7 @@ describe("neurons-services", () => {
 
       await startDissolving(BigInt(10));
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyStartDissolving).not.toHaveBeenCalled();
 
       resetIdentity();
@@ -418,7 +426,7 @@ describe("neurons-services", () => {
 
       await startDissolving(notControlledNeuron.neuronId);
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyStartDissolving).not.toHaveBeenCalled();
     });
   });
@@ -440,7 +448,7 @@ describe("neurons-services", () => {
 
       await stopDissolving(BigInt(10));
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyStopDissolving).not.toHaveBeenCalled();
 
       resetIdentity();
@@ -454,7 +462,7 @@ describe("neurons-services", () => {
 
       await stopDissolving(notControlledNeuron.neuronId);
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyStopDissolving).not.toHaveBeenCalled();
     });
   });
@@ -483,7 +491,7 @@ describe("neurons-services", () => {
         amount: 2.2,
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spySplitNeuron).not.toHaveBeenCalled();
 
       resetIdentity();
@@ -500,7 +508,7 @@ describe("neurons-services", () => {
         amount: 2.2,
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spySplitNeuron).not.toHaveBeenCalled();
 
       neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -544,7 +552,7 @@ describe("neurons-services", () => {
         followee,
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spySetFollowees).not.toHaveBeenCalled();
       resetIdentity();
     });
@@ -563,7 +571,7 @@ describe("neurons-services", () => {
         followee,
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
   });
@@ -573,6 +581,15 @@ describe("neurons-services", () => {
       jest.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
     });
+    const followee = BigInt(8);
+    const topic = Topic.ExchangeRate;
+    const neuronFollowing = {
+      ...controlledNeuron,
+      fullNeuron: {
+        ...controlledNeuron.fullNeuron,
+        followees: [{ topic, followees: [followee] }],
+      },
+    };
     it("should remove the followee to next call", async () => {
       const followee = BigInt(8);
       const topic = Topic.ExchangeRate;
@@ -600,9 +617,7 @@ describe("neurons-services", () => {
     });
 
     it("should not call api if no identity", async () => {
-      const followee = BigInt(8);
-      neuronsStore.setNeurons({ neurons, certified: true });
-      const topic = Topic.ExchangeRate;
+      neuronsStore.setNeurons([neuronFollowing]);
 
       setNoIdentity();
 
@@ -611,26 +626,33 @@ describe("neurons-services", () => {
         topic,
         followee,
       });
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spySetFollowees).not.toHaveBeenCalled();
 
       resetIdentity();
     });
 
     it("should not call api if user not controller nor hotkey", async () => {
-      neuronsStore.pushNeurons({
-        neurons: [notControlledNeuron],
-        certified: true,
-      });
       const followee = BigInt(8);
       const topic = Topic.ExchangeRate;
+      const notControlled = {
+        ...notControlledNeuron,
+        fullNeuron: {
+          ...notControlledNeuron.fullNeuron,
+          followees: [{ topic, followees: [followee] }],
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [notControlled],
+        certified: true,
+      });
 
       await removeFollowee({
-        neuronId: notControlledNeuron.neuronId,
+        neuronId: notControlled.neuronId,
         topic,
         followee,
       });
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
   });

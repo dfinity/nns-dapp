@@ -256,6 +256,31 @@ export const isEnoughToStakeNeuron = ({
 }): boolean =>
   stake.toE8s() > E8S_PER_ICP + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
 
+const isMergeableNeuron = ({
+  neuron,
+  identity,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+}): boolean =>
+  !hasJoinedCommunityFund(neuron) &&
+  !isHotKeyControllable({ neuron, identity });
+
+const getMergeableNeuronMessageKey = ({
+  neuron,
+  identity,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+}): string | undefined => {
+  if (hasJoinedCommunityFund(neuron)) {
+    return "neurons.cannot_merge_neuron_community";
+  }
+  if (isHotKeyControllable({ neuron, identity })) {
+    return "neurons.cannot_merge_neuron_hotkey";
+  }
+};
+
 export type MergeableNeuron = {
   mergeable: boolean;
   messageKey?: string;
@@ -268,26 +293,11 @@ export const mapMergeableNeurons = ({
   neurons: NeuronInfo[];
   identity?: Identity | null;
 }): MergeableNeuron[] =>
-  neurons
-    .map((neuron: NeuronInfo) => ({
-      neuron,
-      mergeable: !hasJoinedCommunityFund(neuron),
-      messageKey: hasJoinedCommunityFund(neuron)
-        ? "neurons.cannot_merge_neuron_community"
-        : undefined,
-    }))
-    .map(({ neuron, mergeable, messageKey }: MergeableNeuron) => ({
-      neuron,
-      mergeable: !mergeable
-        ? mergeable
-        : !isHotKeyControllable({ neuron, identity }),
-      messageKey:
-        messageKey !== undefined
-          ? messageKey
-          : isHotKeyControllable({ neuron, identity })
-          ? "neurons.cannot_merge_neuron_hotkey"
-          : undefined,
-    }));
+  neurons.map((neuron: NeuronInfo) => ({
+    neuron,
+    mergeable: isMergeableNeuron({ neuron, identity }),
+    messageKey: getMergeableNeuronMessageKey({ neuron, identity }),
+  }));
 
 const sameController = (neurons: NeuronInfo[]): boolean =>
   new Set(
