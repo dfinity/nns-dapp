@@ -257,7 +257,6 @@ export const governanceCanister = async ({
   canister: GovernanceCanister;
   agent: HttpAgent;
 }> => {
-  logWithTimestamp(`GC call...`);
   const agent = await createAgent({
     identity,
     host: process.env.HOST,
@@ -268,7 +267,6 @@ export const governanceCanister = async ({
     canisterId: GOVERNANCE_CANISTER_ID,
   });
 
-  logWithTimestamp(`GC complete.`);
   return {
     canister,
     agent,
