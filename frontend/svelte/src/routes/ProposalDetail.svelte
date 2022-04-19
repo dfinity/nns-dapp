@@ -110,17 +110,42 @@
     >
 
     <section>
-      {#if $proposalInfoStore && neuronsReady}
+      {#if $proposalInfoStore}
         <ProposalDetailCard proposalInfo={$proposalInfoStore} />
-        <VotesCard proposalInfo={$proposalInfoStore} />
-        <VotingCard proposalInfo={$proposalInfoStore} />
-        <IneligibleNeuronsCard
-          proposalInfo={$proposalInfoStore}
-          neurons={$definedNeuronsStore}
-        />
+
+        {#if neuronsReady}
+          <VotesCard proposalInfo={$proposalInfoStore} />
+          <VotingCard proposalInfo={$proposalInfoStore} />
+          <IneligibleNeuronsCard
+            proposalInfo={$proposalInfoStore}
+            neurons={$definedNeuronsStore}
+          />
+        {:else}
+          <div class="loader">
+            <div class="spinner">
+              <Spinner />
+            </div>
+
+            <span><small>{$i18n.proposal_detail__vote.loading_neurons}</small></span>
+          </div>
+        {/if}
       {:else}
         <Spinner />
       {/if}
     </section>
   </HeadlessLayout>
 {/if}
+
+<style lang="scss">
+  .loader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .spinner {
+    position: relative;
+    padding: var(--padding-2x) 0;
+  }
+</style>

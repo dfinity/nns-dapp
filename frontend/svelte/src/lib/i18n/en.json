@@ -252,7 +252,8 @@
     "confirm_adopt_headline": "Adopt Proposal",
     "confirm_adopt_text": "You are about to cast $votingPower votes for this proposal, are you sure you want to proceed?",
     "confirm_reject_headline": "Reject Proposal",
-    "confirm_reject_text": "You are about to cast $votingPower votes against this proposal, are you sure you want to proceed?"
+    "confirm_reject_text": "You are about to cast $votingPower votes against this proposal, are you sure you want to proceed?",
+    "loading_neurons": "Loading your neurons..."
   },
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",
