@@ -247,15 +247,11 @@ export const registerVotes = async ({
   // <test_log>
   // https://forum.dfinity.org/t/potentially-serious-nns-error-nns-app-ui-shows-error-when-voting-every-time/12212
   try {
-    // naive test of BigInts in Set
-    const stringifiedNeuronIds = Array.from(
-      new Set(neuronIds.map((id) => id.toString()))
-    );
-    if (stringifiedNeuronIds.length !== neuronIds.length) {
+    if (uniqueNeuronIds.length !== neuronIds.length) {
       console.error(
-        "registerVotes/TL(neuronIds, stringifiedNeuronIds)",
+        "registerVotes/TL(ids, ids_text)",
         neuronIds.map(hashCode),
-        stringifiedNeuronIds.map(hashCode)
+        uniqueNeuronIds.map(hashCode)
       );
     }
   } catch (err) {
@@ -377,12 +373,14 @@ const requestRegisterVotes = async ({
         })
     )
   );
+  const rejectedResponses = responses.filter(
+    ({ status }) => status === "rejected"
+  );
   const details: string[] = responses
     .map((response, i) => errorDetail(neuronIds[i], response))
     .filter(isDefined);
-
-  if (details.length > 0) {
-    console.error("vote", details);
+  if (rejectedResponses.length > 0) {
+    console.error("vote", rejectedResponses);
 
     toastsStore.show({
       labelKey: "error.register_vote",
