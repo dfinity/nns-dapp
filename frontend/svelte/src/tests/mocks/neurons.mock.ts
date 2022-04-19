@@ -43,6 +43,6 @@ export const mockKnownNeuron: KnownNeuron = {
 export const buildMockNeuronsStoreSubscribe =
   (neurons: NeuronInfo[] = []) =>
   (run: Subscriber<NeuronsStore>): (() => void) => {
-    run(neurons);
+    run({ neurons, certified: true });
     return () => undefined;
   };
