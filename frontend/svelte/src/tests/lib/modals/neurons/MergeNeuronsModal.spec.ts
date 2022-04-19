@@ -144,7 +144,7 @@ describe("MergeNeuronsModal", () => {
   });
 
   it("allows user to select two neurons and merge them", async () => {
-    const { queryAllByTestId, queryByTestId, queryByText, queryAllByText } =
+    const { queryAllByTestId, queryByTestId, queryAllByText } =
       await renderMergeModal(mergeableNeurons);
 
     await selectAndTestTwoNeurons({ queryAllByTestId });

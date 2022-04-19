@@ -74,7 +74,8 @@
             selected
             {neuron}
           />
-        {:else if isMaxSelection && !isSelected}
+          <!-- Eslint does not understand that `isSelected` is a boolean -->
+        {:else if isMaxSelection && isSelected === false}
           <Tooltip
             id={`disabled-mergeable-neuron-${neuron.neuronId}`}
             text={$i18n.neurons.only_merge_two}

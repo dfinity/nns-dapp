@@ -23,7 +23,7 @@
   );
 
   // Display the "My Accounts" title only when we filter the list
-  let displayTitle;
+  let displayTitle: boolean;
   $: displayTitle = filterIdentifier !== undefined;
 </script>
 

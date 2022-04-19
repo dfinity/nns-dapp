@@ -254,7 +254,7 @@ export const isEnoughToStakeNeuron = ({
   stake: ICP;
   withTransactionFee?: boolean;
 }): boolean =>
-  stake.toE8s() > E8S_PER_ICP + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
+  stake.toE8s() >= E8S_PER_ICP + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
 
 const isMergeableNeuron = ({
   neuron,
