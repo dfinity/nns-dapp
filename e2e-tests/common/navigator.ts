@@ -1,10 +1,15 @@
+/**
+ * Additional functionality for the wdio "browser".
+ */
 export class Navigator {
   constructor(browser: WebdriverIO.Browser) {
     this.browser = browser;
   }
 
-  // Gets an element, waiting for it to exist.
-  // Motivation:  Consistently useful error messages on timeout.
+  /**
+   * Gets an element, waiting for it to exist.
+   * Motivation: Consistently useful error messages on timeout.
+   */
   async get(
     selector: string,
     description: string,
@@ -20,8 +25,10 @@ export class Navigator {
     return element;
   }
 
-  // Clicks - the camera and then a navigation button.
-  // Motivation: Taking a screenshot before each navigation gives an effective summary of an e2e test.
+  /**
+   * Clicks - the camera and then a navigation button.
+   * Motivation: Taking a screenshot before each navigation gives an effective summary of an e2e test.
+   */
   async click(
     selector: string,
     description: string,
@@ -38,8 +45,10 @@ export class Navigator {
     await button.click();
   }
 
-  // Clicks and moves to the newly opened window.
-  // Warning: Navigation may be wrong-footed if multiple windows are opened or a window is opened and immediately closed.
+  /**
+   * Clicks and moves to the newly opened window.
+   * Warning: Navigation may be wrong-footed if multiple windows are opened or a window is opened and immediately closed.
+   */
   async clickToOpenWindow(
     selector: string,
     description: string,
