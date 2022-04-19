@@ -260,6 +260,7 @@ interface I18nProposal_detail {
   adopt: string;
   reject: string;
   my_votes: string;
+  loading_neurons: string;
 }
 
 interface I18nProposal_detail__vote {
@@ -273,7 +274,6 @@ interface I18nProposal_detail__vote {
   confirm_adopt_text: string;
   confirm_reject_headline: string;
   confirm_reject_text: string;
-  loading_neurons: string;
 }
 
 interface I18nProposal_detail__ineligible {

@@ -126,7 +126,7 @@
               <Spinner />
             </div>
 
-            <span><small>{$i18n.proposal_detail__vote.loading_neurons}</small></span>
+            <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
           </div>
         {/if}
       {:else}
