@@ -1,57 +1,105 @@
+import { IIWelcomeBackPage } from "../components/ii-welcome-back-page";
+import { IIWelcomePage } from "../components/ii-welcome-page";
+import { IIWelcomePage } from "../components/ii-add-device-page";
+import { IICaptchaPage } from "../components/ii-captcha-page";
+import { IICongratulationsPage } from "../components/ii-congratulations-page";
+import { IIRecoveryMechanismPage } from "../components/ii-recovery-mechanism";
+import { IIRecoveryMissingWarningPage } from "../components/ii-recovery-warning";
+import { IIConfirmRedirectPage } from "../components/ii-confirm-redirect";
+
 export const register = async (browser: WebdriverIO.Browser) => {
-  await browser.$("main button").waitForExist();
-  await browser.$("main button").click();
+  // Record the ID of the tab we started on.
+  const originalTabId = await browser.getWindowHandle();
+
+  // On the NNS frontend dapp, click "Login".
+  const loginButton = await getLoginButton(browser);
+  await loginButton.waitForExist();
+  await loginButton.click();
 
   // REGISTRATION
+  // Wait for a new tab to open, then switch to it.
+  const lengthBefore = (await browser.getWindowHandles()).length;
+  await browser.waitUntil(
+    async () => (await browser.getWindowHandles()).length > lengthBefore,
+    { timeoutMsg: "Timed out waiting for II window to open.", timeout: 10_000 }
+  );
+  const newWindowHandle = await browser
+    .getWindowHandles()
+    .then((handles) => handles[handles.length - 1]);
+  await browser.switchToWindow(newWindowHandle);
 
-  // Internet Identity
-  // First title is from the Service Worker.
-  await browser.pause(5000);
-  // We want to switch the tab to II.
-  await browser.switchWindow("Internet Identity");
-  const registerButton = await browser.$("#registerButton");
+  // We may get to the "Welcome back" page.  If so, use "loginDifferent" to get to the normal login page.
+  (
+    await browser.$(
+      `${IIWelcomeBackPage.LOGIN_DIFFERENT_BUTTON_SELECTOR}, ${IIWelcomePage.REGISTER_BUTTON_SELECTOR}`
+    )
+  ).waitForExist({ timeout: 10_000 });
+  const loginDifferent = browser.$(
+    IIWelcomeBackPage.LOGIN_DIFFERENT_BUTTON_SELECTOR
+  );
+  if (await loginDifferent.isExisting()) {
+    await loginDifferent.click();
+  }
+
+  // Click the button to register.
+  const registerButton = await browser.$(
+    IIWelcomePage.REGISTER_BUTTON_SELECTOR
+  );
   await registerButton.waitForExist({ timeout: 10_000 });
   await registerButton.click();
 
   // Add Device Page
-  const registerAlias = await browser.$("#registerAlias");
+  const registerAlias = await browser.$(
+    IIWelcomePage.REGISTER_ALIAS_INPUT_SELECTOR
+  );
   await registerAlias.waitForExist();
   await registerAlias.setValue("My Device");
 
-  await browser.$('button[type="submit"]').click();
+  await browser.$(IIWelcomePage.SUBMIT_BUTTON_SELECTOR).click();
 
   // Captcha Page
-  const captchaInput = await browser.$("#captchaInput");
+  const captchaInput = await browser.$(IICaptchaPage.CAPTCHA_INPUT_SELECTOR);
   await captchaInput.waitForExist({ timeout: 30_000 });
   await captchaInput.setValue("a");
   await browser.waitUntil(async () => {
     return (await captchaInput.getValue()) === "a";
   });
 
-  const confirmCaptchaButton = await browser.$("#confirmRegisterButton");
+  const confirmCaptchaButton = await browser.$(
+    IICaptchaPage.CONFIRM_REGISTER_BUTTON
+  );
   // Long wait: Construction Your Identity Anchor
   await confirmCaptchaButton.waitForEnabled({ timeout: 30_000 });
   await confirmCaptchaButton.click();
 
   // Congratulations Page
-  const continueButton = await browser.$("#displayUserContinue");
+  const continueButton = await browser.$(
+    IICongratulationsPage.CONTINUE_BUTTON_SELECTOR
+  );
   await continueButton.waitForExist({ timeout: 30_000 });
   await continueButton.click();
 
   // Recovery Mechanism Page
-  const addLaterButton = await browser.$("#skipRecovery");
+  const addLaterButton = await browser.$(
+    IIRecoveryMechanismPage.SKIP_RECOVERY_BUTTON_SELECTOR
+  );
   await addLaterButton.waitForExist();
   await addLaterButton.click();
 
   // Warning Recovery Mechanism Page
-  const skipButton = await browser.$("#displayWarningRemindLater");
+  const skipButton = await browser.$(
+    IIRecoveryMissingWarningPage.SKIP_BUTTON_SELECTOR
+  );
   await skipButton.waitForExist();
   await skipButton.click();
 
   // Confirm Redirect Page
-  const proceedButton = await browser.$("#confirmRedirect");
+  const proceedButton = await browser.$(
+    IIConfirmRedirectPage.CONFIRM_REDIRECT_BUTTON_SELECTOR
+  );
   await proceedButton.waitForExist();
   await proceedButton.click();
 
-  await browser.switchWindow("Network Nervous System frontend dapp");
+  // Switch back to original window
+  await browser.switchToWindow(originalTabId);
 };
