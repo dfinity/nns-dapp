@@ -26,7 +26,7 @@ import {
   excludeProposals,
   proposalsHaveSameIds,
 } from "../utils/proposals.utils";
-import { isDefined } from "../utils/utils";
+import { hashCode, isDefined, logWithTimestamp } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 import {
@@ -237,10 +237,30 @@ export const registerVotes = async ({
   startBusy("vote");
 
   const identity: Identity = await getIdentity();
+  const uniqueNeuronIds = Array.from(new Set(neuronIds));
+
+  // <test_log>
+  // https://forum.dfinity.org/t/potentially-serious-nns-error-nns-app-ui-shows-error-when-voting-every-time/12212
+  try {
+    // naive test of BigInts in Set
+    const stringifiedNeuronIds = Array.from(
+      new Set(neuronIds.map((id) => id.toString()))
+    );
+    if (stringifiedNeuronIds.length !== neuronIds.length) {
+      console.error(
+        "registerVotes/TL(neuronIds, stringifiedNeuronIds)",
+        neuronIds.map(hashCode),
+        stringifiedNeuronIds.map(hashCode)
+      );
+    }
+  } catch (err) {
+    console.error("registerVotes/TL(unknown)", err);
+  }
+  // </test_log>
 
   try {
     await requestRegisterVotes({
-      neuronIds,
+      neuronIds: uniqueNeuronIds,
       proposalId,
       identity,
       vote,
