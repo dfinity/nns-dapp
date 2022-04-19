@@ -145,7 +145,7 @@ describe("api-utils", () => {
       expect(queryDone).toBeFalsy();
     });
 
-    it.only("should log", async () => {
+    it("should log", async () => {
       const log = jest.spyOn(console, "log").mockImplementation((text) => {
         console.error(text);
       });
