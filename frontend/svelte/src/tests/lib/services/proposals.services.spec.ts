@@ -2,6 +2,7 @@ import type { NeuronId, ProposalInfo } from "@dfinity/nns";
 import { GovernanceError, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
+import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
   getProposalId,
@@ -11,7 +12,10 @@ import {
   registerVotes,
 } from "../../../lib/services/proposals.services";
 import * as busyStore from "../../../lib/stores/busy.store";
-import { proposalsStore } from "../../../lib/stores/proposals.store";
+import {
+  proposalsFiltersStore,
+  proposalsStore,
+} from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import type { ToastMsg } from "../../../lib/types/toast";
 import {
@@ -34,7 +38,7 @@ describe("proposals-services", () => {
     });
 
     afterEach(() => {
-      proposalsStore.setProposals([]);
+      proposalsStore.setProposals({ proposals: [], certified: true });
 
       spySetProposals.mockClear();
       spyPushProposals.mockClear();
@@ -47,7 +51,7 @@ describe("proposals-services", () => {
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
-      const proposals = get(proposalsStore);
+      const { proposals } = get(proposalsStore);
       expect(proposals).toEqual(mockProposals);
     });
 
@@ -58,7 +62,7 @@ describe("proposals-services", () => {
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
-      const proposals = get(proposalsStore);
+      const { proposals } = get(proposalsStore);
       expect(proposals).toEqual(mockProposals);
     });
 
@@ -82,7 +86,9 @@ describe("proposals-services", () => {
         Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
       );
 
-    beforeAll(() => proposalsStore.setProposals(mockProposals));
+    beforeAll(() =>
+      proposalsStore.setProposals({ proposals: mockProposals, certified: true })
+    );
 
     afterEach(() => jest.clearAllMocks());
 
@@ -98,7 +104,9 @@ describe("proposals-services", () => {
   });
 
   describe("empty list", () => {
-    afterAll(() => proposalsStore.setProposals([]));
+    afterAll(() =>
+      proposalsStore.setProposals({ proposals: [], certified: true })
+    );
 
     it("should not push empty proposals to the list", async () => {
       jest
@@ -367,27 +375,83 @@ describe("proposals-services", () => {
     });
   });
 
-  describe("suspisious responses", () => {
-    beforeAll(() => {
-      jest.clearAllMocks();
+  describe("ignore errors", () => {
+    const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
+    const proposalId = BigInt(0);
+
+    const mockRegisterVoteGovernanceAlreadyVotedError =
+      async (): Promise<void> => {
+        throw new GovernanceError({
+          error_message: "Neuron already voted on proposal.",
+          error_type: 0,
+        });
+      };
+
+    let spyToastShow;
+
+    beforeEach(() => {
+      jest
+        .spyOn(api, "registerVote")
+        .mockImplementation(mockRegisterVoteGovernanceAlreadyVotedError);
+
+      spyToastShow = jest
+        .spyOn(toastsStore, "show")
+        .mockImplementation(jest.fn());
     });
 
-    it("should display suspicious_response error", async () => {
-      let requestIndex = 0;
-      const spyQueryProposals = jest
+    afterAll(() => jest.clearAllMocks());
+
+    it("should ignore already voted error", async () => {
+      await registerVotes({
+        neuronIds,
+        proposalId,
+        vote: Vote.NO,
+      });
+      expect(spyToastShow).not.toBeCalled();
+    });
+  });
+
+  describe("filter", () => {
+    const spySetProposals = jest.spyOn(proposalsStore, "setProposals");
+    const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
+    let spyQueryProposals;
+
+    beforeAll(() => {
+      jest.clearAllMocks();
+
+      spyQueryProposals = jest
         .spyOn(api, "queryProposals")
-        .mockImplementation(() =>
-          Promise.resolve(mockProposals.slice(requestIndex++))
-        );
-      const spyToastShow = jest.spyOn(toastsStore, "show");
+        .mockImplementation(() => Promise.resolve(mockProposals));
+    });
+
+    afterEach(() => {
+      proposalsStore.setProposals({ proposals: [], certified: true });
+
+      spySetProposals.mockClear();
+      spyPushProposals.mockClear();
+    });
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should not call the canister if empty filter", async () => {
+      proposalsFiltersStore.filterStatus([]);
 
       await listProposals();
 
-      expect(spyQueryProposals).toBeCalled();
-      expect(spyToastShow).toBeCalledWith({
-        labelKey: "error.suspicious_response",
-        level: "error",
-      });
+      expect(spyQueryProposals).not.toHaveBeenCalled();
+
+      proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
+    });
+
+    it("should reset the proposal store if empty filter", async () => {
+      proposalsFiltersStore.filterStatus([]);
+
+      await listProposals();
+
+      const { proposals } = get(proposalsStore);
+      expect(proposals).toEqual([]);
+
+      proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
     });
   });
 });

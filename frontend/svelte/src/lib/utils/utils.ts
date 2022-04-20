@@ -29,12 +29,26 @@ export const stringifyJson = (
 ): string =>
   JSON.stringify(
     value,
-    (_, value) =>
-      typeof value === "bigint"
-        ? options?.devMode !== undefined && options.devMode
-          ? `BigInt('${value.toString()}')`
-          : value.toString()
-        : value,
+    (_, value) => {
+      switch (typeof value) {
+        case "object": {
+          // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
+          if (value?._isPrincipal === true) {
+            const asText = value.toString();
+            // To not stringify NOT Principal instance that contains _isPrincipal field
+            return asText === "[object Object]" ? value : asText;
+          }
+          break;
+        }
+        case "bigint": {
+          if (options?.devMode !== undefined && options.devMode) {
+            return `BigInt('${value.toString()}')`;
+          }
+          return value.toString();
+        }
+      }
+      return value;
+    },
     options?.indentation ?? 0
   );
 

@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { ProposalInfo, Vote } from "@dfinity/nns";
   import {
-    notVotedNeurons as getNotVotedNeurons,
+    votableNeurons as getVotableNeurons,
     ProposalStatus,
   } from "@dfinity/nns";
   import { onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
-  import { neuronsStore } from "../../../stores/neurons.store";
+  import { definedNeuronsStore } from "../../../stores/neurons.store";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import Card from "../../ui/Card.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
@@ -15,9 +15,9 @@
 
   export let proposalInfo: ProposalInfo;
 
-  const notVotedNeurons = () =>
-    getNotVotedNeurons({
-      neurons: $neuronsStore,
+  const votableNeurons = () =>
+    getVotableNeurons({
+      neurons: $definedNeuronsStore,
       proposal: proposalInfo,
     });
   let visible: boolean = false;
@@ -25,16 +25,16 @@
   let initialSelectionDone = false;
 
   $: visible =
-    notVotedNeurons().length > 0 &&
+    votableNeurons().length > 0 &&
     proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
 
-  const unsubcribe = neuronsStore.subscribe(() => {
+  const unsubscribe = definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {
       initialSelectionDone = true;
-      votingNeuronSelectStore.set(notVotedNeurons());
+      votingNeuronSelectStore.set(votableNeurons());
     } else {
       // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
-      votingNeuronSelectStore.updateNeurons(notVotedNeurons());
+      votingNeuronSelectStore.updateNeurons(votableNeurons());
     }
   });
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
@@ -45,7 +45,7 @@
     });
 
   onDestroy(() => {
-    unsubcribe();
+    unsubscribe();
     votingNeuronSelectStore.reset();
   });
 </script>

@@ -41,9 +41,6 @@ interface I18nError {
   accounts_not_found: string;
   fail: string;
   join_community_fund: string;
-  suspicious_response: string;
-  start_dissolving: string;
-  stop_dissolving: string;
   dummy_proposal: string;
   update_delay: string;
   unknown: string;
@@ -51,6 +48,16 @@ interface I18nError {
   amount_not_enough: string;
   stake_neuron: string;
   transaction_invalid_amount: string;
+  transaction_no_source_account: string;
+  transaction_no_destination_address: string;
+  transaction_error: string;
+  unexpected_number_neurons_merge: string;
+  cannot_merge: string;
+  split_neuron: string;
+  not_authorized: string;
+  invalid_sender: string;
+  insufficient_funds: string;
+  transfer_error: string;
 }
 
 interface I18nWarning {
@@ -101,6 +108,7 @@ interface I18nAccounts {
   transaction_fee: string;
   review_transaction: string;
   current_balance: string;
+  confirm_and_send: string;
 }
 
 interface I18nNeurons {
@@ -108,6 +116,12 @@ interface I18nNeurons {
   text: string;
   principal_is: string;
   stake_neurons: string;
+  merge_neurons: string;
+  merge_neurons_modal_title: string;
+  merge_neurons_modal_confirm: string;
+  merge_neurons_modal_merge_button: string;
+  merge_neurons_modal_title_2: string;
+  merge_neurons_modal_with: string;
   set_dissolve_delay: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
@@ -139,6 +153,8 @@ interface I18nNeurons {
   update_delay: string;
   confirm_delay: string;
   dissolve_delay_success: string;
+  merge_neurons_article_title: string;
+  split_neuron_success: string;
 }
 
 interface I18nNew_followee {
@@ -244,6 +260,7 @@ interface I18nProposal_detail {
   adopt: string;
   reject: string;
   my_votes: string;
+  loading_neurons: string;
 }
 
 interface I18nProposal_detail__vote {
@@ -293,6 +310,10 @@ interface I18nNeuron_detail {
   following_title: string;
   following_description: string;
   follow_neurons: string;
+  no_ballots: string;
+  split_neuron_confirm: string;
+  split_neuron_success: string;
+  split_neuron_disabled_tooltip: string;
 }
 
 interface I18nTime {

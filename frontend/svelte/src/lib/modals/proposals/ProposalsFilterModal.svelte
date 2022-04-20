@@ -14,17 +14,24 @@
     ProposalStatus,
     Topic,
   } from "@dfinity/nns";
+  import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "../../types/proposals";
 
   export let props: ProposalsFilterModalProps | undefined;
 
   let visible: boolean;
   let category: string;
   let filters: ProposalsFilters | undefined;
+  let filtersValues: number[];
   let selectedFilters: (Topic | ProposalRewardStatus | ProposalStatus)[];
 
   $: visible = props !== undefined;
   $: category = props?.category ?? "uncategorized";
   $: filters = props?.filters;
+  $: filtersValues = filters
+    ? enumValues(filters).filter(
+        (value) => value !== PROPOSAL_FILTER_UNSPECIFIED_VALUE
+      )
+    : [];
   $: selectedFilters = props?.selectedFilters || [];
 
   const dispatch = createEventDispatcher();
@@ -75,7 +82,7 @@
   <span slot="title">{$i18n.voting?.[category] ?? ""}</span>
 
   {#if filters}
-    {#each enumValues(filters) as key (key)}
+    {#each filtersValues as key (key)}
       <Checkbox
         inputId={`${key}`}
         checked={selectedFilters.includes(key)}

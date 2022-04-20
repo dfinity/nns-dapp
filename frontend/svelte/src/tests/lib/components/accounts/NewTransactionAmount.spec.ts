@@ -6,7 +6,10 @@ import { ICP } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import NewTransactionAmount from "../../../../lib/components/accounts/NewTransactionAmount.svelte";
-import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
+import {
+  E8S_PER_ICP,
+  TRANSACTION_FEE_E8S,
+} from "../../../../lib/constants/icp.constants";
 import { transactionStore } from "../../../../lib/stores/transaction.store";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import {
@@ -35,11 +38,10 @@ describe("NewTransactionAmount", () => {
     });
   });
 
-  it("should render a source transaction", () => {
+  it("should not render a source transaction", () => {
     const { getByText } = render(NewTransactionTest, { props });
 
-    // More tests about details are provided in NewTransactionInfo.spec.ts
-    expect(getByText(en.accounts.source)).toBeTruthy();
+    expect(() => getByText(en.accounts.source)).toThrow();
   });
 
   it("should render current balance", () => {
@@ -59,12 +61,15 @@ describe("NewTransactionAmount", () => {
     expect(input).not.toBeNull();
   });
 
-  it("should render an input for the amount that has a max value equals to the source account available funds", () => {
+  it("should render an input for the amount that has a max value equals to the source account available funds minus the transaction fee", () => {
     const { container } = render(NewTransactionTest, { props });
 
     const input: HTMLInputElement | null = container.querySelector("input");
     expect(input?.getAttribute("max")).toEqual(
-      `${Number(mockMainAccount.balance.toE8s()) / E8S_PER_ICP}`
+      `${
+        (Number(mockMainAccount.balance.toE8s()) - TRANSACTION_FEE_E8S) /
+        E8S_PER_ICP
+      }`
     );
   });
 

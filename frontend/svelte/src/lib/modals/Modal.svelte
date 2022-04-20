@@ -10,6 +10,7 @@
   export let visible: boolean = true;
   export let theme: "dark" | "light" = "light";
   export let size: "small" | "medium" = "small";
+  export let testId: string | undefined = undefined;
 
   // There is no way to know whether a parent is listening to the "nnsBack" event
   // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
@@ -29,6 +30,7 @@
     class={`modal ${theme}`}
     transition:fade
     role="dialog"
+    data-tid={testId}
     aria-labelledby={showToolbar ? "modalTitle" : undefined}
     aria-describedby="modalContent"
     on:click|stopPropagation
@@ -75,6 +77,7 @@
 
 <style lang="scss">
   @use "../themes/mixins/interaction";
+  @use "../themes/mixins/text";
 
   .modal {
     position: fixed;
@@ -139,8 +142,8 @@
 
     width: var(--modal-small-width);
     height: fit-content;
-    max-width: calc(100vw - (4 * var(--padding)));
-    max-height: calc(100vh - (2 * var(--padding)));
+    max-width: calc(100vw - var(--padding-4x));
+    max-height: calc(100vh - var(--padding-2x));
 
     --modal-min-height: 100px;
     --modal-toolbar-height: 35px;
@@ -158,7 +161,7 @@
   }
 
   .toolbar {
-    padding: var(--padding) calc(2 * var(--padding));
+    padding: var(--padding) var(--padding-2x);
 
     background: var(--gray-100);
     color: var(--gray-800);
@@ -174,6 +177,8 @@
     height: var(--modal-toolbar-height);
 
     h3 {
+      @include text.clamp(1);
+
       color: inherit;
       font-weight: 400;
       margin-bottom: 0;
