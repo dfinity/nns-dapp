@@ -1,5 +1,5 @@
-# Upgrade frontend NNS Dapp canister to commit `93166d16c3ce3763b66f8a5bde58caeca05ca59f`
-Wasm sha256 hash: `807868d776cad1260c855cf362cf3ade99f61e712c8fc69d2b00781bcf55cb75` (`https://github.com/dfinity/nns-dapp/actions/runs/2192274865`)
+# Upgrade frontend NNS Dapp canister to commit `b1193e0b70d0e550c1f7fc6fa50f5941c94a4655`
+Wasm sha256 hash: `c96a25f6b9400c84b631289447e97c1bfce5825b673fb60e699f6114eaaa1d9f` (`https://github.com/dfinity/nns-dapp/actions/runs/2193676235`)
 
 ## Change Log:
 
@@ -14,7 +14,9 @@ Wasm sha256 hash: `807868d776cad1260c855cf362cf3ade99f61e712c8fc69d2b00781bcf55c
 ## Commit log:
 
 ```
-+ bash -xc "git log --format='%C(auto) %h %s' b39dd5a9..93166d16"
++ bash -xc "git log --format='%C(auto) %h %s' b39dd5a9..b1193e0b"
+ b1193e0b feat: "Loading your neurons..." spinner (#722)
+ a837d452 fix: proposal filters counter (#723)
  93166d16 Feat/request and response logs (#721)
  771c87cd feat: chunks get balance calls to ledger (#718)
  1fe8114b feat: init neurons store for voting only once if needed (#719)
@@ -57,6 +59,6 @@ Wasm sha256 hash: `807868d776cad1260c855cf362cf3ade99f61e712c8fc69d2b00781bcf55c
 To build the wasm module yourself and verify its hash, run the following commands from the root of the nns-dapp repo:
 
 git pull  # to ensure you have the latest changes.
-git checkout `93166d16c3ce3763b66f8a5bde58caeca05ca59f`
+git checkout `b1193e0b70d0e550c1f7fc6fa50f5941c94a4655`
 ./scripts/docker-build
 sha256sum nns-dapp.wasm
