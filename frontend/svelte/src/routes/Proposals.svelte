@@ -90,7 +90,7 @@
       isReferrerProposalDetail
     ) {
       initDebounceFindProposals();
-
+      initialized = true;
       return;
     }
 

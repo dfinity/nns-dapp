@@ -158,26 +158,36 @@ export const loadProposal = async ({
   setProposal,
   handleError,
   silentErrorMessages,
+  silentUpdateErrorMessages,
   callback,
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
-  handleError?: () => void;
+  handleError?: (certified: boolean) => void;
   silentErrorMessages?: boolean;
+  silentUpdateErrorMessages?: boolean;
   callback?: (certified: boolean) => void;
 }): Promise<void> => {
-  const catchError = (error: unknown) => {
-    console.error(error);
+  const catchError: QueryAndUpdateOnError<Error | unknown> = (
+    erroneusResponse
+  ) => {
+    console.error(erroneusResponse);
 
-    if (silentErrorMessages !== true) {
+    const skipUpdateErrorHandling =
+      silentUpdateErrorMessages === true && erroneusResponse.certified === true;
+
+    if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
+      const details = errorToString(erroneusResponse?.error);
       toastsStore.show({
         labelKey: "error.proposal_not_found",
         level: "error",
-        detail: `id: "${proposalId}"`,
+        detail: `id: "${proposalId}"${
+          details === undefined ? "" : `. ${details}`
+        }`,
       });
     }
 
-    handleError?.();
+    handleError?.(erroneusResponse.certified);
   };
 
   try {
@@ -185,7 +195,7 @@ export const loadProposal = async ({
       proposalId,
       onLoad: ({ response: proposal, certified }) => {
         if (!proposal) {
-          catchError(new Error("Proposal not found"));
+          catchError({ certified, error: undefined });
           return;
         }
 
@@ -196,7 +206,7 @@ export const loadProposal = async ({
       onError: catchError,
     });
   } catch (error: unknown) {
-    catchError(error);
+    catchError({ certified: true, error });
   }
 };
 
@@ -210,7 +220,7 @@ const getProposal = async ({
 }: {
   proposalId: ProposalId;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
-  onError: QueryAndUpdateOnError<unknown>;
+  onError: QueryAndUpdateOnError<Error | undefined>;
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
 
@@ -310,6 +320,7 @@ export const registerVotes = async ({
       callback: (certified: boolean) =>
         stopBusySpinner({ certified, initiator: "reload-proposal" }),
       handleError: () => stopBusy("reload-proposal"),
+      silentUpdateErrorMessages: true,
     });
   };
 

@@ -103,6 +103,31 @@ describe("proposals-services", () => {
     });
   });
 
+  describe("error message in details", () => {
+    beforeEach(() => {
+      jest.spyOn(api, "queryProposal").mockImplementation(() => {
+        throw new Error("test-message");
+      });
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
+    });
+    afterEach(() => jest.clearAllMocks());
+
+    it("should show error message in details", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "show");
+
+      await loadProposal({
+        proposalId: BigInt(0),
+        setProposal: () => jest.fn(),
+      });
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        detail: 'id: "0". test-message',
+        labelKey: "error.proposal_not_found",
+        level: "error",
+      });
+    });
+  });
+
   describe("empty list", () => {
     afterAll(() =>
       proposalsStore.setProposals({ proposals: [], certified: true })
