@@ -1,11 +1,15 @@
 # Upgrade frontend NNS Dapp canister to commit `93166d16c3ce3763b66f8a5bde58caeca05ca59f`
-Wasm sha256 hash: `<WASM_HASH>` (`<LINK_TO_GITHUB_ACTION>`)
+Wasm sha256 hash: `807868d776cad1260c855cf362cf3ade99f61e712c8fc69d2b00781bcf55cb75` (`https://github.com/dfinity/nns-dapp/actions/runs/2192274865`)
 
 ## Change Log:
 
-* Write about...
-* ... what has changed
-* ... in simple bullet points
+* Rate limit API calls to reduce the risk of errors for users with large numbers of neurons.
+* Add log messages to help diagnose issues experienced by users.
+* Update dfx to 0.9.2
+* A filter that excludes all proposals was previously ignored, whereas now such a filter will show no results.
+* Preparation for switching more of the UI to svelte.
+* UI improvements.
+* More tests.
 
 ## Commit log:
 
