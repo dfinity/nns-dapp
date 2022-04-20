@@ -310,6 +310,38 @@ const sameController = (neurons: NeuronInfo[]): boolean =>
 const sameId = (neurons: NeuronInfo[]): boolean =>
   new Set(neurons.map(({ neuronId }) => neuronId)).size === 1;
 
+/**
+ * Receives multiple lists of followees sorted by id.
+ *
+ * Compares that the followees are all the same.
+ *
+ * @param sortedFolloweesLists NeuronId[][].
+ * For example:
+ *  [[2, 4, 5], [1, 2, 3]] returns `false`
+ *  [[2, 5, 6], [2, 5, 6]] returns `true`
+ * @returns boolean
+ */
+export const allHaveSameFollowees = (
+  sortedFolloweesLists: NeuronId[][]
+): boolean => {
+  // If lengths of followes are different, return false
+  const lengths = sortedFolloweesLists.map(({ length }) => length);
+  if (new Set(lengths).size > 1) {
+    return false;
+  }
+  // Compare first list with others lists
+  const firstList = sortedFolloweesLists[0];
+  for (let i = 0; i < firstList.length; i++) {
+    const currentIndexFollowees = sortedFolloweesLists.map(
+      (followees) => followees[i]
+    );
+    if (new Set(currentIndexFollowees).size !== 1) {
+      return false;
+    }
+  }
+  return true;
+};
+
 const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
   const fullNeurons: Neuron[] = neurons
     .map(({ fullNeuron }) => fullNeuron)
@@ -329,22 +361,8 @@ const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
   if (sortedFollowees.length === 0) {
     return true;
   }
-  // If lengths of followes are different, return false
-  const lengths = sortedFollowees.map(({ length }) => length);
-  if (new Set(lengths).size > 1) {
-    return false;
-  }
-  const firstList = sortedFollowees[0];
-  for (let i = 0; i < firstList.length; i++) {
-    const currentIndexFollowees = sortedFollowees.map(
-      (followees) => followees[i]
-    );
-    if (new Set(currentIndexFollowees).size !== 1) {
-      return false;
-    }
-  }
-  // If we haven't returned is because all sorted lists of followees are the same.
-  return true;
+  // Check that all neurons have same followees
+  return allHaveSameFollowees(sortedFollowees);
 };
 
 export const canBeMerged = (

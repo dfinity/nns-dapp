@@ -11,6 +11,7 @@ import type { Step } from "../../../lib/stores/steps.state";
 import { InvalidAmountError } from "../../../lib/types/errors";
 import {
   ageMultiplier,
+  allHaveSameFollowees,
   ballotsWithDefinedProposal,
   canBeMerged,
   checkInvalidState,
@@ -693,6 +694,24 @@ describe("neuron-utils", () => {
       expect(isIdentityController({ neuron: mockNeuron, identity: null })).toBe(
         false
       );
+    });
+  });
+
+  describe("allHaveSameFollowees", () => {
+    it("returns true if same followees", () => {
+      const followees = [BigInt(4), BigInt(6), BigInt(9)];
+      expect(allHaveSameFollowees([followees, [...followees]])).toBe(true);
+    });
+
+    it("returns false if not same followees", () => {
+      const followees1 = [BigInt(4), BigInt(6), BigInt(9)];
+      const followees2 = [BigInt(1), BigInt(6), BigInt(9)];
+      expect(allHaveSameFollowees([followees1, followees2])).toBe(false);
+    });
+
+    it("returns false if not the same amount", () => {
+      const followees = [BigInt(4), BigInt(6), BigInt(9)];
+      expect(allHaveSameFollowees([followees, followees.slice(1)])).toBe(false);
     });
   });
 

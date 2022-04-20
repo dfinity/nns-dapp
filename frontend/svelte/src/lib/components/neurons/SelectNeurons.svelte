@@ -59,7 +59,7 @@
 
 <div class="wrapper">
   <ul class="items">
-    {#each neuronsData as { neuron, mergeable, messageKey }}
+    {#each neuronsData as { neuron, mergeable, messageKey } (neuron.neuronId)}
       {@const isSelected = isNeuronSelected(selectedNeuronIds, neuron.neuronId)}
       <!-- We have four possibilities: -->
       <!-- 1. Maximum number selected and neuron is one of the selected -->

@@ -29,6 +29,8 @@
   const merge = async () => {
     loading = true;
     startBusy("merge-neurons");
+    // We know that neurons has 2 neurons.
+    // We have a check above that closes the modal if not.
     const id = await mergeNeurons({
       targetNeuronId: neurons[0].neuronId,
       sourceNeuronId: neurons[1].neuronId,
