@@ -20,7 +20,7 @@ import {
 } from "../mocks/proposals.store.mock";
 import { mockRouteStoreSubscibe } from "../mocks/route.store.mock";
 
-describe("NeuronDetail", () => {
+describe("ProposalDetail", () => {
   const mockGovernanceCanister: MockGovernanceCanister =
     new MockGovernanceCanister(mockProposals);
 
