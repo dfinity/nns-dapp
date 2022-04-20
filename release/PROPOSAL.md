@@ -1,5 +1,5 @@
 # Upgrade frontend NNS Dapp canister to commit `0c1fd54fa687db2b4f44ff3f2a645d8f21ac7d97`
-Wasm sha256 hash: `<WASM_HASH>` (`<LINK_TO_GITHUB_ACTION>`)
+Wasm sha256 hash: `83282b36124498bf9d64cbccfcb58a753aebbde46df6899ac4b2fc1af6408b35` (`https://github.com/dfinity/nns-dapp/actions/runs/2195969677`)
 
 ## Change Log:
 
