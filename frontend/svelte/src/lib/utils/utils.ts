@@ -34,7 +34,9 @@ export const stringifyJson = (
         case "object": {
           // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
           if (value?._isPrincipal === true) {
-            return value.toString();
+            const asText = value.toString();
+            // To not stringify NOT Principal instance that contains _isPrincipal field
+            return asText === "[object Object]" ? value : asText;
           }
           break;
         }

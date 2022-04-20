@@ -81,6 +81,12 @@ describe("utils", () => {
         `{"principal":"${mockPrincipal.toString()}"}`
       );
     });
+
+    it("should not call toString() for Principal alike objects", () => {
+      expect(stringifyJson({ _isPrincipal: true })).toBe(
+        `{"_isPrincipal":true}`
+      );
+    });
   });
 
   describe("uniqueObjects", () => {
