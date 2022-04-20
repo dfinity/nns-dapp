@@ -1,5 +1,5 @@
-# Upgrade frontend NNS Dapp canister to commit `7a1da7b0e039f9700abf521200ff868e44edf0bd`
-Wasm sha256 hash: `88f796eb5b5a57188049593cc1a6c9837b07cb02246ca7f7e34590aa23ba631d` (`https://github.com/dfinity/nns-dapp/actions/runs/2195633623`)
+# Upgrade frontend NNS Dapp canister to commit `0c1fd54fa687db2b4f44ff3f2a645d8f21ac7d97`
+Wasm sha256 hash: `<WASM_HASH>` (`<LINK_TO_GITHUB_ACTION>`)
 
 ## Change Log:
 
@@ -16,7 +16,8 @@ Wasm sha256 hash: `88f796eb5b5a57188049593cc1a6c9837b07cb02246ca7f7e34590aa23ba6
 ## Commit log:
 
 ```
-+ bash -xc "git log --format='%C(auto) %h %s' b39dd5a9..7a1da7b0"
++ bash -xc "git log --format='%C(auto) %h %s' b39dd5a9..0c1fd54f"
+ 0c1fd54f fix: filters have no effect after back from detail page (#731)
  7a1da7b0 feat: show getProposal error message in toast details (#729)
  811a0cb7 Show followee name in neuron details (#727)
  75469429 feat: ignore error "Neuron already voted on proposal." (#726)
@@ -65,6 +66,6 @@ Wasm sha256 hash: `88f796eb5b5a57188049593cc1a6c9837b07cb02246ca7f7e34590aa23ba6
 To build the wasm module yourself and verify its hash, run the following commands from the root of the nns-dapp repo:
 
 git pull  # to ensure you have the latest changes.
-git checkout `7a1da7b0e039f9700abf521200ff868e44edf0bd`
+git checkout `0c1fd54fa687db2b4f44ff3f2a645d8f21ac7d97`
 ./scripts/docker-build
 sha256sum nns-dapp.wasm
