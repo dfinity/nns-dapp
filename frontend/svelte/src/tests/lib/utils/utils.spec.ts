@@ -5,6 +5,7 @@ import {
   stringifyJson,
   uniqueObjects,
 } from "../../../lib/utils/utils";
+import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("utils", () => {
   const callback = jest.fn();
@@ -73,6 +74,18 @@ describe("utils", () => {
           { devMode: true }
         )
       ).toBe(`{"value":"BigInt('123456789012345678901234567890')"}`);
+    });
+
+    it("should render principal as hash", () => {
+      expect(stringifyJson({ principal: mockPrincipal })).toBe(
+        `{"principal":"${mockPrincipal.toString()}"}`
+      );
+    });
+
+    it("should not call toString() for Principal alike objects", () => {
+      expect(stringifyJson({ _isPrincipal: true })).toBe(
+        `{"_isPrincipal":true}`
+      );
     });
   });
 
