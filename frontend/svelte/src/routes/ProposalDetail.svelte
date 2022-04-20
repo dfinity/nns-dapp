@@ -74,7 +74,11 @@
     }
   );
 
-  const onError = () => {
+  const onError = (certified: boolean) => {
+    // Ignore "application payload size (X) cannot be larger than Y" error thrown by update calls
+    if (certified) {
+      return;
+    }
     routeStore.replace({ path: AppPath.Proposals });
   };
 
@@ -87,6 +91,7 @@
       setProposal: (proposalInfo: ProposalInfo) =>
         proposalInfoStore.set(proposalInfo),
       handleError: onError,
+      silentUpdateErrorMessages: true,
     });
   });
 

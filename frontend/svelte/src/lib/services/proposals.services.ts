@@ -158,12 +158,14 @@ export const loadProposal = async ({
   setProposal,
   handleError,
   silentErrorMessages,
+  silentUpdateErrorMessages,
   callback,
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
-  handleError?: () => void;
+  handleError?: (certified: boolean) => void;
   silentErrorMessages?: boolean;
+  silentUpdateErrorMessages?: boolean;
   callback?: (certified: boolean) => void;
 }): Promise<void> => {
   const catchError: QueryAndUpdateOnError<Error | unknown> = (
@@ -171,7 +173,10 @@ export const loadProposal = async ({
   ) => {
     console.error(erroneusResponse);
 
-    if (silentErrorMessages !== true) {
+    const skipUpdateErrorHandling =
+      silentUpdateErrorMessages === true && erroneusResponse.certified === true;
+
+    if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
       const details = errorToString(erroneusResponse?.error);
       toastsStore.show({
         labelKey: "error.proposal_not_found",
@@ -182,7 +187,7 @@ export const loadProposal = async ({
       });
     }
 
-    handleError?.();
+    handleError?.(erroneusResponse.certified);
   };
 
   try {
@@ -315,6 +320,7 @@ export const registerVotes = async ({
       callback: (certified: boolean) =>
         stopBusySpinner({ certified, initiator: "reload-proposal" }),
       handleError: () => stopBusy("reload-proposal"),
+      silentUpdateErrorMessages: true,
     });
   };
 
