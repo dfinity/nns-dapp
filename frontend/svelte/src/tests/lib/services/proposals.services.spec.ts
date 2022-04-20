@@ -387,7 +387,7 @@ describe("proposals-services", () => {
         });
       };
 
-    let lastToastMessage: ToastMsg, spyToastShow;
+    let spyToastShow;
 
     beforeEach(() => {
       jest
@@ -396,7 +396,7 @@ describe("proposals-services", () => {
 
       spyToastShow = jest
         .spyOn(toastsStore, "show")
-        .mockImplementation((params) => (lastToastMessage = params));
+        .mockImplementation(jest.fn());
     });
 
     afterAll(() => jest.clearAllMocks());
