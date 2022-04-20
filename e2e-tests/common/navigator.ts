@@ -33,7 +33,7 @@ export class Navigator {
   async click(
     selector: string,
     description: string,
-    options?: { timeout?: number }
+    options?: { timeout?: number; screenshot?: boolean }
   ) {
     // Sadly typescript does not prevent undefined from being provided as a selector.
     if (undefined === selector) {
@@ -42,7 +42,9 @@ export class Navigator {
     const button = await this.browser.$(selector);
     const timeout = options?.timeout;
     const timeoutMsg = `Timeout waiting to click "${description}" with selector "${selector}".`;
-    await button.waitForEnabled({ timeout, timeoutMsg });
+    if (Boolean(process.env.SCREENSHOT) || (options?.screenshot ?? false)) {
+      await button.waitForEnabled({ timeout, timeoutMsg });
+    }
     await browser["screenshot"](description);
     await button.click();
   }
