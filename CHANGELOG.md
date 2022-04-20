@@ -1,5 +1,7 @@
 # Changelog
 
+## Proposal XXX
+
 ## Proposal 54295
 - Display the proposals tab using svelte
 
