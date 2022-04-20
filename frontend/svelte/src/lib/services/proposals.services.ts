@@ -166,14 +166,19 @@ export const loadProposal = async ({
   silentErrorMessages?: boolean;
   callback?: (certified: boolean) => void;
 }): Promise<void> => {
-  const catchError = (error: unknown) => {
-    console.error(error);
+  const catchError: QueryAndUpdateOnError<Error | unknown> = (
+    erroneusResponse
+  ) => {
+    console.error(erroneusResponse);
 
     if (silentErrorMessages !== true) {
+      const details = errorToString(erroneusResponse?.error);
       toastsStore.show({
         labelKey: "error.proposal_not_found",
         level: "error",
-        detail: `id: "${proposalId}"`,
+        detail: `id: "${proposalId}"${
+          details === undefined ? "" : `. ${details}`
+        }`,
       });
     }
 
@@ -185,7 +190,7 @@ export const loadProposal = async ({
       proposalId,
       onLoad: ({ response: proposal, certified }) => {
         if (!proposal) {
-          catchError(new Error("Proposal not found"));
+          catchError({ certified, error: undefined });
           return;
         }
 
@@ -196,7 +201,7 @@ export const loadProposal = async ({
       onError: catchError,
     });
   } catch (error: unknown) {
-    catchError(error);
+    catchError({ certified: true, error });
   }
 };
 
@@ -210,7 +215,7 @@ const getProposal = async ({
 }: {
   proposalId: ProposalId;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
-  onError: QueryAndUpdateOnError<unknown>;
+  onError: QueryAndUpdateOnError<Error | undefined>;
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
 
