@@ -33,5 +33,6 @@ export const listCanisters = async ({
         detail: errorToString(error),
       });
     },
+    logMessage: "Syncing Canisters",
   });
 };

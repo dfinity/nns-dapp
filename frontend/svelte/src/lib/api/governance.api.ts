@@ -7,6 +7,7 @@ import {
   LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
+import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { dfinityNeuron, icNeuron } from "./constants.api";
 import { toSubAccountId } from "./utils.api";
 
@@ -19,12 +20,19 @@ export const queryNeuron = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<NeuronInfo | undefined> => {
+  logWithTimestamp(
+    `Querying Neuron(${hashCode(neuronId)}) certified:${certified} call...`
+  );
   const { canister } = await governanceCanister({ identity });
 
-  return canister.getNeuron({
+  const response = await canister.getNeuron({
     certified,
     neuronId,
   });
+  logWithTimestamp(
+    `Querying Neuron(${hashCode(neuronId)}) certified:${certified} complete.`
+  );
+  return response;
 };
 
 export const increaseDissolveDelay = async ({
@@ -36,12 +44,23 @@ export const increaseDissolveDelay = async ({
   dissolveDelayInSeconds: number;
   identity: Identity;
 }): Promise<void> => {
+  logWithTimestamp(
+    `Increasing Dissolve Delay(${hashCode(neuronId)}, ${hashCode(
+      dissolveDelayInSeconds
+    )}) call...`
+  );
   const { canister } = await governanceCanister({ identity });
 
-  return canister.increaseDissolveDelay({
+  const response = await canister.increaseDissolveDelay({
     neuronId,
     additionalDissolveDelaySeconds: dissolveDelayInSeconds,
   });
+  logWithTimestamp(
+    `Increasing Dissolve Delay(${hashCode(neuronId)}, ${hashCode(
+      dissolveDelayInSeconds
+    )}) complete.`
+  );
+  return response;
 };
 
 export const joinCommunityFund = async ({
@@ -51,9 +70,12 @@ export const joinCommunityFund = async ({
   neuronId: NeuronId;
   identity: Identity;
 }): Promise<void> => {
+  logWithTimestamp(`Joining Community Fund (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
-  return canister.joinCommunityFund(neuronId);
+  const response = await canister.joinCommunityFund(neuronId);
+  logWithTimestamp(`Joining Community Fund (${hashCode(neuronId)}) complete.`);
+  return response;
 };
 
 export const splitNeuron = async ({
@@ -65,12 +87,15 @@ export const splitNeuron = async ({
   amount: ICP;
   identity: Identity;
 }): Promise<NeuronId> => {
+  logWithTimestamp(`Splitting Neuron (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
-  return canister.splitNeuron({
+  const response = await canister.splitNeuron({
     neuronId,
     amount,
   });
+  logWithTimestamp(`Splitting Neuron (${hashCode(neuronId)}) complete.`);
+  return response;
 };
 
 export const startDissolving = async ({
@@ -80,9 +105,12 @@ export const startDissolving = async ({
   neuronId: NeuronId;
   identity: Identity;
 }): Promise<void> => {
+  logWithTimestamp(`Starting Dissolving (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
-  return canister.startDissolving(neuronId);
+  const response = await canister.startDissolving(neuronId);
+  logWithTimestamp(`Starting Dissolving (${hashCode(neuronId)}) complete.`);
+  return response;
 };
 
 export const stopDissolving = async ({
@@ -92,9 +120,12 @@ export const stopDissolving = async ({
   neuronId: NeuronId;
   identity: Identity;
 }): Promise<void> => {
+  logWithTimestamp(`Stopping Dissolving (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
-  return canister.stopDissolving(neuronId);
+  const response = await canister.stopDissolving(neuronId);
+  logWithTimestamp(`Stopping Dissolving (${hashCode(neuronId)}) complete.`);
+  return response;
 };
 
 export const setFollowees = async ({
@@ -108,13 +139,16 @@ export const setFollowees = async ({
   topic: Topic;
   followees: NeuronId[];
 }): Promise<void> => {
+  logWithTimestamp(`Setting Followees (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
-  return canister.setFollowees({
+  const response = await canister.setFollowees({
     neuronId,
     topic,
     followees,
   });
+  logWithTimestamp(`Setting Followees (${hashCode(neuronId)}) complete.`);
+  return response;
 };
 
 export const queryNeurons = async ({
@@ -124,11 +158,14 @@ export const queryNeurons = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<NeuronInfo[]> => {
+  logWithTimestamp(`Querying Neurons certified:${certified} call...`);
   const { canister } = await governanceCanister({ identity });
 
-  return canister.listNeurons({
+  const response = await canister.listNeurons({
     certified,
   });
+  logWithTimestamp(`Querying Neurons certified:${certified} complete.`);
+  return response;
 };
 
 /**
@@ -143,6 +180,7 @@ export const stakeNeuron = async ({
   identity: Identity;
   fromSubAccount?: SubAccountArray;
 }): Promise<NeuronId> => {
+  logWithTimestamp(`Staking Neuron call...`);
   const { canister, agent } = await governanceCanister({ identity });
 
   const ledgerCanister: LedgerCanister = LedgerCanister.create({
@@ -153,12 +191,14 @@ export const stakeNeuron = async ({
   const fromSubAccountId =
     fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
 
-  return canister.stakeNeuron({
+  const response = await canister.stakeNeuron({
     stake,
     principal: identity.getPrincipal(),
     fromSubAccountId,
     ledgerCanister,
   });
+  logWithTimestamp(`Staking Neuron complete.`);
+  return response;
 };
 
 export const queryKnownNeurons = async ({
@@ -168,6 +208,7 @@ export const queryKnownNeurons = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<KnownNeuron[]> => {
+  logWithTimestamp(`Querieng Known Neurons certified:${certified} call...`);
   const { canister } = await governanceCanister({ identity });
 
   const knownNeurons = await canister.listKnownNeurons(certified);
@@ -180,7 +221,9 @@ export const queryKnownNeurons = async ({
     knownNeurons.push(icNeuron);
   }
 
-  return knownNeurons;
+  const response = await knownNeurons;
+  logWithTimestamp(`Querieng Known Neurons certified:${certified} complete.`);
+  return response;
 };
 
 export const claimOrRefreshNeuron = async ({
@@ -190,12 +233,19 @@ export const claimOrRefreshNeuron = async ({
   neuronId: NeuronId;
   identity: Identity;
 }): Promise<NeuronId | undefined> => {
+  logWithTimestamp(
+    `ClaimingOrRefreshing Neurons (${hashCode(neuronId)}) call...`
+  );
   const { canister } = await governanceCanister({ identity });
 
-  return canister.claimOrRefreshNeuron({
+  const response = await canister.claimOrRefreshNeuron({
     neuronId,
     by: { NeuronIdOrSubaccount: {} },
   });
+  logWithTimestamp(
+    `ClaimingOrRefreshing Neurons (${hashCode(neuronId)}) complete.`
+  );
+  return response;
 };
 
 // TODO: Apply pattern to other canister instantiation L2-371
