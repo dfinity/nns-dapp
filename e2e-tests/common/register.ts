@@ -45,6 +45,7 @@ export const register = async (browser: WebdriverIO.Browser): string => {
     await browser["screenshot"]("registration-ii-welcome-back");
     await loginDifferent.click();
   }
+  // We should now be on the normal welcome page, regardless of how we got here.
 
   // Click the button to register.
   await navigator.click(
