@@ -1,8 +1,10 @@
-# Upgrade frontend NNS Dapp canister to commit `b1193e0b70d0e550c1f7fc6fa50f5941c94a4655`
-Wasm sha256 hash: `c96a25f6b9400c84b631289447e97c1bfce5825b673fb60e699f6114eaaa1d9f` (`https://github.com/dfinity/nns-dapp/actions/runs/2193676235`)
+# Upgrade frontend NNS Dapp canister to commit `7a1da7b0e039f9700abf521200ff868e44edf0bd`
+Wasm sha256 hash: `88f796eb5b5a57188049593cc1a6c9837b07cb02246ca7f7e34590aa23ba631d` (`https://github.com/dfinity/nns-dapp/actions/runs/2195633623`)
 
 ## Change Log:
 
+* Fix rendering of large payloads.
+* Fix double-voting error message.
 * Rate limit API calls to reduce the risk of errors for users with large numbers of neurons.
 * Add log messages to help diagnose issues experienced by users.
 * Update dfx to 0.9.2
@@ -14,7 +16,11 @@ Wasm sha256 hash: `c96a25f6b9400c84b631289447e97c1bfce5825b673fb60e699f6114eaaa1
 ## Commit log:
 
 ```
-+ bash -xc "git log --format='%C(auto) %h %s' b39dd5a9..b1193e0b"
++ bash -xc "git log --format='%C(auto) %h %s' b39dd5a9..7a1da7b0"
+ 7a1da7b0 feat: show getProposal error message in toast details (#729)
+ 811a0cb7 Show followee name in neuron details (#727)
+ 75469429 feat: ignore error "Neuron already voted on proposal." (#726)
+ 09cb2426 refactor: move principal stringifying to nns-dapp (#724)
  b1193e0b feat: "Loading your neurons..." spinner (#722)
  a837d452 fix: proposal filters counter (#723)
  93166d16 Feat/request and response logs (#721)
@@ -59,6 +65,6 @@ Wasm sha256 hash: `c96a25f6b9400c84b631289447e97c1bfce5825b673fb60e699f6114eaaa1
 To build the wasm module yourself and verify its hash, run the following commands from the root of the nns-dapp repo:
 
 git pull  # to ensure you have the latest changes.
-git checkout `b1193e0b70d0e550c1f7fc6fa50f5941c94a4655`
+git checkout `7a1da7b0e039f9700abf521200ff868e44edf0bd`
 ./scripts/docker-build
 sha256sum nns-dapp.wasm
