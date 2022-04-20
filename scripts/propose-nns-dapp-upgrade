@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$(realpath "$0")")/.."
+
+print_help() {
+	cat <<-EOF
+	Propose to upgrade a testnet NNS-dapp canister to the current build.
+
+	Usage:
+	- Build the nns-dapp canister, e.g. with docker as in the README.md
+	- Put a copy of ic-admin to match the testnet in the root of the repository
+	- Run: ./$(basename "$0") testnet
+	EOF
+}
+
+NETWORK=testnet
+while (( $# > 0 )); do
+	arg="$1" ; shift 1
+	case "$arg" in
+	--help)	print_help ; exit 0 ;;
+	*)	NETWORK="$arg" ;;
+	esac
+done
+
+NETWORK="${1:-testnet}"
+WASM_FILE=nns-dapp.wasm
+SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
+PROVIDER="$(NETWORK="$NETWORK" jq -er .networks[env.NETWORK].providers[0] dfx.json)"
+CANISTER_ID="$(dfx canister --network "$NETWORK" id nns-dapp)"
+
+set -x
+./ic-admin --nns-url "$PROVIDER" propose-to-change-nns-canister --test-neuron-proposer --canister-id "$CANISTER_ID" --mode upgrade --wasm-module-path "$WASM_FILE" --wasm-module-sha256 "$SHA" --summary-file ./README.md
