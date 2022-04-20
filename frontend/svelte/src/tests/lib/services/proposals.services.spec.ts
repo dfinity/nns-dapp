@@ -108,6 +108,7 @@ describe("proposals-services", () => {
       jest.spyOn(api, "queryProposal").mockImplementation(() => {
         throw new Error("test-message");
       });
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
     });
     afterEach(() => jest.clearAllMocks());
 
