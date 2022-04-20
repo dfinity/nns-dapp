@@ -101,16 +101,6 @@ describe("proposals-services", () => {
       expect(result?.id).toBe(BigInt(666));
       expect(spyQueryProposal).toBeCalledTimes(2);
     });
-
-    it("should call the canister to get proposalInfo", async () => {
-      let result;
-      await loadProposal({
-        proposalId: BigInt(666),
-        setProposal: (proposal: ProposalInfo) => (result = proposal),
-      });
-      expect(result?.id).toBe(BigInt(666));
-      expect(spyQueryProposal).toBeCalledTimes(2);
-    });
   });
 
   describe("error message in details", () => {
