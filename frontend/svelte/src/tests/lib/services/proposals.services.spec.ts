@@ -101,6 +101,40 @@ describe("proposals-services", () => {
       expect(result?.id).toBe(BigInt(666));
       expect(spyQueryProposal).toBeCalledTimes(2);
     });
+
+    it("should call the canister to get proposalInfo", async () => {
+      let result;
+      await loadProposal({
+        proposalId: BigInt(666),
+        setProposal: (proposal: ProposalInfo) => (result = proposal),
+      });
+      expect(result?.id).toBe(BigInt(666));
+      expect(spyQueryProposal).toBeCalledTimes(2);
+    });
+  });
+
+  describe.only("error message in details", () => {
+    beforeEach(() => {
+      jest.spyOn(api, "queryProposal").mockImplementation(() => {
+        throw new Error("test-message");
+      });
+    });
+    afterEach(() => jest.clearAllMocks());
+
+    it("should show error message in details", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "show");
+
+      await loadProposal({
+        proposalId: BigInt(0),
+        setProposal: () => jest.fn(),
+      });
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        detail: 'id: "0". test-message',
+        labelKey: "error.proposal_not_found",
+        level: "error",
+      });
+    });
   });
 
   describe("empty list", () => {
