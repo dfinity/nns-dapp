@@ -168,24 +168,19 @@ class FolloweeSelected extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(12),
-      child: Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextButton(
-              child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(suggestion.name,
-                      style: Responsive.isMobile(context) ? context.textTheme.bodyText2 : context.textTheme.bodyText1)),
-              onPressed: () {
-                OverlayBaseWidget.show(context, NeuronInfoWidget(suggestion.id));
-              },
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextButton(
+          child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Text(suggestion.name,
+                  style: Responsive.isMobile(context) ? context.textTheme.bodyText2 : context.textTheme.bodyText1)),
+          onPressed: () {
+            OverlayBaseWidget.show(context, NeuronInfoWidget(suggestion.id));
+          },
         ),
-      ),
+      ],
     );
   }
 }
