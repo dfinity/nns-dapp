@@ -113,7 +113,7 @@ describe("proposals-services", () => {
     });
   });
 
-  describe.only("error message in details", () => {
+  describe("error message in details", () => {
     beforeEach(() => {
       jest.spyOn(api, "queryProposal").mockImplementation(() => {
         throw new Error("test-message");
