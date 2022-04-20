@@ -33,6 +33,7 @@ export const syncAccounts = (): Promise<void> => {
         detail: errorToString(error),
       });
     },
+    logMessage: "Syncing Accounts",
   });
 };
 

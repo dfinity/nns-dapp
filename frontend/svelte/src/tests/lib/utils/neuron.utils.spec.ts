@@ -496,7 +496,7 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe.only("followeesNeurons", () => {
+  describe("followeesNeurons", () => {
     it("should transform followees", () => {
       const neuron = {
         ...mockNeuron,

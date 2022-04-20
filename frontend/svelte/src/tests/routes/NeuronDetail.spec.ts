@@ -17,9 +17,9 @@ jest.mock("../../lib/services/neurons.services", () => {
     loadNeuron: ({
       setNeuron,
     }: {
-      setNeuron: (proposal: NeuronInfo) => void;
+      setNeuron: (params: { neuron: NeuronInfo; certified: boolean }) => void;
     }) => {
-      setNeuron(mockNeuron);
+      setNeuron({ neuron: mockNeuron, certified: true });
     },
     // we can't mock one and not the other
     getNeuronId: () => "7193101111710042264",

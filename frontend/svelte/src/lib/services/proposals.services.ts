@@ -6,7 +6,11 @@ import {
   queryProposals,
   registerVote,
 } from "../api/proposals.api";
-import { startBusy, stopBusy } from "../stores/busy.store";
+import {
+  startBusy,
+  stopBusy,
+  type BusyStateInitiator,
+} from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
@@ -16,6 +20,7 @@ import {
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
+import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
 import {
@@ -138,6 +143,9 @@ const findProposals = async ({
       onLoad({ response: proposals, certified });
     },
     onError,
+    logMessage: `Syncing proposals ${
+      beforeProposal === undefined ? "" : `from: ${hashCode(beforeProposal)}`
+    }`,
   });
 };
 
@@ -150,11 +158,13 @@ export const loadProposal = async ({
   setProposal,
   handleError,
   silentErrorMessages,
+  callback,
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: () => void;
   silentErrorMessages?: boolean;
+  callback?: (certified: boolean) => void;
 }): Promise<void> => {
   const catchError = (error: unknown) => {
     console.error(error);
@@ -173,12 +183,15 @@ export const loadProposal = async ({
   try {
     return await getProposal({
       proposalId,
-      onLoad: ({ response: proposal }) => {
+      onLoad: ({ response: proposal, certified }) => {
         if (!proposal) {
           catchError(new Error("Proposal not found"));
           return;
         }
+
         setProposal(proposal);
+
+        callback?.(certified);
       },
       onError: catchError,
     });
@@ -206,6 +219,7 @@ const getProposal = async ({
       queryProposal({ proposalId, identity, certified }),
     onLoad,
     onError,
+    logMessage: `Syncing Proposal ${hashCode(proposalId)}`,
   });
 };
 
@@ -228,14 +242,34 @@ export const registerVotes = async ({
   startBusy("vote");
 
   const identity: Identity = await getIdentity();
+  const uniqueNeuronIds = Array.from(new Set(neuronIds));
+
+  // <test_log>
+  // https://forum.dfinity.org/t/potentially-serious-nns-error-nns-app-ui-shows-error-when-voting-every-time/12212
+  try {
+    if (uniqueNeuronIds.length !== neuronIds.length) {
+      console.error(
+        "registerVotes/TL(ids, ids_text)",
+        neuronIds.map(hashCode),
+        uniqueNeuronIds.map(hashCode)
+      );
+    }
+  } catch (err) {
+    console.error("registerVotes/TL(unknown)", err);
+  }
+  // </test_log>
 
   try {
+    logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
     await requestRegisterVotes({
-      neuronIds,
+      neuronIds: uniqueNeuronIds,
       proposalId,
       identity,
       vote,
     });
+    logWithTimestamp(
+      `Registering [${neuronIds.map(hashCode)}] votes complete.`
+    );
   } catch (error: unknown) {
     console.error("vote unknown:", error);
 
@@ -246,23 +280,56 @@ export const registerVotes = async ({
     });
   }
 
-  await Promise.all([
-    listNeurons().catch((err) => {
+  const stopBusySpinner = ({
+    certified,
+    initiator,
+  }: {
+    certified: boolean;
+    initiator: BusyStateInitiator;
+  }) => {
+    if (!certified) {
+      return;
+    }
+
+    stopBusy(initiator);
+  };
+
+  const reloadListNeurons = async () => {
+    startBusy("reload-neurons");
+
+    try {
+      await listNeurons({
+        callback: (certified: boolean) =>
+          stopBusySpinner({ certified, initiator: "reload-neurons" }),
+      });
+    } catch (err) {
       console.error(err);
       toastsStore.error({
         labelKey: "error.list_proposals",
         err,
       });
-    }),
-    loadProposal({
+
+      stopBusy("reload-neurons");
+    }
+  };
+
+  const reloadProposal = async () => {
+    startBusy("reload-proposal");
+
+    await loadProposal({
       proposalId,
       setProposal: (proposalInfo: ProposalInfo) => {
         proposalInfoStore.set(proposalInfo);
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
       },
-    }),
-  ]);
+      callback: (certified: boolean) =>
+        stopBusySpinner({ certified, initiator: "reload-proposal" }),
+      handleError: () => stopBusy("reload-proposal"),
+    });
+  };
+
+  await Promise.all([reloadListNeurons(), reloadProposal()]);
 
   stopBusy("vote");
 };
@@ -306,12 +373,14 @@ const requestRegisterVotes = async ({
         })
     )
   );
+  const rejectedResponses = responses.filter(
+    ({ status }) => status === "rejected"
+  );
   const details: string[] = responses
     .map((response, i) => errorDetail(neuronIds[i], response))
     .filter(isDefined);
-
-  if (details.length > 0) {
-    console.error("vote", details);
+  if (rejectedResponses.length > 0) {
+    console.error("vote", rejectedResponses);
 
     toastsStore.show({
       labelKey: "error.register_vote",

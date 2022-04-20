@@ -35,7 +35,7 @@ describe("VotingCard", () => {
   );
 
   it("should be hidden if there is no not-voted-neurons", async () => {
-    neuronsStore.setNeurons([]);
+    neuronsStore.setNeurons({ neurons: [], certified: true });
     const { queryByTestId } = render(VotingCard, {
       props: {
         proposalInfo,
@@ -45,7 +45,7 @@ describe("VotingCard", () => {
   });
 
   it("should be visible if there are some not-voted-neurons", async () => {
-    neuronsStore.setNeurons(neurons);
+    neuronsStore.setNeurons({ neurons, certified: true });
     const { queryByTestId } = render(VotingCard, {
       props: {
         proposalInfo,
@@ -72,7 +72,7 @@ describe("VotingCard", () => {
       spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
       spyListNeurons = jest.spyOn(mockGovernanceCanister, "listNeurons");
 
-      neuronsStore.setNeurons(neurons);
+      neuronsStore.setNeurons({ neurons, certified: true });
       render(VotingCard, {
         props: {
           proposalInfo,
