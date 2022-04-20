@@ -242,27 +242,11 @@ export const registerVotes = async ({
   startBusy("vote");
 
   const identity: Identity = await getIdentity();
-  const uniqueNeuronIds = Array.from(new Set(neuronIds));
-
-  // <test_log>
-  // https://forum.dfinity.org/t/potentially-serious-nns-error-nns-app-ui-shows-error-when-voting-every-time/12212
-  try {
-    if (uniqueNeuronIds.length !== neuronIds.length) {
-      console.error(
-        "registerVotes/TL(ids, ids_text)",
-        neuronIds.map(hashCode),
-        uniqueNeuronIds.map(hashCode)
-      );
-    }
-  } catch (err) {
-    console.error("registerVotes/TL(unknown)", err);
-  }
-  // </test_log>
 
   try {
     logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
     await requestRegisterVotes({
-      neuronIds: uniqueNeuronIds,
+      neuronIds,
       proposalId,
       identity,
       vote,
@@ -373,9 +357,24 @@ const requestRegisterVotes = async ({
         })
     )
   );
+
   const rejectedResponses = responses.filter(
-    ({ status }) => status === "rejected"
+    (response: PromiseSettledResult<void>) => {
+      const { status } = response;
+
+      // We ignore the error "Neuron already voted on proposal." - i.e. we consider it as a valid response
+      // 1. the error truly means the neuron has already voted.
+      // 2. if user has for example two neurons with one neuron (B) following another neuron (A). Then if user select both A and B to cast a vote, A will first vote for itself and then vote for the followee B. Then Promise.allSettled above process next neuron B and try to vote again but this vote won't succeed, because it has already been registered by A.
+      // TODO(L2-465): discuss with Governance team to either turn the error into a valid response (or warning) with comment or to throw a unique identifier for this particular error.
+      const hasAlreadyVoted: boolean =
+        "reason" in response &&
+        response.reason?.detail?.error_message ===
+          "Neuron already voted on proposal.";
+
+      return status === "rejected" && !hasAlreadyVoted;
+    }
   );
+
   const details: string[] = responses
     .map((response, i) => errorDetail(neuronIds[i], response))
     .filter(isDefined);
