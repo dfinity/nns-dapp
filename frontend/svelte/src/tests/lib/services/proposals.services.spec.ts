@@ -375,6 +375,42 @@ describe("proposals-services", () => {
     });
   });
 
+  describe("ignore errors", () => {
+    const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
+    const proposalId = BigInt(0);
+
+    const mockRegisterVoteGovernanceAlreadyVotedError =
+      async (): Promise<void> => {
+        throw new GovernanceError({
+          error_message: "Neuron already voted on proposal.",
+          error_type: 0,
+        });
+      };
+
+    let lastToastMessage: ToastMsg, spyToastShow;
+
+    beforeEach(() => {
+      jest
+        .spyOn(api, "registerVote")
+        .mockImplementation(mockRegisterVoteGovernanceAlreadyVotedError);
+
+      spyToastShow = jest
+        .spyOn(toastsStore, "show")
+        .mockImplementation((params) => (lastToastMessage = params));
+    });
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should ignore already voted error", async () => {
+      await registerVotes({
+        neuronIds,
+        proposalId,
+        vote: Vote.NO,
+      });
+      expect(spyToastShow).not.toBeCalled();
+    });
+  });
+
   describe("filter", () => {
     const spySetProposals = jest.spyOn(proposalsStore, "setProposals");
     const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
