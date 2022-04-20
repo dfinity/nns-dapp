@@ -158,26 +158,36 @@ export const loadProposal = async ({
   setProposal,
   handleError,
   silentErrorMessages,
+  silentUpdateErrorMessages,
   callback,
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
-  handleError?: () => void;
+  handleError?: (certified: boolean) => void;
   silentErrorMessages?: boolean;
+  silentUpdateErrorMessages?: boolean;
   callback?: (certified: boolean) => void;
 }): Promise<void> => {
-  const catchError = (error: unknown) => {
-    console.error(error);
+  const catchError: QueryAndUpdateOnError<Error | unknown> = (
+    erroneusResponse
+  ) => {
+    console.error(erroneusResponse);
 
-    if (silentErrorMessages !== true) {
+    const skipUpdateErrorHandling =
+      silentUpdateErrorMessages === true && erroneusResponse.certified === true;
+
+    if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
+      const details = errorToString(erroneusResponse?.error);
       toastsStore.show({
         labelKey: "error.proposal_not_found",
         level: "error",
-        detail: `id: "${proposalId}"`,
+        detail: `id: "${proposalId}"${
+          details === undefined ? "" : `. ${details}`
+        }`,
       });
     }
 
-    handleError?.();
+    handleError?.(erroneusResponse.certified);
   };
 
   try {
@@ -185,7 +195,7 @@ export const loadProposal = async ({
       proposalId,
       onLoad: ({ response: proposal, certified }) => {
         if (!proposal) {
-          catchError(new Error("Proposal not found"));
+          catchError({ certified, error: undefined });
           return;
         }
 
@@ -196,7 +206,7 @@ export const loadProposal = async ({
       onError: catchError,
     });
   } catch (error: unknown) {
-    catchError(error);
+    catchError({ certified: true, error });
   }
 };
 
@@ -210,7 +220,7 @@ const getProposal = async ({
 }: {
   proposalId: ProposalId;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
-  onError: QueryAndUpdateOnError<unknown>;
+  onError: QueryAndUpdateOnError<Error | undefined>;
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
 
@@ -242,27 +252,11 @@ export const registerVotes = async ({
   startBusy("vote");
 
   const identity: Identity = await getIdentity();
-  const uniqueNeuronIds = Array.from(new Set(neuronIds));
-
-  // <test_log>
-  // https://forum.dfinity.org/t/potentially-serious-nns-error-nns-app-ui-shows-error-when-voting-every-time/12212
-  try {
-    if (uniqueNeuronIds.length !== neuronIds.length) {
-      console.error(
-        "registerVotes/TL(ids, ids_text)",
-        neuronIds.map(hashCode),
-        uniqueNeuronIds.map(hashCode)
-      );
-    }
-  } catch (err) {
-    console.error("registerVotes/TL(unknown)", err);
-  }
-  // </test_log>
 
   try {
     logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
     await requestRegisterVotes({
-      neuronIds: uniqueNeuronIds,
+      neuronIds,
       proposalId,
       identity,
       vote,
@@ -326,6 +320,7 @@ export const registerVotes = async ({
       callback: (certified: boolean) =>
         stopBusySpinner({ certified, initiator: "reload-proposal" }),
       handleError: () => stopBusy("reload-proposal"),
+      silentUpdateErrorMessages: true,
     });
   };
 
@@ -373,9 +368,24 @@ const requestRegisterVotes = async ({
         })
     )
   );
+
   const rejectedResponses = responses.filter(
-    ({ status }) => status === "rejected"
+    (response: PromiseSettledResult<void>) => {
+      const { status } = response;
+
+      // We ignore the error "Neuron already voted on proposal." - i.e. we consider it as a valid response
+      // 1. the error truly means the neuron has already voted.
+      // 2. if user has for example two neurons with one neuron (B) following another neuron (A). Then if user select both A and B to cast a vote, A will first vote for itself and then vote for the followee B. Then Promise.allSettled above process next neuron B and try to vote again but this vote won't succeed, because it has already been registered by A.
+      // TODO(L2-465): discuss with Governance team to either turn the error into a valid response (or warning) with comment or to throw a unique identifier for this particular error.
+      const hasAlreadyVoted: boolean =
+        "reason" in response &&
+        response.reason?.detail?.error_message ===
+          "Neuron already voted on proposal.";
+
+      return status === "rejected" && !hasAlreadyVoted;
+    }
   );
+
   const details: string[] = responses
     .map((response, i) => errorDetail(neuronIds[i], response))
     .filter(isDefined);

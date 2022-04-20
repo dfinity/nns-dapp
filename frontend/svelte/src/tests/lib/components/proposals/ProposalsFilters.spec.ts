@@ -36,7 +36,7 @@ describe("ProposalsFilters", () => {
     shouldRenderFilter({
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.topics.length,
-      totalFilters: enumSize(Topic),
+      totalFilters: enumSize(Topic) - 1,
       text: en.voting.topics,
     });
   });
@@ -47,7 +47,7 @@ describe("ProposalsFilters", () => {
     shouldRenderFilter({
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.rewards.length,
-      totalFilters: enumSize(ProposalRewardStatus),
+      totalFilters: enumSize(ProposalRewardStatus) - 1,
       text: en.voting.rewards,
     });
   });
@@ -58,7 +58,7 @@ describe("ProposalsFilters", () => {
     shouldRenderFilter({
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.status.length,
-      totalFilters: enumSize(ProposalStatus),
+      totalFilters: enumSize(ProposalStatus) - 1,
       text: en.voting.status,
     });
   });

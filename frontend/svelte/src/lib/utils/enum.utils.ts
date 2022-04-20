@@ -1,5 +1,3 @@
-import { Topic } from "@dfinity/nns";
-
 /**
  * Return the values of a number-based Enum
  *
@@ -50,9 +48,9 @@ export const enumsExclude = <T>({
     values,
   });
 
-  return enumKeys(Topic)
+  return enumKeys(obj)
     .filter((key: string) => !keys.includes(key))
-    .map((key: string) => Topic[key]);
+    .map((key: string) => obj[key]);
 };
 
 /**
