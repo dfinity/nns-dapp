@@ -17,7 +17,7 @@ describe("VotesCard", () => {
     let renderResult: RenderResult;
     let yes: number, no: number;
     beforeEach(() => {
-      neuronsStore.setNeurons([]);
+      neuronsStore.setNeurons({ neurons: [], certified: true });
       renderResult = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -71,7 +71,7 @@ describe("VotesCard", () => {
     };
     const votedNeurons = [mockNeuron, noVoted, yesVoted];
     it("should have title when proposal has been voted by some owned neuron", () => {
-      neuronsStore.setNeurons(votedNeurons);
+      neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { getByText } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -81,7 +81,7 @@ describe("VotesCard", () => {
     });
 
     it("should not have title when proposal has not been voted by some owned neuron", () => {
-      neuronsStore.setNeurons([]);
+      neuronsStore.setNeurons({ neurons: [], certified: true });
       const { getByText } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -91,7 +91,7 @@ describe("VotesCard", () => {
     });
 
     it("should render an item per voted neuron", () => {
-      neuronsStore.setNeurons(votedNeurons);
+      neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { container } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -104,7 +104,7 @@ describe("VotesCard", () => {
     });
 
     it("should render the proper icon item for YES and NO", () => {
-      neuronsStore.setNeurons(votedNeurons);
+      neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { container } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
