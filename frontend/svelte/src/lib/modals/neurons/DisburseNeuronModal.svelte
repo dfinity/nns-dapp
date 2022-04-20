@@ -10,7 +10,7 @@
   import { emptyAddress } from "../../utils/accounts.utils";
   import { neuronStake } from "../../utils/neuron.utils";
   import IcpComponent from "../../components/ic/ICP.svelte";
-  import { formattedTransactionFeeICP } from "../../utils/icp.utils";
+  import TransactionInfo from "../../components/accounts/TransactionInfo.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -52,6 +52,7 @@
   const dispatcher = createEventDispatcher();
   const executeTransaction = () => {
     // TODO: https://dfinity.atlassian.net/browse/L2-432
+    // TODO: Redirect to `/neurons` if success
     dispatcher("nnsClose");
   };
 </script>
@@ -60,26 +61,26 @@
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
   {#if currentStep.name === "SelectDestination"}
     <Address bind:address on:submit={onEnterAddress} />
+    <h5>{$i18n.accounts.my_accounts}</h5>
     <SelectAccount
       on:nnsSelectAccount={onSelectAccount}
       disableSelection={!emptyAddress(address)}
     />
   {/if}
-  {#if currentStep.name === "ConfirmDisburse"}
-    <form on:submit|preventDefault={executeTransaction} class="wizard-wrapper">
+  {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
+    <form
+      on:submit|preventDefault={executeTransaction}
+      class="wizard-wrapper"
+      data-tid="confirm-disburse-screen"
+    >
       <div class="amount">
         <IcpComponent inline={true} icp={ICP.fromE8s(neuronStake(neuron))} />
       </div>
 
-      <h5>{$i18n.accounts.source}</h5>
-      <p>{neuron.neuronId}</p>
-
-      <h5>{$i18n.accounts.destination}</h5>
-      <p>{destinationAddress}</p>
-
-      <h5>{$i18n.accounts.transaction_fee}</h5>
-
-      <p class="fee">{formattedTransactionFeeICP()} {$i18n.core.icp}</p>
+      <TransactionInfo
+        source={neuron.neuronId.toString()}
+        destination={destinationAddress ?? ""}
+      />
 
       <button class="primary full-width" type="submit">
         {$i18n.accounts.confirm_and_send}
@@ -106,18 +107,5 @@
 
   button {
     margin: var(--padding) 0 0;
-  }
-
-  h5 {
-    margin: 0;
-  }
-
-  p {
-    margin: 0 0 var(--padding-0_5x);
-    word-wrap: break-word;
-  }
-
-  .fee {
-    flex-grow: 1;
   }
 </style>
