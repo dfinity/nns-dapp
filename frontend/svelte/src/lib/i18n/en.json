@@ -240,7 +240,8 @@
     "proposer_prefix": "Proposer:",
     "adopt": "Adopt",
     "reject": "Reject",
-    "my_votes": "My Votes"
+    "my_votes": "My Votes",
+    "loading_neurons": "Loading your neurons..."
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
