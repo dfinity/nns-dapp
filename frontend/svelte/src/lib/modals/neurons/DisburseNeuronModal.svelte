@@ -58,7 +58,10 @@
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
+  <svelte:fragment slot="title"
+    ><span data-tid="disburse-neuron-modal">{currentStep?.title}</span
+    ></svelte:fragment
+  >
   {#if currentStep.name === "SelectDestination"}
     <Address bind:address on:submit={onEnterAddress} />
     <h5>{$i18n.accounts.my_accounts}</h5>
