@@ -10,7 +10,10 @@ import { IIConfirmRedirectPage } from "../components/ii-confirm-redirect";
 import { IIAddDevicePage } from "../components/ii-add-device-page";
 import { Navigator } from "./navigator";
 
-export const register = async (browser: WebdriverIO.Browser) => {
+/**
+ * Registers a new identity on the Internet Identity.
+ */
+export const register = async (browser: WebdriverIO.Browser): string => {
   const navigator = new Navigator(browser);
 
   // Record the ID of the tab we started on.
@@ -24,16 +27,21 @@ export const register = async (browser: WebdriverIO.Browser) => {
     { timeout: 10_000 }
   );
 
-  // We may get to the "Welcome back" page.  If so, use "loginDifferent" to get to the normal login page.
+  // We should now be on the Internet Identity page.
+  // We may get to the "Welcome" or the "Welcome back" page.  If we get "Welcome back"
+  // then we need to navigate to the normal welcome page to register.
+  // ... wait for either welcome page
   (
     await browser.$(
       `${IIWelcomeBackPage.LOGIN_DIFFERENT_BUTTON_SELECTOR}, ${IIWelcomePage.REGISTER_BUTTON_SELECTOR}`
     )
   ).waitForExist({ timeout: 30_000 });
+  // ... is this the welcome back page?
   const loginDifferent = browser.$(
     IIWelcomeBackPage.LOGIN_DIFFERENT_BUTTON_SELECTOR
   );
   if (await loginDifferent.isExisting()) {
+    // ... go to the normal welcome page.
     await browser["screenshot"]("registration-ii-welcome-back");
     await loginDifferent.click();
   }
@@ -75,6 +83,12 @@ export const register = async (browser: WebdriverIO.Browser) => {
   );
 
   // Congratulations Page
+  const newIdentity = await navigator
+    .get(
+      IICongratulationsPage.IDENTITY_SELECTOR,
+      "registration-ii-new-identity"
+    )
+    .then((element) => element.getText());
   await navigator.click(
     IICongratulationsPage.CONTINUE_BUTTON_SELECTOR,
     "registration-ii-congratulations",
@@ -101,4 +115,7 @@ export const register = async (browser: WebdriverIO.Browser) => {
 
   // Switch back to original window
   await browser.switchToWindow(originalTabId);
+
+  console.log("Created identity", newIdentity);
+  return newIdentity;
 };
