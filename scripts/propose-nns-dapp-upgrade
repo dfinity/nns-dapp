@@ -38,11 +38,10 @@ done
 
 NETWORK="${1:-testnet}"
 WASM_FILE=nns-dapp.wasm
+test -e "$WASM_FILE" || ./scripts/docker-build
 SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
 PROVIDER="$(NETWORK="$NETWORK" jq -er .networks[env.NETWORK].providers[0] dfx.json)"
 CANISTER_ID="$(dfx canister --network "$NETWORK" id nns-dapp)"
-
-test -e "$WASM_FILE" || ./scripts/docker-build
 
 set -x
 ./ic-admin --nns-url "$PROVIDER" propose-to-change-nns-canister --test-neuron-proposer --canister-id "$CANISTER_ID" --mode upgrade --wasm-module-path "$WASM_FILE" --wasm-module-sha256 "$SHA" --summary-file ./README.md
