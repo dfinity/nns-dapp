@@ -12,10 +12,10 @@ describe("neurons-store", () => {
       { ...mockNeuron, neuronId: BigInt(1) },
       { ...mockNeuron, neuronId: BigInt(2) },
     ];
-    neuronsStore.setNeurons(neurons);
+    neuronsStore.setNeurons({ neurons, certified: true });
 
     const neuronsInStore = get(neuronsStore);
-    expect(neuronsInStore).toEqual(neurons);
+    expect(neuronsInStore).toEqual({ neurons, certified: true });
   });
 
   it("should push neurons", () => {
@@ -23,16 +23,19 @@ describe("neurons-store", () => {
       { ...mockNeuron, neuronId: BigInt(1) },
       { ...mockNeuron, neuronId: BigInt(2) },
     ];
-    neuronsStore.setNeurons(neurons);
+    neuronsStore.setNeurons({ neurons, certified: true });
 
     const moreNeurons: NeuronInfo[] = [
       { ...mockNeuron, neuronId: BigInt(3) },
       { ...mockNeuron, neuronId: BigInt(4) },
     ];
-    neuronsStore.pushNeurons(moreNeurons);
+    neuronsStore.pushNeurons({ neurons: moreNeurons, certified: true });
 
     const neuronsInStore = get(neuronsStore);
-    expect(neuronsInStore).toEqual([...neurons, ...moreNeurons]);
+    expect(neuronsInStore).toEqual({
+      neurons: [...neurons, ...moreNeurons],
+      certified: true,
+    });
   });
 
   it("should substitute duplicated neurons", () => {
@@ -41,16 +44,16 @@ describe("neurons-store", () => {
       { ...mockNeuron, neuronId: BigInt(1) },
       duplicatedNeuron,
     ];
-    neuronsStore.setNeurons(neurons);
+    neuronsStore.setNeurons({ neurons, certified: true });
 
     const moreNeurons: NeuronInfo[] = [
       { ...mockNeuron, neuronId: BigInt(3) },
       duplicatedNeuron,
     ];
-    neuronsStore.pushNeurons(moreNeurons);
+    neuronsStore.pushNeurons({ neurons: moreNeurons, certified: true });
 
     const neuronsInStore = get(neuronsStore);
-    expect(neuronsInStore.length).toEqual(3);
+    expect((neuronsInStore.neurons || []).length).toEqual(3);
   });
 
   describe("sortedNeuronStore", () => {
@@ -60,7 +63,7 @@ describe("neurons-store", () => {
         { ...mockNeuron, createdTimestampSeconds: BigInt(1) },
         { ...mockNeuron, createdTimestampSeconds: BigInt(3) },
       ];
-      neuronsStore.setNeurons([...neurons]);
+      neuronsStore.setNeurons({ neurons: [...neurons], certified: true });
       expect(get(sortedNeuronStore)).toEqual([
         neurons[2],
         neurons[0],

@@ -18,11 +18,13 @@
   }
 
   .tooltip {
+    z-index: var(--z-index);
+
     position: absolute;
     display: inline-block;
 
     left: 50%;
-    bottom: calc(var(--padding) / 2);
+    bottom: var(--padding-0_5x);
     transform: translate(-50%, 100%);
 
     opacity: 0;
@@ -36,7 +38,11 @@
     background: var(--gray-600);
 
     color: var(--gray-600-contrast);
-    white-space: pre;
+
+    // limit width
+    white-space: pre-wrap;
+    max-width: 240px;
+    width: max-content;
 
     &.noWrap {
       white-space: nowrap;

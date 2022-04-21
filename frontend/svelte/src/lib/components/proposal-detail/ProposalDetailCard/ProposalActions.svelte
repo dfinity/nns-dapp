@@ -52,6 +52,7 @@
         font-size: var(--font-size-ultra-small);
         color: var(--gray-100);
         overflow-wrap: break-word;
+        white-space: pre-wrap;
 
         @include media.min-width(medium) {
           font-size: var(--font-size-small);

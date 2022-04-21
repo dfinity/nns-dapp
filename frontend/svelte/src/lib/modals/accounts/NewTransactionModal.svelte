@@ -74,7 +74,7 @@
       <NewTransactionAmount />
     {/if}
     {#if currentStep?.name === "Review"}
-      <NewTransactionReview />
+      <NewTransactionReview on:nnsClose />
     {/if}
   </svelte:fragment>
 </WizardModal>

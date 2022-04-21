@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { NeuronInfo, NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { getNeuronId, loadNeuron } from "../lib/services/neurons.services";
-  import NeuronFollowingCard from "../lib/components/neuron-detail/NeuronFollowingCard.svelte";
+  import NeuronFollowingCard from "../lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NeuronHotkeysCard from "../lib/components/neuron-detail/NeuronHotkeysCard.svelte";
   import NeuronMaturityCard from "../lib/components/neuron-detail/NeuronMaturityCard.svelte";
   import NeuronMetaInfoCard from "../lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
@@ -50,8 +50,8 @@
 
     await loadNeuron({
       neuronId: neuronIdMaybe,
-      setNeuron: (neuronInfo: NeuronInfo) =>
-        neuronsStore.pushNeurons([neuronInfo]),
+      setNeuron: ({ neuron, certified }) =>
+        neuronsStore.pushNeurons({ neurons: [neuron], certified }),
       handleError: onError,
     });
   });

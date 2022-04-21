@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
   import type { NeuronId } from "@dfinity/nns";
-  import ProposerModal from "../../modals/proposals/ProposerModal.svelte";
+  import VotingHistoryModal from "../../modals/neurons/VotingHistoryModal.svelte";
   import { i18n } from "../../stores/i18n";
 
   export let proposalInfo: ProposalInfo;
@@ -18,7 +18,10 @@
   >
 
   {#if modalOpen}
-    <ProposerModal {proposer} on:nnsClose={() => (modalOpen = false)} />
+    <VotingHistoryModal
+      neuronId={proposer}
+      on:nnsClose={() => (modalOpen = false)}
+    />
   {/if}
 {/if}
 

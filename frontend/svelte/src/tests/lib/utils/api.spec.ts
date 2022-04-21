@@ -1,5 +1,6 @@
 import { tick } from "svelte";
 import { queryAndUpdate } from "../../../lib/services/utils.services";
+import * as devUtils from "../../../lib/utils/dev.utils";
 
 describe("api-utils", () => {
   describe("queryAndUpdate", () => {
@@ -137,6 +138,20 @@ describe("api-utils", () => {
       });
       expect(updateDone).toBeTruthy();
       expect(queryDone).toBeFalsy();
+    });
+
+    it("should log", async () => {
+      const log = jest.spyOn(devUtils, "logWithTimestamp");
+      const request = jest.fn().mockImplementation(() => Promise.resolve());
+      const onLoad = jest.fn();
+
+      await queryAndUpdate<number, unknown>({
+        request,
+        onLoad,
+        logMessage: "test-log",
+      });
+
+      expect(log).toBeCalled();
     });
   });
 });

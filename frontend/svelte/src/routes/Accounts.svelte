@@ -8,7 +8,6 @@
   import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import {
     AppPath,
@@ -18,6 +17,7 @@
   import { ICP } from "@dfinity/nns";
   import { sumICPs } from "../lib/utils/icp.utils";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
+  import RouteSpinner from "../lib/components/ui/RouteSpinner.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -79,7 +79,7 @@
           >
         {/each}
       {:else}
-        <Spinner />
+        <RouteSpinner />
       {/if}
     </section>
 
@@ -111,7 +111,7 @@
     display: block;
     width: 100%;
 
-    margin-bottom: calc(2 * var(--padding));
+    margin-bottom: var(--padding-2x);
 
     --icp-font-size: var(--font-size-h1);
 

@@ -7,7 +7,7 @@
   } from "@dfinity/nns";
   import { Topic } from "@dfinity/nns";
   import { i18n } from "../../../../lib/stores/i18n";
-  import ProposerModal from "../../../modals/proposals/ProposerModal.svelte";
+  import VotingHistoryModal from "../../../modals/neurons/VotingHistoryModal.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -36,7 +36,10 @@
     </button>
 
     {#if modalOpen}
-      <ProposerModal {proposer} on:nnsClose={() => (modalOpen = false)} />
+      <VotingHistoryModal
+        neuronId={proposer}
+        on:nnsClose={() => (modalOpen = false)}
+      />
     {/if}
   {/if}
 
@@ -51,13 +54,13 @@
   @use "../../../themes/mixins/media";
 
   div {
-    margin: calc(3 * var(--padding)) 0;
+    margin: var(--padding-3x) 0;
 
     a,
     p,
     button {
       display: block;
-      margin: 0 0 calc(0.5 * var(--padding));
+      margin: 0 0 var(--padding-0_5x);
       padding: 0;
 
       font-size: var(--font-size-h5);

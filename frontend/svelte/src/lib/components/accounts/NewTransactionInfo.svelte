@@ -9,17 +9,21 @@
     NEW_TRANSACTION_CONTEXT_KEY
   );
   const { store }: TransactionContext = context;
+
+  export let feeOnly: boolean = false;
 </script>
 
-<h5>{$i18n.accounts.source}</h5>
-<p>{$store.selectedAccount?.identifier ?? ""}</p>
+{#if !feeOnly}
+  <h5>{$i18n.accounts.source}</h5>
+  <p>{$store.selectedAccount?.identifier ?? ""}</p>
 
-<h5>{$i18n.accounts.destination}</h5>
-<p>{$store.destinationAddress ?? ""}</p>
+  <h5>{$i18n.accounts.destination}</h5>
+  <p>{$store.destinationAddress ?? ""}</p>
+{/if}
 
 <h5>{$i18n.accounts.transaction_fee}</h5>
 
-<p>{formattedTransactionFeeICP()} ICP</p>
+<p class="fee">{formattedTransactionFeeICP()} ICP</p>
 
 <style lang="scss">
   h5 {
@@ -27,7 +31,11 @@
   }
 
   p {
-    margin: 0 0 calc(var(--padding) / 2);
+    margin: 0 0 var(--padding-0_5x);
     word-wrap: break-word;
+  }
+
+  .fee {
+    flex-grow: 1;
   }
 </style>

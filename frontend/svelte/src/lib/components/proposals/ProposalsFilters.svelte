@@ -5,7 +5,7 @@
   import { i18n } from "../../stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
-  import { enumSize } from "../../utils/enum.utils";
+  import { enumsExclude } from "../../utils/enum.utils";
   import FiltersButton from "../ui/FiltersButton.svelte";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
@@ -21,12 +21,25 @@
 
   $: ({ topics, rewards, status, excludeVotedProposals } =
     $proposalsFiltersStore);
+
+  let totalFiltersTopic = enumsExclude({
+    obj: Topic as unknown as Topic,
+    values: [Topic.Unspecified],
+  }).length;
+  let totalFiltersProposalRewardStatus = enumsExclude({
+    obj: ProposalRewardStatus as unknown as ProposalRewardStatus,
+    values: [ProposalRewardStatus.PROPOSAL_REWARD_STATUS_UNKNOWN],
+  }).length;
+  let totalFiltersProposalStatus = enumsExclude({
+    obj: ProposalStatus as unknown as ProposalStatus,
+    values: [ProposalStatus.PROPOSAL_STATUS_UNKNOWN],
+  }).length;
 </script>
 
 <div class="filters">
   <FiltersButton
     testId="filters-by-topics"
-    totalFilters={enumSize(Topic)}
+    totalFilters={totalFiltersTopic}
     activeFilters={topics.length}
     on:nnsFilter={() =>
       openModal({
@@ -38,7 +51,7 @@
 
   <FiltersButton
     testId="filters-by-rewards"
-    totalFilters={enumSize(ProposalRewardStatus)}
+    totalFilters={totalFiltersProposalRewardStatus}
     activeFilters={rewards.length}
     on:nnsFilter={() =>
       openModal({
@@ -50,7 +63,7 @@
 
   <FiltersButton
     testId="filters-by-status"
-    totalFilters={enumSize(ProposalStatus)}
+    totalFilters={totalFiltersProposalStatus}
     activeFilters={status.length}
     on:nnsFilter={() =>
       openModal({
@@ -80,7 +93,7 @@
   .filters {
     display: flex;
     flex-wrap: wrap;
-    padding: calc(2 * var(--padding)) 0 var(--padding);
+    padding: var(--padding-2x) 0 var(--padding);
 
     --select-flex-direction: row-reverse;
 

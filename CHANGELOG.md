@@ -1,5 +1,19 @@
 # Changelog
 
+## Proposal 55738
+* Fix rendering of large payloads.
+* Fix double-voting error message.
+* Rate limit API calls to reduce the risk of errors for users with large numbers of neurons.
+* Add log messages to help diagnose issues experienced by users.
+* Update dfx to 0.9.2
+* A filter that excludes all proposals was previously ignored, whereas now such a filter will show no results.
+* Preparation for switching more of the UI to svelte.
+* UI improvements.
+* More tests.
+
+## Proposal 54295
+- Display the proposals tab using svelte
+
 ## Proposal 53536
 - Merge neuron functionality (using quill, not the GUI).
 - Updated logo

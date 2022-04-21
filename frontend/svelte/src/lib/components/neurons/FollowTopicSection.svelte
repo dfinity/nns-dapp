@@ -114,7 +114,7 @@
   article {
     :global(.collapsible-expand-icon) {
       align-items: start;
-      padding-top: calc(3 * var(--padding));
+      padding-top: var(--padding-3x);
       color: var(--background-contrast);
     }
   }
@@ -123,7 +123,7 @@
     display: flex;
     align-items: start;
     justify-content: space-between;
-    gap: calc(2 * var(--padding));
+    gap: var(--padding-2x);
   }
 
   .subtitle {
@@ -134,9 +134,9 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    gap: calc(2 * var(--padding));
-    margin-top: calc(2 * var(--padding));
-    margin-right: calc(2 * var(--padding));
+    gap: var(--padding-2x);
+    margin-top: var(--padding-2x);
+    margin-right: var(--padding-2x);
   }
 
   .badge {
@@ -144,8 +144,8 @@
     color: var(--background);
     border-radius: 50%;
     padding: var(--padding);
-    width: calc(2 * var(--padding));
-    height: calc(2 * var(--padding));
+    width: var(--padding-2x);
+    height: var(--padding-2x);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,7 +161,7 @@
 
     ul {
       list-style-type: none;
-      padding: 0 calc(3 * var(--padding));
+      padding: 0 var(--padding-3x);
     }
 
     li {
