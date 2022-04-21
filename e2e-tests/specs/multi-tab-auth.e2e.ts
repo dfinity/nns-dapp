@@ -5,14 +5,19 @@ import { waitForLoad } from "../common/waitForLoad";
 import { Header } from "../components/header.ts";
 import { getLoginButton } from "../components/auth";
 import { Navigator } from "../common/navigator";
+import { AuthPage } from "../components/auth";
 
 /**
  * Verifies that the login/logout state is synchronised across tabs.
  */
 describe("multi-tab-auth", () => {
-  const navigator = new Navigator(browser);
   const nnsTabs = [];
   var identityAnchor = undefined;
+  var navigator;
+
+  before(() => {
+     navigator = new Navigator(browser);
+  });
 
   it("openTwoTabs", async () => {
     await browser.url("/");
@@ -28,7 +33,7 @@ describe("multi-tab-auth", () => {
 
   it("registerTabOne", async () => {
     identityAnchor = await register(browser);
-    await navigator.getElement(Header.LOGOUT_BUTTON_SELECTOR);
+    await navigator.getElement(Header.LOGOUT_BUTTON_SELECTOR, "Wait for login after registration", {timeout: 10_000});
     await waitForImages(browser);
     await browser["screenshot"]("register-tab-one");
   });
@@ -54,6 +59,7 @@ describe("multi-tab-auth", () => {
     });
   });
 
+/*
   // Now with login rather than registration:
   it("loginTabOne", async () => {
     if (identityAnchor === undefined) {
@@ -86,4 +92,5 @@ describe("multi-tab-auth", () => {
       await loginButton.waitForExist({ timeout: 10000 });
     });
   });
+*/
 });

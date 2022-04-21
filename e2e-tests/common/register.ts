@@ -14,6 +14,9 @@ import { Navigator } from "./navigator";
  * Registers a new identity on the Internet Identity.
  */
 export const register = async (browser: WebdriverIO.Browser): string => {
+  if (undefined === browser) {
+    throw new Error("Browser is undefined in 'register(..)'");
+  }
   const navigator = new Navigator(browser);
 
   // Record the ID of the tab we started on.
@@ -85,7 +88,7 @@ export const register = async (browser: WebdriverIO.Browser): string => {
 
   // Congratulations Page
   const newIdentity = await navigator
-    .get(
+    .getElement(
       IICongratulationsPage.IDENTITY_SELECTOR,
       "registration-ii-new-identity",
       { timeout: 30_000 }
@@ -118,6 +121,6 @@ export const register = async (browser: WebdriverIO.Browser): string => {
   // Switch back to original window
   await browser.switchToWindow(originalTabId);
 
-  console.log("Created identity", newIdentity);
+  console.info("Created identity", newIdentity);
   return newIdentity;
 };
