@@ -7,7 +7,6 @@ print_help() {
 	Propose to upgrade a testnet NNS-dapp canister to the current build.
 
 	Usage:
-	- Build the nns-dapp canister, e.g. with docker as in the README.md
 	- Put a copy of ic-admin to match the testnet in the root of the repository
 	- Run: ./$(basename "$0") testnet
 	EOF
