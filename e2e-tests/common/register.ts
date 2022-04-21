@@ -9,6 +9,7 @@ import { IIRecoveryMissingWarningPage } from "../components/ii-recovery-warning"
 import { IIConfirmRedirectPage } from "../components/ii-confirm-redirect";
 import { IIAddDevicePage } from "../components/ii-add-device-page";
 import { Navigator } from "./navigator";
+import { Header } from "../components/header.ts";
 
 /**
  * Registers a new identity on the Internet Identity.
@@ -120,6 +121,11 @@ export const register = async (browser: WebdriverIO.Browser): string => {
 
   // Switch back to original window
   await browser.switchToWindow(originalTabId);
+  await navigator.getElement(
+    Header.LOGOUT_BUTTON_SELECTOR,
+    "Wait for login after registration",
+    { timeout: 10_000 }
+  );
 
   // Log change of state:
   console.warn("Created identity", newIdentity);

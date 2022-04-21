@@ -27,6 +27,31 @@ export class Navigator {
   }
 
   /**
+   * Gets any of a list of selectors.
+   *
+   * Returns a map with:
+   * _: an element matching one of the selectors.
+   * SELECTOR: an element matching SELECTOR, if found.
+   *
+   * Warning: Elements can disappear.
+   */
+  async getAny(
+    selectors: Array<string>,
+    description: string,
+    options?: { timeout?: number }
+  ) {
+    // Comma is the OR operator in CSS query strings.
+    let anyElement = await this.getElement(selectors.join(", "), description, options);
+    return selectors.reduce(async (ans, selector) => {
+      let element = await browser.$(selector);
+      if (await element.isExisting()) {
+        ans[selector] = element;
+      }
+      return ans;
+    }, { _: anyElement });
+  }
+
+  /**
    * Clicks - the camera and then a navigation button.
    * Motivation: Taking a screenshot before each navigation gives an effective summary of an e2e test.
    */
