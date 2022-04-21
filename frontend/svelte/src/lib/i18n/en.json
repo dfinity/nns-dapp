@@ -13,7 +13,8 @@
     "unspecified": "Unspecified",
     "continue": "Continue",
     "amount": "Amount",
-    "max": "Max"
+    "max": "Max",
+    "principal": "Principal"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -59,7 +60,8 @@
     "merge_neurons_same_id": "Two neurons with same id can't be merged. Check the article for more: ",
     "merge_neurons_not_same_controller": "Two neurons need to have the same controller. Check the article for more: ",
     "merge_neurons_not_same_manage_neuron_followees": "Two neurons need to have the same followees on the topic of \"Manage Neuron\". Check the article for more: ",
-    "not_mergeable": "This neuron can't be merged."
+    "not_mergeable": "This neuron can't be merged.",
+    "principal_not_valid": "Please enter a valid principal."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -308,7 +310,8 @@
     "add_hotkey": "Add Hotkey",
     "no_notkeys": "No hotkeys",
     "add_hotkey_modal_title": "Add Hotkey",
-    "enter_hotkey": "Enter Hotkey:"
+    "enter_hotkey": "Enter Hotkey:",
+    "add_hotkey_success": "Hotkey added successfully."
   },
   "time": {
     "year": "year",

@@ -17,6 +17,7 @@ interface I18nCore {
   continue: string;
   amount: string;
   max: string;
+  principal: string;
 }
 
 interface I18nError {
@@ -64,6 +65,7 @@ interface I18nError {
   merge_neurons_not_same_controller: string;
   merge_neurons_not_same_manage_neuron_followees: string;
   not_mergeable: string;
+  principal_not_valid: string;
 }
 
 interface I18nWarning {
@@ -331,6 +333,7 @@ interface I18nNeuron_detail {
   no_notkeys: string;
   add_hotkey_modal_title: string;
   enter_hotkey: string;
+  add_hotkey_success: string;
 }
 
 interface I18nTime {

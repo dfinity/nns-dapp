@@ -1,4 +1,5 @@
 import { ICP, LedgerCanister, Topic } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 import { tick } from "svelte/internal";
 import { get } from "svelte/store";
@@ -20,6 +21,7 @@ import {
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 const {
+  addHotkey,
   addFollowee,
   getNeuronId,
   joinCommunityFund,
@@ -92,6 +94,10 @@ describe("neurons-services", () => {
 
   const spyMergeNeurons = jest
     .spyOn(api, "mergeNeurons")
+    .mockImplementation(() => Promise.resolve());
+
+  const spyAddHotkey = jest
+    .spyOn(api, "addHotkey")
     .mockImplementation(() => Promise.resolve());
 
   const spySplitNeuron = jest
@@ -350,6 +356,7 @@ describe("neurons-services", () => {
       jest.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
     });
+
     it("should update neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await mergeNeurons({
@@ -373,7 +380,6 @@ describe("neurons-services", () => {
 
       resetIdentity();
     });
-
     it("should not update neuron if different controllers", async () => {
       const neuron = {
         ...mockNeuron,
@@ -395,6 +401,50 @@ describe("neurons-services", () => {
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spyMergeNeurons).not.toHaveBeenCalled();
+    });
+  });
+  describe("addHotkey", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
+    });
+    it("should update neuron", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      await addHotkey({
+        neuronId: controlledNeuron.neuronId,
+        principal: Principal.fromText("aaaaa-aa"),
+      });
+
+      expect(spyAddHotkey).toHaveBeenCalled();
+    });
+
+    it("should not update neuron if no identity", async () => {
+      setNoIdentity();
+
+      await addHotkey({
+        neuronId: controlledNeuron.neuronId,
+        principal: Principal.fromText("aaaaa-aa"),
+      });
+
+      expect(toastsStore.show).toHaveBeenCalled();
+      expect(spyAddHotkey).not.toHaveBeenCalled();
+
+      resetIdentity();
+    });
+
+    it("should not update neuron if not controlled by user", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+
+      await addHotkey({
+        neuronId: controlledNeuron.neuronId,
+        principal: Principal.fromText("aaaaa-aa"),
+      });
+
+      expect(toastsStore.error).toHaveBeenCalled();
+      expect(spyAddHotkey).not.toHaveBeenCalled();
     });
   });
 
