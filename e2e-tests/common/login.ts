@@ -38,7 +38,14 @@ export const loginWithIdentity = async (
   // We may get to the "Welcome" or the "Welcome back" page.  If we get "Welcome back"
   // then we need to navigate to the normal welcome page to log in with the specified ID.
   // ... wait for either welcome page
-  let matches = await navigator.getAny([IIWelcomeBackPage.LOGIN_DIFFERENT_BUTTON_SELECTOR, IIWelcomePage.REGISTER_BUTTON_SELECTOR], "welcome-or-welcome-back", { timeout: 30_000 });
+  let matches = await navigator.getAny(
+    [
+      IIWelcomeBackPage.LOGIN_DIFFERENT_BUTTON_SELECTOR,
+      IIWelcomePage.REGISTER_BUTTON_SELECTOR,
+    ],
+    "welcome-or-welcome-back",
+    { timeout: 30_000 }
+  );
   // ... is this the welcome back page?
   if (IIWelcomeBackPage.LOGIN_DIFFERENT_BUTTON_SELECTOR in matches) {
     // ... go to the normal welcome page.
@@ -63,9 +70,18 @@ export const loginWithIdentity = async (
   // - taken to the confirmation page.
   // We look for all.  If we get a recovery page we skip on to the confirmation page.
   await Promise.race([
-    navigator.click(IIRecoveryMechanismPage.SKIP_RECOVERY_BUTTON_SELECTOR, "skip recovery offer"),
-    navigator.click(IIRecoveryMissingWarningPage.SKIP_BUTTON_SELECTOR, "skip recovery warning"),
-    navigator.getElement(IIConfirmRedirectPage.CONFIRM_REDIRECT_BUTTON_SELECTOR, "on the confirmation page already")
+    navigator.click(
+      IIRecoveryMechanismPage.SKIP_RECOVERY_BUTTON_SELECTOR,
+      "skip recovery offer"
+    ),
+    navigator.click(
+      IIRecoveryMissingWarningPage.SKIP_BUTTON_SELECTOR,
+      "skip recovery warning"
+    ),
+    navigator.getElement(
+      IIConfirmRedirectPage.CONFIRM_REDIRECT_BUTTON_SELECTOR,
+      "on the confirmation page already"
+    ),
   ]);
 
   // Now we should be arriving at the confirmation page, by one of several possible paths.

@@ -41,14 +41,21 @@ export class Navigator {
     options?: { timeout?: number }
   ) {
     // Comma is the OR operator in CSS query strings.
-    let anyElement = await this.getElement(selectors.join(", "), description, options);
-    return selectors.reduce(async (ans, selector) => {
-      let element = await browser.$(selector);
-      if (await element.isExisting()) {
-        ans[selector] = element;
-      }
-      return ans;
-    }, { _: anyElement });
+    let anyElement = await this.getElement(
+      selectors.join(", "),
+      description,
+      options
+    );
+    return selectors.reduce(
+      async (ans, selector) => {
+        let element = await browser.$(selector);
+        if (await element.isExisting()) {
+          ans[selector] = element;
+        }
+        return ans;
+      },
+      { _: anyElement }
+    );
   }
 
   /**
