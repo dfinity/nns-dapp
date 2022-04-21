@@ -75,7 +75,7 @@ describe("VotingCard", () => {
         proposalInfo,
       },
     });
-    votingNeuronSelectStore.reset();
+    await tick();
     expect(container.querySelector("button[disabled]")).toBeNull();
   });
 
