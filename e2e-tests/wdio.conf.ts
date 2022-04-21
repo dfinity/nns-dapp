@@ -17,7 +17,7 @@ export const config: WebdriverIO.Config = {
           (Number.isNaN(browser["screenshot-count"])
             ? 1000
             : Number(browser["screenshot-count"])) + 1;
-        const countStr: string = (browser["screenshot-count"]++)
+        const countStr: string = browser["screenshot-count"]
           .toFixed()
           .padStart(2, "0");
         const unsafeFilename = `${browser["screenshot-prefix"]}_${countStr}_${name}`;
@@ -87,7 +87,7 @@ export const config: WebdriverIO.Config = {
     },
   ],
   logLevel:
-    process.env.LOG_LEVEL === undefined ? "info" : process.env.LOG_LEVEL,
+    process.env.LOG_LEVEL === undefined ? "warn" : process.env.LOG_LEVEL,
   services: ["chromedriver"],
 
   framework: "mocha",

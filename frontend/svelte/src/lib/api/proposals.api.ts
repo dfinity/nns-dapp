@@ -107,15 +107,15 @@ export const registerVote = async ({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  const response = await governance.registerVote({
+  await governance.registerVote({
     neuronId,
     vote,
     proposalId,
   });
+
   logWithTimestamp(
     `Registering Vote (${hashCode(proposalId)}, ${hashCode(
       neuronId
     )}) complete.`
   );
-  return response;
 };
