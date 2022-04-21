@@ -55,7 +55,7 @@ export const register = async (browser: WebdriverIO.Browser): string => {
   );
 
   // Add Device Page
-  const registerAlias = await navigator.get(
+  const registerAlias = await navigator.getElement(
     IIAddDevicePage.REGISTER_ALIAS_INPUT_SELECTOR,
     "registration-ii-device-name-input"
   );
@@ -66,7 +66,7 @@ export const register = async (browser: WebdriverIO.Browser): string => {
   );
 
   // Captcha Page
-  const captchaInput = await navigator.get(
+  const captchaInput = await navigator.getElement(
     IICaptchaPage.CAPTCHA_INPUT_SELECTOR,
     "registration-ii-captcha-input",
     { timeout: 30_000 }
@@ -87,7 +87,8 @@ export const register = async (browser: WebdriverIO.Browser): string => {
   const newIdentity = await navigator
     .get(
       IICongratulationsPage.IDENTITY_SELECTOR,
-      "registration-ii-new-identity"
+      "registration-ii-new-identity",
+      { timeout: 30_000 }
     )
     .then((element) => element.getText());
   await navigator.click(
