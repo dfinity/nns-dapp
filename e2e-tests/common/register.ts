@@ -121,6 +121,7 @@ export const register = async (browser: WebdriverIO.Browser): string => {
   // Switch back to original window
   await browser.switchToWindow(originalTabId);
 
-  console.info("Created identity", newIdentity);
+  // Log change of state:
+  console.warn("Created identity", newIdentity);
   return newIdentity;
 };
