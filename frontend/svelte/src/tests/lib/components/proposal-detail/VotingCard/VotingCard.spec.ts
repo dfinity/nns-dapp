@@ -68,7 +68,7 @@ describe("VotingCard", () => {
     expect(container.querySelectorAll("button[disabled]").length).toBe(2);
   });
 
-  it("should enable action buttons any neuron is selected", async () => {
+  it("should enable action buttons when neurons are selected", async () => {
     // changing the neuronStore automatically updates votingNeuronSelectStore with initial pre-selection of all neurons
     neuronsStore.setNeurons({ neurons, certified: true });
     const { container } = render(VotingCard, {
