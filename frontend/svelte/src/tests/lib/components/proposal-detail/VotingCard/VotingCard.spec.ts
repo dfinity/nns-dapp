@@ -36,7 +36,7 @@ describe("VotingCard", () => {
     jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
 
-  afterAll(() => jest.restoreAllMocks());
+  afterAll(() => jest.resetAllMocks());
 
   it("should be hidden if there is no not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
