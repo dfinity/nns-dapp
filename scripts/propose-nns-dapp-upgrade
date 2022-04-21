@@ -13,6 +13,7 @@ print_help() {
 }
 
 on_exit() {
+  set +x
   exit_code=$?
   ((exit_code == 0)) || {
     printf "\n\nERROR: exiting with code %s\n\n" $exit_code
@@ -41,6 +42,14 @@ test -e "$WASM_FILE" || ./scripts/docker-build
 SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
 PROVIDER="$(NETWORK="$NETWORK" jq -er .networks[env.NETWORK].providers[0] dfx.json)"
 CANISTER_ID="$(dfx canister --network "$NETWORK" id nns-dapp)"
+test -e ./ic-admin || {
+	printf "  %s\n" \
+		"" \
+		"Place a copy of ic-admin in the repo root as per the instructions here:" \
+		"https://www.notion.so/SOP-Deploy-NNS-dapp-to-mainnet-5347d7438dc04b088c61abd0edb3abd4" \
+		""
+	read -rp "Press enter to continue..."  _
+}
 
 set -x
 ./ic-admin --nns-url "$PROVIDER" propose-to-change-nns-canister --test-neuron-proposer --canister-id "$CANISTER_ID" --mode upgrade --wasm-module-path "$WASM_FILE" --wasm-module-sha256 "$SHA" --summary-file ./README.md
