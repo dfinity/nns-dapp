@@ -628,9 +628,8 @@ export default class RequestConverters {
       const spawn = command.Spawn;
       return {
         Spawn: {
-          percentage_to_spawn: spawn.percentageToSpawn != null
-            ? [spawn.percentageToSpawn]
-            : [],
+          percentage_to_spawn:
+            spawn.percentageToSpawn != null ? [spawn.percentageToSpawn] : [],
           new_controller: spawn.newController
             ? [Principal.fromText(spawn.newController)]
             : [],

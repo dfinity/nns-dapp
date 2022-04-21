@@ -433,7 +433,7 @@ export interface RegisterVoteRequest {
 }
 
 export interface SpawnRequest {
-  percentageToSpawn : Option<number>,
+  percentageToSpawn: Option<number>;
   neuronId: NeuronId;
   newController: Option<PrincipalString>;
 }

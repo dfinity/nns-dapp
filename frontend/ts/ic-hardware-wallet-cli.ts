@@ -194,7 +194,11 @@ async function disburseNeuron(
   ok(`Disburse completed at block height ${response.transferBlockHeight}`);
 }
 
-async function spawnNeuron(neuronId: string, percentageToSpawn? : number, controller?: PrincipalString) {
+async function spawnNeuron(
+  neuronId: string,
+  percentageToSpawn?: number,
+  controller?: PrincipalString
+) {
   const identity = await getLedgerIdentity();
   const governance = await getGovernanceService(identity);
 
@@ -362,7 +366,9 @@ async function main() {
         .option("--percentage-to-spawn <percentage-to-spawn>")
         .option("--controller <new-controller>")
         .action((args) => {
-          run(() => spawnNeuron(args.neuronId, args.percentageToSpawn, args.controller));
+          run(() =>
+            spawnNeuron(args.neuronId, args.percentageToSpawn, args.controller)
+          );
         })
     )
     .addCommand(
