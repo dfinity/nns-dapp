@@ -56,7 +56,7 @@ describe("VotingCard", () => {
     await waitFor(() => expect(queryByTestId("card")).toBeInTheDocument());
   });
 
-  it("should disable action buttons if nothing is selected", async () => {
+  it("should disable action buttons if no neurons selected", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
     const { container } = render(VotingCard, {
       props: {
@@ -68,7 +68,8 @@ describe("VotingCard", () => {
     expect(container.querySelectorAll("button[disabled]").length).toBe(2);
   });
 
-  it("should enable action buttons if nothing is selected", async () => {
+  it("should enable action buttons any neuron is selected", async () => {
+    // changing the neuronStore automatically updates votingNeuronSelectStore with initial pre-selection of all neurons
     neuronsStore.setNeurons({ neurons, certified: true });
     const { container } = render(VotingCard, {
       props: {
