@@ -54,6 +54,29 @@ describe("VotingCard", () => {
     await waitFor(() => expect(queryByTestId("card")).toBeInTheDocument());
   });
 
+  it("should disable action buttons if nothing is selected", async () => {
+    neuronsStore.setNeurons({ neurons, certified: true });
+    const { container } = render(VotingCard, {
+      props: {
+        proposalInfo,
+      },
+    });
+    votingNeuronSelectStore.reset();
+    await tick();
+    expect(container.querySelectorAll("button[disabled]").length).toBe(2);
+  });
+
+  it("should enable action buttons if nothing is selected", async () => {
+    neuronsStore.setNeurons({ neurons, certified: true });
+    const { container } = render(VotingCard, {
+      props: {
+        proposalInfo,
+      },
+    });
+    votingNeuronSelectStore.reset();
+    expect(container.querySelector("button[disabled]")).toBeNull();
+  });
+
   describe("voting", () => {
     const mockGovernanceCanister: MockGovernanceCanister =
       new MockGovernanceCanister([proposalInfo]);
