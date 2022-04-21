@@ -43,12 +43,12 @@ SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
 PROVIDER="$(NETWORK="$NETWORK" jq -er .networks[env.NETWORK].providers[0] dfx.json)"
 CANISTER_ID="$(dfx canister --network "$NETWORK" id nns-dapp)"
 test -e ./ic-admin || {
-	printf "  %s\n" \
-		"" \
-		"Place a copy of ic-admin in the repo root as per the instructions here:" \
-		"https://www.notion.so/SOP-Deploy-NNS-dapp-to-mainnet-5347d7438dc04b088c61abd0edb3abd4" \
-		""
-	read -rp "Press enter to continue..."  _
+  printf "  %s\n" \
+    "" \
+    "Place a copy of ic-admin in the repo root as in the testnet installation instructions:" \
+    "https://www.notion.so/SOP-Deploy-NNS-dapp-to-mainnet-5347d7438dc04b088c61abd0edb3abd4" \
+    ""
+  read -rp "Press enter to continue..." _
 }
 
 set -x
