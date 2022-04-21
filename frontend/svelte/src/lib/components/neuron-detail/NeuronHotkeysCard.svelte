@@ -19,6 +19,7 @@
 
 <Card>
   <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
+  <!-- TODO: Show and remove hotkeys https://dfinity.atlassian.net/browse/L2-358 -->
   <p>{$i18n.neuron_detail.no_notkeys}</p>
   <div class="actions">
     {#if isControllable}

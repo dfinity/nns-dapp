@@ -21,6 +21,7 @@
     let principal: Principal | undefined = undefined;
     try {
       principal = Principal.fromText(address);
+      showAddressNotValid = false;
     } catch (error) {
       showAddressNotValid = true;
     }
@@ -83,8 +84,6 @@
     @include modal.section;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
     gap: var(--padding);
   }
 

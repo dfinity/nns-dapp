@@ -166,7 +166,7 @@ describe("neurons-api", () => {
       expect(mockGovernanceCanister.joinCommunityFund).toBeCalled();
     });
 
-    it("throws error when setting followees fails", async () => {
+    it("throws error when joining community fund fails", async () => {
       const error = new Error();
       mockGovernanceCanister.joinCommunityFund.mockImplementation(
         jest.fn(() => {
@@ -231,7 +231,7 @@ describe("neurons-api", () => {
       expect(mockGovernanceCanister.addHotkey).toBeCalled();
     });
 
-    it("throws error when setting followees fails", async () => {
+    it("throws error when adding hotkey fails", async () => {
       const error = new Error();
       mockGovernanceCanister.addHotkey.mockImplementation(
         jest.fn(() => {
