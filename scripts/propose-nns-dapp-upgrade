@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$(realpath "$0")")/.."
 
 print_help() {
-	cat <<-EOF
+  cat <<-EOF
 	Propose to upgrade a testnet NNS-dapp canister to the current build.
 
 	Usage:
@@ -14,22 +14,26 @@ print_help() {
 }
 
 on_exit() {
-	exit_code=$?
-	(( exit_code == 0 )) || {
-		printf "\n\nERROR: exiting with code %s\n\n" $exit_code
-		print_help | sed 's/^/USAGE: /g'
-		exit $exit_code
-	} >&2
+  exit_code=$?
+  ((exit_code == 0)) || {
+    printf "\n\nERROR: exiting with code %s\n\n" $exit_code
+    print_help | sed 's/^/USAGE: /g'
+    exit $exit_code
+  } >&2
 }
 trap on_exit EXIT
 
 NETWORK=testnet
-while (( $# > 0 )); do
-	arg="$1" ; shift 1
-	case "$arg" in
-	--help)	print_help ; exit 0 ;;
-	*)	NETWORK="$arg" ;;
-	esac
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    print_help
+    exit 0
+    ;;
+  *) NETWORK="$arg" ;;
+  esac
 done
 
 NETWORK="${1:-testnet}"
