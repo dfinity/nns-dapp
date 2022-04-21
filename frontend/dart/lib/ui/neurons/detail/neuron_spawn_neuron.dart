@@ -28,11 +28,10 @@ class _SpawnNeuronState extends State<SpawnNeuron> {
   }
 
   Future performUpdate(BuildContext context) async {
-    try  {
+    try {
       final newNeuron = await context.callUpdate(
-              () => context.icApi.spawnNeuron(neuron: widget.neuron, percentageToSpawn: sliderValue.currentValue));
-      context.nav
-          .push(neuronPageDef.createPageConfig(newNeuron));
+          () => context.icApi.spawnNeuron(neuron: widget.neuron, percentageToSpawn: sliderValue.currentValue));
+      context.nav.push(neuronPageDef.createPageConfig(newNeuron));
     } catch (err) {
       js.context.callMethod("alert", ["$err"]);
     }
@@ -147,7 +146,10 @@ class _SpawnNeuronState extends State<SpawnNeuron> {
                         },
                       ),
                     );
-                  }.takeIf((e) => sliderValue.currentValue > 0),
+                  }.takeIf(
+                    (e) => ((BigInt.from(sliderValue.currentValue) * widget.neuron.maturityICPEquivalent.asE8s()) >
+                        BigInt.from(E8S_PER_ICP * 100)),
+                  ),
                 ),
               ),
             ],
