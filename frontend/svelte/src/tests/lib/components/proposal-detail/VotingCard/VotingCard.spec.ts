@@ -32,9 +32,11 @@ describe("VotingCard", () => {
     neuronId,
   }));
 
-  beforeEach(() =>
+  beforeAll(() =>
     jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
+
+  afterAll(() => jest.restoreAllMocks());
 
   it("should be hidden if there is no not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -63,7 +65,9 @@ describe("VotingCard", () => {
         proposalInfo,
       },
     });
+    // remove neuron selection
     votingNeuronSelectStore.reset();
+    // wait for UI update (src/lib/components/proposal-detail/VotingCard/VotingCard.svelte#34)
     await tick();
     expect(container.querySelectorAll("button[disabled]").length).toBe(2);
   });
@@ -76,7 +80,6 @@ describe("VotingCard", () => {
         proposalInfo,
       },
     });
-    await tick();
     expect(container.querySelector("button[disabled]")).toBeNull();
   });
 
