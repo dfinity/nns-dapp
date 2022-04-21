@@ -326,6 +326,11 @@ interface I18nNeuron_detail {
   split_neuron_disabled_tooltip: string;
   merge_neurons_success: string;
   disburse_neuron_title: string;
+  hotkeys_title: string;
+  add_hotkey: string;
+  no_notkeys: string;
+  add_hotkey_modal_title: string;
+  enter_hotkey: string;
 }
 
 interface I18nTime {

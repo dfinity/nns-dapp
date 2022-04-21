@@ -300,10 +300,15 @@
     "follow_neurons": "Follow Neurons",
     "no_ballots": "No recent ballots",
     "split_neuron_confirm": "Confirm Split",
-    "split_neuron_success": "Your neuron has been successfully splitted.",
-    "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable.",
     "merge_neurons_success": "Your neurons have been successfully merged.",
-    "disburse_neuron_title": "Disburse Neuron"
+    "disburse_neuron_title": "Disburse Neuron",
+    "split_neuron_success": "Your neuron has successfully been splitted.",
+    "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable.",
+    "hotkeys_title": "Hotkeys",
+    "add_hotkey": "Add Hotkey",
+    "no_notkeys": "No hotkeys",
+    "add_hotkey_modal_title": "Add Hotkey",
+    "enter_hotkey": "Enter Hotkey:"
   },
   "time": {
     "year": "year",
