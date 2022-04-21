@@ -9,7 +9,7 @@ import { IIRecoveryMissingWarningPage } from "../components/ii-recovery-warning"
 import { IIConfirmRedirectPage } from "../components/ii-confirm-redirect";
 import { IIAddDevicePage } from "../components/ii-add-device-page";
 import { Navigator } from "./navigator";
-import { Header } from "../components/header.ts";
+import { Header } from "../components/header";
 
 /**
  * Registers a new identity on the Internet Identity.
