@@ -443,7 +443,7 @@ describe("neurons-services", () => {
         principal: Principal.fromText("aaaaa-aa"),
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expect(toastsStore.show).toHaveBeenCalled();
       expect(spyAddHotkey).not.toHaveBeenCalled();
     });
   });
