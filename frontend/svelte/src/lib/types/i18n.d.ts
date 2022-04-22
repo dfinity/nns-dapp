@@ -324,10 +324,10 @@ interface I18nNeuron_detail {
   follow_neurons: string;
   no_ballots: string;
   split_neuron_confirm: string;
-  split_neuron_success: string;
-  split_neuron_disabled_tooltip: string;
   merge_neurons_success: string;
   disburse_neuron_title: string;
+  split_neuron_success: string;
+  split_neuron_disabled_tooltip: string;
   hotkeys_title: string;
   add_hotkey: string;
   no_notkeys: string;
