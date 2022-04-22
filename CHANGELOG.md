@@ -1,5 +1,7 @@
 # Changelog
 
+## Proposal XXX
+
 ## Proposal 55738
 * Fix rendering of large payloads.
 * Fix double-voting error message.
