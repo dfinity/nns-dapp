@@ -729,11 +729,16 @@ describe("neuron-utils", () => {
         ...neuron,
         neuronId: BigInt(444),
       };
+      const neuron3 = {
+        ...neuron,
+        neuronId: BigInt(445),
+      };
       const wrappedNeurons = mapMergeableNeurons({
-        neurons: [neuron, neuron2],
+        neurons: [neuron, neuron2, neuron3],
       });
       expect(wrappedNeurons[0].mergeable).toBe(true);
       expect(wrappedNeurons[1].mergeable).toBe(true);
+      expect(wrappedNeurons[2].mergeable).toBe(true);
     });
 
     it("wraps mergeable neurons with false if controlled by hotkey or joined community fund", () => {
@@ -843,7 +848,7 @@ describe("neuron-utils", () => {
       expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
     });
 
-    it("return invalid if two neurons have same followees on Manage Neuron", () => {
+    it("return valid if two neurons have same followees on Manage Neuron", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -852,7 +857,7 @@ describe("neuron-utils", () => {
           followees: [
             {
               topic: Topic.ManageNeuron,
-              followees: [BigInt(10), BigInt(40)],
+              followees: [BigInt(40), BigInt(10)],
             },
           ],
         },

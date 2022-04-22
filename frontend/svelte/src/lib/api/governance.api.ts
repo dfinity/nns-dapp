@@ -107,12 +107,24 @@ export const mergeNeurons = async ({
   targetNeuronId: NeuronId;
   identity: Identity;
 }): Promise<void> => {
+  logWithTimestamp(
+    `Merging neurons (${hashCode(sourceNeuronId)}, ${hashCode(
+      targetNeuronId
+    )}) call...`
+  );
   const { canister } = await governanceCanister({ identity });
 
-  return canister.mergeNeurons({
+  const response = await canister.mergeNeurons({
     sourceNeuronId,
     targetNeuronId,
   });
+  logWithTimestamp(
+    `Merging neurons (${hashCode(sourceNeuronId)}, ${hashCode(
+      targetNeuronId
+    )}) complete.`
+  );
+
+  return response;
 };
 
 export const startDissolving = async ({

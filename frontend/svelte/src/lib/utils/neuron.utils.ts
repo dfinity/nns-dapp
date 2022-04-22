@@ -323,24 +323,8 @@ const sameId = (neurons: NeuronInfo[]): boolean =>
  */
 export const allHaveSameFollowees = (
   sortedFolloweesLists: NeuronId[][]
-): boolean => {
-  // If lengths of followes are different, return false
-  const lengths = sortedFolloweesLists.map(({ length }) => length);
-  if (new Set(lengths).size > 1) {
-    return false;
-  }
-  // Compare first list with others lists
-  const firstList = sortedFolloweesLists[0];
-  for (let i = 0; i < firstList.length; i++) {
-    const currentIndexFollowees = sortedFolloweesLists.map(
-      (followees) => followees[i]
-    );
-    if (new Set(currentIndexFollowees).size !== 1) {
-      return false;
-    }
-  }
-  return true;
-};
+): boolean =>
+  new Set(sortedFolloweesLists.map((list) => list.join())).size === 1;
 
 const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
   const fullNeurons: Neuron[] = neurons
@@ -355,8 +339,7 @@ const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
       followees.find(({ topic }) => topic === Topic.ManageNeuron)
     )
     .filter(isDefined)
-    .map(({ followees }) => followees)
-    .sort();
+    .map(({ followees }) => followees.sort());
   // If no neuron has ManageNeuron followees, return true
   if (sortedFollowees.length === 0) {
     return true;

@@ -400,6 +400,7 @@ export const mergeNeurons = async ({
   sourceNeuronId: NeuronId;
   targetNeuronId: NeuronId;
 }): Promise<NeuronId | undefined> => {
+  let success = false;
   try {
     const { neuron: neuron1 } = await getIdentityAndNeuronHelper(
       sourceNeuronId
@@ -416,6 +417,7 @@ export const mergeNeurons = async ({
     const identity: Identity = await getIdentityByNeuron(targetNeuronId);
 
     await mergeNeuronsApi({ sourceNeuronId, targetNeuronId, identity });
+    success = true;
 
     await listNeurons({ skipCheck: true });
 
@@ -424,7 +426,7 @@ export const mergeNeurons = async ({
     toastsStore.show(mapNeuronErrorToToastMessage(err));
 
     // To inform there was an error
-    return undefined;
+    return success ? targetNeuronId : undefined;
   }
 };
 
