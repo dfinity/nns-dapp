@@ -1,6 +1,11 @@
 # Changelog
 
 ## Proposal XXX
+* UI fixes:
+  * Show the ID of followed neurons again
+  * Proposal filtering
+* UI improvements
+* More tests
 
 ## Proposal 55738
 * Fix rendering of large payloads.
