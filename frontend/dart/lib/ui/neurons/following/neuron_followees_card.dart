@@ -69,20 +69,26 @@ class NeuronFolloweesCard extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          ...snapshot.data!.filter(
-                                            (element) {
-                                              isFolloweeSelected = false;
-                                              if (e.key == element.id) {
-                                                isFolloweeSelected = true;
-                                              } else {
-                                                isFolloweeSelected = false;
-                                              }
-                                              return isFolloweeSelected;
-                                            },
-                                          ).mapToList(
-                                            (e) => FolloweeSelected(
-                                              suggestion: e,
-                                            ),
+                                          Text(
+                                            snapshot.data!
+                                                .filter(
+                                                  (element) {
+                                                    isFolloweeSelected = false;
+                                                    if (e.key == element.id) {
+                                                      isFolloweeSelected = true;
+                                                    } else {
+                                                      isFolloweeSelected = false;
+                                                    }
+                                                    return isFolloweeSelected;
+                                                  },
+                                                )
+                                                .mapToList((e) => e.name)
+                                                .firstWhere(
+                                                  (element) => true,
+                                                  orElse: () {
+                                                    return e.key.toString();
+                                                  },
+                                                ),
                                           ),
                                           Wrap(
                                             children: e.value.mapToList(
@@ -157,29 +163,5 @@ class NeuronFolloweesCard extends StatelessWidget {
 
   void showNeuronInfo(BuildContext context, String neuronId) {
     OverlayBaseWidget.show(context, NeuronInfoWidget(neuronId));
-  }
-}
-
-class FolloweeSelected extends StatelessWidget {
-  final FolloweeSuggestion suggestion;
-
-  const FolloweeSelected({Key? key, required this.suggestion}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextButton(
-          child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(suggestion.name,
-                  style: Responsive.isMobile(context) ? context.textTheme.bodyText2 : context.textTheme.bodyText1)),
-          onPressed: () {
-            OverlayBaseWidget.show(context, NeuronInfoWidget(suggestion.id));
-          },
-        ),
-      ],
-    );
   }
 }
