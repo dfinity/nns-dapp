@@ -12,6 +12,7 @@ import {
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
+import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -41,6 +42,12 @@ jest.mock("../../../lib/stores/toasts.store", () => {
       error: jest.fn(),
       show: jest.fn(),
     },
+  };
+});
+
+jest.mock("../../../lib/services/accounts.services", () => {
+  return {
+    syncAccounts: jest.fn(),
   };
 });
 
@@ -90,6 +97,10 @@ describe("neurons-services", () => {
 
   const spyJoinCommunityFund = jest
     .spyOn(api, "joinCommunityFund")
+    .mockImplementation(() => Promise.resolve());
+
+  const spyDisburse = jest
+    .spyOn(api, "disburse")
     .mockImplementation(() => Promise.resolve());
 
   const spyMergeNeurons = jest
@@ -351,6 +362,51 @@ describe("neurons-services", () => {
     });
   });
 
+  describe("disburse", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should disburse neuron", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      await services.disburse({
+        neuronId: controlledNeuron.neuronId,
+        toAccountId: mockMainAccount.identifier,
+      });
+
+      expect(spyDisburse).toHaveBeenCalled();
+    });
+
+    it("should not disburse neuron if no identity", async () => {
+      setNoIdentity();
+
+      await services.disburse({
+        neuronId: controlledNeuron.neuronId,
+        toAccountId: mockMainAccount.identifier,
+      });
+
+      expect(toastsStore.show).toHaveBeenCalled();
+      expect(spyDisburse).not.toHaveBeenCalled();
+
+      resetIdentity();
+    });
+
+    it("should not disburse neuron if not controlled by user", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+
+      await services.disburse({
+        neuronId: controlledNeuron.neuronId,
+        toAccountId: mockMainAccount.identifier,
+      });
+
+      expect(toastsStore.show).toHaveBeenCalled();
+      expect(spyDisburse).not.toHaveBeenCalled();
+    });
+  });
+
   describe("mergeNeurons", () => {
     afterEach(() => {
       jest.clearAllMocks();
@@ -403,6 +459,7 @@ describe("neurons-services", () => {
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
   });
+
   describe("addHotkey", () => {
     afterEach(() => {
       jest.clearAllMocks();

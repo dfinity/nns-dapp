@@ -54,7 +54,11 @@
     destination={destinationAddress}
   />
 
-  <button class="primary full-width" type="submit">
+  <button
+    class="primary full-width"
+    type="submit"
+    data-tid="disburse-neuron-button"
+  >
     {#if loading}
       <Spinner />
     {:else}

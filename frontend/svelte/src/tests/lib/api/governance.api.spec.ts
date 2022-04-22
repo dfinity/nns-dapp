@@ -3,6 +3,7 @@ import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 import {
   addHotkey,
+  disburse,
   increaseDissolveDelay,
   joinCommunityFund,
   mergeNeurons,
@@ -15,6 +16,7 @@ import {
   startDissolving,
   stopDissolving,
 } from "../../../lib/api/governance.api";
+import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 
@@ -177,6 +179,39 @@ describe("neurons-api", () => {
       const call = () =>
         joinCommunityFund({
           identity: mockIdentity,
+          neuronId: BigInt(10),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("disburse", () => {
+    it("disburses neuron successfully", async () => {
+      mockGovernanceCanister.disburse.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await disburse({
+        identity: mockIdentity,
+        toAccountId: mockMainAccount.identifier,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.disburse).toBeCalled();
+    });
+
+    it("throws error when joining community fund fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.disburse.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        disburse({
+          identity: mockIdentity,
+          toAccountId: mockMainAccount.identifier,
           neuronId: BigInt(10),
         });
       await expect(call).rejects.toThrow(error);
