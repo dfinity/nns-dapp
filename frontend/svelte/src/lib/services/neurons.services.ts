@@ -7,9 +7,11 @@ import type {
   NeuronInfo,
   Topic,
 } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
+  addHotkey as addHotkeyApi,
   claimOrRefreshNeuron,
   increaseDissolveDelay,
   joinCommunityFund as joinCommunityFundApi,
@@ -427,6 +429,29 @@ export const mergeNeurons = async ({
 
     // To inform there was an error
     return success ? targetNeuronId : undefined;
+  }
+};
+
+export const addHotkey = async ({
+  neuronId,
+  principal,
+}: {
+  neuronId: NeuronId;
+  principal: Principal;
+}): Promise<NeuronId | undefined> => {
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await addHotkeyApi({ neuronId, identity, principal });
+
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return neuronId;
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    // To inform there was an error
+    return undefined;
   }
 };
 

@@ -125,6 +125,7 @@
   </div>
 </div>
 
+<!-- TODO: improve error color https://dfinity.atlassian.net/browse/L2-476 -->
 <style lang="scss">
   .wrapper {
     position: relative;
@@ -138,7 +139,6 @@
   }
 
   p {
-    color: var(--pink);
     font-size: var(--font-size-ultra-small);
 
     margin-bottom: 0;

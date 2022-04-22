@@ -1,6 +1,8 @@
 import { GovernanceCanister, ICP, LedgerCanister, Topic } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 import {
+  addHotkey,
   increaseDissolveDelay,
   joinCommunityFund,
   mergeNeurons,
@@ -164,7 +166,7 @@ describe("neurons-api", () => {
       expect(mockGovernanceCanister.joinCommunityFund).toBeCalled();
     });
 
-    it("throws error when setting followees fails", async () => {
+    it("throws error when joining community fund fails", async () => {
       const error = new Error();
       mockGovernanceCanister.joinCommunityFund.mockImplementation(
         jest.fn(() => {
@@ -209,6 +211,39 @@ describe("neurons-api", () => {
           identity: mockIdentity,
           sourceNeuronId: BigInt(10),
           targetNeuronId: BigInt(11),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("addHotkey", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.addHotkey.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await addHotkey({
+        identity: mockIdentity,
+        neuronId: BigInt(10),
+        principal: Principal.fromText("aaaaa-aa"),
+      });
+
+      expect(mockGovernanceCanister.addHotkey).toBeCalled();
+    });
+
+    it("throws error when adding hotkey fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.addHotkey.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        addHotkey({
+          identity: mockIdentity,
+          neuronId: BigInt(10),
+          principal: Principal.fromText("aaaaa-aa"),
         });
       await expect(call).rejects.toThrow(error);
     });

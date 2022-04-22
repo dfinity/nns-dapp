@@ -1,11 +1,36 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
+  import { accountsStore } from "../../stores/accounts.store";
+  import { authStore } from "../../stores/auth.store";
+  import { i18n } from "../../stores/i18n";
+  import { isNeuronControllable } from "../../utils/neuron.utils";
   import Card from "../ui/Card.svelte";
+  import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
 
   export let neuron: NeuronInfo;
+
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable({
+    neuron,
+    identity: $authStore.identity,
+    accounts: $accountsStore,
+  });
 </script>
 
 <Card>
-  <!-- TODO: https://dfinity.atlassian.net/browse/L2-358 -->
-  Hokeys Card {neuron.neuronId}
+  <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
+  <!-- TODO: Show and remove hotkeys https://dfinity.atlassian.net/browse/L2-358 -->
+  <p>{$i18n.neuron_detail.no_notkeys}</p>
+  {#if isControllable}
+    <div class="actions">
+      <AddHotkeyButton neuronId={neuron.neuronId} />
+    </div>
+  {/if}
 </Card>
+
+<style lang="scss">
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+</style>
