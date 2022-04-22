@@ -138,7 +138,7 @@
   }
 
   p {
-    color: var(--pink);
+    // TODO: improve color https://dfinity.atlassian.net/browse/L2-476
     font-size: var(--font-size-ultra-small);
 
     margin-bottom: 0;

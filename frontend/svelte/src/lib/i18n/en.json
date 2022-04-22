@@ -311,7 +311,8 @@
     "no_notkeys": "No hotkeys",
     "add_hotkey_modal_title": "Add Hotkey",
     "enter_hotkey": "Enter Hotkey:",
-    "add_hotkey_success": "Hotkey added successfully."
+    "add_hotkey_success": "Hotkey added successfully.",
+    "add_hotkey_placeholder": "Principal ID"
   },
   "time": {
     "year": "year",

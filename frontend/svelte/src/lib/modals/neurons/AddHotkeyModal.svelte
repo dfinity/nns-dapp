@@ -21,6 +21,7 @@
     let principal: Principal | undefined = undefined;
     try {
       principal = Principal.fromText(address);
+      // TODO: Validate principal on blur https://dfinity.atlassian.net/browse/L2-470
       showAddressNotValid = false;
     } catch (error) {
       showAddressNotValid = true;
@@ -52,7 +53,7 @@
       <h5>{$i18n.neuron_detail.enter_hotkey}</h5>
       <Input
         inputType="text"
-        placeholderLabelKey="core.principal"
+        placeholderLabelKey="neuron_detail.add_hotkey_placeholder"
         name="hotkey-principal"
         bind:value={address}
         theme="dark"
@@ -94,7 +95,7 @@
     justify-content: center;
 
     p {
-      color: var(--pink);
+      // TODO: improve color https://dfinity.atlassian.net/browse/L2-476
       font-size: var(--font-size-ultra-small);
     }
   }
