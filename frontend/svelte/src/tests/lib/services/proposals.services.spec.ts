@@ -104,6 +104,31 @@ describe("proposals-services", () => {
     });
   });
 
+  describe("error message in details", () => {
+    beforeEach(() => {
+      jest.spyOn(api, "queryProposal").mockImplementation(() => {
+        throw new Error("test-message");
+      });
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
+    });
+    afterEach(() => jest.clearAllMocks());
+
+    it("should show error message in details", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "show");
+
+      await loadProposal({
+        proposalId: BigInt(0),
+        setProposal: () => jest.fn(),
+      });
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        detail: 'id: "0". test-message',
+        labelKey: "error.proposal_not_found",
+        level: "error",
+      });
+    });
+  });
+
   describe("empty list", () => {
     afterAll(() =>
       proposalsStore.setProposals({ proposals: [], certified: true })
@@ -374,6 +399,42 @@ describe("proposals-services", () => {
         });
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+    });
+  });
+
+  describe("ignore errors", () => {
+    const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
+    const proposalId = BigInt(0);
+
+    const mockRegisterVoteGovernanceAlreadyVotedError =
+      async (): Promise<void> => {
+        throw new GovernanceError({
+          error_message: "Neuron already voted on proposal.",
+          error_type: 0,
+        });
+      };
+
+    let spyToastShow;
+
+    beforeEach(() => {
+      jest
+        .spyOn(api, "registerVote")
+        .mockImplementation(mockRegisterVoteGovernanceAlreadyVotedError);
+
+      spyToastShow = jest
+        .spyOn(toastsStore, "show")
+        .mockImplementation(jest.fn());
+    });
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should ignore already voted error", async () => {
+      await registerVotes({
+        neuronIds,
+        proposalId,
+        vote: Vote.NO,
+      });
+      expect(spyToastShow).not.toBeCalled();
     });
   });
 

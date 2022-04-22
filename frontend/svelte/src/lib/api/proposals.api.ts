@@ -10,6 +10,7 @@ import { GovernanceCanister, Topic } from "@dfinity/nns";
 import { LIST_PAGINATION_LIMIT } from "../constants/constants";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";
+import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { enumsExclude } from "../utils/enum.utils";
 
 export const queryProposals = async ({
@@ -23,6 +24,12 @@ export const queryProposals = async ({
   filters: ProposalsFiltersStore;
   certified: boolean;
 }): Promise<ProposalInfo[]> => {
+  logWithTimestamp(
+    `Querying Proposals (${
+      beforeProposal === undefined ? "start" : hashCode(beforeProposal)
+    }) certified:${certified} call...`
+  );
+
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
@@ -47,6 +54,12 @@ export const queryProposals = async ({
     certified,
   });
 
+  logWithTimestamp(
+    `Querying Proposals (${
+      beforeProposal === undefined ? "start" : hashCode(beforeProposal)
+    }) certified:${certified} complete.`
+  );
+
   return proposals;
 };
 
@@ -59,11 +72,20 @@ export const queryProposal = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<ProposalInfo | undefined> => {
+  logWithTimestamp(
+    `Querying Proposal (${hashCode(proposalId)}) certified:${certified} call...`
+  );
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.getProposal({ proposalId, certified });
+  const response = await governance.getProposal({ proposalId, certified });
+  logWithTimestamp(
+    `Querying Proposal (${hashCode(
+      proposalId
+    )}) certified:${certified} complete.`
+  );
+  return response;
 };
 
 export const registerVote = async ({
@@ -77,13 +99,23 @@ export const registerVote = async ({
   vote: Vote;
   identity: Identity;
 }): Promise<void> => {
+  logWithTimestamp(
+    `Registering Vote (${hashCode(proposalId)}, ${hashCode(neuronId)}) call...`
+  );
+
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
 
-  return governance.registerVote({
+  await governance.registerVote({
     neuronId,
     vote,
     proposalId,
   });
+
+  logWithTimestamp(
+    `Registering Vote (${hashCode(proposalId)}, ${hashCode(
+      neuronId
+    )}) complete.`
+  );
 };

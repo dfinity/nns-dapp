@@ -5,7 +5,7 @@
   import SelectNeurons from "../../components/neurons/SelectNeurons.svelte";
   import ConfirmNeuronsMerge from "../../components/neurons/ConfirmNeuronsMerge.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { neuronsStore } from "../../stores/neurons.store";
+  import { definedNeuronsStore } from "../../stores/neurons.store";
   import {
     mergeableNeurons,
     checkInvalidState,
@@ -17,7 +17,7 @@
 
   let neurons: NeuronInfo[];
   // TODO: Add type wrapper to tell whether neuron is mergeable or not.
-  $: neurons = mergeableNeurons($neuronsStore);
+  $: neurons = mergeableNeurons($definedNeuronsStore);
 
   let selectedNeurons: NeuronInfo[] | undefined;
 

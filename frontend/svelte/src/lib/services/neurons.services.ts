@@ -25,7 +25,8 @@ import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
-import { neuronsStore } from "../stores/neurons.store";
+import { MAX_CONCURRENCY } from "../constants/neurons.constants";
+import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import {
   InsufficientAmountError,
@@ -77,11 +78,13 @@ const getNeuron = async ({
   if (forceFetch) {
     return queryNeuron({ neuronId, identity, certified });
   }
-  const neuron = get(neuronsStore).find(
-    (neuron) => neuron.neuronId === neuronId
-  );
+  const neuron = getNeuronFromStore(neuronId);
+
   return neuron || queryNeuron({ neuronId, identity, certified });
 };
+
+const getNeuronFromStore = (neuronId: NeuronId): NeuronInfo | undefined =>
+  get(definedNeuronsStore).find((neuron) => neuron.neuronId === neuronId);
 
 export const getIdentityByNeuron = async (
   neuronId: NeuronId
@@ -154,7 +157,13 @@ export const stakeAndLoadNeuron = async ({
 
     await loadNeuron({
       neuronId,
-      setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+      setNeuron: ({
+        neuron,
+        certified,
+      }: {
+        neuron: NeuronInfo;
+        certified: boolean;
+      }) => neuronsStore.pushNeurons({ neurons: [neuron], certified }),
     });
 
     return neuronId;
@@ -166,15 +175,25 @@ export const stakeAndLoadNeuron = async ({
   }
 };
 
-// This gets all neurons linked to the current user's principal, even those with a stake of 0.
-// And adds them to the store
+/**
+ * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
+ * @param skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. Useful because the function `checkNeuronBalances` that does this check might ultimately call the current function `listNeurons` again.
+ * @param callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
+ */
 export const listNeurons = async ({
   skipCheck = false,
-}: { skipCheck?: boolean } = {}): Promise<void> => {
+  callback,
+}: {
+  skipCheck?: boolean;
+  callback?: (certified: boolean) => void;
+} = {}): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
     request: ({ certified, identity }) => queryNeurons({ certified, identity }),
     onLoad: async ({ response: neurons, certified }) => {
-      neuronsStore.setNeurons(neurons);
+      neuronsStore.setNeurons({ neurons, certified });
+
+      callback?.(certified);
+
       if (!certified || skipCheck) {
         return;
       }
@@ -193,7 +212,7 @@ export const listNeurons = async ({
       }
 
       // Explicitly handle only UPDATE errors
-      neuronsStore.setNeurons([]);
+      neuronsStore.setNeurons({ neurons: [], certified });
 
       toastsStore.error({
         labelKey: "error.get_neurons",
@@ -220,30 +239,58 @@ const findNeuronsStakeNotBalance = async ({
 }: {
   neurons: Neuron[];
   identity: Identity;
-}): Promise<NeuronId[]> =>
-  (
-    await Promise.all(
-      neurons.map(
-        async (fullNeuron): Promise<{ balance: ICP; fullNeuron: Neuron }> => ({
-          // NOTE: We fetch the balance in an uncertified way as it's more efficient,
-          // and a malicious actor wouldn't gain anything by spoofing this value.
-          // This data is used only to now which neurons need to be refreshed.
-          // This data is not shown to the user, nor stored in any store.
-          balance: await getNeuronBalance({
-            neuron: fullNeuron,
-            identity,
-            certified: false,
-          }),
-          fullNeuron,
-        })
-      )
+}): Promise<NeuronId[]> => {
+  // TODO switch to getting multiple balances in a single request once it is supported by the ledger.
+  // Until the above is supported we must limit the max concurrency otherwise our requests may be throttled.
+
+  const neuronChunks: Neuron[][] = createChunks(neurons, MAX_CONCURRENCY);
+
+  let neuronIdsToRefresh: NeuronId[] = [];
+
+  for (const neuronChunk of neuronChunks) {
+    const notMatchingNeuronIds: NeuronId[] = (
+      await getNeuronsBalance({ neurons: neuronChunk, identity })
     )
-  )
-    .filter((params) => !balanceMatchesStake(params))
-    // We can only refresh a neuron if its balance is at least 1 ICP
-    .filter(balanceIsMoreThanOne)
-    .map(({ fullNeuron }) => fullNeuron.id)
-    .filter(isDefined);
+      .filter((params) => !balanceMatchesStake(params))
+      // We can only refresh a neuron if its balance is at least 1 ICP
+      .filter(balanceIsMoreThanOne)
+      .map(({ fullNeuron }) => fullNeuron.id)
+      .filter(isDefined);
+
+    neuronIdsToRefresh = [...neuronIdsToRefresh, ...notMatchingNeuronIds];
+  }
+
+  return neuronIdsToRefresh;
+};
+
+const getNeuronsBalance = async ({
+  neurons,
+  identity,
+}: {
+  neurons: Neuron[];
+  identity: Identity;
+}): Promise<
+  {
+    balance: ICP;
+    fullNeuron: Neuron;
+  }[]
+> =>
+  Promise.all(
+    neurons.map(
+      async (fullNeuron): Promise<{ balance: ICP; fullNeuron: Neuron }> => ({
+        // NOTE: We fetch the balance in an uncertified way as it's more efficient,
+        // and a malicious actor wouldn't gain anything by spoofing this value.
+        // This data is used only to now which neurons need to be refreshed.
+        // This data is not shown to the user, nor stored in any store.
+        balance: await getNeuronBalance({
+          neuron: fullNeuron,
+          identity,
+          certified: false,
+        }),
+        fullNeuron,
+      })
+    )
+  );
 
 const claimNeurons =
   (identity: Identity) =>
@@ -254,16 +301,31 @@ const claimNeurons =
 
 const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   const identity = await getIdentity();
+
+  const fullNeurons: Neuron[] = neurons
+    .map(({ fullNeuron }) => fullNeuron)
+    .filter(isDefined);
+
+  if (fullNeurons.length === 0) {
+    return;
+  }
+
   const neuronIdsToRefresh: NeuronId[] = await findNeuronsStakeNotBalance({
-    neurons: neurons.map(({ fullNeuron }) => fullNeuron).filter(isDefined),
+    neurons: fullNeurons,
     identity,
   });
+
   if (neuronIdsToRefresh.length === 0) {
     return;
   }
+
   // We found neurons that need to be refreshed.
-  const neuronIdsChunks: NeuronId[][] = createChunks(neuronIdsToRefresh, 10);
+  const neuronIdsChunks: NeuronId[][] = createChunks(
+    neuronIdsToRefresh,
+    MAX_CONCURRENCY
+  );
   await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
+
   return listNeurons({ skipCheck: true });
 };
 
@@ -283,7 +345,7 @@ const getAndLoadNeuronHelper = async ({
   if (!neuron) {
     throw new NotFoundError();
   }
-  neuronsStore.pushNeurons([neuron]);
+  neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
 };
 
 export const updateDelay = async ({
@@ -446,10 +508,7 @@ export const addFollowee = async ({
   topic: Topic;
   followee: NeuronId;
 }): Promise<void> => {
-  const neurons = get(neuronsStore);
-  const neuron = neurons.find(
-    ({ neuronId: currentNeuronId }) => currentNeuronId === neuronId
-  );
+  const neuron = getNeuronFromStore(neuronId);
 
   const topicFollowees = neuron?.fullNeuron?.followees.find(
     ({ topic: currentTopic }) => currentTopic === topic
@@ -476,10 +535,8 @@ export const removeFollowee = async ({
   topic: Topic;
   followee: NeuronId;
 }): Promise<void> => {
-  const neurons = get(neuronsStore);
-  const neuron = neurons.find(
-    ({ neuronId: currentNeuronId }) => currentNeuronId === neuronId
-  );
+  const neuron = getNeuronFromStore(neuronId);
+
   const topicFollowees: Followees | undefined =
     neuron?.fullNeuron?.followees.find(
       ({ topic: currentTopic }) => currentTopic === topic
@@ -512,7 +569,7 @@ export const loadNeuron = ({
   handleError,
 }: {
   neuronId: NeuronId;
-  setNeuron: (neuron: NeuronInfo) => void;
+  setNeuron: (params: { neuron: NeuronInfo; certified: boolean }) => void;
   handleError?: () => void;
 }): Promise<void> => {
   const catchError = (err: unknown) => {
@@ -530,13 +587,13 @@ export const loadNeuron = ({
         neuronId,
         ...options,
       }),
-    onLoad: ({ response: neuron }) => {
+    onLoad: ({ response: neuron, certified }) => {
       if (neuron === undefined) {
         catchError(new Error("Neuron not found"));
         return;
       }
 
-      setNeuron(neuron);
+      setNeuron({ neuron, certified });
     },
     onError: ({ error, certified }) => {
       console.error(error);

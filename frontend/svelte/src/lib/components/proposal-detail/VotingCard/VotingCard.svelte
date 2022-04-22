@@ -7,7 +7,7 @@
   import { onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
-  import { neuronsStore } from "../../../stores/neurons.store";
+  import { definedNeuronsStore } from "../../../stores/neurons.store";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import Card from "../../ui/Card.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
@@ -17,7 +17,7 @@
 
   const votableNeurons = () =>
     getVotableNeurons({
-      neurons: $neuronsStore,
+      neurons: $definedNeuronsStore,
       proposal: proposalInfo,
     });
   let visible: boolean = false;
@@ -29,7 +29,7 @@
       votableNeurons().length > 0 &&
       proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN);
 
-  const unsubcribe = neuronsStore.subscribe(() => {
+  const unsubscribe = definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {
       initialSelectionDone = true;
       votingNeuronSelectStore.set(votableNeurons());
@@ -46,7 +46,7 @@
     });
 
   onDestroy(() => {
-    unsubcribe();
+    unsubscribe();
     votingNeuronSelectStore.reset();
   });
 </script>

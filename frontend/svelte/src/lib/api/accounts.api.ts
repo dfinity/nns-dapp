@@ -13,6 +13,7 @@ import { identityServiceURL } from "../constants/identity.constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Account } from "../types/account";
 import { createAgent } from "../utils/agent.utils";
+import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 
 export const loadAccounts = async ({
   identity,
@@ -21,6 +22,8 @@ export const loadAccounts = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<AccountsStore> => {
+  logWithTimestamp(`Loading Accounts certified:${certified} call...`);
+
   const agent = await createAgent({ identity, host: identityServiceURL });
   // ACCOUNTS
   const nnsDapp: NNSDappCanister = NNSDappCanister.create({
@@ -64,6 +67,8 @@ export const loadAccounts = async ({
     ...mainAccount.sub_accounts.map(mapAccount),
   ]);
 
+  logWithTimestamp(`Loading Accounts certified:${certified} complete.`);
+
   return {
     main,
     subAccounts,
@@ -77,6 +82,8 @@ export const createSubAccount = async ({
   name: string;
   identity: Identity;
 }): Promise<void> => {
+  logWithTimestamp(`Creating SubAccount ${hashCode(name)} call...`);
+
   const nnsDapp: NNSDappCanister = NNSDappCanister.create({
     agent: await createAgent({ identity, host: identityServiceURL }),
     canisterId: OWN_CANISTER_ID,
@@ -85,4 +92,5 @@ export const createSubAccount = async ({
   await nnsDapp.createSubAccount({
     subAccountName: name,
   });
+  logWithTimestamp(`Creating SubAccount ${hashCode(name)} complete.`);
 };

@@ -26,7 +26,7 @@
     // TODO: 🚧 to be discussed -- swithing to UPDATE only because of refetching after both Q&U
     await loadNeuron({
       neuronId,
-      setNeuron: (neuronInfo) => (neuron = neuronInfo),
+      setNeuron: ({ neuron: neuronInfo }) => (neuron = neuronInfo),
       handleError: () => {
         neuron = undefined;
         dispatch("nnsClose");

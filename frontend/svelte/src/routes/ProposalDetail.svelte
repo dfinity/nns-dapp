@@ -18,14 +18,30 @@
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import { listNeurons } from "../lib/services/neurons.services";
-  import { neuronsStore } from "../lib/stores/neurons.store";
+  import {
+    definedNeuronsStore,
+    neuronsStore,
+  } from "../lib/stores/neurons.store";
   import {
     proposalIdStore,
     proposalInfoStore,
   } from "../lib/stores/proposals.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
 
+  const neuronsStoreReady = (): boolean => {
+    // We consider the neurons store as ready if it has been initialized once. Subsequent changes that happen after vote or other functions are handled with the busy store.
+    // This to avoid the display of a spinner within the page and another spinner over it (the busy spinner) when the user vote is being processed.
+    if (neuronsReady) {
+      return true;
+    }
+
+    return (
+      $neuronsStore.neurons !== undefined && $neuronsStore.certified === true
+    );
+  };
+
   let neuronsReady = false;
+  $: $neuronsStore, (neuronsReady = neuronsStoreReady());
 
   onMount(async () => {
     if (!SHOW_PROPOSALS_ROUTE) {
@@ -33,8 +49,12 @@
       return;
     }
 
+    // We query the neurons only if they were not yet fully fetched - i.e. never initialized
+    if (neuronsStoreReady()) {
+      return;
+    }
+
     await listNeurons();
-    neuronsReady = true;
   });
 
   const unsubscribeRouteStore = routeStore.subscribe(
@@ -54,7 +74,11 @@
     }
   );
 
-  const onError = () => {
+  const onError = (certified: boolean) => {
+    // Ignore "application payload size (X) cannot be larger than Y" error thrown by update calls
+    if (certified) {
+      return;
+    }
     routeStore.replace({ path: AppPath.Proposals });
   };
 
@@ -68,6 +92,7 @@
         proposalInfoStore.set(proposalInfo),
       handleError: onError,
       strategy: "query_and_update",
+      silentUpdateErrorMessages: true,
     });
   });
 
@@ -91,17 +116,42 @@
     >
 
     <section>
-      {#if $proposalInfoStore && $neuronsStore && neuronsReady}
+      {#if $proposalInfoStore}
         <ProposalDetailCard proposalInfo={$proposalInfoStore} />
-        <VotesCard proposalInfo={$proposalInfoStore} />
-        <VotingCard proposalInfo={$proposalInfoStore} />
-        <IneligibleNeuronsCard
-          proposalInfo={$proposalInfoStore}
-          neurons={$neuronsStore}
-        />
+
+        {#if neuronsReady}
+          <VotesCard proposalInfo={$proposalInfoStore} />
+          <VotingCard proposalInfo={$proposalInfoStore} />
+          <IneligibleNeuronsCard
+            proposalInfo={$proposalInfoStore}
+            neurons={$definedNeuronsStore}
+          />
+        {:else}
+          <div class="loader">
+            <div class="spinner">
+              <Spinner />
+            </div>
+
+            <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
+          </div>
+        {/if}
       {:else}
         <Spinner />
       {/if}
     </section>
   </HeadlessLayout>
 {/if}
+
+<style lang="scss">
+  .loader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .spinner {
+    position: relative;
+    padding: var(--padding-2x) 0;
+  }
+</style>
