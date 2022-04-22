@@ -3,6 +3,7 @@ import { mock } from "jest-mock-extended";
 import {
   increaseDissolveDelay,
   joinCommunityFund,
+  mergeNeurons,
   queryKnownNeurons,
   queryNeuron,
   queryNeurons,
@@ -175,6 +176,39 @@ describe("neurons-api", () => {
         joinCommunityFund({
           identity: mockIdentity,
           neuronId: BigInt(10),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("merge", () => {
+    it("merges neurons successfully", async () => {
+      mockGovernanceCanister.mergeNeurons.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await mergeNeurons({
+        identity: mockIdentity,
+        sourceNeuronId: BigInt(10),
+        targetNeuronId: BigInt(11),
+      });
+
+      expect(mockGovernanceCanister.mergeNeurons).toBeCalled();
+    });
+
+    it("throws error when setting followees fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.mergeNeurons.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        mergeNeurons({
+          identity: mockIdentity,
+          sourceNeuronId: BigInt(10),
+          targetNeuronId: BigInt(11),
         });
       await expect(call).rejects.toThrow(error);
     });
