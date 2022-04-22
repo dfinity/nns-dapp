@@ -61,6 +61,7 @@
     "merge_neurons_not_same_controller": "Two neurons need to have the same controller. Check the article for more: ",
     "merge_neurons_not_same_manage_neuron_followees": "Two neurons need to have the same followees on the topic of \"Manage Neuron\". Check the article for more: ",
     "not_mergeable": "This neuron can't be merged.",
+    "invalid_account_id": "Sorry, the account id is not valid. Please try again with a valid account id.",
     "principal_not_valid": "Please enter a valid principal."
   },
   "warning": {
@@ -312,6 +313,7 @@
     "add_hotkey_modal_title": "Add Hotkey",
     "enter_hotkey": "Enter Hotkey:",
     "add_hotkey_success": "Hotkey added successfully.",
+    "disburse_success": "Neuron disbursed successfully",
     "add_hotkey_placeholder": "Principal ID"
   },
   "time": {

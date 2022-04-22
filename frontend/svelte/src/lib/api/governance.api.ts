@@ -1,5 +1,11 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import type { KnownNeuron, NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
+import type {
+  E8s,
+  KnownNeuron,
+  NeuronId,
+  NeuronInfo,
+  Topic,
+} from "@dfinity/nns";
 import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
@@ -75,6 +81,25 @@ export const joinCommunityFund = async ({
 
   await canister.joinCommunityFund(neuronId);
   logWithTimestamp(`Joining Community Fund (${hashCode(neuronId)}) complete.`);
+};
+
+export const disburse = async ({
+  neuronId,
+  toAccountId,
+  amount,
+  identity,
+}: {
+  neuronId: NeuronId;
+  toAccountId?: string;
+  amount?: E8s;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(`Disburse neuron (${hashCode(neuronId)}) call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  const response = await canister.disburse({ neuronId, toAccountId, amount });
+  logWithTimestamp(`Disburse neuron (${hashCode(neuronId)}) complete.`);
+  return response;
 };
 
 export const addHotkey = async ({
