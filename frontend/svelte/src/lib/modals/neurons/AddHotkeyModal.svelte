@@ -78,6 +78,7 @@
   </form>
 </Modal>
 
+<!-- TODO: improve error color https://dfinity.atlassian.net/browse/L2-476 -->
 <style lang="scss">
   @use "../../themes/mixins/modal.scss";
 
@@ -95,7 +96,6 @@
     justify-content: center;
 
     p {
-      // TODO: improve color https://dfinity.atlassian.net/browse/L2-476
       font-size: var(--font-size-ultra-small);
     }
   }

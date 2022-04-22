@@ -334,6 +334,7 @@ interface I18nNeuron_detail {
   add_hotkey_modal_title: string;
   enter_hotkey: string;
   add_hotkey_success: string;
+  add_hotkey_placeholder: string;
 }
 
 interface I18nTime {
