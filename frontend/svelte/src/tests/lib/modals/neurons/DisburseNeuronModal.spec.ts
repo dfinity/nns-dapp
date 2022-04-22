@@ -8,6 +8,7 @@ import DisburseNeuronModal from "../../../../lib/modals/neurons/DisburseNeuronMo
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
+  mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
@@ -66,8 +67,7 @@ describe("DisburseNeuronModal", () => {
     expect(continueButton).not.toBeNull();
     expect(continueButton?.getAttribute("disabled")).not.toBeNull();
 
-    const address =
-      "cd70bfa0f092c38a0ff8643d4617219761eb61d199b15418c0b1114d59e30f8e";
+    const address = mockMainAccount.identifier;
     addressInput &&
       (await fireEvent.input(addressInput, { target: { value: address } }));
     expect(continueButton?.getAttribute("disabled")).toBeNull();

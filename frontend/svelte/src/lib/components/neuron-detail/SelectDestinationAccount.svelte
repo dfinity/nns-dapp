@@ -1,4 +1,5 @@
 <script lang="ts">
+  // TODO: Refactor along with NewTransactionDestination
   import { i18n } from "../../stores/i18n";
   import { emptyAddress } from "../../utils/accounts.utils";
   import type { Account } from "../../types/account";
