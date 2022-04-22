@@ -1,11 +1,13 @@
 # Upgrade frontend NNS Dapp canister to commit `589f27bb1af7933da0f992e92c104f2a804b4164`
-Wasm sha256 hash: `<WASM_HASH>` (`<LINK_TO_GITHUB_ACTION>`)
+Wasm sha256 hash: `cea92a3af7a4d5cece3f4d95be2ff828859a68f357666e0d3c66bf27e1acb5f7` (`https://github.com/dfinity/nns-dapp/actions/runs/2207426350`)
 
 ## Change Log:
 
-* Write about...
-* ... what has changed
-* ... in simple bullet points
+* UI fixes:
+  * Show the ID of followed neurons again
+  * Proposal filtering
+* UI improvements
+* More tests
 
 ## Commit log:
 
