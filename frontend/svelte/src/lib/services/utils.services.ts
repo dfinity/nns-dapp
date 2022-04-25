@@ -12,7 +12,6 @@ export type QueryAndUpdateOnError<E> = (options: {
   error: E;
 }) => void;
 
-// as a type to easier switch between strategies
 export type QueryAndUpdateStrategy = "query_and_update" | "query" | "update";
 let lastIndex: number = 0;
 
