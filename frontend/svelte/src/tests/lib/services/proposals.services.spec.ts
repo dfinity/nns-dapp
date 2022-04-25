@@ -288,7 +288,7 @@ describe("proposals-services", () => {
         () =>
           (lastToastMessage = {
             labelKey: "",
-            level: "info",
+            level: "success",
           })
       );
 

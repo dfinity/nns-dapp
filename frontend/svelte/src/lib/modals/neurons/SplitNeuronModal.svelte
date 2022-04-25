@@ -50,7 +50,7 @@
     if (id !== undefined) {
       toastsStore.show({
         labelKey: "neurons.split_neuron_success",
-        level: "info",
+        level: "success",
       });
     }
     dispatcher("nnsClose");

@@ -39,7 +39,7 @@
     if (id !== undefined) {
       toastsStore.show({
         labelKey: successKey,
-        level: "info",
+        level: "success",
       });
     }
     closeModal();

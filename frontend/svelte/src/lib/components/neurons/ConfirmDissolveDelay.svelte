@@ -37,7 +37,7 @@
       dispatcher("nnsUpdated");
       toastsStore.show({
         labelKey: "neurons.dissolve_delay_success",
-        level: "info",
+        level: "success",
       });
     }
   };

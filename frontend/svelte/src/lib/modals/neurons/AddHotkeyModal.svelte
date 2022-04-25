@@ -32,7 +32,7 @@
       const response = await addHotkey({ neuronId, principal });
       if (response !== undefined) {
         toastsStore.show({
-          level: "info",
+          level: "success",
           labelKey: "neuron_detail.add_hotkey_success",
         });
       }

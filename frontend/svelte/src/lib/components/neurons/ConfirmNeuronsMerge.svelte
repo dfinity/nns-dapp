@@ -38,7 +38,7 @@
     if (id !== undefined) {
       toastsStore.show({
         labelKey: "neuron_detail.merge_neurons_success",
-        level: "info",
+        level: "success",
       });
     }
     loading = false;

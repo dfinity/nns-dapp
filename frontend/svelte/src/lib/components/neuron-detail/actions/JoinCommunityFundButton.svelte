@@ -19,7 +19,7 @@
     if (id !== undefined) {
       toastsStore.show({
         labelKey: "neuron_detail.join_community_fund_success",
-        level: "info",
+        level: "success",
       });
     }
     closeModal();

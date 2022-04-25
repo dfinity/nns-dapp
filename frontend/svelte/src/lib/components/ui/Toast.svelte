@@ -62,8 +62,8 @@
     transform: translate(-50%, 0);
 
     border-radius: var(--border-radius);
-    background: var(--black);
-    color: var(--black-contrast);
+    background: var(--green-500);
+    color: var(--green-500-contrast);
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
 
     width: calc(100% - var(--padding-8x));

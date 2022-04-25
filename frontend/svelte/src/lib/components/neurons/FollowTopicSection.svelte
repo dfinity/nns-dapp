@@ -61,7 +61,7 @@
     });
     toastsStore.show({
       labelKey: "new_followee.success_remove_followee",
-      level: "info",
+      level: "success",
     });
     stopBusy("remove-followee");
   };
