@@ -1,6 +1,7 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { KnownNeuron, NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
 import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import {
   GOVERNANCE_CANISTER_ID,
@@ -78,6 +79,23 @@ export const joinCommunityFund = async ({
   return response;
 };
 
+export const addHotkey = async ({
+  neuronId,
+  principal,
+  identity,
+}: {
+  neuronId: NeuronId;
+  principal: Principal;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(`Add hotkey (for neuron ${hashCode(neuronId)}) call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  const response = await canister.addHotkey({ neuronId, principal });
+  logWithTimestamp(`Add hotkey (for neuron ${hashCode(neuronId)}) complete.`);
+  return response;
+};
+
 export const splitNeuron = async ({
   neuronId,
   amount,
@@ -95,6 +113,35 @@ export const splitNeuron = async ({
     amount,
   });
   logWithTimestamp(`Splitting Neuron (${hashCode(neuronId)}) complete.`);
+  return response;
+};
+
+export const mergeNeurons = async ({
+  sourceNeuronId,
+  targetNeuronId,
+  identity,
+}: {
+  sourceNeuronId: NeuronId;
+  targetNeuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(
+    `Merging neurons (${hashCode(sourceNeuronId)}, ${hashCode(
+      targetNeuronId
+    )}) call...`
+  );
+  const { canister } = await governanceCanister({ identity });
+
+  const response = await canister.mergeNeurons({
+    sourceNeuronId,
+    targetNeuronId,
+  });
+  logWithTimestamp(
+    `Merging neurons (${hashCode(sourceNeuronId)}, ${hashCode(
+      targetNeuronId
+    )}) complete.`
+  );
+
   return response;
 };
 
