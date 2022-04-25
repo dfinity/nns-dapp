@@ -3,6 +3,7 @@
   import type { FolloweesNeuron } from "../../../utils/neuron.utils";
   import { i18n } from "../../../stores/i18n";
   import VotingHistoryModal from "../../../modals/neurons/VotingHistoryModal.svelte";
+  import { knownNeuronsStore } from "../../../stores/knownNeurons.store";
 
   export let followee: FolloweesNeuron;
 
@@ -12,10 +13,27 @@
   let modalOpen = false;
   let id: string;
   $: id = `followee-${followee.neuronId}`;
+  let neuronTitle: string;
+  let neuronDescription: string | undefined;
+  $: followee,
+    $knownNeuronsStore,
+    (() => {
+      const knownNeuron = $knownNeuronsStore.find(
+        ({ id }) => id === followee.neuronId
+      );
+      neuronTitle =
+        (knownNeuron && knownNeuron.name) ?? followee.neuronId.toString();
+      neuronDescription = knownNeuron && knownNeuron.description;
+    })();
 </script>
 
-<button {id} class="text" on:click|stopPropagation={() => (modalOpen = true)}>
-  {followee.neuronId}
+<button
+  {id}
+  class="text"
+  title={neuronDescription}
+  on:click|stopPropagation={() => (modalOpen = true)}
+>
+  {neuronTitle}
 </button>
 
 <ul aria-labelledby={id}>
