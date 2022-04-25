@@ -40,7 +40,6 @@ describe("NewTransactionModal", () => {
   it("should display modal", async () => {
     const { container } = await renderModal({
       component: NewTransactionModal,
-      props: { canSelectAccount: true },
     });
 
     expect(container.querySelector("div.modal")).not.toBeNull();
@@ -115,7 +114,6 @@ describe("NewTransactionModal", () => {
   it("should navigate back and forth between steps", async () => {
     const { container, getByText } = await renderModal({
       component: NewTransactionModal,
-      props: { canSelectAccount: true },
     });
 
     // Is step 1 active?
@@ -173,7 +171,6 @@ describe("NewTransactionModal", () => {
   it("should close wizard once transaction executed", async () => {
     const { container, getByText, component } = await renderModal({
       component: NewTransactionModal,
-      props: { canSelectAccount: true },
     });
 
     await goToStep2({ container, getByText });
