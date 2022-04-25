@@ -442,3 +442,14 @@ export const followeesByTopic = ({
         ({ topic: followedTopic }) => topic === followedTopic
       );
 
+/**
+ * NeuronManagement proposals are not public so we hide this topic
+ * (unless the neuron already has followees on this topic)
+ * https://github.com/dfinity/nns-dapp/pull/511
+ */
+export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
+  enumValues(Topic).filter(
+    (topic) =>
+      topic !== Topic.ManageNeuron ||
+      followeesByTopic({ neuron, topic: Topic.ManageNeuron }) !== undefined
+  );
