@@ -513,6 +513,9 @@ export default class ResponseConverters {
       const spawn = command.Spawn;
       return {
         Spawn: {
+          percentageToSpawn: spawn.percentage_to_spawn.length
+            ? spawn.percentage_to_spawn[0]
+            : null,
           newController: spawn.new_controller.length
             ? spawn.new_controller[0].toString()
             : null,
