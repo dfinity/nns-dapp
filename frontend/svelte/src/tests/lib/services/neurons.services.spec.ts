@@ -23,7 +23,7 @@ import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 const {
   addHotkey,
   addFollowee,
-  getNeuronId,
+  routePathNeuronId,
   joinCommunityFund,
   listNeurons,
   loadNeuron,
@@ -717,14 +717,14 @@ describe("neurons-services", () => {
     });
     afterAll(() => jest.clearAllMocks());
     it("should get neuronId from valid path", async () => {
-      expect(getNeuronId("/#/neuron/123")).toBe(BigInt(123));
-      expect(getNeuronId("/#/neuron/0")).toBe(BigInt(0));
+      expect(routePathNeuronId("/#/neuron/123")).toBe(BigInt(123));
+      expect(routePathNeuronId("/#/neuron/0")).toBe(BigInt(0));
     });
 
     it("should not get neuronId from invalid path", async () => {
-      expect(getNeuronId("/#/neuron/")).toBeUndefined();
-      expect(getNeuronId("/#/neuron/1.5")).toBeUndefined();
-      expect(getNeuronId("/#/neuron/123n")).toBeUndefined();
+      expect(routePathNeuronId("/#/neuron/")).toBeUndefined();
+      expect(routePathNeuronId("/#/neuron/1.5")).toBeUndefined();
+      expect(routePathNeuronId("/#/neuron/123n")).toBeUndefined();
     });
   });
 
