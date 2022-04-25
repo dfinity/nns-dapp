@@ -324,7 +324,6 @@ export const registerVotes = async ({
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
       },
-      // TODO: 🚧 to be discussed
       // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
       strategy: "update",
       callback: (certified: boolean) =>

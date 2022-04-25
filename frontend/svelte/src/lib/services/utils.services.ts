@@ -38,7 +38,9 @@ export const queryAndUpdate = async <R, E>({
   let requests: Array<Promise<void>>;
   let logPrefix: string;
   const log = ({ postfix }: { postfix: string }) => {
-    if (strategy !== "query_and_update") return;
+    if (strategy !== "query_and_update") {
+      return;
+    }
     logPrefix = logPrefix ?? `[${lastIndex++}] ${logMessage ?? ""}`;
     logWithTimestamp(`${logPrefix} calls${postfix}`);
   };

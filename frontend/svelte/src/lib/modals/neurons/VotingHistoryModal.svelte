@@ -23,7 +23,6 @@
     }
 
     // The fetched neuron doesn't belong to a user so it should not be added to the neuronsStore
-    // TODO: 🚧 to be discussed -- swithing to UPDATE only because of refetching after both Q&U
     await loadNeuron({
       neuronId,
       setNeuron: ({ neuron: neuronInfo }) => (neuron = neuronInfo),
