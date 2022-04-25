@@ -369,24 +369,26 @@ describe("neurons-services", () => {
 
     it("should disburse neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
-      await services.disburse({
+      const { success } = await services.disburse({
         neuronId: controlledNeuron.neuronId,
         toAccountId: mockMainAccount.identifier,
       });
 
       expect(spyDisburse).toHaveBeenCalled();
+      expect(success).toBe(true);
     });
 
     it("should not disburse neuron if no identity", async () => {
       setNoIdentity();
 
-      await services.disburse({
+      const { success } = await services.disburse({
         neuronId: controlledNeuron.neuronId,
         toAccountId: mockMainAccount.identifier,
       });
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spyDisburse).not.toHaveBeenCalled();
+      expect(success).toBe(false);
 
       resetIdentity();
     });
@@ -397,13 +399,14 @@ describe("neurons-services", () => {
         certified: true,
       });
 
-      await services.disburse({
+      const { success } = await services.disburse({
         neuronId: controlledNeuron.neuronId,
         toAccountId: mockMainAccount.identifier,
       });
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spyDisburse).not.toHaveBeenCalled();
+      expect(success).toBe(false);
     });
   });
 

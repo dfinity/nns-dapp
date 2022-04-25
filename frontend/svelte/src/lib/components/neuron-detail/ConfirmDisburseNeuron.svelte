@@ -21,18 +21,18 @@
   const executeTransaction = async () => {
     startBusy("disburse-neuron");
     loading = true;
-    const response = await disburse({
+    const { success } = await disburse({
       neuronId: neuron.neuronId,
       toAccountId: destinationAddress,
     });
     loading = false;
     stopBusy("disburse-neuron");
-    if (response) {
+    if (success) {
       toastsStore.show({
         level: "info",
         labelKey: "neuron_detail.disburse_success",
       });
-      routeStore.navigate({
+      routeStore.replace({
         path: AppPath.Neurons,
       });
     }

@@ -18,7 +18,7 @@ import { mockNeuron } from "../../../mocks/neurons.mock";
 
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
-    disburse: jest.fn().mockResolvedValue(true),
+    disburse: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
@@ -33,7 +33,7 @@ describe("DisburseNeuronModal", () => {
   };
 
   const spyNavigate = jest
-    .spyOn(routeStore, "navigate")
+    .spyOn(routeStore, "replace")
     .mockImplementation(jest.fn());
 
   beforeAll(() => {
