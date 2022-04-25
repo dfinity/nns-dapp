@@ -131,6 +131,7 @@ describe("Input", () => {
     const { container } = render(Input, {
       props: {
         ...props,
+        inputType: "text",
         autocomplete: "off",
       },
     });
@@ -144,6 +145,17 @@ describe("Input", () => {
     });
 
     testGetAttribute({ container, attribute: "step", expected: "any" });
+  });
+
+  it("should render a text input with autocomplete to off as default value", () => {
+    const { container } = render(Input, {
+      props: {
+        ...props,
+        inputType: "text",
+      },
+    });
+
+    testGetAttribute({ container, attribute: "autocomplete", expected: "off" });
   });
 
   it("should render an input with min length", () => {

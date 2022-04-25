@@ -22,6 +22,7 @@
       inputType === "number" ? +currentTarget.value : currentTarget.value);
 
   $: step = inputType === "number" ? step ?? "any" : undefined;
+  $: autocomplete = inputType !== "number" ? autocomplete ?? "off" : undefined;
 
   let placeholder: string;
   $: placeholder = translate({ labelKey: placeholderLabelKey });

@@ -7,3 +7,9 @@
   touch-action: initial;
   cursor: initial;
 }
+
+@mixin disabled {
+  cursor: not-allowed;
+  touch-action: none;
+  pointer-events: none;
+}

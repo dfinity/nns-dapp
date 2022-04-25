@@ -20,6 +20,7 @@
     <button
       class="primary small"
       type="submit"
+      data-tid="address-submit-button"
       disabled={invalidAddress(address)}
     >
       {$i18n.core.continue}

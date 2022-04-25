@@ -81,6 +81,7 @@ describe("NewTransactionReview", () => {
     ) as HTMLButtonElement;
     await fireEvent.click(button);
 
+    await waitFor(() => expect(button.hasAttribute("disabled")).toBeTruthy());
     await waitFor(() => expect(spyTransferICP).toHaveBeenCalled());
   });
 

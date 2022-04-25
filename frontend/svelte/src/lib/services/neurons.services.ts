@@ -7,12 +7,15 @@ import type {
   NeuronInfo,
   Topic,
 } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
+  addHotkey as addHotkeyApi,
   claimOrRefreshNeuron,
   increaseDissolveDelay,
   joinCommunityFund as joinCommunityFundApi,
+  mergeNeurons as mergeNeuronsApi,
   queryNeuron,
   queryNeurons,
   setFollowees,
@@ -29,13 +32,16 @@ import { MAX_CONCURRENCY } from "../constants/neurons.constants";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import {
+  CannotBeMerged,
   InsufficientAmountError,
   NotAuthorizedError,
   NotFoundError,
 } from "../types/errors";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
+import { translate } from "../utils/i18n.utils";
 import {
+  canBeMerged,
   convertNumberToICP,
   isEnoughToStakeNeuron,
   isIdentityController,
@@ -44,7 +50,7 @@ import { createChunks, isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
-const getIdentityAndNeuron = async (
+const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId
 ): Promise<{ identity: Identity; neuron: NeuronInfo }> => {
   const currentIdentity = await getIdentity();
@@ -89,7 +95,7 @@ const getNeuronFromStore = (neuronId: NeuronId): NeuronInfo | undefined =>
 export const getIdentityByNeuron = async (
   neuronId: NeuronId
 ): Promise<Identity> => {
-  const { identity, neuron } = await getIdentityAndNeuron(neuronId);
+  const { identity, neuron } = await getIdentityAndNeuronHelper(neuronId);
 
   if (isIdentityController({ neuron, identity })) {
     return identity;
@@ -105,7 +111,7 @@ export const getIdentityByNeuronOrHotkey = async (
     return getIdentityByNeuron(neuronId);
   } catch (_) {
     // Check if hotkey
-    const { identity, neuron } = await getIdentityAndNeuron(neuronId);
+    const { identity, neuron } = await getIdentityAndNeuronHelper(neuronId);
 
     // Check if current identity is in the hotkeys
     const isAuthIdentityHotkey = (neuron.fullNeuron?.hotKeys ?? []).reduce(
@@ -177,8 +183,10 @@ export const stakeAndLoadNeuron = async ({
 
 /**
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
- * @param skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. Useful because the function `checkNeuronBalances` that does this check might ultimately call the current function `listNeurons` again.
- * @param callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
+ *
+ * @param {Object} params
+ * @param {skipCheck} params.skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. Useful because the function `checkNeuronBalances` that does this check might ultimately call the current function `listNeurons` again.
+ * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
 export const listNeurons = async ({
   skipCheck = false,
@@ -364,9 +372,7 @@ export const updateDelay = async ({
 
     return neuronId;
   } catch (err) {
-    toastsStore.error({
-      labelKey: mapNeuronErrorToToastMessage(err),
-    });
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
     // To inform there was an error
     return undefined;
   }
@@ -384,9 +390,67 @@ export const joinCommunityFund = async (
 
     return neuronId;
   } catch (err) {
-    toastsStore.error({
-      labelKey: mapNeuronErrorToToastMessage(err),
-    });
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    // To inform there was an error
+    return undefined;
+  }
+};
+
+export const mergeNeurons = async ({
+  sourceNeuronId,
+  targetNeuronId,
+}: {
+  sourceNeuronId: NeuronId;
+  targetNeuronId: NeuronId;
+}): Promise<NeuronId | undefined> => {
+  let success = false;
+  try {
+    const { neuron: neuron1 } = await getIdentityAndNeuronHelper(
+      sourceNeuronId
+    );
+    const { neuron: neuron2 } = await getIdentityAndNeuronHelper(
+      targetNeuronId
+    );
+    const { isValid, messageKey } = canBeMerged([neuron1, neuron2]);
+    if (!isValid) {
+      throw new CannotBeMerged(
+        translate({ labelKey: messageKey ?? "error.governance_error" })
+      );
+    }
+    const identity: Identity = await getIdentityByNeuron(targetNeuronId);
+
+    await mergeNeuronsApi({ sourceNeuronId, targetNeuronId, identity });
+    success = true;
+
+    await listNeurons({ skipCheck: true });
+
+    return targetNeuronId;
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    // To inform there was an error
+    return success ? targetNeuronId : undefined;
+  }
+};
+
+export const addHotkey = async ({
+  neuronId,
+  principal,
+}: {
+  neuronId: NeuronId;
+  principal: Principal;
+}): Promise<NeuronId | undefined> => {
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await addHotkeyApi({ neuronId, identity, principal });
+
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return neuronId;
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
 
     // To inform there was an error
     return undefined;
@@ -419,9 +483,7 @@ export const splitNeuron = async ({
 
     return neuronId;
   } catch (err) {
-    toastsStore.error({
-      labelKey: mapNeuronErrorToToastMessage(err),
-    });
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
     return undefined;
   }
 };
@@ -438,9 +500,7 @@ export const startDissolving = async (
 
     return neuronId;
   } catch (err) {
-    toastsStore.error({
-      labelKey: mapNeuronErrorToToastMessage(err),
-    });
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
 
     return undefined;
   }
@@ -458,9 +518,7 @@ export const stopDissolving = async (
 
     return neuronId;
   } catch (err) {
-    toastsStore.error({
-      labelKey: mapNeuronErrorToToastMessage(err),
-    });
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
 
     return undefined;
   }
@@ -493,9 +551,7 @@ const setFolloweesHelper = async ({
       level: "info",
     });
   } catch (err) {
-    toastsStore.error({
-      labelKey: mapNeuronErrorToToastMessage(err),
-    });
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
   }
 };
 
@@ -624,11 +680,9 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     return;
   } catch (error) {
     console.error(error);
-    toastsStore.error({
-      labelKey: mapNeuronErrorToToastMessage(error),
-    });
+    toastsStore.show(mapNeuronErrorToToastMessage(error));
   }
 };
 
-export const getNeuronId = (path: string): NeuronId | undefined =>
+export const routePathNeuronId = (path: string): NeuronId | undefined =>
   getLastPathDetailId(path);

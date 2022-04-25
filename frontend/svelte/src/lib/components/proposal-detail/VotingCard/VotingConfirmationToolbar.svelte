@@ -9,6 +9,7 @@
   const dispatch = createEventDispatcher();
 
   let total: bigint;
+  let disabled: boolean = true;
   let showConfirmationModal: boolean = false;
   let selectedVoteType: Vote = Vote.YES;
 
@@ -16,6 +17,7 @@
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
   });
+  $: disabled = $votingNeuronSelectStore.selectedIds.length === 0;
 
   const showAdoptConfirmation = () => {
     selectedVoteType = Vote.YES;
@@ -37,13 +39,13 @@
 <div role="toolbar">
   <button
     data-tid="vote-yes"
-    disabled={total === 0n}
+    {disabled}
     on:click={showAdoptConfirmation}
     class="primary full-width">{$i18n.proposal_detail__vote.adopt}</button
   >
   <button
     data-tid="vote-no"
-    disabled={total === 0n}
+    {disabled}
     on:click={showRejectConfirmation}
     class="danger full-width">{$i18n.proposal_detail__vote.reject}</button
   >
