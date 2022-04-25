@@ -134,11 +134,9 @@ describe("Accounts", () => {
   });
 
   it("should open add account modal", async () => {
-    const { container, getByText } = render(Accounts);
+    const { container, getByTestId, getByText } = render(Accounts);
 
-    const button = container.querySelector(
-      '[data-tid="open-add-account-modal"]'
-    ) as HTMLButtonElement;
+    const button = getByTestId("open-add-account-modal") as HTMLButtonElement;
     await fireEvent.click(button);
 
     await waitFor(() => {

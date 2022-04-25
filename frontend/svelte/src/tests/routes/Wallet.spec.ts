@@ -46,9 +46,9 @@ describe("Wallet", () => {
     });
 
     it("should render a spinner while loading", () => {
-      const { container } = render(Wallet);
+      const { getByTestId } = render(Wallet);
 
-      expect(container.querySelector('[data-tid="spinner"]')).not.toBeNull();
+      expect(getByTestId("spinner")).not.toBeNull();
     });
 
     it("new transaction action should be disabled while loading", () => {
