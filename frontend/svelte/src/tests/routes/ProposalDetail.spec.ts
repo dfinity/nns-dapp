@@ -18,7 +18,7 @@ import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
 } from "../mocks/proposals.store.mock";
-import { mockRouteStoreSubscibe } from "../mocks/route.store.mock";
+import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 
 describe("ProposalDetail", () => {
   const mockGovernanceCanister: MockGovernanceCanister =
@@ -34,7 +34,7 @@ describe("ProposalDetail", () => {
     jest
       .spyOn(routeStore, "subscribe")
       .mockImplementation(
-        mockRouteStoreSubscibe(`/#/proposal/${mockProposals[0].id}`)
+        mockRouteStoreSubscribe(`/#/proposal/${mockProposals[0].id}`)
       );
 
     jest

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { accountsStore } from "../../lib/stores/accounts.store";
 import { authStore } from "../../lib/stores/auth.store";
 import { formatICP } from "../../lib/utils/icp.utils";
@@ -13,6 +13,7 @@ import {
   mockSubAccount,
 } from "../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
+import en from "../mocks/i18n.mock";
 
 describe("Accounts", () => {
   let accountsStoreMock: jest.SpyInstance;
@@ -113,5 +114,37 @@ describe("Accounts", () => {
       .spyOn(accountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe());
     expect(accountsStoreMock).toHaveBeenCalled();
+  });
+
+  it("should open transaction modal", async () => {
+    const { container, getByText } = render(Accounts);
+
+    const button = container.querySelector(
+      '[data-tid="open-new-transaction"]'
+    ) as HTMLButtonElement;
+    await fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(container.querySelector("div.modal")).not.toBeNull();
+
+      expect(
+        getByText(en.accounts.select_source, { exact: false })
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("should open add account modal", async () => {
+    const { container, getByTestId, getByText } = render(Accounts);
+
+    const button = getByTestId("open-add-account-modal") as HTMLButtonElement;
+    await fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(container.querySelector("div.modal")).not.toBeNull();
+
+      expect(
+        getByText(en.accounts.new_linked_title, { exact: false })
+      ).toBeInTheDocument();
+    });
   });
 });
