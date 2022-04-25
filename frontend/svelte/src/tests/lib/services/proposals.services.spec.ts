@@ -118,7 +118,8 @@ describe("proposals-services", () => {
 
       await loadProposal({
         proposalId: BigInt(0),
-        setProposal: () => jest.fn(),
+        setProposal: jest.fn,
+        strategy: "query",
       });
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
@@ -352,7 +353,7 @@ describe("proposals-services", () => {
   describe("errors", () => {
     beforeAll(() => {
       jest.clearAllMocks();
-      jest.spyOn(console, "error").mockImplementation(() => jest.fn());
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
       setNoIdentity();
     });
 
