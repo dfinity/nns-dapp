@@ -3,6 +3,10 @@ import { get } from "svelte/store";
 import { createSubAccount, loadAccounts } from "../api/accounts.api";
 import { sendICP } from "../api/ledger.api";
 import { toSubAccountId } from "../api/utils.api";
+import {
+  NameTooLongError,
+  SubAccountLimitExceededError,
+} from "../canisters/nns-dapp/nns-dapp.errors";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
@@ -45,11 +49,25 @@ export const addSubAccount = async ({
 }: {
   name: string;
 }): Promise<void> => {
-  const identity: Identity = await getIdentity();
+  try {
+    const identity: Identity = await getIdentity();
 
-  await createSubAccount({ name, identity });
+    await createSubAccount({ name, identity });
 
-  await syncAccounts();
+    await syncAccounts();
+  } catch (err: unknown) {
+    const labelKey =
+      err instanceof NameTooLongError
+        ? "create_subaccount_too_long"
+        : err instanceof SubAccountLimitExceededError
+        ? "create_subaccount_limit_exceeded"
+        : "create_subaccount";
+
+    toastsStore.error({
+      labelKey,
+      err,
+    });
+  }
 };
 
 export const transferICP = async ({

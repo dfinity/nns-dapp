@@ -10,6 +10,7 @@ import {
   transferICP,
 } from "../../../lib/services/accounts.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
+import { toastsStore } from "../../../lib/stores/toasts.store";
 import type { TransactionStore } from "../../../lib/stores/transaction.store";
 import {
   mockMainAccount,
@@ -20,6 +21,7 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 
 describe("accounts-services", () => {
   describe("services", () => {
@@ -67,11 +69,17 @@ describe("accounts-services", () => {
     });
 
     it("should not add subaccount if no identity", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "error");
+
       setNoIdentity();
 
-      const call = async () => await addSubAccount({ name: "test subaccount" });
+      await addSubAccount({ name: "test subaccount" });
 
-      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "create_subaccount",
+        err: new Error(en.error.missing_identity),
+      });
 
       resetIdentity();
     });
