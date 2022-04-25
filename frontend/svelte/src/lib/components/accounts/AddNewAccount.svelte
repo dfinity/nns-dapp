@@ -3,11 +3,6 @@
   import { i18n } from "../../stores/i18n";
   import { createEventDispatcher } from "svelte";
   import { addSubAccount } from "../../services/accounts.services";
-  import {
-    NameTooLongError,
-    SubAccountLimitExceededError,
-  } from "../../canisters/nns-dapp/nns-dapp.errors";
-  import { toastsStore } from "../../stores/toasts.store";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
 
   let newAccountName: string = "";
