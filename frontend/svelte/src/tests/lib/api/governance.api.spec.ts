@@ -200,7 +200,7 @@ describe("neurons-api", () => {
       expect(mockGovernanceCanister.disburse).toBeCalled();
     });
 
-    it("throws error when joining community fund fails", async () => {
+    it("throws error when disburse fails", async () => {
       const error = new Error();
       mockGovernanceCanister.disburse.mockImplementation(
         jest.fn(() => {
