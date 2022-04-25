@@ -682,5 +682,5 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   }
 };
 
-export const getNeuronId = (path: string): NeuronId | undefined =>
+export const routePathNeuronId = (path: string): NeuronId | undefined =>
   getLastPathDetailId(path);

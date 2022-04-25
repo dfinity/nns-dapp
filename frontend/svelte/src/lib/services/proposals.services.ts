@@ -233,7 +233,7 @@ const getProposal = async ({
   });
 };
 
-export const getProposalId = (path: string): ProposalId | undefined =>
+export const routePathProposalId = (path: string): ProposalId | undefined =>
   getLastPathDetailId(path);
 
 /**
