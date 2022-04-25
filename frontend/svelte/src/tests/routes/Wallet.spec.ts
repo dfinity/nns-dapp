@@ -14,7 +14,7 @@ import {
 } from "../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import en from "../mocks/i18n.mock";
-import { mockRouteStoreSubscibe } from "../mocks/route.store.mock";
+import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 
 describe("Wallet", () => {
   beforeEach(() => {
@@ -63,7 +63,7 @@ describe("Wallet", () => {
       jest
         .spyOn(routeStore, "subscribe")
         .mockImplementation(
-          mockRouteStoreSubscibe(`/#/wallet/${mockMainAccount.identifier}`)
+          mockRouteStoreSubscribe(`/#/wallet/${mockMainAccount.identifier}`)
         );
     });
 
@@ -91,7 +91,7 @@ describe("Wallet", () => {
       jest
         .spyOn(routeStore, "subscribe")
         .mockImplementation(
-          mockRouteStoreSubscibe(`/#/wallet/${mockMainAccount.identifier}`)
+          mockRouteStoreSubscribe(`/#/wallet/${mockMainAccount.identifier}`)
         );
     });
 
