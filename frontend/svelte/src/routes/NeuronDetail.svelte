@@ -2,7 +2,10 @@
   import type { NeuronId } from "@dfinity/nns";
   import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
-  import { routePathNeuronId, loadNeuron } from "../lib/services/neurons.services";
+  import {
+    routePathNeuronId,
+    loadNeuron,
+  } from "../lib/services/neurons.services";
   import NeuronFollowingCard from "../lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NeuronHotkeysCard from "../lib/components/neuron-detail/NeuronHotkeysCard.svelte";
   import NeuronMaturityCard from "../lib/components/neuron-detail/NeuronMaturityCard.svelte";
