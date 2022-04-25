@@ -15,26 +15,15 @@
   let dispatcher = createEventDispatcher();
 
   const createNewAccount = async () => {
-    try {
-      startBusy("accounts");
-      await addSubAccount({
-        name: newAccountName,
-      });
-      dispatcher("nnsClose");
-    } catch (err) {
-      const labelKey =
-        err instanceof NameTooLongError
-          ? "create_subaccount_too_long"
-          : err instanceof SubAccountLimitExceededError
-          ? "create_subaccount_limit_exceeded"
-          : "create_subaccount";
-      toastsStore.error({
-        labelKey,
-        err,
-      });
-    } finally {
-      stopBusy("accounts");
-    }
+    startBusy("accounts");
+
+    await addSubAccount({
+      name: newAccountName,
+    });
+
+    stopBusy("accounts");
+
+    dispatcher("nnsClose");
   };
 </script>
 
