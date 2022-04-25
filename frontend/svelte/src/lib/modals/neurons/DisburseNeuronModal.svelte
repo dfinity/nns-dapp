@@ -3,8 +3,8 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import WizardModal from "../WizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
-  import SelectDestinationAccount from "../../components/neuron-detail/SelectDestinationAccount.svelte";
   import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
+  import DestinationAddress from "../../components/accounts/DestinationAddress.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -26,7 +26,7 @@
 
   let destinationAddress: string | undefined;
 
-  const onSelectAccount = ({
+  const onSelectAddress = ({
     detail: { address },
   }: CustomEvent<{ address: string }>) => {
     destinationAddress = address;
@@ -40,7 +40,7 @@
     ></svelte:fragment
   >
   {#if currentStep.name === "SelectDestination"}
-    <SelectDestinationAccount on:nnsSelectAccount={onSelectAccount} />
+    <DestinationAddress on:nnsAddress={onSelectAddress} />
   {/if}
   {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron on:nnsClose {neuron} {destinationAddress} />
