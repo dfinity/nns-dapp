@@ -6,8 +6,6 @@
   import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
   import DestinationAddress from "./DestinationAddress.svelte";
 
-  let address: string;
-
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
   );
