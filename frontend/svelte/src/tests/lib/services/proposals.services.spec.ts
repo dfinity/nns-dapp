@@ -5,11 +5,11 @@ import * as api from "../../../lib/api/proposals.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
-  routePathProposalId,
   listNextProposals,
   listProposals,
   loadProposal,
   registerVotes,
+  routePathProposalId,
 } from "../../../lib/services/proposals.services";
 import * as busyStore from "../../../lib/stores/busy.store";
 import {
