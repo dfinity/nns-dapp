@@ -3,7 +3,7 @@
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
-    getProposalId,
+    routePathProposalId,
     loadProposal,
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
@@ -62,7 +62,7 @@
       if (!isRoutePath({ path: AppPath.ProposalDetail, routePath })) {
         return;
       }
-      const proposalId = getProposalId(routePath);
+      const proposalId = routePathProposalId(routePath);
 
       if (proposalId === undefined) {
         // Navigate to the proposal list in no proposalId found
