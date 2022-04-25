@@ -9,6 +9,7 @@
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { sortedknownNeuronsStore } from "../../stores/knownNeurons.store";
+  import { followeesByTopic } from "../../utils/neuron.utils";
   import Modal from "../Modal.svelte";
 
   export let neuron: NeuronInfo;
@@ -19,9 +20,7 @@
   let loading: boolean = false;
   let topicFollowees: NeuronId[];
   $: {
-    const topicInfo = neuron.fullNeuron?.followees.find(
-      (followee) => followee.topic === topic
-    );
+    const topicInfo = followeesByTopic({ neuron, topic });
     topicFollowees = topicInfo?.followees ?? [];
   }
 

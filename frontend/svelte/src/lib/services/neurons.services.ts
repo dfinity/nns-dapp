@@ -43,6 +43,7 @@ import { translate } from "../utils/i18n.utils";
 import {
   canBeMerged,
   convertNumberToICP,
+  followeesByTopic,
   isEnoughToStakeNeuron,
   isIdentityController,
 } from "../utils/neuron.utils";
@@ -566,9 +567,7 @@ export const addFollowee = async ({
 }): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
 
-  const topicFollowees = neuron?.fullNeuron?.followees.find(
-    ({ topic: currentTopic }) => currentTopic === topic
-  );
+  const topicFollowees = followeesByTopic({ neuron, topic });
   const newFollowees: NeuronId[] =
     topicFollowees === undefined
       ? [followee]
@@ -593,10 +592,10 @@ export const removeFollowee = async ({
 }): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
 
-  const topicFollowees: Followees | undefined =
-    neuron?.fullNeuron?.followees.find(
-      ({ topic: currentTopic }) => currentTopic === topic
-    );
+  const topicFollowees: Followees | undefined = followeesByTopic({
+    neuron,
+    topic,
+  });
   if (topicFollowees === undefined) {
     // Followee in that topic already does not exist.
     toastsStore.error({
