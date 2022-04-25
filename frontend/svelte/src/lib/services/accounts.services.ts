@@ -1,4 +1,5 @@
 import type { Identity } from "@dfinity/agent";
+import { get } from "svelte/store";
 import { createSubAccount, loadAccounts } from "../api/accounts.api";
 import { sendICP } from "../api/ledger.api";
 import { toSubAccountId } from "../api/utils.api";
@@ -10,6 +11,8 @@ import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { TransactionStore } from "../stores/transaction.store";
+import type { Account } from "../types/account";
+import { getLastPathDetail } from "../utils/app-path.utils";
 import { errorToString } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -118,4 +121,31 @@ const transferError = ({
   });
 
   return { success: false, err: labelKey };
+};
+
+export const routePathAccountIdentifier = (
+  path: string | undefined
+): string | undefined => {
+  const accountIdentifier: string | undefined = getLastPathDetail(path);
+  return accountIdentifier !== undefined && accountIdentifier !== ""
+    ? accountIdentifier
+    : undefined;
+};
+
+export const getAccountFromStore = (
+  identifier: string | undefined
+): Account | undefined => {
+  if (identifier === undefined) {
+    return undefined;
+  }
+
+  const { main, subAccounts }: AccountsStore = get(accountsStore);
+
+  if (main?.identifier === identifier) {
+    return main;
+  }
+
+  return subAccounts?.find(
+    (account: Account) => account.identifier === identifier
+  );
 };
