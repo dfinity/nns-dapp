@@ -10,7 +10,7 @@ import NeuronDetail from "../../routes/NeuronDetail.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import en from "../mocks/i18n.mock";
 import { mockNeuron } from "../mocks/neurons.mock";
-import { mockRouteStoreSubscibe } from "../mocks/route.store.mock";
+import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 
 jest.mock("../../lib/services/neurons.services", () => {
   return {
@@ -22,7 +22,7 @@ jest.mock("../../lib/services/neurons.services", () => {
       setNeuron({ neuron: mockNeuron, certified: true });
     },
     // we can't mock one and not the other
-    getNeuronId: () => "7193101111710042264",
+    routePathNeuronId: () => "7193101111710042264",
   };
 });
 
@@ -35,7 +35,7 @@ describe("NeuronDetail", () => {
     jest
       .spyOn(routeStore, "subscribe")
       .mockImplementation(
-        mockRouteStoreSubscibe("/#/neuron/7193101111710042264")
+        mockRouteStoreSubscribe("/#/neuron/7193101111710042264")
       );
   });
 
