@@ -247,7 +247,7 @@ export const queryKnownNeurons = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<KnownNeuron[]> => {
-  logWithTimestamp(`Querieng Known Neurons certified:${certified} call...`);
+  logWithTimestamp(`Querying Known Neurons certified:${certified} call...`);
   const { canister } = await governanceCanister({ identity });
 
   const knownNeurons = await canister.listKnownNeurons(certified);
@@ -260,9 +260,8 @@ export const queryKnownNeurons = async ({
     knownNeurons.push(icNeuron);
   }
 
-  const response = await knownNeurons;
-  logWithTimestamp(`Querieng Known Neurons certified:${certified} complete.`);
-  return response;
+  logWithTimestamp(`Querying Known Neurons certified:${certified} complete.`);
+  return knownNeurons;
 };
 
 export const claimOrRefreshNeuron = async ({
