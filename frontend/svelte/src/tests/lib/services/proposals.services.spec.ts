@@ -5,7 +5,7 @@ import * as api from "../../../lib/api/proposals.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
-  getProposalId,
+  routePathProposalId,
   listNextProposals,
   listProposals,
   loadProposal,
@@ -154,14 +154,14 @@ describe("proposals-services", () => {
     });
     afterAll(() => jest.clearAllMocks());
     it("should get proposalId from valid path", async () => {
-      expect(getProposalId("/#/proposal/123")).toBe(BigInt(123));
-      expect(getProposalId("/#/proposal/0")).toBe(BigInt(0));
+      expect(routePathProposalId("/#/proposal/123")).toBe(BigInt(123));
+      expect(routePathProposalId("/#/proposal/0")).toBe(BigInt(0));
     });
 
     it("should not get proposalId from invalid path", async () => {
-      expect(getProposalId("/#/proposal/")).toBeUndefined();
-      expect(getProposalId("/#/proposal/1.5")).toBeUndefined();
-      expect(getProposalId("/#/proposal/123n")).toBeUndefined();
+      expect(routePathProposalId("/#/proposal/")).toBeUndefined();
+      expect(routePathProposalId("/#/proposal/1.5")).toBeUndefined();
+      expect(routePathProposalId("/#/proposal/123n")).toBeUndefined();
     });
   });
 
