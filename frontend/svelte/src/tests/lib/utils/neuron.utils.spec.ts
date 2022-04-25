@@ -9,6 +9,7 @@ import {
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import type { Step } from "../../../lib/stores/steps.state";
 import { InvalidAmountError } from "../../../lib/types/errors";
+import { enumValues } from "../../../lib/utils/enum.utils";
 import {
   ageMultiplier,
   allHaveSameFollowees,
@@ -34,6 +35,7 @@ import {
   neuronCanBeSplit,
   neuronStake,
   sortNeuronsByCreatedTimestamp,
+  topicsToFollow,
   votingPower,
   type InvalidState,
 } from "../../../lib/utils/neuron.utils";
@@ -935,6 +937,53 @@ describe("neuron-utils", () => {
           topic: Topic.ManageNeuron,
         })
       ).toBeUndefined();
+    });
+  });
+
+  describe("topicsToFollow", () => {
+    const neuronWithoutManageNeuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        followees: [
+          {
+            topic: Topic.ExchangeRate,
+            followees: [BigInt(0), BigInt(1)],
+          },
+        ],
+      },
+    };
+    const neuronWithoutFollowees = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        followees: [],
+      },
+    };
+    const neuronWithManageNeuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        followees: [
+          {
+            topic: Topic.ManageNeuron,
+            followees: [BigInt(0), BigInt(1)],
+          },
+        ],
+      },
+    };
+
+    it("should return topics without ManageNeuron", () => {
+      expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
+        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+      );
+      expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
+        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+      );
+    });
+
+    it("should return topics with ManageNeuron if already voted for it", () => {
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(enumValues(Topic));
     });
   });
 });
