@@ -153,12 +153,12 @@ describe("proposals-services", () => {
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
     afterAll(() => jest.clearAllMocks());
-    it("should get proposalId from valid path", async () => {
+    it("should get proposalId from valid path", () => {
       expect(routePathProposalId("/#/proposal/123")).toBe(BigInt(123));
       expect(routePathProposalId("/#/proposal/0")).toBe(BigInt(0));
     });
 
-    it("should not get proposalId from invalid path", async () => {
+    it("should not get proposalId from invalid path", () => {
       expect(routePathProposalId("/#/proposal/")).toBeUndefined();
       expect(routePathProposalId("/#/proposal/1.5")).toBeUndefined();
       expect(routePathProposalId("/#/proposal/123n")).toBeUndefined();
