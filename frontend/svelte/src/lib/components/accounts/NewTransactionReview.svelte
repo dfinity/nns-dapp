@@ -6,7 +6,7 @@
   import type { TransactionContext } from "../../stores/transaction.store";
   import { createEventDispatcher, getContext } from "svelte";
   import { i18n } from "../../stores/i18n";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { transferICP } from "../../services/accounts.services";
 
   const context: TransactionContext = getContext<TransactionContext>(
@@ -40,7 +40,7 @@
 
   <NewTransactionInfo />
 
-  <button class="primary full-width" type="submit">
+  <button class="primary full-width" type="submit" disabled={$busy}>
     {$i18n.accounts.confirm_and_send}
   </button>
 </form>
