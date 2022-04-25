@@ -17,6 +17,7 @@ import {
   checkInvalidState,
   convertNumberToICP,
   dissolveDelayMultiplier,
+  followeesByTopic,
   followeesNeurons,
   formatVotingPower,
   getDissolvingTimeInSeconds,
@@ -877,6 +878,63 @@ describe("neuron-utils", () => {
         },
       };
       expect(canBeMerged([neuron, neuron2]).isValid).toBe(true);
+    });
+  });
+
+  describe("followeesByTopic", () => {
+    const followees = [
+      {
+        topic: Topic.ExchangeRate,
+        followees: [BigInt(0), BigInt(1)],
+      },
+      {
+        topic: Topic.Kyc,
+        followees: [BigInt(1)],
+      },
+      {
+        topic: Topic.Governance,
+        followees: [BigInt(0), BigInt(1), BigInt(2)],
+      },
+    ];
+    const neuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        followees,
+      },
+    };
+
+    it("should return followees by topic", () => {
+      expect(followeesByTopic({ neuron, topic: followees[0].topic })).toEqual(
+        followees[0]
+      );
+      expect(followeesByTopic({ neuron, topic: followees[1].topic })).toEqual(
+        followees[1]
+      );
+      expect(followeesByTopic({ neuron, topic: followees[2].topic })).toEqual(
+        followees[2]
+      );
+    });
+
+    it("should return undefined if topic not found", () => {
+      expect(
+        followeesByTopic({ neuron, topic: Topic.ManageNeuron })
+      ).toBeUndefined();
+    });
+
+    it("should return undefined if no neuron", () => {
+      expect(
+        followeesByTopic({ neuron: undefined, topic: Topic.ManageNeuron })
+      ).toBeUndefined();
+    });
+
+    it("should return undefined if no fullNeuron", () => {
+      expect(
+        followeesByTopic({
+          neuron: { ...mockNeuron, fullNeuron: undefined },
+          topic: Topic.ManageNeuron,
+        })
+      ).toBeUndefined();
     });
   });
 });
