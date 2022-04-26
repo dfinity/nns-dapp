@@ -97,9 +97,8 @@ export const disburse = async ({
   logWithTimestamp(`Disburse neuron (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
-  const response = await canister.disburse({ neuronId, toAccountId, amount });
+  await canister.disburse({ neuronId, toAccountId, amount });
   logWithTimestamp(`Disburse neuron (${hashCode(neuronId)}) complete.`);
-  return response;
 };
 
 export const addHotkey = async ({
