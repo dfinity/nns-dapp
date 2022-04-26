@@ -644,10 +644,12 @@ export const removeFollowee = async ({
  */
 export const loadNeuron = ({
   neuronId,
+  forceFetch = false,
   setNeuron,
   handleError,
 }: {
   neuronId: NeuronId;
+  forceFetch?: boolean;
   setNeuron: (params: { neuron: NeuronInfo; certified: boolean }) => void;
   handleError?: () => void;
 }): Promise<void> => {
@@ -664,6 +666,7 @@ export const loadNeuron = ({
     request: (options) =>
       getNeuron({
         neuronId,
+        forceFetch,
         ...options,
       }),
     onLoad: ({ response: neuron, certified }) => {
