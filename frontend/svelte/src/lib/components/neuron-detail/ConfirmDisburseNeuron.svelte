@@ -1,18 +1,41 @@
 <script lang="ts">
   import { ICP, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
+  import { AppPath } from "../../constants/routes.constants";
+  import { disburse } from "../../services/neurons.services";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
+  import { routeStore } from "../../stores/route.store";
+  import { toastsStore } from "../../stores/toasts.store";
   import { neuronStake } from "../../utils/neuron.utils";
   import TransactionInfo from "../accounts/TransactionInfo.svelte";
   import IcpComponent from "../ic/ICP.svelte";
+  import Spinner from "../ui/Spinner.svelte";
 
   export let neuron: NeuronInfo;
   export let destinationAddress: string;
 
+  let loading: boolean = false;
+
   const dispatcher = createEventDispatcher();
-  const executeTransaction = () => {
-    // TODO: https://dfinity.atlassian.net/browse/L2-432
-    // TODO: Redirect to `/neurons` if success
+  const executeTransaction = async () => {
+    startBusy("disburse-neuron");
+    loading = true;
+    const { success } = await disburse({
+      neuronId: neuron.neuronId,
+      toAccountId: destinationAddress,
+    });
+    loading = false;
+    stopBusy("disburse-neuron");
+    if (success) {
+      toastsStore.show({
+        level: "info",
+        labelKey: "neuron_detail.disburse_success",
+      });
+      routeStore.replace({
+        path: AppPath.Neurons,
+      });
+    }
     dispatcher("nnsClose");
   };
 </script>
@@ -31,8 +54,16 @@
     destination={destinationAddress}
   />
 
-  <button class="primary full-width" type="submit">
-    {$i18n.accounts.confirm_and_send}
+  <button
+    class="primary full-width"
+    type="submit"
+    data-tid="disburse-neuron-button"
+  >
+    {#if loading}
+      <Spinner />
+    {:else}
+      {$i18n.accounts.confirm_and_send}
+    {/if}
   </button>
 </form>
 

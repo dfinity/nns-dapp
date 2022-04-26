@@ -533,15 +533,14 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<Neuron> spawnNeuron({required Neuron neuron}) async {
+  Future<Neuron> spawnNeuron({required Neuron neuron, required int percentageToSpawn}) async {
     final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
     final spawnResponse = await promiseToFuture(serviceApi!.spawn(identity,
-        SpawnRequest(neuronId: neuron.id.toString(), newController: null)));
+          SpawnRequest(neuronId: neuron.id.toString(), percentageToSpawn: percentageToSpawn, newController: null)));
     dynamic response = jsonDecode(stringify(spawnResponse));
     final createdNeuronId = response['createdNeuronId'].toString();
     await neuronSyncService!.sync();
-    return hiveBoxes.neurons.values
-        .firstWhere((element) => element.identifier == createdNeuronId);
+    return hiveBoxes.neurons.values.firstWhere((element) => element.identifier == createdNeuronId);
   }
 
   @override
