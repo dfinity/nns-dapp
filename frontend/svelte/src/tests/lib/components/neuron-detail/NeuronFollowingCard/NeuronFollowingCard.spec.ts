@@ -5,6 +5,7 @@
 import { Topic, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronFollowingCard from "../../../../../lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
+import { listKnownNeurons } from "../../../../../lib/services/knownNeurons.services";
 import { authStore } from "../../../../../lib/stores/auth.store";
 import {
   mockAuthStoreSubscribe,
@@ -12,6 +13,12 @@ import {
 } from "../../../../mocks/auth.store.mock";
 import en from "../../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../../mocks/neurons.mock";
+
+jest.mock("../../../../../lib/services/knownNeurons.services", () => {
+  return {
+    listKnownNeurons: jest.fn().mockResolvedValue(undefined),
+  };
+});
 
 describe("NeuronFollowingCard", () => {
   const followees = [111, 222, 333].map(BigInt);
@@ -79,5 +86,15 @@ describe("NeuronFollowingCard", () => {
       },
     });
     expect(container.querySelector(".frame")).toBeNull();
+  });
+
+  it("should trigger listKnownNeurons", async () => {
+    render(NeuronFollowingCard, {
+      props: {
+        neuron: mockNeuron,
+      },
+    });
+
+    expect(listKnownNeurons).toBeCalled();
   });
 });
