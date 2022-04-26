@@ -8,6 +8,7 @@
 
   export let disableSelection: boolean = false;
   export let filterIdentifier: string | undefined = undefined;
+  export let displayTitle: boolean = false;
 
   const dispatch = createEventDispatcher();
   const chooseAccount = (selectedAccount: Account) => {
@@ -21,10 +22,6 @@
   $: subAccounts = ($accountsStore?.subAccounts ?? []).filter(
     ({ identifier }: Account) => identifier !== filterIdentifier
   );
-
-  // Display the "My Accounts" title only when we filter the list
-  let displayTitle: boolean;
-  $: displayTitle = filterIdentifier !== undefined;
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>

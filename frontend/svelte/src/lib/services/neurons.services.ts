@@ -13,6 +13,7 @@ import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
   addHotkey as addHotkeyApi,
   claimOrRefreshNeuron,
+  disburse as disburseApi,
   increaseDissolveDelay,
   joinCommunityFund as joinCommunityFundApi,
   mergeNeurons as mergeNeuronsApi,
@@ -43,10 +44,12 @@ import { translate } from "../utils/i18n.utils";
 import {
   canBeMerged,
   convertNumberToICP,
+  followeesByTopic,
   isEnoughToStakeNeuron,
   isIdentityController,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
+import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -488,6 +491,28 @@ export const splitNeuron = async ({
   }
 };
 
+export const disburse = async ({
+  neuronId,
+  toAccountId,
+}: {
+  neuronId: NeuronId;
+  toAccountId: string;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await disburseApi({ neuronId, toAccountId, identity });
+
+    await Promise.all([syncAccounts(), listNeurons({ skipCheck: true })]);
+
+    return { success: true };
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    return { success: false };
+  }
+};
+
 export const startDissolving = async (
   neuronId: NeuronId
 ): Promise<NeuronId | undefined> => {
@@ -566,9 +591,7 @@ export const addFollowee = async ({
 }): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
 
-  const topicFollowees = neuron?.fullNeuron?.followees.find(
-    ({ topic: currentTopic }) => currentTopic === topic
-  );
+  const topicFollowees = followeesByTopic({ neuron, topic });
   const newFollowees: NeuronId[] =
     topicFollowees === undefined
       ? [followee]
@@ -593,10 +616,10 @@ export const removeFollowee = async ({
 }): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
 
-  const topicFollowees: Followees | undefined =
-    neuron?.fullNeuron?.followees.find(
-      ({ topic: currentTopic }) => currentTopic === topic
-    );
+  const topicFollowees: Followees | undefined = followeesByTopic({
+    neuron,
+    topic,
+  });
   if (topicFollowees === undefined) {
     // Followee in that topic already does not exist.
     toastsStore.error({

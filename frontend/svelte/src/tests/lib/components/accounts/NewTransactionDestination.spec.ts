@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
 import NewTransactionDestination from "../../../../lib/components/accounts/NewTransactionDestination.svelte";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { transactionStore } from "../../../../lib/stores/transaction.store";
@@ -54,36 +55,21 @@ describe("NewTransactionDestination", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render an input to enter an address", () => {
+  it("should select an address", async () => {
+    const spyOnNext = jest.fn();
+
     const { container } = render(NewTransactionTest, {
-      props,
+      props: {
+        ...props,
+        nextCallback: spyOnNext,
+      },
     });
 
-    expect(container.querySelector("input")).not.toBeNull();
-    expect(container.querySelector("form")).not.toBeNull();
-  });
+    const mainAccount = container.querySelector(
+      'article[role="button"]:first-of-type'
+    ) as HTMLButtonElement;
+    fireEvent.click(mainAccount);
 
-  it("should render a list of accounts", () => {
-    const { getByText } = render(NewTransactionTest, {
-      props,
-    });
-
-    expect(
-      getByText(mockSubAccount.identifier, { exact: false })
-    ).toBeInTheDocument();
-
-    expect(
-      getByText(mockSubAccount2.identifier, { exact: false })
-    ).toBeInTheDocument();
-  });
-
-  it("should filter selected account", () => {
-    const { getByText } = render(NewTransactionTest, {
-      props,
-    });
-
-    expect(() =>
-      getByText(mockMainAccount.identifier, { exact: false })
-    ).toThrow();
+    await waitFor(() => expect(spyOnNext).toHaveBeenCalled());
   });
 });

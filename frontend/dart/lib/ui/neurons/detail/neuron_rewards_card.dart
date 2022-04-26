@@ -2,6 +2,7 @@ import 'package:nns_dapp/data/icp.dart';
 import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/neurons/detail/neuron_spawn_neuron.dart';
 import 'package:nns_dapp/ui/wallet/percentage_display_widget.dart';
 import 'package:universal_html/js.dart' as js;
 import '../../../nns_dapp.dart';
@@ -47,23 +48,14 @@ class NeuronRewardsCard extends StatelessWidget {
       ElevatedButton(
           onPressed: () {
             OverlayBaseWidget.show(
-                context,
-                ConfirmDialog(
-                  title: "Really Spawn Neuron",
-                  description: "Are you sure you wish to spawn a new neuron?",
-                  onConfirm: () async {
-                    context.callUpdate(() async {
-                      try {
-                        final newNeuron =
-                            await context.icApi.spawnNeuron(neuron: neuron);
-                        context.nav
-                            .push(neuronPageDef.createPageConfig(newNeuron));
-                      } catch (err) {
-                        js.context.callMethod("alert", ["$err"]);
-                      }
-                    });
-                  },
-                ));
+              context,
+              SpawnNeuron(
+                  neuron: neuron,
+                  cancelTitle: "Skip",
+                  onCompleteAction: (context) {
+                    OverlayBaseWidget.of(context)?.dismiss();
+                  }),
+            );
           }.takeIf((e) =>
               neuron.maturityICPEquivalent.asE8s() > BigInt.from(E8S_PER_ICP) &&
               context.icApi.isNeuronControllable(neuron)),
@@ -71,8 +63,7 @@ class NeuronRewardsCard extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: Text(
               "Spawn Neuron",
-              style:
-                  TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
+              style: TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
             ),
           )),
     ];
