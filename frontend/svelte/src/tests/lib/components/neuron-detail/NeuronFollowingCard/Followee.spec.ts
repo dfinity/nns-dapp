@@ -4,8 +4,7 @@
 
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
-import { render } from "@testing-library/svelte";
-import { tick } from "svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import Followee from "../../../../../lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
 import { knownNeuronsStore } from "../../../../../lib/stores/knownNeurons.store";
 import en from "../../../../mocks/i18n.mock";
@@ -48,7 +47,7 @@ describe("Followee", () => {
   });
 
   it("should render known neurons name", async () => {
-    const { getByText, container } = render(Followee, { props });
+    const { getByText } = render(Followee, { props });
     knownNeuronsStore.setNeurons([
       {
         id: followee.neuronId,
@@ -56,10 +55,6 @@ describe("Followee", () => {
         description: "test-description",
       },
     ]);
-    await tick();
-    expect(getByText("test-name")).toBeInTheDocument();
-    expect(
-      container.querySelector("#followee-111")?.getAttribute("title")
-    ).toBe("test-description");
+    await waitFor(() => expect(getByText("test-name")).toBeInTheDocument());
   });
 });

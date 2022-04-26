@@ -13,27 +13,14 @@
   let modalOpen = false;
   let id: string;
   $: id = `followee-${followee.neuronId}`;
-  let neuronTitle: string;
-  let neuronDescription: string | undefined;
-  $: followee,
-    $knownNeuronsStore,
-    (() => {
-      const knownNeuron = $knownNeuronsStore.find(
-        ({ id }) => id === followee.neuronId
-      );
-      neuronTitle =
-        (knownNeuron && knownNeuron.name) ?? followee.neuronId.toString();
-      neuronDescription = knownNeuron && knownNeuron.description;
-    })();
+  let name: string;
+  $: name =
+    $knownNeuronsStore.find(({ id }) => id === followee.neuronId)?.name ??
+    followee.neuronId.toString();
 </script>
 
-<button
-  {id}
-  class="text"
-  title={neuronDescription}
-  on:click|stopPropagation={() => (modalOpen = true)}
->
-  {neuronTitle}
+<button {id} class="text" on:click|stopPropagation={() => (modalOpen = true)}>
+  {name}
 </button>
 
 <ul aria-labelledby={id}>
