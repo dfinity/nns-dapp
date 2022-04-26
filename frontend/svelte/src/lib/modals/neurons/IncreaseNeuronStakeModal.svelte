@@ -52,7 +52,7 @@
   let modal: WizardModal | undefined;
 
   const dispatcher = createEventDispatcher();
-  const fetchNewData = async () => {
+  const fetchUpdatedNeuron = async () => {
     await loadNeuron({
       neuronId: neuron.neuronId,
       forceFetch: true,
@@ -77,7 +77,7 @@
       <NewTransactionAmount />
     {/if}
     {#if currentStep?.name === "Review"}
-      <NewTransactionReview on:nnsClose={fetchNewData} />
+      <NewTransactionReview on:nnsClose={fetchUpdatedNeuron} />
     {/if}
   </svelte:fragment>
 </WizardModal>
