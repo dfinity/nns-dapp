@@ -5,6 +5,7 @@
   import { invalidAddress } from "../../utils/accounts.utils";
 
   export let address: string = "";
+  // TODO: Validate valid address on blur https://dfinity.atlassian.net/browse/L2-479
 </script>
 
 <article>
