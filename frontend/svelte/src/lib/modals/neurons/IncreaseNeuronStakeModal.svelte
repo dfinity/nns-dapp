@@ -66,7 +66,7 @@
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
-    >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
+    >{currentStep?.title ?? $i18n.accounts.select_source}</svelte:fragment
   >
 
   <svelte:fragment>
