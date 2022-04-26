@@ -497,12 +497,10 @@ export const disburse = async ({
   neuronId: NeuronId;
   toAccountId: string;
 }): Promise<{ success: boolean }> => {
-  let success = false;
   try {
     const identity: Identity = await getIdentityByNeuron(neuronId);
 
     await disburseApi({ neuronId, toAccountId, identity });
-    success = true;
 
     await Promise.all([syncAccounts(), listNeurons({ skipCheck: true })]);
 
@@ -510,7 +508,7 @@ export const disburse = async ({
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
 
-    return { success };
+    return { success: false };
   }
 };
 
