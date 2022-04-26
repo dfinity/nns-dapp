@@ -73,7 +73,7 @@
     selectedAccount,
   }));
 
-  // Update store with selectedAccount in case the property would be set after the component is initialized
+  // Update store with selectedDestination in case the property would be set after the component is initialized
   $: newTransactionStore.update((data) => ({
     ...data,
     destinationAddress: selectedDestination,
