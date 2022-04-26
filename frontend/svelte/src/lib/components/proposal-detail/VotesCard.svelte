@@ -72,9 +72,19 @@
   </div>
 
   {#if neuronsVotedForProposal.length}
-    <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
+  <div role="img" aria-labelledby="voteStatus">
+  <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
     <ul>
       {#each neuronsVotedForProposal as neuron}
+      {#if neuron.vote === Vote.UNSPECIFIED}
+        <div class="visually-hidden" id=voteStatus>
+            Neuron ID {neuron.id} has not voted
+       </div>
+      {:else}
+        <div class="visually-hidden" id=voteStatus>
+            Neuron ID {neuron.id} has voted {neuron.vote === Vote.YES ? 'yes': 'no'} with power of {neuron.votingPower}
+        </div>
+      {/if}
         <li data-tid="neuron-data">
           <p>{neuron.id}</p>
           <p class="vote-details">
@@ -86,6 +96,7 @@
         </li>
       {/each}
     </ul>
+  </div>
   {/if}
 </Card>
 
@@ -158,4 +169,18 @@
       gap: var(--padding);
     }
   }
+
+  .visually-hidden {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
+    clip: rect(1px, 1px, 1px, 1px); /*maybe deprecated but we need to support legacy browsers */
+    clip-path: inset(50%); /*modern browsers, clip-path works inwards from each corner*/
+    white-space: nowrap; /* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
+}
 </style>
