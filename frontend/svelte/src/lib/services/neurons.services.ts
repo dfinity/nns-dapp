@@ -13,6 +13,7 @@ import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
   addHotkey as addHotkeyApi,
   claimOrRefreshNeuron,
+  disburse as disburseApi,
   increaseDissolveDelay,
   joinCommunityFund as joinCommunityFundApi,
   mergeNeurons as mergeNeuronsApi,
@@ -47,6 +48,7 @@ import {
   isIdentityController,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
+import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -485,6 +487,28 @@ export const splitNeuron = async ({
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
     return undefined;
+  }
+};
+
+export const disburse = async ({
+  neuronId,
+  toAccountId,
+}: {
+  neuronId: NeuronId;
+  toAccountId: string;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await disburseApi({ neuronId, toAccountId, identity });
+
+    await Promise.all([syncAccounts(), listNeurons({ skipCheck: true })]);
+
+    return { success: true };
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    return { success: false };
   }
 };
 
