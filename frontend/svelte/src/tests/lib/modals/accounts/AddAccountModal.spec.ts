@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
+import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import AddAccountModal from "../../../../lib/modals/accounts/AddAccountModal.svelte";
 import { addSubAccount } from "../../../../lib/services/accounts.services";
 import en from "../../../mocks/i18n.mock";
@@ -30,9 +30,9 @@ describe("AddAccountModal", () => {
     expect(buttons.length).toEqual(2);
   });
 
-  it("should be able to select new account ", async () => {
-    const { queryByText } = await renderModal({ component: AddAccountModal });
-
+  const shouldNavigateSubaccountStep = async ({
+    queryByText,
+  }: RenderResult) => {
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
 
@@ -41,6 +41,31 @@ describe("AddAccountModal", () => {
       (await fireEvent.click(accountCard.parentElement));
 
     expect(queryByText(en.accounts.new_linked_title)).not.toBeNull();
+  };
+
+  it("should be able to select new subaccount ", async () => {
+    const renderResult = await renderModal({ component: AddAccountModal });
+    await shouldNavigateSubaccountStep(renderResult);
+  });
+
+  const shouldNavigateHardwareWalletStep = async ({
+    queryByText,
+  }: RenderResult) => {
+    const accountCard = queryByText(en.accounts.attach_hardware_title);
+    expect(accountCard).not.toBeNull();
+
+    accountCard &&
+      accountCard.parentElement &&
+      (await fireEvent.click(accountCard.parentElement));
+
+    await waitFor(() =>
+      expect(queryByText(en.accounts.attach_hardware_enter_name)).not.toBeNull()
+    );
+  };
+
+  it("should be able to select new hardware wallet ", async () => {
+    const renderResult = await renderModal({ component: AddAccountModal });
+    await shouldNavigateHardwareWalletStep(renderResult);
   });
 
   it("should have disabled Add Account button", async () => {
@@ -126,5 +151,54 @@ describe("AddAccountModal", () => {
     };
 
     await testSubaccount(extraChecks);
+  });
+
+  const goBack = async ({ container, getByText, title }) => {
+    const back = container.querySelector("button.back") as HTMLButtonElement;
+    fireEvent.click(back);
+
+    await waitFor(() =>
+      expect(getByText(title, { exact: false })).toBeInTheDocument()
+    );
+  };
+
+  const shouldNavigateHardwareWalletConnect = async ({
+    container,
+    queryByText,
+  }: RenderResult) => {
+    const input = container.querySelector("input") as HTMLInputElement;
+    await fireEvent.input(input, { target: { value: "test" } });
+
+    const button: HTMLButtonElement = container.querySelector(
+      'button[type="submit"]'
+    ) as HTMLButtonElement;
+
+    await waitFor(() => {
+      expect(button?.getAttribute("disabled")).toBeNull();
+    });
+
+    fireEvent.click(button);
+
+    await waitFor(() =>
+      expect(
+        queryByText(en.accounts.connect_hardware_wallet, { exact: false })
+      ).not.toBeNull()
+    );
+  };
+
+  it("should navigate back and forth between steps", async () => {
+    const renderResult = await renderModal({ component: AddAccountModal });
+    await shouldNavigateSubaccountStep(renderResult);
+
+    const { container, getByText } = renderResult;
+    await goBack({ container, getByText, title: en.accounts.add_account });
+
+    await shouldNavigateHardwareWalletStep(renderResult);
+
+    await goBack({ container, getByText, title: en.accounts.add_account });
+
+    await shouldNavigateHardwareWalletStep(renderResult);
+
+    await shouldNavigateHardwareWalletConnect(renderResult);
   });
 });

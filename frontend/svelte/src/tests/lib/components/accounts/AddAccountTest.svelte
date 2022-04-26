@@ -12,7 +12,8 @@
 
   setContext<AddAccountContext>(ADD_ACCOUNT_CONTEXT_KEY, {
     store: addAccountStore,
-    selectType: async (type: AccountType) => addAccountStore.update((data) => ({ ...data, type })),
+    selectType: async (type: AccountType) =>
+      addAccountStore.update((data) => ({ ...data, type })),
     next: () => nextCallback?.(),
   });
 </script>

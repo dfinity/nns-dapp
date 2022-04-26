@@ -4,11 +4,11 @@
 
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import HardwareWalletName from "../../../../lib/components/accounts/HardwareWalletName.svelte";
 import { addAccountStore } from "../../../../lib/stores/add-account.store";
 import en from "../../../mocks/i18n.mock";
 import AddAccountTest from "./AddAccountTest.svelte";
-import {tick} from 'svelte';
 
 describe("HardwareWalletName", () => {
   const props = { testComponent: HardwareWalletName };
@@ -43,7 +43,7 @@ describe("HardwareWalletName", () => {
     });
 
     const button: HTMLButtonElement = container.querySelector(
-        'button[type="submit"]'
+      'button[type="submit"]'
     ) as HTMLButtonElement;
 
     expect(button?.getAttribute("disabled")).not.toBeNull();
