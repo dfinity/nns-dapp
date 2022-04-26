@@ -19,6 +19,7 @@ import {
   mergeNeurons as mergeNeuronsApi,
   queryNeuron,
   queryNeurons,
+  removeHotkey as removeHotkeyApi,
   setFollowees,
   splitNeuron as splitNeuronApi,
   stakeNeuron,
@@ -448,6 +449,29 @@ export const addHotkey = async ({
     const identity: Identity = await getIdentityByNeuron(neuronId);
 
     await addHotkeyApi({ neuronId, identity, principal });
+
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return neuronId;
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    // To inform there was an error
+    return undefined;
+  }
+};
+
+export const removeHotkey = async ({
+  neuronId,
+  principal,
+}: {
+  neuronId: NeuronId;
+  principal: Principal;
+}): Promise<NeuronId | undefined> => {
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await removeHotkeyApi({ neuronId, identity, principal });
 
     await getAndLoadNeuronHelper({ neuronId, identity });
 

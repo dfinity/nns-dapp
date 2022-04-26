@@ -29,6 +29,7 @@ const {
   listNeurons,
   loadNeuron,
   removeFollowee,
+  removeHotkey,
   stakeAndLoadNeuron,
   startDissolving,
   stopDissolving,
@@ -109,6 +110,10 @@ describe("neurons-services", () => {
 
   const spyAddHotkey = jest
     .spyOn(api, "addHotkey")
+    .mockImplementation(() => Promise.resolve());
+
+  const spyRemoveHotkey = jest
+    .spyOn(api, "removeHotkey")
     .mockImplementation(() => Promise.resolve());
 
   const spySplitNeuron = jest
@@ -505,6 +510,51 @@ describe("neurons-services", () => {
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spyAddHotkey).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("removeHotkey", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
+    });
+    it("should update neuron", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      await removeHotkey({
+        neuronId: controlledNeuron.neuronId,
+        principal: Principal.fromText("aaaaa-aa"),
+      });
+
+      expect(spyRemoveHotkey).toHaveBeenCalled();
+    });
+
+    it("should not update neuron if no identity", async () => {
+      setNoIdentity();
+
+      await removeHotkey({
+        neuronId: controlledNeuron.neuronId,
+        principal: Principal.fromText("aaaaa-aa"),
+      });
+
+      expect(toastsStore.show).toHaveBeenCalled();
+      expect(spyRemoveHotkey).not.toHaveBeenCalled();
+
+      resetIdentity();
+    });
+
+    it("should not update neuron if not controlled by user", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+
+      await removeHotkey({
+        neuronId: controlledNeuron.neuronId,
+        principal: Principal.fromText("aaaaa-aa"),
+      });
+
+      expect(toastsStore.show).toHaveBeenCalled();
+      expect(spyRemoveHotkey).not.toHaveBeenCalled();
     });
   });
 
