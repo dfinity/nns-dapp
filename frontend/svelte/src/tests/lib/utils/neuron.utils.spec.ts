@@ -982,7 +982,7 @@ describe("neuron-utils", () => {
       );
     });
 
-    it("should return topics with ManageNeuron if already voted for it", () => {
+    it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
       expect(topicsToFollow(neuronWithManageNeuron)).toEqual(enumValues(Topic));
     });
   });
