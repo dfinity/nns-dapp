@@ -2,7 +2,6 @@
   import type { marked } from "marked";
   import ScriptLoader from "../common/ScriptLoader.svelte";
   import Spinner from "./Spinner.svelte";
-  import { removeHTMLTags } from "../../utils/security.utils";
   import { renderer } from "../../utils/markdown.utils";
   type Marked = typeof marked;
 
@@ -32,7 +31,7 @@
     on:nnsError={onError}
   />
 {:else if globalMarked !== undefined && text !== undefined}
-  {@html globalMarked?.parse(removeHTMLTags(text) ?? "", {
+  {@html globalMarked?.parse(text ?? "", {
     renderer: renderer(globalMarked),
   })}
 {:else}
