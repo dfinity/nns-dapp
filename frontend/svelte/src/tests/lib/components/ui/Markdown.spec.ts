@@ -73,14 +73,4 @@ describe("Markdown", () => {
       renderer: { link: targetBlankLinkRenderer, image: imageToLinkRenderer },
     });
   });
-
-  it('should "sanitize" the text', async () => {
-    render(Markdown, {
-      props: { text: "<script>alert('hack')</script>" },
-    });
-    await tick();
-    expect(globalThis.marked.parse).toBeCalledWith("alert('hack')", {
-      renderer: { link: targetBlankLinkRenderer, image: imageToLinkRenderer },
-    });
-  });
 });
