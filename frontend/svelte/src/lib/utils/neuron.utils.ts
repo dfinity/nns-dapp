@@ -4,6 +4,7 @@ import {
   NeuronState,
   Topic,
   type BallotInfo,
+  type Followees,
   type Neuron,
   type NeuronId,
   type NeuronInfo,
@@ -26,6 +27,7 @@ import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
 import { InvalidAmountError } from "../types/errors";
 import { getAccountByPrincipal } from "./accounts.utils";
+import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
 import { isDefined } from "./utils";
 
@@ -426,3 +428,24 @@ export const isIdentityController = ({
   }
   return neuron.fullNeuron?.controller === identity.getPrincipal().toText();
 };
+
+export const followeesByTopic = ({
+  neuron,
+  topic,
+}: {
+  neuron: NeuronInfo | undefined;
+  topic: Topic;
+}): Followees | undefined =>
+  neuron?.fullNeuron?.followees.find(
+    ({ topic: followedTopic }) => topic === followedTopic
+  );
+
+/**
+ * NeuronManagement proposals are not public so we hide this topic
+ * (unless the neuron already has followees on this topic)
+ * https://github.com/dfinity/nns-dapp/pull/511
+ */
+export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
+  followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
+    ? enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+    : enumValues(Topic);
