@@ -9,6 +9,8 @@
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
   import { votedNeurons } from "@dfinity/nns";
   import { definedNeuronsStore } from "../../stores/neurons.store";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
+import { get } from "svelte/store";
 
   export let proposalInfo: ProposalInfo;
 
@@ -31,6 +33,15 @@
     [Vote.UNSPECIFIED]: undefined,
   };
   let neuronsVotedForProposal: CompactNeuronInfo[];
+  function voteMapper(inputNeuronId: NeuronId, vote: Vote) {
+    if (vote === Vote.NO) {
+      return replacePlaceholders(get(i18n).proposal_detail__vote.voted_no, {$neuronId: inputNeuronId.toString()})
+    } else if (vote === Vote.YES) {
+      return replacePlaceholders(get(i18n).proposal_detail__vote.voted_yes, {$neuronId: inputNeuronId.toString()})
+    } else if (vote === Vote.UNSPECIFIED) {
+      return replacePlaceholders(get(i18n).proposal_detail__vote.voted_none, {$neuronId: inputNeuronId.toString()})
+    }
+  }
 
   $: {
     neuronsVotedForProposal = votedNeurons({
@@ -72,31 +83,31 @@
   </div>
 
   {#if neuronsVotedForProposal.length}
-  <div role="img" aria-labelledby="voteStatus">
-  <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
+    <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
     <ul>
       {#each neuronsVotedForProposal as neuron}
-      {#if neuron.vote === Vote.UNSPECIFIED}
-        <div class="visually-hidden" id=voteStatus>
-            Neuron ID {neuron.id} has not voted
-       </div>
-      {:else}
-        <div class="visually-hidden" id=voteStatus>
-            Neuron ID {neuron.id} has voted {neuron.vote === Vote.YES ? 'yes': 'no'} with power of {neuron.votingPower}
+        <div role="img" aria-labelledby="voteStatus" title="{voteMapper(neuron.id, neuron.vote)}">
+          {#if neuron.vote === Vote.UNSPECIFIED}
+            <div class="visually-hidden" id=voteStatus>
+                Neuron ID {neuron.id} has not voted
+            </div>
+          {:else}
+            <div class="visually-hidden" id=voteStatus>
+                {$i18n.neuron_detail.title} {neuron.id} has voted {neuron.vote === Vote.YES ? 'yes': 'no'} with {$i18n.proposal_detail__vote.voting_power} of {neuron.votingPower}
+            </div>
+          {/if}
+          <li data-tid="neuron-data">
+            <p>{neuron.id}</p>
+            <p class="vote-details">
+              <span>{neuron.votingPower}</span>
+              {#if voteIconMapper[neuron.vote]}
+                <svelte:component this={voteIconMapper[neuron.vote]} />
+              {/if}
+            </p>
+          </li>
         </div>
-      {/if}
-        <li data-tid="neuron-data">
-          <p>{neuron.id}</p>
-          <p class="vote-details">
-            <span>{neuron.votingPower}</span>
-            {#if voteIconMapper[neuron.vote]}
-              <svelte:component this={voteIconMapper[neuron.vote]} />
-            {/if}
-          </p>
-        </li>
       {/each}
     </ul>
-  </div>
   {/if}
 </Card>
 

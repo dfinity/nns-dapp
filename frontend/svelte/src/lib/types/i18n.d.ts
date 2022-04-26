@@ -290,6 +290,9 @@ interface I18nProposal_detail__vote {
   confirm_adopt_text: string;
   confirm_reject_headline: string;
   confirm_reject_text: string;
+  voted_yes: string;
+  voted_no: string;
+  voted_none: string;
 }
 
 interface I18nProposal_detail__ineligible {
