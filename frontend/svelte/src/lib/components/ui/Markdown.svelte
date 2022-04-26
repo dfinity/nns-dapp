@@ -1,41 +1,31 @@
 <script lang="ts">
   import type { marked } from "marked";
-  import ScriptLoader from "../common/ScriptLoader.svelte";
   import Spinner from "./Spinner.svelte";
-  import { removeHTMLTags } from "../../utils/security.utils";
   import { renderer } from "../../utils/markdown.utils";
   type Marked = typeof marked;
 
   export let text: string | undefined;
 
-  // do not load the lib if available
-  /* eslint-disable-next-line no-undef */
-  let globalMarked: Marked | undefined = globalThis?.marked as Marked;
-  let loading: boolean = globalMarked === undefined;
+  let sanitisedText: string | undefined;
+  $: text,
+    (async () => {
+      sanitisedText = text === undefined ? undefined : await sanitize(text);
+    })();
 
-  const onLoad = () => {
-    loading = false;
+  const sanitize = async (text: string): Promise<string> => {
+    const purifyUrl = "/assets/assets/libs/purify.min.js";
+    const { sanitize: purify } = (await import(purifyUrl)).default;
+    const markedUrl = "/assets/assets/libs/marked.min.js";
+    const { marked }: { marked: Marked } = await import(markedUrl);
 
-    /* eslint-disable-next-line no-undef */
-    globalMarked = globalThis?.marked as Marked;
-  };
-  const onError = () => {
-    loading = false;
+    return marked(purify(text), {
+      renderer: renderer(marked),
+    });
   };
 </script>
 
-{#if loading}
+{#if sanitisedText === undefined}
   <Spinner inline />
-  <ScriptLoader
-    url="/assets/assets/libs/marked.min.js"
-    on:nnsLoad={onLoad}
-    on:nnsError={onError}
-  />
-{:else if globalMarked !== undefined && text !== undefined}
-  {@html globalMarked?.parse(removeHTMLTags(text) ?? "", {
-    renderer: renderer(globalMarked),
-  })}
 {:else}
-  <!-- fallback text content -->
-  <p data-tid="markdown-text">{text}</p>
+  {@html sanitisedText}
 {/if}
