@@ -7,7 +7,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import HardwareWalletName from "../../../../lib/components/accounts/HardwareWalletName.svelte";
 import { addAccountStore } from "../../../../lib/stores/add-account.store";
 import en from "../../../mocks/i18n.mock";
-import HardwareWalletTest from "./HardwareWalletTest.svelte";
+import AddAccountTest from "./AddAccountTest.svelte";
 import {tick} from 'svelte';
 
 describe("HardwareWalletName", () => {
@@ -28,7 +28,7 @@ describe("HardwareWalletName", () => {
   );
 
   it("should render an explanation text", () => {
-    const { queryByText } = render(HardwareWalletTest, {
+    const { queryByText } = render(AddAccountTest, {
       props,
     });
 
@@ -38,7 +38,7 @@ describe("HardwareWalletName", () => {
   });
 
   it("should enable and disable submit according text input length", async () => {
-    const { container } = render(HardwareWalletTest, {
+    const { container } = render(AddAccountTest, {
       props,
     });
 
@@ -74,7 +74,7 @@ describe("HardwareWalletName", () => {
   it("should enter a wallet name", async () => {
     const spyOnNext = jest.fn();
 
-    const { container } = render(HardwareWalletTest, {
+    const { container } = render(AddAccountTest, {
       props: {
         ...props,
         nextCallback: spyOnNext,
