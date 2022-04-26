@@ -436,11 +436,9 @@ export const followeesByTopic = ({
   neuron: NeuronInfo | undefined;
   topic: Topic;
 }): Followees | undefined =>
-  neuron === undefined
-    ? undefined
-    : neuron.fullNeuron?.followees.find(
-        ({ topic: followedTopic }) => topic === followedTopic
-      );
+  neuron?.fullNeuron?.followees.find(
+    ({ topic: followedTopic }) => topic === followedTopic
+  );
 
 /**
  * NeuronManagement proposals are not public so we hide this topic
@@ -448,8 +446,6 @@ export const followeesByTopic = ({
  * https://github.com/dfinity/nns-dapp/pull/511
  */
 export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
-  enumValues(Topic).filter(
-    (topic) =>
-      topic !== Topic.ManageNeuron ||
-      followeesByTopic({ neuron, topic: Topic.ManageNeuron }) !== undefined
-  );
+  followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
+    ? enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+    : enumValues(Topic);
