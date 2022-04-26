@@ -22,5 +22,5 @@
 
 <NewTransactionModal
   on:nnsClose={fetchUpdatedNeuron}
-  selectedDestination={neuron.fullNeuron?.accountIdentifier}
+  destinationAddress={neuron.fullNeuron?.accountIdentifier}
 />

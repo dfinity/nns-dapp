@@ -16,13 +16,13 @@
   import type { Account } from "../../types/account";
 
   export let selectedAccount: Account | undefined = undefined;
-  export let selectedDestination: string | undefined = undefined;
+  export let destinationAddress: string | undefined = undefined;
 
   let canSelectAccount: boolean;
   $: canSelectAccount = selectedAccount === undefined;
 
   let canSelectDestination: boolean;
-  $: canSelectDestination = selectedDestination === undefined;
+  $: canSelectDestination = destinationAddress === undefined;
 
   let steps: Steps;
   $: steps = [
@@ -58,7 +58,7 @@
 
   const newTransactionStore = writable<TransactionStore>({
     selectedAccount,
-    destinationAddress: selectedDestination,
+    destinationAddress,
     amount: undefined,
   });
 
@@ -73,10 +73,10 @@
     selectedAccount,
   }));
 
-  // Update store with selectedDestination in case the property would be set after the component is initialized
+  // Update store with destinationAddress in case the property would be set after the component is initialized
   $: newTransactionStore.update((data) => ({
     ...data,
-    destinationAddress: selectedDestination,
+    destinationAddress,
   }));
 
   let currentStep: Step | undefined;
