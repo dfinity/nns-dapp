@@ -1,14 +1,9 @@
-let decoder: HTMLDivElement | undefined;
 /**
- * Simple but fast string sanitizer (does NOT escape but removes HTML tags)
- * https://github.com/vuejs/vue/blob/dev/src/compiler/parser/entity-decoder.js
+ * Sanitize HTML using DOMPurify
+ * @see {@link https://github.com/cure53/DOMPurify}
  */
-export const removeHTMLTags = (
-  text?: string | undefined
-): string | null | undefined => {
-  if (text === undefined) return text;
-
-  decoder = decoder || document.createElement("div");
-  decoder.innerHTML = text;
-  return decoder.textContent;
+export const sanitize = async (): Promise<(text: string) => string> => {
+  const url = "/assets/assets/libs/purify.min.js";
+  const { sanitize: purify } = (await import(url)).default;
+  return purify;
 };

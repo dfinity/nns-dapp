@@ -50,3 +50,16 @@ export const renderer = (marked: Marked): Renderer => {
 
   return renderer;
 };
+
+/**
+ * Uses markedjs
+ * @see {@link https://github.com/markedjs/marked}
+ */
+export const markdownToHTML = async (): Promise<(text: string) => string> => {
+  const url = "/assets/assets/libs/marked.min.js";
+  const { marked }: { marked: Marked } = await import(url);
+  return (text: string) =>
+    marked(text, {
+      renderer: renderer(marked),
+    });
+};
