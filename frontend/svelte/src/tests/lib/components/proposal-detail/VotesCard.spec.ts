@@ -133,7 +133,7 @@ describe("VotesCard", () => {
       expect(screen.getByTitle(/has voted YES/)).toBeInTheDocument();
     });
 
-    it("should have aria-labelledby in", () => {
+    it("should have aria-labelledby attribute", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { container } = render(VotesCard, {
         props: {
