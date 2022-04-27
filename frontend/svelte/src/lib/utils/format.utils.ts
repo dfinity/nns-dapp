@@ -23,6 +23,6 @@ export const formatPercentage = (
   value: number,
   options?: { minFraction: number; maxFraction: number }
 ) => {
-  const { minFraction = 2, maxFraction = 3 } = options || {};
+  const { minFraction = 3, maxFraction = 3 } = options || {};
   return `${formatNumber(value * 100, { minFraction, maxFraction })}%`;
 };

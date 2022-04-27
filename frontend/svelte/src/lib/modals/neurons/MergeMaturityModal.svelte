@@ -12,6 +12,7 @@
   import { mergeMaturity } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
+  import Spinner from "../../components/ui/Spinner.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -19,9 +20,11 @@
   $: neuronICP = neuronStake(neuron);
 
   let percentageToMerge: number = 0;
+  let loading: boolean;
 
   const dispatcher = createEventDispatcher();
   const mergeNeuronMaturity = async () => {
+    loading = true;
     startBusy("merge-maturity");
     const { success } = await mergeMaturity({
       neuronId: neuron.neuronId,
@@ -34,6 +37,7 @@
       });
       dispatcher("nnsClose");
     }
+    loading = false;
     stopBusy("merge-maturity");
   };
 </script>
@@ -42,7 +46,7 @@
   <svelte:fragment slot="title"
     >{$i18n.neuron_detail.merge_maturity_modal_title}</svelte:fragment
   >
-  <section data-tid="split-neuron-modal">
+  <section data-tid="merge-maturity-neuron-modal">
     <div>
       <h5>{$i18n.neuron_detail.current_maturity}</h5>
       <p>{formatPercentage(maturityByStake(neuron))}</p>
@@ -78,8 +82,13 @@
       data-tid="merge-maturity-button"
       class="primary full-width"
       on:click={mergeNeuronMaturity}
+      disabled={loading}
     >
-      {$i18n.core.confirm}
+      {#if loading}
+        <Spinner />
+      {:else}
+        {$i18n.core.confirm}
+      {/if}
     </button>
   </section>
 </Modal>

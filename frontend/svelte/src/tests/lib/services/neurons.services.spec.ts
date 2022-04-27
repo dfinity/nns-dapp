@@ -104,6 +104,10 @@ describe("neurons-services", () => {
     .spyOn(api, "disburse")
     .mockImplementation(() => Promise.resolve());
 
+  const spyMergeMaturity = jest
+    .spyOn(api, "mergeMaturity")
+    .mockImplementation(() => Promise.resolve());
+
   const spyMergeNeurons = jest
     .spyOn(api, "mergeNeurons")
     .mockImplementation(() => Promise.resolve());
@@ -405,12 +409,60 @@ describe("neurons-services", () => {
       });
 
       const { success } = await services.disburse({
-        neuronId: controlledNeuron.neuronId,
+        neuronId: notControlledNeuron.neuronId,
         toAccountId: mockMainAccount.identifier,
       });
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spyDisburse).not.toHaveBeenCalled();
+      expect(success).toBe(false);
+    });
+  });
+
+  describe("mergeMaturity", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should merge maturity of the neuron", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      const { success } = await services.mergeMaturity({
+        neuronId: controlledNeuron.neuronId,
+        percentageToMerge: 50,
+      });
+
+      expect(spyMergeMaturity).toHaveBeenCalled();
+      expect(success).toBe(true);
+    });
+
+    it("should not merge maturity if no identity", async () => {
+      setNoIdentity();
+
+      const { success } = await services.mergeMaturity({
+        neuronId: controlledNeuron.neuronId,
+        percentageToMerge: 50,
+      });
+
+      expect(toastsStore.show).toHaveBeenCalled();
+      expect(spyMergeMaturity).not.toHaveBeenCalled();
+      expect(success).toBe(false);
+
+      resetIdentity();
+    });
+
+    it("should not merge maturity if not controlled by user", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+
+      const { success } = await services.mergeMaturity({
+        neuronId: notControlledNeuron.neuronId,
+        percentageToMerge: 50,
+      });
+
+      expect(toastsStore.show).toHaveBeenCalled();
+      expect(spyMergeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
   });
