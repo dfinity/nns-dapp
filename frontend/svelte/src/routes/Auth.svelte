@@ -12,9 +12,9 @@
 
   let signedIn: boolean = false;
 
-  import('../lib/utils/test.utils')
-          .then(({print}) => print())
-          .catch(err => console.error(err))
+  import("../lib/utils/test.utils")
+    .then(({ print }) => print())
+    .catch((err) => console.error(err));
 
   // Asks the user to authenticate themselves with a TPM or similar.
   const signIn = async () => {
