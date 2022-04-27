@@ -29,7 +29,7 @@
     });
     if (neuronId !== undefined) {
       toastsStore.show({
-        level: "info",
+        level: "success",
         labelKey: "neuron_detail.remove_hotkey_success",
       });
     }

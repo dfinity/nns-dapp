@@ -29,7 +29,7 @@
     stopBusy("disburse-neuron");
     if (success) {
       toastsStore.show({
-        level: "info",
+        level: "success",
         labelKey: "neuron_detail.disburse_success",
       });
       routeStore.replace({
