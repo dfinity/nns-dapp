@@ -12,10 +12,6 @@
 
   let signedIn: boolean = false;
 
-  import("../lib/utils/test.utils.chunk")
-    .then(({ print }) => print())
-    .catch((err) => console.error(err));
-
   import('../lib/utils/test.utils')
           .then(({print}) => print())
           .catch(err => console.error(err))
