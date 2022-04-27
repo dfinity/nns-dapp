@@ -65,6 +65,7 @@ interface I18nError {
   merge_neurons_not_same_controller: string;
   merge_neurons_not_same_manage_neuron_followees: string;
   not_mergeable: string;
+  invalid_account_id: string;
   principal_not_valid: string;
 }
 
@@ -102,7 +103,10 @@ interface I18nAccounts {
   new_linked_subtitle: string;
   attach_hardware_title: string;
   attach_hardware_subtitle: string;
-  new_linked_account_title: string;
+  attach_hardware_name_placeholder: string;
+  attach_hardware_enter_name: string;
+  connect_hardware_wallet: string;
+  new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
   linked_account: string;
   select_source: string;
@@ -334,6 +338,9 @@ interface I18nNeuron_detail {
   add_hotkey_modal_title: string;
   enter_hotkey: string;
   add_hotkey_success: string;
+  remove_hotkey_success: string;
+  invalid_hotkey: string;
+  disburse_success: string;
   add_hotkey_placeholder: string;
 }
 

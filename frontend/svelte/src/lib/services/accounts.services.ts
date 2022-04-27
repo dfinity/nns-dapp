@@ -1,11 +1,18 @@
 import type { Identity } from "@dfinity/agent";
+import { get } from "svelte/store";
 import { createSubAccount, loadAccounts } from "../api/accounts.api";
 import { sendICP } from "../api/ledger.api";
 import { toSubAccountId } from "../api/utils.api";
+import {
+  NameTooLongError,
+  SubAccountLimitExceededError,
+} from "../canisters/nns-dapp/nns-dapp.errors";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { TransactionStore } from "../stores/transaction.store";
+import type { Account } from "../types/account";
+import { getLastPathDetail } from "../utils/app-path.utils";
 import { errorToString } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -42,11 +49,25 @@ export const addSubAccount = async ({
 }: {
   name: string;
 }): Promise<void> => {
-  const identity: Identity = await getIdentity();
+  try {
+    const identity: Identity = await getIdentity();
 
-  await createSubAccount({ name, identity });
+    await createSubAccount({ name, identity });
 
-  await syncAccounts();
+    await syncAccounts();
+  } catch (err: unknown) {
+    const labelKey =
+      err instanceof NameTooLongError
+        ? "create_subaccount_too_long"
+        : err instanceof SubAccountLimitExceededError
+        ? "create_subaccount_limit_exceeded"
+        : "create_subaccount";
+
+    toastsStore.error({
+      labelKey,
+      err,
+    });
+  }
 };
 
 export const transferICP = async ({
@@ -100,4 +121,31 @@ const transferError = ({
   });
 
   return { success: false, err: labelKey };
+};
+
+export const routePathAccountIdentifier = (
+  path: string | undefined
+): string | undefined => {
+  const accountIdentifier: string | undefined = getLastPathDetail(path);
+  return accountIdentifier !== undefined && accountIdentifier !== ""
+    ? accountIdentifier
+    : undefined;
+};
+
+export const getAccountFromStore = (
+  identifier: string | undefined
+): Account | undefined => {
+  if (identifier === undefined) {
+    return undefined;
+  }
+
+  const { main, subAccounts }: AccountsStore = get(accountsStore);
+
+  if (main?.identifier === identifier) {
+    return main;
+  }
+
+  return subAccounts?.find(
+    (account: Account) => account.identifier === identifier
+  );
 };

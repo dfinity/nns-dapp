@@ -292,7 +292,7 @@ class SpawnRequest {
   external dynamic neuronId;
   external dynamic newController;
 
-  external factory SpawnRequest({dynamic neuronId, dynamic newController});
+  external factory SpawnRequest({dynamic neuronId, int percentageToSpawn, dynamic newController});
 }
 
 @JS()

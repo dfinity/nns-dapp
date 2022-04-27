@@ -7,6 +7,7 @@
   import { i18n } from "../../stores/i18n";
   import { knownNeuronsStore } from "../../stores/knownNeurons.store";
   import { toastsStore } from "../../stores/toasts.store";
+  import { followeesByTopic } from "../../utils/neuron.utils";
   import Collapsible from "../ui/Collapsible.svelte";
 
   export let topic: Topic;
@@ -26,9 +27,7 @@
   };
   let followees: FolloweeData[] = [];
   $: {
-    const followesPerTopic = neuron.fullNeuron?.followees.find(
-      ({ topic: currentTopic }) => topic === currentTopic
-    );
+    const followesPerTopic = followeesByTopic({ neuron, topic });
     const mapToKnownNeuron = (neuronId: NeuronId): FolloweeData => {
       const knownNeuron = $knownNeuronsStore.find(
         (currentNeuron) => currentNeuron.id === neuronId

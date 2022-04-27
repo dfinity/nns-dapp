@@ -1,5 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
+  import { onMount } from "svelte";
+  import { listKnownNeurons } from "../../../services/knownNeurons.services";
   import { accountsStore } from "../../../stores/accounts.store";
   import { authStore } from "../../../stores/auth.store";
   import { i18n } from "../../../stores/i18n";
@@ -27,6 +29,8 @@
     });
   let followees: FolloweesNeuron[];
   $: followees = followeesNeurons(neuron);
+
+  onMount(listKnownNeurons);
 </script>
 
 <Card>

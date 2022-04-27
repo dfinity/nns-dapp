@@ -21,13 +21,9 @@
   const executeTransaction = async () => {
     startBusy("accounts");
 
-    const { success } = await transferICP($store);
+    await transferICP($store);
 
     stopBusy("accounts");
-
-    if (!success) {
-      return;
-    }
 
     dispatcher("nnsClose");
   };

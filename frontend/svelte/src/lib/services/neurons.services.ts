@@ -7,17 +7,19 @@ import type {
   NeuronInfo,
   Topic,
 } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
   addHotkey as addHotkeyApi,
   claimOrRefreshNeuron,
+  disburse as disburseApi,
   increaseDissolveDelay,
   joinCommunityFund as joinCommunityFundApi,
   mergeNeurons as mergeNeuronsApi,
   queryNeuron,
   queryNeurons,
+  removeHotkey as removeHotkeyApi,
   setFollowees,
   splitNeuron as splitNeuronApi,
   stakeNeuron,
@@ -43,10 +45,12 @@ import { translate } from "../utils/i18n.utils";
 import {
   canBeMerged,
   convertNumberToICP,
+  followeesByTopic,
   isEnoughToStakeNeuron,
   isIdentityController,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
+import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -183,8 +187,10 @@ export const stakeAndLoadNeuron = async ({
 
 /**
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
- * @param skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. Useful because the function `checkNeuronBalances` that does this check might ultimately call the current function `listNeurons` again.
- * @param callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
+ *
+ * @param {Object} params
+ * @param {skipCheck} params.skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. Useful because the function `checkNeuronBalances` that does this check might ultimately call the current function `listNeurons` again.
+ * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
 export const listNeurons = async ({
   skipCheck = false,
@@ -455,6 +461,38 @@ export const addHotkey = async ({
   }
 };
 
+export const removeHotkey = async ({
+  neuronId,
+  principalString,
+}: {
+  neuronId: NeuronId;
+  principalString: string;
+}): Promise<NeuronId | undefined> => {
+  let principal: Principal | undefined = undefined;
+  try {
+    principal = Principal.fromText(principalString);
+  } catch {
+    toastsStore.error({
+      labelKey: "neuron_detail.invalid_hotkey",
+    });
+    return;
+  }
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await removeHotkeyApi({ neuronId, identity, principal });
+
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return neuronId;
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    // To inform there was an error
+    return undefined;
+  }
+};
+
 export const splitNeuron = async ({
   neuronId,
   amount,
@@ -483,6 +521,28 @@ export const splitNeuron = async ({
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
     return undefined;
+  }
+};
+
+export const disburse = async ({
+  neuronId,
+  toAccountId,
+}: {
+  neuronId: NeuronId;
+  toAccountId: string;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await disburseApi({ neuronId, toAccountId, identity });
+
+    await Promise.all([syncAccounts(), listNeurons({ skipCheck: true })]);
+
+    return { success: true };
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    return { success: false };
   }
 };
 
@@ -564,9 +624,7 @@ export const addFollowee = async ({
 }): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
 
-  const topicFollowees = neuron?.fullNeuron?.followees.find(
-    ({ topic: currentTopic }) => currentTopic === topic
-  );
+  const topicFollowees = followeesByTopic({ neuron, topic });
   const newFollowees: NeuronId[] =
     topicFollowees === undefined
       ? [followee]
@@ -591,10 +649,10 @@ export const removeFollowee = async ({
 }): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
 
-  const topicFollowees: Followees | undefined =
-    neuron?.fullNeuron?.followees.find(
-      ({ topic: currentTopic }) => currentTopic === topic
-    );
+  const topicFollowees: Followees | undefined = followeesByTopic({
+    neuron,
+    topic,
+  });
   if (topicFollowees === undefined) {
     // Followee in that topic already does not exist.
     toastsStore.error({
@@ -619,10 +677,12 @@ export const removeFollowee = async ({
  */
 export const loadNeuron = ({
   neuronId,
+  forceFetch = false,
   setNeuron,
   handleError,
 }: {
   neuronId: NeuronId;
+  forceFetch?: boolean;
   setNeuron: (params: { neuron: NeuronInfo; certified: boolean }) => void;
   handleError?: () => void;
 }): Promise<void> => {
@@ -639,6 +699,7 @@ export const loadNeuron = ({
     request: (options) =>
       getNeuron({
         neuronId,
+        forceFetch,
         ...options,
       }),
     onLoad: ({ response: neuron, certified }) => {
@@ -682,5 +743,5 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   }
 };
 
-export const getNeuronId = (path: string): NeuronId | undefined =>
+export const routePathNeuronId = (path: string): NeuronId | undefined =>
   getLastPathDetailId(path);
