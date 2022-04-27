@@ -319,6 +319,8 @@
     "remove_hotkey_success": "Hotkey removed successfully.",
     "invalid_hotkey": "Hotkey not valid. Refresh the page and try again.",
     "disburse_success": "Neuron disbursed successfully",
+    "merge_maturity_modal_title": "Merge Maturity",
+    "merge_maturity_modal_description": "Choose how much of your neuron's maturity to merge into its stake.",
     "add_hotkey_placeholder": "Principal ID"
   },
   "time": {

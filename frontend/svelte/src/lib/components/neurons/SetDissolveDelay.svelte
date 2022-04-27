@@ -17,6 +17,7 @@
     votingPower,
   } from "../../utils/neuron.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
+  import InputRange from "../ui/InputRange.svelte";
 
   export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;
@@ -24,16 +25,6 @@
   export let minDelayInSeconds: number = 0;
 
   let loading: boolean = false;
-
-  let backgroundStyle: string;
-  $: {
-    const firstHalf: number = Math.round(
-      (delayInSeconds / SECONDS_IN_EIGHT_YEARS) * 100
-    );
-    backgroundStyle = `linear-gradient(90deg, var(--background-contrast) ${firstHalf}%, var(--gray-200) ${
-      1 - firstHalf
-    }%)`;
-  }
 
   const checkMinimum = () => {
     if (delayInSeconds < minDelayInSeconds) {
@@ -85,14 +76,11 @@
       <p>{$i18n.neurons.dissolve_delay_description}</p>
     </div>
     <div class="select-delay-container">
-      <!-- Order of on:input and bind:value matters: https://svelte.dev/docs#template-syntax-element-directives-bind-property -->
-      <input
+      <InputRange
         min={0}
         max={SECONDS_IN_EIGHT_YEARS}
-        type="range"
         bind:value={delayInSeconds}
-        on:input={checkMinimum}
-        style={`background-image: ${backgroundStyle};`}
+        handleInput={checkMinimum}
       />
       <div class="details">
         <div>
@@ -140,8 +128,6 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
-
   p {
     margin-top: 0;
   }
@@ -149,59 +135,11 @@
   .select-delay-container {
     width: 100%;
 
-    input {
-      width: 100%;
-    }
-
     .details {
       margin-top: var(--padding);
       display: flex;
       justify-content: space-around;
     }
-  }
-
-  input[type="range"] {
-    appearance: none;
-    border-radius: 6px;
-    height: 6px;
-    width: 100%;
-  }
-
-  input[type="range"]:focus {
-    outline: none;
-  }
-
-  input[type="range"]::-moz-focus-outer {
-    border: 0;
-  }
-
-  input[type="range"]::-webkit-slider-thumb {
-    height: var(--icon-width);
-    width: var(--icon-width);
-    border-radius: 50%;
-    background: var(--background-contrast);
-    @include interaction.tappable;
-    appearance: none;
-  }
-
-  input[type="range"]::-moz-range-thumb {
-    height: var(--icon-width);
-    width: var(--icon-width);
-    border-radius: 50%;
-    background: var(--background-contrast);
-    @include interaction.tappable;
-  }
-
-  input[type="range"]::-ms-thumb {
-    height: var(--icon-width);
-    width: var(--icon-width);
-    border-radius: 50%;
-    background: var(--background-contrast);
-    @include interaction.tappable;
-  }
-
-  input[type="range"]::-webkit-slider-runnable-track {
-    cursor: pointer;
   }
 
   .buttons {

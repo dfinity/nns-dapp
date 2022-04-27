@@ -341,6 +341,8 @@ interface I18nNeuron_detail {
   remove_hotkey_success: string;
   invalid_hotkey: string;
   disburse_success: string;
+  merge_maturity_modal_title: string;
+  merge_maturity_modal_description: string;
   add_hotkey_placeholder: string;
 }
 
