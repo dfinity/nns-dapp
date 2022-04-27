@@ -12,6 +12,7 @@ import svelte from "rollup-plugin-svelte";
 import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
 import { envConfig } from "./env.config.mjs";
+import {parse} from "path";
 
 const { ENVIRONMENT } = envConfig;
 const prodBuild = ENVIRONMENT !== "local";
@@ -68,7 +69,19 @@ const configApp = {
     sourcemap: !prodBuild,
     format: "es",
     name: "app",
-    file: "public/build/bundle.js",
+    dir: "public/build/",
+    manualChunks: (moduleName) => {
+      if (moduleName.includes("node_modules")) {
+        return "vendor";
+      }
+
+      if (!moduleName.includes("chunk")) {
+        return "bundle"
+      }
+
+      const {name} = parse(moduleName);
+      return name.replace('.chunk', '');
+    },
   },
   plugins: [
     svelte({
