@@ -1,5 +1,7 @@
 import type { Identity } from "@dfinity/agent";
 import { logWithTimestamp } from "../utils/dev.utils";
+import { markdownToHTML } from "../utils/markdown.utils";
+import { sanitize } from "../utils/security.utils";
 import { getIdentity } from "./auth.services";
 
 export type QueryAndUpdateOnResponse<R> = (options: {
@@ -59,4 +61,17 @@ export const queryAndUpdate = async <R, E>({
       .catch((error) => onError?.({ certified: true, error }))
       .finally(() => (certifiedDone = true)),
   ]);
+};
+
+/**
+ * Sanitize markdown text and convert it to HTML
+ */
+export const markdownToSanitisedHTML = async (
+  text: string
+): Promise<string> => {
+  const [sanitizeText, convertMarkdownToHTML] = await Promise.all([
+    sanitize(),
+    markdownToHTML(),
+  ]);
+  return convertMarkdownToHTML(sanitizeText(text ?? ""));
 };

@@ -1,28 +1,25 @@
 <script lang="ts">
   import Spinner from "./Spinner.svelte";
-  import { markdownToHTML } from "../../utils/markdown.utils";
-  import { i18n } from "../../stores/i18n";
-  import { sanitize } from "../../utils/security.utils";
+  import { markdownToSanitisedHTML } from "../../services/utils.services";
 
   export let text: string | undefined;
 
   let html: string | undefined;
-  $: {
-    if (text !== undefined) {
-      Promise.all([sanitize(), markdownToHTML()])
-        .then(
-          ([sanitize, markdownToHTML]) =>
-            (html = markdownToHTML(sanitize(text ?? "")))
-        )
-        .catch((error) => {
-          console.error(error);
-          html = $i18n.error.fail;
-        });
+  let error: boolean = false;
+  const transform = async (text: string) => {
+    try {
+      html = await markdownToSanitisedHTML(text);
+    } catch (err) {
+      console.error(err);
+      error = true;
     }
-  }
+  };
+  $: if (text !== undefined) transform(text);
 </script>
 
-{#if html === undefined}
+{#if error}
+  <p class="fallback">{text}</p>
+{:else if html === undefined}
   <Spinner inline />
 {:else}
   {@html html}
