@@ -10,6 +10,7 @@ import {
   queryKnownNeurons,
   queryNeuron,
   queryNeurons,
+  removeHotkey,
   setFollowees,
   splitNeuron,
   stakeNeuron,
@@ -276,6 +277,39 @@ describe("neurons-api", () => {
 
       const call = () =>
         addHotkey({
+          identity: mockIdentity,
+          neuronId: BigInt(10),
+          principal: Principal.fromText("aaaaa-aa"),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("removeHotkey", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.removeHotkey.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await removeHotkey({
+        identity: mockIdentity,
+        neuronId: BigInt(10),
+        principal: Principal.fromText("aaaaa-aa"),
+      });
+
+      expect(mockGovernanceCanister.removeHotkey).toBeCalled();
+    });
+
+    it("throws error when removing hotkey fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.removeHotkey.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        removeHotkey({
           identity: mockIdentity,
           neuronId: BigInt(10),
           principal: Principal.fromText("aaaaa-aa"),
