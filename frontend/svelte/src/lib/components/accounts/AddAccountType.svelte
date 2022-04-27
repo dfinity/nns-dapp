@@ -21,11 +21,7 @@
     <h4>{$i18n.accounts.new_linked_title}</h4>
     <span>{$i18n.accounts.new_linked_subtitle}</span>
   </div>
-  <div
-    class="card-item"
-    role="button"
-    on:click={selectNewHardwareWallet}
-  >
+  <div class="card-item" role="button" on:click={selectNewHardwareWallet}>
     <h4>{$i18n.accounts.attach_hardware_title}</h4>
     <span>{$i18n.accounts.attach_hardware_subtitle}</span>
   </div>
