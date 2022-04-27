@@ -1,5 +1,6 @@
 import {
   imageToLinkRenderer,
+  markdownToHTML,
   targetBlankLinkRenderer,
 } from "../../../lib/utils/markdown.utils";
 
@@ -88,6 +89,39 @@ describe("markdown.utils", () => {
       expect(imageToLinkRenderer(undefined, null, "alt")).toEqual(`alt`);
       expect(imageToLinkRenderer(null, null, "alt")).toEqual(`alt`);
       expect(imageToLinkRenderer("", "", "alt")).toEqual(`alt`);
+    });
+  });
+
+  describe("markdownToHTML", () => {
+    let renderer: unknown;
+    beforeAll(() => {
+      function marked(...args) {
+        renderer = args[1];
+        return args[0] + "-pong";
+      }
+      marked.Renderer = function () {
+        return {};
+      };
+      jest.mock(
+        "/assets/assets/libs/marked.min.js",
+        () => ({
+          marked,
+        }),
+        { virtual: true }
+      );
+    });
+
+    it("should call markedjs/marked", async () => {
+      expect((await markdownToHTML())("ping")).toBe("ping-pong");
+    });
+
+    it("should call markedjs/marked with custom renderers", async () => {
+      expect(renderer).toEqual({
+        renderer: {
+          link: targetBlankLinkRenderer,
+          image: imageToLinkRenderer,
+        },
+      });
     });
   });
 });

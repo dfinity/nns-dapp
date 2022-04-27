@@ -11,6 +11,7 @@ import { authStore } from "../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import en from "../../../mocks/i18n.mock";
+import { silentConsoleErrors } from "../../../mocks/mock.utils";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
 
 describe("BallotSummary", () => {
@@ -36,13 +37,15 @@ describe("BallotSummary", () => {
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
+  beforeAll(silentConsoleErrors);
+
   it("should render proposal id", async () => {
     const { container, getByText } = render(BallotSummary, {
       props,
     });
 
     await waitFor(() =>
-      expect(container.querySelector("div.markdown p")).not.toBeNull()
+      expect(container.querySelector("div.markdown .fallback")).not.toBeNull()
     );
 
     expect(getByText(`${mockProposals[0].id}`)).toBeInTheDocument();
@@ -54,7 +57,7 @@ describe("BallotSummary", () => {
     });
 
     await waitFor(() =>
-      expect(container.querySelector("div.markdown p")).not.toBeNull()
+      expect(container.querySelector("div.markdown .fallback")).not.toBeNull()
     );
 
     expect(

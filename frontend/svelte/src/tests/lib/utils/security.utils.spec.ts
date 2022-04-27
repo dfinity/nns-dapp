@@ -2,16 +2,22 @@
  * @jest-environment jsdom
  */
 
-import { removeHTMLTags } from "../../../lib/utils/security.utils";
+import { sanitize } from "../../../lib/utils/security.utils";
 
 describe("security.utils", () => {
-  describe("removeHTMLTags", () => {
-    it("should remove tags", () =>
-      expect(removeHTMLTags('Hello <script>alert("world")</script>!')).toBe(
-        'Hello alert("world")!'
-      ));
+  describe("sanitize", () => {
+    beforeAll(() => {
+      jest.mock(
+        "/assets/assets/libs/purify.min.js",
+        () => ({
+          sanitize: (value: string) => value + "-pong",
+        }),
+        { virtual: true }
+      );
+    });
 
-    it("should not change TAGless text", () =>
-      expect(removeHTMLTags("Hello World! 🤞")).toBe("Hello World! 🤞"));
+    it("should call DOMPurify.sanitize", async () => {
+      expect((await sanitize())("ping")).toBe("ping-pong");
+    });
   });
 });
