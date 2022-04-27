@@ -46,6 +46,7 @@
       {#each hotkeys as hotkey (hotkey)}
         <li>
           <span>{hotkey}</span><button
+            class="text"
             on:click={() => remove(hotkey)}
             data-tid="remove-hotkey-button">x</button
           >
