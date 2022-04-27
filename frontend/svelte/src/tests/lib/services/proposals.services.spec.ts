@@ -297,6 +297,7 @@ describe("proposals-services", () => {
           vote: Vote.NO,
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [first, rest] = get(toastsStore);
         expect(first.labelKey).toBe("error.register_vote_unknown");
         expect(first.level).toBe("error");
@@ -312,6 +313,7 @@ describe("proposals-services", () => {
           vote: Vote.NO,
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [first, rest] = get(toastsStore);
         expect(first.labelKey).toBe("error.register_vote");
         expect(first.level).toBe("error");
@@ -327,6 +329,7 @@ describe("proposals-services", () => {
           vote: Vote.NO,
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [first, rest] = get(toastsStore);
         expect(first?.detail?.split(/test/).length).toBe(neuronIds.length + 1);
       });
@@ -341,6 +344,7 @@ describe("proposals-services", () => {
           vote: Vote.NO,
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [first, rest] = get(toastsStore);
         expect(first?.detail?.split(/governance-error/).length).toBe(
           neuronIds.length + 1
