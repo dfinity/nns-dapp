@@ -17,7 +17,6 @@ import {
   proposalsStore,
 } from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import type { ToastMsg } from "../../../lib/types/toast";
 import {
   mockIdentityErrorMsg,
   resetIdentity,
@@ -279,20 +278,17 @@ describe("proposals-services", () => {
         });
       };
 
-      let lastToastMessage: ToastMsg;
-      const spyToastShow = jest
-        .spyOn(toastsStore, "show")
-        .mockImplementation((params) => (lastToastMessage = params));
+      const resetToasts = () => {
+        const toasts = get(toastsStore);
+        toasts.forEach(() => toastsStore.hide());
+      };
 
-      beforeEach(
-        () =>
-          (lastToastMessage = {
-            labelKey: "",
-            level: "success",
-          })
-      );
+      beforeEach(resetToasts);
 
-      afterAll(() => jest.clearAllMocks());
+      afterAll(() => {
+        jest.clearAllMocks();
+        resetToasts();
+      });
 
       it("should show error.register_vote_unknown on not nns-js-based error", async () => {
         await registerVotes({
@@ -300,8 +296,10 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(lastToastMessage.labelKey).toBe("error.register_vote_unknown");
-        expect(lastToastMessage.level).toBe("error");
+
+        const [first, rest] = get(toastsStore);
+        expect(first.labelKey).toBe("error.register_vote_unknown");
+        expect(first.level).toBe("error");
       });
 
       it("should show error.register_vote on nns-js-based errors", async () => {
@@ -313,9 +311,10 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(spyToastShow).toBeCalled();
-        expect(lastToastMessage.labelKey).toBe("error.register_vote");
-        expect(lastToastMessage.level).toBe("error");
+
+        const [first, rest] = get(toastsStore);
+        expect(first.labelKey).toBe("error.register_vote");
+        expect(first.level).toBe("error");
       });
 
       it("should show reason per neuron Error in detail", async () => {
@@ -327,9 +326,9 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(lastToastMessage?.detail?.split(/test/).length).toBe(
-          neuronIds.length + 1
-        );
+
+        const [first, rest] = get(toastsStore);
+        expect(first?.detail?.split(/test/).length).toBe(neuronIds.length + 1);
       });
 
       it("should show reason per neuron GovernanceError in detail", async () => {
@@ -341,7 +340,9 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(lastToastMessage?.detail?.split(/governance-error/).length).toBe(
+
+        const [first, rest] = get(toastsStore);
+        expect(first?.detail?.split(/governance-error/).length).toBe(
           neuronIds.length + 1
         );
       });
