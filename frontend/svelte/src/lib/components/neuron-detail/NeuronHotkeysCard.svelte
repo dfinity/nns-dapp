@@ -28,8 +28,7 @@
       principalString: hotkey,
     });
     if (neuronId !== undefined) {
-      toastsStore.show({
-        level: "info",
+      toastsStore.success({
         labelKey: "neuron_detail.remove_hotkey_success",
       });
     }

@@ -510,9 +510,8 @@ export const splitNeuron = async ({
     }
 
     await splitNeuronApi({ neuronId, identity, amount: stake });
-    toastsStore.show({
+    toastsStore.success({
       labelKey: "neuron_detail.split_neuron_success",
-      level: "info",
     });
 
     await getAndLoadNeuronHelper({ neuronId, identity });
@@ -604,9 +603,8 @@ const setFolloweesHelper = async ({
     });
     await getAndLoadNeuronHelper({ neuronId, identity });
 
-    toastsStore.show({
+    toastsStore.success({
       labelKey: `new_followee.success_${labelKey}`,
-      level: "info",
     });
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
@@ -732,9 +730,8 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
       neuronId,
       identity,
     });
-    toastsStore.show({
+    toastsStore.success({
       labelKey: "neuron_detail.dummy_proposal_success",
-      level: "info",
     });
     return;
   } catch (error) {

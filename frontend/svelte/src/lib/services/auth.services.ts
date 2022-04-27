@@ -79,7 +79,7 @@ export const displayAndCleanLogoutMsg = () => {
 
   // For simplicity reason we assume the level pass as query params is one of the type ToastLevel
   const level: ToastLevel =
-    (urlParams.get(levelParam) as ToastLevel | null) ?? "info";
+    (urlParams.get(levelParam) as ToastLevel | null) ?? "success";
 
   toastsStore.show({ labelKey: msg, level });
 

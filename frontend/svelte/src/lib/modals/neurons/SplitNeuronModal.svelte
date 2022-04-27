@@ -48,9 +48,8 @@
     startBusy("split-neuron");
     const id = await splitNeuron({ neuronId: neuron.neuronId, amount });
     if (id !== undefined) {
-      toastsStore.show({
+      toastsStore.success({
         labelKey: "neurons.split_neuron_success",
-        level: "info",
       });
     }
     dispatcher("nnsClose");

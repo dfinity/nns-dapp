@@ -13,7 +13,6 @@ import { toastsStore } from "../stores/toasts.store";
 import type { TransactionStore } from "../stores/transaction.store";
 import type { Account } from "../types/account";
 import { getLastPathDetail } from "../utils/app-path.utils";
-import { errorToString } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -24,8 +23,8 @@ export const syncAccounts = (): Promise<void> => {
   return queryAndUpdate<AccountsStore, unknown>({
     request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => accountsStore.set(accounts),
-    onError: ({ error, certified }) => {
-      console.error(error);
+    onError: ({ error: err, certified }) => {
+      console.error(err);
 
       if (certified !== true) {
         return;
@@ -34,10 +33,9 @@ export const syncAccounts = (): Promise<void> => {
       // Explicitly handle only UPDATE errors
       accountsStore.reset();
 
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.accounts_not_found",
-        level: "error",
-        detail: errorToString(error),
+        err,
       });
     },
     logMessage: "Syncing Accounts",

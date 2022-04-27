@@ -31,8 +31,7 @@
       loading = true;
       const response = await addHotkey({ neuronId, principal });
       if (response !== undefined) {
-        toastsStore.show({
-          level: "info",
+        toastsStore.success({
           labelKey: "neuron_detail.add_hotkey_success",
         });
       }
