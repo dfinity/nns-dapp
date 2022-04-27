@@ -5,5 +5,7 @@
 </script>
 
 <div class="wizard-wrapper">
-  <h4>TODO {$i18n.accounts.connect_hardware_wallet}</h4>
+  <h4>{$i18n.accounts.connect_hardware_wallet}</h4>
+
+  <span>TODO</span>
 </div>
