@@ -68,7 +68,18 @@ const configApp = {
     sourcemap: !prodBuild,
     format: "es",
     name: "app",
-    file: "public/build/bundle.js",
+    dir: "public/build/",
+    manualChunks: {
+      nns: ["@dfinity/nns"],
+      agent: [
+        "@dfinity/agent",
+        "@dfinity/auth-client",
+        "@dfinity/authentication",
+        "@dfinity/candid",
+        "@dfinity/identity",
+        "@dfinity/principal",
+      ],
+    },
   },
   plugins: [
     svelte({
