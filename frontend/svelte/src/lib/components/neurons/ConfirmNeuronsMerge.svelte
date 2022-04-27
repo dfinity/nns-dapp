@@ -36,9 +36,8 @@
       sourceNeuronId: neurons[1].neuronId,
     });
     if (id !== undefined) {
-      toastsStore.show({
+      toastsStore.success({
         labelKey: "neuron_detail.merge_neurons_success",
-        level: "info",
       });
     }
     loading = false;

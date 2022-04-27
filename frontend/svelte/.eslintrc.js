@@ -23,6 +23,7 @@ module.exports = {
   // vars in `global.d.ts`
   globals: {
     InputEventHandler: "readonly",
+    NodeJS: true,
   },
   overrides: [
     {

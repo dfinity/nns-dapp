@@ -37,9 +37,8 @@
     startBusy("dissolve-action");
     const id = await action(neuronId);
     if (id !== undefined) {
-      toastsStore.show({
+      toastsStore.success({
         labelKey: successKey,
-        level: "info",
       });
     }
     closeModal();

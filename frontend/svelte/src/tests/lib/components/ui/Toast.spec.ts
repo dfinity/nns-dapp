@@ -9,7 +9,7 @@ import en from "../../../mocks/i18n.mock";
 
 describe("Toast", () => {
   const props: { msg: ToastMsg } = {
-    msg: { labelKey: "core.close", level: "info", detail: "more details" },
+    msg: { labelKey: "core.close", level: "success", detail: "more details" },
   };
 
   it("should render a text", async () => {

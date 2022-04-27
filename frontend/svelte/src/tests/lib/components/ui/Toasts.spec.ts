@@ -21,7 +21,7 @@ describe("Toasts", () => {
   it("should display a toast", async () => {
     const { container } = render(Toasts);
 
-    toastsStore.show({ labelKey: "test.test", level: "info" });
+    toastsStore.show({ labelKey: "test.test", level: "success" });
 
     await waitForDialog(container);
 
@@ -31,7 +31,7 @@ describe("Toasts", () => {
   it("should display an informative toast", async () => {
     const { container } = render(Toasts);
 
-    toastsStore.show({ labelKey: "test.test", level: "info" });
+    toastsStore.show({ labelKey: "test.test", level: "success" });
 
     await waitForDialog(container);
 
@@ -85,7 +85,7 @@ describe("Toasts", () => {
   it("should close toast", async () => {
     const { container } = render(Toasts);
 
-    toastsStore.show({ labelKey: "test.test", level: "info" });
+    toastsStore.show({ labelKey: "test.test", level: "success" });
 
     await waitForDialog(container);
 
