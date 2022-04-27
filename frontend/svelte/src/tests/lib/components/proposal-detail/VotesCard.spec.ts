@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { Vote } from "@dfinity/nns";
+import { screen } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import VotesCard from "../../../../lib/components/proposal-detail/VotesCard.svelte";
@@ -119,6 +120,32 @@ describe("VotesCard", () => {
         '[data-tid="thumb-down"]'
       );
       expect(thumbDownElements.length).toBe(1);
+    });
+
+    it("should have title attribute per voted neuron for YES or NO", () => {
+      neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
+      const { getByTitle } = render(VotesCard, {
+        props: {
+          proposalInfo: mockProposalInfo,
+        },
+      });
+      expect(screen.getByTitle(/has voted NO/)).toBeInTheDocument();
+      expect(screen.getByTitle(/has voted YES/)).toBeInTheDocument();
+    });
+
+    it("should have aria-labelledby", () => {
+      neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
+      const { container } = render(VotesCard, {
+        props: {
+          proposalInfo: mockProposalInfo,
+        },
+      });
+      // const voteStatus = container.querySelector("#voteStatus");
+      const voteStatus = container.querySelector(
+        `[aria-labelledby="voteStatus"]`
+      );
+
+      expect(voteStatus).toBeInTheDocument();
     });
   });
 });

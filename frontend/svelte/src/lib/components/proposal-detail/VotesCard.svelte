@@ -61,6 +61,7 @@ import { get } from "svelte/store";
         (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
       ) as CompactNeuronInfo[];
   }
+
 </script>
 
 <Card>
