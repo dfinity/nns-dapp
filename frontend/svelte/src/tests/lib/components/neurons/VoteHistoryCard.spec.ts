@@ -69,7 +69,7 @@ describe("VoteHistoryCard", () => {
     });
     await waitFor(() =>
       expect(
-        container.querySelectorAll("div.markdown .fallback").length
+        container.querySelectorAll("[data-tid='markdown-text']").length
       ).toEqual(2)
     );
 

@@ -18,7 +18,7 @@
 </script>
 
 {#if error}
-  <p class="fallback">{text}</p>
+  <p data-tid="markdown-text">{text}</p>
 {:else if html === undefined}
   <Spinner inline />
 {:else}

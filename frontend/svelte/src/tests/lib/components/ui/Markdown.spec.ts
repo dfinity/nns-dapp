@@ -42,11 +42,11 @@ describe("Markdown", () => {
     mockMarkdownToSanitizedHTML(() => {
       throw new Error("test");
     });
-    const { container, queryByText } = render(Markdown, {
+    const { queryByTestId, queryByText } = render(Markdown, {
       props: { text: "text" },
     });
     await waitFor(() =>
-      expect(container.querySelector(".fallback")).toBeInTheDocument()
+      expect(queryByTestId("markdown-text")).toBeInTheDocument()
     );
     expect(queryByText("text")).toBeInTheDocument();
   });

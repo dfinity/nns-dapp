@@ -40,25 +40,21 @@ describe("BallotSummary", () => {
   beforeAll(silentConsoleErrors);
 
   it("should render proposal id", async () => {
-    const { container, getByText } = render(BallotSummary, {
+    const { queryByTestId, getByText } = render(BallotSummary, {
       props,
     });
 
-    await waitFor(() =>
-      expect(container.querySelector("div.markdown .fallback")).not.toBeNull()
-    );
+    await waitFor(() => expect(queryByTestId("markdown-text")).not.toBeNull());
 
     expect(getByText(`${mockProposals[0].id}`)).toBeInTheDocument();
   });
 
   it("should render proposal summary", async () => {
-    const { container, getByText } = render(BallotSummary, {
+    const { queryByTestId, getByText } = render(BallotSummary, {
       props,
     });
 
-    await waitFor(() =>
-      expect(container.querySelector("div.markdown .fallback")).not.toBeNull()
-    );
+    await waitFor(() => expect(queryByTestId("markdown-text")).not.toBeNull());
 
     expect(
       getByText((mockProposals[0].proposal as Proposal).summary)

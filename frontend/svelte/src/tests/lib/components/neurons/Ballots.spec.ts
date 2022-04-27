@@ -47,7 +47,9 @@ describe("Ballots", () => {
     });
 
     await waitFor(() =>
-      expect(container.querySelector("div.markdown .fallback")).not.toBeNull()
+      expect(
+        container.querySelector("[data-tid='markdown-text']")
+      ).not.toBeNull()
     );
     expect(container.querySelectorAll("li").length).toBe(2);
     expect(container.querySelectorAll(".summary").length).toBe(2);
