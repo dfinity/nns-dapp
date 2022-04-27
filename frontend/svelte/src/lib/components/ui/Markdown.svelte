@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { markdownToSanitizedHTML } from "../../utils/html.utils";
+
   import Spinner from "./Spinner.svelte";
-  import { markdownToSanitizedHTML } from "../../services/utils.services";
 
   export let text: string | undefined;
 
