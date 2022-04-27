@@ -8,6 +8,10 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import InputRange from "../../components/ui/InputRange.svelte";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { mergeMaturity } from "../../services/neurons.services";
+  import { toastsStore } from "../../stores/toasts.store";
+  import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
 
@@ -15,16 +19,22 @@
   $: neuronICP = neuronStake(neuron);
 
   let percentageToMerge: number = 0;
-  let backgroundStyle: string;
-  $: {
-    const firstHalf: number = Math.round((percentageToMerge / 100) * 100);
-    backgroundStyle = `linear-gradient(90deg, var(--background-contrast) ${firstHalf}%, var(--gray-200) ${
-      1 - firstHalf
-    }%)`;
-  }
 
-  const mergeNeuronMaturity = () => {
-    console.log("merging...");
+  const dispatcher = createEventDispatcher();
+  const mergeNeuronMaturity = async () => {
+    startBusy("merge-maturity");
+    const { success } = await mergeMaturity({
+      neuronId: neuron.neuronId,
+      percentageToMerge,
+    });
+    if (success) {
+      toastsStore.show({
+        level: "info",
+        labelKey: "neuron_detail.merge_maturity_success",
+      });
+      dispatcher("nnsClose");
+    }
+    stopBusy("merge-maturity");
   };
 </script>
 

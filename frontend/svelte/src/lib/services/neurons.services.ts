@@ -16,6 +16,7 @@ import {
   disburse as disburseApi,
   increaseDissolveDelay,
   joinCommunityFund as joinCommunityFundApi,
+  mergeMaturity as mergeMaturityApi,
   mergeNeurons as mergeNeuronsApi,
   queryNeuron,
   queryNeurons,
@@ -536,6 +537,28 @@ export const disburse = async ({
     await disburseApi({ neuronId, toAccountId, identity });
 
     await Promise.all([syncAccounts(), listNeurons({ skipCheck: true })]);
+
+    return { success: true };
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    return { success: false };
+  }
+};
+
+export const mergeMaturity = async ({
+  neuronId,
+  percentageToMerge,
+}: {
+  neuronId: NeuronId;
+  percentageToMerge: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await mergeMaturityApi({ neuronId, percentageToMerge, identity });
+
+    await getAndLoadNeuronHelper({ neuronId, identity });
 
     return { success: true };
   } catch (err) {

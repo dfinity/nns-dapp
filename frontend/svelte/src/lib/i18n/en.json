@@ -321,6 +321,7 @@
     "disburse_success": "Neuron disbursed successfully",
     "merge_maturity_modal_title": "Merge Maturity",
     "merge_maturity_modal_description": "Choose how much of your neuron's maturity to merge into its stake.",
+    "merge_maturity_success": "Maturity merged successfully.",
     "add_hotkey_placeholder": "Principal ID"
   },
   "time": {
