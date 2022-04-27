@@ -332,6 +332,7 @@ interface I18nNeuron_detail {
   disburse_neuron_title: string;
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
+  merge_maturity_disabled_tooltip: string;
   hotkeys_title: string;
   add_hotkey: string;
   no_notkeys: string;
@@ -344,6 +345,8 @@ interface I18nNeuron_detail {
   merge_maturity_modal_title: string;
   merge_maturity_modal_description: string;
   merge_maturity_success: string;
+  current_stake: string;
+  current_maturity: string;
   add_hotkey_placeholder: string;
 }
 

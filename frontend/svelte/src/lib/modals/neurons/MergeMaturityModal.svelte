@@ -2,7 +2,7 @@
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import Modal from "../Modal.svelte";
-  import { neuronStake } from "../../utils/neuron.utils";
+  import { maturityByStake, neuronStake } from "../../utils/neuron.utils";
   import { formatPercentage } from "../../utils/format.utils";
   import Card from "../../components/ui/Card.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -44,11 +44,11 @@
   >
   <section data-tid="split-neuron-modal">
     <div>
-      <h5>Current Maturity</h5>
-      <p>2.332%</p>
+      <h5>{$i18n.neuron_detail.current_maturity}</h5>
+      <p>{formatPercentage(maturityByStake(neuron))}</p>
     </div>
     <div>
-      <h5>{$i18n.neurons.neuron_balance}</h5>
+      <h5>{$i18n.neuron_detail.current_stake}</h5>
       <p data-tid="neuron-stake">
         {replacePlaceholders($i18n.neurons.icp_stake, {
           $amount: formatICP(neuronICP),

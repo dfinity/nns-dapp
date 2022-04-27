@@ -2,6 +2,11 @@
   import { i18n } from "../../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import MergeMaturityModal from "../../../modals/neurons/MergeMaturityModal.svelte";
+  import Tooltip from "../../ui/Tooltip.svelte";
+  import { replacePlaceholders } from "../../../utils/i18n.utils";
+  import { formatICP } from "../../../utils/icp.utils";
+  import { MIN_MATURITY_MERGE } from "../../../constants/neurons.constants";
+  import { hasEnoughMaturityToMerge } from "../../../utils/neuron.utils";
 
   export let neuron: NeuronInfo;
 
@@ -10,9 +15,21 @@
   const closeModal = () => (isOpen = false);
 </script>
 
-<button class="primary small" on:click={showModal}
-  >{$i18n.neuron_detail.merge_maturity}</button
+<Tooltip
+  id="merge-maturity-button"
+  text={replacePlaceholders(
+    $i18n.neuron_detail.merge_maturity_disabled_tooltip,
+    {
+      $amount: formatICP(BigInt(MIN_MATURITY_MERGE)),
+    }
+  )}
 >
+  <button
+    disabled={!hasEnoughMaturityToMerge(neuron)}
+    class="primary small"
+    on:click={showModal}>{$i18n.neuron_detail.merge_maturity}</button
+  >
+</Tooltip>
 
 {#if isOpen}
   <MergeMaturityModal on:nnsClose={closeModal} {neuron} />
