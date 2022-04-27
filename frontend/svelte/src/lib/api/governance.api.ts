@@ -117,6 +117,24 @@ export const addHotkey = async ({
   logWithTimestamp(`Add hotkey (for neuron ${hashCode(neuronId)}) complete.`);
 };
 
+export const removeHotkey = async ({
+  neuronId,
+  principal,
+  identity,
+}: {
+  neuronId: NeuronId;
+  principal: Principal;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(`Remove hotkey (for neuron ${hashCode(neuronId)}) call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  await canister.removeHotkey({ neuronId, principal });
+  logWithTimestamp(
+    `Remove hotkey (for neuron ${hashCode(neuronId)}) complete.`
+  );
+};
+
 export const splitNeuron = async ({
   neuronId,
   amount,
