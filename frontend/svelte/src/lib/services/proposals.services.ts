@@ -36,17 +36,16 @@ import {
   type QueryAndUpdateOnResponse,
 } from "./utils.services";
 
-const handleFindProposalsError = ({ error, certified }) => {
-  console.error(error);
+const handleFindProposalsError = ({ error: err, certified }) => {
+  console.error(err);
 
   // Explicitly handle only UPDATE errors
   if (certified === true) {
     proposalsStore.setProposals({ proposals: [], certified });
 
-    toastsStore.show({
+    toastsStore.error({
       labelKey: "error.list_proposals",
-      level: "error",
-      detail: errorToString(error),
+      err,
     });
   }
 };
@@ -264,13 +263,12 @@ export const registerVotes = async ({
     logWithTimestamp(
       `Registering [${neuronIds.map(hashCode)}] votes complete.`
     );
-  } catch (error: unknown) {
-    console.error("vote unknown:", error);
+  } catch (err: unknown) {
+    console.error("vote unknown:", err);
 
-    toastsStore.show({
+    toastsStore.error({
       labelKey: "error.register_vote_unknown",
-      level: "error",
-      detail: errorToString(error),
+      err,
     });
   }
 
