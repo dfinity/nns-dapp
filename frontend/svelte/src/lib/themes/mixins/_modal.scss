@@ -10,3 +10,17 @@
   max-height: 182px;
   padding: 0;
 }
+
+@mixin wizard-single-input-form {
+  --input-width: 100%;
+
+  div {
+    // push button to the bottom
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}

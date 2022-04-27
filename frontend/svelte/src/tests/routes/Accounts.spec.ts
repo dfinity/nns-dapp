@@ -143,7 +143,7 @@ describe("Accounts", () => {
       expect(container.querySelector("div.modal")).not.toBeNull();
 
       expect(
-        getByText(en.accounts.new_linked_title, { exact: false })
+        getByText(en.accounts.attach_hardware_title, { exact: false })
       ).toBeInTheDocument();
     });
   });

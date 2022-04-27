@@ -103,7 +103,10 @@ interface I18nAccounts {
   new_linked_subtitle: string;
   attach_hardware_title: string;
   attach_hardware_subtitle: string;
-  new_linked_account_title: string;
+  attach_hardware_name_placeholder: string;
+  attach_hardware_enter_name: string;
+  connect_hardware_wallet: string;
+  new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
   linked_account: string;
   select_source: string;
