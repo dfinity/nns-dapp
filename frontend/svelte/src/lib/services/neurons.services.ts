@@ -7,7 +7,7 @@ import type {
   NeuronInfo,
   Topic,
 } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
@@ -463,11 +463,20 @@ export const addHotkey = async ({
 
 export const removeHotkey = async ({
   neuronId,
-  principal,
+  principalString,
 }: {
   neuronId: NeuronId;
-  principal: Principal;
+  principalString: string;
 }): Promise<NeuronId | undefined> => {
+  let principal: Principal | undefined = undefined;
+  try {
+    principal = Principal.fromText(principalString);
+  } catch {
+    toastsStore.error({
+      labelKey: "neuron_detail.invalid_hotkey",
+    });
+    return;
+  }
   try {
     const identity: Identity = await getIdentityByNeuron(neuronId);
 

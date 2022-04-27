@@ -317,7 +317,7 @@
     "enter_hotkey": "Enter Hotkey:",
     "add_hotkey_success": "Hotkey added successfully.",
     "remove_hotkey_success": "Hotkey removed successfully.",
-    "remove_hotkey_error": "Hotkey not valid. Refresh the page and try again.",
+    "invalid_hotkey": "Hotkey not valid. Refresh the page and try again.",
     "disburse_success": "Neuron disbursed successfully",
     "add_hotkey_placeholder": "Principal ID"
   },

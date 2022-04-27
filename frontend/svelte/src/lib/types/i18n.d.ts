@@ -339,7 +339,7 @@ interface I18nNeuron_detail {
   enter_hotkey: string;
   add_hotkey_success: string;
   remove_hotkey_success: string;
-  remove_hotkey_error: string;
+  invalid_hotkey: string;
   disburse_success: string;
   add_hotkey_placeholder: string;
 }

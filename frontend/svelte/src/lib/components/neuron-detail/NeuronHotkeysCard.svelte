@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { Principal } from "@dfinity/principal";
   import { removeHotkey } from "../../services/neurons.services";
   import { accountsStore } from "../../stores/accounts.store";
   import { authStore } from "../../stores/auth.store";
@@ -24,22 +23,17 @@
 
   const remove = async (hotkey: string) => {
     startBusy("remove-hotkey-neuron");
-    let principal: Principal | undefined = undefined;
-    try {
-      principal = Principal.fromText(hotkey);
-      await removeHotkey({ neuronId: neuron.neuronId, principal });
+    const neuronId = await removeHotkey({
+      neuronId: neuron.neuronId,
+      principalString: hotkey,
+    });
+    if (neuronId !== undefined) {
       toastsStore.show({
         level: "info",
         labelKey: "neuron_detail.remove_hotkey_success",
       });
-    } catch {
-      // Edge case, current hotkeys should be valid principals.
-      toastsStore.error({
-        labelKey: "neuron_detail.remove_hotkey_error",
-      });
-    } finally {
-      stopBusy("remove-hotkey-neuron");
     }
+    stopBusy("remove-hotkey-neuron");
   };
 </script>
 
@@ -49,7 +43,7 @@
     <p>{$i18n.neuron_detail.no_notkeys}</p>
   {:else}
     <ul>
-      {#each hotkeys as hotkey}
+      {#each hotkeys as hotkey (hotkey)}
         <li>
           <span>{hotkey}</span><button
             on:click={() => remove(hotkey)}
@@ -76,6 +70,9 @@
     list-style-type: none;
     padding: 0;
     margin-bottom: var(--padding-2x);
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-0_5x);
   }
 
   li {

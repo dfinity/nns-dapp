@@ -522,10 +522,20 @@ describe("neurons-services", () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await removeHotkey({
         neuronId: controlledNeuron.neuronId,
-        principal: Principal.fromText("aaaaa-aa"),
+        principalString: "aaaaa-aa",
       });
 
       expect(spyRemoveHotkey).toHaveBeenCalled();
+    });
+
+    it("should not update neuron if invalid principal", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      await removeHotkey({
+        neuronId: controlledNeuron.neuronId,
+        principalString: "not-valid",
+      });
+
+      expect(spyRemoveHotkey).not.toHaveBeenCalled();
     });
 
     it("should not update neuron if no identity", async () => {
@@ -533,7 +543,7 @@ describe("neurons-services", () => {
 
       await removeHotkey({
         neuronId: controlledNeuron.neuronId,
-        principal: Principal.fromText("aaaaa-aa"),
+        principalString: "aaaaa-aa",
       });
 
       expect(toastsStore.show).toHaveBeenCalled();
@@ -550,7 +560,7 @@ describe("neurons-services", () => {
 
       await removeHotkey({
         neuronId: controlledNeuron.neuronId,
-        principal: Principal.fromText("aaaaa-aa"),
+        principalString: "aaaaa-aa",
       });
 
       expect(toastsStore.show).toHaveBeenCalled();
