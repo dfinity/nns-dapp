@@ -9,12 +9,13 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import Banner from "../lib/components/common/Banner.svelte";
   import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
+  import { print } from "../lib/utils/test.utils.chunk";
 
   let signedIn: boolean = false;
 
-  import('../lib/utils/test.utils.chunk')
-          .then(({print}) => print())
-          .catch(err => console.error(err))
+  import("../lib/utils/test.utils.chunk")
+    .then(({ print }) => print())
+    .catch((err) => console.error(err));
 
   // Asks the user to authenticate themselves with a TPM or similar.
   const signIn = async () => {

@@ -6,13 +6,13 @@ import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
 import OMT from "@surma/rollup-plugin-off-main-thread";
 import * as fs from "fs";
+import { parse } from "path";
 import css from "rollup-plugin-css-only";
 import livereload from "rollup-plugin-livereload";
 import svelte from "rollup-plugin-svelte";
 import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
 import { envConfig } from "./env.config.mjs";
-import {parse} from "path";
 
 const { ENVIRONMENT } = envConfig;
 const prodBuild = ENVIRONMENT !== "local";
@@ -76,11 +76,11 @@ const configApp = {
       }
 
       if (!moduleName.includes("chunk")) {
-        return "bundle"
+        return "bundle";
       }
 
-      const {name} = parse(moduleName);
-      return name.replace('.chunk', '');
+      const { name } = parse(moduleName);
+      return name.replace(".chunk", "");
     },
   },
   plugins: [
