@@ -62,6 +62,7 @@
     "merge_neurons_not_same_manage_neuron_followees": "Two neurons need to have the same followees on the topic of \"Manage Neuron\". Check the article for more: ",
     "not_mergeable": "This neuron can't be merged.",
     "invalid_account_id": "Sorry, the account id is not valid. Please try again with a valid account id.",
+    "invalid_percentage": "Sorry, the percentage amount is not valid.",
     "principal_not_valid": "Please enter a valid principal."
   },
   "warning": {

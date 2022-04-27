@@ -66,6 +66,7 @@ interface I18nError {
   merge_neurons_not_same_manage_neuron_followees: string;
   not_mergeable: string;
   invalid_account_id: string;
+  invalid_percentage: string;
   principal_not_valid: string;
 }
 
