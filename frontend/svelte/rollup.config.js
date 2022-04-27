@@ -6,7 +6,6 @@ import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
 import OMT from "@surma/rollup-plugin-off-main-thread";
 import * as fs from "fs";
-import { parse } from "path";
 import css from "rollup-plugin-css-only";
 import livereload from "rollup-plugin-livereload";
 import svelte from "rollup-plugin-svelte";
@@ -70,17 +69,16 @@ const configApp = {
     format: "es",
     name: "app",
     dir: "public/build/",
-    manualChunks: (moduleName) => {
-      if (moduleName.includes("node_modules")) {
-        return "vendor";
-      }
-
-      if (!moduleName.includes("chunk")) {
-        return "bundle";
-      }
-
-      const { name } = parse(moduleName);
-      return name.replace(".chunk", "");
+    manualChunks: {
+      nns: ["@dfinity/nns"],
+      agent: [
+        "@dfinity/agent",
+        "@dfinity/auth-client",
+        "@dfinity/authentication",
+        "@dfinity/candid",
+        "@dfinity/identity",
+        "@dfinity/principal",
+      ],
     },
   },
   plugins: [
