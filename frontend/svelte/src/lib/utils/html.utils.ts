@@ -50,3 +50,39 @@ export const renderer = (marked: Marked): Renderer => {
 
   return renderer;
 };
+
+/**
+ * Uses markedjs
+ * @see {@link https://github.com/markedjs/marked}
+ */
+export const markdownToHTML = async (): Promise<(text: string) => string> => {
+  const url = "/assets/assets/libs/marked.min.js";
+  const { marked }: { marked: Marked } = await import(url);
+  return (text: string) =>
+    marked(text, {
+      renderer: renderer(marked),
+    });
+};
+
+/**
+ * Sanitize HTML using DOMPurify
+ * @see {@link https://github.com/cure53/DOMPurify}
+ */
+export const sanitize = async (): Promise<(text: string) => string> => {
+  const url = "/assets/assets/libs/purify.min.js";
+  const { sanitize: purify } = (await import(url)).default;
+  return purify;
+};
+
+/**
+ * Sanitize markdown text and convert it to HTML
+ */
+export const markdownToSanitizedHTML = async (
+  text: string
+): Promise<string> => {
+  const [sanitizeText, convertMarkdownToHTML] = await Promise.all([
+    sanitize(),
+    markdownToHTML(),
+  ]);
+  return convertMarkdownToHTML(sanitizeText(text ?? ""));
+};

@@ -2,13 +2,15 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
-import { tick } from "svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import ProposalSummaryCardBlock from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalSummaryCardBlock.svelte";
 import en from "../../../../mocks/i18n.mock";
+import { silentConsoleErrors } from "../../../../mocks/mock.utils";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
 describe("ProposalSummaryCardBlock", () => {
+  beforeAll(silentConsoleErrors);
+
   it("should render title", () => {
     const { getByText } = render(ProposalSummaryCardBlock, {
       props: {
@@ -24,8 +26,9 @@ describe("ProposalSummaryCardBlock", () => {
         proposal: mockProposalInfo.proposal,
       },
     });
-    await tick();
 
-    expect(getByText("summary-content")).toBeInTheDocument();
+    await waitFor(() =>
+      expect(getByText("summary-content")).toBeInTheDocument()
+    );
   });
 });

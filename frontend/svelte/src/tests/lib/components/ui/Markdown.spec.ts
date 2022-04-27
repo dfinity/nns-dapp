@@ -3,84 +3,50 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import Markdown from "../../../../lib/components/ui/Markdown.svelte";
-import {
-  imageToLinkRenderer,
-  targetBlankLinkRenderer,
-} from "../../../../lib/utils/markdown.utils";
+import { mockWaiting, silentConsoleErrors } from "../../../mocks/mock.utils";
 
-const HTML_TEXT = "<p>demo<p>";
-
-class Renderer {
-  link: () => void;
-}
+let transform: (unknown) => Promise<unknown>;
+jest.mock("../../../../lib/utils/html.utils", () => ({
+  markdownToSanitizedHTML: (value) => transform(value),
+}));
 
 describe("Markdown", () => {
-  beforeEach(() => {
-    globalThis.marked = {
-      parse: jest.fn(() => HTML_TEXT),
-      Renderer,
-    };
-  });
+  beforeAll(silentConsoleErrors);
+  afterAll(() => jest.clearAllMocks());
 
   it("should render html content", async () => {
-    const { container } = render(Markdown, {
-      props: { text: HTML_TEXT },
+    transform = (value) => Promise.resolve(value);
+    const { getByText, queryByTestId } = render(Markdown, {
+      props: { text: "test1" },
     });
-    await tick();
-    expect(container.querySelector("p")).toHaveTextContent("demo");
+    await waitFor(() => expect(getByText("test1")).not.toBeNull());
+    expect(queryByTestId("markdown-text")).toBeNull();
   });
 
-  it("should render html content w/o delay when library was already loaded", () => {
-    const { container } = render(Markdown, {
-      props: { text: HTML_TEXT },
+  it("should render spinner until the text is transformed", async () => {
+    transform = (value) => mockWaiting(0.5, value);
+    const { container, queryByText, queryByTestId } = render(Markdown, {
+      props: { text: "test2" },
     });
-    expect(container.querySelector("p")).toHaveTextContent("demo");
-  });
-
-  it("should render spinner until the lib is loaded", async () => {
-    globalThis.marked = undefined;
-    const { container, getByText } = render(Markdown, {
-      props: { text: HTML_TEXT },
-    });
-    // lib load mock
-    globalThis.marked = {
-      parse: jest.fn(() => HTML_TEXT),
-      Renderer,
-    };
 
     expect(container.querySelector("svg")).toBeInTheDocument();
     expect(container.querySelector("circle")).toBeInTheDocument();
-    await waitFor(() => getByText("demo"));
+    await waitFor(() => expect(queryByText("test2")).not.toBeNull());
+    expect(queryByTestId("markdown-text")).toBeNull();
+    expect(container.querySelector("svg")).not.toBeInTheDocument();
   });
 
-  it("should render text content on script error", async () => {
-    globalThis.marked = undefined;
-    const { getByText } = render(Markdown, {
-      props: { text: HTML_TEXT },
+  it("should render text content on marked error", async () => {
+    transform = () => {
+      throw new Error("test");
+    };
+    const { queryByTestId, queryByText } = render(Markdown, {
+      props: { text: "text" },
     });
-    await tick();
-    expect(getByText(HTML_TEXT)).toBeInTheDocument();
-  });
-
-  it("should be called with custom renderers", async () => {
-    render(Markdown, {
-      props: { text: "" },
-    });
-    await tick();
-    expect(globalThis.marked.parse).toBeCalledWith("", {
-      renderer: { link: targetBlankLinkRenderer, image: imageToLinkRenderer },
-    });
-  });
-
-  it('should "sanitize" the text', async () => {
-    render(Markdown, {
-      props: { text: "<script>alert('hack')</script>" },
-    });
-    await tick();
-    expect(globalThis.marked.parse).toBeCalledWith("alert('hack')", {
-      renderer: { link: targetBlankLinkRenderer, image: imageToLinkRenderer },
-    });
+    await waitFor(() =>
+      expect(queryByTestId("markdown-text")).toBeInTheDocument()
+    );
+    expect(queryByText("text")).toBeInTheDocument();
   });
 });
