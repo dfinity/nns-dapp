@@ -1,22 +1,31 @@
 <script lang="ts">
-  import { Topic } from "@dfinity/nns";
+  import type { Topic } from "@dfinity/nns";
   import type { FolloweesNeuron } from "../../../utils/neuron.utils";
   import { i18n } from "../../../stores/i18n";
   import VotingHistoryModal from "../../../modals/neurons/VotingHistoryModal.svelte";
+  import { knownNeuronsStore } from "../../../stores/knownNeurons.store";
 
   export let followee: FolloweesNeuron;
+
+  const topicTitle = (topic: Topic) =>
+    $i18n.follow_neurons[`topic_${topic}_title`];
+
   let modalOpen = false;
   let id: string;
   $: id = `followee-${followee.neuronId}`;
+  let name: string;
+  $: name =
+    $knownNeuronsStore.find(({ id }) => id === followee.neuronId)?.name ??
+    followee.neuronId.toString();
 </script>
 
 <button {id} class="text" on:click|stopPropagation={() => (modalOpen = true)}>
-  {followee.neuronId}
+  {name}
 </button>
 
 <ul aria-labelledby={id}>
   {#each followee.topics as topic}
-    <li>{$i18n.topics[Topic[topic]]}</li>
+    <li>{topicTitle(topic)}</li>
   {/each}
 </ul>
 

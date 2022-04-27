@@ -99,7 +99,7 @@
     </div>
     <div class="only-buttons">
       {#if isControllable || hotkeyControlled}
-        <IncreaseStakeButton />
+        <IncreaseStakeButton {neuron} />
       {/if}
       {#if isControllable}
         <SplitNeuronButton {neuron} />

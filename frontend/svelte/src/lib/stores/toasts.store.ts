@@ -1,4 +1,5 @@
 import { writable } from "svelte/store";
+import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import type { ToastMsg } from "../types/toast";
 import { errorToString } from "../utils/error.utils";
 
@@ -6,6 +7,8 @@ import { errorToString } from "../utils/error.utils";
  * Toast messages.
  *
  * - show: display a message in toast component - messages are stacked but only one is displayed
+ * - success: display a message of type "success" - something went really well ;)
+ * - error: display an error and print the issue in the console as well
  * - hide: remove the toast message at the first position i.e. hide the currently displayed message
  */
 const initToastsStore = () => {
@@ -18,11 +21,16 @@ const initToastsStore = () => {
       update((messages: ToastMsg[]) => [...messages, msg]);
     },
 
+    success({ labelKey }: Pick<ToastMsg, "labelKey">) {
+      this.show({
+        labelKey,
+        level: "success",
+        duration: DEFAULT_TOAST_DURATION_MILLIS,
+      });
+    },
+
     error({ labelKey, err }: { labelKey: string; err?: unknown }) {
-      update((messages: ToastMsg[]) => [
-        ...messages,
-        { labelKey, level: "error", detail: errorToString(err) },
-      ]);
+      this.show({ labelKey, level: "error", detail: errorToString(err) });
 
       console.error(err);
     },

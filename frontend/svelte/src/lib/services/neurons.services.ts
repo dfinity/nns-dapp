@@ -7,7 +7,7 @@ import type {
   NeuronInfo,
   Topic,
 } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
@@ -19,6 +19,7 @@ import {
   mergeNeurons as mergeNeuronsApi,
   queryNeuron,
   queryNeurons,
+  removeHotkey as removeHotkeyApi,
   setFollowees,
   splitNeuron as splitNeuronApi,
   stakeNeuron,
@@ -460,6 +461,38 @@ export const addHotkey = async ({
   }
 };
 
+export const removeHotkey = async ({
+  neuronId,
+  principalString,
+}: {
+  neuronId: NeuronId;
+  principalString: string;
+}): Promise<NeuronId | undefined> => {
+  let principal: Principal | undefined = undefined;
+  try {
+    principal = Principal.fromText(principalString);
+  } catch {
+    toastsStore.error({
+      labelKey: "neuron_detail.invalid_hotkey",
+    });
+    return;
+  }
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await removeHotkeyApi({ neuronId, identity, principal });
+
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return neuronId;
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    // To inform there was an error
+    return undefined;
+  }
+};
+
 export const splitNeuron = async ({
   neuronId,
   amount,
@@ -477,9 +510,8 @@ export const splitNeuron = async ({
     }
 
     await splitNeuronApi({ neuronId, identity, amount: stake });
-    toastsStore.show({
+    toastsStore.success({
       labelKey: "neuron_detail.split_neuron_success",
-      level: "info",
     });
 
     await getAndLoadNeuronHelper({ neuronId, identity });
@@ -571,9 +603,8 @@ const setFolloweesHelper = async ({
     });
     await getAndLoadNeuronHelper({ neuronId, identity });
 
-    toastsStore.show({
+    toastsStore.success({
       labelKey: `new_followee.success_${labelKey}`,
-      level: "info",
     });
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
@@ -644,10 +675,12 @@ export const removeFollowee = async ({
  */
 export const loadNeuron = ({
   neuronId,
+  forceFetch = false,
   setNeuron,
   handleError,
 }: {
   neuronId: NeuronId;
+  forceFetch?: boolean;
   setNeuron: (params: { neuron: NeuronInfo; certified: boolean }) => void;
   handleError?: () => void;
 }): Promise<void> => {
@@ -664,6 +697,7 @@ export const loadNeuron = ({
     request: (options) =>
       getNeuron({
         neuronId,
+        forceFetch,
         ...options,
       }),
     onLoad: ({ response: neuron, certified }) => {
@@ -696,9 +730,8 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
       neuronId,
       identity,
     });
-    toastsStore.show({
+    toastsStore.success({
       labelKey: "neuron_detail.dummy_proposal_success",
-      level: "info",
     });
     return;
   } catch (error) {
