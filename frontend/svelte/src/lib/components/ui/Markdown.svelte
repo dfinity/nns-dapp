@@ -15,7 +15,7 @@
       error = true;
     }
   };
-  $: if (text !== undefined) transform(text);
+  $: if (text !== undefined) transform(text).then();
 </script>
 
 {#if error}
