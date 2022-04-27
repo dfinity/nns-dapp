@@ -124,7 +124,7 @@ describe("VotesCard", () => {
 
     it("should have title attribute per voted neuron for YES or NO", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
-      const { getByTitle } = render(VotesCard, {
+      render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
         },
