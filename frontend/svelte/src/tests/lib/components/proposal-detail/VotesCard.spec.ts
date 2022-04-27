@@ -133,14 +133,13 @@ describe("VotesCard", () => {
       expect(screen.getByTitle(/has voted YES/)).toBeInTheDocument();
     });
 
-    it("should have aria-labelledby", () => {
+    it("should have aria-labelledby in", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { container } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
         },
       });
-      // const voteStatus = container.querySelector("#voteStatus");
       const voteStatus = container.querySelector(
         `[aria-labelledby="voteStatus"]`
       );
