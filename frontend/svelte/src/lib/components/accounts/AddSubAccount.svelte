@@ -9,7 +9,7 @@
 
   let dispatcher = createEventDispatcher();
 
-  const createNewAccount = async () => {
+  const createNewSubAccount = async () => {
     startBusy("accounts");
 
     await addSubAccount({
@@ -22,9 +22,9 @@
   };
 </script>
 
-<form on:submit|preventDefault={createNewAccount} class="wizard-wrapper">
+<form on:submit|preventDefault={createNewSubAccount} class="wizard-wrapper">
   <div>
-    <h4 class="balance">{$i18n.accounts.new_linked_account_title}</h4>
+    <h4 class="balance">{$i18n.accounts.new_linked_account_enter_name}</h4>
     <Input
       inputType="text"
       placeholderLabelKey="accounts.new_linked_account_placeholder"
@@ -44,17 +44,9 @@
 </form>
 
 <style lang="scss">
+  @use "../../themes/mixins/modal.scss";
+
   form {
-    --input-width: 100%;
-
-    div {
-      // push button to the bottom
-      flex-grow: 1;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+    @include modal.wizard-single-input-form;
   }
 </style>
