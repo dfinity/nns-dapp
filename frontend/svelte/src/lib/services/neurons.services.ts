@@ -7,7 +7,7 @@ import type {
   NeuronInfo,
   Topic,
 } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
@@ -19,6 +19,7 @@ import {
   mergeNeurons as mergeNeuronsApi,
   queryNeuron,
   queryNeurons,
+  removeHotkey as removeHotkeyApi,
   setFollowees,
   splitNeuron as splitNeuronApi,
   stakeNeuron,
@@ -448,6 +449,38 @@ export const addHotkey = async ({
     const identity: Identity = await getIdentityByNeuron(neuronId);
 
     await addHotkeyApi({ neuronId, identity, principal });
+
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return neuronId;
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    // To inform there was an error
+    return undefined;
+  }
+};
+
+export const removeHotkey = async ({
+  neuronId,
+  principalString,
+}: {
+  neuronId: NeuronId;
+  principalString: string;
+}): Promise<NeuronId | undefined> => {
+  let principal: Principal | undefined = undefined;
+  try {
+    principal = Principal.fromText(principalString);
+  } catch {
+    toastsStore.error({
+      labelKey: "neuron_detail.invalid_hotkey",
+    });
+    return;
+  }
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await removeHotkeyApi({ neuronId, identity, principal });
 
     await getAndLoadNeuronHelper({ neuronId, identity });
 
