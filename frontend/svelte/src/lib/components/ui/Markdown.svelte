@@ -1,6 +1,6 @@
 <script lang="ts">
   import Spinner from "./Spinner.svelte";
-  import { markdownToSanitisedHTML } from "../../services/utils.services";
+  import { markdownToSanitizedHTML } from "../../services/utils.services";
 
   export let text: string | undefined;
 
@@ -8,7 +8,7 @@
   let error: boolean = false;
   const transform = async (text: string) => {
     try {
-      html = await markdownToSanitisedHTML(text);
+      html = await markdownToSanitizedHTML(text);
     } catch (err) {
       console.error(err);
       error = true;

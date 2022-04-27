@@ -7,11 +7,11 @@ import Markdown from "../../../../lib/components/ui/Markdown.svelte";
 import { mockWaiting, silentConsoleErrors } from "../../../mocks/mock.utils";
 
 describe("Markdown", () => {
-  const mockMarkdownToSanitisedHTML = (
+  const mockMarkdownToSanitizedHTML = (
     transform: (value: unknown) => Promise<unknown>
   ) =>
     jest.mock("../../../../lib/services/utils.services", () => ({
-      markdownToSanitisedHTML: (value) => transform(value),
+      markdownToSanitizedHTML: (value) => transform(value),
     }));
 
   beforeAll(silentConsoleErrors);
@@ -19,7 +19,7 @@ describe("Markdown", () => {
   afterAll(() => jest.clearAllMocks());
 
   it("should render html content", async () => {
-    mockMarkdownToSanitisedHTML((value) => Promise.resolve(value));
+    mockMarkdownToSanitizedHTML((value) => Promise.resolve(value));
     const { getByText } = render(Markdown, {
       props: { text: "test" },
     });
@@ -27,7 +27,7 @@ describe("Markdown", () => {
   });
 
   it("should render spinner until the text is transformed", async () => {
-    mockMarkdownToSanitisedHTML((value) => mockWaiting(0.5, value));
+    mockMarkdownToSanitizedHTML((value) => mockWaiting(0.5, value));
     const { container, queryByText } = render(Markdown, {
       props: { text: "test" },
     });
@@ -39,7 +39,7 @@ describe("Markdown", () => {
   });
 
   it("should render text content on marked error", async () => {
-    mockMarkdownToSanitisedHTML(() => {
+    mockMarkdownToSanitizedHTML(() => {
       throw new Error("test");
     });
     const { container, queryByText } = render(Markdown, {

@@ -66,7 +66,7 @@ export const queryAndUpdate = async <R, E>({
 /**
  * Sanitize markdown text and convert it to HTML
  */
-export const markdownToSanitisedHTML = async (
+export const markdownToSanitizedHTML = async (
   text: string
 ): Promise<string> => {
   const [sanitizeText, convertMarkdownToHTML] = await Promise.all([
