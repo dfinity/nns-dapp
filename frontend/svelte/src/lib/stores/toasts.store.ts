@@ -18,11 +18,12 @@ const initToastsStore = () => {
       update((messages: ToastMsg[]) => [...messages, msg]);
     },
 
+    success({ labelKey }: Pick<ToastMsg, "labelKey">) {
+      this.show({ labelKey, level: "success" });
+    },
+
     error({ labelKey, err }: { labelKey: string; err?: unknown }) {
-      update((messages: ToastMsg[]) => [
-        ...messages,
-        { labelKey, level: "error", detail: errorToString(err) },
-      ]);
+      this.show({ labelKey, level: "error", detail: errorToString(err) });
 
       console.error(err);
     },

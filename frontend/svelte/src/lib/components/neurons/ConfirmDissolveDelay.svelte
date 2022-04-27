@@ -35,9 +35,8 @@
     loading = false;
     if (neuronId !== undefined) {
       dispatcher("nnsUpdated");
-      toastsStore.show({
+      toastsStore.success({
         labelKey: "neurons.dissolve_delay_success",
-        level: "success",
       });
     }
   };

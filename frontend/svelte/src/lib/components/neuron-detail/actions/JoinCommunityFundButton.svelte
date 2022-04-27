@@ -17,9 +17,8 @@
     startBusy("join-community-fund");
     const id = await joinCommunityFund(neuronId);
     if (id !== undefined) {
-      toastsStore.show({
+      toastsStore.success({
         labelKey: "neuron_detail.join_community_fund_success",
-        level: "success",
       });
     }
     closeModal();
