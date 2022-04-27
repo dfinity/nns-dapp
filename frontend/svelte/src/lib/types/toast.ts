@@ -4,4 +4,5 @@ export interface ToastMsg {
   labelKey: string;
   level: ToastLevel;
   detail?: string;
+  duration?: number;
 }
