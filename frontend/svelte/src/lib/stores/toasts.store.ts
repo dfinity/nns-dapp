@@ -1,4 +1,5 @@
 import { writable } from "svelte/store";
+import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import type { ToastMsg } from "../types/toast";
 import { errorToString } from "../utils/error.utils";
 
@@ -21,7 +22,11 @@ const initToastsStore = () => {
     },
 
     success({ labelKey }: Pick<ToastMsg, "labelKey">) {
-      this.show({ labelKey, level: "success", duration: 4000 });
+      this.show({
+        labelKey,
+        level: "success",
+        duration: DEFAULT_TOAST_DURATION_MILLIS,
+      });
     },
 
     error({ labelKey, err }: { labelKey: string; err?: unknown }) {
