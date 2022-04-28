@@ -113,9 +113,8 @@ export const getIdentityByNeuronOrHotkey = async (
   neuronId: NeuronId
 ): Promise<Identity> => {
   try {
-    // If we return immediately the error thrown is not caught
-    const identity = await getIdentityByNeuron(neuronId);
-    return identity;
+    // No `await` no `catch`
+    return await getIdentityByNeuron(neuronId);
   } catch (_) {
     // Check if hotkey
     const { identity, neuron } = await getIdentityAndNeuronHelper(neuronId);
