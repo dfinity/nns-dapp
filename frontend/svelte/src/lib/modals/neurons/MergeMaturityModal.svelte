@@ -31,8 +31,7 @@
       percentageToMerge,
     });
     if (success) {
-      toastsStore.show({
-        level: "info",
+      toastsStore.success({
         labelKey: "neuron_detail.merge_maturity_success",
       });
       dispatcher("nnsClose");
