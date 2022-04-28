@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     routePathProposalId,
     loadProposal,
@@ -27,6 +26,7 @@
     proposalInfoStore,
   } from "../lib/stores/proposals.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   const neuronsStoreReady = (): boolean => {
     // We consider the neurons store as ready if it has been initialized once. Subsequent changes that happen after vote or other functions are handled with the busy store.
@@ -127,15 +127,15 @@
           />
         {:else}
           <div class="loader">
-            <div class="spinner">
-              <Spinner />
-            </div>
-
+            <SkeletonCard />
             <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
           </div>
         {/if}
       {:else}
-        <Spinner />
+        <SkeletonCard size="large" />
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
       {/if}
     </section>
   </HeadlessLayout>
@@ -143,14 +143,15 @@
 
 <style lang="scss">
   .loader {
+    width: 100%;
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .spinner {
-    position: relative;
+    align-items: stretch;
     padding: var(--padding-2x) 0;
+
+    span {
+      text-align: center;
+    }
   }
 </style>
