@@ -183,6 +183,8 @@ interface I18nNew_followee {
   unfollow: string;
   success_add_followee: string;
   success_remove_followee: string;
+  same_neuron: string;
+  already_followed: string;
 }
 
 interface I18nFollow_neurons {

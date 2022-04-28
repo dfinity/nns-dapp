@@ -1,7 +1,6 @@
 import type { Identity } from "@dfinity/agent";
 import {
   Topic,
-  type Followees,
   type ICP,
   type Neuron,
   type NeuronId,
@@ -648,13 +647,26 @@ export const addFollowee = async ({
   topic: Topic;
   followee: NeuronId;
 }): Promise<void> => {
+  // Do not allow a neuron to follow itself
+  if (followee === neuronId) {
+    toastsStore.error({
+      labelKey: "new_followee.same_neuron",
+    });
+    return;
+  }
   const neuron = getNeuronFromStore(neuronId);
 
   const topicFollowees = followeesByTopic({ neuron, topic });
+  // Do not allow to add a neuron id who is already followed
+  if (topicFollowees !== undefined && topicFollowees.indexOf(followee) > -1) {
+    toastsStore.error({
+      labelKey: "new_followee.already_followed",
+    });
+    return;
+  }
+
   const newFollowees: NeuronId[] =
-    topicFollowees === undefined
-      ? [followee]
-      : [...topicFollowees.followees, followee];
+    topicFollowees === undefined ? [followee] : [...topicFollowees, followee];
 
   await setFolloweesHelper({
     neuronId,
@@ -675,18 +687,18 @@ export const removeFollowee = async ({
 }): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
 
-  const topicFollowees: Followees | undefined = followeesByTopic({
+  const topicFollowees: NeuronId[] | undefined = followeesByTopic({
     neuron,
     topic,
   });
   if (topicFollowees === undefined) {
-    // Followee in that topic already does not exist.
+    // Followee in that topic does not exist.
     toastsStore.error({
       labelKey: "error.followee_does_not_exist",
     });
     return;
   }
-  const newFollowees: NeuronId[] = topicFollowees.followees.filter(
+  const newFollowees: NeuronId[] = topicFollowees.filter(
     (id) => id !== followee
   );
   await setFolloweesHelper({

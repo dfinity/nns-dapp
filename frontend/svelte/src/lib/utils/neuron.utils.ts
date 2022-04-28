@@ -4,7 +4,6 @@ import {
   NeuronState,
   Topic,
   type BallotInfo,
-  type Followees,
   type Neuron,
   type NeuronId,
   type NeuronInfo,
@@ -436,10 +435,10 @@ export const followeesByTopic = ({
 }: {
   neuron: NeuronInfo | undefined;
   topic: Topic;
-}): Followees | undefined =>
+}): NeuronId[] | undefined =>
   neuron?.fullNeuron?.followees.find(
     ({ topic: followedTopic }) => topic === followedTopic
-  );
+  )?.followees;
 
 /**
  * NeuronManagement proposals are not public so we hide this topic
