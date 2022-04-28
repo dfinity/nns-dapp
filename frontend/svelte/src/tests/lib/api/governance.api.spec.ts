@@ -6,6 +6,7 @@ import {
   disburse,
   increaseDissolveDelay,
   joinCommunityFund,
+  mergeMaturity,
   mergeNeurons,
   queryKnownNeurons,
   queryNeuron,
@@ -213,6 +214,39 @@ describe("neurons-api", () => {
         disburse({
           identity: mockIdentity,
           toAccountId: mockMainAccount.identifier,
+          neuronId: BigInt(10),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("mergeMaturity", () => {
+    it("merges a percentage of the maturity of a neuron successfully", async () => {
+      mockGovernanceCanister.mergeMaturity.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await mergeMaturity({
+        identity: mockIdentity,
+        percentageToMerge: 50,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.mergeMaturity).toBeCalled();
+    });
+
+    it("throws error when mergeMaturity fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.mergeMaturity.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        mergeMaturity({
+          identity: mockIdentity,
+          percentageToMerge: 50,
           neuronId: BigInt(10),
         });
       await expect(call).rejects.toThrow(error);

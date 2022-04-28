@@ -7,6 +7,7 @@ import {
   SECONDS_IN_YEAR,
 } from "../../../lib/constants/constants";
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import { MIN_MATURITY_MERGE } from "../../../lib/constants/neurons.constants";
 import type { Step } from "../../../lib/stores/steps.state";
 import { InvalidAmountError } from "../../../lib/types/errors";
 import { enumValues } from "../../../lib/utils/enum.utils";
@@ -22,6 +23,7 @@ import {
   followeesNeurons,
   formatVotingPower,
   getDissolvingTimeInSeconds,
+  hasEnoughMaturityToMerge,
   hasJoinedCommunityFund,
   hasValidStake,
   isEnoughToStakeNeuron,
@@ -287,6 +289,49 @@ describe("neuron-utils", () => {
         },
       };
       expect(maturityByStake(neuron)).toBe(0.333333);
+    });
+  });
+
+  describe("hasEnoughMaturityToMerge", () => {
+    it("returns false when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
+    });
+
+    it("returns false if neuron maturity is 0", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
+    });
+
+    it("returns true if maturity larger than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_MATURITY_MERGE) + BigInt(1000),
+        },
+      };
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(true);
+    });
+
+    it("returns false if maturity smaller than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_MATURITY_MERGE) - BigInt(100),
+        },
+      };
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
     });
   });
 
@@ -908,13 +953,13 @@ describe("neuron-utils", () => {
 
     it("should return followees by topic", () => {
       expect(followeesByTopic({ neuron, topic: followees[0].topic })).toEqual(
-        followees[0]
+        followees[0].followees
       );
       expect(followeesByTopic({ neuron, topic: followees[1].topic })).toEqual(
-        followees[1]
+        followees[1].followees
       );
       expect(followeesByTopic({ neuron, topic: followees[2].topic })).toEqual(
-        followees[2]
+        followees[2].followees
       );
     });
 

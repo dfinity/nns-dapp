@@ -4,7 +4,6 @@ import {
   NeuronState,
   Topic,
   type BallotInfo,
-  type Followees,
   type Neuron,
   type NeuronId,
   type NeuronInfo,
@@ -18,6 +17,7 @@ import {
 import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
+  MIN_MATURITY_MERGE,
   MIN_NEURON_STAKE_SPLITTABLE,
 } from "../constants/neurons.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
@@ -435,10 +435,10 @@ export const followeesByTopic = ({
 }: {
   neuron: NeuronInfo | undefined;
   topic: Topic;
-}): Followees | undefined =>
+}): NeuronId[] | undefined =>
   neuron?.fullNeuron?.followees.find(
     ({ topic: followedTopic }) => topic === followedTopic
-  );
+  )?.followees;
 
 /**
  * NeuronManagement proposals are not public so we hide this topic
@@ -449,3 +449,7 @@ export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
   followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
     ? enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
     : enumValues(Topic);
+
+export const hasEnoughMaturityToMerge = (neuron: NeuronInfo): boolean =>
+  neuron.fullNeuron !== undefined &&
+  neuron.fullNeuron.maturityE8sEquivalent > MIN_MATURITY_MERGE;
