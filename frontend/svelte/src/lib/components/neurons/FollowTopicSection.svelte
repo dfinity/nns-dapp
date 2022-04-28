@@ -39,13 +39,9 @@
           }
         : { neuronId };
     };
-    if (followesPerTopic !== undefined) {
-      followees = followesPerTopic.followees.map(mapToKnownNeuron);
-    } else {
-      // If we remove the last followee of that topic, followesPerTopic is undefined.
-      // and we need to reset the followees array
-      followees = [];
-    }
+    // If we remove the last followee of that topic, followesPerTopic is undefined.
+    // and we need to reset the followees array
+    followees = followesPerTopic?.map(mapToKnownNeuron) ?? [];
   }
 
   const openNewFolloweeModal = () => (showNewFolloweeModal = true);

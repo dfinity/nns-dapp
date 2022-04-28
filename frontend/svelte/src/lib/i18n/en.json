@@ -34,7 +34,7 @@
     "register_vote_unknown": "Sorry, there was an unexpected error while registering the vote. Please try again later.",
     "add_followee": "Sorry, there was an unexpected error while adding the followee. Please try again later.",
     "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
-    "followee_does_not_exist": "Sorry, followee already removed, refresh the page to have the latest data.",
+    "followee_does_not_exist": "Sorry, this neuron is not followed in that topic, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the community fund. Please try again later.",
@@ -171,7 +171,9 @@
     "follow": "Follow",
     "unfollow": "Unfollow",
     "success_add_followee": "Followee added successfully",
-    "success_remove_followee": "Followee removed successfully"
+    "success_remove_followee": "Followee removed successfully",
+    "same_neuron": "You can't add the same neuron as followee.",
+    "already_followed": "You are already following this neuron."
   },
   "follow_neurons": {
     "description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",

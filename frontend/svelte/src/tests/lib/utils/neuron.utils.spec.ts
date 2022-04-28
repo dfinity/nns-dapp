@@ -953,13 +953,13 @@ describe("neuron-utils", () => {
 
     it("should return followees by topic", () => {
       expect(followeesByTopic({ neuron, topic: followees[0].topic })).toEqual(
-        followees[0]
+        followees[0].followees
       );
       expect(followeesByTopic({ neuron, topic: followees[1].topic })).toEqual(
-        followees[1]
+        followees[1].followees
       );
       expect(followeesByTopic({ neuron, topic: followees[2].topic })).toEqual(
-        followees[2]
+        followees[2].followees
       );
     });
 

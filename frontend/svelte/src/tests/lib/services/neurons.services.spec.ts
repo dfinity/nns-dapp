@@ -764,6 +764,42 @@ describe("neurons-services", () => {
       expect(spySetFollowees).toHaveBeenCalledWith(expectedArgument);
     });
 
+    it("should not call api if trying follow itself", async () => {
+      neuronsStore.setNeurons({ neurons, certified: true });
+      const topic = Topic.ExchangeRate;
+
+      await addFollowee({
+        neuronId: controlledNeuron.neuronId,
+        topic,
+        followee: controlledNeuron.neuronId,
+      });
+
+      expect(toastsStore.error).toHaveBeenCalled();
+      expect(spySetFollowees).not.toHaveBeenCalled();
+    });
+
+    it("should not call api if trying follow a neuron already added", async () => {
+      const topic = Topic.ExchangeRate;
+      const followee = BigInt(10);
+      const neuron = {
+        ...controlledNeuron,
+        fullNeuron: {
+          ...controlledNeuron.fullNeuron,
+          followees: [{ topic, followees: [followee] }],
+        },
+      };
+      neuronsStore.setNeurons({ neurons: [neuron], certified: true });
+
+      await addFollowee({
+        neuronId: neuron.neuronId,
+        topic,
+        followee: followee,
+      });
+
+      expect(toastsStore.error).toHaveBeenCalled();
+      expect(spySetFollowees).not.toHaveBeenCalled();
+    });
+
     it("should not call api if no identity", async () => {
       const followee = BigInt(8);
       neuronsStore.setNeurons({ neurons, certified: true });

@@ -42,10 +42,7 @@
   let loadingAddress: boolean = false;
   let loading: boolean = false;
   let topicFollowees: NeuronId[];
-  $: {
-    const topicInfo = followeesByTopic({ neuron, topic });
-    topicFollowees = topicInfo?.followees ?? [];
-  }
+  $: topicFollowees = followeesByTopic({ neuron, topic }) ?? [];
 
   onMount(() => listKnownNeurons());
 
