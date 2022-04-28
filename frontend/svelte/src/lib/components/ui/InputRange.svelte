@@ -28,22 +28,22 @@
 <style lang="scss">
   @use "../../themes/mixins/interaction";
 
-  input[type="range"] {
+  input {
     appearance: none;
     border-radius: 5px;
     height: 5px;
     width: 100%;
   }
 
-  input[type="range"]:focus {
+  input:focus {
     outline: none;
   }
 
-  input[type="range"]::-moz-focus-outer {
+  input::-moz-focus-outer {
     border: 0;
   }
 
-  input[type="range"]::-webkit-slider-thumb {
+  input::-webkit-slider-thumb {
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
@@ -52,7 +52,7 @@
     appearance: none;
   }
 
-  input[type="range"]::-moz-range-thumb {
+  input::-moz-range-thumb {
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
@@ -60,7 +60,7 @@
     @include interaction.tappable;
   }
 
-  input[type="range"]::-ms-thumb {
+  input::-ms-thumb {
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
@@ -68,7 +68,7 @@
     @include interaction.tappable;
   }
 
-  input[type="range"]::-webkit-slider-runnable-track {
+  input::-webkit-slider-runnable-track {
     cursor: pointer;
   }
 </style>
