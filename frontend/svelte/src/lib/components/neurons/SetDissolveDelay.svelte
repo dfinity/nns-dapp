@@ -21,7 +21,7 @@
 
   export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;
-  export let cancelButtonText: string;
+  export let cancelButtonText: string | undefined = undefined;
   export let minDelayInSeconds: number = 0;
 
   let loading: boolean = false;
@@ -107,12 +107,14 @@
     </div>
   </Card>
   <div class="buttons">
-    <button
-      on:click={cancel}
-      data-tid="cancel-neuron-delay"
-      class="secondary full-width"
-      disabled={loading}>{cancelButtonText}</button
-    >
+    {#if cancelButtonText !== undefined}
+      <button
+        on:click={cancel}
+        data-tid="cancel-neuron-delay"
+        class="secondary full-width"
+        disabled={loading}>{cancelButtonText}</button
+      >
+    {/if}
     <button
       class="primary full-width"
       disabled={disableUpdate || loading}
