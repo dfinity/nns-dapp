@@ -10,7 +10,6 @@
   import { votedNeurons } from "@dfinity/nns";
   import { definedNeuronsStore } from "../../stores/neurons.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { get } from "svelte/store";
 
   export let proposalInfo: ProposalInfo;
 
@@ -32,21 +31,21 @@
     [Vote.YES]: IconThumbUp,
     [Vote.UNSPECIFIED]: undefined,
   };
+
   let neuronsVotedForProposal: CompactNeuronInfo[];
-  function voteMapper(inputNeuronId: NeuronId, vote: Vote) {
-    if (vote === Vote.NO) {
-      return replacePlaceholders(get(i18n).proposal_detail__vote.voted_no, {
-        $neuronId: inputNeuronId.toString(),
-      });
-    } else if (vote === Vote.YES) {
-      return replacePlaceholders(get(i18n).proposal_detail__vote.voted_yes, {
-        $neuronId: inputNeuronId.toString(),
-      });
-    } else if (vote === Vote.UNSPECIFIED) {
-      return replacePlaceholders(get(i18n).proposal_detail__vote.voted_none, {
-        $neuronId: inputNeuronId.toString(),
-      });
-    }
+
+  const voteMapper = (inputNeuronId: NeuronId, vote: Vote) => {
+    const stringMapper = {
+      [Vote.NO] : "voted NO",
+      [Vote.YES] : "voted YES",
+      [Vote.UNSPECIFIED] : "not voted"
+    };
+
+    return replacePlaceholders($i18n.proposal_detail__vote.vote_status, {
+      $neuronId: inputNeuronId.toString(),
+      $vote: stringMapper[vote]
+    })
+
   }
 
   $: {
@@ -92,32 +91,15 @@
     <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
     <ul>
       {#each neuronsVotedForProposal as neuron}
-        <div
-          role="img"
-          aria-labelledby="voteStatus"
-          title={voteMapper(neuron.id, neuron.vote)}
-        >
-          {#if neuron.vote === Vote.UNSPECIFIED}
-            <div class="visually-hidden" id="voteStatus">
-              Neuron ID {neuron.id} has not voted
-            </div>
-          {:else}
-            <div class="visually-hidden" id="voteStatus">
-              {$i18n.neuron_detail.title}
-              {neuron.id} has voted {neuron.vote === Vote.YES ? "yes" : "no"} with
-              {$i18n.proposal_detail__vote.voting_power} of {neuron.votingPower}
-            </div>
-          {/if}
-          <li data-tid="neuron-data">
-            <p>{neuron.id}</p>
-            <p class="vote-details">
-              <span>{neuron.votingPower}</span>
-              {#if voteIconMapper[neuron.vote]}
-                <svelte:component this={voteIconMapper[neuron.vote]} />
-              {/if}
-            </p>
-          </li>
-        </div>
+        <li data-tid="neuron-data" aria-label={voteMapper(neuron.id, neuron.vote)} title={voteMapper(neuron.id, neuron.vote)}>
+          <p>{neuron.id}</p>
+          <p class="vote-details">
+            <span>{neuron.votingPower}</span>
+            {#if voteIconMapper[neuron.vote]}
+              <svelte:component this={voteIconMapper[neuron.vote]} />
+            {/if}
+          </p>
+        </li>
       {/each}
     </ul>
   {/if}
@@ -191,28 +173,5 @@
       align-items: center;
       gap: var(--padding);
     }
-  }
-
-  .visually-hidden {
-    border: 0;
-    padding: 0;
-    margin: 0;
-    position: absolute !important;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-    clip: rect(
-      1px 1px 1px 1px
-    ); /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-    clip: rect(
-      1px,
-      1px,
-      1px,
-      1px
-    ); /*maybe deprecated but we need to support legacy browsers */
-    clip-path: inset(
-      50%
-    ); /*modern browsers, clip-path works inwards from each corner*/
-    white-space: nowrap; /* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
   }
 </style>

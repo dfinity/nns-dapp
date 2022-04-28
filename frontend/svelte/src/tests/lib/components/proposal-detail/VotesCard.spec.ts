@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 import { Vote } from "@dfinity/nns";
-import { screen } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import VotesCard from "../../../../lib/components/proposal-detail/VotesCard.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import { formatNumber } from "../../../../lib/utils/format.utils";
+import { replacePlaceholders } from "../../../../lib/utils/i18n.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
@@ -124,27 +124,36 @@ describe("VotesCard", () => {
 
     it("should have title attribute per voted neuron for YES or NO", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
-      render(VotesCard, {
+      const { getByTitle } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
         },
       });
-      expect(screen.getByTitle(/has voted NO/)).toBeInTheDocument();
-      expect(screen.getByTitle(/has voted YES/)).toBeInTheDocument();
+
+      expect(
+        getByTitle(
+          replacePlaceholders(en.proposal_detail__vote.vote_status, {
+            $neuronId: noVoted.neuronId.toString(),
+            $vote: "voted NO",
+          })
+        )
+      ).toBeInTheDocument();
     });
 
-    it("should have aria-labelledby attribute", () => {
+    it("should have aria-label attribute", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { container } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
         },
       });
-      const voteStatus = container.querySelector(
-        `[aria-labelledby="voteStatus"]`
-      );
+      const element = container.querySelector(`[data-tid="neuron-data"]`);
 
-      expect(voteStatus).toBeInTheDocument();
+      expect(element).toBeInTheDocument();
+
+      if (element) {
+        expect(element.getAttribute("aria-label")).toBeTruthy();
+      }
     });
   });
 });
