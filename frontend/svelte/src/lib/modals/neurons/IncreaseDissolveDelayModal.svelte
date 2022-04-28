@@ -42,7 +42,6 @@
     <SetDissolveDelay
       {neuron}
       minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
-      on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
     />
