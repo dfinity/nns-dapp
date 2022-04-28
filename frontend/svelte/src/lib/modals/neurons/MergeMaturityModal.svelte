@@ -84,7 +84,7 @@
       data-tid="merge-maturity-button"
       class="primary full-width"
       on:click={mergeNeuronMaturity}
-      disabled={loading}
+      disabled={loading || percentageToMerge === 0}
     >
       {#if loading}
         <Spinner />
