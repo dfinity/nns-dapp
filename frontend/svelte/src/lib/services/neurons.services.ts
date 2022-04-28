@@ -658,7 +658,7 @@ export const addFollowee = async ({
 
   const topicFollowees = followeesByTopic({ neuron, topic });
   // Do not allow to add a neuron id who is already followed
-  if (topicFollowees !== undefined && topicFollowees.indexOf(followee) > -1) {
+  if (topicFollowees !== undefined && topicFollowees.includes(followee)) {
     toastsStore.error({
       labelKey: "new_followee.already_followed",
     });
