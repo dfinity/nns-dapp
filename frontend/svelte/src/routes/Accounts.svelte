@@ -80,7 +80,6 @@
         {/each}
       {:else}
         <SkeletonCard />
-        <SkeletonCard />
       {/if}
     </section>
 

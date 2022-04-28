@@ -6,7 +6,7 @@
   export let size: "medium" | "large" = "medium";
 </script>
 
-<Card>
+<Card testId="spinner">
   <div class="small" slot="start">
     <SkeletonParagraph />
   </div>
