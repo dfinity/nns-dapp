@@ -7,4 +7,4 @@
 </script>
 
 <button data-tid="change-test-value" on:click={change}>Click</button>
-<InputRange min={0} max={100} bind:value />
+<InputRange ariaLabel="test" min={0} max={100} bind:value />

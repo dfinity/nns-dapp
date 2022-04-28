@@ -2,6 +2,7 @@
   export let max: number;
   export let min: number;
   export let value: number;
+  export let ariaLabel: string;
   export let handleInput: (() => void) | undefined = undefined;
 
   let backgroundStyle: string;
@@ -17,6 +18,7 @@
 <input
   {min}
   {max}
+  aria-label={ariaLabel}
   type="range"
   bind:value
   on:input={handleInput}
@@ -28,8 +30,8 @@
 
   input[type="range"] {
     appearance: none;
-    border-radius: 6px;
-    height: 6px;
+    border-radius: 5px;
+    height: 5px;
     width: 100%;
   }
 

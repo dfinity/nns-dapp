@@ -65,15 +65,18 @@
         <p>{$i18n.neuron_detail.merge_maturity_modal_description}</p>
       </div>
       <div class="select-container">
-        <InputRange min={0} max={100} bind:value={percentageToMerge} />
-        <div class="details">
-          <h5>
-            {formatPercentage(percentageToMerge / 100, {
-              minFraction: 0,
-              maxFraction: 0,
-            })}
-          </h5>
-        </div>
+        <InputRange
+          ariaLabel={$i18n.neuron_detail.merge_maturity_range}
+          min={0}
+          max={100}
+          bind:value={percentageToMerge}
+        />
+        <h5>
+          {formatPercentage(percentageToMerge / 100, {
+            minFraction: 0,
+            maxFraction: 0,
+          })}
+        </h5>
       </div>
     </Card>
 
@@ -108,10 +111,9 @@
   .select-container {
     width: 100%;
 
-    .details {
+    h5 {
       margin-top: var(--padding);
-      display: flex;
-      justify-content: space-around;
+      text-align: center;
     }
   }
 </style>

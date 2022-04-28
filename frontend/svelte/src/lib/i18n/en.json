@@ -326,6 +326,8 @@
     "merge_maturity_success": "Maturity merged successfully.",
     "current_stake": "Current Stake",
     "current_maturity": "Current Maturity",
+    "dissolve_delay_range": "Dissolve Delay Range",
+    "merge_maturity_range": "Merge Maturity Range",
     "add_hotkey_placeholder": "Principal ID"
   },
   "time": {

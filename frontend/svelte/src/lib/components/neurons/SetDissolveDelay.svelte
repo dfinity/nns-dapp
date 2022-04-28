@@ -77,6 +77,7 @@
     </div>
     <div class="select-delay-container">
       <InputRange
+        ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
         min={0}
         max={SECONDS_IN_EIGHT_YEARS}
         bind:value={delayInSeconds}

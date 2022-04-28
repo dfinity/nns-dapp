@@ -9,9 +9,10 @@ import InputRangeTest from "./InputRangeTest.svelte";
 describe("InputRange", () => {
   const min = 0;
   const max = 100;
+  const ariaLabel = "test";
   it("should render an input", () => {
     const { container } = render(InputRange, {
-      props: { min, max, value: 25 },
+      props: { min, max, value: 25, ariaLabel },
     });
 
     const input = container.querySelector("input");
@@ -41,7 +42,7 @@ describe("InputRange", () => {
     const initialValue = 25;
     const changedValue = 90;
     const { container } = render(InputRange, {
-      props: { min, max, value: initialValue },
+      props: { min, max, value: initialValue, ariaLabel },
     });
 
     const input = container.querySelector("input");
@@ -61,7 +62,7 @@ describe("InputRange", () => {
     const initialValue = 25;
     const changedValue = max + initialValue;
     const { container } = render(InputRange, {
-      props: { min, max, value: initialValue },
+      props: { min, max, value: initialValue, ariaLabel },
     });
 
     const input = container.querySelector("input");
@@ -82,7 +83,7 @@ describe("InputRange", () => {
     const newMin = 20;
     const changedValue = 10;
     const { container } = render(InputRange, {
-      props: { min: newMin, max, value: initialValue },
+      props: { min: newMin, max, value: initialValue, ariaLabel },
     });
 
     const input = container.querySelector("input");

@@ -348,6 +348,8 @@ interface I18nNeuron_detail {
   merge_maturity_success: string;
   current_stake: string;
   current_maturity: string;
+  dissolve_delay_range: string;
+  merge_maturity_range: string;
   add_hotkey_placeholder: string;
 }
 
