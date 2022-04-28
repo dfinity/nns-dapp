@@ -36,17 +36,16 @@
 
   const voteMapper = (inputNeuronId: NeuronId, vote: Vote) => {
     const stringMapper = {
-      [Vote.NO] : "voted NO",
-      [Vote.YES] : "voted YES",
-      [Vote.UNSPECIFIED] : "not voted"
+      [Vote.NO]: "voted NO",
+      [Vote.YES]: "voted YES",
+      [Vote.UNSPECIFIED]: "not voted",
     };
 
     return replacePlaceholders($i18n.proposal_detail__vote.vote_status, {
       $neuronId: inputNeuronId.toString(),
-      $vote: stringMapper[vote]
-    })
-
-  }
+      $vote: stringMapper[vote],
+    });
+  };
 
   $: {
     neuronsVotedForProposal = votedNeurons({
@@ -91,7 +90,11 @@
     <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
     <ul>
       {#each neuronsVotedForProposal as neuron}
-        <li data-tid="neuron-data" aria-label={voteMapper(neuron.id, neuron.vote)} title={voteMapper(neuron.id, neuron.vote)}>
+        <li
+          data-tid="neuron-data"
+          aria-label={voteMapper(neuron.id, neuron.vote)}
+          title={voteMapper(neuron.id, neuron.vote)}
+        >
           <p>{neuron.id}</p>
           <p class="vote-details">
             <span>{neuron.votingPower}</span>
