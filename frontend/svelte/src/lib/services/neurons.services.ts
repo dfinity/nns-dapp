@@ -1,11 +1,11 @@
 import type { Identity } from "@dfinity/agent";
-import type {
-  Followees,
-  ICP,
-  Neuron,
-  NeuronId,
-  NeuronInfo,
+import {
   Topic,
+  type Followees,
+  type ICP,
+  type Neuron,
+  type NeuronId,
+  type NeuronInfo,
 } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
@@ -113,7 +113,8 @@ export const getIdentityByNeuronOrHotkey = async (
   neuronId: NeuronId
 ): Promise<Identity> => {
   try {
-    return getIdentityByNeuron(neuronId);
+    // No `await` no `catch`
+    return await getIdentityByNeuron(neuronId);
   } catch (_) {
     // Check if hotkey
     const { identity, neuron } = await getIdentityAndNeuronHelper(neuronId);
@@ -616,7 +617,11 @@ const setFolloweesHelper = async ({
   labelKey: "add_followee" | "remove_followee";
 }) => {
   try {
-    const identity: Identity = await getIdentityByNeuronOrHotkey(neuronId);
+    // ManageNeuron topic followes can only be handled by controllers
+    const identity: Identity =
+      topic === Topic.ManageNeuron
+        ? await getIdentityByNeuron(neuronId)
+        : await getIdentityByNeuronOrHotkey(neuronId);
 
     await setFollowees({
       identity,
