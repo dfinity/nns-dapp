@@ -62,6 +62,7 @@
     "merge_neurons_not_same_manage_neuron_followees": "Two neurons need to have the same followees on the topic of \"Manage Neuron\". Check the article for more: ",
     "not_mergeable": "This neuron can't be merged.",
     "invalid_account_id": "Sorry, the account id is not valid. Please try again with a valid account id.",
+    "invalid_percentage": "Sorry, the percentage amount is not valid.",
     "principal_not_valid": "Please enter a valid principal."
   },
   "warning": {
@@ -310,6 +311,7 @@
     "disburse_neuron_title": "Disburse Neuron",
     "split_neuron_success": "Your neuron has successfully been splitted.",
     "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable.",
+    "merge_maturity_disabled_tooltip": "You need at least $amount ICP to merge maturity.",
     "hotkeys_title": "Hotkeys",
     "add_hotkey": "Add Hotkey",
     "no_notkeys": "No hotkeys",
@@ -319,6 +321,13 @@
     "remove_hotkey_success": "Hotkey removed successfully.",
     "invalid_hotkey": "Hotkey not valid. Refresh the page and try again.",
     "disburse_success": "Neuron disbursed successfully",
+    "merge_maturity_modal_title": "Merge Maturity",
+    "merge_maturity_modal_description": "Choose how much of your neuron's maturity to merge into its stake.",
+    "merge_maturity_success": "Maturity merged successfully.",
+    "current_stake": "Current Stake",
+    "current_maturity": "Current Maturity",
+    "dissolve_delay_range": "Dissolve Delay Range",
+    "merge_maturity_range": "Merge Maturity Range",
     "add_hotkey_placeholder": "Principal ID"
   },
   "time": {
