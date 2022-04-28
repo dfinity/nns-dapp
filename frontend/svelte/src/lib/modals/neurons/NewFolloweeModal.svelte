@@ -1,19 +1,42 @@
 <script lang="ts">
-  import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
+  import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
   import KnownNeuronFollowItem from "../../components/neurons/KnownNeuronFollowItem.svelte";
   import Input from "../../components/ui/Input.svelte";
   import Spinner from "../../components/ui/Spinner.svelte";
   import { listKnownNeurons } from "../../services/knownNeurons.services";
   import { addFollowee } from "../../services/neurons.services";
+  import { accountsStore } from "../../stores/accounts.store";
+  import { authStore } from "../../stores/auth.store";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { sortedknownNeuronsStore } from "../../stores/knownNeurons.store";
-  import { followeesByTopic } from "../../utils/neuron.utils";
+  import {
+    followeesByTopic,
+    isHotKeyControllable,
+    isNeuronControllable,
+  } from "../../utils/neuron.utils";
   import Modal from "../Modal.svelte";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;
+
+  let isControllableByUser: boolean;
+  $: isControllableByUser = isNeuronControllable({
+    neuron,
+    identity: $authStore.identity,
+    accounts: $accountsStore,
+  });
+  let isControllableByHotkey: boolean;
+  $: isControllableByHotkey = isHotKeyControllable({
+    neuron,
+    identity: $authStore.identity,
+  });
+  let isUserAuthorized: boolean;
+  $: isUserAuthorized =
+    topic === Topic.ManageNeuron
+      ? isControllableByUser
+      : isControllableByUser || isControllableByHotkey;
 
   let followeeAddress: string = "";
   let loadingAddress: boolean = false;
@@ -85,11 +108,12 @@
           bind:value={followeeAddress}
           theme="dark"
         />
-        <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
         <button
           class={`primary small ${loadingAddress ? "icon-only" : ""}`}
           type="submit"
-          disabled={followeeAddress.length === 0 || loading}
+          disabled={followeeAddress.length === 0 ||
+            loading ||
+            !isUserAuthorized}
         >
           {#if loadingAddress}
             <Spinner inline size="small" />
@@ -109,7 +133,7 @@
             <li data-tid="known-neuron-item">
               <KnownNeuronFollowItem
                 on:nnsLoading={updateLoading}
-                disabled={loading}
+                disabled={loading || !isUserAuthorized}
                 {knownNeuron}
                 neuronId={neuron.neuronId}
                 {topic}

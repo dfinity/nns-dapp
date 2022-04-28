@@ -799,6 +799,54 @@ describe("neurons-services", () => {
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
+
+    it("should call api if not controlled by user but controlled by hotkey", async () => {
+      const followee = BigInt(8);
+      const topic = Topic.ExchangeRate;
+      const hotkeyNeuron = {
+        ...notControlledNeuron,
+        fullNeuron: {
+          ...notControlledNeuron.fullNeuron,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [hotkeyNeuron],
+        certified: true,
+      });
+
+      await addFollowee({
+        neuronId: hotkeyNeuron.neuronId,
+        topic,
+        followee,
+      });
+
+      expect(spySetFollowees).toHaveBeenCalled();
+    });
+
+    it("should not call api if not controlled by user but controlled by hotkey for topic Manage Neuron", async () => {
+      const followee = BigInt(8);
+      const topic = Topic.ManageNeuron;
+      const hotkeyNeuron = {
+        ...notControlledNeuron,
+        fullNeuron: {
+          ...notControlledNeuron.fullNeuron,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [hotkeyNeuron],
+        certified: true,
+      });
+
+      await addFollowee({
+        neuronId: hotkeyNeuron.neuronId,
+        topic,
+        followee,
+      });
+
+      expect(spySetFollowees).not.toHaveBeenCalled();
+    });
   });
 
   describe("remove followee", () => {
@@ -878,6 +926,54 @@ describe("neurons-services", () => {
         followee,
       });
       expect(toastsStore.show).toHaveBeenCalled();
+      expect(spySetFollowees).not.toHaveBeenCalled();
+    });
+
+    it("should call api if user not controller but controlled by hotkey", async () => {
+      const followee = BigInt(8);
+      const topic = Topic.ExchangeRate;
+      const hotkeyNeuron = {
+        ...notControlledNeuron,
+        fullNeuron: {
+          ...notControlledNeuron.fullNeuron,
+          followees: [{ topic, followees: [followee] }],
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [hotkeyNeuron],
+        certified: true,
+      });
+
+      await removeFollowee({
+        neuronId: hotkeyNeuron.neuronId,
+        topic,
+        followee,
+      });
+      expect(spySetFollowees).toHaveBeenCalled();
+    });
+
+    it("should not call api if user not controller but controlled by hotkey and topic is manage neuron", async () => {
+      const followee = BigInt(8);
+      const topic = Topic.ManageNeuron;
+      const hotkeyNeuron = {
+        ...notControlledNeuron,
+        fullNeuron: {
+          ...notControlledNeuron.fullNeuron,
+          followees: [{ topic, followees: [followee] }],
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [hotkeyNeuron],
+        certified: true,
+      });
+
+      await removeFollowee({
+        neuronId: hotkeyNeuron.neuronId,
+        topic,
+        followee,
+      });
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
   });
