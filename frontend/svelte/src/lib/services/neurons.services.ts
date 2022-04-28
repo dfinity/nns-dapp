@@ -1,11 +1,10 @@
 import type { Identity } from "@dfinity/agent";
-import type {
-  Followees,
-  ICP,
-  Neuron,
-  NeuronId,
-  NeuronInfo,
+import {
   Topic,
+  type ICP,
+  type Neuron,
+  type NeuronId,
+  type NeuronInfo,
 } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
@@ -16,6 +15,7 @@ import {
   disburse as disburseApi,
   increaseDissolveDelay,
   joinCommunityFund as joinCommunityFundApi,
+  mergeMaturity as mergeMaturityApi,
   mergeNeurons as mergeNeuronsApi,
   queryNeuron,
   queryNeurons,
@@ -112,7 +112,8 @@ export const getIdentityByNeuronOrHotkey = async (
   neuronId: NeuronId
 ): Promise<Identity> => {
   try {
-    return getIdentityByNeuron(neuronId);
+    // No `await` no `catch`
+    return await getIdentityByNeuron(neuronId);
   } catch (_) {
     // Check if hotkey
     const { identity, neuron } = await getIdentityAndNeuronHelper(neuronId);
@@ -545,6 +546,28 @@ export const disburse = async ({
   }
 };
 
+export const mergeMaturity = async ({
+  neuronId,
+  percentageToMerge,
+}: {
+  neuronId: NeuronId;
+  percentageToMerge: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await mergeMaturityApi({ neuronId, percentageToMerge, identity });
+
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return { success: true };
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    return { success: false };
+  }
+};
+
 export const startDissolving = async (
   neuronId: NeuronId
 ): Promise<NeuronId | undefined> => {
@@ -593,7 +616,11 @@ const setFolloweesHelper = async ({
   labelKey: "add_followee" | "remove_followee";
 }) => {
   try {
-    const identity: Identity = await getIdentityByNeuronOrHotkey(neuronId);
+    // ManageNeuron topic followes can only be handled by controllers
+    const identity: Identity =
+      topic === Topic.ManageNeuron
+        ? await getIdentityByNeuron(neuronId)
+        : await getIdentityByNeuronOrHotkey(neuronId);
 
     await setFollowees({
       identity,
@@ -620,13 +647,26 @@ export const addFollowee = async ({
   topic: Topic;
   followee: NeuronId;
 }): Promise<void> => {
+  // Do not allow a neuron to follow itself
+  if (followee === neuronId) {
+    toastsStore.error({
+      labelKey: "new_followee.same_neuron",
+    });
+    return;
+  }
   const neuron = getNeuronFromStore(neuronId);
 
   const topicFollowees = followeesByTopic({ neuron, topic });
+  // Do not allow to add a neuron id who is already followed
+  if (topicFollowees !== undefined && topicFollowees.includes(followee)) {
+    toastsStore.error({
+      labelKey: "new_followee.already_followed",
+    });
+    return;
+  }
+
   const newFollowees: NeuronId[] =
-    topicFollowees === undefined
-      ? [followee]
-      : [...topicFollowees.followees, followee];
+    topicFollowees === undefined ? [followee] : [...topicFollowees, followee];
 
   await setFolloweesHelper({
     neuronId,
@@ -647,18 +687,18 @@ export const removeFollowee = async ({
 }): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
 
-  const topicFollowees: Followees | undefined = followeesByTopic({
+  const topicFollowees: NeuronId[] | undefined = followeesByTopic({
     neuron,
     topic,
   });
   if (topicFollowees === undefined) {
-    // Followee in that topic already does not exist.
+    // Followee in that topic does not exist.
     toastsStore.error({
       labelKey: "error.followee_does_not_exist",
     });
     return;
   }
-  const newFollowees: NeuronId[] = topicFollowees.followees.filter(
+  const newFollowees: NeuronId[] = topicFollowees.filter(
     (id) => id !== followee
   );
   await setFolloweesHelper({

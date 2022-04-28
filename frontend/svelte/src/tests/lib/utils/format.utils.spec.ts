@@ -34,5 +34,17 @@ describe("format.utils", () => {
     expect(formatPercentage(1.1239)).toEqual("112.390%");
 
     expect(formatPercentage(0.123456789)).toEqual("12.346%");
+
+    expect(
+      formatPercentage(0.123456789, { minFraction: 2, maxFraction: 4 })
+    ).toEqual("12.3457%");
+
+    expect(formatPercentage(0.123, { minFraction: 2, maxFraction: 4 })).toEqual(
+      "12.30%"
+    );
+
+    expect(formatPercentage(0.123, { minFraction: 0, maxFraction: 0 })).toEqual(
+      "12%"
+    );
   });
 });

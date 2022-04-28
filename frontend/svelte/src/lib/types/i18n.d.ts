@@ -66,6 +66,7 @@ interface I18nError {
   merge_neurons_not_same_manage_neuron_followees: string;
   not_mergeable: string;
   invalid_account_id: string;
+  invalid_percentage: string;
   principal_not_valid: string;
 }
 
@@ -182,6 +183,8 @@ interface I18nNew_followee {
   unfollow: string;
   success_add_followee: string;
   success_remove_followee: string;
+  same_neuron: string;
+  already_followed: string;
 }
 
 interface I18nFollow_neurons {
@@ -333,6 +336,7 @@ interface I18nNeuron_detail {
   disburse_neuron_title: string;
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
+  merge_maturity_disabled_tooltip: string;
   hotkeys_title: string;
   add_hotkey: string;
   no_notkeys: string;
@@ -342,6 +346,13 @@ interface I18nNeuron_detail {
   remove_hotkey_success: string;
   invalid_hotkey: string;
   disburse_success: string;
+  merge_maturity_modal_title: string;
+  merge_maturity_modal_description: string;
+  merge_maturity_success: string;
+  current_stake: string;
+  current_maturity: string;
+  dissolve_delay_range: string;
+  merge_maturity_range: string;
   add_hotkey_placeholder: string;
 }
 

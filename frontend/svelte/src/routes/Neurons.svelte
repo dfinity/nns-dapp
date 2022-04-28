@@ -10,7 +10,6 @@
   import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import { listNeurons } from "../lib/services/neurons.services";
-  import RouteSpinner from "../lib/components/ui/RouteSpinner.svelte";
   import { sortedNeuronStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
   import {
@@ -18,6 +17,7 @@
     SHOW_NEURONS_ROUTE,
   } from "../lib/constants/routes.constants";
   import MergeNeuronsModal from "../lib/modals/neurons/MergeNeuronsModal.svelte";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   let isLoading: boolean = false;
   // TODO: To be removed once this page has been implemented
@@ -62,7 +62,8 @@
       </p>
 
       {#if isLoading}
-        <RouteSpinner />
+        <SkeletonCard />
+        <SkeletonCard />
       {:else}
         {#each $sortedNeuronStore as neuron}
           <NeuronCard

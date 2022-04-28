@@ -101,6 +101,22 @@ export const disburse = async ({
   logWithTimestamp(`Disburse neuron (${hashCode(neuronId)}) complete.`);
 };
 
+export const mergeMaturity = async ({
+  neuronId,
+  percentageToMerge,
+  identity,
+}: {
+  neuronId: NeuronId;
+  percentageToMerge: number;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  await canister.mergeMaturity({ neuronId, percentageToMerge });
+  logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) complete.`);
+};
+
 export const addHotkey = async ({
   neuronId,
   principal,
