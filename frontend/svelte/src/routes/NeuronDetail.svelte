@@ -12,7 +12,6 @@
   import NeuronMetaInfoCard from "../lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
   import NeuronProposalsCard from "../lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "../lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     AppPath,
     SHOW_NEURONS_ROUTE,
@@ -21,6 +20,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { neuronSelectStore, neuronsStore } from "../lib/stores/neurons.store";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   let neuronId: NeuronId | undefined;
   $: neuronSelectStore.select(neuronId);
@@ -84,7 +84,10 @@
         <NeuronHotkeysCard neuron={$neuronSelectStore} />
         <NeuronVotingHistoryCard neuron={$neuronSelectStore} />
       {:else}
-        <Spinner />
+        <SkeletonCard size="large" />
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
       {/if}
     </section>
   </HeadlessLayout>

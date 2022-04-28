@@ -17,7 +17,7 @@
   import { ICP } from "@dfinity/nns";
   import { sumICPs } from "../lib/utils/icp.utils";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
-  import RouteSpinner from "../lib/components/ui/RouteSpinner.svelte";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -79,7 +79,7 @@
           >
         {/each}
       {:else}
-        <RouteSpinner />
+        <SkeletonCard />
       {/if}
     </section>
 
