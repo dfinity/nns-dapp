@@ -48,7 +48,10 @@ wait_for_url "$NETWORK_URL"
 
 : "Creating and deploying canisters..."
 dfx canister create --all || echo Canisters may have been created already. Proceeding...
-REDIRECT_TO_LEGACY=svelte DEPLOY_ENV="$DEPLOY_ENV" IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --network local --argument '(null)'
+II_CANISTER_ID="$(dfx canister --network local id internet_identity)"
+IDENTITY_SERVICE_URL="http://${II_CANISTER_ID}.localhost:8080"
+
+REDIRECT_TO_LEGACY=svelte DEPLOY_ENV="$DEPLOY_ENV" IDENTITY_SERVICE_URL="$IDENTITY_SERVICE_URL" dfx deploy --network local --argument '(null)'
 
 : "Waiting for the canister to return with HTTP code 200..."
 NNS_DAPP_CANISTER_ID="$(dfx canister --network local id nns-dapp)"
