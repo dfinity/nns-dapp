@@ -138,6 +138,15 @@ describe("VotesCard", () => {
           })
         )
       ).toBeInTheDocument();
+
+      expect(
+        getByTitle(
+          replacePlaceholders(en.proposal_detail__vote.vote_status, {
+            $neuronId: yesVoted.neuronId.toString(),
+            $vote: "voted YES",
+          })
+        )
+      ).toBeInTheDocument();
     });
 
     it("should have aria-label attribute", () => {
