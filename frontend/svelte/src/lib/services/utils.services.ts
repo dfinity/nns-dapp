@@ -49,6 +49,7 @@ export const queryAndUpdate = async <R, E>({
       .then((response) => {
         if (certifiedDone) return;
         onLoad({ certified: false, response });
+        log({ postfix: " query complete." });
       })
       .catch((error: E) => {
         // TODO: somehow notify user about probably compromised state
@@ -57,7 +58,10 @@ export const queryAndUpdate = async <R, E>({
       });
   const update = () =>
     request({ certified: true, identity })
-      .then((response) => onLoad({ certified: true, response }))
+      .then((response) => {
+        onLoad({ certified: true, response });
+        log({ postfix: " update complete." });
+      })
       .catch((error) => {
         onError?.({ certified: true, error });
       })
@@ -75,6 +79,4 @@ export const queryAndUpdate = async <R, E>({
   log({ postfix: "..." });
 
   await Promise.race(requests);
-
-  log({ postfix: " complete." });
 };
