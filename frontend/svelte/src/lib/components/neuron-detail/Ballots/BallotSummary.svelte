@@ -17,7 +17,7 @@
         proposalId: ballot.proposalId as ProposalId,
         setProposal: (proposalInfo: ProposalInfo) => (proposal = proposalInfo),
         silentErrorMessages: true,
-        strategy: "query",
+        // TODO: think about strategy: "query"
       })
   );
 </script>

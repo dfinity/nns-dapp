@@ -160,7 +160,7 @@ export const loadProposal = async ({
   callback,
   silentErrorMessages,
   silentUpdateErrorMessages,
-  strategy,
+  strategy = "query_and_update",
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
@@ -168,7 +168,7 @@ export const loadProposal = async ({
   callback?: (certified: boolean) => void;
   silentErrorMessages?: boolean;
   silentUpdateErrorMessages?: boolean;
-  strategy: QueryAndUpdateStrategy;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   const catchError: QueryAndUpdateOnError<Error | unknown> = (
     erroneusResponse

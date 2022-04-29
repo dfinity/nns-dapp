@@ -91,7 +91,6 @@
       setProposal: (proposalInfo: ProposalInfo) =>
         proposalInfoStore.set(proposalInfo),
       handleError: onError,
-      strategy: "query_and_update",
       silentUpdateErrorMessages: true,
     });
   });

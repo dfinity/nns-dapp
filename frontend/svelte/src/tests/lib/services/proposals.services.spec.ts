@@ -96,7 +96,6 @@ describe("proposals-services", () => {
       await loadProposal({
         proposalId: BigInt(666),
         setProposal: (proposal: ProposalInfo) => (result = proposal),
-        strategy: "query_and_update",
       });
       expect(result?.id).toBe(BigInt(666));
       expect(spyQueryProposal).toBeCalledTimes(2);
@@ -118,7 +117,6 @@ describe("proposals-services", () => {
       await loadProposal({
         proposalId: BigInt(0),
         setProposal: jest.fn,
-        strategy: "query",
       });
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
@@ -388,7 +386,6 @@ describe("proposals-services", () => {
         proposalId: mockProposals[0].id as bigint,
         setProposal: jest.fn(),
         handleError: () => done(),
-        strategy: "query_and_update",
       });
     });
 
