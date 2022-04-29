@@ -52,23 +52,12 @@
 <div class="wrapper">
   <ul class="items">
     {#each neurons as { neuron, selected, mergeable, messageKey } (neuron.neuronId)}
-      <!-- We have three possibilities: -->
-      <!-- 1. Neuron is selected -->
-      <!-- 3. Neuron is mergeable -->
-      <!-- 4. Neuron is not mergeable in general or with the selected neuron -->
       <li>
-        {#if selected}
+        {#if mergeable}
           <NeuronCard
             on:click={() => toggleNeuronId(neuron.neuronId)}
             role="checkbox"
-            selected
-            {neuron}
-          />
-        {:else if mergeable}
-          <NeuronCard
-            on:click={() => toggleNeuronId(neuron.neuronId)}
-            role="checkbox"
-            selected={selectedNeuronIds.indexOf(neuron.neuronId) > -1}
+            {selected}
             {neuron}
           />
         {:else}
