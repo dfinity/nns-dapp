@@ -2,11 +2,11 @@
   import Logout from "./Logout.svelte";
   import { i18n } from "../../stores/i18n";
   import GetICPs from "../ic/GetICPs.svelte";
-  import { IS_TESTNET } from "../../constants/environment.constants";
+  import { IS_NOT_MAINNET } from "../../constants/environment.constants";
 </script>
 
 <header>
-  {#if IS_TESTNET}
+  {#if IS_NOT_MAINNET}
     <GetICPs />
   {/if}
 

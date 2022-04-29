@@ -32,7 +32,7 @@ export const acquireICPTs = async ({
 
   // If https://nnsdapp.dfinity.network/ is ever used anywhere else, extract or use an environment variable
   const agent: HttpAgent = new HttpAgent({
-    host: "https://nnsdapp.dfinity.network/",
+    host: "http://rkp4c-7iaaa-aaaaa-aaaca-cai.localhost:8080", // TODO: get this from the environment "https://nnsdapp.dfinity.network/",
     identity,
   });
   await agent.fetchRootKey();
@@ -66,7 +66,7 @@ export const makeDummyProposals = async ({
 };
 
 const assertTestnet = () => {
-  if (process.env.DEPLOY_ENV !== "testnet") {
+  if ((process.env.DEPLOY_ENV !== "testnet") && (process.env.DEPLOY_ENV !== "local")) {
     throw new Error('The environment is not "testnet"');
   }
 };

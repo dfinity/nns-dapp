@@ -46,6 +46,7 @@ wait_for_url() {
 : "Note: The network is expected to complain, with a non-200 response, that we haven't specified the canister ID."
 wait_for_url "$NETWORK_URL"
 
+cat <<EOF
 : "Creating and deploying canisters..."
 : "... the order of these canisters matters"
 dfx canister create --all || echo Canisters may have been created already. Proceeding...
@@ -62,6 +63,7 @@ echo yes | dfx deploy --mode reinstall --argument '(record {
 })' ledger
 
 dfx deploy internet_identity
+EOF
 
 II_CANISTER_ID="$(dfx canister --network local id internet_identity)"
 IDENTITY_SERVICE_URL="http://${II_CANISTER_ID}.localhost:8080"
