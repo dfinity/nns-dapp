@@ -13,23 +13,46 @@
   export let neuronId: NeuronId;
 
   let address: string = "";
-  let showAddressNotValid: boolean = false;
+  let validPrincipal: Principal | undefined;
+  $: {
+    try {
+      validPrincipal = Principal.fromText(address);
+    } catch (_) {
+      validPrincipal = undefined;
+    }
+  }
+  let showError: boolean = false;
   let loading: boolean = false;
+
+  // Used to hide error when address changes.
+  let prevValidatedAddress: string | undefined;
+  const validateHotkey = () => {
+    // Hide error if no value
+    if (address.length === 0) {
+      showError = false;
+      prevValidatedAddress = undefined;
+      return;
+    }
+    try {
+      prevValidatedAddress = address;
+      Principal.fromText(address);
+      showError = false;
+    } catch (_) {
+      showError = true;
+    }
+  };
+  // Hide error when user is changing the value.
+  $: showError =
+    prevValidatedAddress !== undefined && prevValidatedAddress !== address
+      ? false
+      : showError;
 
   const dispatcher = createEventDispatcher();
   const add = async () => {
-    let principal: Principal | undefined = undefined;
-    try {
-      principal = Principal.fromText(address);
-      // TODO: Validate principal on blur https://dfinity.atlassian.net/browse/L2-470
-      showAddressNotValid = false;
-    } catch (error) {
-      showAddressNotValid = true;
-    }
-    if (principal !== undefined) {
+    if (validPrincipal !== undefined) {
       startBusy("add-hotkey-neuron");
       loading = true;
-      const response = await addHotkey({ neuronId, principal });
+      const response = await addHotkey({ neuronId, principal: validPrincipal });
       if (response !== undefined) {
         toastsStore.success({
           labelKey: "neuron_detail.add_hotkey_success",
@@ -39,8 +62,8 @@
       stopBusy("add-hotkey-neuron");
       dispatcher("nnsClose");
     } else {
-      // Edge case, `Principal.fromText` will raise an error instead of returning undefined
-      showAddressNotValid = true;
+      // Edge case, button is not enabled without `validPrincipal`.
+      showError = true;
     }
   };
 </script>
@@ -56,17 +79,16 @@
         name="hotkey-principal"
         bind:value={address}
         theme="dark"
+        errorMessage={showError ? $i18n.error.principal_not_valid : undefined}
+        on:blur={validateHotkey}
       />
-      <!-- TODO: Improve UX https://dfinity.atlassian.net/browse/L2-470 -->
-      {#if showAddressNotValid}
-        <p>{$i18n.error.principal_not_valid}</p>
-      {/if}
     </div>
 
     <button
       data-tid="add-hotkey-neuron-button"
       class="primary full-width"
       type="submit"
+      disabled={validPrincipal === undefined}
     >
       {#if loading}
         <Spinner />
@@ -77,7 +99,6 @@
   </form>
 </Modal>
 
-<!-- TODO: improve error color https://dfinity.atlassian.net/browse/L2-476 -->
 <style lang="scss">
   @use "../../themes/mixins/modal.scss";
 
@@ -93,9 +114,5 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-
-    p {
-      font-size: var(--font-size-ultra-small);
-    }
   }
 </style>
