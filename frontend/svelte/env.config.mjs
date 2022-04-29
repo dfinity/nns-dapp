@@ -53,7 +53,7 @@ const REDIRECT_TO_LEGACY =
 export const envConfig = {
   ENVIRONMENT,
   DEPLOY_ENV: process.env.DEPLOY_ENV || (development ? "testnet" : "mainnet"),
-  FETCH_ROOT_KEY: development,
+  FETCH_ROOT_KEY: process.env.FETCH_ROOT_KEY? process.env.FETCH_ROOT_KEY === "true" : development,
   REDIRECT_TO_LEGACY,
   MAINNET,
   HOST,
