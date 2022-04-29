@@ -47,11 +47,20 @@ wait_for_url() {
 wait_for_url "$NETWORK_URL"
 
 : "Creating and deploying canisters..."
+: "... the order of these canisters matters"
+dfx canister create governance || echo "Governance canister probably already exists"
+dfx canister deploy ledger || echo  "ledger canister probably already exists"
+: "... the code has a hard-wired leder canister ID.  We have to replace the UI canister with the ledger"
+# cat <<< $(jq '.ledger.local="ryjl3-tyaaa-aaaaa-aaaba-cai"' .dfx/local/canister_ids.json) > .dfx/local/canister_ids.json
 dfx canister create --all || echo Canisters may have been created already. Proceeding...
+: "... we actually need specific canister IDs for governance + ledger, sadly.  Seting all canister IDs:"
+cat <<< $(jq '.governance.local = "rrkah-fqaaa-aaaaa-aaaaq-cai" | .ledger.local="ryjl3-tyaaa-aaaaa-aaaba-cai" | .internet_identity.local = "r7inp-6aaaa-aaaaa-aaabq-cai" | .["nns-dapp"].local = "rkp4c-7iaaa-aaaaa-aaaca-cai"' .dfx/local/canister_ids.json) > .dfx/local/canister_ids.json
+
 II_CANISTER_ID="$(dfx canister --network local id internet_identity)"
 IDENTITY_SERVICE_URL="http://${II_CANISTER_ID}.localhost:8080"
+OWN_CANISTER_ID="$(dfx canister --network local id nns-dapp)"
 
-REDIRECT_TO_LEGACY=svelte DEPLOY_ENV="$DEPLOY_ENV" IDENTITY_SERVICE_URL="$IDENTITY_SERVICE_URL" dfx deploy --network local --argument '(null)'
+FETCH_ROOT_KEY=true OWN_CANISTER_ID="$OWN_CANISTER_ID" REDIRECT_TO_LEGACY=svelte DEPLOY_ENV="$DEPLOY_ENV" IDENTITY_SERVICE_URL="$IDENTITY_SERVICE_URL" dfx deploy --network local --argument '(null)'
 
 : "Waiting for the canister to return with HTTP code 200..."
 NNS_DAPP_CANISTER_ID="$(dfx canister --network local id nns-dapp)"

@@ -1,6 +1,18 @@
 {
   "dfx": "0.9.2",
   "canisters": {
+    "governance": {
+      "type": "custom",
+      "candid": "./ic-master/rs/rosetta-api/ledger_canister/ledger.did",
+      "wasm": "./ic-master/rs/rosetta-api/ledger_canister/wasm/ledger_proxy.wasm",
+      "build": "./scripts/get-prebuilt.sh"
+    },
+    "ledger": {
+      "type": "custom",
+      "candid": "./ic-master/rs/rosetta-api/ledger_canister/ledger.did",
+      "wasm": "./ic-master/rs/rosetta-api/ledger_canister/wasm/ledger_proxy.wasm",
+      "build": "./scripts/get-prebuilt.sh"
+    },
     "nns-dapp": {
       "type": "custom",
       "candid": "rs/nns-dapp.did",
