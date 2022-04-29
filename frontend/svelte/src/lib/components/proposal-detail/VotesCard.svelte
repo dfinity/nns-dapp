@@ -34,7 +34,7 @@
 
   let neuronsVotedForProposal: CompactNeuronInfo[];
 
-  const voteMapper = ({neuron, vote}: {neuron: NeuronId, vote: Vote}) => {
+  const voteMapper = ({ neuron, vote }: { neuron: NeuronId; vote: Vote }) => {
     const stringMapper = {
       [Vote.NO]: $i18n.core.no,
       [Vote.YES]: $i18n.core.yes,
@@ -92,8 +92,8 @@
       {#each neuronsVotedForProposal as neuron}
         <li
           data-tid="neuron-data"
-          aria-label={voteMapper({neuron: neuron.id, vote: neuron.vote})}
-          title={voteMapper({neuron: neuron.id, vote: neuron.vote})}
+          aria-label={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
+          title={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
         >
           <p>{neuron.id}</p>
           <p class="vote-details">
