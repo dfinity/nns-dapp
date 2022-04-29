@@ -134,7 +134,7 @@ describe("VotesCard", () => {
         getByTitle(
           replacePlaceholders(en.proposal_detail__vote.vote_status, {
             $neuronId: noVoted.neuronId.toString(),
-            $vote: "voted NO",
+            $vote: en.core.no,
           })
         )
       ).toBeInTheDocument();
@@ -143,7 +143,7 @@ describe("VotesCard", () => {
         getByTitle(
           replacePlaceholders(en.proposal_detail__vote.vote_status, {
             $neuronId: yesVoted.neuronId.toString(),
-            $vote: "voted YES",
+            $vote: en.core.yes,
           })
         )
       ).toBeInTheDocument();

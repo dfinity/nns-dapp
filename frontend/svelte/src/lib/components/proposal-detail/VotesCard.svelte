@@ -36,9 +36,9 @@
 
   const voteMapper = (inputNeuronId: NeuronId, vote: Vote) => {
     const stringMapper = {
-      [Vote.NO]: "voted NO",
-      [Vote.YES]: "voted YES",
-      [Vote.UNSPECIFIED]: "not voted",
+      [Vote.NO]: $i18n.core.no,
+      [Vote.YES]: $i18n.core.yes,
+      [Vote.UNSPECIFIED]: "",
     };
 
     return replacePlaceholders($i18n.proposal_detail__vote.vote_status, {
