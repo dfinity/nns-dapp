@@ -9,9 +9,9 @@
     },
     "ledger": {
       "type": "custom",
-      "candid": "./ic-master/rs/rosetta-api/ledger_canister/ledger.did",
-      "wasm": "./ic-master/rs/rosetta-api/ledger_canister/wasm/ledger_proxy.wasm",
-      "build": "./scripts/get-prebuilt.sh"
+      "candid": "./target/ledger-canister/ledger.private.did",
+      "wasm": "./target/ledger-canister/ledger-canister.wasm",
+      "build": "./e2e-tests/scripts/ledger.sh"
     },
     "nns-dapp": {
       "type": "custom",
