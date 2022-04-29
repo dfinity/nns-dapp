@@ -7,7 +7,10 @@ import {
   SECONDS_IN_YEAR,
 } from "../../../lib/constants/constants";
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
-import { MIN_MATURITY_MERGE } from "../../../lib/constants/neurons.constants";
+import {
+  MAX_NEURONS_MERGED,
+  MIN_MATURITY_MERGE,
+} from "../../../lib/constants/neurons.constants";
 import type { Step } from "../../../lib/stores/steps.state";
 import { InvalidAmountError } from "../../../lib/types/errors";
 import { enumValues } from "../../../lib/utils/enum.utils";
@@ -783,6 +786,7 @@ describe("neuron-utils", () => {
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuron2, neuron3],
+        selectedNeuronIds: [],
       });
       expect(wrappedNeurons[0].mergeable).toBe(true);
       expect(wrappedNeurons[1].mergeable).toBe(true);
@@ -810,9 +814,146 @@ describe("neuron-utils", () => {
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuron2],
         identity: mockIdentity,
+        selectedNeuronIds: [],
       });
       expect(wrappedNeurons[0].mergeable).toBe(false);
       expect(wrappedNeurons[1].mergeable).toBe(false);
+    });
+
+    it("checks current selection ManageNeuron followees to define a neuron as mergeable", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [],
+        },
+      };
+      const neuronFollowingManageNeuron = {
+        ...neuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...neuron.fullNeuron,
+          followees: [{ topic: Topic.ManageNeuron, followees: [BigInt(444)] }],
+        },
+      };
+      const neuron3 = {
+        ...neuron,
+        neuronId: BigInt(445),
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron, neuronFollowingManageNeuron, neuron3],
+        selectedNeuronIds: [neuronFollowingManageNeuron.neuronId],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(false);
+      expect(wrappedNeurons[1].mergeable).toBe(true);
+      expect(wrappedNeurons[2].mergeable).toBe(false);
+    });
+
+    it("checks current selection controller to define a neuron as mergeable", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [],
+        },
+      };
+      const notSameControllerNeuron = {
+        ...neuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...neuron.fullNeuron,
+          controller: "not-same",
+        },
+      };
+      const neuron3 = {
+        ...neuron,
+        neuronId: BigInt(445),
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron, notSameControllerNeuron, neuron3],
+        selectedNeuronIds: [notSameControllerNeuron.neuronId],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(false);
+      expect(wrappedNeurons[1].mergeable).toBe(true);
+      expect(wrappedNeurons[2].mergeable).toBe(false);
+    });
+
+    it("wraps selected neurons with selected property true", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [],
+        },
+      };
+      const neuronFollowingManageNeuron = {
+        ...neuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...neuron.fullNeuron,
+          followees: [{ topic: Topic.ManageNeuron, followees: [BigInt(444)] }],
+        },
+      };
+      const neuron3 = {
+        ...neuron,
+        neuronId: BigInt(445),
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron, neuronFollowingManageNeuron, neuron3],
+        selectedNeuronIds: [neuron.neuronId],
+      });
+      expect(wrappedNeurons[0].selected).toBe(true);
+      expect(wrappedNeurons[1].mergeable).toBe(false);
+      expect(wrappedNeurons[2].selected).toBe(false);
+    });
+
+    it(`does not allow to have more mergeable once ${MAX_NEURONS_MERGED} is reached`, () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [],
+        },
+      };
+      const neuronFollowingManageNeuron = {
+        ...neuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...neuron.fullNeuron,
+          followees: [{ topic: Topic.ManageNeuron, followees: [BigInt(444)] }],
+        },
+      };
+      const neuron3 = {
+        ...neuron,
+        neuronId: BigInt(445),
+      };
+      const neuron4 = {
+        ...neuron,
+        neuronId: BigInt(455),
+      };
+      const neuron5 = {
+        ...neuron,
+        neuronId: BigInt(465),
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [
+          neuron,
+          neuronFollowingManageNeuron,
+          neuron3,
+          neuron4,
+          neuron5,
+        ],
+        selectedNeuronIds: [neuron.neuronId, neuron3.neuronId],
+      });
+      expect(wrappedNeurons[0].selected).toBe(true);
+      expect(wrappedNeurons[1].mergeable).toBe(false);
+      expect(wrappedNeurons[2].selected).toBe(true);
+      expect(wrappedNeurons[3].mergeable).toBe(false);
+      expect(wrappedNeurons[4].mergeable).toBe(false);
     });
   });
 
@@ -925,6 +1066,32 @@ describe("neuron-utils", () => {
         },
       };
       expect(canBeMerged([neuron, neuron2]).isValid).toBe(true);
+    });
+
+    it("return invalid if one neurons have same followees on Manage Neuron and the other none", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(40), BigInt(10)],
+            },
+          ],
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [],
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
     });
   });
 
