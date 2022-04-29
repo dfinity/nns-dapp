@@ -20,7 +20,10 @@
   $: neurons = mapMergeableNeurons({
     neurons: $definedNeuronsStore,
     identity: $authStore.identity,
-    selectedNeuronIds,
+    selectedNeurons: mapNeuronIds({
+      neuronIds: selectedNeuronIds,
+      neurons: $definedNeuronsStore,
+    }),
   });
 
   const dispatcher = createEventDispatcher();
@@ -40,7 +43,7 @@
       );
       return;
     }
-    // We only allow the selection of two neurons.
+    // We only allow the selection of MAX_NEURONS_MERGED neurons.
     if (!isMaxSelection) {
       selectedNeuronIds = [...selectedNeuronIds, neuronId];
     }

@@ -4,6 +4,7 @@ import {
   NeuronState,
   Topic,
   type BallotInfo,
+  type Followees,
   type Neuron,
   type NeuronId,
   type NeuronInfo,
@@ -300,17 +301,19 @@ export type MergeableNeuron = {
 export const mapMergeableNeurons = ({
   neurons,
   identity,
-  selectedNeuronIds,
+  selectedNeurons,
 }: {
   neurons: NeuronInfo[];
   identity?: Identity | null;
-  selectedNeuronIds: NeuronId[];
+  selectedNeurons: NeuronInfo[];
 }): MergeableNeuron[] =>
   neurons
     // First we consider the neuron on itself
     .map((neuron: NeuronInfo) => ({
       neuron,
-      selected: selectedNeuronIds.includes(neuron.neuronId),
+      selected: selectedNeurons
+        .map(({ neuronId }) => neuronId)
+        .includes(neuron.neuronId),
       mergeable: isMergeableNeuron({ neuron, identity }),
       messageKey: getMergeableNeuronMessageKey({ neuron, identity }),
     }))
@@ -321,7 +324,7 @@ export const mapMergeableNeurons = ({
         return { mergeable, selected, messageKey, neuron };
       }
       // Max selection, but not one of the current neurons
-      if (selectedNeuronIds.length >= MAX_NEURONS_MERGED) {
+      if (selectedNeurons.length >= MAX_NEURONS_MERGED) {
         return {
           neuron,
           selected,
@@ -329,21 +332,16 @@ export const mapMergeableNeurons = ({
           messageKey: "neurons.only_merge_two",
         };
       }
-      // Another neuron is selected
-      if (selectedNeuronIds.length === 1) {
-        const selectedNeuron = neurons.find(
-          (neuron) => neuron.neuronId === selectedNeuronIds[0]
-        );
-        // Strictly `find` can return `undefined`. But in this case it's an edge case
-        if (selectedNeuron !== undefined) {
-          const { isValid, messageKey } = canBeMerged([selectedNeuron, neuron]);
-          return {
-            neuron,
-            selected,
-            mergeable: isValid,
-            messageKey,
-          };
-        }
+      // Compare with current selected neuron
+      if (selectedNeurons.length === 1) {
+        const [selectedNeuron] = selectedNeurons;
+        const { isValid, messageKey } = canBeMerged([selectedNeuron, neuron]);
+        return {
+          neuron,
+          selected,
+          mergeable: isValid,
+          messageKey,
+        };
       }
       return { mergeable, selected, messageKey, neuron };
     });
@@ -368,6 +366,7 @@ const sameId = (neurons: NeuronInfo[]): boolean =>
  * For example:
  *  [[2, 4, 5], [1, 2, 3]] returns `false`
  *  [[2, 5, 6], [2, 5, 6]] returns `true`
+ *  [[], []] return `true`
  * @returns boolean
  */
 export const allHaveSameFollowees = (
@@ -384,20 +383,14 @@ const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
     return false;
   }
   const sortedFollowees: NeuronId[][] = fullNeurons
-    .map(({ followees }) =>
-      followees.find(({ topic }) => topic === Topic.ManageNeuron)
+    .map(
+      ({ followees }): Followees =>
+        followees.find(({ topic }) => topic === Topic.ManageNeuron) ?? {
+          topic: Topic.ManageNeuron,
+          followees: [],
+        }
     )
-    .filter(isDefined)
     .map(({ followees }) => followees.sort());
-  // If no neuron has ManageNeuron followees, return true
-  if (sortedFollowees.length === 0) {
-    return true;
-  }
-  // If values of list of followees is different than neurons.
-  // Ex: A neuron does not follow anyone in ManageNeuron.
-  if (sortedFollowees.length !== neurons.length) {
-    return false;
-  }
   return allHaveSameFollowees(sortedFollowees);
 };
 

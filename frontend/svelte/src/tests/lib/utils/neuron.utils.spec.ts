@@ -754,6 +754,10 @@ describe("neuron-utils", () => {
       expect(allHaveSameFollowees([followees, [...followees]])).toBe(true);
     });
 
+    it("returns true if no followees", () => {
+      expect(allHaveSameFollowees([[], [], []])).toBe(true);
+    });
+
     it("returns false if not same followees", () => {
       const followees1 = [BigInt(4), BigInt(6), BigInt(9)];
       const followees2 = [BigInt(1), BigInt(6), BigInt(9)];
@@ -786,7 +790,7 @@ describe("neuron-utils", () => {
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuron2, neuron3],
-        selectedNeuronIds: [],
+        selectedNeurons: [],
       });
       expect(wrappedNeurons[0].mergeable).toBe(true);
       expect(wrappedNeurons[1].mergeable).toBe(true);
@@ -814,7 +818,7 @@ describe("neuron-utils", () => {
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuron2],
         identity: mockIdentity,
-        selectedNeuronIds: [],
+        selectedNeurons: [],
       });
       expect(wrappedNeurons[0].mergeable).toBe(false);
       expect(wrappedNeurons[1].mergeable).toBe(false);
@@ -843,7 +847,7 @@ describe("neuron-utils", () => {
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuronFollowingManageNeuron, neuron3],
-        selectedNeuronIds: [neuronFollowingManageNeuron.neuronId],
+        selectedNeurons: [neuronFollowingManageNeuron],
       });
       expect(wrappedNeurons[0].mergeable).toBe(false);
       expect(wrappedNeurons[1].mergeable).toBe(true);
@@ -873,7 +877,7 @@ describe("neuron-utils", () => {
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, notSameControllerNeuron, neuron3],
-        selectedNeuronIds: [notSameControllerNeuron.neuronId],
+        selectedNeurons: [notSameControllerNeuron],
       });
       expect(wrappedNeurons[0].mergeable).toBe(false);
       expect(wrappedNeurons[1].mergeable).toBe(true);
@@ -903,7 +907,7 @@ describe("neuron-utils", () => {
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuronFollowingManageNeuron, neuron3],
-        selectedNeuronIds: [neuron.neuronId],
+        selectedNeurons: [neuron],
       });
       expect(wrappedNeurons[0].selected).toBe(true);
       expect(wrappedNeurons[1].mergeable).toBe(false);
@@ -947,7 +951,7 @@ describe("neuron-utils", () => {
           neuron4,
           neuron5,
         ],
-        selectedNeuronIds: [neuron.neuronId, neuron3.neuronId],
+        selectedNeurons: [neuron, neuron3],
       });
       expect(wrappedNeurons[0].selected).toBe(true);
       expect(wrappedNeurons[1].mergeable).toBe(false);
