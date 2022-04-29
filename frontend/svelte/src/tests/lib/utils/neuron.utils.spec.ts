@@ -1093,6 +1093,37 @@ describe("neuron-utils", () => {
       };
       expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
     });
+
+    it("return invalid if neurons have different followees on Manage Neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(40), BigInt(10)],
+            },
+          ],
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(40), BigInt(200)],
+            },
+          ],
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
   });
 
   describe("followeesByTopic", () => {
