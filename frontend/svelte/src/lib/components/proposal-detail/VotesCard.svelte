@@ -34,7 +34,7 @@
 
   let neuronsVotedForProposal: CompactNeuronInfo[];
 
-  const voteMapper = (inputNeuronId: NeuronId, vote: Vote) => {
+  const voteMapper = ({neuron, vote}: {neuron: NeuronId, vote: Vote}) => {
     const stringMapper = {
       [Vote.NO]: $i18n.core.no,
       [Vote.YES]: $i18n.core.yes,
@@ -42,7 +42,7 @@
     };
 
     return replacePlaceholders($i18n.proposal_detail__vote.vote_status, {
-      $neuronId: inputNeuronId.toString(),
+      $neuronId: neuron.toString(),
       $vote: stringMapper[vote],
     });
   };
@@ -92,8 +92,8 @@
       {#each neuronsVotedForProposal as neuron}
         <li
           data-tid="neuron-data"
-          aria-label={voteMapper(neuron.id, neuron.vote)}
-          title={voteMapper(neuron.id, neuron.vote)}
+          aria-label={voteMapper({neuron: neuron.id, vote: neuron.vote})}
+          title={voteMapper({neuron: neuron.id, vote: neuron.vote})}
         >
           <p>{neuron.id}</p>
           <p class="vote-details">
