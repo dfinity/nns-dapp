@@ -32,7 +32,9 @@ const initToastsStore = () => {
     error({ labelKey, err }: { labelKey: string; err?: unknown }) {
       this.show({ labelKey, level: "error", detail: errorToString(err) });
 
-      console.error(err);
+      if (err !== undefined) {
+        console.error(err);
+      }
     },
 
     hide() {
