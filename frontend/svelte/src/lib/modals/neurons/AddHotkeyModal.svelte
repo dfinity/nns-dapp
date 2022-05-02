@@ -3,24 +3,19 @@
   import { Principal } from "@dfinity/principal";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import Input from "../../components/ui/Input.svelte";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { addHotkey } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import Spinner from "../../components/ui/Spinner.svelte";
   import { createEventDispatcher } from "svelte";
+  import { getPrincipalFromString } from "../../utils/accounts.utils";
+  import InputWithError from "../../components/ui/InputWithError.svelte";
 
   export let neuronId: NeuronId;
 
   let address: string = "";
   let validPrincipal: Principal | undefined;
-  $: {
-    try {
-      validPrincipal = Principal.fromText(address);
-    } catch (_) {
-      validPrincipal = undefined;
-    }
-  }
+  $: validPrincipal = getPrincipalFromString(address);
   let showError: boolean = false;
   let loading: boolean = false;
 
@@ -41,7 +36,7 @@
       showError = true;
     }
   };
-  // Hide error when user is changing the value.
+  // Update `showError` to ensure we hide the error on input change
   $: showError =
     prevValidatedAddress !== undefined && prevValidatedAddress !== address
       ? false
@@ -73,7 +68,7 @@
   <form on:submit|preventDefault={add} data-tid="add-hotkey-neuron-modal">
     <div class="input-wrapper">
       <h5>{$i18n.neuron_detail.enter_hotkey}</h5>
-      <Input
+      <InputWithError
         inputType="text"
         placeholderLabelKey="neuron_detail.add_hotkey_placeholder"
         name="hotkey-principal"

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import IconInfo from "../../icons/IconInfo.svelte";
   import { translate } from "../../utils/i18n.utils";
   export let name: string;
   export let inputType: "number" | "text" = "number";
@@ -9,7 +8,6 @@
   export let disabled: boolean = false;
   export let minLength: number | undefined = undefined;
   export let max: number | undefined = undefined;
-  export let errorMessage: string | undefined = undefined;
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
   export let autocomplete: "off" | "on" | undefined = undefined;
 
@@ -18,6 +16,8 @@
   export let placeholderLabelKey: string;
 
   export let theme: "dark" | "light" = "light";
+
+  export let error: boolean = false;
 
   const handleInput = ({ currentTarget }: InputEventHandler) =>
     (value =
@@ -30,12 +30,9 @@
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
-<div
-  class={`input-block ${theme}`}
-  class:disabled
-  class:error={errorMessage !== undefined}
->
+<div class={`input-block ${theme}`} class:disabled class:error>
   <input
+    data-tid="input-ui-element"
     type={inputType}
     {required}
     {spellcheck}
@@ -58,15 +55,6 @@
   <slot name="button" />
 </div>
 
-{#if errorMessage !== undefined}
-  <p class={`error-message ${theme}`}>
-    <IconInfo />
-    <span>
-      {errorMessage}
-    </span>
-  </p>
-{/if}
-
 <style lang="scss">
   @use "../../themes/mixins/media.scss";
 
@@ -80,11 +68,8 @@
 
     width: var(--input-width);
 
-    &.error {
-      margin-bottom: var(--padding);
-      input {
-        border: 1px solid var(--error-color) !important;
-      }
+    &.error input {
+      border: 1px solid var(--error-color) !important;
     }
 
     :global(button) {
@@ -166,35 +151,6 @@
 
     /** Space to display fully the caret if field is focused and empty */
     margin-left: 4px;
-  }
-
-  .error-message {
-    font-size: var(--font-size-ultra-smal);
-
-    margin: 0 0 var(--padding) 0;
-    padding: 0 var(--padding);
-    // To have the same spacing as the input
-    border: 1px solid transparent;
-
-    display: flex;
-    align-items: center;
-    gap: var(--padding-0_5x);
-
-    color: var(--error-color);
-
-    span {
-      color: var(--gray-600);
-    }
-
-    @include media.min-width(medium) {
-      padding: 0 var(--padding-2x);
-    }
-
-    &.dark {
-      span {
-        color: var(--gray-400);
-      }
-    }
   }
 
   .input-block input:not(:placeholder-shown) + span.placeholder {

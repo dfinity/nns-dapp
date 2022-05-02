@@ -262,15 +262,6 @@ describe("Input", () => {
     testHasAttribute({ container, attribute: "disabled", expected: true });
   });
 
-  it("should render an error message", () => {
-    const errorMessage = "test error";
-    const { getByText } = render(Input, {
-      props: { ...props, errorMessage },
-    });
-
-    expect(getByText(errorMessage)).toBeInTheDocument();
-  });
-
   it("should bind value", async () => {
     const { container } = render(InputValueTest, {
       props: {
