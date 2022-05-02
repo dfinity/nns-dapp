@@ -87,7 +87,7 @@
         {#if isControllable}
           <IncreaseDissolveDelayButton {neuron} />
           {#if neuron.state === NeuronState.DISSOLVED}
-            <DisburseButton />
+            <DisburseButton {neuron} />
           {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
             <DissolveActionButton
               neuronState={neuron.state}
@@ -99,7 +99,7 @@
     </div>
     <div class="only-buttons">
       {#if isControllable || hotkeyControlled}
-        <IncreaseStakeButton />
+        <IncreaseStakeButton {neuron} />
       {/if}
       {#if isControllable}
         <SplitNeuronButton {neuron} />

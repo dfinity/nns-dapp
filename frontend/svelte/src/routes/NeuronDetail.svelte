@@ -2,14 +2,16 @@
   import type { NeuronId } from "@dfinity/nns";
   import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
-  import { getNeuronId, loadNeuron } from "../lib/services/neurons.services";
+  import {
+    routePathNeuronId,
+    loadNeuron,
+  } from "../lib/services/neurons.services";
   import NeuronFollowingCard from "../lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NeuronHotkeysCard from "../lib/components/neuron-detail/NeuronHotkeysCard.svelte";
   import NeuronMaturityCard from "../lib/components/neuron-detail/NeuronMaturityCard.svelte";
   import NeuronMetaInfoCard from "../lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
   import NeuronProposalsCard from "../lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "../lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     AppPath,
     SHOW_NEURONS_ROUTE,
@@ -18,6 +20,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { neuronSelectStore, neuronsStore } from "../lib/stores/neurons.store";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   let neuronId: NeuronId | undefined;
   $: neuronSelectStore.select(neuronId);
@@ -31,7 +34,7 @@
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    const neuronIdMaybe = getNeuronId(path);
+    const neuronIdMaybe = routePathNeuronId(path);
     if (neuronIdMaybe === undefined) {
       unsubscribe();
       routeStore.replace({ path: AppPath.Neurons });
@@ -81,7 +84,10 @@
         <NeuronHotkeysCard neuron={$neuronSelectStore} />
         <NeuronVotingHistoryCard neuron={$neuronSelectStore} />
       {:else}
-        <Spinner />
+        <SkeletonCard size="large" />
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
       {/if}
     </section>
   </HeadlessLayout>

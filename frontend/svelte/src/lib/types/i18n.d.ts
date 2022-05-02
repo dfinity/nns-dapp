@@ -17,6 +17,7 @@ interface I18nCore {
   continue: string;
   amount: string;
   max: string;
+  principal: string;
 }
 
 interface I18nError {
@@ -58,6 +59,14 @@ interface I18nError {
   invalid_sender: string;
   insufficient_funds: string;
   transfer_error: string;
+  governance_error: string;
+  merge_neurons_same_id: string;
+  merge_neurons_not_same_controller: string;
+  merge_neurons_not_same_manage_neuron_followees: string;
+  not_mergeable: string;
+  invalid_account_id: string;
+  invalid_percentage: string;
+  principal_not_valid: string;
 }
 
 interface I18nWarning {
@@ -94,7 +103,10 @@ interface I18nAccounts {
   new_linked_subtitle: string;
   attach_hardware_title: string;
   attach_hardware_subtitle: string;
-  new_linked_account_title: string;
+  attach_hardware_name_placeholder: string;
+  attach_hardware_enter_name: string;
+  connect_hardware_wallet: string;
+  new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
   linked_account: string;
   select_source: string;
@@ -155,6 +167,10 @@ interface I18nNeurons {
   dissolve_delay_success: string;
   merge_neurons_article_title: string;
   split_neuron_success: string;
+  cannot_merge_neuron_community: string;
+  cannot_merge_neuron_hotkey: string;
+  only_merge_two: string;
+  irreversible_action: string;
 }
 
 interface I18nNew_followee {
@@ -166,6 +182,8 @@ interface I18nNew_followee {
   unfollow: string;
   success_add_followee: string;
   success_remove_followee: string;
+  same_neuron: string;
+  already_followed: string;
 }
 
 interface I18nFollow_neurons {
@@ -285,7 +303,6 @@ interface I18nProposal_detail__ineligible {
 
 interface I18nNeuron_detail {
   title: string;
-  proposer: string;
   voting_history: string;
   vote: string;
   join_community_fund: string;
@@ -312,8 +329,28 @@ interface I18nNeuron_detail {
   follow_neurons: string;
   no_ballots: string;
   split_neuron_confirm: string;
+  merge_neurons_success: string;
+  disburse_neuron_title: string;
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
+  merge_maturity_disabled_tooltip: string;
+  hotkeys_title: string;
+  add_hotkey: string;
+  no_notkeys: string;
+  add_hotkey_modal_title: string;
+  enter_hotkey: string;
+  add_hotkey_success: string;
+  remove_hotkey_success: string;
+  invalid_hotkey: string;
+  disburse_success: string;
+  merge_maturity_modal_title: string;
+  merge_maturity_modal_description: string;
+  merge_maturity_success: string;
+  current_stake: string;
+  current_maturity: string;
+  dissolve_delay_range: string;
+  merge_maturity_range: string;
+  add_hotkey_placeholder: string;
 }
 
 interface I18nTime {

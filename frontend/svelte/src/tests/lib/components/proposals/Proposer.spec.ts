@@ -35,8 +35,8 @@ describe("Proposer", () => {
       props,
     });
 
-    expect(container.querySelector("button small")?.textContent).toEqual(
-      `${en.neuron_detail.proposer}: ${mockProposalInfo.proposer}`
+    expect(container.querySelector("button")?.textContent).toEqual(
+      `${en.proposal_detail.proposer_prefix} ${mockProposalInfo.proposer}`
     );
   });
 

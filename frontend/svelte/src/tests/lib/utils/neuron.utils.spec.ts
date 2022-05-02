@@ -7,17 +7,26 @@ import {
   SECONDS_IN_YEAR,
 } from "../../../lib/constants/constants";
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import {
+  MAX_NEURONS_MERGED,
+  MIN_MATURITY_MERGE,
+} from "../../../lib/constants/neurons.constants";
 import type { Step } from "../../../lib/stores/steps.state";
 import { InvalidAmountError } from "../../../lib/types/errors";
+import { enumValues } from "../../../lib/utils/enum.utils";
 import {
   ageMultiplier,
+  allHaveSameFollowees,
   ballotsWithDefinedProposal,
+  canBeMerged,
   checkInvalidState,
   convertNumberToICP,
   dissolveDelayMultiplier,
+  followeesByTopic,
   followeesNeurons,
   formatVotingPower,
   getDissolvingTimeInSeconds,
+  hasEnoughMaturityToMerge,
   hasJoinedCommunityFund,
   hasValidStake,
   isEnoughToStakeNeuron,
@@ -25,11 +34,13 @@ import {
   isIdentityController,
   isNeuronControllable,
   isValidInputAmount,
+  mapMergeableNeurons,
   mapNeuronIds,
   maturityByStake,
   neuronCanBeSplit,
   neuronStake,
   sortNeuronsByCreatedTimestamp,
+  topicsToFollow,
   votingPower,
   type InvalidState,
 } from "../../../lib/utils/neuron.utils";
@@ -281,6 +292,49 @@ describe("neuron-utils", () => {
         },
       };
       expect(maturityByStake(neuron)).toBe(0.333333);
+    });
+  });
+
+  describe("hasEnoughMaturityToMerge", () => {
+    it("returns false when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
+    });
+
+    it("returns false if neuron maturity is 0", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
+    });
+
+    it("returns true if maturity larger than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_MATURITY_MERGE) + BigInt(1000),
+        },
+      };
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(true);
+    });
+
+    it("returns false if maturity smaller than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_MATURITY_MERGE) - BigInt(100),
+        },
+      };
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
     });
   });
 
@@ -691,6 +745,492 @@ describe("neuron-utils", () => {
       expect(isIdentityController({ neuron: mockNeuron, identity: null })).toBe(
         false
       );
+    });
+  });
+
+  describe("allHaveSameFollowees", () => {
+    it("returns true if same followees", () => {
+      const followees = [BigInt(4), BigInt(6), BigInt(9)];
+      expect(allHaveSameFollowees([followees, [...followees]])).toBe(true);
+    });
+
+    it("returns true if no followees", () => {
+      expect(allHaveSameFollowees([[], [], []])).toBe(true);
+    });
+
+    it("returns false if not same followees", () => {
+      const followees1 = [BigInt(4), BigInt(6), BigInt(9)];
+      const followees2 = [BigInt(1), BigInt(6), BigInt(9)];
+      expect(allHaveSameFollowees([followees1, followees2])).toBe(false);
+    });
+
+    it("returns false if not the same amount", () => {
+      const followees = [BigInt(4), BigInt(6), BigInt(9)];
+      expect(allHaveSameFollowees([followees, followees.slice(1)])).toBe(false);
+    });
+  });
+
+  describe("mapMergeableNeurons", () => {
+    it("wraps mergeable neurons with true if mergeable", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [],
+        },
+      };
+      const neuron2 = {
+        ...neuron,
+        neuronId: BigInt(444),
+      };
+      const neuron3 = {
+        ...neuron,
+        neuronId: BigInt(445),
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron, neuron2, neuron3],
+        selectedNeurons: [],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(true);
+      expect(wrappedNeurons[1].mergeable).toBe(true);
+      expect(wrappedNeurons[2].mergeable).toBe(true);
+    });
+
+    it("wraps mergeable neurons with false if controlled by hotkey or joined community fund", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        joinedCommunityFundTimestampSeconds: BigInt(1234),
+        fullNeuron: {
+          ...mockFullNeuron,
+          hotKeys: [],
+        },
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron, neuron2],
+        identity: mockIdentity,
+        selectedNeurons: [],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(false);
+      expect(wrappedNeurons[1].mergeable).toBe(false);
+    });
+
+    it("checks current selection ManageNeuron followees to define a neuron as mergeable", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [],
+        },
+      };
+      const neuronFollowingManageNeuron = {
+        ...neuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...neuron.fullNeuron,
+          followees: [{ topic: Topic.ManageNeuron, followees: [BigInt(444)] }],
+        },
+      };
+      const neuron3 = {
+        ...neuron,
+        neuronId: BigInt(445),
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron, neuronFollowingManageNeuron, neuron3],
+        selectedNeurons: [neuronFollowingManageNeuron],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(false);
+      expect(wrappedNeurons[1].mergeable).toBe(true);
+      expect(wrappedNeurons[2].mergeable).toBe(false);
+    });
+
+    it("checks current selection controller to define a neuron as mergeable", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [],
+        },
+      };
+      const notSameControllerNeuron = {
+        ...neuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...neuron.fullNeuron,
+          controller: "not-same",
+        },
+      };
+      const neuron3 = {
+        ...neuron,
+        neuronId: BigInt(445),
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron, notSameControllerNeuron, neuron3],
+        selectedNeurons: [notSameControllerNeuron],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(false);
+      expect(wrappedNeurons[1].mergeable).toBe(true);
+      expect(wrappedNeurons[2].mergeable).toBe(false);
+    });
+
+    it("wraps selected neurons with selected property true", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [],
+        },
+      };
+      const neuronFollowingManageNeuron = {
+        ...neuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...neuron.fullNeuron,
+          followees: [{ topic: Topic.ManageNeuron, followees: [BigInt(444)] }],
+        },
+      };
+      const neuron3 = {
+        ...neuron,
+        neuronId: BigInt(445),
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron, neuronFollowingManageNeuron, neuron3],
+        selectedNeurons: [neuron],
+      });
+      expect(wrappedNeurons[0].selected).toBe(true);
+      expect(wrappedNeurons[1].mergeable).toBe(false);
+      expect(wrappedNeurons[2].selected).toBe(false);
+    });
+
+    it(`does not allow to have more mergeable once ${MAX_NEURONS_MERGED} is reached`, () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          hotKeys: [],
+        },
+      };
+      const neuronFollowingManageNeuron = {
+        ...neuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...neuron.fullNeuron,
+          followees: [{ topic: Topic.ManageNeuron, followees: [BigInt(444)] }],
+        },
+      };
+      const neuron3 = {
+        ...neuron,
+        neuronId: BigInt(445),
+      };
+      const neuron4 = {
+        ...neuron,
+        neuronId: BigInt(455),
+      };
+      const neuron5 = {
+        ...neuron,
+        neuronId: BigInt(465),
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [
+          neuron,
+          neuronFollowingManageNeuron,
+          neuron3,
+          neuron4,
+          neuron5,
+        ],
+        selectedNeurons: [neuron, neuron3],
+      });
+      expect(wrappedNeurons[0].selected).toBe(true);
+      expect(wrappedNeurons[1].mergeable).toBe(false);
+      expect(wrappedNeurons[2].selected).toBe(true);
+      expect(wrappedNeurons[3].mergeable).toBe(false);
+      expect(wrappedNeurons[4].mergeable).toBe(false);
+    });
+  });
+
+  describe("canBeMerged", () => {
+    it("return valid if two neurons can be merged", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "same",
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "same",
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(true);
+    });
+
+    it("return invalid if two neurons have same id", () => {
+      const neuron = {
+        ...mockNeuron,
+      };
+      const neuron2 = {
+        ...mockNeuron,
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
+
+    it("return invalid if two neurons do not have same controller", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller-1",
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller-2",
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
+
+    it("return invalid if two neurons do not have same followees on Manage Neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(10), BigInt(40)],
+            },
+          ],
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(10)],
+            },
+          ],
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
+
+    it("return valid if two neurons have same followees on Manage Neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(40), BigInt(10)],
+            },
+          ],
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(10), BigInt(40)],
+            },
+          ],
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(true);
+    });
+
+    it("return invalid if one neurons have same followees on Manage Neuron and the other none", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(40), BigInt(10)],
+            },
+          ],
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [],
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
+
+    it("return invalid if neurons have different followees on Manage Neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(40), BigInt(10)],
+            },
+          ],
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "controller",
+          followees: [
+            {
+              topic: Topic.ManageNeuron,
+              followees: [BigInt(40), BigInt(200)],
+            },
+          ],
+        },
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
+  });
+
+  describe("followeesByTopic", () => {
+    const followees = [
+      {
+        topic: Topic.ExchangeRate,
+        followees: [BigInt(0), BigInt(1)],
+      },
+      {
+        topic: Topic.Kyc,
+        followees: [BigInt(1)],
+      },
+      {
+        topic: Topic.Governance,
+        followees: [BigInt(0), BigInt(1), BigInt(2)],
+      },
+    ];
+    const neuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        followees,
+      },
+    };
+
+    it("should return followees by topic", () => {
+      expect(followeesByTopic({ neuron, topic: followees[0].topic })).toEqual(
+        followees[0].followees
+      );
+      expect(followeesByTopic({ neuron, topic: followees[1].topic })).toEqual(
+        followees[1].followees
+      );
+      expect(followeesByTopic({ neuron, topic: followees[2].topic })).toEqual(
+        followees[2].followees
+      );
+    });
+
+    it("should return undefined if topic not found", () => {
+      expect(
+        followeesByTopic({ neuron, topic: Topic.ManageNeuron })
+      ).toBeUndefined();
+    });
+
+    it("should return undefined if no neuron", () => {
+      expect(
+        followeesByTopic({ neuron: undefined, topic: Topic.ManageNeuron })
+      ).toBeUndefined();
+    });
+
+    it("should return undefined if no fullNeuron", () => {
+      expect(
+        followeesByTopic({
+          neuron: { ...mockNeuron, fullNeuron: undefined },
+          topic: Topic.ManageNeuron,
+        })
+      ).toBeUndefined();
+    });
+  });
+
+  describe("topicsToFollow", () => {
+    const neuronWithoutManageNeuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        followees: [
+          {
+            topic: Topic.ExchangeRate,
+            followees: [BigInt(0), BigInt(1)],
+          },
+        ],
+      },
+    };
+    const neuronWithoutFollowees = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        followees: [],
+      },
+    };
+    const neuronWithManageNeuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        followees: [
+          {
+            topic: Topic.ManageNeuron,
+            followees: [BigInt(0), BigInt(1)],
+          },
+        ],
+      },
+    };
+
+    it("should return topics without ManageNeuron", () => {
+      expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
+        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+      );
+      expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
+        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+      );
+    });
+
+    it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(enumValues(Topic));
     });
   });
 });

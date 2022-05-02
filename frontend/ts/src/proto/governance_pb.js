@@ -2118,7 +2118,9 @@ proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.toObject = function(o
  */
 proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.toObject = function(includeInstance, msg) {
   var f, obj = {
-    newController: (f = msg.getNewController()) && base_types_pb.PrincipalId.toObject(includeInstance, f)
+    newController: (f = msg.getNewController()) && base_types_pb.PrincipalId.toObject(includeInstance, f),
+    nonce: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    percentageToSpawn: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -2160,6 +2162,14 @@ proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.deserializeBinaryFromReader = f
       reader.readMessage(value,base_types_pb.PrincipalId.deserializeBinaryFromReader);
       msg.setNewController(value);
       break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setNonce(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setPercentageToSpawn(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2195,6 +2205,20 @@ proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.serializeBinaryToWriter = funct
       1,
       f,
       base_types_pb.PrincipalId.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeUint32(
+      3,
+      f
     );
   }
 };
@@ -2234,6 +2258,78 @@ proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.clearNewController = 
  */
 proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.hasNewController = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional uint64 nonce = 2;
+ * @return {number}
+ */
+proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.getNonce = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn} returns this
+ */
+proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.setNonce = function(value) {
+  return jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn} returns this
+ */
+proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.clearNonce = function() {
+  return jspb.Message.setField(this, 2, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.hasNonce = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional uint32 percentage_to_spawn = 3;
+ * @return {number}
+ */
+proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.getPercentageToSpawn = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn} returns this
+ */
+proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.setPercentageToSpawn = function(value) {
+  return jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn} returns this
+ */
+proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.clearPercentageToSpawn = function() {
+  return jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ic_nns_governance.pb.v1.ManageNeuron.Spawn.prototype.hasPercentageToSpawn = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 

@@ -37,7 +37,7 @@
   </div>
   <div class="actions">
     {#if isControllable}
-      <MergeMaturityButton />
+      <MergeMaturityButton {neuron} />
       <SpawnNeuronButton />
     {/if}
   </div>

@@ -7,6 +7,7 @@
   import { i18n } from "../../stores/i18n";
   import { knownNeuronsStore } from "../../stores/knownNeurons.store";
   import { toastsStore } from "../../stores/toasts.store";
+  import { followeesByTopic } from "../../utils/neuron.utils";
   import Collapsible from "../ui/Collapsible.svelte";
 
   export let topic: Topic;
@@ -26,9 +27,7 @@
   };
   let followees: FolloweeData[] = [];
   $: {
-    const followesPerTopic = neuron.fullNeuron?.followees.find(
-      ({ topic: currentTopic }) => topic === currentTopic
-    );
+    const followesPerTopic = followeesByTopic({ neuron, topic });
     const mapToKnownNeuron = (neuronId: NeuronId): FolloweeData => {
       const knownNeuron = $knownNeuronsStore.find(
         (currentNeuron) => currentNeuron.id === neuronId
@@ -40,13 +39,9 @@
           }
         : { neuronId };
     };
-    if (followesPerTopic !== undefined) {
-      followees = followesPerTopic.followees.map(mapToKnownNeuron);
-    } else {
-      // If we remove the last followee of that topic, followesPerTopic is undefined.
-      // and we need to reset the followees array
-      followees = [];
-    }
+    // If we remove the last followee of that topic, followesPerTopic is undefined.
+    // and we need to reset the followees array
+    followees = followesPerTopic?.map(mapToKnownNeuron) ?? [];
   }
 
   const openNewFolloweeModal = () => (showNewFolloweeModal = true);
@@ -59,9 +54,8 @@
       topic,
       followee,
     });
-    toastsStore.show({
+    toastsStore.success({
       labelKey: "new_followee.success_remove_followee",
-      level: "info",
     });
     stopBusy("remove-followee");
   };

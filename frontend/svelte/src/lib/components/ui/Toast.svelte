@@ -7,6 +7,7 @@
   import { translate } from "../../utils/i18n.utils";
   import { i18n } from "../../stores/i18n";
   import type { ToastLevel, ToastMsg } from "../../types/toast";
+  import { onDestroy, onMount } from "svelte";
 
   export let msg: ToastMsg;
 
@@ -21,6 +22,29 @@
   $: text = `${translate({ labelKey })}${
     detail !== undefined ? ` ${detail}` : ""
   }`;
+
+  let timeoutId: NodeJS.Timeout | undefined = undefined;
+
+  const autoHide = () => {
+    const { duration } = msg;
+
+    if (duration === undefined) {
+      return;
+    }
+
+    timeoutId = setTimeout(close, duration);
+  };
+
+  const cleanUpAutoHide = () => {
+    if (timeoutId === undefined) {
+      return;
+    }
+
+    clearTimeout(timeoutId);
+  };
+
+  onMount(autoHide);
+  onDestroy(cleanUpAutoHide);
 </script>
 
 <div
@@ -62,8 +86,8 @@
     transform: translate(-50%, 0);
 
     border-radius: var(--border-radius);
-    background: var(--black);
-    color: var(--black-contrast);
+    background: var(--green-500);
+    color: var(--green-500-contrast);
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
 
     width: calc(100% - var(--padding-8x));

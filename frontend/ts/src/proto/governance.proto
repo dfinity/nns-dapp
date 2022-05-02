@@ -29,7 +29,7 @@ message ManageNeuron {
   }
 
   message StartDissolving {}
-  message StopDissolving {} 
+  message StopDissolving {}
 
   message AddHotKey {
     ic_base_types.pb.v1.PrincipalId new_hot_key = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
@@ -55,6 +55,8 @@ message ManageNeuron {
 
   message Spawn {
     ic_base_types.pb.v1.PrincipalId new_controller = 1 [(ic_base_types.pb.v1.tui_signed_display_q2_2021) = true];
+    optional uint64 nonce = 2;
+    optional uint32 percentage_to_spawn = 3;
   }
 
   message Disburse {

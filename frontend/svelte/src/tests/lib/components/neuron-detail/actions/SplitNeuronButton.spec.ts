@@ -7,7 +7,7 @@ import SplitNeuronButton from "../../../../../lib/components/neuron-detail/actio
 import en from "../../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../../mocks/neurons.mock";
 
-describe("DissolveActionButton", () => {
+describe("SplitNeuronButton", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });

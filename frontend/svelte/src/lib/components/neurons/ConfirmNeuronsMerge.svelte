@@ -2,6 +2,8 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
+  import { mergeNeurons } from "../../services/neurons.services";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -13,7 +15,7 @@
 
   const dispatcher = createEventDispatcher();
   $: {
-    // Only two neurons can be merged
+    // Only MAX_NEURONS_MERGED neurons can be merged
     if (neurons.length !== MAX_NEURONS_MERGED) {
       toastsStore.error({
         labelKey: "error.unexpected_number_neurons_merge",
@@ -24,9 +26,23 @@
 
   let loading: boolean = false;
 
-  const mergeNeurons = () => {
-    // TODO: Implement Functionality in next PR
-    console.log("Merging");
+  const merge = async () => {
+    loading = true;
+    startBusy("merge-neurons");
+    // We know that neurons has 2 neurons.
+    // We have a check above that closes the modal if not.
+    const id = await mergeNeurons({
+      targetNeuronId: neurons[0].neuronId,
+      sourceNeuronId: neurons[1].neuronId,
+    });
+    if (id !== undefined) {
+      toastsStore.success({
+        labelKey: "neuron_detail.merge_neurons_success",
+      });
+    }
+    loading = false;
+    dispatcher("nnsClose");
+    stopBusy("merge-neurons");
   };
 
   const sectionTitleMapper = [
@@ -59,7 +75,7 @@
     <button
       class="primary full-width"
       data-tid="confirm-merge-neurons-button"
-      on:click={mergeNeurons}
+      on:click={merge}
     >
       {#if loading}
         <Spinner />
@@ -69,7 +85,7 @@
     </button>
   </div>
   <div class="disclaimer">
-    <p>This action is irreversible.</p>
+    <p>{$i18n.neurons.irreversible_action}</p>
   </div>
 </div>
 

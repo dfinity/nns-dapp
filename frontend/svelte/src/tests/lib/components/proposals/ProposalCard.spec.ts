@@ -3,7 +3,7 @@
  */
 
 import type { Ballot, Proposal, ProposalInfo } from "@dfinity/nns";
-import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
+import { GovernanceCanister, ProposalStatus, Topic, Vote } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
@@ -72,6 +72,18 @@ describe("ProposalCard", () => {
 
     expect(
       getByText(`${mockProposals[0].id}`, { exact: false })
+    ).toBeInTheDocument();
+  });
+
+  it("should render a proposal topic", () => {
+    const { getByText } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[0],
+      },
+    });
+
+    expect(
+      getByText(`${en.topics[Topic[mockProposals[0].topic]]}`, { exact: false })
     ).toBeInTheDocument();
   });
 

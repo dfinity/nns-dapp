@@ -2,6 +2,8 @@
   export let role: "link" | "button" | "checkbox" | undefined = undefined;
   export let ariaLabel: string | undefined = undefined;
   export let selected: boolean = false;
+  export let disabled: boolean | undefined = undefined;
+  export let testId: string = "card";
 
   let clickable: boolean = false;
 
@@ -16,11 +18,13 @@
 </script>
 
 <article
-  data-tid="card"
+  data-tid={testId}
   {role}
   on:click
   class:clickable
   class:selected
+  class:disabled
+  aria-disabled={disabled}
   aria-checked={ariaChecked}
   aria-label={ariaLabel}
 >
@@ -55,10 +59,18 @@
     &.selected {
       border: 2px solid var(--blue-500);
     }
+
+    &.disabled {
+      background: var(--background-hover);
+    }
   }
 
   .clickable {
     @include interaction.tappable;
+
+    &.disabled {
+      @include interaction.disabled;
+    }
 
     &:focus,
     &:hover {
