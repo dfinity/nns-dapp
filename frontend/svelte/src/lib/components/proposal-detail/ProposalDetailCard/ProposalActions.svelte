@@ -27,7 +27,7 @@
         {#if typeof value === "object"}
           <p class="json">
             <JSONTree
-              defaultExpandedLevel={0}
+              defaultExpandedLevel={1}
               value={JSON.parse(stringifyJson(value))}
             />
           </p>
@@ -43,12 +43,19 @@
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
+  @use "../../../themes/mixins/text";
 
+  :global(.json .root > [class^="svelte-"]) {
+    @include text.truncate();
+    max-width: var(--padding-5x);
+    display: inline-block;
+    vertical-align: bottom;
+  }
   :global(.json) {
     --json-tree-font-size: var(--font-size-small);
     // --json-tree-font-family: "Circular", sans-serif;
-    --json-tree-li-indentation: var(--padding);
-    --json-tree-li-line-height: var(--line-height-standard);
+    // --json-tree-li-indentation: var(--padding);
+    // --json-tree-li-line-height: var(--line-height-standard);
     // colors
     --json-tree-property-color: var(--gray-200);
     --json-tree-string-color: var(--yellow-400);
