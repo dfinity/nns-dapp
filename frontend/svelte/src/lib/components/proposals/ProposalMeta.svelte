@@ -43,16 +43,11 @@
 <style lang="scss">
   @use "../../themes/mixins/media";
 
-  p:not(.text_small),
   a {
-    font-size: var(--font-size-h5);
-    line-height: var(--line-height-standard);
+    font-size: inherit;
+    line-height: inherit;
 
     overflow-wrap: anywhere;
-
-    @include media.min-width(medium) {
-      font-size: var(--font-size-h4);
-    }
   }
 
   p {
