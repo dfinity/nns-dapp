@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -eoo pipefail
+cd "$(dirname "$0")/../.."
+
+OUTDIR=target/ic
+mkdir -p "${OUTDIR}"
+
+DOCKER_BUILDKIT=1 docker build \
+  --target scratch \
+  -t "ledger" \
+  -f e2e-tests/scripts/nns-canister.Dockerfile \
+  -o "$OUTDIR" .

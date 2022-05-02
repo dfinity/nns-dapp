@@ -48,7 +48,7 @@ test -x "${DOWNLOAD_DIR}/ic-nns-init" || {
   exit 1
 }
 
-NNS_URL="$(./e2e-tests/scripts/dfx-dashboard)"
+NNS_URL="$(./e2e-tests/scripts/nns-dashboard)"
 
 "${DOWNLOAD_DIR}/ic-nns-init" \
   --url "$NNS_URL" \

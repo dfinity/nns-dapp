@@ -8,7 +8,7 @@ ic_repo="$HOME/dfn/ic"
 
 print_help() {
 	cat <<-EOF
-		Prints the NNS subnet URL of a testnet or local running dfx.
+		Prints the NNS URL of a testnet or local dfx.
 
 		This is useful for:
 		- Examining the dashboard.
