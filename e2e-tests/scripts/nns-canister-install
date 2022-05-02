@@ -20,7 +20,7 @@ help_text() {
 
 	--unclean
 	  Run even if there are already canisters installed.
-	  (NOT TESTED)
+	  (USUALLY GOES HORRIBLY WRONG)
 	EOF
 }
 
