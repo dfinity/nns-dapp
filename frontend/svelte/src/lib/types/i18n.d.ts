@@ -54,7 +54,6 @@ interface I18nError {
   transaction_error: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
-  cannot_merge_check_article: string;
   split_neuron: string;
   not_authorized: string;
   invalid_sender: string;
@@ -304,7 +303,6 @@ interface I18nProposal_detail__ineligible {
 
 interface I18nNeuron_detail {
   title: string;
-  proposer: string;
   voting_history: string;
   vote: string;
   join_community_fund: string;

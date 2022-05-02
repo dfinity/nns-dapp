@@ -11,7 +11,7 @@
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { hideProposal } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
-  import Proposer from "./Proposer.svelte";
+  import ProposalMeta from "./ProposalMeta.svelte";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
@@ -59,8 +59,7 @@
         ><span>{$i18n.status[ProposalStatus[status]] ?? ""}</span></Badge
       >
 
-      <p class="info"><Proposer {proposalInfo} /></p>
-      <p class="info"><small>Id: {id ?? ""}</small></p>
+      <ProposalMeta {proposalInfo} size="small" link={false} />
     </Card>
   {/if}
 </div>
@@ -84,9 +83,5 @@
     @include media.min-width(small) {
       margin: 0 var(--padding-2x) 0 0;
     }
-  }
-
-  .info {
-    margin: 0;
   }
 </style>

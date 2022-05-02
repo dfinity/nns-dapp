@@ -14,7 +14,7 @@
 
 {#if proposer !== undefined}
   <button class="text" on:click|stopPropagation={() => (modalOpen = true)}
-    ><small>{$i18n.neuron_detail.proposer}: {proposer}</small></button
+    >{$i18n.proposal_detail.proposer_prefix} {proposer}</button
   >
 
   {#if modalOpen}

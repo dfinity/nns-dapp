@@ -2,26 +2,16 @@
   import { i18n } from "../../stores/i18n";
   import WizardModal from "../WizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
-  import SelectNeurons from "../../components/neurons/SelectNeurons.svelte";
+  import SelectNeuronsToMerge from "../../components/neurons/SelectNeuronsToMerge.svelte";
   import ConfirmNeuronsMerge from "../../components/neurons/ConfirmNeuronsMerge.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
   import {
-    mapMergeableNeurons,
     checkInvalidState,
     type InvalidState,
-    type MergeableNeuron,
   } from "../../utils/neuron.utils";
   import { toastsStore } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
-  import { authStore } from "../../stores/auth.store";
-
-  let neurons: MergeableNeuron[];
-  $: neurons = mapMergeableNeurons({
-    neurons: $definedNeuronsStore,
-    identity: $authStore.identity,
-  });
 
   let selectedNeurons: NeuronInfo[] | undefined;
 
@@ -75,7 +65,7 @@
       $i18n.neurons.merge_neurons_modal_title}</svelte:fragment
   >
   {#if currentStep?.name === "SelectNeurons"}
-    <SelectNeurons neuronsData={neurons} on:nnsSelect={handleNeuronSelection} />
+    <SelectNeuronsToMerge on:nnsSelect={handleNeuronSelection} />
   {/if}
   {#if currentStep?.name === "ConfirmMerge"}
     {#if selectedNeurons !== undefined}
