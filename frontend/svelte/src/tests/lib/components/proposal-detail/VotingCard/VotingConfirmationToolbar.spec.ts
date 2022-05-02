@@ -141,7 +141,7 @@ describe("VotingConfirmationToolbar", () => {
     )
       .replace(/<strong>/g, "")
       .replace(/<\/strong>/g, "")
-      .replace("&ndash;", "-");
+      .replace("&ndash;", "–");
 
     const { textContent }: HTMLParagraphElement = container.querySelector(
       ".question"
