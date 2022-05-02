@@ -24,9 +24,10 @@
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
 
-  $: visible =
-    votableNeurons().length > 0 &&
-    proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
+  $: $definedNeuronsStore,
+    (visible =
+      votableNeurons().length > 0 &&
+      proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN);
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {

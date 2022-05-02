@@ -12,10 +12,11 @@ export type QueryAndUpdateOnError<E> = (options: {
   error: E;
 }) => void;
 
-let lastIndex: number = Math.round(Math.random() * 100000);
+export type QueryAndUpdateStrategy = "query_and_update" | "query" | "update";
+let lastIndex: number = 0;
 
 /**
- * Makes two requests (QUERY and UPDATE) in parallel.
+ * Depending on the strategy makes one or two requests (QUERY and UPDATE in parallel).
  * The returned promise notify when first fetched data are available.
  * Could call onLoad only once if the update response was first.
  */
@@ -23,40 +24,49 @@ export const queryAndUpdate = async <R, E>({
   request,
   onLoad,
   onError,
+  strategy = "query_and_update",
   logMessage,
 }: {
   request: (options: { certified: boolean; identity: Identity }) => Promise<R>;
   onLoad: QueryAndUpdateOnResponse<R>;
   logMessage?: string;
   onError?: QueryAndUpdateOnError<E>;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   let certifiedDone = false;
+  let requests: Array<Promise<void>>;
+  let logPrefix: string;
+  const log = ({ postfix }: { postfix: string }) => {
+    if (strategy !== "query_and_update") {
+      return;
+    }
+    logPrefix = logPrefix ?? `[${lastIndex++}] ${logMessage ?? ""}`;
+    logWithTimestamp(`${logPrefix} calls${postfix}`);
+  };
   const identity: Identity = await getIdentity();
-
-  const logPrefix = `[${lastIndex++}] ${logMessage ?? ""}`;
-  logWithTimestamp(`${logPrefix} calls...`);
-
-  return Promise.race([
-    // query
-    request({ certified: false, identity })
+  const queryOrUpdate = (certified: boolean) =>
+    request({ certified, identity })
       .then((response) => {
-        logWithTimestamp(`${logPrefix} query complete.`);
         if (certifiedDone) return;
-        onLoad({ certified: false, response });
+        onLoad({ certified, response });
+        log({ postfix: ` ${certified ? "update" : "query"} complete.` });
       })
       .catch((error: E) => {
-        // TODO: somehow notify user about probably compromised state
         if (certifiedDone) return;
-        onError?.({ certified: false, error });
-      }),
-
-    // update
-    request({ certified: true, identity })
-      .then((response) => {
-        logWithTimestamp(`${logPrefix} update complete.`);
-        onLoad({ certified: true, response });
+        onError?.({ certified, error });
       })
-      .catch((error) => onError?.({ certified: true, error }))
-      .finally(() => (certifiedDone = true)),
-  ]);
+      .finally(() => (certifiedDone = certifiedDone || certified));
+
+  // apply fetching strategy
+  if (strategy === "query") {
+    requests = [queryOrUpdate(false)];
+  } else if (strategy === "update") {
+    requests = [queryOrUpdate(true)];
+  } else {
+    requests = [queryOrUpdate(false), queryOrUpdate(true)];
+  }
+
+  log({ postfix: "..." });
+
+  await Promise.race(requests);
 };
