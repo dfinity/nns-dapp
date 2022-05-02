@@ -10,6 +10,7 @@ import { E8S_PER_ICP } from "../../../../../lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
 import { formatVotingPower } from "../../../../../lib/utils/neuron.utils";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
+import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
 describe("VotingConfirmationToolbar", () => {
   const votingPower = BigInt(100 * E8S_PER_ICP);
@@ -19,12 +20,16 @@ describe("VotingConfirmationToolbar", () => {
     votingPower,
   };
 
+  const props = {
+    proposalInfo: mockProposalInfo,
+  };
+
   beforeEach(() => {
     votingNeuronSelectStore.set([neuron]);
   });
 
   it("should disable buttons if nothing is selected", async () => {
-    const { container } = render(VotingConfirmationToolbar);
+    const { container } = render(VotingConfirmationToolbar, { props });
     votingNeuronSelectStore.toggleSelection(neuron.neuronId);
     await waitFor(() =>
       expect(
@@ -39,7 +44,7 @@ describe("VotingConfirmationToolbar", () => {
   });
 
   it("should display Vote.YES modal", async () => {
-    const { container } = render(VotingConfirmationToolbar);
+    const { container } = render(VotingConfirmationToolbar, { props });
     fireEvent.click(
       container.querySelector('[data-tid="vote-yes"]') as Element
     );
@@ -51,7 +56,7 @@ describe("VotingConfirmationToolbar", () => {
   });
 
   it("should display Vote.NO modal", async () => {
-    const { container } = render(VotingConfirmationToolbar);
+    const { container } = render(VotingConfirmationToolbar, { props });
     fireEvent.click(container.querySelector('[data-tid="vote-no"]') as Element);
     await waitFor(() =>
       expect(
@@ -61,7 +66,9 @@ describe("VotingConfirmationToolbar", () => {
   });
 
   it('should display "total" in modal', async () => {
-    const { getByText, container } = render(VotingConfirmationToolbar);
+    const { getByText, container } = render(VotingConfirmationToolbar, {
+      props,
+    });
     fireEvent.click(
       container.querySelector('[data-tid="vote-yes"]') as Element
     );
@@ -73,7 +80,7 @@ describe("VotingConfirmationToolbar", () => {
   });
 
   it("should hide confirmation on cancel", async () => {
-    const { container } = render(VotingConfirmationToolbar);
+    const { container } = render(VotingConfirmationToolbar, { props });
     fireEvent.click(
       container.querySelector('[data-tid="vote-yes"]') as Element
     );
@@ -93,7 +100,9 @@ describe("VotingConfirmationToolbar", () => {
   });
 
   it("should hide confirmation and dispatch on confirm", async () => {
-    const { component, container } = render(VotingConfirmationToolbar);
+    const { component, container } = render(VotingConfirmationToolbar, {
+      props,
+    });
     let calledVoteType: Vote = Vote.UNSPECIFIED;
     const onConfirm = jest.fn((ev) => (calledVoteType = ev?.detail?.voteType));
     component.$on("nnsConfirm", onConfirm);

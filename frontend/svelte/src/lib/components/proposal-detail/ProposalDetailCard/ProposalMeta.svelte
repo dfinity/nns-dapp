@@ -5,21 +5,18 @@
     ProposalId,
     ProposalInfo,
   } from "@dfinity/nns";
-  import { Topic } from "@dfinity/nns";
   import { i18n } from "../../../../lib/stores/i18n";
   import VotingHistoryModal from "../../../modals/neurons/VotingHistoryModal.svelte";
+  import { mapProposalInfo } from "../../../utils/proposals.utils";
 
   export let proposalInfo: ProposalInfo;
 
-  let proposal: Proposal | undefined;
   let proposer: NeuronId | undefined;
   let id: ProposalId | undefined;
   let topic: string | undefined;
   let url: string | undefined;
 
-  $: ({ proposal, proposer, id } = proposalInfo);
-  $: topic = $i18n.topics[Topic[proposalInfo?.topic]];
-  $: url = proposal?.url;
+  $: ({ proposer, id, url, topic } = mapProposalInfo(proposalInfo));
 
   let modalOpen = false;
 </script>

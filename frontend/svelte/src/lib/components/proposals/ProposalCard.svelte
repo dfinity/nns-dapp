@@ -6,25 +6,21 @@
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
-  import { PROPOSAL_COLOR } from "../../constants/proposals.constants";
   import type { ProposalColor } from "../../constants/proposals.constants";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
-  import { hideProposal } from "../../utils/proposals.utils";
+  import {mapProposalInfo, hideProposal} from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
   import Proposer from "./Proposer.svelte";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
 
-  let proposal: Proposal | undefined;
   let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
   let id: ProposalId | undefined;
   let title: string | undefined;
   let color: ProposalColor | undefined;
 
-  $: ({ proposal, status, id } = proposalInfo);
-  $: title = proposal?.title ?? "";
-  $: color = PROPOSAL_COLOR[status];
+  $: ({ status, id, title, color } = mapProposalInfo(proposalInfo));
 
   const showProposal = () => {
     routeStore.navigate({

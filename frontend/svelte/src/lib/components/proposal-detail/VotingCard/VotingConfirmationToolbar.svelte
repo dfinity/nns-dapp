@@ -1,12 +1,22 @@
 <script lang="ts">
-  import { Vote } from "@dfinity/nns";
+  import { type ProposalId, type ProposalInfo, Vote } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
+  import {
+    mapProposalInfo,
+    selectedNeuronsVotingPower,
+  } from "../../../utils/proposals.utils";
+  import { replacePlaceholders } from "../../../utils/i18n.utils";
 
   const dispatch = createEventDispatcher();
+
+  export let proposalInfo: ProposalInfo;
+
+  let id: ProposalId | undefined;
+  let topic: string | undefined;
+  $: ({ id, topic } = mapProposalInfo(proposalInfo));
 
   let total: bigint;
   let disabled: boolean = true;
@@ -35,6 +45,13 @@
     });
   };
 </script>
+
+<p class="question">
+  {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
+    $id: id,
+    $topic: topic,
+  })}
+</p>
 
 <div role="toolbar">
   <button
@@ -66,5 +83,9 @@
 
     display: flex;
     gap: var(--padding);
+  }
+
+  .question {
+    margin: 0 0 var(--padding-2x);
   }
 </style>
