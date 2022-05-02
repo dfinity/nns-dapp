@@ -8,7 +8,7 @@
   import { AppPath } from "../../constants/routes.constants";
   import type { ProposalColor } from "../../constants/proposals.constants";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
-  import {mapProposalInfo, hideProposal} from "../../utils/proposals.utils";
+  import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
   import Proposer from "./Proposer.svelte";
 

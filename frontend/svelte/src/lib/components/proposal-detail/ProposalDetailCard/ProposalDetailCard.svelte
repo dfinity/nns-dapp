@@ -8,7 +8,7 @@
   import ProposalMeta from "./ProposalMeta.svelte";
   import ProposalActions from "./ProposalActions.svelte";
   import ProposalSummaryCardBlock from "./ProposalSummaryCardBlock.svelte";
-  import {mapProposalInfo} from '../../../utils/proposals.utils';
+  import { mapProposalInfo } from "../../../utils/proposals.utils";
 
   export let proposalInfo: ProposalInfo;
 

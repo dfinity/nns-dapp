@@ -3,7 +3,7 @@
   import type { NeuronId } from "@dfinity/nns";
   import VotingHistoryModal from "../../modals/neurons/VotingHistoryModal.svelte";
   import { i18n } from "../../stores/i18n";
-  import {mapProposalInfo} from '../../utils/proposals.utils';
+  import { mapProposalInfo } from "../../utils/proposals.utils";
 
   export let proposalInfo: ProposalInfo;
 

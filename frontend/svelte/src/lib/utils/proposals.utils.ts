@@ -277,7 +277,7 @@ export const mapProposalInfo = (
   proposer: NeuronId | undefined;
   title: string | undefined;
   url: string | undefined;
-  topic: string;
+  topic: string | undefined;
   color: ProposalColor | undefined;
   status: ProposalStatus;
 } => {

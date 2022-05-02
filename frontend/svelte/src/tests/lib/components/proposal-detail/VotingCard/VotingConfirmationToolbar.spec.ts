@@ -2,13 +2,15 @@
  * @jest-environment jsdom
  */
 
-import { Vote } from "@dfinity/nns";
+import { Topic, Vote } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import VotingConfirmationToolbar from "../../../../../lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
 import { E8S_PER_ICP } from "../../../../../lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
+import { replacePlaceholders } from "../../../../../lib/utils/i18n.utils";
 import { formatVotingPower } from "../../../../../lib/utils/neuron.utils";
+import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
@@ -121,5 +123,27 @@ describe("VotingConfirmationToolbar", () => {
     );
     expect(onConfirm).toBeCalled();
     expect(calledVoteType).toBe(Vote.NO);
+  });
+
+  it("should display a question that repeats id and topic", () => {
+    const { container } = render(VotingConfirmationToolbar, {
+      props,
+    });
+
+    const testLabel = replacePlaceholders(
+      en.proposal_detail__vote.accept_or_reject,
+      {
+        $id: `${mockProposalInfo.id}`,
+        $topic: en.topics[Topic[mockProposalInfo.topic]],
+      }
+    )
+      .replace(/<strong>/g, "")
+      .replace(/<\/strong>/g, "");
+
+    const { textContent }: HTMLParagraphElement = container.querySelector(
+      ".question"
+    ) as HTMLParagraphElement;
+
+    expect(textContent).toEqual(testLabel);
   });
 });
