@@ -304,7 +304,6 @@ interface I18nProposal_detail__ineligible {
 
 interface I18nNeuron_detail {
   title: string;
-  proposer: string;
   voting_history: string;
   vote: string;
   join_community_fund: string;

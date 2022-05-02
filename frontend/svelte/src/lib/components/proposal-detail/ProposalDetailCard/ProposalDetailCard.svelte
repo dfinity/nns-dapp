@@ -5,7 +5,7 @@
   import Card from "../../ui/Card.svelte";
   import type { ProposalColor } from "../../../../lib/constants/proposals.constants";
   import { i18n } from "../../../../lib/stores/i18n";
-  import ProposalMeta from "./ProposalMeta.svelte";
+  import ProposalMeta from "../../proposals/ProposalMeta.svelte";
   import ProposalActions from "./ProposalActions.svelte";
   import ProposalSummaryCardBlock from "./ProposalSummaryCardBlock.svelte";
   import { mapProposalInfo } from "../../../utils/proposals.utils";
@@ -26,7 +26,11 @@
     ><h2 class="status">{$i18n.status[ProposalStatus[status]]}</h2></Badge
   >
   <ProposalSummaryCardBlock {proposal} />
-  <ProposalMeta {proposalInfo} />
+
+  <div class="detail">
+    <ProposalMeta {proposalInfo} />
+  </div>
+
   <ProposalActions {proposal} />
 </Card>
 
@@ -51,5 +55,9 @@
     min-width: fit-content;
     font-size: var(--font-size-h3);
     color: inherit;
+  }
+
+  .detail {
+    margin: var(--padding-3x) 0;
   }
 </style>

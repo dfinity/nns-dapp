@@ -4,9 +4,9 @@
 
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import ProposalMeta from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalMeta.svelte";
-import en from "../../../../mocks/i18n.mock";
-import { mockProposalInfo } from "../../../../mocks/proposal.mock";
+import ProposalMeta from "../../../../lib/components/proposals/ProposalMeta.svelte";
+import en from "../../../mocks/i18n.mock";
+import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 describe("ProposalMeta", () => {
   jest.spyOn(console, "error").mockImplementation(jest.fn);
@@ -20,6 +20,16 @@ describe("ProposalMeta", () => {
       props,
     });
     expect(getByText("url").getAttribute("href")).toBe("url");
+  });
+
+  it("should not render proposal url", () => {
+    const { getByText } = render(ProposalMeta, {
+      props: {
+        ...props,
+        link: false,
+      },
+    });
+    expect(() => getByText("url")).toThrow();
   });
 
   it("should render proposer id", () => {
@@ -61,5 +71,15 @@ describe("ProposalMeta", () => {
     await waitFor(() =>
       expect(container.querySelector("div.modal")).not.toBeNull()
     );
+  });
+
+  it("should render small text", () => {
+    const { container } = render(ProposalMeta, {
+      props: {
+        ...props,
+        size: "small",
+      },
+    });
+    expect(container.querySelectorAll(".text_small").length).not.toEqual(0);
   });
 });
