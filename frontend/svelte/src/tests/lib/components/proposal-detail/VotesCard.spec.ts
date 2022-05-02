@@ -160,9 +160,7 @@ describe("VotesCard", () => {
 
       expect(element).toBeInTheDocument();
 
-      if (element) {
-        expect(element.getAttribute("aria-label")).toBeTruthy();
-      }
+      expect(element?.getAttribute("aria-label")).toBeTruthy();
     });
   });
 });
