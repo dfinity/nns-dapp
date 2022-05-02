@@ -16,7 +16,7 @@
 
   let id: ProposalId | undefined;
   let topic: string | undefined;
-  $: ({ id, topic } = mapProposalInfo(proposalInfo));
+  $: ({ id, topic, title } = mapProposalInfo(proposalInfo));
 
   let total: bigint;
   let disabled: boolean = true;
@@ -49,6 +49,7 @@
 <p class="question">
   {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
     $id: `${id ?? ""}`,
+    $title: `${title ?? ""}`,
     $topic: topic ?? "",
   })}
 </p>

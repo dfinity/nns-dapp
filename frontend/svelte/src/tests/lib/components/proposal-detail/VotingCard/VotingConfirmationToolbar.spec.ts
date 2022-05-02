@@ -3,6 +3,7 @@
  */
 
 import { Topic, Vote } from "@dfinity/nns";
+import type { Proposal } from "@dfinity/nns/dist/types/types/governance_converters";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import VotingConfirmationToolbar from "../../../../../lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
@@ -134,6 +135,7 @@ describe("VotingConfirmationToolbar", () => {
       en.proposal_detail__vote.accept_or_reject,
       {
         $id: `${mockProposalInfo.id}`,
+        $title: `${(mockProposalInfo.proposal as Proposal).title}`,
         $topic: en.topics[Topic[mockProposalInfo.topic]],
       }
     )
