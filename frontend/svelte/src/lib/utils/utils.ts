@@ -1,3 +1,5 @@
+import type { Principal } from "@dfinity/principal";
+
 /* eslint-disable-next-line @typescript-eslint/ban-types */
 export const debounce = (func: Function, timeout?: number) => {
   let timer: NodeJS.Timer | undefined;
@@ -16,6 +18,9 @@ export const debounce = (func: Function, timeout?: number) => {
   };
 };
 
+export const isPrincipal = (value: unknown): value is Principal =>
+  typeof value === "object" && (value as Principal)?._isPrincipal === true;
+
 /**
  * Transform bigint to string to avoid serialization error.
  * devMode transforms 123n -> "BigInt(123)"
@@ -33,7 +38,7 @@ export const stringifyJson = (
       switch (typeof value) {
         case "object": {
           // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
-          if (value?._isPrincipal === true) {
+          if (isPrincipal(value)) {
             const asText = value.toString();
             // To not stringify NOT Principal instance that contains _isPrincipal field
             return asText === "[object Object]" ? value : asText;
