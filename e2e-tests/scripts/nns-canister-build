@@ -1,12 +1,48 @@
 #!/usr/bin/env bash
-set -eoo pipefail
+set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-OUTDIR=target/ic
+DOWNLOAD_DIR="$(realpath target/ic)"
+
+help_text() {
+    cat <<-EOF
+	Builds some NNS canisters locally:
+	- ledger
+
+	Flags:
+	--download-dir
+	  The directory in which to place the build artifacts.
+	  Default: '$DOWNLOAD_DIR'
+	EOF
+}
+
+while (($# > 0)) ; do
+        arg="$1" ; shift 1
+        case "$arg" in
+        --help)
+                help_text
+                exit 0 ;;
+        --download-dir)
+                DOWNLOAD_DIR="$(realpath "$1")"
+                test -d "$DOWNLOAD_DIR" || {
+                        printf "ERROR: %s '%s'\n" "Download dir does not exist:" "$1"
+                        exit 1
+                } >&2
+                shift 1 ;;
+        *)
+                {
+                        printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
+                        printf "Usage:"
+                        help_text
+                } >&2
+                exit 1 ;;
+        esac
+done
+
 mkdir -p "${OUTDIR}"
 
 DOCKER_BUILDKIT=1 docker build \
   --target scratch \
   -t "ledger" \
   -f e2e-tests/scripts/nns-canister.Dockerfile \
-  -o "$OUTDIR" .
+  -o "$DOWNLOAD_DIR" .
