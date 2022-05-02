@@ -19,28 +19,11 @@
   let showError: boolean = false;
   let loading: boolean = false;
 
-  // Used to hide error when address changes.
-  let prevValidatedAddress: string | undefined;
-  const validateHotkey = () => {
-    // Hide error if no value
-    if (address.length === 0) {
-      showError = false;
-      prevValidatedAddress = undefined;
-      return;
-    }
-    try {
-      prevValidatedAddress = address;
-      Principal.fromText(address);
-      showError = false;
-    } catch (_) {
-      showError = true;
-    }
+  const showErrorIfAny = () => {
+    showError = address.length > 0 && validPrincipal === undefined;
   };
-  // Update `showError` to ensure we hide the error on input change
-  $: showError =
-    prevValidatedAddress !== undefined && prevValidatedAddress !== address
-      ? false
-      : showError;
+  // Hide error on change
+  $: address, (showError = false);
 
   const dispatcher = createEventDispatcher();
   const add = async () => {
@@ -75,7 +58,7 @@
         bind:value={address}
         theme="dark"
         errorMessage={showError ? $i18n.error.principal_not_valid : undefined}
-        on:blur={validateHotkey}
+        on:blur={showErrorIfAny}
       />
     </div>
 
