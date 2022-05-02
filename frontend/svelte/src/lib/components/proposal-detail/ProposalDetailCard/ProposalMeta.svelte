@@ -1,7 +1,6 @@
 <script lang="ts">
   import type {
     NeuronId,
-    Proposal,
     ProposalId,
     ProposalInfo,
   } from "@dfinity/nns";
