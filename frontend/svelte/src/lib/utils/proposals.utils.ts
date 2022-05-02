@@ -283,7 +283,7 @@ export const mapProposalInfo = (
 } => {
   const { proposal, proposer, id, status } = proposalInfo;
 
-  const {topics} = get(i18n);
+  const { topics } = get(i18n);
 
   return {
     id,
