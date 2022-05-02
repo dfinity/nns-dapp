@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+
+command=echo
+testnet=""
+ic_repo="$HOME/dfn/ic"
+
+print_help() {
+	cat <<-EOF
+		Prints the NNS subnet URL of a testnet or local running dfx.
+
+		This is useful for:
+		- Examining the dashboard.
+		- Installing NNS canisters.
+
+		Flags:
+
+		--help
+		  Prints this help text.
+
+		--ic-repo <IC_REPO_DIR>
+		  The location at which the IC repo is installed.
+		  Default: '$ic_repo'
+
+		--open
+		  Open the dashoard in a browser.
+
+		--testnet
+		  The name of the testnet.
+		  Default: dfx running locally.
+	EOF
+}
+
+while (($# > 0)); do
+	arg="$1"
+	shift 1
+	case "$arg" in
+	--help)
+		print_help
+		exit 0
+		;;
+	--ic-repo)
+		ic_repo="$1"
+		shift 1
+		;;
+	--open)
+		command=xdg-open                 # Uses Linux default browser
+		which "$command" || command=open # Uses mac default browser
+		which "$command" || command=firefox
+		which "$command" || command=google-chrome
+		which "$command" || {
+			printf "ERROR: %s\n" "Unable to detect how to open your browser."
+			exit 1
+		} >&2
+		;;
+	--testnet)
+		testnet="$1"
+		shift 1
+		;;
+	*)
+		{
+			printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
+			printf "Usage:"
+			print_help
+		} >&2
+		exit 1
+		;;
+	esac
+done
+
+if test -n "${testnet:-}"; then
+	testnet_config_dir="${ic_repo}/testnet/env/$testnet/"
+	test -d "$ic_repo" || {
+		printf "ERROR: %s '%s'\n" "IC repo directory does not exist:" "$ic_repo"
+		exit 1
+	} >&2
+	test -d "$testnet_config_dir" || {
+		printf "ERROR: %s '%s'\n" "Testnet config directory does not exist:" "$testnet_config_dir"
+		exit 1
+	} >&2
+	"$command" "http://[$(cd "$testnet_config_dir" && ./hosts --nns-nodes | awk '{print $2 ; exit 0}')]:8080/_/dashboard"
+else
+	local_dfx_port_file="$PWD/.dfx/replica-configuration/replica-1.port"
+	port="$(cat "$local_dfx_port_file" || true)"
+	url="http://localhost:${port}"
+	test -e "$local_dfx_port_file" && curl -s "$url" >/dev/null || {
+		printf "ERROR: %s\n" "dfx does not appear to be running in this repo"
+		exit 1
+	} >&2
+	"$command" "$url"
+fi
