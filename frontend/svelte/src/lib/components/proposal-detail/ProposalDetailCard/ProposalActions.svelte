@@ -5,8 +5,8 @@
     proposalFirstActionKey,
     proposalActionFields,
   } from "../../../../lib/utils/proposals.utils";
-  import JSONTree from "svelte-json-tree";
   import { stringifyJson } from "../../../utils/utils";
+  import Json from "../../common/Json.svelte";
 
   export let proposal: Proposal | undefined;
 
@@ -26,10 +26,7 @@
         <h4>{key}</h4>
         {#if typeof value === "object"}
           <p class="json">
-            <JSONTree
-              defaultExpandedLevel={1}
-              value={JSON.parse(stringifyJson(value))}
-            />
+            <Json json={value} />
           </p>
         {:else}
           <p>
@@ -43,36 +40,6 @@
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
-  @use "../../../themes/mixins/text";
-
-  :global(.json .root > [class^="svelte-"]) {
-    @include text.truncate();
-    max-width: var(--padding-5x);
-    display: inline-block;
-    vertical-align: bottom;
-  }
-  :global(.json) {
-    --json-tree-font-size: var(--font-size-small);
-    // --json-tree-font-family: "Circular", sans-serif;
-    // --json-tree-li-indentation: var(--padding);
-    // --json-tree-li-line-height: var(--line-height-standard);
-    // colors
-    --json-tree-property-color: var(--gray-200);
-    --json-tree-string-color: var(--yellow-400);
-    --json-tree-symbol-color: var(--gray-200);
-    --json-tree-boolean-color: var(--blue-200);
-    --json-tree-function-color: var(--blue-200);
-    --json-tree-number-color: var(--blue-200);
-    --json-tree-label-color: var(--gray-200);
-    --json-tree-property-color: var(--background-contrast);
-    --json-tree-arrow-color: var(--blue-500);
-    --json-tree-operator-color: var(--gray-200);
-    --json-tree-null-color: var(--gray-100);
-    --json-tree-undefined-color: var(--gray-100);
-    --json-tree-date-color: var(--gray-100);
-    --json-tree-internal-color: var(--gray-100);
-    --json-tree-regex-color: var(--yellow-400);
-  }
 
   ul {
     margin: 0;
