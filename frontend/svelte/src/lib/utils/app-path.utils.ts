@@ -26,7 +26,7 @@ export const isRoutePath: ({
 );
 
 export const getLastPathDetailId = (path: string): bigint | undefined => {
-  const pathDetail = path.split("/").pop();
+  const pathDetail = getLastPathDetail(path);
   if (pathDetail === undefined) {
     return undefined;
   }
@@ -38,3 +38,7 @@ export const getLastPathDetailId = (path: string): bigint | undefined => {
     return undefined;
   }
 };
+
+export const getLastPathDetail = (
+  path: string | undefined
+): string | undefined => path?.split("/").pop();

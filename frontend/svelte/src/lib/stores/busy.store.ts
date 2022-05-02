@@ -11,9 +11,13 @@ export type BusyStateInitiator =
   | "dissolve-action"
   | "add-followee"
   | "remove-followee"
+  | "add-hotkey-neuron"
+  | "remove-hotkey-neuron"
   | "reload-neurons"
   | "reload-proposal"
   | "merge-neurons"
+  | "merge-maturity"
+  | "disburse-neuron"
   | "remove-followee";
 
 /**

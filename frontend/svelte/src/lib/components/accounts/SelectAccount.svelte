@@ -1,13 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import AccountCard from "./AccountCard.svelte";
-  import Spinner from "../ui/Spinner.svelte";
   import { accountsStore } from "../../stores/accounts.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
+  import SkeletonCard from "../ui/SkeletonCard.svelte";
 
   export let disableSelection: boolean = false;
   export let filterIdentifier: string | undefined = undefined;
+  export let displayTitle: boolean = false;
 
   const dispatch = createEventDispatcher();
   const chooseAccount = (selectedAccount: Account) => {
@@ -21,10 +22,6 @@
   $: subAccounts = ($accountsStore?.subAccounts ?? []).filter(
     ({ identifier }: Account) => identifier !== filterIdentifier
   );
-
-  // Display the "My Accounts" title only when we filter the list
-  let displayTitle: boolean;
-  $: displayTitle = filterIdentifier !== undefined;
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>
@@ -50,8 +47,8 @@
       >
     {/each}
   {:else}
-    <!-- TODO: https://dfinity.atlassian.net/browse/L2-411 Add Text Skeleton while loading -->
-    <Spinner />
+    <SkeletonCard />
+    <SkeletonCard />
   {/if}
 </div>
 

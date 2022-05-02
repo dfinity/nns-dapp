@@ -5,11 +5,11 @@ import * as api from "../../../lib/api/proposals.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
-  getProposalId,
   listNextProposals,
   listProposals,
   loadProposal,
   registerVotes,
+  routePathProposalId,
 } from "../../../lib/services/proposals.services";
 import * as busyStore from "../../../lib/stores/busy.store";
 import {
@@ -17,7 +17,6 @@ import {
   proposalsStore,
 } from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import type { ToastMsg } from "../../../lib/types/toast";
 import {
   mockIdentityErrorMsg,
   resetIdentity,
@@ -153,15 +152,15 @@ describe("proposals-services", () => {
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
     afterAll(() => jest.clearAllMocks());
-    it("should get proposalId from valid path", async () => {
-      expect(getProposalId("/#/proposal/123")).toBe(BigInt(123));
-      expect(getProposalId("/#/proposal/0")).toBe(BigInt(0));
+    it("should get proposalId from valid path", () => {
+      expect(routePathProposalId("/#/proposal/123")).toBe(BigInt(123));
+      expect(routePathProposalId("/#/proposal/0")).toBe(BigInt(0));
     });
 
-    it("should not get proposalId from invalid path", async () => {
-      expect(getProposalId("/#/proposal/")).toBeUndefined();
-      expect(getProposalId("/#/proposal/1.5")).toBeUndefined();
-      expect(getProposalId("/#/proposal/123n")).toBeUndefined();
+    it("should not get proposalId from invalid path", () => {
+      expect(routePathProposalId("/#/proposal/")).toBeUndefined();
+      expect(routePathProposalId("/#/proposal/1.5")).toBeUndefined();
+      expect(routePathProposalId("/#/proposal/123n")).toBeUndefined();
     });
   });
 
@@ -279,20 +278,17 @@ describe("proposals-services", () => {
         });
       };
 
-      let lastToastMessage: ToastMsg;
-      const spyToastShow = jest
-        .spyOn(toastsStore, "show")
-        .mockImplementation((params) => (lastToastMessage = params));
+      const resetToasts = () => {
+        const toasts = get(toastsStore);
+        toasts.forEach(() => toastsStore.hide());
+      };
 
-      beforeEach(
-        () =>
-          (lastToastMessage = {
-            labelKey: "",
-            level: "info",
-          })
-      );
+      beforeEach(resetToasts);
 
-      afterAll(() => jest.clearAllMocks());
+      afterAll(() => {
+        jest.clearAllMocks();
+        resetToasts();
+      });
 
       it("should show error.register_vote_unknown on not nns-js-based error", async () => {
         await registerVotes({
@@ -300,8 +296,11 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(lastToastMessage.labelKey).toBe("error.register_vote_unknown");
-        expect(lastToastMessage.level).toBe("error");
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [first, rest] = get(toastsStore);
+        expect(first.labelKey).toBe("error.register_vote_unknown");
+        expect(first.level).toBe("error");
       });
 
       it("should show error.register_vote on nns-js-based errors", async () => {
@@ -313,9 +312,11 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(spyToastShow).toBeCalled();
-        expect(lastToastMessage.labelKey).toBe("error.register_vote");
-        expect(lastToastMessage.level).toBe("error");
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [first, rest] = get(toastsStore);
+        expect(first.labelKey).toBe("error.register_vote");
+        expect(first.level).toBe("error");
       });
 
       it("should show reason per neuron Error in detail", async () => {
@@ -327,9 +328,10 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(lastToastMessage?.detail?.split(/test/).length).toBe(
-          neuronIds.length + 1
-        );
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [first, rest] = get(toastsStore);
+        expect(first?.detail?.split(/test/).length).toBe(neuronIds.length + 1);
       });
 
       it("should show reason per neuron GovernanceError in detail", async () => {
@@ -341,7 +343,10 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(lastToastMessage?.detail?.split(/governance-error/).length).toBe(
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [first, rest] = get(toastsStore);
+        expect(first?.detail?.split(/governance-error/).length).toBe(
           neuronIds.length + 1
         );
       });

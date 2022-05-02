@@ -1,20 +1,27 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { getContext } from "svelte";
   import { i18n } from "../../stores/i18n";
+  import {
+    type AccountType,
+    ADD_ACCOUNT_CONTEXT_KEY,
+    type AddAccountContext,
+  } from "../../stores/add-account.store";
 
-  const dispatcher = createEventDispatcher();
-  const selectNewAccount = () => {
-    dispatcher("nnsSelect", "newAccount");
-  };
+  const context: AddAccountContext = getContext<AddAccountContext>(
+    ADD_ACCOUNT_CONTEXT_KEY
+  );
+
+  const select = async (type: AccountType) => await context.selectType(type);
+  const selectNewSubAccount = async () => await select("subAccount");
+  const selectNewHardwareWallet = async () => await select("hardwareWallet");
 </script>
 
 <div class="wizard-wrapper">
-  <div class="card-item" role="button" on:click={selectNewAccount}>
+  <div class="card-item" role="button" on:click={selectNewSubAccount}>
     <h4>{$i18n.accounts.new_linked_title}</h4>
     <span>{$i18n.accounts.new_linked_subtitle}</span>
   </div>
-  <!-- TODO: Select New Hardware Wallet -->
-  <div class="card-item" role="button" on:click={selectNewAccount}>
+  <div class="card-item" role="button" on:click={selectNewHardwareWallet}>
     <h4>{$i18n.accounts.attach_hardware_title}</h4>
     <span>{$i18n.accounts.attach_hardware_subtitle}</span>
   </div>
@@ -22,6 +29,10 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
+
+  .wizard-wrapper {
+    justify-content: center;
+  }
 
   .card-item {
     padding: var(--padding-4x);

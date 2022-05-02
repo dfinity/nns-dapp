@@ -249,6 +249,16 @@ export namespace ManageNeuron {
     getNewController(): base_types_pb.PrincipalId | undefined;
     setNewController(value?: base_types_pb.PrincipalId): void;
 
+    hasNonce(): boolean;
+    clearNonce(): void;
+    getNonce(): number;
+    setNonce(value: number): void;
+
+    hasPercentageToSpawn(): boolean;
+    clearPercentageToSpawn(): void;
+    getPercentageToSpawn(): number;
+    setPercentageToSpawn(value: number): void;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Spawn.AsObject;
     static toObject(includeInstance: boolean, msg: Spawn): Spawn.AsObject;
@@ -262,6 +272,8 @@ export namespace ManageNeuron {
   export namespace Spawn {
     export type AsObject = {
       newController?: base_types_pb.PrincipalId.AsObject,
+      nonce: number,
+      percentageToSpawn: number,
     }
   }
 

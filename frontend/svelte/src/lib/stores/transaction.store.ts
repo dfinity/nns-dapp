@@ -17,8 +17,8 @@ export interface TransactionContext {
 export const NEW_TRANSACTION_CONTEXT_KEY = Symbol("new-transaction");
 
 /**
- * A store that contain transaction information - i.e. information that are use to issue a new transaction between accounts.
- * For example: transfering ICP from main- to a subaccount
+ * A store that contains transaction information - i.e. information that are used to issue a new transaction between accounts.
+ * For example: transferring ICP from main- to a subaccount
  *
  * This store is used in a scoped way in the <NewTransactionModal />
  *

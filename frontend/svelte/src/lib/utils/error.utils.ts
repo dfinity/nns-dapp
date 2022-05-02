@@ -3,6 +3,8 @@ import {
   GovernanceError,
   InsufficientAmountError as InsufficientAmountNNSError,
   InsufficientFundsError,
+  InvalidAccountIDError,
+  InvalidPercentageError,
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
@@ -35,6 +37,8 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
     [InsufficientAmountNNSError, "error.amount_not_enough"],
     [InvalidSenderError, "error.invalid_sender"],
     [InsufficientFundsError, "error.insufficient_funds"],
+    [InvalidAccountIDError, "error.invalid_account_id"],
+    [InvalidPercentageError, "error.invalid_percentage"],
     [GovernanceError, "error.governance_error"],
     [TransferError, "error.transfer_error"],
     [CannotBeMerged, "error.cannot_merge"],

@@ -3,6 +3,7 @@
   export let ariaLabel: string | undefined = undefined;
   export let selected: boolean = false;
   export let disabled: boolean | undefined = undefined;
+  export let testId: string = "card";
 
   let clickable: boolean = false;
 
@@ -17,7 +18,7 @@
 </script>
 
 <article
-  data-tid="card"
+  data-tid={testId}
   {role}
   on:click
   class:clickable

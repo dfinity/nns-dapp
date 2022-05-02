@@ -41,9 +41,7 @@
   {#if currentStep.name === "SetDissolveDelay"}
     <SetDissolveDelay
       {neuron}
-      cancelButtonText={$i18n.core.confirm_no}
       minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
-      on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
     />

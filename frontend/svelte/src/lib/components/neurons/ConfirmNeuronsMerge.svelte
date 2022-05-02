@@ -15,7 +15,7 @@
 
   const dispatcher = createEventDispatcher();
   $: {
-    // Only two neurons can be merged
+    // Only MAX_NEURONS_MERGED neurons can be merged
     if (neurons.length !== MAX_NEURONS_MERGED) {
       toastsStore.error({
         labelKey: "error.unexpected_number_neurons_merge",
@@ -36,9 +36,8 @@
       sourceNeuronId: neurons[1].neuronId,
     });
     if (id !== undefined) {
-      toastsStore.show({
+      toastsStore.success({
         labelKey: "neuron_detail.merge_neurons_success",
-        level: "info",
       });
     }
     loading = false;

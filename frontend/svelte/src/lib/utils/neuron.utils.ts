@@ -4,6 +4,7 @@ import {
   NeuronState,
   Topic,
   type BallotInfo,
+  type Followees,
   type Neuron,
   type NeuronId,
   type NeuronInfo,
@@ -17,6 +18,7 @@ import {
 import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
+  MIN_MATURITY_MERGE,
   MIN_NEURON_STAKE_SPLITTABLE,
 } from "../constants/neurons.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
@@ -26,6 +28,7 @@ import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
 import { InvalidAmountError } from "../types/errors";
 import { getAccountByPrincipal } from "./accounts.utils";
+import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
 import { isDefined } from "./utils";
 
@@ -283,21 +286,65 @@ const getMergeableNeuronMessageKey = ({
 
 export type MergeableNeuron = {
   mergeable: boolean;
+  selected: boolean;
   messageKey?: string;
   neuron: NeuronInfo;
 };
+/**
+ * Returns neuron data wrapped with extra information about mergeability.
+ *
+ * @neurons NeuronInfo[]
+ * @identity Identity | null
+ * @selectedNeuronIds NeuronId[]
+ * @returns MergeableNeuron[]
+ */
 export const mapMergeableNeurons = ({
   neurons,
   identity,
+  selectedNeurons,
 }: {
   neurons: NeuronInfo[];
   identity?: Identity | null;
+  selectedNeurons: NeuronInfo[];
 }): MergeableNeuron[] =>
-  neurons.map((neuron: NeuronInfo) => ({
-    neuron,
-    mergeable: isMergeableNeuron({ neuron, identity }),
-    messageKey: getMergeableNeuronMessageKey({ neuron, identity }),
-  }));
+  neurons
+    // First we consider the neuron on itself
+    .map((neuron: NeuronInfo) => ({
+      neuron,
+      selected: selectedNeurons
+        .map(({ neuronId }) => neuronId)
+        .includes(neuron.neuronId),
+      mergeable: isMergeableNeuron({ neuron, identity }),
+      messageKey: getMergeableNeuronMessageKey({ neuron, identity }),
+    }))
+    // Then we calculate the neuron with the current selection
+    .map(({ mergeable, selected, messageKey, neuron }: MergeableNeuron) => {
+      // If not mergeable by itself or already selected, we keep the data.
+      if (!mergeable || selected) {
+        return { mergeable, selected, messageKey, neuron };
+      }
+      // Max selection, but not one of the current neurons
+      if (selectedNeurons.length >= MAX_NEURONS_MERGED) {
+        return {
+          neuron,
+          selected,
+          mergeable: false,
+          messageKey: "neurons.only_merge_two",
+        };
+      }
+      // Compare with current selected neuron
+      if (selectedNeurons.length === 1) {
+        const [selectedNeuron] = selectedNeurons;
+        const { isValid, messageKey } = canBeMerged([selectedNeuron, neuron]);
+        return {
+          neuron,
+          selected,
+          mergeable: isValid,
+          messageKey,
+        };
+      }
+      return { mergeable, selected, messageKey, neuron };
+    });
 
 const sameController = (neurons: NeuronInfo[]): boolean =>
   new Set(
@@ -319,6 +366,7 @@ const sameId = (neurons: NeuronInfo[]): boolean =>
  * For example:
  *  [[2, 4, 5], [1, 2, 3]] returns `false`
  *  [[2, 5, 6], [2, 5, 6]] returns `true`
+ *  [[], []] return `true`
  * @returns boolean
  */
 export const allHaveSameFollowees = (
@@ -335,16 +383,14 @@ const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
     return false;
   }
   const sortedFollowees: NeuronId[][] = fullNeurons
-    .map(({ followees }) =>
-      followees.find(({ topic }) => topic === Topic.ManageNeuron)
+    .map(
+      ({ followees }): Followees =>
+        followees.find(({ topic }) => topic === Topic.ManageNeuron) ?? {
+          topic: Topic.ManageNeuron,
+          followees: [],
+        }
     )
-    .filter(isDefined)
     .map(({ followees }) => followees.sort());
-  // If no neuron has ManageNeuron followees, return true
-  if (sortedFollowees.length === 0) {
-    return true;
-  }
-  // Check that all neurons have same followees
   return allHaveSameFollowees(sortedFollowees);
 };
 
@@ -426,3 +472,28 @@ export const isIdentityController = ({
   }
   return neuron.fullNeuron?.controller === identity.getPrincipal().toText();
 };
+
+export const followeesByTopic = ({
+  neuron,
+  topic,
+}: {
+  neuron: NeuronInfo | undefined;
+  topic: Topic;
+}): NeuronId[] | undefined =>
+  neuron?.fullNeuron?.followees.find(
+    ({ topic: followedTopic }) => topic === followedTopic
+  )?.followees;
+
+/**
+ * NeuronManagement proposals are not public so we hide this topic
+ * (unless the neuron already has followees on this topic)
+ * https://github.com/dfinity/nns-dapp/pull/511
+ */
+export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
+  followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
+    ? enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+    : enumValues(Topic);
+
+export const hasEnoughMaturityToMerge = (neuron: NeuronInfo): boolean =>
+  neuron.fullNeuron !== undefined &&
+  neuron.fullNeuron.maturityE8sEquivalent > MIN_MATURITY_MERGE;
