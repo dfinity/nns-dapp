@@ -3,6 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 DOWNLOAD_DIR="target/ic"
+UNCLEAN="no"
 
 help_text() {
   cat <<-EOF
@@ -16,6 +17,10 @@ help_text() {
 
 	--download-dir <DIR>
 	  Specifies where the ic artifacts are located.
+
+	--unclean
+	  Run even if there are already canisters installed.
+	  (NOT TESTED)
 	EOF
 }
 
@@ -35,6 +40,9 @@ while (($# > 0)); do
     } >&2
     shift 1
     ;;
+  --unclean)
+    UNCLEAN=yes
+    ;;
   *)
     {
       printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
@@ -50,6 +58,26 @@ test -x "${DOWNLOAD_DIR}/ic-nns-init" || {
   printf "ERROR: %s\n" "ic-nns-init is missing from the download directory"
   exit 1
 }
+
+FIRST_POSSIBLE_CANISTER_ID=rwlgt-iiaaa-aaaaa-aaaaa-cai
+if { curl -sL "$(./e2e-tests/scripts/nns-dashboard)" | grep -q "$FIRST_POSSIBLE_CANISTER_ID"; } && [[ "$UNCLEAN" != "yes" ]]; then
+  printf "WARNING: %s\n" \
+    "Installing governance canisters is only known to work reliably" \
+    "in a clean environment." \
+    "" \
+    "Please consider running:" \
+    "  dfx stop && dfx start --clean" \
+    ""
+  # If running in a non-interactive terminal, fail, else ask the user whether to proceed.
+  if test -t 1; then
+    # Timeout with -t:  Make sure this does not hang indefinitely.  It is better to fail.
+    read -t60 -rp "Continue anyway? (yes/NO) " UNCLEAN
+  fi
+  [[ "$UNCLEAN" == "yes" ]] || {
+    printf "ERROR: %s\n" "Refusing to continue into an unknown state."
+    exit 1
+  }
+fi
 
 NNS_URL="$(./e2e-tests/scripts/nns-dashboard)"
 

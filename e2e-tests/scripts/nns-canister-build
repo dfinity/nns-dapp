@@ -3,6 +3,9 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 DOWNLOAD_DIR="$(realpath ../../target/ic)"
+# Note: This is the default commit of the IC repo to use; it can be overridden on the command line.
+#       The commit should come from the master branch and should be updated regularly.
+#       The default commit is used in CI, so should be a known, tested value.
 IC_COMMIT=eba88796cf8dff32f5788c9167cdd8e292b6072a
 
 help_text() {
@@ -18,6 +21,8 @@ help_text() {
 	--ic-commit)
 	  The commit in the IC repo to build.
 	  default: '$IC_COMMIT'
+	  Note: Not all commits are available as prebuilt assets.
+	        You may have to search around to find a suitable commit.
 	EOF
 }
 
