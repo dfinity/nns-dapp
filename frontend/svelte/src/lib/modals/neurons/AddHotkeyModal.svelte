@@ -5,7 +5,6 @@
   import { i18n } from "../../stores/i18n";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { addHotkey } from "../../services/neurons.services";
-  import { toastsStore } from "../../stores/toasts.store";
   import Spinner from "../../components/ui/Spinner.svelte";
   import { createEventDispatcher } from "svelte";
   import { getPrincipalFromString } from "../../utils/accounts.utils";
@@ -30,12 +29,7 @@
     if (validPrincipal !== undefined) {
       startBusy("add-hotkey-neuron");
       loading = true;
-      const response = await addHotkey({ neuronId, principal: validPrincipal });
-      if (response !== undefined) {
-        toastsStore.success({
-          labelKey: "neuron_detail.add_hotkey_success",
-        });
-      }
+      await addHotkey({ neuronId, principal: validPrincipal });
       loading = false;
       stopBusy("add-hotkey-neuron");
       dispatcher("nnsClose");
