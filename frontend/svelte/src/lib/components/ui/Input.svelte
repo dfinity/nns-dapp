@@ -17,6 +17,8 @@
 
   export let theme: "dark" | "light" = "light";
 
+  export let error: boolean = false;
+
   const handleInput = ({ currentTarget }: InputEventHandler) =>
     (value =
       inputType === "number" ? +currentTarget.value : currentTarget.value);
@@ -28,8 +30,9 @@
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
-<div class={`input-block ${theme}`} class:disabled>
+<div class={`input-block ${theme}`} class:disabled class:error>
   <input
+    data-tid="input-ui-element"
     type={inputType}
     {required}
     {spellcheck}
@@ -41,6 +44,7 @@
     {placeholder}
     {max}
     {autocomplete}
+    on:blur
     on:input={handleInput}
   />
 
@@ -63,6 +67,10 @@
     align-items: center;
 
     width: var(--input-width);
+
+    &.error input {
+      border: 1px solid var(--error-color) !important;
+    }
 
     :global(button) {
       position: absolute;

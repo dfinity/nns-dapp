@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal";
 import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../constants/accounts.constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Account } from "../types/account";
@@ -33,3 +34,18 @@ export const invalidAddress = (address: string | undefined): boolean =>
  */
 export const emptyAddress = (address: string | undefined): boolean =>
   address === undefined || address.length === 0;
+
+/**
+ * Converts address string to Principal.
+ * @param address
+ * @returns Principal or `undefined` when not valid
+ */
+export const getPrincipalFromString = (
+  address: string
+): Principal | undefined => {
+  try {
+    return Principal.fromText(address);
+  } catch (_) {
+    return undefined;
+  }
+};

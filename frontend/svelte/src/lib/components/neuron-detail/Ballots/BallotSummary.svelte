@@ -17,6 +17,7 @@
         proposalId: ballot.proposalId as ProposalId,
         setProposal: (proposalInfo: ProposalInfo) => (proposal = proposalInfo),
         silentErrorMessages: true,
+        // TODO (L2-494): optimize history fetching
       })
   );
 </script>

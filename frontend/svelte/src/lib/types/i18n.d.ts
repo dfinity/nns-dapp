@@ -59,10 +59,10 @@ interface I18nError {
   invalid_sender: string;
   insufficient_funds: string;
   transfer_error: string;
-  governance_error: string;
   merge_neurons_same_id: string;
   merge_neurons_not_same_controller: string;
   merge_neurons_not_same_manage_neuron_followees: string;
+  governance_error: string;
   not_mergeable: string;
   invalid_account_id: string;
   invalid_percentage: string;
@@ -292,6 +292,7 @@ interface I18nProposal_detail__vote {
   confirm_adopt_text: string;
   confirm_reject_headline: string;
   confirm_reject_text: string;
+  accept_or_reject: string;
 }
 
 interface I18nProposal_detail__ineligible {
