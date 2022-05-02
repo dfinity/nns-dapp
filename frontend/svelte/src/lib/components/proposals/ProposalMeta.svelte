@@ -1,12 +1,8 @@
 <script lang="ts">
-  import type {
-    NeuronId,
-    ProposalId,
-    ProposalInfo,
-  } from "@dfinity/nns";
+  import type { NeuronId, ProposalId, ProposalInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import Proposer from "./Proposer.svelte";
-  import {mapProposalInfo} from '../../utils/proposals.utils';
+  import { mapProposalInfo } from "../../utils/proposals.utils";
 
   export let proposalInfo: ProposalInfo;
   export let size: "small" | "normal" = "normal";
