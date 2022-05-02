@@ -44,36 +44,26 @@ export const queryAndUpdate = async <R, E>({
     logWithTimestamp(`${logPrefix} calls${postfix}`);
   };
   const identity: Identity = await getIdentity();
-  const query = () =>
-    request({ certified: false, identity })
+  const queryOrUpdate = (certified: boolean) =>
+    request({ certified, identity })
       .then((response) => {
         if (certifiedDone) return;
-        onLoad({ certified: false, response });
-        log({ postfix: " query complete." });
+        onLoad({ certified, response });
+        log({ postfix: ` ${certified ? "update" : "query"} complete.` });
       })
       .catch((error: E) => {
-        // TODO: somehow notify user about probably compromised state
         if (certifiedDone) return;
-        onError?.({ certified: false, error });
-      });
-  const update = () =>
-    request({ certified: true, identity })
-      .then((response) => {
-        onLoad({ certified: true, response });
-        log({ postfix: " update complete." });
+        onError?.({ certified, error });
       })
-      .catch((error) => {
-        onError?.({ certified: true, error });
-      })
-      .finally(() => (certifiedDone = true));
+      .finally(() => (certifiedDone = certifiedDone || certified));
 
   // apply fetching strategy
   if (strategy === "query") {
-    requests = [query()];
+    requests = [queryOrUpdate(false)];
   } else if (strategy === "update") {
-    requests = [update()];
+    requests = [queryOrUpdate(true)];
   } else {
-    requests = [query(), update()];
+    requests = [queryOrUpdate(false), queryOrUpdate(true)];
   }
 
   log({ postfix: "..." });
