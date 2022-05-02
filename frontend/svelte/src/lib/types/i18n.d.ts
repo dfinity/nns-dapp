@@ -289,6 +289,7 @@ interface I18nProposal_detail__vote {
   confirm_adopt_text: string;
   confirm_reject_headline: string;
   confirm_reject_text: string;
+  vote_status: string;
   accept_or_reject: string;
 }
 
