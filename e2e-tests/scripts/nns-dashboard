@@ -2,6 +2,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
+# This is the command to be executed on the URL.
+# Shellcheck is concerned that we may want the output of echo here.
+# shellcheck disable=SC2209
 command=echo
 testnet=""
 ic_repo="$HOME/dfn/ic"
@@ -45,11 +48,11 @@ while (($# > 0)); do
     shift 1
     ;;
   --open)
-    command=xdg-open                 # Uses Linux default browser
-    which "$command" || command=open # Uses mac default browser
-    which "$command" || command=firefox
-    which "$command" || command=google-chrome
-    which "$command" || {
+    command=xdg-open                      # Uses Linux default browser
+    command -v "$command" || command=open # Uses mac default browser
+    command -v "$command" || command=firefox
+    command -v "$command" || command=google-chrome
+    command -v "$command" || {
       printf "ERROR: %s\n" "Unable to detect how to open your browser."
       exit 1
     } >&2
@@ -84,6 +87,9 @@ else
   local_dfx_port_file="$PWD/.dfx/replica-configuration/replica-1.port"
   port="$(cat "$local_dfx_port_file" || true)"
   url="http://localhost:${port}"
+  # Yes, shell does not bind logical operators like some other languages.  That is fine.
+  # Thank you, shellcheck, for making sure that we are aware.
+  # shellcheck disable=SC2015
   test -e "$local_dfx_port_file" && curl -s "$url" >/dev/null || {
     printf "ERROR: %s\n" "dfx does not appear to be running in this repo"
     exit 1
