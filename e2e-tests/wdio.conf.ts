@@ -37,6 +37,11 @@ export const config: WebdriverIO.Config = {
           mkdirSync(SCREENSHOTS_DIR);
         }
 
+        // Make screenshots deterministic by removing the spinner and other unstable elements, if they exist.
+        await browser.execute(() =>
+          document.querySelectorAll('[data-tid="spinner"]').forEach(element => element.remove());
+        );
+        // Make the screenshot.
         await browser.saveScreenshot(`${SCREENSHOTS_DIR}/${filename}.png`);
 
         if (options?.saveDom === true) {
