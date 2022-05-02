@@ -8,16 +8,18 @@ RUN apt -yq update && \
 
 RUN cargo install --version 0.3.2 ic-cdk-optimizer
 
-# Hint: set this version to the hash of https://github.com/dfinity/ic commit you want to build.
-ARG IC_VERSION=eba88796cf8dff32f5788c9167cdd8e292b6072a
+ARG IC_COMMIT
 
 RUN git clone https://github.com/dfinity/ic && \
     cd ic && \
-    git reset --hard ${IC_VERSION} && \
+    git reset --hard ${IC_COMMIT} && \
     rm -rf .git && \
     cd ..
 
 RUN git config --global url."https://github.com/".insteadOf git://github.com/
+
+COPY nns-canister.patch /tmp/
+RUN cd /ic && patch -p1 < /tmp/nns-canister.patch
 
 RUN export CARGO_TARGET_DIR=/ic/rs/target && \
     cd ic/rs/ && \

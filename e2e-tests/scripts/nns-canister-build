@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd "$(dirname "$0")/../.."
+cd "$(dirname "$0")"
 
-DOWNLOAD_DIR="$(realpath target/ic)"
+DOWNLOAD_DIR="$(realpath ../../target/ic)"
+IC_COMMIT=eba88796cf8dff32f5788c9167cdd8e292b6072a
 
 help_text() {
     cat <<-EOF
@@ -13,6 +14,10 @@ help_text() {
 	--download-dir
 	  The directory in which to place the build artifacts.
 	  Default: '$DOWNLOAD_DIR'
+
+	--ic-commit)
+	  The commit in the IC repo to build.
+	  default: '$IC_COMMIT'
 	EOF
 }
 
@@ -29,6 +34,8 @@ while (($# > 0)) ; do
                         exit 1
                 } >&2
                 shift 1 ;;
+	--ic-commit)
+		IC_COMMIT="$1" ; shift 1 ;;
         *)
                 {
                         printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
@@ -39,10 +46,11 @@ while (($# > 0)) ; do
         esac
 done
 
-mkdir -p "${OUTDIR}"
+mkdir -p "${DOWNLOAD_DIR}"
 
 DOCKER_BUILDKIT=1 docker build \
   --target scratch \
   -t "ledger" \
-  -f e2e-tests/scripts/nns-canister.Dockerfile \
+  -f nns-canister.Dockerfile \
+  --build-arg=IC_COMMIT="$IC_COMMIT" \
   -o "$DOWNLOAD_DIR" .
