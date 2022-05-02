@@ -283,14 +283,14 @@ export const mapProposalInfo = (
 } => {
   const { proposal, proposer, id, status } = proposalInfo;
 
-  const labels = get(i18n);
+  const {topics} = get(i18n);
 
   return {
     id,
     proposer,
     proposal,
     title: proposal?.title,
-    topic: labels.topics[Topic[proposalInfo?.topic]],
+    topic: topics[Topic[proposalInfo?.topic]],
     url: proposal?.url,
     color: PROPOSAL_COLOR[status],
     status,
