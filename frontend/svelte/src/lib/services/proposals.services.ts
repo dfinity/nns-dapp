@@ -34,6 +34,7 @@ import {
   queryAndUpdate,
   type QueryAndUpdateOnError,
   type QueryAndUpdateOnResponse,
+  type QueryAndUpdateStrategy,
 } from "./utils.services";
 
 const handleFindProposalsError = ({ error: err, certified }) => {
@@ -156,16 +157,18 @@ export const loadProposal = async ({
   proposalId,
   setProposal,
   handleError,
+  callback,
   silentErrorMessages,
   silentUpdateErrorMessages,
-  callback,
+  strategy = "query_and_update",
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
   handleError?: (certified: boolean) => void;
+  callback?: (certified: boolean) => void;
   silentErrorMessages?: boolean;
   silentUpdateErrorMessages?: boolean;
-  callback?: (certified: boolean) => void;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   const catchError: QueryAndUpdateOnError<Error | unknown> = (
     erroneusResponse
@@ -203,6 +206,7 @@ export const loadProposal = async ({
         callback?.(certified);
       },
       onError: catchError,
+      strategy,
     });
   } catch (error: unknown) {
     catchError({ certified: true, error });
@@ -216,10 +220,12 @@ const getProposal = async ({
   proposalId,
   onLoad,
   onError,
+  strategy,
 }: {
   proposalId: ProposalId;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
   onError: QueryAndUpdateOnError<Error | undefined>;
+  strategy: QueryAndUpdateStrategy;
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
 
@@ -228,6 +234,7 @@ const getProposal = async ({
       queryProposal({ proposalId, identity, certified }),
     onLoad,
     onError,
+    strategy,
     logMessage: `Syncing Proposal ${hashCode(proposalId)}`,
   });
 };
@@ -315,6 +322,8 @@ export const registerVotes = async ({
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
       },
+      // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
+      strategy: "update",
       callback: (certified: boolean) =>
         stopBusySpinner({ certified, initiator: "reload-proposal" }),
       handleError: () => stopBusy("reload-proposal"),

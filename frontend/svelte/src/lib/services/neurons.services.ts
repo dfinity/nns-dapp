@@ -608,12 +608,10 @@ const setFolloweesHelper = async ({
   neuronId,
   topic,
   followees,
-  labelKey,
 }: {
   neuronId: NeuronId;
   topic: Topic;
   followees: NeuronId[];
-  labelKey: "add_followee" | "remove_followee";
 }) => {
   try {
     // ManageNeuron topic followes can only be handled by controllers
@@ -629,10 +627,6 @@ const setFolloweesHelper = async ({
       followees,
     });
     await getAndLoadNeuronHelper({ neuronId, identity });
-
-    toastsStore.success({
-      labelKey: `new_followee.success_${labelKey}`,
-    });
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
   }
@@ -672,7 +666,6 @@ export const addFollowee = async ({
     neuronId,
     topic,
     followees: newFollowees,
-    labelKey: "add_followee",
   });
 };
 
@@ -705,7 +698,6 @@ export const removeFollowee = async ({
     neuronId,
     topic,
     followees: newFollowees,
-    labelKey: "remove_followee",
   });
 };
 

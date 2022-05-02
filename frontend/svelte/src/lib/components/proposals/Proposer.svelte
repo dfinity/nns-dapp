@@ -3,18 +3,19 @@
   import type { NeuronId } from "@dfinity/nns";
   import VotingHistoryModal from "../../modals/neurons/VotingHistoryModal.svelte";
   import { i18n } from "../../stores/i18n";
+  import { mapProposalInfo } from "../../utils/proposals.utils";
 
   export let proposalInfo: ProposalInfo;
 
   let modalOpen = false;
 
   let proposer: NeuronId | undefined;
-  $: ({ proposer } = proposalInfo);
+  $: ({ proposer } = mapProposalInfo(proposalInfo));
 </script>
 
 {#if proposer !== undefined}
   <button class="text" on:click|stopPropagation={() => (modalOpen = true)}
-    ><small>{$i18n.neuron_detail.proposer}: {proposer}</small></button
+    >{$i18n.proposal_detail.proposer_prefix} {proposer}</button
   >
 
   {#if modalOpen}
