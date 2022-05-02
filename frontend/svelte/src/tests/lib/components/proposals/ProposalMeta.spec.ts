@@ -4,9 +4,9 @@
 
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import ProposalMeta from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalMeta.svelte";
-import en from "../../../../mocks/i18n.mock";
-import { mockProposalInfo } from "../../../../mocks/proposal.mock";
+import ProposalMeta from "../../../../lib/components/proposals/ProposalMeta.svelte";
+import en from "../../../mocks/i18n.mock";
+import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 describe("ProposalMeta", () => {
   jest.spyOn(console, "error").mockImplementation(jest.fn);

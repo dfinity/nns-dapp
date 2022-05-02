@@ -281,7 +281,6 @@
   },
   "neuron_detail": {
     "title": "Neuron",
-    "proposer": "Proposer",
     "voting_history": "Voting History",
     "vote": "Vote",
     "join_community_fund": "Join Community Fund",
